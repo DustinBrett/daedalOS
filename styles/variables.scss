@@ -1,0 +1,36 @@
+$highlightColor: #76b9ed;
+$highlightColor2: rgb(200, 200, 200);
+
+$uiColor1: rgb(55, 55, 55);
+$uiColor2: black;
+
+$offWhite: #f8f8ff;
+
+$minimize: rgb(230, 192, 41);
+$minimize_active: rgb(255, 238, 87);
+$minimize_text: rgb(184, 120, 24);
+$maximize: rgb(83, 194, 43);
+$maximize_active: rgb(130, 240, 89);
+$maximize_text: rgb(0, 92, 0);
+$close: rgb(255, 90, 82);
+$close_active: rgb(255, 135, 128);
+$close_text: rgb(162, 7, 7);
+
+$textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
+  0 1px 2px rgba(0, 0, 0, 0.75), 0 1px 2px rgba(0, 0, 0, 0.75),
+  0 1px 3px rgb(0, 0, 0), 0 1px 3px rgb(0, 0, 0);
+
+$thickLine: 2px;
+
+$fontSize: 12.5px;
+
+$baseZindex: 1000;
+$zindexLevelSize: 100;
+$iconsZindexLevel: 1;
+$windowsZindexLevel: 2;
+$taskbarZindexLevel: 3;
+$foregroundZindex: ($baseZindex + $windowsZindexLevel * $zindexLevelSize) +
+  ($zindexLevelSize / 2);
+
+$taskbarEntryWidth: 160px;
+$titlebarHeight: 22px;

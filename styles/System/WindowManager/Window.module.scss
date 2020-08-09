@@ -1,0 +1,308 @@
+@import '@/styles/mixins';
+
+$buttonIconOpacity: 0.975;
+
+.window {
+  font-family: 'SF-Regular', 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
+  font-size: 12px;
+
+  position: absolute;
+  z-index: map-get($zIndex, windows);
+
+  letter-spacing: 0.5px;
+  pointer-events: all;
+
+  border-radius: map-get($window, border-radius);
+  box-shadow: 0 0 0 1px rgb(80, 80, 80), 0 0 0 2px rgba(0, 0, 0, 0.4),
+    0 5px 50px rgba(0, 0, 0, 0.3);
+
+  &:before {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    margin: -1px;
+
+    content: '';
+
+    border-radius: inherit;
+    background: linear-gradient(to bottom, rgb(125, 125, 125), rgb(85, 85, 85));
+  }
+
+  &.foreground {
+    box-shadow: 0 0 0 1px rgb(90, 90, 90), 0 0 0 2px rgba(0, 0, 0, 0.6),
+      0 5px 50px rgba(0, 0, 0, 0.5);
+
+    #minimize {
+      color: $minimize;
+      background-color: $minimize;
+    }
+
+    #maximize {
+      color: $maximize;
+      background-color: $maximize;
+    }
+
+    #close {
+      color: $close;
+      background-color: $close;
+    }
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+
+    height: map-get($window, title-bar-height);
+
+    color: map-get($window, title-bar-text-color);
+    border-radius: map-get($window, border-radius)
+      map-get($window, border-radius) 0 0;
+    background: linear-gradient(
+      0deg,
+      rgb(45, 45, 45) -100%,
+      rgb(65, 65, 65) 100%
+    );
+
+    h1 {
+      width: 100%;
+
+      figure {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+
+        img {
+          position: relative;
+
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+
+        figcaption {
+          font-size: map-get($window, title-bar-font-size);
+          font-weight: 400;
+
+          overflow: hidden;
+
+          max-width: 45%;
+
+          text-align: center;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    nav {
+      position: absolute;
+      left: 0;
+
+      display: flex;
+
+      padding: 8px;
+
+      button {
+        font-size: 8px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+
+        color: rgb(80, 81, 82);
+        border: 0;
+        border-radius: 100%;
+        background-color: rgb(80, 81, 82);
+
+        &:last-child {
+          margin-right: unset;
+        }
+      }
+    }
+
+    nav:hover button {
+      font-size: 11px;
+
+      &#minimize {
+        color: $minimize_text;
+        background-color: $minimize;
+
+        &:active {
+          background-color: $minimize_active;
+        }
+      }
+
+      &#maximize {
+        color: $maximize_text;
+        background-color: $maximize;
+
+        &:active {
+          background-color: $maximize_active;
+        }
+      }
+
+      &#close {
+        color: $close_text;
+        background-color: $close;
+
+        &:active {
+          background-color: $close_active;
+        }
+      }
+    }
+
+    @media (pointer: coarse) {
+      &:after {
+        position: absolute;
+        top: -(map-get($window, title-bar-pointer-padding) / 2);
+        right: 0;
+
+        width: calc(100% - 68px); // TODO: 68px is button bar width
+        height: map-get($window, title-bar-height) +
+          map-get($window, title-bar-pointer-padding);
+
+        content: '';
+      }
+    }
+  }
+
+  &:not(.foreground) {
+    &:before {
+      background: linear-gradient(
+        to bottom,
+        rgb(110, 110, 110),
+        rgb(85, 85, 85)
+      );
+    }
+
+    .titlebar {
+      background: unset;
+      background-color: rgba(47, 48, 50);
+
+      h1 {
+        opacity: 0.44;
+
+        filter: grayscale(1);
+      }
+    }
+  }
+
+  .content {
+    @include scrollbars(
+      15px,
+      map-get($window, border-radius) * 2,
+      map-get($window, scroll-bar-color),
+      map-get($window, bg-color)
+    );
+
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+
+    height: calc(100% - #{map-get($window, title-bar-height)});
+
+    border-radius: 0 0 map-get($window, border-radius)
+      map-get($window, border-radius);
+  }
+}
+
+.window.foreground nav:hover {
+  #minimize,
+  #maximize,
+  #close {
+    color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+  }
+}
+
+.maximized {
+  header {
+    border-radius: unset !important;
+  }
+
+  article {
+    border-radius: unset !important;
+  }
+}
+
+.resizeTop {
+  top: -3px !important;
+
+  height: 6px !important;
+
+  cursor: ns-resize !important;
+}
+
+.resizeRight {
+  right: -3px !important;
+
+  width: 6px !important;
+
+  cursor: ew-resize !important;
+}
+
+.resizeBottom {
+  bottom: -3px !important;
+
+  height: 6px !important;
+
+  cursor: ns-resize !important;
+}
+
+.resizeLeft {
+  left: -3px !important;
+
+  width: 6px !important;
+
+  cursor: ew-resize !important;
+}
+
+.resizeTopRight {
+  top: -3px !important;
+  right: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  cursor: nesw-resize !important;
+}
+
+.resizeBottomRight {
+  right: -3px !important;
+  bottom: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  cursor: nwse-resize !important;
+}
+
+.resizeBottomLeft {
+  bottom: -3px !important;
+  left: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  cursor: nesw-resize !important;
+}
+
+.resizeTopLeft {
+  top: -3px !important;
+  left: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  cursor: nwse-resize !important;
+}

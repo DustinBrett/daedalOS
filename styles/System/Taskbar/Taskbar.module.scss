@@ -1,0 +1,41 @@
+@import '@/styles/maps';
+@import '@/styles/mixins';
+
+.taskbar {
+  position: fixed;
+  z-index: map-get($zIndex, taskbar);
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: map-get($taskbar, height);
+
+  background-color: hsla(
+    0,
+    0%,
+    map-get($taskbar, base-lightness),
+    map-get($taskbar, opacity)
+  );
+
+  backdrop-filter: blur(map-get($taskbar, blur));
+
+  .entries {
+    @include bottomLeft;
+
+    display: flex;
+    flex: 0 1 map-get($taskbar, entry-width);
+
+    width: calc(100% - #{map-get($clock, width)});
+    height: map-get($taskbar, height);
+
+    li {
+      display: grid;
+
+      padding-right: map-get($taskbar, entry-padding);
+
+      &:last-child {
+        padding-right: unset;
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@import '@/styles/maps';
+@import '@/styles/mixins';
+
+.clock {
+  @include bottomRight;
+
+  font-size: map-get($clock, font-size);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: map-get($clock, width);
+  height: map-get($taskbar, height);
+
+  letter-spacing: 0;
+
+  color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
+
+  &:hover {
+    transition: background-color 0.1s linear;
+
+    background-color: hsla(
+      0,
+      0%,
+      map-get($taskbar, hover-lightness),
+      map-get($taskbar, opacity)
+    );
+  }
+}

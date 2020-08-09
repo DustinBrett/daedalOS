@@ -1,0 +1,53 @@
+@import '@/styles/variables';
+
+@font-face {
+  font-family: 'SegoeUI';
+
+  font-display: fallback;
+  src: url('../public/fonts/SegoeUI.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'SF-Regular';
+
+  font-display: fallback;
+  src: url('../public/fonts/SF-Regular.woff2') format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  user-select: none;
+
+  outline: unset;
+
+  &:focus {
+    outline: unset;
+  }
+}
+
+html {
+  touch-action: manipulation;
+}
+
+body {
+  font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
+
+  background-color: black;
+
+  overscroll-behavior: contain;
+}
+
+ol {
+  list-style-type: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+#webamp-context-menu {
+  z-index: $foregroundZindex !important;
+}

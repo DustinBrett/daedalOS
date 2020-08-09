@@ -1,0 +1,80 @@
+@import '@/styles/variables';
+
+$zIndex: (
+  desktop: $baseZindex,
+  icons: $baseZindex +
+    (
+      $iconsZindexLevel * $zindexLevelSize
+    ),
+  windows: $baseZindex +
+    (
+      $windowsZindexLevel * $zindexLevelSize
+    ),
+  taskbar: $baseZindex +
+    (
+      $taskbarZindexLevel * $zindexLevelSize
+    )
+);
+
+$clock: (
+  text-color: $offWhite,
+  text-opacity: 80%,
+  font-size: $fontSize,
+  width: 90px,
+  hover-bg-opacity: 10%
+);
+
+$modPer: 35%;
+
+$icon: (
+  text-color: $offWhite,
+  text-shadow: $textShadow,
+  font-size: $fontSize,
+  min-height: 80px,
+  max-height: 96px,
+  width: 80px,
+  svg-width: 44px,
+  highlight-color: $highlightColor2,
+  hover-bg-opacity: 15%,
+  focus-bg-opacity: 25%,
+  focus-hover-bg-opacity: 35%
+);
+
+$icons: (
+  padding: 5px
+);
+
+$taskbar: (
+  opacity: 0.5,
+  base-lightness: 0,
+  hover-lightness: 25%,
+  foreground-lightness: 35%,
+  hover-foreground-lightness: 45%,
+  height: 30px,
+  entry-width: $taskbarEntryWidth,
+  entry-padding: 1px,
+  blur: 5px
+);
+
+$taskbarEntry: (
+  text-color: $offWhite,
+  text-width: 125px,
+  font-size: 12px,
+  margin: 4px,
+  hover-bg-opacity: 10%,
+  foreground-bg-opacity: 15%,
+  hover-foreground-bg-opacity: 20%,
+  icon-width: 16px,
+  icon-margin: 5px
+);
+
+$window: (
+  bg-color: $offWhite,
+  border-radius: 5px,
+  title-bar-color: $uiColor1,
+  title-bar-text-color: rgb(195, 195, 195),
+  title-bar-height: $titlebarHeight,
+  title-bar-pointer-padding: 10px,
+  title-bar-font-size: $fontSize,
+  scroll-bar-color: lighten($uiColor1, 55%)
+);
