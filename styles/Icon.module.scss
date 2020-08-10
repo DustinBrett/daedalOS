@@ -4,10 +4,9 @@
   align-content: space-between;
   color: #fff;
   display: grid;
-  font-size: 12px;
   justify-items: center;
   text-shadow: $icon-text-shadow;
-  width: $icon-container-dimensions;
+  width: $icon-dimensions;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);

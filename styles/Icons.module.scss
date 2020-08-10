@@ -2,10 +2,10 @@
 
 .icons {
   display: grid;  
-  grid-template-rows: repeat(auto-fit, $icon-container-dimensions);
+  grid-template-rows: repeat(auto-fit, $icon-dimensions);
   grid-auto-flow: column;
-  height: calc(100vh - #{ $taskbar-height });
-  padding-top: 15px;
-  row-gap: $icon-container-dimensions / 3;
-  width: $icon-container-dimensions;
+  height: calc(100% - #{ $taskbar-height });
+  padding: ($icon-dimensions / 4) 0;
+  row-gap: $icon-dimensions / 3;
+  width: $icon-dimensions;
 }

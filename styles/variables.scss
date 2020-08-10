@@ -1,5 +1,7 @@
-$icon-container-dimensions: 72px;
+$clock-text-color: rgb(255, 255, 255);
+$clock-width: 87px;
 
+$icon-dimensions: 72px;
 $icon-text-shadow:
   0 1px 1px rgba(0, 0, 0, 0.5),
   0 1px 1px rgba(0, 0, 0, 0.5),
@@ -8,4 +10,4 @@ $icon-text-shadow:
   0 1px 3px rgb(0, 0, 0),
   0 1px 3px rgb(0, 0, 0);
 
-$taskbar-height: 0px;
+$taskbar-height: 28px;

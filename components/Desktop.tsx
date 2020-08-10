@@ -1,3 +1,9 @@
+import styles from '../styles/Desktop.module.scss';
+
 export default function Desktop({ children }) {
-  return <div>{ children }</div>;
+  return (
+    <div className={ styles.desktop }>
+      { children }
+    </div>
+  );
 };

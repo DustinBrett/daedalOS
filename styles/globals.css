@@ -7,6 +7,7 @@ body, html {
 
 body {
   font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
   overflow: hidden;
   user-select: none;
 }

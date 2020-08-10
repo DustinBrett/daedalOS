@@ -1,0 +1,16 @@
+@import 'variables';
+
+.clock {
+  align-items: center;
+  color: rgba($clock-text-color, 0.8);
+  display: grid;
+  height: $taskbar-height;
+  justify-items: center;
+  position: absolute;
+  right: 0;
+  width: $clock-width;
+
+  &:hover {
+    background-color: rgba($clock-text-color, 0.1);
+  }
+}
