@@ -1,16 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
 body, html {
   margin: 0;
   padding: 0;
 }
 
 body {
-  /* overflow: hidden; */
+  font-family: 'Open Sans', sans-serif;
+  overflow: hidden;
   user-select: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
 
 * {
