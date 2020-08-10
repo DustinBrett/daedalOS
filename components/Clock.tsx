@@ -1,7 +1,7 @@
 import styles from '../styles/Clock.module.scss';
 import { useEffect, useState } from 'react';
 
-import { LOCALE, SECOND_IN_MILLISECONDS } from '../services/constants';
+import { LOCALE, SECOND_IN_MILLISECONDS } from '../resources/constants';
 
 const
 
@@ -13,15 +13,19 @@ const
       year: 'numeric'
     }).format(new Date()),
 
-  getTime = ({ hour12 }) =>
+  getTime = ({ hour12 = false }) =>
     new Intl.DateTimeFormat(LOCALE, {
       hour12,
-      hour: '2-digit',
+      hour: 'numeric',
       minute: '2-digit',
       second: '2-digit'
     }).format(new Date());
 
-export default function Clock({ hour12 = true }) {
+export type ClockType = {
+  hour12?: boolean
+};
+
+export function Clock({ hour12 }: ClockType) {
   const [date, setDate] = useState(''),
     [time, setTime] = useState(''),
     midnight = hour12 ? '12:00:00 AM' : '00:00:00',

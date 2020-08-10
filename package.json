@@ -1,12 +1,13 @@
 {
   "name": "x",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
+  "author": "Dustin Brett",
+  "license": "UNLICENSED",
   "dependencies": {
     "next": "^9.5.1",
     "react": "^16.13.1",
@@ -15,7 +16,8 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.27",
-    "@types/react": "^16.9.45",
+    "@types/react": "^16.9.46",
+    "@types/react-dom": "^16.9.8",
     "typescript": "^3.9.7"
   }
 }

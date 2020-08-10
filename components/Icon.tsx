@@ -1,10 +1,8 @@
 import styles from '../styles/Icon.module.scss';
 
-import apps from '../services/apps';
+import type { AppType } from '../resources/apps';
 
-export default function Icon({ id }) {
-  const { icon, name } = apps.find(app => app.id === id);
-
+export default function Icon({ icon, name }: AppType) {
   return (
     <div className={ styles.icon }>
       { icon }
