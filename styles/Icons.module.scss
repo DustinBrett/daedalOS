@@ -1,0 +1,16 @@
+@import 'variables';
+
+.icons {
+  display: grid;
+  grid-auto-columns: $icon-container-dimensions;
+  padding-top: 10px;
+}
+
+/*
+
+- 5px padding at top of icon container
+- 72px cube icon containers
+- select/highlight is based on theme color + opacity shifts and a darker 1 px border then back to light 1 px outline
+- Shadow color is dark theme color
+
+*/

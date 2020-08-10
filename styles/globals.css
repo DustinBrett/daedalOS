@@ -3,6 +3,11 @@ body, html {
   padding: 0;
 }
 
+body {
+  /* overflow: hidden; */
+  user-select: none;
+}
+
 a {
   color: inherit;
   text-decoration: none;
