@@ -3,4 +3,6 @@
 .taskbar {
   background-color: rgba(0, 0, 0, 0.5);
   height: $taskbar-height;
+  position: relative;
+  z-index: 1;
 }

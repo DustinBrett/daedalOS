@@ -7,12 +7,9 @@ $close-color: #FF554E;
 
 .window {
   background-color: #fff;
-  height: 200px;
-  left: 150px;
+  left: 100px;
   position: absolute;
-  resize: both;
   top: 50px;
-  width: 200px;
   z-index: 1;
 }
 
@@ -21,6 +18,7 @@ $close-color: #FF554E;
   background-color: $title-bar-color;
   color: $title-bar-text-color;
   display: flex;
+  font-size: 13px;
   height: 28px;
   justify-content: space-between;
   padding: 0 10px;
