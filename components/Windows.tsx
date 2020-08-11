@@ -1,10 +1,14 @@
-import type { WindowObject } from './Window';
+import type { WindowType } from './Window';
 import { Window } from './Window';
 
-export default function Windows({ windows = [] }) {
+type WindowsType = {
+  windows: Array<WindowType>
+}
+
+export default function Windows({ windows }: WindowsType) {
   return (
     <div>
-      { windows.map((window: WindowObject) =>
+      { windows.map((window: WindowType) =>
         <Window key={ window.id } { ...window } />) }
     </div>
   );

@@ -1,6 +1,10 @@
 import styles from '../styles/Desktop.module.scss';
 
-export default function Desktop({ children }: any) { // TODO: What type has `children`?
+type DesktopType = {
+  children: Array<JSX.Element>
+}
+
+export default function Desktop({ children }: DesktopType) {
   return (
     <div className={ styles.desktop }>
       { children }

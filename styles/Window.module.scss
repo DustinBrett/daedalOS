@@ -1,0 +1,51 @@
+$title-bar-color: #3C3C3C;
+$title-bar-text-color: #fff;
+
+$minimize-color: #FFBD2E;
+$maximize-color: #28C940;
+$close-color: #FF554E;
+
+.window {
+  background-color: #fff;
+  height: 200px;
+  left: 150px;
+  position: absolute;
+  resize: both;
+  top: 50px;
+  width: 200px;
+  z-index: 1;
+}
+
+.title_bar {
+  align-items: center;
+  background-color: $title-bar-color;
+  color: $title-bar-text-color;
+  display: flex;
+  height: 28px;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.dot {
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5pt rgba(0, 0, 0, 0.5);
+  display: inline-block;
+  height: 12px;
+  margin-left: 8px;
+  width: 12px;
+}
+
+.minimize {
+  @extend .dot;
+  background-color: $minimize-color;
+}
+
+.maximize {
+  @extend .dot;
+  background-color: $maximize-color;
+}
+
+.close {
+  @extend .dot;
+  background-color: $close-color;
+}

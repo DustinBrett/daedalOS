@@ -1,15 +1,23 @@
 @import 'variables';
 
 .icon {
-  align-content: space-between;
   color: #fff;
   display: grid;
   justify-items: center;
   text-shadow: $icon-text-shadow;
-  width: $icon-dimensions;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
     outline: 1px solid rgba(0, 0, 0, 0.25);
+  }
+}
+
+.dragging {
+  opacity: 0.5;
+  z-index: 2;
+
+  &:hover {
+    background-color: unset;
+    outline: unset;
   }
 }
