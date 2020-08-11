@@ -13,7 +13,7 @@ export type WindowType = {
 export function Window({ title }: WindowType) {
   const [height, setHeight] = useState(250),
     [width, setWidth] = useState(250),
-    onResize = (resizeEvent, { size: { width, height } }) => {
+    onResize = (resizeEvent: any, { size: { width, height } }: any) => { // TODO: Types
       setHeight(height);
       setWidth(width);
     };
