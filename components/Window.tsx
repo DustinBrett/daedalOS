@@ -18,6 +18,7 @@ export function Window({ title }: WindowType) {
       setWidth(width);
     };
 
+  // TODO: Resize from all directions
   return (
     <Draggable handle='.handle'>
       <Resizable
