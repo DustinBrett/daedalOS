@@ -22,14 +22,14 @@ $window-radius: 4px;
   }
 }
 
-.window_bars {
+@mixin window_bars {
   background-color: $title-bar-color;
   color: $title-bar-text-color;
   display: flex;
 }
 
 .title_bar {
-  @extend .window_bars;
+  @include window_bars;
 
   align-items: center;
   border-radius: $window-radius $window-radius 0 0;
@@ -75,7 +75,7 @@ $window-radius: 4px;
 }
 
 .action_bar {
-  @extend .window_bars;
+  @include window_bars;
 
   align-items: flex-end;
   border-top: 1px solid rgba($window-background-color, 0.5);
