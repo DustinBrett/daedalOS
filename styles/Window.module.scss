@@ -3,11 +3,11 @@
 $window-radius: 4px;
 
 .window {
-  background-color: #fff;
+  background-color: $window-background-color;
   border-radius: $window-radius;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1),
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
               0 5px 50px rgba(0, 0, 0, 0.3);
-  left: 100px;
+  left: 115px;
   position: absolute;
   top: 50px;
   z-index: 1;
@@ -22,11 +22,17 @@ $window-radius: 4px;
   }
 }
 
-.title_bar {
-  align-items: center;
+.window_bars {
   background-color: $title-bar-color;
   color: $title-bar-text-color;
   display: flex;
+}
+
+.title_bar {
+  @extend .window_bars;
+
+  align-items: center;
+  border-radius: $window-radius $window-radius 0 0;
   height: $window-titlebar-height;
   justify-content: space-between;
 
@@ -38,21 +44,77 @@ $window-radius: 4px;
 
   .actions {
     display: flex;
-    gap: 4px;
-    padding-right: 5px;
+    gap: 6px;
+    padding-right: 6px;
     position: absolute;
     right: 0;
+
+    .minimize, .maximize, .close {
+      border-radius: 100%;
+    
+      &:hover {
+        background-color: unset;
+      }
+    }
+    
+    .minimize {
+      background-color: $minimize-color;
+      color: $minimize-color;
+    }
+    
+    .maximize {
+      background-color: $maximize-color;
+      color: $maximize-color;
+    }
+    
+    .close {
+      background-color: $close-color;
+      color: $close-color;
+    }
   }
 }
 
-.minimize {
-  color: $minimize-color;
-}
+.action_bar {
+  @extend .window_bars;
 
-.maximize {
-  color: $maximize-color;
-}
+  align-items: flex-end;
+  border-top: 1px solid rgba($window-background-color, 0.5);
+  gap: 10px;
+  padding: 5px 10px;
 
-.close {
-  color: $close-color;
+  .action {
+    border-right: 1px solid rgba($window-background-color, 0.5);
+    padding-right: 10px;
+
+    &:last-child {
+      border-right: unset;
+    }
+  }
+
+  .search {
+    padding-right: unset;
+    width: 100%;
+
+    input {
+      background-color: lighten($title-bar-color, 20%);
+      border: none;
+      border-radius: 5px;
+      caret-color: transparent;
+      color: lighten($title-bar-text-color, 20%);
+      height: 15px;
+      font-family: "Open Sans", sans-serif;
+      font-size: 11px;
+      padding: 0 10px;
+      text-align: right;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: lighten($title-bar-color, 50%);
+      }
+    }
+  }
 }
