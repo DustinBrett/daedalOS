@@ -1,17 +1,25 @@
-$title-bar-color: #3C3C3C;
-$title-bar-text-color: #fff;
+@import 'variables';
 
-$minimize-color: #FFBD2E;
-$maximize-color: #28C940;
-$close-color: #FF554E;
+$window-radius: 4px;
 
 .window {
-  // TODO: Rounded corners on windows
   background-color: #fff;
+  border-radius: $window-radius;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1),
+              0 5px 50px rgba(0, 0, 0, 0.3);
   left: 100px;
   position: absolute;
   top: 50px;
   z-index: 1;
+
+  span[class~="react-resizable-handle"] { // TODO: Find better selector
+    opacity: 0;
+
+    &:hover {
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+    }
+  }
 }
 
 .title_bar {
@@ -19,32 +27,32 @@ $close-color: #FF554E;
   background-color: $title-bar-color;
   color: $title-bar-text-color;
   display: flex;
-  font-size: 13px;
-  height: 28px;
+  height: $window-titlebar-height;
   justify-content: space-between;
-  padding: 0 10px;
-}
 
-.dot {
-  border-radius: 50%;
-  box-shadow: 0 0 0 0.5pt rgba(0, 0, 0, 0.5);
-  display: inline-block;
-  height: 12px;
-  margin-left: 8px;
-  width: 12px;
+  .title {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+    padding-right: 5px;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .minimize {
-  @extend .dot;
-  background-color: $minimize-color;
+  color: $minimize-color;
 }
 
 .maximize {
-  @extend .dot;
-  background-color: $maximize-color;
+  color: $maximize-color;
 }
 
 .close {
-  @extend .dot;
-  background-color: $close-color;
+  color: $close-color;
 }
