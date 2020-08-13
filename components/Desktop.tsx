@@ -1,7 +1,6 @@
 import styles from '../styles/Desktop.module.scss';
 
 import { useEffect, useState } from 'react';
-import { url } from 'inspector';
 
 type DesktopType = {
   children: Array<JSX.Element>
@@ -23,7 +22,9 @@ export default function Desktop({ children }: DesktopType) {
   }, []);
 
   return (
-    <div className={ styles.desktop } style={{ backgroundImage: `url(${ background }), linear-gradient(to top left, ${ bgColor1 }, ${ bgColor2 })` }}>
+    <div className={ styles.desktop } style={{ backgroundImage:
+      `${ background ? `url(${ background }),` : '' } linear-gradient(to top left, ${ bgColor1 }, ${ bgColor2 })` }}
+    >
       { children }
     </div>
   );
