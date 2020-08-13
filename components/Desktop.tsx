@@ -10,6 +10,9 @@ type DesktopType = {
 const apiKey = 'a9c415b8dd5516d30782166da51876ed';
 const apiUrl = 'https://wall.alphacoders.com/api2.0/get.php';
 
+const bgColor1 = '#e5c4f5';
+const bgColor2 = '#3c5ead';
+
 export default function Desktop({ children }: DesktopType) {
   const [background, setBackground] = useState();
 
@@ -20,7 +23,7 @@ export default function Desktop({ children }: DesktopType) {
   }, []);
 
   return (
-    <div className={ styles.desktop } style={{ backgroundImage: `url(${ background })` }}>
+    <div className={ styles.desktop } style={{ backgroundImage: `url(${ background }), linear-gradient(to top left, ${ bgColor1 }, ${ bgColor2 })` }}>
       { children }
     </div>
   );

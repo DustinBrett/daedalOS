@@ -34,6 +34,8 @@ $window-radius: 4px;
   .content {
     background-color: $window-background-color;
     border-radius: 0 0 5px 5px;
+    padding: 5px;
+    user-select: text;
   }
 
   .title_bar {

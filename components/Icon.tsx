@@ -7,6 +7,7 @@ import type { AppType } from '../resources/apps';
 
 export default function Icon({ icon, name }: AppType) {
   const [dragging, setDragging] = useState(false);
+
   return (
     <Draggable
       onStart={ () => setDragging(true) }

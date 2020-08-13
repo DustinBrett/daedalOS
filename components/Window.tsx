@@ -40,6 +40,7 @@ export function Window({ app, children, title }: WindowType) {
 
   // TODO: Resize from all directions or use diff lib
   // TODO: Make action bar more generic
+    // Hover animation on actions
   return (
     <Draggable handle='.handle'>
       <Resizable
