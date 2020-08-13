@@ -13,8 +13,8 @@ import styles from '../styles/Window.module.scss';
 
 import type { AppType } from '../resources/apps';
 
-const DEFAULT_WINDOW_HEIGHT = 250,
-      DEFAULT_WINDOW_WIDTH = 300,
+const DEFAULT_WINDOW_HEIGHT = 350,
+      DEFAULT_WINDOW_WIDTH = 400,
       WINDOW_BAR_HEIGHT = 54; // TODO: This isn't reactive
 
 export type WindowType = {
@@ -34,8 +34,8 @@ export function Window({ app, children, title }: WindowType) {
     onClose = () => app.showWindow = false; // TODO: This doesn't work. Apps should be a state or context.
 
   useEffect(() => {
-    setHeight(window.innerHeight * 0.8);
-    setWidth(window.innerWidth * 0.7);
+    setHeight(Math.min(DEFAULT_WINDOW_HEIGHT, window.innerHeight * 0.8));
+    setWidth(Math.min(DEFAULT_WINDOW_WIDTH, window.innerWidth * 0.7));
   }, []);
 
   // TODO: Resize from all directions or use diff lib
