@@ -2,14 +2,19 @@
 
 $window-radius: 4px;
 
+@mixin window_bars {
+  color: $title-bar-text-color;
+  display: flex;
+}
+
 .window {
-  background-color: $window-background-color;
+  background-color: $title-bar-color;
   border-radius: $window-radius;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
               0 5px 50px rgba(0, 0, 0, 0.3);
-  left: 115px;
+  left: 90px;
   position: absolute;
-  top: 50px;
+  top: 30px;
   z-index: 1;
 
   span[class~="react-resizable-handle"] { // TODO: Find better selector
@@ -20,100 +25,116 @@ $window-radius: 4px;
       transition: opacity 0.3s ease-in-out;
     }
   }
-}
-
-@mixin window_bars {
-  background-color: $title-bar-color;
-  color: $title-bar-text-color;
-  display: flex;
-}
-
-.title_bar {
-  @include window_bars;
-
-  align-items: center;
-  border-radius: $window-radius $window-radius 0 0;
-  height: $window-titlebar-height;
-  justify-content: space-between;
-
-  .title {
-    position: absolute;
-    text-align: center;
-    width: 100%;
-  }
 
   .actions {
     display: flex;
     gap: 6px;
-    padding-right: 6px;
-    position: absolute;
-    right: 0;
+  }
 
-    .minimize, .maximize, .close {
-      border-radius: 100%;
-    
-      &:hover {
-        background-color: unset;
+  .content {
+    background-color: $window-background-color;
+    border-radius: 0 0 5px 5px;
+  }
+
+  .title_bar {
+    @include window_bars;
+  
+    align-items: center;
+    border-radius: $window-radius $window-radius 0 0;
+    height: $window-titlebar-height;
+    justify-content: space-between;
+  
+    .title {
+      position: absolute;
+      text-align: center;
+      width: 100%;
+    }
+  
+    .actions {
+      padding-right: 6px;
+      position: absolute;
+      right: 0;
+  
+      .minimize, .maximize, .close {
+        border-radius: 100%;
+      
+        &:hover {
+          background-color: unset;
+        }
+      }
+      
+      .minimize {
+        background-color: $minimize-color;
+        color: $minimize-color;
+      }
+      
+      .maximize {
+        background-color: $maximize-color;
+        color: $maximize-color;
+      }
+      
+      .close {
+        background-color: $close-color;
+        color: $close-color;
       }
     }
-    
-    .minimize {
-      background-color: $minimize-color;
-      color: $minimize-color;
-    }
-    
-    .maximize {
-      background-color: $maximize-color;
-      color: $maximize-color;
-    }
-    
-    .close {
-      background-color: $close-color;
-      color: $close-color;
-    }
   }
-}
-
-.action_bar {
-  @include window_bars;
-
-  align-items: flex-end;
-  border-top: 1px solid rgba($window-background-color, 0.5);
-  gap: 10px;
-  padding: 5px 10px;
-
-  .action {
-    border-right: 1px solid rgba($window-background-color, 0.5);
-    padding-right: 10px;
-
-    &:last-child {
-      border-right: unset;
+  
+  .action_bar {
+    @include window_bars;
+  
+    gap: 10px;
+    justify-content: space-between;
+    padding: 5px;
+  
+    .action {
+      padding-right: 10px;
+  
+      &:last-child {
+        border-right: unset;
+      }
     }
-  }
-
-  .search {
-    padding-right: unset;
-    width: 100%;
-
-    input {
-      background-color: lighten($title-bar-color, 20%);
-      border: none;
-      border-radius: 5px;
-      caret-color: transparent;
-      color: lighten($title-bar-text-color, 20%);
-      height: 15px;
-      font-family: "Open Sans", sans-serif;
-      font-size: 11px;
-      padding: 0 10px;
+  
+    .actions {
+      align-items: center;
+      font-size: 15px;
+      padding-left: 2px;
+    }
+  
+    .search {
+      padding-right: unset;
+      position: relative;
       text-align: right;
       width: 100%;
-
-      &:focus {
-        outline: none;
+  
+      input {
+        background-color: lighten($title-bar-color, 20%);
+        border: none;
+        border-radius: 5px;
+        color: lighten($title-bar-text-color, 20%);
+        
+        font-family: "Open Sans", sans-serif;
+        font-size: 11px;
+        line-height: 20px;
+        max-width: 200px;
+        padding: 0 0 0 20px;
+        width: 100%;
+  
+        &:focus {
+          outline: none;
+        }
+  
+        &::placeholder {
+          color: lighten($title-bar-color, 50%);
+        }
       }
-
-      &::placeholder {
+  
+      svg {
         color: lighten($title-bar-color, 50%);
+        font-size: 11px;
+        margin-left: 5px;
+        position: absolute;
+        top: 5px;
       }
     }
   }

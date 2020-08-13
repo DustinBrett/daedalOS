@@ -1,15 +1,17 @@
-import type { WindowType } from './Window';
 import { Window } from './Window';
 
-type WindowsType = {
-  windows: Array<WindowType>
-}
+import { Apps } from '../resources/apps';
 
-export default function Windows({ windows }: WindowsType) {
+export default function Windows() {
   return (
     <div>
-      { windows.map((window: WindowType) =>
-        <Window key={ window.id } { ...window } />) }
+      { Apps
+        .filter(app => app.showWindow)
+        .map(app => (
+          <Window key={ app.id } app={ app } title={ app.title || app.name }>
+            { app.component }
+          </Window>
+        )) }
     </div>
   );
 };
