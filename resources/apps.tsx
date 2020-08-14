@@ -1,9 +1,7 @@
 import Blog from '../components/Blog';
 
-import { faGlobeAmericas, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-const iconSize = '3x';
+import BlogIcon from '../assets/svg/blog.svg';
+import ChatIcon from '../assets/svg/chat.svg';
 
 export type AppType = {
     component: React.ReactNode,
@@ -18,7 +16,7 @@ export type AppType = {
 export const Apps: Array<AppType> = [
   {
     component: <Blog />,
-    icon: <FontAwesomeIcon icon={ faGlobeAmericas } size={ iconSize } />,
+    icon: <BlogIcon />,
     id: 1,
     name: 'Blog',
     showIcon: true,
@@ -26,7 +24,7 @@ export const Apps: Array<AppType> = [
   },
   {
     component: undefined,
-    icon: <FontAwesomeIcon icon={ faCommentAlt } size={ iconSize } />,
+    icon: <ChatIcon />,
     id: 2,
     name: 'Chat',
     showIcon: true,
