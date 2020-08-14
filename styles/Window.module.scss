@@ -28,7 +28,7 @@ $window-radius: 4px;
 
   .actions {
     display: flex;
-    gap: 6px;
+    gap: 5px;
   }
 
   .content {
@@ -100,6 +100,7 @@ $window-radius: 4px;
     .actions {
       align-items: center;
       font-size: 15px;
+      gap: 10px;
       padding-left: 2px;
     }
   
