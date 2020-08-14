@@ -11,7 +11,7 @@
     border: 4px solid transparent;
     border-radius: $border-radius;
 
-    &:active {
+    &:hover {
       background-color: darken($foreground-color, 20%);
     }
   }
