@@ -34,11 +34,12 @@ export function Window({ app, children, title }: WindowType) {
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
-    setHeight(window.innerHeight * .6);
-    setWidth(window.innerWidth * .5);
+    setHeight(500); // window.innerHeight * .6
+    setWidth(734); // window.innerWidth * .5
   }, []);
 
   // TODO: Make action bar more generic
+  // TODO: Resize hooks are maybe too big?
   return (
     <Rnd
       className={ styles.window }

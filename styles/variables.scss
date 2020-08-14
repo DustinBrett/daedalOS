@@ -20,6 +20,8 @@ $off-white: #f8f8ff;
 
 $window-background-color: $off-white;
 
+$scrollbar-color: lighten($title-bar-color, 55%);
+
 $taskbar-base-color: rgb(0, 0, 0);
 $taskbar-clock-width: 87px;
 $taskbar-color: rgba($taskbar-base-color, 0.6);

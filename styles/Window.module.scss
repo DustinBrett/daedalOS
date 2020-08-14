@@ -1,3 +1,4 @@
+@import 'mixins';
 @import 'variables';
 
 $window-radius: 5px;
@@ -20,10 +21,13 @@ $window-radius: 5px;
   }
 
   .content {
+    @include scrollbars(15px, $window-radius * 2, $scrollbar-color, $window-background-color);
+
     background-color: $window-background-color;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 $window-radius $window-radius;
     height: calc(100% - (#{ $window-titlebar-height } * 2));
-    padding: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
     user-select: text;
   }
 
@@ -74,6 +78,7 @@ $window-radius: 5px;
   .action_bar {
     @include window_bars;
   
+    align-items: flex-end;
     gap: 10px;
     height: $window-titlebar-height;
     justify-content: space-between;
@@ -105,7 +110,6 @@ $window-radius: 5px;
       position: relative;
       right: 0px;
       text-align: right;
-      top: -4px;
       width: 150px;
 
       input {

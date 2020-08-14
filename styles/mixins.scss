@@ -1,0 +1,24 @@
+@mixin scrollbars($size, $border-radius, $foreground-color, $background-color) {
+  &::-webkit-scrollbar {
+    width:  $size;
+    height: $size;
+    padding: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: $foreground-color;
+    border: 4px solid transparent;
+    border-radius: $border-radius;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0 0 $border-radius 0;
+    border-left: 1px solid lighten($foreground-color, 10%);
+  }
+
+  & {
+    scrollbar-face-color: $foreground-color;
+    scrollbar-track-color: $background-color;
+  }
+}

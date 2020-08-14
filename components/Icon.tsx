@@ -9,6 +9,7 @@ type IconType = {
 };
 
 // TODO: Selected/active styling
+// todo: No more react-draggable
 export default function Icon({ icon, name }: IconType) {
   const [dragging, setDragging] = useState(false);
 

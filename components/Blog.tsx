@@ -1,5 +1,9 @@
+import styles from '../styles/Blog.module.scss';
+
 export default function Blog() {
   return (
-    <>Hello World</>
+    <div className={ styles.blog }>
+      <img src='/blog.png'/>
+    </div>
   );
 };
