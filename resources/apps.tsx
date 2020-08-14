@@ -17,7 +17,7 @@ export const Apps: Array<AppType> = [
   {
     component: <Blog />,
     icon: <BlogIcon />,
-    id: 1,
+    id: 0,
     name: 'Blog',
     showIcon: true,
     showWindow: true
@@ -25,7 +25,7 @@ export const Apps: Array<AppType> = [
   {
     component: undefined,
     icon: <ChatIcon />,
-    id: 2,
+    id: 1,
     name: 'Chat',
     showIcon: true,
     showWindow: false

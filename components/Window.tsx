@@ -32,7 +32,7 @@ export function Window({ app, children, title }: WindowType) {
       setWidth(width);
     },
 
-    onClose = () => app.showWindow = false; // TODO: This doesn't work. Apps should be a state or context.
+    onClose = () => console.log('onClose');
 
   useEffect(() => {
     setHeight(Math.min(DEFAULT_WINDOW_HEIGHT, window.innerHeight * 0.8));
