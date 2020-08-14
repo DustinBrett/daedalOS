@@ -10,6 +10,10 @@
     background-color: $foreground-color;
     border: 4px solid transparent;
     border-radius: $border-radius;
+
+    &:active {
+      background-color: darken($foreground-color, 20%);
+    }
   }
 
   &::-webkit-scrollbar-track {
