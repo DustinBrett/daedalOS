@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import WAVES from '../assets/lib/vanta.waves.min';
 
 export default function Wallpaper() {
-  const [vantaEffect, setVantaEffect] = useState(),
+  const [vantaEffect, setVantaEffect] = useState<any>(),
     myRef = useRef(null),
     vantaSettings = {
       mouseControls: false,
