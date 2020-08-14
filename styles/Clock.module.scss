@@ -2,7 +2,7 @@
 
 .clock {
   align-items: center;
-  color: rgba($taskbar-text-color, 0.8);
+  color: rgba($taskbar-text-color, 0.8); // TODO: Why alpha?
   display: grid;
   height: $taskbar-height;
   justify-items: center;

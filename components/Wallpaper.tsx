@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import WAVES from '../assets/lib/vanta.waves.min';
 
+// TODO: Change color like rainbow effect? Can be changed dynamic on demo site.
+// TODO: Stop animation if can't maintain decent fps for several seconds
+
 export default function Wallpaper() {
   const [vantaEffect, setVantaEffect] = useState<any>(),
     myRef = useRef(null),
