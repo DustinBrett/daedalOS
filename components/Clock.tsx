@@ -21,11 +21,11 @@ const
       second: '2-digit'
     }).format(new Date());
 
-export type ClockType = {
+type ClockType = {
   hour12?: boolean
 };
 
-export function Clock({ hour12 }: ClockType) {
+export default function Clock({ hour12 }: ClockType) {
   const [date, setDate] = useState(''),
     [time, setTime] = useState(''),
     midnight = hour12 ? '12:00:00 AM' : '00:00:00',

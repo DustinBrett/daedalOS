@@ -3,9 +3,12 @@ import Draggable from 'react-draggable';
 
 import styles from '../styles/Icon.module.scss';
 
-import type { AppType } from '../resources/apps';
+type IconType = {
+  icon: JSX.Element,
+  name: string
+};
 
-export default function Icon({ icon, name }: AppType) {
+export default function Icon({ icon, name }: IconType) {
   const [dragging, setDragging] = useState(false);
 
   return (

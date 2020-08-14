@@ -1,0 +1,23 @@
+@import 'variables';
+
+.taskbar_entry {
+    align-items: center;
+    border-bottom: 2px solid rgb(101,169,232);
+    color: $off-white;
+    display: flex;
+    font-size: 11px;
+    height: $taskbar-height;
+    padding: 0 5px;
+    position: absolute;
+    width: 175px;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    svg {
+        height: 16px;
+        margin-right: 4px;
+        width: 16px;
+    }
+}

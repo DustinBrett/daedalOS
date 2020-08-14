@@ -5,4 +5,8 @@
   height: $taskbar-height;
   position: relative;
   z-index: 1;
+
+  .taskbar_entries {
+    position: absolute;
+  }
 }

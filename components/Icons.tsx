@@ -9,7 +9,7 @@ export default function Icons() {
     <div className={ styles.icons }>
       { Apps
         .filter(app => app.showIcon)
-        .map(app => <Icon key={ app.id } { ...app } />) }
+        .map(app => <Icon key={ app.id } icon={ app.icon } name={ app.name } />) }
     </div>
   );
 };
