@@ -2,14 +2,18 @@ import styles from '../styles/Icons.module.scss';
 
 import Icon from './Icon';
 
-import { Apps } from '../resources/apps';
+import type { Apps } from '../resources/apps';
 
-export default function Icons() {
+type IconType = {
+  apps: Apps
+};
+
+export default function Icons({ apps }: IconType) {
   return (
     <div className={ styles.icons }>
-      { Apps
-        .filter(app => app.showIcon)
-        .map(app => <Icon key={ app.id } icon={ app.icon } name={ app.name } />) }
+      { Object.entries(apps)
+        .filter(([_id, app]) => app.showIcon)
+        .map(([id, app]) => <Icon key={ app.id } icon={ app.icon } name={ app.name } />) }
     </div>
   );
 };

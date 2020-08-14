@@ -11,7 +11,7 @@ import {
 
 import styles from '../styles/Window.module.scss';
 
-import type { AppType } from '../resources/apps';
+import type { Apps, AppType } from '../resources/apps';
 
 // TODO: Each window can have it's own defaults
 const DEFAULT_WINDOW_DIMENSION = 350,
@@ -19,18 +19,28 @@ const DEFAULT_WINDOW_DIMENSION = 350,
 
 export type WindowType = {
   app: AppType,
+  appsState: [Apps, Function],
   children: Array<React.ReactNode> | React.ReactNode | undefined,
+  id: string,
   title: string
 };
 
-export function Window({ app, children, title }: WindowType) {
+export function Window({ app, children, id, title, appsState: [apps, setApps] }: WindowType) {
   const [height, setHeight] = useState(0),
     [width, setWidth] = useState(0),
     onResizeStop = (_e: MouseEvent | TouchEvent, _dir: ResizeDirection, elementRef: HTMLDivElement) => {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
     },
-    onClose = () => console.log('onClose');
+    onClose = () => {
+      setApps({
+        ...apps,
+        [id]: {
+          ...app,
+          showWindow: false
+        }
+      });
+    }
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.

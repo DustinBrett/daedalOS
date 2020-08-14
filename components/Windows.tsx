@@ -1,17 +1,21 @@
+import type { Apps } from '../resources/apps';
+
 import { Window } from './Window';
 
-import { Apps } from '../resources/apps';
+type WindowsType = {
+  appsState: [Apps, Function]
+};
 
-export default function Windows() {
+export default function Windows({ appsState: [apps, setApps] }: WindowsType) {
   return (
     <div>
-      { Apps
-        .filter(app => app.showWindow)
-        .map(app => (
-          <Window key={ app.id } app={ app } title={ app.title || app.name }>
-            { app.component }
-          </Window>
-        )) }
+      { Object.entries(apps)
+          .filter(([_id, app]) => app.showWindow)
+          .map(([id, app]) => (
+            <Window key={ id } app={ app } id={ id } title={ app.name } appsState={ [apps, setApps] }>
+              { app.component }
+            </Window>
+          )) }
     </div>
   );
 };
