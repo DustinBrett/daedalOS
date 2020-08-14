@@ -8,6 +8,7 @@ type IconType = {
   name: string
 };
 
+// TODO: Selected/active styling
 export default function Icon({ icon, name }: IconType) {
   const [dragging, setDragging] = useState(false);
 

@@ -1,7 +1,7 @@
 import Blog from '../components/Blog';
 
 import BlogIcon from '../assets/svg/blog.svg';
-import ChatIcon from '../assets/svg/chat.svg';
+import ContactIcon from '../assets/svg/contact.svg';
 
 export type AppType = {
     component: React.ReactNode,
@@ -24,9 +24,9 @@ export const Apps: Array<AppType> = [
   },
   {
     component: undefined,
-    icon: <ChatIcon />,
+    icon: <ContactIcon />,
     id: 1,
-    name: 'Chat',
+    name: 'Contact',
     showIcon: true,
     showWindow: false
   }
