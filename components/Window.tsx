@@ -14,8 +14,8 @@ import styles from '../styles/Window.module.scss';
 import type { AppType } from '../resources/apps';
 
 // TODO: Each window can have it's own defaults
-const DEFAULT_WINDOW_HEIGHT = 350,
-      DEFAULT_WINDOW_WIDTH = 650,
+const DEFAULT_WINDOW_HEIGHT = 550,
+      DEFAULT_WINDOW_WIDTH = 450,
       WINDOW_BAR_HEIGHT = 54; // TODO: This isn't reactive
 
 export type WindowType = {

@@ -6,7 +6,6 @@ import TaskbarEntry from './TaskbarEntry';
 import { Apps } from '../resources/apps';
 
 export default function Taskbar() {
-  console.log(Apps.filter(app => app.showWindow))
   return (
     <div className={ styles.taskbar }>
       <div className={ styles.taskbar_entries }>

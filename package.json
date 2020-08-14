@@ -17,7 +17,8 @@
     "react-dom": "^16.13.1",
     "react-draggable": "^4.4.3",
     "react-resizable": "^1.10.1",
-    "sass": "^1.26.10"
+    "sass": "^1.26.10",
+    "three": "^0.119.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.4.0",
@@ -28,6 +29,7 @@
     "@types/react-fontawesome": "^1.6.4",
     "@types/react-resizable": "^1.7.2",
     "@types/sass": "^1.16.0",
+    "@types/three": "^0.103.2",
     "typescript": "^3.9.7"
   }
 }

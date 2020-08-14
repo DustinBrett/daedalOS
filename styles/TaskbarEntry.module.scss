@@ -2,22 +2,22 @@
 
 .taskbar_entry {
     align-items: center;
-    border-bottom: 2px solid rgb(101,169,232);
-    color: $off-white;
+    border-bottom: $taskbar-highlight-height solid $taskbar-highlight-color;
+    color: $taskbar-text-color;
     display: flex;
-    font-size: 11px;
+    font-size: $taskbar-entry-font-size;
     height: $taskbar-height;
-    padding: 0 5px;
+    padding: 0 $taskbar-entry-padding;
     position: absolute;
-    width: 175px;
+    width: $taskbar-entry-width;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: $taskbar-entry-hover-color;
     }
 
     svg {
-        height: 16px;
-        margin-right: 4px;
-        width: 16px;
+        height: $taskbar-entry-icon-dimensions;
+        margin-right: $taskbar-entry-padding;
+        width: $taskbar-entry-icon-dimensions;
     }
 }

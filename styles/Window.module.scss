@@ -1,6 +1,6 @@
 @import 'variables';
 
-$window-radius: 4px;
+$window-radius: 5px;
 
 @mixin window_bars {
   color: $title-bar-text-color;
@@ -9,12 +9,12 @@ $window-radius: 4px;
 
 .window {
   background-color: $title-bar-color;
-  border-radius: $window-radius;
+  border-radius: 5px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
               0 5px 50px rgba(0, 0, 0, 0.3);
-  left: 90px;
+  left: 115px;
   position: absolute;
-  top: 30px;
+  top: 40px;
   z-index: 1;
 
   span[class~="react-resizable-handle"] { // TODO: Find better selector
@@ -33,7 +33,7 @@ $window-radius: 4px;
 
   .content {
     background-color: $window-background-color;
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 4px 4px;
     padding: 5px;
     user-select: text;
   }

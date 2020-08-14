@@ -2,15 +2,15 @@
 
 .clock {
   align-items: center;
-  color: rgba($clock-text-color, 0.8);
+  color: rgba($taskbar-text-color, 0.8);
   display: grid;
   height: $taskbar-height;
   justify-items: center;
   position: absolute;
   right: 0;
-  width: $clock-width;
+  width: $taskbar-clock-width;
 
   &:hover {
-    background-color: rgba($clock-text-color, 0.1);
+    background-color: $taskbar-entry-hover-color;
   }
 }

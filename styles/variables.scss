@@ -1,6 +1,3 @@
-$clock-text-color: rgb(255, 255, 255);
-$clock-width: 87px;
-
 $icon-dimensions: 72px;
 $icon-text-shadow:
   0 1px 1px rgba(0, 0, 0, 0.5),
@@ -9,8 +6,6 @@ $icon-text-shadow:
   0 1px 2px rgba(0, 0, 0, 0.75),
   0 1px 3px rgb(0, 0, 0),
   0 1px 3px rgb(0, 0, 0);
-
-$taskbar-height: 28px;
 
 $window-titlebar-height: 24px;
 
@@ -21,6 +16,19 @@ $minimize-color: #FFBD2E;
 $maximize-color: #28C940;
 $close-color: #FF554E;
 
-$window-background-color: #f8f8ff;
-
 $off-white: #f8f8ff;
+
+$window-background-color: $off-white;
+
+$taskbar-base-color: rgb(0, 0, 0);
+$taskbar-clock-width: 87px;
+$taskbar-color: rgba($taskbar-base-color, 0.6);
+$taskbar-entry-font-size: 11px;
+$taskbar-entry-hover-color: rgba(invert($taskbar-base-color), 0.1);
+$taskbar-entry-icon-dimensions: 16px;
+$taskbar-entry-padding: 5px;
+$taskbar-entry-width: 165px;
+$taskbar-height: 28px;
+$taskbar-highlight-color: rgb(101, 169, 232);
+$taskbar-highlight-height: 2px;
+$taskbar-text-color: $off-white;

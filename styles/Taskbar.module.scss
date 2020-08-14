@@ -1,7 +1,7 @@
 @import 'variables';
 
 .taskbar {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $taskbar-color;
   height: $taskbar-height;
   position: relative;
   z-index: 1;
