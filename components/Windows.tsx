@@ -6,7 +6,6 @@ export default function Windows() {
   const { apps = {} } = useContext(AppsContext);
 
   // Load windows delayed to show popup actions, 100 ms setTimeouts for each window entry, and pop in animations
-console.log(apps);
   return (
     <div>
       { Object.entries(apps)

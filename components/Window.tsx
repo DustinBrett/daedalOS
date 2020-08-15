@@ -80,6 +80,7 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ `${ styles.action_bar } handle` }>
         <div className={ `${ styles.actions } cancel` }>
           {/* TODO: Move to BlogActions | { app.actions && <app.actions /> } */}
+          {/* Animate instead of color change */}
           <FontAwesomeIcon icon={ faArrowLeft } />
           <FontAwesomeIcon icon={ faArrowRight } />
           <FontAwesomeIcon icon={ faHome } />
