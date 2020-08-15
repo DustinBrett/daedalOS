@@ -34,3 +34,9 @@ $taskbar-height: 28px;
 $taskbar-highlight-color: rgb(101, 169, 232);
 $taskbar-highlight-height: 2px;
 $taskbar-text-color: $off-white;
+
+$desktop-z-index: 0;
+$icon-z-index: $desktop-z-index + 1;
+$window-z-index: $desktop-z-index + 2;
+$icon-dragging-z-index: $desktop-z-index + 3;
+$taskbar-z-index: $desktop-z-index + 4;

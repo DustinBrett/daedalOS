@@ -3,10 +3,11 @@
 .taskbar {
   background-color: $taskbar-color;
   height: $taskbar-height;
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  width: 100%;
+  z-index: $taskbar-z-index;
 
   .taskbar_entries {
-    position: absolute;
+    position: relative;
   }
 }

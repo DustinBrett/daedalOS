@@ -4,7 +4,9 @@
   color: #fff;
   display: grid;
   justify-items: center;
+  position: relative;
   text-shadow: $icon-text-shadow;
+  z-index: $icon-z-index;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -23,7 +25,7 @@
 
 .dragging {
   opacity: 0.5;
-  z-index: 2;
+  z-index: $icon-dragging-z-index;
 
   &:hover {
     background-color: unset;

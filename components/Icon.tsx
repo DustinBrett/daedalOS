@@ -1,7 +1,7 @@
 import styles from '../styles/Icon.module.scss';
 import { useContext, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
-import Draggable from 'react-draggable';
+import Draggable from 'react-draggable'; // TODO: Use posed for this or RnD
 
 type IconType = {
   icon: JSX.Element,
@@ -14,7 +14,7 @@ type IconType = {
 export default function Icon({ icon, id, name, selectedIconState: [selectedIcon, setSelectedIcon] }: IconType) {
   const { updateApp = () => {} } = useContext(AppsContext),
     [dragging, setDragging] = useState(false),
-    selectIcon = () => setSelectedIcon(id),
+    selectIcon = () => setSelectedIcon(id), // TODO: On pressing enter | arrows to navigate icons
     openApp = () => updateApp({ id, minimized: false, opened: true });
 
   return (

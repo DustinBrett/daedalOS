@@ -1,6 +1,7 @@
 @import 'variables';
 
 .icons {
+  column-gap: $icon-dimensions / 6;
   display: grid;
   grid-template-columns: repeat(auto-fit, $icon-dimensions);
   grid-template-rows: repeat(auto-fit, $icon-dimensions);
@@ -8,8 +9,6 @@
   height: calc(100% - #{ $taskbar-height });
   justify-content: flex-start;
   padding: ($icon-dimensions / 4) 0;
-  row-gap: $icon-dimensions / 3;
-  column-gap: $icon-dimensions / 6;
   position: relative;
-  z-index: -1;
+  row-gap: $icon-dimensions / 3;
 }

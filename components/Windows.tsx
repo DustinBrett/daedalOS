@@ -3,6 +3,7 @@ import { AppsContext } from '../resources/AppsProvider';
 import posed, { PoseGroup } from 'react-pose';
 import { Window } from './Window';
 
+// TODO: Upgrade to https://github.com/framer/motion
 const PosedDiv = posed.div({
   enter: {
     y: 0,
@@ -20,7 +21,7 @@ const PosedDiv = posed.div({
     transition: {
       duration: 300
     },
-    y: 50,
+    y: 50, // TODO: x/y funcs using poition of taskbar entry, during minimize, center during close
   }
 });
 

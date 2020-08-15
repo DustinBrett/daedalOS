@@ -1,5 +1,8 @@
+@import 'variables';
+
 .desktop {
-  height: 100vh;
-  position: relative;
-  z-index: 0;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: $desktop-z-index;
 }

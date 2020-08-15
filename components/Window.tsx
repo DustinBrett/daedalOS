@@ -3,6 +3,7 @@ import type { ResizeDirection } from "re-resizable";
 import styles from '../styles/Window.module.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
+import { AgentContext } from "../resources/AgentProvider";
 import posed, { PoseGroup } from 'react-pose';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +12,7 @@ import {
   faMinusCircle, faPlusCircle, faTimesCircle,
   faSearch
 } from '@fortawesome/free-solid-svg-icons';
+import { Agent } from "https";
 
 // TODO: Icons are in front of window during animation
 // TODO: Each window can have it's own defaults
@@ -36,7 +38,8 @@ export type WindowType = {
 };
 
 export function Window({ children, id, title }: WindowType) {
-  const { apps = {}, updateApp } = useContext(AppsContext),
+  const { agent } = useContext(AgentContext),
+  { apps = {}, updateApp } = useContext(AppsContext),
     [height, setHeight] = useState(0),
     [width, setWidth] = useState(0),
     onResizeStop = (_e: MouseEvent | TouchEvent, _dir: ResizeDirection, elementRef: HTMLDivElement) => {
@@ -45,7 +48,10 @@ export function Window({ children, id, title }: WindowType) {
     },
     onMinimize = () => updateApp({ id, minimized: true }),
     onMaximize = () => updateApp({ id, maximized: !apps[id].maximized }),
-    onClose = () => updateApp({ id, opened: false });
+    onClose = () => {
+      updateApp({ id, opened: false });
+      agent.play('Wave');
+    };
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
