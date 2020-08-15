@@ -17,7 +17,7 @@ export default function Wallpaper() {
       shininess: 15,
       waveHeight: 25,
       waveSpeed: 0.5,
-      zoom: 0.8
+      zoom: 0.9
     };
 
   useEffect(() => {

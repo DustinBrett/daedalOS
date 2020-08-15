@@ -11,9 +11,10 @@ type IconType = {
 };
 
 // TODO: Change to using a grid that the icons lock into?
-export default function Icon({ icon, id, name }: IconType) {
+export default function Icon({ icon, id, name, selectedIconState: [selectedIcon, setSelectedIcon] }: IconType) {
   const { updateApp = () => {} } = useContext(AppsContext),
     [dragging, setDragging] = useState(false),
+    selectIcon = () => setSelectedIcon(id),
     openApp = () => updateApp({ id, minimized: false, opened: true });
 
   return (
@@ -22,7 +23,8 @@ export default function Icon({ icon, id, name }: IconType) {
       onStop={ () => setDragging(false) }
     >
       <div
-        className={ `${ styles.icon } ${ dragging && styles.dragging }` }
+        className={ `${ styles.icon } ${ dragging && styles.dragging } ${ selectedIcon === id && styles.selected }` }
+        onClick={ selectIcon }
         onDoubleClick={ openApp }
       >
         { icon }
