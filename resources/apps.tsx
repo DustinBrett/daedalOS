@@ -12,8 +12,7 @@ export type AppType = {
     icon: JSX.Element,
     id: number,
     name: string,
-    showIcon?: boolean,
-    showWindow?: boolean
+    opened: boolean
 };
 
 export const apps: Apps = {
@@ -22,15 +21,13 @@ export const apps: Apps = {
     icon: <BlogIcon />,
     id: 0,
     name: 'Blog',
-    showIcon: true,
-    showWindow: true
+    opened: true
   },
   'contact': {
     component: undefined,
     icon: <ContactIcon />,
     id: 1,
     name: 'Contact',
-    showIcon: true,
-    showWindow: false
+    opened: false
   }
 };

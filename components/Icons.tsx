@@ -9,8 +9,8 @@ export default function Icons() {
   return (
     <div className={ styles.icons }>
       { Object.entries(apps)
-        .filter(([_id, app]) => app.showIcon)
-        .map(([id, app]) => <Icon key={ app.id } icon={ app.icon } name={ app.name } />) }
+        .filter(([_id, app]) => app.component)
+        .map(([id, app]) => <Icon key={ app.id } icon={ app.icon } id={ id } name={ app.name } />) }
     </div>
   );
 };

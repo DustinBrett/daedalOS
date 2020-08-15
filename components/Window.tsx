@@ -31,7 +31,7 @@ export function Window({ children, id, title }: WindowType) {
     },
     onMinimize = () => updateApp({ id, appMinimized: true }),
     onMaximize = () => updateApp({ id, appMaximized: !apps[id].appMaximized }),
-    onClose = () => updateApp({ id, showWindow: false });
+    onClose = () => updateApp({ id, opened: false });
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
