@@ -11,6 +11,8 @@ export type AppType = {
     component: React.ReactNode,
     icon: JSX.Element,
     id: number,
+    minimized?: boolean,
+    maximized?: boolean,
     name: string,
     opened: boolean
 };

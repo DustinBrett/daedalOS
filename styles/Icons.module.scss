@@ -8,4 +8,6 @@
   padding: ($icon-dimensions / 4) 0;
   row-gap: $icon-dimensions / 3;
   width: $icon-dimensions;
+  position: relative;
+  z-index: -1;
 }

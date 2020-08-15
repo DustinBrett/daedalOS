@@ -2,8 +2,9 @@ import type { ResizeDirection } from "re-resizable";
 
 import styles from '../styles/Window.module.scss';
 import { useContext, useEffect, useState } from 'react';
-import { Rnd } from 'react-rnd';
 import { AppsContext } from '../resources/AppsProvider';
+import posed, { PoseGroup } from 'react-pose';
+import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft, faArrowRight, faHome, faComments,
@@ -11,9 +12,22 @@ import {
   faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
+// TODO: Icons are in front of window during animation
 // TODO: Each window can have it's own defaults
 const DEFAULT_WINDOW_DIMENSION = 350,
       MIN_WINDOW_DIMENSION = 200;
+
+const PosedDiv = posed.div({
+  hoverable: true,
+  init: { scale: 1 },
+  hover: { scale: 1.2 }
+});
+
+const PosedFontAwesomeIcon = ({ icon }) => (
+  <PosedDiv>
+    <FontAwesomeIcon icon={ icon } />
+  </PosedDiv>
+);
 
 export type WindowType = {
   children: Array<React.ReactNode> | React.ReactNode | undefined,
@@ -29,8 +43,8 @@ export function Window({ children, id, title }: WindowType) {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
     },
-    onMinimize = () => updateApp({ id, appMinimized: true }),
-    onMaximize = () => updateApp({ id, appMaximized: !apps[id].appMaximized }),
+    onMinimize = () => updateApp({ id, minimized: true }),
+    onMaximize = () => updateApp({ id, maximized: !apps[id].maximized }),
     onClose = () => updateApp({ id, opened: false });
 
   useEffect(() => {
@@ -72,6 +86,7 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ `${ styles.title_bar } handle` }>
         <div className={ styles.title }>{ title }</div>
         <div className={ `${ styles.actions } cancel` }>
+          {/* Lower opacity of icons, relative to tilebar */}
           <FontAwesomeIcon className={ styles.minimize } icon={ faMinusCircle } onClick={ onMinimize } />
           <FontAwesomeIcon className={ styles.maximize } icon={ faPlusCircle } onClick={ onMaximize } />
           <FontAwesomeIcon className={ styles.close } icon={ faTimesCircle } onClick={ onClose } />
@@ -81,10 +96,10 @@ export function Window({ children, id, title }: WindowType) {
         <div className={ `${ styles.actions } cancel` }>
           {/* TODO: Move to BlogActions | { app.actions && <app.actions /> } */}
           {/* Animate instead of color change */}
-          <FontAwesomeIcon icon={ faArrowLeft } />
-          <FontAwesomeIcon icon={ faArrowRight } />
-          <FontAwesomeIcon icon={ faHome } />
-          <FontAwesomeIcon icon={ faComments } /> {/* TODO: CouchSurfing comments on main page, post specific comments on post pages */}
+          <PosedFontAwesomeIcon icon={ faArrowLeft } />
+          <PosedFontAwesomeIcon icon={ faArrowRight } />
+          <PosedFontAwesomeIcon icon={ faHome } />
+          <PosedFontAwesomeIcon icon={ faComments } /> {/* TODO: CouchSurfing comments on main page, post specific comments on post pages */}
         </div>
         <div className={ `${ styles.search } cancel` }>
           <FontAwesomeIcon icon={ faSearch } />

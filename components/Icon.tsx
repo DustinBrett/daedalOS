@@ -6,22 +6,25 @@ import Draggable from 'react-draggable';
 type IconType = {
   icon: JSX.Element,
   id: string,
-  name: string
+  name: string,
+  selectedIconState: [string, Function]
 };
 
-// TODO: Selected/active styling
 // TODO: Change to using a grid that the icons lock into?
 export default function Icon({ icon, id, name }: IconType) {
   const { updateApp = () => {} } = useContext(AppsContext),
     [dragging, setDragging] = useState(false),
-    openApp = () => updateApp({ id, opened: true });
+    openApp = () => updateApp({ id, minimized: false, opened: true });
 
   return (
     <Draggable
-      onStart={ () => setDragging(true) }
+      onDrag={ () => setDragging(true) }
       onStop={ () => setDragging(false) }
     >
-      <div className={ `${ styles.icon } ${ dragging && styles.dragging }` } onDoubleClick={ openApp }>
+      <div
+        className={ `${ styles.icon } ${ dragging && styles.dragging }` }
+        onDoubleClick={ openApp }
+      >
         { icon }
         { name }
       </div>
