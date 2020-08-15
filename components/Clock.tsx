@@ -1,7 +1,6 @@
 import styles from '../styles/Clock.module.scss';
 import { useEffect, useState } from 'react';
-
-import { LOCALE, SECOND_IN_MILLISECONDS } from '../resources/constants';
+import { LOCALE, SECOND_IN_MILLISECONDS } from '../resources/constants'; // TODO: More constants
 
 const
 

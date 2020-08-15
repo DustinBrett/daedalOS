@@ -1,14 +1,11 @@
 import styles from '../styles/Icons.module.scss';
-
+import { useContext } from 'react';
+import { AppsContext } from '../resources/AppsProvider';
 import Icon from './Icon';
 
-import type { Apps } from '../resources/apps';
+export default function Icons() {
+  const { apps = {} } = useContext(AppsContext);
 
-type IconType = {
-  apps: Apps
-};
-
-export default function Icons({ apps }: IconType) {
   return (
     <div className={ styles.icons }>
       { Object.entries(apps)

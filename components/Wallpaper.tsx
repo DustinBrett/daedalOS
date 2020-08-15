@@ -1,6 +1,5 @@
 import styles from '../styles/Wallpaper.module.scss';
 import { useEffect, useRef, useState } from 'react';
-
 import * as THREE from 'three';
 import WAVES from '../assets/lib/vanta.waves.min';
 
@@ -8,7 +7,7 @@ import WAVES from '../assets/lib/vanta.waves.min';
 // TODO: Stop animation if can't maintain decent fps for several seconds
 
 export default function Wallpaper() {
-  const [vantaEffect, setVantaEffect] = useState<any>(),
+  const [vantaEffect, setVantaEffect] = useState<any>(), // TODO: Type
     myRef = useRef(null),
     vantaSettings = {
       mouseControls: false,

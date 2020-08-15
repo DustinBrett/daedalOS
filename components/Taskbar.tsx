@@ -1,15 +1,12 @@
 import styles from '../styles/Taskbar.module.scss';
-
-import type { Apps } from '../resources/apps';
-
+import { useContext } from 'react';
+import { AppsContext } from '../resources/AppsProvider';
 import Clock from './Clock';
 import TaskbarEntry from './TaskbarEntry';
 
-type TaskbarType = {
-  apps: Apps
-};
+export default function Taskbar() {
+  const { apps = {} } = useContext(AppsContext);
 
-export default function Taskbar({ apps }: TaskbarType) {
   return (
     <div className={ styles.taskbar }>
       <div className={ styles.taskbar_entries }>

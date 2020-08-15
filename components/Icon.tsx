@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import Draggable from 'react-draggable';
-
 import styles from '../styles/Icon.module.scss';
+import { useState } from 'react';
+import Draggable from 'react-draggable'; // TODO: Change me
 
 type IconType = {
   icon: JSX.Element,

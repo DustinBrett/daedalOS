@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Rnd } from 'react-rnd';
-import { ResizeDirection } from "re-resizable";
+import type { ResizeDirection } from "re-resizable";
 
+import styles from '../styles/Window.module.scss';
+import { useContext, useEffect, useState } from 'react';
+import { Rnd } from 'react-rnd';
+import { AppsContext } from '../resources/AppsProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft, faArrowRight, faHome, faComments,
@@ -9,38 +11,25 @@ import {
   faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
-import styles from '../styles/Window.module.scss';
-
-import type { Apps, AppType } from '../resources/apps';
-
 // TODO: Each window can have it's own defaults
 const DEFAULT_WINDOW_DIMENSION = 350,
       MIN_WINDOW_DIMENSION = 200;
 
 export type WindowType = {
-  app: AppType,
-  appsState: [Apps, Function],
   children: Array<React.ReactNode> | React.ReactNode | undefined,
   id: string,
   title: string
 };
 
-export function Window({ app, children, id, title, appsState: [apps, setApps] }: WindowType) {
-  const [height, setHeight] = useState(0),
+export function Window({ children, id, title }: WindowType) {
+  const { apps = {}, updateApp } = useContext(AppsContext),
+    [height, setHeight] = useState(0),
     [width, setWidth] = useState(0),
     onResizeStop = (_e: MouseEvent | TouchEvent, _dir: ResizeDirection, elementRef: HTMLDivElement) => {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
     },
-    onClose = () => {
-      setApps({
-        ...apps,
-        [id]: {
-          ...app,
-          showWindow: false
-        }
-      });
-    }
+    onClose = () => updateApp({ id, showWindow: false })
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.

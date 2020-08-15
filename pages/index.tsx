@@ -1,26 +1,22 @@
-import { useState } from 'react';
+import { AppsProvider } from '../resources/AppsProvider';
 
-import { apps as initialApps } from '../resources/apps';
-
-import Desktop from '../components/Desktop';
-import Icons from '../components/Icons';
 import MetaData from '../components/MetaData';
-import Taskbar from '../components/Taskbar';
+import Desktop from '../components/Desktop';
 import Wallpaper from '../components/Wallpaper';
 import Windows from '../components/Windows';
+import Icons from '../components/Icons';
+import Taskbar from '../components/Taskbar';
 
 export default function HomePage() {
-  const [apps, setApps] = useState(initialApps); // Context?
-
   return (
-    <>
+    <AppsProvider>
       <MetaData />
       <Desktop>
         <Wallpaper />
-        <Windows appsState={ [apps, setApps] } />
-        <Icons apps={ apps } />
-        <Taskbar apps={ apps } />
+        <Windows />
+        <Icons />
+        <Taskbar />
       </Desktop>
-    </>
+    </AppsProvider>
   );
 };

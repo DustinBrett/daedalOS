@@ -1,18 +1,18 @@
-import type { Apps } from '../resources/apps';
-
+import { useContext } from 'react';
+import { AppsContext } from '../resources/AppsProvider';
 import { Window } from './Window';
 
-type WindowsType = {
-  appsState: [Apps, Function]
-};
+export default function Windows() {
+  const { apps = {} } = useContext(AppsContext);
 
-export default function Windows({ appsState: [apps, setApps] }: WindowsType) {
+  // Load windows delayed to show popup actions, 100 ms setTimeouts for each window entry, and pop in animations
+
   return (
     <div>
       { Object.entries(apps)
           .filter(([_id, app]) => app.showWindow)
           .map(([id, app]) => (
-            <Window key={ id } app={ app } id={ id } title={ app.name } appsState={ [apps, setApps] }>
+            <Window key={ id } app={ app } id={ id } title={ app.name }>
               { app.component }
             </Window>
           )) }
