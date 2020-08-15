@@ -29,7 +29,9 @@ export function Window({ children, id, title }: WindowType) {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
     },
-    onClose = () => updateApp({ id, showWindow: false })
+    onMinimize = () => updateApp({ id, appMinimized: true }),
+    onMaximize = () => updateApp({ id, appMaximized: !apps[id].appMaximized }),
+    onClose = () => updateApp({ id, showWindow: false });
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
@@ -55,13 +57,23 @@ export function Window({ children, id, title }: WindowType) {
       minHeight={ MIN_WINDOW_DIMENSION }
       minWidth={ MIN_WINDOW_DIMENSION }
       onResizeStop={ onResizeStop }
+      resizeHandleStyles={{
+        bottom: { cursor: 'ns-resize' },
+        bottomLeft: { cursor: 'nesw-resize' },
+        bottomRight: { cursor: 'nwse-resize' },
+        left: { cursor: 'ew-resize' },
+        right: { cursor: 'ew-resize' },
+        top: { cursor: 'ns-resize' },
+        topLeft: { cursor: 'nwse-resize' },
+        topRight: { cursor: 'nesw-resize' }
+      }}
       size={{ width, height }}
     >
       <div className={ `${ styles.title_bar } handle` }>
         <div className={ styles.title }>{ title }</div>
         <div className={ `${ styles.actions } cancel` }>
-          <FontAwesomeIcon className={ styles.minimize } icon={ faMinusCircle } />
-          <FontAwesomeIcon className={ styles.maximize } icon={ faPlusCircle } />
+          <FontAwesomeIcon className={ styles.minimize } icon={ faMinusCircle } onClick={ onMinimize } />
+          <FontAwesomeIcon className={ styles.maximize } icon={ faPlusCircle } onClick={ onMaximize } />
           <FontAwesomeIcon className={ styles.close } icon={ faTimesCircle } onClick={ onClose } />
         </div>
       </div>

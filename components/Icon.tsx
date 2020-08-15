@@ -1,6 +1,6 @@
 import styles from '../styles/Icon.module.scss';
 import { useState } from 'react';
-import Draggable from 'react-draggable'; // TODO: Change me
+import Draggable from 'react-draggable';
 
 type IconType = {
   icon: JSX.Element,
@@ -8,7 +8,7 @@ type IconType = {
 };
 
 // TODO: Selected/active styling
-// todo: No more react-draggable
+// TODO: Change to using a grid that the icons lock into?
 export default function Icon({ icon, name }: IconType) {
   const [dragging, setDragging] = useState(false);
 
