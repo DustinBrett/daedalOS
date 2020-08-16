@@ -1,47 +1,43 @@
 import type { Apps } from '../resources/apps';
 
 import { useContext } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AppsContext } from '../resources/AppsProvider';
-import posed, { PoseGroup } from 'react-pose';
 import { Window } from './Window';
 
-// TODO: Upgrade to https://github.com/framer/motion
-const PosedDiv = posed.div({
-  enter: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      y: {
-        damping: 15,
-        stiffness: 800,
-        type: 'spring'
-      }
+const motionSettings = {
+  initial: { opacity: 0, y: 100 },
+  animate: { opacity: 1, y: 0 },
+  transition: {
+    y: {
+      damping: 15,
+      stiffness: 800,
+      type: 'spring'
     }
   },
-  exit: {
-    opacity: 0,
-    transition: {
-      duration: 300
-    },
-    y: 50, // TODO: x/y funcs using poition of taskbar entry, during minimize, center during close
-  }
-});
+  exit: { opacity: 0, transition: { duration: 0.3 }, y: 100 }
+}
 
 export default function Windows() {
   const { apps = {} } = useContext(AppsContext);
 
   // Load windows delayed to show popup actions, 100 ms setTimeouts for each window entry, and pop in animations
+    // And handle animating children and such with the lib
   return (
-    <PoseGroup animateOnMount={ true }>
+    <AnimatePresence>
       { Object.entries(apps as Apps)
           .filter(([_id, app]) => app.opened && !app.minimized)
           .map(([id, app]) => (
-            <PosedDiv key={ id }>
+            <motion.div
+              key={ id }
+              style={{ position: 'absolute', zIndex: 1000 }}
+              {...motionSettings}
+            >
               <Window id={ id } title={ app.name }>
                 { app.component }
               </Window>
-            </PosedDiv>
+            </motion.div>
           )) }
-    </PoseGroup>
+    </AnimatePresence>
   );
 };

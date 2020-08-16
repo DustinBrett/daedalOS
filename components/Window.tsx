@@ -4,7 +4,7 @@ import styles from '../styles/Window.module.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
 import { AgentContext } from "../resources/AgentProvider";
-import posed, { PoseGroup } from 'react-pose';
+import { motion } from 'framer-motion';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,16 +18,13 @@ import {
 const DEFAULT_WINDOW_DIMENSION = 350,
       MIN_WINDOW_DIMENSION = 200;
 
-const PosedDiv = posed.div({
-  hoverable: true,
-  init: { scale: 1 },
-  hover: { scale: 1.2 }
-});
-
-const PosedFontAwesomeIcon = ({ icon }) => (
-  <PosedDiv>
+const AnimatedFontAwesomeIcon = ({ icon }) => (
+  <motion.div
+    whileHover={{ scale: 1.2 }}
+    whileTap={{ scale: 1.1 }}
+  >
     <FontAwesomeIcon icon={ icon } />
-  </PosedDiv>
+  </motion.div>
 );
 
 export type WindowType = {
@@ -101,12 +98,10 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ `${ styles.action_bar } handle` }>
         <div className={ `${ styles.actions } cancel` }>
           {/* TODO: Move to BlogActions | { app.actions && <app.actions /> } */}
-          <PoseGroup>
-            <PosedFontAwesomeIcon icon={ faArrowLeft } />
-            <PosedFontAwesomeIcon icon={ faArrowRight } />
-            <PosedFontAwesomeIcon icon={ faHome } />
-            <PosedFontAwesomeIcon icon={ faComments } />
-          </PoseGroup>
+          <AnimatedFontAwesomeIcon icon={ faArrowLeft } />
+          <AnimatedFontAwesomeIcon icon={ faArrowRight } />
+          <AnimatedFontAwesomeIcon icon={ faHome } />
+          <AnimatedFontAwesomeIcon icon={ faComments } />
         </div>
         <div className={ `${ styles.search } cancel` }>
           <FontAwesomeIcon icon={ faSearch } />
