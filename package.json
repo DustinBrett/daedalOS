@@ -6,7 +6,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "deploy": "next build && next export && touch out/.nojekyll && git subtree push --prefix out origin gh-pages && rm -fdr out"
+    "deploy": "next build && next export && touch out/.nojekyll && gh-pages -d out -t true -f"
   },
   "author": "Dustin Brett",
   "license": "UNLICENSED",
@@ -33,6 +33,7 @@
     "@types/react-rnd": "^8.0.0",
     "@types/sass": "^1.16.0",
     "@types/three": "^0.103.2",
+    "gh-pages": "^3.1.0",
     "typescript": "^3.9.7"
   }
 }
