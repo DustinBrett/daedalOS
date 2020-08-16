@@ -4,6 +4,11 @@ import clippyjs from '../assets/lib/clippyjs';
 import { createContext, useEffect, useState } from 'react';
 
 // TODO: Control agent.mute() from systray audio icon
+// TODO: Don't allow moving wizard?
+// TODO: Clicking wizard shows ugly outline on mobile at least
+// TODO: Shadow
+// TODO: He should go behind windows
+// TODO: Single click for actions on mobile (maybe desktop)
 
 const agentName = 'Merlin';
 const agentDataPath = './agents/';

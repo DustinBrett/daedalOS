@@ -57,7 +57,7 @@ export function Window({ children, id, title }: WindowType) {
   }, []);
 
   // TODO: Make action bar more generic
-  // TODO: Resize hooks are maybe too big?
+  // TODO: Fix dragging on mobile
   return (
     <Rnd
       className={ styles.window }

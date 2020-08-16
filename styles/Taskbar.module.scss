@@ -3,7 +3,7 @@
 .taskbar {
   background-color: $taskbar-color;
   height: $taskbar-height;
-  position: absolute;
+  position: fixed;
   width: 100%;
   z-index: $taskbar-z-index;
 

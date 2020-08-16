@@ -21,7 +21,8 @@
     "react-dom": "^16.13.1",
     "react-rnd": "^10.2.1",
     "sass": "^1.26.10",
-    "three": "^0.119.1"
+    "three": "^0.119.1",
+    "use-double-tap": "^1.3.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.4.0",

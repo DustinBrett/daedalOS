@@ -26,7 +26,7 @@ export const apps: Apps = {
     opened: true
   },
   'contact': {
-    component: <Blog />,
+    component: undefined,
     icon: <ContactIcon />,
     id: 1,
     name: 'Contact',

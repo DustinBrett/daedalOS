@@ -6,7 +6,7 @@
   display: grid;
   height: $taskbar-height;
   justify-items: center;
-  position: absolute;
+  position: fixed;
   right: 0;
   width: $taskbar-clock-width;
 

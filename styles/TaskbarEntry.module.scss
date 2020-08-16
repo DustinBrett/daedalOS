@@ -8,7 +8,7 @@
     font-size: $taskbar-entry-font-size;
     height: $taskbar-height;
     padding: 0 $taskbar-entry-padding;
-    position: absolute;
+    position: relative;
     width: $taskbar-entry-width;
 
     &:hover {
