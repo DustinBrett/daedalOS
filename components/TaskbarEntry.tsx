@@ -10,7 +10,7 @@ type TaskbarEntryType = {
 
 export default function TaskbarEntry({ icon, id, name }: TaskbarEntryType) {
   const { apps = {}, updateApp = () => {} } = useContext(AppsContext),
-    toggleAppMinimized = () => updateApp({ id, minimized: !apps[id].minimized });
+    toggleAppMinimized = () => (updateApp as Function)({ id, minimized: !apps[id].minimized });
 
   return (
     <div className={ styles.taskbar_entry } onClick={ toggleAppMinimized }>

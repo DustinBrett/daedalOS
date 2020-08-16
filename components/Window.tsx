@@ -12,7 +12,6 @@ import {
   faMinusCircle, faPlusCircle, faTimesCircle,
   faSearch
 } from '@fortawesome/free-solid-svg-icons';
-import { Agent } from "https";
 
 // TODO: Icons are in front of window during animation
 // TODO: Each window can have it's own defaults
@@ -39,17 +38,17 @@ export type WindowType = {
 
 export function Window({ children, id, title }: WindowType) {
   const { agent } = useContext(AgentContext),
-  { apps = {}, updateApp } = useContext(AppsContext),
+    { apps = {}, updateApp = () => {} } = useContext(AppsContext),
     [height, setHeight] = useState(0),
     [width, setWidth] = useState(0),
     onResizeStop = (_e: MouseEvent | TouchEvent, _dir: ResizeDirection, elementRef: HTMLDivElement) => {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
     },
-    onMinimize = () => updateApp({ id, minimized: true }),
-    onMaximize = () => updateApp({ id, maximized: !apps[id].maximized }),
+    onMinimize = () => (updateApp as Function)({ id, minimized: true }),
+    onMaximize = () => (updateApp as Function)({ id, maximized: !apps[id].maximized }),
     onClose = () => {
-      updateApp({ id, opened: false });
+      (updateApp as Function)({ id, opened: false });
       agent.play('Wave');
     };
 
@@ -102,11 +101,12 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ `${ styles.action_bar } handle` }>
         <div className={ `${ styles.actions } cancel` }>
           {/* TODO: Move to BlogActions | { app.actions && <app.actions /> } */}
-          {/* Animate instead of color change */}
-          <PosedFontAwesomeIcon icon={ faArrowLeft } />
-          <PosedFontAwesomeIcon icon={ faArrowRight } />
-          <PosedFontAwesomeIcon icon={ faHome } />
-          <PosedFontAwesomeIcon icon={ faComments } /> {/* TODO: CouchSurfing comments on main page, post specific comments on post pages */}
+          <PoseGroup>
+            <PosedFontAwesomeIcon icon={ faArrowLeft } />
+            <PosedFontAwesomeIcon icon={ faArrowRight } />
+            <PosedFontAwesomeIcon icon={ faHome } />
+            <PosedFontAwesomeIcon icon={ faComments } />
+          </PoseGroup>
         </div>
         <div className={ `${ styles.search } cancel` }>
           <FontAwesomeIcon icon={ faSearch } />

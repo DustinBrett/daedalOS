@@ -1,3 +1,5 @@
+import type { Apps } from '../resources/apps';
+
 import { useContext } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
 import posed, { PoseGroup } from 'react-pose';
@@ -31,11 +33,11 @@ export default function Windows() {
   // Load windows delayed to show popup actions, 100 ms setTimeouts for each window entry, and pop in animations
   return (
     <PoseGroup animateOnMount={ true }>
-      { Object.entries(apps)
+      { Object.entries(apps as Apps)
           .filter(([_id, app]) => app.opened && !app.minimized)
           .map(([id, app]) => (
             <PosedDiv key={ id }>
-              <Window app={ app } id={ id } title={ app.name }>
+              <Window id={ id } title={ app.name }>
                 { app.component }
               </Window>
             </PosedDiv>
