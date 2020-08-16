@@ -581,7 +581,7 @@ Agent.prototype.play = function play (animation, timeout, cb) {
  *
  * @param {Boolean=} fast
  */
-Agent.prototype.show = function show (fast) {
+Agent.prototype.show = function show (x, y, fast) {
 
     this._hidden = false;
     if (fast) {
@@ -592,8 +592,8 @@ Agent.prototype.show = function show (fast) {
     }
 
     if (this._el.css('top') === 'auto' || !this._el.css('left') === 'auto') {
-        var left = $(window).width() * 0.8;
-        var top = ($(window).height() + $(document).scrollTop()) * 0.8;
+        var left = x || $(window).width() * 0.8;
+        var top = y || ($(window).height() + $(document).scrollTop()) * 0.8;
         this._el.css({ top: top, left: left });
     }
 

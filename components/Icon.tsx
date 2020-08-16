@@ -1,7 +1,7 @@
 import styles from '../styles/Icon.module.scss';
 import { useContext, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
-import Draggable from 'react-draggable'; // TODO: Use posed for this or RnD
+import { motion } from 'framer-motion';
 
 type IconType = {
   icon: JSX.Element,
@@ -18,9 +18,12 @@ export default function Icon({ icon, id, name, selectedIconState: [selectedIcon,
     openApp = () => (updateApp as Function)({ id, minimized: false, opened: true });
 
   return (
-    <Draggable
+    <motion.div
+      drag
+      // dragConstraints={desktopRef}
+      dragMomentum={ false }
       onDrag={ () => setDragging(true) }
-      onStop={ () => setDragging(false) }
+      onDragEnd={ () => setDragging(false) }
     >
       <div
         className={ `${ styles.icon } ${ dragging && styles.dragging } ${ selectedIcon === id && styles.selected }` }
@@ -30,6 +33,6 @@ export default function Icon({ icon, id, name, selectedIconState: [selectedIcon,
         { icon }
         { name }
       </div>
-    </Draggable>
+    </motion.div>
   );
 };

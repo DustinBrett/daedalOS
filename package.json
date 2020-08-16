@@ -19,8 +19,6 @@
     "next": "^9.5.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-draggable": "^4.4.3",
-    "react-pose": "^4.0.10",
     "react-rnd": "^10.2.1",
     "sass": "^1.26.10",
     "three": "^0.119.1"

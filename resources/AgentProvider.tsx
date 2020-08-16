@@ -7,6 +7,9 @@ import { createContext, useEffect, useState } from 'react';
 
 const agentName = 'Merlin';
 const agentDataPath = './agents/';
+const agentDimensions = { width: 128, height: 128 };
+const agentPadding = 30;
+const taskbarHeight = 28; // TODO: Import from CSS
 
 export const AgentContext = createContext(null);
 
@@ -21,7 +24,10 @@ export const AgentProvider = props => {
       });
 
       setAgent(agent);
-      agent.show();
+      agent.show(
+        window.innerWidth - agentDimensions.width - agentPadding,
+        window.innerHeight - agentDimensions.height - agentPadding - taskbarHeight
+      );
     };
 
   useEffect(() => clippyjs.load(agentName, updateAgent, undefined, agentDataPath), []);

@@ -16,7 +16,7 @@ export default function HomePage() {
         <Desktop>
           <Wallpaper />
           <Windows />
-          <Icons />
+          <Icons/>
           <Taskbar />
         </Desktop>
       </AppsProvider>

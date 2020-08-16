@@ -15,14 +15,20 @@ const motionSettings = {
       type: 'spring'
     }
   },
-  exit: { opacity: 0, transition: { duration: 0.3 }, y: 100 }
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.3
+    },
+    y: 100
+  }
 }
 
+// Can't touch/drag buttons until animation is done
+  // Does z-index fix this?
 export default function Windows() {
   const { apps = {} } = useContext(AppsContext);
 
-  // Load windows delayed to show popup actions, 100 ms setTimeouts for each window entry, and pop in animations
-    // And handle animating children and such with the lib
   return (
     <AnimatePresence>
       { Object.entries(apps as Apps)
@@ -30,7 +36,6 @@ export default function Windows() {
           .map(([id, app]) => (
             <motion.div
               key={ id }
-              style={{ position: 'absolute', zIndex: 1000 }}
               {...motionSettings}
             >
               <Window id={ id } title={ app.name }>
