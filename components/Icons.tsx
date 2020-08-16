@@ -5,6 +5,7 @@ import { AppsContext } from '../resources/AppsProvider';
 import Icon from './Icon';
 
 // selected state/class here with style, selected, hover, selected + hover
+
 export default function Icons() {
   const { apps = {} } = useContext(AppsContext),
     [selectedIcon, setSelectedIcon] = useState(''),

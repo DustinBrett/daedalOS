@@ -19,6 +19,7 @@ export default function Icon({ icon, id, name, selectedIconState: [selectedIcon,
     openApp = () => (updateApp as Function)({ id, minimized: false, opened: true });
 
   // TODO: Fix z-index for icons when dragging over window
+    // TODO: Add drag effects
   return (
     <motion.div
       drag

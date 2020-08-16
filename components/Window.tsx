@@ -44,10 +44,8 @@ export function Window({ children, id, title }: WindowType) {
     },
     onMinimize = () => (updateApp as Function)({ id, minimized: true }),
     onMaximize = () => (updateApp as Function)({ id, maximized: !apps[id].maximized }),
-    onClose = () => {
-      (updateApp as Function)({ id, opened: false });
-      agent.play('Wave');
-    };
+    onClose = () => (updateApp as Function)({ id, opened: false }), // agent.play('Sad')
+    onSearching = () => agent.play('Searching'); // TODO: Debounce
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
@@ -105,7 +103,7 @@ export function Window({ children, id, title }: WindowType) {
         </div>
         <div className={ `${ styles.search } cancel` }>
           <FontAwesomeIcon icon={ faSearch } />
-          <input placeholder='Search' /> {/* TODO: i18n */}
+          <input placeholder='Search' onInput={ onSearching } /> {/* TODO: i18n */}
           {/* TODO: x to clear search content */}
         </div>
       </div>

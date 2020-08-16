@@ -262,7 +262,7 @@ Balloon.prototype._setup = function _setup () {
     this._balloon = $('<div class="clippy-balloon"><div class="clippy-tip"></div><div class="clippy-content"></div></div> ').hide();
     this._content = this._balloon.find('.clippy-content');
 
-    $(document.body).append(this._balloon);
+    $(this._targetEl).append(this._balloon);
 };
 
 Balloon.prototype.reposition = function reposition () {
@@ -885,7 +885,7 @@ Agent.prototype.resume = function resume () {
     this._balloon.resume();
 };
 
-var load = function load (name, successCb, failCb, base_path) {
+var load = function load (name, successCb, base_path, failCb) {
     base_path = base_path || window.CLIPPY_CDN || 'https://gitcdn.xyz/repo/pi0/clippyjs/master/assets/agents/';
 
     var path = base_path + name;
