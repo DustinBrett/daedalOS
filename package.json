@@ -6,7 +6,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "deploy": "next build && next export && touch out/.nojekyll && git subtree push --prefix out origin gh-pages"
+    "deploy": "next build && next export && touch out/.nojekyll && git subtree push --prefix out origin gh-pages && rm -fdr out"
   },
   "author": "Dustin Brett",
   "license": "UNLICENSED",
