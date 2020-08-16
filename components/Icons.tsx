@@ -1,3 +1,4 @@
+import type { Apps, AppType } from '../resources/apps';
 import styles from '../styles/Icons.module.scss';
 import { useContext, useRef, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
@@ -12,7 +13,7 @@ export default function Icons() {
 
   return (
     <div className={ styles.icons } onClick={ clearSelectedIcon } ref={ iconsRef }>
-      { Object.entries(apps)
+      { Object.entries(apps as Apps)
         .filter(([_id, app]) => app.component)
         .map(([id, app]) =>
           <Icon key={ app.id }

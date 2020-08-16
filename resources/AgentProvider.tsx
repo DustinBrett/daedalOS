@@ -1,24 +1,30 @@
 import 'jquery';
-import clippyjs from 'clippyjs';
-// Host agent data locally, not git // https://www.npmjs.com/package/clippyjs#custom-cdn--agents
-// Load agent more close to bottom right corner
-// How to dynamically change agent?
-// Float mute above his head on hover which can mute/unmute the noises
+import clippyjs from '../assets/lib/clippyjs';
 
 import { createContext, useEffect, useState } from 'react';
 
+// TODO: Control agent.mute() from systray audio icon
+
 const agentName = 'Merlin';
+const agentDataPath = './agents/';
 
 export const AgentContext = createContext(null);
 
 export const AgentProvider = props => {
   const [agent, setAgent] = useState(),
-    loadAgent = agentToLoad => () => clippyjs.load(agentToLoad, loadedAgent => {
-      loadedAgent.show();
-      setAgent(loadedAgent);
-    });
+    updateAgent = agent => {
+      const { _el: [agentElement] } = agent;
 
-  useEffect(loadAgent(agentName), []);
+      agentElement.addEventListener('dblclick', () => {
+        agent.speak(`Hi! I'm ${ agentName } and I'll help you navigate this website.`);
+        agent.animate();
+      });
+
+      setAgent(agent);
+      agent.show();
+    };
+
+  useEffect(() => clippyjs.load(agentName, updateAgent, undefined, agentDataPath), []);
 
   return <AgentContext.Provider value={{ agent }} {...props} />;
 };

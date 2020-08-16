@@ -55,6 +55,7 @@ export function Window({ children, id, title }: WindowType) {
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
+    // Instead of math.min/max, use the min/max stuff in Rnd, pass this data in from the app data
     setHeight(500); // window.innerHeight * .6
     setWidth(734); // window.innerWidth * .5
   }, []);

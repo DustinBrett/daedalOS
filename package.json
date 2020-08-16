@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next export",
-    "start": "next start"
+    "start": "next start",
+    "deploy": "next build && next export && touch out/.nojekyll && git subtree push --prefix out origin gh-pages"
   },
   "author": "Dustin Brett",
   "license": "UNLICENSED",
@@ -13,7 +14,6 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
-    "clippyjs": "0.0.3",
     "jquery": "^3.5.1",
     "next": "^9.5.2",
     "react": "^16.13.1",

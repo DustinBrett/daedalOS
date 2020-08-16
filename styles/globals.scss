@@ -1,3 +1,4 @@
+@import '../assets/lib/clippyjs/clippy.css';
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 body, html {
@@ -17,6 +18,8 @@ body {
   box-sizing: border-box;
 }
 
-.clippy {
-  position: relative;
-}
+// Q: Can I make this a module or import via the agent provider?
+// .clippy {
+//   position: fixed;
+//   cursor: pointer;
+// }

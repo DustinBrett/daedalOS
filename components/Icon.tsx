@@ -15,7 +15,7 @@ export default function Icon({ icon, id, name, selectedIconState: [selectedIcon,
   const { updateApp = () => {} } = useContext(AppsContext),
     [dragging, setDragging] = useState(false),
     selectIcon = () => setSelectedIcon(id), // TODO: On pressing enter | arrows to navigate icons
-    openApp = () => updateApp({ id, minimized: false, opened: true });
+    openApp = () => (updateApp as Function)({ id, minimized: false, opened: true });
 
   return (
     <Draggable
