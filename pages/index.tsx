@@ -1,5 +1,6 @@
 import { AppsProvider } from '../resources/AppsProvider';
-import { AgentProvider } from '../resources/AgentProvider';
+
+import { Agent, AgentProvider } from '../components/Agent';
 
 import MetaData from '../components/MetaData';
 import Desktop from '../components/Desktop';
@@ -15,8 +16,9 @@ export default function HomePage() {
         <MetaData />
         <Desktop>
           <Wallpaper />
-          <Windows />
+          <Agent />
           <Icons/>
+          <Windows />
           <Taskbar />
         </Desktop>
       </AppsProvider>

@@ -36,6 +36,7 @@ $taskbar-highlight-height: 2px;
 $taskbar-text-color: $off-white;
 
 $desktop-z-index: 0;
+$agent-z-index: $desktop-z-index + 1;
 $icon-z-index: $desktop-z-index + 1;
 $window-z-index: $desktop-z-index + 2;
 $icon-dragging-z-index: $desktop-z-index + 3;

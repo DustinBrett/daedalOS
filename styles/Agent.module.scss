@@ -1,0 +1,7 @@
+@import 'variables';
+
+.agent_container {
+    div {
+        z-index: $agent-z-index;
+    }
+}

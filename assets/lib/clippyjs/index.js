@@ -581,7 +581,7 @@ Agent.prototype.play = function play (animation, timeout, cb) {
  *
  * @param {Boolean=} fast
  */
-Agent.prototype.show = function show (x, y, fast) {
+Agent.prototype.show = function show ({ x, y, fast }) {
 
     this._hidden = false;
     if (fast) {

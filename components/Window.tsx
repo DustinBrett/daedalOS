@@ -3,7 +3,7 @@ import type { ResizeDirection } from "re-resizable";
 import styles from '../styles/Window.module.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
-import { AgentContext } from "../resources/AgentProvider";
+import { AgentContext } from "./Agent";
 import { motion } from 'framer-motion';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
