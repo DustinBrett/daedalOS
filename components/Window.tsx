@@ -6,6 +6,7 @@ import { AppsContext } from '../resources/AppsProvider';
 import { AgentContext } from "./Agent";
 import { motion, useDragControls } from 'framer-motion';
 import { Rnd } from 'react-rnd';
+import { Resizable } from 'react-resizable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft, faArrowRight, faHome, faComments,
@@ -74,6 +75,7 @@ export function Window({ children, id, title }: WindowType) {
         // bottom: 0,
       }}
       className={ styles.window }>
+        
       <div className={ `${ styles.title_bar } handle` } onMouseDown={startDrag}>
         <div className={ styles.title }>{ title }</div>
         <div className={ `${ styles.actions } cancel` }>
@@ -100,6 +102,7 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ styles.content }>
         { children }
       </div>
+      
     </motion.div>
   );
 };
