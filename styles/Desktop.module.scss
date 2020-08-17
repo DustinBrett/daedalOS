@@ -2,7 +2,7 @@
 
 .desktop {
   height: 100%;
-  position: fixed;
+  position: absolute;
   width: 100%;
   z-index: $desktop-z-index;
 }

@@ -9,6 +9,6 @@
   height: calc(100% - #{ $taskbar-height });
   justify-content: flex-start;
   padding: ($icon-dimensions / 4) 0;
-  position: relative;
+  position: absolute;
   row-gap: $icon-dimensions / 3;
 }

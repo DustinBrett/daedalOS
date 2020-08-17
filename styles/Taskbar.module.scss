@@ -2,12 +2,12 @@
 
 .taskbar {
   background-color: $taskbar-color;
+  bottom: 0;
   height: $taskbar-height;
   position: fixed;
   width: 100%;
   z-index: $taskbar-z-index;
 
-  .taskbar_entries {
-    position: relative;
-  }
+  // TODO: Account for 2+ entries, next item to the right
+  // .taskbar_entries
 }

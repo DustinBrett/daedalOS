@@ -12,6 +12,8 @@ body {
   height: 100vh;
   overflow: hidden;
   user-select: none;
+  position: fixed;
+  width: 100vw;
 }
 
 * {

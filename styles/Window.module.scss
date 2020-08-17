@@ -15,6 +15,8 @@ $window-radius: 5px;
               0 5px 50px rgba(0, 0, 0, 0.3);
   position: absolute;
   z-index: $window-z-index;
+  // top: 115px;
+  // left: 40px;
 
   .actions {
     display: flex;
@@ -41,7 +43,7 @@ $window-radius: 5px;
     justify-content: space-between;
   
     .title {
-      position: relative;
+      position: absolute;
       text-align: center;
       width: 100%;
     }
@@ -101,7 +103,6 @@ $window-radius: 5px;
     }
   
     .search {
-      padding-right: unset;
       position: relative;
       right: 0px;
       text-align: right;
@@ -116,7 +117,7 @@ $window-radius: 5px;
         font-family: "Open Sans", sans-serif;
         font-size: 11px;
         line-height: 18px;
-        padding: 0 0 0 20px;
+        padding: 0 8px 0 20px;
         width: 100%;
   
         &:focus {

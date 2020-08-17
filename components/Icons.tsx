@@ -12,6 +12,7 @@ export default function Icons() {
     iconsRef = useRef(),
     clearSelectedIcon = ({ target }) => target.isSameNode(iconsRef.current) && setSelectedIcon('');
 
+    // TODO: Could I get cool interactions if I animated the Icons group?
   return (
     <div className={ styles.icons } onClick={ clearSelectedIcon } ref={ iconsRef }>
       { Object.entries(apps as Apps)

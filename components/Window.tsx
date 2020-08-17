@@ -4,7 +4,7 @@ import styles from '../styles/Window.module.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '../resources/AppsProvider';
 import { AgentContext } from "./Agent";
-import { motion } from 'framer-motion';
+import { motion, useDragControls } from 'framer-motion';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -38,6 +38,7 @@ export function Window({ children, id, title }: WindowType) {
     { apps = {}, updateApp = () => {} } = useContext(AppsContext),
     [height, setHeight] = useState(0),
     [width, setWidth] = useState(0),
+    dragControls = useDragControls(),
     onResizeStop = (_e: MouseEvent | TouchEvent, _dir: ResizeDirection, elementRef: HTMLDivElement) => {
       setHeight(Number(elementRef.style.height));
       setWidth(Number(elementRef.style.width));
@@ -45,7 +46,10 @@ export function Window({ children, id, title }: WindowType) {
     onMinimize = () => (updateApp as Function)({ id, minimized: true }),
     onMaximize = () => (updateApp as Function)({ id, maximized: !apps[id].maximized }),
     onClose = () => (updateApp as Function)({ id, opened: false }), // agent.play('Sad')
-    onSearching = () => agent.play('Searching'); // TODO: Debounce
+    onSearching = () => agent.play('Searching'), // TODO: Debounce
+    startDrag = (event) => {
+      dragControls.start(event);
+    };
 
   useEffect(() => {
     // TODO: This needs lots of work, multi window, mobile, etc.
@@ -57,34 +61,20 @@ export function Window({ children, id, title }: WindowType) {
   // TODO: Make action bar more generic
   // TODO: Fix dragging on mobile
   return (
-    <Rnd
-      className={ styles.window }
-      default={{
-        height: DEFAULT_WINDOW_DIMENSION,
-        width: DEFAULT_WINDOW_DIMENSION,
-        x: 115,
-        y: 40
+    <motion.div
+      drag
+      dragControls={dragControls}
+      dragMomentum={false}
+      // dragPropagation={true}
+      initial={{ x: 115, y: 40 }}
+      dragConstraints={{
+        left: 0,
+        // right: 0,
+        top: 0,
+        // bottom: 0,
       }}
-      bounds='body'
-      cancel='.cancel'
-      dragHandleClassName='handle'
-      enableUserSelectHack={ false }
-      minHeight={ MIN_WINDOW_DIMENSION }
-      minWidth={ MIN_WINDOW_DIMENSION }
-      onResizeStop={ onResizeStop }
-      resizeHandleStyles={{
-        bottom: { cursor: 'ns-resize' },
-        bottomLeft: { cursor: 'nesw-resize' },
-        bottomRight: { cursor: 'nwse-resize' },
-        left: { cursor: 'ew-resize' },
-        right: { cursor: 'ew-resize' },
-        top: { cursor: 'ns-resize' },
-        topLeft: { cursor: 'nwse-resize' },
-        topRight: { cursor: 'nesw-resize' }
-      }}
-      size={{ width, height }}
-    >
-      <div className={ `${ styles.title_bar } handle` }>
+      className={ styles.window }>
+      <div className={ `${ styles.title_bar } handle` } onMouseDown={startDrag}>
         <div className={ styles.title }>{ title }</div>
         <div className={ `${ styles.actions } cancel` }>
           {/* Lower opacity of icons, relative to tilebar */}
@@ -93,7 +83,7 @@ export function Window({ children, id, title }: WindowType) {
           <FontAwesomeIcon className={ styles.close } icon={ faTimesCircle } onClick={ onClose } />
         </div>
       </div>
-      <div className={ `${ styles.action_bar } handle` }>
+      <div className={ `${ styles.action_bar } handle` } onMouseDown={startDrag}>
         <div className={ `${ styles.actions } cancel` }>
           {/* TODO: Move to BlogActions | { app.actions && <app.actions /> } */}
           <AnimatedFontAwesomeIcon icon={ faArrowLeft } />
@@ -110,6 +100,6 @@ export function Window({ children, id, title }: WindowType) {
       <div className={ styles.content }>
         { children }
       </div>
-    </Rnd>
+    </motion.div>
   );
 };

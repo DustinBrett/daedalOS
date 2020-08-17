@@ -24,8 +24,9 @@ const motionSettings = {
   }
 }
 
-// Can't touch/drag buttons until animation is done
-  // Does z-index fix this?
+// TODO: Can't touch/drag buttons until animation is done (Does z-index fix this?)
+// TODO: Did I lose window start/end animations?
+// TODO: Fix drag not working on mobile
 export default function Windows() {
   const { apps = {} } = useContext(AppsContext);
 
@@ -35,6 +36,8 @@ export default function Windows() {
           .filter(([_id, app]) => app.opened && !app.minimized)
           .map(([id, app]) => (
             <motion.div
+              // drag
+              // dragMomentum={ false }
               key={ id }
               {...motionSettings}
             >
