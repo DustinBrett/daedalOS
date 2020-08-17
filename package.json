@@ -6,7 +6,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start",
-    "deploy": "next build && next export && touch out/.nojekyll && gh-pages -d out -t true -f"
+    "deploy": "next build && next export && cp CNAME out && touch out/.nojekyll && gh-pages-clean && gh-pages -d out -t true"
   },
   "author": "Dustin Brett",
   "license": "UNLICENSED",
