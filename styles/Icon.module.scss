@@ -1,44 +1,44 @@
-@import 'variables';
+// @import 'variables';
 
-.icon {
-  color: #fff;
-  display: grid;
-  gap: 5px;
-  justify-items: center;
-  position: absolute;
-  text-shadow: $icon-text-shadow;
-  z-index: $icon-z-index;
+// .icon {
+// //   color: #fff;
+// //   display: grid;
+// //   gap: 5px;
+// //   justify-items: center;
+// //   position: absolute;
+// //   text-shadow: $icon-text-shadow;
+// //   z-index: $icon-z-index;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    outline: 1px solid rgba(255, 255, 255, 0.2);
-  }
+// //   &:hover {
+// //     background-color: rgba(255, 255, 255, 0.1);
+// //     outline: 1px solid rgba(255, 255, 255, 0.2);
+// //   }
 
-  &:active {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
+// //   &:active {
+// //     background-color: rgba(255, 255, 255, 0.3);
+// //   }
 
-  svg {
-    height: 48px;
-    width: 48px;
-  }
-}
+// //   svg {
+// //     height: 48px;
+// //     width: 48px;
+// //   }
+// // }
 
-.dragging {
-  opacity: 0.5;
-  z-index: $icon-dragging-z-index;
+// // .dragging {
+// //   opacity: 0.5;
+// //   z-index: $icon-dragging-z-index;
 
-  &:hover {
-    background-color: unset;
-    outline: unset;
-  }
-}
+// //   &:hover {
+// //     background-color: unset;
+// //     outline: unset;
+// //   }
+// // }
 
-.selected {
-  background-color: rgba(255, 255, 255, 0.3);
-  outline: 1px solid rgba(255, 255, 255, 0.2);
+// // .selected {
+// //   background-color: rgba(255, 255, 255, 0.3);
+// //   outline: 1px solid rgba(255, 255, 255, 0.2);
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-}
+// //   &:hover {
+// //     background-color: rgba(255, 255, 255, 0.5);
+// //   }
+// }

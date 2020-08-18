@@ -1,12 +1,11 @@
 import type { FC } from 'react';
-import { LOCALE, SECOND_IN_MILLISECONDS } from '../constants';
 import { useEffect, useState } from 'react';
 import styles from '../styles/Clock.module.scss';
 
 const
 
   getDate = () =>
-    new Intl.DateTimeFormat(LOCALE, {
+    new Intl.DateTimeFormat(process.env.locale, {
       day: 'numeric',
       month: 'long',
       weekday: 'long',
@@ -14,7 +13,7 @@ const
     }).format(new Date()),
 
   getTime = ({ hour12 }: { hour12: boolean }) =>
-    new Intl.DateTimeFormat(LOCALE, {
+    new Intl.DateTimeFormat(process.env.locale, {
       hour12,
       hour: 'numeric',
       minute: '2-digit',
@@ -37,7 +36,7 @@ export const Clock: FC = () => {
   useEffect(updateClock, []);
 
   useEffect(() => {
-    const clockIntervalId = setInterval(updateClock, SECOND_IN_MILLISECONDS);
+    const clockIntervalId = setInterval(updateClock, Number(process.env.millisecondsInSecond));
 
     return () => clearInterval(clockIntervalId);
   }, []);

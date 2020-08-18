@@ -1,11 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+/.next
 /node_modules
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
+/out
