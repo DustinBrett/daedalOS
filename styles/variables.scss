@@ -23,12 +23,14 @@ $backgroundColorOpacityOnHover: (
 );
 
 $height: (
-  taskbar: 28px
+  taskbar: 28px,
+  taskbarEntryIcon: 16px
 );
 
 $width: (
   clock: 90px,
-  taskbarEntry: 165px
+  taskbarEntry: 165px,
+  taskbarEntryIcon: 16px
 );
 
 $padding: (

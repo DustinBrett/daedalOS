@@ -27,9 +27,11 @@ import { Clock } from './Clock';
 import { TaskbarEntry } from './TaskbarEntry';
 import styles from '../styles/Taskbar.module.scss';
 
+import BlogIcon from '../assets/svg/blog.svg';
+
 const apps = [{
   name: 'Blog',
-  // icon: <BlogIcon />,
+  icon: <BlogIcon />,
   // component: <Blog />,
   running: true
 }];

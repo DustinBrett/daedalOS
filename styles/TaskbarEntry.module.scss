@@ -12,6 +12,9 @@
 
   padding: 0 map-get($padding, taskbarEntry);
 
+  display: flex;
+  align-items: center;
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -21,4 +24,13 @@
   &:hover {
     background-color: rgba(map-get($backgroundColorOnHover, taskbarEntry), map-get($backgroundColorOpacityOnHover, taskbarEntry));
   }
+
+  svg {
+    height: map-get($height, taskbarEntryIcon);
+    width: map-get($width, taskbarEntryIcon);
+
+    padding-right: map-get($padding, taskbarEntry) / 2;
+  }
 }
+
+// TODO: ... isnt working yet

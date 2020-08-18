@@ -16,6 +16,7 @@ import { Taskbar } from '../components/Taskbar';
 export default function HomePage(): ReactElement {
   return (
     <Desktop>
+      {/* <Icons/> */}
       <Taskbar />
     </Desktop>
   );
@@ -26,9 +27,7 @@ export default function HomePage(): ReactElement {
 
     //       <Wallpaper />
     //       <Agent />
-    //       <Icons/>
     //       <Windows />
-    //       <Taskbar />
     //     </Desktop>
     //   </AppsProvider>
     // </AgentProvider>
