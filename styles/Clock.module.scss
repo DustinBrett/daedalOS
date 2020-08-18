@@ -1,16 +1,22 @@
 @import 'variables';
 
 .clock {
-  align-items: center;
-  color: rgba($taskbar-text-color, 0.8); // TODO: Why alpha?
-  display: grid;
-  height: $taskbar-height;
-  justify-items: center;
-  position: absolute;
+  color: rgba(map-get($textColor, clock), map-get($textOpacity, clock));
+  font-size: map-get($fontSize, clock);
+
+  height: map-get($height, taskbar);
+  width: map-get($width, clock);
+
+  position: fixed;
+  bottom: 0;
   right: 0;
-  width: $taskbar-clock-width;
+
+  display: grid;
+  place-items: center;
+
+  z-index: map-get($zIndex, clock);
 
   &:hover {
-    background-color: $taskbar-entry-hover-color;
+    background-color: rgba(map-get($backgroundColorOnHover, clock), map-get($backgroundColorOpacityOnHover, clock));
   }
 }

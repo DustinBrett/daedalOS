@@ -1,13 +1,10 @@
+import type { FC } from 'react';
 import styles from '../styles/Desktop.module.scss';
 
-type DesktopType = {
-  children: Array<JSX.Element>
-}
-
-export default function Desktop({ children }: DesktopType) {
+export const Desktop: FC = ({ children }) => {
   return (
-    <div className={ styles.desktop }>
+    <main className={ styles.desktop }>
       { children }
-    </div>
+    </main>
   );
 };

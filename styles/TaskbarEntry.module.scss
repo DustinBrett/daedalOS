@@ -1,22 +1,24 @@
 @import 'variables';
 
-.taskbar_entry {
-    align-items: center;
-    border-bottom: $taskbar-highlight-height solid $taskbar-highlight-color;
-    color: $taskbar-text-color;
-    display: flex;
-    font-size: $taskbar-entry-font-size;
-    height: $taskbar-height;
-    padding: 0 $taskbar-entry-padding;
-    width: $taskbar-entry-width;
+.taskbarEntry {
+  color: map-get($textColor, taskbarEntry);
+  font-size: map-get($fontSize, taskbarEntry);
 
-    &:hover {
-        background-color: $taskbar-entry-hover-color;
-    }
+  border-bottom: $thickLine solid $highlightColor;
 
-    svg {
-        height: $taskbar-entry-icon-dimensions;
-        margin-right: $taskbar-entry-padding;
-        width: $taskbar-entry-icon-dimensions;
-    }
+  height: map-get($height, taskbar) - $thickLine;
+  line-height: map-get($height, taskbar);
+  width: map-get($width, taskbarEntry);
+
+  padding: 0 map-get($padding, taskbarEntry);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  z-index: map-get($zIndex, taskbarEntry);
+
+  &:hover {
+    background-color: rgba(map-get($backgroundColorOnHover, taskbarEntry), map-get($backgroundColorOpacityOnHover, taskbarEntry));
+  }
 }

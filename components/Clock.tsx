@@ -1,6 +1,7 @@
-import styles from '../styles/Clock.module.scss';
+import type { FC } from 'react';
+import { LOCALE, SECOND_IN_MILLISECONDS } from '../constants';
 import { useEffect, useState } from 'react';
-import { LOCALE, SECOND_IN_MILLISECONDS } from '../resources/constants'; // TODO: More constants
+import styles from '../styles/Clock.module.scss';
 
 const
 
@@ -12,7 +13,7 @@ const
       year: 'numeric'
     }).format(new Date()),
 
-  getTime = ({ hour12 = false }) =>
+  getTime = ({ hour12 }: { hour12: boolean }) =>
     new Intl.DateTimeFormat(LOCALE, {
       hour12,
       hour: 'numeric',
@@ -20,18 +21,15 @@ const
       second: '2-digit'
     }).format(new Date());
 
-type ClockType = {
-  hour12?: boolean
-};
-
-export default function Clock({ hour12 }: ClockType) {
+export const Clock: FC = () => {
   const [date, setDate] = useState(''),
-    [time, setTime] = useState(''),
-    midnight = hour12 ? '12:00:00 AM' : '00:00:00',
+    [time12, setTime12] = useState(''),
+    [time24, setTime24] = useState(''),
     updateClock = () => {
-      setTime(getTime({ hour12 }));
+      setTime12(getTime({ hour12: true }));
+      setTime24(getTime({ hour12: false }));
 
-      if (!date || time === midnight) {
+      if (!date || time24 === '00:00:00') {
         setDate(getDate());
       }
     };
@@ -39,14 +37,18 @@ export default function Clock({ hour12 }: ClockType) {
   useEffect(updateClock, []);
 
   useEffect(() => {
-    const clockInterval = setInterval(updateClock, SECOND_IN_MILLISECONDS);
+    const clockIntervalId = setInterval(updateClock, SECOND_IN_MILLISECONDS);
 
-    return () => { clearInterval(clockInterval) };
+    return () => clearInterval(clockIntervalId);
   }, []);
 
   return (
-    <div className={ styles.clock } title={ date }>
-      { time }
-    </div>
+    <time
+      className={ styles.clock }
+      dateTime={ time24 }
+      title={ date }
+    >
+      { time12 }
+    </time>
   );
 };

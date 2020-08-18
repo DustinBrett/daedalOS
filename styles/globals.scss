@@ -1,21 +1,19 @@
-@import '../assets/lib/clippyjs/clippy.css';
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=fallback');
 
-body, html {
+// @import '../assets/lib/clippyjs/clippy.css';
+
+* {
   margin: 0;
   padding: 0;
 }
 
 body {
+  font-display: fallback;
   font-family: 'Open Sans', sans-serif;
-  font-size: 12px;
-  height: 100vh;
-  overflow: hidden;
+
   user-select: none;
-  position: fixed;
-  width: 100vw;
 }
 
-* {
-  box-sizing: border-box;
-}
+// * {
+//   box-sizing: border-box;
+// }

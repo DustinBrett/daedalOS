@@ -1,43 +1,109 @@
-$icon-dimensions: 72px;
-$icon-text-shadow:
-  0 1px 1px rgba(0, 0, 0, 0.5),
-  0 1px 1px rgba(0, 0, 0, 0.5),
-  0 1px 2px rgba(0, 0, 0, 0.75),
-  0 1px 2px rgba(0, 0, 0, 0.75),
-  0 1px 3px rgb(0, 0, 0),
-  0 1px 3px rgb(0, 0, 0);
+$highlightColor: #65a9e8;
+$offWhite: #f8f8ff;
 
-$window-titlebar-height: 24px;
+$thickLine: 2px;
 
-$title-bar-color: #3C3C3C;
-$title-bar-text-color: #fff;
+$backgroundColor: (
+  desktop: #fff,
+  taskbar: #000
+);
 
-$minimize-color: #FFBD2E;
-$maximize-color: #28C940;
-$close-color: #FF554E;
+$backgroundColorOnHover: (
+  clock: invert(map-get($backgroundColor, taskbar)),
+  taskbarEntry: invert(map-get($backgroundColor, taskbar))
+);
 
-$off-white: #f8f8ff;
+$backgroundColorOpacity: (
+  taskbar: 60%
+);
 
-$window-background-color: $off-white;
+$backgroundColorOpacityOnHover: (
+  clock: 10%,
+  taskbarEntry: 10%
+);
 
-$scrollbar-color: lighten($title-bar-color, 55%);
+$height: (
+  taskbar: 28px
+);
 
-$taskbar-base-color: rgb(0, 0, 0);
-$taskbar-clock-width: 87px;
-$taskbar-color: rgba($taskbar-base-color, 0.6);
-$taskbar-entry-font-size: 11px;
-$taskbar-entry-hover-color: rgba(invert($taskbar-base-color), 0.1);
-$taskbar-entry-icon-dimensions: 16px;
-$taskbar-entry-padding: 5px;
-$taskbar-entry-width: 165px;
-$taskbar-height: 28px;
-$taskbar-highlight-color: rgb(101, 169, 232);
-$taskbar-highlight-height: 2px;
-$taskbar-text-color: $off-white;
+$width: (
+  clock: 90px,
+  taskbarEntry: 165px
+);
 
-$desktop-z-index: 0;
-$agent-z-index: $desktop-z-index + 1;
-$icon-z-index: $desktop-z-index + 1;
-$window-z-index: $desktop-z-index + 2;
-$icon-dragging-z-index: $desktop-z-index + 3;
-$taskbar-z-index: $desktop-z-index + 4;
+$padding: (
+  taskbarEntry: 10px
+);
+
+$fontSize: (
+  clock: 12px,
+  taskbarEntry: 11px
+);
+
+$textColor: (
+  clock: $offWhite,
+  taskbarEntry: $offWhite
+);
+
+$textOpacity: (
+  clock: 80%
+);
+
+$zIndex: (
+  desktop: 1000,
+  taskbar: 2000,
+  taskbarEntries: 2001,
+  clock: 2001,
+  taskbarEntry: 2002
+);
+
+
+
+
+
+
+
+
+
+
+// $icon-dimensions: 72px;
+// $icon-text-shadow:
+//   0 1px 1px rgba(0, 0, 0, 0.5),
+//   0 1px 1px rgba(0, 0, 0, 0.5),
+//   0 1px 2px rgba(0, 0, 0, 0.75),
+//   0 1px 2px rgba(0, 0, 0, 0.75),
+//   0 1px 3px rgb(0, 0, 0),
+//   0 1px 3px rgb(0, 0, 0);
+
+// $window-titlebar-height: 24px;
+
+// $title-bar-color: #3C3C3C;
+// $title-bar-text-color: #fff;
+
+// $minimize-color: #FFBD2E;
+// $maximize-color: #28C940;
+// $close-color: #FF554E;
+
+// $off-white: #f8f8ff;
+
+// $window-background-color: $off-white;
+
+// $scrollbar-color: lighten($title-bar-color, 55%);
+
+// $taskbar-base-color: rgb(0, 0, 0);
+// $taskbar-clock-width: 87px;
+// $taskbar-entry-font-size: 11px;
+// $taskbar-entry-hover-color: rgba(invert($taskbar-base-color), 0.1);
+// $taskbar-entry-icon-dimensions: 16px;
+// $taskbar-entry-padding: 5px;
+// $taskbar-entry-width: 165px;
+// $taskbar-highlight-color: rgb(101, 169, 232);
+// $taskbar-highlight-height: 2px;
+// $taskbar-text-color: $off-white;
+
+
+// $agent-z-index: $desktop-z-index + 1;
+// $icon-z-index: $desktop-z-index + 1;
+// $window-z-index: $desktop-z-index + 2;
+// $icon-dragging-z-index: $desktop-z-index + 3;
+// $taskbar-z-index: $desktop-z-index + 4;

@@ -1,13 +1,30 @@
 @import 'variables';
 
 .taskbar {
-  background-color: $taskbar-color;
-  bottom: 0;
-  height: $taskbar-height;
-  position: fixed;
-  width: 100%;
-  z-index: $taskbar-z-index;
+  background-color: rgba(map-get($backgroundColor, taskbar), map-get($backgroundColorOpacity, taskbar));
 
-  // TODO: Account for 2+ entries, next item to the right
-  // .taskbar_entries
+  height: map-get($height, taskbar);
+  width: 100vw;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  z-index: map-get($zIndex, taskbar);
+
+  .taskbarEntries {
+    height: map-get($height, taskbar);
+    width: calc(100% - #{ map-get($width, clock) });
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+
+    list-style-type: none;
+
+    z-index: map-get($zIndex, taskbarEntries);
+  }
 }

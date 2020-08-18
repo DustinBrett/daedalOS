@@ -1,27 +1,35 @@
-import { AppsProvider } from '../resources/AppsProvider';
+import type { ReactElement } from 'react';
 
-import { Agent, AgentProvider } from '../components/Agent';
+import { Desktop } from '../components/Desktop';
+import { Taskbar } from '../components/Taskbar';
+// import { AppsProvider } from '../resources/AppsProvider';
 
-import MetaData from '../components/MetaData';
-import Desktop from '../components/Desktop';
-import Wallpaper from '../components/Wallpaper';
-import Windows from '../components/Windows';
-import Icons from '../components/Icons';
-import Taskbar from '../components/Taskbar';
+// import { Agent, AgentProvider } from '../components/Agent';
 
-export default function HomePage() {
+// import MetaData from '../components/MetaData';
+
+// import Wallpaper from '../components/Wallpaper';
+// import Windows from '../components/Windows';
+// import Icons from '../components/Icons';
+
+
+export default function HomePage(): ReactElement {
   return (
-    <AgentProvider>
-      <AppsProvider>
-        <MetaData />
-        <Desktop>
-          <Wallpaper />
-          <Agent />
-          <Icons/>
-          <Windows />
-          <Taskbar />
-        </Desktop>
-      </AppsProvider>
-    </AgentProvider>
+    <Desktop>
+      <Taskbar />
+    </Desktop>
   );
+
+    // <AgentProvider>
+    //   <AppsProvider>
+    //     <MetaData />
+
+    //       <Wallpaper />
+    //       <Agent />
+    //       <Icons/>
+    //       <Windows />
+    //       <Taskbar />
+    //     </Desktop>
+    //   </AppsProvider>
+    // </AgentProvider>
 };
