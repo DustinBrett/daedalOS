@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 
 import Blog from '../components/Blog';
 
-export type AppType = {
+export type App = {
   component: FC;
   icon: JSX.Element;
   id: string;
@@ -12,22 +12,22 @@ export type AppType = {
   running?: boolean;
 };
 
-type AppsType = Array<AppType>;
+type Apps = Array<App>;
 
 type ContextProps = {
-  apps: AppsType;
-  updateApps: Dispatch<AppsType>;
+  apps: Apps;
+  updateApps: Dispatch<Apps>;
 };
 
-const Apps: AppsType = [Blog];
+const initialApps: Apps = [Blog];
 
 export const AppsContext = createContext<ContextProps>({
-  apps: Apps,
+  apps: [],
   updateApps: () => null
 });
 
 export const AppsProvider: FC = ({ children }) => {
-  const [apps, updateApps] = useState(Apps);
+  const [apps, updateApps] = useState(initialApps);
 
   return (
     <AppsContext.Provider value={{ apps, updateApps }}>
