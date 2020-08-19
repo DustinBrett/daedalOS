@@ -45,7 +45,11 @@ export const Clock: FC = () => {
   }, []);
 
   return (
-    <time className={styles.clock} dateTime={time24} title={date}>
+    <time
+      className={styles.clock}
+      dateTime={time24}
+      title={date}
+    >
       {time12}
     </time>
   );
