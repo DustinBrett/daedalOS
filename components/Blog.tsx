@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import type { App } from '../contexts/Apps';
 import BlogIcon from '../assets/svg/blog.svg';
 
 type Post = {
@@ -27,9 +28,11 @@ const Blog: FC = () => (
   </article>
 );
 
-export default {
+const BlogApp: App = {
   component: Blog,
   icon: <BlogIcon />,
   id: 'blog',
   name: 'Blog'
 };
+
+export default BlogApp;
