@@ -1,7 +1,10 @@
 @import 'variables';
 
 .clock {
-  color: rgba(map-get($textColor, clock), map-get($textOpacity, clock));
+  color: rgba(
+    map-get($textColor, clock),
+    map-get($textOpacity, clock)
+  );
   font-size: map-get($fontSize, clock);
 
   height: map-get($height, taskbar);

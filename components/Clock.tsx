@@ -3,19 +3,20 @@ import { useEffect, useState } from 'react';
 import styles from '../styles/Clock.module.scss';
 
 const getDate = () =>
-    new Intl.DateTimeFormat(process.env.locale, {
-      day: 'numeric',
-      month: 'long',
-      weekday: 'long',
-      year: 'numeric'
-    }).format(new Date()),
-  getTime = ({ hour12 = false }) =>
-    new Intl.DateTimeFormat(process.env.locale, {
-      hour12,
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(new Date());
+  new Intl.DateTimeFormat(process.env.locale, {
+    day: 'numeric',
+    month: 'long',
+    weekday: 'long',
+    year: 'numeric'
+  }).format(new Date());
+
+const getTime = ({ hour12 = false }) =>
+  new Intl.DateTimeFormat(process.env.locale, {
+    hour12,
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(new Date());
 
 export const Clock: FC = () => {
   const [date, setDate] = useState(''),
