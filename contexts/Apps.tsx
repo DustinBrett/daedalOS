@@ -1,26 +1,29 @@
-import type { FC, ReactNode } from "react";
-import { createContext, useReducer } from 'react';
+import type { Dispatch, FC } from "react";
+import { createContext, useState } from 'react';
 import { Blog } from '../components/Blog';
 import BlogIcon from '../assets/svg/blog.svg';
 
 export type AppType = {
-  component: ReactNode,
+  component: FC,
+  enabled?: boolean,
   icon: JSX.Element,
   id: string,
   name: string,
-  running: boolean
+  running?: boolean,
+  selectedIcon?: boolean
 };
 
-export type AppsType = Array<AppType>;
+type AppsType = Array<AppType>;
 
-export type ContextProps = {
-  apps?: AppsType,
-  updateApp?: Function
+type ContextProps = {
+  apps: AppsType,
+  updateApps: Dispatch<AppsType>
 };
 
 const Apps: AppsType = [
   {
-    component: <Blog />,
+    component: Blog,
+    enabled: true,
     icon: <BlogIcon />,
     id: 'blog',
     name: 'Blog',
@@ -30,15 +33,15 @@ const Apps: AppsType = [
 
 export const AppsContext = createContext<ContextProps>({
   apps: Apps,
-  updateApp: undefined
+  updateApps: () => null
 });
 
 export const AppsProvider: FC = ({ children }) => {
-  const [apps, updateApp] = useReducer(
-    (apps: AppsType, updatedApp: AppType) =>
-      apps.map(app => app.id === updatedApp.id ? updatedApp : app),
-    Apps
-  );
+  const [apps, updateApps] = useState(Apps);
 
-  return <AppsContext.Provider value={{ apps, updateApp }} children={ children } />;
+  return (
+    <AppsContext.Provider value={{ apps, updateApps }}>
+      { children }
+    </AppsContext.Provider>
+  );
 };

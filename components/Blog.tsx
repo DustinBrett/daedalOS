@@ -1,7 +1,5 @@
 import type { FC } from "react";
 
-export const Blog: FC = () => {
-  return (
-    <>BLOG</>
-  );
-};
+export const Blog: FC = () => (
+  <>BLOG</>
+);

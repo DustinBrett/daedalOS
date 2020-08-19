@@ -1,0 +1,14 @@
+.icon {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.selected {
+  background-color: pink;
+}
