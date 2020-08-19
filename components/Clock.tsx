@@ -25,6 +25,8 @@ export const Clock: FC = () => {
     [time12, setTime12] = useState(''),
     [time24, setTime24] = useState(''),
     updateClock = () => {
+      // Q: Is doing this twice costly?
+      // Q: Could I get both formats at once?
       setTime12(getTime({ hour12: true }));
       setTime24(getTime({ hour12: false }));
 

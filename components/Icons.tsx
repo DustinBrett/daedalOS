@@ -9,8 +9,7 @@ export const Icons: FC = () => (
     <ol className={ styles.iconEntries }>
       { useContext(AppsContext)
         .apps
-        .filter(app => app.enabled)
-        .map(app => <Icon key={ app.name } { ...app } />)
+        .map(app => <Icon key={ app.id } { ...app } />)
       }
     </ol>
   </nav>

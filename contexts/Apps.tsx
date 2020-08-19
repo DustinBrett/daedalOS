@@ -1,14 +1,14 @@
 import type { Dispatch, FC } from "react";
 import { createContext, useState } from 'react';
-import { Blog } from '../components/Blog';
-import BlogIcon from '../assets/svg/blog.svg';
+
+import Blog from '../components/Blog';
 
 export type AppType = {
   component: FC,
-  enabled?: boolean,
   icon: JSX.Element,
   id: string,
   name: string,
+
   running?: boolean
 };
 
@@ -20,14 +20,7 @@ type ContextProps = {
 };
 
 const Apps: AppsType = [
-  {
-    component: Blog,
-    enabled: true,
-    icon: <BlogIcon />,
-    id: 'blog',
-    name: 'Blog',
-    running: true
-  }
+  Blog
 ];
 
 export const AppsContext = createContext<ContextProps>({

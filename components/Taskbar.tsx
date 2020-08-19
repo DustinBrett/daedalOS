@@ -10,8 +10,8 @@ export const Taskbar: FC = () => (
     <ol className={ styles.taskbarEntries }>
       { useContext(AppsContext)
         .apps
-        .filter(app => app.enabled && app.running)
-        .map(app => <TaskbarEntry key={ app.name } { ...app } />)
+        .filter(app => app.running)
+        .map(app => <TaskbarEntry key={ app.id } { ...app } />)
       }
     </ol>
     <Clock />
