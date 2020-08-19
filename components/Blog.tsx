@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import BlogIcon from '../assets/svg/blog.svg';
 
 type PostType = {
+  id: string,
   title: string;
   content: string;
 };
@@ -45,7 +46,7 @@ const Post = ({ title, content }: PostType) => (
 const Blog: FC = () => (
   <article>
     {posts.map((post) => (
-      <Post {...post} />
+      <Post key={post.id} {...post} />
     ))}
   </article>
 );
