@@ -9,8 +9,7 @@ export type AppType = {
   icon: JSX.Element,
   id: string,
   name: string,
-  running?: boolean,
-  selectedIcon?: boolean
+  running?: boolean
 };
 
 type AppsType = Array<AppType>;
