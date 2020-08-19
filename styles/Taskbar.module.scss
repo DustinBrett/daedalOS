@@ -18,7 +18,7 @@
 
   .taskbarEntries {
     height: map-get($height, taskbar);
-    width: calc(100% - #{ map-get($width, clock) });
+    width: calc(100% - #{map-get($width, clock)});
 
     position: fixed;
     bottom: 0;

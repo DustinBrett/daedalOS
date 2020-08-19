@@ -5,11 +5,11 @@ import { Taskbar } from '../components/Taskbar';
 
 export default function HomePage() {
   return (
-      <Desktop>
-        <AppsProvider>
-          <Icons />
-          <Taskbar />
-        </AppsProvider>
-      </Desktop>
+    <Desktop>
+      <AppsProvider>
+        <Icons />
+        <Taskbar />
+      </AppsProvider>
+    </Desktop>
   );
-};
+}

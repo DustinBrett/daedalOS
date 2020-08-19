@@ -1,27 +1,25 @@
-import type { Dispatch, FC } from "react";
+import type { Dispatch, FC } from 'react';
 import { createContext, useState } from 'react';
 
 import Blog from '../components/Blog';
 
 export type AppType = {
-  component: FC,
-  icon: JSX.Element,
-  id: string,
-  name: string,
+  component: FC;
+  icon: JSX.Element;
+  id: string;
+  name: string;
 
-  running?: boolean
+  running?: boolean;
 };
 
 type AppsType = Array<AppType>;
 
 type ContextProps = {
-  apps: AppsType,
-  updateApps: Dispatch<AppsType>
+  apps: AppsType;
+  updateApps: Dispatch<AppsType>;
 };
 
-const Apps: AppsType = [
-  Blog
-];
+const Apps: AppsType = [Blog];
 
 export const AppsContext = createContext<ContextProps>({
   apps: Apps,
@@ -33,7 +31,7 @@ export const AppsProvider: FC = ({ children }) => {
 
   return (
     <AppsContext.Provider value={{ apps, updateApps }}>
-      { children }
+      {children}
     </AppsContext.Provider>
   );
 };

@@ -2,16 +2,13 @@ import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import styles from '../styles/Clock.module.scss';
 
-const
-
-  getDate = () =>
+const getDate = () =>
     new Intl.DateTimeFormat(process.env.locale, {
       day: 'numeric',
       month: 'long',
       weekday: 'long',
       year: 'numeric'
     }).format(new Date()),
-
   getTime = ({ hour12 = false }) =>
     new Intl.DateTimeFormat(process.env.locale, {
       hour12,
@@ -38,18 +35,17 @@ export const Clock: FC = () => {
   useEffect(updateClock, []);
 
   useEffect(() => {
-    const clockIntervalId = setInterval(updateClock, Number(process.env.millisecondsInSecond));
+    const clockIntervalId = setInterval(
+      updateClock,
+      Number(process.env.millisecondsInSecond)
+    );
 
     return () => clearInterval(clockIntervalId);
   }, []);
 
   return (
-    <time
-      className={ styles.clock }
-      dateTime={ time24 }
-      title={ date }
-    >
-      { time12 }
+    <time className={styles.clock} dateTime={time24} title={date}>
+      {time12}
     </time>
   );
 };

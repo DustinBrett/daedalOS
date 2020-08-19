@@ -1,9 +1,9 @@
-import type { FC } from "react";
+import type { FC } from 'react';
 import BlogIcon from '../assets/svg/blog.svg';
 
 type PostType = {
-  title: string,
-  content: string
+  title: string;
+  content: string;
 };
 
 const posts: Array<PostType> = [];
@@ -11,7 +11,7 @@ const posts: Array<PostType> = [];
 const Post = ({ title, content }: PostType) => (
   <article>
     <header>
-      <h1>{ title }</h1>
+      <h1>{title}</h1>
       {/* <p><time datetime="2009-10-09">3 days ago</time></p> */}
     </header>
     {/* Possibly loop through sections array within each post
@@ -25,7 +25,7 @@ const Post = ({ title, content }: PostType) => (
       <p>These juicy, green apples make a great filling for
       apple pies.</p>
     </section> */}
-    <p>{ content }</p>
+    <p>{content}</p>
     {/* Add comments section
     <section>
       <h1>Comments</h1>
@@ -44,7 +44,9 @@ const Post = ({ title, content }: PostType) => (
 
 const Blog: FC = () => (
   <article>
-    { posts.map(post => <Post { ...post } />) }
+    {posts.map((post) => (
+      <Post {...post} />
+    ))}
   </article>
 );
 
