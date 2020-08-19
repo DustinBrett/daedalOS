@@ -9,7 +9,8 @@
     "dev": "next dev",
     "export": "next export",
     "start": "next start",
-    "lint": "eslint **/*.tsx *.ts *.js && stylelint styles/*.*css"
+    "lint": "eslint **/*.tsx *.ts *.js && stylelint styles/*.*css",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "next": "^9.5.2",
@@ -35,7 +36,6 @@
     "typescript": "^3.9.7"
   },
   "prettier": {
-    "printWidth": 65,
     "singleQuote": true,
     "trailingComma": "none"
   }

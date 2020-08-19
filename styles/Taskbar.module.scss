@@ -1,11 +1,10 @@
 @import 'variables';
 
 .taskbar {
-  background-color:
-    rgba(
-      map-get($backgroundColor, taskbar),
-      map-get($backgroundColorOpacity, taskbar)
-    );
+  background-color: rgba(
+    map-get($backgroundColor, taskbar),
+    map-get($backgroundColorOpacity, taskbar)
+  );
 
   height: map-get($height, taskbar);
   width: 100vw;

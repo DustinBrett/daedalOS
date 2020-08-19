@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import BlogIcon from '../assets/svg/blog.svg';
 
 type PostType = {
-  id: string,
+  id: string;
   title: string;
   content: string;
 };
