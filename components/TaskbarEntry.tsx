@@ -1,12 +1,12 @@
 import type { FC } from 'react';
 import styles from '../styles/TaskbarEntry.module.scss';
-// import { AppsContext } from '../resources/AppsProvider';
-// import styles from '../styles/TaskbarEntry.module.scss';
 
-export const TaskbarEntry: FC = ({ icon, name }) => {
-  // const { apps = {}, updateApp = () => {} } = useContext(AppsContext),
-  //   toggleAppMinimized = () => (updateApp as Function)({ id, minimized: !apps[id].minimized });
+type TaskbarEntry = {
+  icon: JSX.Element,
+  name: String
+};
 
+export const TaskbarEntry: FC<TaskbarEntry> = ({ icon, name }) => {
   return (
     <li className={ styles.taskbarEntry }>
       { icon }

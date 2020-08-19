@@ -22,7 +22,10 @@
   z-index: map-get($zIndex, taskbarEntry);
 
   &:hover {
-    background-color: rgba(map-get($backgroundColorOnHover, taskbarEntry), map-get($backgroundColorOpacityOnHover, taskbarEntry));
+    background-color: rgba(
+      invert(map-get($backgroundColor, taskbar)),
+      map-get($backgroundColorOpacityOnHover, taskbarEntry)
+    );
   }
 
   svg {

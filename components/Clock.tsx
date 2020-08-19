@@ -12,7 +12,7 @@ const
       year: 'numeric'
     }).format(new Date()),
 
-  getTime = ({ hour12 }: { hour12: boolean }) =>
+  getTime = ({ hour12 = false }) =>
     new Intl.DateTimeFormat(process.env.locale, {
       hour12,
       hour: 'numeric',
