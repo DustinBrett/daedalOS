@@ -1,10 +1,11 @@
 @import 'variables';
 
 .clock {
-  color: rgba(
-    map-get($textColor, clock),
-    map-get($textOpacity, clock)
-  );
+  color:
+    rgba(
+      map-get($textColor, clock),
+      map-get($textOpacity, clock)
+    );
   font-size: map-get($fontSize, clock);
 
   height: map-get($height, taskbar);
@@ -20,9 +21,10 @@
   z-index: map-get($zIndex, clock);
 
   &:hover {
-    background-color: rgba(
-      invert(map-get($backgroundColor, taskbar)),
-      map-get($backgroundColorOpacityOnHover, clock)
-    );
+    background-color:
+      rgba(
+        invert(map-get($backgroundColor, taskbar)),
+        map-get($backgroundColorOpacityOnHover, clock)
+      );
   }
 }

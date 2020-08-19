@@ -14,32 +14,32 @@ $backgroundColorOpacity: (
 
 $backgroundColorOpacityOnHover: (
   clock: 10%,
-  taskbarEntry: 10%
+  taskbar-entry: 10%
 );
 
 $height: (
   taskbar: 28px,
-  taskbarEntryIcon: 16px
+  taskbar-entry-icon: 16px
 );
 
 $width: (
   clock: 90px,
-  taskbarEntry: 165px,
-  taskbarEntryIcon: 16px
+  taskbar-entry: 165px,
+  taskbar-entry-icon: 16px
 );
 
 $padding: (
-  taskbarEntry: 10px
+  taskbar-entry: 10px
 );
 
 $fontSize: (
   clock: 12px,
-  taskbarEntry: 11px
+  taskbar-entry: 11px
 );
 
 $textColor: (
   clock: $offWhite,
-  taskbarEntry: $offWhite
+  taskbar-entry: $offWhite
 );
 
 $textOpacity: (
@@ -49,7 +49,7 @@ $textOpacity: (
 $zIndex: (
   desktop: 1000,
   taskbar: 2000,
-  taskbarEntries: 2100,
-  taskbarEntry: 2200,
+  taskbar-entries: 2100,
+  taskbar-entry: 2200,
   clock: 2300
 );

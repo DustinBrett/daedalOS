@@ -1,0 +1,6 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "declaration-empty-line-before": null
+    }
+}

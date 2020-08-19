@@ -1,16 +1,16 @@
 @import 'variables';
 
 .taskbarEntry {
-  color: map-get($textColor, taskbarEntry);
-  font-size: map-get($fontSize, taskbarEntry);
+  color: map-get($textColor, taskbar-entry);
+  font-size: map-get($fontSize, taskbar-entry);
 
   border-bottom: $thickLine solid $highlightColor;
 
   height: map-get($height, taskbar) - $thickLine;
   line-height: map-get($height, taskbar);
-  width: map-get($width, taskbarEntry);
+  width: map-get($width, taskbar-entry);
 
-  padding: 0 map-get($padding, taskbarEntry);
+  padding: 0 map-get($padding, taskbar-entry);
 
   display: flex;
   align-items: center;
@@ -19,20 +19,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  z-index: map-get($zIndex, taskbarEntry);
+  z-index: map-get($zIndex, taskbar-entry);
 
   &:hover {
-    background-color: rgba(
-      invert(map-get($backgroundColor, taskbar)),
-      map-get($backgroundColorOpacityOnHover, taskbarEntry)
-    );
+    background-color:
+      rgba(
+        invert(map-get($backgroundColor, taskbar)),
+        map-get($backgroundColorOpacityOnHover, taskbar-entry)
+      );
   }
 
   svg {
-    height: map-get($height, taskbarEntryIcon);
-    width: map-get($width, taskbarEntryIcon);
+    height: map-get($height, taskbar-entry-icon);
+    width: map-get($width, taskbar-entry-icon);
 
-    padding-right: map-get($padding, taskbarEntry) / 2;
+    padding-right: map-get($padding, taskbar-entry) / 2;
   }
 }
 

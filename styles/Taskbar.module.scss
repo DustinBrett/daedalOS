@@ -1,10 +1,11 @@
 @import 'variables';
 
 .taskbar {
-  background-color: rgba(
-    map-get($backgroundColor, taskbar),
-    map-get($backgroundColorOpacity, taskbar)
-  );
+  background-color:
+    rgba(
+      map-get($backgroundColor, taskbar),
+      map-get($backgroundColorOpacity, taskbar)
+    );
 
   height: map-get($height, taskbar);
   width: 100vw;
@@ -27,6 +28,6 @@
     display: flex;
     list-style-type: none;
 
-    z-index: map-get($zIndex, taskbarEntries);
+    z-index: map-get($zIndex, taskbar-entries);
   }
 }
