@@ -1,3 +1,27 @@
+@import 'variables';
+
 .icons {
-  display: block;
+  height: calc(100% - #{map-get($height, taskbar)});
+  width: 100%;
+
+  padding: 12px 0; // VAR
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  z-index: map-get($zIndex, icons); // Set this
 }
+
+.iconEntries {
+  height: 100%;
+
+  display: grid;
+  grid-template-rows: repeat(auto-fit, map-get($width, icon));
+  grid-auto-flow: column;
+  row-gap: 12px; // VAR
+
+  z-index: map-get($zIndex, icon-entries); // Set this
+}
+
+// TODO: Text ... stuff

@@ -1,10 +1,17 @@
 $highlightColor: #65a9e8;
 $offWhite: #f8f8ff;
+$textShadow:
+  0 1px 1px rgba(0, 0, 0, 0.5),
+  0 1px 1px rgba(0, 0, 0, 0.5),
+  0 1px 2px rgba(0, 0, 0, 0.75),
+  0 1px 2px rgba(0, 0, 0, 0.75),
+  0 1px 3px rgb(0, 0, 0),
+  0 1px 3px rgb(0, 0, 0);
 
 $thickLine: 2px;
 
 $backgroundColor: (
-  desktop: #fff,
+  desktop: #3b6ea5,
   taskbar: #000
 );
 
@@ -18,12 +25,16 @@ $backgroundColorOpacityOnHover: (
 );
 
 $height: (
+  icon: 72px,
+  icon-svg: 42px,
   taskbar: 28px,
   taskbar-entry-icon: 16px
 );
 
 $width: (
   clock: 90px,
+  icon: 72px,
+  icon-svg: 42px,
   taskbar-entry: 165px,
   taskbar-entry-icon: 16px
 );

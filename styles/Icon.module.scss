@@ -1,10 +1,28 @@
+@import 'variables';
+
 .icon {
+  color: white; // TODO: Var
+  font-size: 13px; // TODO: Var
+  text-shadow: $textShadow;
+
+  height: map-get($height, icon);
+  width: map-get($width, icon);
+
   display: flex;
   flex-direction: column;
+  place-content: space-evenly;
   place-items: center;
 
+  z-index: map-get($zIndex, icon); // Set this
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1); // TODO: Var
+    border: 1px solid rgba(0, 0, 0, 0.3); // TODO: Vars
+    border-style: dotted;
+  }
+
   svg {
-    width: 48px;
-    height: 48px;
+    height: map-get($height, icon-svg);
+    width: map-get($width, icon-svg);
   }
 }
