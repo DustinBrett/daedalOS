@@ -16,8 +16,15 @@
   z-index: map-get($icon, z-index);
 
   &:hover {
-    background-color: rgba(map-get($icon, hover-bg-color), map-get($icon, hover-bg-opacity));
-    border: 1px solid rgba(map-get($icon, hover-border-color), map-get($icon, hover-border-opacity));
+    background-color: rgba(
+      map-get($icon, hover-bg-color),
+      map-get($icon, hover-bg-opacity)
+    );
+    border: 1px solid
+      rgba(
+        map-get($icon, hover-border-color),
+        map-get($icon, hover-border-opacity)
+      );
     border-style: dotted;
   }
 
