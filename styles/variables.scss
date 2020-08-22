@@ -8,9 +8,9 @@ $textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
 $thickLine: 2px;
 
 $zIndex: (
-  $desktop: 1000,
-  $icon: 1500,
-  $taskbar: 2000
+  desktop: 1000,
+  icon: 1500,
+  taskbar: 2000
 );
 
 $clock: (
@@ -58,5 +58,6 @@ $taskbarEntry: (
   width: 165px,
   padding: 10px,
   hover-bg-opacity: 10%,
-  icon-height: 16px icon-width: 16px
+  icon-height: 16px,
+  icon-width: 16px
 );
