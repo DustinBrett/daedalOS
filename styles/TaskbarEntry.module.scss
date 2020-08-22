@@ -1,35 +1,40 @@
+@import 'maps';
+@import 'mixins';
 @import 'variables';
 
 .taskbarEntry {
-  color: map-get($taskbarEntry, text-color);
-  font-size: map-get($taskbarEntry, font-size);
+  @include taskbarEntryHover;
+
+  div {
+    @include textOverflowEllipsis;
+
+    svg {
+      width: map-get($taskbarEntry, icon-width);
+
+      padding-right: map-get($taskbarEntry, padding) / 2;
+    }
+
+    span {
+      width: map-get($taskbarEntry, text-width);
+    }
+
+    color: map-get($taskbarEntry, text-color);
+    font-size: map-get($taskbarEntry, font-size);
+
+    height: map-get($taskbar, height) - $thickLine;
+
+    display: flex;
+    align-items: center;
+  }
 
   border-bottom: $thickLine solid $highlightColor;
 
-  height: map-get($taskbar, height) - $thickLine;
-  line-height: map-get($taskbar, height);
+  height: map-get($taskbar, height);
   width: map-get($taskbarEntry, width);
 
   padding: 0 map-get($taskbarEntry, padding);
-
-  display: flex;
-  align-items: center;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  &:hover {
-    background-color: rgba(
-      invert(map-get($taskbar, bg-color)),
-      map-get($taskbarEntry, hover-bg-opacity)
-    );
-  }
-
-  svg {
-    height: map-get($taskbarEntry, icon-height);
-    width: map-get($taskbarEntry, icon-width);
-
-    padding-right: map-get($taskbarEntry, padding) / 2;
-  }
 }
+
+// 4-5 px padding between items, visible in highlight border
+  // on hover the hovered items border extends it's 2px's so only the side items 2px is shown
+    // Also has preview hover, may be harder

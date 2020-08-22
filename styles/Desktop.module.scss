@@ -1,14 +1,11 @@
+@import 'maps';
+@import 'mixins';
 @import 'variables';
 
 .desktop {
+  @include fullScreen;
+
   background-color: map-get($desktop, bg-color);
-
-  height: 100vh;
-  width: 100vw;
-
-  position: fixed;
-  top: 0;
-  left: 0;
 
   z-index: map-get($desktop, z-index);
 }

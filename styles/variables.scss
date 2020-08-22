@@ -1,4 +1,5 @@
 $highlightColor: #65a9e8;
+$windowsBgColor: #3b6ea5;
 $offWhite: #f8f8ff;
 
 $textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
@@ -6,58 +7,3 @@ $textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
   0 1px 3px rgb(0, 0, 0), 0 1px 3px rgb(0, 0, 0);
 
 $thickLine: 2px;
-
-$zIndex: (
-  desktop: 1000,
-  icon: 1500,
-  taskbar: 2000
-);
-
-$clock: (
-  text-color: $offWhite,
-  text-opacity: 80%,
-  font-size: 12px,
-  width: 90px,
-  hover-bg-opacity: 10%
-);
-
-$desktop: (
-  bg-color: #3b6ea5,
-  z-index: map-get($zIndex, desktop)
-);
-
-$icon: (
-  text-color: white,
-  text-shadow: $textShadow,
-  font-size: 13px,
-  height: 72px,
-  width: 72px,
-  svg-height: 42px,
-  svg-width: 42px,
-  hover-bg-color: black,
-  hover-bg-opacity: 10%,
-  hover-border-color: black,
-  hover-border-opacity: 30%,
-  z-index: map-get($zIndex, icon)
-);
-
-$icons: (
-  padding: 12px
-);
-
-$taskbar: (
-  bg-color: black,
-  bg-opacity: 60%,
-  height: 28px,
-  z-index: map-get($zIndex, taskbar)
-);
-
-$taskbarEntry: (
-  text-color: $offWhite,
-  font-size: 11px,
-  width: 165px,
-  padding: 10px,
-  hover-bg-opacity: 10%,
-  icon-height: 16px,
-  icon-width: 16px
-);

@@ -1,0 +1,45 @@
+@import 'maps';
+@import 'variables';
+
+@mixin taskbarEntryHover {
+  transition: 0.1s;
+
+  &:hover {
+    background-color: rgba(
+      invert(map-get($taskbar, bg-color)),
+      map-get($taskbarEntry, hover-bg-opacity)
+    );
+  }
+}
+
+@mixin fullScreen {
+  height: 100vh;
+  width: 100vw;
+
+  position: fixed;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@mixin bottomRight {
+  position: fixed;
+
+  bottom: 0;
+  right: 0;
+}
+
+@mixin topLeft {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+}
+
+@mixin textOverflowEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

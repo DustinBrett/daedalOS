@@ -1,14 +1,14 @@
+@import 'maps';
+@import 'mixins';
 @import 'variables';
 
 .icons {
+  @include topLeft;
+
   height: calc(100% - #{map-get($taskbar, height)});
   width: 100%;
 
   padding: map-get($icons, padding) 0;
-
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 .iconEntries {

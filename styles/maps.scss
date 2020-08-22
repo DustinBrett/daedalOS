@@ -1,0 +1,54 @@
+@import 'variables';
+
+$zIndex: (
+  desktop: 1000,
+  icon: 1500,
+  taskbar: 2000
+);
+
+$clock: (
+  text-color: $offWhite,
+  text-opacity: 80%,
+  font-size: 12px,
+  width: 90px,
+  hover-bg-opacity: 10%
+);
+
+$desktop: (
+  bg-color: $windowsBgColor,
+  z-index: map-get($zIndex, desktop)
+);
+
+$icon: (
+  text-color: white,
+  text-shadow: $textShadow,
+  font-size: 12px,
+  width: 74px,
+  svg-width: 44px,
+  hover-bg-color: black,
+  hover-bg-opacity: 10%,
+  hover-border-color: black,
+  hover-border-opacity: 30%,
+  z-index: map-get($zIndex, icon)
+);
+
+$icons: (
+  padding: 12px
+);
+
+$taskbar: (
+  bg-color: black,
+  bg-opacity: 60%,
+  height: 28px,
+  z-index: map-get($zIndex, taskbar)
+);
+
+$taskbarEntry: (
+  text-color: $offWhite,
+  text-width: 110px,
+  font-size: 11px,
+  width: 165px,
+  padding: 10px,
+  hover-bg-opacity: 10%,
+  icon-width: 16px
+);

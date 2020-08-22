@@ -1,11 +1,18 @@
+@import 'maps';
+@import 'mixins';
 @import 'variables';
 
 .icon {
+  span {
+    @include textOverflowEllipsis;
+
+    text-align: center;
+  }
+
   color: map-get($icon, text-color);
   font-size: map-get($icon, font-size);
   text-shadow: map-get($icon, text-shadow);
 
-  height: map-get($icon, height);
   width: map-get($icon, width);
 
   display: flex;
@@ -20,16 +27,17 @@
       map-get($icon, hover-bg-color),
       map-get($icon, hover-bg-opacity)
     );
-    border: 1px solid
+    outline: 1px solid
       rgba(
         map-get($icon, hover-border-color),
         map-get($icon, hover-border-opacity)
       );
-    border-style: dotted;
+    outline-style: dotted;
   }
 
+  // TODO: Selected and Dragging styles
+
   svg {
-    height: map-get($icon, svg-height);
     width: map-get($icon, svg-width);
   }
 }

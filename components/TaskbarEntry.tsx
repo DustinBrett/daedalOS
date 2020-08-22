@@ -4,7 +4,9 @@ import styles from '../styles/TaskbarEntry.module.scss';
 
 export const TaskbarEntry: FC<App> = ({ icon, name }) => (
   <li className={styles.taskbarEntry}>
-    {icon}
-    {name}
+    <div>
+      {icon}
+      {name}
+    </div>
   </li>
 );
