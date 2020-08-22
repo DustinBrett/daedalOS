@@ -1,64 +1,63 @@
 $highlightColor: #65a9e8;
 $offWhite: #f8f8ff;
+
 $textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
   0 1px 2px rgba(0, 0, 0, 0.75), 0 1px 2px rgba(0, 0, 0, 0.75),
   0 1px 3px rgb(0, 0, 0), 0 1px 3px rgb(0, 0, 0);
 
 $thickLine: 2px;
 
-// TODO: This needs better organization. Things are scattered.
-
-$backgroundColor: (
-  desktop: #3b6ea5,
-  taskbar: #000
-);
-
-$backgroundColorOpacity: (
-  taskbar: 60%
-);
-
-$backgroundColorOpacityOnHover: (
-  clock: 10%,
-  taskbar-entry: 10%
-);
-
-$height: (
-  icon: 72px,
-  icon-svg: 42px,
-  taskbar: 28px,
-  taskbar-entry-icon: 16px
-);
-
-$width: (
-  clock: 90px,
-  icon: 72px,
-  icon-svg: 42px,
-  taskbar-entry: 165px,
-  taskbar-entry-icon: 16px
-);
-
-$padding: (
-  taskbar-entry: 10px
-);
-
-$fontSize: (
-  clock: 12px,
-  taskbar-entry: 11px
-);
-
-$textColor: (
-  clock: $offWhite,
-  taskbar-entry: $offWhite
-);
-
-$textOpacity: (
-  clock: 80%
-);
-
 $zIndex: (
-  desktop: 1000,
-  taskbar: 2000,
-  taskbar-entries: 2100,
-  taskbar-entry: 2200,
-  clock: 2300
+  $desktop: 1000,
+  $icon: 1500,
+  $taskbar: 2000
+);
+
+$clock: (
+  text-color: $offWhite,
+  text-opacity: 80%,
+  font-size: 12px,
+  width: 90px,
+  hover-bg-opacity: 10%,
+);
+
+$desktop: (
+  bg-color: #3b6ea5,
+  z-index: map-get($zIndex, desktop)
+);
+
+$icon: (
+  text-color: white,
+  text-shadow: $textShadow,
+  font-size: 13px,
+  height: 72px,
+  width: 72px,
+  svg-height: 42px,
+  svg-width: 42px,
+  hover-bg-color: black,
+  hover-bg-opacity: 10%,
+  hover-border-color: black,
+  hover-border-opacity: 30%,
+  z-index: map-get($zIndex, icon)
+);
+
+$icons: (
+  padding: 12px
+);
+
+$taskbar: (
+  bg-color: black,
+  bg-opacity: 60%,
+  height: 28px,
+  z-index: map-get($zIndex, taskbar)
+);
+
+$taskbarEntry: (
+  text-color: $offWhite,
+  font-size: 11px,
+  width: 165px,
+  padding: 10px,
+  hover-bg-opacity: 10%,
+  icon-height: 16px
+  icon-width: 16px,
 );

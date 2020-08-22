@@ -1,11 +1,11 @@
 @import 'variables';
 
 .clock {
-  color: rgba(map-get($textColor, clock), map-get($textOpacity, clock));
-  font-size: map-get($fontSize, clock);
+  color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
+  font-size: map-get($clock, font-size);
 
-  height: map-get($height, taskbar);
-  width: map-get($width, clock);
+  height: map-get($taskbar, height);
+  width: map-get($clock, width);
 
   position: fixed;
   bottom: 0;
@@ -14,12 +14,10 @@
   display: grid;
   place-items: center;
 
-  z-index: map-get($zIndex, clock);
-
   &:hover {
     background-color: rgba(
-      invert(map-get($backgroundColor, taskbar)),
-      map-get($backgroundColorOpacityOnHover, clock)
+      invert(map-get($taskbar, bg-color)),
+      map-get($clock, hover-bg-opacity)
     );
   }
 }

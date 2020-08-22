@@ -1,7 +1,7 @@
 @import 'variables';
 
 .desktop {
-  background-color: map-get($backgroundColor, desktop);
+  background-color: map-get($desktop, bg-color);
 
   height: 100vh;
   width: 100vw;
@@ -10,5 +10,5 @@
   top: 0;
   left: 0;
 
-  z-index: map-get($zIndex, desktop);
+  z-index: map-get($desktop, z-index);
 }

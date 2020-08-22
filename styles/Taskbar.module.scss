@@ -2,22 +2,22 @@
 
 .taskbar {
   background-color: rgba(
-    map-get($backgroundColor, taskbar),
-    map-get($backgroundColorOpacity, taskbar)
+    map-get($taskbar, bg-color),
+    map-get($taskbar, bg-opacity)
   );
 
-  height: map-get($height, taskbar);
+  height: map-get($taskbar, height);
   width: 100%;
 
   position: fixed;
   bottom: 0;
   left: 0;
 
-  z-index: map-get($zIndex, taskbar);
+  z-index: map-get($taskbar, z-index);
 
   .taskbarEntries {
-    height: map-get($height, taskbar);
-    width: calc(100% - #{map-get($width, clock)});
+    height: map-get($taskbar, height);
+    width: calc(100% - #{map-get($clock, width)});
 
     position: fixed;
     bottom: 0;
@@ -25,7 +25,5 @@
 
     display: flex;
     list-style-type: none;
-
-    z-index: map-get($zIndex, taskbar-entries);
   }
 }
