@@ -1,5 +1,4 @@
 import type { FC } from 'react';
-
 import styles from '../styles/Icon.module.scss';
 
 type Icon = {

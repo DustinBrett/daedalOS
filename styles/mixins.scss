@@ -2,7 +2,7 @@
 @import 'variables';
 
 @mixin taskbarEntryHover {
-  transition: 0.1s;
+  transition: 0.15s;
 
   &:hover {
     background-color: rgba(

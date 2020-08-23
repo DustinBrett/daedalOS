@@ -1,7 +1,5 @@
 import type { FC } from 'react';
-
 import styles from '../styles/Clock.module.scss';
-
 import { useEffect, useState } from 'react';
 
 const getDate = () =>
@@ -20,13 +18,12 @@ const getTime = ({ hour12 = false }) =>
     second: '2-digit'
   }).format(new Date());
 
+// TODO: Get 12 and 24 hour time in 1 go
 export const Clock: FC = () => {
   const [date, setDate] = useState(''),
     [time12, setTime12] = useState(''),
     [time24, setTime24] = useState(''),
     updateClock = () => {
-      // Q: Is doing this twice costly?
-      // Q: Could I get both formats at once?
       setTime12(getTime({ hour12: true }));
       setTime24(getTime({ hour12: false }));
 

@@ -3,16 +3,14 @@ import { createContext, useState } from 'react';
 import App from '../contexts/App';
 import Blog from '../components/Blog';
 
-export type Apps = Array<App>;
-
-type ContextProps = {
-  apps: Apps;
-  updateApps: Dispatch<Apps>;
-};
+type Apps = Array<App>;
 
 const initialApps: Apps = [Blog];
 
-export const AppsContext = createContext<ContextProps>({
+export const AppsContext = createContext<{
+  apps: Apps;
+  updateApps: Dispatch<Apps>;
+}>({
   apps: [],
   updateApps: () => null
 });

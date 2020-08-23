@@ -24,25 +24,25 @@ export default class {
     this.active = true;
   }
 
-  close?(): void {
-    this.running = false;
-    this.minimized = false;
-    this.maximized = false;
-  }
+  // close?(): void {
+  //   this.running = false;
+  //   this.minimized = false;
+  //   this.maximized = false;
+  // }
 
-  setMaximize?(maximize: boolean): void {
-    this.maximized = maximize;
-  }
+  // setMaximize?(maximize: boolean): void {
+  //   this.maximized = maximize;
+  // }
 
   setMinimized?(minimize: boolean): void {
     this.minimized = minimize;
   }
 
-  setActive?(active: boolean): void {
-    this.active = active;
-  }
+  // setActive?(active: boolean): void {
+  //   this.active = active;
+  // }
 
-  setSelected?(selected: boolean): void {
-    this.selected = selected;
-  }
+  // setSelected?(selected: boolean): void {
+  //   this.selected = selected;
+  // }
 }

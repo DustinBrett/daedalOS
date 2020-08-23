@@ -1,5 +1,4 @@
 import type { FC } from 'react';
-
 import styles from '../styles/TaskbarEntry.module.scss';
 
 type TaskbarEntry = {
