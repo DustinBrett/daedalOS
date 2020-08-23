@@ -6,7 +6,7 @@ type Icon = {
   icon: JSX.Element;
   name: string;
   onDoubleClick: () => void;
-}
+};
 
 export const Icon: FC<Icon> = ({ icon, name, onDoubleClick }) => (
   <li className={styles.icon} onDoubleClick={onDoubleClick}>

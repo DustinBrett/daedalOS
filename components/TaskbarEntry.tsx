@@ -6,7 +6,7 @@ type TaskbarEntry = {
   icon: JSX.Element;
   name: string;
   onClick: () => void;
-}
+};
 
 export const TaskbarEntry: FC<TaskbarEntry> = ({ icon, name, onClick }) => (
   <li className={styles.taskbarEntry} onClick={onClick}>

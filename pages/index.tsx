@@ -16,8 +16,8 @@ export default function HomePage(): ReactElement {
     <>
       <MetaData />
       <Desktop>
-        <Icons apps={ apps } />
-        <Taskbar apps={ apps } />
+        <Icons apps={apps} />
+        <Taskbar apps={apps} />
       </Desktop>
     </>
   );

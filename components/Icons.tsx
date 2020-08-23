@@ -13,10 +13,7 @@ export const Icons: FC<{ apps: Array<App> }> = ({ apps }) => (
           key={app.id}
           icon={app.icon}
           name={app.name}
-          onDoubleClick={() => {
-            console.log('TEST');
-            app?.open?.();
-          }}
+          onDoubleClick={() => app?.open?.()}
         />
       ))}
     </ol>
