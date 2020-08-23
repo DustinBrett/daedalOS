@@ -1,6 +1,5 @@
 @import 'maps';
 @import 'mixins';
-@import 'variables';
 
 .icons {
   @include topLeft;
@@ -18,4 +17,5 @@
   grid-template-rows: repeat(auto-fit, map-get($icon, width));
   grid-auto-flow: column;
   row-gap: map-get($icons, padding);
+  list-style-type: none;
 }

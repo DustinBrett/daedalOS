@@ -1,5 +1,5 @@
 @import 'maps';
-@import 'variables';
+@import 'mixins';
 
 .taskbar {
   background-color: rgba(
@@ -17,12 +17,10 @@
   z-index: map-get($taskbar, z-index);
 
   .taskbarEntries {
+    @include bottomLeft;
+
     height: map-get($taskbar, height);
     width: calc(100% - #{map-get($clock, width)});
-
-    position: fixed;
-    bottom: 0;
-    left: 0;
 
     display: flex;
     list-style-type: none;

@@ -1,0 +1,8 @@
+@import 'maps';
+@import 'mixins';
+
+.wallpaper {
+  @include fullScreen;
+
+  background-color: map-get($desktop, bg-color);
+}
