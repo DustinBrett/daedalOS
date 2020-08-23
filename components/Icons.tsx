@@ -1,19 +1,24 @@
 import type { FC } from 'react';
-import { useContext } from 'react';
-import { Icon } from './Icon';
-import { AppsContext } from '../contexts/Apps';
+import type App from '../contexts/App';
+
 import styles from '../styles/Icons.module.scss';
 
-export const Icons: FC = () => {
-  const { apps } = useContext(AppsContext);
+import { Icon } from './Icon';
 
-  return (
-    <nav className={styles.icons}>
-      <ol className={styles.iconEntries}>
-        {apps.map((app) => (
-          <Icon key={app.id} {...app} />
-        ))}
-      </ol>
-    </nav>
-  );
-};
+export const Icons: FC<{ apps: Array<App> }> = ({ apps }) => (
+  <nav className={styles.icons}>
+    <ol className={styles.iconEntries}>
+      {apps.map((app) => (
+        <Icon
+          key={app.id}
+          icon={app.icon}
+          name={app.name}
+          onDoubleClick={() => {
+            console.log('TEST');
+            app?.open?.();
+          }}
+        />
+      ))}
+    </ol>
+  </nav>
+);

@@ -33,7 +33,7 @@
     "prettier": "2.0.5",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.2"
   },
   "prettier": {
     "singleQuote": true,

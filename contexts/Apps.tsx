@@ -1,18 +1,9 @@
 import type { Dispatch, FC } from 'react';
 import { createContext, useState } from 'react';
-
+import App from '../contexts/App';
 import Blog from '../components/Blog';
 
-export type App = {
-  component: FC;
-  icon: JSX.Element;
-  id: string;
-  name: string;
-
-  running?: boolean;
-};
-
-type Apps = Array<App>;
+export type Apps = Array<App>;
 
 type ContextProps = {
   apps: Apps;

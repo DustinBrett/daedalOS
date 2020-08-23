@@ -1,12 +1,18 @@
 import type { FC } from 'react';
-import type { App } from '../contexts/Apps';
+
 import styles from '../styles/TaskbarEntry.module.scss';
 
-export const TaskbarEntry: FC<App> = ({ icon, name }) => (
-  <li className={styles.taskbarEntry}>
-    <div>
+type TaskbarEntry = {
+  icon: JSX.Element;
+  name: string;
+  onClick: () => void;
+}
+
+export const TaskbarEntry: FC<TaskbarEntry> = ({ icon, name, onClick }) => (
+  <li className={styles.taskbarEntry} onClick={onClick}>
+    <figure>
       {icon}
-      {name}
-    </div>
+      <figcaption>{name}</figcaption>
+    </figure>
   </li>
 );

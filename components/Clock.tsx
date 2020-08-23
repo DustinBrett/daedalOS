@@ -1,6 +1,8 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+
 import styles from '../styles/Clock.module.scss';
+
+import { useEffect, useState } from 'react';
 
 const getDate = () =>
   new Intl.DateTimeFormat(process.env.locale, {

@@ -1,20 +1,18 @@
 import type { FC } from 'react';
-import type { App } from '../contexts/Apps';
-import { AppsContext } from '../contexts/Apps';
-import { useContext } from 'react';
+
 import styles from '../styles/Icon.module.scss';
 
-export const Icon: FC<App> = ({ icon, id, name }) => {
-  const { apps, updateApps } = useContext(AppsContext),
-    openApp = () =>
-      updateApps(
-        apps.map((app) => (app.id === id ? { ...app, running: true } : app))
-      );
+type Icon = {
+  icon: JSX.Element;
+  name: string;
+  onDoubleClick: () => void;
+}
 
-  return (
-    <li className={styles.icon} onDoubleClick={openApp}>
+export const Icon: FC<Icon> = ({ icon, name, onDoubleClick }) => (
+  <li className={styles.icon} onDoubleClick={onDoubleClick}>
+    <figure>
       {icon}
-      {name}
-    </li>
-  );
-};
+      <figcaption>{name}</figcaption>
+    </figure>
+  </li>
+);

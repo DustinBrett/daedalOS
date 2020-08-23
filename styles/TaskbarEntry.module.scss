@@ -5,7 +5,7 @@
 .taskbarEntry {
   @include taskbarEntryHover;
 
-  div {
+  figure {
     @include textOverflowEllipsis;
 
     svg {
@@ -14,7 +14,7 @@
       padding-right: map-get($taskbarEntry, padding) / 2;
     }
 
-    span {
+    figcaption {
       width: map-get($taskbarEntry, text-width);
     }
 
@@ -27,14 +27,14 @@
     align-items: center;
   }
 
-  border-bottom: $thickLine solid $highlightColor;
-
   height: map-get($taskbar, height);
   width: map-get($taskbarEntry, width);
+
+  border-bottom: $thickLine solid $highlightColor;
 
   padding: 0 map-get($taskbarEntry, padding);
 }
 
 // 4-5 px padding between items, visible in highlight border
-  // on hover the hovered items border extends it's 2px's so only the side items 2px is shown
-    // Also has preview hover, may be harder
+// on hover the hovered items border extends it's 2px's so only the side items 2px is shown
+// Also has preview hover, may be harder
