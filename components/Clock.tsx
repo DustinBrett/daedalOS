@@ -18,16 +18,17 @@ const getTime = ({ hour12 = false }) =>
     second: '2-digit'
   }).format(new Date());
 
-// TODO: Get 12 and 24 hour time in 1 go
+// TODO 1 second behind?
 export const Clock: FC = () => {
   const [date, setDate] = useState(''),
-    [time12, setTime12] = useState(''),
-    [time24, setTime24] = useState(''),
+    [time, setTime] = useState({ hour12: '', hour24: '' }),
     updateClock = () => {
-      setTime12(getTime({ hour12: true }));
-      setTime24(getTime({ hour12: false }));
+      setTime({
+        hour12: getTime({ hour12: true }),
+        hour24: getTime({ hour12: false })
+      });
 
-      if (!date || time24 === '00:00:00') {
+      if (!date || time.hour24 === '00:00:00') {
         setDate(getDate());
       }
     };
@@ -44,8 +45,8 @@ export const Clock: FC = () => {
   }, []);
 
   return (
-    <time className={styles.clock} dateTime={time24} title={date}>
-      {time12}
+    <time className={styles.clock} dateTime={time.hour24} title={date}>
+      {time.hour12}
     </time>
   );
 };

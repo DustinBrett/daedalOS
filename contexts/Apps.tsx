@@ -1,4 +1,4 @@
-import type { Dispatch, FC } from 'react';
+import { Dispatch, FC, useReducer } from 'react';
 import { createContext, useState } from 'react';
 import App from '../contexts/App';
 import Blog from '../components/Blog';
@@ -16,7 +16,7 @@ export const AppsContext = createContext<{
 });
 
 export const AppsProvider: FC = ({ children }) => {
-  const [apps, updateApps] = useState(initialApps);
+  const [apps, updateApps] = useReducer((apps: Apps) => [...apps], initialApps);
 
   return (
     <AppsContext.Provider value={{ apps, updateApps }}>

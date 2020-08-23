@@ -13,7 +13,7 @@ const posts: Array<Post> = [];
 
 // TODO: <time></time>
 // TODO: Comments
-const Post = ({ title, content }: Post) => (
+const Post: FC<Post> = ({ content, title }) => (
   <article>
     <header>
       <h1>{title}</h1>

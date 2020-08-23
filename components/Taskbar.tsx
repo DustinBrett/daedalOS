@@ -20,7 +20,7 @@ export const Taskbar: FC = () => {
               name={app.name}
               onClick={() => {
                 app?.setMinimized?.(!app?.minimized);
-                updateApps([...apps]);
+                updateApps(apps);
               }}
             />
           ))}

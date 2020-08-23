@@ -17,7 +17,7 @@ export const Icons: FC = () => {
             name={app.name}
             onDoubleClick={() => {
               app?.open?.();
-              updateApps([...apps]);
+              updateApps(apps);
             }}
           />
         ))}
