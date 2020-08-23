@@ -34,7 +34,3 @@
 
   padding: 0 map-get($taskbarEntry, padding);
 }
-
-// 4-5 px padding between items, visible in highlight border
-// on hover the hovered items border extends it's 2px's so only the side items 2px is shown
-// Also has preview hover, may be harder

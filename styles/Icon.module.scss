@@ -3,7 +3,7 @@
 @import 'variables';
 
 .icon {
-  span {
+  figure {
     @include textOverflowEllipsis;
 
     text-align: center;

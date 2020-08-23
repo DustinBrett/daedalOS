@@ -2,6 +2,7 @@
 @import 'variables';
 
 @mixin taskbarEntryHover {
+  // TODO: Padding on left/right of each entry that increases on hover
   transition: 0.15s;
 
   &:hover {
@@ -39,7 +40,7 @@
 }
 
 @mixin textOverflowEllipsis {
-  overflow: hidden;
+  // TODO: Fix `overflow: hidden` cutting off text shadows
   text-overflow: ellipsis;
   white-space: nowrap;
 }
