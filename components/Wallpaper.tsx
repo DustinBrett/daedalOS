@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import WAVES from '../assets/lib/vanta.waves.min';
 import styles from '../styles/Wallpaper.module.scss';
@@ -18,15 +18,22 @@ const vantaSettings = {
   zoom: 0.9
 };
 
+type VantaEffect = {
+  destroy: () => void;
+};
+
 export const Wallpaper: FC = () => {
-  const vantaRef = useRef(null);
+  const [vantaEffect, setVantaEffect] = useState<VantaEffect>(),
+    vantaRef = useRef(null);
 
   useEffect(() => {
-    WAVES({
+    setVantaEffect(WAVES({
       el: vantaRef.current,
       THREE,
       ...vantaSettings
-    });
+    }));
+
+    return () => vantaEffect?.destroy();
   }, []);
 
   return <aside className={styles.wallpaper} ref={vantaRef} />;
