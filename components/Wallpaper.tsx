@@ -27,11 +27,13 @@ export const Wallpaper: FC = () => {
     vantaRef = useRef(null);
 
   useEffect(() => {
-    setVantaEffect(WAVES({
-      el: vantaRef.current,
-      THREE,
-      ...vantaSettings
-    }));
+    setVantaEffect(
+      WAVES({
+        el: vantaRef.current,
+        THREE,
+        ...vantaSettings
+      })
+    );
 
     return () => vantaEffect?.destroy();
   }, []);

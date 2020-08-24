@@ -3,6 +3,7 @@ module.exports = {
     autoPrerender: false
   },
   env: {
+    lang: 'en',
     locale: 'en-US',
     millisecondsInSecond: 1000
   },
