@@ -1,13 +1,10 @@
-import type { FC } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 import * as THREE from 'three';
-import WAVES from '../assets/lib/vanta.waves.min';
-import styles from '../styles/Wallpaper.module.scss';
+import WAVES from '../assets/lib/vanta.waves.min'; // https://www.vantajs.com/
 
 // TODO: Change color like rainbow effect? Can be changed dynamicly on demo site.
-// https://www.vantajs.com/
 
-const vantaSettings = {
+const vantaJsSettings = {
   gyroControls: false,
   mouseControls: false,
   touchControls: false,
@@ -18,25 +15,15 @@ const vantaSettings = {
   zoom: 0.9
 };
 
-type VantaEffect = {
+export type WallpaperEffect = {
   destroy: () => void;
 };
 
-export const Wallpaper: FC = () => {
-  const [vantaEffect, setVantaEffect] = useState<VantaEffect>(),
-    vantaRef = useRef(null);
-
-  useEffect(() => {
-    setVantaEffect(
-      WAVES({
-        el: vantaRef.current,
-        THREE,
-        ...vantaSettings
-      })
-    );
-
-    return () => vantaEffect?.destroy();
-  }, []);
-
-  return <aside className={styles.wallpaper} ref={vantaRef} />;
-};
+export const renderWallpaperEffect = (
+  renderElement: RefObject<HTMLElement>
+): WallpaperEffect =>
+  WAVES({
+    el: renderElement.current,
+    THREE,
+    ...vantaJsSettings
+  });
