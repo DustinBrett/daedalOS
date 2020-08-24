@@ -19,6 +19,7 @@ export const Icons: FC = () => {
               app?.open?.();
               updateApps(apps);
             }}
+            // Then I can deconstruct this `app.`.........
           />
         ))}
       </ol>

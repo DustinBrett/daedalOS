@@ -20,10 +20,10 @@ export type WallpaperEffect = {
 };
 
 export const renderWallpaperEffect = (
-  renderElement: RefObject<HTMLElement>
+  { current: renderElement }: RefObject<HTMLElement>
 ): WallpaperEffect =>
   WAVES({
-    el: renderElement.current,
+    el: renderElement,
     THREE,
     ...vantaJsSettings
   });

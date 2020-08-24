@@ -5,6 +5,16 @@ type Window = {
   name: string;
 };
 
-export const Window: FC<Window> = ({ name }) => (
-  <article className={styles.window}>{name}</article>
+export const Window: FC<Window> = ({ children, name }) => (
+  <section className={styles.window}>
+    <header className={styles.titleBar}>
+      <h1 className={styles.title}>{name}</h1>
+      <nav className={styles.controls}>
+        <button>-</button>
+        <button>+</button>
+        <button>x</button>
+      </nav>
+    </header>
+    {children}
+  </section>
 );

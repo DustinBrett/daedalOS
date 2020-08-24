@@ -20,7 +20,8 @@ export const Taskbar: FC = () => {
               name={app.name}
               onClick={() => {
                 app?.setMinimized?.(!app?.minimized);
-                updateApps(apps);
+                updateApps(apps); // TODO: State should have reducer that takes actions instead of these funcs
+                  // Then I can deconstruct this `app.`
               }}
             />
           ))}

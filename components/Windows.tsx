@@ -10,10 +10,10 @@ export const Windows: FC = () => {
   return (
     <section className={styles.windows}>
       {apps
-        .filter((app) => app.running && !app.minimized)
-        .map((app) => (
-          <Window key={app.id} name={app.name}>
-            {app.component}
+        .filter(({ running, minimized }) => running && !minimized)
+        .map(({ component: App, id, name }) => (
+          <Window key={id} name={name}>
+            <App />
           </Window>
         ))}
     </section>
