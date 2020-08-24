@@ -19,9 +19,9 @@ export type WallpaperEffect = {
   destroy: () => void;
 };
 
-export const renderWallpaperEffect = (
-  { current: renderElement }: RefObject<HTMLElement>
-): WallpaperEffect =>
+export const renderWallpaperEffect = ({
+  current: renderElement
+}: RefObject<HTMLElement>): WallpaperEffect =>
   WAVES({
     el: renderElement,
     THREE,
