@@ -9,10 +9,11 @@
     "dev": "next dev",
     "export": "next export",
     "start": "next start",
-    "lint": "eslint **/*.tsx *.ts *.js && stylelint styles/*.*css",
+    "eslint": "eslint **/*.tsx *.ts *.js",
+    "stylelint": "stylelint styles",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run csscomb && npm run prettier && npm run lint"
+    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
@@ -40,7 +41,7 @@
     "gh-pages": "^3.1.0",
     "prettier": "2.0.5",
     "stylelint": "^13.6.1",
-    "stylelint-config-standard": "^20.0.0",
+    "stylelint-config-recommended": "^3.0.0",
     "typescript": "^4.0.2"
   },
   "prettier": {
