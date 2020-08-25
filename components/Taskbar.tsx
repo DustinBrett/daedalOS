@@ -10,7 +10,7 @@ export const Taskbar: FC = () => {
 
   return (
     <nav className={styles.taskbar}>
-      <ol className={styles.taskbarEntries}>
+      <ol>
         {apps
           .filter((app) => app.running)
           .map(({ id, icon, minimized, name }) => (

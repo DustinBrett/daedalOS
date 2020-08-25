@@ -2,7 +2,8 @@
 
 $zIndex: (
   desktop: 1000,
-  icon: 1500,
+  icons: 1500,
+  windows: 1750,
   taskbar: 2000
 );
 
@@ -15,21 +16,21 @@ $clock: (
 );
 
 $desktop: (
-  bg-color: $bgColor,
+  bg-color: $bgColor, // TODO: Share this color with Vanta
   z-index: map-get($zIndex, desktop)
 );
 
 $icon: (
-  text-color: white,
+  text-color: $offWhite,
   text-shadow: $textShadow,
   font-size: 12px,
   width: 74px,
   svg-width: 44px,
-  hover-bg-color: black,
+  hover-bg-color: $uiColor2,
   hover-bg-opacity: 10%,
-  hover-border-color: black,
+  hover-border-color: $uiColor2,
   hover-border-opacity: 30%,
-  z-index: map-get($zIndex, icon)
+  z-index: map-get($zIndex, icons)
 );
 
 $icons: (
@@ -37,7 +38,7 @@ $icons: (
 );
 
 $taskbar: (
-  bg-color: black,
+  bg-color: $uiColor2,
   bg-opacity: 60%,
   height: 28px,
   z-index: map-get($zIndex, taskbar)
@@ -51,4 +52,16 @@ $taskbarEntry: (
   padding: 10px,
   hover-bg-opacity: 10%,
   icon-width: 16px
+);
+
+$window: (
+  bg-color: $offWhite,
+  height: 200px,
+  width: 200px,
+  border-radius: 5px,
+  title-bar-color: $uiColor1,
+  title-bar-text-color: $offWhite,
+  title-bar-height: 24px,
+  scroll-bar-color: lighten($uiColor1, 55%),
+  z-index: map-get($zIndex, windows)
 );

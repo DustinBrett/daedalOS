@@ -16,7 +16,7 @@
 
   z-index: map-get($taskbar, z-index);
 
-  .taskbarEntries {
+  ol {
     @include bottomLeft;
 
     height: map-get($taskbar, height);

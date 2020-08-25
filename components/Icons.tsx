@@ -9,7 +9,7 @@ export const Icons: FC = () => {
 
   return (
     <nav className={styles.icons}>
-      <ol className={styles.iconEntries}>
+      <ol>
         {apps.map(({ id, icon, name }) => (
           <Icon
             key={id}

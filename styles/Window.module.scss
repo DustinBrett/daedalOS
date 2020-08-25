@@ -1,3 +1,90 @@
+@import 'mixins';
+
 .window {
-  display: none;
+  background-color: map-get($window, title-bar-color);
+
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
+
+  position: absolute;
+  // TODO: Set this stuff inside the jsx most likely via vars coming from the apps and defaults
+  top: 40px;
+  left: 115px;
+  width: map-get($window, width);
+  height: map-get($window, height);
+  min-width: 185px;
+
+  z-index: map-get($window, z-index);
+
+  header {
+    color: map-get($window, title-bar-text-color);
+
+    height: map-get($window, title-bar-height);
+
+    display: flex;
+    align-items: center;
+
+    h1 {
+      // TODO: Ellipsis to not underlap buttons
+      font-size: 12px;
+
+      width: 100%;
+
+      text-align: center;
+    }
+
+    nav {
+      position: absolute;
+      right: 0;
+
+      display: grid;
+      // TODO: Replace this with set svg/icons
+      grid-template-columns: repeat(3, 14px);
+      gap: 5px;
+
+      padding-right: 6px;
+
+      button {
+        color: transparent;
+
+        border-radius: 100%;
+        border: 0;
+
+        transition: 0.15s;
+
+        &:hover {
+          color: map-get($window, title-bar-color);
+        }
+
+        &#minimize {
+          background-color: $minimize;
+        }
+
+        &#maximize {
+          background-color: $maximize;
+        }
+
+        &#close {
+          background-color: $close;
+        }
+      }
+    }
+  }
+
+  article {
+    @include scrollbars(
+      15px,
+      map-get($window, border-radius) * 2,
+      map-get($window, scroll-bar-color),
+      map-get($window, bg-color)
+    );
+
+    background-color: map-get($window, bg-color);
+
+    height: map-get($window, height) - map-get($window, title-bar-height);
+
+    border-radius: 0 0 map-get($window, border-radius) map-get($window, border-radius);
+
+    overflow: hidden auto;
+  }
 }

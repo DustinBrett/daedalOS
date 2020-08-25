@@ -2,8 +2,8 @@
 @import 'mixins';
 
 .clock {
-  @include taskbarEntryHover;
   @include bottomRight;
+  @include taskbarEntryHover;
 
   color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
   font-size: map-get($clock, font-size);

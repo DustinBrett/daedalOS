@@ -1,13 +1,9 @@
 @import 'maps';
 @import 'mixins';
 
+// TODO: Selected and Dragging styles
+
 .icon {
-  figure {
-    @include textOverflowEllipsis;
-
-    text-align: center;
-  }
-
   color: map-get($icon, text-color);
   font-size: map-get($icon, font-size);
   text-shadow: map-get($icon, text-shadow);
@@ -34,7 +30,11 @@
     outline-style: dotted;
   }
 
-  // TODO: Selected and Dragging styles
+  figure {
+    @include textOverflowEllipsis;
+
+    text-align: center;
+  }
 
   svg {
     width: map-get($icon, svg-width);

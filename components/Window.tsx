@@ -7,14 +7,14 @@ type Window = {
 
 export const Window: FC<Window> = ({ children, name }) => (
   <li className={styles.window}>
-    <header className={styles.titleBar}>
-      <h1 className={styles.title}>{name}</h1>
-      <nav className={styles.controls}>
-        <button>-</button>
-        <button>+</button>
-        <button>x</button>
+    <header>
+      <h1>{name}</h1>
+      <nav>
+        <button id={styles.minimize}>-</button>
+        <button id={styles.maximize}>+</button>
+        <button id={styles.close}>x</button>
       </nav>
     </header>
-    {children}
+    <article>{children}</article>
   </li>
 );
