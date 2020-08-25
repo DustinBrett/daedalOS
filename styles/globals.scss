@@ -18,3 +18,7 @@ button:focus,
 li:focus {
   outline: unset;
 }
+
+ol {
+  list-style-type: none;
+}

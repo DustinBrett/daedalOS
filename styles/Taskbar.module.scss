@@ -23,6 +23,5 @@
     width: calc(100% - #{map-get($clock, width)});
 
     display: flex;
-    list-style-type: none;
   }
 }
