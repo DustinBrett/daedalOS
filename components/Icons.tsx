@@ -10,16 +10,12 @@ export const Icons: FC = () => {
   return (
     <nav className={styles.icons}>
       <ol className={styles.iconEntries}>
-        {apps.map((app) => (
+        {apps.map(({ id, icon, name }) => (
           <Icon
-            key={app.id}
-            icon={app.icon}
-            name={app.name}
-            onDoubleClick={() => {
-              app?.open?.();
-              updateApps(apps);
-            }}
-            // Then I can deconstruct this `app.`.........
+            key={id}
+            icon={icon}
+            name={name}
+            onDoubleClick={() => updateApps({ update: { running: true }, id })}
           />
         ))}
       </ol>

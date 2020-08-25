@@ -13,15 +13,14 @@ export const Taskbar: FC = () => {
       <ol className={styles.taskbarEntries}>
         {apps
           .filter((app) => app.running)
-          .map((app) => (
+          .map(({ id, icon, minimized, name }) => (
             <TaskbarEntry
-              key={app.id}
-              icon={app.icon}
-              name={app.name}
-              onClick={() => {
-                app?.setMinimized?.(!app?.minimized);
-                updateApps(apps); // TODO: State should have reducer that takes actions instead of these funcs, then I can deconstruct this `app.`
-              }}
+              key={id}
+              icon={icon}
+              name={name}
+              onClick={() =>
+                updateApps({ update: { minimized: !minimized }, id })
+              }
             />
           ))}
       </ol>

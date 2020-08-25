@@ -9,13 +9,15 @@ export const Windows: FC = () => {
 
   return (
     <section className={styles.windows}>
-      {apps
-        .filter(({ running, minimized }) => running && !minimized)
-        .map(({ component: App, id, name }) => (
-          <Window key={id} name={name}>
-            <App />
-          </Window>
-        ))}
+      <ol>
+        {apps
+          .filter(({ running, minimized }) => running && !minimized)
+          .map(({ component: App, id, name }) => (
+            <Window key={id} name={name}>
+              <App />
+            </Window>
+          ))}
+      </ol>
     </section>
   );
 };

@@ -6,7 +6,7 @@ type Window = {
 };
 
 export const Window: FC<Window> = ({ children, name }) => (
-  <section className={styles.window}>
+  <li className={styles.window}>
     <header className={styles.titleBar}>
       <h1 className={styles.title}>{name}</h1>
       <nav className={styles.controls}>
@@ -16,5 +16,5 @@ export const Window: FC<Window> = ({ children, name }) => (
       </nav>
     </header>
     {children}
-  </section>
+  </li>
 );
