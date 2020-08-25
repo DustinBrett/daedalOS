@@ -10,12 +10,13 @@ export const Icons: FC = () => {
   return (
     <nav className={styles.icons}>
       <ol>
-        {apps.map(({ id, icon, name }) => (
+        {apps.map(({ id, icon, name }, index) => (
           <Icon
             key={id}
             icon={icon}
             name={name}
-            onDoubleClick={() => updateApps({ update: { running: true }, id })}
+            onDoubleClick={() => updateApps({ update: { running: true }, id })} // TODO: Also unminimize
+            tabIndex={index}
           />
         ))}
       </ol>

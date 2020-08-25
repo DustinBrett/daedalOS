@@ -13,3 +13,8 @@ body {
 
   user-select: none;
 }
+
+button:focus,
+li:focus {
+  outline: unset;
+}

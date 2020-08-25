@@ -13,7 +13,7 @@ export const Taskbar: FC = () => {
       <ol>
         {apps
           .filter((app) => app.running)
-          .map(({ id, icon, minimized, name }) => (
+          .map(({ id, icon, minimized, name }, index) => (
             <TaskbarEntry
               key={id}
               icon={icon}
@@ -21,6 +21,7 @@ export const Taskbar: FC = () => {
               onClick={() =>
                 updateApps({ update: { minimized: !minimized }, id })
               }
+              tabIndex={apps.length + index}
             />
           ))}
       </ol>

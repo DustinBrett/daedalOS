@@ -1,7 +1,17 @@
 @import 'maps';
 @import 'mixins';
 
-// TODO: Selected and Dragging styles
+@mixin iconContainerColors($borderStyle, $darker: 0%) {
+  background-color: rgba(
+    map-get($icon, hover-bg-color),
+    (map-get($icon, hover-bg-opacity) + $darker)
+  );
+  outline: 1px $borderStyle
+    rgba(
+      map-get($icon, hover-border-color),
+      (map-get($icon, hover-border-opacity) + $darker + 5%)
+    );
+}
 
 .icon {
   color: map-get($icon, text-color);
@@ -18,16 +28,15 @@
   z-index: map-get($icon, z-index);
 
   &:hover {
-    background-color: rgba(
-      map-get($icon, hover-bg-color),
-      map-get($icon, hover-bg-opacity)
-    );
-    outline: 1px solid
-      rgba(
-        map-get($icon, hover-border-color),
-        map-get($icon, hover-border-opacity)
-      );
-    outline-style: dotted;
+    @include iconContainerColors(dotted);
+  }
+
+  &:focus {
+    @include iconContainerColors(solid, 10%);
+
+    &:hover {
+      @include iconContainerColors(solid, 20%);
+    }
   }
 
   figure {

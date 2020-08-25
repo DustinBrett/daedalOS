@@ -37,35 +37,30 @@
       position: absolute;
       right: 0;
 
-      display: grid;
-      // TODO: Replace this with set svg/icons
-      grid-template-columns: repeat(3, 14px);
+      display: flex;
       gap: 5px;
 
-      padding-right: 6px;
+      padding: 5px;
 
       button {
-        color: transparent;
+        background-color: transparent;
 
-        border-radius: 100%;
         border: 0;
 
-        transition: 0.15s;
-
-        &:hover {
-          color: map-get($window, title-bar-color);
-        }
-
         &#minimize {
-          background-color: $minimize;
+          color: $minimize;
         }
 
         &#maximize {
-          background-color: $maximize;
+          color: $maximize;
         }
 
         &#close {
-          background-color: $close;
+          color: $close;
+        }
+
+        svg:hover {
+          transform: scale(1.1);
         }
       }
     }
