@@ -1,28 +1,27 @@
 @import 'mixins';
 
 .window {
-  background-color: map-get($window, title-bar-color);
-
-  border-radius: 5px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
-
   position: absolute;
+  z-index: map-get($window, z-index);
   // TODO: Set this stuff inside the jsx most likely via vars coming from the apps and defaults
   top: 40px;
   left: 115px;
-  width: map-get($window, width);
-  height: map-get($window, height);
-  min-width: 185px;
 
-  z-index: map-get($window, z-index);
+  width: map-get($window, width);
+  min-width: 185px;
+  height: map-get($window, height);
+
+  border-radius: 5px;
+  background-color: map-get($window, title-bar-color);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
   header {
-    color: map-get($window, title-bar-text-color);
+    display: flex;
+    align-items: center;
 
     height: map-get($window, title-bar-height);
 
-    display: flex;
-    align-items: center;
+    color: map-get($window, title-bar-text-color);
 
     h1 {
       // TODO: Ellipsis to not underlap buttons
@@ -38,14 +37,14 @@
       right: 0;
 
       display: flex;
-      gap: 5px;
 
       padding: 5px;
 
-      button {
-        background-color: transparent;
+      gap: 5px;
 
+      button {
         border: 0;
+        background-color: transparent;
 
         &#minimize {
           color: $minimize;
@@ -74,13 +73,12 @@
       map-get($window, bg-color)
     );
 
-    background-color: map-get($window, bg-color);
+    overflow: hidden auto;
 
     height: map-get($window, height) - map-get($window, title-bar-height);
 
     border-radius: 0 0 map-get($window, border-radius)
       map-get($window, border-radius);
-
-    overflow: hidden auto;
+    background-color: map-get($window, bg-color);
   }
 }

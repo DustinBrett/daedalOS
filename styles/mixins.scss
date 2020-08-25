@@ -13,43 +13,39 @@
 }
 
 @mixin fullScreen {
-  height: 100vh;
-  width: 100vw;
-
   position: fixed;
-
   top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
+
+  width: 100vw;
+  height: 100vh;
 }
 
 @mixin bottomLeft {
   position: fixed;
-
   bottom: 0;
   left: 0;
 }
 
 @mixin bottomRight {
   position: fixed;
-
-  bottom: 0;
   right: 0;
+  bottom: 0;
 }
 
 @mixin topLeft {
   position: fixed;
-
   top: 0;
   left: 0;
 }
 
 @mixin textOverflowEllipsis {
+  white-space: nowrap;
   // TODO: Fix `overflow: hidden` cutting off text shadows
   // TODO: Icon text is not wrapping still
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 @mixin scrollbars($size, $border-radius, $foreground-color, $background-color) {
@@ -63,10 +59,10 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-clip: padding-box;
-    background-color: $foreground-color;
     border: 4px solid transparent;
     border-radius: $border-radius;
+    background-color: $foreground-color;
+    background-clip: padding-box;
 
     &:hover {
       background-color: darken($foreground-color, 20%);

@@ -1,31 +1,33 @@
 @import 'maps';
 @import 'mixins';
 
-@mixin iconContainerColors($borderStyle, $darker: 0%) {
-  background-color: rgba(
-    map-get($icon, hover-bg-color),
-    (map-get($icon, hover-bg-opacity) + $darker)
-  );
+@mixin iconContainerColors($borderStyle, $darker: 0) {
   outline: 1px $borderStyle
     rgba(
       map-get($icon, hover-border-color),
       (map-get($icon, hover-border-opacity) + $darker + 5%)
     );
+  background-color: rgba(
+    map-get($icon, hover-bg-color),
+    (map-get($icon, hover-bg-opacity) + $darker)
+  );
 }
 
 .icon {
-  color: map-get($icon, text-color);
   font-size: map-get($icon, font-size);
-  text-shadow: map-get($icon, text-shadow);
 
-  width: map-get($icon, width);
+  z-index: map-get($icon, z-index);
 
   display: flex;
   flex-direction: column;
+
+  width: map-get($icon, width);
+
+  color: map-get($icon, text-color);
+  text-shadow: map-get($icon, text-shadow);
+
   place-content: space-evenly;
   place-items: center;
-
-  z-index: map-get($icon, z-index);
 
   &:hover {
     @include iconContainerColors(dotted);

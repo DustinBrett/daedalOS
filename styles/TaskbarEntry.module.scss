@@ -5,27 +5,26 @@
 .taskbarEntry {
   @include taskbarEntryHover;
 
-  height: map-get($taskbar, height);
   width: map-get($taskbarEntry, width);
+  height: map-get($taskbar, height);
+  padding: 0 map-get($taskbarEntry, padding);
 
   border-bottom: $thickLine solid $highlightColor;
-
-  padding: 0 map-get($taskbarEntry, padding);
 
   figure {
     @include textOverflowEllipsis;
 
-    color: map-get($taskbarEntry, text-color);
     font-size: map-get($taskbarEntry, font-size);
-
-    height: map-get($taskbar, height) - $thickLine;
 
     display: flex;
     align-items: center;
 
+    height: map-get($taskbar, height) - $thickLine;
+
+    color: map-get($taskbarEntry, text-color);
+
     svg {
       width: map-get($taskbarEntry, icon-width);
-
       padding-right: map-get($taskbarEntry, padding) / 2;
     }
 

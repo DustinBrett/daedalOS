@@ -4,7 +4,7 @@
 .desktop {
   @include fullScreen;
 
-  background-color: map-get($desktop, bg-color);
-
   z-index: map-get($desktop, z-index);
+
+  background-color: map-get($desktop, bg-color);
 }

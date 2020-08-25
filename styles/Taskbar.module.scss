@@ -2,26 +2,25 @@
 @import 'mixins';
 
 .taskbar {
+  position: fixed;
+  z-index: map-get($taskbar, z-index);
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: map-get($taskbar, height);
+
   background-color: rgba(
     map-get($taskbar, bg-color),
     map-get($taskbar, bg-opacity)
   );
 
-  height: map-get($taskbar, height);
-  width: 100%;
-
-  position: fixed;
-  bottom: 0;
-  left: 0;
-
-  z-index: map-get($taskbar, z-index);
-
   ol {
     @include bottomLeft;
 
-    height: map-get($taskbar, height);
-    width: calc(100% - #{map-get($clock, width)});
-
     display: flex;
+
+    width: calc(100% - #{map-get($clock, width)});
+    height: map-get($taskbar, height);
   }
 }

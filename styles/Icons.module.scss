@@ -4,15 +4,15 @@
 .icons {
   @include topLeft;
 
-  height: calc(100% - #{map-get($taskbar, height)});
   width: 100%;
-
+  height: calc(100% - #{map-get($taskbar, height)});
   padding: map-get($icons, padding) 0;
 
   ol {
+    display: grid;
+
     height: 100%;
 
-    display: grid;
     grid-template-rows: repeat(auto-fit, map-get($icon, width));
     grid-auto-flow: column;
     row-gap: map-get($icons, padding);

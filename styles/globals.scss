@@ -2,16 +2,16 @@
 
 * {
   box-sizing: border-box;
-
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-display: fallback;
   font-family: 'Open Sans', sans-serif;
 
   user-select: none;
+
+  font-display: fallback;
 }
 
 button:focus,
