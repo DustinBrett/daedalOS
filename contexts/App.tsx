@@ -9,8 +9,6 @@ export default class {
   running = false;
   maximized = false;
   minimized = false;
-  active = false;
-  selected = false;
 
   constructor(component: FC, icon: JSX.Element, id: string, name: string) {
     this.component = component;

@@ -47,6 +47,7 @@
 
 @mixin textOverflowEllipsis {
   // TODO: Fix `overflow: hidden` cutting off text shadows
+  // TODO: Icon text is not wrapping still
   text-overflow: ellipsis;
   white-space: nowrap;
 }

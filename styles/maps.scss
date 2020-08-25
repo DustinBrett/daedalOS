@@ -15,7 +15,6 @@ $clock: (
   hover-bg-opacity: 10%
 );
 
-// TODO: Share w/Vanta
 $desktop: (
   bg-color: $bgColor,
   z-index: map-get($zIndex, desktop)
