@@ -12,7 +12,7 @@
     "lint": "eslint **/*.tsx *.ts *.js && stylelint styles/*.*css",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run lint && npm run csscomb && npm run prettier"
+    "check": "npm run csscomb && npm run prettier && npm run lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
