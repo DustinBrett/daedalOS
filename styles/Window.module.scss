@@ -83,7 +83,8 @@
 
     height: map-get($window, height) - map-get($window, title-bar-height);
 
-    border-radius: 0 0 map-get($window, border-radius) map-get($window, border-radius);
+    border-radius: 0 0 map-get($window, border-radius)
+      map-get($window, border-radius);
 
     overflow: hidden auto;
   }
