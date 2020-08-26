@@ -18,9 +18,9 @@ const getTime = ({ hour12 = false }) =>
     second: '2-digit'
   }).format(new Date());
 
-// TODO 1 second behind?
+// TODO: 1 second behind?
 export const Clock: FC = () => {
-  const [date, setDate] = useState(''),
+  const [date, setDate] = useState(getDate()),
     [time, setTime] = useState({ hour12: '', hour24: '' }),
     updateClock = () => {
       setTime({
