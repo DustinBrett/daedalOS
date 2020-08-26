@@ -3,13 +3,6 @@
 .window {
   position: absolute;
   z-index: map-get($window, z-index);
-  // TODO: Set this stuff inside the jsx most likely via vars coming from the apps and defaults
-  top: 40px;
-  left: 115px;
-
-  width: map-get($window, width);
-  min-width: 185px;
-  height: map-get($window, height);
 
   border-radius: 5px;
   background-color: map-get($window, title-bar-color);

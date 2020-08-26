@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useDoubleTap } from 'use-double-tap';
 import styles from '../styles/Icon.module.scss';
 
 type Icon = {
@@ -9,7 +10,12 @@ type Icon = {
 };
 
 export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
-  <li className={styles.icon} onDoubleClick={onDoubleClick} tabIndex={tabIndex}>
+  <li
+    className={styles.icon}
+    onDoubleClick={onDoubleClick}
+    {...useDoubleTap(onDoubleClick)}
+    tabIndex={tabIndex}
+  >
     <figure>
       {icon}
       <figcaption>{name}</figcaption>
