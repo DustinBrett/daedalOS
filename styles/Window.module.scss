@@ -47,12 +47,14 @@ $buttonOpacity: 0.25;
     display: flex;
     align-items: center;
 
-    border-radius: 5px 5px 0 0;
-    background-color: map-get($window, title-bar-color); // TODO: Gradient on focus, dark or solid when not focused
-
     height: map-get($window, title-bar-height);
 
     color: map-get($window, title-bar-text-color);
+    border-radius: 5px 5px 0 0;
+    background-color: map-get(
+      $window,
+      title-bar-color
+    ); // TODO: Gradient on focus, dark or solid when not focused
 
     h1 {
       // TODO: Ellipsis to not underlap buttons
@@ -74,11 +76,11 @@ $buttonOpacity: 0.25;
       gap: 8px;
 
       button {
+        font-size: 12px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-
-        font-size: 12px;
 
         width: 11px;
         height: 11px;
@@ -91,18 +93,18 @@ $buttonOpacity: 0.25;
         background-color: lighten(map-get($window, title-bar-color), 25%);
 
         &#minimize:hover {
-          background-color: rgba($minimize, $buttonOpacity);
           color: $minimize;
+          background-color: rgba($minimize, $buttonOpacity);
         }
 
         &#maximize:hover {
-          background-color: rgba($maximize, $buttonOpacity);
           color: $maximize;
+          background-color: rgba($maximize, $buttonOpacity);
         }
 
         &#close:hover {
-          background-color: rgba($close, $buttonOpacity);
           color: $close;
+          background-color: rgba($close, $buttonOpacity);
         }
       }
     }

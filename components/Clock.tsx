@@ -19,7 +19,7 @@ const getTime = () =>
   }).format(new Date());
 
 export const Clock: FC = () => {
-  const [date, updateDate] =  useReducer(getDate, getDate()),
+  const [date, updateDate] = useReducer(getDate, getDate()),
     [time, updateTime] = useReducer(getTime, ''),
     updateClock = () => {
       updateTime();
