@@ -11,6 +11,7 @@
   ol {
     display: grid;
 
+    width: fit-content;
     height: 100%;
 
     grid-template-rows: repeat(auto-fit, map-get($icon, width));

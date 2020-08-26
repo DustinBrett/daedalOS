@@ -2,23 +2,25 @@
 @import 'mixins';
 @import 'variables';
 
+.foreground {
+  border-bottom: $thickLine solid $highlightColor;
+}
+
 .taskbarEntry {
   @include taskbarEntryHover;
+  @include textOverflowEllipsis;
 
-  width: map-get($taskbarEntry, width);
+  max-width: map-get($taskbarEntry, width);
   height: map-get($taskbar, height);
   padding: 0 map-get($taskbarEntry, padding);
 
-  border-bottom: $thickLine solid $highlightColor;
-
   figure {
-    @include textOverflowEllipsis;
-
     font-size: map-get($taskbarEntry, font-size);
 
     display: flex;
     align-items: center;
 
+    width: fit-content;
     height: map-get($taskbar, height) - $thickLine;
 
     color: map-get($taskbarEntry, text-color);

@@ -11,13 +11,14 @@ body {
 
   user-select: none;
 
+  outline: unset;
+
   overscroll-behavior: contain;
   font-display: fallback;
-}
 
-button:focus,
-li:focus {
-  outline: unset;
+  :focus {
+    outline: unset;
+  }
 }
 
 ol {

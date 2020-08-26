@@ -18,9 +18,12 @@
   ol {
     @include bottomLeft;
 
-    display: flex;
+    display: grid;
 
     width: calc(100% - #{map-get($clock, width)});
     height: map-get($taskbar, height);
+
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(60px, auto);
   }
 }

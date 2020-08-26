@@ -2,7 +2,7 @@
 
 @mixin taskbarEntryHover {
   // TODO: Padding on left/right of each entry that increases on hover
-  transition: 0.15s;
+  transition: 0.15s; // TODO: Var?
 
   &:hover {
     background-color: rgba(

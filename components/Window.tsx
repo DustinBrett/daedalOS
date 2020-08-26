@@ -12,32 +12,46 @@ type Window = {
   name: string;
   onMinimize: () => void;
   onClose: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  tabIndex: number;
 };
 
-export const Window: FC<Window> = ({ children, name, onMinimize, onClose }) => (
+export const Window: FC<Window> = ({
+  children,
+  name,
+  onMinimize,
+  onClose,
+  onFocus,
+  onBlur,
+  tabIndex
+}) => (
   <li>
     <Rnd
       className={styles.window}
       dragHandleClassName="handle"
       cancel=".cancel"
       default={{
-        x: 100,
-        y: 45,
+        x: 25,
+        y: 25,
         width: 225,
         height: 225
       }}
+      tabIndex={tabIndex}
+      onFocus={onFocus}
+      onBlur={onBlur}
     >
       <header className="handle">
         <h1>{name}</h1>
         <nav className="cancel">
+          <button id={styles.close} onClick={onClose}>
+            <FontAwesomeIcon icon={faTimesCircle} />
+          </button>
           <button id={styles.minimize} onClick={onMinimize}>
             <FontAwesomeIcon icon={faMinusCircle} />
           </button>
           <button id={styles.maximize}>
             <FontAwesomeIcon icon={faPlusCircle} />
-          </button>
-          <button id={styles.close} onClick={onClose}>
-            <FontAwesomeIcon icon={faTimesCircle} />
           </button>
         </nav>
       </header>

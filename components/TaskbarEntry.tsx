@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import styles from '../styles/TaskbarEntry.module.scss';
 
 type TaskbarEntry = {
+  foreground: boolean;
   icon: JSX.Element;
   name: string;
   onClick: () => void;
@@ -9,12 +10,17 @@ type TaskbarEntry = {
 };
 
 export const TaskbarEntry: FC<TaskbarEntry> = ({
+  foreground,
   icon,
   name,
   onClick,
   tabIndex
 }) => (
-  <li className={styles.taskbarEntry} onClick={onClick} tabIndex={tabIndex}>
+  <li
+    className={`${styles.taskbarEntry} ${foreground && styles.foreground}`}
+    onClick={onClick}
+    tabIndex={tabIndex}
+  >
     <figure>
       {icon}
       <figcaption>{name}</figcaption>

@@ -13,9 +13,10 @@ export const Taskbar: FC = () => {
       <ol>
         {apps
           .filter((app) => app.running)
-          .map(({ id, icon, minimized, name }, index) => (
+          .map(({ id, icon, minimized, name, foreground }, index) => (
             <TaskbarEntry
               key={id}
+              foreground={foreground} // TODO: Set based on which Window is in focus
               icon={icon}
               name={name}
               onClick={() =>

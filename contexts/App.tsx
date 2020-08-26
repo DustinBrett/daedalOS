@@ -9,6 +9,7 @@ export default class {
   running = false;
   maximized = false;
   minimized = false;
+  foreground = false;
 
   constructor(component: FC, icon: JSX.Element, id: string, name: string) {
     this.component = component;

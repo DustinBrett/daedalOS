@@ -7,6 +7,31 @@
   background-color: map-get($window, title-bar-color);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
+  &:focus {
+    #minimize {
+      color: $minimize;
+      background-color: $minimize;
+    }
+
+    #maximize {
+      color: $maximize;
+      background-color: $maximize;
+    }
+
+    #close {
+      color: $close;
+      background-color: $close;
+    }
+
+    #minimize,
+    #maximize,
+    #close {
+      &:hover {
+        background-color: unset; // TODO: Keep 5% of the color like mac does
+      }
+    }
+  }
+
   header {
     display: flex;
     align-items: center;
@@ -26,32 +51,43 @@
 
     nav {
       position: absolute;
-      right: 0;
+      left: 0;
 
       display: flex;
 
       padding: 5px;
 
-      gap: 5px;
+      gap: 7px;
 
       button {
-        border: 0;
-        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        &#minimize {
+        width: 12px;
+        height: 12px;
+
+        transition: 0.3s;
+
+        color: lighten(map-get($window, title-bar-color), 25%);
+        border: 0;
+        border-radius: 100%;
+        background-color: lighten(map-get($window, title-bar-color), 25%);
+
+        &:hover {
+          background-color: unset;
+        }
+
+        &#minimize:hover {
           color: $minimize;
         }
 
-        &#maximize {
+        &#maximize:hover {
           color: $maximize;
         }
 
-        &#close {
+        &#close:hover {
           color: $close;
-        }
-
-        svg:hover {
-          transform: scale(1.1);
         }
       }
     }
