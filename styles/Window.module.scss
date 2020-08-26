@@ -7,7 +7,7 @@
 // Titlebar has a kind of gradient? Lighter at top.
 //     Gradient is gone when inactive
 
-$buttonOpacity: 0.25;
+$buttonIconOpacity: 0.85;
 
 .window {
   z-index: map-get($window, z-index);
@@ -20,7 +20,8 @@ $buttonOpacity: 0.25;
       background-color: $minimize;
 
       &:hover {
-        background-color: rgba($minimize, $buttonOpacity);
+        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+        background-color: $minimize;
       }
     }
 
@@ -29,7 +30,8 @@ $buttonOpacity: 0.25;
       background-color: $maximize;
 
       &:hover {
-        background-color: rgba($maximize, $buttonOpacity);
+        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+        background-color: $maximize;
       }
     }
 
@@ -38,7 +40,8 @@ $buttonOpacity: 0.25;
       background-color: $close;
 
       &:hover {
-        background-color: rgba($close, $buttonOpacity);
+        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+        background-color: $close;
       }
     }
   }
@@ -76,14 +79,12 @@ $buttonOpacity: 0.25;
       gap: 8px;
 
       button {
-        font-size: 12px;
-
         display: flex;
         align-items: center;
         justify-content: center;
 
-        width: 11px;
-        height: 11px;
+        width: 12px;
+        height: 12px;
 
         transition: 0.3s;
 
@@ -93,18 +94,18 @@ $buttonOpacity: 0.25;
         background-color: lighten(map-get($window, title-bar-color), 25%);
 
         &#minimize:hover {
-          color: $minimize;
-          background-color: rgba($minimize, $buttonOpacity);
+          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+          background-color: $minimize;
         }
 
         &#maximize:hover {
-          color: $maximize;
-          background-color: rgba($maximize, $buttonOpacity);
+          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+          background-color: $maximize;
         }
 
         &#close:hover {
-          color: $close;
-          background-color: rgba($close, $buttonOpacity);
+          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+          background-color: $close;
         }
       }
     }
