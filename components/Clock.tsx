@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import styles from '../styles/Clock.module.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 
 const getDate = () =>
   new Intl.DateTimeFormat(process.env.locale, {
@@ -10,26 +10,22 @@ const getDate = () =>
     year: 'numeric'
   }).format(new Date());
 
-const getTime = ({ hour12 = false }) =>
+const getTime = () =>
   new Intl.DateTimeFormat(process.env.locale, {
-    hour12,
+    hour12: true,
     hour: 'numeric',
     minute: '2-digit',
     second: '2-digit'
   }).format(new Date());
 
-// TODO: 1 second behind?
 export const Clock: FC = () => {
-  const [date, setDate] = useState(getDate()),
-    [time, setTime] = useState({ hour12: '', hour24: '' }),
+  const [date, updateDate] =  useReducer(getDate, getDate()),
+    [time, updateTime] = useReducer(getTime, ''),
     updateClock = () => {
-      setTime({
-        hour12: getTime({ hour12: true }),
-        hour24: getTime({ hour12: false })
-      });
+      updateTime();
 
-      if (!date || time.hour24 === '00:00:00') {
-        setDate(getDate());
+      if (!date || time === '12:00:00 AM') {
+        updateDate();
       }
     };
 
@@ -45,8 +41,8 @@ export const Clock: FC = () => {
   }, []);
 
   return (
-    <time className={styles.clock} dateTime={time.hour24} title={date}>
-      {time.hour12}
+    <time className={styles.clock} title={date}>
+      {time}
     </time>
   );
 };

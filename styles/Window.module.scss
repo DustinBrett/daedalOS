@@ -1,33 +1,44 @@
 @import 'mixins';
 
+// TODO: Var's
+// TODO: minimize, maximize, close generalize (maybe mixin)
+
+// Text and icon also dark when not foreground
+// Titlebar has a kind of gradient? Lighter at top.
+//     Gradient is gone when inactive
+
+$buttonOpacity: 0.25;
+
 .window {
   z-index: map-get($window, z-index);
 
-  border-radius: 5px;
-  background-color: map-get($window, title-bar-color);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
   &:focus {
     #minimize {
       color: $minimize;
       background-color: $minimize;
+
+      &:hover {
+        background-color: rgba($minimize, $buttonOpacity);
+      }
     }
 
     #maximize {
       color: $maximize;
       background-color: $maximize;
+
+      &:hover {
+        background-color: rgba($maximize, $buttonOpacity);
+      }
     }
 
     #close {
       color: $close;
       background-color: $close;
-    }
 
-    #minimize,
-    #maximize,
-    #close {
       &:hover {
-        background-color: unset; // TODO: Keep 5% of the color like mac does
+        background-color: rgba($close, $buttonOpacity);
       }
     }
   }
@@ -35,6 +46,9 @@
   header {
     display: flex;
     align-items: center;
+
+    border-radius: 5px 5px 0 0;
+    background-color: map-get($window, title-bar-color); // TODO: Gradient on focus, dark or solid when not focused
 
     height: map-get($window, title-bar-height);
 
@@ -57,15 +71,17 @@
 
       padding: 5px;
 
-      gap: 7px;
+      gap: 8px;
 
       button {
         display: flex;
         align-items: center;
         justify-content: center;
 
-        width: 12px;
-        height: 12px;
+        font-size: 12px;
+
+        width: 11px;
+        height: 11px;
 
         transition: 0.3s;
 
@@ -74,19 +90,18 @@
         border-radius: 100%;
         background-color: lighten(map-get($window, title-bar-color), 25%);
 
-        &:hover {
-          background-color: unset;
-        }
-
         &#minimize:hover {
+          background-color: rgba($minimize, $buttonOpacity);
           color: $minimize;
         }
 
         &#maximize:hover {
+          background-color: rgba($maximize, $buttonOpacity);
           color: $maximize;
         }
 
         &#close:hover {
+          background-color: rgba($close, $buttonOpacity);
           color: $close;
         }
       }

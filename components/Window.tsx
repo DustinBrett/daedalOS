@@ -37,6 +37,8 @@ export const Window: FC<Window> = ({
         className={styles.window}
         dragHandleClassName="handle"
         cancel=".cancel"
+        // MIN/MAX constraints
+        // Drag constraints on top only
         default={{
           x: 25,
           y: 25,

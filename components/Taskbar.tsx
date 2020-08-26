@@ -5,6 +5,9 @@ import { useContext } from 'react';
 import { Clock } from './Clock';
 import { TaskbarEntry } from './TaskbarEntry';
 
+// TODO: Clicking taskbar entry should also count as window is in focus
+// TODO: If in focus and taskbar clicked, it should min/max, otherwise just focus
+
 export const Taskbar: FC = () => {
   const { apps, updateApps } = useContext(AppsContext);
 
@@ -16,7 +19,7 @@ export const Taskbar: FC = () => {
           .map(({ id, icon, minimized, name, foreground }, index) => (
             <TaskbarEntry
               key={id}
-              foreground={foreground} // TODO: Set based on which Window is in focus
+              foreground={foreground}
               icon={icon}
               name={name}
               onClick={() =>

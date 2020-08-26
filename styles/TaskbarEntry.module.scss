@@ -3,7 +3,13 @@
 @import 'variables';
 
 .foreground {
-  border-bottom: $thickLine solid $highlightColor;
+  // TODO: Mostly same as taskbarEntryHover but not in :hover
+  transition: 0.15s;
+
+  background-color: rgba(
+    invert(map-get($taskbar, bg-color)),
+    map-get($taskbarEntry, hover-bg-opacity)
+  );
 }
 
 .taskbarEntry {
@@ -13,6 +19,8 @@
   max-width: map-get($taskbarEntry, width);
   height: map-get($taskbar, height);
   padding: 0 map-get($taskbarEntry, padding);
+
+  border-bottom: $thickLine solid $highlightColor;
 
   figure {
     font-size: map-get($taskbarEntry, font-size);
