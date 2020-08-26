@@ -15,24 +15,21 @@ type Window = {
 };
 
 export const Window: FC<Window> = ({ children, name, onMinimize, onClose }) => (
-  <li className={styles.window}>
+  <li>
     <Rnd
-      style={{ background: '#f0f0f0' }}
-      dragHandleClassName="handle"
+      className={styles.window}
+      dragHandleClassName='handle'
+      cancel='.cancel'
       default={{
-        x: 0,
-        y: 0,
-        width: 200,
-        height: 200
+        x: 100,
+        y: 45,
+        width: 225,
+        height: 225
       }}
     >
-      <div>
-        <div className="handle">Drag from here</div>
-        <div>This readme is really dragging on...</div>
-      </div>
-      {/* <header>
+      <header className='handle'>
         <h1>{name}</h1>
-        <nav>
+        <nav className='cancel'>
           <button id={styles.minimize} onClick={onMinimize}>
             <FontAwesomeIcon icon={faMinusCircle} />
           </button>
@@ -44,7 +41,7 @@ export const Window: FC<Window> = ({ children, name, onMinimize, onClose }) => (
           </button>
         </nav>
       </header>
-      <article>{children}</article> */}
+      <article>{children}</article>
     </Rnd>
   </li>
 );

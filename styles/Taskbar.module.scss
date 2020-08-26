@@ -20,7 +20,7 @@
 
     display: flex;
 
-    width: calc(100% - #{map-get($clock, width)});
+    width: calc(100% - #{ map-get($clock, width) });
     height: map-get($taskbar, height);
   }
 }
