@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,37 +26,44 @@ export const Window: FC<Window> = ({
   onFocus,
   onBlur,
   tabIndex
-}) => (
-  <li>
-    <Rnd
-      className={styles.window}
-      dragHandleClassName="handle"
-      cancel=".cancel"
-      default={{
-        x: 25,
-        y: 25,
-        width: 225,
-        height: 225
-      }}
-      tabIndex={tabIndex}
-      onFocus={onFocus}
-      onBlur={onBlur}
-    >
-      <header className="handle">
-        <h1>{name}</h1>
-        <nav className="cancel">
-          <button id={styles.close} onClick={onClose}>
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </button>
-          <button id={styles.minimize} onClick={onMinimize}>
-            <FontAwesomeIcon icon={faMinusCircle} />
-          </button>
-          <button id={styles.maximize}>
-            <FontAwesomeIcon icon={faPlusCircle} />
-          </button>
-        </nav>
-      </header>
-      <article>{children}</article>
-    </Rnd>
-  </li>
-);
+}) => {
+  const windowRef = useRef<Rnd>(null);
+
+  useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), []);
+
+  return (
+    <li>
+      <Rnd
+        className={styles.window}
+        dragHandleClassName="handle"
+        cancel=".cancel"
+        default={{
+          x: 25,
+          y: 25,
+          width: 225,
+          height: 225
+        }}
+        tabIndex={tabIndex}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        ref={windowRef}
+      >
+        <header className="handle">
+          <h1>{name}</h1>
+          <nav className="cancel">
+            <button id={styles.close} onClick={onClose}>
+              <FontAwesomeIcon icon={faTimesCircle} />
+            </button>
+            <button id={styles.minimize} onClick={onMinimize}>
+              <FontAwesomeIcon icon={faMinusCircle} />
+            </button>
+            <button id={styles.maximize}>
+              <FontAwesomeIcon icon={faPlusCircle} />
+            </button>
+          </nav>
+        </header>
+        <article>{children}</article>
+      </Rnd>
+    </li>
+  );
+};
