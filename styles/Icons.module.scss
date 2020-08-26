@@ -5,7 +5,7 @@
   @include topLeft;
 
   width: 100%;
-  height: calc(100% - #{ map-get($taskbar, height) });
+  height: calc(100% - #{map-get($taskbar, height)});
   padding: map-get($icons, padding) 0;
 
   ol {

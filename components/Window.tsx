@@ -18,8 +18,8 @@ export const Window: FC<Window> = ({ children, name, onMinimize, onClose }) => (
   <li>
     <Rnd
       className={styles.window}
-      dragHandleClassName='handle'
-      cancel='.cancel'
+      dragHandleClassName="handle"
+      cancel=".cancel"
       default={{
         x: 100,
         y: 45,
@@ -27,9 +27,9 @@ export const Window: FC<Window> = ({ children, name, onMinimize, onClose }) => (
         height: 225
       }}
     >
-      <header className='handle'>
+      <header className="handle">
         <h1>{name}</h1>
-        <nav className='cancel'>
+        <nav className="cancel">
           <button id={styles.minimize} onClick={onMinimize}>
             <FontAwesomeIcon icon={faMinusCircle} />
           </button>
