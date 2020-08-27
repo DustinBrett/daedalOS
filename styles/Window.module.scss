@@ -1,5 +1,7 @@
 @import 'mixins';
 
+// TODO: CLEAN UP
+
 // TODO: Var's
 // TODO: minimize, maximize, close generalize (maybe mixin)
 
@@ -7,11 +9,12 @@
 // Titlebar has a kind of gradient? Lighter at top.
 //     Gradient is gone when inactive
 
-$buttonIconOpacity: 0.85;
+$buttonIconOpacity: 0.7;
 
 .window {
   z-index: map-get($window, z-index);
 
+  border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
   &:focus {
@@ -53,7 +56,7 @@ $buttonIconOpacity: 0.85;
     height: map-get($window, title-bar-height);
 
     color: map-get($window, title-bar-text-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: map-get($window, border-radius) map-get($window, border-radius) 0 0;
     background-color: map-get(
       $window,
       title-bar-color

@@ -1,47 +1,79 @@
 import type { FC } from 'react';
 import styles from '../styles/Clock.module.scss';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useState } from 'react';
 
-const getDate = () =>
-  new Intl.DateTimeFormat(process.env.locale, {
-    day: 'numeric',
-    month: 'long',
-    weekday: 'long',
-    year: 'numeric'
-  }).format(new Date());
+const toDateOptions = {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+};
 
-const getTime = () =>
-  new Intl.DateTimeFormat(process.env.locale, {
-    hour12: true,
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit'
-  }).format(new Date());
+const toDateTimeOptions = {
+  year: 'numeric',
+  day: '2-digit',
+  month: '2-digit'
+};
+
+const toTimeOptions = {
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: true
+};
+
+type DateTimeFormatParts = {
+  [key in Intl.DateTimeFormatPartTypes]: string;
+};
+
+const partsToObject = (acc: DateTimeFormatParts, { type, value }: Intl.DateTimeFormatPart) =>
+  ({ ...acc, [type]: value });
+
+const formatToDateTime = (date: Date) => {
+  const { year, month, day } = new Intl.DateTimeFormat(process.env.locale, toDateTimeOptions)
+    .formatToParts(date)
+    .reduce(partsToObject, {} as DateTimeFormatParts);
+
+  return `${year}-${month}-${day}`;
+};
+
+const formatToDate = (date: Date) =>
+  new Intl.DateTimeFormat(process.env.locale, toDateOptions).format(date);
+
+const formatToTime = (date: Date) =>
+  new Intl.DateTimeFormat(process.env.locale, toTimeOptions).format(date);
 
 export const Clock: FC = () => {
-  const [date, updateDate] = useReducer(getDate, getDate()),
-    [time, updateTime] = useReducer(getTime, ''),
+  const initDate = new Date(),
+    [dateTime, setDateTime] = useState(formatToDateTime(initDate)),
+    [date, setDate] = useState(formatToDate(initDate)),
+    [time, setTime] = useState(formatToTime(initDate)),
     updateClock = () => {
-      updateTime();
+      const currentDate = new Date();
+      const newTime = formatToTime(currentDate);
 
-      if (!date || time === '12:00:00 AM') {
-        updateDate();
+      setTime(newTime);
+
+      if (newTime === '12:00:00 AM') {
+        setDate(formatToDate(currentDate));
+        setDateTime(formatToDateTime(currentDate));
       }
     };
 
-  useEffect(updateClock, []);
-
   useEffect(() => {
-    const clockIntervalId = setInterval(
-      updateClock,
-      Number(process.env.millisecondsInSecond)
-    );
+    let clockIntervalId: NodeJS.Timeout;
+    const oneSecond = Number(process.env.millisecondsInSecond);
+
+    setTimeout(() => {
+      updateClock();
+      clockIntervalId = setInterval(updateClock, oneSecond);
+    }, oneSecond - new Date().getMilliseconds());
 
     return () => clearInterval(clockIntervalId);
   }, []);
 
   return (
-    <time className={styles.clock} title={date}>
+    <time className={styles.clock} dateTime={dateTime} title={date} suppressHydrationWarning={true}>
       {time}
     </time>
   );
