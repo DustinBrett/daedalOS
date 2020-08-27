@@ -3,8 +3,7 @@ import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 
-type DosWindow =
-  Window & typeof globalThis & { Dos: DosFactory };
+type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
 type DosApp = {
   args: string[];
@@ -30,10 +29,15 @@ const Dos: FC<DosApp> = ({ args, url }) => {
 
     lockDocumentTitle();
 
-    (window as DosWindow).Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
-      .then(({ fs, main }) => fs.extract(url).then(async() => ci = await main(args)));
+    (window as DosWindow)
+      .Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
+      .then(({ fs, main }) =>
+        fs.extract(url).then(async () => (ci = await main(args)))
+      );
 
-    return () => { ci.exit(); };
+    return () => {
+      ci.exit();
+    };
   }, []);
 
   require('js-dos');

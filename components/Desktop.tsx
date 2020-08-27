@@ -12,7 +12,9 @@ export const Desktop: FC = ({ children }) => {
   useEffect(() => {
     setWallpaperEffect(renderWallpaperEffect(desktopRef));
 
-    return () => { wallpaperEffect?.destroy(); };
+    return () => {
+      wallpaperEffect?.destroy();
+    };
   }, []);
 
   return (

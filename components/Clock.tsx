@@ -75,7 +75,9 @@ export const Clock: FC = () => {
       clockIntervalId = setInterval(updateClock, oneSecond);
     }, oneSecond - new Date().getMilliseconds());
 
-    return () => { clearInterval(clockIntervalId); };
+    return () => {
+      clearInterval(clockIntervalId);
+    };
   }, []);
 
   return (

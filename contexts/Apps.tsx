@@ -12,10 +12,7 @@ type AppAction = {
   id: string;
 };
 
-const initialApps: Apps = [
-  Blog,
-  CommanderKeen1
-];
+const initialApps: Apps = [Blog, CommanderKeen1];
 
 const appReducer = (apps: Apps, { update, id }: AppAction) =>
   apps.map((app) => (app.id === id ? { ...app, ...update } : app));
