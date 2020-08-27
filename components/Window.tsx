@@ -38,8 +38,8 @@ export const Window: FC<Window> = ({
         default={{
           x: 25,
           y: 25,
-          width: 225,
-          height: 225
+          width: 320,
+          height: 224
         }}
         tabIndex={tabIndex}
         onFocus={onFocus}
