@@ -1,6 +1,7 @@
+import styles from '@/styles/Icon.module.scss';
+
 import type { FC } from 'react';
 import { useDoubleTap } from 'use-double-tap';
-import styles from '../styles/Icon.module.scss';
 
 type Icon = {
   icon: JSX.Element;
@@ -8,6 +9,8 @@ type Icon = {
   onDoubleClick: () => void;
   tabIndex: number;
 };
+
+// Support PNG icons
 
 export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
   <li

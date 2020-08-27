@@ -1,5 +1,6 @@
+import styles from '@/styles/TaskbarEntry.module.scss';
+
 import type { FC } from 'react';
-import styles from '../styles/TaskbarEntry.module.scss';
 
 type TaskbarEntry = {
   foreground: boolean;

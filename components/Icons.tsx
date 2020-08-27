@@ -1,8 +1,9 @@
+import styles from '@/styles/Icons.module.scss';
+
 import type { FC } from 'react';
-import styles from '../styles/Icons.module.scss';
-import { AppsContext } from '../contexts/Apps';
 import { useContext } from 'react';
-import { Icon } from './Icon';
+import { AppsContext } from '@/contexts/Apps';
+import { Icon } from '@/components/Icon';
 
 export const Icons: FC = () => {
   const { apps, updateApps } = useContext(AppsContext);

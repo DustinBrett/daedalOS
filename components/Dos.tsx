@@ -1,33 +1,44 @@
 import type { DosFactory } from 'js-dos';
+import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
-import DosIcon from '../assets/svg/dos.svg';
-import App from '../contexts/App';
 
-const game = {
-  file: 'Commander_Keen_1_-_Marooned_on_Mars_1990.zip',
-  cmd: ['-c', 'CD CKEEN1', '-c', 'KEEN1.EXE']
+type DosWindow =
+  Window & typeof globalThis & { Dos: DosFactory };
+
+type DosApp = {
+  args: string[];
+  url: string;
 };
 
-const DosApp: FC = () => {
+const dosOptions = {
+  wdosboxUrl: '/libs/wdosbox.js'
+};
+
+// TODO: Lock canvas to window width
+// TODO: Fix transparent border around canvas / below title bar
+// TODO: Loading screen until game is running
+
+const lockDocumentTitle = () =>
+  Object.defineProperty(document, 'title', { set: () => {} });
+
+const Dos: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    require('js-dos');
+    let ci: DosCommandInterface;
 
-    if (window) {
-      const { Dos } = (window || {}) as Window &
-        typeof globalThis & { Dos: DosFactory };
+    lockDocumentTitle();
 
-      Dos(canvasRef?.current as HTMLCanvasElement, {
-        wdosboxUrl: '/libs/wdosbox-nosync.js'
-      }).ready((fs, main) => {
-        fs.extract(`/games/${game.file}`).then(() => main(game.cmd));
-      });
-    }
+    (window as DosWindow).Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
+      .then(({ fs, main }) => fs.extract(url).then(async() => ci = await main(args)));
+
+    return () => { ci.exit(); };
   }, []);
+
+  require('js-dos');
 
   return <canvas ref={canvasRef} />;
 };
 
-export default new App(DosApp, <DosIcon />, 'dos', 'DOS');
+export default Dos;

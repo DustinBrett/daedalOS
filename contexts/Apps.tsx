@@ -1,9 +1,9 @@
 import { Dispatch, FC, useReducer } from 'react';
 import { createContext } from 'react';
-import App from '../contexts/App';
+import App from '@/contexts/App';
 
-import Blog from '../components/Blog';
-import Dos from '../components/Dos';
+import Blog from '@/components/Blog';
+import CommanderKeen1 from '@/components/Games/CommanderKeen1';
 
 type Apps = Array<App>;
 
@@ -12,7 +12,10 @@ type AppAction = {
   id: string;
 };
 
-const initialApps: Apps = [Blog, Dos];
+const initialApps: Apps = [
+  Blog,
+  CommanderKeen1
+];
 
 const appReducer = (apps: Apps, { update, id }: AppAction) =>
   apps.map((app) => (app.id === id ? { ...app, ...update } : app));

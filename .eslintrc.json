@@ -24,7 +24,9 @@
     "quotes": ["error", "single"],
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": 0
   },
   "settings": {
     "react": {

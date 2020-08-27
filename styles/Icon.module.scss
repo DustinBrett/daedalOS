@@ -45,6 +45,10 @@
     @include textOverflowEllipsis;
 
     text-align: center;
+
+    figcaption {
+      white-space: break-spaces; // TODO: Fix this pushing the icon above it's container (Also the text is too close to left)
+    }
   }
 
   svg {

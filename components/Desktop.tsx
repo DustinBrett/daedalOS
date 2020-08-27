@@ -1,8 +1,9 @@
+import styles from '@/styles/Desktop.module.scss';
+
 import type { FC } from 'react';
-import type { WallpaperEffect } from './Wallpaper';
+import type { WallpaperEffect } from '@/components/Wallpaper';
 import { useEffect, useRef, useState } from 'react';
-import { renderWallpaperEffect } from './Wallpaper';
-import styles from '../styles/Desktop.module.scss';
+import { renderWallpaperEffect } from '@/components/Wallpaper';
 
 export const Desktop: FC = ({ children }) => {
   const desktopRef = useRef(null),
@@ -11,7 +12,7 @@ export const Desktop: FC = ({ children }) => {
   useEffect(() => {
     setWallpaperEffect(renderWallpaperEffect(desktopRef));
 
-    return () => wallpaperEffect?.destroy();
+    return () => { wallpaperEffect?.destroy(); };
   }, []);
 
   return (

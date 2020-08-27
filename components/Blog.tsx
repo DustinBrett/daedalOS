@@ -1,6 +1,7 @@
+import BlogIcon from '@/assets/svg/blog.svg';
+
 import type { FC } from 'react';
-import BlogIcon from '../assets/svg/blog.svg';
-import App from '../contexts/App';
+import App from '@/contexts/App';
 
 type Post = {
   id: string;

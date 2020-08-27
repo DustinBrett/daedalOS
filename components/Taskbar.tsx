@@ -1,9 +1,10 @@
+import styles from '@/styles/Taskbar.module.scss';
+
 import type { FC } from 'react';
-import styles from '../styles/Taskbar.module.scss';
-import { AppsContext } from '../contexts/Apps';
 import { useContext } from 'react';
-import { Clock } from './Clock';
-import { TaskbarEntry } from './TaskbarEntry';
+import { AppsContext } from '@/contexts/Apps';
+import { Clock } from '@/components/Clock';
+import { TaskbarEntry } from '@/components/TaskbarEntry';
 
 // TODO: Clicking taskbar entry should also count as window is in focus
 // TODO: If in focus and taskbar clicked, it should min/max, otherwise just focus

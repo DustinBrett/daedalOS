@@ -1,9 +1,10 @@
+import styles from '@/styles/Window.module.scss';
+
 import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import styles from '../styles/Window.module.scss';
 
 type Window = {
   name: string;
