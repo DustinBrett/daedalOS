@@ -26,11 +26,16 @@ type DateTimeFormatParts = {
   [key in Intl.DateTimeFormatPartTypes]: string;
 };
 
-const partsToObject = (acc: DateTimeFormatParts, { type, value }: Intl.DateTimeFormatPart) =>
-  ({ ...acc, [type]: value });
+const partsToObject = (
+  acc: DateTimeFormatParts,
+  { type, value }: Intl.DateTimeFormatPart
+) => ({ ...acc, [type]: value });
 
 const formatToDateTime = (date: Date) => {
-  const { year, month, day } = new Intl.DateTimeFormat(process.env.locale, toDateTimeOptions)
+  const { year, month, day } = new Intl.DateTimeFormat(
+    process.env.locale,
+    toDateTimeOptions
+  )
     .formatToParts(date)
     .reduce(partsToObject, {} as DateTimeFormatParts);
 
@@ -73,7 +78,12 @@ export const Clock: FC = () => {
   }, []);
 
   return (
-    <time className={styles.clock} dateTime={dateTime} title={date} suppressHydrationWarning={true}>
+    <time
+      className={styles.clock}
+      dateTime={dateTime}
+      title={date}
+      suppressHydrationWarning={true}
+    >
       {time}
     </time>
   );

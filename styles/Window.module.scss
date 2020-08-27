@@ -56,7 +56,8 @@ $buttonIconOpacity: 0.7;
     height: map-get($window, title-bar-height);
 
     color: map-get($window, title-bar-text-color);
-    border-radius: map-get($window, border-radius) map-get($window, border-radius) 0 0;
+    border-radius: map-get($window, border-radius)
+      map-get($window, border-radius) 0 0;
     background-color: map-get(
       $window,
       title-bar-color
