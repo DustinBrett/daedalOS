@@ -11,6 +11,7 @@ type Icon = {
 };
 
 // Support PNG icons
+// Make Draggable
 
 export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
   <li

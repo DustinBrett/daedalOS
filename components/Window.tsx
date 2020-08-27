@@ -29,6 +29,9 @@ export const Window: FC<Window> = ({
   useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), []);
 
   return (
+    // TODO: BG required for transparent issue?
+    // TODO: Z-index on windows
+    // TODO: Why did foreground not work? maybe stop using focus?
     <li>
       <Rnd
         className={styles.window}
