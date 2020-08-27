@@ -21,7 +21,7 @@ export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
     tabIndex={tabIndex}
   >
     <figure>
-      <img src={icon} />
+      <img alt={name} src={icon} />
       <figcaption>{name}</figcaption>
     </figure>
   </li>
