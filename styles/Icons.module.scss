@@ -9,10 +9,10 @@
   padding: map-get($icons, padding) 0;
 
   ol {
-    height: 100%;
-
     display: flex;
-    flex-flow: column wrap;
     align-content: flex-start;
+    flex-flow: column wrap;
+
+    height: 100%;
   }
 }

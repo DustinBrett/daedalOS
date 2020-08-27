@@ -21,8 +21,9 @@
   display: flex;
   flex-direction: column;
 
-  height: map-get($icon, height);
   width: map-get($icon, width);
+  height: map-get($icon, height);
+  margin-bottom: map-get($icons, padding);
 
   color: map-get($icon, text-color);
   text-shadow: map-get($icon, text-shadow);
@@ -30,8 +31,6 @@
   place-content: space-evenly;
   place-items: center;
 
-  margin-bottom: map-get($icons, padding);
-  
   &:last-child {
     margin-bottom: unset;
   }

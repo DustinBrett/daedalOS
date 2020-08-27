@@ -12,6 +12,7 @@ $buttonIconOpacity: 0.75;
   border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
+  // TODO: Add :focus-within somewhere to keep window lock when clicking nav
   &:focus {
     #minimize {
       color: $minimize;
@@ -49,16 +50,13 @@ $buttonIconOpacity: 0.75;
     align-items: center;
 
     height: map-get($window, title-bar-height);
-
     // TODO: Changes on focus
+
     color: map-get($window, title-bar-text-color);
     border-radius: map-get($window, border-radius)
       map-get($window, border-radius) 0 0;
     // TODO: Gradient on focus, dark or solid when not focused
-    background-color: map-get(
-      $window,
-      title-bar-color
-    ); 
+    background-color: map-get($window, title-bar-color);
 
     h1 {
       // TODO: Ellipsis to not underlap buttons
@@ -84,6 +82,7 @@ $buttonIconOpacity: 0.75;
 
         width: 12px;
         height: 12px;
+        margin-right: 8px;
 
         transition: 0.3s;
 
@@ -92,8 +91,6 @@ $buttonIconOpacity: 0.75;
         border-radius: 100%;
         background-color: lighten(map-get($window, title-bar-color), 25%);
 
-        margin-right: 8px;
-  
         &:last-child {
           margin-right: unset;
         }
