@@ -11,7 +11,7 @@ export default class {
   minimized = false;
   foreground = false;
 
-  constructor(component: FC, icon: JSX.Element, id: string, name: string) {
+  constructor(component: FC, icon: string, id: string, name: string) {
     this.component = component;
     this.icon = icon;
     this.id = id;

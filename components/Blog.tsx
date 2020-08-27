@@ -1,4 +1,4 @@
-import BlogIcon from '@/assets/svg/blog.svg';
+import BlogIcon from '@/assets/icons/Blog.png';
 
 import type { FC } from 'react';
 import App from '@/contexts/App';
@@ -33,4 +33,4 @@ const Blog: FC = () => (
   </article>
 );
 
-export default new App(Blog, <BlogIcon />, 'blog', 'Blog');
+export default new App(Blog, BlogIcon, 'blog', 'Blog');

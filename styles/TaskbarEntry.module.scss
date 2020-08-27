@@ -33,7 +33,7 @@
 
     color: map-get($taskbarEntry, text-color);
 
-    svg {
+    img {
       width: map-get($taskbarEntry, icon-width);
       padding-right: map-get($taskbarEntry, padding) / 2;
     }

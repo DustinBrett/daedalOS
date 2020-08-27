@@ -22,12 +22,20 @@
     "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
-    "react/prop-types": 0,
-    "react/react-in-jsx-scope": 0,
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
     "semi": ["error", "always"],
     "no-empty-function": "off",
-    "@typescript-eslint/no-empty-function": 0
+    "@typescript-eslint/no-empty-function": "off"
   },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ],
   "settings": {
     "react": {
       "version": "latest"

@@ -1,4 +1,6 @@
-module.exports = {
+const withImages = require('next-images');
+
+module.exports = withImages({
   devIndicators: {
     autoPrerender: false
   },
@@ -7,16 +9,5 @@ module.exports = {
     locale: 'en-US',
     millisecondsInSecond: 1000
   },
-  reactStrictMode: true,
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      issuer: {
-        test: /\.tsx?$/
-      },
-      use: ['@svgr/webpack']
-    });
-
-    return config;
-  }
-};
+  reactStrictMode: true
+});

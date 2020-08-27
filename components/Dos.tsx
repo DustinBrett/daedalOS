@@ -18,16 +18,11 @@ const dosOptions = {
 // TODO: Fix transparent border around canvas / below title bar
 // TODO: Loading screen until game is running
 
-const lockDocumentTitle = () =>
-  Object.defineProperty(document, 'title', { set: () => {} });
-
 const Dos: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     let ci: DosCommandInterface;
-
-    lockDocumentTitle();
 
     (window as DosWindow)
       .Dos(canvasRef.current as HTMLCanvasElement, dosOptions)

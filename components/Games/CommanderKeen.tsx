@@ -1,14 +1,19 @@
-import DosIcon from '@/assets/svg/dos.svg';
+import CommanderKeenIcon from '@/assets/icons/CommanderKeen.png';
 
 import type { FC } from 'react';
 import App from '@/contexts/App';
 import Dos from '@/components/Dos';
 
-const CommanderKeen1: FC = () => (
+const CommanderKeen: FC = () => (
   <Dos
     url="/games/Commander_Keen_1_-_Marooned_on_Mars_1990.zip"
     args={['-c', 'CD CKEEN1', '-c', 'KEEN1.EXE']}
   />
 );
 
-export default new App(CommanderKeen1, <DosIcon />, 'keen1', 'Keen 1');
+export default new App(
+  CommanderKeen,
+  CommanderKeenIcon,
+  'commander_keen',
+  'Cmdr Keen'
+);

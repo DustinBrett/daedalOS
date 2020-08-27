@@ -4,7 +4,7 @@ import type { FC } from 'react';
 
 type TaskbarEntry = {
   foreground: boolean;
-  icon: JSX.Element;
+  icon: string;
   name: string;
   onClick: () => void;
   tabIndex: number;
@@ -23,7 +23,7 @@ export const TaskbarEntry: FC<TaskbarEntry> = ({
     tabIndex={tabIndex}
   >
     <figure>
-      {icon}
+      <img src={icon} />
       <figcaption>{name}</figcaption>
     </figure>
   </li>

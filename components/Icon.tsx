@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import { useDoubleTap } from 'use-double-tap';
 
 type Icon = {
-  icon: JSX.Element;
+  icon: string;
   name: string;
   onDoubleClick: () => void;
   tabIndex: number;
@@ -20,7 +20,7 @@ export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
     tabIndex={tabIndex}
   >
     <figure>
-      {icon}
+      <img src={icon} />
       <figcaption>{name}</figcaption>
     </figure>
   </li>
