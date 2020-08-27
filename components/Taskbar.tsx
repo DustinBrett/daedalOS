@@ -9,26 +9,31 @@ import { TaskbarEntry } from '@/components/TaskbarEntry';
 // TODO: Clicking taskbar entry should also count as window is in focus
 // TODO: If in focus and taskbar clicked, it should min/max, otherwise just focus
 
+const taskbarEntryWidth = 160; // CSS Vars? How? map-get($taskbarEntry, width)
+
 export const Taskbar: FC = () => {
-  const { apps, updateApps } = useContext(AppsContext);
+  const { apps, updateApps } = useContext(AppsContext),
+    runningApps = apps.filter(({ running }) => running);
 
   return (
     <nav className={styles.taskbar}>
-      <ol>
-        {apps
-          .filter((app) => app.running)
-          .map(({ id, icon, minimized, name, foreground }, index) => (
-            <TaskbarEntry
-              key={id}
-              foreground={foreground}
-              icon={icon}
-              name={name}
-              onClick={() =>
-                updateApps({ update: { minimized: !minimized }, id })
-              }
-              tabIndex={apps.length + index}
-            />
-          ))}
+      <ol
+        style={{
+          gridTemplateColumns: `repeat(${runningApps.length}, minmax(auto, ${taskbarEntryWidth}px))`
+        }}
+      >
+        {runningApps.map(({ id, icon, minimized, name, foreground }, index) => (
+          <TaskbarEntry
+            key={id}
+            foreground={foreground}
+            icon={icon}
+            name={name}
+            onClick={() =>
+              updateApps({ update: { minimized: !minimized }, id })
+            }
+            tabIndex={apps.length + index}
+          />
+        ))}
       </ol>
       <Clock />
     </nav>
