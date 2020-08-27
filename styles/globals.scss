@@ -4,21 +4,19 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
+  outline: unset;
+
+  &:focus {
+    outline: unset;
+  }
 }
 
 body {
   font-family: 'Open Sans', sans-serif;
 
-  user-select: none;
-
-  outline: unset;
-
   overscroll-behavior: contain;
   font-display: fallback;
-
-  :focus {
-    outline: unset;
-  }
 }
 
 ol {

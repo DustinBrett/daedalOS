@@ -1,15 +1,10 @@
 @import 'mixins';
 
 // TODO: CLEAN UP
-
 // TODO: Var's
 // TODO: minimize, maximize, close generalize (maybe mixin)
 
-// Text and icon also dark when not foreground
-// Titlebar has a kind of gradient? Lighter at top.
-//     Gradient is gone when inactive
-
-$buttonIconOpacity: 0.7;
+$buttonIconOpacity: 0.75;
 
 .window {
   z-index: map-get($window, z-index);
@@ -55,13 +50,15 @@ $buttonIconOpacity: 0.7;
 
     height: map-get($window, title-bar-height);
 
+    // TODO: Changes on focus
     color: map-get($window, title-bar-text-color);
     border-radius: map-get($window, border-radius)
       map-get($window, border-radius) 0 0;
+    // TODO: Gradient on focus, dark or solid when not focused
     background-color: map-get(
       $window,
       title-bar-color
-    ); // TODO: Gradient on focus, dark or solid when not focused
+    ); 
 
     h1 {
       // TODO: Ellipsis to not underlap buttons
@@ -80,8 +77,6 @@ $buttonIconOpacity: 0.7;
 
       padding: 5px;
 
-      gap: 8px;
-
       button {
         display: flex;
         align-items: center;
@@ -96,6 +91,12 @@ $buttonIconOpacity: 0.7;
         border: 0;
         border-radius: 100%;
         background-color: lighten(map-get($window, title-bar-color), 25%);
+
+        margin-right: 8px;
+  
+        &:last-child {
+          margin-right: unset;
+        }
 
         &#minimize:hover {
           color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);

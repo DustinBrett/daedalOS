@@ -9,13 +9,10 @@
   padding: map-get($icons, padding) 0;
 
   ol {
-    display: grid;
-
-    width: fit-content;
     height: 100%;
 
-    grid-template-rows: repeat(auto-fit, map-get($icon, width));
-    grid-auto-flow: column;
-    row-gap: map-get($icons, padding);
+    display: flex;
+    flex-flow: column wrap;
+    align-content: flex-start;
   }
 }

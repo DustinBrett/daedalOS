@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
 
+  height: map-get($icon, height);
   width: map-get($icon, width);
 
   color: map-get($icon, text-color);
@@ -28,6 +29,12 @@
 
   place-content: space-evenly;
   place-items: center;
+
+  margin-bottom: map-get($icons, padding);
+  
+  &:last-child {
+    margin-bottom: unset;
+  }
 
   &:hover {
     @include iconContainerColors(dotted);
