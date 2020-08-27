@@ -26,16 +26,16 @@ type DateTimeFormatParts = {
   [key in Intl.DateTimeFormatPartTypes]: string;
 };
 
+const newDateTimeFormat = (options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat(process.env.locale, options);
+
 const partsToObject = (
   acc: DateTimeFormatParts,
   { type, value }: Intl.DateTimeFormatPart
 ) => ({ ...acc, [type]: value });
 
 const formatToDateTime = (date: Date) => {
-  const { year, month, day } = new Intl.DateTimeFormat(
-    process.env.locale,
-    toDateTimeOptions
-  )
+  const { year, month, day } = newDateTimeFormat(toDateTimeOptions)
     .formatToParts(date)
     .reduce(partsToObject, {} as DateTimeFormatParts);
 
@@ -43,10 +43,10 @@ const formatToDateTime = (date: Date) => {
 };
 
 const formatToDate = (date: Date) =>
-  new Intl.DateTimeFormat(process.env.locale, toDateOptions).format(date);
+  newDateTimeFormat(toDateOptions).format(date);
 
 const formatToTime = (date: Date) =>
-  new Intl.DateTimeFormat(process.env.locale, toTimeOptions).format(date);
+  newDateTimeFormat(toTimeOptions).format(date);
 
 export const Clock: FC = () => {
   const initDate = new Date(),
