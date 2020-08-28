@@ -9,11 +9,8 @@ type Post = {
   content: string;
 };
 
-// TODO: Add posts
 const posts: Array<Post> = [];
 
-// TODO: <time></time>
-// TODO: Comments
 const Post: FC<Post> = ({ content, title }) => (
   <article>
     <header>
@@ -23,8 +20,6 @@ const Post: FC<Post> = ({ content, title }) => (
   </article>
 );
 
-// TODO: Follow HTML spec for blog post and comments
-// https://www.w3.org/TR/2013/CR-html5-20130806/sections.html#the-article-element
 const Blog: FC = () => (
   <article>
     {posts.map((post) => (

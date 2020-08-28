@@ -19,7 +19,7 @@ const dosOptions = {
 
 // TODO: Loading screen until game is running
 
-const Dos: FC<DosApp> = ({ args, url }) => {
+const DOS: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -43,4 +43,4 @@ const Dos: FC<DosApp> = ({ args, url }) => {
   return <canvas className={styles.dos} ref={canvasRef} />;
 };
 
-export default Dos;
+export default DOS;

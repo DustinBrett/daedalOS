@@ -2,10 +2,10 @@ import CommanderKeenIcon from '@/assets/icons/CommanderKeen.png';
 
 import type { FC } from 'react';
 import App from '@/contexts/App';
-import Dos from '@/components/Dos';
+import DOS from '@/components/DOS';
 
 const CommanderKeen: FC = () => (
-  <Dos
+  <DOS
     url="/games/Commander_Keen_1_-_Marooned_on_Mars_1990.zip"
     args={['-c', 'CD CKEEN1', '-c', 'KEEN1.EXE']}
   />
