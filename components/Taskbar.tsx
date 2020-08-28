@@ -6,9 +6,6 @@ import { AppsContext } from '@/contexts/Apps';
 import { Clock } from '@/components/Clock';
 import { TaskbarEntry } from '@/components/TaskbarEntry';
 
-// TODO: Clicking taskbar entry should also count as window is in focus
-// TODO: If in focus and taskbar clicked, it should min/max, otherwise just focus
-
 export const Taskbar: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
     runningApps = apps.filter(({ running }) => running);

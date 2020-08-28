@@ -7,7 +7,6 @@ import { MetaData } from '@/components/MetaData';
 import { Taskbar } from '@/components/Taskbar';
 import { Windows } from '@/components/Windows';
 
-// TODO: Put this somewhere else
 const lockDocumentTitle = () => {
   Object.defineProperty(document, 'title', { set: () => {} });
 };

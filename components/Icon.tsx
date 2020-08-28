@@ -10,9 +10,6 @@ type Icon = {
   tabIndex: number;
 };
 
-// Support PNG icons
-// Make Draggable
-
 export const Icon: FC<Icon> = ({ icon, name, onDoubleClick, tabIndex }) => (
   <li
     className={styles.icon}

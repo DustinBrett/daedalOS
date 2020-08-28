@@ -17,8 +17,6 @@ const dosOptions = {
   onprogress: () => {}
 };
 
-// TODO: Loading screen until game is running
-
 const DOS: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

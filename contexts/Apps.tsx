@@ -1,5 +1,5 @@
-import { Dispatch, FC, useReducer } from 'react';
-import { createContext } from 'react';
+import type { Dispatch, FC } from 'react';
+import { createContext, useReducer } from 'react';
 import App from '@/contexts/App';
 
 import Blog from '@/components/Blog';

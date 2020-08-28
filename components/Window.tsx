@@ -29,16 +29,11 @@ export const Window: FC<Window> = ({
   useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), []);
 
   return (
-    // TODO: BG required for transparent issue?
-    // TODO: Z-index on windows
-    // TODO: Why did foreground not work? maybe stop using focus?
     <li>
       <Rnd
         className={styles.window}
         dragHandleClassName="handle"
         cancel=".cancel"
-        // MIN/MAX constraints
-        // Drag constraints on top only
         default={{
           x: 25,
           y: 25,
@@ -49,7 +44,7 @@ export const Window: FC<Window> = ({
         onFocus={onFocus}
         onBlur={onBlur}
         ref={windowRef}
-        lockAspectRatio={true} // TODO: Only for some windows like DOS
+        lockAspectRatio={true}
       >
         <header className="handle">
           <h1>{name}</h1>

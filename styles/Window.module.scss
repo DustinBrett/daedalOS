@@ -1,18 +1,13 @@
 @import 'mixins';
 
-// TODO: CLEAN UP
-// TODO: Var's
-// TODO: minimize, maximize, close generalize (maybe mixin)
-
 $buttonIconOpacity: 0.75;
 
 .window {
   z-index: map-get($window, z-index);
 
   border-radius: map-get($window, border-radius);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3);
 
-  // TODO: Clicking dos canvas isn't focusing
   &:focus-within {
     #minimize {
       color: $minimize;
@@ -50,16 +45,13 @@ $buttonIconOpacity: 0.75;
     align-items: center;
 
     height: map-get($window, title-bar-height);
-    // TODO: Changes on focus
 
     color: map-get($window, title-bar-text-color);
     border-radius: map-get($window, border-radius)
       map-get($window, border-radius) 0 0;
-    // TODO: Gradient on focus, dark or solid when not focused
     background-color: map-get($window, title-bar-color);
 
     h1 {
-      // TODO: Ellipsis to not underlap buttons
       font-size: 12px;
 
       width: 100%;
@@ -121,7 +113,7 @@ $buttonIconOpacity: 0.75;
       map-get($window, bg-color)
     );
 
-    overflow: hidden; // TODO: Bring back scrollbars for non-DOS windows
+    overflow: hidden;
 
     height: calc(100% - #{map-get($window, title-bar-height)});
 

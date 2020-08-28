@@ -16,7 +16,7 @@ export const Icons: FC = () => {
             key={id}
             icon={icon}
             name={name}
-            onDoubleClick={() => updateApps({ update: { running: true }, id })} // TODO: Also unminimize
+            onDoubleClick={() => updateApps({ update: { running: true }, id })}
             tabIndex={index}
           />
         ))}

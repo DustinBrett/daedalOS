@@ -9,7 +9,6 @@ export default class AppDocument extends Document {
     return await Document.getInitialProps(ctx);
   }
 
-  // TODO: i18n & dynamic lang
   render(): ReactElement {
     return (
       <Html lang={process.env.lang}>

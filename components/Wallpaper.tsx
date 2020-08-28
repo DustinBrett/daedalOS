@@ -1,8 +1,6 @@
 import type { RefObject } from 'react';
 import * as THREE from 'three';
-import WAVES from '@/assets/libs/vanta.waves.min'; // https://www.vantajs.com/
-
-// TODO: Change color like rainbow effect? Can be changed dynamicly on demo site.
+import WAVES from '@/assets/libs/vanta.waves.min';
 
 const vantaJsSettings = {
   gyroControls: false,

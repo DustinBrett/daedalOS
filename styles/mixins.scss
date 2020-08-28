@@ -1,8 +1,7 @@
 @import 'maps';
 
 @mixin taskbarEntryHover {
-  // TODO: Padding on left/right of each entry that increases on hover
-  transition: 0.15s; // TODO: Var?
+  transition: 0.15s;
 
   &:hover {
     background-color: rgba(
@@ -43,8 +42,6 @@
 
 @mixin textOverflowEllipsis {
   white-space: nowrap;
-  // TODO: Fix `overflow: hidden` cutting off text shadows
-  // TODO: Icon text is not wrapping still
   text-overflow: ellipsis;
 }
 

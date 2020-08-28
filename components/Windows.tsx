@@ -14,8 +14,8 @@ export const Windows: FC = () => {
           key={id}
           name={name}
           onMinimize={() => updateApps({ update: { minimized: true }, id })}
-          onClose={() => updateApps({ update: { running: false }, id })} // TODO: Need to reset states on close?
-          onFocus={() => updateApps({ update: { foreground: true }, id })} // TODO: This logic is no good
+          onClose={() => updateApps({ update: { running: false }, id })}
+          onFocus={() => updateApps({ update: { foreground: true }, id })}
           onBlur={() => updateApps({ update: { foreground: false }, id })}
           tabIndex={apps.length * 2 + index}
         >
