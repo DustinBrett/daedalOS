@@ -1,3 +1,5 @@
+import styles from '@/styles/Dos.module.scss';
+
 import type { DosFactory } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
@@ -11,11 +13,10 @@ type DosApp = {
 };
 
 const dosOptions = {
-  wdosboxUrl: '/libs/wdosbox.js'
+  wdosboxUrl: '/libs/wdosbox.js',
+  onprogress: () => {}
 };
 
-// TODO: Lock canvas to window width
-// TODO: Fix transparent border around canvas / below title bar
 // TODO: Loading screen until game is running
 
 const Dos: FC<DosApp> = ({ args, url }) => {
@@ -27,7 +28,9 @@ const Dos: FC<DosApp> = ({ args, url }) => {
     (window as DosWindow)
       .Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
       .then(({ fs, main }) =>
-        fs.extract(url).then(async () => (ci = await main(args)))
+        fs.extract(url).then(async () => {
+          ci = await main(args);
+        })
       );
 
     return () => {
@@ -37,7 +40,7 @@ const Dos: FC<DosApp> = ({ args, url }) => {
 
   require('js-dos');
 
-  return <canvas ref={canvasRef} />;
+  return <canvas className={styles.dos} ref={canvasRef} />;
 };
 
 export default Dos;

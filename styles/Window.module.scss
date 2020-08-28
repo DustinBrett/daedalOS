@@ -12,8 +12,8 @@ $buttonIconOpacity: 0.75;
   border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3); // TODO: Better way to manage shadow effects
 
-  // TODO: Add :focus-within somewhere to keep window lock when clicking nav
-  &:focus {
+  // TODO: Clicking dos canvas isn't focusing
+  &:focus-within {
     #minimize {
       color: $minimize;
       background-color: $minimize;
@@ -121,7 +121,7 @@ $buttonIconOpacity: 0.75;
       map-get($window, bg-color)
     );
 
-    overflow: hidden auto;
+    overflow: hidden; // TODO: Bring back scrollbars for non-DOS windows
 
     height: calc(100% - #{map-get($window, title-bar-height)});
 

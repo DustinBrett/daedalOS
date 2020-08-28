@@ -49,6 +49,7 @@ export const Window: FC<Window> = ({
         onFocus={onFocus}
         onBlur={onBlur}
         ref={windowRef}
+        lockAspectRatio={true} // TODO: Only for some windows like DOS
       >
         <header className="handle">
           <h1>{name}</h1>

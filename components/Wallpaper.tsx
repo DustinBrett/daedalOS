@@ -8,7 +8,7 @@ const vantaJsSettings = {
   gyroControls: false,
   mouseControls: false,
   touchControls: false,
-  color: 0x101f34,
+  color: 0x3c4961,
   shininess: 15,
   waveHeight: 25,
   waveSpeed: 0.5,
