@@ -19,8 +19,13 @@
   - SpyAMP Pro Green (Similar: https://archive.org/details/winampskin_SpyAMP_Pro_Zeus)
 - JS Paint (https://github.com/1j01/jspaint)
 - Clippy.JS (https://www.smore.com/clippy-js)
+- PDF.js (https://github.com/mozilla/pdf.js)
+  - Use to display Resume
 - Terminal app w/Transparent window
   - Replicate iTerm characteristics
+- File Explorer
+- Image Gallery
+- Travel Map
 
 ## HIGH
 
@@ -104,7 +109,8 @@
 #### Blog
 
 - Add `<time>` for post date/time
-- Add comments from blog and also possibly CouchSurfing
+- Add comments from blog and CouchSurfing
+- Add "Accommodations" links to relevant posts
 
 #### Blog
 
