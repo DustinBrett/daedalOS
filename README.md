@@ -87,7 +87,7 @@
 - Stop using `require` if possible
 - Focus window when clicking `<canvas>`
 
-#### MetaData
+#### Metadata
 
 - Add favicon
 
