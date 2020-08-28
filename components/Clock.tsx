@@ -68,12 +68,12 @@ export const Clock: FC = () => {
 
   useEffect(() => {
     let clockIntervalId: NodeJS.Timeout;
-    const oneSecond = Number(process.env.millisecondsInSecond);
+    const millisecondsInSecond = Number(process.env.millisecondsInSecond);
 
     setTimeout(() => {
       updateClock();
-      clockIntervalId = setInterval(updateClock, oneSecond);
-    }, oneSecond - new Date().getMilliseconds());
+      clockIntervalId = setInterval(updateClock, millisecondsInSecond);
+    }, millisecondsInSecond - new Date().getMilliseconds());
 
     return () => {
       clearInterval(clockIntervalId);

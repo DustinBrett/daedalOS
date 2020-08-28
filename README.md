@@ -19,18 +19,22 @@
   - SpyAMP Pro Green (Similar: https://archive.org/details/winampskin_SpyAMP_Pro_Zeus)
 - JS Paint (https://github.com/1j01/jspaint)
 - Clippy.JS (https://www.smore.com/clippy-js)
+- Terminal app w/Transparent window
+  - Replicate iTerm characteristics
 
 ## HIGH
 
 #### Windows
 
 - Need to keep track of z-index when new windows take/lose focus
+- Ability to maximize
 - Constraints on dragging and resizing
   - Only stop dragging `top < 0`
 - Conditionally set `lockAspectRatio` (Lock for DOS)
 - Conditionally hide vertical scrollbar (Hide for DOS)
 - Restore `x`, `y` ,`width` & `height` upon return from minimize
   - Reset on close
+- Issues on mobile with dragging, clicking or resize in `<header>`
 
 #### Icons
 

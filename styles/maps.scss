@@ -60,7 +60,7 @@ $window: (
   border-radius: 5px,
   title-bar-color: $uiColor1,
   title-bar-text-color: $offWhite,
-  title-bar-height: 24px,
+  title-bar-height: 28px,
   scroll-bar-color: lighten($uiColor1, 55%),
   z-index: map-get($zIndex, windows)
 );
