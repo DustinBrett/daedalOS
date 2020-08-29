@@ -11,7 +11,7 @@ import Winamp from '@/components/Winamp';
 
 const Games = [CommanderKeen, Doom, Wolfenstein, DukeNukem];
 
-type Apps = Array<App>;
+export type Apps = Array<App>;
 
 type AppAction = {
   update: { [key: string]: boolean };

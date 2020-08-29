@@ -1,5 +1,10 @@
 import type { FC } from 'react';
 
+export type AppComponent = {
+  onClose?: () => void;
+  onMinimize?: () => void;
+};
+
 export default class {
   component;
   icon;
@@ -13,7 +18,7 @@ export default class {
   foreground = false;
 
   constructor(
-    component: FC,
+    component: FC<AppComponent>,
     icon: string,
     id: string,
     name: string,
