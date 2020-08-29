@@ -59,7 +59,7 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
         e.stopPropagation();
       }
     },
-    loadWebAmp = async(): Promise<Webamp & WebampStore> => {
+    loadWebAmp = async (): Promise<Webamp & WebampStore> => {
       const { default: Webamp } = await import('webamp'),
         webamp = new Webamp(options) as Webamp & WebampStore;
 
@@ -68,7 +68,9 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
       onMinimize && webamp.onMinimize(onMinimize);
       await webamp.renderWhenReady(elementRef.current as HTMLElement);
 
-      elementRef.current?.appendChild(document.getElementById('webamp') || new HTMLElement());
+      elementRef.current?.appendChild(
+        document.getElementById('webamp') || new HTMLElement()
+      );
 
       return webamp;
     };
@@ -87,11 +89,14 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
 
   return (
     <Draggable // Q: can I use Rnd? (fixes findDOMNode is deprecated in StrictMode. ?)
-      handle='#title-bar, .playlist-top'
-      cancel='#minimize, #close'
+      handle="#title-bar, .playlist-top"
+      cancel="#minimize, #close"
       onDrag={onTouchEventsOnly}
     >
-      <article style={{ marginTop: window.innerHeight / 4 / 2 }} ref={elementRef} />
+      <article
+        style={{ marginTop: window.innerHeight / 4 / 2 }}
+        ref={elementRef}
+      />
     </Draggable>
   );
 };
