@@ -6,7 +6,7 @@ import Color from 'color';
 type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${ h }, 30%, 20%)`).rgbNumber();
+  Color(`hsl(${h}, 30%, 20%)`).rgbNumber();
 
 const fps = 25,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
@@ -22,8 +22,11 @@ const fps = 25,
     zoom: 1
   };
 
-const initRainbowEffect = (wallpaperEffect: WallpaperEffect): CancelRainbowEffectFunction => {
-  let now, delta,
+const initRainbowEffect = (
+  wallpaperEffect: WallpaperEffect
+): CancelRainbowEffectFunction => {
+  let now,
+    delta,
     then = Date.now(),
     base = initialColor,
     colorUpdateAnimationId: number;
@@ -34,7 +37,7 @@ const initRainbowEffect = (wallpaperEffect: WallpaperEffect): CancelRainbowEffec
 
     if (delta > updateIntervalInMilliseconds) {
       base = base > 360 ? 0 : base + 1;
-      then = now - delta % updateIntervalInMilliseconds;
+      then = now - (delta % updateIntervalInMilliseconds);
       wallpaperEffect.options.color = wallpaperColor(base);
     }
 
@@ -55,9 +58,10 @@ export type WallpaperEffect = {
   };
 };
 
-export const renderWallpaperEffect = ({ current: renderElement }: RefObject<HTMLElement>): WallpaperEffect => {
-  const
-    wallpaperEffect = WAVES({
+export const renderWallpaperEffect = ({
+  current: renderElement
+}: RefObject<HTMLElement>): WallpaperEffect => {
+  const wallpaperEffect = WAVES({
       el: renderElement,
       THREE,
       ...vantaJsSettings
