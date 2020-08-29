@@ -27,6 +27,7 @@ const DOS: FC<DosApp> = ({ args, url }) => {
       .Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
       .then(({ fs, main }) =>
         fs.extract(url).then(async () => {
+          debugger;
           ci = await main(args);
         })
       );

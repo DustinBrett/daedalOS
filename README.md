@@ -2,12 +2,6 @@
 
 ## INTERESTING
 
-#### Wallpaper
-
-- Subtle light shifting rainbow effect
-  - https://www.vantajs.com/
-- Alternative: https://github.com/wagerfield/flat-surface-shader
-
 #### Animations
 
 - Windows similar to OSX Genie effect
@@ -21,18 +15,36 @@
 - Clippy.JS (https://www.smore.com/clippy-js)
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
+  - Maybe `react-pdf-viewer`
 - Terminal app w/Transparent window
   - Replicate iTerm characteristics
 - File Explorer
 - Image Gallery
 - Travel Map
+- Calendar
+- Games
+  - Tetris
+  - Duke Nukem 3D
+  - Wolfenstein 3D
+- Basic web browser
+- Notepad/code editor
+  - Show the sites source code, meta style
+- Session Management
+- Voice Assistant
+- IRC Client, visuals like mIRC circa '95
+- System tray
+- Virtual machine to run Windows 95? Is it possible?
+- Local internal muting of games/agent/etc
+  - Volume control and mute control in sys tray
+- Chat bubbles, Messenger style
 
 ## HIGH
 
 #### Windows
 
 - Need to keep track of z-index when new windows take/lose focus
-- Ability to maximize
+- Ability to maximize and override for purposes like fullscreen
+  - Keep aspect ratio
 - Constraints on dragging and resizing
   - Only stop dragging `top < 0`
 - Conditionally set `lockAspectRatio` (Lock for DOS)
@@ -78,6 +90,8 @@
   - Change `<header>` background color to a gradient
   - Greyscale entire `<header>` when window is not in focus
   - Add icon to left of `<header>` title
+  - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt
+- Stop using `<ol>` start using `<section>` and/or `<article>` with nesting
 
 #### Mixins
 
@@ -90,11 +104,22 @@
 
 ## LOW
 
+#### Wallpaper
+
+- More complex color cycling for rainbow effect
+  - https://krazydad.com/tutorials/makecolors.php
+
+#### Games
+
+- Game `Loader.tsx` so that I only need to pass the vars
+
 #### DOS
 
+- Pause when not in focus
 - Loading screen until app is running
 - Stop using `require` if possible
 - Focus window when clicking `<canvas>`
+- Hide startup text until at least the 1st load
 
 #### Metadata
 
