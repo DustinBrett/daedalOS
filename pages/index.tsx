@@ -8,7 +8,12 @@ import { Taskbar } from '@/components/Taskbar';
 import { Windows } from '@/components/Windows';
 
 const lockDocumentTitle = () => {
-  Object.defineProperty(document, 'title', { set: () => {} });
+  if (
+    typeof Object.getOwnPropertyDescriptor(document, 'title')?.set ===
+    'undefined'
+  ) {
+    Object.defineProperty(document, 'title', { set: () => {} });
+  }
 };
 
 export default function HomePage(): ReactElement {

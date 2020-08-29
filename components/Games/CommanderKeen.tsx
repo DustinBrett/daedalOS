@@ -15,5 +15,5 @@ export default new App(
   CommanderKeen,
   CommanderKeenIcon,
   'commander_keen',
-  'Cmdr Keen'
+  'Cmdr Keen' // TODO: Commander Keen
 );
