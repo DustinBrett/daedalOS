@@ -51,8 +51,6 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-// TODO: Closing it just makes it unreachable. Need to do destroy perhaps?
-
 const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
   const elementRef = useRef<HTMLElement>(null),
     onTouchEventsOnly: DraggableEventHandler = (e): void => {
@@ -66,7 +64,10 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
         webamp = new Webamp(options) as Webamp & WebampStore;
 
       webamp.store.dispatch(closeEqualizer);
+      onClose && webamp.onClose(onClose);
+      onMinimize && webamp.onMinimize(onMinimize);
       await webamp.renderWhenReady(elementRef.current as HTMLElement);
+
       elementRef.current?.appendChild(document.getElementById('webamp') || new HTMLElement());
 
       return webamp;
@@ -86,7 +87,8 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
 
   return (
     <Draggable // Q: can I use Rnd? (fixes findDOMNode is deprecated in StrictMode. ?)
-      handle='#title-bar'
+      handle='#title-bar, .playlist-top'
+      cancel='#minimize, #close'
       onDrag={onTouchEventsOnly}
     >
       <article style={{ marginTop: window.innerHeight / 4 / 2 }} ref={elementRef} />
