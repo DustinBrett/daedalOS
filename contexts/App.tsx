@@ -17,7 +17,7 @@ export default class {
     icon: string,
     id: string,
     name: string,
-    withWindow = false
+    withWindow = true
   ) {
     this.component = component;
     this.icon = icon;
