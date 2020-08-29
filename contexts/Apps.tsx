@@ -7,6 +7,7 @@ import CommanderKeen from '@/components/Games/CommanderKeen';
 import Doom from '@/components/Games/Doom';
 import DukeNukem from '@/components/Games/DukeNukem';
 import Wolfenstein from '@/components/Games/Wolfenstein';
+import Winamp from '@/components/Winamp';
 
 const Games = [CommanderKeen, Doom, Wolfenstein, DukeNukem];
 
@@ -17,7 +18,7 @@ type AppAction = {
   id: string;
 };
 
-const initialApps: Apps = [Blog, ...Games];
+const initialApps: Apps = [Blog, ...Games, Winamp];
 
 const appReducer = (apps: Apps, { update, id }: AppAction) =>
   apps.map((app) => (app.id === id ? { ...app, ...update } : app));

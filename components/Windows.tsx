@@ -9,19 +9,23 @@ export const Windows: FC = () => {
 
   return (
     <ol>
-      {activeApps.map(({ component: App, id, name }, index) => (
-        <Window
-          key={id}
-          name={name}
-          onMinimize={() => updateApps({ update: { minimized: true }, id })}
-          onClose={() => updateApps({ update: { running: false }, id })}
-          onFocus={() => updateApps({ update: { foreground: true }, id })}
-          onBlur={() => updateApps({ update: { foreground: false }, id })}
-          tabIndex={apps.length * 2 + index}
-        >
-          <App />
-        </Window>
-      ))}
+      {activeApps.map(({ component: App, id, name, withWindow }, index) =>
+        withWindow ? (
+          <Window
+            key={id}
+            name={name}
+            onMinimize={() => updateApps({ update: { minimized: true }, id })}
+            onClose={() => updateApps({ update: { running: false }, id })}
+            onFocus={() => updateApps({ update: { foreground: true }, id })}
+            onBlur={() => updateApps({ update: { foreground: false }, id })}
+            tabIndex={apps.length * 2 + index}
+          >
+            <App />
+          </Window>
+        ) : (
+          <App key={id} />
+        )
+      )}
     </ol>
   );
 };

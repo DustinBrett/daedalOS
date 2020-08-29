@@ -27,7 +27,8 @@
     "react-rnd": "^10.2.2",
     "sass": "^1.26.10",
     "three": "^0.119.1",
-    "use-double-tap": "^1.3.0"
+    "use-double-tap": "^1.3.0",
+    "webamp": "^1.4.1-beta01"
   },
   "devDependencies": {
     "@types/color": "^3.0.1",

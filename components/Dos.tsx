@@ -34,7 +34,7 @@ const DOS: FC<DosApp> = ({ args, url }) => {
     return () => {
       ci.exit();
     };
-  }, []);
+  }, [canvasRef]);
 
   require('js-dos');
 

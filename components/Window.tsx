@@ -26,8 +26,11 @@ export const Window: FC<Window> = ({
 }) => {
   const windowRef = useRef<Rnd>(null);
 
-  useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), []);
+  useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), [
+    windowRef
+  ]);
 
+  // TODO: No more li's, use div's or section or article
   return (
     <li>
       <Rnd
