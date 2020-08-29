@@ -4,7 +4,16 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import { useEffect, useRef } from 'react';
+import Draggable, { DraggableEventHandler } from 'react-draggable';
 import App, { AppComponent } from '@/contexts/App';
+
+type WebampStoreAction = { type: string; windowId: string };
+
+type WebampStore = {
+  store: {
+    dispatch: (action: WebampStoreAction) => void;
+  };
+};
 
 type PrivateOptions = {
   __initialWindowLayout?: {
@@ -17,15 +26,11 @@ type PrivateOptions = {
   };
 };
 
-type WebampStoreAction = { type: string; windowId: string };
-
-type WebampStore = {
-  store: {
-    dispatch: (action: WebampStoreAction) => void;
-  };
-};
-
-const options: Options = {
+const options: Options & PrivateOptions = {
+  __initialWindowLayout: {
+    main: { position: { x: 0, y: 0 } },
+    playlist: { position: { x: 0, y: 116 } }
+  },
   initialTracks: [
     {
       metaData: {
@@ -41,30 +46,37 @@ const options: Options = {
   zIndex: 1750
 };
 
+const closeEqualizer = {
+  type: 'CLOSE_WINDOW',
+  windowId: 'equalizer'
+};
+
 // TODO: Closing it just makes it unreachable. Need to do destroy perhaps?
-// TODO: Why is it above the taskbar still?
 
 const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<HTMLElement>(null),
+    onTouchEventsOnly: DraggableEventHandler = (e): void => {
+      if (e instanceof MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    loadWebAmp = async(): Promise<Webamp & WebampStore> => {
+      const { default: Webamp } = await import('webamp'),
+        webamp = new Webamp(options) as Webamp & WebampStore;
+
+      webamp.store.dispatch(closeEqualizer);
+      await webamp.renderWhenReady(elementRef.current as HTMLElement);
+      elementRef.current?.appendChild(document.getElementById('webamp') || new HTMLElement());
+
+      return webamp;
+    };
 
   useEffect(() => {
-    let webamp: Webamp;
+    let webamp: Webamp & WebampStore;
 
-    import('webamp').then((Webamp) => {
-      const __initialWindowLayout = {
-        main: { position: { x: 0, y: 0 } },
-        playlist: { position: { x: 0, y: 116 } }
-      };
-
-      webamp = new Webamp.default({
-        ...options,
-        __initialWindowLayout
-      } as Options & PrivateOptions);
-      (webamp as Webamp & WebampStore).store.dispatch({
-        type: 'CLOSE_WINDOW',
-        windowId: 'equalizer'
-      });
-      webamp.renderWhenReady(elementRef?.current as HTMLElement);
+    loadWebAmp().then((loadedWebamp) => {
+      webamp = loadedWebamp;
     });
 
     return () => {
@@ -73,10 +85,12 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
   }, [elementRef]);
 
   return (
-    <article
-      // style={{ marginTop: Math.round(window.innerHeight / 5) }}
-      ref={elementRef}
-    />
+    <Draggable // Q: can I use Rnd? (fixes findDOMNode is deprecated in StrictMode. ?)
+      handle='#title-bar'
+      onDrag={onTouchEventsOnly}
+    >
+      <article style={{ marginTop: window.innerHeight / 4 / 2 }} ref={elementRef} />
+    </Draggable>
   );
 };
 
