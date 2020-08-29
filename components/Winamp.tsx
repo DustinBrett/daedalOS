@@ -74,7 +74,7 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
 
   return (
     <article
-      style={{ marginTop: Math.round(window.innerHeight / 5) }}
+      // style={{ marginTop: Math.round(window.innerHeight / 5) }}
       ref={elementRef}
     />
   );

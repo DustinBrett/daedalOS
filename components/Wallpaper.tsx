@@ -6,19 +6,20 @@ import Color from 'color';
 type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${h}, 25%, 15%)`).rgbNumber();
+  Color(`hsl(${h}, 10%, 15%)`).rgbNumber();
 
-const fps = 25,
+const fps = 60,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
   initialColor = 220,
   vantaJsSettings = {
-    gyroControls: false,
-    mouseControls: false,
-    touchControls: false,
+    gyroControls: false, // TODO: What is this?
+    mouseControls: false, // TODO: What is this?
+    touchControls: false, // TODO: What is this?
     color: wallpaperColor(initialColor),
-    shininess: 25,
-    waveHeight: 25,
-    waveSpeed: 0.25,
+    shininess: 30, // TODO: Connect to lux sensor?
+    // TODO: Connect to phone movement?
+    waveHeight: 5,
+    waveSpeed: 0.5,
     zoom: 1
   };
 

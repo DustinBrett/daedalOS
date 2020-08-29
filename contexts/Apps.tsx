@@ -5,11 +5,9 @@ import App from '@/contexts/App';
 import Blog from '@/components/Blog';
 import CommanderKeen from '@/components/Games/CommanderKeen';
 import Doom from '@/components/Games/Doom';
-import DukeNukem from '@/components/Games/DukeNukem';
-import Wolfenstein from '@/components/Games/Wolfenstein';
 import Winamp from '@/components/Winamp';
 
-const Games = [CommanderKeen, Doom, Wolfenstein, DukeNukem];
+const Games = [CommanderKeen, Doom];
 
 export type Apps = Array<App>;
 

@@ -32,7 +32,7 @@ export const Window: FC<Window> = ({
 
   // TODO: No more li's, use div's or section or article
   return (
-    <li>
+    <article>
       <Rnd
         className={styles.window}
         dragHandleClassName="handle"
@@ -65,6 +65,6 @@ export const Window: FC<Window> = ({
         </header>
         <article>{children}</article>
       </Rnd>
-    </li>
+    </article>
   );
 };

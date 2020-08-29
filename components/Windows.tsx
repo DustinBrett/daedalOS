@@ -3,9 +3,6 @@ import { useContext } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/Window';
 
-// Use <article> for window
-// and <section> for windows
-
 export const Windows: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
     activeApps: Apps = apps.filter(
@@ -21,7 +18,7 @@ export const Windows: FC = () => {
       updateApps({ update: { foreground: false }, id });
 
   return (
-    <ol>
+    <section>
       {activeApps.map(({ component: App, id, name, withWindow }, index) =>
         withWindow ? (
           <Window
@@ -36,11 +33,9 @@ export const Windows: FC = () => {
             <App />
           </Window>
         ) : (
-          <li key={id}>
-            <App onMinimize={onMinimize(id)} onClose={onClose(id)} />
-          </li>
+          <App key={id} onMinimize={onMinimize(id)} onClose={onClose(id)} />
         )
       )}
-    </ol>
+    </section>
   );
 };
