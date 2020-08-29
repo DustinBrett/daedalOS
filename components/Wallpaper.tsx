@@ -6,22 +6,26 @@ const vantaJsSettings = {
   gyroControls: false,
   mouseControls: false,
   touchControls: false,
-  color: 0x3c4961,
-  shininess: 15,
+  shininess: 25,
   waveHeight: 25,
-  waveSpeed: 0.5,
-  zoom: 0.9
+  waveSpeed: 0.25,
+  zoom: 1
 };
 
 export type WallpaperEffect = {
   destroy: () => void;
+  options: {
+    color: number;
+  };
 };
 
-export const renderWallpaperEffect = ({
-  current: renderElement
-}: RefObject<HTMLElement>): WallpaperEffect =>
+export const renderWallpaperEffect = (
+  { current: renderElement }: RefObject<HTMLElement>,
+  initialColor: number
+): WallpaperEffect =>
   WAVES({
     el: renderElement,
     THREE,
-    ...vantaJsSettings
+    ...vantaJsSettings,
+    color: initialColor
   });
