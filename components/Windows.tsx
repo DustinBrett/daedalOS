@@ -23,8 +23,8 @@ export const Windows: FC = () => {
 
   useEffect(() => {
     setWindowMargins({
-      marginTop: window.innerHeight * .075,
-      marginLeft: window.innerWidth * .075
+      marginTop: window.innerHeight * 0.075,
+      marginLeft: window.innerWidth * 0.075
     });
   }, []);
 
