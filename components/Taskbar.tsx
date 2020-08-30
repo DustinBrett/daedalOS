@@ -35,7 +35,14 @@ export const Taskbar: FC = () => {
                 // If done via .focus() then I won't need the code below
                 apps.forEach(({ id: appId, stackOrder }) => {
                   updateApps({
-                    update: { stackOrder: [id, ...stackOrder.filter((windowId: string) => windowId !== id)] },
+                    update: {
+                      stackOrder: [
+                        id,
+                        ...stackOrder.filter(
+                          (windowId: string) => windowId !== id
+                        )
+                      ]
+                    },
                     id: appId
                   });
                 });

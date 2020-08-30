@@ -24,7 +24,12 @@ export const Windows: FC = () => {
       // TODO: Storing stack in every app is silly, fix this somehow
       apps.forEach(({ id: appId, stackOrder }) => {
         updateApps({
-          update: { stackOrder: [id, ...stackOrder.filter((windowId: string) => windowId !== id)] },
+          update: {
+            stackOrder: [
+              id,
+              ...stackOrder.filter((windowId: string) => windowId !== id)
+            ]
+          },
           id: appId
         });
       });

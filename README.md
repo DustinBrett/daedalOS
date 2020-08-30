@@ -11,6 +11,7 @@
   - `<Window />` will need access to updateApp
 
 #### DOS
+
 - Pause when not in focus
 
 #### Animations
