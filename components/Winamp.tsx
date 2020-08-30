@@ -3,8 +3,9 @@ import WinampIcon from '@/assets/icons/Winamp.png';
 import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
+import type { RndDragCallback } from 'react-rnd';
 import { useEffect, useRef } from 'react';
-import Draggable, { DraggableEventHandler } from 'react-draggable';
+import { Rnd } from 'react-rnd';
 import App, { AppComponent } from '@/contexts/App';
 
 type WebampStoreAction = { type: string; windowId: string };
@@ -26,10 +27,15 @@ type PrivateOptions = {
   };
 };
 
+const touchControls = `
+  #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,
+  .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button`;
+
 const options: Options & PrivateOptions = {
   __initialWindowLayout: {
     main: { position: { x: 0, y: 0 } },
-    playlist: { position: { x: 0, y: 116 } }
+    playlist: { position: { x: 0, y: 116 } },
+    equalizer: { position: { x: 0, y: 232 } }
   },
   initialTracks: [
     {
@@ -53,7 +59,7 @@ const closeEqualizer = {
 
 const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
   const elementRef = useRef<HTMLElement>(null),
-    onTouchEventsOnly: DraggableEventHandler = (e): void => {
+    onTouchEventsOnly: RndDragCallback = (e): void => {
       if (e instanceof MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
@@ -88,13 +94,14 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
   }, [elementRef]);
 
   return (
-    <Draggable // Q: can I use Rnd? (fixes findDOMNode is deprecated in StrictMode. ?)
-      handle="#title-bar, .playlist-top"
-      cancel="#minimize, #close"
+    <Rnd
+      enableResizing={false}
+      dragHandleClassName="draggable"
+      cancel={touchControls}
       onDrag={onTouchEventsOnly}
     >
       <article ref={elementRef} />
-    </Draggable>
+    </Rnd>
   );
 };
 
