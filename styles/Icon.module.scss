@@ -22,8 +22,8 @@
   flex-direction: column;
 
   width: map-get($icon, width);
-  height: map-get($icon, height);
-  margin-bottom: map-get($icons, padding);
+  min-height: map-get($icon, height);
+  margin: 0 0 map-get($icons, padding) 0;
 
   color: map-get($icon, text-color);
   text-shadow: map-get($icon, text-shadow);

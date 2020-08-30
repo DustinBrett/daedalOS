@@ -1,10 +1,14 @@
 import type { FC } from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/Window';
 
 export const Windows: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
+    [windowMargins, setWindowMargins] = useState({
+      marginTop: 0,
+      marginLeft: 0
+    }),
     activeApps: Apps = apps.filter(
       ({ running, minimized }) => running && !minimized
     ),
@@ -17,8 +21,15 @@ export const Windows: FC = () => {
     onBlur = (id: string) => () =>
       updateApps({ update: { foreground: false }, id });
 
+  useEffect(() => {
+    setWindowMargins({
+      marginTop: window.innerHeight * .075,
+      marginLeft: window.innerWidth * .075
+    });
+  }, []);
+
   return (
-    <section>
+    <section style={windowMargins}>
       {activeApps.map(({ component: App, id, name, withWindow }, index) =>
         withWindow ? (
           <Window

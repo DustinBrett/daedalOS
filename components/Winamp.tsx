@@ -93,10 +93,7 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
       cancel="#minimize, #close"
       onDrag={onTouchEventsOnly}
     >
-      <article
-        style={{ marginTop: window.innerHeight / 4 / 2 }}
-        ref={elementRef}
-      />
+      <article ref={elementRef} />
     </Draggable>
   );
 };

@@ -12,9 +12,9 @@ const fps = 60,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
   initialColor = 220,
   vantaJsSettings = {
-    gyroControls: false, // TODO: What is this?
-    mouseControls: false, // TODO: What is this?
-    touchControls: false, // TODO: What is this?
+    gyroControls: false,
+    mouseControls: false,
+    touchControls: false,
     color: wallpaperColor(initialColor),
     shininess: 30, // TODO: Connect to lux sensor?
     // TODO: Connect to phone movement?

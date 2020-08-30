@@ -30,7 +30,6 @@ export const Window: FC<Window> = ({
     windowRef
   ]);
 
-  // TODO: No more li's, use div's or section or article
   return (
     <article>
       <Rnd
@@ -38,8 +37,8 @@ export const Window: FC<Window> = ({
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
-          x: 25,
-          y: 25,
+          x: 0,
+          y: 0,
           width: 320,
           height: 224
         }}

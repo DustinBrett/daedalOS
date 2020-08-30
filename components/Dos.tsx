@@ -17,6 +17,8 @@ const dosOptions = {
   onprogress: () => {}
 };
 
+// Minimize is not killing DOS properly
+
 const DOS: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

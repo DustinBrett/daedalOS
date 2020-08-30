@@ -9,8 +9,6 @@
 
 ## FUTURE
 
-- Webamp (https://github.com/captbaritone/webamp)
-  - SpyAMP Pro Green (Similar: https://archive.org/details/winampskin_SpyAMP_Pro_Zeus)
 - JS Paint (https://github.com/1j01/jspaint)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - PDF.js (https://github.com/mozilla/pdf.js)
@@ -22,10 +20,6 @@
 - Image Gallery
 - Travel Map
 - Calendar
-- Games
-  - Tetris
-  - Duke Nukem 3D
-  - Wolfenstein 3D
 - Basic web browser
 - Notepad/code editor
   - Show the sites source code, meta style
@@ -68,6 +62,7 @@
 
 #### Blog
 
+- iFrame the current blog until new app is done?
 - Mockup posts to begin styling
   - https://www.lipsum.com/
 - Follow HTML spec for blog post and comments
