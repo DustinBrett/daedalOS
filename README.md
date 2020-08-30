@@ -99,6 +99,11 @@
 
 ## LOW
 
+#### General
+
+- Make tabindex's negative
+  - https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
+
 #### Wallpaper
 
 - More complex color cycling for rainbow effect
@@ -131,9 +136,6 @@
 - Add `<time>` for post date/time
 - Add comments from blog and CouchSurfing
 - Add "Accommodations" links to relevant posts
-
-#### Blog
-
 - Convert posts to JSON and `import` (Can mockup posts initially)
 
 ## Questions

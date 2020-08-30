@@ -23,7 +23,7 @@ export const Taskbar: FC = () => {
               if (minimized) {
                 updateApps({ update: { minimized: false }, id });
               } else {
-                // TODO: Selecting task entry needs to focus the window component
+                // TODO: Selecting task entry needs to :focus the window component
                 apps.forEach(({ id: appId }) => {
                   updateApps({
                     update: { foreground: id === appId },

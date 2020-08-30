@@ -63,6 +63,7 @@ const Winamp: FC<AppComponent> = ({
   onMinimize,
   onFocus,
   onBlur,
+  tabIndex,
   zIndex
 }) => {
   const elementRef = useRef<HTMLElement>(null),
@@ -110,6 +111,7 @@ const Winamp: FC<AppComponent> = ({
       onFocus={onFocus}
       onBlur={onBlur}
       style={{ zIndex }}
+      tabIndex={tabIndex}
     >
       <article ref={elementRef} />
     </Rnd>

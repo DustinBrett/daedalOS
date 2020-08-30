@@ -5,6 +5,7 @@ export type AppComponent = {
   onMinimize?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  tabIndex?: number;
   zIndex?: number;
 };
 

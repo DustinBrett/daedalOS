@@ -3,24 +3,26 @@ import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/Window';
 
-// TODO: REORDER ON SELECTION ZINDEX/FOREGROUND/STACK
-// A State that pops id's into an array and removes them when app is closed
-
 export const Windows: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
       marginLeft: 0
     }),
+    [stackOrder, updateStackOrder] = useState<Array<string>>([]), // TODO: Reducer instead
     activeApps: Apps = apps.filter(
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
       updateApps({ update: { minimized: true }, id }),
-    onClose = (id: string) => () =>
-      updateApps({ update: { running: false }, id }),
-    onFocus = (id: string) => () =>
-      updateApps({ update: { foreground: true }, id }),
+    onClose = (id: string) => () => {
+      updateApps({ update: { running: false }, id });
+      updateStackOrder(stackOrder.filter((window) => window !== id));
+    },
+    onFocus = (id: string) => () => {
+      updateApps({ update: { foreground: true }, id });
+      updateStackOrder([id, ...stackOrder.filter((window) => window !== id)]);
+    },
     onBlur = (id: string) => () =>
       updateApps({ update: { foreground: false }, id });
 
@@ -40,13 +42,15 @@ export const Windows: FC = () => {
             id,
             name,
             windowed,
-            foreground,
             lockAspectRatio,
             hideScrollbars
           },
           index
-        ) =>
-          windowed ? (
+        ) => {
+          const zIndex = 1750 + (activeApps.length - stackOrder.indexOf(id)),
+            tabIndex = apps.length + activeApps.length + index;
+
+          return windowed ? (
             <Window
               key={id}
               name={name}
@@ -56,8 +60,8 @@ export const Windows: FC = () => {
               onBlur={onBlur(id)}
               lockAspectRatio={lockAspectRatio}
               hideScrollbars={hideScrollbars}
-              tabIndex={apps.length * 2 + index} // TODO: Are all tabindexes correct?
-              zIndex={1750 + apps.length + (foreground ? 1 : 0)} // TODO: Stacking logic
+              tabIndex={tabIndex}
+              zIndex={zIndex}
             >
               <App />
             </Window>
@@ -68,9 +72,11 @@ export const Windows: FC = () => {
               onClose={onClose(id)}
               onFocus={onFocus(id)}
               onBlur={onBlur(id)}
-              zIndex={1750 + apps.length + (foreground ? 1 : 0)} // TODO: Stacking logic
+              tabIndex={tabIndex}
+              zIndex={zIndex}
             />
-          )
+          );
+        }
       )}
     </section>
   );
