@@ -17,7 +17,7 @@ const dosOptions = {
   onprogress: () => {}
 };
 
-// Minimize is not killing DOS properly
+// TODO: Minimize is not killing DOS properly
 
 const DOS: FC<DosApp> = ({ args, url }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,7 +34,7 @@ const DOS: FC<DosApp> = ({ args, url }) => {
       );
 
     return () => {
-      ci?.exit(); // Why was this undefined when I clicked the taskbar entry?
+      ci?.exit(); // TODO: Why was this undefined when I clicked the taskbar entry?
     };
   }, [canvasRef]);
 

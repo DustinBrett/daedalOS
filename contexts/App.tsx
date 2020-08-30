@@ -16,6 +16,10 @@ export type AppConstructor = {
   hideScrollbars?: boolean;
 };
 
+// TODO: Keep track of index by app count + 1 for foreground
+// TODO: Keep track of x, y, height, width
+// TODO: Cascading windows (Based on index)
+
 export default class {
   component;
   icon;
@@ -30,11 +34,11 @@ export default class {
   maximized = false;
   minimized = false;
 
-  index = 0;
-  x = 0;
-  y = 0;
-  height = 0;
-  width = 0;
+  // index = 0;
+  // x = 0;
+  // y = 0;
+  // height = 0;
+  // width = 0;
 
   constructor({
     component,
@@ -54,7 +58,3 @@ export default class {
     this.hideScrollbars = hideScrollbars;
   }
 }
-
-// Keep track of index by app count + 1 for foreground
-// Cascading windows
-// Update constucts
