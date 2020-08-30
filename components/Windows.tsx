@@ -30,8 +30,8 @@ export const Windows: FC = () => {
 
   return (
     <section style={windowMargins}>
-      {activeApps.map(({ component: App, id, name, withWindow }, index) =>
-        withWindow ? (
+      {activeApps.map(({ component: App, id, name, windowed, lockAspectRatio, hideScrollbars }, index) =>
+        windowed ? (
           <Window
             key={id}
             name={name}
@@ -39,7 +39,9 @@ export const Windows: FC = () => {
             onClose={onClose(id)}
             onFocus={onFocus(id)}
             onBlur={onBlur(id)}
-            tabIndex={apps.length * 2 + index}
+            lockAspectRatio={lockAspectRatio}
+            hideScrollbars={hideScrollbars}
+            tabIndex={apps.length * 2 + index} // TODO: Are all tabindexes correct?
           >
             <App />
           </Window>

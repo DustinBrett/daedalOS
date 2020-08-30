@@ -12,6 +12,8 @@ type Window = {
   onClose: () => void;
   onFocus: () => void;
   onBlur: () => void;
+  lockAspectRatio: boolean;
+  hideScrollbars: boolean;
   tabIndex: number;
 };
 
@@ -22,6 +24,8 @@ export const Window: FC<Window> = ({
   onClose,
   onFocus,
   onBlur,
+  lockAspectRatio,
+  hideScrollbars,
   tabIndex
 }) => {
   const windowRef = useRef<Rnd>(null);
@@ -30,6 +34,7 @@ export const Window: FC<Window> = ({
     windowRef
   ]);
 
+  // TODO: Clicking title bar isnt always focusing window
   return (
     <article>
       <Rnd
@@ -46,7 +51,7 @@ export const Window: FC<Window> = ({
         onFocus={onFocus}
         onBlur={onBlur}
         ref={windowRef}
-        lockAspectRatio={true}
+        lockAspectRatio={lockAspectRatio}
       >
         <header className="handle">
           <h1>{name}</h1>
@@ -62,7 +67,7 @@ export const Window: FC<Window> = ({
             </button>
           </nav>
         </header>
-        <article>{children}</article>
+        <article style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}>{children}</article>
       </Rnd>
     </article>
   );

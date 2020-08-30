@@ -5,29 +5,56 @@ export type AppComponent = {
   onMinimize?: () => void;
 };
 
+export type AppConstructor = {
+  component: FC<AppComponent>;
+  icon: string;
+  name: string;
+
+  id?: string;
+  windowed?: boolean;
+  lockAspectRatio?: boolean;
+  hideScrollbars?: boolean;
+};
+
 export default class {
   component;
   icon;
-  id;
   name;
-  withWindow;
+  id;
+  windowed;
+  lockAspectRatio;
+  hideScrollbars;
 
   running = false;
+  foreground = false;
   maximized = false;
   minimized = false;
-  foreground = false;
 
-  constructor(
-    component: FC<AppComponent>,
-    icon: string,
-    id: string,
-    name: string,
-    withWindow = true
-  ) {
+  index = 0;
+  x = 0;
+  y = 0;
+  height = 0;
+  width = 0;
+
+  constructor({
+    component,
+    icon,
+    name,
+    id = name.toLowerCase().replace(/ /g, '_'),
+    windowed = true,
+    lockAspectRatio = false,
+    hideScrollbars = false
+  }: AppConstructor) {
     this.component = component;
     this.icon = icon;
-    this.id = id;
     this.name = name;
-    this.withWindow = withWindow;
+    this.id = id;
+    this.windowed = windowed;
+    this.lockAspectRatio = lockAspectRatio;
+    this.hideScrollbars = hideScrollbars;
   }
 }
+
+// Keep track of index by app count + 1 for foreground
+// Cascading windows
+// Update constucts

@@ -2,9 +2,17 @@
 
 ## INTERESTING
 
+#### Simple
+
+- Conditionally set `lockAspectRatio` (Lock for DOS)
+- Conditionally hide vertical scrollbar (Hide for DOS)
+- Restore `x`, `y` ,`width` & `height` upon return from minimize
+  - Reset on close
+- Need to keep track of z-index when new windows take/lose focus
+- Cascading windows
+
 #### Animations
 
-- Windows similar to OSX Genie effect
 - https://www.framer.com/api/motion
 
 ## FUTURE
@@ -36,16 +44,10 @@
 
 #### Windows
 
-- Need to keep track of z-index when new windows take/lose focus
 - Ability to maximize and override for purposes like fullscreen
   - Keep aspect ratio
 - Constraints on dragging and resizing
   - Only stop dragging `top < 0`
-- Conditionally set `lockAspectRatio` (Lock for DOS)
-- Conditionally hide vertical scrollbar (Hide for DOS)
-- Restore `x`, `y` ,`width` & `height` upon return from minimize
-  - Reset on close
-- Issues on mobile with dragging, clicking or resize in `<header>`
 
 #### Icons
 
@@ -86,11 +88,11 @@
   - Greyscale entire `<header>` when window is not in focus
   - Add icon to left of `<header>` title
   - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt
-- Stop using `<ol>` start using `<section>` and/or `<article>` with nesting
+- `<section>` <-> `<article>` which where?
+- Windows similar to OSX Genie effect
 
 #### Mixins
 
-- Fix hidden overflow cutting off text-shadows
 - Extract out more magic numbers
 - Extract out similair styling
   - `.foreground` & `@taskbarEntryHover`

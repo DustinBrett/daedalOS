@@ -113,8 +113,6 @@ $buttonIconOpacity: 0.75;
       map-get($window, bg-color)
     );
 
-    overflow: hidden;
-
     height: calc(100% - #{map-get($window, title-bar-height)});
 
     border-radius: 0 0 map-get($window, border-radius)

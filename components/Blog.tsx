@@ -28,4 +28,8 @@ const Blog: FC = () => (
   </article>
 );
 
-export default new App(Blog, BlogIcon, 'blog', 'Blog');
+export default new App({
+  component: Blog,
+  icon: BlogIcon,
+  name: 'Blog'
+});

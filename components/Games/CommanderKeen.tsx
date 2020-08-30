@@ -11,9 +11,10 @@ const CommanderKeen: FC = () => (
   />
 );
 
-export default new App(
-  CommanderKeen,
-  CommanderKeenIcon,
-  'commander_keen',
-  'Commander Keen'
-);
+export default new App({
+  component: CommanderKeen,
+  icon: CommanderKeenIcon,
+  name: 'Commander Keen',
+  lockAspectRatio: true,
+  hideScrollbars: true
+});

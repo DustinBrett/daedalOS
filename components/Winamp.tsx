@@ -89,7 +89,7 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
     });
 
     return () => {
-      webamp.dispose();
+      webamp?.dispose(); // Q: Why was this undefined when I clicked the taskbar entry?
     };
   }, [elementRef]);
 
@@ -105,4 +105,9 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
   );
 };
 
-export default new App(Winamp, WinampIcon, 'winamp', 'Winamp', false);
+export default new App({
+  component: Winamp,
+  icon: WinampIcon,
+  name: 'Winamp',
+  windowed: false
+});

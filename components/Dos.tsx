@@ -34,7 +34,7 @@ const DOS: FC<DosApp> = ({ args, url }) => {
       );
 
     return () => {
-      ci.exit();
+      ci?.exit(); // Why was this undefined when I clicked the taskbar entry?
     };
   }, [canvasRef]);
 

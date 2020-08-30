@@ -10,6 +10,8 @@ type TaskbarEntry = {
   tabIndex: number;
 };
 
+// TODO: Text need to truncate
+
 export const TaskbarEntry: FC<TaskbarEntry> = ({
   foreground,
   icon,

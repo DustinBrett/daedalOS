@@ -6,4 +6,10 @@ import DOS from '@/components/Dos';
 
 const Doom: FC = () => <DOS url="/games/doom.ZIP" args={['-c', 'DOOM.EXE']} />;
 
-export default new App(Doom, DoomIcon, 'doom', 'Doom');
+export default new App({
+  component: Doom,
+  icon: DoomIcon,
+  name: 'Doom',
+  lockAspectRatio: true,
+  hideScrollbars: true
+});
