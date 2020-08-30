@@ -67,7 +67,9 @@ export const Window: FC<Window> = ({
             </button>
           </nav>
         </header>
-        <article style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}>{children}</article>
+        <article style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}>
+          {children}
+        </article>
       </Rnd>
     </article>
   );
