@@ -6,6 +6,9 @@ import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+// TODO: Make scrollbar slightly wider?
+// TODO: No resize handle on top for mobile? (Use TouchEvent logic)
+
 type Window = {
   name: string;
   onMinimize: () => void;
@@ -15,9 +18,11 @@ type Window = {
   lockAspectRatio: boolean;
   hideScrollbars: boolean;
   tabIndex: number;
+  zIndex: number;
 };
 
 export const Window: FC<Window> = ({
+  // TODO: Can I remove this repetition if I ...dump an entire "Window" into the component?
   children,
   name,
   onMinimize,
@@ -26,7 +31,8 @@ export const Window: FC<Window> = ({
   onBlur,
   lockAspectRatio,
   hideScrollbars,
-  tabIndex
+  tabIndex,
+  zIndex
 }) => {
   const windowRef = useRef<Rnd>(null);
 
@@ -34,7 +40,7 @@ export const Window: FC<Window> = ({
     windowRef
   ]);
 
-  // TODO: Clicking title bar isnt always focusing window
+  // TODO: Clicking title bar isnt focusing DOS windows?
   return (
     <article>
       <Rnd
@@ -52,6 +58,7 @@ export const Window: FC<Window> = ({
         onBlur={onBlur}
         ref={windowRef}
         lockAspectRatio={lockAspectRatio}
+        style={{ zIndex }}
       >
         <header className="handle">
           <h1>{name}</h1>

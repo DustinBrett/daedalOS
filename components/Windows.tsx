@@ -3,6 +3,9 @@ import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/Window';
 
+// TODO: REORDER ON SELECTION ZINDEX/FOREGROUND/STACK
+// A State that pops id's into an array and removes them when app is closed
+
 export const Windows: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
     [windowMargins, setWindowMargins] = useState({
@@ -37,6 +40,7 @@ export const Windows: FC = () => {
             id,
             name,
             windowed,
+            foreground,
             lockAspectRatio,
             hideScrollbars
           },
@@ -53,11 +57,19 @@ export const Windows: FC = () => {
               lockAspectRatio={lockAspectRatio}
               hideScrollbars={hideScrollbars}
               tabIndex={apps.length * 2 + index} // TODO: Are all tabindexes correct?
+              zIndex={1750 + apps.length + (foreground ? 1 : 0)} // TODO: Stacking logic
             >
               <App />
             </Window>
           ) : (
-            <App key={id} onMinimize={onMinimize(id)} onClose={onClose(id)} />
+            <App
+              key={id}
+              onMinimize={onMinimize(id)}
+              onClose={onClose(id)}
+              onFocus={onFocus(id)}
+              onBlur={onBlur(id)}
+              zIndex={1750 + apps.length + (foreground ? 1 : 0)} // TODO: Stacking logic
+            />
           )
       )}
     </section>

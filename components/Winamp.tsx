@@ -48,8 +48,7 @@ const options: Options & PrivateOptions = {
   ],
   initialSkin: {
     url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
-  },
-  zIndex: 1750
+  }
 };
 
 const closeEqualizer = {
@@ -57,7 +56,15 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
+// TODO: Focus/foreground on load
+
+const Winamp: FC<AppComponent> = ({
+  onClose,
+  onMinimize,
+  onFocus,
+  onBlur,
+  zIndex
+}) => {
   const elementRef = useRef<HTMLElement>(null),
     onTouchEventsOnly: RndDragCallback = (e): void => {
       if (e instanceof MouseEvent) {
@@ -99,6 +106,10 @@ const Winamp: FC<AppComponent> = ({ onClose, onMinimize }) => {
       dragHandleClassName="draggable"
       cancel={touchControls}
       onDrag={onTouchEventsOnly}
+      // TODO: Some issues on mobile with focus
+      onFocus={onFocus}
+      onBlur={onBlur}
+      style={{ zIndex }}
     >
       <article ref={elementRef} />
     </Rnd>

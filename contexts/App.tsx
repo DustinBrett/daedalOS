@@ -3,6 +3,9 @@ import type { FC } from 'react';
 export type AppComponent = {
   onClose?: () => void;
   onMinimize?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  zIndex?: number;
 };
 
 export type AppConstructor = {

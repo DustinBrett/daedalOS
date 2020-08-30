@@ -19,9 +19,19 @@ export const Taskbar: FC = () => {
             foreground={foreground}
             icon={icon}
             name={name}
-            onClick={() =>
-              updateApps({ update: { minimized: !minimized }, id })
-            }
+            onClick={() => {
+              if (minimized) {
+                updateApps({ update: { minimized: false }, id });
+              } else {
+                // TODO: Selecting task entry needs to focus the window component
+                apps.forEach(({ id: appId }) => {
+                  updateApps({
+                    update: { foreground: id === appId },
+                    id: appId
+                  });
+                });
+              }
+            }}
             tabIndex={apps.length + index}
           />
         ))}

@@ -2,24 +2,18 @@
 @import 'mixins';
 @import 'variables';
 
-.foreground {
-  transition: 0.15s;
-
-  background-color: rgba(
-    invert(map-get($taskbar, bg-color)),
-    map-get($taskbarEntry, hover-bg-opacity)
-  );
-}
-
 .taskbarEntry {
-  @include taskbarEntryHover;
   @include textOverflowEllipsis;
 
   min-width: map-get($taskbarEntry, width) / 2;
   height: map-get($taskbar, height);
-  padding: 0 map-get($taskbarEntry, padding);
+  margin: 0 map-get($taskbarEntry, margin);
 
   border-bottom: $thickLine solid $highlightColor;
+
+  &:hover {
+    @include taskbarEntryHoverStyle;
+  }
 
   figure {
     font-size: map-get($taskbarEntry, font-size);
@@ -27,18 +21,34 @@
     display: flex;
     align-items: center;
 
-    width: fit-content;
     height: map-get($taskbar, height) - $thickLine;
 
     color: map-get($taskbarEntry, text-color);
 
     img {
       width: map-get($taskbarEntry, icon-width);
-      padding-right: map-get($taskbarEntry, padding) / 2;
+      margin: map-get($taskbarEntry, icon-margin);
     }
 
     figcaption {
       width: map-get($taskbarEntry, text-width);
     }
+  }
+}
+
+.foreground {
+  margin: 0;
+  padding: 0 4px;
+
+  background-color: rgba(
+    invert(map-get($taskbar, bg-color)),
+    map-get($taskbarEntry, foreground-bg-opacity)
+  );
+
+  &:hover {
+    background-color: rgba(
+      invert(map-get($taskbar, bg-color)),
+      map-get($taskbarEntry, hover-foreground-bg-opacity)
+    );
   }
 }

@@ -41,18 +41,21 @@ $icons: (
 $taskbar: (
   bg-color: $uiColor2,
   bg-opacity: 60%,
-  height: 28px,
+  height: 30px,
   z-index: map-get($zIndex, taskbar)
 );
 
 $taskbarEntry: (
   text-color: $offWhite,
   text-width: 110px,
-  font-size: 11px,
+  font-size: 12px,
   width: 165px,
-  padding: 10px,
+  margin: 4px,
   hover-bg-opacity: 10%,
-  icon-width: 16px
+  foreground-bg-opacity: 15%,
+  hover-foreground-bg-opacity: 20%,
+  icon-width: 16px,
+  icon-margin: 7px
 );
 
 $window: (
@@ -60,7 +63,7 @@ $window: (
   border-radius: 5px,
   title-bar-color: $uiColor1,
   title-bar-text-color: $offWhite,
-  title-bar-height: 28px,
+  title-bar-height: 30px,
   scroll-bar-color: lighten($uiColor1, 55%),
   z-index: map-get($zIndex, windows)
 );

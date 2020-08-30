@@ -2,14 +2,12 @@
 
 ## INTERESTING
 
-#### Simple
+#### Windows
 
-- Conditionally set `lockAspectRatio` (Lock for DOS)
-- Conditionally hide vertical scrollbar (Hide for DOS)
-- Restore `x`, `y` ,`width` & `height` upon return from minimize
-  - Reset on close
 - Need to keep track of z-index when new windows take/lose focus
 - Cascading windows
+- Restore `x`, `y` ,`width` & `height` upon return from minimize
+  - `<Window />` will need access to updateApp
 
 #### Animations
 
