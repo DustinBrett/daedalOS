@@ -57,6 +57,7 @@ const closeEqualizer = {
 };
 
 // TODO: Focus/foreground on load
+// TODO: Window position is 0/0 of whatever the cascade needs it to be
 
 const Winamp: FC<AppComponent> = ({
   onClose,

@@ -4,10 +4,14 @@
 
 #### Windows
 
-- Need to keep track of z-index when new windows take/lose focus
+- Taskbar focus via programmaic ref func that assigns itself to the app?
+  - Then I can access it's ref
 - Cascading windows
 - Restore `x`, `y` ,`width` & `height` upon return from minimize
   - `<Window />` will need access to updateApp
+
+#### DOS
+- Pause when not in focus
 
 #### Animations
 
@@ -52,13 +56,7 @@
 - Make draggable (w/Constraints)
 - Double clicking should open if minimized
   - `update` should allow multiple keys to be passed into app
-- Fix label being on 2+ lines pushing icon above container
-  - Changes should happen in ellipsis mixin
-
-#### Taskbar
-
-- Initial clicking of unfocused entry should not toggle minimize
-  - It should focus the entry and it's window
+- Icon label truncation
 
 #### Blog
 
@@ -73,11 +71,14 @@
 #### Taskbar
 
 - Replicate W10 characteristics
-  - Add Padding to highlight bar which shrinks on hover
+  - What is still not right?
+  - Systray and how it looks when loaded with entries
 
 #### Icons
 
 - Replicate W10 characteristics
+  - What is left to do?
+  - I am not happy with the padding/size compared to W10
 
 #### Windows
 
@@ -87,7 +88,7 @@
   - Add icon to left of `<header>` title
   - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt
 - `<section>` <-> `<article>` which where?
-- Windows similar to OSX Genie effect
+- Windows similar to OSX Genie effect on min/max
 
 #### Mixins
 
@@ -109,17 +110,11 @@
 - More complex color cycling for rainbow effect
   - https://krazydad.com/tutorials/makecolors.php
 
-#### Games
-
-- Game `Loader.tsx` so that I only need to pass the vars
-
 #### DOS
 
-- Pause when not in focus
 - Loading screen until app is running
-- Stop using `require` if possible
+  - Hide startup text until at least the 1st load
 - Focus window when clicking `<canvas>`
-- Hide startup text until at least the 1st load
 
 #### Metadata
 
@@ -141,4 +136,4 @@
 ## Questions
 
 - Should I use `Segoe UI`? `system-ui`?
-- What should the background color be? (Behind Vanta)
+- What should the base background color be? (Behind Vanta)
