@@ -4,8 +4,6 @@
 
 #### Windows
 
-- Taskbar focus via programmaic ref func that assigns itself to the app?
-  - Then I can access it's ref
 - Cascading windows
 - Restore `x`, `y` ,`width` & `height` upon return from minimize
   - `<Window />` will need access to updateApp
