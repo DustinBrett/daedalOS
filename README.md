@@ -57,6 +57,7 @@
 - Double clicking should open if minimized
   - `update` should allow multiple keys to be passed into app
 - Icon label truncation
+  - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
 
 #### Blog
 

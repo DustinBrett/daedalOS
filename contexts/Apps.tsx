@@ -12,7 +12,7 @@ const Games = [CommanderKeen, Doom];
 export type Apps = Array<App>;
 
 type AppAction = {
-  update: { [key: string]: boolean };
+  update: { [key: string]: boolean | Array<string> | Date }; // TODO: Fix this also, just use App type for props?
   id: string;
 };
 

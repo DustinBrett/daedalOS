@@ -9,19 +9,25 @@ export const Windows: FC = () => {
       marginTop: 0,
       marginLeft: 0
     }),
-    [stackOrder, updateStackOrder] = useState<Array<string>>([]), // TODO: Reducer instead
     activeApps: Apps = apps.filter(
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
       updateApps({ update: { minimized: true }, id }),
     onClose = (id: string) => () => {
+      // TODO: updateApps accept multi args
       updateApps({ update: { running: false }, id });
-      updateStackOrder(stackOrder.filter((window) => window !== id));
+      updateApps({ update: { stackOrder: [] }, id });
     },
     onFocus = (id: string) => () => {
       updateApps({ update: { foreground: true }, id });
-      updateStackOrder([id, ...stackOrder.filter((window) => window !== id)]);
+      // TODO: Storing stack in every app is silly, fix this somehow
+      apps.forEach(({ id: appId, stackOrder }) => {
+        updateApps({
+          update: { stackOrder: [id, ...stackOrder.filter((windowId: string) => windowId !== id)] },
+          id: appId
+        });
+      });
     },
     onBlur = (id: string) => () =>
       updateApps({ update: { foreground: false }, id });
@@ -43,7 +49,8 @@ export const Windows: FC = () => {
             name,
             windowed,
             lockAspectRatio,
-            hideScrollbars
+            hideScrollbars,
+            stackOrder
           },
           index
         ) => {

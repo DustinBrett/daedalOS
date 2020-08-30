@@ -20,7 +20,6 @@ export type AppConstructor = {
   hideScrollbars?: boolean;
 };
 
-// TODO: Keep track of index by app count + 1 for foreground
 // TODO: Keep track of x, y, height, width
 // TODO: Cascading windows (Based on index)
 
@@ -37,12 +36,8 @@ export default class {
   foreground = false;
   maximized = false;
   minimized = false;
-
-  // index = 0;
-  // x = 0;
-  // y = 0;
-  // height = 0;
-  // width = 0;
+  lastRunning: Date = new Date(0);
+  stackOrder: Array<string> = [];
 
   constructor({
     component,

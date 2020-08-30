@@ -16,7 +16,10 @@ export const Icons: FC = () => {
             key={id}
             icon={icon}
             name={name}
-            onDoubleClick={() => updateApps({ update: { running: true }, id })}
+            onDoubleClick={() => {
+              updateApps({ update: { running: true }, id });
+              updateApps({ update: { lastRunning: new Date() }, id });
+            }}
             tabIndex={index}
           />
         ))}

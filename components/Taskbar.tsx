@@ -8,7 +8,9 @@ import { TaskbarEntry } from '@/components/TaskbarEntry';
 
 export const Taskbar: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
-    runningApps = apps.filter(({ running }) => running);
+    runningApps = apps
+      .filter(({ running }) => running)
+      .sort((a, b) => a.lastRunning.getTime() - b.lastRunning.getTime());
 
   return (
     <nav className={styles.taskbar}>
@@ -23,10 +25,17 @@ export const Taskbar: FC = () => {
               if (minimized) {
                 updateApps({ update: { minimized: false }, id });
               } else {
-                // TODO: Selecting task entry needs to :focus the window component
                 apps.forEach(({ id: appId }) => {
                   updateApps({
                     update: { foreground: id === appId },
+                    id: appId
+                  });
+                });
+                // TODO: Selecting task entry needs to :focus the window component
+                // If done via .focus() then I won't need the code below
+                apps.forEach(({ id: appId, stackOrder }) => {
+                  updateApps({
+                    update: { stackOrder: [id, ...stackOrder.filter((windowId: string) => windowId !== id)] },
                     id: appId
                   });
                 });
