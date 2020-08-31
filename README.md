@@ -1,26 +1,17 @@
 # TODO
 
-## INTERESTING
+## FUTURE
 
-#### Windows
-
-- Maximize
-
-#### Animations
-
-- https://www.framer.com/api/motion
-
-### FUTURE
-
-- JS Paint (https://github.com/1j01/jspaint)
-- Clippy.JS (https://www.smore.com/clippy-js)
-- Minesweeper (https://github.com/ziebelje/minesweeper)
-- PDF.js (https://github.com/mozilla/pdf.js)
-  - Use to display Resume
+- Animations (https://www.framer.com/api/motion)
 - File Explorer
   - https://github.com/jvilk/BrowserFS
   - Make blog using file explorer + WebODF
 - Word Processor (https://webodf.org/)
+- PDF.js (https://github.com/mozilla/pdf.js)
+  - Use to display Resume
+- JS Paint (https://github.com/1j01/jspaint)
+- Clippy.JS (https://www.smore.com/clippy-js)
+- Minesweeper (https://github.com/ziebelje/minesweeper)
 - Photo Viewer
 - Calendar
 - Notepad/code editor
@@ -28,7 +19,7 @@
 - Session Management
 - IRC Client, visuals like mIRC circa '95
 - System tray
-- Local internal muting/volume control of games/agent/etc (access in systray)
+- Local internal muting/volume control of games/agent/etc
 - Chat/Messenger/Contact Component
 - PWA
 
