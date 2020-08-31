@@ -70,7 +70,6 @@
 - Change `<header>` background color to a gradient
 - Greyscale entire `<header>` when window is not in focus
 - Add icon to left of `<header>` title
-- Make scrollbar 1-3 px wider
 - Titlebar text was too bold in Safari (Why was it different?)
 - Remove hard coded z-index in `<Windows />`
 
@@ -84,6 +83,14 @@
 - Focus is not working reliably
   - Touch events are not focusing on winamp
 - Equalizer needs canceling of drag controls
+
+#### React-Use (https://github.com/streamich/react-use)
+
+- useBattery: Show battery in sys tray
+- useIdle: Show screen saver
+- useLongPress: Show right click menu
+- useMediaDevices: Show device manager
+- useNetwork: Show network info / sys tray icon
 
 ## LOW
 
