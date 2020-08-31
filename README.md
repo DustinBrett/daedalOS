@@ -4,9 +4,8 @@
 
 #### Windows
 
-- Cascading
-- Restore `x`, `y` ,`width` & `height` when exiting from minimize
 - Maximize
+- Restore `x`, `y` ,`width` & `height` when exiting from minimize
 
 #### DOS
 
@@ -20,12 +19,14 @@
 
 - JS Paint (https://github.com/1j01/jspaint)
 - Clippy.JS (https://www.smore.com/clippy-js)
+- Minesweeper (https://github.com/ziebelje/minesweeper)
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
   - Maybe `react-pdf-viewer`
 - Terminal app w/Transparent window
   - Replicate iTerm characteristics
 - File Explorer
+  - https://github.com/jvilk/BrowserFS
 - Image Gallery
 - Travel Map
 - Calendar
@@ -70,7 +71,7 @@
 
 #### Winamp
 
-- Winamp stays foreground until it's been clicked at least once
+- Mildrop (https://github.com/jberg/butterchurn)
 
 #### Taskbar
 
@@ -83,9 +84,11 @@
 - Replicate W10 characteristics
   - What is left to do?
   - I am not happy with the padding/size compared to W10
+- Better quality icons, svg?
 
 #### Windows
 
+- Cascading
 - Replicate OSX characteristics
   - Change `<header>` background color to a gradient
   - Greyscale entire `<header>` when window is not in focus
@@ -103,6 +106,17 @@
   - Text/box shadow effects
 
 ## LOW
+
+#### Public
+
+- Move to getting pub resources grabbed during build so I dont "host" any of it
+- Git ignore public and make a script run via package to grab deps
+  - https://archive.org/download/DoomsharewareEpisode/doom.ZIP
+  - https://archive.org/download/CommanderKeenGoodbyeGalaxy/4keen.ZIP
+  - https://js-dos.com/6.22/current/wdosbox.js
+  - https://js-dos.com/6.22/current/wdosbox.wasm.js
+  - https://github.com/lucmult/winamp2-js/raw/master/mp3/llama-2.91.mp3
+  - https://archive.org/download/winampskin_SpyAMP_Professional_Edition_v5/SpyAMP_Professional_Edition_v5.wsz
 
 #### General
 

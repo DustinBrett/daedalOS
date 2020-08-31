@@ -5,10 +5,7 @@ import App from '@/contexts/App';
 import { DosAppLoader } from '@/components/Dos';
 
 const CommanderKeen: FC = () => (
-  <DosAppLoader
-    url="/games/Commander_Keen_1_-_Marooned_on_Mars_1990.zip"
-    args={['-c', 'CD CKEEN1', '-c', 'KEEN1.EXE']}
-  />
+  <DosAppLoader url="/games/4keen.ZIP" args={['-c', 'KEEN4E.EXE']} />
 );
 
 export default new App({
