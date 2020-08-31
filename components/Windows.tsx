@@ -15,13 +15,11 @@ export const Windows: FC = () => {
     onMinimize = (id: string) => () =>
       updateApps({ update: { minimized: true }, id }),
     onClose = (id: string) => () => {
-      // TODO: updateApps accept multi args
       updateApps({ update: { running: false }, id });
       updateApps({ update: { stackOrder: [] }, id });
     },
     onFocus = (id: string) => () => {
       updateApps({ update: { foreground: true }, id });
-      // TODO: Storing stack in every app is silly, fix this somehow
       apps.forEach(({ id: appId, stackOrder }) => {
         updateApps({
           update: {

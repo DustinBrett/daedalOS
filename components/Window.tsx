@@ -7,9 +7,6 @@ import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-// TODO: Make scrollbar slightly wider?
-// TODO: No resize handle on top for mobile? (Use TouchEvent logic)
-
 type Window = {
   name: string;
   onMinimize: () => void;
@@ -23,7 +20,6 @@ type Window = {
 };
 
 export const Window: FC<Window> = ({
-  // TODO: Can I remove this repetition if I ...dump an entire "Window" into the component?
   children,
   name,
   onMinimize,
@@ -45,7 +41,6 @@ export const Window: FC<Window> = ({
     windowRef
   ]);
 
-  // TODO: Clicking title bar isnt focusing DOS windows?
   return (
     <article>
       <Rnd

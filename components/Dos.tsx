@@ -19,9 +19,6 @@ const dosOptions = {
   onprogress: () => {}
 };
 
-// TODO: Minimize is not killing DOS properly
-// TODO: Close on `EXIT` => `SDL_Quit called (and ignored)`
-
 export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),

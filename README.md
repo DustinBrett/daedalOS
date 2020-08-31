@@ -5,42 +5,31 @@
 #### Windows
 
 - Maximize
-- Restore `x`, `y` ,`width` & `height` when exiting from minimize
-
-#### DOS
-
-- Pause when not in focus
 
 #### Animations
 
 - https://www.framer.com/api/motion
 
-## FUTURE
+### FUTURE
 
 - JS Paint (https://github.com/1j01/jspaint)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Minesweeper (https://github.com/ziebelje/minesweeper)
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
-  - Maybe `react-pdf-viewer`
-- Terminal app w/Transparent window
-  - Replicate iTerm characteristics
 - File Explorer
   - https://github.com/jvilk/BrowserFS
-- Image Gallery
-- Travel Map
+  - Make blog using file explorer + WebODF
+- Word Processor (https://webodf.org/)
+- Photo Viewer
 - Calendar
-- Basic web browser
 - Notepad/code editor
-  - Show the sites source code, meta style
+  - Show the sites source code
 - Session Management
-- Voice Assistant
 - IRC Client, visuals like mIRC circa '95
 - System tray
-- Virtual machine to run Windows 95? Is it possible?
-- Local internal muting of games/agent/etc
-  - Volume control and mute control in sys tray
-- Chat bubbles, Messenger style
+- Local internal muting/volume control of games/agent/etc (access in systray)
+- Chat/Messenger/Contact Component
 
 ## HIGH
 
@@ -50,6 +39,7 @@
   - Keep aspect ratio
 - Constraints on dragging and resizing
   - Only stop dragging `top < 0`
+- Fix touch resizing `top` instead of dragging
 
 #### Icons
 
@@ -59,58 +49,79 @@
 - Icon label truncation
   - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
 
-#### Blog
-
-- iFrame the current blog until new app is done?
-- Mockup posts to begin styling
-  - https://www.lipsum.com/
-- Follow HTML spec for blog post and comments
-  - https://www.w3.org/TR/2013/CR-html5-20130806/sections.html#the-article-element
-
 ## MEDIUM
+
+#### Icons
+
+- Redo padding and sizing of containers
+- Upon starting app show some loading indications
+
+#### Taskbar
+
+- Trigger `:focus` when setting foreground
+- If minimized disable any `.foreground`, `:focus` or `:active` effects
+
+#### Taskbar, Icons & Windows
+
+- Fix text label truncation
+
+#### Apps
+
+- Allow updating mulitple key/value's with a single `updateApps`
+- Avoid storing `stackOrder` within every app
+
+#### Windows
+
+- Cascade upon opening
+- Restore `x`, `y` ,`width` & `height` when exiting from minimize
+- Change `<header>` background color to a gradient
+- Greyscale entire `<header>` when window is not in focus
+- Add icon to left of `<header>` title
+- Make scrollbar 1-3 px wider
+
+#### DOS
+
+- Focus window when clicking `<canvas>`
+- Close app when `EXIT` is typed
+
+#### Winamp
+
+- Focus is not working reliably
+- Equalizer needs canceling of drag controls
+
+## LOW
 
 #### Winamp
 
 - Mildrop (https://github.com/jberg/butterchurn)
 
-#### Taskbar
-
-- Replicate W10 characteristics
-  - What is still not right?
-  - Systray and how it looks when loaded with entries
-
 #### Icons
 
-- Replicate W10 characteristics
-  - What is left to do?
-  - I am not happy with the padding/size compared to W10
-- Better quality icons, svg?
+- Better quality icons
 
-#### Windows
+#### DOS
 
-- Cascading
-- Replicate OSX characteristics
-  - Change `<header>` background color to a gradient
-  - Greyscale entire `<header>` when window is not in focus
-  - Add icon to left of `<header>` title
-  - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt
-- `<section>` <-> `<article>` which where?
-- Windows similar to OSX Genie effect on min/max
+- Loading screen until app is running
+  - Hide startup text until at least the 1st load
+- Closing window doesn't fully kill DOS
 
-#### Mixins
+#### Metadata
 
-- Extract out more magic numbers
-- Extract out similair styling
-  - `.foreground` & `@taskbarEntryHover`
-  - `#minimize`, `#maximize` & `#close`
-  - Text/box shadow effects
+- Add favicon
 
-## LOW
+## VERY LOW
+
+#### Production
+
+- Add Sentry monitoring to project
+
+#### Document
+
+- Move `lockDocumentTitle` somewhere modular
 
 #### Public
 
-- Move to getting pub resources grabbed during build so I dont "host" any of it
-- Git ignore public and make a script run via package to grab deps
+- Git ignore public, make script to get files, add to `package.json`
   - https://archive.org/download/DoomsharewareEpisode/doom.ZIP
   - https://archive.org/download/CommanderKeenGoodbyeGalaxy/4keen.ZIP
   - https://js-dos.com/6.22/current/wdosbox.js
@@ -118,41 +129,11 @@
   - https://github.com/lucmult/winamp2-js/raw/master/mp3/llama-2.91.mp3
   - https://archive.org/download/winampskin_SpyAMP_Professional_Edition_v5/SpyAMP_Professional_Edition_v5.wsz
 
-#### General
+#### Accessibility
 
-- Make tabindex's negative
-  - https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
+- Add i18n support, w/auto-detect & dynamic `<html lang />`
+- Negative tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
 
 #### Wallpaper
 
-- More complex color cycling for rainbow effect
-  - https://krazydad.com/tutorials/makecolors.php
-
-#### DOS
-
-- Closing window didnt kill DOS
-- Loading screen until app is running
-  - Hide startup text until at least the 1st load
-- Focus window when clicking `<canvas>`
-
-#### Metadata
-
-- Add favicon
-
-#### Document
-
-- Add i18n support, w/auto-detect & dynamic `<html lang />`
-- Move `lockDocumentTitle` somewhere modular
-  - Add a check so this can't run twice during dev work
-
-#### Blog
-
-- Add `<time>` for post date/time
-- Add comments from blog and CouchSurfing
-- Add "Accommodations" links to relevant posts
-- Convert posts to JSON and `import` (Can mockup posts initially)
-
-## Questions
-
-- Should I use `Segoe UI`? `system-ui`?
-- What should the base background color be? (Behind Vanta)
+- More complex color cycling for rainbow effect (https://krazydad.com/tutorials/makecolors.php)

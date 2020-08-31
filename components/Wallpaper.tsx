@@ -16,8 +16,7 @@ const fps = 60,
     mouseControls: false,
     touchControls: false,
     color: wallpaperColor(initialColor),
-    shininess: 30, // TODO: Connect to lux sensor?
-    // TODO: Connect to phone movement?
+    shininess: 30,
     waveHeight: 5,
     waveSpeed: 0.5,
     zoom: 1

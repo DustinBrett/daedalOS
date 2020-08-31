@@ -20,9 +20,6 @@ export type AppConstructor = {
   hideScrollbars?: boolean;
 };
 
-// TODO: Keep track of x, y, height, width
-// TODO: Cascading windows (Based on index)
-
 export default class {
   component;
   icon;

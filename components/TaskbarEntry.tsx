@@ -10,9 +10,6 @@ type TaskbarEntry = {
   tabIndex: number;
 };
 
-// TODO: Text need to truncate
-// TODO: Entries should appear in order they were opened
-
 export const TaskbarEntry: FC<TaskbarEntry> = ({
   foreground,
   icon,

@@ -31,8 +31,6 @@ export const Taskbar: FC = () => {
                     id: appId
                   });
                 });
-                // TODO: Selecting task entry needs to :focus the window component
-                // If done via .focus() then I won't need the code below
                 apps.forEach(({ id: appId, stackOrder }) => {
                   updateApps({
                     update: {

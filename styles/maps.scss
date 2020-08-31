@@ -16,7 +16,6 @@ $clock: (
 );
 
 $desktop: (
-  bg-color: $bgColor,
   z-index: map-get($zIndex, desktop)
 );
 
