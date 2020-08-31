@@ -142,3 +142,4 @@
 #### Wallpaper
 
 - More complex color cycling for rainbow effect (https://krazydad.com/tutorials/makecolors.php)
+- Go back to using Vanta npm (Need camera to update on load)
