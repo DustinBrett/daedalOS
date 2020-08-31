@@ -56,8 +56,6 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-// TODO: Focus/foreground on load
-// TODO: Window position is 0/0 of whatever the cascade needs it to be
 
 const Winamp: FC<AppComponent> = ({
   onClose,
@@ -81,11 +79,12 @@ const Winamp: FC<AppComponent> = ({
       webamp.store.dispatch(closeEqualizer);
       onClose && webamp.onClose(onClose);
       onMinimize && webamp.onMinimize(onMinimize);
+
       await webamp.renderWhenReady(elementRef.current as HTMLElement);
 
-      elementRef.current?.appendChild(
-        document.getElementById('webamp') || new HTMLElement()
-      );
+      const webampElement = document.getElementById('webamp');
+      webampElement && elementRef.current?.appendChild(webampElement);
+      onFocus?.() && webampElement?.focus();
 
       return webamp;
     };
@@ -98,7 +97,7 @@ const Winamp: FC<AppComponent> = ({
     });
 
     return () => {
-      webamp?.dispose(); // Q: Why was this undefined when I clicked the taskbar entry?
+      webamp?.dispose();
     };
   }, [elementRef]);
 
@@ -108,7 +107,6 @@ const Winamp: FC<AppComponent> = ({
       dragHandleClassName="draggable"
       cancel={touchControls}
       onDrag={onTouchEventsOnly}
-      // TODO: Some issues on mobile with focus
       onFocus={onFocus}
       onBlur={onBlur}
       style={{ zIndex }}

@@ -4,9 +4,9 @@
 
 #### Windows
 
-- Cascading windows
-- Restore `x`, `y` ,`width` & `height` upon return from minimize
-  - `<Window />` will need access to updateApp
+- Cascading
+- Restore `x`, `y` ,`width` & `height` when exiting from minimize
+- Maximize
 
 #### DOS
 
@@ -68,6 +68,9 @@
 
 ## MEDIUM
 
+#### Winamp
+- Winamp stays foreground until it's been clicked at least once
+
 #### Taskbar
 
 - Replicate W10 characteristics
@@ -112,6 +115,7 @@
 
 #### DOS
 
+- Closing window didnt kill DOS
 - Loading screen until app is running
   - Hide startup text until at least the 1st load
 - Focus window when clicking `<canvas>`
