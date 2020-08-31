@@ -69,6 +69,7 @@
 ## MEDIUM
 
 #### Winamp
+
 - Winamp stays foreground until it's been clicked at least once
 
 #### Taskbar

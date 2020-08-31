@@ -56,7 +56,6 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-
 const Winamp: FC<AppComponent> = ({
   onClose,
   onMinimize,

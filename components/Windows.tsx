@@ -59,7 +59,8 @@ export const Windows: FC = () => {
           },
           index
         ) => {
-          const zIndex = 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
+          const zIndex =
+              1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
             tabIndex = apps.length + activeApps.length + index;
 
           return windowed ? (
