@@ -1,6 +1,7 @@
 import styles from '@/styles/Window.module.scss';
 
 import type { FC } from 'react';
+import type { RndDragEvent } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +35,11 @@ export const Window: FC<Window> = ({
   tabIndex,
   zIndex
 }) => {
-  const windowRef = useRef<Rnd>(null);
+  const windowRef = useRef<Rnd>(null),
+    focusOnDrag = ({ target }: RndDragEvent) =>
+      ((target as HTMLElement)?.closest(
+        `.${styles.window}`
+      ) as HTMLDivElement)?.focus?.();
 
   useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), [
     windowRef
@@ -44,6 +49,7 @@ export const Window: FC<Window> = ({
   return (
     <article>
       <Rnd
+        enableUserSelectHack={false}
         className={styles.window}
         dragHandleClassName="handle"
         cancel=".cancel"
@@ -56,6 +62,7 @@ export const Window: FC<Window> = ({
         tabIndex={tabIndex}
         onFocus={onFocus}
         onBlur={onBlur}
+        onDragStart={focusOnDrag}
         ref={windowRef}
         lockAspectRatio={lockAspectRatio}
         style={{ zIndex }}

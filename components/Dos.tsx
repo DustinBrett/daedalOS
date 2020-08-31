@@ -55,5 +55,6 @@ export default new App({
   component: DosAppLoader as FC<AppComponent>,
   icon: DosIcon,
   name: 'DOS',
-  hideScrollbars: true
+  hideScrollbars: true,
+  lockAspectRatio: true
 });

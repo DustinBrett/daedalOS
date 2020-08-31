@@ -59,35 +59,27 @@ export const Windows: FC = () => {
           },
           index
         ) => {
-          const zIndex =
-              1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
-            tabIndex = apps.length + activeApps.length + index;
+          const appOptions = {
+            onMinimize: onMinimize(id),
+            onClose: onClose(id),
+            onFocus: onFocus(id),
+            onBlur: onBlur(id),
+            tabIndex: apps.length + activeApps.length + index,
+            zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1))
+          };
 
           return windowed ? (
             <Window
               key={id}
               name={name}
-              onMinimize={onMinimize(id)}
-              onClose={onClose(id)}
-              onFocus={onFocus(id)}
-              onBlur={onBlur(id)}
               lockAspectRatio={lockAspectRatio}
               hideScrollbars={hideScrollbars}
-              tabIndex={tabIndex}
-              zIndex={zIndex}
+              {...appOptions}
             >
               <App />
             </Window>
           ) : (
-            <App
-              key={id}
-              onMinimize={onMinimize(id)}
-              onClose={onClose(id)}
-              onFocus={onFocus(id)}
-              onBlur={onBlur(id)}
-              tabIndex={tabIndex}
-              zIndex={zIndex}
-            />
+            <App key={id} {...appOptions} />
           );
         }
       )}

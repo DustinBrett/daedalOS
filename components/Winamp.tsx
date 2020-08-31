@@ -8,6 +8,8 @@ import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import App, { AppComponent } from '@/contexts/App';
 
+// TODO: Requires many clicks before it focuses sometimes
+
 type WebampStoreAction = { type: string; windowId: string };
 
 type WebampStore = {
@@ -103,6 +105,7 @@ const Winamp: FC<AppComponent> = ({
   return (
     <Rnd
       enableResizing={false}
+      enableUserSelectHack={false}
       dragHandleClassName="draggable"
       cancel={touchControls}
       onDrag={onTouchEventsOnly}
