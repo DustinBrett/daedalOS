@@ -7,6 +7,7 @@ import type { RndDragCallback } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import App, { AppComponent } from '@/contexts/App';
+import { appendElement, focusOnDrag } from '@/utils';
 
 type WebampStoreAction = { type: string; windowId: string };
 
@@ -60,7 +61,6 @@ const Winamp: FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
-  onBlur,
   tabIndex,
   zIndex
 }) => {
@@ -73,17 +73,19 @@ const Winamp: FC<AppComponent> = ({
     },
     loadWebAmp = async (): Promise<Webamp & WebampStore> => {
       const { default: Webamp } = await import('webamp'),
-        webamp = new Webamp(options) as Webamp & WebampStore;
+        webamp = new Webamp(options) as Webamp & WebampStore,
+        { current: containerElement } = elementRef as { current: HTMLElement };
 
       webamp.store.dispatch(closeEqualizer);
       onClose && webamp.onClose(onClose);
       onMinimize && webamp.onMinimize(onMinimize);
 
-      await webamp.renderWhenReady(elementRef.current as HTMLElement);
+      await webamp.renderWhenReady(containerElement);
 
-      const webampElement = document.getElementById('webamp');
-      webampElement && elementRef.current?.appendChild(webampElement);
-      onFocus?.() && webampElement?.focus();
+      const webampElement = document.getElementById('webamp') as HTMLElement;
+      appendElement(containerElement, webampElement);
+      webampElement?.focus();
+      onFocus?.();
 
       return webamp;
     };
@@ -108,7 +110,7 @@ const Winamp: FC<AppComponent> = ({
       cancel={touchControls}
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
-      onBlur={onBlur}
+      onDragStart={focusOnDrag}
       style={{ zIndex }}
       tabIndex={tabIndex}
     >

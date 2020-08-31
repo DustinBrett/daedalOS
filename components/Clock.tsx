@@ -1,19 +1,20 @@
 import styles from '@/styles/Clock.module.scss';
 
 import type { FC } from 'react';
+
 import { useEffect, useState } from 'react';
+
+const toDateTimeOptions = {
+  year: 'numeric',
+  day: '2-digit',
+  month: '2-digit'
+};
 
 const toDateOptions = {
   weekday: 'long',
   month: 'long',
   day: 'numeric',
   year: 'numeric'
-};
-
-const toDateTimeOptions = {
-  year: 'numeric',
-  day: '2-digit',
-  month: '2-digit'
 };
 
 const toTimeOptions = {

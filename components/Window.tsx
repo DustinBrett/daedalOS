@@ -1,18 +1,17 @@
 import styles from '@/styles/Window.module.scss';
 
 import type { FC } from 'react';
-import type { RndDragEvent } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { focusOnDrag } from '@/utils';
 
 type Window = {
   name: string;
   onMinimize: () => void;
   onClose: () => void;
   onFocus: () => void;
-  onBlur: () => void;
   lockAspectRatio: boolean;
   hideScrollbars: boolean;
   tabIndex: number;
@@ -25,17 +24,12 @@ export const Window: FC<Window> = ({
   onMinimize,
   onClose,
   onFocus,
-  onBlur,
   lockAspectRatio,
   hideScrollbars,
   tabIndex,
   zIndex
 }) => {
-  const windowRef = useRef<Rnd>(null),
-    focusOnDrag = ({ target }: RndDragEvent) =>
-      ((target as HTMLElement)?.closest(
-        `.${styles.window}`
-      ) as HTMLDivElement)?.focus?.();
+  const windowRef = useRef<Rnd>(null);
 
   useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), [
     windowRef
@@ -56,7 +50,6 @@ export const Window: FC<Window> = ({
         }}
         tabIndex={tabIndex}
         onFocus={onFocus}
-        onBlur={onBlur}
         onDragStart={focusOnDrag}
         ref={windowRef}
         lockAspectRatio={lockAspectRatio}

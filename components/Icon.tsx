@@ -1,6 +1,7 @@
 import styles from '@/styles/Icon.module.scss';
 
 import type { FC } from 'react';
+
 import { useDoubleTap } from 'use-double-tap';
 
 type Icon = {

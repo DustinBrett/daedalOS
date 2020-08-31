@@ -4,13 +4,14 @@ import DosIcon from '@/assets/icons/Dos.png';
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
+
 import App, { AppComponent } from '@/contexts/App';
 import { useEffect, useRef } from 'react';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
 type DosApp = {
-  args?: string[];
+  args?: Array<string>;
   url?: string;
 };
 
@@ -28,15 +29,18 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
       });
 
   useEffect(() => {
-    (window as DosWindow)
-      .Dos(canvasRef.current as HTMLCanvasElement, dosOptions)
-      .then(({ fs, main }) => {
-        if (url) {
-          fs.extract(url).then(loadMain(main));
-        } else {
-          loadMain(main)();
-        }
-      });
+    const { current: canvasElement } = canvasRef as {
+        current: HTMLCanvasElement;
+      },
+      { Dos } = window as DosWindow;
+
+    Dos(canvasElement, dosOptions).then(({ fs, main }) => {
+      if (url) {
+        fs.extract(url).then(loadMain(main));
+      } else {
+        loadMain(main)();
+      }
+    });
 
     return () => {
       ci?.exit();

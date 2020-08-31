@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+
 import * as THREE from 'three';
 import WAVES from '@/assets/libs/vanta.waves.min';
 import Color from 'color';
@@ -6,7 +7,7 @@ import Color from 'color';
 type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${h}, 10%, 15%)`).rgbNumber();
+  Color(`hsl(${h}, 80%, 5%)`).rgbNumber();
 
 const fps = 60,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
@@ -16,10 +17,10 @@ const fps = 60,
     mouseControls: false,
     touchControls: false,
     color: wallpaperColor(initialColor),
-    shininess: 30,
-    waveHeight: 5,
+    shininess: 50,
+    waveHeight: 7.5,
     waveSpeed: 0.5,
-    zoom: 1
+    zoom: 1.1
   };
 
 const initRainbowEffect = (

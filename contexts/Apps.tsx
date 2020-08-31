@@ -1,7 +1,7 @@
 import type { Dispatch, FC } from 'react';
+
 import { createContext, useReducer } from 'react';
 import App from '@/contexts/App';
-
 import Files from '@/components/Files';
 import DOS from '@/components/Dos';
 import CommanderKeen from '@/components/Games/CommanderKeen';
@@ -10,7 +10,7 @@ import Winamp from '@/components/Winamp';
 
 export type Apps = Array<App>;
 
-type AppAction = {
+export type AppAction = {
   update: Partial<App>;
   id: string;
 };

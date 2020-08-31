@@ -1,6 +1,7 @@
 import CommanderKeenIcon from '@/assets/icons/CommanderKeen.png';
 
 import type { FC } from 'react';
+
 import App from '@/contexts/App';
 import { DosAppLoader } from '@/components/Dos';
 

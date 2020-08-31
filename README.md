@@ -30,6 +30,7 @@
 - System tray
 - Local internal muting/volume control of games/agent/etc (access in systray)
 - Chat/Messenger/Contact Component
+- PWA
 
 ## HIGH
 
@@ -60,6 +61,7 @@
 
 - Trigger `:focus` when setting foreground
 - If minimized disable any `.foreground`, `:focus` or `:active` effects
+- Hover was resizing slightly on mobile when bar is full
 
 #### Taskbar, Icons & Windows
 
@@ -78,6 +80,8 @@
 - Greyscale entire `<header>` when window is not in focus
 - Add icon to left of `<header>` title
 - Make scrollbar 1-3 px wider
+- Titlebar text was too bold in Safari (Why was it different?)
+- Remove hard coded z-index in `<Windows />`
 
 #### DOS
 
@@ -87,6 +91,7 @@
 #### Winamp
 
 - Focus is not working reliably
+  - Touch events are not focusing on winamp
 - Equalizer needs canceling of drag controls
 
 ## LOW

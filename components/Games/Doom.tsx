@@ -1,6 +1,7 @@
 import DoomIcon from '@/assets/icons/Doom.png';
 
 import type { FC } from 'react';
+
 import App from '@/contexts/App';
 import { DosAppLoader } from '@/components/Dos';
 

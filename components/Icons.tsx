@@ -1,6 +1,7 @@
 import styles from '@/styles/Icons.module.scss';
 
 import type { FC } from 'react';
+
 import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Icon } from '@/components/Icon';

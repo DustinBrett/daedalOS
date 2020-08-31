@@ -1,6 +1,7 @@
 import FilesIcon from '@/assets/icons/Files.png';
 
 import type { FC } from 'react';
+
 import App from '@/contexts/App';
 
 // TODO: Use data from node.fs `ls`

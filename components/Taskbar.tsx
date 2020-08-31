@@ -1,10 +1,12 @@
 import styles from '@/styles/Taskbar.module.scss';
 
 import type { FC } from 'react';
+
 import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Clock } from '@/components/Clock';
 import { TaskbarEntry } from '@/components/TaskbarEntry';
+import { appToFocus } from '@/utils';
 
 export const Taskbar: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),
@@ -25,25 +27,7 @@ export const Taskbar: FC = () => {
               if (minimized) {
                 updateApps({ update: { minimized: false }, id });
               } else {
-                apps.forEach(({ id: appId }) => {
-                  updateApps({
-                    update: { foreground: id === appId },
-                    id: appId
-                  });
-                });
-                apps.forEach(({ id: appId, stackOrder }) => {
-                  updateApps({
-                    update: {
-                      stackOrder: [
-                        id,
-                        ...stackOrder.filter(
-                          (windowId: string) => windowId !== id
-                        )
-                      ]
-                    },
-                    id: appId
-                  });
-                });
+                appToFocus(apps, updateApps, id);
               }
             }}
             tabIndex={apps.length + index}
