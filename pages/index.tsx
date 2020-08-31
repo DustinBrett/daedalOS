@@ -1,17 +1,13 @@
 import type { ReactElement } from 'react';
 
-import { useEffect } from 'react';
 import { AppsProvider } from '@/contexts/Apps';
-import { Desktop } from '@/components/Desktop';
-import { Icons } from '@/components/Icons';
+import { Desktop } from '@/components/System/Desktop';
+import { Icons } from '@/components/System/Icons';
 import { Metadata } from '@/components/Metadata';
-import { Taskbar } from '@/components/Taskbar';
-import { Windows } from '@/components/Windows';
-import { lockDocumentTitle } from '@/utils';
+import { Taskbar } from '@/components/System/Taskbar';
+import { Windows } from '@/components/System/Windows';
 
 export default function HomePage(): ReactElement {
-  useEffect(lockDocumentTitle, []);
-
   return (
     <>
       <Metadata />

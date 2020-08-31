@@ -2,8 +2,8 @@ import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
-import { Window } from '@/components/Window';
-import { appToFocus } from '@/utils';
+import { Window } from '@/components/System/Window';
+import { appToFocus } from 'utils/utils';
 
 export const Windows: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),

@@ -1,4 +1,4 @@
-import styles from '@/styles/Icon.module.scss';
+import styles from '@/styles/System/Icon.module.scss';
 
 import type { FC } from 'react';
 

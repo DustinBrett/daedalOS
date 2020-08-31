@@ -1,6 +1,6 @@
-@import 'maps';
-@import 'mixins';
-@import 'variables';
+@import '@/styles/maps';
+@import '@/styles/mixins';
+@import '@/styles/variables';
 
 .taskbarEntry {
   @include textOverflowEllipsis;

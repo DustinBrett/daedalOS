@@ -1,10 +1,10 @@
-import styles from '@/styles/Desktop.module.scss';
+import styles from '@/styles/System/Desktop.module.scss';
 
 import type { FC } from 'react';
-import type { WallpaperEffect } from '@/components/Wallpaper';
+import type { WallpaperEffect } from '@/components/System/Wallpaper';
 
 import { useEffect, useRef, useState } from 'react';
-import { renderWallpaperEffect } from '@/components/Wallpaper';
+import { renderWallpaperEffect } from '@/components/System/Wallpaper';
 
 export const Desktop: FC = ({ children }) => {
   const desktopRef = useRef(null),

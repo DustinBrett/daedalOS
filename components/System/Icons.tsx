@@ -1,10 +1,10 @@
-import styles from '@/styles/Icons.module.scss';
+import styles from '@/styles/System/Icons.module.scss';
 
 import type { FC } from 'react';
 
 import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
-import { Icon } from '@/components/Icon';
+import { Icon } from '@/components/System/Icon';
 
 export const Icons: FC = () => {
   const { apps, updateApps } = useContext(AppsContext);

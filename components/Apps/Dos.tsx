@@ -1,4 +1,4 @@
-import styles from '@/styles/Dos.module.scss';
+import styles from '@/styles/Apps/Dos.module.scss';
 import DosIcon from '@/assets/icons/Dos.png';
 
 import type { DosFactory, DosMainFn } from 'js-dos';

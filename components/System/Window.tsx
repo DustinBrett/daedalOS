@@ -1,11 +1,11 @@
-import styles from '@/styles/Window.module.scss';
+import styles from '@/styles/System/Window.module.scss';
 
 import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag } from '@/utils';
+import { focusOnDrag } from 'utils/utils';
 
 type Window = {
   name: string;

@@ -1,12 +1,12 @@
-import styles from '@/styles/Taskbar.module.scss';
+import styles from '@/styles/System/Taskbar.module.scss';
 
 import type { FC } from 'react';
 
 import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
-import { Clock } from '@/components/Clock';
-import { TaskbarEntry } from '@/components/TaskbarEntry';
-import { appToFocus } from '@/utils';
+import { Clock } from '@/components/System/Clock';
+import { TaskbarEntry } from '@/components/System/TaskbarEntry';
+import { appToFocus } from 'utils/utils';
 
 export const Taskbar: FC = () => {
   const { apps, updateApps } = useContext(AppsContext),

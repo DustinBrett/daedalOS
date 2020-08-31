@@ -7,7 +7,7 @@ import type { RndDragCallback } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import App, { AppComponent } from '@/contexts/App';
-import { appendElement, focusOnDrag } from '@/utils';
+import { appendElement, focusOnDrag } from 'utils/utils';
 
 type WebampStoreAction = { type: string; windowId: string };
 

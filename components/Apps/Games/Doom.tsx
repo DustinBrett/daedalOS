@@ -3,7 +3,7 @@ import DoomIcon from '@/assets/icons/Doom.png';
 import type { FC } from 'react';
 
 import App from '@/contexts/App';
-import { DosAppLoader } from '@/components/Dos';
+import { DosAppLoader } from '@/components/Apps/Dos';
 
 const Doom: FC = () => (
   <DosAppLoader url="/games/doom.ZIP" args={['-c', 'DOOM.EXE']} />
