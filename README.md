@@ -6,6 +6,8 @@
 - File Explorer
   - https://github.com/jvilk/BrowserFS
   - Make blog using file explorer + WebODF
+- About Me "Dustin Brett" Icon/Profile/Contact app
+  - https://www.laptopmag.com/articles/add-quick-contacts-start-menu-windows-10
 - Word Processor (https://webodf.org/)
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
@@ -13,8 +15,9 @@
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Minesweeper (https://github.com/ziebelje/minesweeper)
 - Photo Viewer
+- Shortcuts (Latest blog post in blog folder on desktop as shortcut)
 - Calendar
-- Notepad/code editor
+- Notepad/Code Editor
   - Show the sites source code
 - Session Management
 - IRC Client, visuals like mIRC circa '95
@@ -32,14 +35,19 @@
 - Constraints on dragging and resizing
   - Only stop dragging `top < 0`
 - Fix touch resizing `top` instead of dragging
+- Restore `x`, `y` ,`width` & `height` when exiting from minimize
 
 #### Icons
 
-- Make draggable (w/Constraints)
+- Make draggable
 - Double clicking should open if minimized
   - `update` should allow multiple keys to be passed into app
 - Icon label truncation
   - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
+
+#### Taskbar, Icons & Windows
+
+- Fix text label truncation
 
 ## MEDIUM
 
@@ -54,24 +62,25 @@
 - If minimized disable any `.foreground`, `:focus` or `:active` effects
 - Hover was resizing slightly on mobile when bar is full
 
-#### Taskbar, Icons & Windows
+#### Taskbar & Icons
 
-- Fix text label truncation
+- Use Windows font label text
 
 #### Apps
 
-- Allow updating mulitple key/value's with a single `updateApps`
+- Allow updating multiple key/value's with a single `updateApps`
 - Avoid storing `stackOrder` within every app
 
 #### Windows
 
 - Cascade upon opening
-- Restore `x`, `y` ,`width` & `height` when exiting from minimize
 - Change `<header>` background color to a gradient
 - Greyscale entire `<header>` when window is not in focus
 - Add icon to left of `<header>` title
 - Titlebar text was too bold in Safari (Why was it different?)
 - Remove hard coded z-index in `<Windows />`
+- Reveal all buttons upon hover for min/max/close
+- Use OSX font for title bar text
 
 #### DOS
 
@@ -96,7 +105,11 @@
 
 #### Winamp
 
-- Mildrop (https://github.com/jberg/butterchurn)
+- Milkdrop (https://github.com/jberg/butterchurn)
+
+#### Icons & Windows
+
+- Drag constraints
 
 #### Icons
 
