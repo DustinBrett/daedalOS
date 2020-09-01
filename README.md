@@ -39,14 +39,13 @@
 
 #### Apps
 
-- Allow updating multiple key/value's with a single `updateApps`
+- Allow updating multiple key/value's with a single `updateApp`
 
 #### Windows
 
 - Ability to maximize
   - Lock aspect ratio with `maxWidth`
 - Fix touch resizing `top` instead of dragging
-  - Resize bar back to OSX size if dragging is fixed
 - Stop minimize from re-rendering the app
 
 #### Icons

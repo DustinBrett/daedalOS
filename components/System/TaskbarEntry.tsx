@@ -23,7 +23,7 @@ export const TaskbarEntry: FC<TaskbarEntry> = ({
     tabIndex={tabIndex}
   >
     <figure>
-      <img alt={name} src={icon} />
+      <img alt={name} src={icon} draggable={false} />
       <figcaption>{name}</figcaption>
     </figure>
   </li>

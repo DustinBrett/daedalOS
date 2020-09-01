@@ -70,7 +70,7 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
   y = 0
 }) => {
   const elementRef = useRef<HTMLElement>(null),
-    { updateApps } = useContext(AppsContext),
+    { updateApp } = useContext(AppsContext),
     onTouchEventsOnly: RndDragCallback = (e): void => {
       if (e instanceof MouseEvent) {
         e.preventDefault();
@@ -118,7 +118,7 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
       onDragStart={focusOnDrag}
-      onDragStop={updatePosition(updateApps, 'winamp')}
+      onDragStop={updatePosition(updateApp, 'winamp')}
       style={{ zIndex }}
       tabIndex={tabIndex}
     >

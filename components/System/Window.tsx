@@ -61,7 +61,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
       >
         <header className="handle">
           <h1>
-            <img alt={name} src={icon} />
+            <img alt={name} src={icon} draggable={false} />
             {name}
           </h1>
           <nav className="cancel">

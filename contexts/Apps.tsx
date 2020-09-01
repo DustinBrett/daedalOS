@@ -11,28 +11,31 @@ import Winamp from '@/components/Apps/Winamp';
 export type Apps = Array<App>;
 
 export type AppAction = {
-  update: Partial<App>;
+  updates: Partial<App>;
   id: string;
 };
 
 const initialApps: Apps = [Files, DOS, CommanderKeen, Doom, Winamp];
 
-const appReducer = (apps: Apps, { update, id }: AppAction) =>
-  apps.map((app) => (app.id === id ? { ...app, ...update } : app));
+// const appReducer = (apps: Apps, { update, id }: AppAction) =>
+//   apps.map((app) => (app.id === id ? { ...app, ...update } : app));
+
+const appReducer = (apps: Apps, { updates, id }: AppAction) =>
+  apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
 
 export const AppsContext = createContext<{
   apps: Apps;
-  updateApps: Dispatch<AppAction>;
+  updateApp: Dispatch<AppAction>;
 }>({
   apps: [],
-  updateApps: () => null
+  updateApp: () => null
 });
 
 export const AppsProvider: FC = ({ children }) => {
-  const [apps, updateApps] = useReducer(appReducer, initialApps);
+  const [apps, updateApp] = useReducer(appReducer, initialApps);
 
   return (
-    <AppsContext.Provider value={{ apps, updateApps }}>
+    <AppsContext.Provider value={{ apps, updateApp }}>
       {children}
     </AppsContext.Provider>
   );

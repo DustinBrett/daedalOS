@@ -18,21 +18,21 @@ export const appendElement = (
 
 export const appToFocus = (
   apps: Apps,
-  updateApps: Dispatch<AppAction>,
+  updateApp: Dispatch<AppAction>,
   id: string
 ): void => {
-  appToForeground(apps, updateApps, id);
-  appToStackTop(apps, updateApps, id);
+  appToForeground(apps, updateApp, id);
+  appToStackTop(apps, updateApp, id);
 };
 
 export const appToForeground = (
   apps: Apps,
-  updateApps: Dispatch<AppAction>,
+  updateApp: Dispatch<AppAction>,
   id: string
 ): void => {
   apps.forEach(({ id: appId }) => {
-    updateApps({
-      update: { foreground: id === appId },
+    updateApp({
+      updates: { foreground: id === appId },
       id: appId
     });
   });
@@ -40,12 +40,12 @@ export const appToForeground = (
 
 export const appToStackTop = (
   apps: Apps,
-  updateApps: Dispatch<AppAction>,
+  updateApp: Dispatch<AppAction>,
   id: string
 ): void => {
   apps.forEach(({ id: appId, stackOrder }) => {
-    updateApps({
-      update: {
+    updateApp({
+      updates: {
         stackOrder: [
           id,
           ...stackOrder.filter((windowId: string) => windowId !== id)
@@ -73,21 +73,19 @@ export const lockDocumentTitle = (): void => {
 };
 
 export const updatePosition = (
-  updateApps: Dispatch<AppAction>,
+  updateApp: Dispatch<AppAction>,
   id: string
 ): RndDragCallback => (_event, { x, y }): void => {
-  updateApps({ update: { x }, id });
-  updateApps({ update: { y }, id });
+  updateApp({ updates: { x, y }, id });
 };
 
 export const updateSize = (
-  updateApps: Dispatch<AppAction>,
+  updateApp: Dispatch<AppAction>,
   id: string
 ): RndResizeCallback => (
   _event,
   _direction,
   { offsetWidth, offsetHeight }
 ): void => {
-  updateApps({ update: { height: offsetHeight }, id });
-  updateApps({ update: { width: offsetWidth }, id });
+  updateApp({ updates: { height: offsetHeight, width: offsetWidth }, id });
 };

@@ -7,7 +7,7 @@ import { AppsContext } from '@/contexts/Apps';
 import { Icon } from '@/components/System/Icon';
 
 export const Icons: FC = () => {
-  const { apps, updateApps } = useContext(AppsContext);
+  const { apps, updateApp } = useContext(AppsContext);
 
   return (
     <nav className={styles.icons}>
@@ -18,8 +18,10 @@ export const Icons: FC = () => {
             icon={icon}
             name={name}
             onDoubleClick={() => {
-              updateApps({ update: { running: true }, id });
-              updateApps({ update: { lastRunning: new Date() }, id });
+              updateApp({
+                updates: { running: true, lastRunning: new Date() },
+                id
+              });
             }}
             tabIndex={index}
           />

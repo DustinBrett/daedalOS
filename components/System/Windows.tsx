@@ -6,7 +6,7 @@ import { Window } from '@/components/System/Window';
 import { appToFocus, updatePosition, updateSize } from 'utils/utils';
 
 export const Windows: FC = () => {
-  const { apps, updateApps } = useContext(AppsContext),
+  const { apps, updateApp } = useContext(AppsContext),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
       marginLeft: 0
@@ -15,12 +15,11 @@ export const Windows: FC = () => {
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
-      updateApps({ update: { minimized: true }, id }),
+      updateApp({ updates: { minimized: true }, id }),
     onClose = (id: string) => () => {
-      updateApps({ update: { running: false }, id });
-      updateApps({ update: { stackOrder: [] }, id });
+      updateApp({ updates: { running: false, stackOrder: [] }, id });
     },
-    onFocus = (id: string) => () => appToFocus(apps, updateApps, id);
+    onFocus = (id: string) => () => appToFocus(apps, updateApp, id);
 
   useEffect(() => {
     setWindowMargins({
@@ -54,8 +53,8 @@ export const Windows: FC = () => {
               onMinimize: onMinimize(id),
               onClose: onClose(id),
               onFocus: onFocus(id),
-              updatePosition: updatePosition(updateApps, id),
-              updateSize: updateSize(updateApps, id),
+              updatePosition: updatePosition(updateApp, id),
+              updateSize: updateSize(updateApp, id),
               tabIndex: apps.length + activeApps.length + index,
               zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
               height,

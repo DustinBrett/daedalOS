@@ -9,7 +9,7 @@ import { TaskbarEntry } from '@/components/System/TaskbarEntry';
 import { appToFocus } from 'utils/utils';
 
 export const Taskbar: FC = () => {
-  const { apps, updateApps } = useContext(AppsContext),
+  const { apps, updateApp } = useContext(AppsContext),
     runningApps = apps
       .filter(({ running }) => running)
       .sort((a, b) => a.lastRunning.getTime() - b.lastRunning.getTime());
@@ -25,9 +25,9 @@ export const Taskbar: FC = () => {
             name={name}
             onClick={() => {
               if (minimized) {
-                updateApps({ update: { minimized: false }, id });
+                updateApp({ updates: { minimized: false }, id });
               } else {
-                appToFocus(apps, updateApps, id);
+                appToFocus(apps, updateApp, id);
               }
             }}
             tabIndex={apps.length + index}
