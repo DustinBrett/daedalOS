@@ -1,29 +1,23 @@
 import styles from '@/styles/System/Window.module.scss';
 
 import type { FC } from 'react';
+import type App from '@/contexts/App';
+import type { AppComponent } from '@/contexts/App';
+
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag } from 'utils/utils';
 
-type Window = {
-  name: string;
-  onMinimize: () => void;
-  onClose: () => void;
-  onFocus: () => void;
-  lockAspectRatio: boolean;
-  hideScrollbars: boolean;
-  tabIndex: number;
-  zIndex: number;
-};
-
-export const Window: FC<Window> = ({
+export const Window: FC<Partial<App> & AppComponent> = ({
   children,
   name,
   onMinimize,
   onClose,
   onFocus,
+  updatePosition,
+  updateSize,
   lockAspectRatio,
   hideScrollbars,
   tabIndex,
@@ -51,6 +45,8 @@ export const Window: FC<Window> = ({
         tabIndex={tabIndex}
         onFocus={onFocus}
         onDragStart={focusOnDrag}
+        onDragStop={updatePosition}
+        onResizeStop={updateSize}
         ref={windowRef}
         lockAspectRatio={lockAspectRatio}
         style={{ zIndex }}

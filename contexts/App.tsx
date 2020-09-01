@@ -1,9 +1,12 @@
 import type { FC } from 'react';
 
 export type AppComponent = {
+  onDoubleClick?: () => void;
   onClose?: () => void;
   onMinimize?: () => void;
   onFocus?: () => void;
+  updatePosition?: () => void;
+  updateSize?: () => void;
   tabIndex?: number;
   zIndex?: number;
 };

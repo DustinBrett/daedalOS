@@ -106,6 +106,8 @@
 #### Winamp
 
 - Milkdrop (https://github.com/jberg/butterchurn)
+- Build up a collection of cool songs in the playlist
+  - Sourced legally and streamable through CORS ideally
 
 #### Icons & Windows
 
