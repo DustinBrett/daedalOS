@@ -37,16 +37,12 @@
 
 ## HIGH
 
-#### Apps
-
-- Allow updating multiple key/value's with a single `updateApp`
-
 #### Windows
 
 - Ability to maximize
   - Lock aspect ratio with `maxWidth`
-- Fix touch resizing `top` instead of dragging
 - Stop minimize from re-rendering the app
+- Fix touch resizing `top` instead of dragging
 
 #### Icons
 
@@ -71,16 +67,12 @@
 - Trigger `:focus` when setting foreground
 - If minimized disable any `.foreground`, `:focus` or `:active` effects
 - Hover was resizing slightly on mobile when bar is full
-
-#### Taskbar & Icons
-
-- Use Windows font label text
+- Clicking when active should minimize
 
 #### Windows
 
 - Remove hard coded z-index in `<Windows />`
 - Reveal all buttons upon hover for min/max/close
-- Use OSX font for title bar text
 
 #### DOS
 
@@ -147,6 +139,7 @@
   - https://js-dos.com/6.22/current/wdosbox.wasm.js
   - https://github.com/lucmult/winamp2-js/raw/master/mp3/llama-2.91.mp3
   - https://archive.org/download/winampskin_SpyAMP_Professional_Edition_v5/SpyAMP_Professional_Edition_v5.wsz
+  - Fonts?
 
 #### Accessibility
 

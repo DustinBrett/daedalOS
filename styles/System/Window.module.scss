@@ -56,8 +56,13 @@ $buttonIconOpacity: 0.75;
     );
 
     h1 {
+      font-family: 'LucidaGrande', sans-serif;
       font-size: 12px;
       font-weight: normal;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       width: 100%;
 
@@ -65,7 +70,6 @@ $buttonIconOpacity: 0.75;
 
       img {
         position: relative;
-        top: 2px;
 
         width: 16px;
         height: 16px;

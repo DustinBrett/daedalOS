@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=fallback');
+// @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=fallback');
+
+@font-face {
+  font-family: 'LucidaGrande';
+  font-weight: normal;
+  font-style: normal;
+
+  src: url('/fonts/LucidaGrande/LucidaGrandeRegular.ttf') format('truetype'),
+    /* Safari, Android, iOS */
+      url('/fonts/LucidaGrande/LucidaGrandeRegular.woff') format('woff'),
+    /* Modern Browsers */ url('/fonts/LucidaGrande/LucidaGrandeRegular.woff2')
+      format('woff2'); /* Modern Browsers */
+}
+
+@font-face {
+  font-family: 'SegoeUI';
+  font-weight: normal;
+  font-style: normal;
+
+  src: url('/fonts/SegoeUI/SegoeUI.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('/fonts/SegoeUI/SegoeUI.woff') format('woff'),
+    /* Modern Browsers */ url('/fonts/SegoeUI/SegoeUI.woff2') format('woff2'); /* Modern Browsers */
+}
 
 * {
   box-sizing: border-box;
@@ -15,10 +37,10 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'SegoeUI', sans-serif;
 
   overscroll-behavior: contain;
-  font-display: fallback;
+  font-display: auto;
 }
 
 ol {
