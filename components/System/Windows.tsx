@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import type { RndDragCallback } from 'react-rnd';
+import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
@@ -16,6 +16,7 @@ export const Windows: FC = () => {
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
+      // TODO: Stop this from re-rendering the app (Can it "pause" a component)
       updateApps({ update: { minimized: true }, id }),
     onClose = (id: string) => () => {
       updateApps({ update: { running: false }, id });
@@ -25,6 +26,10 @@ export const Windows: FC = () => {
     updatePosition = (id: string): RndDragCallback => (_event, { x, y }): void => {
       updateApps({ update: { x }, id });
       updateApps({ update: { y }, id });
+    },
+    updateSize = (id: string): RndResizeCallback => (_event, _direction, { offsetWidth, offsetHeight }): void => {
+      updateApps({ update: { height: offsetHeight }, id });
+      updateApps({ update: { width: offsetWidth }, id });
     };
 
   useEffect(() => {
@@ -46,6 +51,8 @@ export const Windows: FC = () => {
             lockAspectRatio,
             hideScrollbars,
             stackOrder,
+            height,
+            width,
             x,
             y
           },
@@ -56,8 +63,11 @@ export const Windows: FC = () => {
             onClose: onClose(id),
             onFocus: onFocus(id),
             updatePosition: updatePosition(id),
+            updateSize: updateSize(id),
             tabIndex: apps.length + activeApps.length + index,
             zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
+            height,
+            width,
             x,
             y
           };

@@ -22,6 +22,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   hideScrollbars,
   tabIndex,
   zIndex,
+  height,
+  width,
   x,
   y
 }) => {
@@ -39,10 +41,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
+          height: height || 250, // TODO: Const default
+          width: width || 250, // TODO: Const default
           x: x || 0,
-          y: y || 0,
-          width: 320,
-          height: 224
+          y: y || 0
         }}
         tabIndex={tabIndex}
         onFocus={onFocus}

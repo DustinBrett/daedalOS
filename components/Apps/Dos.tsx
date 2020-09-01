@@ -52,10 +52,16 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
   return <canvas className={styles.dos} ref={canvasRef} />;
 };
 
+export const DosAppOptions: Partial<App> = {
+  hideScrollbars: true,
+  lockAspectRatio: true,
+  width: 320,
+  height: 224
+};
+
 export default new App({
   component: DosAppLoader as FC<AppComponent>,
   icon: DosIcon,
   name: 'DOS',
-  hideScrollbars: true,
-  lockAspectRatio: true
+  ...DosAppOptions
 });
