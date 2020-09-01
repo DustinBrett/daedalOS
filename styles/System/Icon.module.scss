@@ -52,8 +52,9 @@
   figure {
     @include textOverflowEllipsis;
 
-    text-align: center;
     margin: 5px 0;
+
+    text-align: center;
 
     figcaption {
       white-space: break-spaces;
