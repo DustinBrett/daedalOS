@@ -23,13 +23,14 @@ $icon: (
   text-color: $offWhite,
   text-shadow: $textShadow,
   font-size: $fontSize,
-  height: 74px,
-  width: 82px,
+  min-height: 72px,
+  max-height: 87px,
+  width: 77px,
   svg-width: 44px,
   hover-bg-color: $uiColor2,
   hover-bg-opacity: 10%,
   hover-border-color: $uiColor2,
-  hover-border-opacity: 30%,
+  hover-border-opacity: 15%,
   z-index: map-get($zIndex, icons)
 );
 

@@ -5,8 +5,9 @@
   outline: 1px $borderStyle
     rgba(
       map-get($icon, hover-border-color),
-      (map-get($icon, hover-border-opacity) + $darker + 5%)
+      (map-get($icon, hover-border-opacity) + $darker)
     );
+  outline-offset: -2px;
   background-color: rgba(
     map-get($icon, hover-bg-color),
     (map-get($icon, hover-bg-opacity) + $darker)
@@ -22,7 +23,8 @@
   flex-direction: column;
 
   width: map-get($icon, width);
-  min-height: map-get($icon, height);
+  min-height: map-get($icon, min-height);
+  max-height: map-get($icon, max-height);
   margin: 0 0 map-get($icons, padding) 0;
 
   color: map-get($icon, text-color);
@@ -36,14 +38,14 @@
   }
 
   &:hover {
-    @include iconContainerColors(dotted);
+    @include iconContainerColors(solid);
   }
 
   &:focus {
-    @include iconContainerColors(solid, 10%);
+    @include iconContainerColors(dotted, 10%);
 
     &:hover {
-      @include iconContainerColors(solid, 20%);
+      @include iconContainerColors(solid, 15%);
     }
   }
 
@@ -51,6 +53,7 @@
     @include textOverflowEllipsis;
 
     text-align: center;
+    margin: 5px 0;
 
     figcaption {
       white-space: break-spaces;

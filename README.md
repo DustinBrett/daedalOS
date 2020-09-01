@@ -37,6 +37,10 @@
 
 ## HIGH
 
+#### Body
+
+- Background color should be black like Windows when explorer.exe is off
+
 #### Windows
 
 - Ability to maximize
@@ -49,7 +53,6 @@
 - Make draggable
 - Double clicking should open if minimized
   - `update` should allow multiple keys to be passed into app
-- Redo padding and sizing of containers
 
 #### Taskbar, Icons & Windows
 
