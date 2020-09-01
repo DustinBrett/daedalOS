@@ -49,14 +49,28 @@ $buttonIconOpacity: 0.75;
     color: map-get($window, title-bar-text-color);
     border-radius: map-get($window, border-radius)
       map-get($window, border-radius) 0 0;
-    background-color: map-get($window, title-bar-color);
+    background: linear-gradient(
+      180deg,
+      rgb(60, 60, 60) 0%,
+      rgb(45, 45, 45) 100%
+    );
 
     h1 {
       font-size: 12px;
+      font-weight: normal;
 
       width: 100%;
 
       text-align: center;
+
+      img {
+        position: relative;
+        top: 2px;
+
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+      }
     }
 
     nav {
@@ -101,6 +115,19 @@ $buttonIconOpacity: 0.75;
           color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
           background-color: $close;
         }
+      }
+    }
+  }
+
+  &:not(:focus) {
+    header {
+      background: unset;
+      background-color: rgb(50, 50, 50);
+
+      filter: grayscale(1.25);
+
+      h1 {
+        opacity: 0.5;
       }
     }
   }

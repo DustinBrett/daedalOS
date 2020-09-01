@@ -79,11 +79,6 @@
 
 #### Windows
 
-- Cascade upon opening
-- Change `<header>` background color to a gradient
-- Greyscale entire `<header>` when window is not in focus
-- Add icon to left of `<header>` title
-- Titlebar text was too bold in Safari (Why was it different?)
 - Remove hard coded z-index in `<Windows />`
 - Reveal all buttons upon hover for min/max/close
 - Use OSX font for title bar text

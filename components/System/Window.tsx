@@ -12,6 +12,7 @@ import { focusOnDrag } from 'utils/utils';
 
 export const Window: FC<Partial<App> & AppComponent> = ({
   children,
+  icon,
   name,
   onMinimize,
   onClose,
@@ -59,7 +60,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         style={{ zIndex }}
       >
         <header className="handle">
-          <h1>{name}</h1>
+          <h1>
+            <img alt={name} src={icon} />
+            {name}
+          </h1>
           <nav className="cancel">
             <button id={styles.close} onClick={onClose}>
               <FontAwesomeIcon size="xs" icon={faTimes} />

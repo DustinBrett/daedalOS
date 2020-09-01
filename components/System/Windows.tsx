@@ -24,8 +24,8 @@ export const Windows: FC = () => {
 
   useEffect(() => {
     setWindowMargins({
-      marginTop: window.innerHeight * 0.075,
-      marginLeft: window.innerWidth * 0.075
+      marginTop: 50,
+      marginLeft: 50
     });
   }, []);
 
@@ -36,6 +36,7 @@ export const Windows: FC = () => {
           {
             component: App,
             id,
+            icon,
             name,
             windowed,
             lockAspectRatio,
@@ -48,23 +49,25 @@ export const Windows: FC = () => {
           },
           index
         ) => {
-          const appOptions = {
-            onMinimize: onMinimize(id),
-            onClose: onClose(id),
-            onFocus: onFocus(id),
-            updatePosition: updatePosition(updateApps, id),
-            updateSize: updateSize(updateApps, id),
-            tabIndex: apps.length + activeApps.length + index,
-            zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
-            height,
-            width,
-            x,
-            y
-          };
+          const cascadeSpacing = (index - 1) * 20,
+            appOptions = {
+              onMinimize: onMinimize(id),
+              onClose: onClose(id),
+              onFocus: onFocus(id),
+              updatePosition: updatePosition(updateApps, id),
+              updateSize: updateSize(updateApps, id),
+              tabIndex: apps.length + activeApps.length + index,
+              zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
+              height,
+              width,
+              x: x || cascadeSpacing,
+              y: y || cascadeSpacing
+            };
 
           return windowed ? (
             <Window
               key={id}
+              icon={icon}
               name={name}
               lockAspectRatio={lockAspectRatio}
               hideScrollbars={hideScrollbars}
