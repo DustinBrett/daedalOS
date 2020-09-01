@@ -65,7 +65,6 @@ export default class {
     lockAspectRatio = false,
     hideScrollbars = false
   }: AppConstructor) {
-    // TODO: Can I do const this = { component };
     this.component = component;
     this.icon = icon;
     this.name = name;

@@ -23,11 +23,18 @@ export const Windows: FC = () => {
       updateApps({ update: { stackOrder: [] }, id });
     },
     onFocus = (id: string) => () => appToFocus(apps, updateApps, id),
-    updatePosition = (id: string): RndDragCallback => (_event, { x, y }): void => {
+    updatePosition = (id: string): RndDragCallback => (
+      _event,
+      { x, y }
+    ): void => {
       updateApps({ update: { x }, id });
       updateApps({ update: { y }, id });
     },
-    updateSize = (id: string): RndResizeCallback => (_event, _direction, { offsetWidth, offsetHeight }): void => {
+    updateSize = (id: string): RndResizeCallback => (
+      _event,
+      _direction,
+      { offsetWidth, offsetHeight }
+    ): void => {
       updateApps({ update: { height: offsetHeight }, id });
       updateApps({ update: { width: offsetWidth }, id });
     };

@@ -6,7 +6,12 @@ import type { AppComponent } from '@/contexts/App';
 
 import { useDoubleTap } from 'use-double-tap';
 
-export const Icon: FC<Partial<App> & AppComponent> = ({ icon, name, onDoubleClick, tabIndex }) => (
+export const Icon: FC<Partial<App> & AppComponent> = ({
+  icon,
+  name,
+  onDoubleClick,
+  tabIndex
+}) => (
   <li
     className={styles.icon}
     onDoubleClick={onDoubleClick}
