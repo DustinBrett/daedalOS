@@ -10,7 +10,7 @@ $zIndex: (
 $clock: (
   text-color: $offWhite,
   text-opacity: 80%,
-  font-size: 12px,
+  font-size: $fontSize,
   width: 90px,
   hover-bg-opacity: 10%
 );
@@ -22,7 +22,7 @@ $desktop: (
 $icon: (
   text-color: $offWhite,
   text-shadow: $textShadow,
-  font-size: 12px,
+  font-size: $fontSize,
   height: 74px,
   width: 82px,
   svg-width: 44px,
@@ -63,6 +63,7 @@ $window: (
   title-bar-color: $uiColor1,
   title-bar-text-color: rgb(170, 170, 170),
   title-bar-height: 24px,
+  title-bar-font-size: $fontSize,
   scroll-bar-color: lighten($uiColor1, 55%),
   z-index: map-get($zIndex, windows)
 );

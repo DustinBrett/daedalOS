@@ -56,8 +56,7 @@ $buttonIconOpacity: 0.75;
     );
 
     h1 {
-      font-family: 'LucidaGrande', sans-serif;
-      font-size: 12px;
+      font-size: map-get($window, title-bar-font-size);
       font-weight: normal;
 
       display: flex;
