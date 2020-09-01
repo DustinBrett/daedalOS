@@ -35,30 +35,30 @@ const touchControls = `
   #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,
   .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button`;
 
-const initialSkin = {
-  url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
-};
-
-const initialTracks = [
-  {
-    metaData: {
-      artist: 'DJ Mike Llama',
-      title: "Llama Whippin' Intro"
-    },
-    url: '/mp3/llama-2.91.mp3'
+const options: Options & PrivateOptions = {
+  __initialWindowLayout: {
+    main: { position: { x: 0, y: 0 } },
+    playlist: { position: { x: 0, y: 116 } },
+    equalizer: { position: { x: 0, y: 232 } }
+  },
+  initialTracks: [
+    {
+      metaData: {
+        artist: 'DJ Mike Llama',
+        title: "Llama Whippin' Intro"
+      },
+      url: '/mp3/llama-2.91.mp3'
+    }
+  ],
+  initialSkin: {
+    url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
   }
-];
+};
 
 const closeEqualizer = {
   type: 'CLOSE_WINDOW',
   windowId: 'equalizer'
 };
-
-const initialWindowLayout = (xOffset: number, yOffset: number) => ({
-  main: { position: { x: 0 + xOffset, y: 0 + yOffset } },
-  playlist: { position: { x: 0 + xOffset, y: 116 + yOffset } },
-  equalizer: { position: { x: 0 + xOffset, y: 232 + yOffset } }
-});
 
 const Winamp: FC<Partial<App> & AppComponent> = ({
   onClose,
@@ -79,11 +79,6 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
     },
     loadWebAmp = async (): Promise<Webamp & WebampStore> => {
       const { default: Webamp } = await import('webamp'),
-        options: Options & PrivateOptions = {
-          __initialWindowLayout: initialWindowLayout(x, y),
-          initialTracks,
-          initialSkin
-        },
         webamp = new Webamp(options) as Webamp & WebampStore,
         { current: containerElement } = elementRef as { current: HTMLElement };
 
@@ -115,6 +110,7 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
 
   return (
     <Rnd
+      default={{ x: x / 2, y: y / 2, width: 275, height: 232 }}
       enableResizing={false}
       enableUserSelectHack={false}
       dragHandleClassName="draggable"

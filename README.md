@@ -2,40 +2,49 @@
 
 ## FUTURE
 
+#### 1st
+
 - Animations (https://www.framer.com/api/motion)
-- File Explorer
-  - https://github.com/jvilk/BrowserFS
-  - Make blog using file explorer + WebODF
-- About Me "Dustin Brett" Icon/Profile/Contact app
-  - https://www.laptopmag.com/articles/add-quick-contacts-start-menu-windows-10
+- File Explorer (https://github.com/jvilk/BrowserFS)
 - Word Processor (https://webodf.org/)
+- Shortcuts (Latest blog post in blog folder on desktop as shortcut)
+
+#### 2nd
+
+- About Me "Dustin Brett" Icon/Profile/Contact app
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
 - JS Paint (https://github.com/1j01/jspaint)
-- Clippy.JS (https://www.smore.com/clippy-js)
-- Minesweeper (https://github.com/ziebelje/minesweeper)
-- Photo Viewer
-- Shortcuts (Latest blog post in blog folder on desktop as shortcut)
-- Calendar
 - Notepad/Code Editor
   - Show the sites source code
-- Session Management
-- IRC Client, visuals like mIRC circa '95
 - System tray
 - Local internal muting/volume control of games/agent/etc
-- Chat/Messenger/Contact Component
+
+#### 3rd
+
+- Clippy.JS (https://www.smore.com/clippy-js)
+- Photo Viewer
+- Calendar
+- Session Management
 - PWA
+
+#### 4th
+
+- IRC Client, visuals like mIRC circa '95
+- Minesweeper (https://github.com/ziebelje/minesweeper)
+- Chat/Messenger/Contact Component
 
 ## HIGH
 
+#### Apps
+
+- Allow updating multiple key/value's with a single `updateApps`
+
 #### Windows
 
-- Ability to maximize and override for purposes like fullscreen
-  - Keep aspect ratio
-- Constraints on dragging and resizing
-  - Only stop dragging `top < 0`
+- Ability to maximize
+  - Lock aspect ratio with `maxWidth`
 - Fix touch resizing `top` instead of dragging
-- Restore `x`, `y` ,`width` & `height` when exiting from minimize
 - Stop minimize from re-rendering the app
 
 #### Icons
@@ -43,18 +52,17 @@
 - Make draggable
 - Double clicking should open if minimized
   - `update` should allow multiple keys to be passed into app
-- Icon label truncation
-  - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
+- Redo padding and sizing of containers
 
 #### Taskbar, Icons & Windows
 
 - Fix text label truncation
+  - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
 
 ## MEDIUM
 
 #### Icons
 
-- Redo padding and sizing of containers
 - Upon starting app show some loading indications
 
 #### Taskbar
@@ -66,11 +74,6 @@
 #### Taskbar & Icons
 
 - Use Windows font label text
-
-#### Apps
-
-- Allow updating multiple key/value's with a single `updateApps`
-- Avoid storing `stackOrder` within every app
 
 #### Windows
 
@@ -93,7 +96,7 @@
 - Focus is not working reliably
   - Touch events are not focusing on winamp
 - Equalizer needs canceling of drag controls
-- x/y not setting properly with `__initialWindowLayout`
+- Fix requiring `x|y / 2` for position to look correctish
 
 #### React-Use (https://github.com/streamich/react-use)
 
@@ -105,15 +108,19 @@
 
 ## LOW
 
+#### Apps
+
+- Avoid storing `stackOrder` within every app
+
 #### Winamp
 
 - Milkdrop (https://github.com/jberg/butterchurn)
 - Build up a collection of cool songs in the playlist
-  - Sourced legally and streamable through CORS ideally
+  - Sourced legally and streamable ideally
 
 #### Icons & Windows
 
-- Drag constraints
+- Only constrain dragging above `top: 0`
 
 #### Icons
 
@@ -134,10 +141,6 @@
 #### Production
 
 - Add Sentry monitoring to project
-
-#### Document
-
-- Move `lockDocumentTitle` somewhere modular
 
 #### Public
 
