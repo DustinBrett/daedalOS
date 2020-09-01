@@ -21,7 +21,9 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   lockAspectRatio,
   hideScrollbars,
   tabIndex,
-  zIndex
+  zIndex,
+  x,
+  y
 }) => {
   const windowRef = useRef<Rnd>(null);
 
@@ -37,8 +39,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
-          x: 0,
-          y: 0,
+          x: x || 0,
+          y: y || 0,
           width: 320,
           height: 224
         }}

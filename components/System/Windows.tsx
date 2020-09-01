@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import type { RndDragCallback } from 'react-rnd';
 
 import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
@@ -20,7 +21,11 @@ export const Windows: FC = () => {
       updateApps({ update: { running: false }, id });
       updateApps({ update: { stackOrder: [] }, id });
     },
-    onFocus = (id: string) => () => appToFocus(apps, updateApps, id);
+    onFocus = (id: string) => () => appToFocus(apps, updateApps, id),
+    updatePosition = (id: string): RndDragCallback => (_event, { x, y }): void => {
+      updateApps({ update: { x }, id });
+      updateApps({ update: { y }, id });
+    };
 
   useEffect(() => {
     setWindowMargins({
@@ -40,7 +45,9 @@ export const Windows: FC = () => {
             windowed,
             lockAspectRatio,
             hideScrollbars,
-            stackOrder
+            stackOrder,
+            x,
+            y
           },
           index
         ) => {
@@ -48,8 +55,11 @@ export const Windows: FC = () => {
             onMinimize: onMinimize(id),
             onClose: onClose(id),
             onFocus: onFocus(id),
+            updatePosition: updatePosition(id),
             tabIndex: apps.length + activeApps.length + index,
-            zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1))
+            zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
+            x,
+            y
           };
 
           return windowed ? (

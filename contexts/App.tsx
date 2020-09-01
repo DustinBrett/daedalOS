@@ -1,11 +1,12 @@
 import type { FC } from 'react';
+import type { RndDragCallback } from 'react-rnd';
 
 export type AppComponent = {
   onDoubleClick?: () => void;
   onClose?: () => void;
   onMinimize?: () => void;
   onFocus?: () => void;
-  updatePosition?: () => void;
+  updatePosition?: RndDragCallback;
   updateSize?: () => void;
   tabIndex?: number;
   zIndex?: number;
@@ -31,6 +32,8 @@ export default class {
   lockAspectRatio;
   hideScrollbars;
 
+  x = 0;
+  y = 0;
   running = false;
   foreground = false;
   maximized = false;
