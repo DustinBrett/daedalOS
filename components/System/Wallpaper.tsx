@@ -1,26 +1,27 @@
 import type { RefObject } from 'react';
 
 import * as THREE from 'three';
-import WAVES from '@/assets/libs/vanta.waves.min';
+import NET from '@/assets/libs/vanta.net.min';
 import Color from 'color';
 
 type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${h}, 35%, 20%)`).rgbNumber();
+  Color(`hsl(${h}, 75%, 75%)`).rgbNumber();
 
 const fps = 60,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
-  initialColor = 220,
+  initialColor = Math.floor(Math.random() * Math.floor(360)),
   vantaJsSettings = {
-    gyroControls: false,
+    gyroControls: true,
     mouseControls: false,
     touchControls: false,
-    color: wallpaperColor(initialColor),
-    shininess: 75,
-    waveHeight: 7.5,
-    waveSpeed: 0.75,
-    zoom: 1.1
+    showDots: false,
+    points: 12,
+    spacing: 20,
+    maxDistance: 25,
+    backgroundColor: Color(`rgb(42, 42, 42)`).rgbNumber(),
+    color: wallpaperColor(initialColor)
   };
 
 const initRainbowEffect = (
@@ -62,7 +63,7 @@ export type WallpaperEffect = {
 export const renderWallpaperEffect = ({
   current: renderElement
 }: RefObject<HTMLElement>): WallpaperEffect => {
-  const wallpaperEffect = WAVES({
+  const wallpaperEffect = NET({
       el: renderElement,
       THREE,
       ...vantaJsSettings
