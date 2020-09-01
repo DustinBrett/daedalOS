@@ -24,8 +24,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   zIndex,
   height,
   width,
-  x,
-  y
+  x = 0,
+  y = 0
 }) => {
   const windowRef = useRef<Rnd>(null);
 
@@ -43,8 +43,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         default={{
           height: height || 250, // TODO: Const default
           width: width || 250, // TODO: Const default
-          x: x || 0,
-          y: y || 0
+          x,
+          y
         }}
         tabIndex={tabIndex}
         onFocus={onFocus}

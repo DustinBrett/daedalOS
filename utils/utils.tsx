@@ -1,4 +1,4 @@
-import type { DraggableData, RndDragEvent } from 'react-rnd';
+import type { DraggableData, RndDragCallback, RndDragEvent, RndResizeCallback } from 'react-rnd';
 import type { AppAction, Apps } from '@/contexts/Apps';
 import type { Dispatch } from 'react';
 
@@ -65,4 +65,21 @@ export const lockDocumentTitle = (): void => {
   ) {
     Object.defineProperty(document, 'title', { set: () => {} });
   }
+};
+
+export const updatePosition = (updateApps: Dispatch<AppAction>, id: string): RndDragCallback => (
+  _event,
+  { x, y }
+): void => {
+  updateApps({ update: { x }, id });
+  updateApps({ update: { y }, id });
+};
+
+export const updateSize = (updateApps: Dispatch<AppAction>, id: string): RndResizeCallback => (
+  _event,
+  _direction,
+  { offsetWidth, offsetHeight }
+): void => {
+  updateApps({ update: { height: offsetHeight }, id });
+  updateApps({ update: { width: offsetWidth }, id });
 };

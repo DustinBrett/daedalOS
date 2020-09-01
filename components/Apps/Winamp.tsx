@@ -4,10 +4,13 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
-import { useEffect, useRef } from 'react';
+
+import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
-import App, { AppComponent } from '@/contexts/App';
-import { appendElement, focusOnDrag } from 'utils/utils';
+import { AppComponent } from '@/contexts/App';
+import { appendElement, focusOnDrag, updatePosition } from 'utils/utils';
+import App from '@/contexts/App';
+import { AppsContext } from '@/contexts/Apps';
 
 type WebampStoreAction = { type: string; windowId: string };
 
@@ -32,39 +35,36 @@ const touchControls = `
   #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,
   .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button`;
 
-const options: Options & PrivateOptions = {
-  __initialWindowLayout: {
-    main: { position: { x: 0, y: 0 } },
-    playlist: { position: { x: 0, y: 116 } },
-    equalizer: { position: { x: 0, y: 232 } }
-  },
-  initialTracks: [
-    {
-      metaData: {
-        artist: 'DJ Mike Llama',
-        title: "Llama Whippin' Intro"
-      },
-      url: '/mp3/llama-2.91.mp3'
-    }
-  ],
-  initialSkin: {
-    url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
-  }
+const initialSkin = {
+  url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
 };
+
+const initialTracks = [
+  {
+    metaData: {
+      artist: 'DJ Mike Llama',
+      title: "Llama Whippin' Intro"
+    },
+    url: '/mp3/llama-2.91.mp3'
+  }
+];
 
 const closeEqualizer = {
   type: 'CLOSE_WINDOW',
   windowId: 'equalizer'
 };
 
-const Winamp: FC<AppComponent> = ({
+const Winamp: FC<Partial<App> & AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
   tabIndex,
-  zIndex
+  zIndex,
+  x = 0,
+  y = 0
 }) => {
   const elementRef = useRef<HTMLElement>(null),
+    { updateApps } = useContext(AppsContext),
     onTouchEventsOnly: RndDragCallback = (e): void => {
       if (e instanceof MouseEvent) {
         e.preventDefault();
@@ -72,7 +72,18 @@ const Winamp: FC<AppComponent> = ({
       }
     },
     loadWebAmp = async (): Promise<Webamp & WebampStore> => {
-      const { default: Webamp } = await import('webamp'),
+      const
+        options: Options & PrivateOptions = {
+          // TODO: __initialWindowLayout is not working properly
+          __initialWindowLayout: {
+            main: { position: { x: 0 + x, y: 0 + y } },
+            playlist: { position: { x: 0 + x, y: 116 + y } },
+            equalizer: { position: { x: 0 + x, y: 232 + y } }
+          },
+          initialTracks,
+          initialSkin
+        },
+        { default: Webamp } = await import('webamp'),
         webamp = new Webamp(options) as Webamp & WebampStore,
         { current: containerElement } = elementRef as { current: HTMLElement };
 
@@ -111,6 +122,7 @@ const Winamp: FC<AppComponent> = ({
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
       onDragStart={focusOnDrag}
+      onDragStop={updatePosition(updateApps, 'winamp')}
       style={{ zIndex }}
       tabIndex={tabIndex}
     >
