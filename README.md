@@ -15,8 +15,9 @@
 - PDF.js (https://github.com/mozilla/pdf.js)
   - Use to display Resume
 - JS Paint (https://github.com/1j01/jspaint)
-- Notepad/Code Editor
+- Code Editor (https://codemirror.net/)
   - Show the sites source code
+- Terminal (https://xtermjs.org/)
 - System tray
 - Local internal muting/volume control of games/agent/etc
 
@@ -45,6 +46,7 @@
 - Ability to maximize
   - Lock aspect ratio with `maxWidth`
 - Fix touch resizing `top` instead of dragging
+  - Resize bar back to OSX size if dragging is fixed
 - Stop minimize from re-rendering the app
 
 #### Icons
