@@ -41,8 +41,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
-          height: height || 250, // TODO: Const default
-          width: width || 250, // TODO: Const default
+          height: height || 250,
+          width: width || 250,
           x,
           y
         }}

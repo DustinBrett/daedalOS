@@ -54,6 +54,12 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
+const initialWindowLayout = (xOffset: number, yOffset: number) => ({
+  main: { position: { x: 0 + xOffset, y: 0 + yOffset } },
+  playlist: { position: { x: 0 + xOffset, y: 116 + yOffset } },
+  equalizer: { position: { x: 0 + xOffset, y: 232 + yOffset } }
+});
+
 const Winamp: FC<Partial<App> & AppComponent> = ({
   onClose,
   onMinimize,
@@ -72,18 +78,12 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
       }
     },
     loadWebAmp = async (): Promise<Webamp & WebampStore> => {
-      const
+      const { default: Webamp } = await import('webamp'),
         options: Options & PrivateOptions = {
-          // TODO: __initialWindowLayout is not working properly
-          __initialWindowLayout: {
-            main: { position: { x: 0 + x, y: 0 + y } },
-            playlist: { position: { x: 0 + x, y: 116 + y } },
-            equalizer: { position: { x: 0 + x, y: 232 + y } }
-          },
+          __initialWindowLayout: initialWindowLayout(x, y),
           initialTracks,
           initialSkin
         },
-        { default: Webamp } = await import('webamp'),
         webamp = new Webamp(options) as Webamp & WebampStore,
         { current: containerElement } = elementRef as { current: HTMLElement };
 

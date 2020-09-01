@@ -15,7 +15,6 @@ export const Windows: FC = () => {
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
-      // TODO: Stop this from re-rendering the app (Can it "pause" a component)
       updateApps({ update: { minimized: true }, id }),
     onClose = (id: string) => () => {
       updateApps({ update: { running: false }, id });

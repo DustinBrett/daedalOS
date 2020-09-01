@@ -36,6 +36,7 @@
   - Only stop dragging `top < 0`
 - Fix touch resizing `top` instead of dragging
 - Restore `x`, `y` ,`width` & `height` when exiting from minimize
+- Stop minimize from re-rendering the app
 
 #### Icons
 
@@ -92,6 +93,7 @@
 - Focus is not working reliably
   - Touch events are not focusing on winamp
 - Equalizer needs canceling of drag controls
+- x/y not setting properly with `__initialWindowLayout`
 
 #### React-Use (https://github.com/streamich/react-use)
 
