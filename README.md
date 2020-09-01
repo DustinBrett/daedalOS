@@ -78,6 +78,7 @@
 
 - Focus window when clicking `<canvas>`
 - Close app when `EXIT` is typed
+- Add virtual keyboard on mobile
 
 #### Winamp
 
