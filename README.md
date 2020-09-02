@@ -3,6 +3,7 @@
 ## NOTES
 
 #### Details that arent 100%
+
 - Clock font should be squished more and it's `:` seems wrong
 - Iocn width is slightly bigger than it should need to be
 - Icons can sometimes look compressed

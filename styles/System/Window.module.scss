@@ -58,7 +58,6 @@ $buttonIconOpacity: 0.75;
     );
 
     h1 {
-      letter-spacing: 1px;
       font-size: map-get($window, title-bar-font-size);
       font-weight: normal;
 
@@ -69,6 +68,7 @@ $buttonIconOpacity: 0.75;
       width: 100%;
 
       text-align: center;
+      letter-spacing: 1px;
 
       img {
         position: relative;
