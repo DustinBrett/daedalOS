@@ -1,18 +1,5 @@
 # TODO
 
-## NOTES
-
-### Missing interactions
-
-- Clicking canvas should focus the window
-- Hovering window buttons should show all icons
-
-### Visuals
-
-- Hovering buttons should disable greyscale filter
-- Icons need to be .ico or .svg
-- Text truncation everywhere
-
 ## FUTURE
 
 #### 1st
@@ -52,9 +39,8 @@
 
 #### Windows
 
-- Ability to maximize
-  - Lock aspect ratio with `maxWidth`
-- Fix touch resizing `top` instead of dragging
+- Ability to maximize w/Lockable aspect ratio
+- Fix mobile (touch) resizing `top` instead of dragging
 
 #### Icons
 
@@ -67,20 +53,17 @@
 
 ## MEDIUM
 
+#### Metadata
+
+- Add favicon
+
 #### Icons
 
 - Upon starting app show some loading indications
-
-#### Taskbar
-
-- Trigger `:focus` when setting foreground
-- If minimized disable any `.foreground`, `:focus` or `:active` effects
-- Hover was resizing slightly on mobile when bar is full
-- Clicking when active should minimize
+- Better quality icons (.ico or .svg)
 
 #### Windows
 
-- Remove hard coded z-index in `<Windows />`
 - Reveal all buttons upon hover for min/max/close
 - Stop minimize from re-rendering the app
 - Opening Dos, Doom then Files has Cascading wrong
@@ -88,8 +71,6 @@
 #### DOS
 
 - Focus window when clicking `<canvas>`
-- Close app when `EXIT` is typed
-- Add virtual keyboard on mobile
 
 #### Winamp
 
@@ -122,19 +103,16 @@
 
 - Only constrain dragging above `top: 0`
 
-#### Icons
+#### Windows
 
-- Better quality icons
+- Remove hard coded z-index in `<Windows />`
 
 #### DOS
 
 - Loading screen until app is running
   - Hide startup text until at least the 1st load
 - Closing window doesn't fully kill DOS
-
-#### Metadata
-
-- Add favicon
+- Close app when `EXIT` is typed
 
 ## VERY LOW
 
@@ -162,3 +140,7 @@
 
 - More complex color cycling for rainbow effect (https://krazydad.com/tutorials/makecolors.php)
 - Go back to using Vanta npm (Need camera to update on load)
+
+#### DOS
+
+- Add virtual keyboard on mobile
