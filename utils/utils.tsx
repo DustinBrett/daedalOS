@@ -38,8 +38,8 @@ export const appToBackground = (
   id: string
 ): void =>
   updateApp({
-    updates: { foreground: false },
-    id
+    id,
+    updates: { foreground: false }
   });
 
 export const appToForeground = (
@@ -49,8 +49,8 @@ export const appToForeground = (
 ): void =>
   apps.forEach(({ id: appId }) => {
     updateApp({
-      updates: { foreground: id === appId },
-      id: appId
+      id: appId,
+      updates: { foreground: id === appId }
     });
   });
 
@@ -61,13 +61,13 @@ export const appToStackTop = (
 ): void =>
   apps.forEach(({ id: appId, stackOrder }) => {
     updateApp({
+      id: appId,
       updates: {
         stackOrder: [
           id,
           ...stackOrder.filter((windowId: string) => windowId !== id)
         ]
-      },
-      id: appId
+      }
     });
   });
 
@@ -89,7 +89,7 @@ export const updatePosition = (
   updateApp: Dispatch<AppAction>,
   id: string
 ): RndDragCallback => (_event, { x, y }): void =>
-  updateApp({ updates: { x, y }, id });
+  updateApp({ id, updates: { x, y } });
 
 export const updateSize = (
   updateApp: Dispatch<AppAction>,
@@ -99,7 +99,7 @@ export const updateSize = (
   _direction,
   { offsetWidth, offsetHeight }
 ): void =>
-  updateApp({ updates: { height: offsetHeight, width: offsetWidth }, id });
+  updateApp({ id, updates: { height: offsetHeight, width: offsetWidth } });
 
 export const focusResizableElement = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();

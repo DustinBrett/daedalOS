@@ -25,7 +25,9 @@
     "react/react-in-jsx-scope": "off",
     "semi": ["error", "always"],
     "no-empty-function": "off",
-    "@typescript-eslint/no-empty-function": "off"
+    "@typescript-eslint/no-empty-function": "off",
+    "sort-keys": ["error", "asc"],
+    "sort-vars": "error"
   },
   "overrides": [
     {
