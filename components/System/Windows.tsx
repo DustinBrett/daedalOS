@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { Apps, AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/System/Window';
-import { appToFocus, updatePosition, updateSize } from 'utils/utils';
+import { appToFocus, appToUnfocus, updatePosition, updateSize } from '@/utils';
 
 export const Windows: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),
@@ -19,7 +19,8 @@ export const Windows: FC = () => {
     onClose = (id: string) => () => {
       updateApp({ updates: { running: false, stackOrder: [] }, id });
     },
-    onFocus = (id: string) => () => appToFocus(apps, updateApp, id);
+    onFocus = (id: string) => () => appToFocus(apps, updateApp, id),
+    onBlur = (id: string) => () => appToUnfocus(apps, updateApp, id);
 
   useEffect(() => {
     setWindowMargins({
@@ -38,6 +39,7 @@ export const Windows: FC = () => {
             icon,
             name,
             windowed,
+            foreground,
             lockAspectRatio,
             hideScrollbars,
             stackOrder,
@@ -53,10 +55,12 @@ export const Windows: FC = () => {
               onMinimize: onMinimize(id),
               onClose: onClose(id),
               onFocus: onFocus(id),
+              onBlur: onBlur(id),
               updatePosition: updatePosition(updateApp, id),
               updateSize: updateSize(updateApp, id),
               tabIndex: apps.length + activeApps.length + index,
               zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
+              foreground,
               height,
               width,
               x: x || cascadeSpacing,

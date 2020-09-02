@@ -24,7 +24,7 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
     loadMain = (main: DosMainFn) => () =>
-      main(args).then((value) => {
+      main(args)?.then((value) => {
         ci = value;
       });
 
@@ -34,9 +34,9 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
       },
       { Dos } = window as DosWindow;
 
-    Dos(canvasElement, dosOptions).then(({ fs, main }) => {
+    Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        fs.extract(url).then(loadMain(main));
+        fs?.extract(url).then(loadMain(main));
       } else {
         loadMain(main)();
       }

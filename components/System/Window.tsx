@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag } from 'utils/utils';
+import { focusOnDrag, focusResizableElement } from '@/utils';
 
 export const Window: FC<Partial<App> & AppComponent> = ({
   children,
@@ -17,6 +17,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   onMinimize,
   onClose,
   onFocus,
+  onBlur,
   updatePosition,
   updateSize,
   lockAspectRatio,
@@ -26,13 +27,17 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   height,
   width,
   x = 0,
-  y = 0
+  y = 0,
+  foreground
 }) => {
   const windowRef = useRef<Rnd>(null);
 
-  useEffect(() => windowRef?.current?.resizableElement?.current?.focus(), [
-    windowRef
-  ]);
+  useEffect(() => focusResizableElement(windowRef), [windowRef]);
+  useEffect(() => {
+    if (foreground) {
+      focusResizableElement(windowRef);
+    }
+  }, [foreground]);
 
   return (
     <article>
@@ -52,6 +57,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         minWidth={200}
         tabIndex={tabIndex}
         onFocus={onFocus}
+        onBlur={onBlur}
         onDragStart={focusOnDrag}
         onDragStop={updatePosition}
         onResizeStop={updateSize}

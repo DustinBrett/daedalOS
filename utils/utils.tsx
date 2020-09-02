@@ -1,18 +1,19 @@
 import type {
   DraggableData,
+  Rnd,
   RndDragCallback,
   RndDragEvent,
   RndResizeCallback
 } from 'react-rnd';
 import type { AppAction, Apps } from '@/contexts/Apps';
-import type { Dispatch } from 'react';
+import type { Dispatch, RefObject } from 'react';
 
 export const appendElement = (
   parentElement: HTMLElement,
   childElement: HTMLElement
 ): void => {
   if (parentElement && childElement) {
-    parentElement.appendChild(childElement);
+    parentElement.appendChild?.(childElement);
   }
 };
 
@@ -25,24 +26,40 @@ export const appToFocus = (
   appToStackTop(apps, updateApp, id);
 };
 
+export const appToUnfocus = (
+  apps: Apps,
+  updateApp: Dispatch<AppAction>,
+  id: string
+): void =>
+  appToBackground(apps, updateApp, id);
+
 export const appToForeground = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
-): void => {
+): void =>
   apps.forEach(({ id: appId }) => {
     updateApp({
       updates: { foreground: id === appId },
       id: appId
     });
   });
-};
+
+export const appToBackground = (
+  apps: Apps,
+  updateApp: Dispatch<AppAction>,
+  id: string
+): void =>
+  updateApp({
+    updates: { foreground: false },
+    id
+  });
 
 export const appToStackTop = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
-): void => {
+): void =>
   apps.forEach(({ id: appId, stackOrder }) => {
     updateApp({
       updates: {
@@ -54,14 +71,12 @@ export const appToStackTop = (
       id: appId
     });
   });
-};
 
 export const focusOnDrag = (
   _event: RndDragEvent,
   { node }: DraggableData
-): void => {
+): void =>
   node.focus();
-};
 
 export const lockDocumentTitle = (): void => {
   if (
@@ -75,9 +90,8 @@ export const lockDocumentTitle = (): void => {
 export const updatePosition = (
   updateApp: Dispatch<AppAction>,
   id: string
-): RndDragCallback => (_event, { x, y }): void => {
+): RndDragCallback => (_event, { x, y }): void =>
   updateApp({ updates: { x, y }, id });
-};
 
 export const updateSize = (
   updateApp: Dispatch<AppAction>,
@@ -86,6 +100,10 @@ export const updateSize = (
   _event,
   _direction,
   { offsetWidth, offsetHeight }
-): void => {
+): void =>
   updateApp({ updates: { height: offsetHeight, width: offsetWidth }, id });
-};
+
+export const focusResizableElement = (
+  elementRef: RefObject<Rnd>
+): void =>
+  elementRef?.current?.resizableElement?.current?.focus?.();

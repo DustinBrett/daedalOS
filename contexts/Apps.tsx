@@ -17,9 +17,6 @@ export type AppAction = {
 
 const initialApps: Apps = [Files, DOS, CommanderKeen, Doom, Winamp];
 
-// const appReducer = (apps: Apps, { update, id }: AppAction) =>
-//   apps.map((app) => (app.id === id ? { ...app, ...update } : app));
-
 const appReducer = (apps: Apps, { updates, id }: AppAction) =>
   apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
 

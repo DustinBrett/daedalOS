@@ -6,6 +6,7 @@ export type AppComponent = {
   onClose?: () => void;
   onMinimize?: () => void;
   onFocus?: () => void;
+  onBlur?: () => void;
   updatePosition?: RndDragCallback;
   updateSize?: RndResizeCallback;
   tabIndex?: number;

@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Clock } from '@/components/System/Clock';
 import { TaskbarEntry } from '@/components/System/TaskbarEntry';
-import { appToFocus } from 'utils/utils';
+import { appToFocus } from '@/utils';
 
 export const Taskbar: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),

@@ -2,6 +2,8 @@
 
 $buttonIconOpacity: 0.75;
 
+// Window bottom right and left corners showing something?
+
 .window {
   z-index: map-get($window, z-index);
 
@@ -51,7 +53,7 @@ $buttonIconOpacity: 0.75;
       map-get($window, border-radius) 0 0;
     background: linear-gradient(
       180deg,
-      rgb(60, 60, 60) 0%,
+      rgb(75, 75, 75) 10%,
       rgb(45, 45, 45) 100%
     );
 
@@ -92,8 +94,6 @@ $buttonIconOpacity: 0.75;
         width: 12px;
         height: 12px;
         margin-right: 8px;
-
-        transition: 0.3s;
 
         color: lighten(map-get($window, title-bar-color), 25%);
         border: 0;

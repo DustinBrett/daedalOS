@@ -8,10 +8,11 @@
 - Clicking taskbar entry should focus window
 - Clicking canvas should focus the window
 - Hovering window buttons should show all icons
-- Icons need to be .ico or .svg
+- Closing window shifts focus when known
 
 ### Visuals
 
+- Icons need to be .ico or .svg
 - Slightly brighter gradient on titlebar
 - Text truncation everywhere
 

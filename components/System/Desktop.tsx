@@ -6,6 +6,8 @@ import type { WallpaperEffect } from '@/components/System/Wallpaper';
 import { useEffect, useRef, useState } from 'react';
 import { renderWallpaperEffect } from '@/components/System/Wallpaper';
 
+// clicking desktop should clean all apps of foreground
+
 export const Desktop: FC = ({ children }) => {
   const desktopRef = useRef(null),
     [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>();

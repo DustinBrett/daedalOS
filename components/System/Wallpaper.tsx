@@ -1,7 +1,8 @@
+import WAVES from '@/assets/libs/vanta.waves.min';
+
 import type { RefObject } from 'react';
 
 import * as THREE from 'three';
-import WAVES from '@/assets/libs/vanta.waves.min';
 import Color from 'color';
 
 type CancelRainbowEffectFunction = () => void;

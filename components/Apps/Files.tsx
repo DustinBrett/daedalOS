@@ -4,8 +4,6 @@ import type { FC } from 'react';
 
 import App from '@/contexts/App';
 
-// TODO: Use data from node.fs `ls`
-
 const Files: FC = () => <article>LIST FILES HERE</article>;
 
 export default new App({
