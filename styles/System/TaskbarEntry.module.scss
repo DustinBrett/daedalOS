@@ -5,14 +5,17 @@
 .taskbarEntry {
   @include textOverflowEllipsis;
 
-  min-width: map-get($taskbarEntry, width) / 2;
+  min-width: map-get($taskbarEntry, text-width) / 2;
   height: map-get($taskbar, height);
-  margin: 0 map-get($taskbarEntry, margin);
+  margin: 0 4px;
 
   border-bottom: $thickLine solid lighten($highlightColor, 30%);
 
   &:hover {
     @include taskbarEntryHoverStyle;
+
+    margin: 0;
+    padding: 0 4px;
   }
 
   figure {

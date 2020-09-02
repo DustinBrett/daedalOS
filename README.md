@@ -14,7 +14,6 @@
 
 - Slightly brighter gradient on titlebar
 - Text truncation everywhere
-- 1px seperate for taskbar entries
 
 ## FUTURE
 
@@ -53,15 +52,10 @@
 
 ## HIGH
 
-#### Body
-
-- Background color should be black like Windows when explorer.exe is off
-
 #### Windows
 
 - Ability to maximize
   - Lock aspect ratio with `maxWidth`
-- Stop minimize from re-rendering the app
 - Fix touch resizing `top` instead of dragging
 
 #### Icons
@@ -92,6 +86,8 @@
 
 - Remove hard coded z-index in `<Windows />`
 - Reveal all buttons upon hover for min/max/close
+- Stop minimize from re-rendering the app
+- Opening Dos, Doom then Files has Cascading wrong
 
 #### DOS
 
