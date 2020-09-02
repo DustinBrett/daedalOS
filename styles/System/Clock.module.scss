@@ -14,7 +14,7 @@
   height: map-get($taskbar, height);
 
   color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
-
+  letter-spacing: 0.2px;
   &:hover {
     @include taskbarEntryHoverStyle;
   }

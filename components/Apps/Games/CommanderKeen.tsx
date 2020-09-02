@@ -12,6 +12,6 @@ const CommanderKeen: FC = () => (
 export default new App({
   component: CommanderKeen,
   icon: CommanderKeenIcon,
-  name: 'Commander Keen',
+  name: 'Commander Keen Fuck off to the moon you lazy cunt',
   ...DosAppOptions
 });

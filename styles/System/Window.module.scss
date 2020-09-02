@@ -53,11 +53,12 @@ $buttonIconOpacity: 0.75;
       map-get($window, border-radius) 0 0;
     background: linear-gradient(
       180deg,
-      rgb(75, 75, 75) 10%,
-      rgb(45, 45, 45) 100%
+      rgb(78, 75, 75) 1%,
+      rgb(65, 65, 65) 100%
     );
 
     h1 {
+      letter-spacing: 1px;
       font-size: map-get($window, title-bar-font-size);
       font-weight: normal;
 
@@ -95,10 +96,10 @@ $buttonIconOpacity: 0.75;
         height: 12px;
         margin-right: 8px;
 
-        color: lighten(map-get($window, title-bar-color), 15%);
+        color: lighten(map-get($window, title-bar-color), 20%);
         border: 0;
         border-radius: 100%;
-        background-color: lighten(map-get($window, title-bar-color), 15%);
+        background-color: lighten(map-get($window, title-bar-color), 20%);
 
         &:last-child {
           margin-right: unset;
@@ -125,10 +126,10 @@ $buttonIconOpacity: 0.75;
   &:not(:focus) {
     header {
       background: unset;
-      background-color: rgb(50, 50, 50);
+      background-color: rgb(55, 55, 55);
 
       h1 {
-        opacity: 0.5;
+        opacity: 0.6;
 
         filter: grayscale(1);
       }

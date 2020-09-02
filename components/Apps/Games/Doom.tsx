@@ -12,6 +12,6 @@ const Doom: FC = () => (
 export default new App({
   component: Doom,
   icon: DoomIcon,
-  name: 'Doom',
+  name: 'Documents',
   ...DosAppOptions
 });
