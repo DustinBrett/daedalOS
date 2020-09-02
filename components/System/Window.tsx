@@ -54,7 +54,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
           y
         }}
         minHeight={200}
-        minWidth={200}
+        minWidth={300}
         tabIndex={tabIndex}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -67,8 +67,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
       >
         <header className="handle">
           <h1>
-            <img alt={name} src={icon} draggable={false} />
-            {name}
+            <figure>
+              <img alt={name} src={icon} draggable={false} />
+              <figcaption>{name}</figcaption>
+            </figure>
           </h1>
           <nav className="cancel">
             <button id={styles.close} onClick={onClose}>

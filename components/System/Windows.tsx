@@ -54,7 +54,7 @@ export const Windows: FC = () => {
           },
           index
         ) => {
-          const cascadeSpacing = (index - 1) * 20,
+          const cascadeSpacing = index * 20 || 0,
             appOptions = {
               onMinimize: onMinimize(id),
               onClose: onClose(id, stackOrder),

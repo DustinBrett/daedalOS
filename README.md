@@ -56,11 +56,9 @@
 
 - Make draggable
 
-#### Taskbar, Icons & Windows
+#### Windows
 
-- Fix text label truncation
-  - https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
-  - Window titlebar text eventually underlaps buttons
+- Titlebar text expand when possible
 
 ## MEDIUM
 
@@ -77,7 +75,7 @@
 
 - Reveal all buttons upon hover for min/max/close
 - Stop minimize from re-rendering the app
-- Opening Dos, Doom then Files has Cascading wrong
+- `Files` is not following cascade offset
 
 #### DOS
 
@@ -89,6 +87,7 @@
   - Touch events are not focusing on winamp
 - Equalizer needs canceling of drag controls
 - Fix requiring `x|y / 2` for position to look correctish
+- Right clicking not working?
 
 #### React-Use (https://github.com/streamich/react-use)
 

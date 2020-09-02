@@ -58,24 +58,32 @@ $buttonIconOpacity: 0.75;
     );
 
     h1 {
-      font-size: map-get($window, title-bar-font-size);
-      font-weight: normal;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
       width: 100%;
 
-      text-align: center;
-      letter-spacing: 1px;
+      figure {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+  
+        width: 100%;
 
-      img {
-        position: relative;
+        img {
+          position: relative;
+  
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
 
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
+        figcaption {
+          font-size: map-get($window, title-bar-font-size);
+          font-weight: normal;
+          text-align: center;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          max-width: 145px;
+        }
       }
     }
 
