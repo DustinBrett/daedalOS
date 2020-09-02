@@ -3,6 +3,7 @@
 ## NOTES
 
 ### Missing interactions
+
 - Clicking desktop should deselect taskbar entry
 - Clicking taskbar entry should focus window
 - Clicking canvas should focus the window
@@ -10,6 +11,7 @@
 - Icons need to be .ico or .svg
 
 ### Visuals
+
 - Slightly brighter gradient on titlebar
 - Text truncation everywhere
 - 1px seperate for taskbar entries

@@ -26,12 +26,9 @@
 
   // TODO: Turn this stuff into a mixin
   &:hover {
-    outline: 1px solid rgba(
-      map-get($icon, highlight-color),
-      map-get($icon, hover-bg-opacity)
-    );
+    outline: 1px solid
+      rgba(map-get($icon, highlight-color), map-get($icon, hover-bg-opacity));
     outline-offset: -2px;
-
     background-color: rgba(
       map-get($icon, highlight-color),
       map-get($icon, hover-bg-opacity)
@@ -39,12 +36,9 @@
   }
 
   &:focus {
-    outline: 1px dotted rgba(
-      map-get($icon, highlight-color),
-      map-get($icon, focus-bg-opacity)
-    );
+    outline: 1px dotted
+      rgba(map-get($icon, highlight-color), map-get($icon, focus-bg-opacity));
     outline-offset: -2px;
-
     background-color: rgba(
       map-get($icon, highlight-color),
       map-get($icon, focus-bg-opacity)
