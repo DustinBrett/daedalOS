@@ -16,7 +16,11 @@ export const Windows: FC = () => {
     ),
     onMinimize = (id: string) => () =>
       updateApp({ updates: { foreground: false, minimized: true }, id }),
-    onClose = (id: string) => () => {
+    onClose = (id: string, [, newForegroundAppId]: Array<string>) => () => {
+      if (newForegroundAppId) {
+        appToFocus(apps, updateApp, newForegroundAppId);
+      }
+
       updateApp({ updates: { running: false, stackOrder: [] }, id });
     },
     onFocus = (id: string) => () => appToFocus(apps, updateApp, id),
@@ -53,7 +57,7 @@ export const Windows: FC = () => {
           const cascadeSpacing = (index - 1) * 20,
             appOptions = {
               onMinimize: onMinimize(id),
-              onClose: onClose(id),
+              onClose: onClose(id, stackOrder),
               onFocus: onFocus(id),
               onBlur: onBlur(id),
               updatePosition: updatePosition(updateApp, id),

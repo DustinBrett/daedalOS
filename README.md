@@ -4,16 +4,13 @@
 
 ### Missing interactions
 
-- Clicking desktop should deselect taskbar entry
-- Clicking taskbar entry should focus window
 - Clicking canvas should focus the window
 - Hovering window buttons should show all icons
-- Closing window shifts focus when known
 
 ### Visuals
 
+- Hovering buttons should disable greyscale filter
 - Icons need to be .ico or .svg
-- Slightly brighter gradient on titlebar
 - Text truncation everywhere
 
 ## FUTURE
@@ -62,8 +59,6 @@
 #### Icons
 
 - Make draggable
-- Double clicking should open if minimized
-  - `update` should allow multiple keys to be passed into app
 
 #### Taskbar, Icons & Windows
 
