@@ -61,7 +61,16 @@
     text-align: center;
 
     figcaption {
-      white-space: break-spaces;
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+
+      width: 75px;
+
+      white-space: pre-line;
+      text-overflow: ellipsis;
+
+      -webkit-line-clamp: 2;
     }
   }
 
