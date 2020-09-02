@@ -47,7 +47,7 @@ const options: Options & PrivateOptions = {
         artist: 'DJ Mike Llama',
         title: "Llama Whippin' Intro"
       },
-      url: '/mp3/llama-2.91.mp3'
+      url: '/mp3/demo.mp3'
     }
   ],
   initialSkin: {
