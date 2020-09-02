@@ -30,8 +30,7 @@ export const appToUnfocus = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
-): void =>
-  appToBackground(apps, updateApp, id);
+): void => appToBackground(apps, updateApp, id);
 
 export const appToForeground = (
   apps: Apps,
@@ -75,8 +74,7 @@ export const appToStackTop = (
 export const focusOnDrag = (
   _event: RndDragEvent,
   { node }: DraggableData
-): void =>
-  node.focus();
+): void => node.focus();
 
 export const lockDocumentTitle = (): void => {
   if (
@@ -103,7 +101,5 @@ export const updateSize = (
 ): void =>
   updateApp({ updates: { height: offsetHeight, width: offsetWidth }, id });
 
-export const focusResizableElement = (
-  elementRef: RefObject<Rnd>
-): void =>
+export const focusResizableElement = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();
