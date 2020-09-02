@@ -34,11 +34,13 @@
     }
 
     figcaption {
-      width: map-get($taskbarEntry, text-width);
       overflow: hidden;
-      text-overflow: ellipsis;
-      letter-spacing: 0px;
+
+      width: map-get($taskbarEntry, text-width);
       padding-right: 5px;
+
+      letter-spacing: 0;
+      text-overflow: ellipsis;
     }
   }
 }

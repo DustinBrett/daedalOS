@@ -64,12 +64,12 @@ $buttonIconOpacity: 0.75;
         display: flex;
         align-items: center;
         justify-content: center;
-  
+
         width: 100%;
 
         img {
           position: relative;
-  
+
           width: 16px;
           height: 16px;
           margin-right: 4px;
@@ -78,11 +78,14 @@ $buttonIconOpacity: 0.75;
         figcaption {
           font-size: map-get($window, title-bar-font-size);
           font-weight: normal;
+
+          overflow: hidden;
+
+          max-width: 145px;
+
           text-align: center;
           white-space: nowrap;
           text-overflow: ellipsis;
-          overflow: hidden;
-          max-width: 145px;
         }
       }
     }
