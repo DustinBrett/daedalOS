@@ -17,7 +17,7 @@ export const Taskbar: FC = () => {
   return (
     <nav className={styles.taskbar}>
       <ol>
-        {runningApps.map(({ id, icon, minimized, name, foreground }, index) => (
+        {runningApps.map(({ id, icon, minimized, name, foreground, stackOrder }, index) => (
           <TaskbarEntry
             key={id}
             foreground={foreground}
@@ -27,7 +27,13 @@ export const Taskbar: FC = () => {
               if (minimized) {
                 updateApp({ updates: { minimized: false }, id });
               } else {
-                appToFocus(apps, updateApp, id);
+                const [foregroundApp] = stackOrder;
+
+                if (foregroundApp === id) {
+                  updateApp({ updates: { minimized: true }, id });
+                } else {
+                  appToFocus(apps, updateApp, id);
+                }
               }
             }}
             tabIndex={apps.length + index}

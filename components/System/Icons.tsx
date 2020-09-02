@@ -12,14 +12,16 @@ export const Icons: FC = () => {
   return (
     <nav className={styles.icons}>
       <ol>
-        {apps.map(({ id, icon, name }, index) => (
+        {apps.map(({ id, icon, running, name }, index) => (
           <Icon
             key={id}
             icon={icon}
             name={name}
             onDoubleClick={() => {
               updateApp({
-                updates: { running: true, lastRunning: new Date() },
+                updates: running
+                  ? { foreground: true, minimized: false }
+                  : { running: true, lastRunning: new Date() },
                 id
               });
             }}

@@ -32,6 +32,16 @@ export const appToUnfocus = (
   id: string
 ): void => appToBackground(apps, updateApp, id);
 
+export const appToBackground = (
+  apps: Apps,
+  updateApp: Dispatch<AppAction>,
+  id: string
+): void =>
+  updateApp({
+    updates: { foreground: false },
+    id
+  });
+
 export const appToForeground = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
@@ -42,16 +52,6 @@ export const appToForeground = (
       updates: { foreground: id === appId },
       id: appId
     });
-  });
-
-export const appToBackground = (
-  apps: Apps,
-  updateApp: Dispatch<AppAction>,
-  id: string
-): void =>
-  updateApp({
-    updates: { foreground: false },
-    id
   });
 
 export const appToStackTop = (

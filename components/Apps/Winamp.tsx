@@ -82,11 +82,11 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
         webamp = new Webamp(options) as Webamp & WebampStore,
         { current: containerElement } = elementRef as { current: HTMLElement };
 
-      webamp.store.dispatch(closeEqualizer);
-      onClose && webamp.onClose(onClose);
-      onMinimize && webamp.onMinimize(onMinimize);
+      webamp?.store?.dispatch(closeEqualizer);
+      onClose && webamp?.onClose(onClose);
+      onMinimize && webamp?.onMinimize(onMinimize);
 
-      await webamp.renderWhenReady(containerElement);
+      await webamp?.renderWhenReady(containerElement);
 
       const webampElement = document.getElementById('webamp') as HTMLElement;
       appendElement(containerElement, webampElement);

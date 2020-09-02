@@ -36,7 +36,7 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
 
     Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        fs?.extract(url).then(loadMain(main));
+        fs?.extract(url)?.then(loadMain(main));
       } else {
         loadMain(main)();
       }

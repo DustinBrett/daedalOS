@@ -15,7 +15,7 @@ export const Windows: FC = () => {
       ({ running, minimized }) => running && !minimized
     ),
     onMinimize = (id: string) => () =>
-      updateApp({ updates: { minimized: true }, id }),
+      updateApp({ updates: { foreground: false, minimized: true }, id }),
     onClose = (id: string) => () => {
       updateApp({ updates: { running: false, stackOrder: [] }, id });
     },
