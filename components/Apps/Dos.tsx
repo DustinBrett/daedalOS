@@ -26,6 +26,9 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
     loadMain = (main: DosMainFn) => () =>
       main(args)?.then((value) => {
         ci = value;
+        if (!args) {
+          ci.shell('CLS');
+        }
       });
 
   useEffect(() => {
