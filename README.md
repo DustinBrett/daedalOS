@@ -1,148 +1,53 @@
 # TODO
 
-## NOTES
+### Bugs
+- DOS: Closing window doesn't fully kill DOS
+- DOS: Clicking `<canvas>` is not focusing on window
+- Taskbar: Min-width can't fit 5 items on mobile
+- Taskbar: Hovering/selecting is resizing the entries on mobile
+- Winamp: Focus isn't reliable on mobile
+- Winamp: Clicking taskbar entry does not focus app
+- Winamp: Right click menu is not working
+- Winamp: Can't drag on equalizer
+- Window: Post-minimize forces re-render
+- Window: Cascading is not working properly in all cases
+- Window: Dragging on mobile sometimes triggers resize
 
-## FUTURE
+### Features
+- Document: Favicon
+- DOS: Loading screen until app is running
+- DOS: Close app when `EXIT` is typed
+- DOS: Virtual keyboard on mobile
+- Icons: Draggable
+- Icons: Loading indicator
+- Winamp: Milkdrop (https://github.com/jberg/butterchurn)
+- Window: Maximize (Maintain aspect ratio)
+- Window: Make titlebar text reactive
+- Window: Reveal min/max/close when hovering any
 
-#### 1st
+### Code
+- Document: Fix tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
+- Winamp: Position logic (`x|y / 2`) is messy
+- Window: Avoid storing `stackOrder` in every app
+- Window: Remove hard coded z-index
+
+# FUTURE
 
 - Animations (https://www.framer.com/api/motion)
 - File Explorer (https://github.com/jvilk/BrowserFS)
 - Word Processor (https://webodf.org/)
-- Shortcuts (Latest blog post in blog folder on desktop as shortcut)
-
-#### 2nd
-
-- About Me "Dustin Brett" Icon/Profile/Contact app
+- React-Use (https://github.com/streamich/react-use)
+  - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
 - PDF.js (https://github.com/mozilla/pdf.js)
-  - Use to display Resume
 - JS Paint (https://github.com/1j01/jspaint)
 - Code Editor (https://codemirror.net/)
-  - Show the sites source code
 - Terminal (https://xtermjs.org/)
-- System tray
-- Local internal muting/volume control of games/agent/etc
-
-#### 3rd
-
+- System Tray
+- Volume Controls
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Photo Viewer
 - Calendar
 - Session Management
 - PWA
-
-#### 4th
-
-- IRC Client, visuals like mIRC circa '95
+- i18n support
 - Minesweeper (https://github.com/ziebelje/minesweeper)
-- Chat/Messenger/Contact Component
-
-## HIGH
-
-#### Windows
-
-- Ability to maximize w/Lockable aspect ratio
-- Fix mobile (touch) resizing `top` instead of dragging
-
-#### Icons
-
-- Make draggable
-
-#### Windows
-
-- Titlebar text expand when possible
-
-## MEDIUM
-
-#### Metadata
-
-- Add favicon
-
-#### Icons
-
-- Upon starting app show some loading indications
-- Better quality icons (.ico or .svg)
-
-#### Windows
-
-- Reveal all buttons upon hover for min/max/close
-- Stop minimize from re-rendering the app
-- `Files` is not following cascade offset
-
-#### DOS
-
-- Focus window when clicking `<canvas>`
-
-#### Winamp
-
-- Focus is not working reliably
-  - Touch events are not focusing on winamp
-- Equalizer needs canceling of drag controls
-- Fix requiring `x|y / 2` for position to look correctish
-- Right clicking not working?
-
-#### React-Use (https://github.com/streamich/react-use)
-
-- useBattery: Show battery in sys tray
-- useIdle: Show screen saver
-- useLongPress: Show right click menu
-- useMediaDevices: Show device manager
-- useNetwork: Show network info / sys tray icon
-
-## LOW
-
-#### Apps
-
-- Avoid storing `stackOrder` within every app
-
-#### Winamp
-
-- Milkdrop (https://github.com/jberg/butterchurn)
-- Build up a collection of cool songs in the playlist
-  - Sourced legally and streamable ideally
-
-#### Icons & Windows
-
-- Only constrain dragging above `top: 0`
-
-#### Windows
-
-- Remove hard coded z-index in `<Windows />`
-
-#### DOS
-
-- Loading screen until app is running
-  - Hide startup text until at least the 1st load
-- Closing window doesn't fully kill DOS
-- Close app when `EXIT` is typed
-
-## VERY LOW
-
-#### Production
-
-- Add Sentry monitoring to project
-
-#### Public
-
-- Git ignore public, make script to get files, add to `package.json`
-  - https://archive.org/download/DoomsharewareEpisode/doom.ZIP
-  - https://archive.org/download/CommanderKeenGoodbyeGalaxy/4keen.ZIP
-  - https://js-dos.com/6.22/current/wdosbox.js
-  - https://js-dos.com/6.22/current/wdosbox.wasm.js
-  - https://github.com/lucmult/winamp2-js/raw/master/mp3/llama-2.91.mp3
-  - https://archive.org/download/winampskin_SpyAMP_Professional_Edition_v5/SpyAMP_Professional_Edition_v5.wsz
-  - Fonts?
-
-#### Accessibility
-
-- Add i18n support, w/auto-detect & dynamic `<html lang />`
-- Negative tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
-
-#### Wallpaper
-
-- More complex color cycling for rainbow effect (https://krazydad.com/tutorials/makecolors.php)
-- Go back to using Vanta npm (Need camera to update on load)
-
-#### DOS
-
-- Add virtual keyboard on mobile
