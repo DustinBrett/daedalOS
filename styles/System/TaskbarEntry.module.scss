@@ -30,11 +30,15 @@
 
     img {
       width: map-get($taskbarEntry, icon-width);
-      margin: map-get($taskbarEntry, icon-margin);
+      margin: 0 map-get($taskbarEntry, icon-margin);
     }
 
     figcaption {
       width: map-get($taskbarEntry, text-width);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0px;
+      padding-right: 5px;
     }
   }
 }
