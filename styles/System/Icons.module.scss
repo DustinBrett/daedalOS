@@ -2,7 +2,7 @@
 @import '@/styles/mixins';
 
 .icons {
-  @include topLeftWithIconBorderBuffer;
+  @include topLeft;
 
   width: 100%;
   height: calc(100% - #{map-get($taskbar, height)});

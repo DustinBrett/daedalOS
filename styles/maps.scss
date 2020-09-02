@@ -19,23 +19,25 @@ $desktop: (
   z-index: map-get($zIndex, desktop)
 );
 
+$modPer: 35%;
+
 $icon: (
   text-color: $offWhite,
   text-shadow: $textShadow,
   font-size: $fontSize,
   min-height: 72px,
   max-height: 87px,
-  width: 77px,
+  width: 80px,
   svg-width: 44px,
-  hover-bg-color: $uiColor2,
-  hover-bg-opacity: 10%,
-  hover-border-color: $uiColor2,
-  hover-border-opacity: 15%,
+  highlight-color: $highlightColor2,
+  hover-bg-opacity: 15%,
+  focus-bg-opacity: 25%,
+  focus-hover-bg-opacity: 35%,
   z-index: map-get($zIndex, icons)
 );
 
 $icons: (
-  padding: 12px
+  padding: 5px
 );
 
 $taskbar: (
@@ -47,7 +49,7 @@ $taskbar: (
 
 $taskbarEntry: (
   text-color: $offWhite,
-  text-width: 110px,
+  text-width: 160px,
   font-size: 12px,
   width: 165px,
   margin: 4px,

@@ -35,10 +35,10 @@
   bottom: 0;
 }
 
-@mixin topLeftWithIconBorderBuffer {
+@mixin topLeft {
   position: fixed;
   top: 0;
-  left: 1px;
+  left: 0;
 }
 
 @mixin textOverflowEllipsis {

@@ -9,7 +9,7 @@
   height: map-get($taskbar, height);
   margin: 0 map-get($taskbarEntry, margin);
 
-  border-bottom: $thickLine solid $highlightColor;
+  border-bottom: $thickLine solid lighten($highlightColor, 30%);
 
   &:hover {
     @include taskbarEntryHoverStyle;
