@@ -17,9 +17,7 @@ export const Windows: FC = () => {
       marginTop: 0,
       marginLeft: 0
     }),
-    activeApps = apps
-      .filter(({ running, minimized }) => running && !minimized)
-      .sort(sortByLastRunning),
+    activeApps = apps.filter(({ running }) => running).sort(sortByLastRunning),
     onMinimize = (id: string) => () =>
       updateApp({ updates: { foreground: false, minimized: true }, id }),
     onClose = (id: string, [, newForegroundAppId]: Array<string>) => () => {
@@ -49,6 +47,7 @@ export const Windows: FC = () => {
             icon,
             name,
             windowed,
+            minimized,
             foreground,
             lockAspectRatio,
             hideScrollbars,
@@ -71,6 +70,7 @@ export const Windows: FC = () => {
               tabIndex: apps.length + activeApps.length + index,
               zIndex: 1750 + (activeApps.length - (stackOrder.indexOf(id) + 1)),
               foreground,
+              minimized,
               height,
               width,
               x: x || cascadeSpacing,

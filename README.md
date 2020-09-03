@@ -2,8 +2,6 @@
 
 ### MVP Bugs
 
-- Window: Post-minimize forces re-render
-  - Have `minimize` change visibility, not be filtered
 - Taskbar: Hovering/selecting is resizing the entries on mobile
   - Redo the padding/margin logic for taskbar entries
 - Winamp: Can't drag on equalizer
