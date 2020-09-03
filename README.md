@@ -1,10 +1,5 @@
 # TODO
 
-### MVP Bugs
-
-- Taskbar: Hovering/selecting is resizing the entries on mobile
-  - Redo the padding/margin logic for taskbar entries
-
 #### Post-MVP Bugs
 
 - DOS: Closing window doesn't fully kill DOS
@@ -15,12 +10,11 @@
 
 ### MVP Features
 
+- Window: Reveal min/max/close when hovering any
 - Document: Favicon
 - Icons: Draggable
 - Icons: Loading indicator
-- Window: Reveal min/max/close when hovering any
-- Window: Maximize (Maintain aspect ratio)
-- Window: Make titlebar text reactive
+- Window: Maximize
 
 #### Post-MVP Features
 
