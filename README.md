@@ -1,12 +1,8 @@
 # TODO
 
-#### Post-MVP Bugs
+### MVP Bugs
 
-- DOS: Closing window doesn't fully kill DOS
-  - Upgrade to js-dos v7
-- Winamp: Focus isn't reliable on mobile
-- Winamp: Clicking taskbar entry does not focus app
-- Window: Dragging on mobile sometimes triggers resize
+- Taskbar: Clicking recently focused entry is minimizing it
 
 ### MVP Features
 
@@ -15,6 +11,14 @@
 - Icons: Draggable
 - Icons: Loading indicator
 - Window: Maximize
+
+#### Post-MVP Bugs
+
+- DOS: Closing window doesn't fully kill DOS
+  - Upgrade to js-dos v7
+- Winamp: Focus isn't reliable on mobile
+- Winamp: Clicking taskbar entry does not focus app
+- Window: Dragging on mobile sometimes triggers resize
 
 #### Post-MVP Features
 
@@ -39,7 +43,7 @@
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
 - PDF.js (https://github.com/mozilla/pdf.js)
 - JS Paint (https://github.com/1j01/jspaint)
-- Code Editor (https://codemirror.net/)
+- Code Editor (https://codemirror.net/, https://ace.c9.io/)
 - Terminal (https://xtermjs.org/)
 - System Tray
 - Volume Controls (https://github.com/Tonejs/unmute)
@@ -50,3 +54,5 @@
 - PWA
 - i18n support
 - Minesweeper (https://github.com/ziebelje/minesweeper)
+- IRC Client (https://thelounge.chat/)
+- Spreadsheet Editor (https://myliang.github.io/x-spreadsheet)
