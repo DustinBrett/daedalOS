@@ -10,9 +10,7 @@ import { appToFocus, sortByLastRunning } from '@/utils';
 
 export const Taskbar: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),
-    runningApps = apps
-      .filter(({ running }) => running)
-      .sort(sortByLastRunning);
+    runningApps = apps.filter(({ running }) => running).sort(sortByLastRunning);
 
   return (
     <nav className={styles.taskbar}>
