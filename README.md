@@ -7,7 +7,6 @@
 ### MVP Features
 
 - Window: Reveal min/max/close when hovering any
-- Document: Favicon
 - Icons: Draggable
 - Icons: Loading indicator
 - Window: Maximize
