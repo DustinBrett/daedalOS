@@ -54,7 +54,9 @@ export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
     <canvas
       className={styles.dos}
       onClick={() => {
-        (canvasRef.current?.closest(':not(li)[tabindex]') as HTMLDivElement).focus();
+        (canvasRef.current?.closest(
+          ':not(li)[tabindex]'
+        ) as HTMLDivElement).focus();
       }}
       ref={canvasRef}
     />
