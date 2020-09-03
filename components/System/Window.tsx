@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag, focusResizableElement } from '@/utils';
+import { focusOnDrag, focusResizableElementRef } from '@/utils';
 
 export const Window: FC<Partial<App> & AppComponent> = ({
   children,
@@ -32,10 +32,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
 }) => {
   const windowRef = useRef<Rnd>(null);
 
-  useEffect(() => focusResizableElement(windowRef), [windowRef]);
+  useEffect(() => focusResizableElementRef(windowRef), [windowRef]);
   useEffect(() => {
     if (foreground) {
-      focusResizableElement(windowRef);
+      focusResizableElementRef(windowRef);
     }
   }, [foreground]);
 

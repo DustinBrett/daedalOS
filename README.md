@@ -1,8 +1,8 @@
 # TODO
 
 ### Bugs
+
 - DOS: Closing window doesn't fully kill DOS
-- DOS: Clicking `<canvas>` is not focusing on window
 - Taskbar: Min-width can't fit 5 items on mobile
 - Taskbar: Hovering/selecting is resizing the entries on mobile
 - Winamp: Focus isn't reliable on mobile
@@ -12,8 +12,10 @@
 - Window: Post-minimize forces re-render
 - Window: Cascading is not working properly in all cases
 - Window: Dragging on mobile sometimes triggers resize
+- Window: Bottom corners showing white slightly
 
 ### Features
+
 - Document: Favicon
 - DOS: Loading screen until app is running
 - DOS: Close app when `EXIT` is typed
@@ -26,6 +28,7 @@
 - Window: Reveal min/max/close when hovering any
 
 ### Code
+
 - Document: Fix tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
 - Winamp: Position logic (`x|y / 2`) is messy
 - Window: Avoid storing `stackOrder` in every app
@@ -43,7 +46,7 @@
 - Code Editor (https://codemirror.net/)
 - Terminal (https://xtermjs.org/)
 - System Tray
-- Volume Controls
+- Volume Controls (https://github.com/Tonejs/unmute)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Photo Viewer
 - Calendar

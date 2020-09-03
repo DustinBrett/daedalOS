@@ -101,5 +101,5 @@ export const updateSize = (
 ): void =>
   updateApp({ id, updates: { height: offsetHeight, width: offsetWidth } });
 
-export const focusResizableElement = (elementRef: RefObject<Rnd>): void =>
+export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();

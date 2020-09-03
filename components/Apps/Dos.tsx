@@ -7,6 +7,7 @@ import type { FC } from 'react';
 
 import App, { AppComponent } from '@/contexts/App';
 import { useEffect, useRef } from 'react';
+import { Html } from 'next/document';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
@@ -20,15 +21,12 @@ const dosOptions = {
   onprogress: () => {}
 };
 
-export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
+export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
     loadMain = (main: DosMainFn) => () =>
       main(args)?.then((value) => {
         ci = value;
-        if (!args) {
-          ci.shell('CLS');
-        }
       });
 
   useEffect(() => {
@@ -52,7 +50,15 @@ export const DosAppLoader: FC<DosApp> = ({ args, url }) => {
 
   require('js-dos');
 
-  return <canvas className={styles.dos} ref={canvasRef} />;
+  return (
+    <canvas
+      className={styles.dos}
+      onClick={() => {
+        (canvasRef.current?.closest(':not(li)[tabindex]') as HTMLDivElement).focus();
+      }}
+      ref={canvasRef}
+    />
+  );
 };
 
 export const DosAppOptions: Partial<App> = {
