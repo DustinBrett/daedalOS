@@ -4,8 +4,6 @@
 
 - Taskbar: Hovering/selecting is resizing the entries on mobile
   - Redo the padding/margin logic for taskbar entries
-- Winamp: Can't drag on equalizer
-  - Add Equalizer components to `cancel` list
 
 #### Post-MVP Bugs
 
@@ -13,7 +11,6 @@
   - Upgrade to js-dos v7
 - Winamp: Focus isn't reliable on mobile
 - Winamp: Clicking taskbar entry does not focus app
-- Winamp: Right click menu is not working
 - Window: Dragging on mobile sometimes triggers resize
 
 ### MVP Features

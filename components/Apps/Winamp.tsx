@@ -33,7 +33,7 @@ type PrivateOptions = {
 
 const touchControls = `
   #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,
-  .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button`;
+  .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button, #equalizer-window`;
 
 const options: Options & PrivateOptions = {
   __initialWindowLayout: {

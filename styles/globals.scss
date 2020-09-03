@@ -36,3 +36,7 @@ ol {
 img {
   -webkit-user-drag: none;
 }
+
+#webamp-context-menu {
+  z-index: 10000 !important;
+}
