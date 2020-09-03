@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "next build",
-    "deploy": "next build && next export && cp CNAME out && touch out/.nojekyll && gh-pages-clean && gh-pages -d out -t true",
+    "deploy": "npm run genfs && next build && next export && cp CNAME out && touch out/.nojekyll && gh-pages-clean && gh-pages -d out -t true",
     "dev": "next dev",
     "export": "next export",
     "start": "next start",
@@ -13,12 +13,14 @@
     "stylelint": "stylelint styles",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint"
+    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint",
+    "genfs": "cd public && make_xhrfs_index index.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
+    "browserfs": "^1.4.3",
     "color": "^3.1.2",
     "js-dos": "^6.22.59",
     "next": "^9.5.2",
