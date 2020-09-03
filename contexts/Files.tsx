@@ -35,9 +35,5 @@ export const FilesProvider: FC = ({ children }) => {
     });
   }, []);
 
-  return (
-    <FilesContext.Provider value={fs}>
-      {children}
-    </FilesContext.Provider>
-  );
+  return <FilesContext.Provider value={fs}>{children}</FilesContext.Provider>;
 };

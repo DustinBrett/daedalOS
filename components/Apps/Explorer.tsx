@@ -5,7 +5,7 @@ import App from '@/contexts/App';
 import { FilesContext, FilesProvider } from '@/contexts/Files';
 
 type FsRequest = {
-  dir?: string
+  dir?: string;
 };
 
 const DirectoryListing: FC<FsRequest> = ({ dir = '/' }) => {
@@ -21,7 +21,9 @@ const DirectoryListing: FC<FsRequest> = ({ dir = '/' }) => {
   return (
     <article>
       <ol>
-        {directoryContents.map(entry => <li key={entry}>{entry}</li>)}
+        {directoryContents.map((entry) => (
+          <li key={entry}>{entry}</li>
+        ))}
       </ol>
     </article>
   );
