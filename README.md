@@ -1,33 +1,42 @@
 # TODO
 
-### Bugs
+### MVP Bugs
+
+- Window: Cascading is not working properly in all cases
+- Window: Bottom corners showing white slightly
+- Window: Post-minimize forces re-render
+  - Have `minimize` change visibility, not be filtered
+- Taskbar: Hovering/selecting is resizing the entries on mobile
+  - Redo the padding/margin logic for taskbar entries
+- Winamp: Can't drag on equalizer
+  - Add Equalizer components to `cancel` list
+
+#### Post-MVP Bugs
 
 - DOS: Closing window doesn't fully kill DOS
-- Taskbar: Min-width can't fit 5 items on mobile
-- Taskbar: Hovering/selecting is resizing the entries on mobile
+  - Upgrade to js-dos v7
 - Winamp: Focus isn't reliable on mobile
 - Winamp: Clicking taskbar entry does not focus app
 - Winamp: Right click menu is not working
-- Winamp: Can't drag on equalizer
-- Window: Post-minimize forces re-render
-- Window: Cascading is not working properly in all cases
 - Window: Dragging on mobile sometimes triggers resize
-- Window: Bottom corners showing white slightly
 
-### Features
+### MVP Features
 
 - Document: Favicon
-- DOS: Loading screen until app is running
-- DOS: Close app when `EXIT` is typed
-- DOS: Virtual keyboard on mobile
 - Icons: Draggable
 - Icons: Loading indicator
-- Winamp: Milkdrop (https://github.com/jberg/butterchurn)
+- Window: Reveal min/max/close when hovering any
 - Window: Maximize (Maintain aspect ratio)
 - Window: Make titlebar text reactive
-- Window: Reveal min/max/close when hovering any
 
-### Code
+#### Post-MVP Features
+
+- DOS: Close app when `EXIT` is typed
+- DOS: Loading screen until app is running
+- DOS: Virtual keyboard on mobile
+- Winamp: Milkdrop (https://github.com/jberg/butterchurn)
+
+### Code Quality
 
 - Document: Fix tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
 - Winamp: Position logic (`x|y / 2`) is messy

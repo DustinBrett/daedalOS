@@ -5,7 +5,7 @@
 .taskbarEntry {
   @include textOverflowEllipsis;
 
-  min-width: map-get($taskbarEntry, text-width) / 2;
+  min-width: 0;
   height: map-get($taskbar, height);
   margin: 0 4px;
 
