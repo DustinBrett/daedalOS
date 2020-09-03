@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
-import { Apps, AppsContext } from '@/contexts/Apps';
+import { AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/System/Window';
-import { appToFocus, appToUnfocus, updatePosition, updateSize } from '@/utils';
+import { appToFocus, appToUnfocus, sortByLastRunning, updatePosition, updateSize } from '@/utils';
 
 export const Windows: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),
@@ -11,9 +11,9 @@ export const Windows: FC = () => {
       marginTop: 0,
       marginLeft: 0
     }),
-    activeApps: Apps = apps.filter(
-      ({ running, minimized }) => running && !minimized
-    ),
+    activeApps = apps
+      .filter(({ running, minimized }) => running && !minimized)
+      .sort(sortByLastRunning),
     onMinimize = (id: string) => () =>
       updateApp({ updates: { foreground: false, minimized: true }, id }),
     onClose = (id: string, [, newForegroundAppId]: Array<string>) => () => {

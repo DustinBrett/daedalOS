@@ -7,6 +7,7 @@ import type {
 } from 'react-rnd';
 import type { AppAction, Apps } from '@/contexts/Apps';
 import type { Dispatch, RefObject } from 'react';
+import type App from '@/contexts/App';
 
 export const appendElement = (
   parentElement: HTMLElement,
@@ -103,3 +104,6 @@ export const updateSize = (
 
 export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();
+
+export const sortByLastRunning = (a: App, b: App): number =>
+  a.lastRunning.getTime() - b.lastRunning.getTime();

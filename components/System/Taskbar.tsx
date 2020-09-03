@@ -6,13 +6,13 @@ import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Clock } from '@/components/System/Clock';
 import { TaskbarEntry } from '@/components/System/TaskbarEntry';
-import { appToFocus } from '@/utils';
+import { appToFocus, sortByLastRunning } from '@/utils';
 
 export const Taskbar: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),
     runningApps = apps
       .filter(({ running }) => running)
-      .sort((a, b) => a.lastRunning.getTime() - b.lastRunning.getTime());
+      .sort(sortByLastRunning);
 
   return (
     <nav className={styles.taskbar}>

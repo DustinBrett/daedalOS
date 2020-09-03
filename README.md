@@ -2,7 +2,6 @@
 
 ### MVP Bugs
 
-- Window: Cascading is not working properly in all cases
 - Window: Bottom corners showing white slightly
 - Window: Post-minimize forces re-render
   - Have `minimize` change visibility, not be filtered
