@@ -18,6 +18,7 @@
 - Winamp: Focus isn't reliable on mobile
 - Winamp: Clicking taskbar entry does not focus app
 - Window: Dragging on mobile sometimes triggers resize
+  - Disable touch events for `OnResize` events from `top`
 
 #### Post-MVP Features
 
@@ -44,14 +45,11 @@
 - JS Paint (https://github.com/1j01/jspaint)
 - Code Editor (https://codemirror.net/, https://ace.c9.io/)
 - Terminal (https://xtermjs.org/)
-- System Tray
 - Volume Controls (https://github.com/Tonejs/unmute)
 - Clippy.JS (https://www.smore.com/clippy-js)
-- Photo Viewer
-- Calendar
-- Session Management
-- PWA
-- i18n support
 - Minesweeper (https://github.com/ziebelje/minesweeper)
 - IRC Client (https://thelounge.chat/)
 - Spreadsheet Editor (https://myliang.github.io/x-spreadsheet)
+- System Tray
+- Photo Viewer
+- Calendar
