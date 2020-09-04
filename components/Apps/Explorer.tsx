@@ -129,5 +129,7 @@ const Explorer: FC = () => (
 export default new App({
   component: Explorer,
   icon: ExplorerIcon,
-  name: 'Explorer'
+  name: 'Explorer',
+  width: 400,
+  height: 250
 });
