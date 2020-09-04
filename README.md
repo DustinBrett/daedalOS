@@ -26,6 +26,7 @@
 - DOS: Loading screen until app is running
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
+- General: URL Routing to apps/files
 
 ### Code Quality
 
@@ -33,6 +34,7 @@
 - Winamp: Position logic (`x|y / 2`) is messy
 - Window: Avoid storing `stackOrder` in every app
 - Window: Remove hard coded z-index
+- General: Create `.d.ts` files for TS declares
 
 # FUTURE
 
