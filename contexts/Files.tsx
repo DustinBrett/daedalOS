@@ -1,3 +1,5 @@
+import index from '@/public/index.json';
+
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { FC } from 'react';
 
@@ -12,7 +14,7 @@ const fsConfig = {
       options: {
         readable: {
           fs: 'XmlHttpRequest',
-          options: {}
+          options: { index }
         },
         writable: {
           fs: 'LocalStorage'
