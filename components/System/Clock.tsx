@@ -1,8 +1,10 @@
 import styles from '@/styles/System/Clock.module.scss';
 
 import type { FC } from 'react';
+import type { DateTimeFormatParts } from '@/utils';
 
 import { useEffect, useState } from 'react';
+import { datePartsToObject, newDateTimeFormat } from '@/utils';
 
 const toDateTimeOptions = {
   year: 'numeric',
@@ -24,22 +26,10 @@ const toTimeOptions = {
   hour12: true
 };
 
-type DateTimeFormatParts = {
-  [key in Intl.DateTimeFormatPartTypes]: string;
-};
-
-const newDateTimeFormat = (options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat(process.env.locale, options);
-
-const partsToObject = (
-  acc: DateTimeFormatParts,
-  { type, value }: Intl.DateTimeFormatPart
-) => ({ ...acc, [type]: value });
-
 const formatToDateTime = (date: Date) => {
   const { year, month, day } = newDateTimeFormat(toDateTimeOptions)
     .formatToParts(date)
-    .reduce(partsToObject, {} as DateTimeFormatParts);
+    .reduce(datePartsToObject, {} as DateTimeFormatParts);
 
   return `${year}-${month}-${day}`;
 };

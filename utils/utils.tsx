@@ -107,3 +107,13 @@ export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
 
 export const sortByLastRunning = (a: App, b: App): number =>
   a.lastRunning.getTime() - b.lastRunning.getTime();
+
+export const newDateTimeFormat = (options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat =>
+  new Intl.DateTimeFormat(process.env.locale, options);
+
+export type DateTimeFormatParts = {
+  [key in Intl.DateTimeFormatPartTypes]: string;
+};
+
+export const datePartsToObject = (acc: DateTimeFormatParts, { type, value }: Intl.DateTimeFormatPart): DateTimeFormatParts =>
+  ({ ...acc, [type]: value });
