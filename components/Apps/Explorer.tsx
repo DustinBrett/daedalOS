@@ -2,28 +2,26 @@ import styles from '@/styles/Apps/Explorer.module.scss';
 import ExplorerIcon from '@/assets/icons/Explorer.png';
 import UnknownFileIcon from '@/assets/icons/Unknown.png';
 
-import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DateTimeFormatParts } from '@/utils';
 
 import { FC, useContext, useEffect, useState } from 'react';
 import App from '@/contexts/App';
-import { FilesContext, FilesProvider } from '@/contexts/Files';
+import { FilesContext, FilesProvider, getFileStat } from '@/contexts/Files';
 import { datePartsToObject, newDateTimeFormat } from '@/utils';
 import { resolve } from 'path';
 
 const homeDir = '/';
 
-type StatsProto = {
-  isDirectory: () => boolean;
-  isFile: () => boolean;
-};
-
 type FsDirectoryEntry = {
   name: string;
   path: string;
   mtime: Date;
+  formattedModifiedTime: string;
   size: number;
+  formattedSize: string;
   isDirectory: boolean;
+  kind: string;
+  icon: string;
 };
 
 const bytesInKB = 1024;
@@ -59,7 +57,7 @@ const formatByteSize = (size: number) => {
   return `${newSize} ${fileSizes[sizeFactor]}`;
 };
 
-const getFileKind = (name: string) => {
+const getFileKind = (name: string): string => {
   const ext = name?.split('.')?.pop() || '';
 
   switch (ext?.toLowerCase()) {
@@ -80,6 +78,8 @@ const getFileKind = (name: string) => {
     case 'wsz':
       return 'Winamp Skin';
   }
+
+  return '';
 };
 
 const getFileIcon = (name: string) => {
@@ -92,6 +92,9 @@ const getFileIcon = (name: string) => {
 };
 
 const openFile = (path: string) => {
+  // TODO: updateApps (find app in directory and set as running?)
+  // TODO: Or find app and set it's "args" before running
+  // TODO: Find which app based on the file extension
   console.log('OPEN FILE: ' + path);
 };
 
@@ -110,18 +113,27 @@ const DirectoryListing: FC = () => {
     [dir, cd] = useState(homeDir),
     [selected, setSelected] = useState('');
 
+  // TODO: Export this out
   useEffect(() => {
     fs?.readdir?.(dir, async (_error, contents = []) => {
       const contentsWithStats = await Promise.all(
         contents.map(async (file) => {
           const path = `${dir}${dir === homeDir ? '' : '/'}${file}`,
-            stats = (await new Promise((resolve) =>
-              fs?.stat?.(path, (_error, stats) => resolve(stats))
-            )) as Stats & StatsProto,
+            stats = await getFileStat(fs, path),
             { mtime, size } = stats || {},
             isDirectory = stats?.isDirectory() || false;
 
-          return { name: file, path, mtime, size, isDirectory };
+          return {
+            name: file,
+            path,
+            icon: isDirectory ? ExplorerIcon : getFileIcon(name),
+            mtime,
+            formattedModifiedTime: mtime && formatToDateTime(mtime),
+            size,
+            formattedSize: isDirectory ? '--' : formatByteSize(size),
+            isDirectory,
+            kind: isDirectory ? 'Folder' : getFileKind(name)
+          };
         })
       );
 
@@ -142,26 +154,32 @@ const DirectoryListing: FC = () => {
       </thead>
       <tbody>
         {dir !== homeDir && previousDir(dir, cd)}
-        {directoryContents.map(({ path, isDirectory, name, mtime, size }) => (
-          <tr
-            key={path}
-            className={selected === path ? styles.selected : ''}
-            onClick={() => setSelected(path)}
-            onDoubleClick={() => (isDirectory ? cd(path) : openFile(path))}
-          >
-            <td className={styles.emphasis}>
-              <img
-                alt={name}
-                src={isDirectory ? ExplorerIcon : getFileIcon(name)}
-                draggable={false}
-              />
-              {name}
-            </td>
-            <td>{mtime && formatToDateTime(mtime)}</td>
-            <td>{isDirectory ? '--' : formatByteSize(size)}</td>
-            <td>{isDirectory ? 'Folder' : getFileKind(name)}</td>
-          </tr>
-        ))}
+        {directoryContents.map(
+          ({
+            path,
+            isDirectory,
+            name,
+            icon,
+            formattedModifiedTime,
+            formattedSize,
+            kind
+          }) => (
+            <tr
+              key={path}
+              className={selected === path ? styles.selected : ''}
+              onClick={() => setSelected(path)}
+              onDoubleClick={() => (isDirectory ? cd(path) : openFile(path))}
+            >
+              <td className={styles.emphasis}>
+                <img alt={name} src={icon} draggable={false} />
+                {name}
+              </td>
+              <td>{formattedModifiedTime}</td>
+              <td>{formattedSize}</td>
+              <td>{kind}</td>
+            </tr>
+          )
+        )}
       </tbody>
     </table>
   );

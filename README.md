@@ -3,7 +3,8 @@
 ### MVP Explorer Tweaks
 
 - Scrolling inside `<tbody>`
-- Unselect line item `onBlur`
+- Unselect line when clicking outside table
+  - Grey instead of blue if clicking outside window
 - `.ico` files can use themselves for their icon
 - Alternating colors should continue to bottom
 
@@ -33,6 +34,7 @@
 
 #### Post-MVP Bugs
 
+- General: Restructure the apps to work with the "file system"
 - DOS: Closing window doesn't fully kill DOS
   - Upgrade to js-dos v7
 - Winamp: Focus isn't reliable on mobile

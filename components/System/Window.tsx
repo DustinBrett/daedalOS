@@ -38,7 +38,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
     if (foreground) {
       focusResizableElementRef(windowRef);
     }
-  }, [foreground]);
+  }, [foreground, windowRef]);
 
   return (
     <article style={{ visibility: minimized ? 'hidden' : 'visible' }}>

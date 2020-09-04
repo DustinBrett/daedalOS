@@ -7,7 +7,6 @@ import type { FC } from 'react';
 
 import App, { AppComponent } from '@/contexts/App';
 import { useEffect, useRef } from 'react';
-import { Html } from 'next/document';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
@@ -21,11 +20,14 @@ const dosOptions = {
   onprogress: () => {}
 };
 
+// TODO: Load with basic tools like EDIT and such (MS-DOS tools somewhere?)
+// TODO: Mobile support (https://github.com/caiiiycuk/js-dos#mobile-support)
+
 export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
-    loadMain = (main: DosMainFn) => () =>
-      main(args)?.then((value) => {
+    loadMain = (main: DosMainFn, extraArgs: Array<string> = []) => () =>
+      main([...extraArgs, ...args])?.then((value) => {
         ci = value;
       });
 
@@ -37,7 +39,7 @@ export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
 
     Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        fs?.extract(url)?.then(loadMain(main));
+        fs?.extract(url, `apps`)?.then(loadMain(main, ['-c', 'CD APPS']));
       } else {
         loadMain(main)();
       }
