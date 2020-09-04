@@ -1,9 +1,27 @@
 # TODO
 
+### MVP Explorer Tweaks
+
+- Scrolling inside `<tbody>`
+- Unselect line item `onBlur`
+- `.ico` files can use themselves for their icon
+- Alternating colors should continue to bottom
+
+### MVP Explorer Features
+
+- Open apps via clicking files
+- Get modified time from files
+- Resizie column headers
+- Status bar with totals
+- Back/Forward buttons
+- Path bar
+
 ### MVP Bugs
 
 - Taskbar: Clicking recently focused entry is minimizing it
 - Window: Better solution to bottom corners showing bg color
+- Window: Remove drag constraints from bottom and sides
+- DOS: Can't touch to click active games
 
 ### MVP Features
 
@@ -11,8 +29,7 @@
 - Icons: Loading indicator
 - Window: Reveal min/max/close when hovering any
 - Window: Maximize
-- Explorer: Styling like OSX
-- Explorer: Open apps via clicking files
+- Wallpaper: Darker and slower
 
 #### Post-MVP Bugs
 
@@ -25,13 +42,17 @@
 
 #### Post-MVP Features
 
+- Icons: Icon component which takes `.ico` files and can store multiple sizes
 - Window: Open at a size/position relative to the viewport, orientation & resolution
 - DOS: Close app when `EXIT` is typed
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
+- Winamp: Load faster
+  - Skin request/decompress, x-win-bitmap requests, pre-loaded mp3
 - General: URL Routing to apps/files
-- Explorer: Link with JS-Dos game saves
+- Explorer: Link with JS-DOS storage
 - Explorer: Delete/Create/Drag/Drop files
+- Explorer: Search files
 
 ### Code Quality
 
