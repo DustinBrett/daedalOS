@@ -38,8 +38,7 @@ const fsConfig = {
 };
 
 export const getFileStat = (fs: FsModule, path: string): Promise<FsStats> =>
-  new Promise((resolve) =>
-    fs?.stat?.(path, (_error, stats) => resolve(stats)));
+  new Promise((resolve) => fs?.stat?.(path, (_error, stats) => resolve(stats)));
 
 export const FilesContext = createContext<FsModule>({});
 
