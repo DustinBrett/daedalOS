@@ -66,7 +66,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         lockAspectRatio={lockAspectRatio}
         style={{ zIndex }}
       >
-        <header className="handle">
+        <header className={`${styles.titlebar} handle`}>
           <h1>
             <figure>
               <img alt={name} src={icon} draggable={false} />
@@ -85,7 +85,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
             </button>
           </nav>
         </header>
-        <article style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}>
+        <article
+          className={styles.content}
+          style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}
+        >
           {children}
         </article>
       </Rnd>

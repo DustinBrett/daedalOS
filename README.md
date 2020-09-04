@@ -3,13 +3,16 @@
 ### MVP Bugs
 
 - Taskbar: Clicking recently focused entry is minimizing it
+- Window: Better solution to bottom corners showing bg color
 
 ### MVP Features
 
-- Window: Reveal min/max/close when hovering any
 - Icons: Draggable
 - Icons: Loading indicator
+- Window: Reveal min/max/close when hovering any
 - Window: Maximize
+- Explorer: Styling like OSX
+- Explorer: Open apps via clicking files
 
 #### Post-MVP Bugs
 
@@ -27,6 +30,8 @@
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
 - General: URL Routing to apps/files
+- Explorer: Link with JS-Dos game saves
+- Explorer: Delete/Create/Drag/Drop files
 
 ### Code Quality
 
@@ -35,11 +40,11 @@
 - Window: Avoid storing `stackOrder` in every app
 - Window: Remove hard coded z-index
 - General: Create `.d.ts` files for TS declares
+- Uses classes when possible to avoid collisions
 
 # FUTURE
 
 - Animations (https://www.framer.com/api/motion)
-- File Explorer (https://github.com/jvilk/BrowserFS)
 - Word Processor (https://webodf.org/)
 - React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork

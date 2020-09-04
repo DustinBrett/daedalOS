@@ -42,7 +42,7 @@ $buttonIconOpacity: 0.75;
     }
   }
 
-  header {
+  .titlebar {
     display: flex;
     align-items: center;
 
@@ -135,19 +135,19 @@ $buttonIconOpacity: 0.75;
   }
 
   &:not(:focus) {
-    header {
+    .titlebar {
       background: unset;
-      background-color: rgb(55, 55, 55);
+      background-color: rgb(55, 53, 56);
 
       h1 {
-        opacity: 0.6;
+        opacity: 0.44;
 
         filter: grayscale(1);
       }
     }
   }
 
-  article {
+  .content {
     @include scrollbars(
       15px,
       map-get($window, border-radius) * 2,
