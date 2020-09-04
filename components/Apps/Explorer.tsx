@@ -15,7 +15,7 @@ type StatsProto = {
 };
 
 type FsDirectoryEntry = {
-  name: string,
+  name: string;
   path: string;
   mtime: Date;
   size: number;
@@ -23,13 +23,15 @@ type FsDirectoryEntry = {
 };
 
 const toDateModified = {
-  dateStyle:'medium',
+  dateStyle: 'medium',
   timeStyle: 'short',
   hour12: true
 };
 
 const formatToDateTime = (date: Date) => {
-  const { month, day, year, hour, minute, dayPeriod } = newDateTimeFormat(toDateModified)
+  const { month, day, year, hour, minute, dayPeriod } = newDateTimeFormat(
+    toDateModified
+  )
     .formatToParts(date)
     .reduce(datePartsToObject, {} as DateTimeFormatParts);
 
@@ -44,7 +46,9 @@ const formatByteSize = (size: number) => {
 
   const sizeFactor = Math.floor(Math.log(size) / Math.log(1024));
 
-  return Math.round(size / Math.pow(1024, sizeFactor)) + ' ' + fileSizes[sizeFactor];
+  return (
+    Math.round(size / Math.pow(1024, sizeFactor)) + ' ' + fileSizes[sizeFactor]
+  );
 };
 
 const DirectoryListing: FC = () => {
@@ -84,12 +88,25 @@ const DirectoryListing: FC = () => {
         </tr>
       </thead>
       <tbody>
-        {dir !== '/' && <tr><td><a href='#' onClick={() => cd(resolve(dir, '..'))}>..</a></td></tr>}
+        {dir !== '/' && (
+          <tr>
+            <td>
+              <a href="#" onClick={() => cd(resolve(dir, '..'))}>
+                ..
+              </a>
+            </td>
+          </tr>
+        )}
         {directoryContents.map(({ name, path, size, mtime, isDirectory }) => (
           <tr key={path}>
-            <td>{isDirectory
-              ? <a href='#' onClick={() => cd(path)}>{name}</a>
-              : name}
+            <td>
+              {isDirectory ? (
+                <a href="#" onClick={() => cd(path)}>
+                  {name}
+                </a>
+              ) : (
+                name
+              )}
             </td>
             <td>{mtime && formatToDateTime(mtime)}</td>
             <td>{isDirectory ? '--' : formatByteSize(size)}</td>
