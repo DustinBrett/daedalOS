@@ -22,8 +22,8 @@
 
 #### Post-MVP Features
 
+- Window: Open at a size/position relative to the viewport, orientation & resolution
 - DOS: Close app when `EXIT` is typed
-- DOS: Loading screen until app is running
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
 - General: URL Routing to apps/files
