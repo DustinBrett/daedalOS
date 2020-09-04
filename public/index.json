@@ -1,8 +1,1 @@
-{
-  "favicon.ico": null,
-  "fonts": { "segoeui.woff2": null },
-  "games": { "4keen.ZIP": null, "doom.ZIP": null },
-  "libs": { "wdosbox.js": null, "wdosbox.wasm.js": null },
-  "mp3": { "demo.mp3": null },
-  "skins": { "SpyAMP_Professional_Edition_v5.wsz": null }
-}
+{"favicon.ico":null,"fonts":{"segoeui.woff2":null},"games":{"4keen.ZIP":null,"doom.ZIP":null},"index.json":null,"libs":{"wdosbox.js":null,"wdosbox.wasm.js":null},"mp3":{"demo.mp3":null},"skins":{"SpyAMP_Professional_Edition_v5.wsz":null}}
