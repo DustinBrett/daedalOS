@@ -1,22 +1,20 @@
-import styles from '@/styles/System/Icon.module.scss';
+import styles from '@/styles/System/DirectoryIcon.module.scss';
 
 import type { FC } from 'react';
-import type App from '@/contexts/App';
-import type { AppComponent } from '@/contexts/App';
+import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
 import { useDoubleTap } from 'use-double-tap';
 
-export const Icon: FC<Partial<App> & AppComponent> = ({
+export const DirectoryIcon: FC<DirectoryEntry> = ({
   icon,
   name,
-  onDoubleClick,
-  tabIndex
+  onDoubleClick
 }) => (
   <li
-    className={styles.icon}
+    className={styles.directoryIcon}
     onDoubleClick={onDoubleClick}
     {...(onDoubleClick ? useDoubleTap(onDoubleClick) : {})}
-    tabIndex={tabIndex}
+    tabIndex={0}
   >
     <figure>
       <img alt={name} src={icon} draggable={false} />

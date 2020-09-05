@@ -9,7 +9,7 @@ import {
   formatToTime,
   isMidnight,
   newDate
-} from '@/utils/dateTime';
+} from '@/utils/dates';
 
 const millisecondsInSecond = Number(process.env.millisecondsInSecond);
 

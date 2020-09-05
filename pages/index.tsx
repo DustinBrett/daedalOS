@@ -1,11 +1,13 @@
 import type { ReactElement } from 'react';
 
 import { AppsProvider } from '@/contexts/Apps';
-import { Desktop } from '@/components/System/Desktop';
-import { Icons } from '@/components/System/Icons';
+import { Desktop } from '@/components/System/Desktop/Desktop';
+import { Directory } from '@/components/System/Directory/Directory';
 import { Metadata } from '@/components/Metadata';
-import { Taskbar } from '@/components/System/Taskbar';
-import { Windows } from '@/components/System/Windows';
+import { Taskbar } from '@/components/System/Taskbar/Taskbar';
+import { Windows } from '@/components/System/Windows/Windows';
+import { View } from '@/components/System/Directory/Directory';
+import { FilesProvider } from '@/contexts/Files';
 
 export default function HomePage(): ReactElement {
   return (
@@ -13,7 +15,9 @@ export default function HomePage(): ReactElement {
       <Metadata />
       <Desktop>
         <AppsProvider>
-          <Icons />
+          <FilesProvider>
+            <Directory path="/" view={View.List} />
+          </FilesProvider>
           <Taskbar />
           <Windows />
         </AppsProvider>

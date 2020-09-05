@@ -1,7 +1,7 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
-.icon {
+.directoryIcon {
   font-size: map-get($icon, font-size);
 
   z-index: map-get($icon, z-index);
