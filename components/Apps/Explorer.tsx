@@ -2,12 +2,10 @@ import styles from '@/styles/Apps/Explorer.module.scss';
 import ExplorerIcon from '@/assets/icons/Explorer.png';
 import UnknownFileIcon from '@/assets/icons/Unknown.png';
 
-import type { DateTimeFormatParts } from '@/utils';
-
 import { FC, useContext, useEffect, useState } from 'react';
 import App from '@/contexts/App';
 import { FilesContext, FilesProvider, getFileStat } from '@/contexts/Files';
-import { datePartsToObject, newDateTimeFormat } from '@/utils';
+import { formatToLongDateTime } from '@/utils/dateTime';
 import { resolve } from 'path';
 
 const homeDir = '/';
@@ -26,26 +24,7 @@ type FsDirectoryEntry = {
 
 const bytesInKB = 1024;
 
-const toDateModified: Partial<Intl.DateTimeFormatOptions> = {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-  hour12: true
-};
-
 const fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-
-const formatToDateTime = (date: Date) => {
-  const { month, day, year, hour, minute, dayPeriod } = newDateTimeFormat(
-    toDateModified
-  )
-    .formatToParts(date)
-    .reduce(datePartsToObject, {} as DateTimeFormatParts);
-
-  return `${month} ${day}, ${year} at ${hour}:${minute} ${dayPeriod}`;
-};
 
 const formatByteSize = (size: number) => {
   if (size === 0) return 'Zero bytes';
@@ -128,7 +107,7 @@ const DirectoryListing: FC = () => {
             path,
             icon: isDirectory ? ExplorerIcon : getFileIcon(name),
             mtime,
-            formattedModifiedTime: mtime && formatToDateTime(mtime),
+            formattedModifiedTime: mtime && formatToLongDateTime(mtime),
             size,
             formattedSize: isDirectory ? '--' : formatByteSize(size),
             isDirectory,

@@ -19,7 +19,7 @@
       "@/components/*": ["components/*"],
       "@/contexts/*": ["contexts/*"],
       "@/styles/*": ["styles/*"],
-      "@/utils": ["utils/utils.tsx"],
+      "@/utils/*": ["utils/*"],
       "@/public/*": ["public/*"]
     }
   },

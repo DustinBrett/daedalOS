@@ -1,5 +1,12 @@
 # TODO
 
+### Refactoring & Cleanup
+
+- Extract out as much as possible into utils
+- Combine `<Icons />` & `<DirectoryListing />` components
+- Switch `<Icon />` to `<DesktopIcon />`
+  - Use mostly `.ico` and setup multiple sizes for each icon
+
 ### MVP Bugs
 
 - Taskbar: Clicking recently focused entry is minimizing it

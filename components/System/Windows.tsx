@@ -9,7 +9,7 @@ import {
   sortByLastRunning,
   updatePosition,
   updateSize
-} from '@/utils';
+} from '@/utils/utils';
 
 export const Windows: FC = () => {
   const { apps, updateApp } = useContext(AppsContext),

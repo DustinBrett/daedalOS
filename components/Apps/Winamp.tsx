@@ -8,7 +8,7 @@ import type { RndDragCallback } from 'react-rnd';
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { AppComponent } from '@/contexts/App';
-import { appendElement, focusOnDrag, updatePosition } from '@/utils';
+import { appendElement, focusOnDrag, updatePosition } from '@/utils/utils';
 import App from '@/contexts/App';
 import { AppsContext } from '@/contexts/Apps';
 

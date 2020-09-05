@@ -17,10 +17,13 @@ type FsStats = Stats & StatsProto;
 type FsModule = Partial<FSModule>;
 
 type ListingObj = {
-  [key: string]: ListingObj | string | null
-}
+  [key: string]: ListingObj | string | null;
+};
 
-const writableJsonFs = (path: string, listingUrlOrObj: string | ListingObj): { [key: string]: BrowserFS.FileSystemConfiguration } => ({
+const writableJsonFs = (
+  path: string,
+  listingUrlOrObj: string | ListingObj
+): { [key: string]: BrowserFS.FileSystemConfiguration } => ({
   [path]: {
     fs: 'OverlayFS',
     options: {
@@ -33,7 +36,7 @@ const writableJsonFs = (path: string, listingUrlOrObj: string | ListingObj): { [
       writable: {
         fs: 'IndexedDB',
         options: {
-          storeName: `browser-fs-cache (${ path })`
+          storeName: `browser-fs-cache (${path})`
         }
       }
     }
