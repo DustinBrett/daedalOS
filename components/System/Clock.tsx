@@ -4,17 +4,22 @@ import type { FC } from 'react';
 
 import { useEffect, useState } from 'react';
 import {
-  formatToShortDateTime,
   formatToDate,
+  formatToShortDateTime,
   formatToTime,
   isMidnight
 } from '@/utils/dateTime';
 
+const millisecondsInSecond = Number(process.env.millisecondsInSecond);
+
+const millisecondsTillNextSecond = () =>
+  millisecondsInSecond - new Date().getMilliseconds();
+
 export const Clock: FC = () => {
-  const initDate = new Date(),
-    [dateTime, setDateTime] = useState(formatToShortDateTime(initDate)),
-    [date, setDate] = useState(formatToDate(initDate)),
-    [time, setTime] = useState(formatToTime(initDate)),
+  const initialDate = new Date(),
+    [date, setDate] = useState(formatToDate(initialDate)),
+    [time, setTime] = useState(formatToTime(initialDate)),
+    [dateTime, setDateTime] = useState(formatToShortDateTime(initialDate)),
     updateClock = () => {
       const currentDate = new Date(),
         newTime = formatToTime(currentDate);
@@ -29,12 +34,11 @@ export const Clock: FC = () => {
 
   useEffect(() => {
     let clockIntervalId: NodeJS.Timeout;
-    const millisecondsInSecond = Number(process.env.millisecondsInSecond);
 
     setTimeout(() => {
       updateClock();
       clockIntervalId = setInterval(updateClock, millisecondsInSecond);
-    }, millisecondsInSecond - new Date().getMilliseconds());
+    }, millisecondsTillNextSecond());
 
     return () => {
       clearInterval(clockIntervalId);
