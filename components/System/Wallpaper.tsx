@@ -8,7 +8,7 @@ import Color from 'color';
 type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${h}, 30%, 15%)`).rgbNumber();
+  Color(`hsl(${h}, 35%, 12%)`).rgbNumber();
 
 const fps = 20,
   updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
@@ -20,7 +20,7 @@ const fps = 20,
     color: wallpaperColor(initialColor),
     shininess: 35,
     waveHeight: 15,
-    waveSpeed: 0.5,
+    waveSpeed: 0.25,
     zoom: 1.1
   };
 

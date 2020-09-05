@@ -1,5 +1,16 @@
 # TODO
 
+### MVP Bugs
+
+- Taskbar: Clicking recently focused entry is minimizing it
+- DOS: Can't touch to click active games
+
+### MVP Features
+
+- Icons: Draggable
+- Window: Reveal min/max/close when hovering any
+- Window: Maximize
+
 ### MVP Explorer Tweaks
 
 - Scrolling inside `<tbody>`
@@ -11,26 +22,9 @@
 ### MVP Explorer Features
 
 - Open apps via clicking files
-- Get modified time from files
-- Resizie column headers
 - Status bar with totals
 - Back/Forward buttons
 - Path bar
-
-### MVP Bugs
-
-- Taskbar: Clicking recently focused entry is minimizing it
-- Window: Better solution to bottom corners showing bg color
-- Window: Remove drag constraints from bottom and sides
-- DOS: Can't touch to click active games
-
-### MVP Features
-
-- Icons: Draggable
-- Icons: Loading indicator
-- Window: Reveal min/max/close when hovering any
-- Window: Maximize
-- Wallpaper: Darker and slower
 
 #### Post-MVP Bugs
 
@@ -39,13 +33,14 @@
   - Upgrade to js-dos v7
 - Winamp: Focus isn't reliable on mobile
 - Winamp: Clicking taskbar entry does not focus app
-- Window: Dragging on mobile sometimes triggers resize
-  - Disable touch events for `OnResize` events from `top`
+- Window: Better solution to bottom corners showing bg color
 
 #### Post-MVP Features
 
+- Icons: Loading indicator
 - Icons: Icon component which takes `.ico` files and can store multiple sizes
 - Window: Open at a size/position relative to the viewport, orientation & resolution
+- Window: Add drag constraint to top
 - DOS: Close app when `EXIT` is typed
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
@@ -55,6 +50,8 @@
 - Explorer: Link with JS-DOS storage
 - Explorer: Delete/Create/Drag/Drop files
 - Explorer: Search files
+- Explorer: Resizie column headers
+- Explorer: Get modified time from files
 
 ### Code Quality
 

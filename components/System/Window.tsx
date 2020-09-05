@@ -47,7 +47,6 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         className={styles.window}
         dragHandleClassName="handle"
         cancel=".cancel"
-        bounds="main"
         default={{
           height: height || 250,
           width: width || 300,
