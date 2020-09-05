@@ -5,6 +5,8 @@ import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
 import { useDoubleTap } from 'use-double-tap';
 
+// TODO: Combine with DirectoryIcons
+
 export const DirectoryIcon: FC<DirectoryEntry> = ({
   icon,
   name,

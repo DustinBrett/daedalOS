@@ -6,21 +6,7 @@ import type { DirectoryView } from '@/components/System/Directory/Directory';
 import { useState } from 'react';
 import { resolve } from 'path';
 
-const homeDir = '/';
-
-const openFile = (path: string) => {
-  console.log('OPEN FILE: ' + path);
-};
-
-const PreviousDir: FC<{ cwd: string; cd: (dir: string) => void }> = ({
-  cwd,
-  cd
-}) => (
-  <tr onDoubleClick={() => cd(resolve(cwd, '..'))}>
-    <td>..</td>
-    <td colSpan={3}></td>
-  </tr>
-);
+const homeDir = '/'; // TODO: Path func to check if at home
 
 export const DirectoryList: FC<DirectoryView> = ({
   cd = () => {},
@@ -41,7 +27,12 @@ export const DirectoryList: FC<DirectoryView> = ({
         </tr>
       </thead>
       <tbody>
-        {cwd !== homeDir && <PreviousDir cwd={cwd} cd={cd} />}
+        {cwd !== homeDir && (
+          <tr onDoubleClick={() => cd(resolve(cwd, '..'))}>
+            <td>..</td>
+            <td colSpan={3}></td>
+          </tr>
+        )}
         {entries.map(
           ({
             path,
@@ -57,7 +48,7 @@ export const DirectoryList: FC<DirectoryView> = ({
               className={selected === path ? styles.selected : ''}
               onClick={() => setSelected(path || '')}
               onDoubleClick={() =>
-                isDirectory ? cd(path || '') : openFile(path || '')
+                isDirectory ? cd(path || '') : console.log(path || '')
               }
             >
               <td className={styles.emphasis}>

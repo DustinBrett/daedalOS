@@ -17,6 +17,7 @@ export default function HomePage(): ReactElement {
         <AppsProvider>
           <FilesProvider>
             <Directory path="/" view={View.List} />
+            <Directory path="/" view={View.Icons} />
           </FilesProvider>
           <Taskbar />
           <Windows />
