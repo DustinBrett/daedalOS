@@ -56,3 +56,5 @@ export const formatToLongDateTime = (date: Date): string => {
 
 export const isMidnight = (time: string, hour12 = true): boolean =>
   time === (hour12 ? '12:00:00 AM' : '00:00:00');
+
+export const newDate = (): Date => new Date();

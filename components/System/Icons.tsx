@@ -5,6 +5,7 @@ import type { FC } from 'react';
 import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Icon } from '@/components/System/Icon';
+import { newDate } from '@/utils/dateTime';
 
 export const Icons: FC = () => {
   const { apps, updateApp } = useContext(AppsContext);
@@ -21,7 +22,7 @@ export const Icons: FC = () => {
               updateApp({
                 updates: running
                   ? { foreground: true, minimized: false }
-                  : { running: true, lastRunning: new Date() },
+                  : { running: true, lastRunning: newDate() },
                 id
               });
             }}

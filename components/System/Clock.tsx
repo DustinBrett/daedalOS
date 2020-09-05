@@ -7,21 +7,22 @@ import {
   formatToDate,
   formatToShortDateTime,
   formatToTime,
-  isMidnight
+  isMidnight,
+  newDate
 } from '@/utils/dateTime';
 
 const millisecondsInSecond = Number(process.env.millisecondsInSecond);
 
 const millisecondsTillNextSecond = () =>
-  millisecondsInSecond - new Date().getMilliseconds();
+  millisecondsInSecond - newDate().getMilliseconds();
 
 export const Clock: FC = () => {
-  const initialDate = new Date(),
+  const initialDate = newDate(),
     [date, setDate] = useState(formatToDate(initialDate)),
     [time, setTime] = useState(formatToTime(initialDate)),
     [dateTime, setDateTime] = useState(formatToShortDateTime(initialDate)),
     updateClock = () => {
-      const currentDate = new Date(),
+      const currentDate = newDate(),
         newTime = formatToTime(currentDate);
 
       setTime(newTime);
