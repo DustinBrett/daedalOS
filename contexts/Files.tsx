@@ -16,25 +16,33 @@ type FsStats = Stats & StatsProto;
 
 type FsModule = Partial<FSModule>;
 
-const fsConfig = {
-  fs: 'MountableFileSystem',
-  options: {
-    '/': {
-      fs: 'OverlayFS',
-      options: {
-        readable: {
-          fs: 'XmlHttpRequest',
-          options: { index }
-        },
-        writable: {
-          fs: 'IndexedDB',
-          options: {
-            storeName: 'browser-fs-cache'
-          }
+type ListingObj = {
+  [key: string]: ListingObj | string | null
+}
+
+const writableJsonFs = (path: string, listingUrlOrObj: string | ListingObj): { [key: string]: BrowserFS.FileSystemConfiguration } => ({
+  [path]: {
+    fs: 'OverlayFS',
+    options: {
+      readable: {
+        fs: 'XmlHttpRequest',
+        options: {
+          index: listingUrlOrObj
+        }
+      },
+      writable: {
+        fs: 'IndexedDB',
+        options: {
+          storeName: `browser-fs-cache (${ path })`
         }
       }
     }
   }
+});
+
+const fsConfig = {
+  fs: 'MountableFileSystem',
+  options: writableJsonFs('/', index)
 };
 
 export const getFileStat = (fs: FsModule, path: string): Promise<FsStats> =>
