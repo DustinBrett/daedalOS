@@ -43,7 +43,9 @@ export const DosAppLoader: FC<Partial<DosApp> & AppComponent> = ({
       if (url) {
         const appPath = `apps/${url.replace('.jsdos', '')}`;
 
-        fs?.extract(url, appPath)?.then(loadMain(main, ['-c', `CD ${appPath}`]));
+        fs?.extract(url, appPath)?.then(
+          loadMain(main, ['-c', `CD ${appPath}`])
+        );
       } else {
         loadMain(main)();
       }
