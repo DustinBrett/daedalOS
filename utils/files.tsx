@@ -7,7 +7,6 @@ import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
 import * as ini from 'ini';
 import { formatToLongDateTime } from '@/utils/dates';
-import { getAppComponent } from './apps';
 
 const bytesInKB = 1024,
   fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'],

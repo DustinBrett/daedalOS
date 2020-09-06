@@ -3,12 +3,12 @@ import ExplorerIcon from '@/assets/icons/Explorer.png';
 
 import type { FC } from 'react';
 
-import App from '@/contexts/App';
+import App, { AppComponent } from '@/contexts/App';
 import { Directory, View } from '@/components/System/Directory/Directory';
 
 // TODO: Allow specifying path here (url)
 
-const Explorer: FC = () => (
+const Explorer: FC<AppComponent> = () => (
   <article className={styles.explorer}>
     <Directory path="/" view={View.List} />
   </article>

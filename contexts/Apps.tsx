@@ -6,6 +6,7 @@ import {
   appClose,
   appFocus,
   appMinimize,
+  appOpen,
   appPosition,
   appSize
 } from '@/utils/utils';
@@ -13,8 +14,9 @@ import {
 export type Apps = Array<App>;
 
 export type AppAction = {
-  updates: Partial<App>;
-  id: string;
+  app?: App;
+  updates?: Partial<App>;
+  id?: string;
 };
 
 type AppsContextType = {
@@ -22,14 +24,17 @@ type AppsContextType = {
   close?: (id: string, stackOrder: Array<string>) => void;
   focus?: (id: string, focus?: boolean) => void;
   minimize?: (id: string, minimize?: boolean) => void;
+  open?: (url: string, icon: string, name: string) => void;
   position?: (id: string) => void;
   size?: (id: string) => void;
 };
 
 const initialApps: Apps = [];
 
-const appReducer = (apps: Apps, { updates, id }: AppAction) =>
-  apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
+const appReducer = (apps: Apps, { app, updates, id }: AppAction) =>
+  app
+    ? [...apps, app]
+    : apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
 
 export const AppsContext = createContext<AppsContextType>({
   apps: []
@@ -45,6 +50,7 @@ export const AppsProvider: FC = ({ children }) => {
         close: appClose(apps, updateApp),
         focus: appFocus(apps, updateApp),
         minimize: appMinimize(updateApp),
+        open: appOpen(updateApp),
         position: appPosition(updateApp),
         size: appSize(updateApp)
       }}

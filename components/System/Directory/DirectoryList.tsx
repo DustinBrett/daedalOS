@@ -27,30 +27,31 @@ export const DirectoryList: FC<DirectoryView> = ({
       </thead>
       <tbody>
         {cwd !== homeDir && (
-          <tr
-            onDoubleClick={onDoubleClick}
-            {...(onDoubleClick ? useDoubleTap(onDoubleClick) : {})}
-          >
+          <tr {...(onDoubleClick ? useDoubleTap(onDoubleClick('..')) : {})}>
             <td>..</td>
             <td colSpan={3}></td>
           </tr>
         )}
-        {entries.map(({ icon, kind, mtime, name, path, size, fullName }) => (
-          <tr
-            key={path}
-            className={selected === path ? styles.selected : ''}
-            onClick={() => setSelected(path || '')}
-            onDoubleClick={onDoubleClick}
-          >
-            <td className={styles.emphasis}>
-              <img alt={name} src={icon} draggable={false} />
-              {fullName}
-            </td>
-            <td>{mtime}</td>
-            <td>{size}</td>
-            <td>{kind}</td>
-          </tr>
-        ))}
+        {entries.map(
+          ({ icon, kind, mtime, name, path, url, size, fullName }) => (
+            <tr
+              key={path}
+              className={selected === path ? styles.selected : ''}
+              onClick={() => setSelected(path || '')}
+              {...(onDoubleClick
+                ? useDoubleTap(onDoubleClick(url, icon, name))
+                : {})}
+            >
+              <td className={styles.emphasis}>
+                <img alt={name} src={icon} draggable={false} />
+                {fullName}
+              </td>
+              <td>{mtime}</td>
+              <td>{size}</td>
+              <td>{kind}</td>
+            </tr>
+          )
+        )}
       </tbody>
     </table>
   );

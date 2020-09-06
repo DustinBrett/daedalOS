@@ -5,6 +5,7 @@ import { DirectoryIcons } from '@/components/System/Directory/DirectoryIcons';
 import { DirectoryList } from '@/components/System/Directory/DirectoryList';
 import { getDirectory } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
+import { AppsContext } from '@/contexts/Apps';
 
 export enum View {
   Icons,
@@ -19,13 +20,14 @@ export type DirectoryEntry = {
   fullName: string;
   path: string;
   size: string;
-  url?: string;
+  url: string;
 };
 
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
   cwd?: string;
-  onDoubleClick: () => void;
+  // TODO: Generic type data? Shortcut?
+  onDoubleClick: (path: string, icon?: string, name?: string) => () => void;
 };
 
 export const Directory: FC<{
@@ -34,11 +36,15 @@ export const Directory: FC<{
 }> = ({ path, view }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState([] as Array<DirectoryEntry>),
-    fs = useContext(FilesContext),
-    onDoubleClick = () => {
-      // resolve(cwd, '..')
-      // cwd !== homeDir
-      // isDirectory ? cd(path || '') : console.log('TODO: OPEN FILE')
+    fs = useContext(FilesContext), // TODO: Get path working
+    { open } = useContext(AppsContext),
+    onDoubleClick = (url: string, icon?: string, name?: string) => () => {
+      if (url === '..') {
+        // cd(resolve(cwd, '..'))
+      } else {
+        // isDirectory ? cd(path || '') : console.log('TODO: OPEN FILE')
+        open?.(url, icon || '', name || '');
+      }
     };
 
   useEffect(() => {

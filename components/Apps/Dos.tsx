@@ -3,15 +3,16 @@ import styles from '@/styles/Apps/Dos.module.scss';
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
+import type { AppComponent } from '@/contexts/App';
 
 import { useEffect, useRef } from 'react';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
-type DosApp = {
-  args?: Array<string>;
-  url?: string;
-};
+interface DosApp extends AppComponent {
+  args: Array<string>;
+  url: string;
+}
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
@@ -21,7 +22,10 @@ const dosOptions = {
 // TODO: Load with basic tools like EDIT and such (MS-DOS tools somewhere?)
 // TODO: Mobile support (https://github.com/caiiiycuk/js-dos#mobile-support)
 
-export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
+export const DosAppLoader: FC<Partial<DosApp> & AppComponent> = ({
+  args = ['-c', 'CLS'],
+  url
+}) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
     loadMain = (main: DosMainFn, extraArgs: Array<string> = []) => () =>

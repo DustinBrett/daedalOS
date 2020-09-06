@@ -1,6 +1,7 @@
-import type { FC } from 'react';
+import type { ReactElement } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
+// TODO: How can I properly use this?
 export type AppComponent = {
   onDoubleClick?: () => void;
   onClose?: () => void;
@@ -14,7 +15,7 @@ export type AppComponent = {
 };
 
 export type AppConstructor = {
-  component: FC<AppComponent>;
+  component: ReactElement;
   icon: string;
   name: string;
 

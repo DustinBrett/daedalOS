@@ -11,12 +11,13 @@ export const DirectoryIcons: FC<DirectoryView> = ({
 }) => (
   <nav className={styles.directoryIcons}>
     <ol>
-      {entries.map(({ path, icon, name }) => (
+      {entries.map(({ icon, name, path, url }) => (
         <li
           key={path}
           className={styles.directoryIcon}
-          onDoubleClick={onDoubleClick}
-          {...(onDoubleClick ? useDoubleTap(onDoubleClick) : {})}
+          {...(onDoubleClick
+            ? useDoubleTap(onDoubleClick(url, icon, name))
+            : {})}
           tabIndex={0}
         >
           <figure>

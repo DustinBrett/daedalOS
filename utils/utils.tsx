@@ -7,7 +7,9 @@ import type {
 } from 'react-rnd';
 import type { AppAction, Apps } from '@/contexts/Apps';
 import type { Dispatch, RefObject } from 'react';
-import type App from '@/contexts/App';
+
+import App from '@/contexts/App';
+import { getAppComponent } from '@/utils/apps';
 
 const appToBackground = (
   apps: Apps,
@@ -118,6 +120,30 @@ export const appSize = (updateApp: Dispatch<AppAction>) => (
   { offsetWidth, offsetHeight }
 ): void =>
   updateApp({ id, updates: { height: offsetHeight, width: offsetWidth } });
+
+export const appOpen = (updateApp: Dispatch<AppAction>) => (
+  url: string,
+  icon: string,
+  name: string
+): void => {
+  const component = getAppComponent(url);
+
+  if (component) {
+    updateApp({
+      app: new App({
+        component,
+        icon,
+        name,
+
+        // DOS Options (How can these be passed?)
+        hideScrollbars: true,
+        lockAspectRatio: true,
+        width: 320,
+        height: 224
+      })
+    });
+  }
+};
 
 export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();
