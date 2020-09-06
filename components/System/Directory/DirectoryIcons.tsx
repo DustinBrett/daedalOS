@@ -16,7 +16,7 @@ export const DirectoryIcons: FC<DirectoryView> = ({
           key={path}
           className={styles.directoryIcon}
           {...(onDoubleClick
-            ? useDoubleTap(onDoubleClick(url, icon, name))
+            ? useDoubleTap(onDoubleClick(path, url, icon, name))
             : {})}
           tabIndex={0}
         >

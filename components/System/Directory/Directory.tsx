@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 
+import { resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { DirectoryIcons } from '@/components/System/Directory/DirectoryIcons';
 import { DirectoryList } from '@/components/System/Directory/DirectoryList';
@@ -27,7 +28,12 @@ export type DirectoryView = {
   entries: Array<DirectoryEntry>;
   cwd?: string;
   // TODO: Generic type data? Shortcut?
-  onDoubleClick: (path: string, icon?: string, name?: string) => () => void;
+  onDoubleClick: (
+    path?: string,
+    url?: string,
+    icon?: string,
+    name?: string
+  ) => () => void;
 };
 
 export const Directory: FC<{
@@ -38,12 +44,13 @@ export const Directory: FC<{
     [entries, setEntries] = useState([] as Array<DirectoryEntry>),
     fs = useContext(FilesContext), // TODO: Get path working
     { open } = useContext(AppsContext),
-    onDoubleClick = (url: string, icon?: string, name?: string) => () => {
-      if (url === '..') {
-        // cd(resolve(cwd, '..'))
-      } else {
-        // isDirectory ? cd(path || '') : console.log('TODO: OPEN FILE')
-        open?.(url, icon || '', name || '');
+    onDoubleClick = (path?: string, url = '', icon = '', name = '') => () => {
+      if (url) {
+        // TODO: isDirectory
+        open?.(url, icon, name);
+      } else if (path) {
+        // TODO: If path is file and not `.url`, then try and open it appLoaderByFileType (Pass loader directly to appOpen)
+        cd(path === '..' ? resolve(cwd, '..') : path);
       }
     };
 

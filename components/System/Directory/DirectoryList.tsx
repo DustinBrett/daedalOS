@@ -4,9 +4,10 @@ import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
 
 import { useState } from 'react';
-import { useDoubleTap } from 'use-double-tap';
 
 const homeDir = '/';
+
+// TODO: Double Tap not working?
 
 export const DirectoryList: FC<DirectoryView> = ({
   onDoubleClick,
@@ -27,7 +28,7 @@ export const DirectoryList: FC<DirectoryView> = ({
       </thead>
       <tbody>
         {cwd !== homeDir && (
-          <tr {...(onDoubleClick ? useDoubleTap(onDoubleClick('..')) : {})}>
+          <tr onDoubleClick={onDoubleClick('..')}>
             <td>..</td>
             <td colSpan={3}></td>
           </tr>
@@ -38,9 +39,7 @@ export const DirectoryList: FC<DirectoryView> = ({
               key={path}
               className={selected === path ? styles.selected : ''}
               onClick={() => setSelected(path || '')}
-              {...(onDoubleClick
-                ? useDoubleTap(onDoubleClick(url, icon, name))
-                : {})}
+              onDoubleClick={onDoubleClick(path, url, icon, name)}
             >
               <td className={styles.emphasis}>
                 <img alt={name} src={icon} draggable={false} />

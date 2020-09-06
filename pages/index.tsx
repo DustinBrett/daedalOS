@@ -14,13 +14,13 @@ export default function HomePage(): ReactElement {
     <>
       <Metadata />
       <Desktop>
-        <AppsProvider>
-          <FilesProvider>
+        <FilesProvider>
+          <AppsProvider>
             <Directory path="/desktop" view={View.Icons} />
-          </FilesProvider>
-          <Taskbar />
-          <Windows />
-        </AppsProvider>
+            <Taskbar />
+            <Windows />
+          </AppsProvider>
+        </FilesProvider>
       </Desktop>
     </>
   );

@@ -44,7 +44,7 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
         loader: Explorer,
         loaderOptions: {
           width: 450,
-          height: 225
+          height: 250
         }
       };
     case 'winamp':

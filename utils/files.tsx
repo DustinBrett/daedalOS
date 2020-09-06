@@ -40,15 +40,18 @@ const getDirectoryEntry = async (
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
     stats = await getFileStat(fs, filePath),
     { mtime, size } = stats || {},
-    isDirectory = stats?.isDirectory() || false,
     ext = getFileExtension(file),
-    { url, icon } = await parseShortcut(fs, filePath);
+    isDirectory = stats?.isDirectory() || false,
+    isShortcut = !isDirectory && file.includes('.url'),
+    { url, icon } = isShortcut
+      ? await parseShortcut(fs, filePath)
+      : ({} as Shortcut);
 
   return {
     name: file.replace(`.${ext}`, ''),
     fullName: file,
     path: filePath,
-    url: decodeURIComponent(url),
+    url: url && decodeURIComponent(url),
     icon: icon ? icon : isDirectory ? ExplorerIcon : getFileIcon(ext),
     mtime: mtime && formatToLongDateTime(mtime),
     size: isDirectory ? '--' : getFormattedSize(size),
