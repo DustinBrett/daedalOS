@@ -1,9 +1,8 @@
 import styles from '@/styles/Apps/Explorer.module.scss';
-import ExplorerIcon from '@/assets/icons/Explorer.png';
 
 import type { FC } from 'react';
 
-import App, { AppComponent } from '@/contexts/App';
+import { AppComponent } from '@/contexts/App';
 import { Directory, View } from '@/components/System/Directory/Directory';
 
 // TODO: Allow specifying path here (url)

@@ -1,5 +1,3 @@
-import WinampIcon from '@/assets/icons/Winamp.png';
-
 import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
@@ -8,7 +6,7 @@ import type { RndDragCallback } from 'react-rnd';
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { AppComponent } from '@/contexts/App';
-import { appendElement, focusOnDrag, updatePosition } from '@/utils/utils';
+import { appendElement, focusOnDrag } from '@/utils/utils';
 import App from '@/contexts/App';
 import { AppsContext } from '@/contexts/Apps';
 
@@ -118,7 +116,7 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
       onDragStart={focusOnDrag}
-      onDragStop={() => position?.('winamp')}
+      onDragStop={position?.('winamp')}
       style={{ zIndex }}
       tabIndex={tabIndex}
     >
