@@ -6,7 +6,7 @@ import type { FC } from 'react';
 import App from '@/contexts/App';
 import { Directory, View } from '@/components/System/Directory/Directory';
 
-// TODO: Allow specifying path here
+// TODO: Allow specifying path here (url)
 
 const Explorer: FC = () => (
   <article className={styles.explorer}>
