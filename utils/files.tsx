@@ -35,13 +35,18 @@ const parseShortcut = (fs: FSModule, path: string): Promise<Shortcut> =>
 const getDirectoryEntry = async (
   fs: FSModule,
   path: string,
-  file: string
+  file: string,
+  getStats: boolean
 ): Promise<DirectoryEntry> => {
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    stats = await getFileStat(fs, filePath),
+    // TODO: Don't need stats for ViewIcons or Directories
+    // Get rid of isDirectory and just check for extension (eventually using path logic)
+    stats = getStats
+      ? await getFileStat(fs, filePath)
+      : ({} as Stats & StatsProto),
     { mtime, size } = stats || {},
     ext = getFileExtension(file),
-    isDirectory = stats?.isDirectory() || false,
+    isDirectory = stats?.isDirectory?.() || false,
     isShortcut = !isDirectory && file.includes('.url'),
     { url, icon } = isShortcut
       ? await parseShortcut(fs, filePath)
@@ -107,13 +112,14 @@ const getFormattedSize = (size: number): string => {
 export const getDirectory = (
   fs: FSModule,
   path: string,
+  getDetails: boolean,
   cb: (entries: Array<DirectoryEntry>) => void // Dispatch?
 ): void => {
   fs?.readdir?.(path, (_error, contents = []) => {
     contents.reduce(async (entries, file) => {
       const newEntries = [
         ...(await entries),
-        await getDirectoryEntry(fs, path, file)
+        await getDirectoryEntry(fs, path, file, getDetails)
       ];
 
       cb(newEntries);

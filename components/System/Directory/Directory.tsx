@@ -55,7 +55,7 @@ export const Directory: FC<{
     };
 
   useEffect(() => {
-    getDirectory(fs, cwd, setEntries);
+    getDirectory(fs, cwd, view === View.List, setEntries);
   }, [fs, cwd]);
 
   switch (view) {
