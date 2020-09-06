@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
+import type { AppLoader } from '@/utils/apps';
 
 // TODO: How can I properly use this?
 export type AppComponent = {
@@ -10,12 +10,13 @@ export type AppComponent = {
   onBlur?: () => void;
   updatePosition?: RndDragCallback;
   updateSize?: RndResizeCallback;
-  tabIndex?: number;
   zIndex?: number;
+  args?: Array<string>;
+  url?: string;
 };
 
 export type AppConstructor = {
-  component: ReactElement;
+  loader: AppLoader;
   icon: string;
   name: string;
 
@@ -31,7 +32,7 @@ export type AppConstructor = {
 };
 
 export default class {
-  component;
+  loader;
   icon;
   name;
 
@@ -45,7 +46,7 @@ export default class {
   lockAspectRatio;
   hideScrollbars;
 
-  running = false;
+  component = undefined;
   foreground = false;
   maximized = false;
   minimized = false;
@@ -53,7 +54,7 @@ export default class {
   stackOrder: Array<string> = [];
 
   constructor({
-    component,
+    loader,
     icon,
     name,
 
@@ -67,7 +68,7 @@ export default class {
     lockAspectRatio = false,
     hideScrollbars = false
   }: AppConstructor) {
-    this.component = component;
+    this.loader = loader;
     this.icon = icon;
     this.name = name;
     this.id = id;

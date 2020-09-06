@@ -3,9 +3,11 @@
 ### Refactoring & Cleanup
 
 - Extract out as much as possible into utils
-- Combine `<Icons />` & `<DirectoryListing />` components
-- Switch `<Icon />` to `<DesktopIcon />`
-  - Use mostly `.ico` and setup multiple sizes for each icon
+- Finish refactoring of apps/files/desktop
+  - Explorer is missing
+  - Winamp doesn't load
+    - Dont pass rendered component?
+    - { loader: DosAppLoader, options: { } }
 
 ### MVP Bugs
 

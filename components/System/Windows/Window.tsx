@@ -8,8 +8,9 @@ import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag, focusResizableElementRef } from '@/utils/utils';
+import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 
+// TODO: This seems messy Partial<App> & AppComponent
 export const Window: FC<Partial<App> & AppComponent> = ({
   children,
   icon,

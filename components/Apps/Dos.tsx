@@ -9,11 +9,6 @@ import { useEffect, useRef } from 'react';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 
-interface DosApp extends AppComponent {
-  args: Array<string>;
-  url: string;
-}
-
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
   onprogress: () => {}
@@ -22,14 +17,14 @@ const dosOptions = {
 // TODO: Load with basic tools like EDIT and such (MS-DOS tools somewhere?)
 // TODO: Mobile support (https://github.com/caiiiycuk/js-dos#mobile-support)
 
-export const DosAppLoader: FC<Partial<DosApp> & AppComponent> = ({
+export const DosAppLoader: FC<AppComponent> = ({
   args = ['-c', 'CLS'],
   url
 }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
-    loadMain = (main: DosMainFn, extraArgs: Array<string> = []) => () =>
-      main([...extraArgs, ...args])?.then((value) => {
+    loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) => () =>
+      main([...prependedArgs, ...args])?.then((value) => {
         ci = value;
       });
 

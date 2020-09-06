@@ -28,7 +28,7 @@ export const Windows: FC = () => {
         .map(
           (
             {
-              component: App,
+              loader: { loader: App, loaderOptions, loadedAppOptions },
               id,
               icon,
               name,
@@ -62,8 +62,7 @@ export const Windows: FC = () => {
                 y: y || cascadeSpacing
               };
 
-            return (
-              //windowed ? (
+            return windowed ? (
               <Window
                 key={id}
                 icon={icon}
@@ -73,10 +72,10 @@ export const Windows: FC = () => {
                 updateSize={size?.(id)}
                 {...appOptions}
               >
-                {App}
+                <App {...loadedAppOptions} />
               </Window>
-              // ) : (
-              //   <App key={id} {...appOptions} />
+            ) : (
+              <App key={id} {...appOptions} {...loadedAppOptions} />
             );
           }
         )}

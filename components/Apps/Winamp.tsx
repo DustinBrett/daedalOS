@@ -6,7 +6,7 @@ import type { RndDragCallback } from 'react-rnd';
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { AppComponent } from '@/contexts/App';
-import { appendElement, focusOnDrag } from '@/utils/utils';
+import { appendElement, focusOnDrag } from '@/utils/elements';
 import App from '@/contexts/App';
 import { AppsContext } from '@/contexts/Apps';
 
@@ -58,14 +58,14 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-const Winamp: FC<Partial<App> & AppComponent> = ({
+export const WinampLoader: FC<Partial<App> & AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
-  tabIndex,
   zIndex,
   x = 0,
   y = 0
+  // TODO: Get url/args for mp3/m3u's
 }) => {
   const elementRef = useRef<HTMLElement>(null),
     { position } = useContext(AppsContext),
@@ -118,16 +118,8 @@ const Winamp: FC<Partial<App> & AppComponent> = ({
       onDragStart={focusOnDrag}
       onDragStop={position?.('winamp')}
       style={{ zIndex }}
-      tabIndex={tabIndex}
     >
       <article ref={elementRef} />
     </Rnd>
   );
 };
-
-// export default new App({
-//   component: Winamp,
-//   icon: WinampIcon,
-//   name: 'Winamp',
-//   windowed: false
-// });

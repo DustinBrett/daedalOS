@@ -10,7 +10,7 @@ import {
   appOpen,
   appPosition,
   appSize
-} from '@/utils/utils';
+} from '@/utils/apps';
 
 export type Apps = Array<App>;
 

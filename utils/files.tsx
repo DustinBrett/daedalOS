@@ -56,24 +56,11 @@ const getDirectoryEntry = async (
   };
 };
 
-const getFileStat = (fs: FSModule, path: string): Promise<Stats & StatsProto> =>
-  new Promise((resolve) => fs?.stat?.(path, (_error, stats) => resolve(stats)));
-
 const getFileIcon = (ext: string): string => {
   switch (ext) {
     default:
       return UnknownFileIcon;
   }
-};
-
-const getFormattedSize = (size: number): string => {
-  if (size === 0) return 'Zero bytes';
-  if (size === 1) return '1 byte';
-
-  const sizeFactor = Math.floor(Math.log(size) / Math.log(bytesInKB)),
-    newSize = Math.round(size / Math.pow(bytesInKB, sizeFactor));
-
-  return `${newSize} ${fileSizes[sizeFactor]}`;
 };
 
 const getFileKind = (ext: string): string => {
@@ -101,10 +88,17 @@ const getFileKind = (ext: string): string => {
   }
 };
 
-export const getFileExtension = (path = ''): string => {
-  const [, ...ext] = path?.split?.('/')?.pop?.()?.split?.('.') || [];
+const getFileStat = (fs: FSModule, path: string): Promise<Stats & StatsProto> =>
+  new Promise((resolve) => fs?.stat?.(path, (_error, stats) => resolve(stats)));
 
-  return (ext || []).join();
+const getFormattedSize = (size: number): string => {
+  if (size === 0) return 'Zero bytes';
+  if (size === 1) return '1 byte';
+
+  const sizeFactor = Math.floor(Math.log(size) / Math.log(bytesInKB)),
+    newSize = Math.round(size / Math.pow(bytesInKB, sizeFactor));
+
+  return `${newSize} ${fileSizes[sizeFactor]}`;
 };
 
 export const getDirectory = (
@@ -119,4 +113,10 @@ export const getDirectory = (
       )
     );
   });
+};
+
+export const getFileExtension = (path = ''): string => {
+  const [, ...ext] = path?.split?.('/')?.pop?.()?.split?.('.') || [];
+
+  return (ext || []).join();
 };
