@@ -34,11 +34,9 @@ const initialApps: Apps = [];
 const appReducer = (apps: Apps, { app, updates, id }: AppAction) =>
   app
     ? [...apps, app]
-    : (
-      updates
-        ? apps.map((app) => (app.id === id ? { ...app, ...updates } : app))
-        : apps.filter((app) => app.id !== id)
-    );
+    : updates
+    ? apps.map((app) => (app.id === id ? { ...app, ...updates } : app))
+    : apps.filter((app) => app.id !== id);
 
 export const AppsContext = createContext<AppsContextType>({
   apps: []
