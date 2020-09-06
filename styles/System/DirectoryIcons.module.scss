@@ -14,5 +14,95 @@
     flex-flow: column wrap;
 
     height: 100%;
+
+    .directoryIcon {
+      font-size: map-get($icon, font-size);
+
+      z-index: map-get($icon, z-index);
+
+      display: flex;
+      flex-direction: column;
+
+      width: map-get($icon, width);
+      min-height: map-get($icon, min-height);
+      max-height: map-get($icon, max-height);
+      margin: 0 0 (map-get($icons, padding) * 3) 0;
+
+      color: map-get($icon, text-color);
+      text-shadow: map-get($icon, text-shadow);
+
+      place-content: space-evenly;
+      place-items: center;
+
+      &:last-child {
+        margin-bottom: unset;
+      }
+
+      // TODO: Turn this stuff into a mixin
+      &:hover {
+        outline: 1px solid
+          rgba(
+            map-get($icon, highlight-color),
+            map-get($icon, hover-bg-opacity)
+          );
+        outline-offset: -2px;
+        background-color: rgba(
+          map-get($icon, highlight-color),
+          map-get($icon, hover-bg-opacity)
+        );
+      }
+
+      &:focus {
+        outline: 1px dotted
+          rgba(
+            map-get($icon, highlight-color),
+            map-get($icon, focus-bg-opacity)
+          );
+        outline-offset: -2px;
+        background-color: rgba(
+          map-get($icon, highlight-color),
+          map-get($icon, focus-bg-opacity)
+        );
+
+        &:hover {
+          outline-style: solid;
+          background-color: rgba(
+            map-get($icon, highlight-color),
+            map-get($icon, focus-hover-bg-opacity)
+          );
+        }
+      }
+
+      figure {
+        @include textOverflowEllipsis;
+
+        margin: 5px 0;
+
+        text-align: center;
+
+        img {
+          width: 42px;
+          height: 42px;
+        }
+
+        figcaption {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+
+          width: 75px;
+
+          white-space: pre-line;
+          letter-spacing: 0.1px;
+          text-overflow: ellipsis;
+
+          -webkit-line-clamp: 2;
+        }
+      }
+
+      svg {
+        width: map-get($icon, svg-width);
+      }
+    }
   }
 }

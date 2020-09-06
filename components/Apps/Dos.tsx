@@ -65,16 +65,12 @@ export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
   );
 };
 
-export const DosAppOptions: Partial<App> = {
-  hideScrollbars: true,
-  lockAspectRatio: true,
-  width: 320,
-  height: 224
-};
-
 export default new App({
   component: DosAppLoader as FC<AppComponent>,
   icon: DosIcon,
   name: 'DOS',
-  ...DosAppOptions
+  hideScrollbars: true,
+  lockAspectRatio: true,
+  width: 320,
+  height: 224
 });

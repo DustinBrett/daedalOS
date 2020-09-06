@@ -12,26 +12,20 @@ export enum View {
 }
 
 export type DirectoryEntry = {
-  id?: string;
   icon: string;
+  kind: string;
+  mtime: string;
   name: string;
-
-  path?: string;
-  mtime?: Date;
-  formattedModifiedTime?: string;
-  size?: number;
-  formattedSize?: string;
-  isDirectory?: boolean;
-  kind?: string;
-
-  onDoubleClick?: () => void;
+  fullName: string;
+  path: string;
+  size: string;
+  url?: string;
 };
 
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
-
-  cd?: (dir: string) => void;
   cwd?: string;
+  onDoubleClick: () => void;
 };
 
 export const Directory: FC<{
@@ -40,10 +34,15 @@ export const Directory: FC<{
 }> = ({ path, view }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState([] as Array<DirectoryEntry>),
-    fs = useContext(FilesContext);
+    fs = useContext(FilesContext),
+    onDoubleClick = () => {
+      // console.log(path.resolve(cwd, '..')); // resolve(cwd, '..')
+      // cwd !== homeDir
+      // isDirectory ? cd(path || '') : console.log('TODO: OPEN FILE')
+      // console.log('TODO: OPEN FILE/FOLDER');
+    };
 
   useEffect(() => {
-    console.log(fs, cwd);
     getDirectory(fs, cwd, (entries) => {
       setEntries(entries);
     });
@@ -51,9 +50,15 @@ export const Directory: FC<{
 
   switch (view) {
     case View.Icons:
-      return <DirectoryIcons entries={entries} />;
+      return <DirectoryIcons entries={entries} onDoubleClick={onDoubleClick} />;
     case View.List:
-      return <DirectoryList entries={entries} cwd={cwd} cd={cd} />;
+      return (
+        <DirectoryList
+          entries={entries}
+          onDoubleClick={onDoubleClick}
+          cwd={cwd}
+        />
+      );
     default:
       return <p>Unknown View Type</p>;
   }

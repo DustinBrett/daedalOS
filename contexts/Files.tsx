@@ -1,7 +1,6 @@
 import index from '@/public/index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-
 import type { FC } from 'react';
 
 import { createContext, useEffect, useState } from 'react';
@@ -37,7 +36,7 @@ const writableJsonFs = (
 export const FilesContext = createContext<FSModule>({} as FSModule);
 
 export const FilesProvider: FC = ({ children }) => {
-  const [fs, setFS] = useState<FSModule>({} as FSModule);
+  const [fs, setFs] = useState<FSModule>({} as FSModule);
 
   useEffect(() => {
     BrowserFS.install(window);
@@ -48,7 +47,7 @@ export const FilesProvider: FC = ({ children }) => {
         options: writableJsonFs('/', index)
       },
       () => {
-        setFS(BrowserFS.BFSRequire('fs'));
+        setFs(BrowserFS.BFSRequire('fs'));
       }
     );
   }, []);

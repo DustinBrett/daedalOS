@@ -4,18 +4,17 @@ import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
 
 import { useState } from 'react';
-import { resolve } from 'path';
+import { useDoubleTap } from 'use-double-tap';
 
-const homeDir = '/'; // TODO: Path func to check if at home
+const homeDir = '/';
 
 export const DirectoryList: FC<DirectoryView> = ({
-  cd = () => {},
-  cwd = '',
+  onDoubleClick,
+  cwd,
   entries
 }) => {
   const [selected, setSelected] = useState('');
 
-  // TODO: DoubleTap
   return (
     <table className={styles.directory}>
       <thead>
@@ -28,39 +27,30 @@ export const DirectoryList: FC<DirectoryView> = ({
       </thead>
       <tbody>
         {cwd !== homeDir && (
-          <tr onDoubleClick={() => cd(resolve(cwd, '..'))}>
+          <tr
+            onDoubleClick={onDoubleClick}
+            {...(onDoubleClick ? useDoubleTap(onDoubleClick) : {})}
+          >
             <td>..</td>
             <td colSpan={3}></td>
           </tr>
         )}
-        {entries.map(
-          ({
-            path,
-            isDirectory,
-            name,
-            icon,
-            formattedModifiedTime,
-            formattedSize,
-            kind
-          }) => (
-            <tr
-              key={path}
-              className={selected === path ? styles.selected : ''}
-              onClick={() => setSelected(path || '')}
-              onDoubleClick={() =>
-                isDirectory ? cd(path || '') : console.log(path || '')
-              }
-            >
-              <td className={styles.emphasis}>
-                <img alt={name} src={icon} draggable={false} />
-                {name}
-              </td>
-              <td>{formattedModifiedTime}</td>
-              <td>{formattedSize}</td>
-              <td>{kind}</td>
-            </tr>
-          )
-        )}
+        {entries.map(({ icon, kind, mtime, name, path, size, fullName }) => (
+          <tr
+            key={path}
+            className={selected === path ? styles.selected : ''}
+            onClick={() => setSelected(path || '')}
+            onDoubleClick={onDoubleClick}
+          >
+            <td className={styles.emphasis}>
+              <img alt={name} src={icon} draggable={false} />
+              {fullName}
+            </td>
+            <td>{mtime}</td>
+            <td>{size}</td>
+            <td>{kind}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

@@ -2,11 +2,6 @@ import type { Dispatch, FC } from 'react';
 
 import { createContext, useReducer } from 'react';
 import App from '@/contexts/App';
-import Explorer from '@/components/Apps/Explorer';
-import DOS from '@/components/Apps/Dos';
-import CommanderKeen from '@/components/Apps/Games/CommanderKeen';
-import Doom from '@/components/Apps/Games/Doom';
-import Winamp from '@/components/Apps/Winamp';
 
 export type Apps = Array<App>;
 
@@ -15,7 +10,7 @@ export type AppAction = {
   id: string;
 };
 
-const initialApps: Apps = [Explorer, DOS, CommanderKeen, Doom, Winamp];
+const initialApps: Apps = [];
 
 const appReducer = (apps: Apps, { updates, id }: AppAction) =>
   apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
