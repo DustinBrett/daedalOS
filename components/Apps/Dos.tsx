@@ -1,11 +1,9 @@
 import styles from '@/styles/Apps/Dos.module.scss';
-import DosIcon from '@/assets/icons/Dos.png';
 
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 
-import App, { AppComponent } from '@/contexts/App';
 import { useEffect, useRef } from 'react';
 
 type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
@@ -64,13 +62,3 @@ export const DosAppLoader: FC<DosApp> = ({ args = ['-c', 'CLS'], url }) => {
     />
   );
 };
-
-export default new App({
-  component: DosAppLoader as FC<AppComponent>,
-  icon: DosIcon,
-  name: 'DOS',
-  hideScrollbars: true,
-  lockAspectRatio: true,
-  width: 320,
-  height: 224
-});

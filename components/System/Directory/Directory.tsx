@@ -36,10 +36,9 @@ export const Directory: FC<{
     [entries, setEntries] = useState([] as Array<DirectoryEntry>),
     fs = useContext(FilesContext),
     onDoubleClick = () => {
-      // console.log(path.resolve(cwd, '..')); // resolve(cwd, '..')
+      // resolve(cwd, '..')
       // cwd !== homeDir
       // isDirectory ? cd(path || '') : console.log('TODO: OPEN FILE')
-      // console.log('TODO: OPEN FILE/FOLDER');
     };
 
   useEffect(() => {

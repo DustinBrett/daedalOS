@@ -3,10 +3,7 @@ import type { ReactElement } from 'react';
 import { DosAppLoader } from '@/components/Apps/Dos';
 import { getFileExtension } from '@/utils/files';
 
-const getAppComponentByName = (
-  name: string,
-  searchParams: URLSearchParams
-): ReactElement | undefined => {
+const getAppComponentByName = (name: string): ReactElement | undefined => {
   switch (name) {
     case 'dos':
       return <DosAppLoader />;
@@ -26,9 +23,9 @@ const getAppComponentByFileType = (
 };
 
 export const getAppComponent = (url: string): ReactElement | undefined => {
-  const { hash, pathname, searchParams } = new URL(url);
+  const { pathname, searchParams } = new URL(url);
 
-  return hash
-    ? getAppComponentByName(hash.replace('#', ''), searchParams)
-    : getAppComponentByFileType(getFileExtension(pathname), searchParams);
+  return pathname === '/'
+    ? getAppComponentByName(searchParams.get('app') || '')
+    : getAppComponentByFileType(pathname, searchParams);
 };
