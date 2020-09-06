@@ -24,7 +24,7 @@ export const DosAppLoader: FC<AppComponent> = ({
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
     loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) => () =>
-      main([...prependedArgs, ...args])?.then((value) => {
+      main?.([...prependedArgs, ...args])?.then((value) => {
         ci = value;
       });
 
@@ -38,7 +38,7 @@ export const DosAppLoader: FC<AppComponent> = ({
       if (url) {
         const appPath = `apps/${url.replace('.jsdos', '')}`;
 
-        fs?.extract(url, appPath)?.then(
+        fs?.extract?.(url, appPath)?.then(
           loadMain(main, ['-c', `CD ${appPath}`])
         );
       } else {
@@ -56,6 +56,7 @@ export const DosAppLoader: FC<AppComponent> = ({
   return (
     <canvas
       className={styles.dos}
+      // TODO: Is this breaking touch?
       onClick={() => {
         (canvasRef.current?.closest(
           ':not(li)[tabindex]'

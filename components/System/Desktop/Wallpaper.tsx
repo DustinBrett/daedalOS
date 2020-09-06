@@ -1,4 +1,4 @@
-import WAVES from '@/assets/libs/vanta.waves.min';
+import WAVES from '@/public/libs/vanta.waves.min';
 
 import type { RefObject } from 'react';
 

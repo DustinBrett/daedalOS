@@ -1,5 +1,5 @@
-import ExplorerIcon from '@/assets/icons/Explorer.png';
-import UnknownFileIcon from '@/assets/icons/Unknown.png';
+import ExplorerIcon from '@/public/icons/apps/explorer.png';
+import UnknownFileTypeIcon from '@/public/icons/types/unknown.png';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
@@ -59,7 +59,7 @@ const getDirectoryEntry = async (
 const getFileIcon = (ext: string): string => {
   switch (ext) {
     default:
-      return UnknownFileIcon;
+      return UnknownFileTypeIcon;
   }
 };
 

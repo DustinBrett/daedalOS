@@ -5,6 +5,7 @@ import type { AppAction, Apps } from '@/contexts/Apps';
 
 import App from '@/contexts/App';
 import { DosAppLoader } from '@/components/Apps/Dos';
+import { Explorer } from '@/components/Apps/Explorer';
 import { WinampLoader } from '@/components/Apps/Winamp';
 import { getFileExtension } from '@/utils/files';
 
@@ -37,6 +38,14 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
       return {
         loader: DosAppLoader,
         loaderOptions: dosLoaderOptions
+      };
+    case 'explorer':
+      return {
+        loader: Explorer,
+        loaderOptions: {
+          width: 450,
+          height: 225
+        }
       };
     case 'winamp':
       return {
