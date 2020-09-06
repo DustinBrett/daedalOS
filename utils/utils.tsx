@@ -78,7 +78,7 @@ export const appMinimize = (updateApp: Dispatch<AppAction>) => (
   if (minimize) {
     updateApp({ updates: { foreground: false, minimized: true }, id });
   } else {
-    updateApp({ updates: { minimized: false }, id });
+    updateApp({ updates: { foreground: true, minimized: false }, id });
   }
 };
 
@@ -90,7 +90,9 @@ export const appClose = (apps: Apps, updateApp: Dispatch<AppAction>) => (
     appFocus(apps, updateApp)(newForegroundAppId);
   }
 
-  updateApp({ updates: { running: false, stackOrder: [] }, id });
+  // TODO: Does stackOrder make sense the same way anymore?
+  // Maybe apps can keep track of this now that its only running
+  updateApp({ id });
 };
 
 export const focusOnDrag = (
