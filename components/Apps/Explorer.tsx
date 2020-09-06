@@ -14,10 +14,10 @@ const Explorer: FC<AppComponent> = () => (
   </article>
 );
 
-export default new App({
-  component: Explorer,
-  icon: ExplorerIcon,
-  name: 'Explorer',
-  width: 450,
-  height: 225
-});
+// export default new App({
+//   component: Explorer,
+//   icon: ExplorerIcon,
+//   name: 'Explorer',
+//   width: 450,
+//   height: 225
+// });

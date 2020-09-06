@@ -1,6 +1,6 @@
-import { FC, useContext } from 'react';
+import type { FC } from 'react';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { Window } from '@/components/System/Windows/Window';
 import { sortByLastRunning } from '@/utils/utils';
@@ -51,8 +51,8 @@ export const Windows: FC = () => {
                 onClose: () => close?.(id, stackOrder),
                 onFocus: () => focus?.(id),
                 onBlur: () => focus?.(id, false),
-                updatePosition: () => position?.(id),
-                updateSize: () => size?.(id),
+                updatePosition: position?.(id),
+                updateSize: size?.(id),
                 zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)), // TODO: Still valid logic?
                 foreground,
                 minimized,
@@ -70,6 +70,7 @@ export const Windows: FC = () => {
                 name={name}
                 lockAspectRatio={lockAspectRatio}
                 hideScrollbars={hideScrollbars}
+                updateSize={size?.(id)}
                 {...appOptions}
               >
                 {App}

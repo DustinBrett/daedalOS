@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 import { createContext, useReducer } from 'react';
 import App from '@/contexts/App';
@@ -25,18 +26,28 @@ type AppsContextType = {
   focus?: (id: string, focus?: boolean) => void;
   minimize?: (id: string, minimize?: boolean) => void;
   open?: (url: string, icon: string, name: string) => void;
-  position?: (id: string) => void;
-  size?: (id: string) => void;
+  position?: (id: string) => RndDragCallback;
+  size?: (id: string) => RndResizeCallback;
 };
 
 const initialApps: Apps = [];
+const appStates: { [key: string]: Partial<App> } = {};
 
-const appReducer = (apps: Apps, { app, updates, id }: AppAction) =>
-  app
-    ? [...apps, app]
-    : updates
-    ? apps.map((app) => (app.id === id ? { ...app, ...updates } : app))
-    : apps.filter((app) => app.id !== id);
+const appReducer = (apps: Apps, { app, updates, id }: AppAction) => {
+  if (app) {
+    return [...apps, { ...app, ...(appStates[app.id] || {}) }];
+  } else if (updates) {
+    return apps.map((app) => (app.id === id ? { ...app, ...updates } : app));
+  } else if (id) {
+    const { x, y, height, width } = apps.find((app) => app.id === id) || {};
+
+    appStates[id] = { x, y, height, width };
+
+    return apps.filter((app) => app.id !== id);
+  }
+
+  return apps;
+};
 
 export const AppsContext = createContext<AppsContextType>({
   apps: []
