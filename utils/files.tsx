@@ -107,14 +107,19 @@ const getFormattedSize = (size: number): string => {
 export const getDirectory = (
   fs: FSModule,
   path: string,
-  cb: (entries: Array<DirectoryEntry>) => void
+  cb: (entries: Array<DirectoryEntry>) => void // Dispatch?
 ): void => {
-  fs?.readdir?.(path, async (_error, contents = []) => {
-    cb(
-      await Promise.all(
-        contents.map((file) => getDirectoryEntry(fs, path, file))
-      )
-    );
+  fs?.readdir?.(path, (_error, contents = []) => {
+    contents.reduce(async (entries, file) => {
+      const newEntries = [
+        ...(await entries),
+        await getDirectoryEntry(fs, path, file)
+      ];
+
+      cb(newEntries);
+
+      return newEntries;
+    }, Promise.resolve([]) as Promise<Array<DirectoryEntry>>);
   });
 };
 

@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { FC } from 'react';
 
 import { resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
@@ -41,7 +41,7 @@ export const Directory: FC<{
   view: View;
 }> = ({ path, view }) => {
   const [cwd, cd] = useState(path),
-    [entries, setEntries] = useState([] as Array<DirectoryEntry>),
+    [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext), // TODO: Get path working
     { open } = useContext(AppsContext),
     onDoubleClick = (path?: string, url = '', icon = '', name = '') => () => {
@@ -55,9 +55,7 @@ export const Directory: FC<{
     };
 
   useEffect(() => {
-    getDirectory(fs, cwd, (entries) => {
-      setEntries(entries);
-    });
+    getDirectory(fs, cwd, setEntries);
   }, [fs, cwd]);
 
   switch (view) {

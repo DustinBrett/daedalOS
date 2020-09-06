@@ -3,7 +3,7 @@ import styles from '@/styles/System/DirectoryIcons.module.scss';
 import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
 
-import { useDoubleTap } from 'use-double-tap';
+// import { useDoubleTap } from 'use-double-tap';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
@@ -15,9 +15,7 @@ export const DirectoryIcons: FC<DirectoryView> = ({
         <li
           key={path}
           className={styles.directoryIcon}
-          {...(onDoubleClick
-            ? useDoubleTap(onDoubleClick(path, url, icon, name))
-            : {})}
+          onDoubleClick={onDoubleClick(path, url, icon, name)}
           tabIndex={0}
         >
           <figure>
