@@ -9,31 +9,7 @@ import type { AppAction, Apps } from '@/contexts/Apps';
 import type { Dispatch, RefObject } from 'react';
 import type App from '@/contexts/App';
 
-export const appendElement = (
-  parentElement: HTMLElement,
-  childElement: HTMLElement
-): void => {
-  if (parentElement && childElement) {
-    parentElement.appendChild?.(childElement);
-  }
-};
-
-export const appToFocus = (
-  apps: Apps,
-  updateApp: Dispatch<AppAction>,
-  id: string
-): void => {
-  appToForeground(apps, updateApp, id);
-  appToStackTop(apps, updateApp, id);
-};
-
-export const appToUnfocus = (
-  apps: Apps,
-  updateApp: Dispatch<AppAction>,
-  id: string
-): void => appToBackground(apps, updateApp, id);
-
-export const appToBackground = (
+const appToBackground = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
@@ -43,7 +19,7 @@ export const appToBackground = (
     updates: { foreground: false }
   });
 
-export const appToForeground = (
+const appToForeground = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
@@ -55,7 +31,7 @@ export const appToForeground = (
     });
   });
 
-export const appToStackTop = (
+const appToStackTop = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
   id: string
@@ -72,6 +48,49 @@ export const appToStackTop = (
     });
   });
 
+export const appendElement = (
+  parentElement: HTMLElement,
+  childElement: HTMLElement
+): void => {
+  if (parentElement && childElement) {
+    parentElement.appendChild?.(childElement);
+  }
+};
+
+export const appFocus = (apps: Apps, updateApp: Dispatch<AppAction>) => (
+  id: string,
+  focus = true
+): void => {
+  if (focus) {
+    appToForeground(apps, updateApp, id);
+    appToStackTop(apps, updateApp, id);
+  } else {
+    appToBackground(apps, updateApp, id);
+  }
+};
+
+export const appMinimize = (updateApp: Dispatch<AppAction>) => (
+  id: string,
+  minimize = true
+): void => {
+  if (minimize) {
+    updateApp({ updates: { foreground: false, minimized: true }, id });
+  } else {
+    updateApp({ updates: { minimized: false }, id });
+  }
+};
+
+export const appClose = (apps: Apps, updateApp: Dispatch<AppAction>) => (
+  id: string,
+  [, newForegroundAppId]: Array<string> // TODO: Does this logic make sense?
+): void => {
+  if (newForegroundAppId) {
+    appFocus(apps, updateApp)(newForegroundAppId);
+  }
+
+  updateApp({ updates: { running: false, stackOrder: [] }, id });
+};
+
 export const focusOnDrag = (
   _event: RndDragEvent,
   { node }: DraggableData
@@ -86,14 +105,12 @@ export const lockDocumentTitle = (): void => {
   }
 };
 
-export const updatePosition = (
-  updateApp: Dispatch<AppAction>,
+export const appPosition = (updateApp: Dispatch<AppAction>) => (
   id: string
 ): RndDragCallback => (_event, { x, y }): void =>
   updateApp({ id, updates: { x, y } });
 
-export const updateSize = (
-  updateApp: Dispatch<AppAction>,
+export const appSize = (updateApp: Dispatch<AppAction>) => (
   id: string
 ): RndResizeCallback => (
   _event,

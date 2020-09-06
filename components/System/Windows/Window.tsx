@@ -22,7 +22,6 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   updateSize,
   lockAspectRatio,
   hideScrollbars,
-  tabIndex,
   zIndex,
   height,
   width,
@@ -55,7 +54,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         }}
         minHeight={200}
         minWidth={300}
-        tabIndex={tabIndex}
+        tabIndex={0}
         onFocus={onFocus}
         onBlur={onBlur}
         onDragStart={focusOnDrag}

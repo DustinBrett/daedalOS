@@ -22,6 +22,13 @@ const getAppComponentByFileType = (
   }
 };
 
+// Could this become AppsContext?
+// import { run, AppsContext } from '@/contexts/apps';
+// const { apps, updateApp } = useContext(AppsContext)
+// run = getAppComponent
+// { apps, updateApp }
+// Could I not use updateApp and instead run funcs exported from AppsContext which mutate `apps` locally within its module?
+
 export const getAppComponent = (url: string): ReactElement | undefined => {
   const { pathname, searchParams } = new URL(url);
 
