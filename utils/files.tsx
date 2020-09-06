@@ -85,7 +85,7 @@ const getFileKind = (ext: string): string => {
     case 'wsz':
       return 'Winamp Skin';
     case 'url':
-      return 'Web site location';
+      return 'Internet Shortcut';
     default:
       return '';
   }

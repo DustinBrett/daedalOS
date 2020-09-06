@@ -43,7 +43,7 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
       return {
         loader: Explorer,
         loaderOptions: {
-          width: 450,
+          width: 500,
           height: 250
         }
       };
