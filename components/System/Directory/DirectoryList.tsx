@@ -23,7 +23,13 @@ export const DirectoryList: FC<DirectoryView> = ({
     </thead>
     <tbody>
       {cwd !== homeDir && (
-        <tr onDoubleClick={onDoubleClick('..')}>
+        <tr
+          onClick={
+            new ClickHandler({
+              doubleClick: onDoubleClick('..')
+            }).clickHandler
+          }
+        >
           <td>..</td>
           <td colSpan={3}></td>
         </tr>
