@@ -57,7 +57,7 @@ $textColor: rgb(225, 225, 225);
       &:nth-child(odd) {
         background: rgb(52, 50, 53);
       }
-      &.selected {
+      &:focus {
         background-color: rgb(0, 88, 208);
       }
 

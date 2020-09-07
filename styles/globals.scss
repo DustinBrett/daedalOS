@@ -20,6 +20,10 @@
   }
 }
 
+html {
+  touch-action: manipulation;
+}
+
 body {
   font-family: 'SegoeUI', sans-serif;
 

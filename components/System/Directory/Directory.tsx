@@ -46,6 +46,7 @@ export const Directory: FC<{
     { open } = useContext(AppsContext),
     onDoubleClick = (path?: string, url = '', icon = '', name = '') => () => {
       if (url) {
+        // TODO: Don't allow opening app twice
         // TODO: isDirectory
         open?.(url, icon, name);
       } else if (path) {
