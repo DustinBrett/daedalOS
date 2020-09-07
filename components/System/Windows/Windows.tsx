@@ -22,13 +22,16 @@ export const Windows: FC = () => {
   }, []);
 
   return (
+    // TODO: Maybe I should use <article>?
+    // W3C: Section lacks heading. Consider using h2-h6 elements to add identifying headings to all sections.
+    // https://www.w3.org/wiki/HTML/Usage/Headings/Missing
     <section style={windowMargins}>
       {apps
         ?.sort(sortByLastRunning)
         .map(
           (
             {
-              loader: { loader: App, loaderOptions, loadedAppOptions },
+              loader: { loader: App, loadedAppOptions },
               id,
               icon,
               name,

@@ -3,16 +3,13 @@
 ### Refactoring & Cleanup
 
 - Extract out as much as possible into utils
-- Finish refactoring of apps/files/desktop
-  - Explorer is missing
-  - Winamp doesn't load
-    - Dont pass rendered component?
-    - { loader: DosAppLoader, options: { } }
+- Switch back to Keen 4
 
 ### MVP Bugs
 
 - Taskbar: Clicking recently focused entry is minimizing it
 - DOS: Can't touch to click active games
+- Icons: Horiz rendering issues in landscape with mixed 1-2 line icon labels
 
 ### MVP Features
 
@@ -34,6 +31,7 @@
 - Status bar with totals
 - Back/Forward buttons
 - Path bar
+- File type icons
 
 #### Post-MVP Bugs
 
@@ -43,6 +41,8 @@
 - Winamp: Focus isn't reliable on mobile
 - Winamp: Clicking taskbar entry does not focus app
 - Window: Better solution to bottom corners showing bg color
+- Windows: Minimize is not working
+- Windows: Seek doesn't work
 
 #### Post-MVP Features
 
@@ -61,6 +61,7 @@
 - Explorer: Search files
 - Explorer: Resizie column headers
 - Explorer: Get modified time from files
+- Games: Duke Nukem 3D & Wolfenstein 3D
 
 ### Code Quality
 
@@ -70,6 +71,7 @@
 - Window: Remove hard coded z-index
 - General: Create `.d.ts` files for TS declares
 - Uses classes when possible to avoid collisions
+- Explorer: use BFS's `path`
 
 # FUTURE
 
@@ -77,15 +79,24 @@
 - Word Processor (https://webodf.org/)
 - React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
-- PDF.js (https://github.com/mozilla/pdf.js)
-- JS Paint (https://github.com/1j01/jspaint)
+  - useIdle + Pipes (https://github.com/1j01/pipes)
 - Code Editor (https://codemirror.net/, https://ace.c9.io/)
-- Terminal (https://xtermjs.org/)
+- Terminal (https://xtermjs.org/, https://github.com/jcubic/git)
 - Volume Controls (https://github.com/Tonejs/unmute)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Minesweeper (https://github.com/ziebelje/minesweeper)
 - IRC Client (https://thelounge.chat/)
+  - https://github.com/gummipunkt/thelounge_theme_mircalike
 - Spreadsheet Editor (https://myliang.github.io/x-spreadsheet)
+- Notepad
 - System Tray
 - Photo Viewer
 - Calendar
+- Right click menus
+- Light/dark theme/modes
+- All my personal stuff (photo albums of me, blog posts, etc.)
+
+# PRIORITY
+
+- PDF.js (https://github.com/mozilla/pdf.js)
+- JS Paint (https://github.com/1j01/jspaint)
