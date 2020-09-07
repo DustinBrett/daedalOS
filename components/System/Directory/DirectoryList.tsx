@@ -28,25 +28,25 @@ export const DirectoryList: FC<DirectoryView> = ({
           <td colSpan={3}></td>
         </tr>
       )}
-      {entries.map(
-        ({ icon, kind, mtime, name, path, url, size, fullName }) => (
-          <tr
-            key={path}
-            onClick={new ClickHandler({
+      {entries.map(({ icon, kind, mtime, name, path, url, size, fullName }) => (
+        <tr
+          key={path}
+          onClick={
+            new ClickHandler({
               doubleClick: onDoubleClick(path, url, icon, name)
-            }).clickHandler}
-            // tabIndex={0} // Fix flickering / re-rendering
-          >
-            <td className={styles.emphasis}>
-              <img alt={name} src={icon} draggable={false} />
-              {fullName}
-            </td>
-            <td>{mtime}</td>
-            <td>{size}</td>
-            <td>{kind}</td>
-          </tr>
-        )
-      )}
+            }).clickHandler
+          }
+          // tabIndex={0} // Fix flickering / re-rendering
+        >
+          <td className={styles.emphasis}>
+            <img alt={name} src={icon} draggable={false} />
+            {fullName}
+          </td>
+          <td>{mtime}</td>
+          <td>{size}</td>
+          <td>{kind}</td>
+        </tr>
+      ))}
     </tbody>
   </table>
 );

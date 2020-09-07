@@ -10,8 +10,8 @@ export class ClickHandler {
     singleClick,
     doubleClick
   }: {
-    singleClick?: () => void,
-    doubleClick?: () => void
+    singleClick?: () => void;
+    doubleClick?: () => void;
   }) {
     this.singleClick = singleClick;
     this.doubleClick = doubleClick;

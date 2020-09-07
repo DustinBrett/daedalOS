@@ -15,9 +15,11 @@ export const DirectoryIcons: FC<DirectoryView> = ({
           key={path}
           className={styles.directoryIcon}
           tabIndex={0}
-          onClick={new ClickHandler({
-            doubleClick: onDoubleClick(path, url, icon, name)
-          }).clickHandler}
+          onClick={
+            new ClickHandler({
+              doubleClick: onDoubleClick(path, url, icon, name)
+            }).clickHandler
+          }
         >
           <figure>
             <img alt={name} src={icon} draggable={false} />
