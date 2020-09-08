@@ -41,8 +41,8 @@ const isDirectory = (path = '') => {
 
 export const Directory: FC<{
   path: string;
-  view: View;
-}> = ({ path, view }) => {
+  view?: View;
+}> = ({ path, view = View.Icons }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext),
@@ -89,3 +89,5 @@ export const Directory: FC<{
       return <p>Unknown View Type</p>;
   }
 };
+
+export default Directory;

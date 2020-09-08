@@ -85,3 +85,5 @@ export const Windows: FC = () => {
     </section>
   );
 };
+
+export default Windows;

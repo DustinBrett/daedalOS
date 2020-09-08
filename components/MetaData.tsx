@@ -4,10 +4,13 @@ import type { FC } from 'react';
 
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { lockDocumentTitle } from '@/utils/utils';
 
 export const Metadata: FC = () => {
-  useEffect(lockDocumentTitle, []);
+  useEffect(() => {
+    import('@/utils/utils').then(({ lockDocumentTitle }) => {
+      lockDocumentTitle();
+    });
+  }, []);
 
   return (
     <Head>
@@ -15,3 +18,5 @@ export const Metadata: FC = () => {
     </Head>
   );
 };
+
+export default Metadata;

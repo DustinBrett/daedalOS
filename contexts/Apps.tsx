@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
+import type App from '@/contexts/App';
 
 import { createContext, useReducer } from 'react';
-import App from '@/contexts/App';
 import {
   appClose,
   appFocus,
@@ -72,3 +72,5 @@ export const AppsProvider: FC = ({ children }) => {
     </AppsContext.Provider>
   );
 };
+
+export default AppsProvider;

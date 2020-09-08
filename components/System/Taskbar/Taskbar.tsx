@@ -38,3 +38,5 @@ export const Taskbar: FC = () => {
     </nav>
   );
 };
+
+export default Taskbar;

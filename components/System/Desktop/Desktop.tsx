@@ -4,14 +4,17 @@ import type { FC } from 'react';
 import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper';
 
 import { useEffect, useRef, useState } from 'react';
-import { renderWallpaperEffect } from '@/components/System/Desktop/Wallpaper';
 
 export const Desktop: FC = ({ children }) => {
   const desktopRef = useRef(null),
     [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>();
 
   useEffect(() => {
-    setWallpaperEffect(renderWallpaperEffect(desktopRef));
+    import('@/components/System/Desktop/Wallpaper').then(
+      ({ renderWallpaperEffect }) => {
+        setWallpaperEffect(renderWallpaperEffect(desktopRef));
+      }
+    );
 
     return () => {
       wallpaperEffect?.destroy();
@@ -24,3 +27,5 @@ export const Desktop: FC = ({ children }) => {
     </main>
   );
 };
+
+export default Desktop;
