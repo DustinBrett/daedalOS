@@ -6,6 +6,7 @@ import type { AppAction, Apps } from '@/contexts/Apps';
 import App from '@/contexts/App';
 import { DosAppLoader } from '@/components/Apps/Dos';
 import { Explorer } from '@/components/Apps/Explorer';
+import { PdfLoader } from '@/components/Apps/Pdf';
 import { WinampLoader } from '@/components/Apps/Winamp';
 import { getFileExtension } from '@/utils/files';
 
@@ -17,12 +18,26 @@ export type AppLoader = {
   loadedAppOptions?: Partial<AppComponent>;
 };
 
-const appLoader = (url: string): AppLoader | undefined => {
-  const { pathname, searchParams } = new URL(url) || {};
+const isValidUrl = (possibleUrl: string) => {
+  try {
+    new URL(possibleUrl);
+  } catch (_) {
+    return false;
+  }
 
-  return pathname === '/'
-    ? appLoaderByName(searchParams.get('app') || '')
-    : appLoaderByFileType(pathname, searchParams);
+  return true;
+};
+
+const appLoader = (url: string): AppLoader | undefined => {
+  if (isValidUrl(url)) {
+    const { pathname, searchParams } = new URL(url) || {};
+
+    return pathname === '/'
+      ? appLoaderByName(searchParams.get('app') || '')
+      : appLoaderByFileType(pathname, searchParams);
+  }
+
+  return appLoaderByFileType(url);
 };
 
 const dosLoaderOptions = {
@@ -30,6 +45,11 @@ const dosLoaderOptions = {
   lockAspectRatio: true,
   width: 320,
   height: 224
+};
+
+const pdfLoaderOptions = {
+  height: 400,
+  width: 425
 };
 
 const appLoaderByName = (name: string): AppLoader | undefined => {
@@ -47,6 +67,11 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
           height: 250
         }
       };
+    case 'pdf':
+      return {
+        loader: PdfLoader,
+        loaderOptions: pdfLoaderOptions
+      };
     case 'winamp':
       return {
         loader: WinampLoader,
@@ -59,7 +84,7 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
 
 const appLoaderByFileType = (
   path: string,
-  searchParams: URLSearchParams
+  searchParams?: URLSearchParams
 ): AppLoader | undefined => {
   switch (getFileExtension(path)) {
     case 'jsdos':
@@ -68,7 +93,15 @@ const appLoaderByFileType = (
         loaderOptions: dosLoaderOptions,
         loadedAppOptions: {
           url: path,
-          args: [...searchParams.entries()].flat()
+          args: searchParams ? [...searchParams.entries()].flat() : [] // TODO: This `args` logic is ideal for DOS only
+        }
+      };
+    case 'pdf':
+      return {
+        loader: PdfLoader,
+        loaderOptions: pdfLoaderOptions,
+        loadedAppOptions: {
+          url: path
         }
       };
   }

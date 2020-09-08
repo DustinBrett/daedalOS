@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { DirectoryIcons } from '@/components/System/Directory/DirectoryIcons';
 import { DirectoryList } from '@/components/System/Directory/DirectoryList';
-import { getDirectory } from '@/utils/files';
+import { getDirectory, getFileExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
 import { AppsContext } from '@/contexts/Apps';
 
@@ -36,6 +36,11 @@ export type DirectoryView = {
   ) => () => void;
 };
 
+// TODO: Use `path` logic from BFS
+const isDirectory = (path = '') => {
+  return getFileExtension(path) === '';
+};
+
 export const Directory: FC<{
   path: string;
   view: View;
@@ -44,14 +49,14 @@ export const Directory: FC<{
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext), // TODO: Get path working
     { open } = useContext(AppsContext),
-    onDoubleClick = (path?: string, url = '', icon = '', name = '') => () => {
-      if (url) {
+    onDoubleClick = (path?: string, url?: string, icon = '', name = '') => () => {
+      if (path && !path.includes('.url') &&  (path === '..' || isDirectory(path))) {
+        // cd(path === '..' ? resolve(cwd, '..') : path);
+        cd(path);
+      } else {
+        console.log('hi')
         // TODO: Don't allow opening app twice
-        // TODO: isDirectory
-        open?.(url, icon, name);
-      } else if (path) {
-        // TODO: If path is file and not `.url`, then try and open it appLoaderByFileType (Pass loader directly to appOpen)
-        cd(path === '..' ? resolve(cwd, '..') : path);
+        open?.(url || path || '', icon, name);
       }
     };
 

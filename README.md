@@ -11,8 +11,14 @@
 - System Tray: React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
   - useIdle + Pipes (https://github.com/1j01/pipes)
+- Performance of icon loading
+  - Don't check stats (It did HEAD on each one)
+  - Optimize icon files for 42x42 (23KB could be 9KB or less) (next-optimized-images?)
+- Start Menu
+- Window: Open at a size/position relative to the viewport, orientation & resolution
+  - Set max sizes for windows and then use rules for below that
 
-### UI/UX Bugs 
+### UI/UX Bugs
 
 - Taskbar: Clicking recently focused entry is minimizing it
 - DOS: Can't focus by clicking canvas
@@ -52,7 +58,6 @@
 #### Post-MVP Features
 
 - Icons: Loading indicator
-- Window: Open at a size/position relative to the viewport, orientation & resolution
 - Window: Add drag constraint to top
 - DOS: Close app when `EXIT` is typed
 - DOS: Virtual keyboard on mobile
