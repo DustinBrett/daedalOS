@@ -33,24 +33,26 @@ const touchControls = `
   #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,
   .actions, .shuffle-repeat, .playlist-middle, .playlist-bottom, #playlist-close-button, #equalizer-window`;
 
+const demoTrack = {
+  metaData: {
+    artist: 'DJ Mike Llama',
+    title: "Llama Whippin' Intro"
+  },
+  url: '/mp3/demo.mp3'
+};
+
 const options: Options & PrivateOptions = {
   __initialWindowLayout: {
     main: { position: { x: 0, y: 0 } },
     playlist: { position: { x: 0, y: 116 } },
     equalizer: { position: { x: 0, y: 232 } }
   },
-  initialTracks: [
+  availableSkins: [
     {
-      metaData: {
-        artist: 'DJ Mike Llama',
-        title: "Llama Whippin' Intro"
-      },
-      url: '/mp3/demo.mp3'
+      url: '/skins/SpyAMP_Professional_Edition_v5.wsz',
+      name: 'SpyAMP Professional Edition v5'
     }
-  ],
-  initialSkin: {
-    url: '/skins/SpyAMP_Professional_Edition_v5.wsz'
-  }
+  ]
 };
 
 const closeEqualizer = {
@@ -64,8 +66,8 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
   onFocus,
   zIndex,
   x = 0,
-  y = 0
-  // TODO: Get url/args for mp3/m3u's
+  y = 0,
+  url
 }) => {
   const elementRef = useRef<HTMLElement>(null),
     { position } = useContext(AppsContext),
@@ -90,6 +92,13 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
       appendElement(containerElement, webampElement);
       webampElement?.focus();
       onFocus?.();
+
+      if (url?.includes('.wsz')) {
+        webamp?.appendTracks([demoTrack]);
+        webamp?.setSkinFromUrl(url);
+      } else {
+        webamp?.setTracksToPlay([url ? { url: url, metaData: { artist: '', title: '' } } : demoTrack]);
+      }
 
       return webamp;
     };

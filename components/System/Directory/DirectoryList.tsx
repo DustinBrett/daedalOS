@@ -42,11 +42,13 @@ export const DirectoryList: FC<DirectoryView> = ({
               doubleClick: onDoubleClick(path, url, icon, name)
             }).clickHandler
           }
-          // tabIndex={0} // Fix flickering / re-rendering
+          // tabIndex={0} // Fix flickering / re-rendering (Caused by the focus that triggers on clicking a window? Or Rnd?)
         >
-          <td className={styles.emphasis}>
-            <img alt={name} src={icon} draggable={false} />
-            {fullName}
+          <td className={styles.emphasis} title={name}>
+            <figure>
+              <img alt={name} src={icon} draggable={false} />
+              <figcaption title={name}>{fullName}</figcaption>
+            </figure>
           </td>
           <td>{mtime}</td>
           <td>{size}</td>

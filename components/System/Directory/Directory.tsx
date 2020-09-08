@@ -1,6 +1,5 @@
 import { FC } from 'react';
 
-import { resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { DirectoryIcons } from '@/components/System/Directory/DirectoryIcons';
 import { DirectoryList } from '@/components/System/Directory/DirectoryList';
@@ -63,7 +62,6 @@ export const Directory: FC<{
         // cd(path === '..' ? resolve(cwd, '..') : path);
         cd(path);
       } else {
-        console.log('hi');
         // TODO: Don't allow opening app twice
         open?.(url || path || '', icon, name);
       }

@@ -96,6 +96,18 @@ const appLoaderByFileType = (
           args: searchParams ? [...searchParams.entries()].flat() : [] // TODO: This `args` logic is ideal for DOS only
         }
       };
+    case 'mp3':
+    case 'm3u':
+    case 'wsz':
+      return {
+        loader: WinampLoader,
+        loaderOptions: {
+          windowed: false
+        },
+        loadedAppOptions: {
+          url: path
+        }
+      };
     case 'pdf':
       return {
         loader: PdfLoader,

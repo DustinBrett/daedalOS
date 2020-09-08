@@ -64,13 +64,17 @@ $textColor: rgb(225, 225, 225);
       td {
         padding-left: 10px;
 
-        img {
-          position: relative;
-          top: 3px;
+        figure {
+          display: flex;
 
-          width: 16px;
-          height: 16px;
-          margin-right: 4px;
+          img {
+            position: relative;
+            top: 3px;
+  
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+          }
         }
       }
     }
