@@ -36,6 +36,17 @@ const parseShortcut = (fs: FSModule, path: string): Promise<Shortcut> =>
     });
   });
 
+const getBestIconMatch = (
+  icon: string,
+  isDirectory: boolean,
+  ext: string,
+  filePath: string
+): string => {
+  if (icon) return icon;
+
+  return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
+};
+
 const getDirectoryEntry = async (
   fs: FSModule,
   path: string,
@@ -60,21 +71,17 @@ const getDirectoryEntry = async (
     fullName: file,
     path: filePath,
     url: url && decodeURIComponent(url),
-    icon: icon
-      ? icon
-      : isDirectory
-      ? ExplorerIcon
-      : ext === 'ico'
-      ? filePath
-      : getFileIcon(ext),
+    icon: getBestIconMatch(icon, isDirectory, ext, filePath),
     mtime: mtime && formatToLongDateTime(mtime),
     size: isDirectory ? '--' : getFormattedSize(size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };
 };
 
-const getFileIcon = (ext: string): string => {
+const getFileIcon = (filePath: string, ext: string): string => {
   switch (ext) {
+    case 'ico':
+      return filePath;
     case 'js':
     case 'json':
       return JsFileTypeIcon;

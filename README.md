@@ -2,7 +2,6 @@
 
 ### Priority
 
-
 - Icons: Draggable
   - Selected icons dont truncate text
   - Hover icons shows title text

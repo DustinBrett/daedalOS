@@ -84,10 +84,11 @@ $buttonIconOpacity: 0.975;
       margin: 8px;
 
       button {
+        font-size: 11px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
 
         width: 12px;
         height: 12px;
@@ -151,7 +152,9 @@ $buttonIconOpacity: 0.975;
 }
 
 .window:focus-within nav:hover {
-  #minimize, #maximize, #close {
+  #minimize,
+  #maximize,
+  #close {
     color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
   }
 }
