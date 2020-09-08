@@ -5,10 +5,10 @@ import type { AppAction, Apps } from '@/contexts/Apps';
 
 import App from '@/contexts/App';
 // Dynamic imports?
-import { DosAppLoader } from '@/components/Apps/Dos';
+import { Dos } from '@/components/Apps/Dos';
 import { Explorer } from '@/components/Apps/Explorer';
-import { PdfLoader } from '@/components/Apps/Pdf';
-import { WinampLoader } from '@/components/Apps/Winamp';
+import { Pdf } from '@/components/Apps/Pdf';
+import { Winamp } from '@/components/Apps/Winamp';
 import { getFileExtension } from '@/utils/files';
 
 // Q: What is the overlap between AppComponent, App & AppConstructor types?
@@ -57,7 +57,7 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
   switch (name) {
     case 'dos':
       return {
-        loader: DosAppLoader,
+        loader: Dos,
         loaderOptions: dosLoaderOptions
       };
     case 'explorer':
@@ -70,12 +70,12 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
       };
     case 'pdf':
       return {
-        loader: PdfLoader,
+        loader: Pdf,
         loaderOptions: pdfLoaderOptions
       };
     case 'winamp':
       return {
-        loader: WinampLoader,
+        loader: Winamp,
         loaderOptions: {
           windowed: false
         }
@@ -90,7 +90,7 @@ const appLoaderByFileType = (
   switch (getFileExtension(path)) {
     case 'jsdos':
       return {
-        loader: DosAppLoader,
+        loader: Dos,
         loaderOptions: dosLoaderOptions,
         loadedAppOptions: {
           url: path,
@@ -101,7 +101,7 @@ const appLoaderByFileType = (
     case 'm3u':
     case 'wsz':
       return {
-        loader: WinampLoader,
+        loader: Winamp,
         loaderOptions: {
           windowed: false
         },
@@ -111,7 +111,7 @@ const appLoaderByFileType = (
       };
     case 'pdf':
       return {
-        loader: PdfLoader,
+        loader: Pdf,
         loaderOptions: pdfLoaderOptions,
         loadedAppOptions: {
           url: path

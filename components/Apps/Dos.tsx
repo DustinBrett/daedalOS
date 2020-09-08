@@ -17,7 +17,7 @@ const dosOptions = {
 // TODO: Load with basic tools like EDIT and such (MS-DOS tools somewhere?)
 // TODO: Mobile support (https://github.com/caiiiycuk/js-dos#mobile-support)
 
-export const DosAppLoader: FC<AppComponent> = ({
+export const Dos: FC<AppComponent> = ({
   args = ['-c', 'CLS'],
   url
 }) => {
@@ -66,3 +66,5 @@ export const DosAppLoader: FC<AppComponent> = ({
     />
   );
 };
+
+export default Dos;

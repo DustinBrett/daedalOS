@@ -6,7 +6,7 @@ import { AppComponent } from '@/contexts/App';
 
 const baseWidth = 400;
 
-export const PdfLoader: FC<AppComponent> = ({ url = '/' }) => {
+export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [zoom, setZoom] = useState(1);
@@ -64,3 +64,5 @@ export const PdfLoader: FC<AppComponent> = ({ url = '/' }) => {
     </>
   );
 };
+
+export default Pdf;

@@ -1,8 +1,8 @@
 import styles from '@/styles/Apps/Explorer.module.scss';
 
 import type { FC } from 'react';
+import type { AppComponent } from '@/contexts/App';
 
-import { AppComponent } from '@/contexts/App';
 import { Directory, View } from '@/components/System/Directory/Directory'; // Dynamic import
 
 export const Explorer: FC<AppComponent> = ({ url = '/' }) => (
@@ -10,3 +10,5 @@ export const Explorer: FC<AppComponent> = ({ url = '/' }) => (
     <Directory path={url} view={View.List} />
   </article>
 );
+
+export default Explorer;

@@ -60,13 +60,12 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-export const WinampLoader: FC<Partial<App> & AppComponent> = ({
+export const Winamp: FC<Partial<App> & AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
   zIndex,
   minimized,
-  foreground,
   x = 0,
   y = 0,
   url
@@ -136,3 +135,5 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
     </Rnd>
   );
 };
+
+export default Winamp;
