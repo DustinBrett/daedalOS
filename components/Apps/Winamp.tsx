@@ -65,6 +65,8 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
   onMinimize,
   onFocus,
   zIndex,
+  minimized,
+  foreground,
   x = 0,
   y = 0,
   url
@@ -84,7 +86,7 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
 
       webamp?.store?.dispatch(closeEqualizer);
       onClose && webamp?.onClose(onClose);
-      onMinimize && webamp?.onMinimize(onMinimize);
+      onMinimize && webamp?.onMinimize(onMinimize); // TODO: Doesn't hide seek bar if playing
 
       await webamp?.renderWhenReady(containerElement);
 
@@ -126,7 +128,7 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
       onFocus={onFocus}
       onDragStart={focusOnDrag}
       onDragStop={position?.('winamp')}
-      style={{ zIndex }}
+      style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
       <article ref={elementRef} />
     </Rnd>

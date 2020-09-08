@@ -54,8 +54,6 @@
 
 - Focus isn't reliable on mobile
 - Clicking taskbar entry does not focus app
-- Minimize is not working
-- Seek doesn't work
 
 #### Post-MVP Features
 
@@ -64,8 +62,6 @@
 - DOS: Close app when `EXIT` is typed
 - DOS: Virtual keyboard on mobile
 - Winamp: Milkdrop (https://github.com/jberg/butterchurn)
-- Winamp: Load faster
-  - Skin request/decompress, x-win-bitmap requests, pre-loaded mp3
 - General: URL Routing to apps/files
 - Explorer: Link with JS-DOS storage
 - Explorer: Delete/Create/Drag/Drop files
@@ -79,7 +75,6 @@
 - Winamp: Position logic (`x|y / 2`) is messy
 - Window: Avoid storing `stackOrder` in every app
 - Window: Remove hard coded z-index
-- Files: use BFS's `path`
 
 # FUTURE
 
