@@ -1,6 +1,6 @@
 @import '@/styles/mixins';
 
-$buttonIconOpacity: 0.75;
+$buttonIconOpacity: 0.975;
 
 // Window bottom right and left corners showing something?
 
@@ -14,31 +14,16 @@ $buttonIconOpacity: 0.75;
     #minimize {
       color: $minimize;
       background-color: $minimize;
-
-      &:hover {
-        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-        background-color: $minimize;
-      }
     }
 
     #maximize {
       color: $maximize;
       background-color: $maximize;
-
-      &:hover {
-        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-        background-color: $maximize;
-      }
     }
 
     #close {
       color: $close;
       background-color: $close;
-
-      &:hover {
-        color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-        background-color: $close;
-      }
     }
   }
 
@@ -96,12 +81,13 @@ $buttonIconOpacity: 0.75;
 
       display: flex;
 
-      padding: 8px;
+      margin: 8px;
 
       button {
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 11px;
 
         width: 12px;
         height: 12px;
@@ -115,26 +101,27 @@ $buttonIconOpacity: 0.75;
         &:last-child {
           margin-right: unset;
         }
+      }
+    }
 
-        &#minimize:hover {
-          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-          background-color: $minimize;
-        }
+    nav:hover button {
+      color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
 
-        &#maximize:hover {
-          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-          background-color: $maximize;
-        }
+      &#minimize {
+        background-color: $minimize;
+      }
 
-        &#close:hover {
-          color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
-          background-color: $close;
-        }
+      &#maximize {
+        background-color: $maximize;
+      }
+
+      &#close {
+        background-color: $close;
       }
     }
   }
 
-  &:not(:focus) {
+  &:not(:focus-within) {
     .titlebar {
       background: unset;
       background-color: rgb(55, 53, 56);
@@ -160,5 +147,11 @@ $buttonIconOpacity: 0.75;
     border-radius: 0 0 map-get($window, border-radius)
       map-get($window, border-radius);
     background-color: map-get($window, bg-color);
+  }
+}
+
+.window:focus-within nav:hover {
+  #minimize, #maximize, #close {
+    color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
   }
 }

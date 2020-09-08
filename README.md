@@ -46,7 +46,6 @@
 
 ### UI/UX
 
-- Window: Reveal min/max/close when hovering any
 - Icons: Horiz rendering issues in landscape with mixed 1-2 line icon labels
 
 #### Winamp Bugs
