@@ -43,7 +43,6 @@ const getDirectoryEntry = async (
   getStats: boolean
 ): Promise<DirectoryEntry> => {
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    // TODO: Don't need stats for ViewIcons or Directories
     // Get rid of isDirectory and just check for extension (eventually using path logic)
     stats = getStats
       ? await getFileStat(fs, filePath)

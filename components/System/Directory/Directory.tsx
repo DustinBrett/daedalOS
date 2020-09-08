@@ -6,6 +6,7 @@ import { DirectoryList } from '@/components/System/Directory/DirectoryList';
 import { getDirectory, getFileExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
 import { AppsContext } from '@/contexts/Apps';
+import { resolve } from 'path';
 
 export enum View {
   Icons,
@@ -26,7 +27,6 @@ export type DirectoryEntry = {
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
   cwd?: string;
-  // TODO: Generic type data? Shortcut?
   onDoubleClick: (
     path?: string,
     url?: string,
@@ -35,7 +35,6 @@ export type DirectoryView = {
   ) => () => void;
 };
 
-// TODO: Use `path` logic from BFS
 const isDirectory = (path = '') => {
   return getFileExtension(path) === '';
 };
@@ -46,8 +45,8 @@ export const Directory: FC<{
 }> = ({ path, view }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
-    fs = useContext(FilesContext), // TODO: Get path working
-    { open } = useContext(AppsContext),
+    fs = useContext(FilesContext),
+    { apps, open, focus } = useContext(AppsContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -59,11 +58,15 @@ export const Directory: FC<{
         !path.includes('.url') &&
         (path === '..' || isDirectory(path))
       ) {
-        // cd(path === '..' ? resolve(cwd, '..') : path);
-        cd(path);
+        cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        // TODO: Don't allow opening app twice
-        open?.(url || path || '', icon, name);
+        const { id } = apps.find(({ name: appName }) => appName === name) || {};
+
+        if (!id) {
+          open?.(url || path || '', icon, name);
+        } else {
+          focus?.(id);
+        }
       }
     };
 
