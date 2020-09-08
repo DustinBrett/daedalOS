@@ -2,13 +2,14 @@ import styles from '@/styles/System/Taskbar.module.scss';
 
 import { FC, useContext } from 'react';
 
+import dynamic from 'next/dynamic';
 import { AppsContext } from '@/contexts/Apps';
-import { Clock } from '@/components/System/Taskbar/Clock';
-import { TaskbarEntry } from '@/components/System/Taskbar/TaskbarEntry';
 import { sortByLastRunning } from '@/utils/utils';
 
 export const Taskbar: FC = () => {
-  const { apps, focus, minimize } = useContext(AppsContext);
+  const { apps, focus, minimize } = useContext(AppsContext),
+    Clock = dynamic(import('@/components/System/Taskbar/Clock')),
+    TaskbarEntry = dynamic(import('@/components/System/Taskbar/TaskbarEntry'));
 
   return (
     <nav className={styles.taskbar}>

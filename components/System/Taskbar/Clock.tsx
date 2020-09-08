@@ -57,3 +57,5 @@ export const Clock: FC = () => {
     </time>
   );
 };
+
+export default Clock;

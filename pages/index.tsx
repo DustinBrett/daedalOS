@@ -2,11 +2,10 @@ import type { ReactElement } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import Metadata from '@/components/Metadata';
-import FilesProvider from '@/contexts/Files';
-
 export default function HomePage(): ReactElement {
-  const Desktop = dynamic(import('@/components/System/Desktop/Desktop')),
+  const Metadata = dynamic(import('@/components/Metadata')),
+    Desktop = dynamic(import('@/components/System/Desktop/Desktop')),
+    FilesProvider = dynamic(import('@/contexts/Files')),
     AppsProvider = dynamic(import('@/contexts/Apps')),
     Directory = dynamic(import('@/components/System/Directory/Directory')),
     Taskbar = dynamic(import('@/components/System/Taskbar/Taskbar')),

@@ -59,3 +59,5 @@ export const DirectoryList: FC<DirectoryView> = ({
     </tbody>
   </table>
 );
+
+export default DirectoryList;

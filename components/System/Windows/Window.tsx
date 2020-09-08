@@ -94,3 +94,5 @@ export const Window: FC<Partial<App> & AppComponent> = ({
     </article>
   );
 };
+
+export default Window;

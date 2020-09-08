@@ -1,12 +1,11 @@
 import { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
-import { DirectoryIcons } from '@/components/System/Directory/DirectoryIcons';
-import { DirectoryList } from '@/components/System/Directory/DirectoryList';
 import { getDirectory, getFileExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
 import { AppsContext } from '@/contexts/Apps';
 import { resolve } from 'path';
+import dynamic from 'next/dynamic';
 
 export enum View {
   Icons,
@@ -43,7 +42,13 @@ export const Directory: FC<{
   path: string;
   view?: View;
 }> = ({ path, view = View.Icons }) => {
-  const [cwd, cd] = useState(path),
+  const DirectoryIcons = dynamic(
+      import('@/components/System/Directory/DirectoryIcons')
+    ),
+    DirectoryList = dynamic(
+      import('@/components/System/Directory/DirectoryList')
+    ),
+    [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext),
     { apps, open, focus } = useContext(AppsContext),

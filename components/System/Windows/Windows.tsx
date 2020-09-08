@@ -2,13 +2,12 @@ import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
-import { Window } from '@/components/System/Windows/Window';
 import { sortByLastRunning } from '@/utils/utils';
+import dynamic from 'next/dynamic';
 
 export const Windows: FC = () => {
-  const { apps, close, focus, minimize, position, size } = useContext(
-      AppsContext
-    ),
+  const Window = dynamic(import('@/components/System/Windows/Window')),
+    { apps, close, focus, minimize, position, size } = useContext(AppsContext),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
       marginLeft: 0

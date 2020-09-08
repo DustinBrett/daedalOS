@@ -31,3 +31,5 @@ export const DirectoryIcons: FC<DirectoryView> = ({
     </ol>
   </nav>
 );
+
+export default DirectoryIcons;

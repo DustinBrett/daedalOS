@@ -2,7 +2,7 @@ import styles from '@/styles/System/TaskbarEntry.module.scss';
 
 import type { FC } from 'react';
 
-type TaskbarEntry = {
+type TaskbarEntryType = {
   foreground: boolean;
   icon: string;
   name: string;
@@ -10,7 +10,7 @@ type TaskbarEntry = {
   tabIndex: number;
 };
 
-export const TaskbarEntry: FC<TaskbarEntry> = ({
+export const TaskbarEntry: FC<TaskbarEntryType> = ({
   foreground,
   icon,
   name,
@@ -28,3 +28,5 @@ export const TaskbarEntry: FC<TaskbarEntry> = ({
     </figure>
   </li>
 );
+
+export default TaskbarEntry;

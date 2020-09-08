@@ -4,6 +4,7 @@ import type { AppComponent, AppConstructor } from '@/contexts/App';
 import type { AppAction, Apps } from '@/contexts/Apps';
 
 import App from '@/contexts/App';
+// Dynamic imports?
 import { DosAppLoader } from '@/components/Apps/Dos';
 import { Explorer } from '@/components/Apps/Explorer';
 import { PdfLoader } from '@/components/Apps/Pdf';
