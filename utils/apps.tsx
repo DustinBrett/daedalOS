@@ -1,20 +1,16 @@
-import type { Dispatch, FC } from 'react';
+import type { ComponentType, Dispatch, FC } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { AppComponent, AppConstructor } from '@/contexts/App';
 import type { AppAction, Apps } from '@/contexts/Apps';
 
 import App from '@/contexts/App';
-// Dynamic imports?
-import { Dos } from '@/components/Apps/Dos';
-import { Explorer } from '@/components/Apps/Explorer';
-import { Pdf } from '@/components/Apps/Pdf';
-import { Winamp } from '@/components/Apps/Winamp';
 import { getFileExtension } from '@/utils/files';
+import dynamic from 'next/dynamic';
 
 // Q: What is the overlap between AppComponent, App & AppConstructor types?
 
 export type AppLoader = {
-  loader: FC<AppComponent>;
+  loader: FC<AppComponent> | ComponentType<AppComponent>;
   loaderOptions?: Partial<AppConstructor>;
   loadedAppOptions?: Partial<AppComponent>;
 };
@@ -52,6 +48,11 @@ const pdfLoaderOptions = {
   height: 400,
   width: 425
 };
+
+const Dos = dynamic(import('@/components/Apps/Dos'));
+const Explorer = dynamic(import('@/components/Apps/Explorer'));
+const Pdf = dynamic(import('@/components/Apps/Pdf'));
+const Winamp = dynamic(import('@/components/Apps/Winamp'));
 
 const appLoaderByName = (name: string): AppLoader | undefined => {
   switch (name) {

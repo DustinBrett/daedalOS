@@ -38,17 +38,14 @@ const isDirectory = (path = '') => {
   return getFileExtension(path) === '';
 };
 
+const DirectoryIcons = dynamic(import('@/components/System/Directory/DirectoryIcons'));
+const DirectoryList = dynamic(import('@/components/System/Directory/DirectoryList'));
+
 export const Directory: FC<{
   path: string;
   view?: View;
 }> = ({ path, view = View.Icons }) => {
-  const DirectoryIcons = dynamic(
-      import('@/components/System/Directory/DirectoryIcons')
-    ),
-    DirectoryList = dynamic(
-      import('@/components/System/Directory/DirectoryList')
-    ),
-    [cwd, cd] = useState(path),
+  const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext),
     { apps, open, focus } = useContext(AppsContext),

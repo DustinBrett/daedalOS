@@ -6,10 +6,11 @@ import dynamic from 'next/dynamic';
 import { AppsContext } from '@/contexts/Apps';
 import { sortByLastRunning } from '@/utils/utils';
 
+const Clock = dynamic(import('@/components/System/Taskbar/Clock'));
+const TaskbarEntry = dynamic(import('@/components/System/Taskbar/TaskbarEntry'));
+
 export const Taskbar: FC = () => {
-  const { apps, focus, minimize } = useContext(AppsContext),
-    Clock = dynamic(import('@/components/System/Taskbar/Clock')),
-    TaskbarEntry = dynamic(import('@/components/System/Taskbar/TaskbarEntry'));
+  const { apps, focus, minimize } = useContext(AppsContext);
 
   return (
     <nav className={styles.taskbar}>
