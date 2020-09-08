@@ -99,7 +99,9 @@ export const WinampLoader: FC<Partial<App> & AppComponent> = ({
         webamp?.appendTracks([demoTrack]);
         webamp?.setSkinFromUrl(url);
       } else {
-        webamp?.setTracksToPlay([url ? { url: url, metaData: { artist: '', title: '' } } : demoTrack]);
+        webamp?.setTracksToPlay([
+          url ? { url: url, metaData: { artist: '', title: '' } } : demoTrack
+        ]);
       }
 
       return webamp;

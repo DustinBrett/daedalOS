@@ -1,24 +1,23 @@
 # TODO
 
 ### Priority
-- Retune all colors based on Digital Color meter on correct rgb setting
+
+
 - Icons: Draggable
   - Selected icons dont truncate text
   - Hover icons shows title text
 - Window: Maximize
 - Animations (https://www.framer.com/api/motion)
-- PDF.js (https://github.com/mozilla/pdf.js)
+- PDF Styling
 - JS Paint (https://github.com/1j01/jspaint)
 - Word Processor (https://webodf.org/)
 - System Tray: React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
   - useIdle + Pipes (https://github.com/1j01/pipes)
-- Performance of icon loading
-  - Don't check stats (It did HEAD on each one)
-  - Optimize icon files for 42x42 (23KB could be 9KB or less) (next-optimized-images?)
 - Start Menu
 - Window: Open at a size/position relative to the viewport, orientation & resolution
   - Set max sizes for windows and then use rules for below that
+- Retune all colors based on Digital Color meter on correct rgb setting
 
 ### UI/UX Bugs
 

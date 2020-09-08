@@ -60,7 +60,13 @@ const getDirectoryEntry = async (
     fullName: file,
     path: filePath,
     url: url && decodeURIComponent(url),
-    icon: icon ? icon : isDirectory ? ExplorerIcon : ext === 'ico' ? filePath : getFileIcon(ext),
+    icon: icon
+      ? icon
+      : isDirectory
+      ? ExplorerIcon
+      : ext === 'ico'
+      ? filePath
+      : getFileIcon(ext),
     mtime: mtime && formatToLongDateTime(mtime),
     size: isDirectory ? '--' : getFormattedSize(size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
