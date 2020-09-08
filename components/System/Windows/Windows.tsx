@@ -8,7 +8,9 @@ import dynamic from 'next/dynamic';
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
 export const Windows: FC = () => {
-  const { apps, close, focus, minimize, position, size } = useContext(AppsContext),
+  const { apps, close, focus, minimize, position, size } = useContext(
+      AppsContext
+    ),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
       marginLeft: 0

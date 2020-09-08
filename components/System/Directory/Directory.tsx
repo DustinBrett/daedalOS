@@ -38,8 +38,12 @@ const isDirectory = (path = '') => {
   return getFileExtension(path) === '';
 };
 
-const DirectoryIcons = dynamic(import('@/components/System/Directory/DirectoryIcons'));
-const DirectoryList = dynamic(import('@/components/System/Directory/DirectoryList'));
+const DirectoryIcons = dynamic(
+  import('@/components/System/Directory/DirectoryIcons')
+);
+const DirectoryList = dynamic(
+  import('@/components/System/Directory/DirectoryList')
+);
 
 export const Directory: FC<{
   path: string;
