@@ -49,12 +49,21 @@ export const Directory: FC<{
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext), // TODO: Get path working
     { open } = useContext(AppsContext),
-    onDoubleClick = (path?: string, url?: string, icon = '', name = '') => () => {
-      if (path && !path.includes('.url') &&  (path === '..' || isDirectory(path))) {
+    onDoubleClick = (
+      path?: string,
+      url?: string,
+      icon = '',
+      name = ''
+    ) => () => {
+      if (
+        path &&
+        !path.includes('.url') &&
+        (path === '..' || isDirectory(path))
+      ) {
         // cd(path === '..' ? resolve(cwd, '..') : path);
         cd(path);
       } else {
-        console.log('hi')
+        console.log('hi');
         // TODO: Don't allow opening app twice
         open?.(url || path || '', icon, name);
       }

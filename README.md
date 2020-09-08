@@ -1,8 +1,10 @@
 # TODO
 
 ### Priority
-
+- Retune all colors based on Digital Color meter on correct rgb setting
 - Icons: Draggable
+  - Selected icons dont truncate text
+  - Hover icons shows title text
 - Window: Maximize
 - Animations (https://www.framer.com/api/motion)
 - PDF.js (https://github.com/mozilla/pdf.js)

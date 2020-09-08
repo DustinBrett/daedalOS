@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import React, { useState } from 'react';
-import { pdfjs, Document, Page } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
 import { AppComponent } from '@/contexts/App';
 
 const baseWidth = 400;
@@ -11,13 +11,13 @@ export const PdfLoader: FC<AppComponent> = ({ url = '/' }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [zoom, setZoom] = useState(1);
 
-  function onDocumentLoadSuccess({ numPages }) {
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
     setPageNumber(1);
   }
 
-  function changePage(offset) {
-    setPageNumber(prevPageNumber => prevPageNumber + offset);
+  function changePage(offset: number) {
+    setPageNumber((prevPageNumber) => prevPageNumber + offset);
   }
 
   function previousPage() {
@@ -30,25 +30,11 @@ export const PdfLoader: FC<AppComponent> = ({ url = '/' }) => {
 
   return (
     <>
-      <Document
-        file={url}
-        onLoadSuccess={onDocumentLoadSuccess}
-        // options={{
-        //   cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
-        //   cMapPacked: true,
-        // }}
-      >
-        <Page pageNumber={pageNumber} width={baseWidth * zoom} />
-      </Document>
       <div>
         <p>
           Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
         </p>
-        <button
-          type="button"
-          disabled={pageNumber <= 1}
-          onClick={previousPage}
-        >
+        <button type="button" disabled={pageNumber <= 1} onClick={previousPage}>
           Previous
         </button>
         <button
@@ -60,11 +46,16 @@ export const PdfLoader: FC<AppComponent> = ({ url = '/' }) => {
         </button>
         <button
           type="button"
-          onClick={() => {setZoom(1.25)}}
+          onClick={() => {
+            setZoom(1.25);
+          }}
         >
           Zoom 125%
         </button>
       </div>
+      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
+        <Page pageNumber={pageNumber} width={baseWidth * zoom} />
+      </Document>
     </>
   );
 };
