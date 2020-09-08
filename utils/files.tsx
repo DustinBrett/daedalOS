@@ -1,5 +1,9 @@
 import ExplorerIcon from '@/public/icons/apps/explorer.png';
-import UnknownFileTypeIcon from '@/public/icons/types/unknown.png';
+
+import JsFileTypeIcon from '@/public/icons/types/js.svg';
+import AudioFileTypeIcon from '@/public/icons/types/audio.svg';
+import PdfFileTypeIcon from '@/public/icons/types/pdf.svg';
+import UnknownFileTypeIcon from '@/public/icons/types/unknown.svg';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
@@ -57,7 +61,7 @@ const getDirectoryEntry = async (
     fullName: file,
     path: filePath,
     url: url && decodeURIComponent(url),
-    icon: icon ? icon : isDirectory ? ExplorerIcon : getFileIcon(ext),
+    icon: icon ? icon : isDirectory ? ExplorerIcon : ext === 'ico' ? filePath : getFileIcon(ext),
     mtime: mtime && formatToLongDateTime(mtime),
     size: isDirectory ? '--' : getFormattedSize(size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
@@ -66,6 +70,14 @@ const getDirectoryEntry = async (
 
 const getFileIcon = (ext: string): string => {
   switch (ext) {
+    case 'js':
+    case 'json':
+      return JsFileTypeIcon;
+    case 'mp3': // TODO: Use winamp icons?
+    case 'm3u':
+      return AudioFileTypeIcon;
+    case 'pdf':
+      return PdfFileTypeIcon;
     default:
       return UnknownFileTypeIcon;
   }
