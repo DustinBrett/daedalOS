@@ -2,16 +2,13 @@ import { name } from 'package.json';
 
 import type { FC } from 'react';
 
-import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useEffect } from 'react';
+import { lockDocumentTitle } from '@/utils/utils';
 
 export const Metadata: FC = () => {
-  const Head = dynamic(import('next/head'));
-
   useEffect(() => {
-    import('@/utils/utils').then(({ lockDocumentTitle }) => {
-      lockDocumentTitle();
-    });
+    lockDocumentTitle();
   }, []);
 
   return (
