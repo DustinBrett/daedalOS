@@ -1,7 +1,6 @@
 import ExplorerIcon from '@/public/icons/apps/explorer.png';
 
 import JsFileTypeIcon from '@/public/icons/types/js.svg';
-import AudioFileTypeIcon from '@/public/icons/types/audio.svg';
 import PdfFileTypeIcon from '@/public/icons/types/pdf.svg';
 import UnknownFileTypeIcon from '@/public/icons/types/unknown.svg';
 
@@ -80,14 +79,24 @@ const getDirectoryEntry = async (
 
 const getFileIcon = (filePath: string, ext: string): string => {
   switch (ext) {
+    case 'png':
     case 'ico':
+    case 'svg':
       return filePath;
+    case 'jsdos':
+      return '/icons/apps/dos.png';
+    // TODO: *.js
     case 'js':
     case 'json':
+    case 'min.js':
+    case 'wasm.js':
+    case 'worker.js':
       return JsFileTypeIcon;
-    case 'mp3': // TODO: Use winamp icons?
+    // TODO: Winamp file type icons
+    case 'mp3':
     case 'm3u':
-      return AudioFileTypeIcon;
+    case 'wsz':
+      return '/icons/apps/winamp.png';
     case 'pdf':
       return PdfFileTypeIcon;
     default:
@@ -156,5 +165,5 @@ export const getDirectory = (
 export const getFileExtension = (path = ''): string => {
   const [, ...ext] = path?.split?.('/')?.pop?.()?.split?.('.') || [];
 
-  return (ext || []).join();
+  return ext.length >= 2 ? ext.slice(ext.length - 2).join('.') : ext[0] || '';
 };

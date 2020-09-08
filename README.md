@@ -24,10 +24,6 @@
 - DOS: Can't focus by clicking canvas
 - Window: Bottom corners showing bg color
 
-### Minor Tweaks
-
-- Switch back to Keen 4
-
 ### Explorer MVP
 
 - Back/Forward buttons
