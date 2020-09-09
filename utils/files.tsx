@@ -8,7 +8,6 @@ import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
-import * as ini from 'ini';
 import { formatToLongDateTime } from '@/utils/dates';
 
 const bytesInKB = 1024,
@@ -27,11 +26,13 @@ type Shortcut = {
 const parseShortcut = (fs: FSModule, path: string): Promise<Shortcut> =>
   new Promise((resolve) => {
     fs?.readFile?.(path, (_error, fileBuffer) => {
-      const {
-        InternetShortcut: { URL: url, IconFile }
-      } = ini.parse(fileBuffer?.toString() || '');
+      import('ini').then(({ default: ini }) => {
+        const {
+          InternetShortcut: { URL: url, IconFile }
+        } = ini.parse(fileBuffer?.toString() || '');
 
-      resolve({ url, icon: new URL(IconFile).pathname });
+        resolve({ url, icon: new URL(IconFile).pathname });
+      });
     });
   });
 

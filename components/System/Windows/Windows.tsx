@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 
+import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { sortByLastRunning } from '@/utils/utils';
-import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));

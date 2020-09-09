@@ -2,12 +2,12 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
+import type { AppComponent } from '@/contexts/App';
+import type App from '@/contexts/App';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
-import { AppComponent } from '@/contexts/App';
 import { appendElement, focusOnDrag } from '@/utils/elements';
-import App from '@/contexts/App';
 import { AppsContext } from '@/contexts/Apps';
 
 type WebampStoreAction = { type: string; windowId: string };

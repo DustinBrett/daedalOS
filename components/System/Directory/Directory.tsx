@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory, getFileExtension } from '@/utils/files';

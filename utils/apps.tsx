@@ -4,8 +4,8 @@ import type { AppComponent, AppConstructor } from '@/contexts/App';
 import type { AppAction, Apps } from '@/contexts/Apps';
 
 import App from '@/contexts/App';
-import { getFileExtension } from '@/utils/files';
 import dynamic from 'next/dynamic';
+import { getFileExtension } from '@/utils/files';
 
 // Q: What is the overlap between AppComponent, App & AppConstructor types?
 
