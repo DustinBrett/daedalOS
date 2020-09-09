@@ -2,6 +2,8 @@
 
 ### Priority
 
+- DO THE DETAILS, THAT IS WHAT PEOPLE WILL HUNT FOR
+- Window titlebar text resize like osx
 - Icons: Draggable
   - Selected icons dont truncate text
   - Hover icons shows title text
