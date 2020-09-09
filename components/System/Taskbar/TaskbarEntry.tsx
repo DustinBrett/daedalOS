@@ -7,26 +7,24 @@ type TaskbarEntryType = {
   icon: string;
   name: string;
   onClick: () => void;
-  tabIndex: number;
 };
 
 export const TaskbarEntry: FC<TaskbarEntryType> = ({
   foreground,
   icon,
   name,
-  onClick,
-  tabIndex
+  onClick
 }) => (
-  <li
+  <div
     className={`${styles.taskbarEntry} ${foreground && styles.foreground}`}
     onClick={onClick}
-    tabIndex={tabIndex}
+    tabIndex={0}
   >
     <figure>
       <img alt={name} src={icon} draggable={false} />
       <figcaption>{name}</figcaption>
     </figure>
-  </li>
+  </div>
 );
 
 export default TaskbarEntry;

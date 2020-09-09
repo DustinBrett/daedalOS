@@ -2,6 +2,7 @@ import styles from '@/styles/System/DirectoryIcons.module.scss';
 
 import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
+
 import { ClickHandler } from '@/utils/events';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
