@@ -3,9 +3,15 @@ import styles from '@/styles/System/DirectoryIcons.module.scss';
 import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
 
-import { ClickHandler } from '@/utils/events';
-import Draggable from 'react-draggable';
+import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ClickHandler } from '@/utils/events';
+
+const desktopIconDragSettings = {
+  dragElastic: 0.15,
+  dragTransition: { bounceStiffness: 500, bounceDamping: 15 },
+  dragMomentum: false
+};
 
 const desktopIconMotionSettings = {
   initial: { opacity: 0, y: -100 },
@@ -20,13 +26,16 @@ const desktopIconMotionSettings = {
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
   onDoubleClick
-}) => (
-  <nav className={styles.directoryIcons}>
-    <ol>
-      <AnimatePresence>
-        {entries.map(({ icon, name, kind, path, url }) => (
-          <Draggable key={path}>
+}) => {
+  const navRef = useRef(null);
+
+  return (
+    <nav className={styles.directoryIcons} ref={navRef}>
+      <ol>
+        <AnimatePresence>
+          {entries.map(({ icon, name, kind, path, url }) => (
             <motion.li
+              key={path}
               className={styles.directoryIcon}
               tabIndex={0}
               title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
@@ -35,6 +44,9 @@ export const DirectoryIcons: FC<DirectoryView> = ({
                   doubleClick: onDoubleClick(path, url, icon, name)
                 }).clickHandler
               }
+              drag
+              dragConstraints={navRef}
+              {...desktopIconDragSettings}
               {...desktopIconMotionSettings}
             >
               <figure>
@@ -42,11 +54,11 @@ export const DirectoryIcons: FC<DirectoryView> = ({
                 <figcaption>{name}</figcaption>
               </figure>
             </motion.li>
-          </Draggable>
-        ))}
-      </AnimatePresence>
-    </ol>
-  </nav>
-);
+          ))}
+        </AnimatePresence>
+      </ol>
+    </nav>
+  );
+};
 
 export default DirectoryIcons;
