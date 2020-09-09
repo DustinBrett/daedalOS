@@ -4,6 +4,7 @@ import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
 
 import { ClickHandler } from '@/utils/events';
+import Draggable from 'react-draggable';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
@@ -12,22 +13,25 @@ export const DirectoryIcons: FC<DirectoryView> = ({
   <nav className={styles.directoryIcons}>
     <ol>
       {entries.map(({ icon, name, kind, path, url }) => (
-        <li
+        <Draggable
           key={path}
-          className={styles.directoryIcon}
-          tabIndex={0}
-          title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
-          onClick={
-            new ClickHandler({
-              doubleClick: onDoubleClick(path, url, icon, name)
-            }).clickHandler
-          }
         >
-          <figure>
-            <img alt={name} src={icon} draggable={false} />
-            <figcaption>{name}</figcaption>
-          </figure>
-        </li>
+          <li
+            className={styles.directoryIcon}
+            tabIndex={0}
+            title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
+            onClick={
+              new ClickHandler({
+                doubleClick: onDoubleClick(path, url, icon, name)
+              }).clickHandler
+            }
+          >
+            <figure>
+              <img alt={name} src={icon} draggable={false} />
+              <figcaption>{name}</figcaption>
+            </figure>
+          </li>
+        </Draggable>
       ))}
     </ol>
   </nav>

@@ -30,6 +30,7 @@
     "next": "^9.5.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-pdf": "^5.0.0",
     "react-rnd": "^10.2.2",
     "sass": "^1.26.10",
