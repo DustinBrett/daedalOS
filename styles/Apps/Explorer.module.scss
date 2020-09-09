@@ -57,9 +57,6 @@ $textColor: rgb(225, 225, 225);
       &:nth-child(odd) {
         background: rgb(52, 50, 53);
       }
-      &:focus {
-        background-color: rgb(0, 88, 208);
-      }
 
       td {
         padding-left: 10px;
@@ -83,4 +80,8 @@ $textColor: rgb(225, 225, 225);
   thead tr td:last-child {
     border-right: none;
   }
+}
+
+.selected {
+  background-color: rgb(0, 88, 208) !important;
 }
