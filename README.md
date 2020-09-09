@@ -1,20 +1,48 @@
-# TODO
+# TODO - MVP
 
-### Priority
+## System
 
-- DO THE DETAILS, THAT IS WHAT PEOPLE WILL HUNT FOR
-- Window titlebar text resize like osx
-- Icons: Draggable
-  - Selected icons dont truncate text
-  - Hover icons shows title text
-- Window: Maximize
+### General
+
 - Animations (https://www.framer.com/api/motion)
-- PDF Styling
+
+### Windows
+
+- Maximize
+- Titlebar text needs to resize like Finder's
+
+### Icons
+
+- Draggable
+
+## Apps
+
+### New Apps
+
 - JS Paint (https://github.com/1j01/jspaint)
 - Word Processor (https://webodf.org/)
+
+### DOS
+
+### Explorer
+
+- Title should change to current folder
+
+### PDF
+
+- Style like generic PDF viewer
+
+# TODO - Post MVP
+
+### Post MVP
+
+- Icon text un-truncate on selection (Don't truncate icons for now)
 - System Tray: React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
   - useIdle + Pipes (https://github.com/1j01/pipes)
+
+### Priority
+
 - Start Menu
 - Window: Open at a size/position relative to the viewport, orientation & resolution
   - Set max sizes for windows and then use rules for below that
@@ -24,7 +52,6 @@
 
 - Taskbar: Clicking recently focused entry is minimizing it
 - DOS: Can't focus by clicking canvas
-- Window: Bottom corners showing bg color
 
 ### Explorer MVP
 
