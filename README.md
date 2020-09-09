@@ -5,7 +5,7 @@
 ### General
 
 - Animations (https://www.framer.com/api/motion)
-  - Max/min
+  - Max/min (https://www.framer.com/api/motion/animation/#animation-controls)
 
 ## Apps
 
