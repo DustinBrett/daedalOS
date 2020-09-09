@@ -6,6 +6,7 @@ import { createContext, useReducer } from 'react';
 import {
   appClose,
   appFocus,
+  appMaximize,
   appMinimize,
   appOpen,
   appPosition,
@@ -24,6 +25,7 @@ type AppsContextType = {
   apps: Apps;
   close?: (id: string, stackOrder: Array<string>) => void;
   focus?: (id: string, focus?: boolean) => void;
+  maximize?: (id: string, maximize?: boolean) => void;
   minimize?: (id: string, minimize?: boolean) => void;
   open?: (url: string, icon: string, name: string) => void;
   position?: (id: string) => RndDragCallback;
@@ -62,6 +64,7 @@ export const AppsProvider: FC = ({ children }) => {
         apps,
         close: appClose(apps, updateApp),
         focus: appFocus(apps, updateApp),
+        maximize: appMaximize(updateApp),
         minimize: appMinimize(updateApp),
         open: appOpen(updateApp),
         position: appPosition(updateApp),

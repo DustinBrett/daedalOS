@@ -187,6 +187,17 @@ export const appMinimize = (updateApp: Dispatch<AppAction>) => (
   }
 };
 
+export const appMaximize = (updateApp: Dispatch<AppAction>) => (
+  id: string,
+  maximized = true
+): void => {
+  if (maximized) {
+    updateApp({ updates: { maximized: true }, id });
+  } else {
+    updateApp({ updates: { maximized: false }, id });
+  }
+};
+
 export const appOpen = (updateApp: Dispatch<AppAction>) => (
   url: string,
   icon: string,

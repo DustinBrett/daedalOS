@@ -9,26 +9,21 @@ import { AnimatePresence, motion } from 'framer-motion';
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
 const windowMotionSettings = {
-  initial: { opacity: 0, y: 100 },
-  animate: { opacity: 1, y: 0 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
   transition: {
-    y: {
-      damping: 15,
-      stiffness: 800,
-      type: 'spring'
-    }
+    duration: 0.5
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.3
-    },
-    y: 100
+      duration: 0.2
+    }
   }
 };
 
 export const Windows: FC = () => {
-  const { apps, close, focus, minimize, position, size } = useContext(
+  const { apps, close, focus, maximize, minimize, position, size } = useContext(
       AppsContext
     ),
     [windowMargins, setWindowMargins] = useState({
@@ -59,6 +54,7 @@ export const Windows: FC = () => {
                 icon,
                 name,
                 windowed,
+                maximized,
                 minimized,
                 foreground,
                 lockAspectRatio,
@@ -74,6 +70,7 @@ export const Windows: FC = () => {
               const cascadeSpacing = index * 20 || 0,
                 appOptions = {
                   onMinimize: () => minimize?.(id),
+                  onMaximize: () => maximize?.(id, !maximized),
                   onClose: () => close?.(id, stackOrder),
                   onFocus: () => focus?.(id),
                   onBlur: () => focus?.(id, false),
@@ -81,6 +78,7 @@ export const Windows: FC = () => {
                   updateSize: size?.(id),
                   zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)), // TODO: Still valid logic?
                   foreground,
+                  maximized,
                   minimized,
                   height,
                   width,

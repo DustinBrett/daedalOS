@@ -9,5 +9,6 @@ module.exports = withImages({
     locale: 'en-US',
     millisecondsInSecond: 1000
   },
-  reactStrictMode: true
+  // Not working with Draggable
+  // reactStrictMode: true
 });

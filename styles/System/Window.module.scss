@@ -2,8 +2,6 @@
 
 $buttonIconOpacity: 0.975;
 
-// Window bottom right and left corners showing something?
-
 .window {
   z-index: map-get($window, z-index);
 
@@ -66,7 +64,7 @@ $buttonIconOpacity: 0.975;
 
           overflow: hidden;
 
-          max-width: 145px;
+          max-width: 45%;
 
           text-align: center;
           white-space: nowrap;
@@ -156,4 +154,11 @@ $buttonIconOpacity: 0.975;
   #close {
     color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
   }
+}
+
+.maximized {
+  height: calc(100vh - #{map-get($taskbar, height)}) !important;
+  width: 100vw !important;
+  position: fixed !important;
+  transform: unset !important;
 }

@@ -5,15 +5,7 @@
 ### General
 
 - Animations (https://www.framer.com/api/motion)
-
-### Windows
-
-- Maximize
-- Titlebar text needs to resize like Finder's
-
-### Icons
-
-- Draggable
+  - Max/min
 
 ## Apps
 

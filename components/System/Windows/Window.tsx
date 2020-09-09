@@ -15,6 +15,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   children,
   icon,
   name,
+  onMaximize,
   onMinimize,
   onClose,
   onFocus,
@@ -29,7 +30,8 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   x = 0,
   y = 0,
   foreground,
-  minimized
+  minimized,
+  maximized
 }) => {
   const windowRef = useRef<Rnd>(null);
 
@@ -44,7 +46,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
     <article style={{ visibility: minimized ? 'hidden' : 'visible' }}>
       <Rnd
         enableUserSelectHack={false}
-        className={styles.window}
+        className={`${styles.window} ${maximized ? styles.maximized : ''}`}
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
@@ -61,6 +63,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         onDragStart={focusOnDrag}
         onDragStop={updatePosition}
         onResizeStop={updateSize}
+        disableDragging={maximized}
         ref={windowRef}
         lockAspectRatio={lockAspectRatio}
         style={{ zIndex }}
@@ -79,7 +82,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
             <button id={styles.minimize} onClick={onMinimize}>
               <FontAwesomeIcon size="xs" icon={faMinus} />
             </button>
-            <button id={styles.maximize}>
+            <button id={styles.maximize} onClick={onMaximize}>
               <FontAwesomeIcon size="xs" icon={faPlus} />
             </button>
           </nav>

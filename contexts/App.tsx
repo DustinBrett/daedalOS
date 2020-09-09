@@ -5,6 +5,7 @@ import type { AppLoader } from '@/utils/apps';
 export type AppComponent = {
   onDoubleClick?: () => void;
   onClose?: () => void;
+  onMaximize?: () => void;
   onMinimize?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
