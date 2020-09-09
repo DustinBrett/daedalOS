@@ -1,13 +1,14 @@
 import styles from '@/styles/System/Taskbar.module.scss';
 
-import { FC, useContext } from 'react';
+import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useContext } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import { sortByLastRunning } from '@/utils/utils';
-import { AnimatePresence, motion } from 'framer-motion';
+import Clock from '@/components/System/Taskbar/Clock';
 
-const Clock = dynamic(import('@/components/System/Taskbar/Clock'));
 const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
 );
