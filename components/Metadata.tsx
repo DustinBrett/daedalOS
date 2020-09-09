@@ -1,4 +1,4 @@
-import { name } from 'package.json';
+import { name, description } from 'package.json';
 
 import type { FC } from 'react';
 
@@ -14,6 +14,7 @@ export const Metadata: FC = () => {
   return (
     <Head>
       <title>{name}</title>
+      <meta name="description" content={description} />
     </Head>
   );
 };
