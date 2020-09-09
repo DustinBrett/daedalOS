@@ -162,6 +162,8 @@ $buttonIconOpacity: 0.975;
   width: 100vw !important;
   height: calc(100vh - #{map-get($taskbar, height)}) !important;
 
+  transform: unset !important;
+
   header {
     border-radius: unset !important;
   }
@@ -169,6 +171,4 @@ $buttonIconOpacity: 0.975;
   article {
     border-radius: unset !important;
   }
-
-  transform: unset !important;
 }
