@@ -2,6 +2,7 @@
   font-family: 'SegoeUI';
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 
   src: url('/fonts/segoeui.woff2') format('woff2');
 }
@@ -30,7 +31,6 @@ body {
   background-color: black;
 
   overscroll-behavior: contain;
-  font-display: swap;
 }
 
 ol {
