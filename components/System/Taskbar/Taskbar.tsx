@@ -33,10 +33,7 @@ export const Taskbar: FC = () => {
           {apps
             ?.sort(sortByLastRunning)
             .map(({ id, icon, minimized, name, foreground, stackOrder }) => (
-              <motion.li
-                key={ id }
-                {...taskbarEntriesMotionSettings}
-              >
+              <motion.li key={id} {...taskbarEntriesMotionSettings}>
                 <TaskbarEntry
                   foreground={foreground}
                   icon={icon}

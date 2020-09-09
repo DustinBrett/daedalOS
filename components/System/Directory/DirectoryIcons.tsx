@@ -25,9 +25,7 @@ export const DirectoryIcons: FC<DirectoryView> = ({
     <ol>
       <AnimatePresence>
         {entries.map(({ icon, name, kind, path, url }) => (
-          <Draggable
-            key={path}
-          >
+          <Draggable key={path}>
             <motion.li
               className={styles.directoryIcon}
               tabIndex={0}

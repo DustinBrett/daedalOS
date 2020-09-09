@@ -85,12 +85,9 @@ export const Windows: FC = () => {
                   x: x || cascadeSpacing,
                   y: y || cascadeSpacing
                 };
-              
+
               return (
-                <motion.div
-                  key={id}
-                  {...windowMotionSettings}
-                >
+                <motion.div key={id} {...windowMotionSettings}>
                   {windowed ? (
                     <Window
                       icon={icon}
