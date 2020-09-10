@@ -41,12 +41,20 @@ const dosLoaderOptions = {
   hideScrollbars: true,
   lockAspectRatio: true,
   width: 320,
-  height: 224
+  height: 224,
+  bgColor: 'black'
 };
 
 const pdfLoaderOptions = {
-  height: 400,
-  width: 425
+  height: 450,
+  width: 425,
+  bgColor: '#f8f8ff'
+};
+
+const explorerLoaderOptions = {
+  width: 500,
+  height: 250,
+  bgColor: 'transparent'
 };
 
 const Dos = dynamic(import('@/components/Apps/Dos'));
@@ -64,10 +72,7 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
     case 'explorer':
       return {
         loader: Explorer,
-        loaderOptions: {
-          width: 500,
-          height: 250
-        }
+        loaderOptions: explorerLoaderOptions
       };
     case 'pdf':
       return {

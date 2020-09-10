@@ -15,6 +15,7 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   children,
   icon,
   name,
+  bgColor,
   onMaximize,
   onMinimize,
   onClose,
@@ -43,7 +44,9 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   }, [foreground, windowRef]);
 
   return (
-    <article style={{ visibility: minimized ? 'hidden' : 'visible' }}>
+    <article style={{
+      visibility: minimized ? 'hidden' : 'visible'
+    }}>
       <Rnd
         enableUserSelectHack={false}
         className={`${styles.window} ${maximized ? styles.maximized : ''}`}
@@ -89,7 +92,10 @@ export const Window: FC<Partial<App> & AppComponent> = ({
         </header>
         <article
           className={styles.content}
-          style={{ overflow: hideScrollbars ? 'hidden' : 'auto' }}
+          style={{
+            backgroundColor: bgColor,
+            overflow: hideScrollbars ? 'hidden' : 'auto'
+          }}
         >
           {children}
         </article>

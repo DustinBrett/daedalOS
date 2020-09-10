@@ -21,6 +21,7 @@ export type AppConstructor = {
   icon: string;
   name: string;
 
+  bgColor?: string;
   height?: number;
   width?: number;
   x?: number;
@@ -36,6 +37,7 @@ export default class {
   loader;
   icon;
   name;
+  bgColor;
 
   height;
   width;
@@ -59,6 +61,7 @@ export default class {
     icon,
     name,
 
+    bgColor = 'black',
     height = 0,
     width = 0,
     x = 0,
@@ -72,6 +75,7 @@ export default class {
     this.loader = loader;
     this.icon = icon;
     this.name = name;
+    this.bgColor = bgColor;
     this.id = id;
     this.height = height;
     this.width = width;

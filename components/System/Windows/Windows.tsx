@@ -53,6 +53,7 @@ export const Windows: FC = () => {
                 id,
                 icon,
                 name,
+                bgColor,
                 windowed,
                 maximized,
                 minimized,
@@ -92,6 +93,7 @@ export const Windows: FC = () => {
                     <Window
                       icon={icon}
                       name={name}
+                      bgColor={bgColor}
                       lockAspectRatio={lockAspectRatio}
                       hideScrollbars={hideScrollbars}
                       updateSize={size?.(id)}

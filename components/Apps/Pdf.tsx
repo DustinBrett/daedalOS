@@ -1,3 +1,5 @@
+import styles from '@/styles/Apps/Pdf.module.scss';
+
 import type { FC } from 'react';
 
 import React, { useState } from 'react';
@@ -35,7 +37,7 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
 
   return (
     <>
-      <div>
+      <div className={styles.controls}>
         <p>
           Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
         </p>
@@ -58,9 +60,11 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
           Zoom 125%
         </button>
       </div>
-      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page pageNumber={pageNumber} width={baseWidth * zoom} />
-      </Document>
+      <div className={styles.document}>
+        <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page pageNumber={pageNumber} width={baseWidth * zoom} />
+        </Document>
+      </div>
     </>
   );
 };
