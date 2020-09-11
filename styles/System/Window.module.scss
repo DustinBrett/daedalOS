@@ -1,8 +1,25 @@
 @import '@/styles/mixins';
 
+@font-face {
+  font-family: "SFPro-Regular";
+
+  src: url("/fonts/SF-Pro.woff2") format("woff2");
+
+  font-weight: normal;
+  font-style: normal;
+
+  font-display: swap;
+}
+
 $buttonIconOpacity: 0.975;
 
 .window {
+  font-family: 'SFPro-Regular', sans-serif;
+  font-size: 12px;
+
+  letter-spacing: 0.5px;
+  font-weight: 600;
+
   z-index: map-get($window, z-index);
 
   border-radius: map-get($window, border-radius);

@@ -11,7 +11,7 @@ import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 import { formatToLongDateTime } from '@/utils/dates';
 
 const bytesInKB = 1024,
-  fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'],
+  fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'],
   homeDir = '/';
 
 type StatsProto = {
