@@ -2,11 +2,18 @@
   display: flex;
   justify-content: space-around;
   background-color: #b1b1b1;
+  padding: 5px;
 }
 
 .document {
-  display: flex;
   background-color: #d7d7d7;
-  justify-content: center;
-  padding: 10px;
+  padding: 25px;
+  height: calc(100% - 31px);
+  overflow: auto;
+
+  .reactDocument {
+    display: flex;
+    justify-content: center;
+    width: 150%;
+  }
 }

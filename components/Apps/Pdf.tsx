@@ -38,12 +38,12 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
   return (
     <>
       <div className={styles.controls}>
-        <p>
-          Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
-        </p>
         <button type="button" disabled={pageNumber <= 1} onClick={previousPage}>
           Previous
         </button>
+        <p>
+          Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+        </p>
         <button
           type="button"
           disabled={pageNumber >= numPages}
@@ -54,14 +54,25 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
         <button
           type="button"
           onClick={() => {
-            setZoom(1.25);
+            setZoom(zoom + 0.25);
           }}
         >
-          Zoom 125%
+          Zoom In
+        </button>
+        <p>
+          Zoom {zoom * 100}%
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setZoom(zoom - 0.25);
+          }}
+        >
+          Zoom Out
         </button>
       </div>
       <div className={styles.document}>
-        <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
+        <Document className={styles.reactDocument} file={url} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} width={baseWidth * zoom} />
         </Document>
       </div>

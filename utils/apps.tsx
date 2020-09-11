@@ -46,9 +46,10 @@ const dosLoaderOptions = {
 };
 
 const pdfLoaderOptions = {
+  hideScrollbars: true,
   height: 450,
-  width: 425,
-  bgColor: '#f8f8ff'
+  width: 475,
+  bgColor: '#d7d7d7'
 };
 
 const explorerLoaderOptions = {
