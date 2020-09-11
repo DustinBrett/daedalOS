@@ -15,13 +15,15 @@
     map-get($taskbar, bg-opacity)
   );
 
-  ol {
+  .entries {
     @include bottomLeft;
 
     display: flex;
     flex: 0 1 map-get($taskbarEntry, width);
 
-    width: calc(100% - #{map-get($clock, width)});
+    width: calc(
+      100% - #{map-get($clock, width)} - #{map-get($systemTray, width)}
+    );
     height: map-get($taskbar, height);
   }
 }

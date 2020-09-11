@@ -32,6 +32,7 @@
     "react-dom": "^16.13.1",
     "react-pdf": "^5.0.0",
     "react-rnd": "^10.2.2",
+    "react-use": "^15.3.4",
     "sass": "^1.26.10",
     "three": "^0.120.1",
     "webamp": "^1.4.1-beta01"

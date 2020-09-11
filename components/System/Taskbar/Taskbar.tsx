@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
 import Clock from '@/components/System/Taskbar/Clock';
+import SystemTray from '@/components/System/Taskbar/SystemTray';
 
 const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
@@ -43,7 +44,7 @@ export const Taskbar: FC = () => {
 
   return (
     <nav className={styles.taskbar}>
-      <ol ref={olRef}>
+      <ol className={styles.entries} ref={olRef}>
         <AnimatePresence>
           {apps.map(({ id, icon, minimized, name, foreground, stackOrder }) => (
             <motion.li
@@ -69,6 +70,7 @@ export const Taskbar: FC = () => {
           ))}
         </AnimatePresence>
       </ol>
+      <SystemTray />
       <Clock />
     </nav>
   );
