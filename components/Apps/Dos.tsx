@@ -14,9 +14,6 @@ const dosOptions = {
   onprogress: () => {}
 };
 
-// TODO: Load with basic tools like EDIT and such (MS-DOS tools somewhere?)
-// TODO: Mobile support (https://github.com/caiiiycuk/js-dos#mobile-support)
-
 export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),

@@ -4,9 +4,8 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
-import { sortByLastRunning } from '@/utils/utils';
 import Clock from '@/components/System/Taskbar/Clock';
 
 const TaskbarEntry = dynamic(
@@ -24,17 +23,24 @@ const taskbarEntriesMotionSettings = {
   exit: { opacity: 0, width: 0, transition: { duration: 0.3 }, x: -100 }
 };
 
+const maxWidth = 159;
+
 export const Taskbar: FC = () => {
-  const { apps, focus, minimize } = useContext(AppsContext);
+  const { apps, focus, minimize } = useContext(AppsContext),
+    olRef = useRef<HTMLOListElement>(null),
+    [entryWidth, setEntryWidth] = useState(maxWidth);
+
+  useEffect(() => {
+    setEntryWidth(Math.min(maxWidth, olRef.current?.offsetWidth ? olRef.current?.offsetWidth / apps.length : maxWidth));
+  }, [apps]);
 
   return (
     <nav className={styles.taskbar}>
-      <ol>
+      <ol ref={olRef}>
         <AnimatePresence>
           {apps
-            ?.sort(sortByLastRunning)
             .map(({ id, icon, minimized, name, foreground, stackOrder }) => (
-              <motion.li key={id} {...taskbarEntriesMotionSettings}>
+              <motion.li key={id} {...taskbarEntriesMotionSettings} style={{ width:  entryWidth }}>
                 <TaskbarEntry
                   foreground={foreground}
                   icon={icon}

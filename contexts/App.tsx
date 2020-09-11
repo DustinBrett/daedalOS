@@ -53,7 +53,6 @@ export default class {
   foreground = false;
   maximized = false;
   minimized = false;
-  lastRunning: Date = new Date(0);
   stackOrder: Array<string> = [];
 
   constructor({

@@ -3,7 +3,6 @@ import type { FC } from 'react';
 import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
 import { AppsContext } from '@/contexts/Apps';
-import { sortByLastRunning } from '@/utils/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
@@ -46,7 +45,6 @@ export const Windows: FC = () => {
     <section style={windowMargins}>
       <AnimatePresence>
         {apps
-          ?.sort(sortByLastRunning)
           .map(
             (
               {

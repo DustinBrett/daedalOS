@@ -101,7 +101,7 @@ const appLoaderByFileType = (
         loaderOptions: dosLoaderOptions,
         loadedAppOptions: {
           url: path,
-          args: searchParams ? [...searchParams.entries()].flat() : [] // TODO: This `args` logic is ideal for DOS only
+          args: searchParams ? [...searchParams.entries()].flat() : []
         }
       };
     case 'mp3':

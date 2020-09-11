@@ -33,9 +33,6 @@
   - File type icons
   - Search bar
 - Document Viewer for Blog (https://webodf.org/)
-- DOS
-  - Optional mouse lock
-  - Clicking canvas focus mobile
 - Clippy.JS (https://www.smore.com/clippy-js)
 
 ## Data
@@ -45,7 +42,6 @@
 # MVP-soft
 
 - JS Paint (https://github.com/1j01/jspaint)
-- HoMM2
 - System Tray: React-Use (https://github.com/streamich/react-use)
   - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
   - useIdle + Pipes (https://github.com/1j01/pipes)
