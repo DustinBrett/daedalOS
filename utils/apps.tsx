@@ -47,7 +47,7 @@ const dosLoaderOptions = {
 
 const pdfLoaderOptions = {
   hideScrollbars: true,
-  height: 450,
+  height: 625,
   width: 475,
   bgColor: '#d7d7d7'
 };
