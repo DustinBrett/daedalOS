@@ -1,7 +1,6 @@
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { AppLoader } from '@/utils/apps';
 
-// TODO: How can I properly use this?
 export type AppComponent = {
   onDoubleClick?: () => void;
   onClose?: () => void;

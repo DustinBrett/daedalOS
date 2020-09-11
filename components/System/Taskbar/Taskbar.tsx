@@ -49,7 +49,7 @@ export const Taskbar: FC = () => {
                     if (minimized) {
                       minimize?.(id, false);
                     } else {
-                      const [foregroundApp] = stackOrder; // TODO: Top of stack order doesnt mean its foreground
+                      const [foregroundApp] = stackOrder;
 
                       foregroundApp === id ? minimize?.(id) : focus?.(id);
                     }

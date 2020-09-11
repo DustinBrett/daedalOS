@@ -8,6 +8,7 @@
   - Size opening/positioning logic
     - Relative to the viewport, orientation & resolution
     - Pre-define ideal min sizes for windows
+  - Fix semantic HTML (https://www.w3.org/wiki/HTML/Usage/Headings/Missing)
 - Icons
   - Horizontal rendering issues with mixed 1-2 line icon labels
 - Taskbar
@@ -22,12 +23,9 @@
   - Print, download
   - Style like a mix of PDF.js, Chrome PDF & Adobe Reader
 - Explorer
-  - Title change to current folder
   - Breadcrumb bar
   - Item count / status bar
-  - Faster select highlighting (via onFocus)
   - Stay highlighted but grey when window is unfocused
-  - Resizable columns
   - Limit scroll viewport to list view
 - Document Viewer for Blog (https://webodf.org/)
 - Clippy.JS (https://www.smore.com/clippy-js)
@@ -44,16 +42,20 @@
 - Icons
   - Image optimization (WebP & responsive)
   - Text un-truncate on selection (Don't truncate icons for now)
+- Window
+  - Top drag constraints
+  - Avoid storing stackOrder in every app
+- Explorer
+  - Title change to current folder
+  - Faster select highlighting (via onFocus)
+  - Resizable columns
+- DOS
+  - Virtual keyboard on mobile
 - Winamp
   - Clicking taskbar entry does not focus app
   - Focus isn't reliable on mobile
   - Position logic (x|y / 2) is messy
   - Seek bar shows when minimized and playing
-- Window
-  - Top drag constraints
-  - Avoid storing stackOrder in every app
-- DOS
-  - Virtual keyboard on mobile
 - Fix tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
 
 # Ideas

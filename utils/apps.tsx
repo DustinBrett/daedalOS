@@ -7,8 +7,6 @@ import App from '@/contexts/App';
 import dynamic from 'next/dynamic';
 import { getFileExtension } from '@/utils/files';
 
-// Q: What is the overlap between AppComponent, App & AppConstructor types?
-
 export type AppLoader = {
   loader: FC<AppComponent> | ComponentType<AppComponent>;
   loaderOptions?: Partial<AppConstructor>;
@@ -139,7 +137,6 @@ const appToForegroundOthersToBackground = (
     });
   });
 
-// TODO: Stop storing stackOrder in every app
 const appToStackTopOnEveryApp = (
   apps: Apps,
   updateApp: Dispatch<AppAction>,
@@ -159,14 +156,12 @@ const appToStackTopOnEveryApp = (
 
 export const appClose = (apps: Apps, updateApp: Dispatch<AppAction>) => (
   id: string,
-  [, newForegroundAppId]: Array<string> // TODO: Does this logic make sense?
+  [, newForegroundAppId]: Array<string>
 ): void => {
   if (newForegroundAppId) {
     appFocus(apps, updateApp)(newForegroundAppId);
   }
 
-  // TODO: Does stackOrder make sense the same way anymore?
-  // Maybe apps can keep track of this now that its only running
   updateApp({ id });
 };
 

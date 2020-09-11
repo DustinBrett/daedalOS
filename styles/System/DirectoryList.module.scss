@@ -1,0 +1,81 @@
+@import '@/styles/variables';
+
+$textColor: rgb(225, 225, 225);
+
+.directory {
+  font-size: $fontSize;
+
+  display: inline-table;
+  overflow: scroll;
+
+  width: 100%;
+
+  border-spacing: 0;
+
+  word-wrap: break-word;
+
+  color: rgba($textColor, 0.75);
+  border: none;
+  border-top: 1px solid black;
+
+  .emphasis {
+    color: rgba($textColor, 1);
+  }
+
+  td {
+    line-height: 20px;
+
+    height: 20px;
+    min-height: 20px;
+    max-height: 20px;
+  }
+
+  thead {
+    background: rgba(55, 53, 56);
+    tr {
+      border-bottom: 1px solid rgb(91, 91, 96);
+      td {
+        padding-left: 10px;
+
+        border-right: 1px solid rgb(76, 76, 81);
+        border-bottom: 1px solid rgb(91, 91, 96);
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even) {
+        background: rgba(42, 40, 43);
+      }
+      &:nth-child(odd) {
+        background: rgb(52, 50, 53);
+      }
+
+      td {
+        padding-left: 10px;
+
+        figure {
+          display: flex;
+
+          img {
+            position: relative;
+            top: 3px;
+
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  thead tr td:last-child {
+    border-right: none;
+  }
+}
+
+.selected {
+  background-color: rgb(0, 88, 208) !important;
+}

@@ -54,7 +54,6 @@ const getDirectoryEntry = async (
   getStats: boolean
 ): Promise<DirectoryEntry> => {
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    // Get rid of isDirectory and just check for extension (eventually using path logic)
     stats = getStats
       ? await getFileStat(fs, filePath)
       : ({} as Stats & StatsProto),
@@ -86,14 +85,12 @@ const getFileIcon = (filePath: string, ext: string): string => {
       return filePath;
     case 'jsdos':
       return '/icons/apps/dos.png';
-    // TODO: *.js
     case 'js':
     case 'json':
     case 'min.js':
     case 'wasm.js':
     case 'worker.js':
       return JsFileTypeIcon;
-    // TODO: Winamp file type icons
     case 'mp3':
     case 'm3u':
     case 'wsz':
@@ -147,7 +144,7 @@ export const getDirectory = (
   fs: FSModule,
   path: string,
   getDetails: boolean,
-  cb: (entries: Array<DirectoryEntry>) => void // Dispatch?
+  cb: (entries: Array<DirectoryEntry>) => void
 ): void => {
   fs?.readdir?.(path, (_error, contents = []) => {
     contents.reduce(async (entries, file) => {

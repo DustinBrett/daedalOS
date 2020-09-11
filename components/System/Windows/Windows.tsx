@@ -7,7 +7,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
-// Z-index is wrong during transition
 const windowMotionSettings = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
@@ -39,9 +38,6 @@ export const Windows: FC = () => {
   }, []);
 
   return (
-    // TODO: Maybe I should use <article>?
-    // W3C: Section lacks heading. Consider using h2-h6 elements to add identifying headings to all sections.
-    // https://www.w3.org/wiki/HTML/Usage/Headings/Missing
     <section style={windowMargins}>
       <AnimatePresence>
         {apps
@@ -76,7 +72,7 @@ export const Windows: FC = () => {
                   onBlur: () => focus?.(id, false),
                   updatePosition: position?.(id),
                   updateSize: size?.(id),
-                  zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)), // TODO: Still valid logic?
+                  zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)),
                   foreground,
                   maximized,
                   minimized,

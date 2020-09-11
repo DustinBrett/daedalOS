@@ -1,4 +1,4 @@
-import styles from '@/styles/Apps/Explorer.module.scss'; // TODO: Fix this not being DirectoryList
+import styles from '@/styles/System/DirectoryList.module.scss';
 
 import { FC, useState } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';
