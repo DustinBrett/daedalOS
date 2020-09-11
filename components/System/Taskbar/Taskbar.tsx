@@ -31,32 +31,42 @@ export const Taskbar: FC = () => {
     [entryWidth, setEntryWidth] = useState(maxWidth);
 
   useEffect(() => {
-    setEntryWidth(Math.min(maxWidth, olRef.current?.offsetWidth ? olRef.current?.offsetWidth / apps.length : maxWidth));
+    setEntryWidth(
+      Math.min(
+        maxWidth,
+        olRef.current?.offsetWidth
+          ? olRef.current?.offsetWidth / apps.length
+          : maxWidth
+      )
+    );
   }, [apps]);
 
   return (
     <nav className={styles.taskbar}>
       <ol ref={olRef}>
         <AnimatePresence>
-          {apps
-            .map(({ id, icon, minimized, name, foreground, stackOrder }) => (
-              <motion.li key={id} {...taskbarEntriesMotionSettings} style={{ width:  entryWidth }}>
-                <TaskbarEntry
-                  foreground={foreground}
-                  icon={icon}
-                  name={name}
-                  onClick={() => {
-                    if (minimized) {
-                      minimize?.(id, false);
-                    } else {
-                      const [foregroundApp] = stackOrder;
+          {apps.map(({ id, icon, minimized, name, foreground, stackOrder }) => (
+            <motion.li
+              key={id}
+              {...taskbarEntriesMotionSettings}
+              style={{ width: entryWidth }}
+            >
+              <TaskbarEntry
+                foreground={foreground}
+                icon={icon}
+                name={name}
+                onClick={() => {
+                  if (minimized) {
+                    minimize?.(id, false);
+                  } else {
+                    const [foregroundApp] = stackOrder;
 
-                      foregroundApp === id ? minimize?.(id) : focus?.(id);
-                    }
-                  }}
-                />
-              </motion.li>
-            ))}
+                    foregroundApp === id ? minimize?.(id) : focus?.(id);
+                  }
+                }}
+              />
+            </motion.li>
+          ))}
         </AnimatePresence>
       </ol>
       <Clock />

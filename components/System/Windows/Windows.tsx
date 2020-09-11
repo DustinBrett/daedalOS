@@ -40,69 +40,68 @@ export const Windows: FC = () => {
   return (
     <section style={windowMargins}>
       <AnimatePresence>
-        {apps
-          .map(
-            (
-              {
-                loader: { loader: App, loadedAppOptions },
-                id,
-                icon,
-                name,
-                bgColor,
-                windowed,
+        {apps.map(
+          (
+            {
+              loader: { loader: App, loadedAppOptions },
+              id,
+              icon,
+              name,
+              bgColor,
+              windowed,
+              maximized,
+              minimized,
+              foreground,
+              lockAspectRatio,
+              hideScrollbars,
+              stackOrder,
+              height,
+              width,
+              x,
+              y
+            },
+            index
+          ) => {
+            const cascadeSpacing = index * 20 || 0,
+              appOptions = {
+                onMinimize: () => minimize?.(id),
+                onMaximize: () => maximize?.(id, !maximized),
+                onClose: () => close?.(id, stackOrder),
+                onFocus: () => focus?.(id),
+                onBlur: () => focus?.(id, false),
+                updatePosition: position?.(id),
+                updateSize: size?.(id),
+                zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)),
+                foreground,
                 maximized,
                 minimized,
-                foreground,
-                lockAspectRatio,
-                hideScrollbars,
-                stackOrder,
                 height,
                 width,
-                x,
-                y
-              },
-              index
-            ) => {
-              const cascadeSpacing = index * 20 || 0,
-                appOptions = {
-                  onMinimize: () => minimize?.(id),
-                  onMaximize: () => maximize?.(id, !maximized),
-                  onClose: () => close?.(id, stackOrder),
-                  onFocus: () => focus?.(id),
-                  onBlur: () => focus?.(id, false),
-                  updatePosition: position?.(id),
-                  updateSize: size?.(id),
-                  zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)),
-                  foreground,
-                  maximized,
-                  minimized,
-                  height,
-                  width,
-                  x: x || cascadeSpacing,
-                  y: y || cascadeSpacing
-                };
+                x: x || cascadeSpacing,
+                y: y || cascadeSpacing
+              };
 
-              return (
-                <motion.div key={id} {...windowMotionSettings}>
-                  {windowed ? (
-                    <Window
-                      icon={icon}
-                      name={name}
-                      bgColor={bgColor}
-                      lockAspectRatio={lockAspectRatio}
-                      hideScrollbars={hideScrollbars}
-                      updateSize={size?.(id)}
-                      {...appOptions}
-                    >
-                      <App {...loadedAppOptions} />
-                    </Window>
-                  ) : (
-                    <App key={id} {...appOptions} {...loadedAppOptions} />
-                  )}
-                </motion.div>
-              );
-            }
-          )}
+            return (
+              <motion.div key={id} {...windowMotionSettings}>
+                {windowed ? (
+                  <Window
+                    icon={icon}
+                    name={name}
+                    bgColor={bgColor}
+                    lockAspectRatio={lockAspectRatio}
+                    hideScrollbars={hideScrollbars}
+                    updateSize={size?.(id)}
+                    {...appOptions}
+                  >
+                    <App {...loadedAppOptions} />
+                  </Window>
+                ) : (
+                  <App key={id} {...appOptions} {...loadedAppOptions} />
+                )}
+              </motion.div>
+            );
+          }
+        )}
       </AnimatePresence>
     </section>
   );
