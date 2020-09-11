@@ -5,7 +5,7 @@ $buttonIconOpacity: 0.975;
 .window {
   font-family: 'SFPro-Regular', sans-serif;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 400;
 
   z-index: map-get($window, z-index);
 
@@ -66,7 +66,7 @@ $buttonIconOpacity: 0.975;
 
         figcaption {
           font-size: map-get($window, title-bar-font-size);
-          font-weight: normal;
+          font-weight: 400;
 
           overflow: hidden;
 

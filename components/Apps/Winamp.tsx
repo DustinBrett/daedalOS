@@ -49,7 +49,7 @@ const options: Options & PrivateOptions = {
   },
   availableSkins: [
     {
-      url: '/skins/SpyAMP_Professional_Edition_v5.wsz',
+      url: '/skins/SpyAMP_Pro.wsz',
       name: 'SpyAMP Professional Edition v5'
     }
   ]

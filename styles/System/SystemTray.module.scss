@@ -2,7 +2,7 @@
 @import '@/styles/mixins';
 
 .tray {
-  font-size: 12.5px;
+  font-size: 8.5px;
 
   position: fixed;
   right: 0 + 90px;
@@ -16,6 +16,8 @@
   height: map-get($taskbar, height);
 
   color: white;
+
+  writing-mode: vertical-rl;
 
   &:hover {
     @include taskbarEntryHoverStyle;

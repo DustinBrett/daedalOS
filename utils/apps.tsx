@@ -51,8 +51,8 @@ const pdfLoaderOptions = {
 };
 
 const explorerLoaderOptions = {
-  width: 350,
-  height: 270,
+  width: 305,
+  height: 265,
   bgColor: '#2a282b'
 };
 

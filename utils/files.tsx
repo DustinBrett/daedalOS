@@ -121,11 +121,11 @@ const getFileKind = (ext: string): string => {
     case 'mp3':
       return 'MP3 Audio';
     case 'js':
-      return 'JavaScript Document';
+      return 'JS Document';
     case 'wsz':
       return 'Winamp Skin';
     case 'url':
-      return 'Internet Shortcut';
+      return 'Shortcut';
     default:
       return '';
   }
