@@ -52,7 +52,7 @@ const pdfLoaderOptions = {
 
 const explorerLoaderOptions = {
   width: 450,
-  height: 375,
+  height: 270,
   bgColor: '#2a282b'
 };
 
