@@ -51,9 +51,9 @@ const pdfLoaderOptions = {
 };
 
 const explorerLoaderOptions = {
-  width: 500,
-  height: 250,
-  bgColor: 'transparent'
+  width: 450,
+  height: 375,
+  bgColor: '#2a282b'
 };
 
 const Dos = dynamic(import('@/components/Apps/Dos'));
