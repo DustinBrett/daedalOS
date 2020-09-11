@@ -7,6 +7,15 @@
   src: url('/fonts/segoeui.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'SFPro-Regular';
+  font-weight: normal;
+  font-style: normal;
+
+  src: url('/fonts/SF-Pro.woff2') format('woff2');
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

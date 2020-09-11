@@ -8,7 +8,7 @@ import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
-import { formatToLongDateTime } from '@/utils/dates';
+// import { formatToLongDateTime } from '@/utils/dates';
 
 const bytesInKB = 1024,
   fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'],
@@ -47,6 +47,10 @@ const getBestIconMatch = (
   return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
 };
 
+export const hasExtension = (path = ''): boolean => {
+  return getFileExtension(path) === '';
+};
+
 const getDirectoryEntry = async (
   fs: FSModule,
   path: string,
@@ -54,12 +58,13 @@ const getDirectoryEntry = async (
   getStats: boolean
 ): Promise<DirectoryEntry> => {
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    stats = getStats
-      ? await getFileStat(fs, filePath)
-      : ({} as Stats & StatsProto),
-    { mtime, size } = stats || {},
+    isDirectory = hasExtension(filePath), // TODO: More efficent than calling getFileStat
+    stats =
+      !isDirectory && getStats
+        ? await getFileStat(fs, filePath)
+        : ({} as Stats & StatsProto),
+    { size } = stats || {},
     ext = getFileExtension(file),
-    isDirectory = stats?.isDirectory?.() || false,
     isShortcut = !isDirectory && file.includes('.url'),
     { url, icon } = isShortcut
       ? await parseShortcut(fs, filePath)
@@ -71,7 +76,6 @@ const getDirectoryEntry = async (
     path: filePath,
     url: url && decodeURIComponent(url),
     icon: getBestIconMatch(icon, isDirectory, ext, filePath),
-    mtime: mtime && formatToLongDateTime(mtime),
     size: isDirectory ? '--' : getFormattedSize(size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };

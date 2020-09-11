@@ -18,10 +18,9 @@ export const DirectoryList: FC<DirectoryView> = ({
     <table className={styles.directory}>
       <thead>
         <tr className={styles.emphasis}>
-          <td>Name</td>
-          <td>Date Modified</td>
-          <td>Size</td>
-          <td>Kind</td>
+          <th>Name</th>
+          <th>Size</th>
+          <th>Kind</th>
         </tr>
       </thead>
       <tbody>
@@ -41,32 +40,29 @@ export const DirectoryList: FC<DirectoryView> = ({
             <td colSpan={3}></td>
           </tr>
         )}
-        {entries.map(
-          ({ icon, kind, mtime, name, path, url, size, fullName }) => (
-            <tr
-              className={selected === path ? styles.selected : ''}
-              key={path}
-              onClick={
-                new ClickHandler({
-                  singleClick: () => {
-                    setSelected(path);
-                  },
-                  doubleClick: onDoubleClick(path, url, icon, name)
-                }).clickHandler
-              }
-            >
-              <td className={styles.emphasis} title={name}>
-                <figure>
-                  <img alt={name} src={icon} draggable={false} />
-                  <figcaption title={name}>{fullName}</figcaption>
-                </figure>
-              </td>
-              <td>{mtime}</td>
-              <td>{size}</td>
-              <td>{kind}</td>
-            </tr>
-          )
-        )}
+        {entries.map(({ icon, kind, name, path, url, size, fullName }) => (
+          <tr
+            className={selected === path ? styles.selected : ''}
+            key={path}
+            onClick={
+              new ClickHandler({
+                singleClick: () => {
+                  setSelected(path);
+                },
+                doubleClick: onDoubleClick(path, url, icon, name)
+              }).clickHandler
+            }
+          >
+            <td className={styles.emphasis} title={name}>
+              <figure>
+                <img alt={name} src={icon} draggable={false} />
+                <figcaption title={name}>{fullName}</figcaption>
+              </figure>
+            </td>
+            <td>{size}</td>
+            <td>{kind}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

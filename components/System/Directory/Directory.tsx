@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
-import { getDirectory, getFileExtension } from '@/utils/files';
+import { getDirectory, hasExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
 import { AppsContext } from '@/contexts/Apps';
 import { resolve } from 'path';
@@ -15,7 +15,6 @@ export enum View {
 export type DirectoryEntry = {
   icon: string;
   kind: string;
-  mtime: string;
   name: string;
   fullName: string;
   path: string;
@@ -32,10 +31,6 @@ export type DirectoryView = {
     icon?: string,
     name?: string
   ) => () => void;
-};
-
-const isDirectory = (path = '') => {
-  return getFileExtension(path) === '';
 };
 
 const DirectoryIcons = dynamic(
@@ -62,7 +57,7 @@ export const Directory: FC<{
       if (
         path &&
         !path.includes('.url') &&
-        (path === '..' || isDirectory(path))
+        (path === '..' || hasExtension(path))
       ) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
