@@ -30,11 +30,6 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
     changePage(1);
   }
 
-  // display: flex;
-  // justify-content: space-evenly;
-  // background-color: grey;
-  // div>span> user-select: text;
-
   return (
     <>
       <div className={styles.controls}>

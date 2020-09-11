@@ -85,7 +85,7 @@ export const Winamp: FC<Partial<App> & AppComponent> = ({
 
       webamp?.store?.dispatch(closeEqualizer);
       onClose && webamp?.onClose(onClose);
-      onMinimize && webamp?.onMinimize(onMinimize); // TODO: Doesn't hide seek bar if playing
+      onMinimize && webamp?.onMinimize(onMinimize);
 
       await webamp?.renderWhenReady(containerElement);
 

@@ -48,6 +48,7 @@
   - Clicking taskbar entry does not focus app
   - Focus isn't reliable on mobile
   - Position logic (x|y / 2) is messy
+  - Seek bar shows when minimized and playing
 - Window
   - Top drag constraints
   - Avoid storing stackOrder in every app
