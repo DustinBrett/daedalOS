@@ -44,9 +44,11 @@ export const Window: FC<Partial<App> & AppComponent> = ({
   }, [foreground, windowRef]);
 
   return (
-    <article style={{
-      visibility: minimized ? 'hidden' : 'visible'
-    }}>
+    <article
+      style={{
+        visibility: minimized ? 'hidden' : 'visible'
+      }}
+    >
       <Rnd
         enableUserSelectHack={false}
         className={`${styles.window} ${maximized ? styles.maximized : ''}`}

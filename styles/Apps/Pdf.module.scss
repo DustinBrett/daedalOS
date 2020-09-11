@@ -1,19 +1,24 @@
 .controls {
   display: flex;
   justify-content: space-around;
-  background-color: #b1b1b1;
+
   padding: 5px;
+
+  background-color: #b1b1b1;
 }
 
 .document {
-  background-color: #d7d7d7;
-  padding: 25px;
-  height: calc(100% - 31px);
   overflow: auto;
+
+  height: calc(100% - 31px);
+  padding: 25px;
+
+  background-color: #d7d7d7;
 
   .reactDocument {
     display: flex;
     justify-content: center;
+
     width: 100%;
   }
 }

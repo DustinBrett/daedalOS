@@ -59,9 +59,7 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
         >
           Zoom In
         </button>
-        <p>
-          Zoom {zoom * 100}%
-        </p>
+        <p>Zoom {zoom * 100}%</p>
         <button
           type="button"
           onClick={() => {
@@ -72,7 +70,11 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
         </button>
       </div>
       <div className={styles.document}>
-        <Document className={styles.reactDocument} file={url} onLoadSuccess={onDocumentLoadSuccess}>
+        <Document
+          className={styles.reactDocument}
+          file={url}
+          onLoadSuccess={onDocumentLoadSuccess}
+        >
           <Page pageNumber={pageNumber} width={baseWidth * zoom} />
         </Document>
       </div>
