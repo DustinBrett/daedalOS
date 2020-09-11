@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
+// Z-index is wrong during transition
 const windowMotionSettings = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },

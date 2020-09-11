@@ -23,7 +23,12 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
     loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) => () =>
       main?.([...prependedArgs, ...args])?.then((value) => {
         ci = value;
-      });
+      }),
+    focusCanvas = () => {
+      (canvasRef.current?.closest(
+        ':not(li)[tabindex]'
+      ) as HTMLDivElement).focus();
+    };
 
   useEffect(() => {
     const { current: canvasElement } = canvasRef as {
@@ -53,12 +58,8 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
   return (
     <canvas
       className={styles.dos}
-      // TODO: Is this breaking touch?
-      onClick={() => {
-        (canvasRef.current?.closest(
-          ':not(li)[tabindex]'
-        ) as HTMLDivElement).focus();
-      }}
+      onTouchStart={focusCanvas}
+      onClick={focusCanvas}
       ref={canvasRef}
     />
   );
