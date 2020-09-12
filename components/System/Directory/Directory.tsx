@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getDirectory, hasExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
 import { AppsContext } from '@/contexts/Apps';
-import { resolve } from 'path';
+import { basename, resolve } from 'path';
 import dynamic from 'next/dynamic';
 
 export enum View {
@@ -47,7 +47,7 @@ export const Directory: FC<{
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext),
-    { apps, open, focus } = useContext(AppsContext),
+    { apps, open, focus, title } = useContext(AppsContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -73,6 +73,7 @@ export const Directory: FC<{
 
   useEffect(() => {
     getDirectory(fs, cwd, view === View.List, setEntries);
+    title?.('explorer', cwd === '/' ? 'home' : basename(cwd));
   }, [fs, cwd]);
 
   switch (view) {

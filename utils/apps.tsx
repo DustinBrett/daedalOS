@@ -51,8 +51,8 @@ const pdfLoaderOptions = {
 };
 
 const explorerLoaderOptions = {
-  width: 305,
-  height: 265,
+  width: 300,
+  height: 245,
   bgColor: '#2a282b'
 };
 
@@ -198,6 +198,11 @@ export const appMaximize = (updateApp: Dispatch<AppAction>) => (
     updateApp({ updates: { maximized: false }, id });
   }
 };
+
+export const appTitle = (updateApp: Dispatch<AppAction>) => (
+  id: string,
+  name: string
+): void => updateApp({ updates: { name }, id });
 
 export const appOpen = (updateApp: Dispatch<AppAction>) => (
   url: string,

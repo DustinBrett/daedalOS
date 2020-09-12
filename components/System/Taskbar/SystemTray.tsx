@@ -13,7 +13,7 @@ import {
   faBatteryHalf,
   faBatteryThreeQuarters,
   faBatteryFull,
-  faBolt
+  faChargingStation
 } from '@fortawesome/free-solid-svg-icons';
 
 type UseBatteryState = BatteryState & { isSupported: true; fetched: true };
@@ -59,18 +59,7 @@ export const SystemTray: FC = () => {
             batteryCharging ? 'Yes' : 'No'
           }`}
         >
-          {batteryCharging ? (
-            <span className="fa-layers fa-fw">
-              <FontAwesomeIcon icon={getBatteryIcon(batteryLevel)} />
-              <FontAwesomeIcon
-                size="1x"
-                icon={faBolt}
-                style={{ color: '#f8f8ff' }}
-              />
-            </span>
-          ) : (
-            <FontAwesomeIcon icon={getBatteryIcon(batteryLevel)} />
-          )}
+          <FontAwesomeIcon icon={batteryCharging ? faChargingStation : getBatteryIcon(batteryLevel)} />
         </li>
       </ol>
     </nav>

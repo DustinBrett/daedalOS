@@ -12,7 +12,12 @@
   border-bottom: $thickLine solid lighten($highlightColor, 30%);
 
   &:hover {
-    @include taskbarEntryHoverStyle;
+    transition: background-color 0.1s linear;
+
+    background-color: rgba(
+      invert(map-get($taskbar, bg-color)),
+      map-get($taskbarEntry, hover-bg-opacity)
+    );
 
     margin: 0;
     padding: 0 4px;

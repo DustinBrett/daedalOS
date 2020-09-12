@@ -10,7 +10,8 @@ import {
   appMinimize,
   appOpen,
   appPosition,
-  appSize
+  appSize,
+  appTitle
 } from '@/utils/apps';
 
 export type Apps = Array<App>;
@@ -30,6 +31,7 @@ type AppsContextType = {
   open?: (url: string, icon: string, name: string) => void;
   position?: (id: string) => RndDragCallback;
   size?: (id: string) => RndResizeCallback;
+  title?: (id: string, name: string) => void;
 };
 
 const initialApps: Apps = [];
@@ -68,7 +70,8 @@ export const AppsProvider: FC = ({ children }) => {
         minimize: appMinimize(updateApp),
         open: appOpen(updateApp),
         position: appPosition(updateApp),
-        size: appSize(updateApp)
+        size: appSize(updateApp),
+        title: appTitle(updateApp)
       }}
     >
       {children}

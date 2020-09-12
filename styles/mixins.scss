@@ -1,17 +1,5 @@
 @import 'maps';
 
-@mixin taskbarEntryHoverStyle {
-  margin: 0;
-  padding: 0 4px;
-
-  transition: background-color 0.1s linear;
-
-  background-color: rgba(
-    invert(map-get($taskbar, bg-color)),
-    map-get($taskbarEntry, hover-bg-opacity)
-  );
-}
-
 @mixin fullScreen {
   position: fixed;
   top: 0;
