@@ -3,8 +3,10 @@ import styles from '@/styles/Apps/Pdf.module.scss';
 import type { FC } from 'react';
 
 import React, { useState } from 'react';
-import { Document, Page } from 'react-pdf';
+import { pdfjs, Document, Page } from 'react-pdf';
 import { AppComponent } from '@/contexts/App';
+
+pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.js';
 
 const baseWidth = 400;
 
