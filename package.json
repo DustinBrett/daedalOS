@@ -35,7 +35,8 @@
     "react-use": "^15.3.4",
     "sass": "^1.26.10",
     "three": "^0.120.1",
-    "webamp": "^1.4.1-beta01"
+    "webamp": "^1.4.1-beta01",
+    "worker-loader": "^3.0.2"
   },
   "devDependencies": {
     "@types/color": "^3.0.1",

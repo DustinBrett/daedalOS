@@ -6,14 +6,12 @@ import React, { useState } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import { AppComponent } from '@/contexts/App';
 
-pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.js';
-
-const baseWidth = 400;
+pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.min.js';
 
 export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState(1);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.75);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -72,7 +70,7 @@ export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
         >
-          <Page pageNumber={pageNumber} width={baseWidth * zoom} />
+          <Page pageNumber={pageNumber} scale={zoom} />
         </Document>
       </div>
     </>
