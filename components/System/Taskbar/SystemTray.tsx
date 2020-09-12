@@ -59,7 +59,11 @@ export const SystemTray: FC = () => {
             batteryCharging ? 'Yes' : 'No'
           }`}
         >
-          <FontAwesomeIcon icon={batteryCharging ? faChargingStation : getBatteryIcon(batteryLevel)} />
+          <FontAwesomeIcon
+            icon={
+              batteryCharging ? faChargingStation : getBatteryIcon(batteryLevel)
+            }
+          />
         </li>
       </ol>
     </nav>

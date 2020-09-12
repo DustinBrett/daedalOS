@@ -21,7 +21,7 @@
 
   &:hover {
     transition: background-color 0.1s linear;
-  
+
     background-color: rgba(
       invert(map-get($taskbar, bg-color)),
       map-get($taskbarEntry, hover-bg-opacity)
