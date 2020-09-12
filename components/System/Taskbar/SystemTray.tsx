@@ -59,13 +59,13 @@ export const SystemTray: FC = () => {
             batteryCharging ? 'Yes' : 'No'
           }`}
         >
-          {!batteryCharging ? (
+          {batteryCharging ? (
             <span className="fa-layers fa-fw">
               <FontAwesomeIcon icon={getBatteryIcon(batteryLevel)} />
               <FontAwesomeIcon
                 size="1x"
                 icon={faBolt}
-                style={{ color: '#f8f8ff ' }}
+                style={{ color: '#f8f8ff' }}
               />
             </span>
           ) : (
