@@ -46,28 +46,30 @@ export const Taskbar: FC = () => {
     <nav className={styles.taskbar}>
       <ol className={styles.entries} ref={olRef}>
         <AnimatePresence>
-          {processes.map(({ id, icon, minimized, name, foreground, stackOrder }) => (
-            <motion.li
-              key={id}
-              {...taskbarEntriesMotionSettings}
-              style={{ width: entryWidth }}
-            >
-              <TaskbarEntry
-                foreground={foreground}
-                icon={icon}
-                name={name}
-                onClick={() => {
-                  if (minimized) {
-                    minimize?.(id, false);
-                  } else {
-                    const [foregroundApp] = stackOrder;
+          {processes.map(
+            ({ id, icon, minimized, name, foreground, stackOrder }) => (
+              <motion.li
+                key={id}
+                {...taskbarEntriesMotionSettings}
+                style={{ width: entryWidth }}
+              >
+                <TaskbarEntry
+                  foreground={foreground}
+                  icon={icon}
+                  name={name}
+                  onClick={() => {
+                    if (minimized) {
+                      minimize?.(id, false);
+                    } else {
+                      const [foregroundApp] = stackOrder;
 
-                    foregroundApp === id ? minimize?.(id) : focus?.(id);
-                  }
-                }}
-              />
-            </motion.li>
-          ))}
+                      foregroundApp === id ? minimize?.(id) : focus?.(id);
+                    }
+                  }}
+                />
+              </motion.li>
+            )
+          )}
         </AnimatePresence>
       </ol>
       <SystemTray />

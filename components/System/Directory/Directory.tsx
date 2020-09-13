@@ -33,7 +33,8 @@ export type DirectoryView = {
   ) => () => void;
 };
 
-const DirectoryIcons = dynamic( // TODO: Don't dynamic load this cause its part of Desktop
+const DirectoryIcons = dynamic(
+  // TODO: Don't dynamic load this cause its part of Desktop
   import('@/components/System/Directory/DirectoryIcons')
 );
 const DirectoryList = dynamic(
@@ -61,7 +62,8 @@ export const Directory: FC<{
       ) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        const { id } = processes.find(({ name: processName }) => processName === name) || {};
+        const { id } =
+          processes.find(({ name: processName }) => processName === name) || {};
 
         if (!id) {
           open?.(url || path || '', icon, name);

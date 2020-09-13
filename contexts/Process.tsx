@@ -1,5 +1,10 @@
 import type { FC } from 'react';
-import type { Processes, ProcessAction, ProcessConstructor, ProcessContextType } from '@/contexts/Process.d';
+import type {
+  Processes,
+  ProcessAction,
+  ProcessConstructor,
+  ProcessContextType
+} from '@/contexts/Process.d';
 
 import { createContext, useReducer } from 'react';
 import {
@@ -17,11 +22,19 @@ import {
 // Use with stackorder and selected icon/window
 const sessionProcessState: { [key: string]: Partial<Process> } = {};
 
-const updateProcess = (id: string, updates: Partial<Process>, processes: Processes): Processes =>
-  processes.map((process) => process.id === id ? { ...process, ...updates } : process);
+const updateProcess = (
+  id: string,
+  updates: Partial<Process>,
+  processes: Processes
+): Processes =>
+  processes.map((process) =>
+    process.id === id ? { ...process, ...updates } : process
+  );
 
-const addProcess = (process: Process, processes: Processes): Processes =>
-  [...processes, { ...process, ...(sessionProcessState[process.id] || {}) }];
+const addProcess = (process: Process, processes: Processes): Processes => [
+  ...processes,
+  { ...process, ...(sessionProcessState[process.id] || {}) }
+];
 
 const removeProcess = (id: string, processes: Processes): Processes => {
   return processes.filter((process) => {
@@ -32,7 +45,10 @@ const removeProcess = (id: string, processes: Processes): Processes => {
   });
 };
 
-const processReducer = (processes: Processes, { id, process, updates }: ProcessAction) => {
+const processReducer = (
+  processes: Processes,
+  { id, process, updates }: ProcessAction
+) => {
   if (id && updates) return updateProcess(id, updates, processes);
   if (process) return addProcess(process, processes);
   if (id) return removeProcess(id, processes);

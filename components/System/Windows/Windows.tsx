@@ -22,9 +22,15 @@ const windowMotionSettings = {
 };
 
 export const Windows: FC = () => {
-  const { processes, close, focus, maximize, minimize, position, size } = useContext(
-      ProcessContext
-    ),
+  const {
+      processes,
+      close,
+      focus,
+      maximize,
+      minimize,
+      position,
+      size
+    } = useContext(ProcessContext),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
       marginLeft: 0
@@ -71,7 +77,8 @@ export const Windows: FC = () => {
                 onBlur: () => focus?.(id, false),
                 updatePosition: position?.(id),
                 updateSize: size?.(id),
-                zIndex: 1750 + (processes.length - (stackOrder.indexOf(id) + 1)),
+                zIndex:
+                  1750 + (processes.length - (stackOrder.indexOf(id) + 1)),
                 foreground,
                 maximized,
                 minimized,

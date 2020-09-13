@@ -7,19 +7,20 @@ import { appLoader } from '@/utils/apps';
 
 // TODO: Session context to replace foreground & stackOrder
 
-export const close = (processes: Processes, updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  [, nextRemainingProcessId]: Array<string>
-): void => {
-  if (nextRemainingProcessId) focus(processes, updateProcesses)(nextRemainingProcessId);
+export const close = (
+  processes: Processes,
+  updateProcesses: Dispatch<ProcessAction>
+) => (id: string, [, nextRemainingProcessId]: Array<string>): void => {
+  if (nextRemainingProcessId)
+    focus(processes, updateProcesses)(nextRemainingProcessId);
 
   updateProcesses({ id });
 };
 
-export const focus = (processes: Processes, updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  toggleFocus = true
-): void => {
+export const focus = (
+  processes: Processes,
+  updateProcesses: Dispatch<ProcessAction>
+) => (id: string, toggleFocus = true): void => {
   if (toggleFocus) {
     processes.forEach(({ id: processId, stackOrder }) => {
       updateProcesses({
@@ -47,7 +48,10 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
   toggleMinimized = true
 ): void =>
-  updateProcesses({ updates: { foreground: !toggleMinimized, minimized: toggleMinimized }, id });
+  updateProcesses({
+    updates: { foreground: !toggleMinimized, minimized: toggleMinimized },
+    id
+  });
 
 export const open = (updateProcesses: Dispatch<ProcessAction>) => (
   url: string,
@@ -70,9 +74,8 @@ export const open = (updateProcesses: Dispatch<ProcessAction>) => (
 
 export const position = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string
-): RndDragCallback => (
-  _event, { x, y }
-): void => updateProcesses({ id, updates: { x, y } });
+): RndDragCallback => (_event, { x, y }): void =>
+  updateProcesses({ id, updates: { x, y } });
 
 export const size = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string
