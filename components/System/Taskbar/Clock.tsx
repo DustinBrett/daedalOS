@@ -1,4 +1,4 @@
-import styles from '@/styles/System/Clock.module.scss';
+import styles from '@/styles/System/Taskbar/Clock.module.scss';
 
 import type { FC } from 'react';
 

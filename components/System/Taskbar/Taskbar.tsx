@@ -1,4 +1,4 @@
-import styles from '@/styles/System/Taskbar.module.scss';
+import styles from '@/styles/System/Taskbar/Taskbar.module.scss';
 
 import type { FC } from 'react';
 

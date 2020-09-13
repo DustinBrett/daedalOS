@@ -2,7 +2,7 @@ import type { AppLoader } from '@/utils/apps.d';
 
 import dynamic from 'next/dynamic';
 import { getFileExtension } from '@/utils/file';
-import { isValidUrl } from '@/utils/utils';
+import { isValidUrl } from '@/utils/url';
 
 import { loaderOptions as dosLoaderOptions } from '@/components/Apps/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Apps/Explorer';

@@ -2,7 +2,7 @@ import type { FSModule } from 'browserfs/dist/node/core/FS';
 
 import * as ini from 'ini';
 
-type Shortcut = {
+export type Shortcut = {
   url: string;
   icon: string;
 };

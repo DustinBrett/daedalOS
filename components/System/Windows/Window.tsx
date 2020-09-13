@@ -1,4 +1,4 @@
-import styles from '@/styles/System/Window.module.scss';
+import styles from '@/styles/System/Windows/Window.module.scss';
 
 import type { FC } from 'react';
 import type { Process } from '@/utils/pm';

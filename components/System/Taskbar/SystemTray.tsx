@@ -1,4 +1,4 @@
-import styles from '@/styles/System/SystemTray.module.scss';
+import styles from '@/styles/System/Taskbar/SystemTray.module.scss';
 
 import type { FC } from 'react';
 

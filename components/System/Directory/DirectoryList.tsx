@@ -1,4 +1,4 @@
-import styles from '@/styles/System/DirectoryList.module.scss';
+import styles from '@/styles/System/Directory/DirectoryList.module.scss';
 
 import { FC, useState } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory';

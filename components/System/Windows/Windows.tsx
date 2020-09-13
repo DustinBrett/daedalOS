@@ -44,7 +44,7 @@ export const Windows: FC = () => {
   }, []);
 
   return (
-    <section style={windowMargins}>
+    <article style={windowMargins}>
       <AnimatePresence>
         {processes.map(
           (
@@ -110,7 +110,7 @@ export const Windows: FC = () => {
           }
         )}
       </AnimatePresence>
-    </section>
+    </article>
   );
 };
 

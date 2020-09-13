@@ -8,7 +8,9 @@ import Directory from '@/components/System/Directory/Directory';
 import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
 
-// TODO: Session context to replace `foreground, stackOrder, x, y, height, width`
+// TODO: Session context to replace `foreground, stackOrder, x, y, height, width, selected (icon & window), focus, zIndex`
+// - No need to manipulate the process for these things
+// - No need for `:focus` to keep track of things
 
 export default function HomePage(): ReactElement {
   return (

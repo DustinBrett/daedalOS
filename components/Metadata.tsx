@@ -4,7 +4,7 @@ import type { FC } from 'react';
 
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { lockDocumentTitle } from '@/utils/utils';
+import { lockDocumentTitle } from '@/utils/elements';
 
 const Metadata: FC = () => {
   useEffect(lockDocumentTitle, []);

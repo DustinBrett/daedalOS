@@ -1,4 +1,4 @@
-import styles from '@/styles/System/Desktop.module.scss';
+import styles from '@/styles/System/Desktop/Desktop.module.scss';
 
 import type { FC } from 'react';
 import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper.d';

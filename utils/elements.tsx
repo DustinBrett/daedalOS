@@ -17,3 +17,12 @@ export const focusOnDrag = (
 
 export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
   elementRef?.current?.resizableElement?.current?.focus?.();
+
+export const lockDocumentTitle = (): void => {
+  if (
+    typeof Object.getOwnPropertyDescriptor(document, 'title')?.set ===
+    'undefined'
+  ) {
+    Object.defineProperty(document, 'title', { set: () => {} });
+  }
+};

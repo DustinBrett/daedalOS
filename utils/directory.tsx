@@ -2,9 +2,8 @@ import ExplorerIcon from '@/public/icons/apps/explorer.png';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory';
-import type { StatsProto } from '@/utils/file.d';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
-import type { Shortcut } from '@/utils/shortcut.d';
+import type { Shortcut } from '@/utils/shortcut';
 
 import {
   getFileExtension,
@@ -15,6 +14,10 @@ import {
   hasExtension
 } from '@/utils/file';
 import { parseShortcut } from '@/utils/shortcut';
+
+export type StatsProto = {
+  isDirectory: () => boolean;
+};
 
 const homeDir = '/';
 
