@@ -5,8 +5,6 @@ import type { Processes, ProcessAction } from '@/contexts/Process.d';
 import { Process } from '@/contexts/Process';
 import { appLoader } from '@/utils/apps';
 
-// TODO: Session context to replace foreground & stackOrder
-
 export const close = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>

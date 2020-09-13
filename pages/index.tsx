@@ -9,6 +9,7 @@ import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
 
 // TODO: Change FilesProvider to FileProvider
+// TODO: Linting .d files
 
 export default function HomePage(): ReactElement {
   return (

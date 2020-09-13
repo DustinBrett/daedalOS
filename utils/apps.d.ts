@@ -1,7 +1,5 @@
 import { ProcessConstructor } from '@/contexts/Process.d';
 
-// TODO: Linting .d files
-
 export type AppComponent = {
   args?: Array<string>;
   url?: string;

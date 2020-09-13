@@ -18,8 +18,8 @@ import {
   title
 } from '@/utils/process';
 
-// TODO: Move this to a Session context
-// Use with stackorder and selected icon/window
+// TODO: Session context to replace `foreground, stackOrder, x, y, height, width`
+
 const sessionProcessState: { [key: string]: Partial<Process> } = {};
 
 const updateProcess = (

@@ -1,6 +1,4 @@
-type DateTimeFormatParts = {
-  [key in Intl.DateTimeFormatPartTypes]: string;
-};
+import { DateTimeFormatParts } from '@/utils/dates.d';
 
 const datePartsToObject = (
   acc: DateTimeFormatParts,
