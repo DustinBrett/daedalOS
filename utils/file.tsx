@@ -4,7 +4,7 @@ import UnknownFileTypeIcon from '@/public/icons/types/unknown.svg';
 
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { StatsProto } from '@/utils/directory';
+import type { StatsProto } from '@/utils/directory.d';
 
 const bytesInKB = 1024,
   fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -59,12 +59,6 @@ export const getFileKind = (ext: string): string => {
   }
 };
 
-export const getFileExtension = (path = ''): string => {
-  const [, ...ext] = path?.split?.('/')?.pop?.()?.split?.('.') || [];
-
-  return ext.length >= 2 ? ext.slice(ext.length - 2).join('.') : ext[0] || '';
-};
-
 export const getFileStat = (
   fs: FSModule,
   path: string
@@ -79,8 +73,4 @@ export const getFormattedSize = (size: number): string => {
     newSize = Math.round(size / Math.pow(bytesInKB, sizeFactor));
 
   return `${newSize} ${fileSizes[sizeFactor]}`;
-};
-
-export const hasExtension = (path = ''): boolean => {
-  return getFileExtension(path) === '';
 };

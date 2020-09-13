@@ -1,23 +1,19 @@
 import ExplorerIcon from '@/public/icons/apps/explorer.png';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { DirectoryEntry } from '@/components/System/Directory/Directory';
+import type { DirectoryEntry } from '@/components/System/Directory/Directory.d';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
-import type { Shortcut } from '@/utils/shortcut';
+import type { Shortcut } from '@/utils/shortcut.d';
+import type { StatsProto } from '@/utils/directory.d';
 
+import { extname } from 'path';
 import {
-  getFileExtension,
   getFileKind,
   getFileIcon,
   getFormattedSize,
-  getFileStat,
-  hasExtension
+  getFileStat
 } from '@/utils/file';
 import { parseShortcut } from '@/utils/shortcut';
-
-export type StatsProto = {
-  isDirectory: () => boolean;
-};
 
 const homeDir = '/';
 
@@ -42,13 +38,13 @@ const getDirectoryEntry = async (
   getStats: boolean
 ): Promise<DirectoryEntry> => {
   const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    isDirectory = hasExtension(filePath),
+    ext = extname(file),
+    isDirectory = !ext,
     stats =
       !isDirectory && getStats
         ? await getFileStat(fs, filePath)
         : ({} as Stats & StatsProto),
     { size } = stats || {},
-    ext = getFileExtension(file),
     isShortcut = !isDirectory && file.includes('.url'),
     { url, icon } = isShortcut
       ? await parseShortcut(fs, filePath)

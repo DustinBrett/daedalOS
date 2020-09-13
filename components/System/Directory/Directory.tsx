@@ -1,11 +1,10 @@
 import type { FC } from 'react';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory.d';
 
-import { basename, resolve } from 'path';
+import { basename, extname, resolve } from 'path';
 import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
-import { hasExtension } from '@/utils/file';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { View } from '@/components/System/Directory/Directory.d';
@@ -29,11 +28,7 @@ export const Directory: FC<{
       icon = '',
       name = ''
     ) => () => {
-      if (
-        path &&
-        !path.includes('.url') &&
-        (path === '..' || hasExtension(path))
-      ) {
+      if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
         open?.(url || path || '', icon, name);
@@ -42,6 +37,7 @@ export const Directory: FC<{
 
   useEffect(() => {
     getDirectory(fs, cwd, view === View.List, setEntries);
+    // TODO: Explorer should do this, not Directory
     title?.('explorer', cwd === '/' ? 'home' : basename(cwd));
   }, [fs, cwd]);
 

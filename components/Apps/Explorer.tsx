@@ -3,7 +3,8 @@ import styles from '@/styles/Apps/Explorer.module.scss';
 import type { FC } from 'react';
 import type { AppComponent } from '@/utils/apps.d';
 
-import { Directory, View } from '@/components/System/Directory/Directory';
+import { Directory } from '@/components/System/Directory/Directory';
+import { View } from '@/components/System/Directory/Directory.d';
 
 export const loaderOptions = {
   width: 300,

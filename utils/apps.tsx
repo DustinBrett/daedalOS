@@ -1,7 +1,7 @@
 import type { AppLoader } from '@/utils/apps.d';
 
 import dynamic from 'next/dynamic';
-import { getFileExtension } from '@/utils/file';
+import { extname } from 'path';
 import { isValidUrl } from '@/utils/url';
 
 import { loaderOptions as dosLoaderOptions } from '@/components/Apps/Dos';
@@ -43,8 +43,8 @@ const appLoaderByFileType = (
   path: string,
   searchParams?: URLSearchParams
 ): AppLoader | undefined => {
-  switch (getFileExtension(path)) {
-    case 'jsdos':
+  switch (extname(path)) {
+    case '.jsdos':
       return {
         loader: Dos,
         loaderOptions: dosLoaderOptions,
@@ -53,9 +53,9 @@ const appLoaderByFileType = (
           args: searchParams ? [...searchParams.entries()].flat() : []
         }
       };
-    case 'mp3':
-    case 'm3u':
-    case 'wsz':
+    case '.mp3':
+    case '.m3u':
+    case '.wsz':
       return {
         loader: Winamp,
         loaderOptions: winampLoaderOptions,
@@ -63,7 +63,7 @@ const appLoaderByFileType = (
           url: path
         }
       };
-    case 'pdf':
+    case '.pdf':
       return {
         loader: Pdf,
         loaderOptions: pdfLoaderOptions,
