@@ -1,43 +1,16 @@
 import type { FC } from 'react';
+import type { DirectoryEntry } from '@/components/System/Directory/Directory.d';
 
+import { basename, resolve } from 'path';
+import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
 import { hasExtension } from '@/utils/file';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
-import { basename, resolve } from 'path';
-import dynamic from 'next/dynamic';
+import { View } from '@/components/System/Directory/Directory.d';
+import DirectoryIcons from '@/components/System/Directory/DirectoryIcons';
 
-export enum View {
-  Icons,
-  List
-}
-
-export type DirectoryEntry = {
-  icon: string;
-  kind: string;
-  name: string;
-  fullName: string;
-  path: string;
-  size: string;
-  url: string;
-};
-
-export type DirectoryView = {
-  entries: Array<DirectoryEntry>;
-  cwd?: string;
-  onDoubleClick: (
-    path?: string,
-    url?: string,
-    icon?: string,
-    name?: string
-  ) => () => void;
-};
-
-const DirectoryIcons = dynamic(
-  // TODO: Don't dynamic load this cause its part of Desktop
-  import('@/components/System/Directory/DirectoryIcons')
-);
 const DirectoryList = dynamic(
   import('@/components/System/Directory/DirectoryList')
 );
@@ -49,7 +22,7 @@ export const Directory: FC<{
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
-    { processes, open, focus, title } = useContext(ProcessContext),
+    { open, title } = useContext(ProcessContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -63,14 +36,7 @@ export const Directory: FC<{
       ) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        const { id } =
-          processes.find(({ name: processName }) => processName === name) || {};
-
-        if (!id) {
-          open?.(url || path || '', icon, name);
-        } else {
-          focus?.(id);
-        }
+        open?.(url || path || '', icon, name);
       }
     };
 

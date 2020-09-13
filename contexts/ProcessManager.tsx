@@ -29,7 +29,7 @@ export const ProcessProvider: FC = ({ children }) => {
         focus: focus(processes, updateProcesses),
         maximize: maximize(updateProcesses),
         minimize: minimize(updateProcesses),
-        open: open(updateProcesses),
+        open: open(processes, updateProcesses),
         position: position(updateProcesses),
         size: size(updateProcesses),
         title: title(updateProcesses)

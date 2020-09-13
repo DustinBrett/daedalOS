@@ -1,10 +1,7 @@
 import WAVES from '@/public/libs/vanta.waves.min';
 
 import type { RefObject } from 'react';
-import type {
-  CancelRainbowEffectFunction,
-  WallpaperEffect
-} from '@/components/System/Desktop/Wallpaper.d';
+import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper.d';
 
 import * as THREE from 'three';
 import Color from 'color';
@@ -26,9 +23,7 @@ const fps = 20,
     zoom: 1.1
   };
 
-const initRainbowEffect = (
-  wallpaperEffect: WallpaperEffect
-): CancelRainbowEffectFunction => {
+const initRainbowEffect = (wallpaperEffect: WallpaperEffect): (() => void) => {
   let then = Date.now(),
     base = initialColor,
     colorUpdateAnimationId: number;

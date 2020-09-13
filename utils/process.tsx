@@ -51,22 +51,28 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
     id
   });
 
-export const open = (updateProcesses: Dispatch<ProcessAction>) => (
-  url: string,
-  icon: string,
-  name: string
-): void => {
-  const loader = appLoader(url);
+export const open = (
+  processes: Processes,
+  updateProcesses: Dispatch<ProcessAction>
+) => (url: string, icon: string, name: string): void => {
+  const { id: existingProcessId } =
+    processes.find(({ name: processName }) => processName === name) || {};
 
-  if (loader) {
-    updateProcesses({
-      process: new Process({
-        loader,
-        icon,
-        name,
-        ...loader.loaderOptions
-      })
-    });
+  if (!existingProcessId) {
+    const loader = appLoader(url);
+
+    if (loader) {
+      updateProcesses({
+        process: new Process({
+          loader,
+          icon,
+          name,
+          ...loader.loaderOptions
+        })
+      });
+    }
+  } else {
+    focus(processes, updateProcesses)(existingProcessId);
   }
 };
 
