@@ -1,4 +1,6 @@
-import type { ListingObj } from '@/utils/fs.d';
+type ListingObj = {
+  [key: string]: ListingObj | string | null;
+};
 
 export const writableJsonFs = (
   path: string,

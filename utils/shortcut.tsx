@@ -1,7 +1,11 @@
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { Shortcut } from '@/utils/shortcut.d';
 
 import * as ini from 'ini';
+
+type Shortcut = {
+  url: string;
+  icon: string;
+};
 
 export const parseShortcut = (fs: FSModule, path: string): Promise<Shortcut> =>
   new Promise((resolve) => {

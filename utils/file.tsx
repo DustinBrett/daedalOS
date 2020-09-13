@@ -4,7 +4,10 @@ import UnknownFileTypeIcon from '@/public/icons/types/unknown.svg';
 
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { StatsProto } from '@/utils/file.d';
+
+type StatsProto = {
+  isDirectory: () => boolean;
+};
 
 const bytesInKB = 1024,
   fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
