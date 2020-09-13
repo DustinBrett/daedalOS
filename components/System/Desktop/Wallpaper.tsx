@@ -1,11 +1,13 @@
 import WAVES from '@/public/libs/vanta.waves.min';
 
 import type { RefObject } from 'react';
+import type {
+  CancelRainbowEffectFunction,
+  WallpaperEffect
+} from '@/components/System/Desktop/Wallpaper.d';
 
 import * as THREE from 'three';
 import Color from 'color';
-
-type CancelRainbowEffectFunction = () => void;
 
 const wallpaperColor = (h: number): number =>
   Color(`hsl(${h}, 35%, 12%)`).rgbNumber();
@@ -27,15 +29,13 @@ const fps = 20,
 const initRainbowEffect = (
   wallpaperEffect: WallpaperEffect
 ): CancelRainbowEffectFunction => {
-  let now,
-    delta,
-    then = Date.now(),
+  let then = Date.now(),
     base = initialColor,
     colorUpdateAnimationId: number;
 
   const updateColor = () => {
-    now = Date.now();
-    delta = now - then;
+    const now = Date.now(),
+      delta = now - then;
 
     if (delta > updateIntervalInMilliseconds) {
       base = base > 360 ? 0 : base + 1;
@@ -53,13 +53,6 @@ const initRainbowEffect = (
   };
 };
 
-export type WallpaperEffect = {
-  destroy: () => void;
-  options: {
-    color: number;
-  };
-};
-
 export const renderWallpaperEffect = ({
   current: renderElement
 }: RefObject<HTMLElement>): WallpaperEffect => {
@@ -70,9 +63,7 @@ export const renderWallpaperEffect = ({
     }),
     cancelRainbowEffect = initRainbowEffect(wallpaperEffect);
 
-  wallpaperEffect.onDestroy = () => {
-    cancelRainbowEffect();
-  };
+  wallpaperEffect.onDestroy = cancelRainbowEffect;
 
   return wallpaperEffect;
 };
