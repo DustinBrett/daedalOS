@@ -1,4 +1,8 @@
-import type { Processes, ProcessAction, ProcessConstructor } from '@/utils/pm.d';
+import type {
+  Processes,
+  ProcessAction,
+  ProcessConstructor
+} from '@/utils/pm.d';
 
 const sessionProcessState: { [key: string]: Partial<Process> } = {};
 
