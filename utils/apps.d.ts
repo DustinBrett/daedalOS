@@ -1,4 +1,6 @@
-import { ProcessConstructor } from '@/contexts/ProcessManager';
+import type { ComponentType } from 'react';
+import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
+import type { ProcessConstructor } from '@/contexts/ProcessManager';
 
 export type AppComponent = {
   args?: Array<string>;

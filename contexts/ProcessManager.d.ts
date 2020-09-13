@@ -1,3 +1,4 @@
+import type { AppLoader } from '@/utils/apps.d';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { Processes } from '@/utils/pm.d';
 
