@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type { Processes, ProcessAction } from '@/contexts/ProcessManager.d';
+import type { Processes, ProcessAction } from '@/utils/pm.d';
 
 import { Process } from '@/contexts/ProcessManager';
 import { appLoader } from '@/utils/apps';

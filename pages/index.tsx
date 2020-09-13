@@ -9,6 +9,7 @@ import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
 
 // TODO: Linting .d files
+// TODO: Session context to replace `foreground, stackOrder, x, y, height, width`
 
 export default function HomePage(): ReactElement {
   return (

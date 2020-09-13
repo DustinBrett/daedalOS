@@ -1,7 +1,5 @@
 import type { FC } from 'react';
 import type {
-  Processes,
-  ProcessAction,
   ProcessConstructor,
   ProcessContextType
 } from '@/contexts/ProcessManager.d';
@@ -17,43 +15,7 @@ import {
   size,
   title
 } from '@/utils/process';
-
-// TODO: Session context to replace `foreground, stackOrder, x, y, height, width`
-
-const sessionProcessState: { [key: string]: Partial<Process> } = {};
-
-const updateProcess = (
-  id: string,
-  updates: Partial<Process>,
-  processes: Processes
-): Processes =>
-  processes.map((process) =>
-    process.id === id ? { ...process, ...updates } : process
-  );
-
-const addProcess = (process: Process, processes: Processes): Processes => [
-  ...processes,
-  { ...process, ...(sessionProcessState[process.id] || {}) }
-];
-
-const removeProcess = (id: string, processes: Processes): Processes => {
-  return processes.filter((process) => {
-    if (process.id !== id) return true;
-
-    const { height, width, x, y } = process;
-    sessionProcessState[id] = { height, width, x, y };
-  });
-};
-
-const processReducer = (
-  processes: Processes,
-  { id, process, updates }: ProcessAction
-) => {
-  if (id && updates) return updateProcess(id, updates, processes);
-  if (process) return addProcess(process, processes);
-  if (id) return removeProcess(id, processes);
-  return processes;
-};
+import { processReducer } from '@/utils/pm';
 
 export class Process {
   loader;
