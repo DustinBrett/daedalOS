@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory, hasExtension } from '@/utils/files';
 import { FilesContext } from '@/contexts/Files';
-import { AppsContext } from '@/contexts/Apps';
+import { ProcessContext } from '@/contexts/Process';
 import { basename, resolve } from 'path';
 import dynamic from 'next/dynamic';
 
@@ -33,7 +33,7 @@ export type DirectoryView = {
   ) => () => void;
 };
 
-const DirectoryIcons = dynamic(
+const DirectoryIcons = dynamic( // TODO: Don't dynamic load this cause its part of Desktop
   import('@/components/System/Directory/DirectoryIcons')
 );
 const DirectoryList = dynamic(
@@ -47,7 +47,7 @@ export const Directory: FC<{
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FilesContext),
-    { apps, open, focus, title } = useContext(AppsContext),
+    { processes, open, focus, title } = useContext(ProcessContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -61,7 +61,7 @@ export const Directory: FC<{
       ) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        const { id } = apps.find(({ name: appName }) => appName === name) || {};
+        const { id } = processes.find(({ name: processName }) => processName === name) || {};
 
         if (!id) {
           open?.(url || path || '', icon, name);

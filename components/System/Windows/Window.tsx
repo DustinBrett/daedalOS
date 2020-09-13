@@ -1,8 +1,8 @@
 import styles from '@/styles/System/Window.module.scss';
 
 import type { FC } from 'react';
-import type App from '@/contexts/App';
-import type { AppComponent } from '@/contexts/App';
+import type { Process } from '@/contexts/Process';
+import type { AppComponent } from '@/utils/apps.d';
 
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 
-export const Window: FC<Partial<App> & AppComponent> = ({
+export const Window: FC<Partial<Process> & AppComponent> = ({
   children,
   icon,
   name,

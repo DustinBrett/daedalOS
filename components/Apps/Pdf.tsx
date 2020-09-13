@@ -1,12 +1,19 @@
 import styles from '@/styles/Apps/Pdf.module.scss';
 
 import type { FC } from 'react';
+import type { AppComponent } from '@/utils/apps.d';
 
 import React, { useState } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
-import { AppComponent } from '@/contexts/App';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.min.js';
+
+export const loaderOptions = {
+  hideScrollbars: true,
+  height: 700,
+  width: 520,
+  bgColor: '#d7d7d7'
+};
 
 export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
   const [numPages, setNumPages] = useState<number>(0);

@@ -3,7 +3,7 @@ import styles from '@/styles/Apps/Dos.module.scss';
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
-import type { AppComponent } from '@/contexts/App';
+import type { AppComponent } from '@/utils/apps.d';
 
 import { useEffect, useRef } from 'react';
 
@@ -12,6 +12,14 @@ type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
   onprogress: () => {}
+};
+
+export const loaderOptions = {
+  hideScrollbars: true,
+  lockAspectRatio: true,
+  width: 320,
+  height: 224,
+  bgColor: '#fff'
 };
 
 export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {

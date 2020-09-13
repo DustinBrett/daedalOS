@@ -2,13 +2,13 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
-import type { AppComponent } from '@/contexts/App';
-import type App from '@/contexts/App';
+import type { AppComponent } from '@/utils/apps.d';
+import type { Process } from '@/contexts/Process';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { appendElement, focusOnDrag } from '@/utils/elements';
-import { AppsContext } from '@/contexts/Apps';
+import { ProcessContext } from '@/contexts/Process';
 
 type WebampStoreAction = { type: string; windowId: string };
 
@@ -60,7 +60,11 @@ const closeEqualizer = {
   windowId: 'equalizer'
 };
 
-export const Winamp: FC<Partial<App> & AppComponent> = ({
+export const loaderOptions = {
+  windowed: false
+};
+
+export const Winamp: FC<Partial<Process> & AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
@@ -71,7 +75,7 @@ export const Winamp: FC<Partial<App> & AppComponent> = ({
   url
 }) => {
   const elementRef = useRef<HTMLElement>(null),
-    { position } = useContext(AppsContext),
+    { position } = useContext(ProcessContext),
     onTouchEventsOnly: RndDragCallback = (e): void => {
       if (e instanceof MouseEvent) {
         e.preventDefault();

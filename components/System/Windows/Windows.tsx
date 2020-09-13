@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
-import { AppsContext } from '@/contexts/Apps';
+import { ProcessContext } from '@/contexts/Process';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
@@ -22,8 +22,8 @@ const windowMotionSettings = {
 };
 
 export const Windows: FC = () => {
-  const { apps, close, focus, maximize, minimize, position, size } = useContext(
-      AppsContext
+  const { processes, close, focus, maximize, minimize, position, size } = useContext(
+      ProcessContext
     ),
     [windowMargins, setWindowMargins] = useState({
       marginTop: 0,
@@ -40,7 +40,7 @@ export const Windows: FC = () => {
   return (
     <section style={windowMargins}>
       <AnimatePresence>
-        {apps.map(
+        {processes.map(
           (
             {
               loader: { loader: App, loadedAppOptions },
@@ -71,7 +71,7 @@ export const Windows: FC = () => {
                 onBlur: () => focus?.(id, false),
                 updatePosition: position?.(id),
                 updateSize: size?.(id),
-                zIndex: 1750 + (apps.length - (stackOrder.indexOf(id) + 1)),
+                zIndex: 1750 + (processes.length - (stackOrder.indexOf(id) + 1)),
                 foreground,
                 maximized,
                 minimized,

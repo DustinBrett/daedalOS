@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { AppsContext } from '@/contexts/Apps';
+import { ProcessContext } from '@/contexts/Process';
 import Clock from '@/components/System/Taskbar/Clock';
 import SystemTray from '@/components/System/Taskbar/SystemTray';
 
@@ -27,7 +27,7 @@ const taskbarEntriesMotionSettings = {
 const maxWidth = 159;
 
 export const Taskbar: FC = () => {
-  const { apps, focus, minimize } = useContext(AppsContext),
+  const { processes, focus, minimize } = useContext(ProcessContext),
     olRef = useRef<HTMLOListElement>(null),
     [entryWidth, setEntryWidth] = useState(maxWidth);
 
@@ -36,17 +36,17 @@ export const Taskbar: FC = () => {
       Math.min(
         maxWidth,
         olRef.current?.offsetWidth
-          ? olRef.current?.offsetWidth / apps.length
+          ? olRef.current?.offsetWidth / processes.length
           : maxWidth
       )
     );
-  }, [apps]);
+  }, [processes]);
 
   return (
     <nav className={styles.taskbar}>
       <ol className={styles.entries} ref={olRef}>
         <AnimatePresence>
-          {apps.map(({ id, icon, minimized, name, foreground, stackOrder }) => (
+          {processes.map(({ id, icon, minimized, name, foreground, stackOrder }) => (
             <motion.li
               key={id}
               {...taskbarEntriesMotionSettings}
