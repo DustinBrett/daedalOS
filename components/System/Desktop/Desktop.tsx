@@ -4,17 +4,16 @@ import type { FC } from 'react';
 import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper';
 
 import { useEffect, useRef, useState } from 'react';
+import { renderWallpaperEffect } from '@/components/System/Desktop/Wallpaper';
 
-export const Desktop: FC = ({ children }) => {
-  const desktopRef = useRef(null),
+// TODO: Dynamic z-index
+
+const Desktop: FC = ({ children }) => {
+  const desktopRef = useRef<HTMLElement>(null),
     [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>();
 
   useEffect(() => {
-    import('@/components/System/Desktop/Wallpaper').then(
-      ({ renderWallpaperEffect }) => {
-        setWallpaperEffect(renderWallpaperEffect(desktopRef));
-      }
-    );
+    setWallpaperEffect(renderWallpaperEffect(desktopRef));
 
     return () => {
       wallpaperEffect?.destroy();
@@ -22,7 +21,7 @@ export const Desktop: FC = ({ children }) => {
   }, [desktopRef]);
 
   return (
-    <main className={styles.desktop} ref={desktopRef}>
+    <main className={styles.desktop} style={{ zIndex: 1000 }} ref={desktopRef}>
       {children}
     </main>
   );
