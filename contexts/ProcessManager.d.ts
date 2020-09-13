@@ -1,5 +1,5 @@
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type Process from '@/contexts/Process';
+import type Process from '@/contexts/ProcessManager';
 
 export type Processes = Array<Process>;
 

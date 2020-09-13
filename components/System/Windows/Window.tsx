@@ -1,7 +1,7 @@
 import styles from '@/styles/System/Window.module.scss';
 
 import type { FC } from 'react';
-import type { Process } from '@/contexts/Process';
+import type { Process } from '@/contexts/ProcessManager';
 import type { AppComponent } from '@/utils/apps.d';
 
 import { useEffect, useRef } from 'react';

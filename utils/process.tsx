@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type { Processes, ProcessAction } from '@/contexts/Process.d';
+import type { Processes, ProcessAction } from '@/contexts/ProcessManager.d';
 
-import { Process } from '@/contexts/Process';
+import { Process } from '@/contexts/ProcessManager';
 import { appLoader } from '@/utils/apps';
 
 export const close = (

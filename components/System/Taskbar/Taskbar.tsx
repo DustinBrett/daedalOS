@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { ProcessContext } from '@/contexts/Process';
+import { ProcessContext } from '@/contexts/ProcessManager';
 import Clock from '@/components/System/Taskbar/Clock';
 import SystemTray from '@/components/System/Taskbar/SystemTray';
 

@@ -3,12 +3,12 @@ import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
 import type { AppComponent } from '@/utils/apps.d';
-import type { Process } from '@/contexts/Process';
+import type { Process } from '@/contexts/ProcessManager';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { appendElement, focusOnDrag } from '@/utils/elements';
-import { ProcessContext } from '@/contexts/Process';
+import { ProcessContext } from '@/contexts/ProcessManager';
 
 type WebampStoreAction = { type: string; windowId: string };
 

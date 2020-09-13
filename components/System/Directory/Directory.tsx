@@ -1,9 +1,10 @@
 import type { FC } from 'react';
 
 import { useContext, useEffect, useState } from 'react';
-import { getDirectory, hasExtension } from '@/utils/files';
-import { FilesContext } from '@/contexts/Files';
-import { ProcessContext } from '@/contexts/Process';
+import { getDirectory } from '@/utils/directory';
+import { hasExtension } from '@/utils/file';
+import { FileContext } from '@/contexts/FileSystem';
+import { ProcessContext } from '@/contexts/ProcessManager';
 import { basename, resolve } from 'path';
 import dynamic from 'next/dynamic';
 
@@ -47,7 +48,7 @@ export const Directory: FC<{
 }> = ({ path, view = View.Icons }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
-    fs = useContext(FilesContext),
+    fs = useContext(FileContext),
     { processes, open, focus, title } = useContext(ProcessContext),
     onDoubleClick = (
       path?: string,

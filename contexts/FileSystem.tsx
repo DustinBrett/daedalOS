@@ -2,10 +2,10 @@ import index from '@/public/index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { FC } from 'react';
-import type { ListingObj } from '@/contexts/Files.d';
+import type { ListingObj } from '@/contexts/FileSystem.d';
 
 import { createContext, useEffect, useState } from 'react';
-import BrowserFS from 'browserfs';
+import * as BrowserFS from 'browserfs';
 
 const writableJsonFs = (
   path: string,
@@ -30,9 +30,9 @@ const writableJsonFs = (
   }
 });
 
-export const FilesContext = createContext<FSModule>({} as FSModule);
+export const FileContext = createContext<FSModule>({} as FSModule);
 
-export const FilesProvider: FC = ({ children }) => {
+export const FileProvider: FC = ({ children }) => {
   const [fs, setFs] = useState<FSModule>({} as FSModule);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export const FilesProvider: FC = ({ children }) => {
     );
   }, []);
 
-  return <FilesContext.Provider value={fs}>{children}</FilesContext.Provider>;
+  return <FileContext.Provider value={fs}>{children}</FileContext.Provider>;
 };
 
-export default FilesProvider;
+export default FileProvider;

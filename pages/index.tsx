@@ -2,8 +2,8 @@ import type { ReactElement } from 'react';
 
 import Metadata from '@/components/Metadata';
 import Desktop from '@/components/System/Desktop/Desktop';
-import ProcessProvider from '@/contexts/Process';
-import FilesProvider from '@/contexts/Files';
+import ProcessProvider from '@/contexts/ProcessManager';
+import FileProvider from '@/contexts/FileSystem';
 import Directory from '@/components/System/Directory/Directory';
 import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
@@ -16,10 +16,10 @@ export default function HomePage(): ReactElement {
       <Metadata />
       <Desktop>
         <ProcessProvider>
-          <FilesProvider>
+          <FileProvider>
             <Directory path="/desktop" />
             <Windows />
-          </FilesProvider>
+          </FileProvider>
           <Taskbar />
         </ProcessProvider>
       </Desktop>

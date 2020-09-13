@@ -8,6 +8,8 @@ import { pdfjs, Document, Page } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.min.js';
 
+// TODO: Fix `window` error on (server?) builds
+
 export const loaderOptions = {
   hideScrollbars: true,
   height: 700,

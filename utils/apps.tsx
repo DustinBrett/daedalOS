@@ -1,7 +1,7 @@
 import type { AppLoader } from '@/utils/apps.d';
 
 import dynamic from 'next/dynamic';
-import { getFileExtension } from '@/utils/files';
+import { getFileExtension } from '@/utils/file';
 import { isValidUrl } from '@/utils/utils';
 
 import { loaderOptions as dosLoaderOptions } from '@/components/Apps/Dos';

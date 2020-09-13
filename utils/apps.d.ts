@@ -1,4 +1,4 @@
-import { ProcessConstructor } from '@/contexts/Process.d';
+import { ProcessConstructor } from '@/contexts/ProcessManager';
 
 export type AppComponent = {
   args?: Array<string>;

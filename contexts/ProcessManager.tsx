@@ -4,7 +4,7 @@ import type {
   ProcessAction,
   ProcessConstructor,
   ProcessContextType
-} from '@/contexts/Process.d';
+} from '@/contexts/ProcessManager.d';
 
 import { createContext, useReducer } from 'react';
 import {

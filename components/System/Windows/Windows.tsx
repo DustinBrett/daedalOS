@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useContext, useEffect, useState } from 'react';
-import { ProcessContext } from '@/contexts/Process';
+import { ProcessContext } from '@/contexts/ProcessManager';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
