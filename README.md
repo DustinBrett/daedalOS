@@ -2,33 +2,28 @@
 
 ## System
 
-- Double check colors and sizes (Digital Color Meter)
+- Quality
+  - Double check colors and sizes (Digital Color Meter)
+  - Fix semantic HTML (https://www.w3.org/wiki/HTML/Usage/Headings/Missing)
 - Windows
-  - Animate min/max/enter/exit with framer (fix z-index)
   - Size opening/positioning logic
     - Relative to the viewport, orientation & resolution
     - Pre-define ideal min sizes for windows
-  - Fix semantic HTML (https://www.w3.org/wiki/HTML/Usage/Headings/Missing)
-- Icons
-  - Horizontal rendering issues with mixed 1-2 line icon labels
+  - Animate min/max/enter/exit with framer (fix z-index)
 - Taskbar
   - Clicking recently focused entry is minimizing it
-- System Tray: React-Use (https://github.com/streamich/react-use)
-  - useBattery, useIdle, useLongPress, useMediaDevices, useNetwork
-  - useIdle + Pipes (https://github.com/1j01/pipes)
+- Start Menu
 
 ## Apps
 
 - PDF
-  - Print, download
-  - Style like a mix of PDF.js, Chrome PDF & Adobe Reader
+  - Download & Print
+  - Auto Zoom
+  - Complete UI/Toolbar
 - Explorer
-  - Breadcrumb bar
-  - Item count / status bar
-  - Stay highlighted but grey when window is unfocused
-  - Limit scroll viewport to list view
+  - Breadcrumb Bar
+  - Complete UI/Toolbar
 - Document Viewer for Blog (https://webodf.org/)
-- Clippy.JS (https://www.smore.com/clippy-js)
 
 ## Data
 
@@ -36,12 +31,13 @@
 
 # Post-MVP
 
-- Start Menu
 - next-optimized-images
 - URL Routing to apps/files
+- Clippy.JS (https://www.smore.com/clippy-js)
 - Icons
   - Image optimization (WebP & responsive)
   - Text un-truncate on selection (Don't truncate icons for now)
+  - Horizontal rendering issues with mixed 1-2 line icon labels (CSS Grid)
 - Window
   - Top drag constraints
   - Avoid storing stackOrder in every app

@@ -9,6 +9,7 @@ import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
 // import { formatToLongDateTime } from '@/utils/dates';
+// Cache sizes and modified times during genfs
 
 const bytesInKB = 1024,
   fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'],

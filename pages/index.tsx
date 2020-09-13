@@ -1,27 +1,28 @@
 import type { ReactElement } from 'react';
 
-import dynamic from 'next/dynamic';
+// Only use dynamic for things that arent needed on load
+// import dynamic from 'next/dynamic';
 
-const Metadata = dynamic(import('@/components/Metadata')),
-  Desktop = dynamic(import('@/components/System/Desktop/Desktop')),
-  FilesProvider = dynamic(import('@/contexts/Files')),
-  AppsProvider = dynamic(import('@/contexts/Apps')),
-  Directory = dynamic(import('@/components/System/Directory/Directory')),
-  Taskbar = dynamic(import('@/components/System/Taskbar/Taskbar')),
-  Windows = dynamic(import('@/components/System/Windows/Windows'));
+import Metadata from '@/components/Metadata';
+import Desktop from '@/components/System/Desktop/Desktop';
+import AppsProvider from '@/contexts/Apps'; // TODO: Apps is actually Process
+import FilesProvider from '@/contexts/Files';
+import Directory from '@/components/System/Directory/Directory';
+import Windows from '@/components/System/Windows/Windows';
+import Taskbar from '@/components/System/Taskbar/Taskbar';
 
 export default function HomePage(): ReactElement {
   return (
     <>
       <Metadata />
       <Desktop>
-        <FilesProvider>
-          <AppsProvider>
+        <AppsProvider>
+          <FilesProvider>
             <Directory path="/desktop" />
-            <Taskbar />
             <Windows />
-          </AppsProvider>
-        </FilesProvider>
+          </FilesProvider>
+          <Taskbar />
+        </AppsProvider>
       </Desktop>
     </>
   );
