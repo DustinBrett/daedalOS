@@ -1,8 +1,5 @@
 import type { FC } from 'react';
-import type {
-  ProcessConstructor,
-  ProcessContextType
-} from '@/contexts/ProcessManager.d';
+import type { ProcessContextType } from '@/contexts/ProcessManager.d';
 
 import { createContext, useReducer } from 'react';
 import {
@@ -16,56 +13,6 @@ import {
   title
 } from '@/utils/process';
 import { processReducer } from '@/utils/pm';
-
-export class Process {
-  loader;
-  icon;
-  name;
-
-  bgColor;
-  height;
-  hideScrollbars;
-  id;
-  lockAspectRatio;
-  width;
-  windowed;
-  x;
-  y;
-
-  foreground = false;
-  maximized = false;
-  minimized = false;
-  stackOrder: Array<string> = [];
-
-  constructor({
-    loader,
-    icon,
-    name,
-
-    bgColor = '#fff',
-    height = 0,
-    hideScrollbars = false,
-    id = name.toLowerCase().replace(/ /g, '_'),
-    lockAspectRatio = false,
-    width = 0,
-    windowed = true,
-    x = 0,
-    y = 0
-  }: ProcessConstructor) {
-    this.loader = loader;
-    this.icon = icon;
-    this.name = name;
-    this.bgColor = bgColor;
-    this.height = height;
-    this.hideScrollbars = hideScrollbars;
-    this.id = id;
-    this.lockAspectRatio = lockAspectRatio;
-    this.width = width;
-    this.windowed = windowed;
-    this.x = x;
-    this.y = y;
-  }
-}
 
 export const ProcessContext = createContext<ProcessContextType>({
   processes: []

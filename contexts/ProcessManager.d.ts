@@ -1,22 +1,5 @@
-import type { AppLoader } from '@/utils/apps.d';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { Processes } from '@/utils/pm.d';
-
-export type ProcessConstructor = {
-  loader: AppLoader;
-  icon: string;
-  name: string;
-
-  bgColor?: string;
-  height?: number;
-  hideScrollbars?: boolean;
-  id?: string;
-  lockAspectRatio?: boolean;
-  width?: number;
-  windowed?: boolean;
-  x?: number;
-  y?: number;
-};
 
 export type ProcessContextType = {
   processes: Processes;
