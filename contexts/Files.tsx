@@ -2,12 +2,10 @@ import index from '@/public/index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { FC } from 'react';
+import type { ListingObj } from '@/contexts/Files.d';
 
 import { createContext, useEffect, useState } from 'react';
-
-type ListingObj = {
-  [key: string]: ListingObj | string | null;
-};
+import BrowserFS from 'browserfs';
 
 const writableJsonFs = (
   path: string,
@@ -38,19 +36,19 @@ export const FilesProvider: FC = ({ children }) => {
   const [fs, setFs] = useState<FSModule>({} as FSModule);
 
   useEffect(() => {
-    import('browserfs').then((BrowserFS) => {
-      BrowserFS.install(window);
+    BrowserFS.install(window);
 
-      BrowserFS.configure(
-        {
-          fs: 'MountableFileSystem',
-          options: writableJsonFs('/', index)
-        },
-        () => {
-          setFs(BrowserFS.BFSRequire('fs'));
+    BrowserFS.configure(
+      {
+        fs: 'MountableFileSystem',
+        options: {
+          ...writableJsonFs('/', index)
         }
-      );
-    });
+      },
+      () => {
+        setFs(BrowserFS.BFSRequire('fs'));
+      }
+    );
   }, []);
 
   return <FilesContext.Provider value={fs}>{children}</FilesContext.Provider>;

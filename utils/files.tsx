@@ -8,6 +8,8 @@ import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory';
 
+import * as ini from 'ini';
+
 // import { formatToLongDateTime } from '@/utils/dates';
 // Cache sizes and modified times during genfs
 
@@ -27,26 +29,13 @@ type Shortcut = {
 const parseShortcut = (fs: FSModule, path: string): Promise<Shortcut> =>
   new Promise((resolve) => {
     fs?.readFile?.(path, (_error, fileBuffer) => {
-      import('ini').then(({ default: ini }) => {
-        const {
-          InternetShortcut: { URL: url, IconFile }
-        } = ini.parse(fileBuffer?.toString() || '');
+      const {
+        InternetShortcut: { URL: url, IconFile }
+      } = ini.parse(fileBuffer?.toString() || '');
 
-        resolve({ url, icon: new URL(IconFile).pathname });
-      });
+      resolve({ url, icon: new URL(IconFile).pathname });
     });
   });
-
-const getBestIconMatch = (
-  icon: string,
-  isDirectory: boolean,
-  ext: string,
-  filePath: string
-): string => {
-  if (icon) return icon;
-
-  return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
-};
 
 export const hasExtension = (path = ''): boolean => {
   return getFileExtension(path) === '';
@@ -80,6 +69,17 @@ const getDirectoryEntry = async (
     size: isDirectory ? '--' : getFormattedSize(size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };
+};
+
+const getBestIconMatch = (
+  icon: string,
+  isDirectory: boolean,
+  ext: string,
+  filePath: string
+): string => {
+  if (icon) return icon;
+
+  return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
 };
 
 const getFileIcon = (filePath: string, ext: string): string => {
