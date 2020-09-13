@@ -1,7 +1,7 @@
 import styles from '@/styles/System/Desktop.module.scss';
 
 import type { FC } from 'react';
-import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper';
+import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper.d';
 
 import { useEffect, useRef, useState } from 'react';
 import { renderWallpaperEffect } from '@/components/System/Desktop/Wallpaper';
