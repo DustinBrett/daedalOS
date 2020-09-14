@@ -14,7 +14,7 @@ $buttonIconOpacity: 0.975;
   border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3);
 
-  &:focus-within {
+  &.foreground {
     #minimize {
       color: $minimize;
       background-color: $minimize;
@@ -126,7 +126,7 @@ $buttonIconOpacity: 0.975;
     }
   }
 
-  &:not(:focus-within) {
+  &:not(.foreground) {
     .titlebar {
       background: unset;
       background-color: rgb(55, 53, 56);
@@ -154,7 +154,7 @@ $buttonIconOpacity: 0.975;
   }
 }
 
-.window:focus-within nav:hover {
+.window.foreground nav:hover {
   #minimize,
   #maximize,
   #close {

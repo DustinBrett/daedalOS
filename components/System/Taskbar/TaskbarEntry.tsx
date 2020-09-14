@@ -9,6 +9,7 @@ type TaskbarEntryType = {
   icon: string;
   id: string;
   name: string;
+  onBlur: () => void;
   onClick: () => void;
 };
 
@@ -16,6 +17,7 @@ export const TaskbarEntry: FC<TaskbarEntryType> = ({
   icon,
   id,
   name,
+  onBlur,
   onClick
 }) => {
   const { session } = useContext(SessionContext);
@@ -26,6 +28,7 @@ export const TaskbarEntry: FC<TaskbarEntryType> = ({
         session.foreground === id && styles.foreground
       }`}
       onClick={onClick}
+      onBlur={onBlur}
       tabIndex={0}
     >
       <figure>

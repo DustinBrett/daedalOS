@@ -11,15 +11,17 @@ import { SessionContext } from '@/contexts/SessionManager';
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
 const windowMotionSettings = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
+  initial: { scale: 0, x: -100, y: -100 },
+  animate: { scale: 1, x: 0, y: 0, zIndex: 10000, position: 'relative' },
   transition: {
-    duration: 0.5
+    duration: 0.25,
   },
   exit: {
-    opacity: 0,
+    scale: 0,
+    x: -100,
+    y: -100,
     transition: {
-      duration: 0.2
+      duration: 0.1
     }
   }
 };
@@ -31,7 +33,7 @@ export const Windows: FC = () => {
     { session, background, foreground } = useContext(SessionContext);
 
   return (
-    <article className={styles.windows}>
+    <div className={styles.windows}>
       <AnimatePresence>
         {processes.map(
           (
@@ -100,7 +102,7 @@ export const Windows: FC = () => {
           }
         )}
       </AnimatePresence>
-    </article>
+    </div>
   );
 };
 

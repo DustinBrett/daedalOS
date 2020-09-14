@@ -14,6 +14,8 @@ import Taskbar from '@/components/System/Taskbar/Taskbar';
 // - No need to manipulate the process for these things
 // - No need for `:focus` to keep track of things
 
+// TODO: Too many props, use {...props} more
+
 export default function HomePage(): ReactElement {
   return (
     <>

@@ -4,11 +4,11 @@ import type { FC } from 'react';
 import type { Process } from '@/utils/pm';
 import type { AppComponent } from '@/utils/programs.d';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useContext } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
+import { focusOnDrag } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 
 export const Window: FC<Partial<Process> & AppComponent> = ({
@@ -34,15 +34,7 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   minimized,
   maximized
 }) => {
-  const windowRef = useRef<Rnd>(null),
-    { session } = useContext(SessionContext);
-
-  useEffect(() => focusResizableElementRef(windowRef), [windowRef]);
-  useEffect(() => {
-    if (session.foreground === id) {
-      focusResizableElementRef(windowRef);
-    }
-  }, [session, windowRef]);
+  const { session } = useContext(SessionContext);
 
   return (
     <article
@@ -52,7 +44,9 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
     >
       <Rnd
         enableUserSelectHack={false}
-        className={`${styles.window} ${maximized ? styles.maximized : ''}`}
+        className={`${styles.window} ${maximized ? styles.maximized : ''} ${
+          session.foreground === id ? styles.foreground : ''
+        }`}
         dragHandleClassName="handle"
         cancel=".cancel"
         default={{
@@ -70,7 +64,6 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
         onDragStop={updatePosition}
         onResizeStop={updateSize}
         disableDragging={maximized}
-        ref={windowRef}
         lockAspectRatio={lockAspectRatio}
         style={{ zIndex }}
       >

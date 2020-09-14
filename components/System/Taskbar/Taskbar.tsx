@@ -63,7 +63,6 @@ export const Taskbar: FC = () => {
                     minimize?.(id, false);
                     foreground?.(id);
                   } else {
-                    // TODO: Clicking the entry makes it no longer foreground
                     if (session.foreground === id) {
                       minimize?.(id);
                       background?.(id);
@@ -72,6 +71,7 @@ export const Taskbar: FC = () => {
                     }
                   }
                 }}
+                onBlur={() => background?.(id)}
               />
             </motion.li>
           ))}
