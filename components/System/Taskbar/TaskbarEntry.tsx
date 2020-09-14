@@ -7,20 +7,19 @@ import { SessionContext } from '@/contexts/SessionManager';
 
 type TaskbarEntryType = {
   icon: string;
+  id: string;
   name: string;
   onClick: () => void;
 };
 
-export const TaskbarEntry: FC<TaskbarEntryType> = ({
-  icon,
-  name,
-  onClick
-}) => {
+export const TaskbarEntry: FC<TaskbarEntryType> = ({ icon, id, name, onClick }) => {
   const { session } = useContext(SessionContext);
 
   return (
     <div
-      className={`${styles.taskbarEntry} ${session.foreground && styles.foreground}`}
+      className={`${styles.taskbarEntry} ${
+        session.foreground === id && styles.foreground
+      }`}
       onClick={onClick}
       tabIndex={0}
     >

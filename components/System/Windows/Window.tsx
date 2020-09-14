@@ -14,6 +14,7 @@ import { SessionContext } from '@/contexts/SessionManager';
 export const Window: FC<Partial<Process> & AppComponent> = ({
   children,
   icon,
+  id,
   name,
   bgColor,
   onMaximize,
@@ -38,7 +39,7 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
 
   useEffect(() => focusResizableElementRef(windowRef), [windowRef]);
   useEffect(() => {
-    if (session.foreground) {
+    if (session.foreground === id) {
       focusResizableElementRef(windowRef);
     }
   }, [session, windowRef]);

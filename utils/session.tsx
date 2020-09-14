@@ -5,9 +5,18 @@ import type { SessionState } from '@/contexts/SessionManager.d';
 export const background = (
   session: SessionState,
   updateSession: Dispatch<SessionState>
-) => (id: string): void => updateSession({ ...session, foreground: session.foreground === id ? '' : session.foreground });
+) => (id: string): void => {
+  console.log('background', session, id);
+  updateSession({
+    ...session,
+    foreground: session.foreground === id ? '' : session.foreground
+  });
+};
 
 export const foreground = (
   session: SessionState,
   updateSession: Dispatch<SessionState>
-) => (id: string): void => updateSession({ ...session, foreground: id });
+) => (id: string): void => {
+  console.log('foreground', session, id);
+  updateSession({ ...session, foreground: id });
+};

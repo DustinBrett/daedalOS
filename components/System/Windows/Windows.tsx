@@ -34,7 +34,7 @@ export const Windows: FC = () => {
       position,
       size
     } = useContext(ProcessContext),
-    { background, foreground } =  useContext(SessionContext);
+    { background, foreground } = useContext(SessionContext);
 
   return (
     <article className={styles.windows}>
@@ -75,6 +75,7 @@ export const Windows: FC = () => {
                 minimized,
                 height,
                 width,
+                id,
                 x: x || cascadeSpacing,
                 y: y || cascadeSpacing
               };
