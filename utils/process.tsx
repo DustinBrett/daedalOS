@@ -3,7 +3,7 @@ import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { Processes, ProcessAction } from '@/utils/pm.d';
 
 import { Process } from '@/utils/pm';
-import { appLoader } from '@/utils/apps';
+import { appLoader } from '@/utils/programs';
 
 export const close = (
   processes: Processes,

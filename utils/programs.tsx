@@ -1,18 +1,18 @@
-import type { AppLoader } from '@/utils/apps.d';
+import type { AppLoader } from '@/utils/programs.d';
 
 import dynamic from 'next/dynamic';
 import { extname } from 'path';
 import { isValidUrl } from '@/utils/url';
 
-import { loaderOptions as dosLoaderOptions } from '@/components/Apps/Dos';
-import { loaderOptions as explorerLoaderOptions } from '@/components/Apps/Explorer';
-import { loaderOptions as pdfLoaderOptions } from '@/components/Apps/Pdf';
-import { loaderOptions as winampLoaderOptions } from '@/components/Apps/Winamp';
+import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
+import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
+import { loaderOptions as pdfLoaderOptions } from '@/components/Programs/Pdf';
+import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
 
-const Dos = dynamic(import('@/components/Apps/Dos')),
-  Explorer = dynamic(import('@/components/Apps/Explorer')),
-  Pdf = dynamic(import('@/components/Apps/Pdf')),
-  Winamp = dynamic(import('@/components/Apps/Winamp'));
+const Dos = dynamic(import('@/components/Programs/Dos')),
+  Explorer = dynamic(import('@/components/Programs/Explorer')),
+  Pdf = dynamic(import('@/components/Programs/Pdf')),
+  Winamp = dynamic(import('@/components/Programs/Winamp'));
 
 const appLoaderByName = (name: string): AppLoader | undefined => {
   switch (name) {

@@ -1,6 +1,6 @@
-import JsFileTypeIcon from '@/public/icons/types/js.svg';
-import PdfFileTypeIcon from '@/public/icons/types/pdf.svg';
-import UnknownFileTypeIcon from '@/public/icons/types/unknown.svg';
+import JsFileTypeIcon from '@/public/icons/files/js.svg';
+import PdfFileTypeIcon from '@/public/icons/files/pdf.svg';
+import UnknownFileTypeIcon from '@/public/icons/files/unknown.svg';
 
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { FSModule } from 'browserfs/dist/node/core/FS';
@@ -16,14 +16,14 @@ export const getFileIcon = (filePath: string, ext: string): string => {
     case '.svg':
       return filePath;
     case '.jsdos':
-      return '/icons/apps/dos.png';
+      return '/icons/programs/dos.png';
     case '.js':
     case '.json':
       return JsFileTypeIcon;
     case '.mp3':
     case '.m3u':
     case '.wsz':
-      return '/icons/apps/winamp.png';
+      return '/icons/programs/winamp.png';
     case '.pdf':
       return PdfFileTypeIcon;
     default:

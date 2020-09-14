@@ -1,4 +1,4 @@
-import ExplorerIcon from '@/public/icons/apps/explorer.png';
+import ExplorerIcon from '@/public/icons/programs/explorer.png';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { DirectoryEntry } from '@/components/System/Directory/Directory.d';

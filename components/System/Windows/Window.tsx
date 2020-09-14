@@ -2,7 +2,7 @@ import styles from '@/styles/System/Windows/Window.module.scss';
 
 import type { FC } from 'react';
 import type { Process } from '@/utils/pm';
-import type { AppComponent } from '@/utils/apps.d';
+import type { AppComponent } from '@/utils/programs.d';
 
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';

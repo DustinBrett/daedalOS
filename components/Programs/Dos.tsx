@@ -1,9 +1,9 @@
-import styles from '@/styles/Apps/Dos.module.scss';
+import styles from '@/styles/Programs/Dos.module.scss';
 
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
-import type { AppComponent } from '@/utils/apps.d';
+import type { AppComponent } from '@/utils/programs.d';
 
 import { useEffect, useRef } from 'react';
 
@@ -43,7 +43,7 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
 
     Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        const appPath = `apps/${url.replace('.jsdos', '')}`;
+        const appPath = url.replace('.jsdos', '');
 
         fs?.extract?.(url, appPath)?.then(
           loadMain(main, ['-c', `CD ${appPath}`])

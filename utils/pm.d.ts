@@ -1,4 +1,4 @@
-import type { AppLoader } from '@/utils/apps.d';
+import type { AppLoader } from '@/utils/programs';
 import type { Process } from '@/utils/pm';
 
 export type Processes = Array<Process>;

@@ -1,7 +1,7 @@
-import styles from '@/styles/Apps/Explorer.module.scss';
+import styles from '@/styles/Programs/Explorer.module.scss';
 
 import type { FC } from 'react';
-import type { AppComponent } from '@/utils/apps.d';
+import type { AppComponent } from '@/utils/programs.d';
 
 import { Directory } from '@/components/System/Directory/Directory';
 import DirectoryListView from '@/components/System/Directory/DirectoryListView';

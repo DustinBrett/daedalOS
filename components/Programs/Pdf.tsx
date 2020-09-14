@@ -1,7 +1,7 @@
-import styles from '@/styles/Apps/Pdf.module.scss';
+import styles from '@/styles/Programs/Pdf.module.scss';
 
 import type { FC } from 'react';
-import type { AppComponent } from '@/utils/apps.d';
+import type { AppComponent } from '@/utils/programs.d';
 
 import React, { useState } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';

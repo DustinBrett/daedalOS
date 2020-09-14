@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
-import type { AppComponent } from '@/utils/apps.d';
+import type { AppComponent } from '@/utils/programs.d';
 import type { Process } from '@/utils/pm';
 
 import { useContext, useEffect, useRef } from 'react';
