@@ -32,7 +32,7 @@
 # Post-MVP
 
 - next-optimized-images
-- URL Routing to apps/files
+- Startup URL Routing to programs/files (Part of url.tsx)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Icons
   - Image optimization (WebP & responsive)
