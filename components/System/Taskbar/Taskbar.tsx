@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ProcessContext } from '@/contexts/ProcessManager';
+import { SessionContext } from '@/contexts/SessionManager';
 import Clock from '@/components/System/Taskbar/Clock';
 import SystemTray from '@/components/System/Taskbar/SystemTray';
 
@@ -28,6 +29,7 @@ const maxWidth = 159;
 
 export const Taskbar: FC = () => {
   const { processes, focus, minimize } = useContext(ProcessContext),
+    { session, foreground } = useContext(SessionContext),
     olRef = useRef<HTMLOListElement>(null),
     [entryWidth, setEntryWidth] = useState(maxWidth);
 
@@ -47,24 +49,27 @@ export const Taskbar: FC = () => {
       <ol className={styles.entries} ref={olRef}>
         <AnimatePresence>
           {processes.map(
-            ({ id, icon, minimized, name, foreground, stackOrder }) => (
+            ({ id, icon, minimized, name }) => (
               <motion.li
                 key={id}
                 {...taskbarEntriesMotionSettings}
                 style={{ width: entryWidth }}
               >
                 <TaskbarEntry
-                  foreground={foreground}
                   icon={icon}
                   name={name}
                   onClick={() => {
                     if (minimized) {
                       minimize?.(id, false);
                     } else {
-                      const [foregroundApp] = stackOrder;
-
-                      foregroundApp === id ? minimize?.(id) : focus?.(id);
+                      if (session.foreground === id) {
+                        minimize?.(id);
+                      } else {
+                        focus?.(id); // TODO: Get rid of need for this
+                        foreground?.(id);
+                      }
                     }
+                    // TODO: Call background if minimize is run?
                   }}
                 />
               </motion.li>

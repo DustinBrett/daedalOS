@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useContext } from 'react';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { AnimatePresence, motion } from 'framer-motion';
+import { SessionContext } from '@/contexts/SessionManager';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
@@ -25,14 +26,15 @@ const windowMotionSettings = {
 
 export const Windows: FC = () => {
   const {
-    processes,
-    close,
-    focus,
-    maximize,
-    minimize,
-    position,
-    size
-  } = useContext(ProcessContext);
+      processes,
+      close,
+      focus,
+      maximize,
+      minimize,
+      position,
+      size
+    } = useContext(ProcessContext),
+    { background, foreground } =  useContext(SessionContext);
 
   return (
     <article className={styles.windows}>
@@ -48,7 +50,6 @@ export const Windows: FC = () => {
               windowed,
               maximized,
               minimized,
-              foreground,
               lockAspectRatio,
               hideScrollbars,
               stackOrder,
@@ -64,13 +65,12 @@ export const Windows: FC = () => {
                 onMinimize: () => minimize?.(id),
                 onMaximize: () => maximize?.(id, !maximized),
                 onClose: () => close?.(id, stackOrder),
-                onFocus: () => focus?.(id),
-                onBlur: () => focus?.(id, false),
+                onFocus: () => focus?.(id) && foreground?.(id),
+                onBlur: () => focus?.(id, false) && background?.(id),
                 updatePosition: position?.(id),
                 updateSize: size?.(id),
                 zIndex:
                   1750 + (processes.length - (stackOrder.indexOf(id) + 1)),
-                foreground,
                 maximized,
                 minimized,
                 height,

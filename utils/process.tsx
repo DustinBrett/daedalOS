@@ -15,6 +15,7 @@ export const close = (
   updateProcesses({ id });
 };
 
+// TODO: Focus should not be needed if foreground says what to focus on
 export const focus = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
@@ -24,7 +25,6 @@ export const focus = (
       updateProcesses({
         id: processId,
         updates: {
-          foreground: processId === id,
           stackOrder: [
             id,
             ...stackOrder.filter((stackId: string) => stackId !== id)
@@ -32,8 +32,6 @@ export const focus = (
         }
       });
     });
-  } else {
-    updateProcesses({ id, updates: { foreground: false } });
   }
 };
 
@@ -47,14 +45,14 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
   toggleMinimized = true
 ): void =>
   updateProcesses({
-    updates: { foreground: !toggleMinimized, minimized: toggleMinimized },
+    updates: { minimized: toggleMinimized },
     id
   });
 
 export const open = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (url: string, icon: string, name: string): void => {
+) => (url: string, icon: string, name: string): string | undefined => {
   const { id: existingProcessId } =
     processes.find(({ name: processName }) => processName === name) || {};
 
@@ -62,17 +60,21 @@ export const open = (
     const loader = appLoader(url);
 
     if (loader) {
-      updateProcesses({
-        process: new Process({
-          loader,
-          icon,
-          name,
-          ...loader.loaderOptions
-        })
+      const process = new Process({
+        loader,
+        icon,
+        name,
+        ...loader.loaderOptions
       });
+
+      updateProcesses({ process });
+
+      return process.id;
     }
   } else {
     focus(processes, updateProcesses)(existingProcessId);
+
+    return existingProcessId;
   }
 };
 

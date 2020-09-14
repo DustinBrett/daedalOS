@@ -4,11 +4,12 @@ import type { FC } from 'react';
 import type { Process } from '@/utils/pm';
 import type { AppComponent } from '@/utils/programs.d';
 
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
+import { SessionContext } from '@/contexts/SessionManager';
 
 export const Window: FC<Partial<Process> & AppComponent> = ({
   children,
@@ -29,18 +30,18 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   width,
   x = 0,
   y = 0,
-  foreground,
   minimized,
   maximized
 }) => {
-  const windowRef = useRef<Rnd>(null);
+  const windowRef = useRef<Rnd>(null),
+    { session } = useContext(SessionContext);
 
   useEffect(() => focusResizableElementRef(windowRef), [windowRef]);
   useEffect(() => {
-    if (foreground) {
+    if (session.foreground) {
       focusResizableElementRef(windowRef);
     }
-  }, [foreground, windowRef]);
+  }, [session, windowRef]);
 
   return (
     <article

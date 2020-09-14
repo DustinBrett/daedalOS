@@ -56,7 +56,6 @@ export class Process {
   minimized = false;
 
   // TODO: SessionContext
-  foreground = false;
   x;
   y;
   stackOrder: Array<string> = [];
