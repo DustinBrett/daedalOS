@@ -10,16 +10,11 @@ export type DirectoryEntry = {
 
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
-  cwd?: string;
   onDoubleClick: (
     path?: string,
     url?: string,
     icon?: string,
     name?: string
   ) => () => void;
+  cwd?: string;
 };
-
-export enum View {
-  Icons,
-  List
-}

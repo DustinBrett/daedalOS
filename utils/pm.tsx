@@ -51,12 +51,14 @@ export class Process {
   lockAspectRatio;
   width;
   windowed;
-  x;
-  y;
 
-  foreground = false;
   maximized = false;
   minimized = false;
+
+  // TODO: SessionContext
+  foreground = false;
+  x;
+  y;
   stackOrder: Array<string> = [];
 
   constructor({

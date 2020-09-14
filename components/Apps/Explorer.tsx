@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import type { AppComponent } from '@/utils/apps.d';
 
 import { Directory } from '@/components/System/Directory/Directory';
-import { View } from '@/components/System/Directory/Directory.d';
+import DirectoryListView from '@/components/System/Directory/DirectoryListView';
 
 export const loaderOptions = {
   width: 300,
@@ -14,7 +14,7 @@ export const loaderOptions = {
 
 export const Explorer: FC<AppComponent> = ({ url = '/' }) => (
   <article className={styles.explorer}>
-    <Directory path={url} view={View.List} />
+    <Directory path={url} render={DirectoryListView} details={true} />
   </article>
 );
 

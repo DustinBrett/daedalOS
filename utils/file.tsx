@@ -11,23 +11,20 @@ const bytesInKB = 1024,
 
 export const getFileIcon = (filePath: string, ext: string): string => {
   switch (ext) {
-    case 'png':
-    case 'ico':
-    case 'svg':
+    case '.png':
+    case '.ico':
+    case '.svg':
       return filePath;
-    case 'jsdos':
+    case '.jsdos':
       return '/icons/apps/dos.png';
-    case 'js':
-    case 'json':
-    case 'min.js':
-    case 'wasm.js':
-    case 'worker.js':
+    case '.js':
+    case '.json':
       return JsFileTypeIcon;
-    case 'mp3':
-    case 'm3u':
-    case 'wsz':
+    case '.mp3':
+    case '.m3u':
+    case '.wsz':
       return '/icons/apps/winamp.png';
-    case 'pdf':
+    case '.pdf':
       return PdfFileTypeIcon;
     default:
       return UnknownFileTypeIcon;
@@ -36,23 +33,23 @@ export const getFileIcon = (filePath: string, ext: string): string => {
 
 export const getFileKind = (ext: string): string => {
   switch (ext) {
-    case 'txt':
+    case '.txt':
       return 'Plain Text';
-    case 'json':
+    case '.json':
       return 'JSON Document';
-    case 'ico':
+    case '.ico':
       return 'Icon Image';
-    case 'woff2':
+    case '.woff2':
       return 'Web Font';
-    case 'zip':
+    case '.zip':
       return 'ZIP Archive';
-    case 'mp3':
+    case '.mp3':
       return 'MP3 Audio';
-    case 'js':
+    case '.js':
       return 'JS Document';
-    case 'wsz':
+    case '.wsz':
       return 'Winamp Skin';
-    case 'url':
+    case '.url':
       return 'Shortcut';
     default:
       return '';

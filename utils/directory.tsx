@@ -51,7 +51,7 @@ const getDirectoryEntry = async (
       : ({} as Shortcut);
 
   return {
-    name: file.replace(`.${ext}`, ''),
+    name: file.replace(ext, ''),
     fullName: file,
     path: filePath,
     url: url && decodeURIComponent(url),

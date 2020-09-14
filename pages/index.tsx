@@ -7,8 +7,9 @@ import FileProvider from '@/contexts/FileSystem';
 import Directory from '@/components/System/Directory/Directory';
 import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
+import DirectoryIconsView from '@/components/System/Directory/DirectoryIconsView';
 
-// TODO: Session context to replace `foreground, stackOrder, x, y, height, width, selected (icon & window), focus, zIndex`
+// TODO: Session context to replace `foreground, stackOrder, x, y, selected (icon & window), focus, zIndex, partially height & width`
 // - No need to manipulate the process for these things
 // - No need for `:focus` to keep track of things
 
@@ -19,7 +20,7 @@ export default function HomePage(): ReactElement {
       <Desktop>
         <ProcessProvider>
           <FileProvider>
-            <Directory path="/desktop" />
+            <Directory path="/desktop" render={DirectoryIconsView} />
             <Windows />
           </FileProvider>
           <Taskbar />

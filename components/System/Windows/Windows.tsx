@@ -37,11 +37,14 @@ export const Windows: FC = () => {
     });
 
   useEffect(() => {
+    // TODO: Why can't this just be in CSS?
     setWindowMargins({
       marginTop: 50,
       marginLeft: 50
     });
   }, []);
+
+  // TODO: location.hash !== '' open(location.hash);
 
   return (
     <article style={windowMargins}>
