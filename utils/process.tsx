@@ -5,34 +5,14 @@ import type { Processes, ProcessAction } from '@/utils/pm.d';
 import { Process } from '@/utils/pm';
 import { appLoader } from '@/utils/programs';
 
-export const close = (
-  processes: Processes,
-  updateProcesses: Dispatch<ProcessAction>
-) => (id: string, [, nextRemainingProcessId]: Array<string>): void => {
-  if (nextRemainingProcessId)
-    focus(processes, updateProcesses)(nextRemainingProcessId);
-
+// TODO: Take in processes and get the next app somehow through that? Maybe based on last ran
+export const close = (updateProcesses: Dispatch<ProcessAction>) => (
+  id: string,
+  [, nextRemainingProcessId]: Array<string>
+): string | undefined => {
   updateProcesses({ id });
-};
 
-// TODO: Focus should not be needed if foreground says what to focus on
-export const focus = (
-  processes: Processes,
-  updateProcesses: Dispatch<ProcessAction>
-) => (id: string, toggleFocus = true): void => {
-  if (toggleFocus) {
-    processes.forEach(({ id: processId, stackOrder }) => {
-      updateProcesses({
-        id: processId,
-        updates: {
-          stackOrder: [
-            id,
-            ...stackOrder.filter((stackId: string) => stackId !== id)
-          ]
-        }
-      });
-    });
-  }
+  if (nextRemainingProcessId) return nextRemainingProcessId;
 };
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
@@ -56,25 +36,21 @@ export const open = (
   const { id: existingProcessId } =
     processes.find(({ name: processName }) => processName === name) || {};
 
-  if (!existingProcessId) {
-    const loader = appLoader(url);
+  if (existingProcessId) return existingProcessId;
 
-    if (loader) {
-      const process = new Process({
-        loader,
-        icon,
-        name,
-        ...loader.loaderOptions
-      });
+  const loader = appLoader(url);
 
-      updateProcesses({ process });
+  if (loader) {
+    const process = new Process({
+      loader,
+      icon,
+      name,
+      ...loader.loaderOptions
+    });
 
-      return process.id;
-    }
-  } else {
-    focus(processes, updateProcesses)(existingProcessId);
+    updateProcesses({ process });
 
-    return existingProcessId;
+    return process.id;
   }
 };
 

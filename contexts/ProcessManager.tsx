@@ -4,7 +4,6 @@ import type { ProcessContextType } from '@/contexts/ProcessManager.d';
 import { createContext, useReducer } from 'react';
 import {
   close,
-  focus,
   maximize,
   minimize,
   open,
@@ -25,8 +24,7 @@ export const ProcessProvider: FC = ({ children }) => {
     <ProcessContext.Provider
       value={{
         processes,
-        close: close(processes, updateProcesses),
-        focus: focus(processes, updateProcesses),
+        close: close(updateProcesses),
         maximize: maximize(updateProcesses),
         minimize: minimize(updateProcesses),
         open: open(processes, updateProcesses),

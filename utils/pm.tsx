@@ -58,7 +58,6 @@ export class Process {
   // TODO: SessionContext
   x;
   y;
-  stackOrder: Array<string> = [];
 
   constructor({
     loader,

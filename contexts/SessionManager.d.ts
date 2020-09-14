@@ -1,5 +1,6 @@
 export type SessionState = {
   foreground?: string;
+  stackOrder?: Array<string>;
 };
 
 export type SessionContextType = {

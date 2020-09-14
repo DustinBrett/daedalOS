@@ -25,16 +25,10 @@ const windowMotionSettings = {
 };
 
 export const Windows: FC = () => {
-  const {
-      processes,
-      close,
-      focus,
-      maximize,
-      minimize,
-      position,
-      size
-    } = useContext(ProcessContext),
-    { background, foreground } = useContext(SessionContext);
+  const { processes, close, maximize, minimize, position, size } = useContext(
+      ProcessContext
+    ),
+    { session, background, foreground } = useContext(SessionContext);
 
   return (
     <article className={styles.windows}>
@@ -52,7 +46,6 @@ export const Windows: FC = () => {
               minimized,
               lockAspectRatio,
               hideScrollbars,
-              stackOrder,
               height,
               width,
               x,
@@ -64,13 +57,16 @@ export const Windows: FC = () => {
               appOptions = {
                 onMinimize: () => minimize?.(id),
                 onMaximize: () => maximize?.(id, !maximized),
-                onClose: () => close?.(id, stackOrder),
-                onFocus: () => focus?.(id) && foreground?.(id),
-                onBlur: () => focus?.(id, false) && background?.(id),
+                onClose: () => {
+                  const nextId = close?.(id, session?.stackOrder || []); // Q: Do I need `session?.` ?
+                  if (nextId) foreground?.(nextId);
+                },
+                onFocus: () => foreground?.(id),
+                onBlur: () => background?.(id),
                 updatePosition: position?.(id),
                 updateSize: size?.(id),
                 zIndex:
-                  1750 + (processes.length - (stackOrder.indexOf(id) + 1)),
+                  1750 + (processes.length - ((session?.stackOrder || []).indexOf(id) + 1)),
                 maximized,
                 minimized,
                 height,

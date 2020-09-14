@@ -10,6 +10,7 @@ export const background = (
   updateSession({
     ...session,
     foreground: session.foreground === id ? '' : session.foreground
+    // TODO: What to do with the stackOrder?
   });
 };
 
@@ -18,5 +19,12 @@ export const foreground = (
   updateSession: Dispatch<SessionState>
 ) => (id: string): void => {
   console.log('foreground', session, id);
-  updateSession({ ...session, foreground: id });
+  updateSession({
+    ...session,
+    foreground: id,
+    stackOrder: [
+      id,
+      ...(session.stackOrder || []).filter((stackId) => stackId !== id)
+    ]
+  });
 };

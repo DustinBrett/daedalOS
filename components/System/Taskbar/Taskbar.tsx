@@ -28,8 +28,8 @@ const taskbarEntriesMotionSettings = {
 const maxWidth = 159;
 
 export const Taskbar: FC = () => {
-  const { processes, focus, minimize } = useContext(ProcessContext),
-    { session, foreground } = useContext(SessionContext),
+  const { processes, minimize } = useContext(ProcessContext),
+    { session, background, foreground } = useContext(SessionContext),
     olRef = useRef<HTMLOListElement>(null),
     [entryWidth, setEntryWidth] = useState(maxWidth);
 
@@ -61,15 +61,15 @@ export const Taskbar: FC = () => {
                 onClick={() => {
                   if (minimized) {
                     minimize?.(id, false);
+                    foreground?.(id);
                   } else {
-                    if (session.foreground === id) {
+                    if (session.foreground === id) { // TODO: Clicking the entry makes it no longer foreground
                       minimize?.(id);
+                      background?.(id);
                     } else {
-                      focus?.(id); // TODO: Get rid of need for this
                       foreground?.(id);
                     }
                   }
-                  // TODO: Call background if minimize is run?
                 }}
               />
             </motion.li>
