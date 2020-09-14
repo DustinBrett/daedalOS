@@ -63,7 +63,8 @@ export const Taskbar: FC = () => {
                     minimize?.(id, false);
                     foreground?.(id);
                   } else {
-                    if (session.foreground === id) { // TODO: Clicking the entry makes it no longer foreground
+                    // TODO: Clicking the entry makes it no longer foreground
+                    if (session.foreground === id) {
                       minimize?.(id);
                       background?.(id);
                     } else {
