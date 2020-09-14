@@ -12,7 +12,12 @@ type TaskbarEntryType = {
   onClick: () => void;
 };
 
-export const TaskbarEntry: FC<TaskbarEntryType> = ({ icon, id, name, onClick }) => {
+export const TaskbarEntry: FC<TaskbarEntryType> = ({
+  icon,
+  id,
+  name,
+  onClick
+}) => {
   const { session } = useContext(SessionContext);
 
   return (
