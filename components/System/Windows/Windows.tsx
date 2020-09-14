@@ -12,7 +12,7 @@ const Window = dynamic(import('@/components/System/Windows/Window'));
 
 const windowMotionSettings = {
   initial: { scale: 0, x: -250, y: -300 },
-  animate: { scale: 1, x: 0, y: 0, zIndex: 10000, position: 'relative' },
+  animate: { scale: 1, x: 0, y: 0 },
   transition: {
     duration: 0.25,
     y: {
@@ -83,7 +83,14 @@ export const Windows: FC = () => {
               };
 
             return (
-              <motion.div key={id} {...windowMotionSettings}>
+              <motion.div
+                key={id}
+                {...windowMotionSettings}
+                style={{
+                  position: session.foreground === id ? 'relative' : 'initial',
+                  zIndex: session.foreground === id ? 10000 : 1750
+                }}
+              >
                 {windowed ? (
                   <Window
                     icon={icon}

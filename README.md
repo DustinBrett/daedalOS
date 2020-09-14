@@ -9,9 +9,7 @@
   - Size opening/positioning logic
     - Relative to the viewport, orientation & resolution
     - Pre-define ideal min sizes for windows
-  - Animate min/max/enter/exit with framer (fix z-index)
-- Taskbar
-  - Clicking recently focused entry is minimizing it
+  - Animate min/max with framer (fix z-index)
 - Start Menu
 
 ## Apps

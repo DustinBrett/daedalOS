@@ -4,11 +4,11 @@ import type { FC } from 'react';
 import type { Process } from '@/utils/pm';
 import type { AppComponent } from '@/utils/programs.d';
 
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { focusOnDrag } from '@/utils/elements';
+import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 
 export const Window: FC<Partial<Process> & AppComponent> = ({
@@ -34,7 +34,12 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   minimized,
   maximized
 }) => {
-  const { session } = useContext(SessionContext);
+  const { session } = useContext(SessionContext),
+    windowRef = useRef<Rnd>(null);
+
+  useEffect(() => {
+    focusResizableElementRef(windowRef);
+  }, []);
 
   return (
     <article
@@ -43,6 +48,7 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
       }}
     >
       <Rnd
+        ref={windowRef}
         enableUserSelectHack={false}
         className={`${styles.window} ${maximized ? styles.maximized : ''} ${
           session.foreground === id ? styles.foreground : ''
