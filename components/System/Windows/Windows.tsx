@@ -1,7 +1,9 @@
+import styles from '@/styles/System/Windows/Windows.module.scss';
+
 import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -23,31 +25,19 @@ const windowMotionSettings = {
 
 export const Windows: FC = () => {
   const {
-      processes,
-      close,
-      focus,
-      maximize,
-      minimize,
-      position,
-      size
-    } = useContext(ProcessContext),
-    [windowMargins, setWindowMargins] = useState({
-      marginTop: 0,
-      marginLeft: 0
-    });
-
-  useEffect(() => {
-    // TODO: Why can't this just be in CSS?
-    setWindowMargins({
-      marginTop: 50,
-      marginLeft: 50
-    });
-  }, []);
+    processes,
+    close,
+    focus,
+    maximize,
+    minimize,
+    position,
+    size
+  } = useContext(ProcessContext);
 
   // TODO: location.hash !== '' open(location.hash);
 
   return (
-    <article style={windowMargins}>
+    <article className={styles.windows}>
       <AnimatePresence>
         {processes.map(
           (
