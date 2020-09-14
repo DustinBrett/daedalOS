@@ -34,8 +34,6 @@ export const Windows: FC = () => {
     size
   } = useContext(ProcessContext);
 
-  // TODO: location.hash !== '' open(location.hash);
-
   return (
     <article className={styles.windows}>
       <AnimatePresence>
