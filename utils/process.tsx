@@ -5,7 +5,6 @@ import type { Processes, ProcessAction } from '@/utils/pm.d';
 import { Process } from '@/utils/pm';
 import { appLoader } from '@/utils/programs';
 
-// TODO: Take in processes and get the next app somehow through that? Maybe based on last ran
 export const close = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
   [, nextRemainingProcessId]: Array<string>

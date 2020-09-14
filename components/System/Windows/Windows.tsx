@@ -66,7 +66,9 @@ export const Windows: FC = () => {
                 updatePosition: position?.(id),
                 updateSize: size?.(id),
                 zIndex:
-                  1750 + (processes.length - ((session?.stackOrder || []).indexOf(id) + 1)),
+                  1750 +
+                  (processes.length -
+                    ((session?.stackOrder || []).indexOf(id) + 1)),
                 maximized,
                 minimized,
                 height,
