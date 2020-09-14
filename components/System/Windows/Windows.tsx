@@ -11,18 +11,20 @@ import { SessionContext } from '@/contexts/SessionManager';
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
 const windowMotionSettings = {
-  initial: { scale: 0, x: -100, y: -100 },
+  initial: { scale: 0, x: -250, y: -300 },
   animate: { scale: 1, x: 0, y: 0, zIndex: 10000, position: 'relative' },
   transition: {
     duration: 0.25,
+    y: {
+      type: 'spring',
+      damping: 10,
+      mass: 0.6
+    }
   },
   exit: {
     scale: 0,
-    x: -100,
-    y: -100,
-    transition: {
-      duration: 0.1
-    }
+    x: -250,
+    y: -300
   }
 };
 
