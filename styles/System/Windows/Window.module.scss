@@ -180,57 +180,73 @@ $buttonIconOpacity: 0.975;
 }
 
 .resizeTop {
-	height: 6px !important;
   top: -3px !important;
+
+  height: 6px !important;
+
   cursor: ns-resize !important;
 }
 
 .resizeRight {
-	width: 6px !important;
   right: -3px !important;
+
+  width: 6px !important;
+
   cursor: ew-resize !important;
 }
 
 .resizeBottom {
-	height: 6px !important;
   bottom: -3px !important;
+
+  height: 6px !important;
+
   cursor: ns-resize !important;
 }
 
 .resizeLeft {
-	width: 6px !important;
   left: -3px !important;
+
+  width: 6px !important;
+
   cursor: ew-resize !important;
 }
 
 .resizeTopRight {
-	width: 12px !important;
-	height: 12px !important;
-	right: -3px !important;
   top: -3px !important;
+  right: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
   cursor: nesw-resize !important;
 }
 
 .resizeBottomRight {
-	width: 12px !important;
-	height: 12px !important;
-	right: -3px !important;
+  right: -3px !important;
   bottom: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
   cursor: nwse-resize !important;
 }
 
 .resizeBottomLeft {
-	width: 12px !important;
-	height: 12px !important;
-	left: -3px !important;
   bottom: -3px !important;
+  left: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
   cursor: nesw-resize !important;
 }
 
 .resizeTopLeft {
-	width: 12px !important;
-	height: 12px !important;
-	left: -3px !important;
   top: -3px !important;
+  left: -3px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
   cursor: nwse-resize !important;
 }
