@@ -54,6 +54,16 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
           session.foreground === id ? styles.foreground : ''
         }`}
         dragHandleClassName="handle"
+        resizeHandleClasses={{
+          top: styles.resizeTop,
+          right: styles.resizeRight,
+          bottom: styles.resizeBottom,
+          left: styles.resizeLeft,
+          topRight: styles.resizeTopRight,
+          bottomRight: styles.resizeBottomRight,
+          bottomLeft: styles.resizeBottomLeft,
+          topLeft: styles.resizeTopLeft
+        }}
         cancel=".cancel"
         default={{
           height: height || 250,

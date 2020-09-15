@@ -41,6 +41,8 @@
 - Explorer
   - Faster select highlighting (via onFocus)
   - Resizable columns
+- Taskbar
+  - Entries should resize better
 - DOS
   - Virtual keyboard on mobile
 - Winamp
