@@ -4,7 +4,6 @@
 
 - Quality
   - Double check colors and sizes (Digital Color Meter)
-  - Fix semantic HTML (https://www.w3.org/wiki/HTML/Usage/Headings/Missing)
 - Windows
   - Size opening/positioning logic
     - Relative to the viewport, orientation & resolution
@@ -40,7 +39,6 @@
   - Top drag constraints
   - Avoid storing stackOrder in every app
 - Explorer
-  - Title change to current folder
   - Faster select highlighting (via onFocus)
   - Resizable columns
 - DOS

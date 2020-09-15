@@ -22,7 +22,7 @@
     flex: 0 1 map-get($taskbarEntry, width);
 
     width: calc(
-      100% - #{map-get($clock, width)} - #{map-get($systemTray, width)}
+      100% - #{map-get($clock, width)}
     );
     height: map-get($taskbar, height);
   }

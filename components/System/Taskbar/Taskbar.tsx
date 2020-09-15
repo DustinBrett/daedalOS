@@ -8,7 +8,6 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import Clock from '@/components/System/Taskbar/Clock';
-import SystemTray from '@/components/System/Taskbar/SystemTray';
 
 const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
@@ -77,7 +76,6 @@ export const Taskbar: FC = () => {
           ))}
         </AnimatePresence>
       </ol>
-      <SystemTray />
       <Clock />
     </nav>
   );
