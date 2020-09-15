@@ -4,7 +4,7 @@ import type {
   DirectoryView
 } from '@/components/System/Directory/Directory.d';
 
-import { basename, extname, resolve } from 'path';
+import { extname, resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
 import { FileContext } from '@/contexts/FileSystem';
@@ -15,11 +15,12 @@ export const Directory: FC<{
   path: string;
   render: FC<DirectoryView>;
   details?: boolean;
-}> = ({ path, render, details = false }) => {
+  onChange?: (cwd: string) => void
+}> = ({ path, render, details = false, onChange }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
-    { open, title } = useContext(ProcessContext),
+    { open } = useContext(ProcessContext),
     { foreground } = useContext(SessionContext),
     onDoubleClick = (
       path?: string,
@@ -37,8 +38,7 @@ export const Directory: FC<{
 
   useEffect(() => {
     getDirectory(fs, cwd, details, setEntries);
-    // TODO: Explorer should do this, not Directory
-    title?.('explorer', cwd === '/' ? 'home' : basename(cwd));
+    onChange?.(cwd);
   }, [fs, cwd]);
 
   return render({ entries, onDoubleClick, cwd });
