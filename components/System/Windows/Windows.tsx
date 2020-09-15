@@ -62,7 +62,7 @@ export const Windows: FC = () => {
                 onMinimize: () => minimize?.(id),
                 onMaximize: () => maximize?.(id, !maximized),
                 onClose: () => {
-                  const nextId = close?.(id, session?.stackOrder || []); // Q: Do I need `session?.` ?
+                  const nextId = close?.(id, session?.stackOrder || []);
                   if (nextId) foreground?.(nextId);
                 },
                 onFocus: () => foreground?.(id),

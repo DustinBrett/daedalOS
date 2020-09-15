@@ -23,7 +23,12 @@ export const Explorer: FC<AppComponent> = ({ url = '/' }) => {
 
   return (
     <article className={styles.explorer}>
-      <Directory path={url} render={DirectoryListView} details={true} onChange={updateTitleOnChange} />
+      <Directory
+        path={url}
+        render={DirectoryListView}
+        details={true}
+        onChange={updateTitleOnChange}
+      />
     </article>
   );
 };

@@ -1,7 +1,7 @@
 import type { Dispatch } from 'react';
 import type { SessionState } from '@/contexts/SessionManager.d';
 
-// TODO: And set foreground on next item in stack?
+// TODO: Set foreground on next item in stack?
 export const background = (
   session: SessionState,
   updateSession: Dispatch<SessionState>
@@ -9,7 +9,6 @@ export const background = (
   updateSession({
     ...session,
     foreground: session.foreground === id ? '' : session.foreground
-    // TODO: What to do with the stackOrder?
   });
 };
 

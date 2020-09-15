@@ -15,7 +15,7 @@ export const Directory: FC<{
   path: string;
   render: FC<DirectoryView>;
   details?: boolean;
-  onChange?: (cwd: string) => void
+  onChange?: (cwd: string) => void;
 }> = ({ path, render, details = false, onChange }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
