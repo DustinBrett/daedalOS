@@ -14,7 +14,7 @@ const windowMotionSettings = {
   initial: { scale: 0, x: -250, y: -300 },
   animate: { scale: 1, x: 0, y: 0 },
   transition: {
-    duration: 0.25,
+    duration: 0.2,
     y: {
       type: 'spring',
       damping: 10,
@@ -29,9 +29,15 @@ const windowMotionSettings = {
 };
 
 export const Windows: FC = () => {
-  const { processes, close, maximize, minimize, position, size } = useContext(
-      ProcessContext
-    ),
+  const {
+      processes,
+      close,
+      maximize,
+      minimize,
+      position,
+      restore,
+      size
+    } = useContext(ProcessContext),
     { session, background, foreground } = useContext(SessionContext);
 
   return (
@@ -60,7 +66,7 @@ export const Windows: FC = () => {
             const cascadeSpacing = index * 20 || 0,
               appOptions = {
                 onMinimize: () => minimize?.(id),
-                onMaximize: () => maximize?.(id, !maximized),
+                onMaximize: () => (maximized ? restore?.(id) : maximize?.(id)),
                 onClose: () => {
                   const nextId = close?.(id, session?.stackOrder || []);
                   if (nextId) foreground?.(nextId);

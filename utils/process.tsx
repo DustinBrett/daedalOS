@@ -15,18 +15,12 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
 };
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  toggleMaximized = true
-): void => updateProcesses({ updates: { maximized: toggleMaximized }, id });
+  id: string
+): void => updateProcesses({ updates: { maximized: true }, id });
 
 export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  toggleMinimized = true
-): void =>
-  updateProcesses({
-    updates: { minimized: toggleMinimized },
-    id
-  });
+  id: string
+): void => updateProcesses({ updates: { minimized: true }, id });
 
 export const open = (
   processes: Processes,
@@ -57,6 +51,14 @@ export const position = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string
 ): RndDragCallback => (_event, { x, y }): void =>
   updateProcesses({ id, updates: { x, y } });
+
+export const restore = (updateProcesses: Dispatch<ProcessAction>) => (
+  id: string
+): void =>
+  updateProcesses({
+    updates: { maximized: false, minimized: false },
+    id
+  });
 
 export const size = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string

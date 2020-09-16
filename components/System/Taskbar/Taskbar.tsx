@@ -7,31 +7,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
+import { cycleWindowState } from '@/utils/taskbar';
+import { taskbarEntriesMotionSettings } from '@/utils/motions';
 import Clock from '@/components/System/Taskbar/Clock';
 
 const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
 );
 
-const taskbarEntriesMotionSettings = {
-  initial: { opacity: 0, x: -100 },
-  animate: { opacity: 1, x: 0 },
-  transition: {
-    x: {
-      type: 'spring'
-    }
-  },
-  exit: { opacity: 0, width: 0, transition: { duration: 0.3 }, x: -100 }
-};
-
-const maxWidth = 159;
-
 export const Taskbar: FC = () => {
-  const { processes, minimize } = useContext(ProcessContext),
+  const { processes, minimize, restore } = useContext(ProcessContext),
     { session, background, foreground } = useContext(SessionContext),
-    olRef = useRef<HTMLOListElement>(null),
-    [entryWidth, setEntryWidth] = useState(maxWidth);
 
+    // TODO: Remove this and just figure out flex with framer-motion
+    // -----
+    olRef = useRef<HTMLOListElement>(null),
+    maxWidth = 159,
+    [entryWidth, setEntryWidth] = useState(maxWidth);
   useEffect(() => {
     setEntryWidth(
       Math.min(
@@ -42,6 +34,7 @@ export const Taskbar: FC = () => {
       )
     );
   }, [processes]);
+  // -----
 
   return (
     <nav className={styles.taskbar}>
@@ -57,20 +50,18 @@ export const Taskbar: FC = () => {
                 icon={icon}
                 id={id}
                 name={name}
-                onClick={() => {
-                  if (minimized) {
-                    minimize?.(id, false);
-                    foreground?.(id);
-                  } else {
-                    if (session.foreground === id) {
-                      minimize?.(id);
-                      background?.(id);
-                    } else {
-                      foreground?.(id);
-                    }
-                  }
-                }}
                 onBlur={() => background?.(id)}
+                onClick={() =>
+                  cycleWindowState({
+                    id,
+                    session,
+                    minimized,
+                    background,
+                    foreground,
+                    minimize,
+                    restore
+                  })
+                }
               />
             </motion.li>
           ))}

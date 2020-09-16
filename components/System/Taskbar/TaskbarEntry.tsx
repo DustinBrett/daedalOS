@@ -2,16 +2,8 @@ import styles from '@/styles/System/Taskbar/TaskbarEntry.module.scss';
 
 import type { FC } from 'react';
 
-import { useContext } from 'react';
 import { SessionContext } from '@/contexts/SessionManager';
-
-type TaskbarEntryType = {
-  icon: string;
-  id: string;
-  name: string;
-  onBlur: () => void;
-  onClick: () => void;
-};
+import { TaskbarEntryType } from '@/components/System/Taskbar/TaskbarEntry.d';
 
 export const TaskbarEntry: FC<TaskbarEntryType> = ({
   icon,
@@ -19,24 +11,24 @@ export const TaskbarEntry: FC<TaskbarEntryType> = ({
   name,
   onBlur,
   onClick
-}) => {
-  const { session } = useContext(SessionContext);
-
-  return (
-    <div
-      className={`${styles.taskbarEntry} ${
-        session.foreground === id && styles.foreground
-      }`}
-      onClick={onClick}
-      onBlur={onBlur}
-      tabIndex={0}
-    >
-      <figure>
-        <img alt={name} src={icon} draggable={false} />
-        <figcaption>{name}</figcaption>
-      </figure>
-    </div>
-  );
-};
+}) => (
+  <SessionContext.Consumer>
+    {({ session }) => (
+      <div
+        className={`${styles.taskbarEntry} ${
+          session.foreground === id && styles.foreground
+        }`}
+        onBlur={onBlur}
+        onClick={onClick}
+        tabIndex={0}
+      >
+        <figure>
+          <img alt={name} draggable={false} src={icon} />
+          <figcaption>{name}</figcaption>
+        </figure>
+      </div>
+    )}
+  </SessionContext.Consumer>
+);
 
 export default TaskbarEntry;

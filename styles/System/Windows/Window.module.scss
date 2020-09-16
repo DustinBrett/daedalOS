@@ -12,9 +12,13 @@ $buttonIconOpacity: 0.975;
   letter-spacing: 0.5px;
 
   border-radius: map-get($window, border-radius);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(150, 150, 150, 0.3), 0 0 0 2px rgba(0, 0, 0, 0.4),
+    0 5px 50px rgba(0, 0, 0, 0.3);
 
   &.foreground {
+    box-shadow: 0 0 0 1px rgba(125, 125, 125, 0.5), 0 0 0 2px rgba(0, 0, 0, 0.6),
+      0 5px 50px rgba(0, 0, 0, 0.5);
+
     #minimize {
       color: $minimize;
       background-color: $minimize;

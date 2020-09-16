@@ -10,8 +10,6 @@ import DirectoryIconsView from '@/components/System/Directory/DirectoryIconsView
 import Windows from '@/components/System/Windows/Windows';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
 
-// TODO: Session context: `foreground, stackOrder, x, y, selected (icon & window), focus, zIndex, partially height & width`
-
 export default function HomePage(): ReactElement {
   return (
     <>

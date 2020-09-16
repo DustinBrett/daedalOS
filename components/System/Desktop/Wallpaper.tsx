@@ -20,7 +20,7 @@ const fps = 20,
     shininess: 35,
     waveHeight: 15,
     waveSpeed: 0.25,
-    zoom: 1
+    zoom: 0.95
   };
 
 const initRainbowEffect = (wallpaperEffect: WallpaperEffect): (() => void) => {

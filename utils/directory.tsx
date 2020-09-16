@@ -17,9 +17,6 @@ import { parseShortcut } from '@/utils/shortcut';
 
 const homeDir = '/';
 
-// TODO: Cache size and modified in index.json
-// import { formatToLongDateTime } from '@/utils/dates';
-
 const getBestIconMatch = (
   icon: string,
   isDirectory: boolean,

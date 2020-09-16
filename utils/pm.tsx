@@ -55,7 +55,6 @@ export class Process {
   maximized = false;
   minimized = false;
 
-  // TODO: SessionContext
   x;
   y;
 

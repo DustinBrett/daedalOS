@@ -2,14 +2,20 @@
 
 ## System
 
-- Quality
-  - Double check colors and sizes (Digital Color Meter)
+- Session
+  - x, y, height & width
+  - Possibly: zIndex, focus, selected
 - Windows
   - Size opening/positioning logic
-    - Relative to the viewport, orientation & resolution
-    - Pre-define ideal min sizes for windows
-  - Animate min/max with framer (fix z-index)
-- Start Menu
+    - 1. In apps set a width and height that looks best
+    - 2. When loading the app, try and use those values
+    - 3. If there is not enough viewport for a dimension with padding, then shrink by the difference
+  - Focus last viewed process on close/minimize of current process
+  - Animate min/max with framer
+  - Open/close scaling from the x/y of the icon that opened it
+  - Title text should be more reactive
+- Quality
+  - Double check colors and sizes (Digital Color Meter)
 
 ## Apps
 
@@ -28,6 +34,7 @@
 
 # Post-MVP
 
+- Start Menu
 - next-optimized-images
 - Startup URL Routing to programs/files (Part of url.tsx)
 - Clippy.JS (https://www.smore.com/clippy-js)
@@ -41,8 +48,10 @@
 - Explorer
   - Faster select highlighting (via onFocus)
   - Resizable columns
+  - Cache size and modified time
 - Taskbar
-  - Entries should resize better
+  - Entries should resize smoother
+  - Blur content behind taskbar
 - DOS
   - Virtual keyboard on mobile
 - Winamp
@@ -60,3 +69,9 @@
   - https://github.com/gummipunkt/thelounge_theme_mircalike
 - Code Editor (https://codemirror.net/, https://ace.c9.io/)
 - Photo Viewer
+
+# Performance
+
+- useCallback/useMemo
+- https://github.com/welldone-software/why-did-you-render
+- https://chrome.google.com/webstore/detail/react-developer-tools

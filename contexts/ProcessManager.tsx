@@ -8,6 +8,7 @@ import {
   minimize,
   open,
   position,
+  restore,
   size,
   title
 } from '@/utils/process';
@@ -29,6 +30,7 @@ export const ProcessProvider: FC = ({ children }) => {
         minimize: minimize(updateProcesses),
         open: open(processes, updateProcesses),
         position: position(updateProcesses),
+        restore: restore(updateProcesses),
         size: size(updateProcesses),
         title: title(updateProcesses)
       }}
