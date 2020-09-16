@@ -10,10 +10,10 @@
     - 1. In apps set a width and height that looks best
     - 2. When loading the app, try and use those values
     - 3. If there is not enough viewport for a dimension with padding, then shrink by the difference
-  - Focus last viewed process on close/minimize of current process
   - Animate min/max with framer
   - Open/close scaling from the x/y of the icon that opened it
   - Title text should be more reactive
+  - Closing 3rd window didn't shift focus/foreground properly
 - Quality
   - Double check colors and sizes (Digital Color Meter)
 

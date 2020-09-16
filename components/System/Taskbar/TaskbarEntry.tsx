@@ -16,7 +16,7 @@ export const TaskbarEntry: FC<TaskbarEntryType> = ({
     {({ session }) => (
       <div
         className={`${styles.taskbarEntry} ${
-          session.foreground === id && styles.foreground
+          session.foregroundId === id && styles.foreground
         }`}
         onBlur={onBlur}
         onClick={onClick}

@@ -1,10 +1,10 @@
 export type SessionState = {
-  foreground?: string;
+  foregroundId?: string;
   stackOrder?: Array<string>;
 };
 
 export type SessionContextType = {
   session: SessionState;
-  background?: (id: string) => void;
-  foreground?: (id: string) => void;
+  background?: (id?: string) => void;
+  foreground?: (id?: string) => void;
 };

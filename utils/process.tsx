@@ -19,8 +19,13 @@ export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
 ): void => updateProcesses({ updates: { maximized: true }, id });
 
 export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string
-): void => updateProcesses({ updates: { minimized: true }, id });
+  id: string,
+  [, nextRemainingProcessId]: Array<string>
+): string | undefined => {
+  updateProcesses({ updates: { minimized: true }, id });
+
+  if (nextRemainingProcessId) return nextRemainingProcessId;
+};
 
 export const open = (
   processes: Processes,

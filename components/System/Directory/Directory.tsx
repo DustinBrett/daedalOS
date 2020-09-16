@@ -31,8 +31,7 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        const id = open?.(url || path || '', icon, name);
-        foreground?.(id || '');
+        foreground?.(open?.(url || path || '', icon, name));
       }
     };
 

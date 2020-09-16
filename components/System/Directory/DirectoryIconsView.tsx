@@ -6,7 +6,10 @@ import type { DirectoryView } from '@/components/System/Directory/Directory.d';
 import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ClickHandler } from '@/utils/events';
-import { desktopIconDragSettings, desktopIconMotionSettings } from '@/utils/motions';
+import {
+  desktopIconDragSettings,
+  desktopIconMotionSettings
+} from '@/utils/motions';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
