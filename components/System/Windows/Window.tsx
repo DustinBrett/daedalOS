@@ -36,7 +36,9 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   minimized,
   maximized
 }) => {
-  const { session } = useContext(SessionContext),
+  const {
+      session: { foregroundId }
+    } = useContext(SessionContext),
     windowRef = useRef<Rnd>(null);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
         ref={windowRef}
         enableUserSelectHack={false}
         className={`${styles.window} ${maximized ? styles.maximized : ''} ${
-          session.foregroundId === id ? styles.foreground : ''
+          foregroundId === id ? styles.foreground : ''
         }`}
         dragHandleClassName="handle"
         resizeHandleClasses={{

@@ -16,6 +16,8 @@
   - Closing 3rd window didn't shift focus/foreground properly
 - Quality
   - Double check colors and sizes (Digital Color Meter)
+  - next-optimized-images
+    - https://web.dev/image-aspect-ratio/?utm_source=lighthouse&utm_medium=devtools
 
 ## Apps
 
@@ -25,6 +27,7 @@
   - Auto Zoom
   - Complete UI/Toolbar
 - Explorer
+  - Faster select highlighting (via onFocus)
   - Breadcrumb Bar
   - Complete UI/Toolbar
 - Document Viewer for Blog (https://webodf.org/)
@@ -36,7 +39,6 @@
 # Post-MVP
 
 - Start Menu
-- next-optimized-images
 - Startup URL Routing to programs/files (Part of url.tsx)
 - Clippy.JS (https://www.smore.com/clippy-js)
 - Icons
@@ -44,10 +46,8 @@
   - Text un-truncate on selection (Don't truncate icons for now)
   - Horizontal rendering issues with mixed 1-2 line icon labels (CSS Grid)
 - Window
-  - Top drag constraints
   - Avoid storing stackOrder in every app
 - Explorer
-  - Faster select highlighting (via onFocus)
   - Resizable columns
   - Cache size and modified time
 - Taskbar

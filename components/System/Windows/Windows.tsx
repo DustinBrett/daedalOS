@@ -24,7 +24,11 @@ export const Windows: FC = () => (
           size
         }) => (
           <SessionContext.Consumer>
-            {({ session, background, foreground }) =>
+            {({
+              session: { stackOrder, foregroundId },
+              background,
+              foreground
+            }) =>
               processes.map(
                 (
                   {
@@ -48,11 +52,11 @@ export const Windows: FC = () => (
                   const cascadeSpacing = index * 20 || 0,
                     appOptions = {
                       onMinimize: () =>
-                        foreground?.(minimize?.(id, session?.stackOrder || [])),
+                        foreground?.(minimize?.(id, stackOrder || [])),
                       onMaximize: () =>
                         maximized ? restore?.(id) : maximize?.(id),
                       onClose: () =>
-                        foreground?.(close?.(id, session?.stackOrder || [])),
+                        foreground?.(close?.(id, stackOrder || [])),
                       onFocus: () => foreground?.(id),
                       onBlur: () => background?.(id),
                       updatePosition: position?.(id),
@@ -60,7 +64,7 @@ export const Windows: FC = () => (
                       zIndex:
                         1750 +
                         (processes.length -
-                          ((session?.stackOrder || []).indexOf(id) + 1)),
+                          ((stackOrder || []).indexOf(id) + 1)),
                       maximized,
                       minimized,
                       height,
@@ -69,7 +73,7 @@ export const Windows: FC = () => (
                       x: x || cascadeSpacing,
                       y: y || cascadeSpacing
                     },
-                    isForeground = session.foregroundId === id;
+                    isForeground = foregroundId === id;
 
                   return (
                     <motion.div

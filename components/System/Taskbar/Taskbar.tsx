@@ -18,7 +18,6 @@ const TaskbarEntry = dynamic(
 export const Taskbar: FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext),
     { session, background, foreground } = useContext(SessionContext),
-
     // TODO: Remove this and just figure out flex with framer-motion
     // -----
     olRef = useRef<HTMLOListElement>(null),
