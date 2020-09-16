@@ -4,29 +4,12 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useContext } from 'react';
-import { ProcessContext } from '@/contexts/ProcessManager';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
+import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
-
-const windowMotionSettings = {
-  initial: { scale: 0, x: -250, y: -300 },
-  animate: { scale: 1, x: 0, y: 0 },
-  transition: {
-    duration: 0.2,
-    y: {
-      type: 'spring',
-      damping: 10,
-      mass: 0.6
-    }
-  },
-  exit: {
-    scale: 0,
-    x: -250,
-    y: -300
-  }
-};
 
 export const Windows: FC = () => {
   const {
@@ -86,16 +69,17 @@ export const Windows: FC = () => {
                 id,
                 x: x || cascadeSpacing,
                 y: y || cascadeSpacing
-              };
+              },
+              isForeground = session.foreground === id;
 
             return (
               <motion.div
                 key={id}
-                {...windowMotionSettings}
                 style={{
-                  position: session.foreground === id ? 'relative' : 'initial',
-                  zIndex: session.foreground === id ? 10000 : 1750
+                  position: isForeground ? 'relative' : 'initial',
+                  zIndex: isForeground ? 10000 : 1750
                 }}
+                {...windowMotionSettings}
               >
                 {windowed ? (
                   <Window

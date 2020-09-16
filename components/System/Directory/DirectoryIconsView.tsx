@@ -6,28 +6,13 @@ import type { DirectoryView } from '@/components/System/Directory/Directory.d';
 import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ClickHandler } from '@/utils/events';
-
-const desktopIconDragSettings = {
-  dragElastic: 0.15,
-  dragTransition: { bounceStiffness: 500, bounceDamping: 15 },
-  dragMomentum: false
-};
-
-const desktopIconMotionSettings = {
-  initial: { opacity: 0, y: -100 },
-  animate: { opacity: 1, y: 0 },
-  transition: {
-    y: {
-      type: 'spring'
-    }
-  }
-};
+import { desktopIconDragSettings, desktopIconMotionSettings } from '@/utils/motions';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
   onDoubleClick
 }) => {
-  const navRef = useRef(null);
+  const navRef = useRef<HTMLElement>(null);
 
   return (
     <nav className={styles.directoryIcons} ref={navRef}>
@@ -37,20 +22,20 @@ export const DirectoryIcons: FC<DirectoryView> = ({
             <motion.li
               key={path}
               className={styles.directoryIcon}
-              tabIndex={0}
-              title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
+              drag
+              dragConstraints={navRef}
               onClick={
                 new ClickHandler({
                   doubleClick: onDoubleClick(path, url, icon, name)
                 }).clickHandler
               }
-              drag
-              dragConstraints={navRef}
+              tabIndex={0}
+              title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
               {...desktopIconDragSettings}
               {...desktopIconMotionSettings}
             >
               <figure>
-                <img alt={name} src={icon} draggable={false} />
+                <img alt={name} draggable={false} src={icon} />
                 <figcaption>{name}</figcaption>
               </figure>
             </motion.li>
