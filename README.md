@@ -20,6 +20,7 @@
 ## Apps
 
 - PDF
+  - Fix window SS build error
   - Download & Print
   - Auto Zoom
   - Complete UI/Toolbar
