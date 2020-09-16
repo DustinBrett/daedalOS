@@ -5,12 +5,13 @@ import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper.d';
 
 import * as THREE from 'three';
 import Color from 'color';
+import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 
 const wallpaperColor = (h: number): number =>
   Color(`hsl(${h}, 35%, 12%)`).rgbNumber();
 
 const fps = 20,
-  updateIntervalInMilliseconds = Number(process.env.millisecondsInSecond) / fps,
+  updateIntervalInMilliseconds = MILLISECONDS_IN_SECOND / fps,
   initialColor = 200,
   vantaJsSettings = {
     gyroControls: false,

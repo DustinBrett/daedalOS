@@ -10,11 +10,10 @@ import {
   isMidnight,
   newDate
 } from '@/utils/dates';
-
-const millisecondsInSecond = Number(process.env.millisecondsInSecond);
+import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 
 const millisecondsTillNextSecond = () =>
-  millisecondsInSecond - newDate().getMilliseconds();
+  MILLISECONDS_IN_SECOND - newDate().getMilliseconds();
 
 export const Clock: FC = () => {
   const initialDate = newDate(),
@@ -38,7 +37,7 @@ export const Clock: FC = () => {
 
     setTimeout(() => {
       updateClock();
-      clockIntervalId = setInterval(updateClock, millisecondsInSecond);
+      clockIntervalId = setInterval(updateClock, MILLISECONDS_IN_SECOND);
     }, millisecondsTillNextSecond());
 
     return () => {

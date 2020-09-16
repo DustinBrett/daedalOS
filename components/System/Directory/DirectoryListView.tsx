@@ -1,8 +1,9 @@
 import styles from '@/styles/System/Directory/DirectoryList.module.scss';
 
-import { FC, useState } from 'react';
+import type { FC } from 'react';
 import type { DirectoryView } from '@/components/System/Directory/Directory.d';
 
+import { useState } from 'react';
 import { ClickHandler } from '@/utils/events';
 
 const homeDir = '/';
@@ -29,9 +30,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             className={selected === '..' ? styles.selected : ''}
             onClick={
               new ClickHandler({
-                singleClick: () => {
-                  setSelected('..');
-                },
+                singleClick: () => setSelected('..'),
                 doubleClick: onDoubleClick('..')
               }).clickHandler
             }
@@ -46,9 +45,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             key={path}
             onClick={
               new ClickHandler({
-                singleClick: () => {
-                  setSelected(path);
-                },
+                singleClick: () => setSelected(path),
                 doubleClick: onDoubleClick(path, url, icon, name)
               }).clickHandler
             }

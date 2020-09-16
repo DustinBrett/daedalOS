@@ -6,8 +6,7 @@ module.exports = withImages({
   },
   env: {
     lang: 'en',
-    locale: 'en-US',
-    millisecondsInSecond: 1000
+    locale: 'en-US'
   },
   reactStrictMode: true
 });
