@@ -9,7 +9,6 @@ import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
-import { SessionContext } from '@/contexts/SessionManager';
 
 export const Directory: FC<{
   path: string;
@@ -20,8 +19,7 @@ export const Directory: FC<{
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
-    { open } = useContext(ProcessContext),
-    { foreground } = useContext(SessionContext),
+    { load, open } = useContext(ProcessContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -31,8 +29,12 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        foreground?.(open?.(url || path || '', icon, name));
+        open?.(url || path || '', icon, name);
       }
+    },
+    // Q: Should this be in <desktop>
+    onFileDrop = (file: File) => {
+      load?.(file);
     };
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export const Directory: FC<{
     onChange?.(cwd);
   }, [fs, cwd]);
 
-  return render({ entries, onDoubleClick, cwd });
+  return render({ entries, onDoubleClick, onFileDrop, cwd });
 };
 
 export default Directory;

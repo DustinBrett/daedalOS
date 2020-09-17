@@ -102,6 +102,7 @@ export const Winamp: FC<Partial<Process> & AppComponent> = ({
         webamp?.appendTracks([demoTrack]);
         webamp?.setSkinFromUrl(url);
       } else {
+        // TODO: Get file name from url when drag/drop
         webamp?.setTracksToPlay([
           url ? { url: url, metaData: { artist: '', title: '' } } : demoTrack
         ]);

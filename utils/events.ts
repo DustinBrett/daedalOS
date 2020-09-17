@@ -1,4 +1,23 @@
+import { FileDropEvents } from '@/utils/events.d';
+
 const CLICK_DELAY_IN_MILLISECONDS = 300;
+
+const haltEvent = (event: React.DragEvent): void => {
+  event.preventDefault();
+  event.stopPropagation();
+};
+
+export const useFileDrop = (onFileDrop: (file: File) => void): FileDropEvents => ({
+  onDragLeave: (event: React.DragEvent) => haltEvent(event),
+  onDragEnter: (event: React.DragEvent) => haltEvent(event),
+  onDragOver: (event: React.DragEvent) => haltEvent(event),
+  onDrop: (event: React.DragEvent) => {
+    const { dataTransfer: { files: [file] = [] } = {} } = event;
+
+    haltEvent(event);
+    onFileDrop(file);
+  }
+});
 
 export class ClickHandler {
   clickTimer: NodeJS.Timeout | undefined;

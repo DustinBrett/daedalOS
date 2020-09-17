@@ -41,9 +41,10 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
 
 const appLoaderByFileType = (
   path: string,
-  searchParams?: URLSearchParams
+  searchParams?: URLSearchParams,
+  ext?: string
 ): AppLoader | undefined => {
-  switch (extname(path)) {
+  switch (ext || extname(path)) {
     case '.jsdos':
       return {
         loader: Dos,
@@ -74,14 +75,15 @@ const appLoaderByFileType = (
   }
 };
 
-export const appLoader = (url: string): AppLoader | undefined => {
+export const appLoader = (url: string, name: string): AppLoader | undefined => {
+  console.log(url, name);
   if (isValidUrl(url)) {
     const { pathname, searchParams } = new URL(url);
 
     return pathname === '/'
       ? appLoaderByName(searchParams.get('app') || '')
-      : appLoaderByFileType(pathname, searchParams);
+      : appLoaderByFileType(pathname, searchParams, extname(name));
   }
 
-  return appLoaderByFileType(url);
+  return appLoaderByFileType(url); // Q: When would this occur?
 };

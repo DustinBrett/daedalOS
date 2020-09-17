@@ -2,8 +2,10 @@ import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { Processes, ProcessAction } from '@/utils/pm.d';
 
+import { extname } from 'path';
 import { Process } from '@/utils/pm';
 import { appLoader } from '@/utils/programs';
+import { getFileIcon } from '@/utils/file';
 
 export const close = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
@@ -12,6 +14,23 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
   updateProcesses({ id });
 
   if (nextRemainingProcessId) return nextRemainingProcessId;
+};
+
+export const load = (
+  processes: Processes,
+  updateProcesses: Dispatch<ProcessAction>
+) => (file: File): string | undefined => {
+  const fileReader = new FileReader();
+
+  fileReader.addEventListener('loadend', () => {
+    const url = URL.createObjectURL(new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]));
+
+    open(processes, updateProcesses)(`blob:${url}?name=${file.name}`, getFileIcon('', extname(file.name)), file.name);
+  });
+
+  fileReader.readAsArrayBuffer(file);
+
+  return ''; // TODO: Return loaded id
 };
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
@@ -36,7 +55,7 @@ export const open = (
 
   if (existingProcessId) return existingProcessId;
 
-  const loader = appLoader(url);
+  const loader = appLoader(url, name);
 
   if (loader) {
     const process = new Process({
