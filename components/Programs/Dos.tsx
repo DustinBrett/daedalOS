@@ -46,8 +46,8 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
       if (url) {
         const appPath = url.replace('.jsdos', '');
 
-        fs?.extract?.(url, appPath)?.then(
-          () => loadMain(main, ['-c', `CD ${appPath}`])
+        fs?.extract?.(url, appPath)?.then(() =>
+          loadMain(main, ['-c', `CD ${appPath}`])
         );
       } else {
         loadMain(main);
