@@ -44,7 +44,9 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
 
     Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        const appPath = (args[0] === 'name' ? args[1] : url).replace('.jsdos', '').substring(0, 8);
+        const appPath = (args[0] === 'name' ? args[1] : url)
+          .replace('.jsdos', '')
+          .substring(0, 8);
 
         fs?.extract?.(url, appPath)?.then(() =>
           loadMain(main, ['-c', `CD ${appPath}`])

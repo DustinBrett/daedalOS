@@ -23,9 +23,15 @@ export const load = (
   const fileReader = new FileReader();
 
   fileReader.addEventListener('loadend', () => {
-    const url = URL.createObjectURL(new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]));
+    const url = URL.createObjectURL(
+      new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
+    );
 
-    open(processes, updateProcesses)(`blob:${url}?name=${file.name}`, getFileIcon('', extname(file.name)), file.name);
+    open(processes, updateProcesses)(
+      `blob:${url}?name=${file.name}`,
+      getFileIcon('', extname(file.name)),
+      file.name
+    );
   });
 
   fileReader.readAsArrayBuffer(file);

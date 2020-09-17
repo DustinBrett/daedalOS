@@ -7,7 +7,9 @@ const haltEvent = (event: React.DragEvent): void => {
   event.stopPropagation();
 };
 
-export const useFileDrop = (onFileDrop: (file: File) => void): FileDropEvents => ({
+export const useFileDrop = (
+  onFileDrop: (file: File) => void
+): FileDropEvents => ({
   onDragLeave: (event: React.DragEvent) => haltEvent(event),
   onDragEnter: (event: React.DragEvent) => haltEvent(event),
   onDragOver: (event: React.DragEvent) => haltEvent(event),
