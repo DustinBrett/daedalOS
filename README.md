@@ -15,7 +15,6 @@
   - Title text should be more reactive
   - Closing 3rd window didn't shift focus/foreground properly
 - Quality
-  - Double check colors and sizes (Digital Color Meter)
   - next-optimized-images
     - https://web.dev/image-aspect-ratio/?utm_source=lighthouse&utm_medium=devtools
 
