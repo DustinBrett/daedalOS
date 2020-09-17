@@ -1,5 +1,6 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
+@import '@/styles/variables';
 
 @mixin positionTopLeft {
   position: fixed;
