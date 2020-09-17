@@ -15,14 +15,15 @@ const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
 );
 
+// TODO: Remove the need for setting entry widths
+
 export const Taskbar: FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext),
     { session, background, foreground } = useContext(SessionContext),
-    // TODO: Remove this and just figure out flex with framer-motion
-    // -----
     olRef = useRef<HTMLOListElement>(null),
     maxWidth = 159,
     [entryWidth, setEntryWidth] = useState(maxWidth);
+
   useEffect(() => {
     setEntryWidth(
       Math.min(
@@ -33,7 +34,6 @@ export const Taskbar: FC = () => {
       )
     );
   }, [processes]);
-  // -----
 
   return (
     <nav className={styles.taskbar}>

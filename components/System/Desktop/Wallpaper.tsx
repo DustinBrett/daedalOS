@@ -8,7 +8,7 @@ import Color from 'color';
 import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 
 const wallpaperColor = (h: number): number =>
-  Color(`hsl(${h}, 35%, 12%)`).rgbNumber();
+  Color(`hsl(${h}, 40%, 15%)`).rgbNumber();
 
 const fps = 20,
   updateIntervalInMilliseconds = MILLISECONDS_IN_SECOND / fps,

@@ -8,6 +8,10 @@ import { ClickHandler } from '@/utils/events';
 
 const homeDir = '/';
 
+// TODO: Create DirectyListEntry
+// TODO: Stop using custom click handler, replace single click with focusing
+// TODO: style.emphasis is not needed
+
 export const DirectoryList: FC<DirectoryView> = ({
   onDoubleClick,
   cwd,
@@ -43,12 +47,13 @@ export const DirectoryList: FC<DirectoryView> = ({
           <tr
             className={selected === path ? styles.selected : ''}
             key={path}
+            onFocus={() => setSelected(path)}
             onClick={
               new ClickHandler({
-                singleClick: () => setSelected(path),
                 doubleClick: onDoubleClick(path, url, icon, name)
               }).clickHandler
             }
+            tabIndex={0}
           >
             <td className={styles.emphasis} title={name}>
               <figure>

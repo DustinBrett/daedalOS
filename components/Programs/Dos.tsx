@@ -29,6 +29,7 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
       main?.([...prependedArgs, ...args])?.then((value) => {
         ci = value;
       }),
+    // TODO: Set app to foreground instead of manually focusing
     focusCanvas = () => {
       (canvasRef.current?.closest(
         ':not(li)[tabindex]'
