@@ -24,7 +24,6 @@ export const DirectoryIcons: FC<DirectoryView> = ({
           {entries.map(({ icon, name, kind, path, url }) => (
             <motion.li
               key={path}
-              className={styles.directoryIcon}
               drag
               dragConstraints={navRef}
               onClick={

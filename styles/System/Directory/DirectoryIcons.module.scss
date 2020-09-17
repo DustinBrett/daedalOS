@@ -1,106 +1,97 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
+@mixin positionTopLeft {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .directoryIcons {
-  @include topLeft;
+  @include positionTopLeft;
 
   width: 100%;
   height: calc(100% - #{map-get($taskbar, height)});
   padding: map-get($icons, padding) 0;
 
-  ol {
+  li {
+    font-size: map-get($icon, font-size);
+
+    z-index: map-get($zIndex, icons);
+
     display: flex;
-    align-content: flex-start;
-    flex-flow: column wrap;
 
-    height: 100%;
+    width: map-get($icon, width);
+    min-height: map-get($icon, min-height);
+    max-height: map-get($icon, max-height);
+    margin: 0 0 (map-get($icons, padding) * 3) 0;
 
-    .directoryIcon {
-      font-size: map-get($icon, font-size);
+    color: map-get($icon, text-color);
+    text-shadow: map-get($icon, text-shadow);
 
-      z-index: map-get($icon, z-index);
+    place-content: space-evenly;
+    place-items: center;
 
-      display: flex;
-      flex-direction: column;
+    &:last-child {
+      margin-bottom: unset;
+    }
 
-      width: map-get($icon, width);
-      min-height: map-get($icon, min-height);
-      max-height: map-get($icon, max-height);
-      margin: 0 0 (map-get($icons, padding) * 3) 0;
+    &:hover {
+      outline: 1px solid
+        rgba(map-get($icon, highlight-color), map-get($icon, hover-bg-opacity));
+      outline-offset: -2px;
+      background-color: rgba(
+        map-get($icon, highlight-color),
+        map-get($icon, hover-bg-opacity)
+      );
+    }
 
-      color: map-get($icon, text-color);
-      text-shadow: map-get($icon, text-shadow);
-
-      place-content: space-evenly;
-      place-items: center;
-
-      &:last-child {
-        margin-bottom: unset;
-      }
+    &:focus {
+      outline: 1px dotted
+        rgba(map-get($icon, highlight-color), map-get($icon, focus-bg-opacity));
+      outline-offset: -2px;
+      background-color: rgba(
+        map-get($icon, highlight-color),
+        map-get($icon, focus-bg-opacity)
+      );
 
       &:hover {
-        outline: 1px solid
-          rgba(
-            map-get($icon, highlight-color),
-            map-get($icon, hover-bg-opacity)
-          );
-        outline-offset: -2px;
+        outline-style: solid;
         background-color: rgba(
           map-get($icon, highlight-color),
-          map-get($icon, hover-bg-opacity)
+          map-get($icon, focus-hover-bg-opacity)
         );
       }
+    }
 
-      &:focus {
-        outline: 1px dotted
-          rgba(
-            map-get($icon, highlight-color),
-            map-get($icon, focus-bg-opacity)
-          );
-        outline-offset: -2px;
-        background-color: rgba(
-          map-get($icon, highlight-color),
-          map-get($icon, focus-bg-opacity)
-        );
+    figure {
+      margin: 5px 0;
 
-        &:hover {
-          outline-style: solid;
-          background-color: rgba(
-            map-get($icon, highlight-color),
-            map-get($icon, focus-hover-bg-opacity)
-          );
-        }
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      img {
+        width: 42px;
+        height: 42px;
       }
 
-      figure {
-        @include textOverflowEllipsis;
+      figcaption {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
 
-        margin: 5px 0;
+        width: 75px;
 
-        text-align: center;
+        white-space: pre-line;
+        letter-spacing: 0.1px;
+        text-overflow: ellipsis;
 
-        img {
-          width: 42px;
-          height: 42px;
-        }
-
-        figcaption {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-
-          width: 75px;
-
-          white-space: pre-line;
-          letter-spacing: 0.1px;
-          text-overflow: ellipsis;
-
-          -webkit-line-clamp: 2;
-        }
+        -webkit-line-clamp: 2;
       }
+    }
 
-      svg {
-        width: map-get($icon, svg-width);
-      }
+    svg {
+      width: map-get($icon, svg-width);
     }
   }
 }
