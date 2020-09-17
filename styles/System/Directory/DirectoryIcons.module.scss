@@ -20,6 +20,8 @@
     align-content: flex-start;
     flex-flow: column wrap;
 
+    height: 100%;
+
     li {
       font-size: map-get($icon, font-size);
 
