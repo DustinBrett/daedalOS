@@ -19,7 +19,7 @@ const Desktop: FC = ({ children }) => {
   }, [desktopRef]);
 
   return (
-    <main className={styles.desktop} style={{ zIndex: 1000 }} ref={desktopRef}>
+    <main className={styles.desktop} ref={desktopRef}>
       {children}
     </main>
   );

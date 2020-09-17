@@ -25,7 +25,7 @@ export const loaderOptions = {
 export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
-    loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) => () =>
+    loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) =>
       main?.([...prependedArgs, ...args])?.then((value) => {
         ci = value;
       }),
@@ -47,10 +47,10 @@ export const Dos: FC<AppComponent> = ({ args = ['-c', 'CLS'], url }) => {
         const appPath = url.replace('.jsdos', '');
 
         fs?.extract?.(url, appPath)?.then(
-          loadMain(main, ['-c', `CD ${appPath}`])
+          () => loadMain(main, ['-c', `CD ${appPath}`])
         );
       } else {
-        loadMain(main)();
+        loadMain(main);
       }
     });
 

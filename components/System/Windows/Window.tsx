@@ -11,7 +11,7 @@ import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 
-// TODO: Split this into more components
+// TODO: Split `<header>` into component
 
 export const Window: FC<Partial<Process> & AppComponent> = ({
   children,
