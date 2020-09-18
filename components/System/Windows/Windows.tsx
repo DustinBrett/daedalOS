@@ -13,39 +13,34 @@ const Window = dynamic(import('@/components/System/Windows/Window'));
 export const Windows: FC = () => (
   <div className={styles.windows}>
     <ProcessContext.Consumer>
-      {({
-        processes,
-        close,
-        maximize,
-        minimize,
-        position,
-        restore,
-        size
-      }) => (
+      {({ processes, close, maximize, minimize, position, restore, size }) => (
         <SessionContext.Consumer>
           {({
             session: { stackOrder, foregroundId },
             background,
             foreground
-          }) =>
+          }) => (
             <AnimatePresence>
               {processes.map(
-                ({
-                  loader: { loader: App, loadedAppOptions },
-                  id,
-                  icon,
-                  name,
-                  bgColor,
-                  windowed,
-                  maximized,
-                  minimized,
-                  lockAspectRatio,
-                  hideScrollbars,
-                  height,
-                  width,
-                  x,
-                  y
-                }, index) => {
+                (
+                  {
+                    loader: { loader: App, loadedAppOptions },
+                    id,
+                    icon,
+                    name,
+                    bgColor,
+                    windowed,
+                    maximized,
+                    minimized,
+                    lockAspectRatio,
+                    hideScrollbars,
+                    height,
+                    width,
+                    x,
+                    y
+                  },
+                  index
+                ) => {
                   const cascadeSpacing = index * 12 || 0,
                     windowOptions = {
                       onMinimize: () =>
@@ -106,7 +101,7 @@ export const Windows: FC = () => (
                 }
               )}
             </AnimatePresence>
-          }
+          )}
         </SessionContext.Consumer>
       )}
     </ProcessContext.Consumer>

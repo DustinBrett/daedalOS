@@ -47,9 +47,7 @@ export const Dos: FC<AppComponent> = ({
 
     Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
-        const appPath = name
-          .replace(/ /g, '')
-          .substring(0, 8);
+        const appPath = name.replace(/ /g, '').substring(0, 8);
 
         fs?.extract?.(url, appPath)?.then(() =>
           loadMain(main, ['-c', `CD ${appPath}`])
