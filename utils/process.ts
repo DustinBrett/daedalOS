@@ -28,7 +28,7 @@ export const load = (
       const url = URL.createObjectURL(
           new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
         ),
-        ext = extname(file.name);
+        ext = extname(file.name).toLowerCase();
 
       resolve(
         open(

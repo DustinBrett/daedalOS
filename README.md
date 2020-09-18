@@ -1,16 +1,3 @@
-# To Do
-
-- CSS
-  - Partials: w-100, h-100, wv-100, hv-100, top-left, full-screen
-- DOS Drag/Drop
-  - Remove extension from name + English Caps
-- Drag & Drop
-  - Remove extension from name + Cap 1st letter
-  - Change to "file" object with `{ path, url, name, extension }` for passing files/paths/urls
-  - DOS: After fs.extract, find the correct exe/bat to run whenever possible
-  - DOS: Support .zip
-  - DOS: Check is a valid file before running main
-
 # MVP
 
 ## System
@@ -20,15 +7,14 @@
   - Possibly: zIndex, focus, selected
 - Windows
   - Size opening/positioning logic
-    - 1. In apps set a width and height that looks best
-    - 2. When loading the app, try and use those values
-    - 3. If there is not enough viewport for a dimension with padding, then shrink by the difference
+    - In apps set a width and height that looks best
+    - When loading the app, try and use those values
+    - If there is not enough viewport for a dimension with padding, then shrink by the difference
+  - x/y is in wrong spot on reload
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)
   - Open/close scaling from the x/y of the icon that opened it
   - Closing 3rd window didn't shift focus/foreground properly (base on stack?)
   - 2x1 px border needs adjusting
-  - Close animation is not working
-  - Disable resizing by top handle on mobile
 - Quality
   - next-optimized-images
     - https://web.dev/image-aspect-ratio/?utm_source=lighthouse&utm_medium=devtools
@@ -44,6 +30,7 @@
   - Faster select highlighting (via onFocus)
   - Breadcrumb Bar
   - Complete UI/Toolbar
+  - Favicon is showing NaN after drag/drop demo
 - Document Viewer for Blog (https://webodf.org/)
 
 ## Data
@@ -62,8 +49,8 @@
   - Horizontal rendering issues with mixed 1-2 line icon labels (CSS Grid)
   - zIndex on drag should be above windows
 - Window
-  - Avoid storing stackOrder in every app
   - Title text should be more reactive
+  - Disable resizing by top handle on mobile
 - Explorer
   - Resizable columns
   - Cache size and modified time

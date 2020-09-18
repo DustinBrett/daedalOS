@@ -29,12 +29,7 @@ export const windowMotionSettings = {
   initial: { scale: 0, x: -250, y: -300 },
   animate: { scale: 1, x: 0, y: 0 },
   transition: {
-    duration: 0.2,
-    y: {
-      type: 'spring',
-      damping: 10,
-      mass: 0.6
-    }
+    duration: 0.2
   },
   exit: {
     scale: 0,

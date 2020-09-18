@@ -29,8 +29,8 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   lockAspectRatio,
   hideScrollbars,
   zIndex,
-  height,
-  width,
+  height = 250,
+  width = 300,
   x = 0,
   y = 0,
   minimized,
@@ -46,77 +46,67 @@ export const Window: FC<Partial<Process> & AppComponent> = ({
   }, []);
 
   return (
-    <article
-      style={{
-        visibility: minimized ? 'hidden' : 'visible'
+    <Rnd
+      ref={windowRef}
+      enableUserSelectHack={false}
+      className={`${styles.window} ${maximized ? styles.maximized : ''} ${
+        foregroundId === id ? styles.foreground : ''
+      }`}
+      dragHandleClassName="handle"
+      resizeHandleClasses={{
+        top: styles.resizeTop,
+        right: styles.resizeRight,
+        bottom: styles.resizeBottom,
+        left: styles.resizeLeft,
+        topRight: styles.resizeTopRight,
+        bottomRight: styles.resizeBottomRight,
+        bottomLeft: styles.resizeBottomLeft,
+        topLeft: styles.resizeTopLeft
       }}
+      cancel=".cancel"
+      size={{ height, width }}
+      position={{ x, y }}
+      minHeight={200}
+      minWidth={300}
+      tabIndex={0}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onDragStart={focusOnDrag}
+      onDragStop={updatePosition}
+      onResizeStop={updateSize}
+      disableDragging={maximized}
+      lockAspectRatio={lockAspectRatio}
+      style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
-      <Rnd
-        ref={windowRef}
-        enableUserSelectHack={false}
-        className={`${styles.window} ${maximized ? styles.maximized : ''} ${
-          foregroundId === id ? styles.foreground : ''
-        }`}
-        dragHandleClassName="handle"
-        resizeHandleClasses={{
-          top: styles.resizeTop,
-          right: styles.resizeRight,
-          bottom: styles.resizeBottom,
-          left: styles.resizeLeft,
-          topRight: styles.resizeTopRight,
-          bottomRight: styles.resizeBottomRight,
-          bottomLeft: styles.resizeBottomLeft,
-          topLeft: styles.resizeTopLeft
+      <header className={`${styles.titlebar} handle`}>
+        <h1>
+          <figure>
+            <img alt={name} src={icon} draggable={false} />
+            <figcaption>{name}</figcaption>
+          </figure>
+        </h1>
+        <nav className="cancel">
+          <button id={styles.close} onClick={onClose}>
+            <FontAwesomeIcon size="xs" icon={faTimes} />
+          </button>
+          <button id={styles.minimize} onClick={onMinimize}>
+            <FontAwesomeIcon size="xs" icon={faMinus} />
+          </button>
+          <button id={styles.maximize} onClick={onMaximize}>
+            <FontAwesomeIcon size="xs" icon={faPlus} />
+          </button>
+        </nav>
+      </header>
+      <article
+        className={styles.content}
+        style={{
+          backgroundColor: bgColor,
+          overflow: hideScrollbars ? 'hidden' : 'auto'
         }}
-        cancel=".cancel"
-        default={{
-          height: height || 250,
-          width: width || 300,
-          x,
-          y
-        }}
-        minHeight={200}
-        minWidth={300}
-        tabIndex={0}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onDragStart={focusOnDrag}
-        onDragStop={updatePosition}
-        onResizeStop={updateSize}
-        disableDragging={maximized}
-        lockAspectRatio={lockAspectRatio}
-        style={{ zIndex }}
       >
-        <header className={`${styles.titlebar} handle`}>
-          <h1>
-            <figure>
-              <img alt={name} src={icon} draggable={false} />
-              <figcaption>{name}</figcaption>
-            </figure>
-          </h1>
-          <nav className="cancel">
-            <button id={styles.close} onClick={onClose}>
-              <FontAwesomeIcon size="xs" icon={faTimes} />
-            </button>
-            <button id={styles.minimize} onClick={onMinimize}>
-              <FontAwesomeIcon size="xs" icon={faMinus} />
-            </button>
-            <button id={styles.maximize} onClick={onMaximize}>
-              <FontAwesomeIcon size="xs" icon={faPlus} />
-            </button>
-          </nav>
-        </header>
-        <article
-          className={styles.content}
-          style={{
-            backgroundColor: bgColor,
-            overflow: hideScrollbars ? 'hidden' : 'auto'
-          }}
-        >
-          {children}
-        </article>
-      </Rnd>
-    </article>
+        {children}
+      </article>
+    </Rnd>
   );
 };
 

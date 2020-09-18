@@ -12,44 +12,41 @@ const Window = dynamic(import('@/components/System/Windows/Window'));
 
 export const Windows: FC = () => (
   <div className={styles.windows}>
-    <AnimatePresence>
-      <ProcessContext.Consumer>
-        {({
-          processes,
-          close,
-          maximize,
-          minimize,
-          position,
-          restore,
-          size
-        }) => (
-          <SessionContext.Consumer>
-            {({
-              session: { stackOrder, foregroundId },
-              background,
-              foreground
-            }) =>
-              processes.map(
-                (
-                  {
-                    loader: { loader: App, loadedAppOptions },
-                    id,
-                    icon,
-                    name,
-                    bgColor,
-                    windowed,
-                    maximized,
-                    minimized,
-                    lockAspectRatio,
-                    hideScrollbars,
-                    height,
-                    width,
-                    x,
-                    y
-                  },
-                  index
-                ) => {
-                  const cascadeSpacing = index * 20 || 0,
+    <ProcessContext.Consumer>
+      {({
+        processes,
+        close,
+        maximize,
+        minimize,
+        position,
+        restore,
+        size
+      }) => (
+        <SessionContext.Consumer>
+          {({
+            session: { stackOrder, foregroundId },
+            background,
+            foreground
+          }) =>
+            <AnimatePresence>
+              {processes.map(
+                ({
+                  loader: { loader: App, loadedAppOptions },
+                  id,
+                  icon,
+                  name,
+                  bgColor,
+                  windowed,
+                  maximized,
+                  minimized,
+                  lockAspectRatio,
+                  hideScrollbars,
+                  height,
+                  width,
+                  x,
+                  y
+                }, index) => {
+                  const cascadeSpacing = index * 12 || 0,
                     windowOptions = {
                       onMinimize: () =>
                         foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
@@ -107,12 +104,12 @@ export const Windows: FC = () => (
                     </motion.div>
                   );
                 }
-              )
-            }
-          </SessionContext.Consumer>
-        )}
-      </ProcessContext.Consumer>
-    </AnimatePresence>
+              )}
+            </AnimatePresence>
+          }
+        </SessionContext.Consumer>
+      )}
+    </ProcessContext.Consumer>
   </div>
 );
 
