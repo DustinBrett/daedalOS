@@ -18,7 +18,12 @@ const removeProcess = (id: string, processes: Processes): Processes => {
 
     const { height, width, x, y } = process,
       { x: previousX = 0, y: previousY = 0 } = sessionProcessState[id] || {};
-    sessionProcessState[id] = { height, width, x: previousX === x ? x : previousX + x, y: previousY === y ? y : previousY + y };
+    sessionProcessState[id] = {
+      height,
+      width,
+      x: previousX === x ? x : previousX + x,
+      y: previousY === y ? y : previousY + y
+    };
   });
 };
 

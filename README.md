@@ -6,11 +6,8 @@
   - x, y, height & width
   - Possibly: zIndex, focus, selected
 - Windows
-  - Size opening/positioning logic
-    - In apps set a width and height that looks best
-    - When loading the app, try and use those values
-    - If there is not enough viewport for a dimension with padding, then shrink by the difference
-  - x/y is in wrong spot on reload
+  - Cascading windows
+  - Opening to size for viewport if can't do max ideal
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)
   - Open/close scaling from the x/y of the icon that opened it
   - Closing 3rd window didn't shift focus/foreground properly (base on stack?)
