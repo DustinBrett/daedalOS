@@ -26,8 +26,11 @@ export const taskbarEntriesMotionSettings = {
 };
 
 export const windowMotionSettings = {
-  initial: { scale: 0, x: -250, y: -300 },
-  animate: { scale: 1, x: 0, y: 0 },
+  initial: {
+    scale: 0,
+    x: -250,
+    y: -300
+  },
   transition: {
     duration: 0.2
   },

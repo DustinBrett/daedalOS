@@ -1,5 +1,3 @@
-import styles from '@/styles/System/Windows/Windows.module.scss';
-
 import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -8,10 +6,17 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
 
+import { sessionProcessState } from '@/utils/pm'; // TODO: Replace with SessionConext
+
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
+// TODO: Update position and size into session (Then I don't need the inital)
+// TODO: Only use `default` for Rnd
+// TODO: Store states in session.windows
+// TODO: Do I need to pass x/y to Rnd?
+
 export const Windows: FC = () => (
-  <div className={styles.windows}>
+  <div>
     <ProcessContext.Consumer>
       {({ processes, close, maximize, minimize, position, restore, size }) => (
         <SessionContext.Consumer>
@@ -22,26 +27,23 @@ export const Windows: FC = () => (
           }) => (
             <AnimatePresence>
               {processes.map(
-                (
-                  {
-                    loader: { loader: App, loadedAppOptions },
-                    id,
-                    icon,
-                    name,
-                    bgColor,
-                    windowed,
-                    maximized,
-                    minimized,
-                    lockAspectRatio,
-                    hideScrollbars,
-                    height,
-                    width,
-                    x,
-                    y
-                  },
-                  index
-                ) => {
-                  const cascadeSpacing = index * 12 || 0,
+                ({
+                  loader: { loader: App, loadedAppOptions },
+                  id,
+                  icon,
+                  name,
+                  bgColor,
+                  windowed,
+                  maximized,
+                  minimized,
+                  lockAspectRatio,
+                  hideScrollbars,
+                  height,
+                  width,
+                  x,
+                  y
+                }) => {
+                  const { x: initialX = 0, y: initialY = 0 } = sessionProcessState[id] || {},
                     windowOptions = {
                       onMinimize: () =>
                         foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
@@ -51,7 +53,7 @@ export const Windows: FC = () => (
                         foreground?.(close?.(id, stackOrder || [])), // TODO: Same change as onMin
                       onFocus: () => foreground?.(id),
                       onBlur: () => background?.(id),
-                      updatePosition: position?.(id),
+                      updatePosition: position?.(id), // TODO: Update session directly to avoid needing update on removeProcess
                       updateSize: size?.(id),
                       // TODO: Remove when adding session and redoing css
                       zIndex:
@@ -63,8 +65,11 @@ export const Windows: FC = () => (
                       height,
                       width,
                       id,
-                      x: x || cascadeSpacing,
-                      y: y || cascadeSpacing
+                      // TODO: Can I get rid of the need to pass position to Rnd?
+                      // TODO: updatePosition needs to know if cascade spacing was used?
+                      // TODO: Or maybe Rnd could have x/y defaults to handle cascade
+                      x: initialX === x ? 0 : x,
+                      y: initialY === y ? 0 : y
                     },
                     isForeground = foregroundId === id;
 
@@ -76,6 +81,7 @@ export const Windows: FC = () => (
                         zIndex: isForeground ? 10000 : 1750
                       }}
                       {...windowMotionSettings}
+                      animate={{ scale: 1, x: initialX, y: initialY }}
                     >
                       {windowed ? (
                         <Window

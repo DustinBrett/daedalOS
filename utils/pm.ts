@@ -4,7 +4,8 @@ import type {
   ProcessConstructor
 } from '@/utils/pm.d';
 
-const sessionProcessState: { [key: string]: Partial<Process> } = {};
+// TODO: Replace with SessionContext
+export const sessionProcessState: { [key: string]: Partial<Process> } = {};
 
 const addProcess = (process: Process, processes: Processes): Processes => [
   ...processes,
@@ -15,8 +16,9 @@ const removeProcess = (id: string, processes: Processes): Processes => {
   return processes.filter((process) => {
     if (process.id !== id) return true;
 
-    const { height, width, x, y } = process;
-    sessionProcessState[id] = { height, width, x, y };
+    const { height, width, x, y } = process,
+      { x: previousX = 0, y: previousY = 0 } = sessionProcessState[id] || {};
+    sessionProcessState[id] = { height, width, x: previousX === x ? x : previousX + x, y: previousY === y ? y : previousY + y };
   });
 };
 
