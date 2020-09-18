@@ -17,7 +17,7 @@ export const loaderOptions = {
   bgColor: '#d7d7d7'
 };
 
-export const Pdf: FC<AppComponent> = ({ url = '/' }) => {
+export const Pdf: FC<AppComponent> = ({ file: { url = '/' } = {} }) => {
   return <></>; // TODO: Fix `window` loading issue
   // const [numPages, setNumPages] = useState<number>(0);
   // const [pageNumber, setPageNumber] = useState(1);

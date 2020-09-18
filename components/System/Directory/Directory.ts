@@ -19,7 +19,7 @@ export const Directory: FC<{
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
-    { load, open } = useContext(ProcessContext),
+    { open } = useContext(ProcessContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -29,12 +29,8 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        open?.(url || path || '', icon, name);
+        open?.({ url: url || path || '', icon, name });
       }
-    },
-    // Q: Should this be in <desktop>
-    onFileDrop = (file: File) => {
-      load?.(file);
     };
 
   useEffect(() => {
@@ -42,7 +38,7 @@ export const Directory: FC<{
     onChange?.(cwd);
   }, [fs, cwd]);
 
-  return render({ entries, onDoubleClick, onFileDrop, cwd });
+  return render({ entries, onDoubleClick, cwd });
 };
 
 export default Directory;

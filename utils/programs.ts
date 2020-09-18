@@ -1,4 +1,4 @@
-import type { AppLoader } from '@/utils/programs.d';
+import type { AppFile, AppLoader } from '@/utils/programs.d';
 
 import dynamic from 'next/dynamic';
 import { extname } from 'path';
@@ -40,17 +40,18 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
 };
 
 const appLoaderByFileType = (
-  path: string,
-  searchParams?: URLSearchParams,
-  ext?: string
+  appFile: AppFile,
+  ext?: string,
+  searchParams?: URLSearchParams
 ): AppLoader | undefined => {
-  switch (ext || extname(path)) {
+  switch (ext || extname(appFile.url)) {
     case '.jsdos':
+    case '.zip':
       return {
         loader: Dos,
         loaderOptions: dosLoaderOptions,
         loadedAppOptions: {
-          url: path,
+          file: appFile,
           args: searchParams ? [...searchParams.entries()].flat() : []
         }
       };
@@ -61,7 +62,7 @@ const appLoaderByFileType = (
         loader: Winamp,
         loaderOptions: winampLoaderOptions,
         loadedAppOptions: {
-          url: path
+          file: appFile
         }
       };
     case '.pdf':
@@ -69,21 +70,22 @@ const appLoaderByFileType = (
         loader: Pdf,
         loaderOptions: pdfLoaderOptions,
         loadedAppOptions: {
-          url: path
+          file: appFile
         }
       };
   }
 };
 
-export const appLoader = (url: string, name: string): AppLoader | undefined => {
-  console.log(url, name);
+export const appLoader = (appFile: AppFile): AppLoader | undefined => {
+  const { ext, url } = appFile;
+
   if (isValidUrl(url)) {
     const { pathname, searchParams } = new URL(url);
 
     return pathname === '/'
       ? appLoaderByName(searchParams.get('app') || '')
-      : appLoaderByFileType(pathname, searchParams, extname(name));
+      : appLoaderByFileType(appFile, ext || extname(pathname), searchParams);
   }
 
-  return appLoaderByFileType(url); // Q: When would this occur?
+  return appLoaderByFileType(appFile);
 };

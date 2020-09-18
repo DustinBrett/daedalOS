@@ -14,7 +14,7 @@ export const loaderOptions = {
   bgColor: '#2a282b'
 };
 
-export const Explorer: FC<AppComponent> = ({ url = '/' }) => (
+export const Explorer: FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
   <ProcessContext.Consumer>
     {({ title }) => (
       <article className={styles.explorer}>

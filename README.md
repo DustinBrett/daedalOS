@@ -28,6 +28,7 @@
   - Closing 3rd window didn't shift focus/foreground properly (base on stack?)
   - 2x1 px border needs adjusting
   - Close animation is not working
+  - Disable resizing by top handle on mobile
 - Quality
   - next-optimized-images
     - https://web.dev/image-aspect-ratio/?utm_source=lighthouse&utm_medium=devtools

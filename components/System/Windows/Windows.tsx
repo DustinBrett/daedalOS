@@ -50,17 +50,18 @@ export const Windows: FC = () => (
                   index
                 ) => {
                   const cascadeSpacing = index * 20 || 0,
-                    appOptions = {
+                    windowOptions = {
                       onMinimize: () =>
-                        foreground?.(minimize?.(id, stackOrder || [])),
+                        foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
                       onMaximize: () =>
                         maximized ? restore?.(id) : maximize?.(id),
                       onClose: () =>
-                        foreground?.(close?.(id, stackOrder || [])),
+                        foreground?.(close?.(id, stackOrder || [])), // TODO: Same change as onMin
                       onFocus: () => foreground?.(id),
                       onBlur: () => background?.(id),
                       updatePosition: position?.(id),
                       updateSize: size?.(id),
+                      // TODO: Remove when adding session and redoing css
                       zIndex:
                         1750 +
                         (processes.length -
@@ -92,12 +93,16 @@ export const Windows: FC = () => (
                           lockAspectRatio={lockAspectRatio}
                           hideScrollbars={hideScrollbars}
                           updateSize={size?.(id)}
-                          {...appOptions}
+                          {...windowOptions}
                         >
                           <App {...loadedAppOptions} />
                         </Window>
                       ) : (
-                        <App key={id} {...appOptions} {...loadedAppOptions} />
+                        <App
+                          key={id}
+                          {...windowOptions}
+                          {...loadedAppOptions}
+                        />
                       )}
                     </motion.div>
                   );

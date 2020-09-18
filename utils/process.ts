@@ -1,8 +1,9 @@
 import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type { Processes, ProcessAction } from '@/utils/pm.d';
+import type { AppFile } from '@/utils/programs.d';
 
-import { extname } from 'path';
+import { basename, extname } from 'path';
 import { Process } from '@/utils/pm';
 import { appLoader } from '@/utils/programs';
 import { getFileIcon } from '@/utils/file';
@@ -19,24 +20,31 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
 export const load = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (file: File): string | undefined => {
-  const fileReader = new FileReader();
+) => async (file: File): Promise<string | undefined> => {
+  return new Promise((resolve) => {
+    const fileReader = new FileReader();
 
-  fileReader.addEventListener('loadend', () => {
-    const url = URL.createObjectURL(
-      new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
-    );
+    fileReader.addEventListener('loadend', () => {
+      const url = URL.createObjectURL(
+          new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
+        ),
+        ext = extname(file.name);
 
-    open(processes, updateProcesses)(
-      `blob:${url}?name=${file.name}`,
-      getFileIcon('', extname(file.name)),
-      file.name
-    );
+      resolve(
+        open(
+          processes,
+          updateProcesses
+        )({
+          ext,
+          icon: getFileIcon('', ext),
+          name: basename(file.name, ext),
+          url
+        })
+      );
+    });
+
+    fileReader.readAsArrayBuffer(file);
   });
-
-  fileReader.readAsArrayBuffer(file);
-
-  return ''; // TODO: Return loaded id
 };
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
@@ -55,13 +63,14 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
 export const open = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (url: string, icon: string, name: string): string | undefined => {
-  const { id: existingProcessId } =
-    processes.find(({ name: processName }) => processName === name) || {};
+) => (appFile: AppFile): string | undefined => {
+  const { icon, name } = appFile,
+    { id: existingProcessId } =
+      processes.find(({ name: processName }) => processName === name) || {};
 
   if (existingProcessId) return existingProcessId;
 
-  const loader = appLoader(url, name);
+  const loader = appLoader(appFile);
 
   if (loader) {
     const process = new Process({

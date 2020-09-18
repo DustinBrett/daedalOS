@@ -72,7 +72,7 @@ export const Winamp: FC<Partial<Process> & AppComponent> = ({
   minimized,
   x = 0,
   y = 0,
-  url
+  file: { url } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null),
     { position } = useContext(ProcessContext),

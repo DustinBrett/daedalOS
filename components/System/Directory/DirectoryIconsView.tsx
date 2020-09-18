@@ -5,7 +5,7 @@ import type { DirectoryView } from '@/components/System/Directory/Directory.d';
 
 import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ClickHandler, useFileDrop } from '@/utils/events';
+import { ClickHandler } from '@/utils/events';
 import {
   desktopIconDragSettings,
   desktopIconMotionSettings
@@ -13,14 +13,12 @@ import {
 
 export const DirectoryIcons: FC<DirectoryView> = ({
   entries = [],
-  onDoubleClick,
-  onFileDrop
+  onDoubleClick
 }) => {
-  const navRef = useRef<HTMLElement>(null),
-    fileDropHandler = useFileDrop(onFileDrop);
+  const navRef = useRef<HTMLElement>(null);
 
   return (
-    <nav className={styles.directoryIcons} ref={navRef} {...fileDropHandler}>
+    <nav className={styles.directoryIcons} ref={navRef}>
       <ol>
         <AnimatePresence>
           {entries.map(({ icon, name, kind, path, url }) => (

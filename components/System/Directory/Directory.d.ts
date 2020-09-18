@@ -16,6 +16,5 @@ export type DirectoryView = {
     icon?: string,
     name?: string
   ) => () => void;
-  onFileDrop: (file: File) => void;
   cwd?: string;
 };

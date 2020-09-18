@@ -14,17 +14,17 @@ export default function HomePage(): ReactElement {
   return (
     <>
       <Metadata />
-      <Desktop>
-        <SessionProvider>
-          <ProcessProvider>
+      <SessionProvider>
+        <ProcessProvider>
+          <Desktop>
             <FileProvider>
               <Directory path="/desktop" render={DirectoryIconsView} />
               <Windows />
             </FileProvider>
             <Taskbar />
-          </ProcessProvider>
-        </SessionProvider>
-      </Desktop>
+          </Desktop>
+        </ProcessProvider>
+      </SessionProvider>
     </>
   );
 }
