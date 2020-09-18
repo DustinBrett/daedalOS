@@ -72,7 +72,7 @@ export const Winamp: FC<Partial<Process> & AppComponent> = ({
   minimized,
   x = 0,
   y = 0,
-  file: { url } = {}
+  file: { url, name = '' } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null),
     { position } = useContext(ProcessContext),
@@ -102,9 +102,8 @@ export const Winamp: FC<Partial<Process> & AppComponent> = ({
         webamp?.appendTracks([demoTrack]);
         webamp?.setSkinFromUrl(url);
       } else {
-        // TODO: Get file name from url when drag/drop
         webamp?.setTracksToPlay([
-          url ? { url: url, metaData: { artist: '', title: '' } } : demoTrack
+          url ? { url: url, metaData: { artist: '', title: name } } : demoTrack
         ]);
       }
 
