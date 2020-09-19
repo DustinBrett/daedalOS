@@ -5,7 +5,7 @@ import type {
 } from '@/contexts/SessionManager.d';
 
 import { createContext, useState } from 'react';
-import { background, foreground } from '@/utils/session';
+import { background, foreground, getState, saveState } from '@/utils/session';
 
 export const SessionContext = createContext<SessionContextType>({
   session: {}
@@ -19,7 +19,9 @@ export const SessionProvider: FC = ({ children }) => {
       value={{
         session,
         background: background(session, updateSession),
-        foreground: foreground(session, updateSession)
+        foreground: foreground(session, updateSession),
+        getState: getState(session),
+        saveState: saveState(session, updateSession)
       }}
     >
       {children}

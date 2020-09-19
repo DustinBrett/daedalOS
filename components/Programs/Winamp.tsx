@@ -3,7 +3,7 @@ import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
 import type { AppComponent } from '@/utils/programs.d';
-import type { Process } from '@/utils/pm';
+import type { ProcessState } from '@/utils/pm.d';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
@@ -64,7 +64,7 @@ export const loaderOptions = {
   windowed: false
 };
 
-export const Winamp: FC<Partial<Process> & AppComponent> = ({
+export const Winamp: FC<AppComponent & ProcessState> = ({
   onClose,
   onMinimize,
   onFocus,

@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
+import { SessionContext } from '@/contexts/SessionManager';
 
 export const Directory: FC<{
   path: string;
@@ -20,6 +21,7 @@ export const Directory: FC<{
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
     { open } = useContext(ProcessContext),
+    { getState } = useContext(SessionContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -29,7 +31,7 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        open?.({ url: url || path || '', icon, name });
+        open?.({ url: url || path || '', icon, name }, getState?.(name));
       }
     };
 

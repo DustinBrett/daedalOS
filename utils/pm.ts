@@ -1,35 +1,25 @@
 import type {
   Processes,
   ProcessAction,
+  ProcessState,
   ProcessConstructor
 } from '@/utils/pm.d';
 
-// TODO: Replace with SessionContext
-export const sessionProcessState: { [key: string]: Partial<Process> } = {};
-
-const addProcess = (process: Process, processes: Processes): Processes => [
-  ...processes,
-  { ...process, ...(sessionProcessState[process.id] || {}) }
-];
+const addProcess = (
+  process: Process,
+  processes: Processes,
+  previousState: ProcessState = {}
+): Processes => [...processes, { ...process, ...previousState }];
 
 const removeProcess = (id: string, processes: Processes): Processes => {
   return processes.filter((process) => {
     if (process.id !== id) return true;
-
-    const { height, width, x, y } = process,
-      { x: previousX = 0, y: previousY = 0 } = sessionProcessState[id] || {};
-    sessionProcessState[id] = {
-      height,
-      width,
-      x: previousX === x ? x : previousX + x,
-      y: previousY === y ? y : previousY + y
-    };
   });
 };
 
 const updateProcess = (
   id: string,
-  updates: Partial<Process>,
+  updates: ProcessState,
   processes: Processes
 ): Processes =>
   processes.map((process) =>
@@ -38,13 +28,16 @@ const updateProcess = (
 
 export const processReducer = (
   processes: Processes,
-  { id, process, updates }: ProcessAction
+  { id, process, updates, previousState }: ProcessAction
 ): Processes => {
   if (id && updates) return updateProcess(id, updates, processes);
-  if (process) return addProcess(process, processes);
+  if (process) return addProcess(process, processes, previousState);
   if (id) return removeProcess(id, processes);
   return processes;
 };
+
+export const getProcessId = (name: string): string =>
+  name.toLowerCase().replace(/ /g, '_');
 
 export class Process {
   loader;
@@ -73,7 +66,7 @@ export class Process {
     bgColor = '#fff',
     height = 0,
     hideScrollbars = false,
-    id = name.toLowerCase().replace(/ /g, '_'),
+    id = getProcessId(name),
     lockAspectRatio = false,
     width = 0,
     windowed = true,

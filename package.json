@@ -14,7 +14,7 @@
     "stylelint": "stylelint styles",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint",
+    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
     "genfs": "cd public && make_xhrfs_index index.json"
   },
   "dependencies": {

@@ -6,14 +6,9 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
 
-import { sessionProcessState } from '@/utils/pm'; // TODO: Replace with SessionConext
-
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
-// TODO: Update position and size into session (Then I don't need the inital)
-// TODO: Only use `default` for Rnd
-// TODO: Store states in session.windows
-// TODO: Do I need to pass x/y to Rnd?
+// TODO: Do I need to pass x/y to Rnd? If so, only default?
 
 export const Windows: FC = () => (
   <div>
@@ -23,7 +18,9 @@ export const Windows: FC = () => (
           {({
             session: { stackOrder, foregroundId },
             background,
-            foreground
+            foreground,
+            getState,
+            saveState
           }) => (
             <AnimatePresence>
               {processes.map(
@@ -44,14 +41,16 @@ export const Windows: FC = () => (
                   y
                 }) => {
                   const { x: initialX = 0, y: initialY = 0 } =
-                      sessionProcessState[id] || {},
+                      getState?.(name) || {},
                     windowOptions = {
                       onMinimize: () =>
                         foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
                       onMaximize: () =>
                         maximized ? restore?.(id) : maximize?.(id),
-                      onClose: () =>
-                        foreground?.(close?.(id, stackOrder || [])), // TODO: Same change as onMin
+                      onClose: () => {
+                        saveState?.(id, { height, width, x, y });
+                        foreground?.(close?.(id, stackOrder || [])); // TODO: Same change as onMin
+                      },
                       onFocus: () => foreground?.(id),
                       onBlur: () => background?.(id),
                       updatePosition: position?.(id), // TODO: Update session directly to avoid needing update on removeProcess

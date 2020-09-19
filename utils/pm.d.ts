@@ -3,10 +3,13 @@ import type { Process } from '@/utils/pm';
 
 export type Processes = Array<Process>;
 
+export type ProcessState = Partial<Process>;
+
 export type ProcessAction = {
   id?: string;
   process?: Process;
-  updates?: Partial<Process>;
+  updates?: ProcessState;
+  previousState?: ProcessState;
 };
 
 export type ProcessConstructor = {

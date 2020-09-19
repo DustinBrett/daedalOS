@@ -1,7 +1,7 @@
 import styles from '@/styles/System/Windows/Window.module.scss';
 
 import type { FC } from 'react';
-import type { Process } from '@/utils/pm';
+import type { ProcessState } from '@/utils/pm.d';
 import type { AppComponent } from '@/utils/programs.d';
 
 import { useContext, useEffect, useRef } from 'react';
@@ -13,7 +13,7 @@ import { SessionContext } from '@/contexts/SessionManager';
 
 // TODO: Split `<header>` into component
 
-export const Window: FC<Partial<Process> & AppComponent> = ({
+export const Window: FC<AppComponent & ProcessState> = ({
   children,
   icon,
   id,
