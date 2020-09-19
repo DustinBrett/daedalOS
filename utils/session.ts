@@ -32,7 +32,7 @@ export const foreground = (
 
 export const getState = (session: SessionState) => (
   name: string
-): ProcessState | undefined => session.states?.[getProcessId(name)];
+): ProcessState => session.states?.[getProcessId(name)] || {};
 
 export const saveState = (
   session: SessionState,

@@ -8,7 +8,8 @@ import { createContext, useState } from 'react';
 import { background, foreground, getState, saveState } from '@/utils/session';
 
 export const SessionContext = createContext<SessionContextType>({
-  session: {}
+  session: {},
+  getState: () => ({})
 });
 
 export const SessionProvider: FC = ({ children }) => {

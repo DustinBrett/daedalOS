@@ -14,9 +14,7 @@ const Desktop: FC = ({ children }) => {
     [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>(),
     { load } = useContext(ProcessContext),
     { getState } = useContext(SessionContext),
-    fileDropHandler = useFileDrop((file: File) =>
-      load?.(file, getState?.(name))
-    );
+    fileDropHandler = useFileDrop((file: File) => load?.(file, getState(name)));
 
   useEffect(() => {
     setWallpaperEffect(renderWallpaperEffect(desktopRef));

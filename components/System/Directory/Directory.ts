@@ -31,7 +31,7 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        open?.({ url: url || path || '', icon, name }, getState?.(name));
+        open?.({ url: url || path || '', icon, name }, getState(name));
       }
     };
 

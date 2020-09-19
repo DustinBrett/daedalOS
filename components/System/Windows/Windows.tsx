@@ -40,8 +40,7 @@ export const Windows: FC = () => (
                   x,
                   y
                 }) => {
-                  const { x: initialX = 0, y: initialY = 0 } =
-                      getState?.(name) || {},
+                  const { x: initialX = 0, y: initialY = 0 } = getState(name),
                     windowOptions = {
                       onMinimize: () =>
                         foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
