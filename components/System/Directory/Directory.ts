@@ -21,7 +21,7 @@ export const Directory: FC<{
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
     { open } = useContext(ProcessContext),
-    { getState } = useContext(SessionContext),
+    { foreground, getState } = useContext(SessionContext),
     onDoubleClick = (
       path?: string,
       url?: string,
@@ -31,7 +31,9 @@ export const Directory: FC<{
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        open?.({ url: url || path || '', icon, name }, getState(name));
+        foreground?.(
+          open({ url: url || path || '', icon, name }, getState(name))
+        );
       }
     };
 

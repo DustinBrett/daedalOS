@@ -16,7 +16,9 @@ import {
 import { processReducer } from '@/utils/pm';
 
 export const ProcessContext = createContext<ProcessContextType>({
-  processes: []
+  processes: [],
+  load: async () => '',
+  open: () => ''
 });
 
 export const ProcessProvider: FC = ({ children }) => {

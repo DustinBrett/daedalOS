@@ -7,13 +7,10 @@ import type { AppFile } from '@/utils/programs.d';
 export type ProcessContextType = {
   processes: Processes;
   close?: (id: string, stackOrder: Array<string>) => string | undefined;
-  load?: (
-    file: File,
-    previousState?: ProcessState
-  ) => Promise<string | undefined>;
+  load: (file: File, previousState: ProcessState) => Promise<string>;
   maximize?: (id: string) => void;
   minimize?: (id: string, stackOrder: Array<string>) => string | undefined;
-  open?: (appFile: AppFile, previousState?: ProcessState) => string | undefined;
+  open: (appFile: AppFile, previousState: ProcessState) => string;
   position?: (id: string) => RndDragCallback;
   restore?: (id: string) => void;
   size?: (id: string) => RndResizeCallback;

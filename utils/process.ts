@@ -4,7 +4,7 @@ import type { Processes, ProcessAction, ProcessState } from '@/utils/pm.d';
 import type { AppFile } from '@/utils/programs.d';
 
 import { basename, extname } from 'path';
-import { Process } from '@/utils/pm';
+import { getProcessId, Process } from '@/utils/pm';
 import { appLoader } from '@/utils/programs';
 import { getFileIcon } from '@/utils/file';
 
@@ -20,25 +20,22 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
 export const load = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => async (
-  file: File,
-  previousState?: ProcessState
-): Promise<string | undefined> => {
+) => async (file: File, previousState: ProcessState): Promise<string> => {
   return new Promise((resolve) => {
     const fileReader = new FileReader();
 
     fileReader.addEventListener('loadend', () => {
       const url = URL.createObjectURL(
-          new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
+          new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]) // Q: Can I just directly use `fileReader.result`?
         ),
         ext = extname(file.name).toLowerCase();
 
       resolve(
         open(processes, updateProcesses)(
           {
-            ext,
             icon: getFileIcon('', ext),
             name: basename(file.name, ext),
+            ext,
             url
           },
           previousState
@@ -66,12 +63,12 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
 export const open = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (appFile: AppFile, previousState?: ProcessState): string | undefined => {
+) => (appFile: AppFile, previousState: ProcessState): string => {
   const { icon, name } = appFile,
-    { id: existingProcessId } =
-      processes.find(({ name: processName }) => processName === name) || {};
+    existingProcessId = getProcessId(name);
 
-  if (existingProcessId) return existingProcessId;
+  if (processes.find(({ id: processId }) => processId === existingProcessId))
+    return existingProcessId;
 
   const loader = appLoader(appFile);
 
@@ -87,6 +84,8 @@ export const open = (
 
     return process.id;
   }
+
+  return '';
 };
 
 export const position = (updateProcesses: Dispatch<ProcessAction>) => (
