@@ -1,7 +1,8 @@
 import type { FC } from 'react';
 import type {
   DirectoryEntry,
-  DirectoryView
+  DirectoryType,
+  DirectoryEntryDoubleClick
 } from '@/components/System/Directory/Directory.d';
 
 import { extname, resolve } from 'path';
@@ -11,23 +12,13 @@ import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
-export const Directory: FC<{
-  path: string;
-  render: FC<DirectoryView>;
-  details?: boolean;
-  onChange?: (cwd: string) => void;
-}> = ({ path, render, details = false, onChange }) => {
+export const Directory: FC<DirectoryType> = ({ path, render, details = false, onChange }) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
     { open } = useContext(ProcessContext),
     { foreground, getState } = useContext(SessionContext),
-    onDoubleClick = (
-      path?: string,
-      url?: string,
-      icon = '',
-      name = ''
-    ) => () => {
+    onDoubleClick = ({ path, url, icon = '', name = '' }: DirectoryEntryDoubleClick) => {
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {

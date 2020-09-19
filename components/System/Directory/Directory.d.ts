@@ -8,13 +8,22 @@ export type DirectoryEntry = {
   url: string;
 };
 
+export type DirectoryEntryDoubleClick = {
+  path: string,
+  url?: string,
+  icon?: string,
+  name?: string
+ };
+
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
-  onDoubleClick: (
-    path?: string,
-    url?: string,
-    icon?: string,
-    name?: string
-  ) => () => void;
+  onDoubleClick: (entryData: DirectoryEntryDoubleClick) => void;
   cwd?: string;
+};
+
+export type DirectoryType = {
+  path: string;
+  render: FC<DirectoryView>;
+  details?: boolean;
+  onChange?: (cwd: string) => void;
 };

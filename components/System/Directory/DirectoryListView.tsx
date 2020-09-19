@@ -14,9 +14,9 @@ const homeDir = '/';
 // TODO: Maybe I dont need setSelected if I just style with focus?
 
 export const DirectoryList: FC<DirectoryView> = ({
-  onDoubleClick,
+  entries,
   cwd,
-  entries
+  onDoubleClick
 }) => {
   const [selected, setSelected] = useState('');
 
@@ -35,7 +35,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             className={selected === '..' ? styles.selected : ''}
             onClick={
               new ClickHandler({
-                doubleClick: onDoubleClick('..')
+                doubleClick: () => onDoubleClick({ path: '..' })
               }).clickHandler
             }
             onFocus={() => setSelected('..')}
@@ -51,7 +51,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             key={path}
             onClick={
               new ClickHandler({
-                doubleClick: onDoubleClick(path, url, icon, name)
+                doubleClick: () => onDoubleClick({ path, url, icon, name })
               }).clickHandler
             }
             onFocus={() => setSelected(path)}
