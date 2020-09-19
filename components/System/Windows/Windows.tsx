@@ -43,14 +43,14 @@ export const Windows: FC = () => (
                   const { x: initialX = 0, y: initialY = 0 } = getState(name),
                     windowOptions = {
                       onMinimize: () =>
-                        foreground?.(minimize?.(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
+                        foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
                       onMaximize: () =>
                         maximized ? restore?.(id) : maximize?.(id),
                       onClose: () => {
                         saveState?.(id, { height, width, x, y });
-                        foreground?.(close?.(id, stackOrder || [])); // TODO: Same change as onMin
+                        foreground(close(id, stackOrder || [])); // TODO: Same change as onMin
                       },
-                      onFocus: () => foreground?.(id),
+                      onFocus: () => foreground(id),
                       onBlur: () => background?.(id),
                       updatePosition: position?.(id), // TODO: Update session directly to avoid needing update on removeProcess
                       updateSize: size?.(id),

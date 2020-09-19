@@ -11,10 +11,10 @@ import { getFileIcon } from '@/utils/file';
 export const close = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
   [, nextRemainingProcessId]: Array<string>
-): string | undefined => {
+): string => {
   updateProcesses({ id });
 
-  if (nextRemainingProcessId) return nextRemainingProcessId;
+  return nextRemainingProcessId || '';
 };
 
 export const load = (
@@ -54,10 +54,10 @@ export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
 export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
   [, nextRemainingProcessId]: Array<string>
-): string | undefined => {
+): string => {
   updateProcesses({ updates: { minimized: true }, id });
 
-  if (nextRemainingProcessId) return nextRemainingProcessId;
+  return nextRemainingProcessId || '';
 };
 
 export const open = (

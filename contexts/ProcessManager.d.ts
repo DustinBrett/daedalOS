@@ -6,10 +6,10 @@ import type { AppFile } from '@/utils/programs.d';
 
 export type ProcessContextType = {
   processes: Processes;
-  close?: (id: string, stackOrder: Array<string>) => string | undefined;
+  close: (id: string, stackOrder: Array<string>) => string;
   load: (file: File, previousState: ProcessState) => Promise<string>;
   maximize?: (id: string) => void;
-  minimize?: (id: string, stackOrder: Array<string>) => string | undefined;
+  minimize: (id: string, stackOrder: Array<string>) => string;
   open: (appFile: AppFile, previousState: ProcessState) => string;
   position?: (id: string) => RndDragCallback;
   restore?: (id: string) => void;

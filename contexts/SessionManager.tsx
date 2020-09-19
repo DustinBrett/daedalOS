@@ -9,6 +9,7 @@ import { background, foreground, getState, saveState } from '@/utils/session';
 
 export const SessionContext = createContext<SessionContextType>({
   session: {},
+  foreground: () => ({}),
   getState: () => ({})
 });
 

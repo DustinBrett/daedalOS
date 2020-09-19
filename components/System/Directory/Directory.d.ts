@@ -9,11 +9,11 @@ export type DirectoryEntry = {
 };
 
 export type DirectoryEntryDoubleClick = {
-  path: string,
-  url?: string,
-  icon?: string,
-  name?: string
- };
+  path: string;
+  url?: string;
+  icon?: string;
+  name?: string;
+};
 
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;

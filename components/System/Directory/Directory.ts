@@ -12,17 +12,27 @@ import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
-export const Directory: FC<DirectoryType> = ({ path, render, details = false, onChange }) => {
+export const Directory: FC<DirectoryType> = ({
+  path,
+  render,
+  details = false,
+  onChange
+}) => {
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
     { open } = useContext(ProcessContext),
     { foreground, getState } = useContext(SessionContext),
-    onDoubleClick = ({ path, url, icon = '', name = '' }: DirectoryEntryDoubleClick) => {
+    onDoubleClick = ({
+      path,
+      url,
+      icon = '',
+      name = ''
+    }: DirectoryEntryDoubleClick) => {
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
-        foreground?.(
+        foreground(
           open({ url: url || path || '', icon, name }, getState(name))
         );
       }
@@ -30,7 +40,7 @@ export const Directory: FC<DirectoryType> = ({ path, render, details = false, on
 
   useEffect(() => {
     getDirectory(fs, cwd, details, setEntries);
-    onChange?.(cwd);
+    onChange?.(cwd); // TODO: Continuing removing ?'s from here
   }, [fs, cwd]);
 
   return render({ entries, onDoubleClick, cwd });
