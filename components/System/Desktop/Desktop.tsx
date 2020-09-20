@@ -15,7 +15,7 @@ const Desktop: FC = ({ children }) => {
     { load } = useContext(ProcessContext),
     { getState } = useContext(SessionContext),
     fileDropHandler = useFileDrop(({ pageX, pageY }, file) => {
-      load(file, getState(name), { startX: pageX, startY: pageY });
+      load(file, getState({ name }), { startX: pageX, startY: pageY });
     });
 
   useEffect(() => {

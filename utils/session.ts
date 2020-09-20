@@ -26,9 +26,13 @@ export const foreground = (
     ]
   });
 
-export const getState = (session: SessionState) => (
-  name: string
-): ProcessState => session.states?.[getProcessId(name)] || {};
+export const getState = (session: SessionState) => ({
+  id,
+  name = ''
+}: {
+  id?: string;
+  name?: string;
+}): ProcessState => session.states?.[id || getProcessId(name)] || {};
 
 export const saveState = (
   session: SessionState,

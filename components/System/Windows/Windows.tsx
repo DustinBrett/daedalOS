@@ -24,25 +24,29 @@ export const Windows: FC = () => (
           }) => (
             <AnimatePresence>
               {processes.map(
-                ({
-                  loader: { loader: App, loadedAppOptions },
-                  id,
-                  icon,
-                  name,
-                  bgColor,
-                  windowed,
-                  maximized,
-                  minimized,
-                  lockAspectRatio,
-                  hideScrollbars,
-                  height,
-                  width,
-                  x,
-                  y,
-                  startX,
-                  startY
-                }) => {
-                  const { x: initialX = 0, y: initialY = 0 } = getState(name),
+                (
+                  {
+                    loader: { loader: App, loadedAppOptions },
+                    id,
+                    icon,
+                    name,
+                    bgColor,
+                    windowed,
+                    maximized,
+                    minimized,
+                    lockAspectRatio,
+                    hideScrollbars,
+                    height,
+                    width,
+                    x,
+                    y,
+                    startX,
+                    startY
+                  }
+                ) => {
+                  const { x: previousX = 0, y: previousY = 0 } = getState({
+                      id
+                    }),
                     windowOptions = {
                       onMinimize: () =>
                         foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
@@ -68,8 +72,8 @@ export const Windows: FC = () => (
                       // TODO: Can I get rid of the need to pass position to Rnd?
                       // TODO: updatePosition needs to know if cascade spacing was used?
                       // TODO: Or maybe Rnd could have x/y defaults to handle cascade
-                      x: initialX === x ? 0 : x,
-                      y: initialY === y ? 0 : y
+                      x: previousX === x ? 0 : x,
+                      y: previousY === y ? 0 : y
                     },
                     isForeground = foregroundId === id;
 
@@ -81,8 +85,8 @@ export const Windows: FC = () => (
                         zIndex: isForeground ? 10000 : 1750
                       }}
                       {...windowMotionSettings({
-                        initialX,
-                        initialY,
+                        initialX: previousX,
+                        initialY: previousY,
                         startX,
                         startY
                       })}

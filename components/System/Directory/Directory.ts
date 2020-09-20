@@ -35,7 +35,7 @@ export const Directory: FC<DirectoryType> = ({
           event.currentTarget
         );
         foreground(
-          open({ url: url || path || '', icon, name }, getState(name), {
+          open({ url: url || path || '', icon, name }, getState({ name }), {
             startX,
             startY
           })
