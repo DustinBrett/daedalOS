@@ -8,8 +8,6 @@ import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/Windows/Window'));
 
-// TODO: Do I need to pass x/y to Rnd? If so, only default?
-
 export const Windows: FC = () => (
   <div>
     <ProcessContext.Consumer>
@@ -45,7 +43,7 @@ export const Windows: FC = () => (
                   const { x: previousX = 0, y: previousY = 0 } = getState({
                       id
                     }),
-                    cascadePadding = (index + 1) * 15,
+                    cascadePadding = (index + 1) * 20,
                     windowOptions = {
                       onMinimize: () =>
                         foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
@@ -72,12 +70,7 @@ export const Windows: FC = () => (
                       minimized,
                       height,
                       width,
-                      id,
-                      // TODO: Can I get rid of the need to pass position to Rnd?
-                      // TODO: updatePosition needs to know if cascade spacing was used?
-                      // TODO: Or maybe Rnd could have x/y defaults to handle cascade
-                      x: previousX === x ? 0 : x,
-                      y: previousY === y ? 0 : y
+                      id
                     },
                     isForeground = foregroundId === id;
 

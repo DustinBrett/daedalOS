@@ -31,8 +31,6 @@ export const Window: FC<AppComponent & ProcessState> = ({
   zIndex,
   height = 250,
   width = 300,
-  x = 0,
-  y = 0,
   minimized,
   maximized
 }) => {
@@ -65,7 +63,6 @@ export const Window: FC<AppComponent & ProcessState> = ({
       }}
       cancel=".cancel"
       size={{ height, width }}
-      position={{ x, y }}
       minHeight={200}
       minWidth={300}
       tabIndex={0}
