@@ -24,26 +24,24 @@ export const Windows: FC = () => (
           }) => (
             <AnimatePresence>
               {processes.map(
-                (
-                  {
-                    loader: { loader: App, loadedAppOptions },
-                    id,
-                    icon,
-                    name,
-                    bgColor,
-                    windowed,
-                    maximized,
-                    minimized,
-                    lockAspectRatio,
-                    hideScrollbars,
-                    height,
-                    width,
-                    x,
-                    y,
-                    startX,
-                    startY
-                  }
-                ) => {
+                ({
+                  loader: { loader: App, loadedAppOptions },
+                  id,
+                  icon,
+                  name,
+                  bgColor,
+                  windowed,
+                  maximized,
+                  minimized,
+                  lockAspectRatio,
+                  hideScrollbars,
+                  height,
+                  width,
+                  x,
+                  y,
+                  startX,
+                  startY
+                }) => {
                   const { x: previousX = 0, y: previousY = 0 } = getState({
                       id
                     }),
