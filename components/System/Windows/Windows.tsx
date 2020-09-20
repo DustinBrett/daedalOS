@@ -41,17 +41,23 @@ export const Windows: FC = () => (
                   y,
                   startX,
                   startY
-                }) => {
+                }, index) => {
                   const { x: previousX = 0, y: previousY = 0 } = getState({
                       id
                     }),
+                    cascadePadding = (index + 1) * 15,
                     windowOptions = {
                       onMinimize: () =>
                         foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
                       onMaximize: () =>
                         maximized ? restore(id) : maximize(id),
                       onClose: () => {
-                        saveState(id, { height, width, x, y });
+                        saveState(id, {
+                          height,
+                          width,
+                          x: !previousX ? x + cascadePadding : x,
+                          y: !previousY ? y + cascadePadding : y
+                        });
                         foreground(close(id, stackOrder || [])); // TODO: Same change as onMin
                       },
                       onFocus: () => foreground(id),
@@ -83,8 +89,8 @@ export const Windows: FC = () => (
                         zIndex: isForeground ? 10000 : 1750
                       }}
                       {...windowMotionSettings({
-                        initialX: previousX,
-                        initialY: previousY,
+                        initialX: previousX || cascadePadding,
+                        initialY: previousY || cascadePadding,
                         startX,
                         startY
                       })}
