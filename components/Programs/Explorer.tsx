@@ -23,7 +23,7 @@ export const Explorer: FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
           render={DirectoryListView}
           details={true}
           onChange={(cwd: string) => {
-            title?.('explorer', cwd === '/' ? 'home' : basename(cwd));
+            title('explorer', cwd === '/' ? 'home' : basename(cwd));
           }}
         />
       </article>

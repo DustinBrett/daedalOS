@@ -20,31 +20,27 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
 export const load = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => async (file: File, previousState: ProcessState): Promise<string> => {
-  return new Promise((resolve) => {
-    const fileReader = new FileReader();
+) => (file: File, previousState: ProcessState): void => {
+  const fileReader = new FileReader();
 
-    fileReader.addEventListener('loadend', () => {
-      const url = URL.createObjectURL(
-          new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]) // Q: Can I just directly use `fileReader.result`?
-        ),
-        ext = extname(file.name).toLowerCase();
+  fileReader.addEventListener('loadend', () => {
+    const url = URL.createObjectURL(
+        new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]) // Q: Can I just directly use `fileReader.result`?
+      ),
+      ext = extname(file.name).toLowerCase();
 
-      resolve(
-        open(processes, updateProcesses)(
-          {
-            icon: getFileIcon('', ext),
-            name: basename(file.name, ext),
-            ext,
-            url
-          },
-          previousState
-        )
-      );
-    });
-
-    fileReader.readAsArrayBuffer(file);
+    open(processes, updateProcesses)(
+      {
+        icon: getFileIcon('', ext),
+        name: basename(file.name, ext),
+        ext,
+        url
+      },
+      previousState
+    );
   });
+
+  fileReader.readAsArrayBuffer(file);
 };
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (

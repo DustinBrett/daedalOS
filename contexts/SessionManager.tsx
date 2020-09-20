@@ -6,15 +6,16 @@ import type {
 
 import { createContext, useState } from 'react';
 import { background, foreground, getState, saveState } from '@/utils/session';
+import { initialSessionState } from '@/utils/initial';
 
-export const SessionContext = createContext<SessionContextType>({
-  session: {},
-  foreground: () => ({}),
-  getState: () => ({})
-});
+export const SessionContext = createContext<SessionContextType>(
+  initialSessionState
+);
 
 export const SessionProvider: FC = ({ children }) => {
-  const [session, updateSession] = useState<SessionState>({});
+  const [session, updateSession] = useState<SessionState>(
+    initialSessionState.session
+  );
 
   return (
     <SessionContext.Provider

@@ -14,17 +14,17 @@ import {
   title
 } from '@/utils/process';
 import { processReducer } from '@/utils/pm';
+import { initialProcessState } from '@/utils/initial';
 
-export const ProcessContext = createContext<ProcessContextType>({
-  processes: [],
-  close: () => '',
-  load: async () => '',
-  minimize: () => '',
-  open: () => ''
-});
+export const ProcessContext = createContext<ProcessContextType>(
+  initialProcessState
+);
 
 export const ProcessProvider: FC = ({ children }) => {
-  const [processes, updateProcesses] = useReducer(processReducer, []);
+  const [processes, updateProcesses] = useReducer(
+    processReducer,
+    initialProcessState.processes
+  );
 
   return (
     <ProcessContext.Provider

@@ -40,7 +40,7 @@ export const Directory: FC<DirectoryType> = ({
 
   useEffect(() => {
     getDirectory(fs, cwd, details, setEntries);
-    onChange?.(cwd); // TODO: Continuing removing ?'s from here
+    onChange?.(cwd);
   }, [fs, cwd]);
 
   return render({ entries, onDoubleClick, cwd });

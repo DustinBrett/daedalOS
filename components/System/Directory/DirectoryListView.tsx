@@ -10,8 +10,6 @@ const homeDir = '/';
 
 // TODO: Create DirectyListEntry
 // TODO: Replace custom click handler
-// TODO: style.emphasis is not needed
-// TODO: Maybe I dont need setSelected if I just style with focus?
 
 export const DirectoryList: FC<DirectoryView> = ({
   entries,

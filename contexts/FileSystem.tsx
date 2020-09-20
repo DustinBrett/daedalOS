@@ -10,7 +10,7 @@ import { writableJsonFs } from '@/utils/fs';
 export const FileContext = createContext<FSModule>({} as FSModule);
 
 export const FileProvider: FC = ({ children }) => {
-  const [fs, setFs] = useState<FSModule>({} as FSModule);
+  const [fs, setFs] = useState<FSModule>({} as FSModule); // TODO: Add BFS Path
 
   useEffect(() => {
     BrowserFS.install(window);

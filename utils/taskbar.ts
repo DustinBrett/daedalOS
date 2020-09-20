@@ -11,11 +11,11 @@ export const cycleWindowState = ({
   restore
 }: WindowStateCycler): void => {
   if (minimized) {
-    restore?.(id);
+    restore(id);
     foreground(id);
   } else if (foregroundId === id) {
     minimize(id, stackOrder || []);
-    background?.(id);
+    background(id);
   } else {
     foreground(id);
   }

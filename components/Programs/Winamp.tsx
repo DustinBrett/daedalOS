@@ -132,7 +132,7 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
       onDragStart={focusOnDrag}
-      onDragStop={position?.('winamp')}
+      onDragStop={position('winamp')}
       style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
       <article ref={elementRef} />

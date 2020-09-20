@@ -22,7 +22,7 @@ export const useFileDrop = (
 });
 
 export class ClickHandler {
-  clickTimer: NodeJS.Timeout | undefined;
+  clickTimer?: NodeJS.Timeout;
 
   singleClick;
   doubleClick;

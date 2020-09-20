@@ -45,15 +45,14 @@ export const Windows: FC = () => (
                       onMinimize: () =>
                         foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
                       onMaximize: () =>
-                        maximized ? restore?.(id) : maximize?.(id),
+                        maximized ? restore(id) : maximize(id),
                       onClose: () => {
-                        saveState?.(id, { height, width, x, y });
+                        saveState(id, { height, width, x, y });
                         foreground(close(id, stackOrder || [])); // TODO: Same change as onMin
                       },
                       onFocus: () => foreground(id),
-                      onBlur: () => background?.(id),
-                      updatePosition: position?.(id), // TODO: Update session directly to avoid needing update on removeProcess
-                      updateSize: size?.(id),
+                      onBlur: () => background(id),
+                      updatePosition: position(id),
                       // TODO: Remove when adding session and redoing css
                       zIndex:
                         1750 +
@@ -89,7 +88,7 @@ export const Windows: FC = () => (
                           bgColor={bgColor}
                           lockAspectRatio={lockAspectRatio}
                           hideScrollbars={hideScrollbars}
-                          updateSize={size?.(id)}
+                          updateSize={size(id)}
                           {...windowOptions}
                         >
                           <App {...loadedAppOptions} />

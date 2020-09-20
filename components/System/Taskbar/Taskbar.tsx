@@ -49,7 +49,7 @@ export const Taskbar: FC = () => {
                 icon={icon}
                 id={id}
                 name={name}
-                onBlur={() => background?.(id)}
+                onBlur={() => background(id)}
                 onClick={() =>
                   cycleWindowState({
                     id,

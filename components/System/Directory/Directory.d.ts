@@ -18,7 +18,7 @@ export type DirectoryEntryDoubleClick = {
 export type DirectoryView = {
   entries: Array<DirectoryEntry>;
   onDoubleClick: (entryData: DirectoryEntryDoubleClick) => void;
-  cwd?: string;
+  cwd: string;
 };
 
 export type DirectoryType = {
