@@ -40,11 +40,13 @@ export const saveState = (
 ) => (id: string, { height, width, x = 0, y = 0 }: ProcessState): void => {
   if (!session.states) session.states = {};
 
+  const { x: previousX = 0, y: previousY = 0 } = session.states[id] || {};
+
   session.states[id] = {
     height,
     width,
-    x,
-    y
+    x: previousX === x ? x : previousX + x,
+    y: previousY === y ? y : previousY + y
   };
 
   updateSession(session);
