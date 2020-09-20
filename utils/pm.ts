@@ -2,14 +2,19 @@ import type {
   Processes,
   ProcessAction,
   ProcessState,
-  ProcessConstructor
+  ProcessConstructor,
+  ProcessStartPosition
 } from '@/utils/pm.d';
 
 const addProcess = (
   process: Process,
   processes: Processes,
-  previousState: ProcessState = {}
-): Processes => [...processes, { ...process, ...previousState }];
+  previousState: ProcessState = {},
+  startPosition: ProcessStartPosition = {}
+): Processes => [
+  ...processes,
+  { ...process, ...previousState, ...startPosition }
+];
 
 const removeProcess = (id: string, processes: Processes): Processes => {
   return processes.filter((process) => {
@@ -28,10 +33,11 @@ const updateProcess = (
 
 export const processReducer = (
   processes: Processes,
-  { id, process, updates, previousState }: ProcessAction
+  { id, process, updates, previousState, startPosition }: ProcessAction
 ): Processes => {
   if (id && updates) return updateProcess(id, updates, processes);
-  if (process) return addProcess(process, processes, previousState);
+  if (process)
+    return addProcess(process, processes, previousState, startPosition);
   if (id) return removeProcess(id, processes);
   return processes;
 };
@@ -57,6 +63,8 @@ export class Process {
 
   x;
   y;
+  startX;
+  startY;
 
   constructor({
     loader,
@@ -71,7 +79,9 @@ export class Process {
     width = 0,
     windowed = true,
     x = 0,
-    y = 0
+    y = 0,
+    startX = 0,
+    startY = 0
   }: ProcessConstructor) {
     this.loader = loader;
     this.icon = icon;
@@ -85,5 +95,7 @@ export class Process {
     this.windowed = windowed;
     this.x = x;
     this.y = y;
+    this.startX = startX;
+    this.startY = startY;
   }
 }

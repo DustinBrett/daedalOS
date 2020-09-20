@@ -1,10 +1,6 @@
 # MVP
 
-const { x, y, height, width } = event.currentTarget.getBoundingClientRect(),
-  startPosition = {
-    x: x + (width / 2),
-    y: y + (height / 2)
-  };
+- Remove more defaults `= {}`, `= []`
 
 ## System
 
@@ -23,6 +19,8 @@ const { x, y, height, width } = event.currentTarget.getBoundingClientRect(),
 
 ## Apps
 
+- Winamp
+  - Positioning and animation issues on load
 - PDF
   - Fix window SS build error
   - Download & Print

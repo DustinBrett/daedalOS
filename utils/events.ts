@@ -8,7 +8,7 @@ const haltEvent = (event: React.DragEvent): void => {
 };
 
 export const useFileDrop = (
-  onFileDrop: (file: File) => void
+  onFileDrop: (event: React.DragEvent, file: File) => void
 ): FileDropEvents => ({
   onDragLeave: (event: React.DragEvent) => haltEvent(event),
   onDragEnter: (event: React.DragEvent) => haltEvent(event),
@@ -17,7 +17,7 @@ export const useFileDrop = (
     const { dataTransfer: { files: [file] = [] } = {} } = event;
 
     haltEvent(event);
-    onFileDrop(file);
+    onFileDrop(event, file);
   }
 });
 

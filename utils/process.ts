@@ -1,6 +1,11 @@
 import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type { Processes, ProcessAction, ProcessState } from '@/utils/pm.d';
+import type {
+  Processes,
+  ProcessAction,
+  ProcessState,
+  ProcessStartPosition
+} from '@/utils/pm.d';
 import type { AppFile } from '@/utils/programs.d';
 
 import { basename, extname } from 'path';
@@ -20,7 +25,11 @@ export const close = (updateProcesses: Dispatch<ProcessAction>) => (
 export const load = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (file: File, previousState: ProcessState): void => {
+) => (
+  file: File,
+  previousState: ProcessState,
+  startPosition: ProcessStartPosition
+): void => {
   const fileReader = new FileReader();
 
   fileReader.addEventListener('loadend', () => {
@@ -36,7 +45,8 @@ export const load = (
         ext,
         url
       },
-      previousState
+      previousState,
+      startPosition
     );
   });
 
@@ -59,7 +69,11 @@ export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
 export const open = (
   processes: Processes,
   updateProcesses: Dispatch<ProcessAction>
-) => (appFile: AppFile, previousState: ProcessState): string => {
+) => (
+  appFile: AppFile,
+  previousState: ProcessState,
+  startPosition: ProcessStartPosition
+): string => {
   const { icon, name } = appFile,
     existingProcessId = getProcessId(name);
 
@@ -76,7 +90,7 @@ export const open = (
       ...loader.loaderOptions
     });
 
-    updateProcesses({ process, previousState });
+    updateProcesses({ process, previousState, startPosition });
 
     return process.id;
   }

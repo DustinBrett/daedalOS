@@ -28,7 +28,8 @@ export const DirectoryIcons: FC<DirectoryView> = ({
               dragConstraints={navRef}
               onClick={
                 new ClickHandler({
-                  doubleClick: () => onDoubleClick({ path, url, icon, name })
+                  doubleClick: (event) =>
+                    onDoubleClick(event, { path, url, icon, name })
                 }).clickHandler
               }
               tabIndex={0}

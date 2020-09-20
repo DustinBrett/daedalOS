@@ -8,6 +8,7 @@ import type {
 import { extname, resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/directory';
+import { getTargetCenterPosition } from '@/utils/elements';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
@@ -23,17 +24,21 @@ export const Directory: FC<DirectoryType> = ({
     fs = useContext(FileContext),
     { open } = useContext(ProcessContext),
     { foreground, getState } = useContext(SessionContext),
-    onDoubleClick = ({
-      path,
-      url,
-      icon = '',
-      name = ''
-    }: DirectoryEntryDoubleClick) => {
+    onDoubleClick = (
+      event: React.MouseEvent<Element>,
+      { path, url, icon = '', name = '' }: DirectoryEntryDoubleClick
+    ) => {
       if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
+        const { x: startX, y: startY } = getTargetCenterPosition(
+          event.currentTarget
+        );
         foreground(
-          open({ url: url || path || '', icon, name }, getState(name))
+          open({ url: url || path || '', icon, name }, getState(name), {
+            startX,
+            startY
+          })
         );
       }
     };

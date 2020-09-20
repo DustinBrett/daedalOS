@@ -38,7 +38,9 @@ export const Windows: FC = () => (
                   height,
                   width,
                   x,
-                  y
+                  y,
+                  startX,
+                  startY
                 }) => {
                   const { x: initialX = 0, y: initialY = 0 } = getState(name),
                     windowOptions = {
@@ -78,8 +80,12 @@ export const Windows: FC = () => (
                         position: isForeground ? 'relative' : 'initial',
                         zIndex: isForeground ? 10000 : 1750
                       }}
-                      {...windowMotionSettings}
-                      animate={{ scale: 1, x: initialX, y: initialY }}
+                      {...windowMotionSettings({
+                        initialX,
+                        initialY,
+                        startX,
+                        startY
+                      })}
                     >
                       {windowed ? (
                         <Window

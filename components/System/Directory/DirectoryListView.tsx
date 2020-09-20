@@ -33,7 +33,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             className={selected === '..' ? styles.selected : ''}
             onClick={
               new ClickHandler({
-                doubleClick: () => onDoubleClick({ path: '..' })
+                doubleClick: (event) => onDoubleClick(event, { path: '..' })
               }).clickHandler
             }
             onFocus={() => setSelected('..')}
@@ -49,7 +49,8 @@ export const DirectoryList: FC<DirectoryView> = ({
             key={path}
             onClick={
               new ClickHandler({
-                doubleClick: () => onDoubleClick({ path, url, icon, name })
+                doubleClick: (event) =>
+                  onDoubleClick(event, { path, url, icon, name })
               }).clickHandler
             }
             onFocus={() => setSelected(path)}

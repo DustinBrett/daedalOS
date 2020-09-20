@@ -5,11 +5,17 @@ export type Processes = Array<Process>;
 
 export type ProcessState = Partial<Process>;
 
+export type ProcessStartPosition = {
+  startX?: number;
+  startY?: number;
+};
+
 export type ProcessAction = {
   id?: string;
   process?: Process;
   updates?: ProcessState;
   previousState?: ProcessState;
+  startPosition?: ProcessStartPosition;
 };
 
 export type ProcessConstructor = {
@@ -26,4 +32,6 @@ export type ProcessConstructor = {
   windowed?: boolean;
   x?: number;
   y?: number;
+  startX?: number;
+  startY?: number;
 };

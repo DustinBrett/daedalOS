@@ -26,3 +26,12 @@ export const lockDocumentTitle = (): void => {
     Object.defineProperty(document, 'title', { set: () => {} });
   }
 };
+
+export const getTargetCenterPosition = (element: Element): Partial<DOMRect> => {
+  const { x, y, height, width } = element.getBoundingClientRect();
+
+  return {
+    x: Math.floor(x + width / 2),
+    y: Math.floor(y + height / 2)
+  };
+};

@@ -25,18 +25,30 @@ export const taskbarEntriesMotionSettings = {
   exit: { opacity: 0, width: 0, transition: { duration: 0.3 }, x: -100 }
 };
 
-export const windowMotionSettings = {
+// TODO: Return type
+// TODO: DRY (initial/exit)
+export const windowMotionSettings = ({
+  initialX = 0,
+  initialY = 0,
+  startX = 0,
+  startY = 0
+}) => ({
   initial: {
     scale: 0,
-    x: -250,
-    y: -300
+    x: Math.floor(-(window.innerWidth / 2) + startX),
+    y: startY
+  },
+  animate: {
+    scale: 1,
+    x: initialX,
+    y: initialY
   },
   transition: {
     duration: 0.2
   },
   exit: {
     scale: 0,
-    x: -250,
-    y: -300
+    x: Math.floor(-(window.innerWidth / 2) + startX),
+    y: startY
   }
-};
+});
