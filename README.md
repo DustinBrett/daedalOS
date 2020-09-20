@@ -1,10 +1,15 @@
 # MVP
 
+const { x, y, height, width } = event.currentTarget.getBoundingClientRect(),
+  startPosition = {
+    x: x + (width / 2),
+    y: y + (height / 2)
+  };
+
 ## System
 
 - Session
-  - x, y, height & width
-  - Possibly: zIndex, focus, selected
+  - zIndex, focus, selected
 - Windows
   - Cascading windows
   - Opening to size for viewport if can't do max ideal
