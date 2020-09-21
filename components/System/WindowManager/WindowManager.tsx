@@ -12,9 +12,9 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
 
-const Window = dynamic(import('@/components/System/Windows/Window'));
+const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
-export const Windows: FC = () => (
+export const WindowManager: FC = () => (
   <div>
     <ProcessContext.Consumer>
       {({ processes, close, maximize, minimize, position, restore, size }) => (
@@ -129,4 +129,4 @@ export const Windows: FC = () => (
   </div>
 );
 
-export default Windows;
+export default WindowManager;

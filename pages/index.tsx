@@ -7,7 +7,7 @@ import ProcessProvider from '@/contexts/ProcessManager';
 import FileProvider from '@/contexts/FileSystem';
 import Directory from '@/components/System/Directory/Directory';
 import DirectoryIconsView from '@/components/System/Directory/DirectoryIconsView';
-import Windows from '@/components/System/Windows/Windows';
+import WindowManager from '@/components/System/WindowManager/WindowManager';
 import Taskbar from '@/components/System/Taskbar/Taskbar';
 
 export default function HomePage(): ReactElement {
@@ -19,7 +19,7 @@ export default function HomePage(): ReactElement {
           <Desktop>
             <FileProvider>
               <Directory path="/desktop" render={DirectoryIconsView} />
-              <Windows />
+              <WindowManager />
             </FileProvider>
             <Taskbar />
           </Desktop>

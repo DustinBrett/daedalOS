@@ -1,4 +1,4 @@
-import styles from '@/styles/System/Windows/Window.module.scss';
+import styles from '@/styles/System/WindowManager/Window.module.scss';
 
 import type { FC } from 'react';
 import type { ProcessState } from '@/utils/pm.d';
@@ -11,7 +11,7 @@ import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 
-// TODO: Split `<header>` into component
+// TODO: Split `<header>` into component (Does it also have to be dynamic? Even though Window is dynamic.)
 
 export const Window: FC<AppComponent & ProcessState> = ({
   children,
