@@ -7,9 +7,9 @@
 - Session
   - icon selected
 - Windows
+  - Closing window is adjusting open windows by cascade, even if they had been moved
   - Opening to size for viewport if can't do max ideal
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)
-  - Closing 3rd window didn't shift focus/foreground properly (base on stack?)
   - 2x1 px border needs adjusting
 - Quality
   - next-optimized-images

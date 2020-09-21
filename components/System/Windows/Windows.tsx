@@ -47,7 +47,7 @@ export const Windows: FC = () => (
                   const { x: previousX = 0, y: previousY = 0 } = getState({
                       id
                     }),
-                    cascadePadding = (index + 1) * 20,
+                    cascadePadding = (index + 1) * 20, // TODO: I can't use `index` for something only relevant on load
                     windowZindex = (baseZindex + (windowsZindexLevel * zindexLevelSize)),
                     windowOptions = {
                       onMinimize: () => foreground(minimize(id, stackOrder), id),
@@ -82,7 +82,6 @@ export const Windows: FC = () => (
                         zIndex: isForeground ? foregroundZindex : windowOptions.zIndex
                       }}
                       {...windowMotionSettings({
-                        // TODO: Why is cascade padding effecting moved windows on close of one?
                         initialX: previousX || cascadePadding,
                         initialY: previousY || cascadePadding,
                         startX,
