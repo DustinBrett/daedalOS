@@ -17,3 +17,12 @@ $textShadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.5),
 $thickLine: 2px;
 
 $fontSize: 12.5px;
+
+// NOTE: Sync constants with `@/utils/constants.ts`
+// TODO: Share constants between TSX/SCSS
+$foregroundZindex: 10000;
+$baseZindex: 1000;
+$zindexLevelSize: 100;
+$iconsZindexLevel: 1;
+$windowsZindexLevel: 2;
+$taskbarZindexLevel: 3;

@@ -16,13 +16,13 @@ export const background = (
 export const foreground = (
   session: SessionState,
   updateSession: Dispatch<SessionState>
-) => (id: string): void =>
+) => (id: string, removeId?: string): void =>
   updateSession({
     ...session,
     foregroundId: id,
     stackOrder: [
       id,
-      ...(session.stackOrder || []).filter((stackId) => stackId !== id)
+      ...(session.stackOrder).filter((stackId) => ![id, removeId].includes(stackId))
     ]
   });
 

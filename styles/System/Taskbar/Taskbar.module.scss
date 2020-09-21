@@ -3,7 +3,7 @@
 
 .taskbar {
   position: fixed;
-  z-index: map-get($taskbar, z-index);
+  z-index: map-get($zIndex, taskbar);
   bottom: 0;
   left: 0;
 

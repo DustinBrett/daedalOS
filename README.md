@@ -1,11 +1,11 @@
 # MVP
 
-- Remove more defaults `= {}`, `= []`
+- Remove more defaults `= {}`, `= []`, `||`, ` | `
 
 ## System
 
 - Session
-  - zIndex, focus, selected
+  - icon selected
 - Windows
   - Opening to size for viewport if can't do max ideal
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)

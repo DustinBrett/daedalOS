@@ -2,6 +2,7 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
+import { baseZindex, windowsZindexLevel, zindexLevelSize, foregroundZindex } from '@/utils/constants';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
@@ -47,9 +48,9 @@ export const Windows: FC = () => (
                       id
                     }),
                     cascadePadding = (index + 1) * 20,
+                    windowZindex = (baseZindex + (windowsZindexLevel * zindexLevelSize)),
                     windowOptions = {
-                      onMinimize: () =>
-                        foreground(minimize(id, stackOrder || [])), // TODO: Min drops stack to end, then foreground(stackOrder[0])
+                      onMinimize: () => foreground(minimize(id, stackOrder), id),
                       onMaximize: () =>
                         maximized ? restore(id) : maximize(id),
                       onClose: () => {
@@ -59,16 +60,12 @@ export const Windows: FC = () => (
                           x: !previousX ? x + cascadePadding : x,
                           y: !previousY ? y + cascadePadding : y
                         });
-                        foreground(close(id, stackOrder || [])); // TODO: Same change as onMin
+                        foreground(close(id, stackOrder), id);
                       },
                       onFocus: () => foreground(id),
                       onBlur: () => background(id),
                       updatePosition: position(id),
-                      // TODO: Remove when adding session and redoing css
-                      zIndex:
-                        1750 +
-                        (processes.length -
-                          ((stackOrder || []).indexOf(id) + 1)),
+                      zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
                       maximized,
                       minimized,
                       height,
@@ -81,10 +78,11 @@ export const Windows: FC = () => (
                     <motion.div
                       key={id}
                       style={{
-                        position: isForeground ? 'relative' : 'initial',
-                        zIndex: isForeground ? 10000 : 1750
+                        position: isForeground ? 'relative' : 'absolute',
+                        zIndex: isForeground ? foregroundZindex : windowOptions.zIndex
                       }}
                       {...windowMotionSettings({
+                        // TODO: Why is cascade padding effecting moved windows on close of one?
                         initialX: previousX || cascadePadding,
                         initialY: previousY || cascadePadding,
                         startX,
