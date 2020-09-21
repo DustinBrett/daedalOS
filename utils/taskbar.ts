@@ -14,7 +14,7 @@ export const cycleWindowState = ({
     restore(id);
     foreground(id);
   } else if (foregroundId === id) {
-    minimize(id, stackOrder || []);
+    minimize(id, stackOrder);
     background(id);
   } else {
     foreground(id);

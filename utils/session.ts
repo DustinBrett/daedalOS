@@ -22,7 +22,9 @@ export const foreground = (
     foregroundId: id,
     stackOrder: [
       id,
-      ...(session.stackOrder).filter((stackId) => ![id, removeId].includes(stackId))
+      ...session.stackOrder.filter(
+        (stackId) => ![id, removeId].includes(stackId)
+      )
     ]
   });
 
@@ -32,7 +34,7 @@ export const getState = (session: SessionState) => ({
 }: {
   id?: string;
   name?: string;
-}): ProcessState => session.states?.[id || getProcessId(name)] || {};
+}): ProcessState => session.states[id || getProcessId(name)] || {};
 
 export const saveState = (
   session: SessionState,

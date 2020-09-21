@@ -41,7 +41,6 @@ const getDirectoryEntry = async (
       !isDirectory && getStats
         ? await getFileStat(fs, filePath)
         : ({} as Stats & StatsProto),
-    { size } = stats || {},
     isShortcut = !isDirectory && file.includes('.url'),
     { url, icon } = isShortcut
       ? await parseShortcut(fs, filePath)
@@ -53,7 +52,7 @@ const getDirectoryEntry = async (
     path: filePath,
     url: url && decodeURIComponent(url),
     icon: getBestIconMatch(icon, isDirectory, ext, filePath),
-    size: isDirectory ? '--' : getFormattedSize(size),
+    size: isDirectory ? '--' : getFormattedSize(stats.size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };
 };

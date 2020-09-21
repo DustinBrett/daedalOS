@@ -1,7 +1,5 @@
 # MVP
 
-- Remove more defaults `= {}`, `= []`, `||`, ` | `
-
 ## System
 
 - Session

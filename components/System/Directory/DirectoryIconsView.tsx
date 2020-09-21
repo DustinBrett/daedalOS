@@ -12,7 +12,7 @@ import {
 } from '@/utils/motions';
 
 export const DirectoryIcons: FC<DirectoryView> = ({
-  entries = [],
+  entries,
   onDoubleClick
 }) => {
   const navRef = useRef<HTMLElement>(null);

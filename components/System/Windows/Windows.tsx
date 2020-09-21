@@ -2,7 +2,12 @@ import type { FC } from 'react';
 
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
-import { baseZindex, windowsZindexLevel, zindexLevelSize, foregroundZindex } from '@/utils/constants';
+import {
+  baseZindex,
+  windowsZindexLevel,
+  zindexLevelSize,
+  foregroundZindex
+} from '@/utils/constants';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
@@ -48,9 +53,11 @@ export const Windows: FC = () => (
                       id
                     }),
                     cascadePadding = (index + 1) * 20, // TODO: I can't use `index` for something only relevant on load
-                    windowZindex = (baseZindex + (windowsZindexLevel * zindexLevelSize)),
+                    windowZindex =
+                      baseZindex + windowsZindexLevel * zindexLevelSize,
                     windowOptions = {
-                      onMinimize: () => foreground(minimize(id, stackOrder), id),
+                      onMinimize: () =>
+                        foreground(minimize(id, stackOrder), id),
                       onMaximize: () =>
                         maximized ? restore(id) : maximize(id),
                       onClose: () => {
@@ -65,7 +72,8 @@ export const Windows: FC = () => (
                       onFocus: () => foreground(id),
                       onBlur: () => background(id),
                       updatePosition: position(id),
-                      zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
+                      zIndex:
+                        windowZindex + stackOrder.slice().reverse().indexOf(id),
                       maximized,
                       minimized,
                       height,
@@ -79,7 +87,9 @@ export const Windows: FC = () => (
                       key={id}
                       style={{
                         position: isForeground ? 'relative' : 'absolute',
-                        zIndex: isForeground ? foregroundZindex : windowOptions.zIndex
+                        zIndex: isForeground
+                          ? foregroundZindex
+                          : windowOptions.zIndex
                       }}
                       {...windowMotionSettings({
                         initialX: previousX || cascadePadding,

@@ -15,11 +15,11 @@ import { getFileIcon } from '@/utils/file';
 
 export const close = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
-  [, nextRemainingProcessId]: Array<string>
+  [, nextRemainingProcessId = '']: Array<string>
 ): string => {
   updateProcesses({ id });
 
-  return nextRemainingProcessId || '';
+  return nextRemainingProcessId;
 };
 
 export const load = (
@@ -59,11 +59,11 @@ export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
 
 export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
-  [, nextRemainingProcessId]: Array<string>
+  [, nextRemainingProcessId = '']: Array<string>
 ): string => {
   updateProcesses({ updates: { minimized: true }, id });
 
-  return nextRemainingProcessId || '';
+  return nextRemainingProcessId;
 };
 
 export const open = (

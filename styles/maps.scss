@@ -2,9 +2,18 @@
 
 $zIndex: (
   desktop: $baseZindex,
-  icons: $baseZindex + ($iconsZindexLevel * $zindexLevelSize),
-  windows: $baseZindex + ($windowsZindexLevel * $zindexLevelSize),
-  taskbar: $baseZindex + ($taskbarZindexLevel * $zindexLevelSize)
+  icons: $baseZindex +
+    (
+      $iconsZindexLevel * $zindexLevelSize
+    ),
+  windows: $baseZindex +
+    (
+      $windowsZindexLevel * $zindexLevelSize
+    ),
+  taskbar: $baseZindex +
+    (
+      $taskbarZindexLevel * $zindexLevelSize
+    )
 );
 
 $clock: (
