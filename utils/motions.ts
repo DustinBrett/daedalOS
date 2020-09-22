@@ -27,6 +27,7 @@ export const taskbarEntriesMotionSettings = {
 
 // TODO: Return type
 // TODO: DRY (initial/exit)
+// TODO: Naming is shit
 export const windowMotionSettings = ({
   initialX = 0,
   initialY = 0,

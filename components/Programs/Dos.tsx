@@ -18,7 +18,7 @@ export const loaderOptions = {
   hideScrollbars: true,
   lockAspectRatio: true,
   width: 640,
-  height: 400 + 24, // TODO: 24 is taskbar height
+  height: 400 + 24, // TODO: 24 is titlebar height
   bgColor: '#fff'
 };
 

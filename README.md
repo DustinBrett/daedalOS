@@ -1,11 +1,15 @@
 # MVP
 
+- Define WindowStateCycler
+- windowMotionSettings needs TS love
+
 ## System
 
 - Session
   - icon selected
 - Windows
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)
+  - Cascade glitch before/after maximize
   - 2x1 px border needs adjusting
 - Quality
   - next-optimized-images

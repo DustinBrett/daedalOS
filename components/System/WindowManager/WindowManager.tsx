@@ -30,7 +30,14 @@ export const WindowManager: FC = () => (
             <AnimatePresence>
               {processes.map(
                 ({
-                  loader: { loader: App, loadedAppOptions },
+                  loader: {
+                    loader: App,
+                    loadedAppOptions,
+                    loaderOptions: {
+                      width: defaultWidth,
+                      height: defaultHeight
+                    }
+                  },
                   id,
                   icon,
                   name,
@@ -76,7 +83,13 @@ export const WindowManager: FC = () => (
                       maximized,
                       minimized,
                       id,
-                      ...getMaxDimensions(width, height, lockAspectRatio)
+                      ...getMaxDimensions(
+                        width,
+                        height,
+                        defaultWidth,
+                        defaultHeight,
+                        lockAspectRatio
+                      )
                     },
                     isForeground = foregroundId === id;
 
@@ -90,8 +103,8 @@ export const WindowManager: FC = () => (
                           : windowOptions.zIndex
                       }}
                       {...windowMotionSettings({
-                        initialX: previousX || cascadePadding,
-                        initialY: previousY || cascadePadding,
+                        initialX: maximized ? 0 : previousX || cascadePadding,
+                        initialY: maximized ? 0 : previousY || cascadePadding,
                         startX,
                         startY
                       })}
