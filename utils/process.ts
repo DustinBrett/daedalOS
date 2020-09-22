@@ -34,7 +34,7 @@ export const load = (
 
   fileReader.addEventListener('loadend', () => {
     const url = URL.createObjectURL(
-        new Blob([new Uint8Array(fileReader.result as ArrayBuffer)]) // Q: Can I just directly use `fileReader.result`?
+        new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
       ),
       ext = extname(file.name).toLowerCase();
 

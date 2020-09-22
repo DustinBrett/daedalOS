@@ -11,8 +11,7 @@ import {
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
-
-const CASCADE_PADDING = 25;
+import { getMaxDimensions, CASCADE_PADDING } from '@/utils/wm';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
@@ -76,9 +75,8 @@ export const WindowManager: FC = () => (
                         windowZindex + stackOrder.slice().reverse().indexOf(id),
                       maximized,
                       minimized,
-                      height,
-                      width,
-                      id
+                      id,
+                      ...getMaxDimensions(width, height, lockAspectRatio)
                     },
                     isForeground = foregroundId === id;
 
