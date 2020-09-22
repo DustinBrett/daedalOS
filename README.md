@@ -5,8 +5,6 @@
 - Session
   - icon selected
 - Windows
-  - Closing window is adjusting open windows by cascade, even if they had been moved
-  - Opening to size for viewport if can't do max ideal
   - Animate min/max with framer (scale transition smooth), min/max from taskbar entry (useCycle)
   - 2x1 px border needs adjusting
 - Quality
