@@ -13,15 +13,17 @@
   width: map-get($clock, width);
   height: map-get($taskbar, height);
 
-  letter-spacing: 0.2px;
+  letter-spacing: -0.1px;
 
   color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
+
   &:hover {
     transition: background-color 0.1s linear;
+    // background-color: rgba(
+    //   invert(map-get($taskbar, bg-color)),
+    //   map-get($taskbarEntry, hover-bg-opacity)
+    // );
 
-    background-color: rgba(
-      invert(map-get($taskbar, bg-color)),
-      map-get($taskbarEntry, hover-bg-opacity)
-    );
+    background-color: hsla(0, 0%, 20.5%, 0.9);
   }
 }

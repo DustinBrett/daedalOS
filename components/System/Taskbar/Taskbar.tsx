@@ -21,7 +21,7 @@ export const Taskbar: FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext),
     { session, background, foreground } = useContext(SessionContext),
     olRef = useRef<HTMLOListElement>(null),
-    maxWidth = 159,
+    maxWidth = 160,
     [entryWidth, setEntryWidth] = useState(maxWidth);
 
   useEffect(() => {
