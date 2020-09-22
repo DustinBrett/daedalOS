@@ -34,4 +34,5 @@ export type ProcessConstructor = {
   y?: number;
   startX?: number;
   startY?: number;
+  startIndex?: number;
 };

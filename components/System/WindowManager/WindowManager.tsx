@@ -12,6 +12,8 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
 
+const CASCADE_PADDING = 25;
+
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
 export const WindowManager: FC = () => (
@@ -28,31 +30,29 @@ export const WindowManager: FC = () => (
           }) => (
             <AnimatePresence>
               {processes.map(
-                (
-                  {
-                    loader: { loader: App, loadedAppOptions },
-                    id,
-                    icon,
-                    name,
-                    bgColor,
-                    windowed,
-                    maximized,
-                    minimized,
-                    lockAspectRatio,
-                    hideScrollbars,
-                    height,
-                    width,
-                    x,
-                    y,
-                    startX,
-                    startY
-                  },
-                  index
-                ) => {
+                ({
+                  loader: { loader: App, loadedAppOptions },
+                  id,
+                  icon,
+                  name,
+                  bgColor,
+                  windowed,
+                  maximized,
+                  minimized,
+                  lockAspectRatio,
+                  hideScrollbars,
+                  height,
+                  width,
+                  x,
+                  y,
+                  startX,
+                  startY,
+                  startIndex
+                }) => {
                   const { x: previousX = 0, y: previousY = 0 } = getState({
                       id
                     }),
-                    cascadePadding = (index + 1) * 20, // TODO: I can't use `index` for something only relevant on load
+                    cascadePadding = startIndex * CASCADE_PADDING,
                     windowZindex =
                       baseZindex + windowsZindexLevel * zindexLevelSize,
                     windowOptions = {
@@ -64,8 +64,8 @@ export const WindowManager: FC = () => (
                         saveState(id, {
                           height,
                           width,
-                          x: !previousX ? x + cascadePadding : x,
-                          y: !previousY ? y + cascadePadding : y
+                          x: !previousX && x ? x + cascadePadding : x,
+                          y: !previousY && y ? y + cascadePadding : y
                         });
                         foreground(close(id, stackOrder), id);
                       },

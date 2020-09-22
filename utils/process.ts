@@ -87,6 +87,7 @@ export const open = (
       loader,
       icon,
       name,
+      startIndex: processes.length + 1,
       ...loader.loaderOptions
     });
 

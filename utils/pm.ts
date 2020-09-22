@@ -65,6 +65,7 @@ export class Process {
   y;
   startX;
   startY;
+  startIndex;
 
   constructor({
     loader,
@@ -81,7 +82,8 @@ export class Process {
     x = 0,
     y = 0,
     startX = 0,
-    startY = 0
+    startY = 0,
+    startIndex = -1
   }: ProcessConstructor) {
     this.loader = loader;
     this.icon = icon;
@@ -97,5 +99,6 @@ export class Process {
     this.y = y;
     this.startX = startX;
     this.startY = startY;
+    this.startIndex = startIndex;
   }
 }
