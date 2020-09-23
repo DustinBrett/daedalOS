@@ -1,7 +1,7 @@
 # MVP
 
 - Define WindowStateCycler
-- windowMotionSettings needs TS love
+- windowMotionSettings needs DRY'ing
 
 ## System
 
@@ -48,7 +48,7 @@
   - zIndex on drag should be above windows
 - Window
   - Title text should be more reactive
-  - Disable resizing by top handle on mobile
+  - Disable resizing/touch by top handle on mobile
 - Explorer
   - Resizable columns
   - Cache size and modified time

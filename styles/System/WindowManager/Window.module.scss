@@ -3,9 +3,10 @@
 $buttonIconOpacity: 0.975;
 
 .window {
-  font-family: 'SFPro-Regular', 'SegoeUI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SFPro-Regular', 'Segoe UI',
+    'SegoeUI', sans-serif;
   font-size: 12.5px;
-  font-weight: 400;
+  font-weight: 100;
 
   position: absolute;
   z-index: map-get($zIndex, windows);

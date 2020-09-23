@@ -9,26 +9,29 @@
 
   width: 100%;
   height: map-get($taskbar, height);
-  // background-color: rgba(
-  //   map-get($taskbar, bg-color),
-  //   map-get($taskbar, bg-opacity)
-  // );
 
-  background-color: hsla(0, 0%, 10%, 0.8);
+  background-color: hsla(
+    0,
+    0%,
+    map-get($taskbar, base-lightness),
+    map-get($taskbar, opacity)
+  );
 
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(map-get($taskbar, blur));
 
   .entries {
     @include bottomLeft;
 
     display: flex;
-    flex: 0 1 map-get($taskbarEntry, width);
+    flex: 0 1 map-get($taskbar, entry-width);
 
     width: calc(100% - #{map-get($clock, width)});
     height: map-get($taskbar, height);
 
     li {
-      padding-right: 1px;
+      display: grid;
+
+      padding-right: map-get($taskbar, entry-padding);
 
       &:last-child {
         padding-right: unset;

@@ -6,15 +6,14 @@ import { isValidUrl } from '@/utils/url';
 
 import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
-import { loaderOptions as pdfLoaderOptions } from '@/components/Programs/Pdf';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
 
 const Dos = dynamic(import('@/components/Programs/Dos')),
   Explorer = dynamic(import('@/components/Programs/Explorer')),
-  Pdf = dynamic(import('@/components/Programs/Pdf')),
   Winamp = dynamic(import('@/components/Programs/Winamp'));
 
 const appLoaderByName = (name: string): AppLoader | undefined => {
+  // TODO: Make this generic and feed in a list?
   switch (name) {
     case 'dos':
       return {
@@ -25,11 +24,6 @@ const appLoaderByName = (name: string): AppLoader | undefined => {
       return {
         loader: Explorer,
         loaderOptions: explorerLoaderOptions
-      };
-    case 'pdf':
-      return {
-        loader: Pdf,
-        loaderOptions: pdfLoaderOptions
       };
     case 'winamp':
       return {
@@ -61,14 +55,6 @@ const appLoaderByFileType = (
       return {
         loader: Winamp,
         loaderOptions: winampLoaderOptions,
-        loadedAppOptions: {
-          file: appFile
-        }
-      };
-    case '.pdf':
-      return {
-        loader: Pdf,
-        loaderOptions: pdfLoaderOptions,
         loadedAppOptions: {
           file: appFile
         }

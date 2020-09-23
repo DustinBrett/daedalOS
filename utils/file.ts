@@ -1,5 +1,4 @@
 import JsFileTypeIcon from '@/public/icons/files/js.svg';
-import PdfFileTypeIcon from '@/public/icons/files/pdf.svg';
 import UnknownFileTypeIcon from '@/public/icons/files/unknown.svg';
 
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
@@ -24,8 +23,6 @@ export const getFileIcon = (filePath: string, ext: string): string => {
     case '.m3u':
     case '.wsz':
       return '/icons/programs/winamp.png';
-    case '.pdf':
-      return PdfFileTypeIcon;
     default:
       return UnknownFileTypeIcon;
   }

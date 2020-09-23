@@ -44,10 +44,21 @@ $icons: (
   padding: 5px
 );
 
+$desktop: (
+  background-darkness: 0.2,
+  background-url: url(/backgrounds/heic1509a-1920x1080.jpg)
+);
+
 $taskbar: (
-  bg-color: $uiColor2,
-  bg-opacity: 60%,
-  height: 30px
+  opacity: 0.5,
+  base-lightness: 0,
+  hover-lightness: 25%,
+  foreground-lightness: 35%,
+  hover-foreground-lightness: 45%,
+  height: 30px,
+  entry-width: 160px,
+  entry-padding: 1px,
+  blur: 5px
 );
 
 $taskbarEntry: (

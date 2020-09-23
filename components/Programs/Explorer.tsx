@@ -10,7 +10,7 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 
 export const loaderOptions = {
   width: 300,
-  height: 245,
+  height: 255,
   bgColor: '#2a282b'
 };
 
