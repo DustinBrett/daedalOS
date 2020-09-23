@@ -2,20 +2,14 @@
 
 @font-face {
   font-family: 'SegoeUI';
-  font-weight: 600;
-  font-style: normal;
-
-  font-display: swap;
-  src: url('/fonts/segoeui.woff2') format('woff2');
+  font-display: fallback;
+  src: url('/fonts/SegoeUI.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'SFPro-Regular';
-  font-weight: 600;
-  font-style: normal;
-
-  src: url('/fonts/SF-Pro.woff2') format('woff2');
-  font-display: swap;
+  font-family: 'SF-Regular';
+  font-display: fallback;
+  src: url('/fonts/SF-Regular.woff2') format('woff2');
 }
 
 * {
@@ -37,7 +31,7 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', 'SegoeUI', sans-serif;
+  font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', 'Arial', sans-serif;
 
   background-color: black;
 
