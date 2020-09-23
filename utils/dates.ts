@@ -9,7 +9,7 @@ const datePartsToObject = (
 
 const newDateTimeFormat = (
   options: Intl.DateTimeFormatOptions
-): Intl.DateTimeFormat => new Intl.DateTimeFormat(process.env.locale, options);
+): Intl.DateTimeFormat => new Intl.DateTimeFormat(process.env.LOCALE, options);
 
 export const formatToDate = (date: Date): string =>
   newDateTimeFormat({
