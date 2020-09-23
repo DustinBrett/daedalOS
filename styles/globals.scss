@@ -2,12 +2,14 @@
 
 @font-face {
   font-family: 'SegoeUI';
+
   font-display: fallback;
   src: url('/fonts/SegoeUI.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'SF-Regular';
+
   font-display: fallback;
   src: url('/fonts/SF-Regular.woff2') format('woff2');
 }
@@ -31,7 +33,7 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
 
   background-color: black;
 
