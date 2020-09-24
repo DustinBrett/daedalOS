@@ -12,7 +12,7 @@ export default class AppDocument extends Document {
 
   render(): ReactElement {
     return (
-      <Html lang={process.env.LANGUAGE}>
+      <Html lang={process.env.lang}>
         <Head />
         <body>
           <Main />
