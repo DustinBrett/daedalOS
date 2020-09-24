@@ -15,6 +15,17 @@ const dosOptions = {
   onprogress: () => {}
 };
 
+// TODO: Clean up hardcoded taskbar/titlebar heights
+const getLockedAspectRatioDimensions = () => {
+  const aspectRatio = loaderOptions.width / (loaderOptions.height - 24),
+    widerWidth = window.innerWidth / window.innerHeight < aspectRatio;
+
+  return {
+    width: widerWidth ? '100%' : (window.innerHeight - 24 - 30) * aspectRatio,
+    height: widerWidth ? 'unset' : '100%'
+  };
+};
+
 export const loaderOptions = {
   hideScrollbars: true,
   lockAspectRatio: true,
@@ -67,19 +78,16 @@ export const Dos: FC<AppComponent & ProcessState> = ({
   require('js-dos');
 
   return (
-    <canvas
+    <div
       className={styles.dos}
-      style={
-        maximized
-          ? window.innerHeight > window.innerWidth
-            ? { height: 'unset' }
-            : { width: 'unset' }
-          : {}
-      }
-      onTouchStart={focusCanvas}
-      onClick={focusCanvas}
-      ref={canvasRef}
-    />
+      {...(maximized ? { style: getLockedAspectRatioDimensions() } : {})}
+    >
+      <canvas
+        onTouchStart={focusCanvas}
+        onClick={focusCanvas}
+        ref={canvasRef}
+      />
+    </div>
   );
 };
 
