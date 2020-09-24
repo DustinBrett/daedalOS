@@ -119,7 +119,7 @@ export const WindowManager: FC = () => (
                           updateSize={size(id)}
                           {...windowOptions}
                         >
-                          <App {...loadedAppOptions} />
+                          <App {...loadedAppOptions} {...windowOptions} />
                         </Window>
                       ) : (
                         <App

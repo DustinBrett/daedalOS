@@ -4,6 +4,7 @@ import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import type { AppComponent } from '@/utils/programs.d';
+import type { ProcessState } from '@/utils/pm.d';
 
 import { useEffect, useRef } from 'react';
 
@@ -19,12 +20,13 @@ export const loaderOptions = {
   lockAspectRatio: true,
   width: 640,
   height: 400 + 24, // TODO: 24 is titlebar height
-  bgColor: '#fff'
+  bgColor: '#000000'
 };
 
-export const Dos: FC<AppComponent> = ({
+export const Dos: FC<AppComponent & ProcessState> = ({
   args = ['-c', 'CLS'],
-  file: { url, name = '' } = {}
+  file: { url, name = '' } = {},
+  maximized
 }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null),
@@ -67,6 +69,13 @@ export const Dos: FC<AppComponent> = ({
   return (
     <canvas
       className={styles.dos}
+      style={
+        maximized
+          ? window.innerHeight > window.innerWidth
+            ? { height: 'unset' }
+            : { width: 'unset' }
+          : {}
+      }
       onTouchStart={focusCanvas}
       onClick={focusCanvas}
       ref={canvasRef}

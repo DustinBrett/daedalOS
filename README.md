@@ -60,7 +60,7 @@
 - Winamp
   - Clicking taskbar entry does not focus app
   - Focus isn't reliable on mobile
-  - Position logic (x|y / 2) is messy
+  - Position logic (x|y / 2) is messy (Position is getting saved where it animates to)
   - Seek bar shows when minimized and playing
 - Fix tabindex (https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
 

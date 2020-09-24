@@ -73,7 +73,6 @@ export const Window: FC<AppComponent & ProcessState> = ({
       onResizeStop={updateSize}
       disableDragging={maximized}
       lockAspectRatio={lockAspectRatio}
-      // TODO: If lockAspectRatio && maximized then I need adjust lockAspectRatioExtraHeight/lockAspectRatioExtraWidth
       style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
       <header className={`${styles.titlebar} handle`}>
