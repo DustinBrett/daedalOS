@@ -4,8 +4,8 @@ import type { FC } from 'react';
 import type { AppComponent } from '@/utils/programs.d';
 
 import { basename } from 'path';
-import { Directory } from '@/components/System/Directory/Directory';
-import DirectoryListView from '@/components/System/Directory/DirectoryListView';
+import { FileManager } from '@/components/System/FileManager/FileManager';
+import ListView from '@/components/System/FileManager/ListView';
 import { ProcessContext } from '@/contexts/ProcessManager';
 
 export const loaderOptions = {
@@ -18,9 +18,9 @@ export const Explorer: FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
   <ProcessContext.Consumer>
     {({ title }) => (
       <article className={styles.explorer}>
-        <Directory
+        <FileManager
           path={url}
-          render={DirectoryListView}
+          render={ListView}
           details={true}
           onChange={(cwd: string) => {
             title('explorer', cwd === '/' ? 'home' : basename(cwd));

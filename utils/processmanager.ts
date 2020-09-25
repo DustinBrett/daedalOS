@@ -4,7 +4,7 @@ import type {
   ProcessState,
   ProcessConstructor,
   ProcessStartPosition
-} from '@/utils/pm.d';
+} from '@/utils/processmanager.d';
 
 const addProcess = (
   process: Process,

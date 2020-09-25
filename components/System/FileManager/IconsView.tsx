@@ -1,7 +1,7 @@
-import styles from '@/styles/System/Directory/DirectoryIcons.module.scss';
+import styles from '@/styles/System/FileManager/IconsView.module.scss';
 
 import type { FC } from 'react';
-import type { DirectoryView } from '@/components/System/Directory/Directory.d';
+import type { DirectoryView } from '@/components/System/FileManager/FileManager.d';
 
 import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';

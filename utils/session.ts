@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 import type { SessionState } from '@/contexts/SessionManager.d';
-import type { ProcessState } from '@/utils/pm.d';
+import type { ProcessState } from '@/utils/processmanager.d';
 
-import { getProcessId } from '@/utils/pm';
+import { getProcessId } from '@/utils/processmanager';
 
 export const background = (
   session: SessionState,

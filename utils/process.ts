@@ -5,11 +5,11 @@ import type {
   ProcessAction,
   ProcessState,
   ProcessStartPosition
-} from '@/utils/pm.d';
+} from '@/utils/processmanager.d';
 import type { AppFile } from '@/utils/programs.d';
 
 import { basename, extname } from 'path';
-import { getProcessId, Process } from '@/utils/pm';
+import { getProcessId, Process } from '@/utils/processmanager';
 import { appLoader } from '@/utils/programs';
 import { getFileIcon } from '@/utils/file';
 

@@ -1,10 +1,10 @@
 import ExplorerIcon from '@/public/icons/programs/explorer.png';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { DirectoryEntry } from '@/components/System/Directory/Directory.d';
+import type { DirectoryEntry } from '@/components/System/FileManager/FileManager.d';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { Shortcut } from '@/utils/shortcut.d';
-import type { StatsProto } from '@/utils/directory.d';
+import type { StatsProto } from '@/utils/filemanager.d';
 
 import { extname } from 'path';
 import {

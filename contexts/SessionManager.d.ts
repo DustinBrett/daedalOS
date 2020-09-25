@@ -1,4 +1,4 @@
-import type { ProcessState } from '@/utils/pm.d';
+import type { ProcessState } from '@/utils/processmanager.d';
 
 export type SessionState = {
   foregroundId: string;

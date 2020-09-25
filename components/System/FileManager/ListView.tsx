@@ -1,7 +1,7 @@
-import styles from '@/styles/System/Directory/DirectoryList.module.scss';
+import styles from '@/styles/System/FileManager/ListView.module.scss';
 
 import type { FC } from 'react';
-import type { DirectoryView } from '@/components/System/Directory/Directory.d';
+import type { DirectoryView } from '@/components/System/FileManager/FileManager.d';
 
 import { useState } from 'react';
 import { ClickHandler } from '@/utils/events';

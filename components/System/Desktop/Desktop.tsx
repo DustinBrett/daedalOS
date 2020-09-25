@@ -9,6 +9,7 @@ import { useFileDrop } from '@/utils/events';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
+// TODO: Move drag/drop into directory
 const Desktop: FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement>(null),
     [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>(),

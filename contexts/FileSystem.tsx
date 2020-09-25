@@ -5,7 +5,7 @@ import type { FC } from 'react';
 
 import { createContext, useEffect, useState } from 'react';
 import * as BrowserFS from 'browserfs';
-import { writableJsonFs } from '@/utils/fs';
+import { writableJsonFs } from '@/utils/filesystem';
 
 export const FileContext = createContext<FSModule>({} as FSModule);
 

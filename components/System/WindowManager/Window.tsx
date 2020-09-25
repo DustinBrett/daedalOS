@@ -1,7 +1,7 @@
 import styles from '@/styles/System/WindowManager/Window.module.scss';
 
 import type { FC } from 'react';
-import type { ProcessState } from '@/utils/pm.d';
+import type { ProcessState } from '@/utils/processmanager.d';
 import type { AppComponent } from '@/utils/programs.d';
 
 import { useContext, useEffect, useRef } from 'react';

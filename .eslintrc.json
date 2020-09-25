@@ -28,14 +28,6 @@
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off"
   },
-  "overrides": [
-    {
-      "files": ["*.js"],
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off"
-      }
-    }
-  ],
   "settings": {
     "react": {
       "version": "latest"

@@ -3,7 +3,7 @@ import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
 import type { AppComponent } from '@/utils/programs.d';
-import type { ProcessState } from '@/utils/pm.d';
+import type { ProcessState } from '@/utils/processmanager.d';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';

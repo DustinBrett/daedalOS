@@ -3,7 +3,7 @@ import type {
   Processes,
   ProcessState,
   ProcessStartPosition
-} from '@/utils/pm.d';
+} from '@/utils/processmanager.d';
 import type { AppFile } from '@/utils/programs.d';
 
 export type ProcessContextType = {

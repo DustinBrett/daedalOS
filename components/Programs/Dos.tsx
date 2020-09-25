@@ -4,7 +4,7 @@ import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import type { AppComponent } from '@/utils/programs.d';
-import type { ProcessState } from '@/utils/pm.d';
+import type { ProcessState } from '@/utils/processmanager.d';
 
 import { useEffect, useRef } from 'react';
 

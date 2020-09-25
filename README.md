@@ -20,7 +20,7 @@
 - File Manager
   - Change Directory to FileManager
   - Change drag drop logic to Directory and have it write the file
-  - Favicon is showing `NaN` after drag/drop demo
+  - Favicon is showing `NaN`
   - Sort contents by name by default
   - Complete UI/Toolbar/Breadcrumb Bar
 - Icons

@@ -3,17 +3,17 @@ import type {
   DirectoryEntry,
   DirectoryType,
   DirectoryEntryDoubleClick
-} from '@/components/System/Directory/Directory.d';
+} from '@/components/System/FileManager/FileManager.d';
 
 import { extname, resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
-import { getDirectory } from '@/utils/directory';
+import { getDirectory } from '@/utils/filemanager';
 import { getTargetCenterPosition } from '@/utils/elements';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
-export const Directory: FC<DirectoryType> = ({
+export const FileManager: FC<DirectoryType> = ({
   path,
   render,
   details = false,
@@ -55,4 +55,4 @@ export const Directory: FC<DirectoryType> = ({
   return render({ entries, onDoubleClick, cwd });
 };
 
-export default Directory;
+export default FileManager;

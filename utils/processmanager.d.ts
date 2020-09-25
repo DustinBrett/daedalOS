@@ -1,5 +1,5 @@
-import type { AppLoader } from '@/utils/programs';
-import type { Process } from '@/utils/pm';
+import type { AppLoader } from '@/utils/programs.d';
+import type { Process } from '@/utils/processmanager';
 
 export type Processes = Array<Process>;
 
