@@ -8,7 +8,7 @@ import type { WindowMotionSettings } from './motion.d';
 import { taskbarEntryWidth } from './constants';
 
 export const desktopIconDragSettings = {
-  dragElastic: 0.15,
+  dragElastic: 0.25,
   dragTransition: { bounceStiffness: 500, bounceDamping: 15 },
   dragMomentum: false
 };

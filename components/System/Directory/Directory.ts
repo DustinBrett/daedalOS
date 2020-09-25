@@ -22,7 +22,7 @@ export const Directory: FC<DirectoryType> = ({
   const [cwd, cd] = useState(path),
     [entries, setEntries] = useState<Array<DirectoryEntry>>([]),
     fs = useContext(FileContext),
-    { open } = useContext(ProcessContext),
+    { open, restore } = useContext(ProcessContext),
     { foreground, getState } = useContext(SessionContext),
     onDoubleClick = (
       event: React.MouseEvent<Element>,
@@ -32,14 +32,18 @@ export const Directory: FC<DirectoryType> = ({
         cd(path === '..' ? resolve(cwd, '..') : path);
       } else {
         const { x: startX, y: startY } = getTargetCenterPosition(
-          event.currentTarget
-        );
-        foreground(
-          open({ url: url || path || '', icon, name }, getState({ name }), {
-            startX,
-            startY
-          })
-        );
+            event.currentTarget
+          ),
+          processsId = open(
+            { url: url || path || '', icon, name },
+            getState({ name }),
+            {
+              startX,
+              startY
+            }
+          );
+        foreground(processsId);
+        restore(processsId);
       }
     };
 
