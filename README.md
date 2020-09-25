@@ -3,12 +3,10 @@
 ## Current Focus
 
 - Windows
-  - Minimize/Maximize
-    - Maximized mobile is not accounting for taskbar
-    - Animate minimize scaling into it's taskbar entry
-    - Animate maximize as is done on osx
-    - Cascade is causing visual glitch during min/max
-    - WindowStateCycler needs defining
+  - Maximized mobile is not accounting for taskbar
+  - Animate maximize as is done on osx
+  - Cascade is causing visual glitch during min/max
+  - WindowStateCycler needs defining
 
 ## System
 

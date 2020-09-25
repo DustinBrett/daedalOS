@@ -8,3 +8,6 @@ export const windowsZindexLevel = 2;
 export const taskbarZindexLevel = 3;
 export const foregroundZindex =
   baseZindex + windowsZindexLevel * zindexLevelSize + zindexLevelSize / 2;
+
+// NOTE: Sync constants with `@/styles/maps.scss`
+export const taskbarEntryWidth = 160;
