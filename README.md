@@ -60,7 +60,12 @@
 - Minesweeper
   - https://github.com/ziebelje/minesweeper
   - https://github.com/ShizukuIchi/minesweeper
-- Clippy.JS (https://www.smore.com/clippy-js)
+- Assistant (https://www.smore.com/clippy-js)
 - IRC Client (https://thelounge.chat/)
   - https://github.com/gummipunkt/thelounge_theme_mircalike
 - Code Editor (https://codemirror.net/, https://ace.c9.io/)
+- REPL (https://github.com/replit/ReplitClient.js)
+- Remote Desktop (https://github.com/novnc/noVNC)
+- Video Converter (https://github.com/Etwas-Builders/modfy.video)
+- Video Player (https://github.com/videojs/video.js)
+- Photo Viewer/Editor (https://github.com/imgly/pesdk-html5-build/tree/master/pesdk-v5)
