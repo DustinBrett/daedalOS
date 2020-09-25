@@ -1,5 +1,5 @@
 {
-  "exclude": [".git/**", "node_modules/**", "bower_components/**"],
+  "exclude": [".git/**", "node_modules/**"],
   "always-semicolon": true,
   "block-indent": 2,
   "color-case": "lower",
