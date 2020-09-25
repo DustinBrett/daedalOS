@@ -21,10 +21,11 @@
   - Change Directory to FileManager
   - Change drag drop logic to Directory and have it write the file
   - Favicon is showing `NaN` after drag/drop demo
+  - Sort contents by name by default
   - Complete UI/Toolbar/Breadcrumb Bar
 - Icons
   - zIndex on drag should be above windows
-  - Switch to `grid` to fix icon landscape issues
+  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
   - Truncation breaks at 3 lines
 - Side-By-Side Compare
   - Windows
