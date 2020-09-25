@@ -40,7 +40,8 @@ export const windowMotionSettings = ({
     inOutAnimation = {
       scale: 0,
       x: Math.floor(-(window.innerWidth / 2) + startX),
-      y: startY
+      y: startY,
+      position: 'relative'
     },
     animationVariants = {
       start: {

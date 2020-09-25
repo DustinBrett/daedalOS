@@ -97,7 +97,6 @@ export const WindowManager: FC = () => (
                     <motion.div
                       key={id}
                       style={{
-                        position: isForeground ? 'relative' : 'absolute',
                         zIndex: isForeground
                           ? foregroundZindex
                           : windowOptions.zIndex
