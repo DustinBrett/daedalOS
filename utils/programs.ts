@@ -1,4 +1,4 @@
-import type { AppFile, AppLoader } from '@/types/utils/programs';
+import type { AppFile, AppLoader, AppLoaders } from '@/types/utils/programs';
 
 import dynamic from 'next/dynamic';
 import { extname } from 'path';
@@ -12,27 +12,22 @@ const Dos = dynamic(import('@/components/Programs/Dos'));
 const Explorer = dynamic(import('@/components/Programs/Explorer'));
 const Winamp = dynamic(import('@/components/Programs/Winamp'));
 
-// TODO: Fix the way `appLoader` returns
-// TODO: Make this generic and feed in a list?
-const appLoaderByName = (name: string): AppLoader | undefined => {
-  switch (name) {
-    case 'dos':
-      return {
-        loader: Dos,
-        loaderOptions: dosLoaderOptions
-      };
-    case 'explorer':
-      return {
-        loader: Explorer,
-        loaderOptions: explorerLoaderOptions
-      };
-    case 'winamp':
-      return {
-        loader: Winamp,
-        loaderOptions: winampLoaderOptions
-      };
+const appLoaders: AppLoaders = {
+  dos: {
+    loader: Dos,
+    loaderOptions: dosLoaderOptions
+  },
+  explorer: {
+    loader: Explorer,
+    loaderOptions: explorerLoaderOptions
+  },
+  winamp: {
+    loader: Winamp,
+    loaderOptions: winampLoaderOptions
   }
-};
+}
+
+const appLoaderByName = (name: string): AppLoader | undefined => appLoaders[name];
 
 const appLoaderByFileType = (
   appFile: AppFile,
@@ -43,8 +38,7 @@ const appLoaderByFileType = (
     case '.jsdos':
     case '.zip':
       return {
-        loader: Dos,
-        loaderOptions: dosLoaderOptions,
+        ...appLoaders.dos,
         loadedAppOptions: {
           file: appFile,
           args: searchParams ? [...searchParams.entries()].flat() : []
@@ -54,12 +48,12 @@ const appLoaderByFileType = (
     case '.m3u':
     case '.wsz':
       return {
-        loader: Winamp,
-        loaderOptions: winampLoaderOptions,
+        ...appLoaders.winamp,
         loadedAppOptions: {
           file: appFile
         }
       };
+    default: return undefined;
   }
 };
 

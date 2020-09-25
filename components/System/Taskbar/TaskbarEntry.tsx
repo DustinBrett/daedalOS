@@ -18,6 +18,7 @@ export const TaskbarEntry: FC<TaskbarEntryType> = ({
         className={`${styles.taskbarEntry} ${
           foregroundId === id && styles.foreground
         }`}
+        role="button"
         onBlur={onBlur}
         onClick={onClick}
         tabIndex={0}

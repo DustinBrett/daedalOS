@@ -12,6 +12,7 @@ import { getLockedAspectRatioDimensions } from '@/utils/windowmanager';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
+  /* eslint @typescript-eslint/no-empty-function: off */
   onprogress: () => {}
 };
 

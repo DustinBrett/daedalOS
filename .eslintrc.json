@@ -36,8 +36,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
-    "react/prop-types": "off",
-    "@typescript-eslint/no-empty-function": "warn"
+    "react/prop-types": "off"
   },
   "settings": {
     "react": {

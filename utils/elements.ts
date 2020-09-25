@@ -25,6 +25,7 @@ export const lockDocumentTitle = (): void => {
     typeof Object.getOwnPropertyDescriptor(document, 'title')?.set ===
     'undefined'
   ) {
+    /* eslint @typescript-eslint/no-empty-function: off */
     Object.defineProperty(document, 'title', { set: () => {} });
   }
 };

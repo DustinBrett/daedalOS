@@ -28,3 +28,5 @@ export type AppLoader = {
   loaderOptions: Partial<ProcessConstructor>;
   loadedAppOptions?: Partial<AppComponent>;
 };
+
+export type AppLoaders = { [key: string]: AppLoader };
