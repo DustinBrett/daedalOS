@@ -25,31 +25,43 @@ export const taskbarEntriesMotionSettings = {
   exit: { opacity: 0, width: 0, transition: { duration: 0.3 }, x: -100 }
 };
 
-// TODO: Return type
-// TODO: DRY (initial/exit)
+// TODO: Types
 // TODO: Naming is shit
 export const windowMotionSettings = ({
   initialX = 0,
   initialY = 0,
   startX = 0,
-  startY = 0
-}) => ({
-  initial: {
-    scale: 0,
-    x: Math.floor(-(window.innerWidth / 2) + startX),
-    y: startY
-  },
-  animate: {
-    scale: 1,
-    x: initialX,
-    y: initialY
-  },
-  transition: {
-    duration: 0.2
-  },
-  exit: {
-    scale: 0,
-    x: Math.floor(-(window.innerWidth / 2) + startX),
-    y: startY
-  }
-});
+  startY = 0,
+  animation = 'start',
+  startIndex = 0
+}) => {
+  const
+    taskbarEntryWidth = 160, // TODO: Move this
+    inOutAnimation = {
+      scale: 0,
+      x: Math.floor(-(window.innerWidth / 2) + startX),
+      y: startY
+    },
+    animationVariants = {
+      start: {
+        scale: 1,
+        x: initialX,
+        y: initialY
+      },
+      minimized: {
+        scale: 0,
+        x: (taskbarEntryWidth * startIndex) - (taskbarEntryWidth / 2),
+        y: window.innerHeight,
+        position: 'fixed'
+      }
+    };
+
+  return {
+    initial: inOutAnimation,
+    exit: inOutAnimation,
+    animate: animationVariants[animation],
+    transition: {
+      duration: 0.2
+    }
+  };
+};

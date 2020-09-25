@@ -31,7 +31,6 @@ export const Window: FC<AppComponent & ProcessState> = ({
   zIndex,
   height = 250,
   width = 300,
-  minimized,
   maximized
 }) => {
   const {
@@ -73,7 +72,7 @@ export const Window: FC<AppComponent & ProcessState> = ({
       onResizeStop={updateSize}
       disableDragging={maximized}
       lockAspectRatio={lockAspectRatio}
-      style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
+      style={{ zIndex }}
     >
       <header className={`${styles.titlebar} handle`}>
         <h1>
