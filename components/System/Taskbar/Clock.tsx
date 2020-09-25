@@ -16,21 +16,21 @@ const millisecondsTillNextSecond = () =>
   MILLISECONDS_IN_SECOND - newDate().getMilliseconds();
 
 export const Clock: FC = () => {
-  const initialDate = newDate(),
-    [date, setDate] = useState(formatToDate(initialDate)),
-    [time, setTime] = useState(formatToTime(initialDate)),
-    [dateTime, setDateTime] = useState(formatToShortDateTime(initialDate)),
-    updateClock = () => {
-      const currentDate = newDate(),
-        newTime = formatToTime(currentDate);
+  const initialDate = newDate();
+  const [date, setDate] = useState(formatToDate(initialDate));
+  const [time, setTime] = useState(formatToTime(initialDate));
+  const [dateTime, setDateTime] = useState(formatToShortDateTime(initialDate));
+  const updateClock = () => {
+    const currentDate = newDate();
+    const newTime = formatToTime(currentDate);
 
-      setTime(newTime);
+    setTime(newTime);
 
-      if (isMidnight(newTime)) {
-        setDate(formatToDate(currentDate));
-        setDateTime(formatToShortDateTime(currentDate));
-      }
-    };
+    if (isMidnight(newTime)) {
+      setDate(formatToDate(currentDate));
+      setDateTime(formatToShortDateTime(currentDate));
+    }
+  };
 
   useEffect(() => {
     let clockIntervalId: NodeJS.Timeout;
@@ -50,7 +50,7 @@ export const Clock: FC = () => {
       className={styles.clock}
       dateTime={dateTime}
       title={date}
-      suppressHydrationWarning={true}
+      suppressHydrationWarning
     >
       {time}
     </time>

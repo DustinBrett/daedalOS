@@ -40,7 +40,7 @@ export const DirectoryList: FC<DirectoryView> = ({
             tabIndex={0}
           >
             <td>..</td>
-            <td colSpan={2}></td>
+            <td colSpan={2} />
           </tr>
         )}
         {entries.map(({ icon, kind, name, path, url, size, fullName }) => (
@@ -50,7 +50,12 @@ export const DirectoryList: FC<DirectoryView> = ({
             onClick={
               new ClickHandler({
                 doubleClick: (event) =>
-                  onDoubleClick(event, { path, url, icon, name })
+                  onDoubleClick(event, {
+                    path,
+                    url,
+                    icon,
+                    name
+                  })
               }).clickHandler
             }
             onFocus={() => setSelected(path)}

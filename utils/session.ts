@@ -36,6 +36,7 @@ export const getState = (session: SessionState) => ({
   name?: string;
 }): ProcessState => session.states[id || getProcessId(name)] || {};
 
+// TODO: Stop reassigning session
 export const saveState = (
   session: SessionState,
   updateSession: Dispatch<SessionState>

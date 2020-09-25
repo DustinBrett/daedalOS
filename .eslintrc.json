@@ -9,8 +9,14 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "airbnb",
-    "airbnb/hooks"
+    "airbnb/hooks",
+    "prettier",
+    "prettier/react"
   ],
+  "globals": {
+    "NodeJS": "readonly",
+    "React": "readonly"
+  },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -22,20 +28,20 @@
   "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
     "comma-dangle": "off",
+    "global-require": "off",
     "import/no-unresolved": "off",
-    "indent": ["error", 2, { "SwitchCase": 1 }],
-    "linebreak-style": ["error", "unix"],
-    "no-empty-function": "off",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "lines-between-class-members": "off",
+    "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
+    "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off",
-    "react-hooks/rules-of-hooks": "error",
-    "semi": ["error", "always"],
-    "@typescript-eslint/no-empty-function": "off"
+    "@typescript-eslint/no-empty-function": "warn"
   },
   "settings": {
     "react": {
-      "version": "latest"
+      "version": "detect"
     }
   }
 }

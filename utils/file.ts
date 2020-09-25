@@ -5,8 +5,8 @@ import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { StatsProto } from '@/types/utils/filemanager';
 
-const bytesInKB = 1024,
-  fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+const bytesInKB = 1024;
+const fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
 
 export const getFileIcon = (filePath: string, ext: string): string => {
   switch (ext) {
@@ -63,8 +63,8 @@ export const getFormattedSize = (size: number): string => {
   if (size === 0) return 'Zero bytes';
   if (size === 1) return '1 byte';
 
-  const sizeFactor = Math.floor(Math.log(size) / Math.log(bytesInKB)),
-    newSize = Math.round(size / Math.pow(bytesInKB, sizeFactor));
+  const sizeFactor = Math.floor(Math.log(size) / Math.log(bytesInKB));
+  const newSize = Math.round(size / bytesInKB ** sizeFactor);
 
   return `${newSize} ${fileSizes[sizeFactor]}`;
 };

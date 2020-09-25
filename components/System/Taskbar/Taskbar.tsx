@@ -16,9 +16,10 @@ const TaskbarEntry = dynamic(
 );
 
 export const Taskbar: FC = () => {
-  const { processes, minimize, restore } = useContext(ProcessContext),
-    { session, background, foreground } = useContext(SessionContext);
+  const { processes, minimize, restore } = useContext(ProcessContext);
+  const { session, background, foreground } = useContext(SessionContext);
 
+  // Q: Maybe TaskbarEntry's div should be the li?
   return (
     <nav className={styles.taskbar}>
       <ol className={styles.entries}>

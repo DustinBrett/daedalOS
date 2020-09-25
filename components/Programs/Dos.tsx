@@ -1,29 +1,18 @@
 import styles from '@/styles/Programs/Dos.module.scss';
 
-import type { DosFactory, DosMainFn } from 'js-dos';
+import type { DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import type { AppComponent } from '@/types/utils/programs';
 import type { ProcessState } from '@/types/utils/processmanager';
+import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
 import { useEffect, useRef } from 'react';
-
-type DosWindow = Window & typeof globalThis & { Dos: DosFactory };
+import { getLockedAspectRatioDimensions } from '@/utils/windowmanager';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
   onprogress: () => {}
-};
-
-// TODO: Clean up hardcoded taskbar/titlebar heights
-const getLockedAspectRatioDimensions = () => {
-  const aspectRatio = loaderOptions.width / (loaderOptions.height - 24),
-    widerWidth = window.innerWidth / window.innerHeight < aspectRatio;
-
-  return {
-    width: widerWidth ? '100%' : (window.innerHeight - 24 - 30) * aspectRatio,
-    height: widerWidth ? 'unset' : '100%'
-  };
 };
 
 export const loaderOptions = {
@@ -40,25 +29,25 @@ export const Dos: FC<AppComponent & ProcessState> = ({
   maximized
 }) => {
   let ci: DosCommandInterface;
-  const canvasRef = useRef<HTMLCanvasElement>(null),
-    loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) =>
-      main?.([...prependedArgs, ...args])?.then((value) => {
-        ci = value;
-      }),
-    // TODO: Set app to foreground instead of manually focusing
-    focusCanvas = () => {
-      (canvasRef.current?.closest(
-        ':not(li)[tabindex]'
-      ) as HTMLDivElement).focus();
-    };
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) =>
+    main?.([...prependedArgs, ...args])?.then((value) => {
+      ci = value;
+    });
+  // TODO: Set app to foreground instead of manually focusing
+  const focusCanvas = () => {
+    (canvasRef.current?.closest(
+      ':not(li)[tabindex]'
+    ) as HTMLDivElement).focus();
+  };
 
   useEffect(() => {
     const { current: canvasElement } = canvasRef as {
-        current: HTMLCanvasElement;
-      },
-      { Dos } = window as DosWindow;
+      current: HTMLCanvasElement;
+    };
+    const { Dos: DosModule } = window as WindowWithDosModule;
 
-    Dos(canvasElement, dosOptions)?.then(({ fs, main }) => {
+    DosModule(canvasElement, dosOptions)?.then(({ fs, main }) => {
       if (url) {
         const appPath = name.replace(/ /g, '').substring(0, 8);
 
@@ -80,7 +69,14 @@ export const Dos: FC<AppComponent & ProcessState> = ({
   return (
     <div
       className={styles.dos}
-      {...(maximized ? { style: getLockedAspectRatioDimensions() } : {})}
+      {...(maximized
+        ? {
+            style: getLockedAspectRatioDimensions(
+              loaderOptions.width,
+              loaderOptions.height
+            )
+          }
+        : {})}
     >
       <canvas
         onTouchStart={focusCanvas}

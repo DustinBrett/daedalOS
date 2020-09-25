@@ -1,3 +1,5 @@
+import type { FC } from 'react';
+
 export type DirectoryEntry = {
   icon: string;
   kind: string;

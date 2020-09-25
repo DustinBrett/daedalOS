@@ -21,10 +21,10 @@ export const Explorer: FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
         <FileManager
           path={url}
           render={ListView}
-          details={true}
           onChange={(cwd: string) => {
             title('explorer', cwd === '/' ? 'home' : basename(cwd));
           }}
+          details
         />
       </article>
     )}

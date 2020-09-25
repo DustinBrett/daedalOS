@@ -15,7 +15,7 @@
     "stylelint": "stylelint styles",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run eslint && npm run dtslint && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
+    "check": "npm run eslint -- --fix && npm run dtslint && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
     "genfs": "cd public && make_xhrfs_index index.json"
   },
   "dependencies": {
@@ -51,6 +51,7 @@
     "dtslint": "^4.0.4",
     "eslint": "^7.9.0",
     "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.2",

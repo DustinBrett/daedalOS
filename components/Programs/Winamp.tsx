@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+/* eslint import/no-duplicates: off */
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
@@ -59,41 +60,44 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
   y = 0,
   file: { url, name = '' } = {}
 }) => {
-  const elementRef = useRef<HTMLElement>(null),
-    { position } = useContext(ProcessContext),
-    onTouchEventsOnly: RndDragCallback = (e): void => {
-      if (e instanceof MouseEvent) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    },
-    loadWebAmp = async (): Promise<Webamp & WebampStore> => {
-      const { default: Webamp } = await import('webamp'),
-        webamp = new Webamp(options) as Webamp & WebampStore,
-        { current: containerElement } = elementRef as { current: HTMLElement };
-
-      webamp?.store?.dispatch(closeEqualizer);
-      onClose && webamp?.onClose(onClose);
-      onMinimize && webamp?.onMinimize(onMinimize);
-
-      await webamp?.renderWhenReady(containerElement);
-
-      const webampElement = document.getElementById('webamp') as HTMLElement;
-      appendElement(containerElement, webampElement);
-      webampElement?.focus();
-      onFocus?.();
-
-      if (url?.includes('.wsz')) {
-        webamp?.appendTracks([demoTrack]);
-        webamp?.setSkinFromUrl(url);
-      } else {
-        webamp?.setTracksToPlay([
-          url ? { url: url, metaData: { artist: '', title: name } } : demoTrack
-        ]);
-      }
-
-      return webamp;
+  const elementRef = useRef<HTMLElement>(null);
+  const { position } = useContext(ProcessContext);
+  const onTouchEventsOnly: RndDragCallback = (e): void => {
+    if (e instanceof MouseEvent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+  const loadWebAmp = async (): Promise<Webamp & WebampStore> => {
+    const { default: WebampConstructor } = await import('webamp');
+    const webamp = new WebampConstructor(options) as Webamp & WebampStore;
+    const { current: containerElement } = elementRef as {
+      current: HTMLElement;
     };
+
+    if (onClose) webamp?.onClose(onClose);
+    if (onMinimize) webamp?.onMinimize(onMinimize);
+    webamp?.store?.dispatch(closeEqualizer);
+
+    await webamp?.renderWhenReady(containerElement);
+
+    appendElement(
+      containerElement,
+      document.getElementById('webamp') as HTMLElement
+    ).focus();
+    onFocus?.();
+
+    if (url?.includes('.wsz')) {
+      webamp?.appendTracks([demoTrack]);
+      webamp?.setSkinFromUrl(url);
+    } else {
+      webamp?.setTracksToPlay([
+        url ? { url, metaData: { artist: '', title: name } } : demoTrack
+      ]);
+    }
+
+    return webamp;
+  };
 
   useEffect(() => {
     let webamp: Webamp & WebampStore;
@@ -109,7 +113,12 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
 
   return (
     <Rnd
-      default={{ x: x / 2, y: y / 2, width: 275, height: 232 }}
+      default={{
+        x: x / 2,
+        y: y / 2,
+        width: 275,
+        height: 232
+      }}
       enableResizing={false}
       enableUserSelectHack={false}
       dragHandleClassName="draggable"

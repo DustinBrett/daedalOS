@@ -31,7 +31,12 @@ export const taskbarEntriesMotionSettings: MotionProps = {
       type: 'spring'
     }
   },
-  exit: { opacity: 0, width: 0, transition: { duration: 0.3 }, x: -100 }
+  exit: {
+    opacity: 0,
+    width: 0,
+    transition: { duration: 0.3 },
+    x: -100
+  }
 };
 
 export const windowMotionSettings = ({
@@ -43,25 +48,25 @@ export const windowMotionSettings = ({
   startIndex = 0
 }: WindowMotionSettings): MotionProps => {
   const animationVariants: {
-      [key: string]: AnimationProps & TargetAndTransition;
-    } = {
-      start: {
-        scale: 1,
-        x: initialX,
-        y: initialY
-      },
-      minimized: {
-        scale: 0,
-        x: taskbarEntryWidth * startIndex - taskbarEntryWidth / 2,
-        y: window.innerHeight,
-        position: 'fixed'
-      }
+    [key: string]: AnimationProps & TargetAndTransition;
+  } = {
+    start: {
+      scale: 1,
+      x: initialX,
+      y: initialY
     },
-    initialExitTransform: TransformProperties = {
+    minimized: {
       scale: 0,
-      x: Math.floor(-(window.innerWidth / 2) + startX),
-      y: startY
-    };
+      x: taskbarEntryWidth * startIndex - taskbarEntryWidth / 2,
+      y: window.innerHeight,
+      position: 'fixed'
+    }
+  };
+  const initialExitTransform: TransformProperties = {
+    scale: 0,
+    x: Math.floor(-(window.innerWidth / 2) + startX),
+    y: startY
+  };
 
   return {
     initial: {

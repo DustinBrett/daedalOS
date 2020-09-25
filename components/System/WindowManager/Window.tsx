@@ -11,7 +11,7 @@ import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 
-// TODO: Split `<header>` into component (Does it also have to be dynamic? Even though Window is dynamic.)
+// TODO: Split `<header>` into component
 
 export const Window: FC<AppComponent & ProcessState> = ({
   children,
@@ -34,9 +34,9 @@ export const Window: FC<AppComponent & ProcessState> = ({
   maximized
 }) => {
   const {
-      session: { foregroundId }
-    } = useContext(SessionContext),
-    windowRef = useRef<Rnd>(null);
+    session: { foregroundId }
+  } = useContext(SessionContext);
+  const windowRef = useRef<Rnd>(null);
 
   useEffect(() => {
     focusResizableElementRef(windowRef);
@@ -82,13 +82,13 @@ export const Window: FC<AppComponent & ProcessState> = ({
           </figure>
         </h1>
         <nav className="cancel">
-          <button id={styles.close} onClick={onClose}>
+          <button id={styles.close} type="button" onClick={onClose}>
             <FontAwesomeIcon size="xs" icon={faTimes} />
           </button>
-          <button id={styles.minimize} onClick={onMinimize}>
+          <button id={styles.minimize} type="button" onClick={onMinimize}>
             <FontAwesomeIcon size="xs" icon={faMinus} />
           </button>
-          <button id={styles.maximize} onClick={onMaximize}>
+          <button id={styles.maximize} type="button" onClick={onMaximize}>
             <FontAwesomeIcon size="xs" icon={faPlus} />
           </button>
         </nav>

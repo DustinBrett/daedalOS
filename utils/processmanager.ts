@@ -1,8 +1,8 @@
+import type { Process } from '@/utils/process';
 import type {
   Processes,
   ProcessAction,
   ProcessState,
-  ProcessConstructor,
   ProcessStartPosition
 } from '@/types/utils/processmanager';
 
@@ -16,11 +16,8 @@ const addProcess = (
   { ...process, ...previousState, ...startPosition }
 ];
 
-const removeProcess = (id: string, processes: Processes): Processes => {
-  return processes.filter((process) => {
-    if (process.id !== id) return true;
-  });
-};
+const removeProcess = (id: string, processes: Processes): Processes =>
+  processes.filter((process) => process.id !== id);
 
 const updateProcess = (
   id: string,
@@ -44,61 +41,3 @@ export const processReducer = (
 
 export const getProcessId = (name: string): string =>
   name.toLowerCase().replace(/ /g, '_');
-
-export class Process {
-  loader;
-  icon;
-  name;
-
-  bgColor;
-  height;
-  hideScrollbars;
-  id;
-  lockAspectRatio;
-  width;
-  windowed;
-
-  maximized = false;
-  minimized = false;
-
-  x;
-  y;
-  startX;
-  startY;
-  startIndex;
-
-  constructor({
-    loader,
-    icon,
-    name,
-
-    bgColor = '#fff',
-    height = 0,
-    hideScrollbars = false,
-    id = getProcessId(name),
-    lockAspectRatio = false,
-    width = 0,
-    windowed = true,
-    x = 0,
-    y = 0,
-    startX = 0,
-    startY = 0,
-    startIndex = -1
-  }: ProcessConstructor) {
-    this.loader = loader;
-    this.icon = icon;
-    this.name = name;
-    this.bgColor = bgColor;
-    this.height = height;
-    this.hideScrollbars = hideScrollbars;
-    this.id = id;
-    this.lockAspectRatio = lockAspectRatio;
-    this.width = width;
-    this.windowed = windowed;
-    this.x = x;
-    this.y = y;
-    this.startX = startX;
-    this.startY = startY;
-    this.startIndex = startIndex;
-  }
-}

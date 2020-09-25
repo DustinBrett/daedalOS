@@ -11,13 +11,13 @@ import { SessionContext } from '@/contexts/SessionManager';
 
 // TODO: Move drag/drop into directory
 const Desktop: FC = ({ children }) => {
-  const desktopRef = useRef<HTMLElement>(null),
-    [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>(),
-    { load } = useContext(ProcessContext),
-    { getState } = useContext(SessionContext),
-    fileDropHandler = useFileDrop(({ pageX, pageY }, file) => {
-      load(file, getState({ name }), { startX: pageX, startY: pageY });
-    });
+  const desktopRef = useRef<HTMLElement>(null);
+  const [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>();
+  const { load } = useContext(ProcessContext);
+  const { getState } = useContext(SessionContext);
+  const fileDropHandler = useFileDrop(({ pageX, pageY }, file) => {
+    load(file, getState({ name: file.name }), { startX: pageX, startY: pageY });
+  });
 
   useEffect(() => {
     setWallpaperEffect(renderWallpaperEffect(desktopRef));

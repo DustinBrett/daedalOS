@@ -1,3 +1,4 @@
+import type * as BrowserFS from 'browserfs';
 import type { ListingObj } from '@/types/utils/filesystem';
 
 export const writableJsonFs = (

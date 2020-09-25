@@ -56,42 +56,40 @@ export const WindowManager: FC = () => (
                   startIndex
                 }) => {
                   const { x: previousX = 0, y: previousY = 0 } = getState({
-                      id
-                    }),
-                    cascadePadding = startIndex * CASCADE_PADDING,
-                    windowZindex =
-                      baseZindex + windowsZindexLevel * zindexLevelSize,
-                    windowOptions = {
-                      onMinimize: () =>
-                        foreground(minimize(id, stackOrder), id),
-                      onMaximize: () =>
-                        maximized ? restore(id) : maximize(id),
-                      onClose: () => {
-                        saveState(id, {
-                          height,
-                          width,
-                          x: !previousX && x ? x + cascadePadding : x,
-                          y: !previousY && y ? y + cascadePadding : y
-                        });
-                        foreground(close(id, stackOrder), id);
-                      },
-                      onFocus: () => foreground(id),
-                      onBlur: () => background(id),
-                      updatePosition: position(id),
-                      zIndex:
-                        windowZindex + stackOrder.slice().reverse().indexOf(id),
-                      maximized,
-                      minimized,
-                      id,
-                      ...getMaxDimensions(
-                        width,
+                    id
+                  });
+                  const cascadePadding = startIndex * CASCADE_PADDING;
+                  const windowZindex =
+                    baseZindex + windowsZindexLevel * zindexLevelSize;
+                  const windowOptions = {
+                    onMinimize: () => foreground(minimize(id, stackOrder), id),
+                    onMaximize: () => (maximized ? restore(id) : maximize(id)),
+                    onClose: () => {
+                      saveState(id, {
                         height,
-                        defaultWidth,
-                        defaultHeight,
-                        lockAspectRatio
-                      )
+                        width,
+                        x: !previousX && x ? x + cascadePadding : x,
+                        y: !previousY && y ? y + cascadePadding : y
+                      });
+                      foreground(close(id, stackOrder), id);
                     },
-                    isForeground = foregroundId === id;
+                    onFocus: () => foreground(id),
+                    onBlur: () => background(id),
+                    updatePosition: position(id),
+                    zIndex:
+                      windowZindex + stackOrder.slice().reverse().indexOf(id),
+                    maximized,
+                    minimized,
+                    id,
+                    ...getMaxDimensions(
+                      width,
+                      height,
+                      defaultWidth,
+                      defaultHeight,
+                      lockAspectRatio
+                    )
+                  };
+                  const isForeground = foregroundId === id;
 
                   return (
                     <motion.div

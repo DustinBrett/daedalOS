@@ -1,5 +1,5 @@
 import type { AppLoader } from '@/types/utils/programs';
-import type { Process } from '@/utils/processmanager';
+import type { Process } from '@/utils/process';
 
 export type Processes = Process[];
 

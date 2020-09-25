@@ -34,17 +34,17 @@ const getDirectoryEntry = async (
   file: string,
   getStats: boolean
 ): Promise<DirectoryEntry> => {
-  const filePath = `${path}${path === homeDir ? '' : '/'}${file}`,
-    ext = extname(file),
-    isDirectory = !ext,
-    stats =
-      !isDirectory && getStats
-        ? await getFileStat(fs, filePath)
-        : ({} as Stats & StatsProto),
-    isShortcut = !isDirectory && file.includes('.url'),
-    { url, icon } = isShortcut
-      ? await parseShortcut(fs, filePath)
-      : ({} as Shortcut);
+  const filePath = `${path}${path === homeDir ? '' : '/'}${file}`;
+  const ext = extname(file);
+  const isDirectory = !ext;
+  const stats =
+    !isDirectory && getStats
+      ? await getFileStat(fs, filePath)
+      : ({} as Stats & StatsProto);
+  const isShortcut = !isDirectory && file.includes('.url');
+  const { url, icon } = isShortcut
+    ? await parseShortcut(fs, filePath)
+    : ({} as Shortcut);
 
   return {
     name: file.replace(ext, ''),

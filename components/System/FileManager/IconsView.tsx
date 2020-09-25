@@ -29,7 +29,12 @@ export const DirectoryIcons: FC<DirectoryView> = ({
               onClick={
                 new ClickHandler({
                   doubleClick: (event) =>
-                    onDoubleClick(event, { path, url, icon, name })
+                    onDoubleClick(event, {
+                      path,
+                      url,
+                      icon,
+                      name
+                    })
                 }).clickHandler
               }
               tabIndex={0}

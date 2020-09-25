@@ -8,12 +8,13 @@ import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
 
-const Dos = dynamic(import('@/components/Programs/Dos')),
-  Explorer = dynamic(import('@/components/Programs/Explorer')),
-  Winamp = dynamic(import('@/components/Programs/Winamp'));
+const Dos = dynamic(import('@/components/Programs/Dos'));
+const Explorer = dynamic(import('@/components/Programs/Explorer'));
+const Winamp = dynamic(import('@/components/Programs/Winamp'));
 
+// TODO: Fix the way `appLoader` returns
+// TODO: Make this generic and feed in a list?
 const appLoaderByName = (name: string): AppLoader | undefined => {
-  // TODO: Make this generic and feed in a list?
   switch (name) {
     case 'dos':
       return {
