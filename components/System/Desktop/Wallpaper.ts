@@ -1,7 +1,7 @@
 import WAVES from '@/public/libs/vanta.waves.min';
 
 import type { RefObject } from 'react';
-import type { WallpaperEffect } from '@/components/System/Desktop/Wallpaper.d';
+import type { WallpaperEffect } from '@/types/components/System/Desktop/Wallpaper';
 
 import * as THREE from 'three';
 import Color from 'color';

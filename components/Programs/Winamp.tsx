@@ -2,32 +2,17 @@ import type { FC } from 'react';
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
-import type { AppComponent } from '@/utils/programs.d';
-import type { ProcessState } from '@/utils/processmanager.d';
+import type { AppComponent } from '@/types/utils/programs';
+import type { ProcessState } from '@/types/utils/processmanager';
+import type {
+  PrivateOptions,
+  WebampStore
+} from '@/types/components/Programs/winamp';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { appendElement, focusOnDrag } from '@/utils/elements';
 import { ProcessContext } from '@/contexts/ProcessManager';
-
-type WebampStoreAction = { type: string; windowId: string };
-
-type WebampStore = {
-  store: {
-    dispatch: (action: WebampStoreAction) => void;
-  };
-};
-
-type PrivateOptions = {
-  __initialWindowLayout?: {
-    [windowId: string]: {
-      position: {
-        x: number;
-        y: number;
-      };
-    };
-  };
-};
 
 const touchControls = `
   #minimize, #close, #volume, #balance, #equalizer-button, #playlist-button, #position, #eject,

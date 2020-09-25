@@ -1,10 +1,10 @@
 import type { ComponentType } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type { ProcessConstructor } from '@/contexts/ProcessManager';
-import type { AppFile } from '@/utils/programs.d';
+import type { ProcessConstructor } from '@/types/utils/ProcessManager';
+import type { AppFile } from '@/types/utils/programs';
 
 export type AppComponent = {
-  args?: Array<string>;
+  args?: string[];
   file?: AppFile;
   zIndex?: number;
   onDoubleClick?: () => void;
@@ -19,7 +19,7 @@ export type AppComponent = {
 
 export type AppLoader = {
   loader: FC<AppComponent> | ComponentType<AppComponent>;
-  loaderOptions?: Partial<ProcessConstructor>;
+  loaderOptions: Partial<ProcessConstructor>;
   loadedAppOptions?: Partial<AppComponent>;
 };
 

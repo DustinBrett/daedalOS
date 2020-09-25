@@ -1,4 +1,4 @@
-import type { ProcessState } from '@/utils/processmanager.d';
+import type { ProcessState } from '@/types/utils/processmanager';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 export const initialSessionState = {

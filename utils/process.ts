@@ -5,8 +5,8 @@ import type {
   ProcessAction,
   ProcessState,
   ProcessStartPosition
-} from '@/utils/processmanager.d';
-import type { AppFile } from '@/utils/programs.d';
+} from '@/types/utils/processmanager';
+import type { AppFile } from '@/types/utils/programs';
 
 import { basename, extname } from 'path';
 import { getProcessId, Process } from '@/utils/processmanager';

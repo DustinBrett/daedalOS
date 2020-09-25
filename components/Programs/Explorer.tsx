@@ -1,7 +1,7 @@
 import styles from '@/styles/Programs/Explorer.module.scss';
 
 import type { FC } from 'react';
-import type { AppComponent } from '@/utils/programs.d';
+import type { AppComponent } from '@/types/utils/programs';
 
 import { basename } from 'path';
 import { FileManager } from '@/components/System/FileManager/FileManager';

@@ -3,8 +3,8 @@ import styles from '@/styles/Programs/Dos.module.scss';
 import type { DosFactory, DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
-import type { AppComponent } from '@/utils/programs.d';
-import type { ProcessState } from '@/utils/processmanager.d';
+import type { AppComponent } from '@/types/utils/programs';
+import type { ProcessState } from '@/types/utils/processmanager';
 
 import { useEffect, useRef } from 'react';
 

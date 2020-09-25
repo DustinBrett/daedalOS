@@ -1,4 +1,4 @@
-import { WindowStateCycler } from '@/utils/taskbar.d';
+import type { WindowStateCycler } from '@/types/utils/taskbar';
 
 export const cycleWindowState = ({
   id,

@@ -1,4 +1,4 @@
-import { FileDropEvents } from '@/utils/events.d';
+import { FileDropEvents } from '@/types/utils/events';
 
 const CLICK_DELAY_IN_MILLISECONDS = 300;
 

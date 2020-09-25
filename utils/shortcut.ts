@@ -1,5 +1,5 @@
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { Shortcut } from '@/utils/shortcut.d';
+import type { Shortcut } from '@/types/utils/shortcut';
 
 import * as ini from 'ini';
 import { isValidUrl } from '@/utils/url';

@@ -1,6 +1,6 @@
-// import type { ProcessContextType } from '@/contexts/ProcessManager.d';
-// import type { SessionContextType } from '@/contexts/SessionManager.d';
-// import type { SessionState } from '@/contexts/SessionManager.d';
+// import type { ProcessContextType } from '@/contexts/ProcessManager';
+// import type { SessionContextType } from '@/contexts/SessionManager';
+// import type { SessionState } from '@/contexts/SessionManager';
 // import { Process } from '@/utils/pm';
 
 export type WindowStateCycler = any; // Partial<ProcessContextType> &

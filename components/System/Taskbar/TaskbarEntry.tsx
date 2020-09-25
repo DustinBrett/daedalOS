@@ -3,7 +3,7 @@ import styles from '@/styles/System/Taskbar/TaskbarEntry.module.scss';
 import type { FC } from 'react';
 
 import { SessionContext } from '@/contexts/SessionManager';
-import { TaskbarEntryType } from '@/components/System/Taskbar/TaskbarEntry.d';
+import { TaskbarEntryType } from '@/types/components/System/Taskbar/TaskbarEntry';
 
 export const TaskbarEntry: FC<TaskbarEntryType> = ({
   icon,

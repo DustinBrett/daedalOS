@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import type { ProcessContextType } from '@/contexts/ProcessManager.d';
+import type { ProcessContextType } from '@/types/contexts/ProcessManager';
 
 import { createContext, useReducer } from 'react';
 import {

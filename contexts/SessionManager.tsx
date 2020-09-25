@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import type {
   SessionContextType,
   SessionState
-} from '@/contexts/SessionManager.d';
+} from '@/types/contexts/SessionManager';
 
 import { createContext, useState } from 'react';
 import { background, foreground, getState, saveState } from '@/utils/session';

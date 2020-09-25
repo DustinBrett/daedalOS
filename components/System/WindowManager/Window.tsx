@@ -1,8 +1,8 @@
 import styles from '@/styles/System/WindowManager/Window.module.scss';
 
 import type { FC } from 'react';
-import type { ProcessState } from '@/utils/processmanager.d';
-import type { AppComponent } from '@/utils/programs.d';
+import type { ProcessState } from '@/types/utils/processmanager';
+import type { AppComponent } from '@/types/utils/programs';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';

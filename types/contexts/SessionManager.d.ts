@@ -1,9 +1,9 @@
-import type { ProcessState } from '@/utils/processmanager.d';
+import type { ProcessState } from '@/types/utils/processmanager';
 
 export type SessionState = {
   foregroundId: string;
   states: { [key: string]: ProcessState };
-  stackOrder: Array<string>;
+  stackOrder: string[];
 };
 
 export type SessionContextType = {

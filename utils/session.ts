@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
-import type { SessionState } from '@/contexts/SessionManager.d';
-import type { ProcessState } from '@/utils/processmanager.d';
+import type { SessionState } from '@/types/contexts/SessionManager';
+import type { ProcessState } from '@/types/utils/processmanager';
 
 import { getProcessId } from '@/utils/processmanager';
 

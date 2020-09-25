@@ -3,9 +3,9 @@ import type {
   TransformProperties
 } from 'framer-motion/types/motion/types';
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
-import type { WindowMotionSettings } from './motion.d';
+import type { WindowMotionSettings } from '@/types/utils/motion';
 
-import { taskbarEntryWidth } from './constants';
+import { taskbarEntryWidth } from '@/utils/constants';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,

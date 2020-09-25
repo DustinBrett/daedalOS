@@ -3,19 +3,19 @@ import type {
   Processes,
   ProcessState,
   ProcessStartPosition
-} from '@/utils/processmanager.d';
-import type { AppFile } from '@/utils/programs.d';
+} from '@/types/utils/processmanager';
+import type { AppFile } from '@/types/utils/programs';
 
 export type ProcessContextType = {
   processes: Processes;
-  close: (id: string, stackOrder: Array<string>) => string;
+  close: (id: string, stackOrder: string[]) => string;
   load: (
     file: File,
     previousState: ProcessState,
     startPosition: ProcessStartPosition
   ) => void;
   maximize: (id: string) => void;
-  minimize: (id: string, stackOrder: Array<string>) => string;
+  minimize: (id: string, stackOrder: string[]) => string;
   open: (
     appFile: AppFile,
     previousState: ProcessState,

@@ -1,7 +1,7 @@
 import styles from '@/styles/System/FileManager/IconsView.module.scss';
 
 import type { FC } from 'react';
-import type { DirectoryView } from '@/components/System/FileManager/FileManager.d';
+import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
 import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';

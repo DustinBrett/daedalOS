@@ -1,7 +1,7 @@
-import type { AppLoader } from '@/utils/programs.d';
+import type { AppLoader } from '@/types/utils/programs';
 import type { Process } from '@/utils/processmanager';
 
-export type Processes = Array<Process>;
+export type Processes = Process[];
 
 export type ProcessState = Partial<Process>;
 
@@ -22,6 +22,7 @@ export type ProcessConstructor = {
   loader: AppLoader;
   icon: string;
   name: string;
+  startIndex: number;
 
   bgColor?: string;
   height?: number;
@@ -34,5 +35,4 @@ export type ProcessConstructor = {
   y?: number;
   startX?: number;
   startY?: number;
-  startIndex?: number;
 };

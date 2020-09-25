@@ -1,6 +1,4 @@
-type ListingObj = {
-  [key: string]: ListingObj | string | null;
-};
+import type { ListingObj } from '@/types/utils/filesystem';
 
 export const writableJsonFs = (
   path: string,

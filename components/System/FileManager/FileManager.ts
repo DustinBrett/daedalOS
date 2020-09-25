@@ -3,7 +3,7 @@ import type {
   DirectoryEntry,
   DirectoryType,
   DirectoryEntryDoubleClick
-} from '@/components/System/FileManager/FileManager.d';
+} from '@/types/components/System/FileManager/FileManager';
 
 import { extname, resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';

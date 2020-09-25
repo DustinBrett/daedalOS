@@ -1,4 +1,4 @@
-import type { AppFile, AppLoader } from '@/utils/programs.d';
+import type { AppFile, AppLoader } from '@/types/utils/programs';
 
 import dynamic from 'next/dynamic';
 import { extname } from 'path';

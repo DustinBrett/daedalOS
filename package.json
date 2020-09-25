@@ -11,10 +11,11 @@
     "export": "next export",
     "start": "next start",
     "eslint": "eslint **/*.tsx *.ts *.js",
+    "dtslint": "dtslint --localTs node_modules/typescript/lib types",
     "stylelint": "stylelint styles",
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
-    "check": "npm run eslint && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
+    "check": "npm run eslint && npm run dtslint && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
     "genfs": "cd public && make_xhrfs_index index.json"
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "csscomb": "^4.3.0",
+    "dtslint": "^4.0.4",
     "eslint": "^7.9.0",
     "eslint-plugin-react": "^7.21.1",
     "eslint-plugin-react-hooks": "^4.1.2",
