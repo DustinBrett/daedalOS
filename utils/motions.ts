@@ -35,8 +35,7 @@ export const windowMotionSettings = ({
   animation = 'start',
   startIndex = 0
 }) => {
-  const
-    taskbarEntryWidth = 160, // TODO: Move this
+  const taskbarEntryWidth = 160, // TODO: Move this
     inOutAnimation = {
       scale: 0,
       x: Math.floor(-(window.innerWidth / 2) + startX),
@@ -51,7 +50,7 @@ export const windowMotionSettings = ({
       },
       minimized: {
         scale: 0,
-        x: (taskbarEntryWidth * startIndex) - (taskbarEntryWidth / 2),
+        x: taskbarEntryWidth * startIndex - taskbarEntryWidth / 2,
         y: window.innerHeight,
         position: 'fixed'
       }
