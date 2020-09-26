@@ -4,7 +4,7 @@ import type {
   SessionProcessState
 } from '@/types/contexts/SessionManager';
 
-const updateState = (
+const saveState = (
   session: SessionState,
   state: SessionProcessState
 ): SessionState => ({
@@ -16,7 +16,7 @@ const updateState = (
   stackOrder: session.stackOrder.filter((stackId) => stackId !== state.id)
 });
 
-const updateForground = (
+const changeForground = (
   session: SessionState,
   foregroundId: string
 ): SessionState => ({
@@ -32,8 +32,8 @@ export const sessionReducer = (
   session: SessionState,
   { foregroundId, state }: SessionAction
 ): SessionState => {
-  if (state) return updateState(session, state);
+  if (state) return saveState(session, state);
   if (typeof foregroundId === 'string')
-    return updateForground(session, foregroundId);
+    return changeForground(session, foregroundId);
   return session;
 };
