@@ -1,4 +1,5 @@
 export type SessionProcessState = {
+  id: string;
   height: number;
   width: number;
   x: number;
@@ -20,10 +21,10 @@ export type SessionContextType = {
     id?: string;
     name?: string;
   }) => SessionProcessState;
-  saveState: (id: string, state: SessionProcessState) => void;
+  saveState: (state: SessionProcessState) => void;
 };
 
 export type SessionAction = {
   foregroundId?: string;
-  state?: SessionProcessStates;
+  state?: SessionProcessState;
 };

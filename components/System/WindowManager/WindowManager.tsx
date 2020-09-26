@@ -16,8 +16,6 @@ import { getMaxDimensions, CASCADE_PADDING } from '@/utils/windowmanager';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
-// TODO: Fix foregroundId update to next window on closing of window
-
 export const WindowManager: FC = () => {
   const {
     foreground,
@@ -72,13 +70,15 @@ export const WindowManager: FC = () => {
               onMinimize: () => minimize(id),
               onMaximize: () => (maximized ? restore(id) : maximize(id)),
               onClose: () => {
-                saveState(id, {
+                saveState({
+                  id,
                   height,
                   width,
                   x: !previousX && x ? x + cascadePadding : x,
                   y: !previousY && y ? y + cascadePadding : y
                 });
                 close(id);
+                if (stackOrder.length > 1) foreground(stackOrder[1]);
               },
               onFocus: () => foreground(id),
               onBlur: () => foreground(''),

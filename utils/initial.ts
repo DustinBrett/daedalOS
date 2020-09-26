@@ -9,6 +9,7 @@ export const initialSessionState = {
   },
   foreground: (): void => undefined,
   getState: (): SessionProcessState => ({
+    id: '',
     height: 0,
     width: 0,
     x: 0,

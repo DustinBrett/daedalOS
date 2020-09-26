@@ -22,20 +22,22 @@ export const getState = (session: SessionState) => ({
 export const saveState = (
   session: SessionState,
   updateSession: Dispatch<SessionAction>
-) => (
-  id: string,
-  { height = 0, width = 0, x = 0, y = 0 }: SessionProcessState
-): void => {
+) => ({
+  id,
+  height = 0,
+  width = 0,
+  x = 0,
+  y = 0
+}: SessionProcessState): void => {
   const { x: previousX = 0, y: previousY = 0 } = session.states[id] || {};
 
   updateSession({
     state: {
-      [id]: {
-        height,
-        width,
-        x: previousX === x ? x : previousX + x,
-        y: previousY === y ? y : previousY + y
-      }
+      id,
+      height,
+      width,
+      x: previousX === x ? x : previousX + x,
+      y: previousY === y ? y : previousY + y
     }
   });
 };

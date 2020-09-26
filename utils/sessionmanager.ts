@@ -1,18 +1,19 @@
 import type {
   SessionState,
   SessionAction,
-  SessionProcessStates
+  SessionProcessState
 } from '@/types/contexts/SessionManager';
 
 const updateState = (
   session: SessionState,
-  state: SessionProcessStates = {}
+  state: SessionProcessState
 ): SessionState => ({
   ...session,
   states: {
     ...session.states,
-    ...state
-  }
+    [state.id]: state
+  },
+  stackOrder: session.stackOrder.filter((stackId) => stackId !== state.id)
 });
 
 const updateForground = (
