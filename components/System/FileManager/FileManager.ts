@@ -42,8 +42,8 @@ export const FileManager: FC<DirectoryType> = ({
           startY
         }
       );
-      foreground(processsId);
       restore(processsId);
+      foreground(processsId);
     }
   };
 
