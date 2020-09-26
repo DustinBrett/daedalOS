@@ -4,7 +4,6 @@ export const cycleWindowState = ({
   id,
   session: { foregroundId },
   minimized,
-  background,
   foreground,
   minimize,
   restore
@@ -14,7 +13,7 @@ export const cycleWindowState = ({
     foreground(id);
   } else if (foregroundId && foregroundId === id) {
     minimize(id);
-    background(id);
+    foreground('');
   } else {
     foreground(id);
   }

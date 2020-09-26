@@ -17,7 +17,7 @@ const TaskbarEntry = dynamic(
 
 export const Taskbar: FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext);
-  const { session, background, foreground } = useContext(SessionContext);
+  const { session, foreground } = useContext(SessionContext);
 
   // Q: Maybe TaskbarEntry's div should be the li?
   return (
@@ -30,13 +30,12 @@ export const Taskbar: FC = () => {
                 icon={icon}
                 id={id}
                 name={name}
-                onBlur={() => background(id)}
+                onBlur={() => foreground('')}
                 onClick={() =>
                   cycleWindowState({
                     id,
                     session,
                     minimized,
-                    background,
                     foreground,
                     minimize,
                     restore

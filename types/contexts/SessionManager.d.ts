@@ -1,15 +1,29 @@
-import type { ProcessState } from '@/types/utils/processmanager';
+export type SessionProcessState = {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
+export type SessionProcessStates = { [key: string]: SessionProcessState };
 
 export type SessionState = {
   foregroundId: string;
-  states: { [key: string]: ProcessState };
+  states: SessionProcessStates;
   stackOrder: string[];
 };
 
 export type SessionContextType = {
   session: SessionState;
-  background: (id: string) => void;
-  foreground: (id: string, removeId?: string) => void;
-  getState: (processSelector: { id?: string; name?: string }) => ProcessState;
-  saveState: (id: string, state: ProcessState) => void;
+  foreground: (id: string) => void;
+  getState: (processSelector: {
+    id?: string;
+    name?: string;
+  }) => SessionProcessState;
+  saveState: (id: string, state: SessionProcessState) => void;
+};
+
+export type SessionAction = {
+  foregroundId?: string;
+  state?: SessionProcessStates;
 };

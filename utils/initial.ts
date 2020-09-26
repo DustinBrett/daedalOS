@@ -1,4 +1,4 @@
-import type { ProcessState } from '@/types/utils/processmanager';
+import type { SessionProcessState } from '@/types/contexts/SessionManager';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 export const initialSessionState = {
@@ -7,9 +7,13 @@ export const initialSessionState = {
     states: {},
     stackOrder: []
   },
-  background: (): void => undefined,
   foreground: (): void => undefined,
-  getState: (): ProcessState => ({}),
+  getState: (): SessionProcessState => ({
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0
+  }),
   saveState: (): void => undefined
 };
 

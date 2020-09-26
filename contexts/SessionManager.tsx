@@ -1,19 +1,18 @@
 import type { FC } from 'react';
-import type {
-  SessionContextType,
-  SessionState
-} from '@/types/contexts/SessionManager';
+import type { SessionContextType } from '@/types/contexts/SessionManager';
 
-import { createContext, useState } from 'react';
-import { background, foreground, getState, saveState } from '@/utils/session';
+import { createContext, useReducer } from 'react';
+import { foreground, getState, saveState } from '@/utils/session';
 import { initialSessionState } from '@/utils/initial';
+import { sessionReducer } from '@/utils/sessionmanager';
 
 export const SessionContext = createContext<SessionContextType>(
   initialSessionState
 );
 
 export const SessionProvider: FC = ({ children }) => {
-  const [session, updateSession] = useState<SessionState>(
+  const [session, updateSession] = useReducer(
+    sessionReducer,
     initialSessionState.session
   );
 
@@ -21,8 +20,7 @@ export const SessionProvider: FC = ({ children }) => {
     <SessionContext.Provider
       value={{
         session,
-        background: background(session, updateSession),
-        foreground: foreground(session, updateSession),
+        foreground: foreground(updateSession),
         getState: getState(session),
         saveState: saveState(session, updateSession)
       }}

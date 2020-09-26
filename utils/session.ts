@@ -1,32 +1,15 @@
 import type { Dispatch } from 'react';
-import type { SessionState } from '@/types/contexts/SessionManager';
-import type { ProcessState } from '@/types/utils/processmanager';
+import type {
+  SessionAction,
+  SessionProcessState,
+  SessionState
+} from '@/types/contexts/SessionManager';
 
 import { getProcessId } from '@/utils/processmanager';
 
-export const background = (
-  session: SessionState,
-  updateSession: Dispatch<SessionState>
-) => (id: string): void =>
-  updateSession({
-    ...session,
-    foregroundId: session.foregroundId === id ? '' : session.foregroundId
-  });
-
-export const foreground = (
-  session: SessionState,
-  updateSession: Dispatch<SessionState>
-) => (id: string, removeId?: string): void =>
-  updateSession({
-    ...session,
-    foregroundId: id,
-    stackOrder: [
-      id,
-      ...session.stackOrder.filter(
-        (stackId) => ![id, removeId].includes(stackId)
-      )
-    ]
-  });
+export const foreground = (updateSession: Dispatch<SessionAction>) => (
+  id: string
+): void => updateSession({ foregroundId: id });
 
 export const getState = (session: SessionState) => ({
   id,
@@ -34,18 +17,19 @@ export const getState = (session: SessionState) => ({
 }: {
   id?: string;
   name?: string;
-}): ProcessState => session.states[id || getProcessId(name)] || {};
+}): SessionProcessState => session.states[id || getProcessId(name)] || {};
 
 export const saveState = (
   session: SessionState,
-  updateSession: Dispatch<SessionState>
-) => (id: string, { height, width, x = 0, y = 0 }: ProcessState): void => {
+  updateSession: Dispatch<SessionAction>
+) => (
+  id: string,
+  { height = 0, width = 0, x = 0, y = 0 }: SessionProcessState
+): void => {
   const { x: previousX = 0, y: previousY = 0 } = session.states[id] || {};
 
   updateSession({
-    ...session,
-    states: {
-      ...session.states,
+    state: {
       [id]: {
         height,
         width,
