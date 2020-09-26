@@ -73,26 +73,16 @@ export class Process {
 }
 
 export const close = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  [, nextRemainingProcessId = '']: Array<string>
-): string => {
-  updateProcesses({ id });
-
-  return nextRemainingProcessId;
-};
+  id: string
+): void => updateProcesses({ id });
 
 export const maximize = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string
 ): void => updateProcesses({ updates: { maximized: true }, id });
 
 export const minimize = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string,
-  [, nextRemainingProcessId = '']: Array<string>
-): string => {
-  updateProcesses({ updates: { minimized: true }, id });
-
-  return nextRemainingProcessId;
-};
+  id: string
+): void => updateProcesses({ updates: { minimized: true }, id });
 
 export const open = (
   processes: Processes,

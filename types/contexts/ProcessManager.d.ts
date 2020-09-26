@@ -8,14 +8,14 @@ import type { AppFile } from '@/types/utils/programs';
 
 export type ProcessContextType = {
   processes: Processes;
-  close: (id: string, stackOrder: string[]) => string;
+  close: (id: string) => void;
   load: (
     file: File,
     previousState: ProcessState,
     startPosition: ProcessStartPosition
   ) => void;
   maximize: (id: string) => void;
-  minimize: (id: string, stackOrder: string[]) => string;
+  minimize: (id: string) => void;
   open: (
     appFile: AppFile,
     previousState: ProcessState,

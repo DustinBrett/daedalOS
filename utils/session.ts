@@ -36,21 +36,22 @@ export const getState = (session: SessionState) => ({
   name?: string;
 }): ProcessState => session.states[id || getProcessId(name)] || {};
 
-// TODO: Stop reassigning session
 export const saveState = (
   session: SessionState,
   updateSession: Dispatch<SessionState>
 ) => (id: string, { height, width, x = 0, y = 0 }: ProcessState): void => {
-  if (!session.states) session.states = {};
-
   const { x: previousX = 0, y: previousY = 0 } = session.states[id] || {};
 
-  session.states[id] = {
-    height,
-    width,
-    x: previousX === x ? x : previousX + x,
-    y: previousY === y ? y : previousY + y
-  };
-
-  updateSession(session);
+  updateSession({
+    ...session,
+    states: {
+      ...session.states,
+      [id]: {
+        height,
+        width,
+        x: previousX === x ? x : previousX + x,
+        y: previousY === y ? y : previousY + y
+      }
+    }
+  });
 };

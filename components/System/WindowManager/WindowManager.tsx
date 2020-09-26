@@ -15,6 +15,10 @@ import { getMaxDimensions, CASCADE_PADDING } from '@/utils/windowmanager';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
+// TODO: Fix foregroundId update to next window on closing of window
+// Q: Does the stackOrder have the value I need to know?
+// Q: Can WM be responsilbe for focusing new windows?
+
 export const WindowManager: FC = () => (
   <div>
     <ProcessContext.Consumer>
@@ -62,7 +66,7 @@ export const WindowManager: FC = () => (
                   const windowZindex =
                     baseZindex + windowsZindexLevel * zindexLevelSize;
                   const windowOptions = {
-                    onMinimize: () => foreground(minimize(id, stackOrder), id),
+                    onMinimize: () => minimize(id),
                     onMaximize: () => (maximized ? restore(id) : maximize(id)),
                     onClose: () => {
                       saveState(id, {
@@ -71,7 +75,7 @@ export const WindowManager: FC = () => (
                         x: !previousX && x ? x + cascadePadding : x,
                         y: !previousY && y ? y + cascadePadding : y
                       });
-                      foreground(close(id, stackOrder), id);
+                      close(id);
                     },
                     onFocus: () => foreground(id),
                     onBlur: () => background(id),

@@ -63,7 +63,7 @@ export const Dos: FC<AppComponent & ProcessState> = ({
     return () => {
       ci?.exit();
     };
-  }, [canvasRef]);
+  }, []);
 
   require('js-dos');
 

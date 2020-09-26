@@ -25,7 +25,7 @@ const Desktop: FC = ({ children }) => {
     return () => {
       wallpaperEffect?.destroy();
     };
-  }, [desktopRef]);
+  }, []);
 
   return (
     <main className={styles.desktop} ref={desktopRef} {...fileDropHandler}>

@@ -109,7 +109,7 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
     return () => {
       webamp?.dispose();
     };
-  }, [elementRef]);
+  }, []);
 
   return (
     <Rnd

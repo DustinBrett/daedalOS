@@ -1,11 +1,11 @@
-// import type { ProcessContextType } from '@/contexts/ProcessManager';
-// import type { SessionContextType } from '@/contexts/SessionManager';
-// import type { SessionState } from '@/contexts/SessionManager';
-// import { Process } from '@/utils/pm';
+import type { SessionState } from '@/types/contexts/SessionManager';
 
-export type WindowStateCycler = any; // Partial<ProcessContextType> &
-// Partial<SessionContextType> &
-// Partial<SessionState> &
-// Partial<Process> & {
-//   id: string;
-// };
+export type WindowStateCycler = {
+  id: string;
+  session: SessionState;
+  minimized: boolean;
+  background: (id: string) => void;
+  foreground: (id: string) => void;
+  minimize: (id: string) => void;
+  restore: (id: string) => void;
+};

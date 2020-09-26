@@ -25,9 +25,10 @@ const appLoaders: AppLoaders = {
     loader: Winamp,
     loaderOptions: winampLoaderOptions
   }
-}
+};
 
-const appLoaderByName = (name: string): AppLoader | undefined => appLoaders[name];
+const appLoaderByName = (name: string): AppLoader | undefined =>
+  appLoaders[name];
 
 const appLoaderByFileType = (
   appFile: AppFile,
@@ -53,7 +54,8 @@ const appLoaderByFileType = (
           file: appFile
         }
       };
-    default: return undefined;
+    default:
+      return undefined;
   }
 };
 

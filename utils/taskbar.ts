@@ -2,7 +2,7 @@ import type { WindowStateCycler } from '@/types/utils/taskbar';
 
 export const cycleWindowState = ({
   id,
-  session: { foregroundId, stackOrder },
+  session: { foregroundId },
   minimized,
   background,
   foreground,
@@ -13,7 +13,7 @@ export const cycleWindowState = ({
     restore(id);
     foreground(id);
   } else if (foregroundId && foregroundId === id) {
-    minimize(id, stackOrder);
+    minimize(id);
     background(id);
   } else {
     foreground(id);
