@@ -18,8 +18,6 @@ $thickLine: 2px;
 
 $fontSize: 12.5px;
 
-// NOTE: Sync constants with `@/utils/constants.ts`
-// TODO: Share constants between TSX/SCSS
 $baseZindex: 1000;
 $zindexLevelSize: 100;
 $iconsZindexLevel: 1;
@@ -27,3 +25,5 @@ $windowsZindexLevel: 2;
 $taskbarZindexLevel: 3;
 $foregroundZindex: ($baseZindex + $windowsZindexLevel * $zindexLevelSize) +
   ($zindexLevelSize / 2);
+
+$taskbarEntryWidth: 160;

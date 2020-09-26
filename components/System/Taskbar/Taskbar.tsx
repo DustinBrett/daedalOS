@@ -19,7 +19,7 @@ export const Taskbar: FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext);
   const { session, foreground } = useContext(SessionContext);
 
-  // Q: Maybe TaskbarEntry's div should be the li?
+  // TODO: Move motion.li into TaskbarEntry
   return (
     <nav className={styles.taskbar}>
       <ol className={styles.entries}>

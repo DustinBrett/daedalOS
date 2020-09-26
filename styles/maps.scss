@@ -51,7 +51,7 @@ $taskbar: (
   foreground-lightness: 35%,
   hover-foreground-lightness: 45%,
   height: 30px,
-  entry-width: 160px,
+  entry-width: $taskbarEntryWidth,
   entry-padding: 1px,
   blur: 5px
 );

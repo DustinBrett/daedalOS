@@ -104,7 +104,6 @@ export const WindowManager: FC = () => {
                   zIndex: isForeground ? foregroundZindex : windowOptions.zIndex
                 }}
                 {...windowMotionSettings({
-                  // || cascadePadding is causing the glitch during min/max
                   initialX: maximized ? 0 : previousX || cascadePadding,
                   initialY: maximized ? 0 : previousY || cascadePadding,
                   startX,

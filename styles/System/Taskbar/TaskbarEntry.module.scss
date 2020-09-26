@@ -7,15 +7,15 @@
 
   min-width: 0;
   height: map-get($taskbar, height);
-  margin: 0 4px; // VAR
+  margin: 0 4px;
 
   border-bottom: $thickLine solid $highlightColor;
 
   &:hover {
     margin: 0;
-    padding: 0 4px; // VAR
+    padding: 0 4px;
 
-    transition: background-color 0.1s linear; // VAR
+    transition: background-color 0.1s linear;
 
     background-color: hsla(
       0,
@@ -44,7 +44,7 @@
       overflow: hidden;
 
       width: map-get($taskbarEntry, text-width);
-      padding-right: 5px; // VAR
+      padding-right: 5px;
 
       letter-spacing: 0;
       text-overflow: ellipsis;
@@ -54,7 +54,7 @@
 
 .foreground {
   margin: 0;
-  padding: 0 4px; // VAR
+  padding: 0 4px;
 
   background-color: hsla(
     0,

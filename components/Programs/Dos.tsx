@@ -35,7 +35,6 @@ export const Dos: FC<AppComponent & ProcessState> = ({
     main?.([...prependedArgs, ...args])?.then((value) => {
       ci = value;
     });
-  // TODO: Set app to foreground instead of manually focusing
   const focusCanvas = () => {
     (canvasRef.current?.closest(
       ':not(li)[tabindex]'
