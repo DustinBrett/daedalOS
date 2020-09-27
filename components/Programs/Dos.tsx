@@ -31,8 +31,8 @@ export const Dos: FC<AppComponent & ProcessState> = ({
 }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const loadMain = (main: DosMainFn, prependedArgs: Array<string> = []) =>
-    main?.([...prependedArgs, ...args])?.then((value) => {
+  const loadMain = (main: DosMainFn, prependedArgs: string[] = []) =>
+    main([...prependedArgs, ...args]).then((value) => {
       ci = value;
     });
   const focusCanvas = () => {
@@ -47,11 +47,11 @@ export const Dos: FC<AppComponent & ProcessState> = ({
     };
     const { Dos: DosModule } = window as WindowWithDosModule;
 
-    DosModule(canvasElement, dosOptions)?.then(({ fs, main }) => {
+    DosModule(canvasElement, dosOptions).then(({ fs, main }) => {
       if (url) {
         const appPath = name.replace(/ /g, '').substring(0, 8);
 
-        fs?.extract?.(url, appPath)?.then(() =>
+        fs.extract(url, appPath).then(() =>
           loadMain(main, ['-c', `CD ${appPath}`])
         );
       } else {

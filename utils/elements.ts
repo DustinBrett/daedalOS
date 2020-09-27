@@ -6,7 +6,7 @@ export const appendElement = (
   childElement: HTMLElement
 ): HTMLElement => {
   if (parentElement && childElement) {
-    parentElement.appendChild?.(childElement);
+    parentElement.appendChild(childElement);
   }
 
   return childElement;
@@ -18,7 +18,7 @@ export const focusOnDrag = (
 ): void => node.focus();
 
 export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
-  elementRef?.current?.resizableElement?.current?.focus?.();
+  elementRef.current?.resizableElement.current?.focus();
 
 export const lockDocumentTitle = (): void => {
   if (

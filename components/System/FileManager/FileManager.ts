@@ -20,7 +20,7 @@ export const FileManager: FC<DirectoryType> = ({
   onChange
 }) => {
   const [cwd, cd] = useState(directoryPath);
-  const [entries, setEntries] = useState<Array<DirectoryEntry>>([]);
+  const [entries, setEntries] = useState<DirectoryEntry[]>([]);
   const fs = useContext(FileContext);
   const { open, restore } = useContext(ProcessContext);
   const { foreground, getState } = useContext(SessionContext);

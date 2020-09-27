@@ -57,7 +57,7 @@ export const getFileStat = (
   fs: FSModule,
   path: string
 ): Promise<Stats & StatsProto> =>
-  new Promise((resolve) => fs?.stat?.(path, (_error, stats) => resolve(stats)));
+  new Promise((resolve) => fs.stat(path, (_error, stats) => resolve(stats)));
 
 export const getFormattedSize = (size: number): string => {
   if (size === 0) return 'Zero bytes';

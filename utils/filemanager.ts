@@ -61,9 +61,9 @@ export const getDirectory = (
   fs: FSModule,
   path: string,
   getDetails: boolean,
-  cb: (entries: Array<DirectoryEntry>) => void
+  cb: (entries: DirectoryEntry[]) => void
 ): void => {
-  fs?.readdir?.(path, (_error, contents = []) => {
+  fs.readdir(path, (_error, contents = []) => {
     contents.reduce(async (entries, file) => {
       const newEntries = [
         ...(await entries),
@@ -73,6 +73,6 @@ export const getDirectory = (
       cb(newEntries);
 
       return newEntries;
-    }, Promise.resolve([]) as Promise<Array<DirectoryEntry>>);
+    }, Promise.resolve([]) as Promise<DirectoryEntry[]>);
   });
 };
