@@ -5,22 +5,19 @@
 - Windows
   - Maximized mobile is not accounting for taskbar
   - Animate maximize as is done on osx
-  - Cascade is causing visual glitch during min/max
-  - Double clicking titlebar is same as maximize
+  - Cascade is causing visual glitch during max
+  - Create WindowTitleBar component
+    - Double clicking titlebar, same as maximize
+    - Title text should truncate at far right of titlebar
+  - Disable top resize handle on mobile to improve dragging
 
 ## System
 
 - Images
   - next-optimized-images (https://web.dev/image-aspect-ratio)
-- Windows
-  - windowMotionSettings needs DRY'ing
-  - Create WindowTitleBar component
-  - Title text should truncate at far right of titlebar
-  - Disable top resize handle on mobile to improve dragging
 - File Manager
-  - Change Directory to FileManager
   - Change drag drop logic to Directory and have it write the file
-  - Favicon is showing `NaN`
+  - Favicon size is showing `NaN` sometimes
   - Sort contents by name by default
   - Complete UI/Toolbar/Breadcrumb Bar
 - Icons
