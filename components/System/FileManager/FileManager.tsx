@@ -8,6 +8,7 @@ import { extname, resolve } from 'path';
 import { useContext, useEffect, useState } from 'react';
 import { getDirectory } from '@/utils/filemanager';
 import { getTargetCenterPosition } from '@/utils/elements';
+import { useFileDrop } from '@/utils/events';
 import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
@@ -21,8 +22,11 @@ export const FileManager: React.FC<DirectoryType> = ({
   const [cwd, cd] = useState(directoryPath);
   const [entries, setEntries] = useState<DirectoryEntry[]>([]);
   const fs = useContext(FileContext);
-  const { open, restore } = useContext(ProcessContext);
+  const { load, open, restore } = useContext(ProcessContext);
   const { foreground, getState } = useContext(SessionContext);
+  const fileDropHandler = useFileDrop(({ pageX, pageY }, file) => {
+    load(file, getState({ name: file.name }), { startX: pageX, startY: pageY });
+  });
   const onDoubleClick = (
     event: React.MouseEvent<Element>,
     { path, url, icon = '', name = '' }: DirectoryEntryDoubleClick
@@ -51,7 +55,11 @@ export const FileManager: React.FC<DirectoryType> = ({
     onChange?.(cwd);
   }, [fs, cwd]);
 
-  return render({ entries, onDoubleClick, cwd });
+  return (
+    <div {...fileDropHandler}>
+      { render({ entries, onDoubleClick, cwd }) }
+    </div>
+  );
 };
 
 export default FileManager;
