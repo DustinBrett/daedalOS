@@ -1,6 +1,9 @@
-import type { FC, ComponentType } from 'react';
+import type { ComponentType } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type { ProcessConstructor } from '@/types/utils/ProcessManager';
+import type {
+  ProcessConstructor,
+  ProcessState
+} from '@/types/utils/ProcessManager';
 
 export type AppFile = {
   icon: string;
@@ -9,24 +12,28 @@ export type AppFile = {
   ext?: string;
 };
 
-export type AppComponent = {
+export type AppOptions = {
   args?: string[];
-  file?: AppFile;
-  zIndex?: number;
-  onDoubleClick?: () => void;
-  onClose?: () => void;
-  onMaximize?: () => void;
-  onMinimize?: () => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
-  updatePosition?: RndDragCallback;
+  file: AppFile;
+};
+
+export type AppWindow = {
+  zIndex: number;
+  onClose: () => void;
+  onMaximize: () => void;
+  onMinimize: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  updatePosition: RndDragCallback;
   updateSize?: RndResizeCallback;
 };
 
+export type AppComponent = AppWindow & Partial<AppOptions> & ProcessState;
+
 export type AppLoader = {
-  loader: FC<AppComponent> | ComponentType<AppComponent>;
+  loader: ComponentType<AppComponent>;
   loaderOptions: Partial<ProcessConstructor>;
-  loadedAppOptions?: Partial<AppComponent>;
+  loadedAppOptions?: AppOptions;
 };
 
 export type AppLoaders = { [key: string]: AppLoader };

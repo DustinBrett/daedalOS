@@ -4,7 +4,6 @@ import type { DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { FC } from 'react';
 import type { AppComponent } from '@/types/utils/programs';
-import type { ProcessState } from '@/types/utils/processmanager';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
 import { useEffect, useRef } from 'react';
@@ -24,7 +23,7 @@ export const loaderOptions = {
   bgColor: '#000000'
 };
 
-export const Dos: FC<AppComponent & ProcessState> = ({
+export const Dos: FC<AppComponent> = ({
   args = ['-c', 'CLS'],
   file: { url, name = '' } = {},
   maximized

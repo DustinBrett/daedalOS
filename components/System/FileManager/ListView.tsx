@@ -9,7 +9,6 @@ import { ClickHandler } from '@/utils/events';
 const homeDir = '/';
 
 // TODO: Create DirectyListEntry
-// TODO: Replace custom click handler
 
 export const DirectoryList: FC<DirectoryView> = ({
   entries,

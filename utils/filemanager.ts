@@ -63,7 +63,7 @@ export const getDirectory = (
   getDetails: boolean,
   cb: (entries: DirectoryEntry[]) => void
 ): void => {
-  fs.readdir(path, (_error, contents = []) => {
+  fs?.readdir?.(path, (_error, contents = []) => {
     contents.reduce(async (entries, file) => {
       const newEntries = [
         ...(await entries),

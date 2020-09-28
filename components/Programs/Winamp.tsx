@@ -4,7 +4,6 @@ import type Webamp from 'webamp';
 import type { Options } from 'webamp';
 import type { RndDragCallback } from 'react-rnd';
 import type { AppComponent } from '@/types/utils/programs';
-import type { ProcessState } from '@/types/utils/processmanager';
 import type {
   PrivateOptions,
   WebampStore
@@ -50,7 +49,7 @@ export const loaderOptions = {
   windowed: false
 };
 
-export const Winamp: FC<AppComponent & ProcessState> = ({
+export const Winamp: FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
@@ -58,7 +57,7 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
   minimized,
   x = 0,
   y = 0,
-  file: { url, name = '' } = {}
+  file: { url = '', name = '' } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null);
   const { position } = useContext(ProcessContext);
@@ -75,23 +74,23 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
       current: HTMLElement;
     };
 
-    if (onClose) webamp?.onClose(onClose);
-    if (onMinimize) webamp?.onMinimize(onMinimize);
-    webamp?.store?.dispatch(closeEqualizer);
+    if (onClose) webamp.onClose(onClose);
+    if (onMinimize) webamp.onMinimize(onMinimize);
+    webamp.store.dispatch(closeEqualizer);
 
-    await webamp?.renderWhenReady(containerElement);
+    await webamp.renderWhenReady(containerElement);
 
     appendElement(
       containerElement,
       document.getElementById('webamp') as HTMLElement
     ).focus();
-    onFocus?.();
+    onFocus();
 
-    if (url?.includes('.wsz')) {
-      webamp?.appendTracks([demoTrack]);
-      webamp?.setSkinFromUrl(url);
+    if (url.includes('.wsz')) {
+      webamp.appendTracks([demoTrack]);
+      webamp.setSkinFromUrl(url);
     } else {
-      webamp?.setTracksToPlay([
+      webamp.setTracksToPlay([
         url ? { url, metaData: { artist: '', title: name } } : demoTrack
       ]);
     }
@@ -107,7 +106,7 @@ export const Winamp: FC<AppComponent & ProcessState> = ({
     });
 
     return () => {
-      webamp?.dispose();
+      webamp.dispose();
     };
   }, []);
 

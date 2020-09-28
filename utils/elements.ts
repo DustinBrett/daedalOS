@@ -30,7 +30,9 @@ export const lockDocumentTitle = (): void => {
   }
 };
 
-export const getTargetCenterPosition = (element: Element): Partial<DOMRect> => {
+export const getTargetCenterPosition = (
+  element: Element
+): { x: number; y: number } => {
   const { x, y, height, width } = element.getBoundingClientRect();
 
   return {

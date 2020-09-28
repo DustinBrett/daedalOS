@@ -7,7 +7,7 @@ export type WebampStore = {
 };
 
 export type PrivateOptions = {
-  __initialWindowLayout?: {
+  __initialWindowLayout: {
     [windowId: string]: {
       position: {
         x: number;
