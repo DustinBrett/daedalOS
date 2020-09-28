@@ -28,7 +28,7 @@ const getBestIconMatch = (
   return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
 };
 
-const getDirectoryEntry = async (
+export const getDirectoryEntry = async (
   fs: FSModule,
   path: string,
   file: string,

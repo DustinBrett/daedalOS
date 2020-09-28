@@ -15,8 +15,10 @@
 
 - Images
   - next-optimized-images (https://web.dev/image-aspect-ratio)
+- Desktop
+  - Icon sorting needs to work with drag/drop
+  - Save icon positions
 - File Manager
-  - Change drag drop logic to Directory and have it write the file
   - Favicon size is showing `NaN` sometimes
   - Sort contents by name by default
   - Complete UI/Toolbar/Breadcrumb Bar
