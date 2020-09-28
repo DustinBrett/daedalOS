@@ -2,7 +2,6 @@ import styles from '@/styles/Programs/Dos.module.scss';
 
 import type { DosMainFn } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
-import type { FC } from 'react';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
@@ -23,7 +22,7 @@ export const loaderOptions = {
   bgColor: '#000000'
 };
 
-export const Dos: FC<AppComponent> = ({
+export const Dos: React.FC<AppComponent> = ({
   args = ['-c', 'CLS'],
   file: { url, name = '' } = {},
   maximized

@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 /* eslint import/no-duplicates: off */
 import type Webamp from 'webamp';
 import type { Options } from 'webamp';
@@ -49,7 +48,7 @@ export const loaderOptions = {
   windowed: false
 };
 
-export const Winamp: FC<AppComponent> = ({
+export const Winamp: React.FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,

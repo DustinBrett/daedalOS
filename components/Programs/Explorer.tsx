@@ -1,6 +1,5 @@
 import styles from '@/styles/Programs/Explorer.module.scss';
 
-import type { FC } from 'react';
 import type { AppComponent } from '@/types/utils/programs';
 
 import { basename } from 'path';
@@ -14,7 +13,9 @@ export const loaderOptions = {
   bgColor: '#2a282b'
 };
 
-export const Explorer: FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
+export const Explorer: React.FC<AppComponent> = ({
+  file: { url = '/' } = {}
+}) => (
   <ProcessContext.Consumer>
     {({ title }) => (
       <article className={styles.explorer}>

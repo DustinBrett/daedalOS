@@ -1,5 +1,3 @@
-import type { FC } from 'react';
-
 import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,7 +14,7 @@ import { getMaxDimensions, CASCADE_PADDING } from '@/utils/windowmanager';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
-export const WindowManager: FC = () => {
+export const WindowManager: React.FC = () => {
   const {
     foreground,
     getState,

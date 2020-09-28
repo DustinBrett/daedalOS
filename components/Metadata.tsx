@@ -1,12 +1,10 @@
 import { name, description } from 'package.json';
 
-import type { FC } from 'react';
-
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { lockDocumentTitle } from '@/utils/elements';
 
-const Metadata: FC = () => {
+const Metadata: React.FC = () => {
   useEffect(lockDocumentTitle, []);
 
   return (

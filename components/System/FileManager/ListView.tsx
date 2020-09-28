@@ -1,6 +1,5 @@
 import styles from '@/styles/System/FileManager/ListView.module.scss';
 
-import type { FC } from 'react';
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
 import { useState } from 'react';
@@ -10,7 +9,7 @@ const homeDir = '/';
 
 // TODO: Create DirectyListEntry
 
-export const DirectoryList: FC<DirectoryView> = ({
+export const DirectoryList: React.FC<DirectoryView> = ({
   entries,
   cwd,
   onDoubleClick

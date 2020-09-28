@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import type {
   DirectoryEntry,
   DirectoryType,
@@ -13,7 +12,7 @@ import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
-export const FileManager: FC<DirectoryType> = ({
+export const FileManager: React.FC<DirectoryType> = ({
   path: directoryPath,
   render,
   details = false,

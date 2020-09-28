@@ -1,6 +1,5 @@
 import styles from '@/styles/System/WindowManager/Window.module.scss';
 
-import type { FC } from 'react';
 import type { AppComponent } from '@/types/utils/programs';
 
 import { useContext, useEffect, useRef } from 'react';
@@ -12,7 +11,7 @@ import { SessionContext } from '@/contexts/SessionManager';
 
 // TODO: Split `<header>` into component
 
-export const Window: FC<AppComponent> = ({
+export const Window: React.FC<AppComponent> = ({
   children,
   icon,
   id,

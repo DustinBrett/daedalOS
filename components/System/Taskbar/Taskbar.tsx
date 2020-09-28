@@ -1,7 +1,5 @@
 import styles from '@/styles/System/Taskbar/Taskbar.module.scss';
 
-import type { FC } from 'react';
-
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useContext } from 'react';
@@ -15,7 +13,7 @@ const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
 );
 
-export const Taskbar: FC = () => {
+export const Taskbar: React.FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext);
   const { session, foreground } = useContext(SessionContext);
 

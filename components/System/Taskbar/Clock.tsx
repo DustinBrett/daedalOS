@@ -1,7 +1,5 @@
 import styles from '@/styles/System/Taskbar/Clock.module.scss';
 
-import type { FC } from 'react';
-
 import { useEffect, useState } from 'react';
 import {
   formatToDate,
@@ -15,7 +13,7 @@ import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 const millisecondsTillNextSecond = () =>
   MILLISECONDS_IN_SECOND - newDate().getMilliseconds();
 
-export const Clock: FC = () => {
+export const Clock: React.FC = () => {
   const initialDate = newDate();
   const [date, setDate] = useState(formatToDate(initialDate));
   const [time, setTime] = useState(formatToTime(initialDate));

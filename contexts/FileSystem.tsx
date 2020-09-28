@@ -1,7 +1,6 @@
 import index from '@/public/index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { FC } from 'react';
 
 import { createContext, useEffect, useState } from 'react';
 import * as BrowserFS from 'browserfs';
@@ -9,7 +8,7 @@ import { writableJsonFs } from '@/utils/filesystem';
 
 export const FileContext = createContext<FSModule>({} as FSModule);
 
-export const FileProvider: FC = ({ children }) => {
+export const FileProvider: React.FC = ({ children }) => {
   const [fs, setFs] = useState<FSModule>({} as FSModule); // TODO: Add BFS Path
 
   useEffect(() => {

@@ -1,5 +1,3 @@
-import type { FC } from 'react';
-
 export type DirectoryEntry = {
   icon: string;
   kind: string;
@@ -28,7 +26,7 @@ export type DirectoryView = {
 
 export type DirectoryType = {
   path: string;
-  render: FC<DirectoryView>;
+  render: React.FC<DirectoryView>;
   details?: boolean;
   onChange?: (cwd: string) => void;
 };

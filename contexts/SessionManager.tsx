@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import type { SessionContextType } from '@/types/contexts/SessionManager';
 
 import { createContext, useReducer } from 'react';
@@ -10,7 +9,7 @@ export const SessionContext = createContext<SessionContextType>(
   initialSessionState
 );
 
-export const SessionProvider: FC = ({ children }) => {
+export const SessionProvider: React.FC = ({ children }) => {
   const [session, updateSession] = useReducer(
     sessionReducer,
     initialSessionState.session

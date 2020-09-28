@@ -1,6 +1,5 @@
 import styles from '@/styles/System/FileManager/IconsView.module.scss';
 
-import type { FC } from 'react';
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
 import { useRef } from 'react';
@@ -11,7 +10,7 @@ import {
   desktopIconMotionSettings
 } from '@/utils/motions';
 
-export const DirectoryIcons: FC<DirectoryView> = ({
+export const DirectoryIcons: React.FC<DirectoryView> = ({
   entries,
   onDoubleClick
 }) => {

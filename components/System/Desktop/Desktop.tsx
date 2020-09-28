@@ -1,6 +1,5 @@
 import styles from '@/styles/System/Desktop/Desktop.module.scss';
 
-import type { FC } from 'react';
 import type { WallpaperEffect } from '@/types/components/System/Desktop/Wallpaper';
 
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -10,7 +9,7 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
 // TODO: Move drag/drop into directory
-const Desktop: FC = ({ children }) => {
+const Desktop: React.FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement>(null);
   const [wallpaperEffect, setWallpaperEffect] = useState<WallpaperEffect>();
   const { load } = useContext(ProcessContext);
