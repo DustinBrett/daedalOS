@@ -133,9 +133,9 @@ $buttonIconOpacity: 0.975;
       }
 
       &#close {
-        background-color: $close;
-
         font-size: 10px;
+
+        background-color: $close;
 
         &:active {
           background-color: $close_active;
