@@ -50,7 +50,7 @@ export const FileManager: React.FC<DirectoryType> = ({
           startY
         }
       );
-      restore(processsId);
+      restore(processsId, 'minimized');
       foreground(processsId);
     }
   };

@@ -9,7 +9,7 @@ export const cycleWindowState = ({
   restore
 }: WindowStateCycler): void => {
   if (minimized) {
-    restore(id);
+    restore(id, 'minimized');
     foreground(id);
   } else if (foregroundId && foregroundId === id) {
     minimize(id);

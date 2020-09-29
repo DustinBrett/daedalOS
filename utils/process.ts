@@ -154,10 +154,11 @@ export const position = (updateProcesses: Dispatch<ProcessAction>) => (
   updateProcesses({ id, updates: { x, y } });
 
 export const restore = (updateProcesses: Dispatch<ProcessAction>) => (
-  id: string
+  id: string,
+  key: 'minimized' | 'maximized'
 ): void =>
   updateProcesses({
-    updates: { maximized: false, minimized: false },
+    updates: { [key]: false },
     id
   });
 

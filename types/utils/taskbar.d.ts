@@ -6,5 +6,5 @@ export type WindowStateCycler = {
   minimized: boolean;
   foreground: (id: string) => void;
   minimize: (id: string) => void;
-  restore: (id: string) => void;
+  restore: (id: string, key: 'minimized' | 'maximized') => void;
 };

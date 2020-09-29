@@ -78,7 +78,8 @@ export const WindowManager: React.FC = () => {
                 minimize(id);
                 focusNextVisibleWindow();
               },
-              onMaximize: () => (maximized ? restore(id) : maximize(id)),
+              onMaximize: () =>
+                maximized ? restore(id, 'maximized') : maximize(id),
               onClose: () => {
                 saveState({
                   id,

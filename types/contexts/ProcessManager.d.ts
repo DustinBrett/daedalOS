@@ -22,7 +22,7 @@ export type ProcessContextType = {
     startPosition: ProcessStartPosition
   ) => string;
   position: (id: string) => RndDragCallback;
-  restore: (id: string) => void;
+  restore: (id: string, key: 'minimized' | 'maximized') => void;
   size: (id: string) => RndResizeCallback;
   title: (id: string, name: string) => void;
 };
