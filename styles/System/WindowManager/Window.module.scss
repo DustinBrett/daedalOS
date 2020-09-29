@@ -92,7 +92,7 @@ $buttonIconOpacity: 0.975;
       padding: 8px;
 
       button {
-        font-size: 11px;
+        font-size: 8px;
 
         display: flex;
         align-items: center;
@@ -118,14 +118,28 @@ $buttonIconOpacity: 0.975;
 
       &#minimize {
         background-color: $minimize;
+
+        &:active {
+          background-color: $minimize_active;
+        }
       }
 
       &#maximize {
         background-color: $maximize;
+
+        &:active {
+          background-color: $maximize_active;
+        }
       }
 
       &#close {
         background-color: $close;
+
+        font-size: 10px;
+
+        &:active {
+          background-color: $close_active;
+        }
       }
     }
   }
