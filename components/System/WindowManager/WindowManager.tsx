@@ -64,8 +64,20 @@ export const WindowManager: React.FC = () => {
             const cascadePadding = startIndex * CASCADE_PADDING;
             const windowZindex =
               baseZindex + windowsZindexLevel * zindexLevelSize;
+            const focusNextVisibleWindow = () => {
+              const [, ...remainingStackEntries] = stackOrder;
+              const visibleProcessId = remainingStackEntries.find((stackId) =>
+                processes.find(
+                  (process) => process.id === stackId && !process.minimized
+                )
+              );
+              if (visibleProcessId) foreground(visibleProcessId);
+            };
             const windowOptions = {
-              onMinimize: () => minimize(id),
+              onMinimize: () => {
+                minimize(id);
+                focusNextVisibleWindow();
+              },
               onMaximize: () => (maximized ? restore(id) : maximize(id)),
               onClose: () => {
                 saveState({
@@ -76,7 +88,7 @@ export const WindowManager: React.FC = () => {
                   y: !previousY && y ? y + cascadePadding : y
                 });
                 close(id);
-                if (stackOrder.length > 1) foreground(stackOrder[1]);
+                focusNextVisibleWindow();
               },
               onFocus: () => foreground(id),
               onBlur: () => foreground(''),
