@@ -10,7 +10,7 @@
     - Double clicking titlebar, same as maximize
     - Title text should truncate at far right of titlebar
   - Disable top resize handle on mobile to improve dragging
-  - On restore, check if it was maximized before minimizing
+  - Move all size and position logic to motion.li?
 
 ## System
 
