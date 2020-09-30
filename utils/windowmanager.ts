@@ -37,11 +37,11 @@ export const getLockedAspectRatioDimensions = (
   width: number,
   height: number
 ): { width: string | number; height: string | number } => {
-  const aspectRatio = width / (height - 24);
+  const aspectRatio = width / (height - 22);
   const widerWidth = window.innerWidth / window.innerHeight < aspectRatio;
 
   return {
-    width: widerWidth ? '100%' : (window.innerHeight - 24 - 30) * aspectRatio,
+    width: widerWidth ? '100%' : (window.innerHeight - 22 - 30) * aspectRatio,
     height: widerWidth ? 'unset' : '100%'
   };
 };

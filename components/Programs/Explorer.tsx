@@ -10,7 +10,7 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 export const loaderOptions = {
   width: 300,
   height: 255,
-  bgColor: '#2a282b'
+  bgColor: '#2b2d2f'
 };
 
 export const Explorer: React.FC<AppComponent> = ({

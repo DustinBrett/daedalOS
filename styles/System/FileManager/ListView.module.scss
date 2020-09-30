@@ -12,12 +12,12 @@ $textColor: rgb(225, 225, 225);
 
   word-wrap: break-word;
 
-  color: rgba($textColor, 0.65);
+  color:rgba(255, 255, 255, 0.5);
   border: none;
-  border-top: 1px solid black;
+  border-top: 1px solid rgb(19, 19, 19);
 
   .emphasis {
-    color: rgba($textColor, 1);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   td,
@@ -30,18 +30,28 @@ $textColor: rgb(225, 225, 225);
   }
 
   thead {
-    background: rgba(55, 53, 56);
+    background: rgba(45, 46, 47);
     tr {
-      border-bottom: 1px solid rgb(91, 91, 96);
       th {
-        font-size: 11px;
+        font-size: 10.5px;
 
         padding: 0 10px;
 
         text-align: left;
 
         border-right: 1px solid rgb(76, 76, 81);
-        border-bottom: 1px solid rgb(91, 91, 96);
+        border-bottom: 3px solid;
+
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          left: 0;
+          height: 2px;
+          width: 100%;
+          border-top: 1px solid rgb(81, 81, 86);
+          background-color: rgb(32, 32, 35);
+        }
       }
     }
   }
@@ -49,14 +59,14 @@ $textColor: rgb(225, 225, 225);
   tbody {
     tr {
       &:nth-child(even) {
-        background: rgba(42, 40, 43);
+        background: rgba(33, 35, 37);
       }
       &:nth-child(odd) {
-        background: rgb(52, 50, 53);
+        background: rgb(43, 45, 47);
       }
 
       td {
-        padding-left: 10px;
+        padding: 0 10px;
 
         figure {
           display: flex;
@@ -80,5 +90,15 @@ $textColor: rgb(225, 225, 225);
 }
 
 .selected {
-  background-color: rgb(0, 88, 208) !important;
+  background-color: rgb(0, 88, 208) !important; // !forground = rgb(70, 70, 70)
+
+  color: rgba(255, 255, 255, 0.7);
+
+  .emphasis {
+    color: rgba(255, 255, 255, 1);
+  }
+}
+
+.alignRight {
+  text-align: right;
 }

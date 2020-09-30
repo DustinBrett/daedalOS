@@ -65,7 +65,7 @@ export const DirectoryList: React.FC<DirectoryView> = ({
                 <figcaption title={name}>{fullName}</figcaption>
               </figure>
             </td>
-            <td>{size}</td>
+            <td className={styles.alignRight}>{size}</td>
             <td>{kind}</td>
           </tr>
         ))}
