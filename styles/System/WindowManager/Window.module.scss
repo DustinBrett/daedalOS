@@ -114,9 +114,10 @@ $buttonIconOpacity: 0.975;
     }
 
     nav:hover button {
-      color: rgba(map-get($window, title-bar-color), $buttonIconOpacity);
+      font-size: 11px;
 
       &#minimize {
+        color: $minimize_text;
         background-color: $minimize;
 
         &:active {
@@ -125,6 +126,7 @@ $buttonIconOpacity: 0.975;
       }
 
       &#maximize {
+        color: $maximize_text;
         background-color: $maximize;
 
         &:active {
@@ -133,8 +135,7 @@ $buttonIconOpacity: 0.975;
       }
 
       &#close {
-        font-size: 10px;
-
+        color: $close_text;
         background-color: $close;
 
         &:active {
