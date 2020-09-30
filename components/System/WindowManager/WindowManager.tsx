@@ -5,12 +5,13 @@ import {
   baseZindex,
   windowsZindexLevel,
   zindexLevelSize,
-  foregroundZindex
+  foregroundZindex,
+  CASCADE_PADDING
 } from '@/utils/constants';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
-import { getMaxDimensions, CASCADE_PADDING } from '@/utils/windowmanager';
+import { getMaxDimensions } from '@/utils/windowmanager';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 

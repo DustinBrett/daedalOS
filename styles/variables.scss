@@ -32,4 +32,5 @@ $taskbarZindexLevel: 3;
 $foregroundZindex: ($baseZindex + $windowsZindexLevel * $zindexLevelSize) +
   ($zindexLevelSize / 2);
 
-$taskbarEntryWidth: 160;
+$taskbarEntryWidth: 160px;
+$titlebarHeight: 22px;

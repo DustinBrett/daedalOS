@@ -5,7 +5,7 @@ import type {
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
-import { taskbarEntryWidth } from '@/utils/constants';
+import { TASKBAR_ENTRY_WIDTH } from '@/utils/constants';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,
@@ -57,7 +57,7 @@ export const windowMotionSettings = ({
     },
     minimized: {
       scale: 0,
-      x: taskbarEntryWidth * startIndex - taskbarEntryWidth / 2,
+      x: TASKBAR_ENTRY_WIDTH * startIndex - TASKBAR_ENTRY_WIDTH / 2,
       y: window.innerHeight,
       position: 'fixed'
     }

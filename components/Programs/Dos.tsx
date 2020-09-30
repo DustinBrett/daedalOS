@@ -7,6 +7,7 @@ import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
 import { useEffect, useRef } from 'react';
 import { getLockedAspectRatioDimensions } from '@/utils/windowmanager';
+import { TITLEBAR_HEIGHT } from '@/utils/constants';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
@@ -18,7 +19,7 @@ export const loaderOptions = {
   hideScrollbars: true,
   lockAspectRatio: true,
   width: 640,
-  height: 400 + 22, // TODO: 22 is titlebar height
+  height: 400 + TITLEBAR_HEIGHT,
   bgColor: '#000000'
 };
 
