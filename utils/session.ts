@@ -5,7 +5,7 @@ import type {
   SessionState
 } from '@/types/contexts/SessionManager';
 
-import { getProcessId } from '@/utils/processmanager';
+import { getProcessId } from '@/utils/process';
 
 export const foreground = (updateSession: Dispatch<SessionAction>) => (
   id: string

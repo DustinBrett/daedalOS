@@ -1,8 +1,6 @@
-import {
-  TASKBAR_HEIGHT,
-  TITLEBAR_HEIGHT,
-  CASCADE_PADDING
-} from '@/utils/constants';
+import type { Processes } from '@/types/utils/processmanager';
+
+import { TASKBAR_HEIGHT, CASCADE_PADDING } from '@/utils/constants';
 
 export const getMaxDimensions = (
   width: number,
@@ -34,17 +32,15 @@ export const getMaxDimensions = (
   return { height, width };
 };
 
-export const getLockedAspectRatioDimensions = (
-  width: number,
-  height: number
-): { width: string | number; height: string | number } => {
-  const aspectRatio = width / (height - TITLEBAR_HEIGHT);
-  const widerWidth = window.innerWidth / window.innerHeight < aspectRatio;
+export const focusNextVisibleWindow = (
+  stackOrder: string[],
+  processes: Processes,
+  foreground: (id: string) => void
+): void => {
+  const [, ...remainingStackEntries] = stackOrder;
+  const visibleProcessId = remainingStackEntries.find((stackId) =>
+    processes.find((process) => process.id === stackId && !process.minimized)
+  );
 
-  return {
-    width: widerWidth
-      ? '100%'
-      : (window.innerHeight - TITLEBAR_HEIGHT - TASKBAR_HEIGHT) * aspectRatio,
-    height: widerWidth ? 'unset' : '100%'
-  };
+  if (visibleProcessId) foreground(visibleProcessId);
 };

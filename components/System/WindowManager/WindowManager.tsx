@@ -11,7 +11,10 @@ import {
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { windowMotionSettings } from '@/utils/motions';
-import { getMaxDimensions } from '@/utils/windowmanager';
+import {
+  focusNextVisibleWindow,
+  getMaxDimensions
+} from '@/utils/windowmanager';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
@@ -65,19 +68,10 @@ export const WindowManager: React.FC = () => {
             const cascadePadding = startIndex * CASCADE_PADDING;
             const windowZindex =
               baseZindex + windowsZindexLevel * zindexLevelSize;
-            const focusNextVisibleWindow = () => {
-              const [, ...remainingStackEntries] = stackOrder;
-              const visibleProcessId = remainingStackEntries.find((stackId) =>
-                processes.find(
-                  (process) => process.id === stackId && !process.minimized
-                )
-              );
-              if (visibleProcessId) foreground(visibleProcessId);
-            };
             const windowOptions = {
               onMinimize: () => {
                 minimize(id);
-                focusNextVisibleWindow();
+                focusNextVisibleWindow(stackOrder, processes, foreground);
               },
               onMaximize: () =>
                 maximized ? restore(id, 'maximized') : maximize(id),
@@ -90,7 +84,7 @@ export const WindowManager: React.FC = () => {
                   y: !previousY && y ? y + cascadePadding : y
                 });
                 close(id);
-                focusNextVisibleWindow();
+                focusNextVisibleWindow(stackOrder, processes, foreground);
               },
               onFocus: () => foreground(id),
               onBlur: () => foreground(''),
@@ -107,13 +101,15 @@ export const WindowManager: React.FC = () => {
                 lockAspectRatio
               )
             };
-            const isForeground = foregroundId === id;
 
             return (
               <motion.div
                 key={id}
                 style={{
-                  zIndex: isForeground ? foregroundZindex : windowOptions.zIndex
+                  zIndex:
+                    foregroundId === id
+                      ? foregroundZindex
+                      : windowOptions.zIndex
                 }}
                 {...windowMotionSettings({
                   initialX: maximized ? 0 : previousX || cascadePadding,

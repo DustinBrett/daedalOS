@@ -1,4 +1,3 @@
-import type { AppLoader } from '@/types/utils/programs';
 import type { Process } from '@/utils/process';
 
 export type Processes = Process[];
@@ -16,23 +15,4 @@ export type ProcessAction = {
   updates?: ProcessState;
   previousState?: ProcessState;
   startPosition?: ProcessStartPosition;
-};
-
-export type ProcessConstructor = {
-  loader: AppLoader;
-  icon: string;
-  name: string;
-  startIndex: number;
-
-  bgColor?: string;
-  height?: number;
-  hideScrollbars?: boolean;
-  id?: string;
-  lockAspectRatio?: boolean;
-  width?: number;
-  windowed?: boolean;
-  x?: number;
-  y?: number;
-  startX?: number;
-  startY?: number;
 };

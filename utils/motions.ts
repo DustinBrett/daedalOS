@@ -16,21 +16,13 @@ export const desktopIconDragSettings = {
 export const desktopIconMotionSettings: MotionProps = {
   initial: { opacity: 0, y: -100 },
   animate: { opacity: 1, y: 0 },
-  transition: {
-    y: {
-      type: 'spring'
-    }
-  }
+  transition: { y: { type: 'spring' } }
 };
 
 export const taskbarEntriesMotionSettings: MotionProps = {
   initial: { opacity: 0, x: -100 },
   animate: { opacity: 1, x: 0 },
-  transition: {
-    x: {
-      type: 'spring'
-    }
-  },
+  transition: { x: { type: 'spring' } },
   exit: {
     opacity: 0,
     width: 0,

@@ -10,9 +10,9 @@ import {
   position,
   restore,
   size,
-  title
-} from '@/utils/process';
-import { processReducer } from '@/utils/processmanager';
+  title,
+  processReducer
+} from '@/utils/processmanager';
 import { initialProcessState } from '@/utils/initial';
 
 export const ProcessContext = createContext<ProcessContextType>(

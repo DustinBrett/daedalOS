@@ -6,7 +6,7 @@ import type { AppComponent } from '@/types/utils/programs';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
 import { useEffect, useRef } from 'react';
-import { getLockedAspectRatioDimensions } from '@/utils/windowmanager';
+import { getLockedAspectRatioDimensions } from '@/utils/dos';
 import { TITLEBAR_HEIGHT } from '@/utils/constants';
 import { focusClosestFocusableElementFromRef } from '@/utils/elements';
 
