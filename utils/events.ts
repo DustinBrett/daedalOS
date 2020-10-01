@@ -1,4 +1,5 @@
-import { FileDropEvents } from '@/types/utils/events';
+import type { RndDragCallback } from 'react-rnd';
+import type { FileDropEvents } from '@/types/utils/events';
 
 const CLICK_DELAY_IN_MILLISECONDS = 300;
 
@@ -20,6 +21,13 @@ export const useFileDrop = (
     onFileDrop(event, file);
   }
 });
+
+export const onTouchEventsOnly: RndDragCallback = (e): void => {
+  if (e instanceof MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
 
 export class ClickHandler {
   clickTimer?: NodeJS.Timeout;
