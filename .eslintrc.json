@@ -33,7 +33,6 @@
     "import/prefer-default-export": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "lines-between-class-members": "off",
-    "max-lines": ["warn", 80],
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",

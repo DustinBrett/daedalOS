@@ -25,8 +25,6 @@ export const Window: React.FC<AppComponent> = ({
   lockAspectRatio,
   hideScrollbars,
   zIndex,
-  height = 250,
-  width = 300,
   maximized
 }) => {
   const {
@@ -48,9 +46,9 @@ export const Window: React.FC<AppComponent> = ({
       dragHandleClassName="handle"
       resizeHandleClasses={resizeHandleClasses(styles)}
       cancel=".cancel"
-      size={{ height, width }}
-      minHeight={200}
-      minWidth={300}
+      size={{ height: '100%', width: '100%' }}
+      minHeight={250}
+      minWidth={250}
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}

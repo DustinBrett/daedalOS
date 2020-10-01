@@ -92,14 +92,7 @@ export const WindowManager: React.FC = () => {
               zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
               maximized,
               minimized,
-              id,
-              ...getMaxDimensions(
-                width,
-                height,
-                defaultWidth,
-                defaultHeight,
-                lockAspectRatio
-              )
+              id
             };
 
             return (
@@ -109,7 +102,14 @@ export const WindowManager: React.FC = () => {
                   zIndex:
                     foregroundId === id
                       ? foregroundZindex
-                      : windowOptions.zIndex
+                      : windowOptions.zIndex,
+                  ...getMaxDimensions(
+                    width,
+                    height,
+                    defaultWidth,
+                    defaultHeight,
+                    lockAspectRatio
+                  )
                 }}
                 {...windowMotionSettings({
                   initialX: maximized ? 0 : previousX || cascadePadding,
