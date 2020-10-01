@@ -5,8 +5,7 @@ import {
   baseZindex,
   windowsZindexLevel,
   zindexLevelSize,
-  foregroundZindex,
-  CASCADE_PADDING
+  foregroundZindex
 } from '@/utils/constants';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
@@ -65,7 +64,6 @@ export const WindowManager: React.FC = () => {
             const { x: previousX = 0, y: previousY = 0 } = getState({
               id
             });
-            const cascadePadding = startIndex * CASCADE_PADDING;
             const windowZindex =
               baseZindex + windowsZindexLevel * zindexLevelSize;
             const windowOptions = {
@@ -80,8 +78,8 @@ export const WindowManager: React.FC = () => {
                   id,
                   height,
                   width,
-                  x: !previousX && x ? x + cascadePadding : x,
-                  y: !previousY && y ? y + cascadePadding : y
+                  x,
+                  y
                 });
                 close(id);
                 focusNextVisibleWindow(stackOrder, processes, foreground);
@@ -112,12 +110,16 @@ export const WindowManager: React.FC = () => {
                   )
                 }}
                 {...windowMotionSettings({
-                  initialX: maximized ? 0 : previousX || cascadePadding,
-                  initialY: maximized ? 0 : previousY || cascadePadding,
+                  initialX: previousX,
+                  initialY: previousY,
                   startX,
                   startY,
-                  animation: minimized ? 'minimized' : 'start',
-                  startIndex
+                  animation: minimized && 'minimized' || maximized && 'maximized' || 'start',
+                  startIndex,
+                  height,
+                  width,
+                  x,
+                  y
                 })}
               >
                 {windowed ? (

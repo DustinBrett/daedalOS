@@ -55,6 +55,7 @@ export const Window: React.FC<AppComponent> = ({
       onDragStart={focusOnDrag}
       onDragStop={updatePosition}
       onResizeStop={updateSize}
+      enableResizing={!maximized}
       disableDragging={maximized}
       lockAspectRatio={lockAspectRatio}
       style={{ zIndex }}

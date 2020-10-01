@@ -5,7 +5,7 @@ import type {
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
-import { TASKBAR_ENTRY_WIDTH } from '@/utils/constants';
+import { TASKBAR_ENTRY_WIDTH, TASKBAR_HEIGHT } from '@/utils/constants';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,
@@ -37,27 +37,44 @@ export const windowMotionSettings = ({
   startX = 0,
   startY = 0,
   animation = 'start',
-  startIndex = 0
+  startIndex = 0,
+  height,
+  width,
+  x,
+  y
 }: WindowMotionSettings): MotionProps => {
+  const widthOffset = -Math.floor(width / 2);
+  const heightOffset = -Math.floor(height / 2);
   const animationVariants: {
     [key: string]: AnimationProps & TargetAndTransition;
   } = {
     start: {
       scale: 1,
       x: initialX,
-      y: initialY
+      y: initialY,
+      height,
+      width
+    },
+    maximized: {
+      x: initialX ? 0 : -x,
+      y: initialY ? 0 : -y,
+      height: window.innerHeight - TASKBAR_HEIGHT,
+      width: '100vw',
+      transitionEnd: {
+        
+      }
     },
     minimized: {
       scale: 0,
-      x: TASKBAR_ENTRY_WIDTH * startIndex - TASKBAR_ENTRY_WIDTH / 2,
-      y: window.innerHeight,
+      x: widthOffset + TASKBAR_ENTRY_WIDTH * startIndex - TASKBAR_ENTRY_WIDTH / 2,
+      y: heightOffset + -(TASKBAR_HEIGHT / 2) + window.innerHeight,
       position: 'fixed'
     }
   };
   const initialExitTransform: TransformProperties = {
     scale: 0,
-    x: Math.floor(-(window.innerWidth / 2) + startX),
-    y: startY
+    x: widthOffset + startX,
+    y: heightOffset + startY
   };
 
   return {

@@ -186,13 +186,6 @@ $buttonIconOpacity: 0.975;
 }
 
 .maximized {
-  position: fixed !important;
-
-  width: 100vw !important;
-  height: calc(100vh - #{map-get($taskbar, height)}) !important;
-
-  transform: unset !important;
-
   header {
     border-radius: unset !important;
   }

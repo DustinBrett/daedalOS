@@ -1,6 +1,6 @@
 import type { Processes } from '@/types/utils/processmanager';
 
-import { TASKBAR_HEIGHT, CASCADE_PADDING } from '@/utils/constants';
+import { TASKBAR_HEIGHT } from '@/utils/constants';
 
 export const getMaxDimensions = (
   width: number,
@@ -10,8 +10,8 @@ export const getMaxDimensions = (
   lockAspectRatio = false
 ): { width: number; height: number } => {
   if (width === defaultWidth && height === defaultHeight) {
-    let maxWidth = window.innerWidth - CASCADE_PADDING * 2;
-    let maxHeight = window.innerHeight - CASCADE_PADDING * 2 - TASKBAR_HEIGHT;
+    let maxWidth = window.innerWidth;
+    let maxHeight = window.innerHeight - TASKBAR_HEIGHT;
 
     if (lockAspectRatio) {
       const aspectLockedHeight = Math.min(maxWidth, width) * (height / width);

@@ -4,8 +4,9 @@
 
 - Windows
   - Maximized mobile is not accounting for taskbar
-  - Animate maximize as is done on osx
-  - Cascade is causing visual glitch during max
+  - Redo cascade logic
+  - Ghost window is blocking icons
+  - Fix glitchy resizing
   - Double clicking titlebar, same as maximize
   - Title text should truncate at far right of titlebar
   - Disable top resize handle on mobile to improve dragging

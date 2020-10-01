@@ -11,4 +11,3 @@ export const foregroundZindex =
 export const TASKBAR_ENTRY_WIDTH = 160;
 export const TASKBAR_HEIGHT = 30;
 export const TITLEBAR_HEIGHT = 22;
-export const CASCADE_PADDING = 25;

@@ -5,4 +5,8 @@ export type WindowMotionSettings = {
   startY: number;
   animation: string;
   startIndex: number;
+  height: number;
+  width: number;
+  x: number;
+  y: number;
 };
