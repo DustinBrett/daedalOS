@@ -6,31 +6,28 @@
   - Maximized mobile is not accounting for taskbar
   - Animate maximize as is done on osx
   - Cascade is causing visual glitch during max
-  - Create WindowTitleBar component
-    - Double clicking titlebar, same as maximize
-    - Title text should truncate at far right of titlebar
+  - Double clicking titlebar, same as maximize
+  - Title text should truncate at far right of titlebar
   - Disable top resize handle on mobile to improve dragging
-  - Move all size and position logic to motion.li?
+  - Move all size logic to motion.li
 
 ## System
 
 - Images
   - next-optimized-images (https://web.dev/image-aspect-ratio)
 - Desktop
-  - Icon sorting needs to work with drag/drop
+  - Use grid to fix landscape alignment
   - Save icon positions
 - File Manager
   - Favicon size is showing `NaN` sometimes
-  - Sort contents by name by default
+  - Scale open/close from center of icon image
+  - Switch to react-table for resizable columns
+  - Sort contents by name/date
   - Complete UI/Toolbar/Breadcrumb Bar
 - Icons
   - zIndex on drag should be above windows
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
   - Truncation breaks at 3 lines
-- Side-By-Side Compare
-  - Windows
-  - Icons
-  - Taskbar
 
 ## Apps
 
