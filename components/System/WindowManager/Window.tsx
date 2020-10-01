@@ -4,12 +4,10 @@ import type { AppComponent } from '@/types/utils/programs';
 
 import { useContext, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { TitleBar } from '@/components/System/WindowManager/TitleBar';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
-
-// TODO: Split `<header>` into component
+import { resizeHandleClasses } from '@/utils/window';
 
 export const Window: React.FC<AppComponent> = ({
   children,
@@ -48,16 +46,7 @@ export const Window: React.FC<AppComponent> = ({
         foregroundId === id ? styles.foreground : ''
       }`}
       dragHandleClassName="handle"
-      resizeHandleClasses={{
-        top: styles.resizeTop,
-        right: styles.resizeRight,
-        bottom: styles.resizeBottom,
-        left: styles.resizeLeft,
-        topRight: styles.resizeTopRight,
-        bottomRight: styles.resizeBottomRight,
-        bottomLeft: styles.resizeBottomLeft,
-        topLeft: styles.resizeTopLeft
-      }}
+      resizeHandleClasses={resizeHandleClasses(styles)}
       cancel=".cancel"
       size={{ height, width }}
       minHeight={200}
@@ -72,25 +61,13 @@ export const Window: React.FC<AppComponent> = ({
       lockAspectRatio={lockAspectRatio}
       style={{ zIndex }}
     >
-      <header className={`${styles.titlebar} handle`}>
-        <h1>
-          <figure>
-            <img alt={name} src={icon} draggable={false} />
-            <figcaption>{name}</figcaption>
-          </figure>
-        </h1>
-        <nav className="cancel">
-          <button id={styles.close} type="button" onClick={onClose}>
-            <FontAwesomeIcon size="xs" icon={faTimes} />
-          </button>
-          <button id={styles.minimize} type="button" onClick={onMinimize}>
-            <FontAwesomeIcon size="xs" icon={faMinus} />
-          </button>
-          <button id={styles.maximize} type="button" onClick={onMaximize}>
-            <FontAwesomeIcon size="xs" icon={faPlus} />
-          </button>
-        </nav>
-      </header>
+      <TitleBar
+        icon={icon}
+        name={name}
+        onMaximize={onMaximize}
+        onMinimize={onMinimize}
+        onClose={onClose}
+      />
       <article
         className={styles.content}
         style={{
