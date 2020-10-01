@@ -20,6 +20,12 @@ export const focusOnDrag = (
 export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
   elementRef.current?.resizableElement.current?.focus();
 
+export const focusClosestFocusableElementFromRef = (
+  elementRef: RefObject<HTMLElement>
+) => (): void => {
+  elementRef.current?.closest<HTMLElement>(':not(li)[tabindex]')?.focus();
+};
+
 export const lockDocumentTitle = (): void => {
   if (
     typeof Object.getOwnPropertyDescriptor(document, 'title')?.set ===

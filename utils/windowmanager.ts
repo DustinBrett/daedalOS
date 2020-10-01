@@ -1,4 +1,8 @@
-import { TASKBAR_HEIGHT, TITLEBAR_HEIGHT, CASCADE_PADDING } from "@/utils/constants";
+import {
+  TASKBAR_HEIGHT,
+  TITLEBAR_HEIGHT,
+  CASCADE_PADDING
+} from '@/utils/constants';
 
 export const getMaxDimensions = (
   width: number,
@@ -38,7 +42,9 @@ export const getLockedAspectRatioDimensions = (
   const widerWidth = window.innerWidth / window.innerHeight < aspectRatio;
 
   return {
-    width: widerWidth ? '100%' : (window.innerHeight - TITLEBAR_HEIGHT - TASKBAR_HEIGHT) * aspectRatio,
+    width: widerWidth
+      ? '100%'
+      : (window.innerHeight - TITLEBAR_HEIGHT - TASKBAR_HEIGHT) * aspectRatio,
     height: widerWidth ? 'unset' : '100%'
   };
 };

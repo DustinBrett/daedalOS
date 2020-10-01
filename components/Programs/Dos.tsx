@@ -1,6 +1,6 @@
 import styles from '@/styles/Programs/Dos.module.scss';
 
-import type { DosMainFn } from 'js-dos';
+import type { DosMainFn, DosRuntime } from 'js-dos';
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
@@ -8,11 +8,11 @@ import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 import { useEffect, useRef } from 'react';
 import { getLockedAspectRatioDimensions } from '@/utils/windowmanager';
 import { TITLEBAR_HEIGHT } from '@/utils/constants';
+import { focusClosestFocusableElementFromRef } from '@/utils/elements';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
-  /* eslint @typescript-eslint/no-empty-function: off */
-  onprogress: () => {}
+  onprogress: () => {} /* eslint @typescript-eslint/no-empty-function: off */
 };
 
 export const loaderOptions = {
@@ -34,11 +34,20 @@ export const Dos: React.FC<AppComponent> = ({
     main([...prependedArgs, ...args]).then((value) => {
       ci = value;
     });
-  const focusCanvas = () => {
-    (canvasRef.current?.closest(
-      ':not(li)[tabindex]'
-    ) as HTMLDivElement).focus();
+  const loadDos = ({ fs, main }: DosRuntime) => {
+    if (url) {
+      const appPath = name.replace(/ /g, '').substring(0, 8);
+
+      fs.extract(url, appPath).then(() =>
+        loadMain(main, ['-c', `CD ${appPath}`])
+      );
+    } else {
+      loadMain(main);
+    }
   };
+  const maximizedStyle = maximized
+    ? getLockedAspectRatioDimensions(loaderOptions.width, loaderOptions.height)
+    : {};
 
   useEffect(() => {
     const { current: canvasElement } = canvasRef as {
@@ -46,17 +55,7 @@ export const Dos: React.FC<AppComponent> = ({
     };
     const { Dos: DosModule } = window as WindowWithDosModule;
 
-    DosModule(canvasElement, dosOptions).then(({ fs, main }) => {
-      if (url) {
-        const appPath = name.replace(/ /g, '').substring(0, 8);
-
-        fs.extract(url, appPath).then(() =>
-          loadMain(main, ['-c', `CD ${appPath}`])
-        );
-      } else {
-        loadMain(main);
-      }
-    });
+    DosModule(canvasElement, dosOptions).then(loadDos);
 
     return () => {
       ci?.exit();
@@ -66,20 +65,10 @@ export const Dos: React.FC<AppComponent> = ({
   require('js-dos');
 
   return (
-    <div
-      className={styles.dos}
-      {...(maximized
-        ? {
-            style: getLockedAspectRatioDimensions(
-              loaderOptions.width,
-              loaderOptions.height
-            )
-          }
-        : {})}
-    >
+    <div className={styles.dos} style={maximizedStyle}>
       <canvas
-        onTouchStart={focusCanvas}
-        onClick={focusCanvas}
+        onTouchStart={focusClosestFocusableElementFromRef(canvasRef)}
+        onClick={focusClosestFocusableElementFromRef(canvasRef)}
         ref={canvasRef}
       />
     </div>
