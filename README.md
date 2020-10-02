@@ -3,9 +3,8 @@
 ## Current Focus
 
 - Windows
-  - Maximized mobile is not accounting for taskbar
   - Redo cascade logic
-  - Title text should truncate at far right of titlebar
+  - Maximized mobile is not accounting for taskbar
   - Disable top resize handle on mobile to improve dragging
 
 ## System
@@ -37,7 +36,6 @@
 - PDF Viewer
   - Update Resume
 - Winamp
-  - Can't drag/click window
   - Positioning and animation issues on load
   - Seek bar visible when minimized and playing
 

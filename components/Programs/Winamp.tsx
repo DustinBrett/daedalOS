@@ -1,3 +1,5 @@
+import styles from '@/styles/Programs/Winamp.module.scss';
+
 import type Webamp from 'webamp';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WebampStore } from '@/types/components/Programs/winamp';
@@ -61,6 +63,7 @@ export const Winamp: React.FC<AppComponent> = ({
 
   return (
     <Rnd
+      className={styles.winamp}
       enableResizing={false}
       enableUserSelectHack={false}
       dragHandleClassName="draggable"
