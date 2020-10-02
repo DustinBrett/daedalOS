@@ -141,8 +141,10 @@ export const size = (updateProcesses: Dispatch<ProcessAction>) => (
 ): RndResizeCallback => (
   _event,
   _direction,
-  { offsetWidth: width, offsetHeight: height }
-): void => updateProcesses({ id, updates: { height, width } });
+  { offsetWidth: width, offsetHeight: height },
+  _delta,
+  { x, y }
+): void => updateProcesses({ id, updates: { height, width, x, y } });
 
 export const title = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,

@@ -5,7 +5,11 @@ import type {
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
-import { TASKBAR_ENTRY_WIDTH, TASKBAR_HEIGHT } from '@/utils/constants';
+import {
+  TASKBAR_ENTRY_WIDTH,
+  TASKBAR_HEIGHT,
+  MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
+} from '@/utils/constants';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,
@@ -56,14 +60,17 @@ export const windowMotionSettings = ({
       width
     },
     maximized: {
-      x: initialX ? 0 : -x,
-      y: initialY ? 0 : -y,
+      x: initialX === x ? 0 : -x,
+      y: initialY === y ? 0 : -y,
       height: window.innerHeight - TASKBAR_HEIGHT,
       width: '100vw'
     },
     minimized: {
       scale: 0,
-      x: widthOffset + TASKBAR_ENTRY_WIDTH * startIndex - TASKBAR_ENTRY_WIDTH / 2,
+      x:
+        widthOffset +
+        TASKBAR_ENTRY_WIDTH * startIndex -
+        TASKBAR_ENTRY_WIDTH / 2,
       y: heightOffset + -(TASKBAR_HEIGHT / 2) + window.innerHeight,
       position: 'fixed'
     }
@@ -85,7 +92,7 @@ export const windowMotionSettings = ({
     },
     animate: animationVariants[animation],
     transition: {
-      duration: 0.2
+      duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
     }
   };
 };

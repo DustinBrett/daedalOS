@@ -90,7 +90,9 @@ export const WindowManager: React.FC = () => {
               zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
               maximized,
               minimized,
-              id
+              id,
+              height,
+              width
             };
 
             return (
@@ -114,7 +116,10 @@ export const WindowManager: React.FC = () => {
                   initialY: previousY,
                   startX,
                   startY,
-                  animation: minimized && 'minimized' || maximized && 'maximized' || 'start',
+                  animation:
+                    (minimized && 'minimized') ||
+                    (maximized && 'maximized') ||
+                    'start',
                   startIndex,
                   height,
                   width,
