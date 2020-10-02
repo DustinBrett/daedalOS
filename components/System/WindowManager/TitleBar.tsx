@@ -13,7 +13,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   onClose
 }) => {
   return (
-    <header className={`${styles.titlebar} handle`}>
+    <header className={`${styles.titlebar} handle`} onDoubleClick={onMaximize}>
       <h1>
         <figure>
           <img alt={name} src={icon} draggable={false} />

@@ -5,9 +5,6 @@
 - Windows
   - Maximized mobile is not accounting for taskbar
   - Redo cascade logic
-  - Ghost window is blocking icons
-  - Fix glitchy resizing
-  - Double clicking titlebar, same as maximize
   - Title text should truncate at far right of titlebar
   - Disable top resize handle on mobile to improve dragging
 
@@ -19,10 +16,14 @@
   - Use grid to fix landscape alignment
   - Save icon positions
 - File Manager
-  - Favicon size is showing `NaN` sometimes
   - Scale open/close from center of icon image
   - Switch to react-table for resizable columns
   - Sort contents by name/date
+  - Truncate all text (line height never changes)
+  - File sizes
+    - Cache file sizes during `genfs`
+    - File size sometimes returns `-1`
+    - File size not correct for new files
   - Complete UI/Toolbar/Breadcrumb Bar
 - Icons
   - zIndex on drag should be above windows
@@ -36,6 +37,7 @@
 - PDF Viewer
   - Update Resume
 - Winamp
+  - Can't drag/click window
   - Positioning and animation issues on load
   - Seek bar visible when minimized and playing
 
