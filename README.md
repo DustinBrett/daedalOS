@@ -4,8 +4,7 @@
 
 - Windows
   - Redo cascade logic
-  - Maximized mobile is not accounting for taskbar
-  - Disable top resize handle on mobile to improve dragging
+  - Fix titlebar dragging requiring entire touch zone be in titlebar
 
 ## System
 

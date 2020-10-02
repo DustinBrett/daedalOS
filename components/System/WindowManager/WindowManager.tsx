@@ -55,8 +55,8 @@ export const WindowManager: React.FC = () => {
             minimized,
             lockAspectRatio,
             hideScrollbars,
-            height,
-            width,
+            height: initialHeight,
+            width: initialWidth,
             x,
             y,
             startX,
@@ -68,6 +68,13 @@ export const WindowManager: React.FC = () => {
             });
             const windowZindex =
               baseZindex + windowsZindexLevel * zindexLevelSize;
+            const { height, width } = getMaxDimensions(
+              initialWidth,
+              initialHeight,
+              defaultWidth,
+              defaultHeight,
+              lockAspectRatio
+            );
             const windowOptions = {
               onMinimize: () => {
                 minimize(id);
@@ -106,13 +113,8 @@ export const WindowManager: React.FC = () => {
                     foregroundId === id
                       ? foregroundZindex
                       : windowOptions.zIndex,
-                  ...getMaxDimensions(
-                    width,
-                    height,
-                    defaultWidth,
-                    defaultHeight,
-                    lockAspectRatio
-                  )
+                  height,
+                  width
                 }}
                 {...windowMotionSettings({
                   initialX: previousX,

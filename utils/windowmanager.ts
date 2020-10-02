@@ -24,8 +24,8 @@ export const getMaxDimensions = (
     }
 
     return {
-      height: Math.min(maxHeight, height),
-      width: Math.min(maxWidth, width)
+      height: Math.floor(Math.min(maxHeight, height)),
+      width: Math.floor(Math.min(maxWidth, width))
     };
   }
 
