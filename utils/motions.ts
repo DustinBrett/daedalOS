@@ -59,10 +59,7 @@ export const windowMotionSettings = ({
       x: initialX ? 0 : -x,
       y: initialY ? 0 : -y,
       height: window.innerHeight - TASKBAR_HEIGHT,
-      width: '100vw',
-      transitionEnd: {
-        
-      }
+      width: '100vw'
     },
     minimized: {
       scale: 0,
