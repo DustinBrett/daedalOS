@@ -1,3 +1,5 @@
+import styles from '@/styles/System/WindowManager/WindowManager.module.scss';
+
 import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -35,7 +37,7 @@ export const WindowManager: React.FC = () => {
   } = useContext(ProcessContext);
 
   return (
-    <div>
+    <div className={styles.windows}>
       <AnimatePresence>
         {processes.map(
           ({
@@ -98,6 +100,7 @@ export const WindowManager: React.FC = () => {
             return (
               <motion.div
                 key={id}
+                className={styles.animatedWindows}
                 style={{
                   zIndex:
                     foregroundId === id

@@ -10,6 +10,7 @@ $buttonIconOpacity: 0.975;
   z-index: map-get($zIndex, windows);
 
   letter-spacing: 0.5px;
+  pointer-events: all;
 
   border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgb(80, 80, 80), 0 0 0 2px rgba(0, 0, 0, 0.4),
