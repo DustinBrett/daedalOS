@@ -52,6 +52,7 @@ export const getDirectoryEntry = async (
     path: filePath,
     url: url && decodeURIComponent(url),
     icon: getBestIconMatch(icon, isDirectory, ext, filePath),
+    // TODO: Sometimes size is -1 (Cache sizes during genfs)
     size: isDirectory ? '--' : getFormattedSize(stats.size),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };

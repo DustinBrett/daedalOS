@@ -60,6 +60,7 @@ export const getFileStat = (
   new Promise((resolve) => fs.stat(path, (_error, stats) => resolve(stats)));
 
 export const getFormattedSize = (size: number): string => {
+  if (size === -1) return 'Unknown';
   if (size === 0) return 'Zero bytes';
   if (size === 1) return '1 byte';
 
