@@ -4,7 +4,7 @@
 
 - Windows
   - Redo cascade logic
-  - Fix titlebar dragging requiring entire touch zone be in titlebar
+  - Improve titlebar text to truncate better
 
 ## System
 

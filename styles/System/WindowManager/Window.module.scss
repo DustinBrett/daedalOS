@@ -144,6 +144,20 @@ $buttonIconOpacity: 0.975;
         }
       }
     }
+
+    @media (pointer: coarse) {
+      &:after {
+        position: absolute;
+        top: -(map-get($window, title-bar-pointer-padding) / 2);
+        right: 0;
+
+        width: calc(100% - 68px); // TODO: 68px is button bar width
+        height: map-get($window, title-bar-height) +
+          map-get($window, title-bar-pointer-padding);
+
+        content: '';
+      }
+    }
   }
 
   &:not(.foreground) {
