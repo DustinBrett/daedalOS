@@ -17,6 +17,7 @@
   - Switch to react-table for resizable columns
   - Sort contents by name/date
   - Truncate all text (line height never changes)
+  - Background still not lining up
   - File sizes
     - Cache file sizes during `genfs`
     - File size sometimes returns `-1`
