@@ -16,7 +16,6 @@ const dosOptions = {
 };
 
 export const loaderOptions = {
-  hideScrollbars: true,
   lockAspectRatio: true,
   width: 640,
   height: 400 + TITLEBAR_HEIGHT,

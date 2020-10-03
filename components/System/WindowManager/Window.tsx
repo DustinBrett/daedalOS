@@ -27,7 +27,6 @@ export const Window: React.FC<AppComponent> = ({
   updatePosition,
   updateSize,
   lockAspectRatio,
-  hideScrollbars,
   zIndex,
   maximized,
   height = 0,
@@ -88,13 +87,7 @@ export const Window: React.FC<AppComponent> = ({
         onMinimize={onMinimize}
         onClose={onClose}
       />
-      <article
-        className={styles.content}
-        style={{
-          backgroundColor: bgColor,
-          overflow: hideScrollbars ? 'hidden' : 'auto'
-        }}
-      >
+      <article className={styles.content} style={{ backgroundColor: bgColor }}>
         {children}
       </article>
     </Rnd>

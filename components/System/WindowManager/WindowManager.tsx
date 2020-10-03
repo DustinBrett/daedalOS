@@ -54,7 +54,6 @@ export const WindowManager: React.FC = () => {
             maximized,
             minimized,
             lockAspectRatio,
-            hideScrollbars,
             height: initialHeight,
             width: initialWidth,
             x,
@@ -138,7 +137,6 @@ export const WindowManager: React.FC = () => {
                     name={name}
                     bgColor={bgColor}
                     lockAspectRatio={lockAspectRatio}
-                    hideScrollbars={hideScrollbars}
                     updateSize={size(id)}
                     {...windowOptions}
                   >

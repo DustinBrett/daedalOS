@@ -10,7 +10,6 @@ export class Process {
 
   bgColor;
   height;
-  hideScrollbars;
   id;
   lockAspectRatio;
   width;
@@ -32,7 +31,6 @@ export class Process {
 
     bgColor = '#fff',
     height = 0,
-    hideScrollbars = false,
     id = getProcessId(name),
     lockAspectRatio = false,
     width = 0,
@@ -48,7 +46,6 @@ export class Process {
     this.name = name;
     this.bgColor = bgColor;
     this.height = height;
-    this.hideScrollbars = hideScrollbars;
     this.id = id;
     this.lockAspectRatio = lockAspectRatio;
     this.width = width;

@@ -4,12 +4,13 @@
 
 - Windows
   - Redo cascade logic
-  - Improve titlebar text to truncate better
+    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
 
 ## System
 
 - Images
   - next-optimized-images (https://web.dev/image-aspect-ratio)
+- Start Menu
 - Desktop
   - Use grid to fix landscape alignment
   - Save icon positions
@@ -42,7 +43,7 @@
 
 ## System
 
-- Start Menu
+- Improve titlebar text to truncate better
 - Save Session
 - URL Routing via opening `.url`
 

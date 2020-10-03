@@ -8,7 +8,6 @@ export type ProcessConstructor = {
 
   bgColor?: string;
   height?: number;
-  hideScrollbars?: boolean;
   id?: string;
   lockAspectRatio?: boolean;
   width?: number;
