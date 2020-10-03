@@ -8,8 +8,6 @@
 
 ## System
 
-- Images
-  - next-optimized-images (https://web.dev/image-aspect-ratio)
 - Start Menu
 - Desktop
   - Use grid to fix landscape alignment
