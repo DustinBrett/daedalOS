@@ -19,7 +19,7 @@ import {
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
-export const WindowManager: React.FC = () => {
+const WindowManager: React.FC = () => {
   const {
     foreground,
     getState,

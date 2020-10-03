@@ -1,5 +1,3 @@
-import ExplorerIcon from '@/public/icons/programs/explorer.png';
-
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/types/components/System/FileManager/FileManager';
@@ -25,7 +23,9 @@ const getBestIconMatch = (
 ): string => {
   if (icon) return icon;
 
-  return isDirectory ? ExplorerIcon : getFileIcon(filePath, ext);
+  return isDirectory
+    ? '/icons/programs/explorer.png'
+    : getFileIcon(filePath, ext);
 };
 
 export const getDirectoryEntry = async (

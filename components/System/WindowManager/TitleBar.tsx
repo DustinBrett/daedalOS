@@ -4,8 +4,9 @@ import type { TitleBarProps } from '@/types/components/System/WindowManager/Titl
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import Icon from '@/components/System/Icon';
 
-export const TitleBar: React.FC<TitleBarProps> = ({
+const TitleBar: React.FC<TitleBarProps> = ({
   icon,
   name,
   onMaximize,
@@ -16,7 +17,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
     <header className={`${styles.titlebar} handle`} onDoubleClick={onMaximize}>
       <h1>
         <figure>
-          <img alt={name} src={icon} draggable={false} />
+          <Icon src={icon} />
           <figcaption>{name}</figcaption>
         </figure>
       </h1>

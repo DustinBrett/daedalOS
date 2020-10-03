@@ -4,7 +4,7 @@ import type { AppComponent } from '@/types/utils/programs';
 
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Rnd } from 'react-rnd';
-import { TitleBar } from '@/components/System/WindowManager/TitleBar';
+import TitleBar from '@/components/System/WindowManager/TitleBar';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
 import { SessionContext } from '@/contexts/SessionManager';
 import { resizeHandleClasses } from '@/utils/window';
@@ -13,11 +13,11 @@ import {
   MILLISECONDS_IN_SECOND
 } from '@/utils/constants';
 
-export const Window: React.FC<AppComponent> = ({
+const Window: React.FC<AppComponent> = ({
   children,
-  icon,
+  icon = '',
   id,
-  name,
+  name = '',
   bgColor,
   onMaximize,
   onMinimize,

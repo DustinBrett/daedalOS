@@ -13,7 +13,7 @@ import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 const millisecondsTillNextSecond = () =>
   MILLISECONDS_IN_SECOND - newDate().getMilliseconds();
 
-export const Clock: React.FC = () => {
+const Clock: React.FC = () => {
   const initialDate = newDate();
   const [date, setDate] = useState(formatToDate(initialDate));
   const [time, setTime] = useState(formatToTime(initialDate));

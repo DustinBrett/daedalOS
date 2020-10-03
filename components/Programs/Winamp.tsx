@@ -20,7 +20,7 @@ export const loaderOptions = {
   windowed: false
 };
 
-export const Winamp: React.FC<AppComponent> = ({
+const Winamp: React.FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,

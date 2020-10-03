@@ -4,12 +4,13 @@ import type { DirectoryView } from '@/types/components/System/FileManager/FileMa
 
 import { useState } from 'react';
 import { ClickHandler } from '@/utils/events';
+import Icon from '@/components/System/Icon';
 
 const homeDir = '/';
 
 // TODO: Create DirectyListEntry
 
-export const DirectoryList: React.FC<DirectoryView> = ({
+const DirectoryList: React.FC<DirectoryView> = ({
   entries,
   cwd,
   onDoubleClick
@@ -61,7 +62,7 @@ export const DirectoryList: React.FC<DirectoryView> = ({
           >
             <td className={styles.emphasis} title={name}>
               <figure>
-                <img alt={name} src={icon} draggable={false} />
+                <Icon src={icon} />
                 <figcaption title={name}>{fullName}</figcaption>
               </figure>
             </td>

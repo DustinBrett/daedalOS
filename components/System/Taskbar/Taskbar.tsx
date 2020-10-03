@@ -13,7 +13,7 @@ const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')
 );
 
-export const Taskbar: React.FC = () => {
+const Taskbar: React.FC = () => {
   const { processes, minimize, restore } = useContext(ProcessContext);
   const { session, foreground } = useContext(SessionContext);
 

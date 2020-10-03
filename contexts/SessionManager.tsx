@@ -9,7 +9,7 @@ export const SessionContext = createContext<SessionContextType>(
   initialSessionState
 );
 
-export const SessionProvider: React.FC = ({ children }) => {
+const SessionProvider: React.FC = ({ children }) => {
   const [session, updateSession] = useReducer(
     sessionReducer,
     initialSessionState.session

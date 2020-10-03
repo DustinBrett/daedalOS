@@ -9,8 +9,9 @@ import {
   desktopIconDragSettings,
   desktopIconMotionSettings
 } from '@/utils/motions';
+import Icon from '@/components/System/Icon';
 
-export const DirectoryIcons: React.FC<DirectoryView> = ({
+const DirectoryIcons: React.FC<DirectoryView> = ({
   entries,
   onDoubleClick
 }) => {
@@ -42,7 +43,7 @@ export const DirectoryIcons: React.FC<DirectoryView> = ({
               {...desktopIconMotionSettings}
             >
               <figure>
-                <img alt={name} draggable={false} src={icon} />
+                <Icon src={icon} />
                 <figcaption>{name}</figcaption>
               </figure>
             </motion.li>

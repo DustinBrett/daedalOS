@@ -22,7 +22,7 @@ export const loaderOptions = {
   bgColor: '#000000'
 };
 
-export const Dos: React.FC<AppComponent> = ({
+const Dos: React.FC<AppComponent> = ({
   args = ['-c', 'CLS'],
   file: { url, name = '' } = {},
   maximized

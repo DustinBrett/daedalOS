@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 
-import Metadata from '@/components/Metadata';
+import Metadata from '@/components/System/Metadata';
 import Desktop from '@/components/System/Desktop/Desktop';
 import SessionProvider from '@/contexts/SessionManager';
 import ProcessProvider from '@/contexts/ProcessManager';

@@ -13,7 +13,7 @@ import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 
-export const FileManager: React.FC<DirectoryType> = ({
+const FileManager: React.FC<DirectoryType> = ({
   path: directoryPath,
   render,
   details = false,

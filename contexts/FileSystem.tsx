@@ -8,7 +8,7 @@ import { writableJsonFs } from '@/utils/filesystem';
 
 export const FileContext = createContext<FSModule>({} as FSModule);
 
-export const FileProvider: React.FC = ({ children }) => {
+const FileProvider: React.FC = ({ children }) => {
   const [fs, setFs] = useState<FSModule>({} as FSModule); // TODO: Add BFS Path
 
   useEffect(() => {

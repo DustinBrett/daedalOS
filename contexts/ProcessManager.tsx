@@ -19,7 +19,7 @@ export const ProcessContext = createContext<ProcessContextType>(
   initialProcessState
 );
 
-export const ProcessProvider: React.FC = ({ children }) => {
+const ProcessProvider: React.FC = ({ children }) => {
   const [processes, updateProcesses] = useReducer(
     processReducer,
     initialProcessState.processes

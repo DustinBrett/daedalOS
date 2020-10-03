@@ -1,4 +1,4 @@
-export type TaskbarEntryType = {
+export type TaskbarEntryProps = {
   icon: string;
   id: string;
   name: string;

@@ -1,9 +1,11 @@
 import styles from '@/styles/System/Taskbar/TaskbarEntry.module.scss';
 
-import { SessionContext } from '@/contexts/SessionManager';
-import { TaskbarEntryType } from '@/types/components/System/Taskbar/TaskbarEntry';
+import type { TaskbarEntryProps } from '@/types/components/System/Taskbar/TaskbarEntry';
 
-export const TaskbarEntry: React.FC<TaskbarEntryType> = ({
+import { SessionContext } from '@/contexts/SessionManager';
+import Icon from '@/components/System/Icon';
+
+const TaskbarEntry: React.FC<TaskbarEntryProps> = ({
   icon,
   id,
   name,
@@ -22,7 +24,7 @@ export const TaskbarEntry: React.FC<TaskbarEntryType> = ({
         tabIndex={0}
       >
         <figure>
-          <img alt={name} draggable={false} src={icon} />
+          <Icon src={icon} />
           <figcaption>{name}</figcaption>
         </figure>
       </div>
