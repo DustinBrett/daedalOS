@@ -10,7 +10,7 @@ import { ROOT_DIRECTORY } from '@/utils/constants';
 export const FileContext = createContext<FSModule>({} as FSModule);
 
 const FileProvider: React.FC = ({ children }) => {
-  const [fs, setFs] = useState<FSModule>({} as FSModule); // TODO: Add BFS Path
+  const [fs, setFs] = useState<FSModule>({} as FSModule);
 
   useEffect(() => {
     BrowserFS.install(window);

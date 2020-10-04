@@ -3,8 +3,9 @@
 ## Current Focus
 
 - Windows
-  - Redo cascade logic
-    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+  - Position of 2nd window is effected by 1st and so on
+  - Does startIndex still make sense for motions/taskbar?
+    - Could it have 2 processes with same startIndex?
 
 ## System
 
@@ -36,7 +37,6 @@
   - Update Resume
 - Winamp
   - Positioning and animation issues on load
-  - Not visible when loaded after Explorer & Dos
   - Seek bar visible when minimized and playing
 
 # Post-MVP
