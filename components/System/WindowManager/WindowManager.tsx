@@ -143,7 +143,7 @@ const WindowManager: React.FC = () => {
                     <App {...loadedAppOptions} {...windowOptions} />
                   </Window>
                 ) : (
-                  <App key={id} {...windowOptions} {...loadedAppOptions} />
+                  <App key={id} {...loadedAppOptions} {...windowOptions} />
                 )}
               </motion.div>
             );

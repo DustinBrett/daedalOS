@@ -7,6 +7,7 @@ import ExplorerImage from '@/public/icons/programs/explorer.png';
 import WinampImage from '@/public/icons/programs/winamp.png';
 
 import { basename } from 'path';
+import { memo } from 'react';
 import Img from 'react-optimized-image';
 
 // Q: draggable={false}
@@ -31,4 +32,4 @@ const Icon: React.FC<{ src: string }> = ({ src }) => {
   }
 };
 
-export default Icon;
+export default memo(Icon);

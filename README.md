@@ -36,6 +36,7 @@
   - Update Resume
 - Winamp
   - Positioning and animation issues on load
+  - Not visible when loaded after Explorer & Dos
   - Seek bar visible when minimized and playing
 
 # Post-MVP

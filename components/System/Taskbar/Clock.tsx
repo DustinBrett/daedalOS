@@ -1,6 +1,6 @@
 import styles from '@/styles/System/Taskbar/Clock.module.scss';
 
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   formatToDate,
   formatToShortDateTime,
@@ -55,4 +55,4 @@ const Clock: React.FC = () => {
   );
 };
 
-export default Clock;
+export default memo(Clock);
