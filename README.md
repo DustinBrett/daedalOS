@@ -4,6 +4,7 @@
 
 - Windows
   - Position of 2nd window is effected by 1st and so on
+  - Max width/height padding
   - Does startIndex still make sense for motions/taskbar?
     - Could it have 2 processes with same startIndex?
 
