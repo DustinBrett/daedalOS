@@ -12,8 +12,7 @@ import {
   getFileStat
 } from '@/utils/file';
 import { parseShortcut } from '@/utils/shortcut';
-
-const homeDir = '/';
+import { ROOT_DIRECTORY } from '@/utils/constants';
 
 const getBestIconMatch = (
   icon: string,
@@ -34,7 +33,9 @@ export const getDirectoryEntry = async (
   file: string,
   getStats: boolean
 ): Promise<DirectoryEntry> => {
-  const filePath = `${path}${path === homeDir ? '' : '/'}${file}`;
+  const filePath = `${path}${
+    path === ROOT_DIRECTORY ? '' : ROOT_DIRECTORY
+  }${file}`;
   const ext = extname(file);
   const isDirectory = !ext;
   const stats =

@@ -3,12 +3,8 @@ import styles from '@/styles/System/FileManager/ListView.module.scss';
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
 import { useState } from 'react';
-import { ClickHandler } from '@/utils/events';
-import Icon from '@/components/System/Icon';
-
-const homeDir = '/';
-
-// TODO: Create DirectyListEntry
+import DirectyListEntry from '@/components/System/FileManager/DirectyListEntry';
+import { ROOT_DIRECTORY } from '@/utils/constants';
 
 const DirectoryList: React.FC<DirectoryView> = ({
   entries,
@@ -27,49 +23,28 @@ const DirectoryList: React.FC<DirectoryView> = ({
         </tr>
       </thead>
       <tbody>
-        {cwd !== homeDir && (
-          <tr
-            className={selected === '..' ? styles.selected : ''}
-            onClick={
-              new ClickHandler({
-                doubleClick: (event) => onDoubleClick(event, { path: '..' })
-              }).clickHandler
-            }
-            onFocus={() => setSelected('..')}
-            tabIndex={0}
-          >
-            <td>..</td>
-            <td colSpan={2} />
-          </tr>
+        {cwd !== ROOT_DIRECTORY && (
+          <DirectyListEntry
+            selected={selected}
+            setSelected={setSelected}
+            doubleClick={onDoubleClick({ path: '..' })}
+          />
         )}
-        {entries.map(({ icon, kind, name, path, url, size, fullName }) => (
-          <tr
-            className={selected === path ? styles.selected : ''}
-            key={path}
-            onClick={
-              new ClickHandler({
-                doubleClick: (event) =>
-                  onDoubleClick(event, {
-                    path,
-                    url,
-                    icon,
-                    name
-                  })
-              }).clickHandler
-            }
-            onFocus={() => setSelected(path)}
-            tabIndex={0}
-          >
-            <td className={styles.emphasis} title={name}>
-              <figure>
-                <Icon src={icon} />
-                <figcaption title={name}>{fullName}</figcaption>
-              </figure>
-            </td>
-            <td className={styles.alignRight}>{size}</td>
-            <td>{kind}</td>
-          </tr>
-        ))}
+        {entries.map(({ icon, kind, name, path, url, size, fullName }) => {
+          return (
+            <DirectyListEntry
+              key={path}
+              path={path}
+              icon={icon}
+              kind={kind}
+              size={size}
+              fullName={fullName}
+              selected={selected}
+              setSelected={setSelected}
+              doubleClick={onDoubleClick({ path, url, icon, name })}
+            />
+          );
+        })}
       </tbody>
     </table>
   );

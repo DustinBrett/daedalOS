@@ -28,13 +28,7 @@ const DirectoryIcons: React.FC<DirectoryView> = ({
               dragConstraints={navRef}
               onClick={
                 new ClickHandler({
-                  doubleClick: (event) =>
-                    onDoubleClick(event, {
-                      path,
-                      url,
-                      icon,
-                      name
-                    })
+                  doubleClick: onDoubleClick({ path, url, icon, name })
                 }).clickHandler
               }
               tabIndex={0}

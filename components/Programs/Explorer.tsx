@@ -6,6 +6,7 @@ import { basename } from 'path';
 import FileManager from '@/components/System/FileManager/FileManager';
 import ListView from '@/components/System/FileManager/ListView';
 import { ProcessContext } from '@/contexts/ProcessManager';
+import { ROOT_DIRECTORY } from '@/utils/constants';
 
 export const loaderOptions = {
   width: 300,
@@ -13,7 +14,9 @@ export const loaderOptions = {
   bgColor: '#2b2d2f'
 };
 
-const Explorer: React.FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
+const Explorer: React.FC<AppComponent> = ({
+  file: { url = ROOT_DIRECTORY } = {}
+}) => (
   <ProcessContext.Consumer>
     {({ title }) => (
       <article className={styles.explorer}>
@@ -21,7 +24,7 @@ const Explorer: React.FC<AppComponent> = ({ file: { url = '/' } = {} }) => (
           path={url}
           render={ListView}
           onChange={(cwd: string) => {
-            title('explorer', cwd === '/' ? 'home' : basename(cwd));
+            title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
           }}
           details
         />

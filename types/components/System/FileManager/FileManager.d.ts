@@ -18,9 +18,8 @@ export type DirectoryEntryDoubleClick = {
 export type DirectoryView = {
   entries: DirectoryEntry[];
   onDoubleClick: (
-    event: React.MouseEvent,
     entryData: DirectoryEntryDoubleClick
-  ) => void;
+  ) => (event: React.MouseEvent) => void;
   cwd: string;
 };
 

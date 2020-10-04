@@ -7,6 +7,7 @@ import { isValidUrl } from '@/utils/url';
 import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
+import { ROOT_DIRECTORY } from '@/utils/constants';
 
 const Dos = dynamic(import('@/components/Programs/Dos'));
 const Explorer = dynamic(import('@/components/Programs/Explorer'));
@@ -65,7 +66,7 @@ export const appLoader = (appFile: AppFile): AppLoader | undefined => {
   if (isValidUrl(url)) {
     const { pathname, searchParams } = new URL(url);
 
-    return pathname === '/'
+    return pathname === ROOT_DIRECTORY
       ? appLoaderByName(searchParams.get('app') || '')
       : appLoaderByFileType(appFile, ext || extname(pathname), searchParams);
   }

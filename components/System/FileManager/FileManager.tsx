@@ -32,10 +32,12 @@ const FileManager: React.FC<DirectoryType> = ({
       await getDirectoryEntry(fs, cwd, file.name, details)
     ]);
   });
-  const onDoubleClick = (
-    event: React.MouseEvent<Element>,
-    { path, url, icon = '', name = '' }: DirectoryEntryDoubleClick
-  ) => {
+  const onDoubleClick = ({
+    path,
+    url,
+    icon = '',
+    name = ''
+  }: DirectoryEntryDoubleClick) => (event: React.MouseEvent<Element>) => {
     if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
       cd(path === '..' ? resolve(cwd, '..') : path);
     } else {

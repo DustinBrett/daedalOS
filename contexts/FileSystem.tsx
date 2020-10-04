@@ -5,6 +5,7 @@ import type { FSModule } from 'browserfs/dist/node/core/FS';
 import { createContext, useEffect, useState } from 'react';
 import * as BrowserFS from 'browserfs';
 import { writableJsonFs } from '@/utils/filesystem';
+import { ROOT_DIRECTORY } from '@/utils/constants';
 
 export const FileContext = createContext<FSModule>({} as FSModule);
 
@@ -18,7 +19,7 @@ const FileProvider: React.FC = ({ children }) => {
       {
         fs: 'MountableFileSystem',
         options: {
-          ...writableJsonFs('/', index)
+          ...writableJsonFs(ROOT_DIRECTORY, index)
         }
       },
       () => {
