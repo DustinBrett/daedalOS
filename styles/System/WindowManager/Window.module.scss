@@ -29,11 +29,7 @@ $buttonIconOpacity: 0.975;
     content: '';
 
     border-radius: inherit;
-    background: linear-gradient(
-      to bottom,
-      rgb(125, 125, 125),
-      rgb(85, 85, 85)
-    );
+    background: linear-gradient(to bottom, rgb(125, 125, 125), rgb(85, 85, 85));
   }
 
   &.foreground {

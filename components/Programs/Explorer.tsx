@@ -9,8 +9,8 @@ import { ProcessContext } from '@/contexts/ProcessManager';
 import { ROOT_DIRECTORY } from '@/utils/constants';
 
 export const loaderOptions = {
-  width: 300,
-  height: 255,
+  width: 320,
+  height: 275,
   bgColor: '#2b2d2f'
 };
 

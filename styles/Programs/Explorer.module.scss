@@ -5,13 +5,12 @@
 
   width: 100%;
   height: 100%;
-  // TODO: Hardcoded. 23 is thead
 
   background: repeating-linear-gradient(
-      #2b2d2f,
-      #2b2d2f 20px,
+      #212325,
       #212325 20px,
-      #212325 40px
+      #2b2d2f 20px,
+      #2b2d2f 40px
     )
-    left 0 top calc(#{$titlebarHeight} + 23px) no-repeat fixed;
+    left 0 top 0 no-repeat fixed;
 }
