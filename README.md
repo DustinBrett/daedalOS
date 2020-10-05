@@ -4,6 +4,8 @@
 
 - Windows
   - Position of 2nd window is effected by 1st and so on
+  - Resizing is now fucking with x/y
+  - Fix icon alignment to match OSX, and titlebar height?
   - Max width/height padding
   - Does startIndex still make sense for motions/taskbar?
     - Could it have 2 processes with same startIndex?
