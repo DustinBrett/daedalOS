@@ -4,12 +4,12 @@
 
 - Windows
   - Position of 2nd window is effected by 1st and so on
-  - Resizing is messing with x/y
   - Max width/height padding
   - Does startIndex still make sense for motions/taskbar?
     - Could there be 2 processes with same startIndex?
   - Cascade padding
     - 1st load save state so it can act like 2nd load
+    - previousX/previousY are 0 then use cascade padding
     - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
 
 ## System

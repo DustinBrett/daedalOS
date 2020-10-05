@@ -111,7 +111,9 @@ const WindowManager: React.FC = () => {
                   zIndex:
                     foregroundId === id
                       ? foregroundZindex
-                      : windowOptions.zIndex
+                      : windowOptions.zIndex,
+                  height,
+                  width
                 }}
                 {...windowMotionSettings({
                   initialX: previousX,
