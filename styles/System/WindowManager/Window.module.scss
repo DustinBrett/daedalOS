@@ -12,19 +12,29 @@ $buttonIconOpacity: 0.975;
   letter-spacing: 0.5px;
   pointer-events: all;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    z-index: -1;
-    margin: -1px;
-    border-radius: inherit;
-    background: linear-gradient(to bottom, rgb(125, 125, 125), rgb(85, 85, 85)); // TODO: Match OSX colors
-  }
-
   border-radius: map-get($window, border-radius);
   box-shadow: 0 0 0 1px rgb(80, 80, 80), 0 0 0 2px rgba(0, 0, 0, 0.4),
     0 5px 50px rgba(0, 0, 0, 0.3);
+
+  &:before {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    margin: -1px;
+
+    content: '';
+
+    border-radius: inherit;
+    background: linear-gradient(
+      to bottom,
+      rgb(125, 125, 125),
+      rgb(85, 85, 85)
+    );
+  }
 
   &.foreground {
     box-shadow: 0 0 0 1px rgb(90, 90, 90), 0 0 0 2px rgba(0, 0, 0, 0.6),
@@ -172,7 +182,11 @@ $buttonIconOpacity: 0.975;
 
   &:not(.foreground) {
     &:before {
-      background: linear-gradient(to bottom, rgb(110, 110, 110), rgb(85, 85, 85));
+      background: linear-gradient(
+        to bottom,
+        rgb(110, 110, 110),
+        rgb(85, 85, 85)
+      );
     }
 
     .titlebar {
