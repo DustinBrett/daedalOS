@@ -62,10 +62,6 @@ const WindowManager: React.FC = () => {
             startY,
             startIndex
           }) => {
-            const cascadePadding = {
-              x: Math.floor(window.innerWidth * 0.5 - initialWidth / 2),
-              y: Math.floor(window.innerHeight * 0.45 - initialHeight / 2)
-            };
             const { x: previousX = 0, y: previousY = 0 } = getState({
               id
             });
@@ -90,8 +86,8 @@ const WindowManager: React.FC = () => {
                   id,
                   height,
                   width,
-                  x: !previousX ? cascadePadding.x + x : x,
-                  y: !previousY ? cascadePadding.y + y : y
+                  x,
+                  y
                 });
                 close(id);
                 focusNextVisibleWindow(stackOrder, processes, foreground);
@@ -118,8 +114,8 @@ const WindowManager: React.FC = () => {
                       : windowOptions.zIndex
                 }}
                 {...windowMotionSettings({
-                  initialX: previousX || cascadePadding.x,
-                  initialY: previousY || cascadePadding.y,
+                  initialX: previousX,
+                  initialY: previousY,
                   startX,
                   startY,
                   animation:

@@ -4,11 +4,13 @@
 
 - Windows
   - Position of 2nd window is effected by 1st and so on
-  - Resizing is now fucking with x/y
-  - Fix icon alignment to match OSX, and titlebar height?
+  - Resizing is messing with x/y
   - Max width/height padding
   - Does startIndex still make sense for motions/taskbar?
-    - Could it have 2 processes with same startIndex?
+    - Could there be 2 processes with same startIndex?
+  - Cascade padding
+    - 1st load save state so it can act like 2nd load
+    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
 
 ## System
 
@@ -31,6 +33,8 @@
   - zIndex on drag should be above windows
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
   - Truncation breaks at 3 lines
+- Performance
+  - Safari/Firefox are slow
 
 ## Apps
 
