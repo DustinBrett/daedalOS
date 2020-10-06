@@ -71,8 +71,7 @@ export const windowMotionSettings = ({
         widthOffset +
         TASKBAR_ENTRY_WIDTH * startIndex -
         TASKBAR_ENTRY_WIDTH / 2,
-      y: heightOffset + -(TASKBAR_HEIGHT / 2) + window.innerHeight,
-      position: 'fixed'
+      y: heightOffset + -(TASKBAR_HEIGHT / 2) + window.innerHeight
     }
   };
   const initialExitTransform: TransformProperties = {
@@ -83,12 +82,10 @@ export const windowMotionSettings = ({
 
   return {
     initial: {
-      ...initialExitTransform,
-      position: 'relative'
+      ...initialExitTransform
     },
     exit: {
-      ...initialExitTransform,
-      position: 'relative'
+      ...initialExitTransform
     },
     animate: animationVariants[animation],
     transition: {

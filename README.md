@@ -3,48 +3,40 @@
 ## Current Focus
 
 - Windows
-  - Position of 2nd window is effected by 1st and so on
-  - Max width/height padding
-  - Does startIndex still make sense for motions/taskbar?
-    - Could there be 2 processes with same startIndex?
-  - Cascade padding
-    - 1st load save state so it can act like 2nd load
-    - previousX/previousY are 0 then use cascade padding
-    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+  - Minimize a maximized window causes issue
+- Icons
+  - zIndex on drag should be above windows
+  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
+  - Save icon positions
 
 ## System
 
 - Start Menu
 - Desktop
-  - Use grid to fix landscape alignment
-  - Save icon positions
 - File Manager
   - Scale open/close from center of icon image
-  - Switch to react-table for resizable columns
+  - Switch to react-table for resizable/sortable/scrollable columns
   - Sort contents by name/date
   - Truncate all text (line height never changes)
-  - Background still not lining up
-  - File sizes
-    - Cache file sizes during `genfs`
-    - File size sometimes returns `-1`
-    - File size not correct for new files
+  - Cache file sizes during `genfs` and on uploads
   - Complete UI/Toolbar/Breadcrumb Bar
-- Icons
-  - zIndex on drag should be above windows
-  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
-  - Truncation breaks at 3 lines
-- Performance
-  - Safari/Firefox are slow
+- Windows
+  - Max width/height padding
+  - Cascade padding
+    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
 
 ## Apps
 
-- ODF Viewer (https://webodf.org/)
-  - Convert blog posts into `.odf` files
-- PDF Viewer
-  - Update Resume
 - Winamp
   - Positioning and animation issues on load
   - Seek bar visible when minimized and playing
+  - Issue with focus when clicking via taskbar and on mobile
+- Document Viewer (https://webodf.org/)
+- PDF Viewer
+- JS Paint (https://github.com/1j01/jspaint)
+- Minesweeper
+  - https://github.com/ziebelje/minesweeper
+  - https://github.com/ShizukuIchi/minesweeper
 
 # Post-MVP
 
@@ -53,23 +45,10 @@
 - Improve titlebar text to truncate better
 - Save Session
 - URL Routing via opening `.url`
+- Icon text truncation breaks at 3 lines
 
 ## Apps
 
-- DOS
-  - Virtual keyboard on mobile
-- Winamp
-  - Issue with focus when clicking via taskbar and on mobile
-- JS Paint (https://github.com/1j01/jspaint)
-- Minesweeper
-  - https://github.com/ziebelje/minesweeper
-  - https://github.com/ShizukuIchi/minesweeper
-- Assistant (https://www.smore.com/clippy-js)
-- IRC Client (https://thelounge.chat/)
-  - https://github.com/gummipunkt/thelounge_theme_mircalike
-- Code Editor (https://codemirror.net/, https://ace.c9.io/)
-- REPL (https://github.com/replit/ReplitClient.js)
-- Remote Desktop (https://github.com/novnc/noVNC)
-- Video Converter (https://github.com/Etwas-Builders/modfy.video)
+- DOS virtual keyboard on mobile
 - Video Player (https://github.com/videojs/video.js)
-- Photo Viewer/Editor (https://github.com/imgly/pesdk-html5-build/tree/master/pesdk-v5)
+- Photo Viewer
