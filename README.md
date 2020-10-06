@@ -4,6 +4,8 @@
 
 - Windows
   - Minimize a maximized window causes issue
+  - Stay foreground until close/minimized or a window can pop in front of it
+  - Animate out/in from icon on list view
 - Icons
   - zIndex on drag should be above windows
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
