@@ -4,10 +4,9 @@ import type Webamp from 'webamp';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WebampStore } from '@/types/components/Programs/winamp';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { appendElement, focusOnDrag } from '@/utils/elements';
-import { ProcessContext } from '@/contexts/ProcessManager';
 import { onTouchEventsOnly } from '@/utils/events';
 import {
   closeEqualizer,
@@ -24,12 +23,12 @@ const Winamp: React.FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
+  updatePosition,
   zIndex,
   minimized,
   file: { url = '', name = '' } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null);
-  const { position } = useContext(ProcessContext);
   const getWebamp = () => document.getElementById('webamp') as HTMLElement;
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
     const { default: WebampConstructor } = await import('webamp');
@@ -71,7 +70,7 @@ const Winamp: React.FC<AppComponent> = ({
       onDrag={onTouchEventsOnly}
       onFocus={onFocus}
       onDragStart={focusOnDrag}
-      onDragStop={position('winamp')}
+      onDragStop={updatePosition}
       style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
       <article ref={elementRef} />

@@ -82,6 +82,7 @@ const WindowManager: React.FC = () => {
               onMaximize: () =>
                 maximized ? restore(id, 'maximized') : maximize(id),
               onClose: () => {
+                // Q: Why are x, y 0's?
                 saveState({
                   id,
                   height,
