@@ -27,6 +27,8 @@
 
 ## Apps
 
+- DOS
+  - Visual glitch on un-minimizes
 - Winamp
   - Positioning and animation issues on load
   - Seek bar visible when minimized and playing
@@ -46,6 +48,7 @@
 - Save Session
 - URL Routing via opening `.url`
 - Icon text truncation breaks at 3 lines
+- Improve color cycle (https://krazydad.com/tutorials/makecolors.php)
 
 ## Apps
 
