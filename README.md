@@ -4,7 +4,8 @@
 
 - Windows
   - Minimize a maximized window causes issue
-  - Stay foreground until close/minimized or a window can pop in front of it
+  - Delay foregrounding next window until close/minimize is done animating
+  - Minimize on mobile is not animating to taskbar
   - Animate out/in from icon on list view
 - Icons
   - zIndex on drag should be above windows
@@ -20,7 +21,8 @@
   - Switch to react-table for resizable/sortable/scrollable columns
   - Sort contents by name/date
   - Truncate all text (line height never changes)
-  - Cache file sizes during `genfs` and on uploads
+  - File size sometimes -1 (favicon/uploaded)
+  - Favicon list entry was 20px, should always be 22px
   - Complete UI/Toolbar/Breadcrumb Bar
 - Windows
   - Max width/height padding
