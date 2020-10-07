@@ -1,4 +1,4 @@
-import index from 'index.json';
+import index from 'public_index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 

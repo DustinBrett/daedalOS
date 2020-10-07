@@ -1,8 +1,6 @@
 import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
 import type { DirectoryEntry } from '@/types/components/System/FileManager/FileManager';
 import type { Shortcut } from '@/types/utils/shortcut';
-import type { StatsProto } from '@/types/utils/filemanager';
 
 import { extname } from 'path';
 import {
@@ -13,6 +11,7 @@ import {
 } from '@/utils/file';
 import { parseShortcut } from '@/utils/shortcut';
 import { ROOT_DIRECTORY } from '@/utils/constants';
+import { FileStat } from '@/types/utils/filesystem';
 
 const getBestIconMatch = (
   icon: string,
@@ -39,9 +38,7 @@ export const getDirectoryEntry = async (
   const ext = extname(file);
   const isDirectory = !ext;
   const stats =
-    !isDirectory && getStats
-      ? await getFileStat(fs, filePath)
-      : ({} as Stats & StatsProto);
+    !isDirectory && getStats ? getFileStat(filePath) : ({} as FileStat);
   const isShortcut = !isDirectory && file.includes('.url');
   const { url, icon } = isShortcut
     ? await parseShortcut(fs, filePath)
@@ -53,7 +50,7 @@ export const getDirectoryEntry = async (
     path: filePath,
     url: url && decodeURIComponent(url),
     icon: getBestIconMatch(icon, isDirectory, ext, filePath),
-    size: isDirectory ? '--' : getFormattedSize(stats.size),
+    size: isDirectory ? '--' : getFormattedSize(stats.size || 0),
     kind: isDirectory ? 'Folder' : getFileKind(ext)
   };
 };

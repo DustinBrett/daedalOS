@@ -14,15 +14,14 @@
 
 ## System
 
-- Start Menu
-- Desktop
 - File Manager
   - Scale open/close from center of icon image
   - Switch to react-table for resizable/sortable/scrollable columns
   - Sort contents by name/date
   - Truncate all text (line height never changes)
-  - File size sometimes -1 (favicon/uploaded)
+  - File stat solution needed for uploaded files
   - Favicon list entry was 20px, should always be 22px
+  - Bring back modified time
   - Complete UI/Toolbar/Breadcrumb Bar
 - Windows
   - Max width/height padding
@@ -48,6 +47,8 @@
 
 ## System
 
+- Start Menu
+- Right Click Menu's
 - Improve titlebar text to truncate better
 - Save Session
 - URL Routing via opening `.url`

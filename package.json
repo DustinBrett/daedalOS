@@ -15,7 +15,7 @@
     "prettier": "prettier --write .",
     "csscomb": "csscomb styles",
     "check": "npm run eslint -- --fix && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
-    "genfs": "cd public && make_xhrfs_index ../index.json"
+    "genfs": "cd public && make_xhrfs_index ../public_index.json && node ../scripts/cache_size_and_date.js ../public_index.json ../public_stats.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.31",

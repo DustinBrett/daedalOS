@@ -1,6 +1,6 @@
-import type { Stats } from 'browserfs/dist/node/generic/emscripten_fs';
-import type { FSModule } from 'browserfs/dist/node/core/FS';
-import type { StatsProto } from '@/types/utils/filemanager';
+import { FileStat, ListingStat } from '@/types/utils/filesystem';
+
+import publicStats from 'public_stats.json';
 
 const bytesInKB = 1024;
 const fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -50,11 +50,8 @@ export const getFileKind = (ext: string): string => {
   }
 };
 
-export const getFileStat = (
-  fs: FSModule,
-  path: string
-): Promise<Stats & StatsProto> =>
-  new Promise((resolve) => fs.stat(path, (_error, stats) => resolve(stats)));
+export const getFileStat = (path: string): FileStat =>
+  (publicStats as ListingStat)[path] || {};
 
 export const getFormattedSize = (size: number): string => {
   if (size === -1) return 'Unknown';
