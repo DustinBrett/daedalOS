@@ -4,14 +4,14 @@
   font-family: 'SegoeUI';
 
   font-display: fallback;
-  src: url('/fonts/SegoeUI.woff2') format('woff2');
+  src: url('../public/fonts/SegoeUI.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'SF-Regular';
 
   font-display: fallback;
-  src: url('/fonts/SF-Regular.woff2') format('woff2');
+  src: url('../public/fonts/SF-Regular.woff2') format('woff2');
 }
 
 * {
