@@ -1,9 +1,7 @@
 import type { ComponentType } from 'react';
+import type { ProcessConstructor } from '@/types/utils/process';
+import type { ProcessState } from '@/types/utils/processmanager';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
-import type {
-  ProcessConstructor,
-  ProcessState
-} from '@/types/utils/ProcessManager';
 
 export type AppFile = {
   icon: string;

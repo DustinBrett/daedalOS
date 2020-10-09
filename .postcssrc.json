@@ -8,11 +8,11 @@
         "autoprefixer": {
           "flexbox": "no-2009"
         },
-        "stage": 3,
         "features": {
           "custom-properties": false
         },
-        "parser": "safe"
+        "parser": "safe",
+        "stage": 3
       }
     ]
   ]

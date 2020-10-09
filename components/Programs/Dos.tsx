@@ -61,7 +61,7 @@ const Dos: React.FC<AppComponent> = ({
     };
   }, []);
 
-  require('js-dos');
+  require('js-dos'); /* eslint global-require: off */
 
   return (
     <div className={styles.dos} style={maximizedStyle}>

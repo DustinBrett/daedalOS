@@ -5,18 +5,21 @@
     "node": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
     "airbnb",
     "airbnb/hooks",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:react/recommended",
     "prettier",
+    "prettier/@typescript-eslint",
     "prettier/react"
   ],
   "globals": {
     "NodeJS": "readonly",
     "React": "readonly"
   },
+  "ignorePatterns": ["*.config.js"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -25,20 +28,26 @@
     "ecmaVersion": 11,
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint",
+    "react-hooks",
+    "react"
+  ],
   "rules": {
     "comma-dangle": "off",
-    "global-require": "off",
-    "import/no-unresolved": "off",
+    "import/no-cycle": "off",
     "import/prefer-default-export": "off",
-    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/click-events-have-key-events": "warn",
     "lines-between-class-members": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-filename-extension":  [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off"
   },
   "settings": {
+    "import/resolver": {
+      "typescript": {}
+    },
     "react": {
       "version": "detect"
     }

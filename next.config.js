@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-var-requires: off */
 const withOptimizedImages = require('next-optimized-images');
 
 module.exports = withOptimizedImages({
