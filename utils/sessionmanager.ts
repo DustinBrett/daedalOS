@@ -1,7 +1,7 @@
 import type {
-  SessionState,
   SessionAction,
-  SessionProcessState
+  SessionProcessState,
+  SessionState
 } from '@/types/contexts/SessionManager';
 
 const saveState = (

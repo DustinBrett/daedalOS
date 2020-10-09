@@ -3,7 +3,6 @@ import type { AppFile, AppLoader, AppLoaders } from '@/types/utils/programs';
 import dynamic from 'next/dynamic';
 import { extname } from 'path';
 import { isValidUrl } from '@/utils/url';
-
 import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';

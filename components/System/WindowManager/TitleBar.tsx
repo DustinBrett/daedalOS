@@ -2,9 +2,9 @@ import styles from '@/styles/System/WindowManager/Window.module.scss';
 
 import type { TitleBarProps } from '@/types/components/System/WindowManager/TitleBar';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Icon from '@/components/System/Icon';
+import { faMinus, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TitleBar: React.FC<TitleBarProps> = ({
   icon,

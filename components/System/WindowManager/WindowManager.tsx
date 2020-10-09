@@ -1,21 +1,21 @@
 import styles from '@/styles/System/WindowManager/WindowManager.module.scss';
 
-import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   baseZindex,
+  foregroundZindex,
   windowsZindexLevel,
-  zindexLevelSize,
-  foregroundZindex
+  zindexLevelSize
 } from '@/utils/constants';
-import { ProcessContext } from '@/contexts/ProcessManager';
-import { SessionContext } from '@/contexts/SessionManager';
-import { windowMotionSettings } from '@/utils/motions';
 import {
   focusNextVisibleWindow,
   getMaxDimensions
 } from '@/utils/windowmanager';
+import { ProcessContext } from '@/contexts/ProcessManager';
+import { SessionContext } from '@/contexts/SessionManager';
+import { useContext } from 'react';
+import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 

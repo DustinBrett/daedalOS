@@ -2,9 +2,9 @@ import styles from '@/styles/System/FileManager/ListView.module.scss';
 
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
-import { useState } from 'react';
 import DirectyListEntry from '@/components/System/FileManager/DirectyListEntry';
 import { ROOT_DIRECTORY } from '@/utils/constants';
+import { useState } from 'react';
 
 const DirectoryList: React.FC<DirectoryView> = ({
   entries,

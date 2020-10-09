@@ -2,8 +2,8 @@ import styles from '@/styles/System/Desktop/Desktop.module.scss';
 
 import type { WallpaperEffect } from '@/types/components/System/Desktop/Wallpaper';
 
-import { useEffect, useRef, useState } from 'react';
 import { renderWallpaperEffect } from '@/components/System/Desktop/Wallpaper';
+import { useEffect, useRef, useState } from 'react';
 
 const Desktop: React.FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement>(null);

@@ -1,12 +1,12 @@
 import styles from '@/styles/System/Taskbar/Taskbar.module.scss';
 
+import Clock from '@/components/System/Taskbar/Clock';
 import dynamic from 'next/dynamic';
 import { AnimatePresence } from 'framer-motion';
-import { useContext } from 'react';
+import { cycleWindowState } from '@/utils/taskbar';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
-import { cycleWindowState } from '@/utils/taskbar';
-import Clock from '@/components/System/Taskbar/Clock';
+import { useContext } from 'react';
 
 const TaskbarEntry = dynamic(
   import('@/components/System/Taskbar/TaskbarEntry')

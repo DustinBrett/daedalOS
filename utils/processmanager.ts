@@ -1,15 +1,15 @@
+import type { AppFile } from '@/types/utils/programs';
 import type { Dispatch } from 'react';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type {
-  Processes,
   ProcessAction,
-  ProcessState,
-  ProcessStartPosition
+  Processes,
+  ProcessStartPosition,
+  ProcessState
 } from '@/types/utils/processmanager';
-import type { AppFile } from '@/types/utils/programs';
 
-import { basename, extname } from 'path';
 import { appLoader } from '@/utils/programs';
+import { basename, extname } from 'path';
 import { getFileIcon } from '@/utils/file';
 import { getProcessId, Process } from '@/utils/process';
 

@@ -2,8 +2,8 @@ import styles from '@/styles/System/FileManager/ListView.module.scss';
 
 import type { DirectyListEntryProps } from '@/types/components/System/FileManager/DirectyListEntry';
 
-import { ClickHandler } from '@/utils/events';
 import Icon from '@/components/System/Icon';
+import { ClickHandler } from '@/utils/events';
 
 const DirectyListEntry: React.FC<DirectyListEntryProps> = ({
   path = '..',

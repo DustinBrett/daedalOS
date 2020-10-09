@@ -2,9 +2,9 @@ import styles from '@/styles/Programs/Explorer.module.scss';
 
 import type { AppComponent } from '@/types/utils/programs';
 
-import { basename } from 'path';
 import FileManager from '@/components/System/FileManager/FileManager';
 import ListView from '@/components/System/FileManager/ListView';
+import { basename } from 'path';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { ROOT_DIRECTORY } from '@/utils/constants';
 

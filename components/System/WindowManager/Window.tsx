@@ -2,16 +2,16 @@ import styles from '@/styles/System/WindowManager/Window.module.scss';
 
 import type { AppComponent } from '@/types/utils/programs';
 
-import { useContext, useEffect, useRef, useState } from 'react';
-import { Rnd } from 'react-rnd';
 import TitleBar from '@/components/System/WindowManager/TitleBar';
 import { focusOnDrag, focusResizableElementRef } from '@/utils/elements';
-import { SessionContext } from '@/contexts/SessionManager';
-import { resizeHandleClasses } from '@/utils/window';
 import {
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   MILLISECONDS_IN_SECOND
 } from '@/utils/constants';
+import { resizeHandleClasses } from '@/utils/window';
+import { Rnd } from 'react-rnd';
+import { SessionContext } from '@/contexts/SessionManager';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 const Window: React.FC<AppComponent> = ({
   children,

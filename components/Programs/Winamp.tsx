@@ -4,16 +4,16 @@ import type Webamp from 'webamp';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WebampStore } from '@/types/components/Programs/winamp';
 
-import { useEffect, useRef } from 'react';
-import { Rnd } from 'react-rnd';
 import { appendElement, focusOnDrag } from '@/utils/elements';
-import { onTouchEventsOnly } from '@/utils/events';
 import {
   closeEqualizer,
-  touchControls,
   loadTrackOrSkin,
+  touchControls,
   webampOptions
 } from '@/utils/winamp';
+import { onTouchEventsOnly } from '@/utils/events';
+import { Rnd } from 'react-rnd';
+import { useEffect, useRef } from 'react';
 
 export const loaderOptions = {
   windowed: false

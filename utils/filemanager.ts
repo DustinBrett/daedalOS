@@ -1,17 +1,17 @@
-import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { DirectoryEntry } from '@/types/components/System/FileManager/FileManager';
+import type { FSModule } from 'browserfs/dist/node/core/FS';
 import type { Shortcut } from '@/types/utils/shortcut';
 
 import { extname } from 'path';
+import { FileStat } from '@/types/utils/filesystem';
 import {
-  getFileKind,
   getFileIcon,
-  getFormattedSize,
-  getFileStat
+  getFileKind,
+  getFileStat,
+  getFormattedSize
 } from '@/utils/file';
 import { parseShortcut } from '@/utils/shortcut';
 import { ROOT_DIRECTORY } from '@/utils/constants';
-import { FileStat } from '@/types/utils/filesystem';
 
 const getBestIconMatch = (
   icon: string,

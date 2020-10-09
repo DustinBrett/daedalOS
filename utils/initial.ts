@@ -1,5 +1,5 @@
-import type { SessionProcessState } from '@/types/contexts/SessionManager';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
+import type { SessionProcessState } from '@/types/contexts/SessionManager';
 
 export const initialSessionState = {
   session: {

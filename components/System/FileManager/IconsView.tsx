@@ -2,14 +2,14 @@ import styles from '@/styles/System/FileManager/IconsView.module.scss';
 
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
-import { useRef } from 'react';
+import Icon from '@/components/System/Icon';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ClickHandler } from '@/utils/events';
 import {
   desktopIconDragSettings,
   desktopIconMotionSettings
 } from '@/utils/motions';
-import Icon from '@/components/System/Icon';
+import { useRef } from 'react';
 
 const DirectoryIcons: React.FC<DirectoryView> = ({
   entries,

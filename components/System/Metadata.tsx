@@ -1,8 +1,8 @@
-import { name, description } from 'package.json';
+import { description, name } from 'package.json';
 
 import Head from 'next/head';
-import { useEffect } from 'react';
 import { lockDocumentTitle } from '@/utils/elements';
+import { useEffect } from 'react';
 
 const Metadata: React.FC = () => {
   useEffect(lockDocumentTitle, []);

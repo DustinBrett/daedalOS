@@ -1,6 +1,5 @@
 import type { ProcessContextType } from '@/types/contexts/ProcessManager';
 
-import { createContext, useReducer } from 'react';
 import {
   close,
   load,
@@ -8,11 +7,12 @@ import {
   minimize,
   open,
   position,
+  processReducer,
   restore,
   size,
-  title,
-  processReducer
+  title
 } from '@/utils/processmanager';
+import { createContext, useReducer } from 'react';
 import { initialProcessState } from '@/utils/initial';
 
 export const ProcessContext = createContext<ProcessContextType>(

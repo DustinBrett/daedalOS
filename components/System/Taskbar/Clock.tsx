@@ -1,6 +1,5 @@
 import styles from '@/styles/System/Taskbar/Clock.module.scss';
 
-import { memo, useEffect, useState } from 'react';
 import {
   formatToDate,
   formatToShortDateTime,
@@ -8,6 +7,7 @@ import {
   isMidnight,
   newDate
 } from '@/utils/dates';
+import { memo, useEffect, useState } from 'react';
 import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
 
 const millisecondsTillNextSecond = () =>

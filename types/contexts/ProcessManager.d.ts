@@ -1,10 +1,10 @@
-import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
+import type { AppFile } from '@/types/utils/programs';
 import type {
   Processes,
-  ProcessState,
-  ProcessStartPosition
+  ProcessStartPosition,
+  ProcessState
 } from '@/types/utils/processmanager';
-import type { AppFile } from '@/types/utils/programs';
+import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 export type ProcessContextType = {
   processes: Processes;

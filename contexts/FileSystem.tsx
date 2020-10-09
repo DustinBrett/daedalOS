@@ -2,10 +2,10 @@ import index from 'public_index.json';
 
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 
-import { createContext, useEffect, useState } from 'react';
 import * as BrowserFS from 'browserfs';
-import { writableJsonFs } from '@/utils/filesystem';
+import { createContext, useEffect, useState } from 'react';
 import { ROOT_DIRECTORY } from '@/utils/constants';
+import { writableJsonFs } from '@/utils/filesystem';
 
 export const FileContext = createContext<FSModule>({} as FSModule);
 

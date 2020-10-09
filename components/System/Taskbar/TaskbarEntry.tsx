@@ -2,9 +2,9 @@ import styles from '@/styles/System/Taskbar/TaskbarEntry.module.scss';
 
 import type { TaskbarEntryProps } from '@/types/components/System/Taskbar/TaskbarEntry';
 
+import Icon from '@/components/System/Icon';
 import { motion } from 'framer-motion';
 import { SessionContext } from '@/contexts/SessionManager';
-import Icon from '@/components/System/Icon';
 import { taskbarEntriesMotionSettings } from '@/utils/motions';
 
 const TaskbarEntry: React.FC<TaskbarEntryProps> = ({

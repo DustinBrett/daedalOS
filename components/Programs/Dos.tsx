@@ -1,14 +1,14 @@
 import styles from '@/styles/Programs/Dos.module.scss';
 
-import type { DosMainFn, DosRuntime } from 'js-dos';
-import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
 import type { AppComponent } from '@/types/utils/programs';
+import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
+import type { DosMainFn, DosRuntime } from 'js-dos';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
-import { useEffect, useRef } from 'react';
-import { getLockedAspectRatioDimensions } from '@/utils/dos';
-import { TITLEBAR_HEIGHT } from '@/utils/constants';
 import { focusClosestFocusableElementFromRef } from '@/utils/elements';
+import { getLockedAspectRatioDimensions } from '@/utils/dos';
+import { useEffect, useRef } from 'react';
+import { TITLEBAR_HEIGHT } from '@/utils/constants';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',

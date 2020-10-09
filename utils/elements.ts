@@ -1,5 +1,5 @@
-import type { RefObject } from 'react';
 import type { DraggableData, Rnd, RndDragEvent } from 'react-rnd';
+import type { RefObject } from 'react';
 
 export const appendElement = (
   parentElement: HTMLElement,

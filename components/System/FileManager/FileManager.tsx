@@ -1,17 +1,17 @@
 import type {
   DirectoryEntry,
-  DirectoryType,
-  DirectoryEntryDoubleClick
+  DirectoryEntryDoubleClick,
+  DirectoryType
 } from '@/types/components/System/FileManager/FileManager';
 
 import { extname, resolve } from 'path';
-import { useContext, useEffect, useState } from 'react';
+import { FileContext } from '@/contexts/FileSystem';
 import { getDirectory, getDirectoryEntry } from '@/utils/filemanager';
 import { getTargetCenterPosition } from '@/utils/elements';
-import { useFileDrop } from '@/utils/events';
-import { FileContext } from '@/contexts/FileSystem';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
+import { useContext, useEffect, useState } from 'react';
+import { useFileDrop } from '@/utils/events';
 
 const FileManager: React.FC<DirectoryType> = ({
   path: directoryPath,
