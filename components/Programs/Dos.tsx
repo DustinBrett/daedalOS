@@ -12,7 +12,8 @@ import { focusClosestFocusableElementFromRef } from '@/utils/elements';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
-  onprogress: () => {} /* eslint @typescript-eslint/no-empty-function: off */
+  /* eslint @typescript-eslint/no-empty-function: off */
+  onprogress: () => {}
 };
 
 export const loaderOptions = {
@@ -61,7 +62,8 @@ const Dos: React.FC<AppComponent> = ({
     };
   }, []);
 
-  require('js-dos'); /* eslint global-require: off */
+  /* eslint global-require: off */
+  require('js-dos');
 
   return (
     <div className={styles.dos} style={maximizedStyle}>

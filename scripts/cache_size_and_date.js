@@ -30,6 +30,8 @@ const { argv: [, , fileArg, saveFileArg] = [] } = process || {};
 fs.writeFileSync(
   saveFileArg || fileArg,
   JSON.stringify(
-    parseDirectory(JSON.parse(fs.readFileSync(fileArg || 'index.json')))
+    parseDirectory(
+      JSON.parse(fs.readFileSync(fileArg || 'index.json').toString())
+    )
   )
 );
