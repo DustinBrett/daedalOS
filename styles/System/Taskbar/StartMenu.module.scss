@@ -1,21 +1,23 @@
 @import '@/styles/maps';
-@import '@/styles/mixins';
+@import '@/styles/variables';
 
-.clock {
-  @include bottomRight;
-
-  font-size: map-get($clock, font-size);
+.start {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: map-get($clock, width);
+  width: map-get($startmenu, width);
   height: map-get($taskbar, height);
 
-  letter-spacing: 0;
+  svg {
+    font-size: 18px;
 
-  color: rgba(map-get($clock, text-color), map-get($clock, text-opacity));
+    color: white;
+  }
 
   &:hover {
     background-color: hsla(
@@ -24,5 +26,9 @@
       map-get($taskbar, hover-lightness),
       map-get($taskbar, opacity)
     );
+
+    svg {
+      color: $highlightColor;
+    }
   }
 }

@@ -1,6 +1,8 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
+$startMenuTotalWidth: map-get($startmenu, width) - map-get($startmenu, padding);
+
 .taskbar {
   position: fixed;
   z-index: map-get($zIndex, taskbar);
@@ -22,10 +24,12 @@
   .entries {
     @include bottomLeft;
 
+    left: $startMenuTotalWidth;
+
     display: flex;
     flex: 0 1 map-get($taskbar, entry-width);
 
-    width: calc(100% - #{map-get($clock, width)});
+    width: calc(100% - #{map-get($clock, width) - $startMenuTotalWidth});
     height: map-get($taskbar, height);
 
     li {

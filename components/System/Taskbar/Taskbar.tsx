@@ -2,6 +2,7 @@ import styles from '@/styles/System/Taskbar/Taskbar.module.scss';
 
 import Clock from '@/components/System/Taskbar/Clock';
 import dynamic from 'next/dynamic';
+import StartMenu from '@/components/System/Taskbar/StartMenu';
 import { AnimatePresence } from 'framer-motion';
 import { cycleWindowState } from '@/utils/taskbar';
 import { ProcessContext } from '@/contexts/ProcessManager';
@@ -18,6 +19,7 @@ const Taskbar: React.FC = () => {
 
   return (
     <nav className={styles.taskbar}>
+      <StartMenu />
       <ol className={styles.entries}>
         <AnimatePresence>
           {processes.map(({ id, icon, minimized, name }) => (
