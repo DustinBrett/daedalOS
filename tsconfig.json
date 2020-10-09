@@ -20,9 +20,9 @@
       "@/utils/*": ["utils/*"]
     },
     "resolveJsonModule": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strict": true,
-    "target": "es5",
+    "target": "es5"
   },
   "exclude": ["node_modules"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]

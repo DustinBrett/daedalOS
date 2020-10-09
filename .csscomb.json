@@ -1,11 +1,11 @@
 {
-  "exclude": [".git/**", "node_modules/**"],
   "always-semicolon": true,
   "block-indent": 2,
   "color-case": "lower",
   "color-shorthand": true,
   "element-case": "lower",
   "eof-newline": true,
+  "exclude": [".git/**", "node_modules/**"],
   "leading-zero": true,
   "quotes": "single",
   "remove-empty-rulesets": true,

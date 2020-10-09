@@ -28,11 +28,7 @@
     "ecmaVersion": 11,
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react-hooks",
-    "react"
-  ],
+  "plugins": ["@typescript-eslint", "react-hooks", "react"],
   "rules": {
     "comma-dangle": "off",
     "import/no-cycle": "off",
@@ -40,7 +36,7 @@
     "jsx-a11y/click-events-have-key-events": "warn",
     "lines-between-class-members": "off",
     "react-hooks/exhaustive-deps": "warn",
-    "react/jsx-filename-extension":  [1, { "extensions": [".tsx"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off"
   },
