@@ -1,7 +1,7 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
-$startMenuTotalWidth: map-get($startmenu, width) - map-get($startmenu, padding);
+$startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
 
 .taskbar {
   position: fixed;
