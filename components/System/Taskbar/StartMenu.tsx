@@ -2,6 +2,7 @@ import styles from '@/styles/System/Taskbar/StartMenu.module.scss';
 
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 
 // TODO:
 // - The menu can be <ol>.
@@ -17,11 +18,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // - Highlight color for icon, text color and left border for buttons, 4px
 // - Title on hover is "Start"
 // - 1px border on right side of button menu
+// - Start menu is also transprent but is more blurred, maybe more dark slightly
 
-const StartMenu: React.FC = () => (
-  <nav className={styles.start} title="Start">
-    <FontAwesomeIcon icon={faWindows} />
-  </nav>
-);
+const StartMenu: React.FC = () => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <nav className={styles.start} title="Start">
+      <ol className={styles.menu} style={{ display: showMenu ? 'block' : 'none' }} />
+      <FontAwesomeIcon icon={faWindows} onClick={() => setShowMenu(!showMenu)} />
+    </nav>
+  );
+}
 
 export default StartMenu;

@@ -32,3 +32,22 @@
     }
   }
 }
+
+.menu {
+  position: absolute;
+  bottom: map-get($taskbar, height);
+  left: 0;
+
+  width: 275px;
+  height: 300px;
+
+  background-color: hsla(
+    0,
+    0%,
+    map-get($taskbar, base-lightness),
+    60%
+  );
+
+  // TODO: Not working with taskbar's backdrop-filter
+  // backdrop-filter: blur(map-get($taskbar, blur));
+}

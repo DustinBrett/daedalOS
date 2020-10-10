@@ -29,7 +29,7 @@ $startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
     display: flex;
     flex: 0 1 map-get($taskbar, entry-width);
 
-    width: calc(100% - #{map-get($clock, width) - $startMenuTotalWidth});
+    width: calc(100% - #{map-get($clock, width)} - #{$startMenuTotalWidth});
     height: map-get($taskbar, height);
 
     li {
