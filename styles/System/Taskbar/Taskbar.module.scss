@@ -36,6 +36,7 @@ $startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
       display: grid;
 
       padding-right: map-get($taskbar, entry-padding);
+      width: map-get($taskbar, entry-width);
 
       &:last-child {
         padding-right: unset;
