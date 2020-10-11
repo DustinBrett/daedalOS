@@ -10,17 +10,15 @@ import { getLockedAspectRatioDimensions } from '@/utils/dos';
 import { useEffect, useRef } from 'react';
 import { TITLEBAR_HEIGHT } from '@/utils/constants';
 
+const defaultDimensions = {
+  width: 640,
+  height: 400 + TITLEBAR_HEIGHT
+};
+
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
   /* eslint @typescript-eslint/no-empty-function: off */
   onprogress: () => {}
-};
-
-export const loaderOptions = {
-  lockAspectRatio: true,
-  width: 640,
-  height: 400 + TITLEBAR_HEIGHT,
-  bgColor: '#000000'
 };
 
 const Dos: React.FC<AppComponent> = ({
@@ -46,7 +44,10 @@ const Dos: React.FC<AppComponent> = ({
     }
   };
   const maximizedStyle = maximized
-    ? getLockedAspectRatioDimensions(loaderOptions.width, loaderOptions.height)
+    ? getLockedAspectRatioDimensions(
+        defaultDimensions.width,
+        defaultDimensions.height
+      )
     : {};
 
   useEffect(() => {
@@ -77,3 +78,9 @@ const Dos: React.FC<AppComponent> = ({
 };
 
 export default Dos;
+
+export const loaderOptions = {
+  lockAspectRatio: true,
+  bgColor: '#000000',
+  ...defaultDimensions
+};

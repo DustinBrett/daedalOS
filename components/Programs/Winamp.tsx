@@ -15,10 +15,6 @@ import { onTouchEventsOnly } from '@/utils/events';
 import { Rnd } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 
-export const loaderOptions = {
-  windowed: false
-};
-
 const Winamp: React.FC<AppComponent> = ({
   onClose,
   onMinimize,
@@ -79,3 +75,7 @@ const Winamp: React.FC<AppComponent> = ({
 };
 
 export default Winamp;
+
+export const loaderOptions = {
+  windowed: false
+};

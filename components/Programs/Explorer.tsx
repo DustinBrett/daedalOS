@@ -8,12 +8,6 @@ import { basename } from 'path';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { ROOT_DIRECTORY } from '@/utils/constants';
 
-export const loaderOptions = {
-  width: 320,
-  height: 275,
-  bgColor: '#2b2d2f'
-};
-
 const Explorer: React.FC<AppComponent> = ({
   file: { url = ROOT_DIRECTORY } = {}
 }) => (
@@ -34,3 +28,9 @@ const Explorer: React.FC<AppComponent> = ({
 );
 
 export default Explorer;
+
+export const loaderOptions = {
+  width: 320,
+  height: 275,
+  bgColor: '#2b2d2f'
+};
