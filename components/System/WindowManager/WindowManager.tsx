@@ -76,7 +76,8 @@ const WindowManager: React.FC = () => {
             );
             const windowOptions = {
               onMinimize: () => {
-                if (maximized) restore(id, 'maximized');
+                // TODO: Allow restoring maximized. Fix max restore.
+                // if (maximized) restore(id, 'maximized');
                 minimize(id);
                 focusNextVisibleWindow(stackOrder, processes, foreground);
               },

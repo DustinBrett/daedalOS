@@ -61,6 +61,15 @@
   - https://github.com/ziebelje/minesweeper
   - https://github.com/ShizukuIchi/minesweeper
 
+## Refactoring
+
+- Move all types defined in .tsx/.ts into .d.ts files
+  - Use "Props" when proper
+- Alphabetize all constants, variables, props, functions, etc
+- Group exports together at the bottom
+- Try styled components to see if its better
+- Extract all magic numbers to variables
+
 # Post-MVP
 
 ## System
