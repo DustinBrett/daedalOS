@@ -2,15 +2,28 @@
 
 ## Current Focus
 
+- Taskbar
+  - Clicking taskbar after focusing window is not minimizing
+  - Minimize is not going to proper taskbar entry position
 - Windows
-  - Minimize a maximized window causes issue
-  - Delay foregrounding next window until close/minimize is done animating
-  - Minimize on mobile is not animating to taskbar
-  - Animate out/in from icon on list view
+  - Minimize when maximized isnt animating to taskbar entry
+  - Animate open/close from icon on list view
 - Icons
   - zIndex on drag should be above windows
-  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
-  - Save icon positions
+- Start Menu
+  - <ol> needs to be to the right, buttons on left
+  - 0 height by default
+  - animate to 100% height
+  - On click the button bg color gets lighter
+  - Stays lighter until menu goes away
+  - hover on start menu has a circle gradient from cursor for 15-20px
+  - hover lights up borders of buttons and bg of items
+  - START | All Apps | Dustin Brett | Documents | Power
+  - Highlight color for icon, text color and left border (4px) for buttons
+  - 1px border on right side of button menu
+  - Start menu is also transprent but is more blurred and more dark slightly
+  - Add BG blur backdrop-filter
+  - Unfocus/hide start menu when clicking outside start menu
 
 ## System
 
@@ -20,13 +33,18 @@
   - Sort contents by name/date
   - Truncate all text (line height never changes)
   - File stat solution needed for uploaded files
-  - Favicon list entry was 20px, should always be 22px
-  - Bring back modified time
-  - Complete UI/Toolbar/Breadcrumb Bar
+  - Favicon list entry heights are not consistent
+  - Add modified time
+  - Toolbar & Breadcrumb Bar
+- Icons
+  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
+  - Save icon positions
 - Windows
   - Max width/height padding
   - Cascade padding
     - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+  - Delay foregrounding next window until close/minimize is done animating
+  - Hover on button not nav, like osx (make nav padding tight)
 
 ## Apps
 
@@ -47,7 +65,6 @@
 
 ## System
 
-- Start Menu
 - Right Click Menu's
 - Improve titlebar text to truncate better
 - Save Session
