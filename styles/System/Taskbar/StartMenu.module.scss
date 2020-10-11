@@ -48,6 +48,5 @@
     60%
   );
 
-  // TODO: Not working with taskbar's backdrop-filter
-  // backdrop-filter: blur(map-get($taskbar, blur));
+  // TODO: Menu backdrop-filter not working with taskbar's backdrop-filter
 }
