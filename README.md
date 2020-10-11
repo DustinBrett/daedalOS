@@ -1,49 +1,38 @@
 # MVP
 
-## Current Focus
+## Top Priority
 
 - Taskbar
-  - Clicking taskbar after focusing window is not minimizing
   - Minimize is not going to proper taskbar entry position
+    - When maximized isnt animating to taskbar entry
 - Windows
-  - Minimize when maximized isnt animating to taskbar entry
-  - Animate open/close from icon on list view
-- Icons
-  - zIndex on drag should be above windows
+  - Cascade padding with max width/height padding
+    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+  - Turn off transparency, use that color, then get backdrop-filter blur on window
 - Start Menu
-  - <ol> needs to be to the right, buttons on left
-  - 0 height by default
-  - animate to 100% height
-  - On click the button bg color gets lighter
-  - Stays lighter until menu goes away
-  - hover on start menu has a circle gradient from cursor for 15-20px
-  - hover lights up borders of buttons and bg of items
-  - START | All Apps | Dustin Brett | Documents | Power
-  - Highlight color for icon, text color and left border (4px) for buttons
-  - 1px border on right side of button menu
-  - Start menu is also transprent but is more blurred and more dark slightly
-  - Add BG blur backdrop-filter
-  - Unfocus/hide start menu when clicking outside start menu
+  - Complete UI/UX
 
 ## System
 
 - File Manager
-  - Scale open/close from center of icon image
   - Switch to react-table for resizable/sortable/scrollable columns
   - Sort contents by name/date
-  - Truncate all text (line height never changes)
+  - Line heights never change (Truncate all text)
   - File stat solution needed for uploaded files
-  - Favicon list entry heights are not consistent
   - Add modified time
-  - Toolbar & Breadcrumb Bar
+  - Toolbar
+  - Breadcrumb Bar
+- Taskbar
+  - Clicking taskbar after focusing window is not minimizing
+  - Add padding to left of clock if needed
 - Icons
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
   - Save icon positions
+  - zIndex on drag should be above windows
 - Windows
-  - Max width/height padding
-  - Cascade padding
-    - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+  - Animate open/close from icon on list view
   - Delay foregrounding next window until close/minimize is done animating
+    - Add foreground zindex to those animations
   - Hover on button not nav, like osx (make nav padding tight)
 
 ## Apps
