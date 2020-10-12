@@ -4,7 +4,6 @@ import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 import type {
   ProcessAction,
   Processes,
-  ProcessStartPosition,
   ProcessState
 } from '@/types/utils/processmanager';
 
@@ -16,12 +15,8 @@ import { getProcessId, Process } from '@/utils/process';
 const addProcess = (
   process: Process,
   processes: Processes,
-  previousState: ProcessState = {},
-  startPosition: ProcessStartPosition = {}
-): Processes => [
-  ...processes,
-  { ...process, ...previousState, ...startPosition }
-];
+  previousState: ProcessState = {}
+): Processes => [...processes, { ...process, ...previousState }];
 
 const removeProcess = (id: string, processes: Processes): Processes =>
   processes.filter((process) => process.id !== id);
@@ -37,11 +32,10 @@ const updateProcess = (
 
 export const processReducer = (
   processes: Processes,
-  { id, process, updates, previousState, startPosition }: ProcessAction
+  { id, process, updates, previousState }: ProcessAction
 ): Processes => {
   if (id && updates) return updateProcess(id, updates, processes);
-  if (process)
-    return addProcess(process, processes, previousState, startPosition);
+  if (process) return addProcess(process, processes, previousState);
   if (id) return removeProcess(id, processes);
   return processes;
 };
@@ -64,7 +58,7 @@ export const open = (
 ) => (
   appFile: AppFile,
   previousState: ProcessState,
-  startPosition: ProcessStartPosition
+  launchElement: EventTarget
 ): string => {
   const { icon, name } = appFile;
   const existingProcessId = getProcessId(name);
@@ -79,10 +73,11 @@ export const open = (
       loader,
       icon,
       name,
+      launchElement,
       ...loader.loaderOptions
     });
 
-    updateProcesses({ process, previousState, startPosition });
+    updateProcesses({ process, previousState });
 
     return process.id;
   }
@@ -96,7 +91,7 @@ export const load = (
 ) => (
   file: File,
   previousState: ProcessState,
-  startPosition: ProcessStartPosition
+  launchElement: EventTarget
 ): void => {
   const fileReader = new FileReader();
 
@@ -114,7 +109,7 @@ export const load = (
         url
       },
       previousState,
-      startPosition
+      launchElement
     );
   });
 

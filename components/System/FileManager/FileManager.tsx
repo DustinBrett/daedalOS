@@ -7,7 +7,6 @@ import type {
 import { extname, resolve } from 'path';
 import { FileContext } from '@/contexts/FileSystem';
 import { getDirectory, getDirectoryEntry } from '@/utils/filemanager';
-import { getTargetCenterPosition } from '@/utils/elements';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { useContext, useEffect, useState } from 'react';
@@ -24,8 +23,8 @@ const FileManager: React.FC<DirectoryType> = ({
   const fs = useContext(FileContext);
   const { load, open, restore } = useContext(ProcessContext);
   const { foreground, getState } = useContext(SessionContext);
-  const fileDropHandler = useFileDrop(async ({ pageX, pageY }, file) => {
-    load(file, getState({ name: file.name }), { startX: pageX, startY: pageY });
+  const fileDropHandler = useFileDrop(async (dragEvent, file) => {
+    load(file, getState({ name: file.name }), dragEvent.target);
     fs.writeFile(`${cwd}/${file.name}`, file);
     setEntries([
       ...entries,
@@ -41,16 +40,10 @@ const FileManager: React.FC<DirectoryType> = ({
     if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
       cd(path === '..' ? resolve(cwd, '..') : path);
     } else {
-      const { x: startX, y: startY } = getTargetCenterPosition(
-        event.currentTarget
-      );
       const processsId = open(
         { url: url || path || '', icon, name },
         getState({ name }),
-        {
-          startX,
-          startY
-        }
+        event.currentTarget
       );
       restore(processsId, 'minimized');
       foreground(processsId);

@@ -2,8 +2,6 @@
 
 ## Top Priority
 
-- Icon
-  - Use same refCallback design to replace startX/startY
 - Windows
   - Cascade padding with max width/height padding
     - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
@@ -27,7 +25,7 @@
   - Add padding to left of clock if needed
 - Icons
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
-  - Save icon positions
+  - Save icon positions (Stop using translate if possible)
   - zIndex on drag should be above windows
 - Windows
   - Animate open/close from icon on list view

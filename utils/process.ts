@@ -7,6 +7,7 @@ export class Process {
   loader;
   icon;
   name;
+  launchElement;
 
   bgColor;
   height;
@@ -20,14 +21,13 @@ export class Process {
 
   x;
   y;
-  startX;
-  startY;
   taskbarElement;
 
   constructor({
     loader,
     icon,
     name,
+    launchElement,
 
     bgColor = '#fff',
     height = 0,
@@ -37,13 +37,12 @@ export class Process {
     windowed = true,
     x = 0,
     y = 0,
-    startX = 0,
-    startY = 0,
     taskbarElement
   }: ProcessConstructor) {
     this.loader = loader;
     this.icon = icon;
     this.name = name;
+    this.launchElement = launchElement as HTMLElement;
     this.bgColor = bgColor;
     this.height = height;
     this.id = id;
@@ -52,8 +51,6 @@ export class Process {
     this.windowed = windowed;
     this.x = x;
     this.y = y;
-    this.startX = startX;
-    this.startY = startY;
     this.taskbarElement = taskbarElement;
   }
 }

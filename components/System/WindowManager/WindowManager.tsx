@@ -60,9 +60,8 @@ const WindowManager: React.FC = () => {
             width: initialWidth,
             x,
             y,
-            startX,
-            startY,
-            taskbarElement
+            taskbarElement,
+            launchElement
           }) => {
             const { x: previousX = 0, y: previousY = 0 } = getState({
               id
@@ -122,8 +121,6 @@ const WindowManager: React.FC = () => {
                 {...windowMotionSettings({
                   initialX: previousX,
                   initialY: previousY,
-                  startX,
-                  startY,
                   animation:
                     (minimized && 'minimized') ||
                     (maximized && 'maximized') ||
@@ -132,7 +129,8 @@ const WindowManager: React.FC = () => {
                   width,
                   x,
                   y,
-                  taskbarElement
+                  taskbarElement,
+                  launchElement
                 })}
               >
                 {windowed ? (

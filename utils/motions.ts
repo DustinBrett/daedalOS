@@ -5,9 +5,10 @@ import type {
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
+import { getTargetCenterPosition } from '@/utils/elements';
 import {
-  TASKBAR_HEIGHT,
-  MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
+  MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
+  TASKBAR_HEIGHT
 } from '@/utils/constants';
 
 export const desktopIconDragSettings = {
@@ -37,22 +38,24 @@ export const taskbarEntriesMotionSettings: MotionProps = {
 export const windowMotionSettings = ({
   initialX = 0,
   initialY = 0,
-  startX = 0,
-  startY = 0,
   animation = 'start',
   height,
   width,
   x,
   y,
-  taskbarElement
+  taskbarElement,
+  launchElement
 }: WindowMotionSettings): MotionProps => {
   const widthOffset = -Math.floor(width / 2);
   const heightOffset = -Math.floor(height / 2);
   const {
-    width: taskbarElementWidth = 0,
     x: taskbarElementX = 0,
     y: taskbarElementY = 0
-  } = taskbarElement?.getBoundingClientRect() || {};
+  } = getTargetCenterPosition(taskbarElement);
+  const {
+    x: launchElementX = 0,
+    y: launchElementY = 0
+  } = getTargetCenterPosition(launchElement);
   // TODO: Only calc `animation`, not all of them
   const animationVariants: {
     [key: string]: AnimationProps & TargetAndTransition;
@@ -72,14 +75,14 @@ export const windowMotionSettings = ({
     },
     minimized: {
       scale: 0,
-      x: widthOffset + taskbarElementX + (taskbarElementWidth / 2),
+      x: widthOffset + taskbarElementX,
       y: heightOffset + taskbarElementY
     }
   };
   const initialExitTransform: TransformProperties = {
     scale: 0,
-    x: widthOffset + startX,
-    y: heightOffset + startY
+    x: widthOffset + launchElementX,
+    y: heightOffset + launchElementY
   };
 
   return {

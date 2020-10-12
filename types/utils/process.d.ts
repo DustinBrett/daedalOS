@@ -4,6 +4,7 @@ export type ProcessConstructor = {
   loader: AppLoader;
   icon: string;
   name: string;
+  launchElement: EventTarget;
 
   bgColor?: string;
   height?: number;
@@ -13,7 +14,5 @@ export type ProcessConstructor = {
   windowed?: boolean;
   x?: number;
   y?: number;
-  startX?: number;
-  startY?: number;
   taskbarElement?: HTMLDivElement;
 };

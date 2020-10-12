@@ -1,9 +1,5 @@
 import type { AppFile } from '@/types/utils/programs';
-import type {
-  Processes,
-  ProcessStartPosition,
-  ProcessState
-} from '@/types/utils/processmanager';
+import type { Processes, ProcessState } from '@/types/utils/processmanager';
 import type { RndDragCallback, RndResizeCallback } from 'react-rnd';
 
 export type ProcessContextType = {
@@ -12,14 +8,14 @@ export type ProcessContextType = {
   load: (
     file: File,
     previousState: ProcessState,
-    startPosition: ProcessStartPosition
+    launchElement: EventTarget
   ) => void;
   maximize: (id: string) => void;
   minimize: (id: string) => void;
   open: (
     appFile: AppFile,
     previousState: ProcessState,
-    startPosition: ProcessStartPosition
+    launchElement: EventTarget
   ) => string;
   position: (id: string) => RndDragCallback;
   restore: (id: string, key: 'minimized' | 'maximized') => void;
