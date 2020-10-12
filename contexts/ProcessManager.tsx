@@ -10,6 +10,7 @@ import {
   processReducer,
   restore,
   size,
+  taskbarElement,
   title
 } from '@/utils/processmanager';
 import { createContext, useReducer } from 'react';
@@ -37,6 +38,7 @@ const ProcessProvider: React.FC = ({ children }) => {
         position: position(updateProcesses),
         restore: restore(updateProcesses),
         size: size(updateProcesses),
+        taskbarElement: taskbarElement(updateProcesses),
         title: title(updateProcesses)
       }}
     >

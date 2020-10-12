@@ -6,7 +6,6 @@ import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
 import {
-  TASKBAR_ENTRY_WIDTH,
   TASKBAR_HEIGHT,
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
 } from '@/utils/constants';
@@ -41,14 +40,20 @@ export const windowMotionSettings = ({
   startX = 0,
   startY = 0,
   animation = 'start',
-  startIndex = 0,
   height,
   width,
   x,
-  y
+  y,
+  taskbarElement
 }: WindowMotionSettings): MotionProps => {
   const widthOffset = -Math.floor(width / 2);
   const heightOffset = -Math.floor(height / 2);
+  const {
+    width: taskbarElementWidth = 0,
+    x: taskbarElementX = 0,
+    y: taskbarElementY = 0
+  } = taskbarElement?.getBoundingClientRect() || {};
+  // TODO: Only calc `animation`, not all of them
   const animationVariants: {
     [key: string]: AnimationProps & TargetAndTransition;
   } = {
@@ -67,11 +72,8 @@ export const windowMotionSettings = ({
     },
     minimized: {
       scale: 0,
-      x:
-        widthOffset +
-        TASKBAR_ENTRY_WIDTH * startIndex -
-        TASKBAR_ENTRY_WIDTH / 2,
-      y: heightOffset + -(TASKBAR_HEIGHT / 2) + window.innerHeight
+      x: widthOffset + taskbarElementX + (taskbarElementWidth / 2),
+      y: heightOffset + taskbarElementY
     }
   };
   const initialExitTransform: TransformProperties = {

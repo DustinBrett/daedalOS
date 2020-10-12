@@ -8,7 +8,6 @@ export const taskbarZindexLevel = 3;
 export const foregroundZindex =
   baseZindex + windowsZindexLevel * zindexLevelSize + zindexLevelSize / 2;
 
-export const TASKBAR_ENTRY_WIDTH = 160;
 export const TASKBAR_HEIGHT = 30;
 export const TITLEBAR_HEIGHT = 22;
 export const MAXIMIZE_ANIMATION_SPEED_IN_SECONDS = 0.2;

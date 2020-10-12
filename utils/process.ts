@@ -22,7 +22,7 @@ export class Process {
   y;
   startX;
   startY;
-  startIndex;
+  taskbarElement;
 
   constructor({
     loader,
@@ -39,7 +39,7 @@ export class Process {
     y = 0,
     startX = 0,
     startY = 0,
-    startIndex = -1
+    taskbarElement
   }: ProcessConstructor) {
     this.loader = loader;
     this.icon = icon;
@@ -54,6 +54,6 @@ export class Process {
     this.y = y;
     this.startX = startX;
     this.startY = startY;
-    this.startIndex = startIndex;
+    this.taskbarElement = taskbarElement;
   }
 }

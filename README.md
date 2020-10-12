@@ -2,12 +2,12 @@
 
 ## Top Priority
 
-- Taskbar
-  - Minimize is not going to proper taskbar entry position
-    - When maximized isnt animating to taskbar entry
+- Icon
+  - Use same refCallback design to replace startX/startY
 - Windows
   - Cascade padding with max width/height padding
     - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
+    - Get absolute x/y and not relative to start point (then offsets will be easier)
   - Turn off transparency, use that color, then get backdrop-filter blur on window
 - Start Menu
   - Complete UI/UX

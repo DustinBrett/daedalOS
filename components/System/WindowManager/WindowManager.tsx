@@ -19,6 +19,8 @@ import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
+// TODO: I need to memo some of this stuff
+
 const WindowManager: React.FC = () => {
   const {
     foreground,
@@ -60,7 +62,7 @@ const WindowManager: React.FC = () => {
             y,
             startX,
             startY,
-            startIndex
+            taskbarElement
           }) => {
             const { x: previousX = 0, y: previousY = 0 } = getState({
               id
@@ -126,11 +128,11 @@ const WindowManager: React.FC = () => {
                     (minimized && 'minimized') ||
                     (maximized && 'maximized') ||
                     'start',
-                  startIndex,
                   height,
                   width,
                   x,
-                  y
+                  y,
+                  taskbarElement
                 })}
               >
                 {windowed ? (

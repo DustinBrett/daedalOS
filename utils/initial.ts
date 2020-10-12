@@ -28,5 +28,6 @@ export const initialProcessState = {
   position: (): RndDragCallback => () => false,
   restore: (): void => undefined,
   size: (): RndResizeCallback => () => false,
+  taskbarElement: (): void => undefined,
   title: (): void => undefined
 };

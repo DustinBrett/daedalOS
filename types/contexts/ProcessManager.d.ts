@@ -24,5 +24,6 @@ export type ProcessContextType = {
   position: (id: string) => RndDragCallback;
   restore: (id: string, key: 'minimized' | 'maximized') => void;
   size: (id: string) => RndResizeCallback;
+  taskbarElement: (id: string, element: HTMLDivElement) => void;
   title: (id: string, name: string) => void;
 };

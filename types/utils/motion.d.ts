@@ -4,9 +4,9 @@ export type WindowMotionSettings = {
   startX: number;
   startY: number;
   animation: string;
-  startIndex: number;
   height: number;
   width: number;
   x: number;
   y: number;
+  taskbarElement?: HTMLDivElement;
 };

@@ -79,7 +79,6 @@ export const open = (
       loader,
       icon,
       name,
-      startIndex: processes.length + 1,
       ...loader.loaderOptions
     });
 
@@ -145,6 +144,13 @@ export const size = (updateProcesses: Dispatch<ProcessAction>) => (
   _delta,
   { x, y }
 ): void => updateProcesses({ id, updates: { height, width, x, y } });
+
+export const taskbarElement = (updateProcesses: Dispatch<ProcessAction>) => (
+  id: string,
+  element: HTMLDivElement
+): void => {
+  updateProcesses({ updates: { taskbarElement: element }, id });
+};
 
 export const title = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
