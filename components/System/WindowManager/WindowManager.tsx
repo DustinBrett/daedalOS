@@ -96,7 +96,11 @@ const WindowManager: React.FC = () => {
                 focusNextVisibleWindow(stackOrder, processes, foreground);
               },
               onFocus: () => foreground(id),
-              onBlur: () => foreground(''),
+              onBlur: (event: React.FocusEvent) => {
+                if (event.relatedTarget !== taskbarElement) {
+                  foreground('');
+                }
+              },
               updatePosition: position(id),
               zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
               maximized,
