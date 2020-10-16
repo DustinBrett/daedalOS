@@ -14,23 +14,23 @@ $textColor: rgb(225, 225, 225);
 
   color: rgba(255, 255, 255, 0.5);
   border: none;
-  border-top: 1px solid rgb(19, 19, 19);
+  border-top: 1px solid rgb(0, 0, 0);
 
   .emphasis {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.825);
   }
 
   td,
   th {
-    line-height: 20px;
+    line-height: 19px;
 
-    height: 20px;
-    min-height: 20px;
-    max-height: 20px;
+    height: 19px;
+    min-height: 19px;
+    max-height: 19px;
   }
 
   thead {
-    background: rgba(45, 46, 47);
+    background: rgba(45, 45, 45);
     tr {
       th {
         font-size: 10.5px;
@@ -54,7 +54,7 @@ $textColor: rgb(225, 225, 225);
           content: '';
 
           border-top: 1px solid rgb(81, 81, 86);
-          background-color: rgb(32, 32, 35);
+          background-color: rgb(30, 30, 30);
         }
       }
     }
@@ -63,10 +63,10 @@ $textColor: rgb(225, 225, 225);
   tbody {
     tr {
       &:nth-child(even) {
-        background: rgba(33, 35, 37);
+        background: rgb(30, 30, 30);
       }
       &:nth-child(odd) {
-        background: rgb(43, 45, 47);
+        background: rgb(41, 41, 41);
       }
 
       td {
@@ -74,11 +74,9 @@ $textColor: rgb(225, 225, 225);
 
         figure {
           display: flex;
+          align-items: center;
 
-          img {
-            position: relative;
-            top: 3px;
-
+          img, picture {
             width: 16px;
             height: 16px;
             margin-right: 4px;
@@ -95,7 +93,7 @@ $textColor: rgb(225, 225, 225);
 
 .selected {
   color: rgba(255, 255, 255, 0.7);
-  background-color: rgb(0, 88, 208) !important; // !forground = rgb(70, 70, 70)
+  background-color: rgb(0, 88, 208) !important;
 
   .emphasis {
     color: rgba(255, 255, 255, 1);

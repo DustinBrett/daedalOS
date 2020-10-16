@@ -17,7 +17,7 @@ const DirectyListEntry: React.FC<DirectyListEntryProps> = ({
   doubleClick
 }) => (
   <tr
-    className={selected === path ? styles.selected : ''}
+    className={selected === path ? `${styles.selected} selected` : ''}
     onClick={new ClickHandler({ doubleClick }).clickHandler}
     onFocus={() => setSelected(path)}
     tabIndex={0}

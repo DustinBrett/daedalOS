@@ -7,10 +7,10 @@
   height: 100%;
 
   background: repeating-linear-gradient(
-      #212325,
-      #212325 20px,
-      #2b2d2f 20px,
-      #2b2d2f 40px
+    rgb(30, 30, 30),
+    rgb(30, 30, 30) 19px,
+    rgb(41, 41, 41) 19px,
+    rgb(41, 41, 41) 38px
     )
-    left 0 top 0 no-repeat fixed;
+    left 0 top 25px no-repeat fixed;
 }
