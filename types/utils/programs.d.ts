@@ -21,7 +21,7 @@ export type AppWindow = {
   onMaximize: () => void;
   onMinimize: () => void;
   onFocus: () => void;
-  onBlur: () => void;
+  onBlur: (event: React.FocusEvent) => void;
   updatePosition: RndDragCallback;
   updateSize?: RndResizeCallback;
 };
