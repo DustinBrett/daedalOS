@@ -6,7 +6,6 @@
   - Cascade padding with max width/height padding
     - https://docs.microsoft.com/en-ca/windows/win32/uxguide/win-window-mgt#window-location
     - Get absolute x/y and not relative to start point (then offsets will be easier)
-  - Turn off transparency, use that color, then get backdrop-filter blur on window
 - Start Menu
   - Complete UI/UX
 
@@ -15,11 +14,9 @@
 - File Manager
   - Switch to react-table for resizable/sortable/scrollable columns
   - Sort contents by name/date
-  - Line heights never change (Truncate all text)
   - File stat solution needed for uploaded files
   - Add modified time
-  - Toolbar
-  - Breadcrumb Bar
+  - Open folders in new windows
 - Taskbar
   - Clicking taskbar after focusing window is not minimizing
   - Add padding to left of clock if needed
