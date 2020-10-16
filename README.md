@@ -18,7 +18,6 @@
   - Add modified time
   - Open folders in new windows
 - Taskbar
-  - Clicking taskbar after focusing window is not minimizing
   - Add padding to left of clock if needed
 - Icons
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
