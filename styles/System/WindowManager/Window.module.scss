@@ -29,7 +29,11 @@ $buttonIconOpacity: 0.975;
     content: '';
 
     border-radius: inherit;
-    background: linear-gradient(to bottom, rgba(134, 134, 134, 0.85), rgba(84, 84, 84, 0.7));
+    background: linear-gradient(
+      to bottom,
+      rgba(134, 134, 134, 0.85),
+      rgba(84, 84, 84, 0.7)
+    );
   }
 
   &.foreground {
@@ -61,11 +65,7 @@ $buttonIconOpacity: 0.975;
     color: map-get($window, title-bar-text-color);
     border-radius: map-get($window, border-radius)
       map-get($window, border-radius) 0 0;
-    background: linear-gradient(
-      0deg,
-      rgb(54, 54, 54),
-      rgb(65, 65, 65)
-    );
+    background: linear-gradient(0deg, rgb(54, 54, 54), rgb(65, 65, 65));
 
     h1 {
       width: 100%;
@@ -178,7 +178,11 @@ $buttonIconOpacity: 0.975;
 
   &:not(.foreground) {
     &:before {
-      background: linear-gradient(to bottom, rgba(117, 117, 117, 0.85), rgba(80, 80, 80, 0.7));
+      background: linear-gradient(
+        to bottom,
+        rgba(117, 117, 117, 0.85),
+        rgba(80, 80, 80, 0.7)
+      );
     }
 
     .titlebar {
@@ -193,7 +197,7 @@ $buttonIconOpacity: 0.975;
     }
 
     tbody {
-      tr[class~=selected] {
+      tr[class~='selected'] {
         background-color: rgb(70, 70, 70) !important;
       }
     }
