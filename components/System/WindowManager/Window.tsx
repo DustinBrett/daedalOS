@@ -57,7 +57,7 @@ const Window: React.FC<AppComponent> = ({
     <Rnd
       ref={windowRef}
       enableUserSelectHack={false}
-      className={`${styles.window} ${maximized ? styles.maximized : ''} ${
+      className={`${styles.window} ${maximizeWindow ? styles.maximized : ''} ${
         foregroundId === id ? styles.foreground : ''
       }`}
       dragHandleClassName="handle"
@@ -75,8 +75,8 @@ const Window: React.FC<AppComponent> = ({
       onDragStart={focusOnDrag}
       onDragStop={updatePosition}
       onResizeStop={updateSize}
-      enableResizing={!maximized}
-      disableDragging={maximized}
+      enableResizing={!maximizeWindow}
+      disableDragging={maximizeWindow}
       lockAspectRatio={lockAspectRatio}
       style={{ zIndex }}
     >
