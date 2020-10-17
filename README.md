@@ -25,6 +25,7 @@
   - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
   - Save icon positions (Stop using translate if possible)
   - zIndex on drag should be above windows
+  - Image elements do not have explicit width and height
 - Windows
   - Animate open/close from icon on list view
   - Delay foregrounding next window until close/minimize is done animating
