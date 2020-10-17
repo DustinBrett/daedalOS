@@ -7,25 +7,26 @@ import ListView from '@/components/System/FileManager/ListView';
 import { basename } from 'path';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { ROOT_DIRECTORY } from '@/utils/constants';
+import { useContext } from 'react';
 
 const Explorer: React.FC<AppComponent> = ({
   file: { url = ROOT_DIRECTORY } = {}
-}) => (
-  <ProcessContext.Consumer>
-    {({ title }) => (
-      <article className={styles.explorer}>
-        <FileManager
-          path={url}
-          render={ListView}
-          onChange={(cwd: string) => {
-            title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
-          }}
-          details
-        />
-      </article>
-    )}
-  </ProcessContext.Consumer>
-);
+}) => {
+  const { title } = useContext(ProcessContext);
+
+  return (
+    <article className={styles.explorer}>
+      <FileManager
+        path={url}
+        render={ListView}
+        onChange={(cwd: string) => {
+          title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
+        }}
+        details
+      />
+    </article>
+  );
+}
 
 export default Explorer;
 

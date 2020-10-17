@@ -17,6 +17,8 @@
   - File stat solution needed for uploaded files
   - Add modified time
   - Open folders in new windows
+  - Clicking into directory messes with foregroundId
+    - Changing id is likely the issue
 - Taskbar
   - Add padding to left of clock if needed
 - Icons
