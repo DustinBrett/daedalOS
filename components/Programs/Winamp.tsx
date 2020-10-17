@@ -54,7 +54,7 @@ const Winamp: React.FC<AppComponent> = ({
     return () => {
       try {
         webamp.dispose();
-      } finally {
+      } catch (exception) {
         /* eslint no-empty: off */
       }
     };
