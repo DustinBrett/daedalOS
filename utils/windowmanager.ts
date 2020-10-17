@@ -32,6 +32,7 @@ export const getMaxDimensions = (
   return { height, width };
 };
 
+// TODO: Find a way to not need processes or stackOrder (Maybe index in the DOM?)
 export const focusNextVisibleWindow = (
   stackOrder: string[],
   processes: Processes,

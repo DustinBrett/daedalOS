@@ -23,6 +23,9 @@ const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
 const windowZindex = baseZindex + windowsZindexLevel * zindexLevelSize;
 
+// TODO: Stop so many re-renders on stackOrder & foregroundId changes
+// TODO: Focus next window without the need for processes and stackOrder
+
 const ProcessWindow: React.FC<Process> = ({
   loader: {
     loader: App,
@@ -110,6 +113,9 @@ const ProcessWindow: React.FC<Process> = ({
     height,
     width
   };
+  const updateSize = useCallback((event, dir, ref, delta, pos) => size(id)(event, dir, ref, delta, pos), [
+    id
+  ]);
 
   return (
     <motion.article
@@ -139,7 +145,7 @@ const ProcessWindow: React.FC<Process> = ({
           name={name}
           bgColor={bgColor}
           lockAspectRatio={lockAspectRatio}
-          updateSize={size(id)}
+          updateSize={updateSize}
           {...windowOptions}
         >
           <App {...loadedAppOptions} {...windowOptions} />
