@@ -16,22 +16,25 @@ import { useState } from 'react';
 // - Highlight color for icon, text color and left border (4px) for buttons
 // - 1px border on right side of button menu
 // - Start menu is also transprent but is more blurred and more dark slightly
-// - Add BG blur backdrop-filter
 // - Unfocus/hide start menu when clicking outside start menu
 
 const StartMenu: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <nav className={styles.start} title="Start">
+    <nav>
       <ol
         className={styles.menu}
         style={{ display: showMenu ? 'block' : 'none' }}
       />
-      <FontAwesomeIcon
-        icon={faWindows}
+      <button
+        className={styles.start}
+        type="button"
+        title="Start"
         onClick={() => setShowMenu(!showMenu)}
-      />
+      >
+        <FontAwesomeIcon icon={faWindows} />
+      </button>
     </nav>
   );
 };

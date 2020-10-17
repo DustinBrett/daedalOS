@@ -1,8 +1,6 @@
-import type { SessionState } from '@/types/contexts/SessionManager';
-
 export type WindowStateCycler = {
+  foregroundId: string;
   id: string;
-  session: SessionState;
   minimized: boolean;
   foreground: (id: string) => void;
   minimize: (id: string) => void;

@@ -39,7 +39,7 @@ const WindowManager: React.FC = () => {
   } = useContext(ProcessContext);
 
   return (
-    <div className={styles.windows}>
+    <article className={styles.windows}>
       <AnimatePresence>
         {processes.map(
           ({
@@ -111,7 +111,7 @@ const WindowManager: React.FC = () => {
             };
 
             return (
-              <motion.div
+              <motion.article
                 key={id}
                 className={styles.animatedWindows}
                 style={{
@@ -151,12 +151,12 @@ const WindowManager: React.FC = () => {
                 ) : (
                   <App key={id} {...loadedAppOptions} {...windowOptions} />
                 )}
-              </motion.div>
+              </motion.article>
             );
           }
         )}
       </AnimatePresence>
-    </div>
+    </article>
   );
 };
 

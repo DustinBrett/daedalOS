@@ -9,7 +9,12 @@
   height: map-get($taskbar, height);
   margin: 0 4px;
 
-  border-bottom: $thickLine solid $highlightColor;
+  text-align: left;
+
+  border-width: 0 0 $thickLine 0;
+  border-bottom-style: solid;
+  border-bottom-color: $highlightColor;
+  background-color: transparent;
 
   &:hover {
     margin: 0;
@@ -24,6 +29,7 @@
   }
 
   figure {
+    font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
     font-size: map-get($taskbarEntry, font-size);
 
     display: flex;

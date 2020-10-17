@@ -3,6 +3,7 @@ import styles from '@/styles/System/Taskbar/TaskbarEntry.module.scss';
 import type { TaskbarEntryProps } from '@/types/components/System/Taskbar/TaskbarEntry';
 
 import Icon from '@/components/System/Icon';
+import { cycleWindowState } from '@/utils/taskbar';
 import { motion } from 'framer-motion';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
@@ -12,26 +13,39 @@ import { useCallback, useContext } from 'react';
 const TaskbarEntry: React.FC<TaskbarEntryProps> = ({
   icon,
   id,
-  name,
-  onBlur,
-  onClick
+  minimized,
+  name
 }) => {
   const {
+    foreground,
     session: { foregroundId }
   } = useContext(SessionContext);
-  const { taskbarElement } = useContext(ProcessContext);
+  const { minimize, restore, taskbarElement } = useContext(ProcessContext);
   const refCallback = useCallback((element) => taskbarElement(id, element), [
     id
   ]);
+  const onBlur = () => foreground('');
+  const onClick = useCallback(
+    () =>
+      cycleWindowState({
+        foregroundId,
+        id,
+        minimized,
+        foreground,
+        minimize,
+        restore
+      }),
+    [foregroundId, id, minimized]
+  );
 
   return (
     <motion.li {...taskbarEntriesMotionSettings}>
-      <div
+      <button
         className={`${styles.taskbarEntry} ${
           foregroundId === id && styles.foreground
         }`}
+        type="button"
         ref={refCallback}
-        role="button"
         onBlur={onBlur}
         onClick={onClick}
         tabIndex={0}
@@ -40,7 +54,7 @@ const TaskbarEntry: React.FC<TaskbarEntryProps> = ({
           <Icon src={icon} />
           <figcaption>{name}</figcaption>
         </figure>
-      </div>
+      </button>
     </motion.li>
   );
 };

@@ -1,0 +1,29 @@
+@import '@/styles/maps';
+@import '@/styles/mixins';
+
+$startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
+
+.taskbarEntries {
+  @include bottomLeft;
+
+  left: $startMenuTotalWidth;
+
+  display: flex;
+  flex: 0 1 map-get($taskbar, entry-width);
+
+  width: calc(100% - #{map-get($clock, width)} - #{$startMenuTotalWidth});
+  height: map-get($taskbar, height);
+
+  backdrop-filter: blur(map-get($taskbar, blur));
+
+  li {
+    display: grid;
+
+    width: map-get($taskbar, entry-width);
+    padding-right: map-get($taskbar, entry-padding);
+
+    &:last-child {
+      padding-right: unset;
+    }
+  }
+}

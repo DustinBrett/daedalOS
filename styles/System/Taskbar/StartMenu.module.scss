@@ -13,6 +13,9 @@
   width: map-get($startmenu, width);
   height: map-get($taskbar, height);
 
+  border: none;
+  background-color: transparent;
+
   svg {
     font-size: 18px;
 
@@ -42,4 +45,6 @@
   height: 300px;
 
   background-color: hsla(0, 0%, map-get($taskbar, base-lightness), 60%);
+
+  backdrop-filter: blur(map-get($taskbar, blur) * 2);
 }

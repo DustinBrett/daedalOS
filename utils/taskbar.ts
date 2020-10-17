@@ -1,8 +1,8 @@
 import type { WindowStateCycler } from '@/types/utils/taskbar';
 
 export const cycleWindowState = ({
+  foregroundId,
   id,
-  session: { foregroundId },
   minimized,
   foreground,
   minimize,

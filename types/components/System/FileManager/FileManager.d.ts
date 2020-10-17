@@ -16,11 +16,11 @@ export type DirectoryEntryDoubleClick = {
 };
 
 export type DirectoryView = {
+  cwd: string;
   entries: DirectoryEntry[];
   onDoubleClick: (
     entryData: DirectoryEntryDoubleClick
   ) => (event: React.MouseEvent) => void;
-  cwd: string;
 };
 
 export type DirectoryType = {

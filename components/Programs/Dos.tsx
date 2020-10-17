@@ -67,13 +67,13 @@ const Dos: React.FC<AppComponent> = ({
   require('js-dos');
 
   return (
-    <div className={styles.dos} style={maximizedStyle}>
+    <article className={styles.dos} style={maximizedStyle}>
       <canvas
         onTouchStart={focusClosestFocusableElementFromRef(canvasRef)}
         onClick={focusClosestFocusableElementFromRef(canvasRef)}
         ref={canvasRef}
       />
-    </div>
+    </article>
   );
 };
 

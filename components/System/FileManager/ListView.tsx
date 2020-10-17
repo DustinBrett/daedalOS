@@ -7,8 +7,8 @@ import { ROOT_DIRECTORY } from '@/utils/constants';
 import { useState } from 'react';
 
 const DirectoryList: React.FC<DirectoryView> = ({
-  entries,
   cwd,
+  entries,
   onDoubleClick
 }) => {
   const [selected, setSelected] = useState('');
