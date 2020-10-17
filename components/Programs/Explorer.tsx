@@ -26,7 +26,7 @@ const Explorer: React.FC<AppComponent> = ({
       />
     </article>
   );
-}
+};
 
 export default Explorer;
 

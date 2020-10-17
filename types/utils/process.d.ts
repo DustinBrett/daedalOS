@@ -14,5 +14,5 @@ export type ProcessConstructor = {
   windowed?: boolean;
   x?: number;
   y?: number;
-  taskbarElement?: HTMLDivElement;
+  taskbarElement?: HTMLButtonElement;
 };

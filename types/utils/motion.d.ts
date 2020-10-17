@@ -6,6 +6,6 @@ export type WindowMotionSettings = {
   width: number;
   x: number;
   y: number;
-  taskbarElement?: HTMLDivElement;
+  taskbarElement?: HTMLButtonElement;
   launchElement: HTMLElement;
 };

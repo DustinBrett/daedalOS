@@ -142,7 +142,7 @@ export const size = (updateProcesses: Dispatch<ProcessAction>) => (
 
 export const taskbarElement = (updateProcesses: Dispatch<ProcessAction>) => (
   id: string,
-  element: HTMLDivElement
+  element: HTMLButtonElement
 ): void => {
   updateProcesses({ updates: { taskbarElement: element }, id });
 };
