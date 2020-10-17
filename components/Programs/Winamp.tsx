@@ -25,7 +25,7 @@ const Winamp: React.FC<AppComponent> = ({
   file: { url = '', name = '' } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null);
-  const getWebamp = () => document.getElementById('webamp') as HTMLElement;
+  const getWebamp = () => document.getElementById('webamp') as HTMLDivElement;
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
     const { default: WebampConstructor } = await import('webamp');
     const webamp = new WebampConstructor(webampOptions) as Webamp & WebampStore;

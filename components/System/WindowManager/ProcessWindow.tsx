@@ -152,7 +152,7 @@ const ProcessWindow: React.FC<Process> = ({
           <App {...loadedAppOptions} {...windowOptions} />
         </Window>
       ) : (
-        <App key={id} {...loadedAppOptions} {...windowOptions} />
+        <App {...loadedAppOptions} {...windowOptions} />
       )}
     </motion.article>
   );

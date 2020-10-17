@@ -40,7 +40,6 @@
   - Positioning and animation issues on load
   - Seek bar visible when minimized and playing
   - Issue with focus when clicking via taskbar and on mobile
-  - Closing quickly on mobile while playing MP3 caused `An unexpected error has occured`
 - Document Viewer (https://webodf.org/)
 - PDF Viewer
 - JS Paint (https://github.com/1j01/jspaint)
