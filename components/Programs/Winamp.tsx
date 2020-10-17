@@ -52,7 +52,11 @@ const Winamp: React.FC<AppComponent> = ({
     });
 
     return () => {
-      webamp.dispose();
+      try {
+        webamp.dispose();
+      } finally {
+        /* eslint no-empty: off */
+      }
     };
   }, []);
 
