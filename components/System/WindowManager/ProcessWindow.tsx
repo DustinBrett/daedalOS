@@ -113,9 +113,10 @@ const ProcessWindow: React.FC<Process> = ({
     height,
     width
   };
-  const updateSize = useCallback((event, dir, ref, delta, pos) => size(id)(event, dir, ref, delta, pos), [
-    id
-  ]);
+  const updateSize = useCallback(
+    (event, dir, ref, delta, pos) => size(id)(event, dir, ref, delta, pos),
+    [id]
+  );
 
   return (
     <motion.article
