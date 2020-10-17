@@ -19,10 +19,10 @@
 
   &:hover {
     background-color: hsla(
-    0,
-    0%,
-    map-get($taskbar, hover-lightness),
-    map-get($taskbar, opacity)
+      0,
+      0%,
+      map-get($taskbar, hover-lightness),
+      map-get($taskbar, opacity)
     );
   }
 }
