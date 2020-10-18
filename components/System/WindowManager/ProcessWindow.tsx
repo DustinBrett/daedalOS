@@ -6,17 +6,16 @@ import dynamic from 'next/dynamic';
 import {
   baseZindex,
   foregroundZindex,
+  MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
+  MILLISECONDS_IN_SECOND,
   windowsZindexLevel,
   zindexLevelSize
 } from '@/utils/constants';
-import {
-  getNextVisibleWindow,
-  getMaxDimensions
-} from '@/utils/windowmanager';
+import { getNextVisibleWindow, getMaxDimensions } from '@/utils/windowmanager';
 import { motion } from 'framer-motion';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
@@ -59,6 +58,7 @@ const ProcessWindow: React.FC<Process> = ({
     restore,
     size
   } = useContext(ProcessContext);
+  const [maximizeWindow, setMaximizeWindow] = useState(false);
   const { x: previousX = 0, y: previousY = 0 } = getState({
     id
   });
@@ -91,7 +91,7 @@ const ProcessWindow: React.FC<Process> = ({
     },
     updatePosition: position(id),
     zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
-    maximized,
+    maximized: maximizeWindow,
     minimized,
     id,
     height,
@@ -100,11 +100,27 @@ const ProcessWindow: React.FC<Process> = ({
 
   useEffect(() => {
     if (foregroundId === id && minimized) {
-      foreground(getNextVisibleWindow(processes, stackOrder.filter((stackId) => stackId !== id)));
+      foreground(
+        getNextVisibleWindow(
+          processes,
+          stackOrder.filter((stackId) => stackId !== id)
+        )
+      );
     } else if (!stackOrder.includes(id)) {
       foreground(getNextVisibleWindow(processes, stackOrder));
     }
   }, [foregroundId, minimized, processes, stackOrder]);
+
+  useEffect(() => {
+    if (maximized) {
+      setMaximizeWindow(true);
+    } else if (maximizeWindow) {
+      setTimeout(
+        () => setMaximizeWindow(false),
+        MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND
+      );
+    }
+  }, [maximized]);
 
   return (
     <motion.article
