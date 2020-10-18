@@ -25,11 +25,14 @@ const DirectoryList: React.FC<DirectoryView> = ({
       ref={tableContainerRef}
       tabIndex={-1}
     >
-      <table className={styles.directory} onBlur={(event) => {
-        if (event.relatedTarget === tableContainerRef.current) {
-          setSelected('');
-        }
-      }}>
+      <table
+        className={styles.directory}
+        onBlur={(event) => {
+          if (event.relatedTarget === tableContainerRef.current) {
+            setSelected('');
+          }
+        }}
+      >
         <thead>
           <tr className={styles.emphasis}>
             <th>Name</th>
