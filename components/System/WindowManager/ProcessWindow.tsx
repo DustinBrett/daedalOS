@@ -16,7 +16,7 @@ import {
 import { motion } from 'framer-motion';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect } from 'react';
 import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
@@ -70,13 +70,10 @@ const ProcessWindow: React.FC<Process> = ({
     lockAspectRatio
   );
   const windowOptions = {
-    // TODO: Allow restoring maximized. Fix max restore.
-    onMinimize: useCallback(() => minimize(id), [id]),
-    onMaximize: useCallback(
-      () => (maximized ? restore(id, 'maximized') : maximize(id)),
-      [id, maximized]
-    ),
-    onClose: useCallback(() => {
+    // TODO: Allow restoring maximized. Allow min when maxed with restore.
+    onMinimize: () => minimize(id),
+    onMaximize: () => (maximized ? restore(id, 'maximized') : maximize(id)),
+    onClose: () => {
       saveState({
         height,
         id,
@@ -85,17 +82,14 @@ const ProcessWindow: React.FC<Process> = ({
         y
       });
       close(id);
-    }, [height, id, width, x, y]),
-    onFocus: useCallback(() => foreground(id), [id]),
-    onBlur: useCallback(
-      (event: React.FocusEvent) => {
-        if (event.relatedTarget !== taskbarElement) {
-          foreground('');
-        }
-      },
-      [taskbarElement]
-    ),
-    updatePosition: useCallback(position(id), [id]),
+    },
+    onFocus: () => foreground(id),
+    onBlur: (event: React.FocusEvent) => {
+      if (event.relatedTarget !== taskbarElement) {
+        foreground('');
+      }
+    },
+    updatePosition: position(id),
     zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
     maximized,
     minimized,
@@ -103,19 +97,6 @@ const ProcessWindow: React.FC<Process> = ({
     height,
     width
   };
-  const updateSize = useCallback(size(id), [id]);
-  const windowMotion = useMemo(() => windowMotionSettings({
-    initialX: previousX,
-    initialY: previousY,
-    animation:
-      (minimized && 'minimized') || (maximized && 'maximized') || 'start',
-    height,
-    width,
-    x,
-    y,
-    taskbarElement,
-    launchElement
-  }), [height, maximized, minimized, width, x, y]);
 
   useEffect(() => {
     if (foregroundId === id && minimized) {
@@ -134,7 +115,18 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         width
       }}
-      {...windowMotion}
+      {...windowMotionSettings({
+        initialX: previousX,
+        initialY: previousY,
+        animation:
+          (minimized && 'minimized') || (maximized && 'maximized') || 'start',
+        height,
+        width,
+        x,
+        y,
+        taskbarElement,
+        launchElement
+      })}
     >
       {windowed ? (
         <Window
@@ -142,7 +134,7 @@ const ProcessWindow: React.FC<Process> = ({
           name={name}
           bgColor={bgColor}
           lockAspectRatio={lockAspectRatio}
-          updateSize={updateSize}
+          updateSize={size(id)}
           {...windowOptions}
         >
           <App {...loadedAppOptions} {...windowOptions} />
