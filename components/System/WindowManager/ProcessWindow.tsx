@@ -108,7 +108,7 @@ const ProcessWindow: React.FC<Process> = ({
     } else if (!stackOrder.includes(id)) {
       foreground(getNextVisibleWindow(processes, stackOrder));
     }
-  }, [foregroundId, minimized, processes, stackOrder]);
+  }, [foregroundId, id, minimized, processes, stackOrder]);
 
   useEffect(() => {
     if (maximized) {
@@ -130,6 +130,8 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         width
       }}
+      // TODO: Make this function more efficent
+      // TODO: Pass element positions to allow memo'ing
       {...windowMotionSettings({
         initialX: previousX,
         initialY: previousY,

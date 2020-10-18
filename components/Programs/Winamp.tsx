@@ -46,18 +46,19 @@ const Winamp: React.FC<AppComponent> = ({
 
   useEffect(() => {
     let webamp: Webamp & WebampStore;
-
-    loadWebamp().then((loadedWebamp) => {
-      webamp = loadedWebamp;
-    });
-
-    return () => {
+    const tryDispose = () => {
       try {
         webamp.dispose();
       } catch (exception) {
         /* eslint no-empty: off */
       }
     };
+
+    loadWebamp().then((loadedWebamp) => {
+      webamp = loadedWebamp;
+    });
+
+    return tryDispose;
   }, []);
 
   return (
