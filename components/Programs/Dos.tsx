@@ -43,7 +43,6 @@ const Dos: React.FC<AppComponent> = ({
       loadMain(main);
     }
   };
-  // TODO: Need delayedMaximized here and Window to change after animation
   const maximizedStyle = maximized
     ? getLockedAspectRatioDimensions(
         defaultDimensions.width,

@@ -70,7 +70,6 @@ const ProcessWindow: React.FC<Process> = ({
     lockAspectRatio
   );
   const windowOptions = {
-    // TODO: Allow restoring maximized. Allow min when maxed with restore.
     onMinimize: () => minimize(id),
     onMaximize: () => (maximized ? restore(id, 'maximized') : maximize(id)),
     onClose: () => {
