@@ -12,6 +12,8 @@ import { SessionContext } from '@/contexts/SessionManager';
 import { useContext, useEffect, useState } from 'react';
 import { useFileDrop } from '@/utils/events';
 
+// TODO: Keep track of "selected" entries here instead of using tabindex
+
 const FileManager: React.FC<DirectoryType> = ({
   path: directoryPath,
   render,
