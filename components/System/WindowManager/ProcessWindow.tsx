@@ -10,21 +10,18 @@ import {
   zindexLevelSize
 } from '@/utils/constants';
 import {
-  focusNextVisibleWindow,
+  getNextVisibleWindow,
   getMaxDimensions
 } from '@/utils/windowmanager';
 import { motion } from 'framer-motion';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
 
 const windowZindex = baseZindex + windowsZindexLevel * zindexLevelSize;
-
-// TODO: Stop so many re-renders on stackOrder & foregroundId changes
-// TODO: Focus next window without the need for processes and stackOrder
 
 const ProcessWindow: React.FC<Process> = ({
   loader: {
@@ -73,27 +70,22 @@ const ProcessWindow: React.FC<Process> = ({
     lockAspectRatio
   );
   const windowOptions = {
-    onMinimize: useCallback(() => {
-      // TODO: Allow restoring maximized. Fix max restore.
-      // if (maximized) restore(id, 'maximized');
-      minimize(id);
-      focusNextVisibleWindow(stackOrder, processes, foreground);
-    }, [id, processes, stackOrder]),
+    // TODO: Allow restoring maximized. Fix max restore.
+    onMinimize: useCallback(() => minimize(id), [id]),
     onMaximize: useCallback(
       () => (maximized ? restore(id, 'maximized') : maximize(id)),
       [id, maximized]
     ),
     onClose: useCallback(() => {
       saveState({
-        id,
         height,
+        id,
         width,
         x,
         y
       });
       close(id);
-      focusNextVisibleWindow(stackOrder, processes, foreground);
-    }, [height, id, processes, stackOrder, width, x, y]),
+    }, [height, id, width, x, y]),
     onFocus: useCallback(() => foreground(id), [id]),
     onBlur: useCallback(
       (event: React.FocusEvent) => {
@@ -103,9 +95,7 @@ const ProcessWindow: React.FC<Process> = ({
       },
       [taskbarElement]
     ),
-    updatePosition: useCallback((event, data) => position(id)(event, data), [
-      id
-    ]),
+    updatePosition: useCallback(position(id), [id]),
     zIndex: windowZindex + stackOrder.slice().reverse().indexOf(id),
     maximized,
     minimized,
@@ -113,10 +103,27 @@ const ProcessWindow: React.FC<Process> = ({
     height,
     width
   };
-  const updateSize = useCallback(
-    (event, dir, ref, delta, pos) => size(id)(event, dir, ref, delta, pos),
-    [id]
-  );
+  const updateSize = useCallback(size(id), [id]);
+  const windowMotion = useMemo(() => windowMotionSettings({
+    initialX: previousX,
+    initialY: previousY,
+    animation:
+      (minimized && 'minimized') || (maximized && 'maximized') || 'start',
+    height,
+    width,
+    x,
+    y,
+    taskbarElement,
+    launchElement
+  }), [height, maximized, minimized, width, x, y]);
+
+  useEffect(() => {
+    if (foregroundId === id && minimized) {
+      foreground(getNextVisibleWindow(processes, stackOrder.filter((stackId) => stackId !== id)));
+    } else if (!stackOrder.includes(id)) {
+      foreground(getNextVisibleWindow(processes, stackOrder));
+    }
+  }, [foregroundId, minimized, processes, stackOrder]);
 
   return (
     <motion.article
@@ -127,18 +134,7 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         width
       }}
-      {...windowMotionSettings({
-        initialX: previousX,
-        initialY: previousY,
-        animation:
-          (minimized && 'minimized') || (maximized && 'maximized') || 'start',
-        height,
-        width,
-        x,
-        y,
-        taskbarElement,
-        launchElement
-      })}
+      {...windowMotion}
     >
       {windowed ? (
         <Window

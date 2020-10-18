@@ -32,16 +32,13 @@ export const getMaxDimensions = (
   return { height, width };
 };
 
-// TODO: Find a way to not need processes or stackOrder (Maybe index in the DOM?)
-export const focusNextVisibleWindow = (
-  stackOrder: string[],
+export const getNextVisibleWindow = (
   processes: Processes,
-  foreground: (id: string) => void
-): void => {
-  const [, ...remainingStackEntries] = stackOrder;
-  const visibleProcessId = remainingStackEntries.find((stackId) =>
+  stackOrder: string[]
+): string => {
+  const visibleProcessId = stackOrder.find((stackId) =>
     processes.find((process) => process.id === stackId && !process.minimized)
   );
 
-  if (visibleProcessId) foreground(visibleProcessId);
+  return visibleProcessId || '';
 };
