@@ -20,7 +20,7 @@ const DirectyListEntry: React.FC<DirectyListEntryProps> = ({
     className={selected === path ? `${styles.selected} selected` : ''}
     onClick={new ClickHandler({ doubleClick }).clickHandler}
     onFocus={() => setSelected(path)}
-    tabIndex={0}
+    tabIndex={-1}
   >
     {path === '..' ? (
       <>

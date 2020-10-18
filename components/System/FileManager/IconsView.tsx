@@ -31,7 +31,7 @@ const DirectoryIcons: React.FC<DirectoryView> = ({
                   doubleClick: onDoubleClick({ path, url, icon, name })
                 }).clickHandler
               }
-              tabIndex={0}
+              tabIndex={-1}
               title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
               {...desktopIconDragSettings}
               {...desktopIconMotionSettings}

@@ -53,7 +53,7 @@ const Window: React.FC<AppComponent> = ({
       }}
       minHeight={250}
       minWidth={250}
-      tabIndex={0}
+      tabIndex={-1}
       onFocus={onFocus}
       onBlur={onBlur}
       onDragStart={focusOnDrag}

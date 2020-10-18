@@ -92,6 +92,10 @@ $textColor: rgb(225, 225, 225);
   }
 }
 
+.directoryContainer {
+  height: 100%;
+}
+
 .selected {
   color: rgba(255, 255, 255, 0.7);
   background-color: rgb(0, 88, 208) !important;

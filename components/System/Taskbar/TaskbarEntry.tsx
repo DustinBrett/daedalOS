@@ -48,7 +48,7 @@ const TaskbarEntry: React.FC<TaskbarEntryProps> = ({
         ref={refCallback}
         onBlur={onBlur}
         onClick={onClick}
-        tabIndex={0}
+        tabIndex={-1}
       >
         <figure>
           <Icon src={icon} />
