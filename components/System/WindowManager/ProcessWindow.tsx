@@ -136,7 +136,10 @@ const ProcessWindow: React.FC<Process> = ({
         initialX: previousX,
         initialY: previousY,
         animation:
-          (minimized && 'minimized') || (maximized && 'maximized') || 'start',
+          (minimized && maximized && 'minmax')
+          || (minimized && 'minimized')
+          || (maximized && 'maximized')
+          || 'start',
         height,
         width,
         x,

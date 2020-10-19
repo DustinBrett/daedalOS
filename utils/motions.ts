@@ -77,6 +77,11 @@ export const windowMotionSettings = ({
       scale: 0,
       x: widthOffset + taskbarElementX,
       y: heightOffset + taskbarElementY
+    },
+    minmax: {
+      scale: 0,
+      x: -(window.innerWidth / 2) + taskbarElementX,
+      y: -(window.innerHeight / 2) + taskbarElementY
     }
   };
   const initialExitTransform: TransformProperties = {
