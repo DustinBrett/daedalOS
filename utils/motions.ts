@@ -56,7 +56,11 @@ export const windowMotionSettings = ({
     x: launchElementX = 0,
     y: launchElementY = 0
   } = getTargetCenterPosition(launchElement);
-  // TODO: Only calc `animation`, not all of them
+  const initialExitTransform: TransformProperties = {
+    scale: 0,
+    x: widthOffset + launchElementX,
+    y: heightOffset + launchElementY
+  };
   const animationVariants: {
     [key: string]: AnimationProps & TargetAndTransition;
   } = {
@@ -79,25 +83,16 @@ export const windowMotionSettings = ({
       x: widthOffset + taskbarElementX,
       y: heightOffset + taskbarElementY
     },
-    minmax: {
+    maxmin: {
       scale: 0,
       x: -(window.innerWidth / 2) + taskbarElementX,
       y: -(window.innerHeight / 2) + taskbarElementY
     }
   };
-  const initialExitTransform: TransformProperties = {
-    scale: 0,
-    x: widthOffset + launchElementX,
-    y: heightOffset + launchElementY
-  };
 
   return {
-    initial: {
-      ...initialExitTransform
-    },
-    exit: {
-      ...initialExitTransform
-    },
+    initial: initialExitTransform,
+    exit: initialExitTransform,
     animate: animationVariants[animation],
     transition: {
       duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS

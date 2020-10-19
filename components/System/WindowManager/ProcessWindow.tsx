@@ -130,15 +130,13 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         width
       }}
-      // TODO: Make this function more efficent
-      // TODO: Pass element positions to allow memo'ing
       {...windowMotionSettings({
         initialX: previousX,
         initialY: previousY,
         animation:
-          (minimized && maximized && 'minmax')
-          || (minimized && 'minimized')
+          (maximized && minimized && 'maxmin')
           || (maximized && 'maximized')
+          || (minimized && 'minimized')
           || 'start',
         height,
         width,
