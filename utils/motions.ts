@@ -98,7 +98,8 @@ export const windowMotionSettings = ({
 
   return {
     initial: initialExitTransform,
-    exit: animation === 'maximized' ? maximizedExitTransform : initialExitTransform,
+    exit:
+      animation === 'maximized' ? maximizedExitTransform : initialExitTransform,
     animate: animationVariants[animation],
     transition: {
       duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
