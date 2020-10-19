@@ -68,6 +68,7 @@ export const windowMotionSettings = ({
       width
     },
     maximized: {
+      scale: 1,
       x: initialX === x ? 0 : -x,
       y: initialY === y ? 0 : -y,
       height: window.innerHeight - TASKBAR_HEIGHT,
