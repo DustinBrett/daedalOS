@@ -35,6 +35,7 @@ export const taskbarEntriesMotionSettings: MotionProps = {
   }
 };
 
+// TODO: Refactor this to be more efficent and DRY
 export const windowMotionSettings = ({
   initialX = 0,
   initialY = 0,
@@ -60,6 +61,11 @@ export const windowMotionSettings = ({
     scale: 0,
     x: widthOffset + launchElementX,
     y: heightOffset + launchElementY
+  };
+  const maximizedExitTransform: TransformProperties = {
+    scale: 0,
+    x: -(window.innerWidth / 2) + launchElementX,
+    y: -(window.innerHeight / 2) + launchElementY
   };
   const animationVariants: {
     [key: string]: AnimationProps & TargetAndTransition;
@@ -92,7 +98,7 @@ export const windowMotionSettings = ({
 
   return {
     initial: initialExitTransform,
-    exit: initialExitTransform,
+    exit: animation === 'maximized' ? maximizedExitTransform : initialExitTransform,
     animate: animationVariants[animation],
     transition: {
       duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
