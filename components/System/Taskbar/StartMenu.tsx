@@ -17,10 +17,7 @@ const StartMenu: React.FC = () => {
 
   return (
     <nav>
-      <ol
-        className={styles.menu}
-        style={{ display: showMenu ? 'block' : 'none' }}
-      />
+      {showMenu && <ol className={styles.menu} />}
       <button
         className={styles.start}
         type="button"
