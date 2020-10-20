@@ -27,5 +27,5 @@ export type DirectoryType = {
   path: string;
   render: React.FC<DirectoryView>;
   details?: boolean;
-  onChange?: (cwd: string) => void;
+  onChange?: (cwd?: string) => void;
 };

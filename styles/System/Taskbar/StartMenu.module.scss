@@ -19,7 +19,7 @@
   svg {
     font-size: 19px;
 
-    color: white;
+    color: $offWhite;
   }
 
   &:hover {
@@ -33,6 +33,15 @@
     svg {
       color: $highlightColor;
     }
+  }
+
+  &.menuOpen {
+    background-color: hsla(
+      0,
+      0%,
+      map-get($taskbar, hover-lightness),
+      0.75
+    );
   }
 }
 
@@ -55,12 +64,15 @@
 
     width: 48px;
     height: 300px;
-    padding-top: 3px;
+    padding-top: 4px;
 
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
 
       svg {
+        position: absolute;
+        left: 16px;
+
         color: darken($highlightColor, 15%);
       }
     }
@@ -75,7 +87,7 @@
       width: 48px;
       height: 48px;
 
-      color: white;
+      color: rgba($offWhite, 80%);
 
       &:hover {
         background-color: hsla(
@@ -84,10 +96,6 @@
           map-get($taskbar, hover-lightness),
           map-get($taskbar, opacity)
         );
-
-        svg {
-          color: $highlightColor;
-        }
       }
     }
   }

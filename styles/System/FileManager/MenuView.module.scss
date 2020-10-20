@@ -10,17 +10,17 @@
 
   width: 227px;
   height: 300px;
-  padding-top: 6px;
-  padding-right: 10px;
+  padding-top: 7px;
+  padding-right: 14px;
 
   li {
     padding: 2px;
     padding-left: 4px;
 
-    color: white;
+    color: rgba($offWhite, 0.8);
 
     figure {
-      font-size: 13px;
+      font-size: 12px;
 
       display: flex;
       align-items: center;
@@ -54,6 +54,6 @@
   img {
     width: 32px;
     height: 32px;
-    padding: 5px;
+    padding: 4px;
   }
 }

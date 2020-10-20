@@ -47,6 +47,7 @@ const FileManager: React.FC<DirectoryType> = ({
       );
       restore(processsId, 'minimized');
       foreground(processsId);
+      onChange?.();
     }
   };
 

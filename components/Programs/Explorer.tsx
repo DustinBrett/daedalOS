@@ -19,8 +19,10 @@ const Explorer: React.FC<AppComponent> = ({
       <FileManager
         path={url}
         render={ListView}
-        onChange={(cwd: string) => {
-          title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
+        onChange={(cwd) => {
+          if (cwd) {
+            title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
+          }
         }}
         details
       />

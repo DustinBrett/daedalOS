@@ -30,11 +30,15 @@ const StartMenu: React.FC = () => {
               <FontAwesomeIcon icon={faList} />
             </li>
           </ol>
-          <FileManager path="/desktop" render={MenuView} />
+          <FileManager
+            path="/desktop"
+            render={MenuView}
+            onChange={(cwd) => !cwd && setShowMenu(false)}
+          />
         </nav>
       )}
       <button
-        className={styles.start}
+        className={`${styles.start} ${showMenu && styles.menuOpen}`}
         type="button"
         title="Start"
         onClick={() => setShowMenu(!showMenu)}
