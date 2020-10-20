@@ -36,12 +36,7 @@
   }
 
   &.menuOpen {
-    background-color: hsla(
-      0,
-      0%,
-      map-get($taskbar, hover-lightness),
-      0.75
-    );
+    background-color: hsla(0, 0%, map-get($taskbar, hover-lightness), 0.75);
   }
 }
 
