@@ -23,8 +23,12 @@ const StartMenu: React.FC = () => {
       {showMenu && (
         <nav className={styles.menu}>
           <ol className={styles.buttons}>
-            <li><FontAwesomeIcon icon={faBars} /></li>
-            <li className={styles.buttonSelected}><FontAwesomeIcon icon={faList} /></li>
+            <li>
+              <FontAwesomeIcon icon={faBars} />
+            </li>
+            <li className={styles.buttonSelected}>
+              <FontAwesomeIcon icon={faList} />
+            </li>
           </ol>
           <FileManager path="/desktop" render={MenuView} />
         </nav>

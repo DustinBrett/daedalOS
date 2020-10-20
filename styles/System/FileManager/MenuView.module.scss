@@ -4,25 +4,26 @@
 // TODO: Dimensions and position should not be part of the MenuView. All View's should be more generic. Pass class along?
 
 .menuView {
-  padding-top: 6px;
-  padding-right: 10px;
-
   position: absolute;
   bottom: 0;
   left: 48px; // TODO: Width of button bar
 
   width: 227px;
   height: 300px;
+  padding-top: 6px;
+  padding-right: 10px;
 
   li {
-    color: white;
     padding: 2px;
     padding-left: 4px;
 
+    color: white;
+
     figure {
+      font-size: 13px;
+
       display: flex;
       align-items: center;
-      font-size: 13px;
 
       figcaption {
         padding-left: 7px;
@@ -36,7 +37,7 @@
         map-get($taskbar, hover-lightness),
         map-get($taskbar, opacity)
       );
-  
+
       svg {
         color: $highlightColor;
       }
@@ -45,9 +46,10 @@
 }
 
 .menuIcon {
-  background-color: darken($highlightColor, 25%);
   width: 32px;
   height: 32px;
+
+  background-color: darken($highlightColor, 25%);
 
   img {
     width: 32px;

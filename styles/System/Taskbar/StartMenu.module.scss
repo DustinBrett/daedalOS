@@ -49,13 +49,13 @@
   backdrop-filter: blur(map-get($taskbar, blur) * 2);
 
   .buttons {
-    padding-top: 3px;
     position: relative;
     bottom: 0;
     left: 0;
-  
+
     width: 48px;
     height: 300px;
+    padding-top: 3px;
 
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
@@ -66,12 +66,15 @@
     }
 
     li {
-      width: 48px;
-      height: 48px;
+      font-size: 16px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+
+      width: 48px;
+      height: 48px;
+
       color: white;
 
       &:hover {
@@ -81,7 +84,7 @@
           map-get($taskbar, hover-lightness),
           map-get($taskbar, opacity)
         );
-    
+
         svg {
           color: $highlightColor;
         }

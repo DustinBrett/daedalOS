@@ -5,10 +5,7 @@ import type { DirectoryView } from '@/types/components/System/FileManager/FileMa
 import Icon from '@/components/System/Icon';
 import { motion } from 'framer-motion';
 
-const DirectoryMenu: React.FC<DirectoryView> = ({
-  entries,
-  onDoubleClick
-}) => {
+const DirectoryMenu: React.FC<DirectoryView> = ({ entries, onDoubleClick }) => {
   return (
     <ol className={styles.menuView}>
       {entries.map(({ icon, name, path, url }) => (
