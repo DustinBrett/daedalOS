@@ -16,13 +16,13 @@ export default function HomePage(): ReactElement {
       <Metadata />
       <SessionProvider>
         <ProcessProvider>
-          <Desktop>
-            <FileProvider>
+          <FileProvider>
+            <Desktop>
               <FileManager path="/desktop" render={IconsView} />
               <WindowManager />
-            </FileProvider>
-            <Taskbar />
-          </Desktop>
+              <Taskbar />
+            </Desktop>
+          </FileProvider>
         </ProcessProvider>
       </SessionProvider>
     </>

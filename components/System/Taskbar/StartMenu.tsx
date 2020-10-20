@@ -1,5 +1,8 @@
 import styles from '@/styles/System/Taskbar/StartMenu.module.scss';
 
+import FileManager from '@/components/System/FileManager/FileManager';
+import MenuView from '@/components/System/FileManager/MenuView';
+import { faBars, faList } from '@fortawesome/free-solid-svg-icons';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
@@ -17,7 +20,15 @@ const StartMenu: React.FC = () => {
 
   return (
     <nav>
-      {showMenu && <ol className={styles.menu} />}
+      {showMenu && (
+        <nav className={styles.menu}>
+          <ol className={styles.buttons}>
+            <li><FontAwesomeIcon icon={faBars} /></li>
+            <li className={styles.buttonSelected}><FontAwesomeIcon icon={faList} /></li>
+          </ol>
+          <FileManager path="/desktop" render={MenuView} />
+        </nav>
+      )}
       <button
         className={styles.start}
         type="button"
