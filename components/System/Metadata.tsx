@@ -2,7 +2,7 @@ import { description, name } from 'package.json';
 
 import Head from 'next/head';
 import { lockDocumentTitle } from '@/utils/elements';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 const Metadata: React.FC = () => {
   useEffect(lockDocumentTitle, []);
@@ -15,4 +15,4 @@ const Metadata: React.FC = () => {
   );
 };
 
-export default Metadata;
+export default memo(Metadata);
