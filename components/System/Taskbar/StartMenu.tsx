@@ -36,7 +36,7 @@ const StartMenu: React.FC = () => {
             </li>
           </ol>
           <FileManager
-            path="/desktop"
+            path="/start"
             render={MenuView}
             onChange={(cwd) => !cwd && setShowMenu(false)}
           />

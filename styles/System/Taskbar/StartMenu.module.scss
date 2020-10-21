@@ -61,6 +61,8 @@
     height: 300px;
     padding-top: 4px;
 
+    transition: width 0.1s ease-out 0s;
+
     > :last-child {
       position: absolute;
       bottom: 0;
@@ -123,7 +125,8 @@
 
     width: 200px;
 
-    transition: width 0.3s;
+    transition: all 0.1s ease-out 0.6s;
+    transition-property: width, background-color, backdrop-filter;
 
     background-color: rgba(0, 0, 0, 0.9);
 
@@ -133,7 +136,7 @@
   .buttons:hover figure {
     width: 200px;
 
-    transition: width 0.3s;
+    transition: width 0.1s ease-out 0.6s;
 
     &:hover {
       border-right: 1px solid
