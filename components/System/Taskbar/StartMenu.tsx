@@ -6,10 +6,11 @@ import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faList } from '@fortawesome/free-solid-svg-icons';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const StartMenu: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const startButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <nav>
@@ -43,10 +44,18 @@ const StartMenu: React.FC = () => {
         </nav>
       )}
       <button
+        ref={startButtonRef}
         className={`${styles.start} ${showMenu && styles.menuOpen}`}
         type="button"
         title="Start"
         onClick={() => setShowMenu(!showMenu)}
+        onBlur={({ relatedTarget }) => {
+          if (!relatedTarget) {
+            startButtonRef?.current?.focus();
+          } else {
+            setShowMenu(false);
+          }
+        }}
       >
         <FontAwesomeIcon icon={faWindows} />
       </button>

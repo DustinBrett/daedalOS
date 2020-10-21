@@ -18,7 +18,7 @@ const DirectoryIcons: React.FC<DirectoryView> = ({
   const navRef = useRef<HTMLElement>(null);
 
   return (
-    <nav className={styles.directoryIcons} ref={navRef}>
+    <nav className={styles.directoryIcons} ref={navRef} tabIndex={-1}>
       <ol>
         <AnimatePresence>
           {entries.map(({ icon, name, kind, path, url }) => (
