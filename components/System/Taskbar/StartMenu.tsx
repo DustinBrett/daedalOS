@@ -17,13 +17,22 @@ const StartMenu: React.FC = () => {
         <nav className={styles.menu}>
           <ol className={styles.buttons}>
             <li>
-              <FontAwesomeIcon icon={faBars} />
-            </li>
-            <li className={styles.buttonSelected}>
-              <FontAwesomeIcon icon={faList} />
+              <figure>
+                <FontAwesomeIcon icon={faBars} />
+                <figcaption>START</figcaption>
+              </figure>
             </li>
             <li>
-              <FontAwesomeIcon icon={faFile} />
+              <figure className={styles.buttonSelected}>
+                <FontAwesomeIcon icon={faList} />
+                <figcaption>All Apps</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <FontAwesomeIcon icon={faFile} />
+                <figcaption>Documents</figcaption>
+              </figure>
             </li>
           </ol>
           <FileManager

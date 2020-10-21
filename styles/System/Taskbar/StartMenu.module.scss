@@ -69,25 +69,38 @@
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
 
-      svg {
-        position: absolute;
-        left: 16px;
-
-        color: darken($highlightColor, 15%);
+      * {
+        margin-left: -4px;
       }
     }
 
-    li {
+    figure svg {
+      position: absolute;
+      width: 48px;
+    }
+
+    .buttonSelected svg {
+      color: darken($highlightColor, 15%);
+    }
+
+    figure {
       font-size: 16px;
 
       display: flex;
       align-items: center;
-      justify-content: center;
+
+      overflow: hidden;
 
       width: 48px;
       height: 48px;
 
       color: rgba($offWhite, 80%);
+
+      figcaption {
+        position: relative;
+        left: 48px;
+        font-size: 14px;
+      }
 
       &:hover {
         background-color: hsla(
@@ -97,6 +110,35 @@
           map-get($taskbar, opacity)
         );
       }
+    }
+
+    > :first-child figure figcaption {
+      font-weight: bold;
+    }
+  }
+
+  .buttons:hover {
+    transition: width 0.3s;
+    z-index: 99999;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+
+    width: 200px;
+  }
+
+  .buttons:hover figure {
+    transition: width 0.3s;
+    width: 200px;
+
+    &:hover {
+      background-color: hsla(
+        0,
+        0%,
+        map-get($taskbar, hover-lightness),
+        map-get($taskbar, opacity)
+      );
+
+      border-right: 1px solid hsla(0, 0%, map-get($taskbar, base-lightness), 60%);
     }
   }
 }
