@@ -53,10 +53,16 @@ export const windowMotionSettings = ({
     x: taskbarElementX = 0,
     y: taskbarElementY = 0
   } = getTargetCenterPosition(taskbarElement);
-  const {
+  let {
     x: launchElementX = 0,
     y: launchElementY = 0
   } = getTargetCenterPosition(launchElement);
+  if (launchElementX === 0) {
+    launchElementX = window.innerWidth / 2;
+  }
+  if (launchElementY === 0) {
+    launchElementY = window.innerHeight / 2;
+  }
   const initialExitTransform: TransformProperties = {
     scale: 0,
     x: widthOffset + launchElementX,
