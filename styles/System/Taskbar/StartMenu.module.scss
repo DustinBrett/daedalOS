@@ -61,6 +61,11 @@
     height: 300px;
     padding-top: 4px;
 
+    > :last-child {
+      position: absolute;
+      bottom: 0;
+    }
+
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
 
