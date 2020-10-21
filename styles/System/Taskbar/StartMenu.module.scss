@@ -76,6 +76,7 @@
 
     figure svg {
       position: absolute;
+
       width: 48px;
     }
 
@@ -87,9 +88,8 @@
       font-size: 16px;
 
       display: flex;
-      align-items: center;
-
       overflow: hidden;
+      align-items: center;
 
       width: 48px;
       height: 48px;
@@ -97,9 +97,10 @@
       color: rgba($offWhite, 80%);
 
       figcaption {
+        font-size: 14px;
+
         position: relative;
         left: 48px;
-        font-size: 14px;
       }
 
       &:hover {
@@ -118,27 +119,31 @@
   }
 
   .buttons:hover {
-    transition: width 0.3s;
     z-index: 99999;
-    background-color: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
 
     width: 200px;
+
+    transition: width 0.3s;
+
+    background-color: rgba(0, 0, 0, 0.9);
+
+    backdrop-filter: blur(10px);
   }
 
   .buttons:hover figure {
-    transition: width 0.3s;
     width: 200px;
 
+    transition: width 0.3s;
+
     &:hover {
+      border-right: 1px solid
+        hsla(0, 0%, map-get($taskbar, base-lightness), 60%);
       background-color: hsla(
         0,
         0%,
         map-get($taskbar, hover-lightness),
         map-get($taskbar, opacity)
       );
-
-      border-right: 1px solid hsla(0, 0%, map-get($taskbar, base-lightness), 60%);
     }
   }
 }
