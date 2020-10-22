@@ -42,7 +42,7 @@ export const getTargetCenterPosition = (
   const idealElement =
     element?.getElementsByTagName?.('img')?.[0] ||
     element?.getElementsByTagName?.('figure')?.[0] ||
-    element
+    element;
   const { x = 0, y = 0, height = 0, width = 0 } =
     idealElement?.getBoundingClientRect() || {};
 
