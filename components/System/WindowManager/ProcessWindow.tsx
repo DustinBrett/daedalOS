@@ -59,7 +59,7 @@ const ProcessWindow: React.FC<Process> = ({
     size
   } = useContext(ProcessContext);
   const [maximizeWindow, setMaximizeWindow] = useState(false);
-  const { x: previousX = 0, y: previousY = 0 } = getState({
+  const { x: previousX, y: previousY } = getState({
     id
   });
   const { height, width } = getMaxDimensions(
@@ -69,6 +69,8 @@ const ProcessWindow: React.FC<Process> = ({
     defaultHeight,
     lockAspectRatio
   );
+  const defaultX = -Math.floor(width / 2) + window.innerWidth * 0.5;
+  const defaultY = -Math.floor(height / 2) + window.innerHeight * 0.45;
   const windowOptions = {
     onMinimize: () => minimize(id),
     onMaximize: () => (maximized ? restore(id, 'maximized') : maximize(id)),
@@ -77,8 +79,8 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         id,
         width,
-        x,
-        y
+        x: !previousX ? defaultX + x : x,
+        y: !previousY ? defaultY + y : y
       });
       close(id);
     },
@@ -131,8 +133,8 @@ const ProcessWindow: React.FC<Process> = ({
         width
       }}
       {...windowMotionSettings({
-        initialX: previousX,
-        initialY: previousY,
+        initialX: previousX || defaultX,
+        initialY: previousY || defaultY,
         animation:
           (maximized && minimized && 'maxmin') ||
           (maximized && 'maximized') ||

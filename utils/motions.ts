@@ -63,7 +63,7 @@ export const windowMotionSettings = ({
   if (launchElementY === 0) {
     launchElementY = window.innerHeight / 2;
   }
-  const initialExitTransform: TransformProperties = {
+  const baseTransform: TransformProperties = {
     scale: 0,
     x: widthOffset + launchElementX,
     y: heightOffset + launchElementY
@@ -103,9 +103,9 @@ export const windowMotionSettings = ({
   };
 
   return {
-    initial: initialExitTransform,
+    initial: baseTransform,
     exit:
-      animation === 'maximized' ? maximizedExitTransform : initialExitTransform,
+      animation === 'maximized' ? maximizedExitTransform : baseTransform,
     animate: animationVariants[animation],
     transition: {
       duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
