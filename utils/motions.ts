@@ -5,11 +5,12 @@ import type {
 import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
-import { getTargetCenterPosition } from '@/utils/elements';
 import {
+  foregroundZindex,
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   TASKBAR_HEIGHT
 } from '@/utils/constants';
+import { getTargetCenterPosition } from '@/utils/elements';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,
@@ -63,8 +64,9 @@ export const windowMotionSettings = ({
   if (launchElementY === 0) {
     launchElementY = window.innerHeight / 2;
   }
-  const baseTransform: TransformProperties = {
+  const baseTransform: TransformProperties & { zIndex: number } = {
     scale: 0,
+    zIndex: foregroundZindex,
     x: widthOffset + launchElementX,
     y: heightOffset + launchElementY
   };
