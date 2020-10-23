@@ -125,19 +125,23 @@
 
     width: 200px;
 
-    transition: all 0.1s ease-out 0.6s;
-    transition-property: width, background-color, backdrop-filter;
-
     background-color: rgba(0, 0, 0, 0.9);
 
     backdrop-filter: blur(10px);
+
+    @media (hover: hover) {
+      transition: all 0.1s ease-out 0.6s;
+      transition-property: width, background-color, backdrop-filter;
+    }
   }
 
   .buttons:hover figure {
     width: 199px;
 
-    transition: all 0.1s ease-out 0.6s;
-    transition-property: width;
+    @media (hover: hover) {
+      transition: all 0.1s ease-out 0.6s;
+      transition-property: width;
+    }
 
     &:hover {
       background-color: hsla(
