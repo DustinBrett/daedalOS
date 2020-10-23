@@ -6,7 +6,6 @@ import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
 import {
-  foregroundZindex,
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   TASKBAR_HEIGHT
 } from '@/utils/constants';
@@ -64,9 +63,8 @@ export const windowMotionSettings = ({
   if (launchElementY === 0) {
     launchElementY = window.innerHeight / 2;
   }
-  const baseTransform: TransformProperties & { zIndex: number } = {
+  const baseTransform: TransformProperties = {
     scale: 0,
-    zIndex: foregroundZindex,
     x: widthOffset + launchElementX,
     y: heightOffset + launchElementY
   };
