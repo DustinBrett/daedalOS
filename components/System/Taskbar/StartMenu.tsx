@@ -6,9 +6,33 @@ import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRef, useState } from 'react';
 
+const buttons = [
+  {
+    title: 'START',
+    alt: 'Expand',
+    icon: '\ue700',
+    isBold: true
+  },
+  {
+    title: 'All apps',
+    icon: '\ue179',
+    isView: true
+  },
+  {
+    title: 'Documents',
+    icon: '\ue160'
+  },
+  {
+    title: 'Power',
+    icon: '\ue7e8'
+  }
+];
+
+const defaultView = 'All apps';
+
 const StartMenu: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [view, setView] = useState('All apps');
+  const [view, setView] = useState(defaultView);
   const startButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -16,36 +40,20 @@ const StartMenu: React.FC = () => {
       {showMenu && (
         <nav className={styles.menu}>
           <ol className={styles.buttons}>
-            <li>
-              <figure title="Expand">
-                <span data-icon="&#xe700;" />
-                <figcaption>
-                  <strong>START</strong>
-                </figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure
-                className={view === 'All apps' ? styles.buttonSelected : ''}
-                title="All apps"
-                onClick={() => setView('All apps')}
-              >
-                <span data-icon="&#xe179;" />
-                <figcaption>All apps</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure title="Documents">
-                <span data-icon="&#xe160;" />
-                <figcaption>Documents</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure title="Power">
-                <span data-icon="&#xe7e8;" />
-                <figcaption>Power</figcaption>
-              </figure>
-            </li>
+            {buttons.map(({ alt, icon, isBold, isView, title }) => (
+              <li key={title}>
+                <figure
+                  className={view === title ? styles.buttonSelected : ''}
+                  onClick={isView ? () => setView(view) : undefined}
+                  title={alt || title}
+                >
+                  <span data-icon={icon} />
+                  <figcaption>
+                    {isBold ? <strong>{title}</strong> : title}
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
           </ol>
           <FileManager
             path="/start"
