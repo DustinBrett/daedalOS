@@ -21,7 +21,14 @@
   - Animate open/close from icon on list view
   - Delay foregrounding next window until close/minimize is done animating
 - Start Menu
-  - Complete UI/UX
+  - Document shortcut function
+  - START MENU click to close
+  - Title's only when not showing submenu
+  - Clicking all apps closes or sends to all apps
+  - Drop shadow on expanded button bar
+  - Expanded button bar background color needs work
+  - Top/bottom border on hovers
+  - Blur effect isnt right
 
 ## Apps
 

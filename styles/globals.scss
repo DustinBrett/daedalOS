@@ -4,7 +4,13 @@
   font-family: 'SegoeUI';
 
   font-display: fallback;
-  src: url('../public/fonts/SegoeUI.woff2') format('woff2');
+  src: url('../public/fonts/segoeui.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'SegoeMDL2Assets';
+
+  src: url('../public/fonts/segmdl2.woff2') format('woff2');
 }
 
 @font-face {

@@ -76,24 +76,14 @@
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
 
-      * {
+      span {
         margin-left: -4px;
+
+        color: darken($highlightColor, 15%);
       }
     }
 
-    figure svg {
-      position: absolute;
-
-      width: 48px;
-    }
-
-    .buttonSelected svg {
-      color: darken($highlightColor, 15%);
-    }
-
     figure {
-      font-size: 16px;
-
       display: flex;
       overflow: hidden;
       align-items: center;
@@ -101,7 +91,17 @@
       width: 48px;
       height: 48px;
 
-      color: rgba($offWhite, 80%);
+      color: rgba(white, 80%);
+      [data-icon]:before {
+        /* stylelint-disable font-family-no-missing-generic-family-keyword */
+        font-family: 'SegoeMDL2Assets';
+
+        position: relative;
+        top: 2px;
+        left: 16px;
+
+        content: attr(data-icon);
+      }
 
       figcaption {
         font-size: 14px;
@@ -135,9 +135,9 @@
 
     width: 200px;
 
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.75);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
 
     @media (hover: hover) {
       transition: all 0.1s ease-out 0.6s;
@@ -147,6 +147,10 @@
 
   .buttons:hover figure {
     width: 199px;
+
+    figcaption {
+      left: 32px;
+    }
 
     @media (hover: hover) {
       transition: all 0.1s ease-out 0.6s;
