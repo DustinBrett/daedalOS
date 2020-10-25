@@ -10,24 +10,30 @@ import Img from 'react-optimized-image';
 import { basename } from 'path';
 import { memo } from 'react';
 
-const Icon: React.FC<{ src: string }> = ({ src }) => {
+type IconProps = { height: number, src: string, width: number };
+
+const Icon: React.FC<IconProps> = ({ src, width, height }) => {
+  const dimensions = { width, height };
+
   switch (src) {
     case '/icons/files/js.svg':
-      return <Img src={JsFileImage} alt="JavaScript" url />;
+      return <Img url {...dimensions} src={JsFileImage} alt="JavaScript" />;
     case '/icons/files/unknown.svg':
-      return <Img src={UnknownFileImage} alt="Unknown" url />;
-    case '/icons/games/doom.png':
-      return <Img src={DoomImage} alt="Doom" type="icon" />;
-    case '/icons/games/keen.png':
-      return <Img src={KeenImage} alt="Commander Keen" type="icon" />;
+      return <Img url {...dimensions} src={UnknownFileImage} alt="Unknown" />;
     case '/icons/programs/dos.png':
-      return <Img src={DosImage} alt="DOS" url />;
+      return <Img url {...dimensions} src={DosImage} alt="DOS" />;
+
+    case '/icons/games/keen.png':
+      return <Img {...dimensions} src={KeenImage} alt="Commander Keen" type="icon" />;
+    case '/icons/games/doom.png':
+      return <Img {...dimensions} src={DoomImage} alt="Doom" type="icon" />;
     case '/icons/programs/explorer.png':
-      return <Img src={ExplorerImage} alt="Explorer" type="icon" />;
+      return <Img {...dimensions} src={ExplorerImage} alt="Explorer" type="icon" />;
     case '/icons/programs/winamp.png':
-      return <Img src={WinampImage} alt="Winamp" type="icon" />;
+      return <Img {...dimensions} src={WinampImage} alt="Winamp" type="icon" />;
+
     default:
-      return <img alt={basename(src)} src={src} />;
+      return <img {...dimensions} src={src} alt={basename(src)} />;
   }
 };
 

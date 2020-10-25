@@ -15,7 +15,7 @@ const DirectoryMenu: React.FC<DirectoryView> = ({ entries, onDoubleClick }) => {
         >
           <figure>
             <div className={styles.menuIcon}>
-              <Icon src={icon} />
+              <Icon src={icon} height={32} width={32} />
             </div>
             <figcaption>{name}</figcaption>
           </figure>

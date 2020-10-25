@@ -17,7 +17,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
     <header className={`${styles.titlebar} handle`} onDoubleClick={onMaximize}>
       <h1>
         <figure>
-          <Icon src={icon} />
+          <Icon src={icon} height={16} width={16} />
           <figcaption>{name}</figcaption>
         </figure>
       </h1>

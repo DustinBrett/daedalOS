@@ -51,7 +51,7 @@ const TaskbarEntry: React.FC<TaskbarEntryProps> = ({
         tabIndex={-1}
       >
         <figure>
-          <Icon src={icon} />
+          <Icon src={icon} height={16} width={16} />
           <figcaption>{name}</figcaption>
         </figure>
       </button>

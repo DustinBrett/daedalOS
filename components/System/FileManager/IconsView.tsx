@@ -37,7 +37,7 @@ const DirectoryIcons: React.FC<DirectoryView> = ({
               {...desktopIconMotionSettings}
             >
               <figure>
-                <Icon src={icon} />
+                <Icon src={icon} height={42} width={42} />
                 <figcaption>{name}</figcaption>
               </figure>
             </motion.li>

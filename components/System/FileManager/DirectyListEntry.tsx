@@ -31,7 +31,7 @@ const DirectyListEntry: React.FC<DirectyListEntryProps> = ({
       <>
         <td className={styles.emphasis} title={name}>
           <figure>
-            <Icon src={icon} />
+            <Icon src={icon} height={16} width={16} />
             <figcaption title={name}>{fullName}</figcaption>
           </figure>
         </td>
