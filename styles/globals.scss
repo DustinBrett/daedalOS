@@ -3,20 +3,21 @@
 @font-face {
   font-family: 'SegoeUI';
 
-  font-display: fallback;
+  font-display: block;
   src: url('/fonts/segoeui.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'SegoeMDL2Assets';
 
+  font-display: block;
   src: url('/fonts/segmdl2.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'SF-Regular';
 
-  font-display: fallback;
+  font-display: block;
   src: url('/fonts/SF-Regular.woff2') format('woff2');
 }
 
