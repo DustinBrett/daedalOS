@@ -3,7 +3,7 @@ import styles from '@/styles/System/Taskbar/StartMenu.module.scss';
 import FileManager from '@/components/System/FileManager/FileManager';
 import MenuView from '@/components/System/FileManager/MenuView';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faList } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faList, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRef, useState } from 'react';
@@ -20,7 +20,9 @@ const StartMenu: React.FC = () => {
             <li>
               <figure>
                 <FontAwesomeIcon icon={faBars} />
-                <figcaption>START</figcaption>
+                <figcaption>
+                  <strong>START</strong>
+                </figcaption>
               </figure>
             </li>
             <li>
@@ -33,6 +35,12 @@ const StartMenu: React.FC = () => {
               <figure>
                 <FontAwesomeIcon icon={faFile} />
                 <figcaption>Documents</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <FontAwesomeIcon icon={faPowerOff} />
+                <figcaption>Power</figcaption>
               </figure>
             </li>
           </ol>

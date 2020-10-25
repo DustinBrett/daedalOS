@@ -68,6 +68,11 @@
       bottom: 0;
     }
 
+    > :nth-last-child(2) {
+      position: absolute;
+      bottom: 48px;
+    }
+
     .buttonSelected {
       border-left: solid 4px darken($highlightColor, 15%);
 
@@ -103,6 +108,11 @@
 
         position: relative;
         left: 48px;
+
+        strong {
+          font-family: 'Helvetica', sans-serif;
+          font-weight: 900;
+        }
       }
 
       &:hover {
