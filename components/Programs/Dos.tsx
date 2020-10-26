@@ -81,6 +81,6 @@ export default Dos;
 
 export const loaderOptions = {
   lockAspectRatio: true,
-  bgColor: '#000000',
+  bgColor: '#000',
   ...defaultDimensions
 };

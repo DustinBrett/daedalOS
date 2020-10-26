@@ -5,11 +5,13 @@ import { extname } from 'path';
 import { isValidUrl } from '@/utils/url';
 import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
+import { loaderOptions as webampLoaderOptions } from '@/components/Programs/WebODF';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
 import { ROOT_DIRECTORY } from '@/utils/constants';
 
 const Dos = dynamic(import('@/components/Programs/Dos'));
 const Explorer = dynamic(import('@/components/Programs/Explorer'));
+const WebODF = dynamic(import('@/components/Programs/WebODF'));
 const Winamp = dynamic(import('@/components/Programs/Winamp'));
 
 const appLoaders: AppLoaders = {
@@ -20,6 +22,10 @@ const appLoaders: AppLoaders = {
   explorer: {
     loader: Explorer,
     loaderOptions: explorerLoaderOptions
+  },
+  webodf: {
+    loader: WebODF,
+    loaderOptions: webampLoaderOptions
   },
   winamp: {
     loader: Winamp,

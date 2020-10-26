@@ -37,14 +37,14 @@
 
 html {
   touch-action: manipulation;
-}
 
-body {
-  font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
+  > body {
+    font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;
 
-  background-color: black;
+    background-color: black;
 
-  overscroll-behavior: contain;
+    overscroll-behavior: contain;
+  }
 }
 
 ol {
