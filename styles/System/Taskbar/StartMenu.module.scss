@@ -130,7 +130,7 @@
     }
   }
 
-  .buttons:hover {
+  .buttons:hover, .buttons:active {
     z-index: 99999;
 
     width: 200px;
@@ -138,23 +138,20 @@
     background-color: rgba(0, 0, 0, 0.9);
 
     backdrop-filter: blur(6px);
+  }
 
-    @media (hover: hover) {
+  @media (hover: hover) {
+    .buttons:hover {
       transition: all 0.1s ease-out 0.6s;
       transition-property: width, background-color, backdrop-filter;
     }
   }
 
-  .buttons:hover figure {
+  .buttons:hover figure, .buttons:active figure {
     width: 199px;
 
     figcaption {
       left: 32px;
-    }
-
-    @media (hover: hover) {
-      transition: all 0.1s ease-out 0.6s;
-      transition-property: width;
     }
 
     &:hover {
@@ -164,6 +161,13 @@
         map-get($taskbar, hover-lightness),
         map-get($taskbar, opacity)
       );
+    }
+  }
+
+  @media (hover: hover) {
+    .buttons:hover figure {
+      transition: all 0.1s ease-out 0.6s;
+      transition-property: width;
     }
   }
 }
