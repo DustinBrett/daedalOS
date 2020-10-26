@@ -130,7 +130,8 @@
     }
   }
 
-  .buttons:hover, .buttons:active {
+  .buttons:hover,
+  .buttons:active {
     z-index: 99999;
 
     width: 200px;
@@ -147,7 +148,8 @@
     }
   }
 
-  .buttons:hover figure, .buttons:active figure {
+  .buttons:hover figure,
+  .buttons:active figure {
     width: 199px;
 
     figcaption {
