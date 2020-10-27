@@ -5,10 +5,10 @@
   "author": "Dustin Brett",
   "license": "MIT",
   "scripts": {
-    "build": "npm run genfs && next build",
-    "check": "npm run eslint -- --fix && npm run csscomb && npm run prettier && npm run stylelint && npm run build",
+    "build": "next build",
+    "check": "npm run eslint -- --fix && npm run csscomb && npm run prettier && npm run stylelint && npm run genfs && npm run build",
     "csscomb": "csscomb styles",
-    "deploy": "npm run build && npm run export && cp CNAME out && touch out/.nojekyll && gh-pages-clean && gh-pages -d out -t true",
+    "deploy": "npm run genfs && npm run build && npm run export && cp CNAME out && touch out/.nojekyll && gh-pages-clean && gh-pages -d out -t true",
     "dev": "next dev",
     "eslint": "eslint components contexts pages types utils *.js *.ts",
     "export": "next export",
