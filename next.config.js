@@ -1,4 +1,7 @@
-module.exports = {
+/* eslint @typescript-eslint/no-var-requires: off */
+const withOptimizedImages = require('next-optimized-images');
+
+module.exports = withOptimizedImages({
   devIndicators: {
     autoPrerender: false
   },
@@ -6,8 +9,5 @@ module.exports = {
     lang: 'en',
     locale: 'en-US'
   },
-  images: {
-    imageSizes: [16, 24, 42]
-  },
   reactStrictMode: true
-};
+});

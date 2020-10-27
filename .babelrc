@@ -1,0 +1,4 @@
+{
+  "plugins": ["react-optimized-image/plugin"],
+  "presets": ["next/babel"]
+}
