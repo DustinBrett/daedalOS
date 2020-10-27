@@ -1,7 +1,7 @@
 module.exports = {
   types: {
     icon: {
-      sizes: [16, 42, 126],
+      sizes: [16, 24, 42],
       webp: true
     }
   }
