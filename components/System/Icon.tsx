@@ -4,6 +4,7 @@ import ExplorerImg from '@/public/icons/programs/explorer.png';
 import JsFileImg from '@/public/icons/files/js.svg';
 import KeenImg from '@/public/icons/games/keen.png';
 import UnknownFileImg from '@/public/icons/files/unknown.svg';
+import WebODFImg from '@/public/icons/programs/webodf.png';
 import WinampImg from '@/public/icons/programs/winamp.png';
 
 import Img from 'react-optimized-image';
@@ -29,6 +30,8 @@ const Icon: React.FC<IconProps> = ({ src, width, height }) => {
       return <Img {...size} src={DoomImg} alt="Doom" type="icon" />;
     case '/icons/programs/explorer.png':
       return <Img {...size} src={ExplorerImg} alt="Explorer" type="icon" />;
+    case '/icons/programs/webodf.png':
+      return <Img {...size} src={WebODFImg} alt="WebODF" type="icon" />;
     case '/icons/programs/winamp.png':
       return <Img {...size} src={WinampImg} alt="Winamp" type="icon" />;
 
