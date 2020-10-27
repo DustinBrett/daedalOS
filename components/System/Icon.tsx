@@ -1,39 +1,51 @@
-import DoomImg from '@/public/icons/games/doom.png';
-import DosImg from '@/public/icons/programs/dos.png';
-import ExplorerImg from '@/public/icons/programs/explorer.png';
-import JsFileImg from '@/public/icons/files/js.svg';
-import KeenImg from '@/public/icons/games/keen.png';
-import UnknownFileImg from '@/public/icons/files/unknown.svg';
-import WebODFImg from '@/public/icons/programs/webodf.png';
-import WinampImg from '@/public/icons/programs/winamp.png';
-
-import Img from 'react-optimized-image';
+import Image from 'next/image';
 import { basename } from 'path';
 import { memo } from 'react';
 
 type IconProps = { height: number; src: string; width: number };
 
+// TODO: Pass `alt`
 const Icon: React.FC<IconProps> = ({ src, width, height }) => {
   const size = { width, height };
 
   switch (src) {
     case '/icons/files/js.svg':
-      return <Img url {...size} src={JsFileImg} alt="JavaScript" />;
+      return (
+        <Image
+          unoptimized
+          {...size}
+          src="/icons/files/js.svg"
+          alt="JavaScript"
+        />
+      );
     case '/icons/files/unknown.svg':
-      return <Img url {...size} src={UnknownFileImg} alt="Unknown" />;
+      return (
+        <Image
+          unoptimized
+          {...size}
+          src="/icons/files/unknown.svg"
+          alt="Unknown"
+        />
+      );
     case '/icons/programs/dos.png':
-      return <Img url {...size} src={DosImg} alt="DOS" />;
+      return (
+        <Image unoptimized {...size} src="/icons/programs/dos.png" alt="DOS" />
+      );
 
     case '/icons/games/keen.png':
-      return <Img {...size} src={KeenImg} alt="Commander Keen" type="icon" />;
+      return (
+        <Image {...size} src="/icons/games/keen.png" alt="Commander Keen" />
+      );
     case '/icons/games/doom.png':
-      return <Img {...size} src={DoomImg} alt="Doom" type="icon" />;
+      return <Image {...size} src="/icons/games/doom.png" alt="Doom" />;
     case '/icons/programs/explorer.png':
-      return <Img {...size} src={ExplorerImg} alt="Explorer" type="icon" />;
+      return (
+        <Image {...size} src="/icons/programs/explorer.png" alt="Explorer" />
+      );
     case '/icons/programs/webodf.png':
-      return <Img {...size} src={WebODFImg} alt="WebODF" type="icon" />;
+      return <Image {...size} src="/icons/programs/webodf.png" alt="WebODF" />;
     case '/icons/programs/winamp.png':
-      return <Img {...size} src={WinampImg} alt="Winamp" type="icon" />;
+      return <Image {...size} src="/icons/programs/winamp.png" alt="Winamp" />;
 
     default:
       return <img {...size} src={src} alt={basename(src)} />;
