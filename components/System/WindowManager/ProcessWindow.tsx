@@ -15,7 +15,7 @@ import { getNextVisibleWindow, getMaxDimensions } from '@/utils/windowmanager';
 import { motion } from 'framer-motion';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { windowMotionSettings } from '@/utils/motions';
 
 const Window = dynamic(import('@/components/System/WindowManager/Window'));
@@ -69,8 +69,13 @@ const ProcessWindow: React.FC<Process> = ({
     defaultHeight,
     lockAspectRatio
   );
-  // const defaultX = -Math.floor(width / 2) + window.innerWidth * 0.5;
-  // const defaultY = -Math.floor(height / 2) + window.innerHeight * 0.45;
+  const { x: defaultX, y: defaultY } = useMemo(
+    () => ({
+      x: -Math.floor(width / 2) + window.innerWidth * 0.5,
+      y: -Math.floor(height / 2) + window.innerHeight * 0.45
+    }),
+    []
+  );
   const windowOptions = {
     onMinimize: () => minimize(id),
     onMaximize: () => (maximized ? restore(id, 'maximized') : maximize(id)),
@@ -79,8 +84,8 @@ const ProcessWindow: React.FC<Process> = ({
         height,
         id,
         width,
-        x, // : !previousX ? defaultX + x : x,
-        y // : !previousY ? defaultY + y : y
+        x: !previousX ? defaultX + x : x,
+        y: !previousY ? defaultY + y : y
       });
       close(id);
     },
@@ -133,8 +138,8 @@ const ProcessWindow: React.FC<Process> = ({
         width
       }}
       {...windowMotionSettings({
-        initialX: previousX, // || defaultX,
-        initialY: previousY, // || defaultY,
+        initialX: previousX || defaultX,
+        initialY: previousY || defaultY,
         animation:
           (maximized && minimized && 'maxmin') ||
           (maximized && 'maximized') ||
