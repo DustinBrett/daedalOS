@@ -1,6 +1,6 @@
 import type { Processes } from '@/types/utils/processmanager';
 
-import { TASKBAR_HEIGHT } from '@/utils/constants';
+import { TASKBAR_HEIGHT, WINDOW_PADDING } from '@/utils/constants';
 
 export const getMaxDimensions = (
   width: number,
@@ -24,8 +24,8 @@ export const getMaxDimensions = (
     }
 
     return {
-      height: Math.floor(Math.min(maxHeight, height)),
-      width: Math.floor(Math.min(maxWidth, width))
+      height: Math.floor(Math.min(maxHeight - WINDOW_PADDING * 2, height)),
+      width: Math.floor(Math.min(maxWidth - WINDOW_PADDING * 2, width))
     };
   }
 
