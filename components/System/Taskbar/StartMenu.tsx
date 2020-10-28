@@ -34,12 +34,18 @@ const StartMenu: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [view, setView] = useState(defaultView);
   const startButtonRef = useRef<HTMLButtonElement>(null);
+  const buttonsRef = useRef<HTMLOListElement>(null);
 
   return (
     <nav>
       {showMenu && (
         <nav className={styles.menu}>
-          <ol className={styles.buttons}>
+          <ol
+            className={styles.buttons}
+            ref={buttonsRef}
+            tabIndex={-1}
+            onMouseLeave={() => startButtonRef.current?.focus()}
+          >
             {buttons.map(({ alt, icon, isBold, isView, title }) => (
               <li key={title}>
                 <figure
@@ -71,7 +77,7 @@ const StartMenu: React.FC = () => {
         onBlur={({ relatedTarget }) => {
           if (!relatedTarget) {
             startButtonRef?.current?.focus();
-          } else {
+          } else if (relatedTarget !== buttonsRef.current) {
             setShowMenu(false);
           }
         }}

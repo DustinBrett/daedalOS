@@ -130,8 +130,17 @@
     }
   }
 
-  .buttons:hover,
-  .buttons:active {
+  .buttons:focus {
+    transition-delay: 0s !important;
+    transition-property: none !important;
+  }
+
+  .buttons:focus figure {
+    transition-delay: 0s !important;
+    transition-property: none !important;
+  }
+
+  .buttons:hover {
     z-index: 99999;
 
     width: 200px;
@@ -148,8 +157,7 @@
     }
   }
 
-  .buttons:hover figure,
-  .buttons:active figure {
+  .buttons:hover figure {
     width: 199px;
 
     figcaption {
