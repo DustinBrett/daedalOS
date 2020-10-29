@@ -1,12 +1,12 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
-$startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
+$startMenuTotalWidth: map-get($startmenu, width) + (map-get($startmenu, padding) * 2);
 
 .taskbarEntries {
   @include bottomLeft;
 
-  left: $startMenuTotalWidth;
+  left: $startMenuTotalWidth - map-get($startmenu, padding);
 
   display: flex;
   flex: 0 1 map-get($taskbar, entry-width);
@@ -20,7 +20,6 @@ $startMenuTotalWidth: map-get($startmenu, width) + map-get($startmenu, padding);
     display: grid;
 
     width: map-get($taskbar, entry-width);
-    padding-right: map-get($taskbar, entry-padding);
 
     &:last-child {
       padding-right: unset;
