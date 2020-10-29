@@ -10,11 +10,12 @@ export const getMaxDimensions = (
   lockAspectRatio = false
 ): { width: number; height: number } => {
   if (width === defaultWidth && height === defaultHeight) {
-    let maxWidth = window.innerWidth;
-    let maxHeight = window.innerHeight - TASKBAR_HEIGHT;
+    const PADDING = WINDOW_PADDING * 2;
+    let maxWidth = window.innerWidth - PADDING;
+    let maxHeight = window.innerHeight - TASKBAR_HEIGHT - PADDING;
 
     if (lockAspectRatio) {
-      const aspectLockedHeight = Math.min(maxWidth, width) * (height / width);
+      const aspectLockedHeight = (height / width) * Math.min(maxWidth, width);
 
       if (aspectLockedHeight > maxHeight) {
         maxWidth = maxHeight / (height / width);
@@ -24,8 +25,8 @@ export const getMaxDimensions = (
     }
 
     return {
-      height: Math.floor(Math.min(maxHeight - WINDOW_PADDING * 2, height)),
-      width: Math.floor(Math.min(maxWidth - WINDOW_PADDING * 2, width))
+      height: Math.ceil(Math.min(maxHeight, height)),
+      width: Math.ceil(Math.min(maxWidth, width))
     };
   }
 
