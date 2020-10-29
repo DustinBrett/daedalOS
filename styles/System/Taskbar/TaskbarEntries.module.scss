@@ -1,7 +1,8 @@
 @import '@/styles/maps';
 @import '@/styles/mixins';
 
-$startMenuTotalWidth: map-get($startmenu, width) + (map-get($startmenu, padding) * 2);
+$startMenuTotalWidth: map-get($startmenu, width) +
+  (map-get($startmenu, padding) * 2);
 
 .taskbarEntries {
   @include bottomLeft;
