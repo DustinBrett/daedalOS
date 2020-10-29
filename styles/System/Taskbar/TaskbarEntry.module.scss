@@ -45,6 +45,9 @@
     }
 
     figcaption {
+      position: relative;
+      top: -1px;
+
       overflow: hidden;
 
       width: map-get($taskbarEntry, text-width);
@@ -52,9 +55,6 @@
 
       letter-spacing: 0;
       text-overflow: ellipsis;
-
-      position: relative;
-      top: -1px;
     }
   }
 }

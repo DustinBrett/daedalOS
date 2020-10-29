@@ -1,61 +1,62 @@
-# MVP
+# Bugs
 
 ## System
 
 - File Manager
-  - Switch to react-table for resizable/sortable/scrollable columns
-  - Sort contents by name/date
-  - File stat solution needed for uploaded files
-  - Add modified time
-  - Open folders in new windows
-  - Clicking into directory messes with foregroundId
-- Taskbar
-  - Add padding to left of clock if needed
+  - Opening a directory breaks initial foreground focus
 - Icons
-  - Switch to `grid` to fix icon landscape issues (https://grid.layoutit.com/)
-  - Save icon positions (Stop using translate if possible)
-  - zIndex on drag should be above windows
-  - Image elements do not have explicit width and height
-- Windows
-  - Cascade padding with max width/height padding
-  - Animate open/close from icon on list view
-  - Delay foregrounding next window until close/minimize is done animating
+  - Moved icons occasionally flicker to initial position
+  - Icons don't properly align when landscape view
+  - Text truncation breaks at 3 lines
 - Start Menu
-  - Document shortcut function
-  - START MENU click to close
-  - Title's only when not showing submenu
-  - Clicking all apps closes or sends to all apps
-  - Drop shadow on expanded button bar
-  - Expanded button bar background color needs work
-  - Top/bottom border on hovers
-  - Blur effect isnt right
+  - Button labels start squished during animation transition
+  - Button menu opens when clicking active view
+- Windows
+  - Closing animation goes to initial position on mobile
+  - Z-index issue during animation transitions
+  - Focus doesn't work when opening uploaded DOS game
 
 ## Apps
 
+- WebODF
+  - Initial position issue
+  - Canvas size doesn't match window size
 - Winamp
-  - Positioning and animation issues on load
-  - Seek bar visible when minimized and playing
-  - Issue with focus when clicking via taskbar and on mobile
-- Document Viewer (https://webodf.org/)
-- PDF Viewer
-- JS Paint (https://github.com/1j01/jspaint)
-- Minesweeper
+  - Initial & subsequent position issues
+  - Minimize animation only works once
+  - Close animation doesn't work
+  - Console error on close
 
-## Refactoring
-
-- Move all types defined in .tsx/.ts into .d.ts files
-- Extract all magic numbers to variables
-
-# Post-MVP
+# High Priority
 
 ## System
 
-- Improve titlebar text to truncate better
-- Save Session
-- URL Routing via opening `.url`
-- Icon text truncation breaks at 3 lines
-- Improve color cycle (https://krazydad.com/tutorials/makecolors.php)
+- File Manager
+  - Seperate windows per directory
+- Icons
+  - Z-index issue during dragging
+  - Double check colors & behaviours
+- Start Menu
+  - Documents shortcut
+  - START MENU click to close
 
 ## Apps
 
-- DOS virtual keyboard on mobile
+- PDF Viewer
+- WebODF
+
+# Post MVP
+
+## System
+
+- Desktop
+  - Use brighter rainbow effect with wallpaper
+- File Manager
+  - Resizable/sortable/scrollable columns
+  - Modified date/time
+  - Expandable tree-view of directories
+  - Store uploaded file stats
+- Icons
+  - Save icon positions
+- Windows
+  - Save maximized state on close
