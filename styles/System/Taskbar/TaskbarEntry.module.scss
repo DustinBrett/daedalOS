@@ -52,6 +52,9 @@
 
       letter-spacing: 0;
       text-overflow: ellipsis;
+
+      position: relative;
+      top: -1px;
     }
   }
 }
