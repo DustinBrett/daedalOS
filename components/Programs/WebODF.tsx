@@ -1,3 +1,5 @@
+import styles from '@/styles/Programs/WebODF.module.scss';
+
 import type { AppComponent } from '@/types/utils/programs';
 
 import { useEffect, useRef } from 'react';
@@ -28,7 +30,7 @@ const WebODF: React.FC<AppComponent> = () => {
     };
   }, []);
 
-  return <article ref={odfElementRef} />;
+  return <article className={styles.webOdf} ref={odfElementRef} />;
 };
 
 export default WebODF;
