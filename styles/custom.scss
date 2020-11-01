@@ -1,0 +1,9 @@
+@mixin odfDocument {
+  *body {
+    width: 100%;
+  }
+
+  *text {
+    margin: 25px;
+  }
+}

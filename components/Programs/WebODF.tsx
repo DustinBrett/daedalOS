@@ -2,11 +2,22 @@ import styles from '@/styles/Programs/WebODF.module.scss';
 
 import type { AppComponent } from '@/types/utils/programs';
 
+import {
+  MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
+  MILLISECONDS_IN_SECOND
+} from '@/utils/constants';
 import { useEffect, useRef } from 'react';
 
-type WindowWithWebOdf = Window & typeof globalThis & { odf: any };
+type WindowWithWebOdf = Window &
+  typeof globalThis & {
+    odf: {
+      OdfCanvas: new (element: HTMLElement) => { load: (url: string) => void };
+    };
+  };
 
-const WebODF: React.FC<AppComponent> = () => {
+const WebODF: React.FC<AppComponent> = ({
+  file: { url = '/docs/welcome.odt' } = {}
+}) => {
   const odfElementRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -15,12 +26,17 @@ const WebODF: React.FC<AppComponent> = () => {
     lib.src = '/libs/webodf.js';
     lib.type = 'text/javascript';
     lib.onload = () => {
-      const odfCanvas = new (window as WindowWithWebOdf).odf.OdfCanvas(
-        odfElementRef.current
-      );
+      const { current: odfCanvasElement } = odfElementRef;
 
-      // TODO: Wait for opening animation to finish
-      odfCanvas.load('/docs/welcome.odt');
+      if (odfCanvasElement) {
+        setTimeout(
+          () =>
+            new (window as WindowWithWebOdf).odf.OdfCanvas(
+              odfCanvasElement
+            ).load(url),
+          MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND
+        );
+      }
     };
 
     document.head.appendChild(lib);
@@ -35,4 +51,7 @@ const WebODF: React.FC<AppComponent> = () => {
 
 export default WebODF;
 
-export const loaderOptions = {};
+export const loaderOptions = {
+  width: 450,
+  height: 500
+};

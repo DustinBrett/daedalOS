@@ -1,7 +1,7 @@
 import type { FileDropEvents } from '@/types/utils/events';
 import type { RndDragCallback } from 'react-rnd';
 
-const CLICK_DELAY_IN_MILLISECONDS = 300;
+import { CLICK_DELAY_IN_MILLISECONDS } from '@/utils/constants';
 
 const haltEvent = (event: React.DragEvent): void => {
   event.preventDefault();
