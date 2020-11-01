@@ -18,9 +18,6 @@
 
 ## Apps
 
-- WebODF
-  - Initial position issue
-  - Canvas size doesn't match window size
 - Winamp
   - Initial & subsequent position issues
   - Minimize animation only works once
