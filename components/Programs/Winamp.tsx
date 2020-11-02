@@ -13,7 +13,7 @@ import {
 } from '@/utils/winamp';
 import { onTouchEventsOnly } from '@/utils/events';
 import { Rnd } from 'react-rnd';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const defaultDimensions = {
   height: 232,
@@ -32,6 +32,7 @@ const Winamp: React.FC<AppComponent> = ({
   minimized,
   file: { url = '', name = '' } = {}
 }) => {
+  const [closing, setClosing] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
     const { default: WebampConstructor } = await import('webamp');
@@ -40,7 +41,7 @@ const Winamp: React.FC<AppComponent> = ({
       current: HTMLElement;
     };
 
-    if (onClose) webamp.onClose(onClose);
+    webamp.onWillClose(() => setClosing(true));
     if (onMinimize) webamp.onMinimize(onMinimize);
     closeEqualizer(webamp);
     await webamp.renderWhenReady(containerElement);
@@ -67,6 +68,13 @@ const Winamp: React.FC<AppComponent> = ({
 
     return tryDispose;
   }, []);
+
+  useEffect(() => {
+    if (closing) {
+      onClose();
+      setClosing(false);
+    }
+  }, [closing, onClose]);
 
   return (
     <Rnd
