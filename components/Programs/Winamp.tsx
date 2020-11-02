@@ -32,6 +32,7 @@ const Winamp: React.FC<AppComponent> = ({
   minimized,
   file: { url = '', name = '' } = {}
 }) => {
+  const [webampLib, setWebampLib] = useState<Webamp & WebampStore>();
   const [closing, setClosing] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
@@ -53,17 +54,16 @@ const Winamp: React.FC<AppComponent> = ({
   };
 
   useEffect(() => {
-    let webamp: Webamp & WebampStore;
     const tryDispose = () => {
       try {
-        webamp.dispose();
+        webampLib?.dispose();
       } catch (_exception) {
         /* eslint no-empty: off */
       }
     };
 
     loadWebamp().then((loadedWebamp) => {
-      webamp = loadedWebamp;
+      setWebampLib(loadedWebamp);
     });
 
     return tryDispose;
