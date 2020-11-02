@@ -15,7 +15,15 @@ import { onTouchEventsOnly } from '@/utils/events';
 import { Rnd } from 'react-rnd';
 import { useEffect, useRef } from 'react';
 
+const defaultDimensions = {
+  height: 232,
+  width: 275
+};
+
+const getWebamp = () => document.getElementById('webamp') as HTMLDivElement;
+
 const Winamp: React.FC<AppComponent> = ({
+  onBlur,
   onClose,
   onMinimize,
   onFocus,
@@ -25,7 +33,6 @@ const Winamp: React.FC<AppComponent> = ({
   file: { url = '', name = '' } = {}
 }) => {
   const elementRef = useRef<HTMLElement>(null);
-  const getWebamp = () => document.getElementById('webamp') as HTMLDivElement;
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
     const { default: WebampConstructor } = await import('webamp');
     const webamp = new WebampConstructor(webampOptions) as Webamp & WebampStore;
@@ -49,7 +56,7 @@ const Winamp: React.FC<AppComponent> = ({
     const tryDispose = () => {
       try {
         webamp.dispose();
-      } catch (exception) {
+      } catch (_exception) {
         /* eslint no-empty: off */
       }
     };
@@ -64,14 +71,15 @@ const Winamp: React.FC<AppComponent> = ({
   return (
     <Rnd
       className={styles.winamp}
+      cancel={touchControls}
+      dragHandleClassName="draggable"
       enableResizing={false}
       enableUserSelectHack={false}
-      dragHandleClassName="draggable"
-      cancel={touchControls}
+      onBlur={onBlur}
       onDrag={onTouchEventsOnly}
-      onFocus={onFocus}
       onDragStart={focusOnDrag}
       onDragStop={updatePosition}
+      onFocus={onFocus}
       style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
     >
       <article ref={elementRef} />
@@ -82,5 +90,6 @@ const Winamp: React.FC<AppComponent> = ({
 export default Winamp;
 
 export const loaderOptions = {
-  windowed: false
+  windowed: false,
+  ...defaultDimensions
 };

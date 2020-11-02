@@ -1,3 +1,15 @@
 .winamp {
   pointer-events: all;
+
+  article > div > div > div > div:nth-child(1) {
+    transform: translate(0, 0) !important;
+  }
+
+  article > div > div > div > div:nth-child(2) {
+    transform: translate(0, 116px) !important;
+  }
+
+  article > div > div > div > div:nth-child(3) {
+    transform: translate(0, 232px) !important;
+  }
 }

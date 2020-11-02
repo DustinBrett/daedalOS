@@ -19,10 +19,11 @@
 ## Apps
 
 - Winamp
-  - Initial & subsequent position issues
   - Minimize animation only works once
   - Close animation doesn't work
   - Console error on close
+  - Initial focus not working
+  - Mobile focus of main window not working
 
 # High Priority
 

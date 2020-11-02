@@ -71,8 +71,8 @@ const ProcessWindow: React.FC<Process> = ({
   );
   const { x: defaultX, y: defaultY } = useMemo(
     () => ({
-      x: -Math.floor(width / 2) + window.innerWidth * 0.5,
-      y: -Math.floor(height / 2) + window.innerHeight * 0.45
+      x: Math.floor(-(width / 2) + window.innerWidth * 0.5),
+      y: Math.floor(-(height / 2) + window.innerHeight * 0.45)
     }),
     []
   );
