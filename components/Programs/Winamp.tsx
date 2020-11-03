@@ -4,7 +4,11 @@ import type Webamp from 'webamp';
 import type { AppComponent } from '@/types/utils/programs';
 import type { WebampStore } from '@/types/components/Programs/winamp';
 
-import { appendElement, focusOnDrag } from '@/utils/elements';
+import {
+  appendElement,
+  focusOnDrag,
+  focusResizableElementRef
+} from '@/utils/elements';
 import {
   closeEqualizer,
   loadTrackOrSkin,
@@ -29,12 +33,12 @@ const Winamp: React.FC<AppComponent> = ({
   onFocus,
   updatePosition,
   zIndex,
-  minimized,
   file: { url = '', name = '' } = {}
 }) => {
   const [webampLib, setWebampLib] = useState<Webamp & WebampStore>();
   const [closing, setClosing] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
+  const dragContainerRef = useRef<Rnd>(null);
   const loadWebamp = async (): Promise<Webamp & WebampStore> => {
     const { default: WebampConstructor } = await import('webamp');
     const webamp = new WebampConstructor(webampOptions) as Webamp & WebampStore;
@@ -46,8 +50,8 @@ const Winamp: React.FC<AppComponent> = ({
     if (onMinimize) webamp.onMinimize(onMinimize);
     closeEqualizer(webamp);
     await webamp.renderWhenReady(containerElement);
-    appendElement(containerElement, getWebamp()).focus();
-    onFocus();
+    appendElement(containerElement, getWebamp());
+    focusResizableElementRef(dragContainerRef);
     loadTrackOrSkin(webamp, url, name);
 
     return webamp;
@@ -71,8 +75,8 @@ const Winamp: React.FC<AppComponent> = ({
 
   useEffect(() => {
     if (closing) {
-      onClose();
       setClosing(false);
+      onClose();
     }
   }, [closing, onClose]);
 
@@ -88,7 +92,9 @@ const Winamp: React.FC<AppComponent> = ({
       onDragStart={focusOnDrag}
       onDragStop={updatePosition}
       onFocus={onFocus}
-      style={{ zIndex, visibility: minimized ? 'hidden' : 'visible' }}
+      style={{ zIndex }}
+      ref={dragContainerRef}
+      tabIndex={-1}
     >
       <article ref={elementRef} />
     </Rnd>

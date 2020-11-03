@@ -16,10 +16,8 @@
 ## Apps
 
 - Winamp
-  - Minimize animation only works once
-  - Close animation doesn't work
-  - Initial focus not working
-  - Mobile focus of main window not working
+  - Exit animation doesn't work
+  - Titlebar not inactive after initial blur
 
 # High Priority
 
