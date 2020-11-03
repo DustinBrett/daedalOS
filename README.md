@@ -8,9 +8,6 @@
   - Moved icons occasionally flicker to initial position
   - Icons don't properly align when landscape view
   - Text truncation breaks at 3 lines
-- Start Menu
-  - Button labels start squished during animation transition
-  - Button menu opens when clicking active view
 - Windows
   - Closing animation goes to initial position on mobile
   - Z-index issue during animation transitions
@@ -35,12 +32,14 @@
   - Double check colors & behaviours
 - Start Menu
   - Documents shortcut
-  - START MENU click to close
+  - START MENU click to toggle button bar
+  - Power to reset all caches
 
 ## Apps
 
 - PDF Viewer
 - WebODF
+  - Add `odf` file support with icon
 
 # Post MVP
 

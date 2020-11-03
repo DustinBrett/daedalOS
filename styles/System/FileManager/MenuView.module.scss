@@ -42,6 +42,15 @@
         color: $highlightColor;
       }
     }
+
+    &:active {
+      background-color: hsla(
+        0,
+        0%,
+        map-get($taskbar, hover-lightness),
+        map-get($taskbar, active-opacity)
+      );
+    }
   }
 }
 

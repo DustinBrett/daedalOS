@@ -36,8 +36,9 @@
 }
 
 html {
-  touch-action: manipulation;
   overflow: hidden;
+
+  touch-action: manipulation;
 
   > body {
     font-family: 'Segoe UI', 'SegoeUI', 'Helvetica', sans-serif;

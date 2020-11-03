@@ -51,6 +51,7 @@ const StartMenu: React.FC = () => {
                 <figure
                   className={view === title ? styles.buttonSelected : ''}
                   onClick={isView ? () => setView(view) : undefined}
+                  tabIndex={-1}
                   title={alt || title}
                 >
                   <span data-icon={icon} />
@@ -77,7 +78,7 @@ const StartMenu: React.FC = () => {
         onBlur={({ relatedTarget }) => {
           if (!relatedTarget) {
             startButtonRef?.current?.focus();
-          } else if (relatedTarget !== buttonsRef.current) {
+          } else if (!buttonsRef.current?.contains(relatedTarget as Node)) {
             setShowMenu(false);
           }
         }}

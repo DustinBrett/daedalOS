@@ -9,7 +9,10 @@ import {
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   TASKBAR_HEIGHT
 } from '@/utils/constants';
-import { getTargetCenterPosition } from '@/utils/elements';
+import {
+  getTargetCenterPosition,
+  getTargetCenterImagePosition
+} from '@/utils/elements';
 
 export const desktopIconDragSettings = {
   dragElastic: 0.25,
@@ -56,7 +59,7 @@ export const windowMotionSettings = ({
   let {
     x: launchElementX = 0,
     y: launchElementY = 0
-  } = getTargetCenterPosition(launchElement);
+  } = getTargetCenterImagePosition(launchElement);
   if (launchElementX === 0) {
     launchElementX = window.innerWidth / 2;
   }

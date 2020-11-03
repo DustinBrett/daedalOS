@@ -37,10 +37,11 @@ export const lockDocumentTitle = (): void => {
 };
 
 export const getTargetCenterPosition = (
-  element?: HTMLElement
+  element?: HTMLElement,
+  focusImage = false
 ): { x: number; y: number } => {
   const idealElement =
-    element?.getElementsByTagName?.('img')?.[0] ||
+    (focusImage && element?.getElementsByTagName?.('img')?.[0]) ||
     element?.getElementsByTagName?.('figure')?.[0] ||
     element;
   const { x = 0, y = 0, height = 0, width = 0 } =
@@ -51,3 +52,7 @@ export const getTargetCenterPosition = (
     y: Math.floor(y + height / 2)
   };
 };
+
+export const getTargetCenterImagePosition = (
+  element: HTMLElement
+): { x: number; y: number } => getTargetCenterPosition(element, true);

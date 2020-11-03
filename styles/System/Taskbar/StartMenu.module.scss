@@ -91,6 +91,8 @@
       width: 48px;
       height: 48px;
 
+      white-space: nowrap;
+
       color: rgba(white, 80%);
       [data-icon]:before {
         /* stylelint-disable font-family-no-missing-generic-family-keyword */
@@ -122,6 +124,15 @@
           map-get($taskbar, hover-lightness),
           map-get($taskbar, opacity)
         );
+      }
+
+      &:active {
+        background-color: hsla(
+          0,
+          0%,
+          map-get($taskbar, hover-lightness),
+          map-get($taskbar, active-opacity)
+        ) !important;
       }
     }
 
