@@ -8,4 +8,5 @@ export type WindowMotionSettings = {
   y: number;
   taskbarElement?: HTMLButtonElement;
   launchElement: HTMLElement;
+  zIndex: number;
 };

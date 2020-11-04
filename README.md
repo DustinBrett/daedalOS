@@ -10,7 +10,6 @@
   - Text truncation breaks at 3 lines
 - Windows
   - Closing animation goes to initial position on mobile
-  - Z-index issue during animation transitions
   - Focus doesn't work when opening uploaded DOS game
 
 ## Apps

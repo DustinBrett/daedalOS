@@ -150,7 +150,8 @@ const ProcessWindow: React.FC<Process> = ({
         x,
         y,
         taskbarElement,
-        launchElement
+        launchElement,
+        zIndex: windowOptions.zIndex
       })}
     >
       {windowed ? (

@@ -6,6 +6,7 @@ import type { MotionProps, TargetAndTransition } from 'framer-motion';
 import type { WindowMotionSettings } from '@/types/utils/motion';
 
 import {
+  foregroundZindex,
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   TASKBAR_HEIGHT
 } from '@/utils/constants';
@@ -48,8 +49,10 @@ export const windowMotionSettings = ({
   x,
   y,
   taskbarElement,
-  launchElement
+  launchElement,
+  zIndex
 }: WindowMotionSettings): MotionProps => {
+  const exitZIndex = foregroundZindex + 1;
   const widthOffset = -Math.floor(width / 2);
   const heightOffset = -Math.floor(height / 2);
   const {
@@ -84,30 +87,37 @@ export const windowMotionSettings = ({
       x: initialX,
       y: initialY,
       height,
-      width
+      width,
+      zIndex
     },
     maximized: {
       scale: 1,
       x: initialX === x ? 0 : -x,
       y: initialY === y ? 0 : -y,
       height: window.innerHeight - TASKBAR_HEIGHT,
-      width: '100vw'
+      width: '100vw',
+      zIndex
     },
     minimized: {
       scale: 0,
       x: widthOffset + taskbarElementX,
-      y: heightOffset + taskbarElementY
+      y: heightOffset + taskbarElementY,
+      zIndex: exitZIndex
     },
     maxmin: {
       scale: 0,
       x: -(window.innerWidth / 2) + taskbarElementX,
-      y: -(window.innerHeight / 2) + taskbarElementY
+      y: -(window.innerHeight / 2) + taskbarElementY,
+      zIndex: exitZIndex
     }
   };
 
   return {
     initial: baseTransform,
-    exit: animation === 'maximized' ? maximizedExitTransform : baseTransform,
+    exit: {
+      ...(animation === 'maximized' ? maximizedExitTransform : baseTransform),
+      zIndex: exitZIndex
+    },
     animate: animationVariants[animation],
     transition: {
       duration: MAXIMIZE_ANIMATION_SPEED_IN_SECONDS
