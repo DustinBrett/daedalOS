@@ -48,9 +48,7 @@
   width: 275px;
   height: 300px;
 
-  background-color: hsla(0, 0%, map-get($taskbar, base-lightness), 60%);
-
-  backdrop-filter: blur(map-get($taskbar, blur) * 2);
+  background-color: hsla(0, 0%, map-get($taskbar, base-lightness), 70%);
 
   .buttons {
     position: relative;
@@ -156,9 +154,7 @@
 
     width: 200px;
 
-    background-color: rgba(0, 0, 0, 0.9);
-
-    backdrop-filter: blur(6px);
+    background-color: rgba(5, 5, 5, 0.975);
   }
 
   @media (hover: hover) {

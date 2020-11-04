@@ -15,4 +15,6 @@
     map-get($taskbar, base-lightness),
     map-get($taskbar, opacity)
   );
+
+  backdrop-filter: blur(5px);
 }
