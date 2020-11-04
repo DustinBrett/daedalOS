@@ -31,7 +31,8 @@
 - Start Menu
   - Documents shortcut
   - START MENU click to toggle button bar
-  - Power to reset all caches
+  - Power should reset all caches
+  - Blur on menu and buttons submenu
 
 ## Apps
 
