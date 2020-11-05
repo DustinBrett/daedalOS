@@ -1,3 +1,4 @@
+import BlogImg from '@/public/icons/programs/blog.jpeg';
 import DoomImg from '@/public/icons/games/doom.png';
 import DosImg from '@/public/icons/programs/dos.png';
 import ExplorerImg from '@/public/icons/programs/explorer.png';
@@ -28,6 +29,8 @@ const Icon: React.FC<IconProps> = ({ src, width, height }) => {
       return <Img {...size} src={KeenImg} alt="Commander Keen" type="icon" />;
     case '/icons/games/doom.png':
       return <Img {...size} src={DoomImg} alt="Doom" type="icon" />;
+    case '/icons/programs/blog.jpeg':
+      return <Img {...size} src={BlogImg} alt="Blog" type="icon" />;
     case '/icons/programs/explorer.png':
       return <Img {...size} src={ExplorerImg} alt="Explorer" type="icon" />;
     case '/icons/programs/webodf.png':
