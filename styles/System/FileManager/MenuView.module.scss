@@ -1,12 +1,10 @@
 @import '@/styles/maps';
 @import '@/styles/variables';
 
-// TODO: Dimensions and position should not be part of the MenuView. All View's should be more generic. Pass class along?
-
 .menuView {
   position: absolute;
   bottom: 0;
-  left: 48px; // TODO: Width of button bar
+  left: 48px;
 
   width: 227px;
   height: 300px;

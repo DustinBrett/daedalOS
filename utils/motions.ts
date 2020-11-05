@@ -39,7 +39,6 @@ export const taskbarEntriesMotionSettings: MotionProps = {
   }
 };
 
-// TODO: Refactor this to be more efficent and DRY
 export const windowMotionSettings = ({
   initialX = 0,
   initialY = 0,

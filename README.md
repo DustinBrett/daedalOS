@@ -35,9 +35,14 @@
 
 ## Apps
 
+- Blog
+  - Toolbar
+    - Back & Forward Buttons
+      - iframe.contentWindow.history.back() | forward()
+    - Refresh & Home Buttons
+    - Address (Read-Only) & Search (w/WordPress) Inputs
 - PDF Viewer
 - WebODF
-  - Add `odf` file support with icon
 
 # Post MVP
 
@@ -54,3 +59,4 @@
   - Save icon positions
 - Windows
   - Save maximized state on close
+  - Initial load maximized if dimensions > screen

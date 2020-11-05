@@ -29,8 +29,6 @@ export const onTouchEventsOnly: RndDragCallback = (e): void => {
   }
 };
 
-// TODO: https://www.npmjs.com/package/use-double-tap
-// - Extract another component and useCallback
 export class ClickHandler {
   clickTimer?: NodeJS.Timeout;
 
