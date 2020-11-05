@@ -73,7 +73,7 @@ const ProcessWindow: React.FC<Process> = ({
   const { x: defaultX, y: defaultY } = useMemo(
     () => ({
       x: Math.floor((window.innerWidth - width) / 2),
-      y: Math.floor(((window.innerHeight - TASKBAR_HEIGHT) - height) / 2)
+      y: Math.floor((window.innerHeight - height - TASKBAR_HEIGHT) / 2)
     }),
     []
   );
