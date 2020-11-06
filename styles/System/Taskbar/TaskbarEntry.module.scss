@@ -40,14 +40,13 @@
     color: map-get($taskbarEntry, text-color);
 
     img {
+      display: flex;
+
       width: map-get($taskbarEntry, icon-width);
       margin: 0 map-get($taskbarEntry, icon-margin);
     }
 
     figcaption {
-      position: relative;
-      top: -1px;
-
       overflow: hidden;
 
       width: map-get($taskbarEntry, text-width);

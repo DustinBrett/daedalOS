@@ -75,10 +75,11 @@ $buttonIconOpacity: 0.975;
         align-items: center;
         justify-content: center;
 
+        height: map-get($window, title-bar-height);
         width: 100%;
 
         img {
-          position: relative;
+          display: flex;
 
           width: 16px;
           height: 16px;
