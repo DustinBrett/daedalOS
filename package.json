@@ -62,7 +62,7 @@
     "postcss-preset-env": "^6.7.0",
     "postcss-safe-parser": "^5.0.2",
     "prettier": "^2.1.2",
-    "sass": "^1.28.0",
+    "sass": "^1.29.0",
     "stylelint": "^13.7.2",
     "stylelint-config-recommended": "^3.0.0",
     "typescript": "^4.0.5"
