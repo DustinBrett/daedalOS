@@ -9,7 +9,7 @@ export type ProcessContextType = {
     file: File,
     previousState: ProcessState,
     launchElement: EventTarget
-  ) => void;
+  ) => Promise<string>;
   maximize: (id: string) => void;
   minimize: (id: string) => void;
   open: (

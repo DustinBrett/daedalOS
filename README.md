@@ -5,12 +5,10 @@
 - File Manager
   - Opening a directory breaks initial foreground focus
 - Icons
-  - Moved icons occasionally flicker to initial position
+  - Initial position ghosting & closing animation on mobile
   - Icons don't properly align when landscape view
-  - Text truncation breaks at 3 lines
 - Windows
-  - Closing animation goes to initial position on mobile
-  - Focus doesn't work when opening uploaded DOS game
+  - Closing animation on uploaded apps doesn't work right
 
 ## Apps
 

@@ -92,28 +92,32 @@ export const load = (
   file: File,
   previousState: ProcessState,
   launchElement: EventTarget
-): void => {
-  const fileReader = new FileReader();
+): Promise<string> => {
+  return new Promise((resolve) => {
+    const fileReader = new FileReader();
 
-  fileReader.addEventListener('loadend', () => {
-    const url = URL.createObjectURL(
-      new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
-    );
-    const ext = extname(file.name).toLowerCase();
-
-    open(processes, updateProcesses)(
-      {
-        icon: getFileIcon('', ext),
-        name: basename(file.name, ext),
-        ext,
-        url
-      },
-      previousState,
-      launchElement
-    );
+    fileReader.addEventListener('loadend', () => {
+      const url = URL.createObjectURL(
+        new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
+      );
+      const ext = extname(file.name).toLowerCase();
+  
+      resolve(
+        open(processes, updateProcesses)(
+          {
+            icon: getFileIcon('', ext),
+            name: basename(file.name, ext),
+            ext,
+            url
+          },
+          previousState,
+          launchElement
+        )
+      );
+    });
+  
+    fileReader.readAsArrayBuffer(file);
   });
-
-  fileReader.readAsArrayBuffer(file);
 };
 
 export const position = (updateProcesses: Dispatch<ProcessAction>) => (

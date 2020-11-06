@@ -24,7 +24,12 @@ const FileManager: React.FC<DirectoryType> = ({
   const { load, open } = useContext(ProcessContext);
   const { foreground, getState } = useContext(SessionContext);
   const fileDropHandler = useFileDrop(async (dragEvent, file) => {
-    load(file, getState({ name: file.name }), dragEvent.target);
+    const processsId = await load(
+      file,
+      getState({ name: file.name }),
+      dragEvent.target
+    );
+    foreground(processsId);
     fs.writeFile(`${cwd}/${file.name}`, file);
     setEntries([
       ...entries,
