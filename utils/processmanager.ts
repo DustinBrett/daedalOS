@@ -101,7 +101,7 @@ export const load = (
         new Blob([new Uint8Array(fileReader.result as ArrayBuffer)])
       );
       const ext = extname(file.name).toLowerCase();
-  
+
       resolve(
         open(processes, updateProcesses)(
           {
@@ -115,7 +115,7 @@ export const load = (
         )
       );
     });
-  
+
     fileReader.readAsArrayBuffer(file);
   });
 };

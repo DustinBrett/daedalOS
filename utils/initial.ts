@@ -21,7 +21,7 @@ export const initialSessionState = {
 export const initialProcessState = {
   processes: [],
   close: (): string => '',
-  load: (): void => undefined,
+  load: (): Promise<string> => new Promise((resolve) => resolve()),
   maximize: (): void => undefined,
   minimize: (): string => '',
   open: (): string => '',
