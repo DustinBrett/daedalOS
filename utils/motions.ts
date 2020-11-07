@@ -27,6 +27,11 @@ export const desktopIconMotionSettings: MotionProps = {
   transition: { y: { type: 'spring' } }
 };
 
+export const startMenuEntriesMotionSettings: MotionProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 }
+};
+
 export const taskbarEntriesMotionSettings: MotionProps = {
   initial: { opacity: 0, x: -100 },
   animate: { opacity: 1, x: 0 },
