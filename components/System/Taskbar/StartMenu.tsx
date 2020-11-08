@@ -4,37 +4,50 @@ import FileManager from '@/components/System/FileManager/FileManager';
 import MenuView from '@/components/System/FileManager/MenuView';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useRef, useState } from 'react';
-
-const buttons = [
-  {
-    title: 'START',
-    alt: 'Expand',
-    icon: '\ue700',
-    isBold: true
-  },
-  {
-    title: 'All apps',
-    icon: '\ue179',
-    isView: true
-  },
-  {
-    title: 'Documents',
-    icon: '\ue160'
-  },
-  {
-    title: 'Power',
-    icon: '\ue7e8'
-  }
-];
+import { ProcessContext } from '@/contexts/ProcessManager';
+import { SessionContext } from '@/contexts/SessionManager';
+import { useContext, useRef, useState } from 'react';
 
 const defaultView = 'All apps';
 
 const StartMenu: React.FC = () => {
+  const { open } = useContext(ProcessContext);
+  const { foreground } = useContext(SessionContext);
   const [showMenu, setShowMenu] = useState(false);
   const [view, setView] = useState(defaultView);
   const startButtonRef = useRef<HTMLButtonElement>(null);
   const buttonsRef = useRef<HTMLOListElement>(null);
+
+  const buttons = [
+    {
+      title: 'START',
+      alt: 'Expand',
+      icon: '\ue700',
+      isBold: true
+    },
+    {
+      title: 'All apps',
+      icon: '\ue179',
+      isView: true
+    },
+    {
+      title: 'Documents',
+      icon: '\ue160',
+      onClick: async (clickEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        const processId = await open({
+          icon: '/icons/programs/explorer.png',
+          name: 'Documents',
+          url: '/docs'
+        }, {}, clickEvent.target);
+        foreground(processId);
+        setShowMenu(false);
+      }
+    },
+    {
+      title: 'Power',
+      icon: '\ue7e8'
+    }
+  ];
 
   return (
     <nav>
@@ -46,11 +59,11 @@ const StartMenu: React.FC = () => {
             tabIndex={-1}
             onMouseLeave={() => startButtonRef.current?.focus()}
           >
-            {buttons.map(({ alt, icon, isBold, isView, title }) => (
+            {buttons.map(({ alt, icon, isBold, isView, title, onClick }) => (
               <li key={title}>
                 <figure
                   className={view === title ? styles.buttonSelected : ''}
-                  onClick={isView ? () => setView(view) : undefined}
+                  onClick={isView ? () => setView(view) : onClick}
                   tabIndex={-1}
                   title={alt || title}
                 >

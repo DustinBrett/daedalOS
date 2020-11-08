@@ -47,7 +47,18 @@ const appLoaderByFileType = (
   ext?: string,
   searchParams?: URLSearchParams
 ): AppLoader | undefined => {
-  switch (ext || extname(appFile.url)) {
+  const extName = ext || extname(appFile.url);
+
+  if (!extName) {
+    return {
+      ...appLoaders.explorer,
+      loadedAppOptions: {
+        file: appFile
+      }
+    };
+  }
+
+  switch (extName) {
     case '.jsdos':
     case '.zip':
       return {

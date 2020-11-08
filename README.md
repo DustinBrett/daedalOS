@@ -9,7 +9,7 @@
   - Dragging goes behind windows
   - Icons don't properly align in landscape view
 - Windows
-  - Closing animation on uploaded apps doesn't work right
+  - Closing animation on uploaded apps doesn't go to right position
 
 ## Apps
 
@@ -24,7 +24,6 @@
 - Icons
   - Double check colors & behaviours
 - Start Menu
-  - Documents shortcut
   - START MENU click to toggle button bar
   - Power should reset all caches
   - Blur on menu and buttons submenu
