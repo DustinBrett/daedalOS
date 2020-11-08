@@ -33,12 +33,18 @@ const StartMenu: React.FC = () => {
     {
       title: 'Documents',
       icon: '\ue160',
-      onClick: async (clickEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        const processId = await open({
-          icon: '/icons/programs/explorer.png',
-          name: 'Documents',
-          url: '/docs'
-        }, {}, clickEvent.target);
+      onClick: async (
+        clickEvent: React.MouseEvent<HTMLElement, MouseEvent>
+      ) => {
+        const processId = await open(
+          {
+            icon: '/icons/programs/explorer.png',
+            name: 'Documents',
+            url: '/docs'
+          },
+          {},
+          clickEvent.target
+        );
         foreground(processId);
         setShowMenu(false);
       }
