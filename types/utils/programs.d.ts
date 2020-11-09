@@ -11,7 +11,7 @@ export type AppFile = {
 };
 
 export type AppOptions = {
-  args?: string[];
+  args?: URLSearchParams;
   file: AppFile;
 };
 

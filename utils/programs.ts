@@ -65,7 +65,7 @@ const appLoaderByFileType = (
         ...appLoaders.dos,
         loadedAppOptions: {
           file: appFile,
-          args: searchParams ? [...searchParams.entries()].flat() : []
+          args: searchParams
         }
       };
     case '.odt':

@@ -22,16 +22,18 @@ const dosOptions = {
 };
 
 const Dos: React.FC<AppComponent> = ({
-  args = ['-c', 'CLS'],
+  args,
   file: { url, name = '' } = {},
   maximized
 }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loadMain = (main: DosMainFn, prependedArgs: string[] = []) =>
-    main([...prependedArgs, ...args]).then((value) => {
-      ci = value;
-    });
+    main([...prependedArgs, ...['-c', args?.get('-c') || 'CLS']]).then(
+      (value) => {
+        ci = value;
+      }
+    );
   const loadDos = ({ fs, main }: DosRuntime) => {
     if (url) {
       const appPath = name.replace(/ /g, '').substring(0, 8);
@@ -56,7 +58,10 @@ const Dos: React.FC<AppComponent> = ({
     };
     const { Dos: DosModule } = window as WindowWithDosModule;
 
-    DosModule(canvasElement, dosOptions).then(loadDos);
+    DosModule(canvasElement, {
+      autolock: !!args?.get('autolock'),
+      ...dosOptions
+    }).then(loadDos);
 
     return () => {
       ci?.exit();
