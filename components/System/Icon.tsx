@@ -3,7 +3,6 @@ import DoomImg from '@/public/icons/games/doom.png';
 import DosImg from '@/public/icons/programs/dos.png';
 import ExplorerImg from '@/public/icons/programs/explorer.png';
 import JsFileImg from '@/public/icons/files/js.svg';
-import Heroes2Img from '@/public/icons/games/heroes2.png';
 import KeenImg from '@/public/icons/games/keen.png';
 import UnknownFileImg from '@/public/icons/files/unknown.svg';
 import WebODFImg from '@/public/icons/programs/webodf.png';
@@ -26,8 +25,6 @@ const Icon: React.FC<IconProps> = ({ src, width, height }) => {
     case '/icons/programs/dos.png':
       return <Img url {...size} src={DosImg} alt="DOS" />;
 
-    case '/icons/games/heroes2.png':
-      return <Img {...size} src={Heroes2Img} alt="Heroes 2" type="icon" />;
     case '/icons/games/keen.png':
       return <Img {...size} src={KeenImg} alt="Commander Keen" type="icon" />;
     case '/icons/games/doom.png':

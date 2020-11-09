@@ -28,12 +28,18 @@ const Dos: React.FC<AppComponent> = ({
 }) => {
   let ci: DosCommandInterface;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const loadMain = (main: DosMainFn, prependedArgs: string[] = []) =>
-    main([...prependedArgs, ...['-c', args?.get('-c') || 'CLS']]).then(
-      (value) => {
-        ci = value;
-      }
-    );
+  const loadMain = (main: DosMainFn, prependedArgs: string[] = []) => {
+    const loadArgs = args?.get('-c')
+      ? args
+          ?.getAll('-c')
+          .map((value) => ['-c', value])
+          .flat()
+      : ['-c', 'CLS'];
+
+    main([...prependedArgs, ...loadArgs]).then((value) => {
+      ci = value;
+    });
+  };
   const loadDos = ({ fs, main }: DosRuntime) => {
     if (url) {
       const appPath = name.replace(/ /g, '').substring(0, 8);
