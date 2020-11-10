@@ -10,6 +10,7 @@ import { ROOT_DIRECTORY } from '@/utils/constants';
 import { useContext } from 'react';
 
 const Explorer: React.FC<AppComponent> = ({
+  id = '',
   file: { url = ROOT_DIRECTORY } = {}
 }) => {
   const { title } = useContext(ProcessContext);
@@ -21,7 +22,7 @@ const Explorer: React.FC<AppComponent> = ({
         render={ListView}
         onChange={(cwd) => {
           if (cwd) {
-            title('explorer', cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
+            title(id, cwd === ROOT_DIRECTORY ? 'home' : basename(cwd));
           }
         }}
         details
