@@ -2,8 +2,6 @@
 
 ## System
 
-- File Manager
-  - Opening a directory breaks focus
 - Icons
   - Initial position ghosting & closing animation on mobile
   - Dragging goes behind windows
