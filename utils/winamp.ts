@@ -34,7 +34,8 @@ export const touchControls = `
 
 export const webampOptions: Options & PrivateOptions = {
   __initialWindowLayout,
-  availableSkins
+  availableSkins,
+  initialSkin: availableSkins[0]
 };
 
 export const loadTrackOrSkin = (
