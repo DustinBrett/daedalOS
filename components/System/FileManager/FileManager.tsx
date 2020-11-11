@@ -61,9 +61,7 @@ const FileManager: React.FC<DirectoryType> = ({
   }, [fs, cwd]);
 
   return (
-    <div {...fileDropHandler}>
-      {render({ entries, onDoubleClick, cwd })}
-    </div>
+    <div {...fileDropHandler}>{render({ entries, onDoubleClick, cwd })}</div>
   );
 };
 
