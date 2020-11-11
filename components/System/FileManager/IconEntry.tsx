@@ -20,7 +20,10 @@ const DirectyIconEntry: React.FC<IconEntryProps> = ({
   navRef,
   onDoubleClick
 }) => {
-  const [initialPosition, setInitialPosition] = useState<{ top: number, left: number } | null>(null);
+  const [initialPosition, setInitialPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const iconRef = useRef<HTMLLIElement>(null);
   const getPosition = () => {
@@ -29,10 +32,10 @@ const DirectyIconEntry: React.FC<IconEntryProps> = ({
     const { top: initialTop = 0, left: initialLeft = 0 } =
       initialPosition || {};
 
-    return({
+    return {
       top: top - initialTop,
       left: left - initialLeft
-    });
+    };
   };
 
   return (
