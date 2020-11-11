@@ -14,13 +14,13 @@ const WindowManager: React.FC = () => {
   const { processes } = useContext(ProcessContext);
 
   return (
-    <article className={styles.windows}>
+    <div className={styles.windows}>
       <AnimatePresence>
         {processes.map((process) => (
           <ProcessWindow key={process.id} {...process} />
         ))}
       </AnimatePresence>
-    </article>
+    </div>
   );
 };
 
