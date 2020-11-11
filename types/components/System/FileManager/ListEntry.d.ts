@@ -1,4 +1,4 @@
-export type DirectyListEntryProps = {
+export type ListEntryProps = {
   path?: string;
   name?: string;
   icon?: string;

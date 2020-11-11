@@ -2,7 +2,7 @@ import styles from '@/styles/System/FileManager/ListView.module.scss';
 
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
-import DirectyListEntry from '@/components/System/FileManager/DirectyListEntry';
+import ListEntry from '@/components/System/FileManager/ListEntry';
 import { ROOT_DIRECTORY } from '@/utils/constants';
 import { useRef, useState } from 'react';
 
@@ -42,27 +42,25 @@ const DirectoryList: React.FC<DirectoryView> = ({
         </thead>
         <tbody>
           {cwd !== ROOT_DIRECTORY && (
-            <DirectyListEntry
+            <ListEntry
               selected={selected}
               setSelected={setSelected}
               doubleClick={onDoubleClick({ path: '..' })}
             />
           )}
-          {entries.map(({ icon, kind, name, path, url, size, fullName }) => {
-            return (
-              <DirectyListEntry
-                key={path}
-                path={path}
-                icon={icon}
-                kind={kind}
-                size={size}
-                fullName={fullName}
-                selected={selected}
-                setSelected={setSelected}
-                doubleClick={onDoubleClick({ path, url, icon, name })}
-              />
-            );
-          })}
+          {entries.map(({ icon, kind, name, path, url, size, fullName }) => (
+            <ListEntry
+              key={path}
+              path={path}
+              icon={icon}
+              kind={kind}
+              size={size}
+              fullName={fullName}
+              selected={selected}
+              setSelected={setSelected}
+              doubleClick={onDoubleClick({ path, url, icon, name })}
+            />
+          ))}
         </tbody>
       </table>
     </article>

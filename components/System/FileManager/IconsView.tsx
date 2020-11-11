@@ -2,13 +2,8 @@ import styles from '@/styles/System/FileManager/IconsView.module.scss';
 
 import type { DirectoryView } from '@/types/components/System/FileManager/FileManager';
 
-import Icon from '@/components/System/Icon';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ClickHandler } from '@/utils/events';
-import {
-  desktopIconDragSettings,
-  desktopIconMotionSettings
-} from '@/utils/motions';
+import IconEntry from '@/components/System/FileManager/IconEntry';
+import { AnimatePresence } from 'framer-motion';
 import { useRef } from 'react';
 
 const DirectoryIcons: React.FC<DirectoryView> = ({
@@ -22,25 +17,16 @@ const DirectoryIcons: React.FC<DirectoryView> = ({
       <ol>
         <AnimatePresence>
           {entries.map(({ icon, name, kind, path, url }) => (
-            <motion.li
+            <IconEntry
               key={path}
-              drag
-              dragConstraints={navRef}
-              onClick={
-                new ClickHandler({
-                  doubleClick: onDoubleClick({ path, url, icon, name })
-                }).clickHandler
-              }
-              tabIndex={-1}
-              title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
-              {...desktopIconDragSettings}
-              {...desktopIconMotionSettings}
-            >
-              <figure>
-                <Icon src={icon} height={42} width={42} />
-                <figcaption>{name}</figcaption>
-              </figure>
-            </motion.li>
+              icon={icon}
+              name={name}
+              kind={kind}
+              path={path}
+              url={url}
+              navRef={navRef}
+              onDoubleClick={onDoubleClick}
+            />
           ))}
         </AnimatePresence>
       </ol>

@@ -1,5 +1,4 @@
 import type { DraggableData, Rnd, RndDragEvent } from 'react-rnd';
-import type { RefObject } from 'react';
 
 export const appendElement = (
   parentElement: HTMLElement,
@@ -17,11 +16,12 @@ export const focusOnDrag = (
   { node }: DraggableData
 ): void => node.focus();
 
-export const focusResizableElementRef = (elementRef: RefObject<Rnd>): void =>
-  elementRef.current?.resizableElement.current?.focus();
+export const focusResizableElementRef = (
+  elementRef: React.RefObject<Rnd>
+): void => elementRef.current?.resizableElement.current?.focus();
 
 export const focusClosestFocusableElementFromRef = (
-  elementRef: RefObject<HTMLElement>
+  elementRef: React.RefObject<HTMLElement>
 ) => (): void => {
   elementRef.current?.closest<HTMLElement>(':not(li)[tabindex]')?.focus();
 };

@@ -3,9 +3,9 @@
 ## System
 
 - Icons
-  - Initial position ghosting & closing animation on mobile
   - Dragging goes behind windows
   - Icons don't properly align in landscape view
+  - Icons re-arrange when one is moved
 - Windows
   - Closing animation on uploaded apps doesn't go to right position
 
@@ -19,8 +19,6 @@
 
 ## System
 
-- Icons
-  - Double check colors & behaviours
 - Start Menu
   - START MENU click to toggle button bar
   - Power should reset all caches

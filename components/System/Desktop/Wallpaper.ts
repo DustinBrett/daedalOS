@@ -1,6 +1,5 @@
 import WAVES from '@/public/libs/vanta.waves.min';
 
-import type { RefObject } from 'react';
 import type { WallpaperEffect } from '@/types/components/System/Desktop/Wallpaper';
 
 import * as THREE from 'three';
@@ -52,7 +51,7 @@ const initRainbowEffect = (wallpaperEffect: WallpaperEffect): (() => void) => {
 
 export const renderWallpaperEffect = ({
   current: renderElement
-}: RefObject<HTMLElement>): WallpaperEffect => {
+}: React.RefObject<HTMLElement>): WallpaperEffect => {
   const wallpaperEffect = WAVES({
     el: renderElement,
     THREE,
