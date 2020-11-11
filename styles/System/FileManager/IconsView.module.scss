@@ -8,6 +8,10 @@
   left: 0;
 }
 
+.directoryIcon {
+  position: relative;
+}
+
 .directoryIcons {
   @include positionTopLeft;
 

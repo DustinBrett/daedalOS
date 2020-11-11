@@ -5,7 +5,6 @@
 - Icons
   - Dragging goes behind windows
   - Icons don't properly align in landscape view
-  - Icons re-arrange when one is moved
 - Windows
   - Closing animation on uploaded apps doesn't go to right position
 

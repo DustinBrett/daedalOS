@@ -1,3 +1,5 @@
+import styles from '@/styles/System/FileManager/IconsView.module.scss';
+
 import type { IconEntryProps } from '@/types/components/System/FileManager/IconEntry';
 
 import Icon from '@/components/System/Icon';
@@ -18,8 +20,20 @@ const DirectyIconEntry: React.FC<IconEntryProps> = ({
   navRef,
   onDoubleClick
 }) => {
+  const [initialPosition, setInitialPosition] = useState<{ top: number, left: number } | null>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const iconRef = useRef<HTMLLIElement>(null);
+  const getPosition = () => {
+    const { top = 0, left = 0 } =
+      iconRef?.current?.getBoundingClientRect() || {};
+    const { top: initialTop = 0, left: initialLeft = 0 } =
+      initialPosition || {};
+
+    return({
+      top: top - initialTop,
+      left: left - initialLeft
+    });
+  };
 
   return (
     <motion.li
@@ -27,25 +41,18 @@ const DirectyIconEntry: React.FC<IconEntryProps> = ({
       drag
       layout
       dragConstraints={navRef}
+      className={styles.directoryIcon}
       onClick={
         new ClickHandler({
           doubleClick: onDoubleClick({ path, url, icon, name })
         }).clickHandler
       }
-      onDragEnd={() => {
-        const { top = 0, left = 0 } =
-          iconRef?.current?.getBoundingClientRect() || {};
-
-        setPosition({ top, left });
-      }}
+      onDragStart={() => !initialPosition && setInitialPosition(getPosition())}
+      onDragEnd={() => setPosition(getPosition())}
       ref={iconRef}
       tabIndex={-1}
       title={`${name}${kind ? `\r\nType: ${kind}` : ''}`}
-      style={{
-        position:
-          position.top !== 0 || position.left !== 0 ? 'fixed' : 'relative',
-        ...position
-      }}
+      style={position}
       {...desktopIconDragSettings}
       {...desktopIconMotionSettings}
     >
