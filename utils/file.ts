@@ -7,6 +7,8 @@ const fileSizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
 
 export const getFileIcon = (filePath: string, ext: string): string => {
   switch (ext) {
+    case '.jpg':
+    case '.jpeg':
     case '.png':
     case '.ico':
     case '.svg':
