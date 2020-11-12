@@ -1,5 +1,14 @@
 # Bugs
 
+## System
+
+- Icons
+  - Dragging goes behind windows
+- Files
+  - Filename is showing instead of app name in titles
+  - Opening file when app is already open causes issues
+  - Trying to open unknown file type causes glitch
+
 ## Apps
 
 - Winamp
@@ -14,6 +23,7 @@
   - START MENU click to toggle button bar
   - Power should reset all caches
   - Blur buttons submenu
+  - Entries are slow on first and subsequent loads
 - Toolbar
   - Back, Forward, Refresh & Home Buttons
     - iframe.contentWindow.history.back() | forward()
