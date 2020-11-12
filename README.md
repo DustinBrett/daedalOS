@@ -5,6 +5,7 @@
 - Icons
   - Dragging goes behind windows
   - Icons don't properly align in landscape view
+  - Text drop shadow is cut off at bottom
 - Windows
   - Closing animation on uploaded apps doesn't go to right position
 
