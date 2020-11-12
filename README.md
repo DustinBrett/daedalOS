@@ -21,7 +21,7 @@
 - Start Menu
   - START MENU click to toggle button bar
   - Power should reset all caches
-  - Blur on menu and buttons submenu
+  - Blur buttons submenu
 - Toolbar
   - Back, Forward, Refresh & Home Buttons
     - iframe.contentWindow.history.back() | forward()

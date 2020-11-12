@@ -56,7 +56,7 @@ const StartMenu: React.FC = () => {
   ];
 
   return (
-    <nav>
+    <nav className={styles.button}>
       {showMenu && (
         <nav className={styles.menu}>
           <ol

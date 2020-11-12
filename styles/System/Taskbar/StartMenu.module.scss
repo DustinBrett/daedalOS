@@ -2,10 +2,6 @@
 @import '@/styles/variables';
 
 .start {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,6 +36,13 @@
   }
 }
 
+.button {
+  position: absolute;
+  z-index: map-get($zIndex, taskbar) + 1;
+  bottom: 0;
+  left: 0;
+}
+
 .menu {
   position: absolute;
   bottom: map-get($taskbar, height);
@@ -49,6 +52,8 @@
   height: 300px;
 
   background-color: hsla(0, 0%, map-get($taskbar, base-lightness), 70%);
+
+  backdrop-filter: blur(10px);
 
   .buttons {
     position: relative;
