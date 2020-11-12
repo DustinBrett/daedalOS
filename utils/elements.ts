@@ -41,9 +41,11 @@ export const getTargetCenterPosition = (
   focusImage = false
 ): { x: number; y: number } => {
   const idealElement =
-    (focusImage && element?.getElementsByTagName?.('img')?.[0]) ||
-    element?.getElementsByTagName?.('figure')?.[0] ||
-    element;
+    focusImage && ['BUTTON', 'LI'].includes(element?.nodeName || '')
+      ? element?.getElementsByTagName?.('img')?.[0] ||
+        element?.getElementsByTagName?.('figure')?.[0] ||
+        element
+      : element;
   const { x = 0, y = 0, height = 0, width = 0 } =
     idealElement?.getBoundingClientRect() || {};
 

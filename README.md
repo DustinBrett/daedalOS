@@ -1,10 +1,5 @@
 # Bugs
 
-## System
-
-- Windows
-  - Closing animation on uploaded apps doesn't go to right position
-
 ## Apps
 
 - Winamp
