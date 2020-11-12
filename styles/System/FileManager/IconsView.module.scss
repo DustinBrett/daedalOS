@@ -95,17 +95,11 @@
         }
 
         figcaption {
-          display: -webkit-box;
-          overflow: hidden;
-          -webkit-box-orient: vertical;
-
           width: 75px;
 
           white-space: pre-line;
           letter-spacing: 0.1px;
           text-overflow: ellipsis;
-
-          -webkit-line-clamp: 2;
         }
       }
 
