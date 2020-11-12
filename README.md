@@ -7,7 +7,6 @@
 - Files
   - Filename is showing instead of app name in titles
   - Opening file when app is already open causes issues
-  - Trying to open unknown file type causes glitch
 
 ## Apps
 

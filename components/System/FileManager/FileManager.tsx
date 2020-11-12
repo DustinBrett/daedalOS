@@ -50,8 +50,10 @@ const FileManager: React.FC<DirectoryType> = ({
         getState({ name }),
         event.currentTarget
       );
-      foreground(processsId);
-      onChange?.();
+      if (processsId) {
+        foreground(processsId);
+        onChange?.();
+      }
     }
   };
 
