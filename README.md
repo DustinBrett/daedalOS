@@ -33,3 +33,30 @@
 ## Apps
 
 - PDF Viewer
+
+# Post MVP
+
+## Desktop
+
+- Use brighter rainbow effect with wallpaper
+
+## File Manager
+
+- Resizable/sortable/scrollable columns
+- Modified date/time
+- Expandable tree-view of directories (List & Menu View)
+- Store uploaded file stats
+
+## Icons
+
+- Store icon positions
+- Switch to grid layout
+- Fix 3rd line truncation (overflow: hidden / breaks shadow)
+
+## Windows
+
+- Save maximized state on close
+
+## System
+
+- Context menus on right click or touch hold
