@@ -16,5 +16,3 @@ export const MAXIMIZE_ANIMATION_SPEED_IN_SECONDS = 0.2;
 export const ROOT_DIRECTORY = '/';
 
 export const CLICK_DELAY_IN_MILLISECONDS = 300;
-
-export const NEXT_ID = '__next';

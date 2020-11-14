@@ -1,0 +1,143 @@
+@import '@/styles/maps';
+@import '@/styles/variables';
+
+.buttons {
+  position: absolute;
+  z-index: map-get($zIndex, taskbar);
+  bottom: map-get($taskbar, height);
+  left: 0;
+
+  width: 48px;
+  height: 300px;
+  padding-top: 4px;
+
+  transition: width 0.1s ease-out 0s;
+
+  > :last-child {
+    position: absolute;
+    bottom: 0;
+  }
+
+  > :nth-last-child(2) {
+    position: absolute;
+    bottom: 48px;
+  }
+
+  .buttonSelected {
+    border-left: solid 4px darken($highlightColor, 15%);
+
+    span {
+      margin-left: -4px;
+
+      color: darken($highlightColor, 15%);
+    }
+  }
+
+  figure {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+
+    width: 48px;
+    height: 48px;
+
+    white-space: nowrap;
+
+    color: rgba(white, 80%);
+    [data-icon]:before {
+      /* stylelint-disable font-family-no-missing-generic-family-keyword */
+      font-family: 'SegoeMDL2Assets';
+
+      position: relative;
+      top: 2px;
+      left: 16px;
+
+      content: attr(data-icon);
+    }
+
+    figcaption {
+      font-size: 14px;
+
+      position: relative;
+      left: 48px;
+
+      strong {
+        font-family: 'Helvetica', sans-serif;
+        font-weight: 900;
+      }
+    }
+
+    &:hover {
+      background-color: hsla(
+        0,
+        0%,
+        map-get($taskbar, hover-lightness),
+        map-get($taskbar, opacity)
+      );
+    }
+
+    &:active {
+      background-color: hsla(
+        0,
+        0%,
+        map-get($taskbar, hover-lightness),
+        map-get($taskbar, active-opacity)
+      ) !important;
+    }
+  }
+
+  > :first-child figure figcaption {
+    font-weight: bold;
+  }
+}
+
+.buttons:focus {
+  transition-delay: 0s !important;
+  transition-property: none !important;
+}
+
+.buttons:focus figure {
+  transition-delay: 0s !important;
+  transition-property: none !important;
+}
+
+.buttons:hover {
+  z-index: 99999;
+
+  width: 200px;
+
+  background-color: rgba(25, 25, 25, 0.5);
+
+  backdrop-filter: blur(20px);
+}
+
+@media (hover: hover) {
+  .buttons:hover {
+    transition: all 0.1s ease-out 0.6s;
+    transition-property: width, background-color, backdrop-filter;
+  }
+}
+
+.buttons:hover figure {
+  width: 199px;
+
+  figcaption {
+    left: 32px;
+  }
+
+  &:hover {
+    background-color: hsla(
+      0,
+      0%,
+      map-get($taskbar, hover-lightness),
+      map-get($taskbar, opacity)
+    );
+  }
+}
+
+@media (hover: hover) {
+  .buttons:hover figure {
+    transition: all 0.1s ease-out 0.6s;
+    transition-property: width;
+  }
+}
