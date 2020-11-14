@@ -3,6 +3,7 @@
 
 .start {
   position: absolute;
+  z-index: map-get($zIndex, taskbar);
   bottom: 0;
   left: 0;
 
@@ -42,6 +43,7 @@
 
 .menu {
   position: absolute;
+  z-index: map-get($zIndex, taskbar);
   bottom: map-get($taskbar, height);
   left: 0;
 

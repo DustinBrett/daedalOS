@@ -21,7 +21,7 @@
 - Start Menu
   - START MENU click to toggle button bar
   - Power should reset all caches
-  - Blur on menu and buttons submenu
+  - Blur on buttons submenu
   - Entries are slow on first and subsequent loads
 - Toolbar
   - Back, Forward, Refresh & Home Buttons
