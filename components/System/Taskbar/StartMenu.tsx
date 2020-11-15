@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
 
 const StartMenu: React.FC<{
-  footerRef: React.MutableRefObject<HTMLElement | null>
+  footerRef: React.MutableRefObject<HTMLElement | null>;
 }> = ({ footerRef }) => {
   const [showMenu, setShowMenu] = useState(false);
   const startButtonRef = useRef<HTMLButtonElement>(null);
@@ -18,42 +18,44 @@ const StartMenu: React.FC<{
 
   useEffect(() => setMounted(true), [footerRef]);
 
-  return mounted ? createPortal(
-    <nav>
-      {showMenu && (
-        <nav className={styles.menu}>
-          <ButtonBar
-            startButtonRef={startButtonRef}
-            buttonsRef={buttonsRef}
-            setShowMenu={setShowMenu}
-            footerRef={footerRef}
-          />
-          <FileManager
-            path="/start"
-            render={MenuView}
-            onChange={(cwd) => !cwd && setShowMenu(false)}
-          />
-        </nav>
-      )}
-      <button
-        ref={startButtonRef}
-        className={`${styles.start} ${showMenu && styles.menuOpen}`}
-        type="button"
-        title="Start"
-        onClick={() => setShowMenu(!showMenu)}
-        onBlur={({ relatedTarget }) => {
-          if (!relatedTarget) {
-            startButtonRef?.current?.focus();
-          } else if (!buttonsRef.current?.contains(relatedTarget as Node)) {
-            setShowMenu(false);
-          }
-        }}
-      >
-        <FontAwesomeIcon icon={faWindows} />
-      </button>
-    </nav>,
-    footerRef.current as HTMLElement
-  ) : null;
+  return mounted
+    ? createPortal(
+        <nav>
+          {showMenu && (
+            <nav className={styles.menu}>
+              <ButtonBar
+                startButtonRef={startButtonRef}
+                buttonsRef={buttonsRef}
+                setShowMenu={setShowMenu}
+                footerRef={footerRef}
+              />
+              <FileManager
+                path="/start"
+                render={MenuView}
+                onChange={(cwd) => !cwd && setShowMenu(false)}
+              />
+            </nav>
+          )}
+          <button
+            ref={startButtonRef}
+            className={`${styles.start} ${showMenu && styles.menuOpen}`}
+            type="button"
+            title="Start"
+            onClick={() => setShowMenu(!showMenu)}
+            onBlur={({ relatedTarget }) => {
+              if (!relatedTarget) {
+                startButtonRef?.current?.focus();
+              } else if (!buttonsRef.current?.contains(relatedTarget as Node)) {
+                setShowMenu(false);
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faWindows} />
+          </button>
+        </nav>,
+        footerRef.current as HTMLElement
+      )
+    : null;
 };
 
 export default StartMenu;
