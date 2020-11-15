@@ -48,7 +48,8 @@ const ButtonBar: React.FC<{
     },
     {
       title: 'Power',
-      icon: '\ue7e8'
+      icon: '\ue7e8',
+      onClick: () => window.location.reload()
     }
   ];
 

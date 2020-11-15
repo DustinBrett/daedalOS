@@ -7,6 +7,8 @@
 - Files
   - Filename is showing instead of app name in titles
   - Opening file when app is already open causes issues
+- Start Menu
+  - Button bar clicking on mobile not instant
 
 ## Apps
 
