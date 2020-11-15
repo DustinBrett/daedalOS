@@ -1,6 +1,5 @@
 import styles from '@/styles/System/Taskbar/ButtonBar.module.scss';
 
-import { createPortal } from 'react-dom';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { useContext, useState } from 'react';
@@ -10,9 +9,8 @@ const defaultView = 'All apps';
 const ButtonBar: React.FC<{
   startButtonRef: React.RefObject<HTMLButtonElement>;
   buttonsRef: React.RefObject<HTMLOListElement>;
-  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  footerRef: React.MutableRefObject<HTMLElement | null>;
-}> = ({ startButtonRef, buttonsRef, setShowMenu, footerRef }) => {
+  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>
+}> = ({ startButtonRef, buttonsRef, setShowMenu }) => {
   const { foreground } = useContext(SessionContext);
   const { open } = useContext(ProcessContext);
   const [view, setView] = useState(defaultView);
@@ -54,7 +52,7 @@ const ButtonBar: React.FC<{
     }
   ];
 
-  return createPortal(
+  return (
     <ol
       className={styles.buttons}
       ref={buttonsRef}
@@ -74,8 +72,7 @@ const ButtonBar: React.FC<{
           </figure>
         </li>
       ))}
-    </ol>,
-    footerRef.current as HTMLElement
+    </ol>
   );
 };
 

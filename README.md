@@ -22,6 +22,7 @@
   - START MENU click to toggle button bar
   - Power should reset all caches
   - Entries are slow on first and subsequent loads
+  - Blur on menu and buttons submenu
 - Toolbar
   - Back, Forward, Refresh & Home Buttons
     - iframe.contentWindow.history.back() | forward()

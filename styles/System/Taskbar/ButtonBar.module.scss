@@ -2,10 +2,7 @@
 @import '@/styles/variables';
 
 .buttons {
-  position: absolute;
-  z-index: map-get($zIndex, taskbar);
-  bottom: map-get($taskbar, height);
-  left: 0;
+  position: relative;
 
   width: 48px;
   height: 300px;

@@ -2,10 +2,10 @@
 @import '@/styles/variables';
 
 .start {
-  position: absolute !important;
-  z-index: map-get($zIndex, taskbar) !important;
-  bottom: 0 !important;
-  left: 0 !important;
+  position: absolute;
+  z-index: map-get($zIndex, taskbar);
+  bottom: 0;
+  left: 0;
 
   display: flex;
   align-items: center;
@@ -21,8 +21,6 @@
     font-size: 19px;
 
     color: $offWhite;
-
-    z-index: map-get($zIndex, taskbar) !important;
   }
 
   &:hover {
