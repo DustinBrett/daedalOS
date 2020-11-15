@@ -9,7 +9,7 @@ const defaultView = 'All apps';
 const ButtonBar: React.FC<{
   startButtonRef: React.RefObject<HTMLButtonElement>;
   buttonsRef: React.RefObject<HTMLOListElement>;
-  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ startButtonRef, buttonsRef, setShowMenu }) => {
   const { foreground } = useContext(SessionContext);
   const { open } = useContext(ProcessContext);
