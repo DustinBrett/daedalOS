@@ -11,8 +11,8 @@ const ButtonBar: React.FC<{
   startButtonRef: React.RefObject<HTMLButtonElement>;
   buttonsRef: React.RefObject<HTMLOListElement>;
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  mainRef: React.MutableRefObject<HTMLElement | null>;
-}> = ({ startButtonRef, buttonsRef, setShowMenu, mainRef }) => {
+  footerRef: React.MutableRefObject<HTMLElement | null>;
+}> = ({ startButtonRef, buttonsRef, setShowMenu, footerRef }) => {
   const { foreground } = useContext(SessionContext);
   const { open } = useContext(ProcessContext);
   const [view, setView] = useState(defaultView);
@@ -75,7 +75,7 @@ const ButtonBar: React.FC<{
         </li>
       ))}
     </ol>,
-    mainRef.current as HTMLElement
+    footerRef.current as HTMLElement
   );
 };
 
