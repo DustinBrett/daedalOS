@@ -16,7 +16,10 @@ const StartMenu: React.FC<{
   const buttonsRef = useRef<HTMLOListElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), [footerRef]);
+  useEffect(() => {
+    setMounted(true);
+    alert('MOUNTED!');
+  }, [footerRef]);
 
   return mounted
     ? createPortal(
