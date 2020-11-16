@@ -40,7 +40,6 @@ const DirectyIconEntry: React.FC<IconEntryProps> = ({
 
   return (
     <motion.li
-      key={path}
       drag
       layout
       dragConstraints={navRef}

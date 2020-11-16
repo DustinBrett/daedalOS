@@ -131,7 +131,6 @@ const ProcessWindow: React.FC<Process> = ({
 
   return (
     <motion.article
-      key={id}
       className={styles.animatedWindows}
       style={{
         zIndex: foregroundId === id ? foregroundZindex : windowOptions.zIndex,
