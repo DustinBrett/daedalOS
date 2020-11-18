@@ -31,7 +31,7 @@ const Winamp: React.FC<AppComponent> = ({
   onClose,
   onMinimize,
   onFocus,
-  updatePosition,
+  onDrag,
   zIndex,
   file: { url = '', name = '' } = {}
 }) => {
@@ -90,7 +90,7 @@ const Winamp: React.FC<AppComponent> = ({
       onBlur={onBlur}
       onDrag={onTouchEventsOnly}
       onDragStart={focusOnDrag}
-      onDragStop={updatePosition}
+      onDragStop={onDrag}
       onFocus={onFocus}
       style={{ zIndex }}
       ref={dragContainerRef}

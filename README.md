@@ -7,8 +7,6 @@
   - Opening file when app is already open causes issues
 - Start Menu
   - Button bar clicking on mobile not instant
-- Windows
-  - Dragging blog acts glitchy
 - Winamp
   - Exit animation doesn't work
   - Titlebar not inactive after initial blur

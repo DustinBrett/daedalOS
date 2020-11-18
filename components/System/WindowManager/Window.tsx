@@ -20,8 +20,8 @@ const Window: React.FC<AppComponent> = ({
   onClose,
   onFocus,
   onBlur,
-  updatePosition,
-  updateSize,
+  onDrag,
+  onResize,
   lockAspectRatio,
   zIndex,
   maximized,
@@ -57,8 +57,8 @@ const Window: React.FC<AppComponent> = ({
       onFocus={onFocus}
       onBlur={onBlur}
       onDragStart={focusOnDrag}
-      onDragStop={updatePosition}
-      onResizeStop={updateSize}
+      onDragStop={onDrag}
+      onResizeStop={onResize}
       enableResizing={!maximized}
       disableDragging={maximized}
       lockAspectRatio={lockAspectRatio}

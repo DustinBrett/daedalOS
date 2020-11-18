@@ -22,8 +22,8 @@ export type AppWindow = {
   onMinimize: () => void;
   onFocus: () => void;
   onBlur: (event: React.FocusEvent) => void;
-  updatePosition: RndDragCallback;
-  updateSize?: RndResizeCallback;
+  onDrag: RndDragCallback;
+  onResize?: RndResizeCallback;
 };
 
 export type AppComponent = AppWindow & Partial<AppOptions> & ProcessState;
