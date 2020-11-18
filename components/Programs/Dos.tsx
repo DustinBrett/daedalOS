@@ -33,7 +33,7 @@ const Dos: React.FC<AppComponent> = ({
       ? args
           ?.getAll('-c')
           .map((value) => ['-c', value])
-          .flat()
+          .flat() || []
       : ['-c', 'CLS'];
 
     main([...prependedArgs, ...loadArgs]).then((value) => {

@@ -1,7 +1,5 @@
 # Bugs
 
-## System
-
 - Icons
   - Dragging goes behind windows
 - Files
@@ -9,16 +7,13 @@
   - Opening file when app is already open causes issues
 - Start Menu
   - Button bar clicking on mobile not instant
-
-## Apps
-
+- Windows
+  - Dragging blog acts glitchy
 - Winamp
   - Exit animation doesn't work
   - Titlebar not inactive after initial blur
 
 # Features
-
-## System
 
 - Start Menu
   - START MENU click to toggle button bar
@@ -31,9 +26,6 @@
   - Address & Search Inputs
 - Windows
   - Initial load maximized if dimensions > screen
-
-## Apps
-
 - PDF Viewer
 
 # Post MVP
