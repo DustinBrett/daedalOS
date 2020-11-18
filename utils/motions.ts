@@ -59,14 +59,12 @@ export const windowMotionSettings = ({
   const exitZIndex = foregroundZindex + 1;
   const widthOffset = -Math.floor(width / 2);
   const heightOffset = -Math.floor(height / 2);
-  const {
-    x: taskbarElementX,
-    y: taskbarElementY
-  } = getTargetCenterPosition(taskbarElement);
-  let {
-    x: launchElementX,
-    y: launchElementY
-  } = getTargetCenterImagePosition(launchElement);
+  const { x: taskbarElementX, y: taskbarElementY } = getTargetCenterPosition(
+    taskbarElement
+  );
+  let { x: launchElementX, y: launchElementY } = getTargetCenterImagePosition(
+    launchElement
+  );
   if (launchElementX === 0) {
     launchElementX = window.innerWidth / 2;
   }
