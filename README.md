@@ -36,7 +36,6 @@
   - Context menus on right click or touch hold
 - Toolbar
   - Back, Forward, Refresh & Home Buttons
-    - iframe.contentWindow.history.back() | forward()
   - Address & Search Inputs
 - Windows
   - Initial load maximized if dimensions > screen
@@ -44,4 +43,4 @@
 - Icons
   - Store icon positions
   - Switch to grid layout
-  - Fix 3rd line truncation (overflow: hidden / breaks shadow)
+  - Fix 3rd line truncation (overflow hidden breaks text-shadow)
