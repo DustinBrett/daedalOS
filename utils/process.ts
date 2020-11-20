@@ -5,22 +5,33 @@ export const getProcessId = (name: string): string =>
 
 export class Process {
   loader;
+
   icon;
+
   name;
+
   launchElement;
 
   bgColor;
+
   height;
+
   id;
+
   lockAspectRatio;
+
   width;
+
   windowed;
 
   maximized = false;
+
   minimized = false;
 
   x;
+
   y;
+
   taskbarElement;
 
   constructor({

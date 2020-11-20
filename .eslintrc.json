@@ -7,10 +7,13 @@
   },
   "extends": [
     "airbnb",
+    "airbnb-typescript",
     "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "prettier",
     "prettier/@typescript-eslint",
@@ -20,12 +23,14 @@
     "NodeJS": "readonly",
     "React": "readonly"
   },
+  "ignorePatterns": ["/*.config.js", "/setupTests.js"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
     "ecmaVersion": 11,
+    "project": "./tsconfig.json",
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "react-hooks", "react"],

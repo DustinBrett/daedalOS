@@ -15,6 +15,7 @@ const demoTrack = {
 };
 
 /* eslint no-underscore-dangle: off */
+/* eslint @typescript-eslint/naming-convention: off */
 const __initialWindowLayout = {
   main: { position: { x: 0, y: 0 } },
   playlist: { position: { x: 0, y: 116 } },

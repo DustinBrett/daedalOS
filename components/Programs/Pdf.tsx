@@ -8,6 +8,7 @@ import { pdfjs, Document, Page } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.min.js';
 
 // TODO: Getting `window` error on SSR
+// TODO: Make this dynamic so it doesn't make First Load 488KB
 
 export const Pdf: React.FC<AppComponent> = ({
   file: { url = '/docs/dummy.pdf' } = {}

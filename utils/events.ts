@@ -33,6 +33,7 @@ export class ClickHandler {
   clickTimer?: NodeJS.Timeout;
 
   singleClick;
+
   doubleClick;
 
   constructor({
