@@ -9,8 +9,6 @@
   - Button bar clicking on mobile has delay
 - DOS
   - When running it slows down other parts of app
-- PDF Viewer
-  - Fix UI
 - Winamp
   - Exit animation doesn't work
   - Titlebar not inactive after initial blur
@@ -22,6 +20,8 @@
   - Power should reset all caches
   - Entries are slow on first and subsequent loads
   - Blur on menu and buttons submenu
+- PDF Viewer
+  - Finish UI
 
 # Post MVP
 
