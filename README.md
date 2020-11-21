@@ -22,6 +22,7 @@
   - Blur on menu and buttons submenu
 - PDF Viewer
   - Finish UI
+  - Fix `window` error
 
 # Post MVP
 
