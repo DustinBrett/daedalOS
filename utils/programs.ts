@@ -39,6 +39,22 @@ const appLoaders: AppLoaders = {
   }
 };
 
+export const getAppNameByExtension = (ext: string): string => {
+  switch (ext) {
+    case '.jsdos':
+    case '.zip':
+      return 'dos';
+    case '.odt':
+      return 'webodf';
+    case '.mp3':
+    case '.m3u':
+    case '.wsz':
+      return 'winamp';
+    default:
+      return '';
+  }
+};
+
 const appLoaderByName = (name: string): AppLoader | undefined =>
   appLoaders[name];
 
@@ -58,35 +74,13 @@ const appLoaderByFileType = (
     };
   }
 
-  switch (extName) {
-    case '.jsdos':
-    case '.zip':
-      return {
-        ...appLoaders.dos,
-        loadedAppOptions: {
-          file: appFile,
-          args: searchParams
-        }
-      };
-    case '.odt':
-      return {
-        ...appLoaders.webodf,
-        loadedAppOptions: {
-          file: appFile
-        }
-      };
-    case '.mp3':
-    case '.m3u':
-    case '.wsz':
-      return {
-        ...appLoaders.winamp,
-        loadedAppOptions: {
-          file: appFile
-        }
-      };
-    default:
-      return undefined;
-  }
+  return {
+    ...(appLoaders[getAppNameByExtension(extName)] || {}),
+    loadedAppOptions: {
+      file: appFile,
+      args: searchParams
+    }
+  };
 };
 
 export const appLoader = (appFile: AppFile): AppLoader | undefined => {

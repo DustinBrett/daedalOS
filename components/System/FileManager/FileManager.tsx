@@ -20,7 +20,7 @@ const FileManager: React.FC<DirectoryType> = ({
 }) => {
   const [cwd, cd] = useState(directoryPath);
   const [entries, setEntries] = useState<DirectoryEntry[]>([]);
-  const fs = useContext(FileContext); // Q: Do I need a context for `fs`?
+  const fs = useContext(FileContext);
   const { load, open } = useContext(ProcessContext);
   const { foreground, getState } = useContext(SessionContext);
   const fileDropHandler = useFileDrop(async (dragEvent, file) => {
