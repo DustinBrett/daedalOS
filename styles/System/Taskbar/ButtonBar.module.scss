@@ -91,12 +91,12 @@
   }
 }
 
-.buttons:focus {
+.buttons:focus-within {
   transition-delay: 0s !important;
   transition-property: none !important;
 }
 
-.buttons:focus figure {
+.buttons:focus-within figure {
   transition-delay: 0s !important;
   transition-property: none !important;
 }
