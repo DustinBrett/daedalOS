@@ -18,8 +18,6 @@ export const getFileIcon = (filePath: string, ext: string): string => {
     case '.js':
     case '.json':
       return '/icons/files/js.svg';
-    case '.pdf':
-      return '/icons/files/pdf.svg';
     case '.mp3':
     case '.m3u':
     case '.wsz':

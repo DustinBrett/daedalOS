@@ -6,7 +6,6 @@ import { isValidUrl } from '@/utils/url';
 import { loaderOptions as blogLoaderOptions } from '@/components/Programs/Blog';
 import { loaderOptions as dosLoaderOptions } from '@/components/Programs/Dos';
 import { loaderOptions as explorerLoaderOptions } from '@/components/Programs/Explorer';
-import { loaderOptions as pdfLoaderOptions } from '@/components/Programs/Pdf';
 import { loaderOptions as webampLoaderOptions } from '@/components/Programs/WebODF';
 import { loaderOptions as winampLoaderOptions } from '@/components/Programs/Winamp';
 import { ROOT_DIRECTORY } from '@/utils/constants';
@@ -14,7 +13,6 @@ import { ROOT_DIRECTORY } from '@/utils/constants';
 const Blog = dynamic(import('@/components/Programs/Blog'));
 const Dos = dynamic(import('@/components/Programs/Dos'));
 const Explorer = dynamic(import('@/components/Programs/Explorer'));
-const Pdf = dynamic(import('@/components/Programs/Pdf'));
 const WebODF = dynamic(import('@/components/Programs/WebODF'));
 const Winamp = dynamic(import('@/components/Programs/Winamp'));
 
@@ -30,10 +28,6 @@ const appLoaders: AppLoaders = {
   explorer: {
     loader: Explorer,
     loaderOptions: explorerLoaderOptions
-  },
-  pdf: {
-    loader: Pdf,
-    loaderOptions: pdfLoaderOptions
   },
   webodf: {
     loader: WebODF,
@@ -77,13 +71,6 @@ const appLoaderByFileType = (
     case '.odt':
       return {
         ...appLoaders.webodf,
-        loadedAppOptions: {
-          file: appFile
-        }
-      };
-    case '.pdf':
-      return {
-        ...appLoaders.pdf,
         loadedAppOptions: {
           file: appFile
         }
