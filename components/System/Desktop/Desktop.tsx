@@ -6,7 +6,6 @@ import { useEffect, useRef } from 'react';
 const Desktop: React.FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement>(null);
 
-  // TODO: useWallpaper();
   useEffect(() => {
     const wallpaperEffect = renderWallpaperEffect(desktopRef);
 

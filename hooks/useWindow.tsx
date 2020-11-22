@@ -66,7 +66,6 @@ const useWindow = ({
   const zIndex = windowZindex + stackOrder.slice().reverse().indexOf(id);
 
   useEffect(() => {
-    // TODO: maybeReFocus(foreground, foregroundId, id, minimized, processes, stackOrder)
     if (foregroundId === id && minimized) {
       foreground(
         getNextVisibleWindow(
@@ -80,7 +79,6 @@ const useWindow = ({
   }, [foregroundId, id, minimized, processes, stackOrder]);
 
   useEffect(() => {
-    // TODO: maybeToggleMaximize(maximized, maximizeWindow, setMaximizeWindow)
     if (maximized) {
       setMaximizeWindow(true);
     } else if (maximizeWindow) {

@@ -4,6 +4,12 @@
   - Filename is showing instead of app name in titles
   - Opening file when app is already open causes issues
 
+# MVP To Do's
+
+- Get 126px images working for mobile renders
+- Hook Refactors (useWallpaper, useWinamp)
+- Effect Refactors (maybeReFocus, maybeToggleMaximize)
+
 # Post MVP
 
 - Wallpaper
