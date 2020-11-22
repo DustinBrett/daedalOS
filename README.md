@@ -7,7 +7,7 @@
   - Button bar clicking on mobile has delay
   - Power should refresh page
   - Blur on menu and buttons submenu
-  
+
 # Post MVP
 
 - Wallpaper

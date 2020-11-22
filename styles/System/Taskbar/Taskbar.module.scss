@@ -1,5 +1,11 @@
 @import '@/styles/maps';
 
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
 .taskbar {
   position: fixed;
   z-index: map-get($zIndex, taskbar);

@@ -1,5 +1,6 @@
 import styles from '@/styles/System/Taskbar/ButtonBar.module.scss';
 
+import { createPortal } from 'react-dom';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { useContext, useState } from 'react';
@@ -53,7 +54,7 @@ const ButtonBar: React.FC<{
     }
   ];
 
-  return (
+  return createPortal(
     <ol
       className={styles.buttons}
       ref={buttonsRef}
@@ -73,7 +74,8 @@ const ButtonBar: React.FC<{
           </figure>
         </li>
       ))}
-    </ol>
+    </ol>,
+    document.getElementById('__next') as HTMLElement
   );
 };
 

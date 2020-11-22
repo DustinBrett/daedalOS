@@ -5,10 +5,12 @@ import StartMenu from '@/components/System/Taskbar/StartMenu';
 import TaskbarEntries from '@/components/System/Taskbar/TaskbarEntries';
 
 const Taskbar: React.FC = () => (
-  <footer className={styles.taskbar}>
+  <footer className={styles.footer}>
     <StartMenu />
-    <TaskbarEntries />
-    <Clock />
+    <nav className={styles.taskbar}>
+      <TaskbarEntries />
+      <Clock />
+    </nav>
   </footer>
 );
 
