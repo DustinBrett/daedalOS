@@ -1,5 +1,7 @@
 import type { DraggableData, Rnd, RndDragEvent } from 'react-rnd';
 
+import { NEXT_CONTAINER_ID } from './constants';
+
 export const appendElement = (
   parentElement: HTMLElement,
   childElement: HTMLElement
@@ -58,3 +60,6 @@ export const getTargetCenterPosition = (
 export const getTargetCenterImagePosition = (
   element: HTMLElement
 ): { x: number; y: number } => getTargetCenterPosition(element, true);
+
+export const getNextContainerElement = (): HTMLDivElement =>
+  document.getElementById(NEXT_CONTAINER_ID) as HTMLDivElement;

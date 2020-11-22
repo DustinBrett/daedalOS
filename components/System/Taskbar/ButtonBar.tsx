@@ -1,6 +1,7 @@
 import styles from '@/styles/System/Taskbar/ButtonBar.module.scss';
 
 import { createPortal } from 'react-dom';
+import { getNextContainerElement } from '@/utils/elements';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
 import { useContext, useState } from 'react';
@@ -75,7 +76,7 @@ const ButtonBar: React.FC<{
         </li>
       ))}
     </ol>,
-    document.getElementById('__next') as HTMLElement
+    getNextContainerElement()
   );
 };
 

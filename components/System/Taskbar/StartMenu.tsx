@@ -6,6 +6,7 @@ import MenuView from '@/components/System/FileManager/MenuView';
 import { createPortal } from 'react-dom';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getNextContainerElement } from '@/utils/elements';
 import { useEffect, useRef, useState } from 'react';
 
 const StartMenu: React.FC = () => {
@@ -50,7 +51,7 @@ const StartMenu: React.FC = () => {
             <FontAwesomeIcon icon={faWindows} />
           </button>
         </>,
-        document.getElementById('__next') as HTMLElement
+        getNextContainerElement()
       )
     : null;
 };
