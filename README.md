@@ -1,12 +1,10 @@
-# MVP
+# MVP Bugs
 
 - Files
   - Filename is showing instead of app name in titles
   - Opening file when app is already open causes issues
 - Start Menu
   - Button bar clicking on mobile has delay
-  - Power should refresh page
-  - Blur on menu and buttons submenu
 
 # Post MVP
 
