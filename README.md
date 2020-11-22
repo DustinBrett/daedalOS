@@ -4,11 +4,10 @@
   - Filename is showing instead of app name in titles
   - Opening file when app is already open causes issues
 
-# MVP To Do's
+# MVP Refactors
 
-- Get 126px images working for mobile renders
-- Hook Refactors (useWallpaper, useWinamp)
-- Effect Refactors (maybeReFocus, maybeToggleMaximize)
+- Hook (useWallpaper, useWinamp)
+- Effect (maybeReFocus, maybeToggleMaximize)
 
 # Post MVP
 
@@ -35,7 +34,7 @@
   - Dragging should go in front of windows
   - Store icon positions
   - Switch to grid layout
-  - Fix 3rd line truncation (overflow hidden breaks text-shadow)
+  - Fix 3rd line truncation (hiding overflow cuts off shadow)
 - DOS
   - Run in web worker to stop animation blocking
 - Winamp
