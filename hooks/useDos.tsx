@@ -1,8 +1,9 @@
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
+import type { DosFS } from 'js-dos/dist/typescript/js-dos-fs';
 import type { DosMainFn, DosRuntime } from 'js-dos';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const dosOptions = {
   wdosboxUrl: '/libs/wdosbox.js',
@@ -21,7 +22,7 @@ const useDos = ({
   name: string;
   url?: string;
 }): void => {
-  let ci: DosCommandInterface;
+  const [dosCi, setDosCi] = useState<DosCommandInterface | null>(null);
   const loadMain = (main: DosMainFn, prependedArgs: string[] = []) => {
     const loadArgs = args?.get('-c')
       ? args
@@ -31,7 +32,7 @@ const useDos = ({
       : ['-c', 'CLS'];
 
     main([...prependedArgs, ...loadArgs]).then((value) => {
-      ci = value;
+      setDosCi(value);
     });
   };
   const loadDos = ({ fs, main }: DosRuntime) => {
@@ -56,11 +57,11 @@ const useDos = ({
       autolock: !!args?.get('autolock'),
       ...dosOptions
     }).then(loadDos);
-
-    return () => {
-      ci?.exit();
-    };
   }, []);
+
+  useEffect(() => () => {
+    dosCi?.exit();
+  }, [dosCi]);
 
   /* eslint global-require: off */
   require('js-dos');
