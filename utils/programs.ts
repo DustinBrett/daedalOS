@@ -43,13 +43,13 @@ export const getAppNameByExtension = (ext: string): string => {
   switch (ext) {
     case '.jsdos':
     case '.zip':
-      return 'dos';
+      return 'DOS';
     case '.odt':
-      return 'webodf';
+      return 'WebODF';
     case '.mp3':
     case '.m3u':
     case '.wsz':
-      return 'winamp';
+      return 'Winamp';
     default:
       return '';
   }
@@ -74,7 +74,7 @@ const appLoaderByFileType = (
     };
   }
 
-  const appLoader = appLoaders[getAppNameByExtension(extName)];
+  const appLoader = appLoaders[getAppNameByExtension(extName).toLowerCase()];
 
   if (appLoader) {
     return {

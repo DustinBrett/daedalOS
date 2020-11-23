@@ -77,7 +77,7 @@ export const open = (
     const process = new Process({
       loader,
       icon,
-      name,
+      name: appName || name,
       launchElement,
       ...loader.loaderOptions
     });

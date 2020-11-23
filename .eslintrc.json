@@ -13,7 +13,6 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
-    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "prettier",
     "prettier/@typescript-eslint",

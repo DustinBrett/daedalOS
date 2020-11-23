@@ -2,14 +2,8 @@ import {
   MAXIMIZE_ANIMATION_SPEED_IN_SECONDS,
   MILLISECONDS_IN_SECOND
 } from '@/utils/constants';
-import { useEffect } from 'react';
-
-type WindowWithWebOdf = Window &
-  typeof globalThis & {
-    odf: {
-      OdfCanvas: new (element: HTMLElement) => { load: (url: string) => void };
-    };
-  };
+import { useEffect, useState } from 'react';
+import { OdfLib, WindowWithWebOdf } from '@/types/hooks/useOdf';
 
 const useOdf = ({
   odfElementRef,
@@ -17,7 +11,9 @@ const useOdf = ({
 }: {
   odfElementRef: React.RefObject<HTMLElement>;
   url: string;
-}): void => {
+}): OdfLib | null => {
+  const [odfLib, setOdfLib] = useState<OdfLib | null>(null);
+
   useEffect(() => {
     const lib = document.createElement('script');
 
@@ -28,12 +24,15 @@ const useOdf = ({
 
       if (odfCanvasElement) {
         setTimeout(
-          () =>
-            new (window as WindowWithWebOdf).odf.OdfCanvas(
+          () => {
+            const newOdfLib = new (window as WindowWithWebOdf).odf.OdfCanvas(
               odfCanvasElement
-            ).load(url),
-          MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND
-        );
+            );
+
+            newOdfLib.load(url);
+            setOdfLib(newOdfLib);
+          },
+        MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND);
       }
     };
 
@@ -43,6 +42,8 @@ const useOdf = ({
       document.head.removeChild(lib);
     };
   }, []);
+
+  return odfLib;
 };
 
 export default useOdf;

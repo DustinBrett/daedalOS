@@ -2,6 +2,12 @@
 
 - Explorer
   - Filename is showing instead of app name in titlebar
+- Icons
+  - WebODF icon for doc types
+- Windows
+  - Reopening explorer changes foreground id but not focus
+- Winamp
+  - Titlebar should match foreground state on initial blur & mobile
 
 # MVP Refactors
 
@@ -36,8 +42,6 @@
   - Fix 3rd line truncation (hiding overflow cuts off shadow)
 - DOS
   - Run in web worker to stop animation blocking
-- Winamp
-  - Titlebar should match foreground state on initial blur & mobile
 - PDF Viewer
   - Finish UI
   - Fix `window` error
