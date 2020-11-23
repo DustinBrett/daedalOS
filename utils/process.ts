@@ -28,6 +28,8 @@ export class Process {
 
   minimized = false;
 
+  url = '';
+
   x;
 
   y;

@@ -6,6 +6,7 @@ import type {
 
 import { extname, resolve } from 'path';
 import { FileContext } from '@/contexts/FileSystem';
+import { getAppNameByExtension } from '@/utils/programs';
 import { getDirectory, getDirectoryEntry } from '@/utils/filemanager';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { SessionContext } from '@/contexts/SessionManager';
@@ -45,8 +46,14 @@ const FileManager: React.FC<DirectoryType> = ({
     if (path && !path.includes('.url') && (path === '..' || !extname(path))) {
       cd(path === '..' ? resolve(cwd, '..') : path);
     } else {
+      const appUrl = url || path || '';
       const processsId = open(
-        { url: url || path || '', icon, name },
+        {
+          url: appUrl,
+          icon,
+          name,
+          ...(appUrl ? { appName: getAppNameByExtension(extname(appUrl)) } : {})
+        },
         getState({ name }),
         event.currentTarget
       );

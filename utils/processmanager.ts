@@ -60,11 +60,16 @@ export const open = (
   previousState: ProcessState,
   launchElement: EventTarget
 ): string => {
-  const { icon, name } = appFile;
-  const existingProcessId = getProcessId(name);
+  const { appName, icon, name, url } = appFile;
+  const existingProcessId = getProcessId(appName || name);
 
-  if (processes.find(({ id: processId }) => processId === existingProcessId))
+  if (processes.find(({ id: processId }) => processId === existingProcessId)) {
+    if (appName !== name) {
+      updateProcesses({ updates: { url }, id: existingProcessId });
+    }
+
     return existingProcessId;
+  }
 
   const loader = appLoader(appFile);
 

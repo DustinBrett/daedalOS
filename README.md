@@ -2,7 +2,6 @@
 
 - Explorer
   - Filename is showing instead of app name in titlebar
-  - Opening file when app is already open causes issues
 
 # MVP Refactors
 

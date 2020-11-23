@@ -7,6 +7,7 @@ export type AppFile = {
   icon: string;
   name: string;
   url: string;
+  appName?: string;
   ext?: string;
 };
 

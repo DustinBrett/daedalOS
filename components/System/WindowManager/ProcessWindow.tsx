@@ -13,6 +13,7 @@ const ProcessWindow: React.FC<Process> = ({
   bgColor,
   icon,
   name,
+  url,
   windowed,
   ...processProps
 }) => {
@@ -21,6 +22,7 @@ const ProcessWindow: React.FC<Process> = ({
     loaderOptions
   });
   const { height, width, zIndex } = settings;
+  const AppComponent = <App url={url} {...loadedAppOptions} {...settings} />;
 
   return (
     <motion.article
@@ -30,10 +32,10 @@ const ProcessWindow: React.FC<Process> = ({
     >
       {windowed ? (
         <Window icon={icon} name={name} bgColor={bgColor} {...settings}>
-          <App {...loadedAppOptions} {...settings} />
+          {AppComponent}
         </Window>
       ) : (
-        <App {...loadedAppOptions} {...settings} />
+        AppComponent
       )}
     </motion.article>
   );

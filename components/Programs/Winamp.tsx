@@ -33,6 +33,7 @@ const Winamp: React.FC<AppComponent> = ({
   onFocus,
   onDrag,
   zIndex,
+  url: appUrl,
   file: { url = '', name = '' } = {}
 }) => {
   const [webampLib, setWebampLib] = useState<Webamp & WebampStore>();
@@ -79,6 +80,12 @@ const Winamp: React.FC<AppComponent> = ({
       onClose();
     }
   }, [closing, onClose]);
+
+  useEffect(() => {
+    if (appUrl && webampLib) {
+      loadTrackOrSkin(webampLib, appUrl, name);
+    }
+  }, [appUrl, webampLib]);
 
   return (
     <Rnd
