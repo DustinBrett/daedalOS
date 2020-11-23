@@ -1,5 +1,4 @@
 import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
-import type { DosFS } from 'js-dos/dist/typescript/js-dos-fs';
 import type { DosMainFn, DosRuntime } from 'js-dos';
 import type { WindowWithDosModule } from '@/types/components/Programs/dos';
 
@@ -59,9 +58,12 @@ const useDos = ({
     }).then(loadDos);
   }, []);
 
-  useEffect(() => () => {
-    dosCi?.exit();
-  }, [dosCi]);
+  useEffect(
+    () => () => {
+      dosCi?.exit();
+    },
+    [dosCi]
+  );
 
   /* eslint global-require: off */
   require('js-dos');

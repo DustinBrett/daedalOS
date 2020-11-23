@@ -66,8 +66,8 @@ export const open = (
   const existingProcessId = getProcessId(appName || name);
 
   if (
-    processes.find(({ id: processId }) => processId === existingProcessId)
-    && !singleInstanceApps.includes(existingProcessId)
+    processes.find(({ id: processId }) => processId === existingProcessId) &&
+    !singleInstanceApps.includes(existingProcessId)
   ) {
     if (appName !== name) {
       updateProcesses({ updates: { url }, id: existingProcessId });

@@ -23,16 +23,14 @@ const useOdf = ({
       const { current: odfCanvasElement } = odfElementRef;
 
       if (odfCanvasElement) {
-        setTimeout(
-          () => {
-            const newOdfLib = new (window as WindowWithWebOdf).odf.OdfCanvas(
-              odfCanvasElement
-            );
+        setTimeout(() => {
+          const newOdfLib = new (window as WindowWithWebOdf).odf.OdfCanvas(
+            odfCanvasElement
+          );
 
-            newOdfLib.load(url);
-            setOdfLib(newOdfLib);
-          },
-        MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND);
+          newOdfLib.load(url);
+          setOdfLib(newOdfLib);
+        }, MAXIMIZE_ANIMATION_SPEED_IN_SECONDS * MILLISECONDS_IN_SECOND);
       }
     };
 
