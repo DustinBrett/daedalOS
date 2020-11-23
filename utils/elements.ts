@@ -2,6 +2,8 @@ import type { DraggableData, Rnd, RndDragEvent } from 'react-rnd';
 
 import { NEXT_CONTAINER_ID } from './constants';
 
+const imageContainerElements = ['BUTTON', 'LI', 'TR'];
+
 export const appendElement = (
   parentElement: HTMLElement,
   childElement: HTMLElement
@@ -43,7 +45,7 @@ export const getTargetCenterPosition = (
   focusImage = false
 ): { x: number; y: number } => {
   const idealElement =
-    focusImage && ['BUTTON', 'LI'].includes(element?.nodeName || '')
+    focusImage && imageContainerElements.includes(element?.nodeName || '')
       ? element?.getElementsByTagName?.('img')?.[0] ||
         element?.getElementsByTagName?.('figure')?.[0] ||
         element

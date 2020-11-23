@@ -74,13 +74,19 @@ const appLoaderByFileType = (
     };
   }
 
-  return {
-    ...(appLoaders[getAppNameByExtension(extName)] || {}),
-    loadedAppOptions: {
-      file: appFile,
-      args: searchParams
-    }
-  };
+  const appLoader = appLoaders[getAppNameByExtension(extName)];
+
+  if (appLoader) {
+    return {
+      ...appLoader,
+      loadedAppOptions: {
+        file: appFile,
+        args: searchParams
+      }
+    };
+  }
+
+  return undefined;
 };
 
 export const appLoader = (appFile: AppFile): AppLoader | undefined => {
