@@ -64,10 +64,11 @@ export const open = (
 ): string => {
   const { appName, icon, name, url } = appFile;
   const existingProcessId = getProcessId(appName || name);
+  const singleInstanceApp = singleInstanceApps.includes(existingProcessId);
 
   if (
-    processes.find(({ id: processId }) => processId === existingProcessId) &&
-    !singleInstanceApps.includes(existingProcessId)
+    !singleInstanceApp &&
+    processes.find(({ id: processId }) => processId === existingProcessId)
   ) {
     if (appName !== name) {
       updateProcesses({ updates: { url }, id: existingProcessId });
@@ -82,7 +83,7 @@ export const open = (
     const process = new Process({
       loader,
       icon,
-      name: singleInstanceApps ? name : appName || name,
+      name: singleInstanceApp ? name : appName || name,
       launchElement,
       ...loader.loaderOptions
     });

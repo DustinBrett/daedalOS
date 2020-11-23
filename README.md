@@ -1,7 +1,7 @@
 # MVP Bugs
 
 - Explorer
-  - Filename is showing instead of app name in titlebar
+  - Filename should truncate when too long
 - Icon
   - WebODF icon for doc types
 - Focus
