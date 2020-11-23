@@ -1,4 +1,4 @@
-# MVP Bugs
+# Bugs
 
 - Explorer
   - Filename should truncate when too long
@@ -11,7 +11,7 @@
 - Files
   - Uploaded files not working on subsequent loads
 
-# MVP Refactors
+# Refactors
 
 - Hook (useWallpaper, useWinamp)
 - Effect (maybeReFocus, maybeToggleMaximize)
