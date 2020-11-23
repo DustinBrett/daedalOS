@@ -12,6 +12,8 @@ import { basename, extname } from 'path';
 import { getFileIcon } from '@/utils/file';
 import { getProcessId, Process } from '@/utils/process';
 
+const singleInstanceApps = ['dos'];
+
 const addProcess = (
   process: Process,
   processes: Processes,
@@ -63,7 +65,10 @@ export const open = (
   const { appName, icon, name, url } = appFile;
   const existingProcessId = getProcessId(appName || name);
 
-  if (processes.find(({ id: processId }) => processId === existingProcessId)) {
+  if (
+    processes.find(({ id: processId }) => processId === existingProcessId)
+    && !singleInstanceApps.includes(existingProcessId)
+  ) {
     if (appName !== name) {
       updateProcesses({ updates: { url }, id: existingProcessId });
     }
@@ -77,7 +82,7 @@ export const open = (
     const process = new Process({
       loader,
       icon,
-      name: appName || name,
+      name: singleInstanceApps ? name : appName || name,
       launchElement,
       ...loader.loaderOptions
     });
