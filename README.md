@@ -2,12 +2,14 @@
 
 - Explorer
   - Filename is showing instead of app name in titlebar
-- Icons
+- Icon
   - WebODF icon for doc types
-- Windows
-  - Reopening explorer changes foreground id but not focus
-- Winamp
-  - Titlebar should match foreground state on initial blur & mobile
+- Focus
+  - Reopening app changes foreground id but not focus
+  - Clicking iFrame doesn't focus window
+  - Winamp titlebar not properly focused on load
+- Files
+  - Uploaded files not working on subsequent loads
 
 # MVP Refactors
 
@@ -35,6 +37,7 @@
   - Initial load maximized if dimensions > screen
   - Save maximized state on close
   - Fix missing exit animation on windowless apps
+  - Re-render maximized window on layout/orientation changes
 - Icons
   - Dragging should go in front of windows
   - Store icon positions
