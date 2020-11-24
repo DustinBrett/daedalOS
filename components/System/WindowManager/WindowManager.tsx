@@ -3,9 +3,9 @@ import styles from '@/styles/System/WindowManager/WindowManager.module.scss';
 import { AnimatePresence } from 'framer-motion';
 
 import dynamic from 'next/dynamic';
-import { focusClosestFocusableElement } from '@/utils/elements';
+import useIFrameFocuser from '@/hooks/useIframeFocuser';
 import { ProcessContext } from '@/contexts/ProcessManager';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 
 const ProcessWindow = dynamic(
   import('@/components/System/WindowManager/ProcessWindow')
@@ -14,13 +14,7 @@ const ProcessWindow = dynamic(
 const WindowManager: React.FC = () => {
   const { processes } = useContext(ProcessContext);
 
-  useEffect(() => {
-    window.addEventListener('blur', () => {
-      if (document.activeElement instanceof HTMLIFrameElement) {
-        focusClosestFocusableElement(document.activeElement);
-      }
-    });
-  }, []);
+  useIFrameFocuser();
 
   return (
     <div className={styles.windows}>
