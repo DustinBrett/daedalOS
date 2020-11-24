@@ -43,6 +43,7 @@
   - Store icon positions
   - Switch to grid layout
   - Fix 3rd line truncation (hiding overflow cuts off shadow)
+  - Fix single long line not truncating
 - DOS
   - Run in web worker to stop animation blocking
 - PDF Viewer
