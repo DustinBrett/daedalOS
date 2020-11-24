@@ -5,6 +5,7 @@ import type { WallpaperEffect } from '@/types/components/System/Desktop/Wallpape
 import * as THREE from 'three';
 import Color from 'color';
 import { MILLISECONDS_IN_SECOND } from '@/utils/constants';
+import { useEffect } from 'react';
 
 const wallpaperColor = (h: number): number =>
   Color(`hsl(${h}, 40%, 15%)`).rgbNumber();
@@ -49,7 +50,7 @@ const initRainbowEffect = (wallpaperEffect: WallpaperEffect): (() => void) => {
   };
 };
 
-export const renderWallpaperEffect = ({
+const renderWallpaperEffect = ({
   current: renderElement
 }: React.RefObject<HTMLElement>): WallpaperEffect => {
   const wallpaperEffect = WAVES({
@@ -63,3 +64,15 @@ export const renderWallpaperEffect = ({
 
   return wallpaperEffect;
 };
+
+const useWallpaper = (desktopRef: React.RefObject<HTMLElement>): void => {
+  useEffect(() => {
+    const wallpaperEffect = renderWallpaperEffect(desktopRef);
+
+    return () => {
+      wallpaperEffect?.destroy();
+    };
+  }, []);
+};
+
+export default useWallpaper;

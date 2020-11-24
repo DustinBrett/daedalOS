@@ -1,18 +1,12 @@
 import styles from '@/styles/System/Desktop/Desktop.module.scss';
 
-import { renderWallpaperEffect } from '@/components/System/Desktop/Wallpaper';
-import { useEffect, useRef } from 'react';
+import useWallpaper from '@/hooks/useWallpaper';
+import { useRef } from 'react';
 
 const Desktop: React.FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const wallpaperEffect = renderWallpaperEffect(desktopRef);
-
-    return () => {
-      wallpaperEffect?.destroy();
-    };
-  }, []);
+  useWallpaper(desktopRef);
 
   return (
     <main className={styles.desktop} ref={desktopRef}>

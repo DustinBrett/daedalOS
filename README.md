@@ -9,7 +9,7 @@
 
 # Refactors
 
-- Hook (useIFrameFocusMonitor, useWallpaper, useWinamp)
+- Hook (useWinamp)
 - Effect (maybeReFocus, maybeToggleMaximize)
 
 # Post MVP
