@@ -24,10 +24,14 @@ export const focusResizableElementRef = (
   elementRef: React.RefObject<Rnd>
 ): void => elementRef.current?.resizableElement.current?.focus();
 
+export const focusClosestFocusableElement = (
+  element: HTMLElement | null
+): void => element?.closest<HTMLElement>(':not(li)[tabindex]')?.focus();
+
 export const focusClosestFocusableElementFromRef = (
   elementRef: React.RefObject<HTMLElement>
 ) => (): void => {
-  elementRef.current?.closest<HTMLElement>(':not(li)[tabindex]')?.focus();
+  focusClosestFocusableElement(elementRef.current);
 };
 
 export const lockDocumentTitle = (): void => {

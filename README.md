@@ -1,19 +1,15 @@
 # Bugs
 
-- Explorer
-  - Filename should truncate when too long
-- Icon
-  - WebODF icon for doc types
 - Focus
   - Reopening app changes foreground id but not focus
-  - Clicking iFrame doesn't focus window
+  - Clicking iFrame doesn't blur start menu
   - Winamp titlebar not properly focused on load
 - Files
   - Uploaded files not working on subsequent loads
 
 # Refactors
 
-- Hook (useWallpaper, useWinamp)
+- Hook (useIFrameFocusMonitor, useWallpaper, useWinamp)
 - Effect (maybeReFocus, maybeToggleMaximize)
 
 # Post MVP
@@ -28,6 +24,7 @@
   - Modified date/time
   - Expandable tree-view of directories (List & Menu View)
   - Store uploaded file stats
+  - Filename should truncate when too long
 - System
   - Context menus on right click or touch hold
 - Toolbar
@@ -44,6 +41,7 @@
   - Switch to grid layout
   - Fix 3rd line truncation (hiding overflow cuts off shadow)
   - Fix single long line not truncating
+  - WebODF icon for doc types
 - DOS
   - Run in web worker to stop animation blocking
 - PDF Viewer
