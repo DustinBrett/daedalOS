@@ -3,7 +3,7 @@ import styles from '@/styles/System/WindowManager/WindowManager.module.scss';
 import { AnimatePresence } from 'framer-motion';
 
 import dynamic from 'next/dynamic';
-import useIFrameFocuser from '@/hooks/useIframeFocuser';
+import useIFrameFocuser from '@/hooks/useIFrameFocuser';
 import { ProcessContext } from '@/contexts/ProcessManager';
 import { useContext } from 'react';
 

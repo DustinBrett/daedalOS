@@ -1,29 +1,14 @@
-# Bugs
-
-- Focus
-  - Reopening app changes foreground id but not focus
-  - Clicking iFrame doesn't blur start menu
-  - Winamp titlebar not properly focused on load
-- Files
-  - Uploaded files not working on subsequent loads
-
-# Refactors
-
-- Hook (useWinamp)
-- Effect (maybeReFocus, maybeToggleMaximize)
-
-# Post MVP
+# To Do
 
 - Wallpaper
   - Use brighter rainbow effect
 - Start Menu
   - START MENU click to toggle button bar
-  - Entries are slow on first and subsequent loads
+  - Blur doesn't work when clicking iFrame
 - File Manager
   - Resizable/sortable/scrollable columns
   - Modified date/time
   - Expandable tree-view of directories (List & Menu View)
-  - Store uploaded file stats
   - Filename should truncate when too long
 - System
   - Context menus on right click or touch hold
@@ -47,3 +32,9 @@
 - PDF Viewer
   - Finish UI
   - Fix `window` error
+- Focus
+  - Reopening app changes foreground id but not focus
+  - Winamp titlebar not properly focused on load
+- Files
+  - Uploaded files not working on subsequent loads
+  - Store uploaded file stats
