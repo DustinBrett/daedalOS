@@ -4,6 +4,7 @@ import DosImg from '@/public/icons/programs/dos.png';
 import ExplorerImg from '@/public/icons/programs/explorer.png';
 import JsFileImg from '@/public/icons/files/js.svg';
 import KeenImg from '@/public/icons/games/keen.png';
+import PdfFileImg from '@/public/icons/files/pdf.svg';
 import UnknownFileImg from '@/public/icons/files/unknown.svg';
 import WebODFImg from '@/public/icons/programs/webodf.png';
 import WinampImg from '@/public/icons/programs/winamp.png';
@@ -20,6 +21,8 @@ const Icon: React.FC<IconProps> = ({ src, width, height }) => {
   switch (src) {
     case '/icons/files/js.svg':
       return <Img url {...size} src={JsFileImg} alt="JavaScript" />;
+    case '/icons/files/pdf.svg':
+      return <Img url {...size} src={PdfFileImg} alt="PDF" />;
     case '/icons/files/unknown.svg':
       return <Img url {...size} src={UnknownFileImg} alt="Unknown" />;
     case '/icons/programs/dos.png':

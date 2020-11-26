@@ -31,6 +31,8 @@
   - Winamp titlebar not properly focused on load
 - Files
   - Store uploaded file stats
+- PDF & ODF Viewers
+  - Finish UI's / Add Controls
 
 ## Low
 
@@ -48,6 +50,9 @@
 - Icons
   - Switch to grid layout
   - WebODF icon for doc types
-- PDF Viewer
-  - Finish UI
-  - Fix `window` error
+- ClippyJS
+  - Clean up code and move to hooks
+- System Tray
+  - Use battery icons from 
+- DOS
+  - Add Jazz and Heroes
