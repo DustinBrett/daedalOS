@@ -54,5 +54,3 @@
   - Clean up code and move to hooks
 - System Tray
   - Use battery icons from
-- DOS
-  - Add Jazz and Heroes
