@@ -2,6 +2,7 @@ import BlogImg from '@/public/icons/programs/blog.jpeg';
 import DoomImg from '@/public/icons/games/doom.png';
 import DosImg from '@/public/icons/programs/dos.png';
 import ExplorerImg from '@/public/icons/programs/explorer.png';
+import JazzImg from '@/public/icons/games/jazz.png';
 import JsFileImg from '@/public/icons/files/js.svg';
 import KeenImg from '@/public/icons/games/keen.png';
 import PdfFileImg from '@/public/icons/files/pdf.svg';
@@ -32,6 +33,8 @@ const Icon: React.FC<IconProps> = ({ src, width, height }) => {
       return <Img {...size} src={KeenImg} alt="Commander Keen" type="icon" />;
     case '/icons/games/doom.png':
       return <Img {...size} src={DoomImg} alt="Doom" type="icon" />;
+    case '/icons/games/jazz.png':
+      return <Img {...size} src={JazzImg} alt="Jazz Jackrabbit" type="icon" />;
     case '/icons/programs/blog.jpeg':
       return <Img {...size} src={BlogImg} alt="Blog" type="icon" />;
     case '/icons/programs/explorer.png':
