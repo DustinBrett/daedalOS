@@ -10,10 +10,7 @@ export const Pdf: React.FC<AppComponent> = ({
   file: { url = '/docs/resume.pdf' } = {}
 }) => (
   <div className={styles.document}>
-    <Document
-      className={styles.reactDocument}
-      file={url}
-    >
+    <Document className={styles.reactDocument} file={url}>
       <Page pageNumber={1} scale={0.75} />
     </Document>
   </div>
