@@ -13,7 +13,7 @@ const useIFrameFocuser = (): void => {
 
     return () => {
       window.removeEventListener('blur', focusIFrameContainer);
-    }
+    };
   }, []);
 };
 
