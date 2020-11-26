@@ -4,7 +4,6 @@
   - Use brighter rainbow effect
 - Start Menu
   - START MENU click to toggle button bar
-  - Blur doesn't work when clicking iFrame
 - File Manager
   - Resizable/sortable/scrollable columns
   - Modified date/time
