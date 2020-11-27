@@ -125,6 +125,13 @@ $buttonIconOpacity: 0.975;
         border-radius: 100%;
         background-color: rgb(95, 95, 95);
 
+        &:before {
+          content: '';
+          position: absolute;
+          width: 18px;
+          height: 18px;
+        }
+
         &:last-child {
           margin-right: unset;
         }
