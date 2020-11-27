@@ -54,3 +54,11 @@
   - Clean up code and move to hooks
 - System Tray
   - Use battery icons from
+
+# Feedback
+
+- Allow changing theme components to all Windows or all macOS (or Linux)
+- iOS/iPad issues with min/max/close and start icons/positions
+- Improve UX/a11y to fit better into browser format
+- Virtual keyboard for DOS on mobile/tablet
+- Min/max/close are sometimes not doing the correct functions
