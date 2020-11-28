@@ -58,7 +58,7 @@
 # Feedback
 
 - Allow changing theme components to all Windows or all macOS (or Linux)
-- iOS/iPad issues with min/max/close and start icons/positions
+- iOS/iPad Safari issue with start button
 - Improve UX/a11y to fit better into browser format
 - Virtual keyboard for DOS on mobile/tablet
 - Min/max/close are sometimes not doing the correct functions
