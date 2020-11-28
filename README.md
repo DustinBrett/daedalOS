@@ -62,3 +62,5 @@
 - Improve UX/a11y to fit better into browser format
 - Virtual keyboard for DOS on mobile/tablet
 - Min/max/close are sometimes not doing the correct functions
+- Key combos in DOS are being capture by browser/OS (Fullscreen?)
+- Unfocus of start menu is inconsistent on Safari
