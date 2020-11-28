@@ -64,3 +64,6 @@
 - Min/max/close are sometimes not doing the correct functions
 - Key combos in DOS are being capture by browser/OS (Fullscreen?)
 - Unfocus of start menu is inconsistent on Safari
+- Dragging acts odd when Blog iframe is open
+- iPhone 6 issues with clicking anything
+- Blog iframe glitches out of window on Safari w/iPhone XS or lower
