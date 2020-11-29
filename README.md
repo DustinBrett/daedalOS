@@ -67,3 +67,4 @@
 - Dragging acts odd when Blog iframe is open
 - iPhone 6 issues with clicking anything
 - Blog iframe glitches out of window on Safari w/iPhone XS or lower
+- Typing and resizing of 1 DOS window effects others
