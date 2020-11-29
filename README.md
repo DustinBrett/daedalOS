@@ -2,14 +2,14 @@
 
 ## High
 
-- File Manager
+- Explorer
   - Filename should truncate when too long
 - Focus
   - Reopening app changes foreground id but not focus
 - Icons
   - Dragging should go in front of windows
 - Files
-  - Uploaded files not working on subsequent loads
+  - Uploaded files not working on reload for PDF/ODT
 - Windows
   - Initial load maximized if dimensions > screen
 
@@ -25,8 +25,6 @@
   - Store icon positions
   - Fix 3rd line truncation (hiding overflow cuts off shadow)
   - Fix single long line not truncating
-- DOS
-  - Run in web worker to stop animation blocking
 - Focus
   - Winamp titlebar not properly focused on load
 - Files
@@ -36,35 +34,24 @@
 
 ## Low
 
-- Wallpaper
-  - Use brighter rainbow effect
 - File Manager
   - Resizable/sortable/scrollable columns
   - Modified date/time
   - Expandable tree-view of directories (List & Menu View)
-- System
-  - Context menus on right click or touch hold
-- Toolbar
-  - Back, Forward, Refresh & Home Buttons
+- Toolbars
+  - Back, Forward, Refresh, Zoom & Home Buttons
   - Address & Search Inputs
 - Icons
   - Switch to grid layout
   - WebODF icon for doc types
 - ClippyJS
   - Clean up code and move to hooks
-- System Tray
-  - Use battery icons from
+- DOS
+  - Add buttons for virtual keyboard and saving
 
 # Feedback
 
-- Allow changing theme components to all Windows or all macOS (or Linux)
-- iOS/iPad Safari issue with start button
-- Improve UX/a11y to fit better into browser format
-- Virtual keyboard for DOS on mobile/tablet
-- Min/max/close are sometimes not doing the correct functions
-- Key combos in DOS are being capture by browser/OS (Fullscreen?)
-- Unfocus of start menu is inconsistent on Safari
 - Dragging acts odd when Blog iframe is open
-- iPhone 6 issues with clicking anything
-- Blog iframe glitches out of window on Safari w/iPhone XS or lower
-- Typing and resizing of 1 DOS window effects others
+- Blog iframe glitches out of window on Safari
+- Unfocus of start menu is inconsistent on Safari
+- Mobile Safari issues with start button

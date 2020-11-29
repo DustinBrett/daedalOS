@@ -1,4 +1,10 @@
-import type { DosFactory } from 'js-dos';
+export type DosCommandInterface = {
+  exit: () => void;
+};
 
-export type WindowWithDosModule = Window &
-  typeof globalThis & { Dos: DosFactory };
+export type WindowWithDosModules = Window &
+  typeof globalThis & {
+    __dirname: string;
+    Dos: any;
+    emulators: any;
+  };

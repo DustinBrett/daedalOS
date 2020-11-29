@@ -18,3 +18,5 @@ export const ROOT_DIRECTORY = '/';
 export const CLICK_DELAY_IN_MILLISECONDS = 300;
 
 export const NEXT_CONTAINER_ID = '__next';
+
+export const CNAME = 'x.dustinbrett.com';

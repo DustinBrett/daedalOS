@@ -1,61 +1,33 @@
-import type { DosCommandInterface } from 'js-dos/dist/typescript/js-dos-ci';
-import type { DosMainFn, DosRuntime } from 'js-dos';
-import type { WindowWithDosModule } from '@/types/components/Programs/dos';
+import type {
+  DosCommandInterface,
+  WindowWithDosModules
+} from '@/types/components/Programs/dos';
 
+import { CNAME } from '@/utils/constants';
 import { useEffect, useState } from 'react';
 
-const dosOptions = {
-  wdosboxUrl: '/libs/wdosbox.js',
-  /* eslint @typescript-eslint/no-empty-function: off */
-  onprogress: () => {}
-};
-
 const useDos = ({
-  args,
-  canvasRef,
-  name,
+  containerRef,
   url
 }: {
-  args: URLSearchParams | undefined;
-  canvasRef: React.RefObject<HTMLCanvasElement>;
-  name: string;
+  containerRef: React.RefObject<HTMLElement>;
   url?: string;
 }): void => {
   const [dosCi, setDosCi] = useState<DosCommandInterface | null>(null);
-  const loadMain = (main: DosMainFn, prependedArgs: string[] = []) => {
-    const loadArgs = args?.get('-c')
-      ? args
-          ?.getAll('-c')
-          .map((value) => ['-c', value])
-          .flat() || []
-      : ['-c', 'CLS'];
-
-    main([...prependedArgs, ...loadArgs]).then((value) => {
-      setDosCi(value);
-    });
-  };
-  const loadDos = ({ fs, main }: DosRuntime) => {
-    if (url) {
-      const appPath = name.replace(/ /g, '').substring(0, 8);
-
-      fs.extract(url, appPath).then(() =>
-        loadMain(main, ['-c', `CD ${appPath}`])
-      );
-    } else {
-      loadMain(main);
-    }
-  };
 
   useEffect(() => {
-    const { current: canvasElement } = canvasRef as {
+    const { current: containerElement } = containerRef as {
       current: HTMLCanvasElement;
     };
-    const { Dos: DosModule } = window as WindowWithDosModule;
+    const DosWindow = window as WindowWithDosModules;
 
-    DosModule(canvasElement, {
-      autolock: !!args?.get('autolock'),
-      ...dosOptions
-    }).then(loadDos);
+    /* eslint no-underscore-dangle: off */
+    DosWindow.__dirname = '';
+    DosWindow.emulators.pathPrefix = '/libs/js-dos/';
+
+    DosWindow.Dos(containerElement)
+      .run(url?.replace(`https://${CNAME}`, ''))
+      .then((ci: DosCommandInterface) => setDosCi(ci));
   }, []);
 
   useEffect(

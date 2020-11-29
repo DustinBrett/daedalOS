@@ -13,12 +13,8 @@ const defaultDimensions = {
   height: 400 + TITLEBAR_HEIGHT
 };
 
-const Dos: React.FC<AppComponent> = ({
-  args,
-  file: { url, name = '' } = {},
-  maximized
-}) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const Dos: React.FC<AppComponent> = ({ file: { url } = {}, maximized }) => {
+  const containerRef = useRef<HTMLElement>(null);
   const maximizedStyle = maximized
     ? getLockedAspectRatioDimensions(
         defaultDimensions.width,
@@ -26,16 +22,16 @@ const Dos: React.FC<AppComponent> = ({
       )
     : {};
 
-  useDos({ args, canvasRef, name, url });
+  useDos({ containerRef, url });
 
   return (
-    <article className={styles.dos} style={maximizedStyle}>
-      <canvas
-        onTouchStart={focusClosestFocusableElementFromRef(canvasRef)}
-        onClick={focusClosestFocusableElementFromRef(canvasRef)}
-        ref={canvasRef}
-      />
-    </article>
+    <article
+      className={styles.dos}
+      style={maximizedStyle}
+      onTouchStart={focusClosestFocusableElementFromRef(containerRef)}
+      onClick={focusClosestFocusableElementFromRef(containerRef)}
+      ref={containerRef}
+    />
   );
 };
 
