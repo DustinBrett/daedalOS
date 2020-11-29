@@ -33,7 +33,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-optimized-image": "^0.4.1",
-    "react-pdf": "^5.1.0-beta",
     "react-rnd": "^10.2.3",
     "three": "^0.123.0",
     "webamp": "^1.4.1-beta06"
@@ -49,7 +48,6 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-fontawesome": "^1.6.4",
-    "@types/react-pdf": "^5.0.0",
     "@types/react-rnd": "^8.0.0",
     "@types/sass": "^1.16.0",
     "@typescript-eslint/eslint-plugin": "^4.8.2",

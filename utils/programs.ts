@@ -16,9 +16,6 @@ const Explorer = dynamic(import('@/components/Programs/Explorer'));
 const WebODF = dynamic(import('@/components/Programs/WebODF'));
 const Winamp = dynamic(import('@/components/Programs/Winamp'));
 
-// Skip SSR
-const Pdf = dynamic(import('@/components/Programs/Pdf'), { ssr: false });
-
 const appLoaders: AppLoaders = {
   blog: {
     loader: Blog,
@@ -31,15 +28,6 @@ const appLoaders: AppLoaders = {
   explorer: {
     loader: Explorer,
     loaderOptions: explorerLoaderOptions
-  },
-  pdf: {
-    loader: Pdf,
-    // TODO: Remove hardcoding (Bypass SSR)
-    loaderOptions: {
-      height: 700,
-      width: 500,
-      bgColor: '#d7d7d7'
-    }
   },
   webodf: {
     loader: WebODF,
@@ -56,8 +44,6 @@ export const getAppNameByExtension = (ext: string): string => {
     case '.jsdos':
     case '.zip':
       return 'DOS';
-    case '.pdf':
-      return 'PDF';
     case '.odt':
       return 'WebODF';
     case '.mp3':

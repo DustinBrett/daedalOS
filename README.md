@@ -41,6 +41,8 @@
 - Toolbars
   - Back, Forward, Refresh, Zoom & Home Buttons
   - Address & Search Inputs
+- Taskbar
+  - On restore, refocus on window, not on taskbar entry
 - Icons
   - Switch to grid layout
   - WebODF icon for doc types
