@@ -19,9 +19,10 @@ $startMenuTotalWidth: map-get($startmenu, width) +
     display: grid;
 
     width: map-get($taskbar, entry-width);
+    padding-left: 1px;
 
-    &:last-child {
-      padding-right: unset;
+    &:first-child {
+      padding-left: unset;
     }
   }
 }

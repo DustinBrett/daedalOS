@@ -34,8 +34,10 @@ const Window: React.FC<AppComponent> = ({
   const windowRef = useRef<Rnd>(null);
 
   useEffect(() => {
-    focusResizableElementRef(windowRef);
-  }, []);
+    if (foregroundId === id) {
+      focusResizableElementRef(windowRef);
+    }
+  }, [foregroundId]);
 
   return (
     <Rnd
