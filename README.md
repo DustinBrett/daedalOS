@@ -1,6 +1,6 @@
 # To Do
 
-# System
+## System
 
 - Windows
   - Restoring from taskbar should refocus onto window
@@ -19,6 +19,8 @@
 - Start Menu
   - START MENU click to toggle button bar
   - Auto resize height for shorter screens
+  - Not auto closing on blur on Safari
+  - In Safari mobile the window icon moves with scroll/swipe
 - File Manager
   - Filename not properly truncating
   - Resizable/sortable/scrollable columns
@@ -31,31 +33,18 @@
 
 ## Apps
 
-- PDF.js
-  - Add responsive page containers
-- WebODF
-  - Clicking links doesn't work
-- Blog
-  - Dragging window drops randomly
-- ClippyJS
-  - Clean up code and move to hooks
-- Winamp
-  - Main window titlebar focus doesn't work on load or mobile
-  - Cannot resize playlist on mobile
-- WebODF
-  - Document file type icon
 - DOS
   - Auto resize has too much padding since upgrading to v7
   - Add virtual keyboard toggle and touch capability
   - Remove canvas animation transition during maximize
-
-## Browser Specific
-
-- Firefox
-  - Blur effects not working
-  - Issue with font preloading in console
-- Safari
-  - Start menu is not closing on blur
-- Safari Mobile
-  - iframe height not staying within window
-  - Start menu button moves with scroll/swipe
+- PDF.js
+  - Add responsive page containers & zoom controls
+- WebODF
+  - Clicking links doesn't work
+  - Document file type icon
+- Blog
+  - Dragging window loses "grip" randomly
+  - In Safari the iframe height goes outside it's container
+- Winamp
+  - Main window titlebar focus doesn't work on load or mobile
+  - Cannot resize playlist on mobile
