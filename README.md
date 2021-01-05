@@ -1,9 +1,8 @@
-# BIG NEWS!
+# STREAMING THE REBUILD!
 
-I have decided to re-write my project in it's entirety and stream it all live on YouTube (https://www.youtube.com/c/DustinBrett/videos). I will be starting the 1st stream this **Saturday (January 2nd, 2021) @ 9 PM PST**.
+I've begun to re-write this project in it's entirety and stream it all live on YouTube (https://www.youtube.com/c/DustinBrett/videos). The streams happen every **Saturday @ 9 PM PST**.
 
-Jan 2nd Event Link: https://www.youtube.com/watch?v=S-rF5rkhaJ0
+- 01/02/21: https://www.youtube.com/watch?v=S-rF5rkhaJ0
+- 01/09/21: https://www.youtube.com/watch?v=te1sxZVj55E (Upcoming)
 
-My first stream will go over the goals for the project as well as initial setup of Next.js and the tooling. I'd be happy to answer any questions or discuss anything and I plan on making many more videos for this project and just in general about software development.
-
-Thanks everyone for the support I have gotten and I look forward to sharing this project with the community.
+I'd be happy to answer questions or discuss anything during the streams. Thanks everyone for the support!
