@@ -2,6 +2,8 @@
   "extends": [
     "stylelint-config-prettier",
     "stylelint-config-standard",
-    "stylelint-config-sass-guidelines"
-  ]
+    "stylelint-config-sass-guidelines",
+    "stylelint-config-styled-components"
+  ],
+  "processors": ["stylelint-processor-styled-components"]
 }
