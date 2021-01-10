@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { description, name } from 'package.json';
 import type { ReactElement } from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import defaultTheme from 'themes/default.json';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -16,12 +17,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const theme = {
-  colors: {
-    primary: '#008000'
-  }
-};
-
 export default function App({ Component, pageProps }: AppProps): ReactElement {
   return (
     <>
@@ -30,7 +25,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
         <meta name="description" content={description} />
       </Head>
       <GlobalStyle />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={defaultTheme}>
         <Component {...pageProps} />
       </ThemeProvider>
     </>
