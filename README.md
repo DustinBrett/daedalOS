@@ -1,8 +1,6 @@
-# STREAMING THE REBUILD!
+# Make an OS with React & Next.js (**Saturdays @ 9 PM PST**)
 
-I've begun to re-write this project in it's entirety and stream it all live on YouTube (https://www.youtube.com/c/DustinBrett/videos). The streams happen every **Saturday @ 9 PM PST**.
+I'm live streaming the total re-write of this project on [my YouTube channel](https://www.youtube.com/c/DustinBrett/videos)!
 
-- 01/02/21: https://www.youtube.com/watch?v=S-rF5rkhaJ0
-- 01/09/21: https://www.youtube.com/watch?v=te1sxZVj55E (Upcoming)
-
-I'd be happy to answer questions or discuss anything during the streams. Thanks everyone for the support!
+### - [Project Goals & Setup (01/02/21)](https://youtu.be/S-rF5rkhaJ0)
+### - [More Setup & Testing (01/09/21)](https://youtu.be/te1sxZVj55E)
