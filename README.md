@@ -6,3 +6,4 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 
 ### - [Project Goals & Setup](https://youtu.be/S-rF5rkhaJ0) (01/02/21)
 ### - [More Setup & Testing](https://youtu.be/te1sxZVj55E) (01/09/21)
+### - [Contexts & Refactoring](https://youtu.be/wbKSvZ2DrJg) (01/16/21)
