@@ -7,11 +7,18 @@
   },
   "extends": [
     "airbnb",
+    "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
     "plugin:jest/recommended",
+    "plugin:jest-dom/recommended",
     "plugin:react/recommended",
-    "prettier"
+    "plugin:react-hooks/recommended",
+    "plugin:testing-library/recommended",
+    "prettier",
+    "prettier/@typescript-eslint",
+    "prettier/react"
   ],
   "globals": {
     "React": "readonly"
@@ -24,8 +31,19 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "jest", "react", "simple-import-sort"],
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "jest-dom",
+    "react",
+    "simple-import-sort",
+    "testing-library"
+  ],
   "rules": {
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
     "comma-dangle": ["error", "never"],
     "max-lines": ["error", 80],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
