@@ -2,6 +2,12 @@
   "name": "x",
   "version": "2.0.0",
   "description": "Desktop environment in the browser.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DustinBrett/x.git"
+  },
+  "author": "Dustin Brett",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,12 +18,16 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DustinBrett/x.git"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
-  "author": "Dustin Brett",
-  "license": "MIT",
+  "lint-staged": {
+    "*": "prettier --write",
+    "*.{js,ts,tsx}": "eslint --fix",
+    "*.tsx": "stylelint --fix"
+  },
   "dependencies": {
     "next": "^10.0.5",
     "react": "^17.0.1",
@@ -56,15 +66,5 @@
     "stylelint-config-standard": "^20.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "typescript": "^4.1.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*": "prettier --write",
-    "*.{js,ts,tsx}": "eslint --fix",
-    "*.tsx": "stylelint --fix"
   }
 }
