@@ -48,6 +48,7 @@
     "max-lines": ["error", 80],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
     "semi": ["error", "always"],
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
