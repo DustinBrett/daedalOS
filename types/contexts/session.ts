@@ -1,5 +1,5 @@
 import type { DefaultTheme } from 'styled-components';
 
-export type StyledAppProps = {
+export type SessionContextState = {
   theme?: DefaultTheme;
 };
