@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import { createContext, useState } from 'react';
-import type { Process } from 'types/utils/processDirectory';
+import type { Processes } from 'types/utils/processDirectory';
 import processDirectory from 'utils/processDirectory';
 
 type ProcessContextState = {
-  processes: Partial<Process>;
+  processes: Processes;
 };
 
 const ProcessContext = createContext<ProcessContextState>({ processes: {} });
