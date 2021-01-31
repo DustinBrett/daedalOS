@@ -1,7 +1,5 @@
 import type { SessionContextState } from 'types/contexts/session';
 
-const useSessionContextState = (): SessionContextState => ({
-  theme: undefined
-});
+const useSessionContextState = (): SessionContextState => ({});
 
 export default useSessionContextState;
