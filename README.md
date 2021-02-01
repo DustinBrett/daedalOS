@@ -7,3 +7,5 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [Project Goals & Setup](https://youtu.be/S-rF5rkhaJ0) (01/02/21)
 ### - [More Setup & Testing](https://youtu.be/te1sxZVj55E) (01/09/21)
 ### - [Contexts & Refactoring](https://youtu.be/wbKSvZ2DrJg) (01/16/21)
+### - [System Components](https://youtu.be/o6Q8gF-zwL0) (01/23/21)
+### - [Wallpaper & Taskbar](https://youtu.be/LdZQ-qmS7to) (01/30/21)
