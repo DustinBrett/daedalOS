@@ -10,7 +10,3 @@ export type Processes = {
 export type ProcessContextState = {
   processes: Processes;
 };
-
-export type ProcessProviderProps = {
-  startupProcesses: Processes;
-};
