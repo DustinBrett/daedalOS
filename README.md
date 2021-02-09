@@ -9,3 +9,4 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [Contexts & Refactoring](https://youtu.be/wbKSvZ2DrJg) (01/16/21)
 ### - [System Components](https://youtu.be/o6Q8gF-zwL0) (01/23/21)
 ### - [Wallpaper & Taskbar](https://youtu.be/LdZQ-qmS7to) (01/30/21)
+### - [Wallpaper, Taskbar & Refactoring](https://youtu.be/DVn1LB5PwYk) (02/06/21)
