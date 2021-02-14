@@ -1,3 +1,3 @@
-const HelloWorld: React.FC = () => <h1>Hello, world!</h1>;
+const HelloWorld = (): JSX.Element => <h1>Hello, world!</h1>;
 
 export default HelloWorld;

@@ -1,6 +1,6 @@
 import StyledTaskbarEntry from 'styles/components/system/Taskbar/StyledTaskbarEntry';
 
-const TaskbarEntry: React.FC = () => (
+const TaskbarEntry = (): JSX.Element => (
   <StyledTaskbarEntry>PROCESS</StyledTaskbarEntry>
 );
 
