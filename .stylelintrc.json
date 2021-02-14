@@ -4,5 +4,8 @@
     "stylelint-config-sass-guidelines",
     "stylelint-config-standard",
     "stylelint-config-styled-components"
-  ]
+  ],
+  "rules": {
+    "value-keyword-case": null
+  }
 }

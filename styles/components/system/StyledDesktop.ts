@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const StyledDesktop = styled.main`
-  background-color: ${({ theme }) => theme.colors.backgroundcolor};
+  background-color: ${({ theme }) => theme.colors.background};
   bottom: 0;
   height: 100vh;
   left: 0;
