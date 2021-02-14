@@ -9,6 +9,11 @@ declare module 'styled-components' {
       primary: string;
       window: string;
     };
+    fonts: {
+      clock: {
+        size: string;
+      };
+    };
     sizes: {
       clock: {
         width: string;
