@@ -3,18 +3,15 @@ import StyledApp from 'components/pages/StyledApp';
 import { SessionProvider } from 'contexts/session';
 import type { AppProps } from 'next/app';
 
-export default function App({
-  Component,
-  pageProps
-}: AppProps): React.ReactElement {
-  return (
-    <>
-      <Metadata />
-      <SessionProvider>
-        <StyledApp>
-          <Component {...pageProps} />
-        </StyledApp>
-      </SessionProvider>
-    </>
-  );
-}
+const App = ({ Component, pageProps }: AppProps): React.ReactElement => (
+  <>
+    <Metadata />
+    <SessionProvider>
+      <StyledApp>
+        <Component {...pageProps} />
+      </StyledApp>
+    </SessionProvider>
+  </>
+);
+
+export default App;

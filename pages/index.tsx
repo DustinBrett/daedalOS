@@ -2,12 +2,12 @@ import Desktop from 'components/system/Desktop';
 import ProcessLoader from 'components/system/Processes/ProcessLoader';
 import { ProcessProvider } from 'contexts/process';
 
-export default function Home(): React.ReactElement {
-  return (
-    <Desktop>
-      <ProcessProvider>
-        <ProcessLoader />
-      </ProcessProvider>
-    </Desktop>
-  );
-}
+const Home = (): React.ReactElement => (
+  <Desktop>
+    <ProcessProvider>
+      <ProcessLoader />
+    </ProcessProvider>
+  </Desktop>
+);
+
+export default Home;
