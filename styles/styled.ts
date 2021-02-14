@@ -9,6 +9,6 @@ declare module 'styled-components' {
       primary: string;
       window: string;
     };
-    wallpaper: WallpaperEffect;
+    wallpaper?: WallpaperEffect;
   }
 }
