@@ -13,6 +13,7 @@
     "plugin:import/typescript",
     "plugin:jest/recommended",
     "plugin:jest-dom/recommended",
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:testing-library/recommended",
@@ -35,6 +36,7 @@
     "@typescript-eslint",
     "jest",
     "jest-dom",
+    "prettier",
     "react",
     "simple-import-sort",
     "testing-library"
@@ -44,12 +46,10 @@
       "error",
       { "prefer": "type-imports" }
     ],
-    "comma-dangle": ["error", "never"],
     "max-lines": ["error", 80],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
-    "semi": ["error", "always"],
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
   },
