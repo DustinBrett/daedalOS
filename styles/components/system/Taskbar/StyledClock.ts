@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledStartButton = styled.time`
+const StyledClock = styled.time`
   background-color: green;
   height: 100%;
   position: absolute;
@@ -8,4 +8,4 @@ const StyledStartButton = styled.time`
   width: 90px;
 `;
 
-export default StyledStartButton;
+export default StyledClock;
