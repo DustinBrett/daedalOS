@@ -18,11 +18,11 @@ declare module 'styled-components' {
       };
       taskbar: {
         entry: {
-          width: string
+          width: string;
         };
         height: string;
-      }
-    }
+      };
+    };
     wallpaper?: WallpaperEffect;
   }
 }
