@@ -1,5 +1,3 @@
-import Title from 'styles/generic/Title';
-
-const HelloWorld: React.FC = () => <Title>Hello, world!</Title>;
+const HelloWorld: React.FC = () => <h1>Hello, world!</h1>;
 
 export default HelloWorld;
