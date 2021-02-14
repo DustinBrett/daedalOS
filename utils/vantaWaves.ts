@@ -14,16 +14,17 @@ const disableControls = {
 const isWebGLAvailable = typeof WebGLRenderingContext !== 'undefined';
 
 const vantaWaves = (settings: VantaWavesSettings): WallpaperEffect => (
-  desktopRef: React.RefObject<HTMLElement>
+  element
 ) => {
-  const vantaEffect = isWebGLAvailable
-    ? WAVES({
-        el: desktopRef.current,
-        THREE,
-        ...disableControls,
-        ...settings
-      })
-    : undefined;
+  const vantaEffect =
+    element && isWebGLAvailable
+      ? WAVES({
+          el: element,
+          THREE,
+          ...disableControls,
+          ...settings
+        })
+      : undefined;
 
   return () => {
     vantaEffect?.destroy?.();
