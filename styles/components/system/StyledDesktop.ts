@@ -5,6 +5,7 @@ const StyledDesktop = styled.main`
   bottom: 0;
   height: 100vh;
   left: 0;
+  overflow: hidden;
   position: absolute;
   right: 0;
   top: 0;
