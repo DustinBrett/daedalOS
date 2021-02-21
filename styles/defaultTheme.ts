@@ -4,6 +4,7 @@ import vantaWaves from 'utils/vantaWaves';
 const colors = {
   background: '#000',
   primary: '#000',
+  taskbar: 'rgba(0, 0, 0, 60%)',
   window: '#808080'
 };
 
