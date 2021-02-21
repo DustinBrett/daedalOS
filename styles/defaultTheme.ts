@@ -3,6 +3,7 @@ import vantaWaves from 'utils/vantaWaves';
 
 const colors = {
   background: '#000',
+  clockText: 'rgba(255, 255, 255, 80%)',
   primary: '#000',
   startButton: '#FFF',
   taskbar: 'rgba(0, 0, 0, 60%)',
