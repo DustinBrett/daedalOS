@@ -10,7 +10,7 @@ const fonts = {
   clock: {
     size: '12px'
   }
-}
+};
 
 const sizes = {
   clock: {
