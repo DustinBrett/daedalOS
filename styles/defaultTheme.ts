@@ -1,3 +1,4 @@
+import type { DefaultTheme } from 'styled-components';
 import vantaWaves from 'utils/vantaWaves';
 
 const colors = {
@@ -35,6 +36,6 @@ const wallpaper = vantaWaves({
   zoom: 0.9
 });
 
-const defaultTheme = { colors, fonts, sizes, wallpaper };
+const defaultTheme: DefaultTheme = { colors, fonts, sizes, wallpaper };
 
 export default defaultTheme;
