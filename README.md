@@ -10,3 +10,5 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [System Components](https://youtu.be/o6Q8gF-zwL0) (01/23/21)
 ### - [Wallpaper & Taskbar](https://youtu.be/LdZQ-qmS7to) (01/30/21)
 ### - [Wallpaper, Taskbar & Refactoring](https://youtu.be/DVn1LB5PwYk) (02/06/21)
+### - [Taskbar & Refactoring](https://youtu.be/prxGXXX-SU0) (02/13/21)
+### - [Clock & File System](https://youtu.be/y_RZ_YitbXg) (02/20/21)
