@@ -13,7 +13,7 @@
     "build": "next build",
     "start": "next start",
     "eslint": "eslint .",
-    "stylelint": "stylelint **/*.tsx",
+    "stylelint": "stylelint **/*.ts",
     "prettier": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -26,7 +26,7 @@
   "lint-staged": {
     "*": "prettier --write",
     "*.{js,ts,tsx}": "eslint --fix",
-    "*.tsx": "stylelint --fix"
+    "*.ts": "stylelint --fix"
   },
   "dependencies": {
     "next": "^10.0.6",
