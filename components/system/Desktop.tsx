@@ -7,11 +7,7 @@ const Desktop: React.FC = ({ children }) => {
 
   useWallpaper(desktopRef);
 
-  return (
-    <StyledDesktop ref={desktopRef} role="main">
-      {children}
-    </StyledDesktop>
-  );
+  return <StyledDesktop ref={desktopRef}>{children}</StyledDesktop>;
 };
 
 export default Desktop;
