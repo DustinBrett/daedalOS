@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic';
-import type { Process } from 'types/contexts/process';
+import type { Processes } from 'types/contexts/process';
 
-export const HelloWorld: Process = {
-  Component: dynamic(() => import('components/apps/HelloWorld')),
-  hasWindow: true
+const processDirectory: Processes = {
+  HelloWorld: {
+    Component: dynamic(() => import('components/apps/HelloWorld')),
+    hasWindow: true
+  }
 };
 
-export const Taskbar: Process = {
-  Component: dynamic(() => import('components/system/Taskbar'))
-};
+export default processDirectory;
