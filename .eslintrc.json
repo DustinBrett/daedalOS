@@ -17,9 +17,7 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:testing-library/recommended",
-    "prettier",
-    "prettier/@typescript-eslint",
-    "prettier/react"
+    "prettier"
   ],
   "globals": {
     "React": "readonly"
@@ -34,10 +32,12 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "import",
     "jest",
     "jest-dom",
     "prettier",
     "react",
+    "react-hooks",
     "simple-import-sort",
     "testing-library"
   ],
