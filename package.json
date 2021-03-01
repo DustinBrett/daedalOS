@@ -34,7 +34,7 @@
     "react-dom": "^17.0.1",
     "react-optimized-image": "^0.4.1",
     "react-rnd": "^10.2.3",
-    "three": "^0.123.0",
+    "three": "^0.125.0",
     "webamp": "^1.4.1-beta06"
   },
   "devDependencies": {
