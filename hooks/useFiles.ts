@@ -1,5 +1,3 @@
-// TODO: mapFiles from ProcessConsumer?
-
 import { useFileSystem } from 'contexts/fileSystem';
 import { useEffect, useState } from 'react';
 
