@@ -8,6 +8,7 @@ const colors = {
   primary: '#000',
   startButton: '#FFF',
   taskbar: 'rgba(0, 0, 0, 60%)',
+  taskbarHover: 'hsla(0, 0%, 25%, 70%)',
   window: '#808080'
 };
 
