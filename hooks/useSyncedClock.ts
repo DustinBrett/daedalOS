@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-
-const MILLISECONDS_IN_SECOND = 1000;
+import { MILLISECONDS_IN_SECOND } from 'utils/constants';
 
 const useSyncedClock = (callback: () => void): void => {
   useEffect(() => {
