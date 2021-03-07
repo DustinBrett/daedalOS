@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
 
   button {
     background-color: transparent;
+    font-family: inherit;
   }
 
   ol,
