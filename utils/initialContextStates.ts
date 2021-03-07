@@ -9,7 +9,7 @@ export const initialFileSystemContextState: FileSystemContextState = {
 export const initialProcessContextState: ProcessContextState = {
   close: () => undefined,
   open: () => undefined,
-  processes: {}
+  mapProcesses: () => []
 };
 
 export const initialSessionContextState: SessionContextState = {
