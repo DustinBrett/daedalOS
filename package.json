@@ -30,9 +30,6 @@
     "*.ts": "stylelint --fix"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.34",
-    "@fortawesome/free-brands-svg-icons": "^5.15.2",
-    "@fortawesome/react-fontawesome": "^0.1.14",
     "browserfs": "github:jvilk/BrowserFS",
     "ini": "^2.0.0",
     "next": "^10.0.8",
