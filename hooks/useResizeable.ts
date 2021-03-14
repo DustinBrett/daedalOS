@@ -27,7 +27,7 @@ const useResizable = (maximized = false): Resizable => {
   );
 
   return {
-    height: maximized ? '100%' : height, // TODO: Subtract taskbar height
+    height: maximized ? '100%' : height,
     width: maximized ? '100%' : width,
     updateSize
   };

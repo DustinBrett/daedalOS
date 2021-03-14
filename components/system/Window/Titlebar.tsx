@@ -22,14 +22,14 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const onClose = useCallback(() => close(id), [id, close]);
 
   return (
-    <StyledTitlebar>
+    <StyledTitlebar className="handle">
       <h1>
         <figure>
           <img src={icon} alt={title} />
           <figcaption>{title}</figcaption>
         </figure>
       </h1>
-      <nav>
+      <nav className="cancel">
         <Button onClick={onMinimize}>
           <MinimizeIcon />
         </Button>
