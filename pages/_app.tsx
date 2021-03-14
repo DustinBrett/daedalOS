@@ -9,7 +9,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => (
     <SessionProvider>
       <StyledApp>
         <Metadata />
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...pageProps} />
       </StyledApp>
     </SessionProvider>
