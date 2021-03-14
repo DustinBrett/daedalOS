@@ -22,7 +22,7 @@ const Window: React.FC<ProcessComponentProps> = ({ children, id }) => {
       enableResizing={!maximized}
       size={{ height, width }}
       onDragStop={updatePosition}
-      onResizeStop={updateSize}
+      onResize={updateSize}
       position={{ x, y }}
       {...rndDefaults}
     >
