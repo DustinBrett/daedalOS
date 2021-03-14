@@ -4,6 +4,8 @@ export type Process = {
   Component: React.ComponentType;
   hasWindow?: boolean;
   icon: string;
+  maximize?: boolean;
+  minimize?: boolean;
   title: string;
 };
 
