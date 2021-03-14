@@ -11,7 +11,8 @@ export const initialProcessContextState: ProcessContextState = {
   open: () => undefined,
   mapProcesses: () => [],
   maximize: () => undefined,
-  minimize: () => undefined
+  minimize: () => undefined,
+  processes: {}
 };
 
 export const initialSessionContextState: SessionContextState = {

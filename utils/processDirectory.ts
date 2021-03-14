@@ -1,11 +1,12 @@
+import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
 import dynamic from 'next/dynamic';
 
 export type Process = {
-  Component: React.ComponentType;
+  Component: React.ComponentType<ProcessComponentProps>;
   hasWindow?: boolean;
   icon: string;
-  maximize?: boolean;
-  minimize?: boolean;
+  maximized?: boolean;
+  minimized?: boolean;
   title: string;
 };
 
