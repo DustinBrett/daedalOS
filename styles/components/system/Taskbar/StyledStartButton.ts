@@ -1,8 +1,7 @@
 import styled from 'styled-components';
+import Button from 'styles/common/Button';
 
-const StyledStartButton = styled.button.attrs({
-  type: 'button'
-})`
+const StyledStartButton = styled(Button)`
   color: ${({ theme }) => theme.colors.startButton};
   display: flex;
   font-size: ${({ theme }) => theme.sizes.startButton.iconSize};

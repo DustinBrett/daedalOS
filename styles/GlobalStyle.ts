@@ -16,11 +16,6 @@ const GlobalStyle = createGlobalStyle`
     user-select: none;
   }
 
-  button {
-    background-color: transparent;
-    font-family: inherit;
-  }
-
   ol,
   ul {
     list-style: none;
