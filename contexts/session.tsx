@@ -1,5 +1,5 @@
+import type { SessionContextState } from 'hooks/useSessionContextState';
 import useSessionContextState from 'hooks/useSessionContextState';
-import type { SessionContextState } from 'types/contexts/session';
 import contextFactory from 'utils/contextFactory';
 import { initialSessionContextState } from 'utils/initialContextStates';
 

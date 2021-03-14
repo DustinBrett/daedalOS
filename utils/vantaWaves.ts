@@ -1,5 +1,5 @@
+import type { WallpaperEffect } from 'styles/styled';
 import * as THREE from 'three';
-import type { WallpaperEffect } from 'types/styles/wallpaper';
 /* @ts-expect-error No declaration file is required */
 import WAVES from 'vanta/dist/vanta.waves.min';
 

@@ -1,5 +1,5 @@
+import type { ProcessContextState } from 'hooks/useProcessContextState';
 import useProcessContextState from 'hooks/useProcessContextState';
-import type { ProcessContextState } from 'types/contexts/process';
 import contextFactory from 'utils/contextFactory';
 import { initialProcessContextState } from 'utils/initialContextStates';
 
