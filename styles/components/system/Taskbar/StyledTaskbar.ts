@@ -9,6 +9,7 @@ const StyledTaskbar = styled.nav`
   position: absolute;
   right: 0;
   width: 100vw;
+  z-index: 2;
 `;
 
 export default StyledTaskbar;
