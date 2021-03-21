@@ -4,5 +4,9 @@
     "stylelint-config-sass-guidelines",
     "stylelint-config-styled-components",
     "stylelint-config-prettier"
-  ]
+  ],
+  "rules": {
+    "max-nesting-depth": null,
+    "selector-no-qualifying-type": null
+  }
 }
