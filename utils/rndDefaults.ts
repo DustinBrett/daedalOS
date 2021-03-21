@@ -1,6 +1,7 @@
 import type { HandleStyles } from 'react-rnd';
 
 const rndDefaults = {
+  bounds: 'main',
   cancel: '.cancel',
   dragHandleClassName: 'handle',
   enableUserSelectHack: false,
