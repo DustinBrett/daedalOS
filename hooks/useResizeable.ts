@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { RndResizeCallback } from 'react-rnd';
+import { useTheme } from 'styled-components';
 
 type Size = {
   height: string;
@@ -16,6 +17,7 @@ const defaultWindowSize = {
 };
 
 const useResizable = (maximized = false): Resizable => {
+  const { sizes } = useTheme();
   const [{ height, width }, setSize] = useState<Size>(defaultWindowSize);
   const updateSize = useCallback<RndResizeCallback>(
     (
@@ -27,7 +29,7 @@ const useResizable = (maximized = false): Resizable => {
   );
 
   return {
-    height: maximized ? '100%' : height,
+    height: maximized ? `calc(100% - ${sizes.taskbar.height})` : height,
     width: maximized ? '100%' : width,
     updateSize
   };
