@@ -3,8 +3,8 @@ import { useState } from 'react';
 import type { Position } from 'react-rnd';
 
 type WindowState = {
-  positon: Position;
-  size: Size;
+  position?: Position;
+  size?: Size;
 };
 
 type WindowStates = {
