@@ -8,8 +8,10 @@ declare module 'styled-components' {
       background: string;
       highlight: string;
       startButton: string;
-      taskbar: string;
-      taskbarHover: string;
+      taskbar: {
+        background: string;
+        hover: string;
+      };
       text: string;
       titleBar: {
         background: string;

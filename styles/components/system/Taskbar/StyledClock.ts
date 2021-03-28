@@ -12,7 +12,7 @@ const StyledClock = styled.time`
   width: ${({ theme }) => theme.sizes.clock.width};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.taskbarHover};
+    background-color: ${({ theme }) => theme.colors.taskbar.hover};
   }
 `;
 
