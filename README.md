@@ -68,6 +68,7 @@
 # Limitations
 
 - Styling could be more accurate
+  - Window Outline Color
   - Taskbar/Hover Color
   - Titlebar Icon & Text Position/Accuracy
   - Taskbar Entry Icon & Text Position/Accuracy

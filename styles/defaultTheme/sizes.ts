@@ -27,6 +27,9 @@ const sizes = {
     height: '30px',
     iconMargin: '0 8px',
     iconSize: '16px'
+  },
+  window: {
+    outline: '1px'
   }
 };
 
