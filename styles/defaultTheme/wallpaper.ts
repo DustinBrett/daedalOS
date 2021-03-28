@@ -1,7 +1,7 @@
 import vantaWaves from 'utils/vantaWaves';
 
 const wallpaper = vantaWaves({
-  color: 0x274c,
+  color: 0x172b36,
   shininess: 35,
   waveHeight: 15,
   waveSpeed: 0.3,
