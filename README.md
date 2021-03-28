@@ -26,6 +26,7 @@
   - Drag/Drop Support
 - Right Click Menu
 - System Tray
+- Wallpaper rainbow color
 
 ## Apps
 
