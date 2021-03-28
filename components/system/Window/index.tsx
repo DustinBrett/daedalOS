@@ -6,7 +6,11 @@ import { Rnd } from 'react-rnd';
 import StyledWindow from 'styles/components/system/Window/StyledWindow';
 import rndDefaults from 'utils/rndDefaults';
 
-const Window: React.FC<ProcessComponentProps> = ({ children, id }) => {
+type WindowProps = ProcessComponentProps & {
+  children: React.ReactNode;
+};
+
+const Window = ({ children, id }: WindowProps): JSX.Element => {
   const {
     processes: {
       [id]: { maximized, minimized }
