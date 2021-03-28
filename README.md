@@ -14,6 +14,8 @@
   - Titlebar Text Truncation
   - Task View
   - Focus Behaviours/Index History
+    - Focus on Drag/Click
+    - Focus with Iframes
   - Maintain Aspect Ratio
 - Desktop
   - Icons Drag & Snap to Grid
@@ -52,7 +54,6 @@
 ## Bugs
 
 - `npm update` isn't updating `package.json`
-- Corner drag handles are too near inside
 
 # Ideas
 
@@ -66,6 +67,11 @@
 # Limitations
 
 - Styling could be more accurate
+  - Taskbar/Hover Color
+  - Titlebar Icon & Text Position/Accuracy
+  - Taskbar Entry Icon & Text Position/Accuracy
+  - Space between Start, Task Entries & Clock
+  - Taskbar Entry Grouping & Resizing (CSS Grid?)
 - Blurring doesn't work in Firefox
 - Inefficent image loading/sizing
 - Need more tests (Cypress)
