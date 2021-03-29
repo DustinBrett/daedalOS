@@ -12,3 +12,8 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [Wallpaper, Taskbar & Refactoring](https://youtu.be/DVn1LB5PwYk) (02/06/21)
 ### - [Taskbar & Refactoring](https://youtu.be/prxGXXX-SU0) (02/13/21)
 ### - [Clock & File System](https://youtu.be/y_RZ_YitbXg) (02/20/21)
+### - [Taskbar & Processes](https://youtu.be/qAuL2t82Y8A) (02/27/21)
+### - [File Manager](https://youtu.be/9M7-py__Ycg) (03/06/21)
+### - [Windows (Drag, Resize, Min, Max)](https://youtu.be/xrtO1cf0s18) (03/13/21)
+### - [Styling & Planning](https://youtu.be/IqHpqlPUsgU) (03/20/21)
+### - [Styling & Session](https://youtu.be/Caa5WKf-Z0c) (03/27/21)
