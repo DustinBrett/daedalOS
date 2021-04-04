@@ -3,6 +3,7 @@ import { useSession } from 'contexts/session';
 import useRnd from 'hooks/useRnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
+import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -12,7 +13,7 @@ type RndWindowProps = {
 const RndWindow = ({ children, id }: RndWindowProps): JSX.Element => {
   const {
     processes: {
-      [id]: { maximized }
+      [id]: { autoSizing, maximized }
     }
   } = useProcesses();
   const rndRef = useRef<Rnd | null>(null);
@@ -27,10 +28,10 @@ const RndWindow = ({ children, id }: RndWindowProps): JSX.Element => {
         ...currentWindowStates,
         [id]: {
           position: current?.props?.position,
-          size: current?.props?.size
+          size: autoSizing ? DEFAULT_WINDOW_SIZE : current?.props?.size
         }
       }));
-  }, [id, setWindowStates]);
+  }, [autoSizing, id, setWindowStates]);
 
   return (
     <Rnd ref={rndRef} {...rndProps}>

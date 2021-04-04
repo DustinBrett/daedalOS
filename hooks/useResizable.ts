@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Props } from 'react-rnd';
 import { useTheme } from 'styled-components';
 import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
@@ -10,12 +10,19 @@ type Resizable = [Size, React.Dispatch<React.SetStateAction<Size>>];
 
 const useResizable = (
   maximized = false,
+  autoSizing = false,
   size = DEFAULT_WINDOW_SIZE
 ): Resizable => {
   const [{ height, width }, setSize] = useState<Size>(size);
   const {
     sizes: { taskbar }
   } = useTheme();
+
+  useEffect(() => {
+    if (autoSizing) {
+      setSize(size);
+    }
+  }, [autoSizing, size]);
 
   return [
     {
