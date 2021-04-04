@@ -17,3 +17,4 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [Windows (Drag, Resize, Min, Max)](https://youtu.be/xrtO1cf0s18) (03/13/21)
 ### - [Styling & Planning](https://youtu.be/IqHpqlPUsgU) (03/20/21)
 ### - [Styling & Session](https://youtu.be/Caa5WKf-Z0c) (03/27/21)
+### - [x86 Emulation & File Drop](https://youtu.be/SuvXykToxQ4) (04/03/21)
