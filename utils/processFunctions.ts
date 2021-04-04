@@ -6,15 +6,21 @@ export const closeProcess = (processId: string) => ({
   ...remainingProcesses
 }: Processes): Processes => remainingProcesses;
 
-export const openProcess = (processId: string) => (
+export const openProcess = (processId: string, url: string) => (
   currentProcesses: Processes
-): Processes =>
-  currentProcesses[processId] || !processDirectory[processId]
+): Processes => {
+  const id = url ? `${processId}_${url}` : processId;
+
+  return currentProcesses[id] || !processDirectory[processId]
     ? currentProcesses
     : {
         ...currentProcesses,
-        [processId]: processDirectory[processId]
+        [id]: {
+          ...processDirectory[processId],
+          url
+        }
       };
+};
 
 export const toggleProcessSetting = (
   processId: string,

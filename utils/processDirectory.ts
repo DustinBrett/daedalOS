@@ -9,6 +9,7 @@ export type Process = {
   maximized?: boolean;
   minimized?: boolean;
   title: string;
+  url?: string;
 };
 
 export type Processes = {
