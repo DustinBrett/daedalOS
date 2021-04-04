@@ -1,20 +1,25 @@
 import { useFileSystem } from 'contexts/fileSystem';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-const useFiles = (
-  directory: string,
-  callback: (file: string) => JSX.Element
-): JSX.Element[] => {
+type Files = {
+  files: string[];
+  getFiles: () => void;
+};
+
+const useFiles = (directory: string): Files => {
   const [files, setFiles] = useState<string[]>([]);
   const { fs } = useFileSystem();
+  const getFiles = useCallback(
+    () => fs?.readdir(directory, (_error, contents = []) => setFiles(contents)),
+    [directory, fs]
+  );
 
-  useEffect(() => {
-    if (fs) {
-      fs.readdir(directory, (_error, contents = []) => setFiles(contents));
-    }
-  }, [directory, fs]);
+  useEffect(getFiles, [getFiles]);
 
-  return files.map(callback);
+  return {
+    files,
+    getFiles
+  };
 };
 
 export default useFiles;
