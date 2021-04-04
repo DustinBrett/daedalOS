@@ -13,18 +13,25 @@
   - Opening Position (Cascade or Centered)
   - Titlebar Text Truncation
   - Task View
-  - Focus Behaviours/Index History
+  - Z-Index History
+  - Focus Behaviours
     - Focus on Drag/Click
     - Focus with Iframes
   - Maintain Aspect Ratio
 - Desktop
   - Icons Drag & Snap to Grid
+  - Icon Hover Over Text
+  - Delete icons
+  - Select multiple
   - Text Truncation (3 Lines)
 - Taskbar
   - Add space between Start and Task Entries
 - File Manager
   - Drag/Drop Support
+    - Loading indicator during transfer
+  - Download files
 - Right Click Menu
+- Open With... Dialog
 - System Tray
 - Wallpaper rainbow color
 
@@ -43,6 +50,11 @@
 - Code Editor (Markdown/JavaScript)
 - Emulators (MAME/SNES/N64)
 - v86 (Linux/Windows)
+  - Save/Restore States
+  - Dynamic File System
+    - Allow reading new files
+  - Loading indicator
+  - Icon toolbar / Menu bar
 - Task Manager
 - Notepad
 - Browser (w/CORS Proxy)
@@ -51,10 +63,6 @@
 - Calendar
 - Calculator (Uno Calculator)
 - Blog
-
-## Bugs
-
-- `npm update` isn't updating `package.json`
 
 # Ideas
 
