@@ -63,7 +63,7 @@ const StyledTitlebar = styled.header`
 
         &.close {
           background-color: ${({ theme }) => theme.colors.titleBar.closeHover};
-          transition: background-color 0.3s ease;
+          transition: background-color 0.25s ease;
         }
       }
     }
