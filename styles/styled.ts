@@ -1,4 +1,3 @@
-/* eslint max-lines: off */
 import 'styled-components';
 
 export type WallpaperEffect = (element: HTMLElement | null) => () => void;
