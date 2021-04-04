@@ -41,6 +41,7 @@ const sizes = {
     iconSize: '16px'
   },
   window: {
+    lineHeight: '14px',
     outline: '1px'
   }
 };

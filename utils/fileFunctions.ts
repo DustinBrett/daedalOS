@@ -24,9 +24,32 @@ export const getShortcut = (path: string, fs: FSModule): Promise<Shortcut> =>
 
 export const getIconByFileExtension = (extension: string): string => {
   switch (extension) {
+    case '.img':
+    case '.iso':
+      return '/icons/image.ico';
     default:
       return '/icons/unknown.ico';
   }
 };
 
-export const getProcessByFileExtension = (_extension: string): string => '';
+export const getProcessByFileExtension = (extension: string): string => {
+  switch (extension) {
+    case '.img':
+    case '.iso':
+      return 'V86';
+    default:
+      return '';
+  }
+};
+
+export const loadScript = (src: string, callback: () => void): void => {
+  const script = document.createElement('script');
+
+  script.src = src;
+  script.onload = () => callback?.();
+
+  document.head.appendChild(script);
+};
+
+export const bufferToUrl = (buffer: Buffer): string =>
+  URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
