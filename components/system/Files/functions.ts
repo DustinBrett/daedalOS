@@ -2,9 +2,9 @@ export const getIconByFileExtension = (extension: string): string => {
   switch (extension) {
     case '.img':
     case '.iso':
-      return '/icons/image.ico';
+      return '/icons/image.png';
     default:
-      return '/icons/unknown.ico';
+      return '/icons/unknown.png';
   }
 };
 
