@@ -1,87 +1,89 @@
-# To Do
+# x (TODO)
 
-## OS
+## Global
 
-- Session
-  - Window Positions/Sizes
-  - Icon Positions
-  - Startup Apps
-  - Maximized
-- Start Menu
-- Windows
-  - Animations (Min/Max/Open/Close)
-  - Opening Position (Cascade or Centered)
-  - Titlebar Text Truncation
-  - Task View
-  - Z-Index History
-  - Focus Behaviours
-    - Focus on Drag/Click
-    - Focus with Iframes
-  - Maintain Aspect Ratio
-- Desktop
-  - Icons Drag & Snap to Grid
-  - Icon Hover Over Text
-  - Delete icons
-  - Select multiple
-  - Text Truncation (3 Lines)
-- Taskbar
-  - Add space between Start and Task Entries
-- File Manager
-  - Drag/Drop Support
-    - Loading indicator during transfer
-  - Download files
-- Right Click Menu
-- Open With... Dialog
-- System Tray
-- Wallpaper rainbow color
+- Right Click Context Menus
+- Optimize Image Loading/Quality/Size
 
-## Apps
+## Bugs
 
-- File Explorer
-  - Based on Build 21337
-  - File Search
-- DOS (w/Web Workers)
-  - Blake Stone, Commander Keen, Doom, Duke Nukem, HOMM2, Jazz Rabbit
-- IRC Client
-- Clippy
-- Webamp (MP3/M3U/WAV Support)
-  - SpyAmp Pro Skin
-- PDF Reader
-- Code Editor (Markdown/JavaScript)
-- Emulators (MAME/SNES/N64)
-- v86 (Linux/Windows)
-  - Save/Restore States
-  - Dynamic File System
-    - Allow reading new files
-  - Loading indicator
-  - Icon toolbar / Menu bar
-- Task Manager
-- Notepad
-- Browser (w/CORS Proxy)
-- Image Viewer
-- Video Viewer
-- Calendar
-- Calculator (Uno Calculator)
-- Blog
+- Windows lose focus at drag handles
+- Focused taskbar entry click doesn't minimize
+- Buffer urls aren't cleaned up
+- Background blur doesn't work in Firefox
+- NPM Issues (Use nvm/.nvmrc/yarn)
+- App doesn't load in IE11
 
-# Ideas
+## File Manager
 
-- Windows 2000 Theme
-- Windows 10 Light Theme (w/CSS Detect)
-- Host Old Personal Websites
-- Game Save Collaboration
-- Build number at bottom right
-- Easter eggs
+- Details View with Columns (File Explorer)
+- Allow Opening Folders in Same Window (Not Desktop)
+- Menu View (Start Menu)
+- Open With Dialog
+- Download Files
+- Delete Files/Folders
+- Rename Files/Folders
+- Loading Indicator
+- Open Zip Files as Folders
 
-# Limitations
+## Desktop Icons
 
-- Styling could be more accurate
-  - Window Outline Color
-  - Taskbar/Hover Color
-  - Titlebar Icon & Text Position/Accuracy
-  - Taskbar Entry Icon & Text Position/Accuracy
-  - Space between Start, Task Entries & Clock
-  - Taskbar Entry Grouping & Resizing (CSS Grid?)
-- Blurring doesn't work in Firefox
-- Inefficent image loading/sizing
-- Need more tests (Cypress)
+- Selected State BG Color
+- Selected+Hover State BG Color
+- Unselect on Blur
+- Text Truncation Behaviours
+- Drag & Drop
+- Align to Grid
+- Store Icon Order
+- Adjust Text Brightness/Shadow/Size
+
+## Window Titlebar
+
+- Confirm Icon/Text Positions
+- Adjust Text Brightness/Shadow/Size
+- Double Click to Toggle Maximize
+- Foreground/Background Coloring
+
+## Windows
+
+- Update Titles in Apps
+- Open/Close/Min/Max Transitions/Positions
+- Active/Inactive Outline/Shadow
+- Allow Maintain Aspect Ratio Resizing
+- Initial Position
+- Cascade Windows
+- File Menu
+- Status Bar
+- Store Maximized State
+
+## Start Menu
+
+- Close on Blur
+- Remain Open on Taskbar Clicks (Not Taskbar Entries)
+- Active/Hover Colors on Button when Open
+- Blur Background Effects
+- Open/Close Transitions
+- Start Menu File Manager (All Apps)
+- Left Navigation Buttons
+
+## Taskbar Entries
+
+- Hover/Active Transitions
+- Open/Close Transitions
+- Adjust Text Brightness/Shadow/Size
+
+## V86
+
+- Save/Load States
+- Loading Indicator
+- Limit Screen Resize
+- Resolve Position Offset Tuning
+
+## CodeMirror
+
+- Allow Beautifying Minified Code
+- Status Bar Panel
+
+## App Ideas
+
+- DOS
