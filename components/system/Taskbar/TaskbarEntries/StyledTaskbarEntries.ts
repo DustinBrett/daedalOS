@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const StyledTaskbarEntries = styled.ol`
+  display: flex;
   height: 100%;
   left: ${({ theme }) => theme.sizes.startButton.width};
   position: absolute;
