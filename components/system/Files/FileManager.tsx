@@ -10,10 +10,10 @@ type FileManagerProps = {
 };
 
 const FileManager = ({ directory }: FileManagerProps): JSX.Element => {
-  const { files, getFiles } = useFiles(directory);
+  const { files, updateFiles } = useFiles(directory);
 
   return (
-    <StyledFileManager {...useFileDrop(directory, getFiles)}>
+    <StyledFileManager {...useFileDrop(directory, updateFiles)}>
       {files.map((file) => (
         <StyledFileEntry key={file}>
           <FileEntry

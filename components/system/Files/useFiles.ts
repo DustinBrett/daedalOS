@@ -3,22 +3,27 @@ import { useCallback, useEffect, useState } from 'react';
 
 type Files = {
   files: string[];
-  getFiles: () => void;
+  updateFiles: (appendFile?: string) => void;
 };
 
 const useFiles = (directory: string): Files => {
   const [files, setFiles] = useState<string[]>([]);
   const { fs } = useFileSystem();
-  const getFiles = useCallback(
-    () => fs?.readdir(directory, (_error, contents = []) => setFiles(contents)),
+  const updateFiles = useCallback(
+    (appendFile = '') =>
+      fs?.readdir(directory, (_error, contents = []) =>
+        setFiles((currentFiles) =>
+          appendFile ? [...currentFiles, appendFile] : contents
+        )
+      ),
     [directory, fs]
   );
 
-  useEffect(getFiles, [getFiles]);
+  useEffect(updateFiles, [updateFiles]);
 
   return {
     files,
-    getFiles
+    updateFiles
   };
 };
 
