@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import type { HandleStyles } from 'react-rnd';
 
 const rndDefaults = {
@@ -57,9 +56,6 @@ const rndDefaults = {
       top: '-3px',
       width: '12px'
     }
-  },
-  style: <CSSProperties>{
-    zIndex: 1
   }
 };
 
