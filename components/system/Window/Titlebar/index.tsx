@@ -1,6 +1,11 @@
-import { CloseIcon, MaximizeIcon, MinimizeIcon } from 'components/system/Icons';
 import StyledTitlebar from 'components/system/Window/Titlebar/StyledTitlebar';
 import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
+import {
+  CloseIcon,
+  MaximizedIcon,
+  MaximizeIcon,
+  MinimizeIcon
+} from 'components/system/Window/Titlebar/WindowActionIcons';
 import { useProcesses } from 'contexts/process';
 import Button from 'styles/common/Button';
 import Image from 'styles/common/Image';
@@ -12,7 +17,7 @@ type TitlebarProps = {
 const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const {
     processes: {
-      [id]: { autoSizing, icon, title }
+      [id]: { autoSizing, icon, title, maximized }
     }
   } = useProcesses();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
@@ -26,11 +31,11 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         </figure>
       </h1>
       <nav className="cancel">
-        <Button onClick={onMinimize}>
+        <Button className="minimize" onClick={onMinimize}>
           <MinimizeIcon />
         </Button>
         <Button className="maximize" onClick={onMaximize} disabled={autoSizing}>
-          <MaximizeIcon />
+          {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
         </Button>
         <Button className="close" onClick={onClose}>
           <CloseIcon />
