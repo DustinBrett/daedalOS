@@ -1,11 +1,11 @@
+import rndDefaults from 'components/system/Window/RndWindow/rndDefaults';
+import useDraggable from 'components/system/Window/RndWindow/useDraggable';
+import useResizable from 'components/system/Window/RndWindow/useResizable';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import useDraggable from 'hooks/useDraggable';
-import useResizable from 'hooks/useResizable';
 import { useCallback } from 'react';
 import type { DraggableEventHandler } from 'react-draggable';
 import type { Props, RndResizeCallback } from 'react-rnd';
-import rndDefaults from 'utils/rndDefaults';
 
 const useRnd = (id: string, maximized = false): Props => {
   const {

@@ -1,4 +1,4 @@
-import vantaWaves from 'utils/vantaWaves';
+import vantaWaves from 'components/system/Desktop/wallpapers/vantaWaves';
 
 const wallpaper = vantaWaves({
   color: 0x172b36,

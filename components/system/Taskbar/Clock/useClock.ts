@@ -1,4 +1,4 @@
-import useSyncedClock from 'hooks/useSyncedClock';
+import useSyncedClock from 'components/system/Taskbar/Clock/useSyncedClock';
 import { useCallback, useState } from 'react';
 
 const useClock = (): Date => {

@@ -1,6 +1,6 @@
+import useRnd from 'components/system/Window/RndWindow/useRnd';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import useRnd from 'hooks/useRnd';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { DEFAULT_WINDOW_SIZE } from 'utils/constants';

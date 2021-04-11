@@ -1,4 +1,4 @@
-import type { Size } from 'hooks/useResizable';
+import type { Size } from 'components/system/Window/RndWindow/useResizable';
 import { useState } from 'react';
 import type { Position } from 'react-rnd';
 

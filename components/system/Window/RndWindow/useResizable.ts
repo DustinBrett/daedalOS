@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Props } from 'react-rnd';
 import { useTheme } from 'styled-components';
 import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
-import { pxToNumber } from 'utils/stringFunctions';
+import { pxToNumber } from 'utils/functions';
 
 export type Size = NonNullable<Props['size']>;
 

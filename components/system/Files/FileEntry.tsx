@@ -1,10 +1,10 @@
+import StyledFileEntry from 'components/system/Files/StyledFileEntry';
+import useDoubleClick from 'components/system/Files/useDoubleClick';
+import useFileInfo from 'components/system/Files/useFileInfo';
 import { useProcesses } from 'contexts/process';
-import useDoubleClick from 'hooks/useDoubleClick';
-import useFileInfo from 'hooks/useFileInfo';
 import { useCallback } from 'react';
 import Button from 'styles/common/Button';
 import Image from 'styles/common/Image';
-import StyledFileEntry from 'styles/components/system/Files/StyledFileEntry';
 
 type FileEntryProps = {
   name: string;

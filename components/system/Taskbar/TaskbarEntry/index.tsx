@@ -1,8 +1,8 @@
+import StyledTaskbarEntry from 'components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry';
 import { useProcesses } from 'contexts/process';
 import { useCallback } from 'react';
 import Button from 'styles/common/Button';
 import Image from 'styles/common/Image';
-import StyledTaskbarEntry from 'styles/components/system/Taskbar/StyledTaskbarEntry';
 
 type TaskbarEntryProps = {
   icon: string;

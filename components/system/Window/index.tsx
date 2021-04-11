@@ -2,7 +2,7 @@ import type { ProcessComponentProps } from 'components/system/Processes/RenderPr
 import RndWindow from 'components/system/Window/RndWindow';
 import Titlebar from 'components/system/Window/Titlebar';
 import { useProcesses } from 'contexts/process';
-import StyledWindow from 'styles/components/system/Window/StyledWindow';
+import StyledWindow from 'components/system/Window/StyledWindow';
 
 type WindowProps = ProcessComponentProps & {
   children: React.ReactNode;

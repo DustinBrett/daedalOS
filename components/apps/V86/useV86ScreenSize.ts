@@ -3,7 +3,7 @@ import { useSession } from 'contexts/session';
 import { useCallback, useEffect } from 'react';
 import type { CSSProperties } from 'styled-components';
 import { useTheme } from 'styled-components';
-import { pxToNumber } from 'utils/stringFunctions';
+import { pxToNumber } from 'utils/functions';
 
 const SET_SCREEN_GFX = 'screen-set-size-graphical';
 const SET_SCREEN_TXT = 'screen-set-size-text';
