@@ -25,7 +25,7 @@ const useFileInfo = (path: string): FileInfo => {
 
   useEffect(() => {
     if (fs) {
-      const extension = extname(path);
+      const extension = extname(path).toLowerCase();
       const getInfoByFileExtension = () =>
         setInfo({
           icon: getIconByFileExtension(extension),
