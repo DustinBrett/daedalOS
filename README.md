@@ -12,6 +12,7 @@
 - Buffer urls aren't cleaned up
 - Background blur doesn't work in Firefox
 - NPM Issues (Use nvm/.nvmrc/yarn)
+- HTML lang tag is unset
 - App doesn't load in IE11
 
 ## File Manager

@@ -12,6 +12,7 @@
     "dev": "next dev",
     "build": "npm run build:fs && next build",
     "build:fs": "cd public && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json && node ../components/apps/V86/fs2json.js --exclude .index --out .index/fs.9p.json .",
+    "export": "next export",
     "start": "next start",
     "eslint": "eslint .",
     "stylelint": "stylelint **/*.ts",
