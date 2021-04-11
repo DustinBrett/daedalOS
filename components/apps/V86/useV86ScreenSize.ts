@@ -1,8 +1,8 @@
 import type { EventCallback, V86Starter } from 'components/apps/V86/types';
 import { useSession } from 'contexts/session';
 import { stripUnit } from 'polished';
+import type { CSSProperties } from 'react';
 import { useCallback, useEffect } from 'react';
-import type { CSSProperties } from 'styled-components';
 import { useTheme } from 'styled-components';
 
 const SET_SCREEN_GFX = 'screen-set-size-graphical';
