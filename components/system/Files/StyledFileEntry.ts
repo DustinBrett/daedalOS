@@ -22,13 +22,15 @@ const StyledFileEntry = styled.li`
   }
 
   button {
-    z-index: 1;
+    position: relative;
 
     figcaption {
       color: ${({ theme }) => theme.colors.fileEntry.text};
       font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
       letter-spacing: ${({ theme }) => theme.sizes.fileEntry.letterSpacing};
+      position: relative;
       text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
+      top: -1px;
     }
 
     img {
