@@ -9,6 +9,3 @@ export const loadScript = (src: string, callback: () => void): void => {
 
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
-
-export const pxToNumber = (value: string): number =>
-  Number(value.replace('px', ''));

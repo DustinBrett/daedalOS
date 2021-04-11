@@ -1,8 +1,8 @@
+import { stripUnit } from 'polished';
 import { useEffect, useState } from 'react';
 import type { Props } from 'react-rnd';
 import { useTheme } from 'styled-components';
 import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
-import { pxToNumber } from 'utils/functions';
 
 export type Size = NonNullable<Props['size']>;
 
@@ -27,7 +27,7 @@ const useResizable = (
   return [
     {
       height: maximized
-        ? `${window.innerHeight - pxToNumber(taskbar.height)}px`
+        ? `${window.innerHeight - Number(stripUnit(taskbar.height))}px`
         : height,
       width: maximized ? '100%' : width
     },
