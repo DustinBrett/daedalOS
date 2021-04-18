@@ -1,5 +1,5 @@
-import useDoubleClick from 'components/system/Files/useDoubleClick';
-import useFileInfo from 'components/system/Files/useFileInfo';
+import useDoubleClick from 'components/system/useDoubleClick';
+import useFileInfo from 'components/system/Files/FileEntry/useFileInfo';
 import { useProcesses } from 'contexts/process';
 import { createPid } from 'contexts/process/functions';
 import { useSession } from 'contexts/session';

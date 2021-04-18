@@ -1,7 +1,7 @@
 import {
   getIconByFileExtension,
   getProcessByFileExtension
-} from 'components/system/Files/functions';
+} from 'components/system/Files/FileEntry/functions';
 import { useFileSystem } from 'contexts/fileSystem';
 import ini from 'ini';
 import { extname } from 'path';
