@@ -21,17 +21,20 @@ const useFileDrop = (
       haltDragEvent(event);
 
       const { files: [file] = [] } = event.dataTransfer || {};
-      const reader = new FileReader();
 
-      reader.onload = ({ target }) => {
-        fs?.writeFile(
-          `${directory}/${file.name}`,
-          Buffer.from(new Uint8Array(target?.result as ArrayBuffer)),
-          (error) => !error && updateFiles(file.name)
-        );
-      };
+      if (file) {
+        const reader = new FileReader();
 
-      reader.readAsArrayBuffer(file);
+        reader.onload = ({ target }) => {
+          fs?.writeFile(
+            `${directory}/${file.name}`,
+            Buffer.from(new Uint8Array(target?.result as ArrayBuffer)),
+            (error) => !error && updateFiles(file.name)
+          );
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
     },
     [directory, fs, updateFiles]
   );
