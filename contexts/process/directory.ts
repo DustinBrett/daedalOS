@@ -26,6 +26,13 @@ export type Processes = {
 };
 
 const processDirectory: Processes = {
+  FileExplorer: {
+    backgroundColor: '#202020',
+    Component: dynamic(() => import('components/apps/FileExplorer')),
+    hasWindow: true,
+    icon: '/icons/explorer.png',
+    title: 'File Explorer'
+  },
   HelloWorld: {
     Component: dynamic(() => import('components/apps/HelloWorld')),
     hasWindow: true,
