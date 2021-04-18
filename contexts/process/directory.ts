@@ -32,6 +32,14 @@ const processDirectory: Processes = {
     icon: '/favicon.ico',
     title: 'Hello World'
   },
+  JSDOS: {
+    autoSizing: true,
+    backgroundColor: '#000',
+    Component: dynamic(() => import('components/apps/JSDOS')),
+    hasWindow: true,
+    icon: '/icons/jsdos.png',
+    title: 'JS-DOS'
+  },
   V86: {
     autoSizing: true,
     backgroundColor: '#000',
