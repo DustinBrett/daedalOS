@@ -51,7 +51,7 @@ const useSessionContextState = (): SessionContextState => {
     () =>
       fs?.readFile(SESSION_FILE, (_error, contents) => {
         if (contents) {
-          const session = JSON.parse(contents.toString());
+          const session = JSON.parse(contents.toString() || '{}');
 
           setThemeName(session.themeName);
           setWindowStates(session.windowStates);
