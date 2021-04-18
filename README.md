@@ -18,3 +18,5 @@ I'm [live streaming](https://youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz
 ### - [Styling & Planning](https://youtu.be/IqHpqlPUsgU) (03/20/21)
 ### - [Styling & Session](https://youtu.be/Caa5WKf-Z0c) (03/27/21)
 ### - [x86 Emulation & File Drop](https://youtu.be/SuvXykToxQ4) (04/03/21)
+### - [Behaviors, Styling & Refactoring](https://youtu.be/2YHvhUatrLo) (04/10/21)
+### - [DOS & File Explorer](https://youtu.be/Hu1RYVoCbgs) (04/17/21)
