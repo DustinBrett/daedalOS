@@ -24,17 +24,22 @@ const StyledFileEntry = styled.li`
   button {
     position: relative;
 
-    figcaption {
-      color: ${({ theme }) => theme.colors.fileEntry.text};
-      font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
-      letter-spacing: ${({ theme }) => theme.sizes.fileEntry.letterSpacing};
-      position: relative;
-      text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
-      top: -1px;
-    }
+    figure {
+      display: flex;
+      flex-direction: column;
+      place-items: center;
 
-    img {
-      width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
+      figcaption {
+        color: ${({ theme }) => theme.colors.fileEntry.text};
+        font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
+        letter-spacing: ${({ theme }) => theme.sizes.fileEntry.letterSpacing};
+        padding: 2px 0;
+        text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
+      }
+
+      img {
+        width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
+      }
     }
   }
 `;
