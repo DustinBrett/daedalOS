@@ -20,10 +20,12 @@ const StyledTaskbarEntry = styled.li`
   figure {
     align-items: center;
     display: flex;
+    padding: 4px;
 
     figcaption {
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
+      margin-left: 4px;
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -32,7 +34,6 @@ const StyledTaskbarEntry = styled.li`
     img {
       height: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
       image-rendering: pixelated;
-      margin: ${({ theme }) => theme.sizes.taskbar.entry.icon.margin};
       width: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
     }
   }

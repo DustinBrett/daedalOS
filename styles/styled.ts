@@ -62,7 +62,6 @@ declare module 'styled-components' {
           borderSize: string;
           fontSize: string;
           icon: {
-            margin: string;
             size: string;
           };
           maxWidth: string;
