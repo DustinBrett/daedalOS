@@ -31,6 +31,7 @@ const StyledTaskbarEntry = styled.li`
 
     img {
       height: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
+      image-rendering: pixelated;
       margin: ${({ theme }) => theme.sizes.taskbar.entry.icon.margin};
       width: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
     }
