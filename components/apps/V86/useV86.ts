@@ -35,7 +35,12 @@ const useV86 = (
               memory_size: memoryRatio * 1024 * 1024 * 1024,
               vga_memory_size: memoryRatio * 32 * 1024 * 1024,
               boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
-              [isISO ? 'cdrom' : 'fda']: { url: bufferToUrl(contents) },
+              [isISO ? 'cdrom' : 'fda']: {
+                async: false,
+                size: contents.length,
+                url: bufferToUrl(contents),
+                use_parts: false
+              },
               screen_container: screenContainer.current,
               ...v86Config
             })
