@@ -15,6 +15,8 @@ declare module 'styled-components' {
       highlight: string;
       startButton: string;
       taskbar: {
+        active: string;
+        activeHover: string;
         background: string;
         hover: string;
       };
