@@ -3,6 +3,8 @@ import { extname } from 'path';
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
 
+export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
+
 export const loadScript = (src: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
