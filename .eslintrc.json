@@ -22,7 +22,6 @@
   "globals": {
     "React": "readonly"
   },
-  "ignorePatterns": ["public"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
