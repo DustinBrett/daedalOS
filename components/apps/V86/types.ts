@@ -37,7 +37,11 @@ interface V86Constructor {
   new (config: V86Config): V86Starter;
 }
 
-export type WindowWithV86Starter = Window &
-  typeof globalThis & { V86Starter: V86Constructor };
-
-export type NavigatorWithMemory = Navigator & { deviceMemory: number };
+declare global {
+  interface Window {
+    V86Starter: V86Constructor;
+  }
+  interface Navigator {
+    deviceMemory: number;
+  }
+}
