@@ -1,10 +1,15 @@
-import type { EventCallback, V86Starter } from 'components/apps/V86/types';
+import type {
+  ModeCallback,
+  SizeCallback,
+  V86Starter
+} from 'components/apps/V86/types';
 import useWindowSize from 'components/system/Window/useWindowSize';
 import { stripUnit } from 'polished';
 import type { CSSProperties } from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'styled-components';
 
+const SET_SCREEN_MODE = 'screen-set-mode';
 const SET_SCREEN_GFX = 'screen-set-size-graphical';
 const SET_SCREEN_TXT = 'screen-set-size-text';
 
@@ -18,34 +23,44 @@ const useV86ScreenSize = (
     }
   } = useTheme();
   const { updateWindowSize } = useWindowSize(id);
+  const [isGraphical, setIsGraphical] = useState(false);
 
-  const setScreenGfx = useCallback<EventCallback>(
+  const setScreenMode = useCallback<ModeCallback>(
+    (isGfxMode) => setIsGraphical(isGfxMode),
+    []
+  );
+
+  const setScreenGfx = useCallback<SizeCallback>(
     ([width, height]) => updateWindowSize(height, width),
     [updateWindowSize]
   );
 
-  const setScreenText = useCallback<EventCallback>(
+  const setScreenText = useCallback<SizeCallback>(
     ([cols, rows]) =>
       updateWindowSize(
-        rows * Number(stripUnit(lineHeight)),
-        (cols / 2 + 4) * Number(stripUnit(lineHeight)) // Why + 4
+        rows * Number(stripUnit(lineHeight)) + 3, // Why + 3?
+        (cols / 2 + 4) * Number(stripUnit(lineHeight)) // Why + 4?
       ),
     [lineHeight, updateWindowSize]
   );
 
   useEffect(() => {
+    emulator?.add_listener?.(SET_SCREEN_MODE, setScreenMode);
     emulator?.add_listener?.(SET_SCREEN_GFX, setScreenGfx);
     emulator?.add_listener?.(SET_SCREEN_TXT, setScreenText);
 
     return () => {
+      emulator?.remove_listener?.(SET_SCREEN_MODE, setScreenMode);
       emulator?.remove_listener?.(SET_SCREEN_GFX, setScreenGfx);
       emulator?.remove_listener?.(SET_SCREEN_TXT, setScreenText);
     };
-  }, [emulator, setScreenGfx, setScreenText]);
+  }, [emulator, setScreenGfx, setScreenMode, setScreenText]);
 
   return {
     font: `${lineHeight} monospace`,
-    lineHeight
+    lineHeight,
+    position: 'relative',
+    top: isGraphical ? '' : '2px' // Why + 2?
   };
 };
 

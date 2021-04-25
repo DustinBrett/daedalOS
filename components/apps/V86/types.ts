@@ -1,9 +1,14 @@
 /* eslint-disable camelcase */
 import type { config as v86Config } from 'components/apps/V86/config';
+import type { V86ImageConfig } from 'components/apps/V86/image';
 
-export type EventCallback = (data: number[]) => void;
+export type ModeCallback = (isGraphical: boolean) => void;
+export type SizeCallback = (dimensions: number[]) => void;
 
-type EventListener = (event: string, callback: EventCallback) => void;
+type EventListener = (
+  event: string,
+  callback: SizeCallback | ModeCallback
+) => void;
 
 export type V86Starter = {
   add_listener: EventListener;
@@ -17,21 +22,13 @@ export type V86 = {
   lockMouse: () => void;
 };
 
-type V86Image = {
-  async?: boolean;
-  size?: number;
-  url: string;
-  use_parts?: boolean;
-};
-
-type V86Config = typeof v86Config & {
-  memory_size: number;
-  vga_memory_size: number;
-  boot_order: number;
-  cdrom?: V86Image;
-  fda?: V86Image;
-  screen_container: HTMLDivElement | null;
-};
+type V86Config = typeof v86Config &
+  V86ImageConfig & {
+    memory_size: number;
+    vga_memory_size: number;
+    boot_order: number;
+    screen_container: HTMLDivElement | null;
+  };
 
 interface V86Constructor {
   new (config: V86Config): V86Starter;
