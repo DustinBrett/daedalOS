@@ -1,3 +1,4 @@
+import { libs, pathPrefix } from 'components/apps/JSDOS/config';
 import type { DosCI } from 'components/apps/JSDOS/types';
 import useTitle from 'components/system/Window/useTitle';
 import useWindowSize from 'components/system/Window/useWindowSize';
@@ -18,21 +19,19 @@ const useJSDOS = (
   useEffect(() => {
     if (!dos && fs && url && screenRef?.current) {
       fs.readFile(url, (_error, contents = Buffer.from('')) =>
-        loadFiles(['/libs/jsdos/js-dos.js', '/libs/jsdos/js-dos.css']).then(
-          () => {
-            const objectURL = bufferToUrl(contents);
+        loadFiles(libs).then(() => {
+          const objectURL = bufferToUrl(contents);
 
-            window.emulators.pathPrefix = '/libs/jsdos/';
-            window
-              .Dos(screenRef.current as HTMLDivElement)
-              .run(objectURL)
-              .then((ci) => {
-                appendFileToTitle(url);
-                cleanUpBufferUrl(objectURL);
-                setDos(ci);
-              });
-          }
-        )
+          window.emulators.pathPrefix = pathPrefix;
+          window
+            .Dos(screenRef.current as HTMLDivElement)
+            .run(objectURL)
+            .then((ci) => {
+              appendFileToTitle(url);
+              cleanUpBufferUrl(objectURL);
+              setDos(ci);
+            });
+        })
       );
     }
 
