@@ -33,7 +33,9 @@ declare module 'styled-components' {
       window: {
         background: string;
         outline: string;
+        outlineInactive: string;
         shadow: string;
+        shadowInactive: string;
       };
     };
     formats: {

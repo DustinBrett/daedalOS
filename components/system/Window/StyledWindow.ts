@@ -1,16 +1,24 @@
 import styled from 'styled-components';
 
 type StyledWindowProps = {
-  minimized?: boolean;
+  foreground: boolean;
+  minimized: boolean;
 };
 
 const StyledWindow = styled.section<StyledWindowProps>`
   background-color: ${({ theme }) => theme.colors.window.background};
-  box-shadow: ${({ theme }) => theme.colors.window.shadow};
+  box-shadow: ${({ foreground, theme }) =>
+    foreground
+      ? theme.colors.window.shadow
+      : theme.colors.window.shadowInactive};
   display: ${({ minimized = false }) => (minimized ? 'none' : 'block')};
   height: 100%;
-  outline: ${({ theme }) =>
-    `${theme.sizes.window.outline} solid ${theme.colors.window.outline}`};
+  outline: ${({ foreground, theme }) =>
+    `${theme.sizes.window.outline} solid ${
+      foreground
+        ? theme.colors.window.outline
+        : theme.colors.window.outlineInactive
+    }`};
   overflow: hidden;
   position: absolute;
   width: 100%;
