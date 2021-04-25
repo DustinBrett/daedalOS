@@ -1,3 +1,4 @@
+import useDoubleClick from 'components/system/useDoubleClick';
 import StyledTitlebar from 'components/system/Window/Titlebar/StyledTitlebar';
 import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
 import {
@@ -28,9 +29,14 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
-      <h1>
+      <h1 onClick={useDoubleClick(autoSizing ? () => undefined : onMaximize)}>
         <figure>
-          <Icon src={icon} alt={title} size={16} />
+          <Icon
+            src={icon}
+            alt={title}
+            onClick={useDoubleClick(onClose)}
+            size={16}
+          />
           <figcaption>{title}</figcaption>
         </figure>
       </h1>

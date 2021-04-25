@@ -50,6 +50,8 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ],
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
