@@ -13,3 +13,5 @@ export const config = {
   bios: { url: '/libs/v86/bios/seabios.bin' },
   vga_bios: { url: '/libs/v86/bios/vgabios.bin' }
 };
+
+export const libs = ['/libs/v86/libv86.js'];
