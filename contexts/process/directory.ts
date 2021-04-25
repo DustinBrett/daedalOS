@@ -33,12 +33,6 @@ const processDirectory: Processes = {
     icon: '/icons/explorer.png',
     title: 'File Explorer'
   },
-  HelloWorld: {
-    Component: dynamic(() => import('components/apps/HelloWorld')),
-    hasWindow: true,
-    icon: '/favicon.ico',
-    title: 'Hello World'
-  },
   JSDOS: {
     autoSizing: true,
     backgroundColor: '#000',
