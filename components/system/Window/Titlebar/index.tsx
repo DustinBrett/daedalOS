@@ -7,6 +7,8 @@ import {
   MinimizeIcon
 } from 'components/system/Window/Titlebar/WindowActionIcons';
 import { useProcesses } from 'contexts/process';
+import { useSession } from 'contexts/session';
+import { useMemo } from 'react';
 import Button from 'styles/common/Button';
 import Icon from 'styles/common/Icon';
 
@@ -20,10 +22,12 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       [id]: { autoSizing, icon, title, maximized }
     }
   } = useProcesses();
+  const { foregroundId } = useSession();
+  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
 
   return (
-    <StyledTitlebar className="handle">
+    <StyledTitlebar className="handle" foreground={isForeground}>
       <h1>
         <figure>
           <Icon src={icon} alt={title} size={16} />
