@@ -8,7 +8,7 @@ import {
 } from 'components/system/Window/Titlebar/WindowActionIcons';
 import { useProcesses } from 'contexts/process';
 import Button from 'styles/common/Button';
-import Image from 'styles/common/Image';
+import Icon from 'styles/common/Icon';
 
 type TitlebarProps = {
   id: string;
@@ -26,7 +26,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
     <StyledTitlebar className="handle">
       <h1>
         <figure>
-          <Image src={icon} alt={title} />
+          <Icon src={icon} alt={title} size={16} />
           <figcaption>{title}</figcaption>
         </figure>
       </h1>

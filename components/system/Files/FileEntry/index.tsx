@@ -5,7 +5,7 @@ import { createPid } from 'contexts/process/functions';
 import { useSession } from 'contexts/session';
 import { useCallback } from 'react';
 import Button from 'styles/common/Button';
-import Image from 'styles/common/Image';
+import Icon from 'styles/common/Icon';
 
 type FileEntryProps = {
   name: string;
@@ -30,7 +30,7 @@ const FileEntry = ({ name, path }: FileEntryProps): JSX.Element => {
   return (
     <Button onClick={useDoubleClick(onClick)}>
       <figure>
-        <Image src={icon} alt={name} />
+        <Icon src={icon} alt={name} size={48} />
         <figcaption>{name}</figcaption>
       </figure>
     </Button>

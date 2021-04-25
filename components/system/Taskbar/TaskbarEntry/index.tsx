@@ -4,7 +4,7 @@ import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useCallback, useMemo } from 'react';
 import Button from 'styles/common/Button';
-import Image from 'styles/common/Image';
+import Icon from 'styles/common/Icon';
 
 type TaskbarEntryProps = {
   icon: string;
@@ -40,7 +40,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
     <StyledTaskbarEntry foreground={isForeground}>
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
-          <Image src={icon} alt={title} />
+          <Icon src={icon} alt={title} size={16} />
           <figcaption>{title}</figcaption>
         </figure>
       </Button>
