@@ -45,7 +45,7 @@ const processDirectory: Processes = {
     Component: dynamic(() => import('components/apps/JSDOS')),
     hasWindow: true,
     icon: '/icons/jsdos.png',
-    title: 'JS-DOS'
+    title: 'js-dos v7'
   },
   V86: {
     autoSizing: true,
@@ -53,7 +53,7 @@ const processDirectory: Processes = {
     Component: dynamic(() => import('components/apps/V86')),
     hasWindow: true,
     icon: '/icons/v86.png',
-    title: 'v86'
+    title: 'Virtual x86'
   }
 };
 

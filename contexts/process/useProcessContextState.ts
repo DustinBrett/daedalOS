@@ -8,7 +8,8 @@ import {
   maximizeProcess,
   minimizeProcess,
   openProcess,
-  setProcessElement
+  setProcessElement,
+  setTitle
 } from 'contexts/process/functions';
 import { useCallback, useState } from 'react';
 
@@ -28,6 +29,7 @@ export type ProcessContextState = {
   minimize: (id: string) => void;
   open: (id: string, url: string) => void;
   processes: Processes;
+  title: (id: string, newTitle: string) => void;
 };
 
 const useProcessContextState = (): ProcessContextState => {
@@ -54,6 +56,10 @@ const useProcessContextState = (): ProcessContextState => {
       setProcesses(setProcessElement(id, name, element)),
     []
   );
+  const title = useCallback(
+    (id: string, newTitle: string) => setProcesses(setTitle(id, newTitle)),
+    []
+  );
 
   return {
     close,
@@ -62,7 +68,8 @@ const useProcessContextState = (): ProcessContextState => {
     maximize,
     minimize,
     open,
-    processes
+    processes,
+    title
   };
 };
 

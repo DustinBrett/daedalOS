@@ -5,6 +5,7 @@ import type {
   ProcessToggles
 } from 'contexts/process/directory';
 import processDirectory from 'contexts/process/directory';
+import { PROCESS_DELIMITER } from 'utils/constants';
 
 export const closeProcess = (processId: string) => ({
   [processId]: _closedProcess,
@@ -12,7 +13,7 @@ export const closeProcess = (processId: string) => ({
 }: Processes): Processes => remainingProcesses;
 
 export const createPid = (processId: string, url: string): string =>
-  url ? `${processId}_${url}` : processId;
+  url ? `${processId}${PROCESS_DELIMITER}${url}` : processId;
 
 export const openProcess = (processId: string, url: string) => (
   currentProcesses: Processes
@@ -69,3 +70,7 @@ export const setProcessElement = (
   element: HTMLElement
 ) => (currentProcesses: Processes): Processes =>
   setProcessSettings(processId, { [name]: element })(currentProcesses);
+
+export const setTitle = (processId: string, title: string) => (
+  currentProcesses: Processes
+): Processes => setProcessSettings(processId, { title })(currentProcesses);

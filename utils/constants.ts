@@ -36,3 +36,5 @@ export const IMAGE_FILE_EXTENSIONS = [
 ];
 
 export const MILLISECONDS_IN_SECOND = 1000;
+
+export const PROCESS_DELIMITER = '__';

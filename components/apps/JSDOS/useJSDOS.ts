@@ -1,4 +1,5 @@
 import type { DosCI, WindowWithDos } from 'components/apps/JSDOS/types';
+import useTitle from 'components/system/Window/useTitle';
 import useWindowSize from 'components/system/Window/useWindowSize';
 import { useFileSystem } from 'contexts/fileSystem';
 import { useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ const useJSDOS = (
   url: string,
   screenRef: React.MutableRefObject<HTMLDivElement | null>
 ): void => {
+  const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
   const [dos, setDos] = useState<DosCI | null>(null);
   const { fs } = useFileSystem();
@@ -25,6 +27,7 @@ const useJSDOS = (
             DosWindow.Dos(screenRef.current as HTMLDivElement)
               .run(objectURL)
               .then((ci) => {
+                appendFileToTitle(url);
                 cleanUpBufferUrl(objectURL);
                 setDos(ci);
               });
@@ -34,7 +37,7 @@ const useJSDOS = (
     }
 
     return () => dos?.exit();
-  }, [dos, fs, screenRef, url]);
+  }, [appendFileToTitle, dos, fs, screenRef, url]);
 
   useEffect(() => {
     if (dos) {

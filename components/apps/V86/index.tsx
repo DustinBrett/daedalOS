@@ -12,7 +12,7 @@ const V86 = ({ id }: ProcessComponentProps): JSX.Element => {
     }
   } = useProcesses();
   const screenRef = useRef<HTMLDivElement | null>(null);
-  const { emulator, lockMouse } = useV86(url, screenRef);
+  const { emulator, lockMouse } = useV86(id, url, screenRef);
   const txtStyle = useV86ScreenSize(id, emulator);
 
   return (
