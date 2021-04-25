@@ -18,6 +18,8 @@ const StyledTitlebar = styled.header`
       align-items: center;
       display: flex;
       min-width: inherit;
+      position: relative;
+      top: -1px;
 
       img {
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
@@ -54,6 +56,7 @@ const StyledTitlebar = styled.header`
       &.minimize {
         svg {
           margin-bottom: 1px;
+          margin-right: 0;
         }
       }
 
