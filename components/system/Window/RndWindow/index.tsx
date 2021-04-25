@@ -12,6 +12,16 @@ type RndWindowProps = {
   style: CSSProperties;
 };
 
+const reRouteFocus = (focusElement?: HTMLElement) => (
+  element?: Element
+): void => {
+  element?.setAttribute('tabindex', '-1');
+  element?.addEventListener('mousedown', (event) => {
+    event.preventDefault();
+    focusElement?.focus();
+  });
+};
+
 const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   const {
     processes: {
@@ -24,6 +34,11 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
 
   useEffect(() => {
     const { current } = rndRef || {};
+    const [windowContainer, resizeHandleContainer] =
+      current?.resizableElement?.current?.children || [];
+    const resizeHandles = [...resizeHandleContainer?.children];
+
+    resizeHandles.forEach(reRouteFocus(windowContainer as HTMLElement));
 
     return () =>
       setWindowStates((currentWindowStates) => ({
