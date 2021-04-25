@@ -5,12 +5,12 @@ import { ServerStyleSheet } from 'styled-components';
 const withStyledComponents = async (
   ctx: DocumentContext
 ): Promise<DocumentInitialProps> => {
-  const originalRenderPage = ctx.renderPage;
+  const { renderPage } = ctx;
   const sheet = new ServerStyleSheet();
 
   try {
     ctx.renderPage = () =>
-      originalRenderPage({
+      renderPage({
         enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />)
       });
 
