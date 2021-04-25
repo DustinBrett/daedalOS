@@ -13,7 +13,8 @@ export const initialProcessContextState: ProcessContextState = {
   maximize: () => undefined,
   minimize: () => undefined,
   open: () => undefined,
-  processes: {}
+  processes: {},
+  title: () => undefined
 };
 
 export const initialSessionContextState: SessionContextState = {
