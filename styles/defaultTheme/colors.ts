@@ -17,11 +17,11 @@ const colors = {
       0 2px 2px rgba(0, 0, 0, 50%),
       0 2px 3px rgba(0, 0, 0, 25%)`
   },
-  highlight: '#76B9ED',
+  highlight: 'hsl(207deg 100% 72% / 90%)',
   startButton: '#FFF',
   taskbar: {
-    active: 'hsla(0, 0%, 40%, 70%)',
-    activeHover: 'hsla(0, 0%, 50%, 70%)',
+    active: 'hsla(0, 0%, 35%, 70%)',
+    activeHover: 'hsla(0, 0%, 45%, 70%)',
     background: 'hsla(0, 0%, 10%, 70%)',
     hover: 'hsla(0, 0%, 25%, 70%)'
   },
