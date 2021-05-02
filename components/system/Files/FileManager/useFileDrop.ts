@@ -28,9 +28,8 @@ const useFileDrop = (
     (event: React.DragEvent<HTMLElement>) => {
       haltDragEvent(event);
 
-      const { files: [file] = [] } = event.dataTransfer || {};
-
-      if (file) {
+      if (event?.dataTransfer?.files.length) {
+        const files = [...event?.dataTransfer?.files];
         const writeUniqueName = (
           path: string,
           fileBuffer: Buffer,
@@ -48,16 +47,19 @@ const useFileDrop = (
             }
           });
         };
-        const reader = new FileReader();
 
-        reader.onload = ({ target }) => {
-          writeUniqueName(
-            `${directory}/${file.name}`,
-            Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
-          );
-        };
+        files.forEach((file) => {
+          const reader = new FileReader();
 
-        reader.readAsArrayBuffer(file);
+          reader.onload = ({ target }) => {
+            writeUniqueName(
+              `${directory}/${file.name}`,
+              Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
+            );
+          };
+
+          reader.readAsArrayBuffer(file);
+        });
       }
     },
     [directory, fs, updateFiles]
