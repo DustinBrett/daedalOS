@@ -19,9 +19,7 @@ const useResizable = (
   } = useTheme();
 
   useEffect(() => {
-    if (autoSizing) {
-      setSize(size);
-    }
+    if (autoSizing) setSize(size);
   }, [autoSizing, size]);
 
   return [
