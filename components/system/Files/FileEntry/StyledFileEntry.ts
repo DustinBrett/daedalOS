@@ -32,7 +32,6 @@ const StyledFileEntry = styled.li`
       figcaption {
         color: ${({ theme }) => theme.colors.fileEntry.text};
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
-        letter-spacing: ${({ theme }) => theme.sizes.fileEntry.letterSpacing};
         padding: 2px 0;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
       }

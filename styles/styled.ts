@@ -50,7 +50,6 @@ declare module 'styled-components' {
       fileEntry: {
         fontSize: string;
         iconSize: string;
-        letterSpacing: string;
       };
       fileManager: {
         columnGap: string;
