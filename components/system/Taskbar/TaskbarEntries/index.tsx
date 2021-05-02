@@ -5,8 +5,8 @@ import { ProcessConsumer } from 'contexts/process';
 const TaskbarEntries = (): JSX.Element => (
   <StyledTaskbarEntries>
     <ProcessConsumer>
-      {({ mapProcesses }) =>
-        mapProcesses(([id, { icon, title }]) => (
+      {({ processes }) =>
+        Object.entries(processes).map(([id, { icon, title }]) => (
           <TaskbarEntry key={id} icon={icon} id={id} title={title} />
         ))
       }
