@@ -46,7 +46,6 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
 
     img {
       height: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
-      image-rendering: pixelated;
       position: relative;
       top: 1px;
       width: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};

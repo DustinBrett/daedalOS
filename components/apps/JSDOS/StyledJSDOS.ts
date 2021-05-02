@@ -8,6 +8,7 @@ const StyledJSDOS = styled.div`
   canvas {
     height: 100%;
     image-rendering: pixelated;
+    image-rendering: crisp-edges;
     top: 0 !important;
     width: 100%;
   }
