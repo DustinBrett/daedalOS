@@ -1,8 +1,7 @@
 import type {
   Process,
   ProcessElements,
-  Processes,
-  ProcessToggles
+  Processes
 } from 'contexts/process/directory';
 import processDirectory from 'contexts/process/directory';
 import { PROCESS_DELIMITER } from 'utils/constants';
@@ -45,24 +44,19 @@ export const setProcessSettings = (
   return newProcesses;
 };
 
-export const toggleProcessSetting = (
-  processId: string,
-  setting: keyof ProcessToggles
-) => (currentProcesses: Processes): Processes => {
-  const { ...newProcesses } = currentProcesses;
-
-  newProcesses[processId][setting] = !newProcesses[processId][setting];
-
-  return newProcesses;
-};
-
 export const maximizeProcess = (processId: string) => (
   currentProcesses: Processes
-): Processes => toggleProcessSetting(processId, 'maximized')(currentProcesses);
+): Processes =>
+  setProcessSettings(processId, {
+    maximized: !currentProcesses[processId].maximized
+  })(currentProcesses);
 
 export const minimizeProcess = (processId: string) => (
   currentProcesses: Processes
-): Processes => toggleProcessSetting(processId, 'minimized')(currentProcesses);
+): Processes =>
+  setProcessSettings(processId, {
+    minimized: !currentProcesses[processId].minimized
+  })(currentProcesses);
 
 export const setProcessElement = (
   processId: string,
