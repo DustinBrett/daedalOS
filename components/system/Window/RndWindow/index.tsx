@@ -48,7 +48,7 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
           size: autoSizing ? DEFAULT_WINDOW_SIZE : current?.props?.size
         }
       }));
-  }, [autoSizing, id, setWindowStates]);
+  }, [autoSizing, id, maximized, setWindowStates]);
 
   return (
     <Rnd ref={rndRef} style={style} {...rndProps}>
