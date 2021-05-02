@@ -8,7 +8,11 @@ declare module 'styled-components' {
       background: string;
       fileEntry: {
         background: string;
+        backgroundFocused: string;
+        backgroundFocusedHover: string;
         border: string;
+        borderFocused: string;
+        borderFocusedHover: string;
         text: string;
         textShadow: string;
       };

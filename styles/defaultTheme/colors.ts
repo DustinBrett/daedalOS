@@ -1,8 +1,12 @@
 const colors = {
   background: '#000',
   fileEntry: {
-    background: `hsl(206deg 77% 70% / 25%)`,
-    border: 'hsl(206deg 77% 100% / 30%)',
+    background: `hsl(207deg 30% 72% / 25%)`,
+    backgroundFocused: `hsl(207deg 60% 72% / 30%)`,
+    backgroundFocusedHover: `hsl(207deg 90% 72% / 35%)`,
+    border: 'hsl(207deg 30% 72% / 30%)',
+    borderFocused: 'hsl(207deg 60% 72% / 35%)',
+    borderFocusedHover: 'hsl(207deg 90% 72% / 40%)',
     text: '#FFF',
     textShadow: `
       0 0 1px rgba(0, 0, 0, 75%),
