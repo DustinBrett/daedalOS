@@ -1,4 +1,5 @@
 import { extname } from 'path';
+import { stripUnit } from 'polished';
 
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
@@ -52,3 +53,6 @@ export const loadFiles = async (files: string[]): Promise<Event[]> =>
       return filesToLoad;
     }, [])
   );
+
+export const pxToNum = (value: string | number): number =>
+  Number(stripUnit(value));
