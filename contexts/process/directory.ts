@@ -11,6 +11,7 @@ export type Process = ProcessElements & {
   Component: React.ComponentType<ProcessComponentProps>;
   hasWindow?: boolean;
   icon: string;
+  lockAspectRatio?: boolean;
   maximized?: boolean;
   minimized?: boolean;
   title: string;
@@ -35,6 +36,7 @@ const processDirectory: Processes = {
     Component: dynamic(() => import('components/apps/JSDOS')),
     hasWindow: true,
     icon: '/icons/jsdos.png',
+    lockAspectRatio: true,
     title: 'js-dos v7'
   },
   V86: {
