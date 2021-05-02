@@ -40,15 +40,11 @@ const useFileDrop = (
             ? path
             : iterateFileName(path, iteration);
 
-          fs?.stat(writePath, (statError) => {
-            if (statError?.code === 'ENOENT') {
-              fs?.writeFile(
-                writePath,
-                fileBuffer,
-                (writeError) => !writeError && updateFiles(writePath)
-              );
-            } else {
+          fs?.writeFile(writePath, fileBuffer, { flag: 'wx' }, (error) => {
+            if (error?.code === 'EEXIST') {
               writeUniqueName(path, fileBuffer, iteration + 1);
+            } else if (!error) {
+              updateFiles(writePath);
             }
           });
         };
