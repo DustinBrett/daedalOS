@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 type StyledWindowProps = {
@@ -5,7 +6,7 @@ type StyledWindowProps = {
   minimized: boolean;
 };
 
-const StyledWindow = styled.section<StyledWindowProps>`
+const StyledWindow = styled(motion.section)<StyledWindowProps>`
   background-color: ${({ theme }) => theme.colors.window.background};
   box-shadow: ${({ foreground, theme }) =>
     foreground

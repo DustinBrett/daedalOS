@@ -20,7 +20,12 @@ type TitlebarProps = {
 const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const {
     processes: {
-      [id]: { autoSizing, icon, title, maximized }
+      [id]: {
+        autoSizing = false,
+        icon = '',
+        title = '',
+        maximized = false
+      } = {}
     }
   } = useProcesses();
   const { foregroundId } = useSession();

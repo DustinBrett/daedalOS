@@ -18,9 +18,7 @@ const centerPosition = (size: Size, taskbarHeight: string): Position => ({
 
 const useRnd = (id: string, maximized = false): Props => {
   const {
-    processes: {
-      [id]: { autoSizing, lockAspectRatio }
-    }
+    processes: { [id]: { autoSizing = false, lockAspectRatio = false } = {} }
   } = useProcesses();
   const { windowStates: { [id]: windowState } = {} } = useSession();
   const { position: statePosition, size: stateSize } = windowState || {};

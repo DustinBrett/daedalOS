@@ -7,9 +7,7 @@ import { useRef } from 'react';
 
 const V86 = ({ id }: ProcessComponentProps): JSX.Element => {
   const {
-    processes: {
-      [id]: { url = '' }
-    }
+    processes: { [id]: { url = '' } = {} }
   } = useProcesses();
   const screenRef = useRef<HTMLDivElement | null>(null);
   const { emulator, lockMouse } = useV86(id, url, screenRef);

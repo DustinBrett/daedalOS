@@ -1,4 +1,5 @@
 import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import { windowOpenCloseTransitions } from 'components/system/Window/animations';
 import RndWindow from 'components/system/Window/RndWindow';
 import StyledWindow from 'components/system/Window/StyledWindow';
 import Titlebar from 'components/system/Window/Titlebar';
@@ -13,9 +14,7 @@ type WindowProps = ProcessComponentProps & {
 
 const Window = ({ children, id }: WindowProps): JSX.Element => {
   const {
-    processes: {
-      [id]: { backgroundColor, minimized = false }
-    }
+    processes: { [id]: { backgroundColor = '', minimized = false } = {} }
   } = useProcesses();
   const { foregroundId } = useSession();
   const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
@@ -30,6 +29,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
         ref={windowRef}
         style={{ backgroundColor }}
         {...focusableProps}
+        {...windowOpenCloseTransitions}
       >
         <Titlebar id={id} />
         {children}

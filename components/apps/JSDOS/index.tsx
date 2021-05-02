@@ -6,9 +6,7 @@ import { useRef } from 'react';
 
 const JSDOS = ({ id }: ProcessComponentProps): JSX.Element => {
   const {
-    processes: {
-      [id]: { url = '' }
-    }
+    processes: { [id]: { url = '' } = {} }
   } = useProcesses();
   const screenRef = useRef<HTMLDivElement | null>(null);
 

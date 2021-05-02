@@ -6,10 +6,34 @@ import type {
 import processDirectory from 'contexts/process/directory';
 import { PROCESS_DELIMITER } from 'utils/constants';
 
-export const closeProcess = (processId: string) => ({
-  [processId]: _closedProcess,
-  ...remainingProcesses
-}: Processes): Processes => remainingProcesses;
+export const setProcessSettings = (
+  processId: string,
+  settings: Partial<Process>
+) => (currentProcesses: Processes): Processes => {
+  const { ...newProcesses } = currentProcesses;
+
+  newProcesses[processId] = {
+    ...newProcesses[processId],
+    ...settings
+  };
+
+  return newProcesses;
+};
+
+export const closeProcess = (processId: string, closing?: boolean) => (
+  currentProcesses: Processes
+): Processes => {
+  if (closing) {
+    return setProcessSettings(processId, { closing })(currentProcesses);
+  }
+
+  const {
+    [processId]: _closedProcess,
+    ...remainingProcesses
+  } = currentProcesses;
+
+  return remainingProcesses;
+};
 
 export const createPid = (processId: string, url: string): string =>
   url ? `${processId}${PROCESS_DELIMITER}${url}` : processId;
@@ -28,20 +52,6 @@ export const openProcess = (processId: string, url: string) => (
           url
         }
       };
-};
-
-export const setProcessSettings = (
-  processId: string,
-  settings: Partial<Process>
-) => (currentProcesses: Processes): Processes => {
-  const { ...newProcesses } = currentProcesses;
-
-  newProcesses[processId] = {
-    ...newProcesses[processId],
-    ...settings
-  };
-
-  return newProcesses;
 };
 
 export const maximizeProcess = (processId: string) => (

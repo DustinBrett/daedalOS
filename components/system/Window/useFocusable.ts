@@ -22,9 +22,7 @@ const useFocusable = (
   const zIndex = stackOrder.length - stackOrder.indexOf(id) + 1;
   const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const {
-    processes: {
-      [id]: { taskbarEntry }
-    }
+    processes: { [id]: { taskbarEntry = undefined } = {} }
   } = useProcesses();
   const onBlur = useCallback(
     ({ relatedTarget }) => {

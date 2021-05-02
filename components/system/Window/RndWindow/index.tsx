@@ -24,9 +24,7 @@ const reRouteFocus = (focusElement?: HTMLElement) => (
 
 const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   const {
-    processes: {
-      [id]: { autoSizing, maximized }
-    }
+    processes: { [id]: { autoSizing = false, maximized = false } = {} }
   } = useProcesses();
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);

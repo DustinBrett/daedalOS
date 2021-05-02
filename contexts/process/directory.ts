@@ -8,6 +8,7 @@ export type ProcessElements = {
 export type Process = ProcessElements & {
   autoSizing?: boolean;
   backgroundColor?: string;
+  closing?: boolean;
   Component: React.ComponentType<ProcessComponentProps>;
   hasWindow?: boolean;
   icon: string;

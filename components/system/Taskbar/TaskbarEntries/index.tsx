@@ -6,9 +6,11 @@ const TaskbarEntries = (): JSX.Element => (
   <StyledTaskbarEntries>
     <ProcessConsumer>
       {({ processes }) =>
-        Object.entries(processes).map(([id, { icon, title }]) => (
-          <TaskbarEntry key={id} icon={icon} id={id} title={title} />
-        ))
+        Object.entries(processes)
+          .filter(([_id, { closing }]) => !closing)
+          .map(([id, { icon, title }]) => (
+            <TaskbarEntry key={id} icon={icon} id={id} title={title} />
+          ))
       }
     </ProcessConsumer>
   </StyledTaskbarEntries>

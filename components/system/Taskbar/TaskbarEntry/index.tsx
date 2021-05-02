@@ -19,9 +19,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   const {
     linkElement,
     minimize,
-    processes: {
-      [id]: { minimized }
-    }
+    processes: { [id]: { minimized = false } = {} }
   } = useProcesses();
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement) =>
