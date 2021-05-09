@@ -23,6 +23,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       [id]: {
         autoSizing = false,
         icon = '',
+        lockAspectRatio = false,
         title = '',
         maximized = false
       } = {}
@@ -31,10 +32,16 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const { foregroundId } = useSession();
   const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
+  const isMaximizable = useMemo(() => autoSizing && !lockAspectRatio, [
+    autoSizing,
+    lockAspectRatio
+  ]);
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
-      <h1 onClick={useDoubleClick(autoSizing ? () => undefined : onMaximize)}>
+      <h1
+        onClick={useDoubleClick(isMaximizable ? () => undefined : onMaximize)}
+      >
         <figure>
           <Icon
             src={icon}
@@ -49,7 +56,11 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         <Button className="minimize" onClick={onMinimize}>
           <MinimizeIcon />
         </Button>
-        <Button className="maximize" onClick={onMaximize} disabled={autoSizing}>
+        <Button
+          className="maximize"
+          onClick={onMaximize}
+          disabled={isMaximizable}
+        >
           {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
         </Button>
         <Button className="close" onClick={onClose}>
