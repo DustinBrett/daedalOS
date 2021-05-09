@@ -10,11 +10,17 @@ import type { Position, Props, RndResizeCallback } from 'react-rnd';
 import { useTheme } from 'styled-components';
 import { pxToNum } from 'utils/functions';
 
-const centerPosition = (size: Size, taskbarHeight: string): Position => ({
-  x: window.innerWidth / 2 - pxToNum(size.width) / 2,
-  y:
-    (window.innerHeight - pxToNum(taskbarHeight)) / 2 - pxToNum(size.height) / 2
-});
+const centerPosition = (
+  { height, width }: Size,
+  taskbarHeight: string
+): Position => {
+  const { innerHeight: vh, innerWidth: vw } = window;
+
+  return {
+    x: Math.floor(vw / 2 - pxToNum(width) / 2),
+    y: Math.floor((vh - pxToNum(taskbarHeight)) / 2 - pxToNum(height) / 2)
+  };
+};
 
 const useRnd = (id: string, maximized = false): Props => {
   const {
