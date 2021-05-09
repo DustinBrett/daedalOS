@@ -17,8 +17,8 @@ export const loadScript = (src: string): Promise<Event> =>
 
       script.async = false;
       script.src = src;
-      script.onerror = (event) => reject(event);
-      script.onload = (event) => resolve(event);
+      script.onerror = reject;
+      script.onload = resolve;
 
       document.head.appendChild(script);
     }
@@ -35,8 +35,8 @@ export const loadStyle = (href: string): Promise<Event> =>
 
       link.rel = 'stylesheet';
       link.href = href;
-      link.onerror = (event) => reject(event);
-      link.onload = (event) => resolve(event);
+      link.onerror = reject;
+      link.onload = resolve;
 
       document.head.appendChild(link);
     }
