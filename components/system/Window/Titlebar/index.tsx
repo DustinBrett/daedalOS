@@ -53,17 +53,18 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         </figure>
       </h1>
       <nav className="cancel">
-        <Button className="minimize" onClick={onMinimize}>
+        <Button className="minimize" onClick={onMinimize} title="Minimize">
           <MinimizeIcon />
         </Button>
         <Button
           className="maximize"
-          onClick={onMaximize}
           disabled={isMaximizable}
+          onClick={onMaximize}
+          title="Maximize"
         >
           {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
         </Button>
-        <Button className="close" onClick={onClose}>
+        <Button className="close" onClick={onClose} title="Close">
           <CloseIcon />
         </Button>
       </nav>
