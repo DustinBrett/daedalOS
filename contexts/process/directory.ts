@@ -27,7 +27,6 @@ const processDirectory: Processes = {
   FileExplorer: {
     backgroundColor: '#202020',
     Component: dynamic(() => import('components/apps/FileExplorer')),
-    hasWindow: true,
     icon: '/icons/explorer.png',
     title: 'File Explorer'
   },
@@ -35,7 +34,6 @@ const processDirectory: Processes = {
     autoSizing: true,
     backgroundColor: '#000',
     Component: dynamic(() => import('components/apps/JSDOS')),
-    hasWindow: true,
     icon: '/icons/jsdos.png',
     lockAspectRatio: true,
     title: 'js-dos v7'
@@ -44,7 +42,6 @@ const processDirectory: Processes = {
     autoSizing: true,
     backgroundColor: '#000',
     Component: dynamic(() => import('components/apps/V86')),
-    hasWindow: true,
     icon: '/icons/v86.png',
     title: 'Virtual x86'
   }

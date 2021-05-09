@@ -14,7 +14,7 @@ type RenderProcessProps = {
 
 const RenderProcess = ({
   Component,
-  hasWindow = false,
+  hasWindow = true,
   id
 }: RenderProcessProps): JSX.Element =>
   hasWindow ? (
