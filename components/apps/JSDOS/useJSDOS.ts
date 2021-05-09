@@ -1,6 +1,7 @@
 import type { FSModule } from 'browserfs/dist/node/core/FS';
 import {
   defaultConfig,
+  globals,
   libs,
   pathPrefix,
   zipConfigPath
@@ -18,6 +19,9 @@ const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
   (await isFileInZip(buffer, zipConfigPath))
     ? buffer
     : addFileToZip(buffer, defaultConfig, zipConfigPath, fs);
+
+const cleanUpLoader = () =>
+  globals.forEach((global) => delete (window as never)[global]);
 
 const useJSDOS = (
   id: string,
@@ -43,15 +47,21 @@ const useJSDOS = (
             .Dos(screenRef.current as HTMLDivElement)
             .run(objectURL)
             .then((ci) => {
+              setDos(ci);
               appendFileToTitle(url);
               cleanUpBufferUrl(objectURL);
-              setDos(ci);
+              cleanUpLoader();
             });
         })
       );
     }
 
-    return () => dos?.exit();
+    return () => {
+      if (dos) {
+        dos.exit?.();
+        window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.();
+      }
+    };
   }, [appendFileToTitle, dos, fs, screenRef, url]);
 
   useEffect(() => {
