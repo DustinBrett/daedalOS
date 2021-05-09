@@ -58,8 +58,7 @@ const useRnd = (id: string, maximized = false): Props => {
 
   return {
     disableDragging: maximized,
-    enableResizing:
-      !maximized && (!autoSizing || (autoSizing && lockAspectRatio)),
+    enableResizing: !maximized && (!autoSizing || lockAspectRatio),
     lockAspectRatio,
     onDragStop,
     onResizeStop,
