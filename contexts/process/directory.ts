@@ -44,6 +44,12 @@ const processDirectory: Processes = {
     Component: dynamic(() => import('components/apps/V86')),
     icon: '/icons/v86.png',
     title: 'Virtual x86'
+  },
+  Webamp: {
+    Component: dynamic(() => import('components/apps/Webamp')),
+    hasWindow: false,
+    icon: '/icons/webamp.png',
+    title: 'Webamp'
   }
 };
 
