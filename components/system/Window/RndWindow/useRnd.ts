@@ -33,9 +33,8 @@ const useRnd = (id: string, maximized = false): Props => {
       taskbar: { height: taskbarHeight }
     }
   } = useTheme();
-  const [size, setSize] = useResizable(maximized, autoSizing, stateSize);
+  const [size, setSize] = useResizable(autoSizing, stateSize);
   const [position, setPosition] = useDraggable(
-    maximized,
     statePosition || centerPosition(size, taskbarHeight)
   );
   const onDragStop = useCallback<DraggableEventHandler>(
