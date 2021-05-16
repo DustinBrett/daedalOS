@@ -16,10 +16,11 @@ export const getIconByFileExtension = (extension: string): string => {
 export const getProcessByFileExtension = (extension: string): string => {
   switch (extension) {
     case '.img':
-    case '.iso':
       return 'V86';
-    case '.jsdos':
+    case '.iso':
     case '.zip':
+      return 'FileExplorer';
+    case '.jsdos':
       return 'JSDOS';
     case '.mp3':
       return 'Webamp';

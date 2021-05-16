@@ -3,7 +3,9 @@ import type { ProcessContextState } from 'contexts/process/useProcessContextStat
 import type { SessionContextState } from 'contexts/session/useSessionContextState';
 
 export const initialFileSystemContextState: FileSystemContextState = {
-  fs: null
+  fs: null,
+  mountFs: () => undefined,
+  unMountFs: () => undefined
 };
 
 export const initialProcessContextState: ProcessContextState = {

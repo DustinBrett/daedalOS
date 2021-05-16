@@ -2,18 +2,23 @@ import type { FileSystemConfiguration } from 'browserfs';
 import bfsJson from 'public/.index/fs.bfs.json';
 
 const FileSystemConfig: FileSystemConfiguration = {
-  fs: 'OverlayFS',
+  fs: 'MountableFileSystem',
   options: {
-    readable: {
-      fs: 'XmlHttpRequest',
+    '/': {
+      fs: 'OverlayFS',
       options: {
-        index: bfsJson
-      }
-    },
-    writable: {
-      fs: 'IndexedDB',
-      options: {
-        storeName: 'browser-fs-cache'
+        readable: {
+          fs: 'XmlHttpRequest',
+          options: {
+            index: bfsJson
+          }
+        },
+        writable: {
+          fs: 'IndexedDB',
+          options: {
+            storeName: 'browser-fs-cache'
+          }
+        }
       }
     }
   }

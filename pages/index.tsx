@@ -5,7 +5,7 @@ import Taskbar from 'components/system/Taskbar';
 
 const Home = (): React.ReactElement => (
   <Desktop>
-    <FileManager directory="/desktop" />
+    <FileManager url="/desktop" />
     <Taskbar />
     <AppsLoader />
   </Desktop>

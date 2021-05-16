@@ -14,7 +14,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
     }
   }, [id, url, title]);
 
-  return url ? <FileManager directory={url} /> : <></>;
+  return url ? <FileManager url={url} /> : <></>;
 };
 
 export default FileExplorer;
