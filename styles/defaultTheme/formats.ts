@@ -1,6 +1,5 @@
 const formats = {
   date: <Intl.DateTimeFormatOptions>{
-    weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric'
