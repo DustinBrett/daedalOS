@@ -10,8 +10,10 @@ import { pxToNum } from 'utils/functions';
 
 const staticBaseVariants = {
   active: {
+    height: 'inherit',
     opacity: 1,
-    scale: 1
+    scale: 1,
+    width: 'inherit'
   },
   initial: {
     opacity: 0,
