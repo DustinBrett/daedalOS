@@ -19,9 +19,7 @@ export type DosCI = {
 
 declare global {
   interface Window {
-    Dos: (
-      element: HTMLElement
-    ) => {
+    Dos: (element: HTMLElement) => {
       run: (url: string) => Promise<DosCI>;
     };
     emulators: {

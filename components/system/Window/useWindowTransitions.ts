@@ -66,8 +66,11 @@ const useWindowTransitions = (
       x: taskbarX = 0,
       y: taskbarY = 0
     } = taskbarEntry?.getBoundingClientRect() || {};
-    const { height: windowHeight = 0, x: windowX = 0, y: windowY = 0 } =
-      windowRef?.current?.getBoundingClientRect() || {};
+    const {
+      height: windowHeight = 0,
+      x: windowX = 0,
+      y: windowY = 0
+    } = windowRef?.current?.getBoundingClientRect() || {};
 
     setMinimize({
       ...staticMinimizeVariant,

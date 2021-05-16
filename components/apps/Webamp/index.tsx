@@ -21,10 +21,8 @@ const Webamp = ({ id }: ProcessComponentProps): JSX.Element => {
     minimize,
     processes: { [id]: { minimized = false } = {} } = {}
   } = useProcesses();
-  const {
-    setWindowStates,
-    windowStates: { [id]: windowState } = {}
-  } = useSession();
+  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
+    useSession();
   const { position: { x: previousX = -1, y: previousY = -1 } = {} } =
     windowState || {};
   const {

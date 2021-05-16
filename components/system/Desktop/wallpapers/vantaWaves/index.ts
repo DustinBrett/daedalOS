@@ -11,32 +11,32 @@ const isWebGLAvailable = typeof WebGLRenderingContext !== 'undefined';
 
 const libs = ['/libs/vanta/three.min.js', '/libs/vanta/vanta.waves.min.js'];
 
-const vantaWaves = (config: VantaWavesConfig) => (
-  el: HTMLElement | null
-): void => {
-  loadFiles(libs).then(() => {
-    const {
-      VANTA: { current: currentEffect, WAVES }
-    } = window;
-    currentEffect?.destroy();
+const vantaWaves =
+  (config: VantaWavesConfig) =>
+  (el: HTMLElement | null): void => {
+    loadFiles(libs).then(() => {
+      const {
+        VANTA: { current: currentEffect, WAVES }
+      } = window;
+      currentEffect?.destroy();
 
-    const vantaEffect =
-      el && isWebGLAvailable
-        ? WAVES({
-            el,
-            ...disableControls,
-            ...config
-          })
-        : undefined;
+      const vantaEffect =
+        el && isWebGLAvailable
+          ? WAVES({
+              el,
+              ...disableControls,
+              ...config
+            })
+          : undefined;
 
-    if (vantaEffect) {
-      const { stop: stopColorCycle } = colorCycle(config.color, (color) =>
-        vantaEffect.setOptions({ color })
-      );
+      if (vantaEffect) {
+        const { stop: stopColorCycle } = colorCycle(config.color, (color) =>
+          vantaEffect.setOptions({ color })
+        );
 
-      vantaEffect.onDestroy = stopColorCycle;
-    }
-  });
-};
+        vantaEffect.onDestroy = stopColorCycle;
+      }
+    });
+  };
 
 export default vantaWaves;

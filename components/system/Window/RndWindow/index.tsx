@@ -12,15 +12,15 @@ type RndWindowProps = {
   style: CSSProperties;
 };
 
-const reRouteFocus = (focusElement?: HTMLElement) => (
-  element?: Element
-): void => {
-  element?.setAttribute('tabindex', '-1');
-  element?.addEventListener('mousedown', (event) => {
-    event.preventDefault();
-    focusElement?.focus();
-  });
-};
+const reRouteFocus =
+  (focusElement?: HTMLElement) =>
+  (element?: Element): void => {
+    element?.setAttribute('tabindex', '-1');
+    element?.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      focusElement?.focus();
+    });
+  };
 
 const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   const {

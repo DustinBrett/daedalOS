@@ -3,14 +3,11 @@ import type { FileSystemContextState } from 'contexts/fileSystem/useFileSystemCo
 import useFileSystemContextState from 'contexts/fileSystem/useFileSystemContextState';
 import { initialFileSystemContextState } from 'contexts/initialContextStates';
 
-const {
-  Consumer,
-  Provider,
-  useContext
-} = contextFactory<FileSystemContextState>(
-  initialFileSystemContextState,
-  useFileSystemContextState
-);
+const { Consumer, Provider, useContext } =
+  contextFactory<FileSystemContextState>(
+    initialFileSystemContextState,
+    useFileSystemContextState
+  );
 
 export {
   Consumer as FileSystemConsumer,

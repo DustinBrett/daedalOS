@@ -12,17 +12,7 @@ export type V86ImageConfig = Partial<Record<V86ImageType, V86Image>>;
 
 // https://github.com/copy/v86/blob/master/src/floppy.js#L64
 const SUPPORTED_FLOPPY_TYPES = [
-  160,
-  180,
-  200,
-  320,
-  360,
-  400,
-  720,
-  1200,
-  1440,
-  1722,
-  2880
+  160, 180, 200, 320, 360, 400, 720, 1200, 1440, 1722, 2880
 ];
 
 // https://github.com/copy/v86/blob/master/src/floppy.js#L83

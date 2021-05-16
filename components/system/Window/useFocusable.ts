@@ -13,12 +13,8 @@ const useFocusable = (
   id: string,
   windowRef: React.MutableRefObject<HTMLElement | null>
 ): Focusable => {
-  const {
-    foregroundId,
-    setForegroundId,
-    setStackOrder,
-    stackOrder
-  } = useSession();
+  const { foregroundId, setForegroundId, setStackOrder, stackOrder } =
+    useSession();
   const zIndex = stackOrder.length - stackOrder.indexOf(id) + 1;
   const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const {

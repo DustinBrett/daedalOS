@@ -32,10 +32,10 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const { foregroundId } = useSession();
   const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const isMaximizable = useMemo(() => autoSizing && !lockAspectRatio, [
-    autoSizing,
-    lockAspectRatio
-  ]);
+  const isMaximizable = useMemo(
+    () => autoSizing && !lockAspectRatio,
+    [autoSizing, lockAspectRatio]
+  );
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
