@@ -35,7 +35,8 @@ type Track = {
   url: string;
 };
 
-type WebampOptions = {
+export type WebampOptions = {
+  __butterchurnOptions: unknown;
   initialSkin?: {
     url: string;
   };
@@ -49,6 +50,10 @@ interface WebampConstructor {
 
 declare global {
   interface Window {
+    butterchurn: unknown;
+    butterchurnPresets: {
+      getPresets: () => { [preset: string]: unknown };
+    };
     Webamp: WebampConstructor;
   }
 }
