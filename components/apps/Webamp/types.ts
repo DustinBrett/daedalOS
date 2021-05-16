@@ -27,11 +27,19 @@ export type WebampCI = {
   };
 };
 
+type Track = {
+  metaData: {
+    artist?: string;
+    title: string;
+  };
+  url: string;
+};
+
 type WebampOptions = {
   initialSkin?: {
     url: string;
   };
-  initialTracks?: string[];
+  initialTracks?: Track[];
   zIndex?: number;
 };
 
