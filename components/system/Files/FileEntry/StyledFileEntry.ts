@@ -34,11 +34,12 @@ const StyledFileEntry = styled.li`
         color: ${({ theme }) => theme.colors.fileEntry.text};
         display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
+        letter-spacing: -0.1px;
         -webkit-line-clamp: 2;
         overflow: hidden;
         padding: 2px 0;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
-        word-break: break-all;
+        word-break: break-word;
       }
 
       img {

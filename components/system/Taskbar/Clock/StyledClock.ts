@@ -5,6 +5,7 @@ const StyledClock = styled.time`
   display: flex;
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
+  letter-spacing: -0.1px;
   place-content: center;
   place-items: center;
   position: absolute;

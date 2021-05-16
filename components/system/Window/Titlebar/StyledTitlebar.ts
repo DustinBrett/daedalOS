@@ -41,6 +41,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       }
 
       figcaption {
+        letter-spacing: -0.1px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
