@@ -32,8 +32,8 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   } = useTheme();
 
   useEffect(() => {
-    if (containerRef?.current) {
-      loadFiles(['/libs/webamp/webamp.bundle.min.js']).then(() => {
+    loadFiles(['/libs/webamp/webamp.bundle.min.js']).then(() => {
+      if (containerRef?.current) {
         const webamp: WebampCI = new window.Webamp({ zIndex: 2 });
 
         webamp.onClose(() => {
@@ -79,8 +79,8 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
 
             containerRef?.current?.appendChild(getWebampElement());
           });
-      });
-    }
+      }
+    });
   }, [
     close,
     containerRef,

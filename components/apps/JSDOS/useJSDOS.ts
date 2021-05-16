@@ -36,7 +36,7 @@ const useJSDOS = (
   const { close } = useProcesses();
 
   useEffect(() => {
-    if (!dos && fs && url && screenRef?.current) {
+    if (!dos && fs && url) {
       fs.readFile(url, (_error, contents = Buffer.from('')) =>
         loadFiles(libs).then(async () => {
           const isZip = extname(url).toLowerCase() === '.zip';
@@ -44,16 +44,18 @@ const useJSDOS = (
             isZip ? await addJsDosConfig(contents, fs) : contents
           );
 
-          window.emulators.pathPrefix = pathPrefix;
-          window
-            .Dos(screenRef.current as HTMLDivElement)
-            .run(objectURL)
-            .then((ci) => {
-              setDos(ci);
-              appendFileToTitle(url);
-              cleanUpBufferUrl(objectURL);
-              cleanUpLoader();
-            });
+          if (screenRef?.current) {
+            window.emulators.pathPrefix = pathPrefix;
+            window
+              .Dos(screenRef.current as HTMLDivElement)
+              .run(objectURL)
+              .then((ci) => {
+                setDos(ci);
+                appendFileToTitle(url);
+                cleanUpBufferUrl(objectURL);
+                cleanUpLoader();
+              });
+          }
         })
       );
     }
