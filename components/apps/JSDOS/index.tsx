@@ -1,10 +1,10 @@
 import StyledJSDOS from 'components/apps/JSDOS/StyledJSDOS';
 import useJSDOS from 'components/apps/JSDOS/useJSDOS';
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import { useProcesses } from 'contexts/process';
 import { useRef } from 'react';
 
-const JSDOS = ({ id }: ProcessComponentProps): JSX.Element => {
+const JSDOS = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
     processes: { [id]: { url = '' } = {} }
   } = useProcesses();

@@ -3,7 +3,7 @@ import {
   updateWindowPositions
 } from 'components/apps/Webamp/functions';
 import type { WebampCI } from 'components/apps/Webamp/types';
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import { centerPosition } from 'components/system/Window/functions';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
@@ -14,7 +14,7 @@ import { loadFiles } from 'utils/functions';
 const getWebampElement = (): HTMLDivElement =>
   document.getElementById('webamp') as HTMLDivElement;
 
-const Webamp = ({ id }: ProcessComponentProps): JSX.Element => {
+const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const {
     close,

@@ -1,15 +1,15 @@
-import RenderProcess from 'components/system/Processes/RenderProcess';
+import RenderComponent from 'components/system/Apps/RenderComponent';
 import { ProcessConsumer } from 'contexts/process';
 import { AnimatePresence } from 'framer-motion';
 
-const ProcessLoader = (): JSX.Element => (
+const AppsLoader = (): JSX.Element => (
   <ProcessConsumer>
     {({ processes }) => (
       <AnimatePresence>
         {Object.entries(processes)
           .filter(([_id, { closing }]) => !closing)
           .map(([id, { Component, hasWindow }]) => (
-            <RenderProcess
+            <RenderComponent
               key={id}
               Component={Component}
               hasWindow={hasWindow}
@@ -21,4 +21,4 @@ const ProcessLoader = (): JSX.Element => (
   </ProcessConsumer>
 );
 
-export default ProcessLoader;
+export default AppsLoader;

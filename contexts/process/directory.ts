@@ -1,4 +1,4 @@
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import dynamic from 'next/dynamic';
 
 export type ProcessElements = {
@@ -9,7 +9,7 @@ export type Process = ProcessElements & {
   autoSizing?: boolean;
   backgroundColor?: string;
   closing?: boolean;
-  Component: React.ComponentType<ProcessComponentProps>;
+  Component: React.ComponentType<ComponentProcessProps>;
   hasWindow?: boolean;
   icon: string;
   lockAspectRatio?: boolean;

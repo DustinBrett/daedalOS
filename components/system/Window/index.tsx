@@ -1,4 +1,4 @@
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import RndWindow from 'components/system/Window/RndWindow';
 import StyledWindow from 'components/system/Window/StyledWindow';
 import Titlebar from 'components/system/Window/Titlebar';
@@ -8,7 +8,7 @@ import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useMemo, useRef } from 'react';
 
-type WindowProps = ProcessComponentProps & {
+type WindowProps = ComponentProcessProps & {
   children: React.ReactNode;
 };
 

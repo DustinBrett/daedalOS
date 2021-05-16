@@ -1,9 +1,9 @@
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import FileManager from 'components/system/Files/FileManager';
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
 import { useProcesses } from 'contexts/process';
 import { useEffect } from 'react';
 
-const FileExplorer = ({ id }: ProcessComponentProps): JSX.Element => {
+const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
     title,
     processes: { [id]: { url = '' } = {} }

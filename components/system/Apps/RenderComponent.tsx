@@ -2,21 +2,21 @@ import dynamic from 'next/dynamic';
 
 const Window = dynamic(() => import('components/system/Window'));
 
-export type ProcessComponentProps = {
+export type ComponentProcessProps = {
   id: string;
 };
 
-type RenderProcessProps = {
-  Component: React.ComponentType<ProcessComponentProps>;
+type RenderComponentProps = {
+  Component: React.ComponentType<ComponentProcessProps>;
   hasWindow?: boolean;
   id: string;
 };
 
-const RenderProcess = ({
+const RenderComponent = ({
   Component,
   hasWindow = true,
   id
-}: RenderProcessProps): JSX.Element =>
+}: RenderComponentProps): JSX.Element =>
   hasWindow ? (
     <Window id={id}>
       <Component id={id} />
@@ -25,4 +25,4 @@ const RenderProcess = ({
     <Component id={id} />
   );
 
-export default RenderProcess;
+export default RenderComponent;

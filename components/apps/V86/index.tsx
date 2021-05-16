@@ -1,11 +1,11 @@
 import StyledV86 from 'components/apps/V86/StyledV86';
 import useV86 from 'components/apps/V86/useV86';
 import useV86ScreenSize from 'components/apps/V86/useV86ScreenSize';
-import type { ProcessComponentProps } from 'components/system/Processes/RenderProcess';
+import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
 import { useProcesses } from 'contexts/process';
 import { useRef } from 'react';
 
-const V86 = ({ id }: ProcessComponentProps): JSX.Element => {
+const V86 = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
     processes: { [id]: { url = '' } = {} }
   } = useProcesses();
