@@ -1,18 +1,15 @@
 import {
   closeEqualizer,
-  updateWindowPositions
+  getWebampElement,
+  updateWebampPosition
 } from 'components/apps/Webamp/functions';
 import type { WebampCI } from 'components/apps/Webamp/types';
 import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
-import { centerPosition } from 'components/system/Window/functions';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useEffect, useRef } from 'react';
 import { useTheme } from 'styled-components';
 import { loadFiles } from 'utils/functions';
-
-const getWebampElement = (): HTMLDivElement =>
-  document.getElementById('webamp') as HTMLDivElement;
 
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -21,10 +18,10 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
     minimize,
     processes: { [id]: { minimized = false } = {} } = {}
   } = useProcesses();
-  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
-    useSession();
-  const { position: { x: previousX = -1, y: previousY = -1 } = {} } =
-    windowState || {};
+  const {
+    setWindowStates,
+    windowStates: { [id]: { position = undefined } = {} } = {}
+  } = useSession();
   const {
     sizes: {
       taskbar: { height: taskbarHeight }
@@ -34,7 +31,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   useEffect(() => {
     loadFiles(['/libs/webamp/webamp.bundle.min.js']).then(() => {
       if (containerRef?.current) {
-        const webamp: WebampCI = new window.Webamp({ zIndex: 2 });
+        const webamp: WebampCI = new window.Webamp({ zIndex: 1 });
 
         webamp.onClose(() => {
           const [main] = getWebampElement().getElementsByClassName('window');
@@ -53,30 +50,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
           .renderWhenReady(containerRef?.current as HTMLDivElement)
           .then(() => {
             closeEqualizer(webamp);
-            if (previousX === -1) {
-              const webampSize = [
-                ...getWebampElement().getElementsByClassName('window')
-              ].reduce(
-                (acc, element) => {
-                  const { height, width } = element.getBoundingClientRect();
-
-                  return {
-                    height: acc.height + height,
-                    width
-                  };
-                },
-                { height: 0, width: 0 }
-              );
-              const { x: centerX, y: centerY } = centerPosition(
-                webampSize,
-                taskbarHeight
-              );
-
-              updateWindowPositions(webamp, centerX, centerY);
-            } else {
-              updateWindowPositions(webamp, previousX, previousY);
-            }
-
+            updateWebampPosition(webamp, taskbarHeight, position);
             containerRef?.current?.appendChild(getWebampElement());
           });
       }
@@ -86,8 +60,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
     containerRef,
     id,
     minimize,
-    previousX,
-    previousY,
+    position,
     setWindowStates,
     taskbarHeight
   ]);
