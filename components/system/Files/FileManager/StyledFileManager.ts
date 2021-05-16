@@ -13,6 +13,10 @@ const StyledFileManager = styled.ol`
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
+  main > & {
+    padding-bottom: 23px;
+  }
+
   ${StyledWindow} & {
     grid-auto-flow: row;
   }
