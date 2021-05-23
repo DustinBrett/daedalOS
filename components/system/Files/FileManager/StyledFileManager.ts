@@ -13,7 +13,7 @@ const StyledFileManager = styled.ol`
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
   main > & {
-    padding-bottom: 23px;
+    padding-bottom: 20px;
   }
 
   ${StyledWindow} & {
