@@ -8,6 +8,8 @@ type WebampDispatchOptionalProps = {
     playlist: Position;
   };
   windowId?: string;
+  window?: string;
+  zIndex?: number;
 };
 
 type WebampDispatch = WebampDispatchOptionalProps & {

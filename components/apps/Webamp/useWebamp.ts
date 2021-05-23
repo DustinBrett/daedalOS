@@ -6,12 +6,13 @@ import {
 import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTheme } from 'styled-components';
 import { bufferToUrl, cleanUpBufferUrl } from 'utils/functions';
 
 type Webamp = {
   loadWebamp: (containerElement: HTMLDivElement | null, file?: Buffer) => void;
+  webampCI: WebampCI | null;
 };
 
 const useWebamp = (id: string): Webamp => {
@@ -25,6 +26,7 @@ const useWebamp = (id: string): Webamp => {
       taskbar: { height: taskbarHeight }
     }
   } = useTheme();
+  const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
   const loadWebamp = useCallback(
     (containerElement: HTMLDivElement | null, file?: Buffer): void => {
       if (containerElement) {
@@ -43,7 +45,7 @@ const useWebamp = (id: string): Webamp => {
             },
             butterchurnOpen: true
           },
-          zIndex: 1 // TODO: Base zIndex on foregroundId === id
+          zIndex: 3 // TODO: Const for base window + in focus?
         };
 
         if (file) {
@@ -84,13 +86,16 @@ const useWebamp = (id: string): Webamp => {
           updateWebampPosition(webamp, taskbarHeight, position);
           containerElement.appendChild(getWebampElement());
         });
+
+        setWebampCI(webamp);
       }
     },
     [close, id, minimize, position, setWindowStates, taskbarHeight]
   );
 
   return {
-    loadWebamp
+    loadWebamp,
+    webampCI
   };
 };
 

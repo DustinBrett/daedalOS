@@ -34,3 +34,21 @@ export const updateWebampPosition = (
     }
   });
 };
+
+export const focusWindow = (webamp: WebampCI, window: string): void =>
+  webamp.store.dispatch({
+    type: 'SET_FOCUSED_WINDOW',
+    window
+  });
+
+export const unFocus = (webamp: WebampCI): void =>
+  webamp.store.dispatch({
+    type: 'SET_FOCUSED_WINDOW',
+    window: ''
+  });
+
+export const setZIndex = (webamp: WebampCI, zIndex: number): void =>
+  webamp.store.dispatch({
+    type: 'SET_Z_INDEX',
+    zIndex
+  });
