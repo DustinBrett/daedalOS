@@ -14,7 +14,7 @@ type FileManagerProps = {
 const MOUNTABLE_EXTENSIONS = ['.iso', '.zip'];
 
 const FileManager = ({ url }: FileManagerProps): JSX.Element => {
-  const { deleteFile, files, updateFiles } = useFiles(url);
+  const { deleteFile, files, renameFile, updateFiles } = useFiles(url);
   const { mountFs, unMountFs } = useFileSystem();
 
   useEffect(() => {
@@ -35,6 +35,7 @@ const FileManager = ({ url }: FileManagerProps): JSX.Element => {
             deleteFile={deleteFile}
             name={basename(file, extname(file))}
             path={resolve(url, file)}
+            renameFile={renameFile}
           />
         </StyledFileEntry>
       ))}

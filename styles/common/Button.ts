@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Button = styled.button.attrs({
+  onKeyUp: (event) => event?.preventDefault(),
   type: 'button'
 })`
   background-color: transparent;

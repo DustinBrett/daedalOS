@@ -5,11 +5,15 @@ import processDirectory from 'contexts/process/directory';
 const useContextMenu = (
   url: string,
   pid: string,
-  deleteFile: () => void
+  deleteFile: () => void,
+  renameFile: () => void
 ): MenuItem[] => {
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url, pid);
-  const menuItems: MenuItem[] = [{ label: 'Delete', action: deleteFile }];
+  const menuItems: MenuItem[] = [
+    { label: 'Delete', action: deleteFile },
+    { label: 'Rename', action: renameFile }
+  ];
 
   if (pid) {
     menuItems.unshift(
