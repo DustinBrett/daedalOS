@@ -27,6 +27,7 @@ const StyledFileEntry = styled.li`
     figure {
       display: flex;
       flex-direction: column;
+      margin-bottom: -3px;
       place-items: center;
 
       figcaption {
@@ -35,9 +36,10 @@ const StyledFileEntry = styled.li`
         display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         letter-spacing: -0.1px;
+        line-height: 15px;
         -webkit-line-clamp: 2;
         overflow: hidden;
-        padding: 2px 0;
+        padding: 3px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }
