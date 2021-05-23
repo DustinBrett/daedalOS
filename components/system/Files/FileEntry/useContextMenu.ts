@@ -2,18 +2,25 @@ import useFile from 'components/system/Files/FileEntry/useFile';
 import type { MenuItem } from 'contexts/menu/useMenuContextState';
 import processDirectory from 'contexts/process/directory';
 
-const useContextMenu = (url: string, pid: string): MenuItem[] => {
+const useContextMenu = (
+  url: string,
+  pid: string,
+  deleteFile: () => void
+): MenuItem[] => {
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url, pid);
-  const menuItems: MenuItem[] = [];
+  const menuItems: MenuItem[] = [{ label: 'Delete', action: deleteFile }];
 
   if (pid) {
-    menuItems.push({
-      icon: pidIcon,
-      label: 'Open',
-      primary: true,
-      action: openFile
-    });
+    menuItems.unshift(
+      {
+        icon: pidIcon,
+        label: 'Open',
+        primary: true,
+        action: openFile
+      },
+      { separator: 1 }
+    );
   }
 
   return menuItems;
