@@ -4,7 +4,6 @@ import { useSession } from 'contexts/session';
 import type { CSSProperties } from 'react';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
-import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -24,7 +23,7 @@ const reRouteFocus =
 
 const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   const {
-    processes: { [id]: { autoSizing = false, maximized = false } = {} }
+    processes: { [id]: { maximized = false } = {} }
   } = useProcesses();
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
@@ -43,10 +42,10 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
         ...currentWindowStates,
         [id]: {
           position: currentWindow?.props?.position,
-          size: autoSizing ? DEFAULT_WINDOW_SIZE : currentWindow?.props?.size
+          size: currentWindow?.props?.size
         }
       }));
-  }, [autoSizing, id, maximized, setWindowStates]);
+  }, [id, maximized, setWindowStates]);
 
   return (
     <Rnd ref={rndRef} style={style} {...rndProps}>
