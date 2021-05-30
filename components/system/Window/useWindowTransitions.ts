@@ -28,7 +28,7 @@ const baseMaximize = {
 
 const baseMinimize = {
   opacity: 0,
-  scale: 0.75
+  scale: 0.7
 };
 
 const useWindowTransitions = (
