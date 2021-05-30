@@ -8,26 +8,25 @@ import {
 } from 'utils/constants';
 import { pxToNum } from 'utils/functions';
 
-const staticBaseVariants = {
-  active: {
-    height: 'inherit',
-    opacity: 1,
-    scale: 1,
-    width: 'inherit'
-  },
-  initial: {
-    opacity: 0,
-    scale: 0.95
-  }
+const active = {
+  height: 'inherit',
+  opacity: 1,
+  scale: 1,
+  width: 'inherit'
 };
 
-const staticMaximizeVariant = {
+const initial = {
+  opacity: 0,
+  scale: 0.95
+};
+
+const baseMaximize = {
   opacity: 1,
   scale: 1,
   width: '100vw'
 };
 
-const staticMinimizeVariant = {
+const baseMinimize = {
   opacity: 0,
   scale: 0.75
 };
@@ -54,7 +53,7 @@ const useWindowTransitions = (
       windowRef?.current?.getBoundingClientRect() || {};
 
     setMaximize({
-      ...staticMaximizeVariant,
+      ...baseMaximize,
       height: `${window.innerHeight - pxToNum(taskbar?.height)}px`,
       x: -windowX,
       y: -windowY
@@ -75,7 +74,7 @@ const useWindowTransitions = (
     } = windowRef?.current?.getBoundingClientRect() || {};
 
     setMinimize({
-      ...staticMinimizeVariant,
+      ...baseMinimize,
       x: taskbarX - windowX - taskbarWidth / 2,
       y: taskbarY - windowY - windowHeight / 2 - taskbarHeight / 2
     });
@@ -89,11 +88,7 @@ const useWindowTransitions = (
       duration:
         WINDOW_TRANSITION_DURATION_IN_MILLISECONDS / MILLISECONDS_IN_SECOND
     },
-    variants: {
-      ...staticBaseVariants,
-      maximize,
-      minimize
-    }
+    variants: { active, initial, maximize, minimize }
   };
 };
 
