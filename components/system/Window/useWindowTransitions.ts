@@ -69,14 +69,15 @@ const useWindowTransitions = (
     } = taskbarEntry?.getBoundingClientRect() || {};
     const {
       height: windowHeight = 0,
+      width: windowWidth = 0,
       x: windowX = 0,
       y: windowY = 0
     } = windowRef?.current?.getBoundingClientRect() || {};
 
     setMinimize({
       ...baseMinimize,
-      x: taskbarX - windowX - taskbarWidth / 2,
-      y: taskbarY - windowY - windowHeight / 2 - taskbarHeight / 2
+      x: taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2,
+      y: taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2
     });
   }, [minimized, taskbarEntry, windowRef]);
 
