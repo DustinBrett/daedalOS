@@ -18,7 +18,7 @@ type WebampDispatch = WebampDispatchOptionalProps & {
 
 export type WebampCI = {
   dispose: () => void;
-  onClose: (cb: () => void) => () => void;
+  onWillClose: (cb: (cancel: () => void) => void) => () => void;
   onMinimize: (cb: () => void) => () => void;
   renderWhenReady: (domNode: HTMLElement) => Promise<void>;
   store: {
