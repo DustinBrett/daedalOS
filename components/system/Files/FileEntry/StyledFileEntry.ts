@@ -36,8 +36,8 @@ const StyledFileEntry = styled.li`
         display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         letter-spacing: -0.1px;
-        line-height: 15px;
         -webkit-line-clamp: 2;
+        line-height: 15px;
         overflow: hidden;
         padding: 3px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
