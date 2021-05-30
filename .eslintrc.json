@@ -10,13 +10,14 @@
     "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
     "plugin:jest-dom/recommended",
-    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:testing-library/react",
+    "plugin:prettier/recommended",
     "prettier"
   ],
   "globals": {
