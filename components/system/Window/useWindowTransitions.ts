@@ -81,7 +81,7 @@ const useWindowTransitions = (
   }, [minimized, taskbarEntry, windowRef]);
 
   return {
-    animate: (maximized && 'maximize') || (minimized && 'minimize') || 'active',
+    animate: (minimized && 'minimize') || (maximized && 'maximize') || 'active',
     exit: 'initial',
     initial: 'initial',
     transition: {
