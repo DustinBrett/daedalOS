@@ -8,6 +8,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
     title,
     processes: { [id]: { url = '' } = {} }
   } = useProcesses();
+
   useEffect(() => {
     if (url) {
       title(id, url);
