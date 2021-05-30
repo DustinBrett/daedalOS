@@ -27,14 +27,20 @@ const useFocusable = (
     },
     [isForeground, setForegroundId, taskbarEntry]
   );
-  const moveToFront = useCallback(() => {
-    setStackOrder((currentStackOrder) => [
-      id,
-      ...currentStackOrder.filter((stackId) => stackId !== id)
-    ]);
-    setForegroundId(id);
-    windowRef.current?.focus();
-  }, [id, setForegroundId, setStackOrder, windowRef]);
+  const moveToFront = useCallback(
+    ({ relatedTarget } = {}) => {
+      if (windowRef.current?.contains(document.activeElement)) {
+        setStackOrder((currentStackOrder) => [
+          id,
+          ...currentStackOrder.filter((stackId) => stackId !== id)
+        ]);
+        setForegroundId(id);
+      } else if (!relatedTarget || document.activeElement === taskbarEntry) {
+        windowRef.current?.focus();
+      }
+    },
+    [id, setForegroundId, setStackOrder, taskbarEntry, windowRef]
+  );
 
   useEffect(() => {
     if (isForeground) moveToFront();
