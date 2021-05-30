@@ -32,6 +32,8 @@ export const initialSessionContextState: SessionContextState = {
   setThemeName: () => undefined,
   setWindowStates: () => undefined,
   stackOrder: [],
+  startMenuVisible: false,
   themeName: '',
+  toggleStartMenu: () => undefined,
   windowStates: {}
 };

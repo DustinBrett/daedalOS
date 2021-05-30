@@ -1,6 +1,6 @@
 import type { Size } from 'components/system/Window/RndWindow/useResizable';
 import { useFileSystem } from 'contexts/fileSystem';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Position } from 'react-rnd';
 
 type WindowState = {
@@ -19,7 +19,9 @@ export type SessionContextState = {
   setThemeName: React.Dispatch<React.SetStateAction<string>>;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
+  startMenuVisible: boolean;
   themeName: string;
+  toggleStartMenu: (showMenu?: boolean) => void;
   windowStates: WindowStates;
 };
 
@@ -32,6 +34,12 @@ const useSessionContextState = (): SessionContextState => {
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState('');
   const [windowStates, setWindowStates] = useState<WindowStates>({});
+  const [startMenuVisible, setStartMenuVisible] = useState(false);
+  const toggleStartMenu = useCallback(
+    (showMenu?: boolean) =>
+      setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState),
+    [setStartMenuVisible]
+  );
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -69,7 +77,9 @@ const useSessionContextState = (): SessionContextState => {
     setThemeName,
     setWindowStates,
     stackOrder,
+    startMenuVisible,
     themeName,
+    toggleStartMenu,
     windowStates
   };
 };
