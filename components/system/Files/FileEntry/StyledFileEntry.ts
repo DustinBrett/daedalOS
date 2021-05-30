@@ -38,8 +38,9 @@ const StyledFileEntry = styled.li`
         letter-spacing: -0.1px;
         -webkit-line-clamp: 2;
         line-height: 15px;
+        margin: 1px 0;
         overflow: hidden;
-        padding: 3px;
+        padding: 2px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }

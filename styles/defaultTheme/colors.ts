@@ -11,15 +11,12 @@ const colors = {
     textShadow: `
       0 0 1px rgba(0, 0, 0, 75%),
       0 0 2px rgba(0, 0, 0, 50%),
-      0 0 3px rgba(0, 0, 0, 25%),
 
       0 1px 1px rgba(0, 0, 0, 75%),
       0 1px 2px rgba(0, 0, 0, 50%),
-      0 1px 3px rgba(0, 0, 0, 25%),
 
       0 2px 1px rgba(0, 0, 0, 75%),
-      0 2px 2px rgba(0, 0, 0, 50%),
-      0 2px 3px rgba(0, 0, 0, 25%)`
+      0 2px 2px rgba(0, 0, 0, 50%)`
   },
   highlight: 'hsl(207deg 100% 72% / 90%)',
   startButton: '#FFF',
