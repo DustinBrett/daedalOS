@@ -20,6 +20,8 @@ const useWebamp = (id: string): Webamp => {
   const { close, minimize } = useProcesses();
   const {
     setWindowStates,
+    setStackOrder,
+    stackOrder,
     windowStates: { [id]: { position = undefined } = {} } = {}
   } = useSession();
   const {
@@ -30,7 +32,7 @@ const useWebamp = (id: string): Webamp => {
   const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
   const loadWebamp = useCallback(
     (containerElement: HTMLDivElement | null, file?: Buffer): void => {
-      if (containerElement) {
+      if (containerElement && window.Webamp && !webampCI) {
         const options: WebampOptions = {
           __butterchurnOptions: {
             importButterchurn: () => Promise.resolve(window.butterchurn),
@@ -46,7 +48,7 @@ const useWebamp = (id: string): Webamp => {
             },
             butterchurnOpen: true
           },
-          zIndex: 3 // TODO: Const for base window + in focus?
+          zIndex: stackOrder.length + 1
         };
 
         if (file) {
@@ -76,6 +78,9 @@ const useWebamp = (id: string): Webamp => {
               position: { x, y }
             }
           }));
+          setStackOrder((currentStackOrder) =>
+            currentStackOrder.filter((stackId) => stackId !== id)
+          );
 
           if (options.initialTracks) {
             const [{ url: objectUrl }] = options.initialTracks;
@@ -93,7 +98,17 @@ const useWebamp = (id: string): Webamp => {
         setWebampCI(webamp);
       }
     },
-    [close, id, minimize, position, setWindowStates, taskbarHeight]
+    [
+      close,
+      id,
+      minimize,
+      position,
+      setStackOrder,
+      setWindowStates,
+      stackOrder.length,
+      taskbarHeight,
+      webampCI
+    ]
   );
 
   return {

@@ -10,16 +10,25 @@ import useWindowTransitions from 'components/system/Window/useWindowTransitions'
 import { useFileSystem } from 'contexts/fileSystem';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { loadFiles } from 'utils/functions';
 
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { fs } = useFileSystem();
-  const { processes: { [id]: { url = '' } = {} } = {} } = useProcesses();
+  const {
+    processes: {
+      [id]: { minimized = false, taskbarEntry = undefined, url = '' } = {}
+    } = {}
+  } = useProcesses();
   const { loadWebamp, webampCI } = useWebamp(id);
-  const { foregroundId, setForegroundId } = useSession();
+  const { foregroundId, setForegroundId, setStackOrder, stackOrder } =
+    useSession();
   const windowTransitions = useWindowTransitions(id, containerRef);
+  const zIndex = useMemo(
+    () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
+    [id, minimized, stackOrder]
+  );
 
   useEffect(() => {
     if (fs) {
@@ -37,26 +46,34 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
 
   useEffect(() => {
     if (webampCI) {
-      if (foregroundId === id) {
-        if (!containerRef?.current?.contains(document.activeElement)) {
-          focusWindow(webampCI, 'main');
-          containerRef?.current?.focus();
-        }
-
-        setZIndex(webampCI, 3);
-      } else if (foregroundId) {
-        setZIndex(webampCI, 1);
+      if (
+        foregroundId === id &&
+        !containerRef?.current?.contains(document.activeElement)
+      ) {
+        focusWindow(webampCI, 'main');
+        containerRef?.current?.focus();
       }
+
+      setZIndex(webampCI, zIndex);
     }
-  }, [foregroundId, id, webampCI]);
+  }, [foregroundId, id, stackOrder, webampCI, zIndex]);
 
   return (
     <StyledWebamp
       ref={containerRef}
       tabIndex={-1}
-      onFocus={() => setForegroundId(id)}
-      onBlur={() => {
-        setForegroundId('');
+      onFocus={() => {
+        setStackOrder((currentStackOrder) => [
+          id,
+          ...currentStackOrder.filter((stackId) => stackId !== id)
+        ]);
+        setForegroundId(id);
+      }}
+      onBlur={({ relatedTarget }) => {
+        if (foregroundId === id && relatedTarget !== taskbarEntry) {
+          setForegroundId('');
+        }
+
         if (webampCI) unFocus(webampCI);
       }}
       {...windowTransitions}
