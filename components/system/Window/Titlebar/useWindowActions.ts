@@ -1,8 +1,8 @@
+import { closeWithTransition } from 'components/system/Window/functions';
 import useNextFocusable from 'components/system/Window/useNextFocusable';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useCallback } from 'react';
-import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from 'utils/constants';
 
 type WindowActions = {
   onClose: React.MouseEventHandler;
@@ -23,8 +23,7 @@ const useWindowActions = (id: string): WindowActions => {
     setStackOrder((currentStackOrder) =>
       currentStackOrder.filter((stackId) => stackId !== id)
     );
-    close(id, true);
-    setTimeout(() => close(id), WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
+    closeWithTransition(close, id);
     setForegroundId(nextFocusableId);
   }, [setStackOrder, close, id, setForegroundId, nextFocusableId]);
 

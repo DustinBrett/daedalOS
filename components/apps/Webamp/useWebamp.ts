@@ -4,6 +4,7 @@ import {
   updateWebampPosition
 } from 'components/apps/Webamp/functions';
 import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
+import { closeWithTransition } from 'components/system/Window/functions';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
 import { useCallback, useState } from 'react';
@@ -66,7 +67,7 @@ const useWebamp = (id: string): Webamp => {
           const [main] = getWebampElement().getElementsByClassName('window');
           const { x, y } = main.getBoundingClientRect();
 
-          close(id);
+          closeWithTransition(close, id);
           setWindowStates((currentWindowStates) => ({
             ...currentWindowStates,
             [id]: {

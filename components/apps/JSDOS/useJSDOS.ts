@@ -8,6 +8,7 @@ import {
 } from 'components/apps/JSDOS/config';
 import type { DosCI } from 'components/apps/JSDOS/types';
 import { addFileToZip, isFileInZip } from 'components/apps/JSDOS/zipFunctions';
+import { closeWithTransition } from 'components/system/Window/functions';
 import useTitle from 'components/system/Window/useTitle';
 import useWindowSize from 'components/system/Window/useWindowSize';
 import { useFileSystem } from 'contexts/fileSystem';
@@ -78,7 +79,9 @@ const useJSDOS = (
             .replace('Parsing command line: ', '')
             .split(' ');
 
-          if (dosCommand.toUpperCase() === 'EXIT') close(id);
+          if (dosCommand.toUpperCase() === 'EXIT') {
+            closeWithTransition(close, id);
+          }
         }
       });
 
