@@ -15,11 +15,12 @@ const useFocusable = (
 ): Focusable => {
   const { foregroundId, setForegroundId, setStackOrder, stackOrder } =
     useSession();
-  const zIndex = stackOrder.length - stackOrder.indexOf(id) + 1;
-  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const {
-    processes: { [id]: { taskbarEntry = undefined } = {} }
+    processes: { [id]: { minimized = false, taskbarEntry = undefined } = {} }
   } = useProcesses();
+  const zIndex =
+    stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
+  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
   const onBlur = useCallback(
     ({ relatedTarget }) => {
       if (isForeground && relatedTarget !== taskbarEntry) setForegroundId('');
