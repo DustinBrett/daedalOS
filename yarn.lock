@@ -1396,6 +1396,13 @@ browser-process-hrtime@^1.0.0:
     async "~2.6.1"
     pako "~1.0.6"
 
+"browserfs@https://github.com/jvilk/BrowserFS.git":
+  version "2.0.0"
+  resolved "https://github.com/jvilk/BrowserFS.git#a96aa2d417995dac7d376987839bc4e95e218e06"
+  dependencies:
+    async "~2.6.1"
+    pako "~1.0.6"
+
 browserify-aes@^1.0.0, browserify-aes@^1.0.4:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/browserify-aes/-/browserify-aes-1.2.0.tgz#326734642f403dabc3003209853bb70ad428ef48"
@@ -5749,7 +5756,7 @@ style-value-types@4.1.4:
     hey-listen "^1.0.8"
     tslib "^2.1.0"
 
-styled-components@^5.3.0:
+styled-components@^5, styled-components@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.3.0.tgz#e47c3d3e9ddfff539f118a3dd0fd4f8f4fb25727"
   integrity sha512-bPJKwZCHjJPf/hwTJl6TbkSZg/3evha+XPEizrZUGb535jLImwDUdjTNxXqjjaASt2M4qO4AVfoHJNe3XB/tpQ==

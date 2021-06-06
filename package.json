@@ -37,7 +37,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
-    "browserfs": "github:jvilk/BrowserFS",
+    "browserfs": "https://github.com/jvilk/BrowserFS.git",
     "fflate": "^0.7.0",
     "framer-motion": "^4.1.17",
     "ini": "^2.0.0",
