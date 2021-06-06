@@ -13,7 +13,7 @@ const useFocusable = (
   id: string,
   windowRef: React.MutableRefObject<HTMLElement | null>
 ): Focusable => {
-  const { foregroundId, setForegroundId, setStackOrder, stackOrder } =
+  const { foregroundId, prependToStack, setForegroundId, stackOrder } =
     useSession();
   const {
     processes: { [id]: { minimized = false, taskbarEntry = undefined } = {} }
@@ -32,16 +32,13 @@ const useFocusable = (
   const moveToFront = useCallback(
     ({ relatedTarget } = {}) => {
       if (windowRef.current?.contains(document.activeElement)) {
-        setStackOrder((currentStackOrder) => [
-          id,
-          ...currentStackOrder.filter((stackId) => stackId !== id)
-        ]);
+        prependToStack(id);
         setForegroundId(id);
       } else if (!relatedTarget || document.activeElement === taskbarEntry) {
         windowRef.current?.focus();
       }
     },
-    [id, setForegroundId, setStackOrder, taskbarEntry, windowRef]
+    [id, prependToStack, setForegroundId, taskbarEntry, windowRef]
   );
 
   useEffect(() => {

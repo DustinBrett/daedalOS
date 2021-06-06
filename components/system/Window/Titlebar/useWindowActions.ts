@@ -12,7 +12,7 @@ type WindowActions = {
 
 const useWindowActions = (id: string): WindowActions => {
   const nextFocusableId = useNextFocusable(id);
-  const { setForegroundId, setStackOrder } = useSession();
+  const { setForegroundId, removeFromStack } = useSession();
   const { close, maximize, minimize } = useProcesses();
   const onMinimize = useCallback(() => {
     minimize(id);
@@ -20,12 +20,10 @@ const useWindowActions = (id: string): WindowActions => {
   }, [id, minimize, nextFocusableId, setForegroundId]);
   const onMaximize = useCallback(() => maximize(id), [id, maximize]);
   const onClose = useCallback(() => {
-    setStackOrder((currentStackOrder) =>
-      currentStackOrder.filter((stackId) => stackId !== id)
-    );
+    removeFromStack(id);
     closeWithTransition(close, id);
     setForegroundId(nextFocusableId);
-  }, [setStackOrder, close, id, setForegroundId, nextFocusableId]);
+  }, [removeFromStack, id, close, setForegroundId, nextFocusableId]);
 
   return { onClose, onMaximize, onMinimize };
 };

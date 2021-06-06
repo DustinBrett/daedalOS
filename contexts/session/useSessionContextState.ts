@@ -14,8 +14,9 @@ type WindowStates = {
 
 export type SessionContextState = {
   foregroundId: string;
+  prependToStack: (id: string) => void;
+  removeFromStack: (id: string) => void;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
-  setStackOrder: React.Dispatch<React.SetStateAction<string[]>>;
   setThemeName: React.Dispatch<React.SetStateAction<string>>;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
@@ -39,6 +40,21 @@ const useSessionContextState = (): SessionContextState => {
     (showMenu?: boolean) =>
       setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState),
     [setStartMenuVisible]
+  );
+  const prependToStack = useCallback(
+    (id: string) =>
+      setStackOrder((currentStackOrder) => [
+        id,
+        ...currentStackOrder.filter((stackId) => stackId !== id)
+      ]),
+    []
+  );
+  const removeFromStack = useCallback(
+    (id: string) =>
+      setStackOrder((currentStackOrder) =>
+        currentStackOrder.filter((stackId) => stackId !== id)
+      ),
+    []
   );
 
   useEffect(() => {
@@ -72,8 +88,9 @@ const useSessionContextState = (): SessionContextState => {
 
   return {
     foregroundId,
+    prependToStack,
+    removeFromStack,
     setForegroundId,
-    setStackOrder,
     setThemeName,
     setWindowStates,
     stackOrder,

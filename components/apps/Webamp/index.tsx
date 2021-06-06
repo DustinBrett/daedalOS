@@ -22,7 +22,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
     } = {}
   } = useProcesses();
   const { loadWebamp, webampCI } = useWebamp(id);
-  const { foregroundId, setForegroundId, setStackOrder, stackOrder } =
+  const { foregroundId, prependToStack, setForegroundId, stackOrder } =
     useSession();
   const windowTransitions = useWindowTransitions(id, containerRef);
   const zIndex = useMemo(
@@ -63,10 +63,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
       ref={containerRef}
       tabIndex={-1}
       onFocus={() => {
-        setStackOrder((currentStackOrder) => [
-          id,
-          ...currentStackOrder.filter((stackId) => stackId !== id)
-        ]);
+        prependToStack(id);
         setForegroundId(id);
       }}
       onBlur={({ relatedTarget }) => {

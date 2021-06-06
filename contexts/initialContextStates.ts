@@ -27,8 +27,9 @@ export const initialProcessContextState: ProcessContextState = {
 
 export const initialSessionContextState: SessionContextState = {
   foregroundId: '',
+  prependToStack: () => undefined,
+  removeFromStack: () => undefined,
   setForegroundId: () => undefined,
-  setStackOrder: () => undefined,
   setThemeName: () => undefined,
   setWindowStates: () => undefined,
   stackOrder: [],
