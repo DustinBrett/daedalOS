@@ -38,7 +38,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
     <StyledTaskbarEntry foreground={isForeground} title={title}>
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
-          <Icon src={icon} alt={title} size={16} />
+          <Icon src={icon} alt={title} imgSize={16} />
           <figcaption>{title}</figcaption>
         </figure>
       </Button>

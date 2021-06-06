@@ -47,7 +47,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
             src={icon}
             alt={title}
             onClick={useDoubleClick(onClose)}
-            size={16}
+            imgSize={16}
           />
           <figcaption>{title}</figcaption>
         </figure>

@@ -2,6 +2,7 @@ import RenameBox from 'components/system/Files/FileEntry/RenameBox';
 import useContextMenu from 'components/system/Files/FileEntry/useContextMenu';
 import useFile from 'components/system/Files/FileEntry/useFile';
 import useFileInfo from 'components/system/Files/FileEntry/useFileInfo';
+import { FileEntryIconSize } from 'components/system/Files/Views';
 import useDoubleClick from 'components/system/useDoubleClick';
 import { useMenu } from 'contexts/menu';
 import { useCallback, useState } from 'react';
@@ -13,13 +14,15 @@ type FileEntryProps = {
   name: string;
   path: string;
   renameFile: (path: string, name?: string) => void;
+  view: string;
 };
 
 const FileEntry = ({
   deleteFile,
   name,
   path,
-  renameFile
+  renameFile,
+  view
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
   const [renaming, setRenaming] = useState(false);
@@ -35,7 +38,7 @@ const FileEntry = ({
       onContextMenu={contextMenu(menu)}
     >
       <figure>
-        <Icon src={icon} alt={name} size={48} />
+        <Icon src={icon} alt={name} {...FileEntryIconSize[view]} />
         {renaming ? (
           <RenameBox
             name={name}

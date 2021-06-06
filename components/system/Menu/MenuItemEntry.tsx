@@ -23,7 +23,7 @@ const MenuItemEntry = ({
           resetMenu();
         }}
       >
-        {icon && <Icon src={icon} alt={label} size={16} />}
+        {icon && <Icon src={icon} alt={label} imgSize={16} />}
         <figcaption className={primary ? 'primary' : ''}>{label}</figcaption>
       </figure>
     )}

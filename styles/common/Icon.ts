@@ -10,18 +10,23 @@ const onLoad: React.ReactEventHandler<HTMLImageElement> = ({ target }) => {
   if (img.src.startsWith('blob:')) cleanUpBufferUrl(img.src);
 };
 
-type IconProps = { size: number };
+export type IconProps = {
+  imgSize: number;
+  displaySize?: number;
+};
 
-const Icon = styled.img.attrs<IconProps>(({ size, src = '' }) => ({
-  draggable: false,
-  height: `${size}px`,
-  onLoad,
-  src:
-    !src || src.startsWith('blob:')
-      ? src
-      : `${dirname(src)}/${size}x${size}/${basename(src)}`,
-  width: `${size}px`
-}))<IconProps>`
+const Icon = styled.img.attrs<IconProps>(
+  ({ imgSize, displaySize, src = '' }) => ({
+    draggable: false,
+    height: `${displaySize || imgSize}px`,
+    onLoad,
+    src:
+      !src || src.startsWith('blob:')
+        ? src
+        : `${dirname(src)}/${imgSize}x${imgSize}/${basename(src)}`,
+    width: `${displaySize || imgSize}px`
+  })
+)<IconProps>`
   visibility: hidden;
 `;
 

@@ -1,4 +1,4 @@
-import StyledRenameBox from 'components/system/Files/FileEntry/StyledRenameBox';
+import StyledRenameBox from 'components/system/Files/Views/StyledRenameBox';
 import { useCallback, useEffect, useRef } from 'react';
 
 type RenameBoxProps = {
