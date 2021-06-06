@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Modules
-        run: npm install
+        run: yarn install
       - name: Run Build
-        run: npm run build
+        run: yarn run build
       - name: Run Tests
-        run: npm test
+        run: yarn test
