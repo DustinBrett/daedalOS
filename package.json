@@ -33,6 +33,9 @@
     "*.{js,ts,tsx}": "eslint --fix",
     "*.ts": "stylelint --fix"
   },
+  "resolutions": {
+    "styled-components": "^5"
+  },
   "dependencies": {
     "browserfs": "github:jvilk/BrowserFS",
     "fflate": "^0.7.0",
