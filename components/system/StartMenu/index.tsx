@@ -1,3 +1,4 @@
+import FileManager from 'components/system/Files/FileManager';
 import StyledStartMenu from 'components/system/StartMenu/StyledStartMenu';
 import { useSession } from 'contexts/session';
 import { useCallback, useEffect, useRef } from 'react';
@@ -23,7 +24,9 @@ const StartMenu = (): JSX.Element => {
   useEffect(() => menuRef.current?.focus(), []);
 
   return (
-    <StyledStartMenu onBlur={maybeCloseMenu} tabIndex={-1} ref={menuRef} />
+    <StyledStartMenu onBlur={maybeCloseMenu} tabIndex={-1} ref={menuRef}>
+      <FileManager url="/start" view="list" />
+    </StyledStartMenu>
   );
 };
 
