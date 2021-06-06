@@ -27,6 +27,7 @@ const processDirectory: Processes = {
     Component: dynamic(() => import('components/apps/Webamp')),
     hasWindow: false,
     icon: '/icons/webamp.png',
+    singleton: true,
     title: 'Webamp'
   }
 };
