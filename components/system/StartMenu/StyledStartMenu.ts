@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 const StyledStartMenu = styled.nav`
-  backdrop-filter: blur(10px);
-  background-color: hsla(0, 0%, 12.5%, 70%);
+  backdrop-filter: blur(12px);
+  background-color: hsla(0, 0%, 12%, 70%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
-  height: 390px;
+  height: 350px;
   left: 0;
   position: absolute;
   width: 320px;
