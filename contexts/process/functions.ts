@@ -1,9 +1,9 @@
+import processDirectory from 'contexts/process/directory';
 import type {
   Process,
   ProcessElements,
   Processes
-} from 'contexts/process/directory';
-import processDirectory from 'contexts/process/directory';
+} from 'contexts/process/types';
 import { PROCESS_DELIMITER } from 'utils/constants';
 
 export const setProcessSettings =

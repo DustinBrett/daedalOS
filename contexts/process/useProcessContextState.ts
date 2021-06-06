@@ -1,4 +1,3 @@
-import type { ProcessElements, Processes } from 'contexts/process/directory';
 import {
   closeProcess,
   maximizeProcess,
@@ -7,6 +6,7 @@ import {
   setProcessElement,
   setTitle
 } from 'contexts/process/functions';
+import type { ProcessElements, Processes } from 'contexts/process/types';
 import { useCallback, useState } from 'react';
 
 export type ProcessContextState = {
