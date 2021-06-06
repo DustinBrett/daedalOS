@@ -6,6 +6,7 @@
     "stylelint-config-prettier"
   ],
   "rules": {
+    "declaration-bang-space-before": null,
     "max-nesting-depth": null,
     "selector-no-qualifying-type": null
   }
