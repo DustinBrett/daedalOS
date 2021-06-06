@@ -16,8 +16,10 @@ const active = {
 };
 
 const initial = {
+  height: 'inherit',
   opacity: 0,
-  scale: 0.95
+  scale: 0.95,
+  width: 'inherit'
 };
 
 const baseMaximize = {
