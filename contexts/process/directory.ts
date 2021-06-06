@@ -1,27 +1,5 @@
-import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
+import type { Processes } from 'contexts/process/types';
 import dynamic from 'next/dynamic';
-
-export type ProcessElements = {
-  taskbarEntry?: HTMLElement;
-};
-
-export type Process = ProcessElements & {
-  autoSizing?: boolean;
-  backgroundColor?: string;
-  closing?: boolean;
-  Component: React.ComponentType<ComponentProcessProps>;
-  hasWindow?: boolean;
-  icon: string;
-  lockAspectRatio?: boolean;
-  maximized?: boolean;
-  minimized?: boolean;
-  title: string;
-  url?: string;
-};
-
-export type Processes = {
-  [id: string]: Process;
-};
 
 const processDirectory: Processes = {
   FileExplorer: {
