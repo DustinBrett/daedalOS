@@ -8,14 +8,16 @@ const StartMenu = (): JSX.Element => {
   const menuRef = useRef<HTMLElement | null>(null);
   const maybeCloseMenu = useCallback(
     ({ relatedTarget }) => {
-      if (
-        ![relatedTarget, relatedTarget?.parentElement].includes(
-          menuRef.current?.nextSibling
-        )
-      ) {
-        toggleStartMenu(false);
-      } else {
-        menuRef.current?.focus();
+      if (!menuRef.current?.contains(relatedTarget)) {
+        if (
+          ![relatedTarget, relatedTarget?.parentElement].includes(
+            menuRef.current?.nextSibling
+          )
+        ) {
+          toggleStartMenu(false);
+        } else {
+          menuRef.current?.focus();
+        }
       }
     },
     [toggleStartMenu]

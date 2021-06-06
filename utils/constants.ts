@@ -13,6 +13,8 @@ export const DEFAULT_WINDOW_SIZE: Size = {
   width: '250px'
 };
 
+export const DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS = 500;
+
 export const IMAGE_FILE_EXTENSIONS = [
   '.apng',
   '.avif',
