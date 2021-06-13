@@ -24,46 +24,41 @@ const useFileDrop = (
   updateFiles: (appendFile?: string) => void
 ): FileDrop => {
   const { fs } = useFileSystem();
-  const onDrop = useCallback(
-    (event: React.DragEvent<HTMLElement>) => {
-      haltDragEvent(event);
+  const onDrop = (event: React.DragEvent<HTMLElement>) => {
+    haltDragEvent(event);
 
-      if (event?.dataTransfer?.files.length) {
-        const files = [...event?.dataTransfer?.files];
-        const writeUniqueName = (
-          path: string,
-          fileBuffer: Buffer,
-          iteration = 0
-        ): void => {
-          const writePath = !iteration
-            ? path
-            : iterateFileName(path, iteration);
+    if (event?.dataTransfer?.files.length) {
+      const files = [...event?.dataTransfer?.files];
+      const writeUniqueName = (
+        path: string,
+        fileBuffer: Buffer,
+        iteration = 0
+      ): void => {
+        const writePath = !iteration ? path : iterateFileName(path, iteration);
 
-          fs?.writeFile(writePath, fileBuffer, { flag: 'wx' }, (error) => {
-            if (error?.code === 'EEXIST') {
-              writeUniqueName(path, fileBuffer, iteration + 1);
-            } else if (!error) {
-              updateFiles(writePath);
-            }
-          });
+        fs?.writeFile(writePath, fileBuffer, { flag: 'wx' }, (error) => {
+          if (error?.code === 'EEXIST') {
+            writeUniqueName(path, fileBuffer, iteration + 1);
+          } else if (!error) {
+            updateFiles(writePath);
+          }
+        });
+      };
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onload = ({ target }) => {
+          writeUniqueName(
+            `${directory}/${file.name}`,
+            Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
+          );
         };
 
-        files.forEach((file) => {
-          const reader = new FileReader();
-
-          reader.onload = ({ target }) => {
-            writeUniqueName(
-              `${directory}/${file.name}`,
-              Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
-            );
-          };
-
-          reader.readAsArrayBuffer(file);
-        });
-      }
-    },
-    [directory, fs, updateFiles]
-  );
+        reader.readAsArrayBuffer(file);
+      });
+    }
+  };
 
   return {
     onDragOver: haltDragEvent,
