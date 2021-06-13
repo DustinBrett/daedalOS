@@ -80,8 +80,6 @@ const useWebamp = (id: string): Webamp => {
           }
         }));
 
-        removeFromStack(id);
-
         if (options.initialTracks) {
           const [{ url: objectUrl }] = options.initialTracks;
 
