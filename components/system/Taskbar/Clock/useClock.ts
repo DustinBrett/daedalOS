@@ -1,11 +1,20 @@
-import useSyncedClock from 'components/system/Taskbar/Clock/useSyncedClock';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { MILLISECONDS_IN_SECOND } from 'utils/constants';
 
 const useClock = (): Date => {
   const [now, setNow] = useState(new Date());
-  const updateClock = useCallback(() => setNow(new Date()), []);
+  const updateClock = () => setNow(new Date());
 
-  useSyncedClock(updateClock);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    timeoutId = setTimeout(() => {
+      updateClock();
+      timeoutId = setInterval(updateClock, MILLISECONDS_IN_SECOND);
+    }, MILLISECONDS_IN_SECOND - new Date().getMilliseconds());
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return now;
 };
