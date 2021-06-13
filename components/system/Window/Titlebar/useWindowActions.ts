@@ -5,9 +5,9 @@ import { useSession } from 'contexts/session';
 import { useCallback } from 'react';
 
 type WindowActions = {
-  onClose: React.MouseEventHandler;
-  onMaximize: React.MouseEventHandler;
-  onMinimize: React.MouseEventHandler;
+  onClose: () => void;
+  onMaximize: () => void;
+  onMinimize: () => void;
 };
 
 const useWindowActions = (id: string): WindowActions => {
