@@ -39,6 +39,8 @@ export const IMAGE_FILE_EXTENSIONS = [
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
+export const MOUNTABLE_EXTENSIONS = ['.iso', '.zip'];
+
 export const PROCESS_DELIMITER = '__';
 
 export const SHORTCUT_EXTENSION = '.url';

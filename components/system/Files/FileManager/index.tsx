@@ -6,13 +6,12 @@ import { FileManagerViews } from 'components/system/Files/Views';
 import { useFileSystem } from 'contexts/fileSystem';
 import { basename, extname, resolve } from 'path';
 import { useEffect } from 'react';
+import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from 'utils/constants';
 
 type FileManagerProps = {
   url: string;
   view: FileManagerViewNames;
 };
-
-const MOUNTABLE_EXTENSIONS = ['.iso', '.zip'];
 
 const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { deleteFile, files, renameFile, updateFiles } = useFiles(url);
@@ -35,7 +34,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
         <StyledFileEntry key={file}>
           <FileEntry
             deleteFile={deleteFile}
-            name={basename(file, extname(file))}
+            name={basename(file, SHORTCUT_EXTENSION)}
             path={resolve(url, file)}
             renameFile={renameFile}
             view={view}
