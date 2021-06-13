@@ -1,4 +1,5 @@
 import StyledRenameBox from 'components/system/Files/Views/StyledRenameBox';
+import { extname } from 'path';
 import { useEffect, useRef } from 'react';
 
 type RenameBoxProps = {
@@ -13,8 +14,8 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
 
   useEffect(() => {
     inputRef?.current?.focus();
-    inputRef?.current?.select();
-  }, []);
+    inputRef?.current?.setSelectionRange(0, name.length - extname(name).length);
+  }, [name]);
 
   return (
     <StyledRenameBox
