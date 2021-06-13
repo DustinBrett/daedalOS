@@ -1,5 +1,5 @@
 import StyledRenameBox from 'components/system/Files/Views/StyledRenameBox';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 type RenameBoxProps = {
   name: string;
@@ -9,10 +9,7 @@ type RenameBoxProps = {
 
 const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const saveRename = useCallback(
-    () => renameFile(path, inputRef?.current?.value),
-    [path, renameFile]
-  );
+  const saveRename = () => renameFile(path, inputRef?.current?.value);
 
   useEffect(() => {
     inputRef?.current?.focus();
