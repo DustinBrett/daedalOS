@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 export type MenuItem = {
   action?: () => void;
@@ -22,15 +22,13 @@ export type MenuContextState = {
 
 const useMenuContextState = (): MenuContextState => {
   const [menu, setMenu] = useState<MenuState>({});
-  const contextMenu = useCallback(
+  const contextMenu =
     (items: MenuItem[]): React.MouseEventHandler =>
-      (event) => {
-        event.preventDefault();
-        const { pageX: x, pageY: y } = event;
-        setMenu({ items, x, y });
-      },
-    []
-  );
+    (event) => {
+      event.preventDefault();
+      const { pageX: x, pageY: y } = event;
+      setMenu({ items, x, y });
+    };
 
   return { contextMenu, menu, setMenu };
 };
