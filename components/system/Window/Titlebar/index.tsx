@@ -9,7 +9,6 @@ import {
 } from 'components/system/Window/Titlebar/WindowActionIcons';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useMemo } from 'react';
 import Button from 'styles/common/Button';
 import Icon from 'styles/common/Icon';
 
@@ -30,12 +29,9 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
     }
   } = useProcesses();
   const { foregroundId } = useSession();
-  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
+  const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const isMaximizable = useMemo(
-    () => autoSizing && !lockAspectRatio,
-    [autoSizing, lockAspectRatio]
-  );
+  const isMaximizable = autoSizing && !lockAspectRatio;
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
