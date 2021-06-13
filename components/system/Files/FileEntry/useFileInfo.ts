@@ -6,7 +6,7 @@ import { useFileSystem } from 'contexts/fileSystem';
 import ini from 'ini';
 import { extname } from 'path';
 import { useEffect, useState } from 'react';
-import { IMAGE_FILE_EXTENSIONS } from 'utils/constants';
+import { IMAGE_FILE_EXTENSIONS, SHORTCUT_EXTENSION } from 'utils/constants';
 import { bufferToUrl } from 'utils/functions';
 
 type FileInfo = {
@@ -45,7 +45,7 @@ const useFileInfo = (path: string): FileInfo => {
             url: path
           });
 
-        if (extension === '.url') {
+        if (extension === SHORTCUT_EXTENSION) {
           fs.readFile(path, (error, contents = Buffer.from('')) => {
             if (error) {
               getInfoByFileExtension();

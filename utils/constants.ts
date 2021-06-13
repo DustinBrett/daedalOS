@@ -41,4 +41,6 @@ export const MILLISECONDS_IN_SECOND = 1000;
 
 export const PROCESS_DELIMITER = '__';
 
+export const SHORTCUT_EXTENSION = '.url';
+
 export const WINDOW_TRANSITION_DURATION_IN_MILLISECONDS = 250;
