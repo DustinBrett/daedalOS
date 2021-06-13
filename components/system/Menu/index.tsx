@@ -1,11 +1,11 @@
 import MenuItemEntry from 'components/system/Menu/MenuItemEntry';
 import StyledMenu from 'components/system/Menu/StyledMenu';
 import { useMenu } from 'contexts/menu/index';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 const Menu = (): JSX.Element => {
   const { menu: { items, x = 0, y = 0 } = {}, setMenu } = useMenu();
-  const resetMenu = useCallback(() => setMenu({}), [setMenu]);
+  const resetMenu = () => setMenu({});
   const menuRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
