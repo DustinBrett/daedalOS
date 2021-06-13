@@ -10,7 +10,7 @@ import type { V86, V86Starter } from 'components/apps/V86/types';
 import useTitle from 'components/system/Window/useTitle';
 import { useFileSystem } from 'contexts/fileSystem';
 import { extname } from 'path';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from 'utils/functions';
 
 const useV86 = (
@@ -20,7 +20,6 @@ const useV86 = (
 ): V86 => {
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<V86Starter | null>(null);
-  const lockMouse = useCallback(() => emulator?.lock_mouse?.(), [emulator]);
   const { fs } = useFileSystem();
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const useV86 = (
 
   return {
     emulator,
-    lockMouse
+    lockMouse: emulator?.lock_mouse
   };
 };
 

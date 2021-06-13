@@ -19,7 +19,7 @@ export type V86Starter = {
 
 export type V86 = {
   emulator: V86Starter | null;
-  lockMouse: () => void;
+  lockMouse?: () => void;
 };
 
 type V86Config = typeof v86Config &
