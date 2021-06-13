@@ -1,6 +1,5 @@
 import { useFileSystem } from 'contexts/fileSystem';
 import { basename, dirname, extname } from 'path';
-import { useCallback } from 'react';
 
 const haltDragEvent = (event: React.DragEvent<HTMLElement>): void => {
   event.preventDefault();
