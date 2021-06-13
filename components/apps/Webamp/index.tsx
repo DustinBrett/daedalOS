@@ -6,6 +6,7 @@ import useWindowTransitions from 'components/system/Window/useWindowTransitions'
 import { useFileSystem } from 'contexts/fileSystem';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
+import { basename } from 'path';
 import { useEffect, useRef } from 'react';
 import { loadFiles } from 'utils/functions';
 
@@ -31,7 +32,9 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
           '/libs/webamp/butterchurn.min.js',
           '/libs/webamp/butterchurnPresets.min.js',
           '/libs/webamp/webamp.bundle.min.js'
-        ]).then(() => loadWebamp(containerRef?.current, contents));
+        ]).then(() =>
+          loadWebamp(containerRef?.current, basename(url), contents)
+        );
       });
     }
   }, [containerRef, fs, loadWebamp, url]);

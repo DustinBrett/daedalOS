@@ -6,12 +6,17 @@ import {
 import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
 import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
 import { useSession } from 'contexts/session';
+import { parseBuffer } from 'music-metadata-browser';
 import { useState } from 'react';
 import { useTheme } from 'styled-components';
 import { bufferToUrl, cleanUpBufferUrl } from 'utils/functions';
 
 type Webamp = {
-  loadWebamp: (containerElement: HTMLDivElement | null, file?: Buffer) => void;
+  loadWebamp: (
+    containerElement: HTMLDivElement | null,
+    fileName: string,
+    file?: Buffer
+  ) => void;
   webampCI: WebampCI | null;
 };
 
@@ -28,10 +33,11 @@ const useWebamp = (id: string): Webamp => {
     }
   } = useTheme();
   const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
-  const loadWebamp = (
+  const loadWebamp = async (
     containerElement: HTMLDivElement | null,
+    fileName: string,
     file?: Buffer
-  ): void => {
+  ): Promise<void> => {
     if (containerElement && window.Webamp && !webampCI) {
       const options: WebampOptions = {
         __butterchurnOptions: {
@@ -52,12 +58,12 @@ const useWebamp = (id: string): Webamp => {
       };
 
       if (file) {
+        const { common: { artist = '', title = fileName } = {} } =
+          (await parseBuffer(file)) || {};
+
         options.initialTracks = [
           {
-            metaData: {
-              artist: '',
-              title: ''
-            },
+            metaData: { artist, title },
             url: bufferToUrl(file)
           }
         ];
