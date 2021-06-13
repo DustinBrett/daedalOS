@@ -2,7 +2,7 @@ import StyledTaskbarEntry from 'components/system/Taskbar/TaskbarEntry/StyledTas
 import useNextFocusable from 'components/system/Window/useNextFocusable';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import Button from 'styles/common/Button';
 import Icon from 'styles/common/Icon';
 
@@ -15,7 +15,7 @@ type TaskbarEntryProps = {
 const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   const nextFocusableId = useNextFocusable(id);
   const { foregroundId, setForegroundId } = useSession();
-  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
+  const isForeground = id === foregroundId;
   const {
     linkElement,
     minimize,
@@ -26,13 +26,13 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       taskbarEntry && linkElement(id, 'taskbarEntry', taskbarEntry),
     [id, linkElement]
   );
-  const onClick = useCallback(() => {
+  const onClick = () => {
     if (minimized || isForeground) {
       minimize(id);
     }
 
     setForegroundId(isForeground ? nextFocusableId : id);
-  }, [id, isForeground, minimize, minimized, nextFocusableId, setForegroundId]);
+  };
 
   return (
     <StyledTaskbarEntry foreground={isForeground} title={title}>
