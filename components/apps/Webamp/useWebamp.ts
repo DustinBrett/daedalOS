@@ -18,7 +18,6 @@ type Webamp = {
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
   const {
-    removeFromStack,
     setWindowStates,
     stackOrder,
     windowStates: { [id]: { position = undefined } = {} } = {}
