@@ -1,6 +1,6 @@
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
 type Focusable = {
   onBlur: (event: React.FocusEvent<HTMLElement>) => void;
@@ -18,17 +18,12 @@ const useFocusable = (
   const {
     processes: { [id]: { minimized = false, taskbarEntry = undefined } = {} }
   } = useProcesses();
-  const zIndex = useMemo(
-    () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
-    [id, minimized, stackOrder]
-  );
-  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
-  const onBlur = useCallback(
-    ({ relatedTarget }) => {
-      if (isForeground && relatedTarget !== taskbarEntry) setForegroundId('');
-    },
-    [isForeground, setForegroundId, taskbarEntry]
-  );
+  const zIndex =
+    stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
+  const isForeground = id === foregroundId;
+  const onBlur: React.FocusEventHandler = ({ relatedTarget }) => {
+    if (isForeground && relatedTarget !== taskbarEntry) setForegroundId('');
+  };
   const moveToFront = useCallback(
     ({ relatedTarget } = {}) => {
       if (windowRef.current?.contains(document.activeElement)) {
@@ -45,7 +40,7 @@ const useFocusable = (
     if (isForeground) moveToFront();
   }, [isForeground, moveToFront]);
 
-  useEffect(moveToFront, [moveToFront]);
+  useEffect(() => setForegroundId(id), [id, setForegroundId]);
 
   return {
     onBlur,
