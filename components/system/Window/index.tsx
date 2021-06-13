@@ -6,7 +6,7 @@ import useFocusable from 'components/system/Window/useFocusable';
 import useWindowTransitions from 'components/system/Window/useWindowTransitions';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 type WindowProps = ComponentProcessProps & {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
     processes: { [id]: { backgroundColor = '' } = {} }
   } = useProcesses();
   const { foregroundId } = useSession();
-  const isForeground = useMemo(() => id === foregroundId, [foregroundId, id]);
+  const isForeground = id === foregroundId;
   const windowRef = useRef<HTMLElement | null>(null);
   const { zIndex, ...focusableProps } = useFocusable(id, windowRef);
   const windowTransitions = useWindowTransitions(id, windowRef);
