@@ -1,8 +1,4 @@
-import {
-  focusWindow,
-  setZIndex,
-  unFocus
-} from 'components/apps/Webamp/functions';
+import { focusWindow, unFocus } from 'components/apps/Webamp/functions';
 import StyledWebamp from 'components/apps/Webamp/StyledWebamp';
 import useWebamp from 'components/apps/Webamp/useWebamp';
 import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
@@ -10,7 +6,7 @@ import useWindowTransitions from 'components/system/Window/useWindowTransitions'
 import { useFileSystem } from 'contexts/fileSystem';
 import { useProcesses } from 'contexts/process';
 import { useSession } from 'contexts/session';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { loadFiles } from 'utils/functions';
 
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
@@ -25,10 +21,8 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const { foregroundId, prependToStack, setForegroundId, stackOrder } =
     useSession();
   const windowTransitions = useWindowTransitions(id, containerRef);
-  const zIndex = useMemo(
-    () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
-    [id, minimized, stackOrder]
-  );
+  const zIndex =
+    stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
 
   useEffect(() => {
     if (fs) {
@@ -45,23 +39,21 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   useEffect(() => containerRef?.current?.focus(), []);
 
   useEffect(() => {
-    if (webampCI) {
-      if (
-        foregroundId === id &&
-        !containerRef?.current?.contains(document.activeElement)
-      ) {
-        focusWindow(webampCI, 'main');
-        containerRef?.current?.focus();
-      }
-
-      setZIndex(webampCI, zIndex);
+    if (
+      webampCI &&
+      foregroundId === id &&
+      !containerRef?.current?.contains(document.activeElement)
+    ) {
+      focusWindow(webampCI, 'main');
+      containerRef?.current?.focus();
     }
-  }, [foregroundId, id, stackOrder, webampCI, zIndex]);
+  }, [foregroundId, id, webampCI]);
 
   return (
     <StyledWebamp
       ref={containerRef}
       tabIndex={-1}
+      style={{ zIndex }}
       onFocus={() => {
         prependToStack(id);
         setForegroundId(id);
