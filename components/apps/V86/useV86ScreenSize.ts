@@ -4,8 +4,7 @@ import type {
   V86Starter
 } from 'components/apps/V86/types';
 import useWindowSize from 'components/system/Window/useWindowSize';
-import type { CSSProperties } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from 'styled-components';
 import { pxToNum } from 'utils/functions';
 
@@ -16,7 +15,7 @@ const SET_SCREEN_TXT = 'screen-set-size-text';
 const useV86ScreenSize = (
   id: string,
   emulator: V86Starter | null
-): CSSProperties => {
+): React.CSSProperties => {
   const {
     sizes: {
       window: { lineHeight }
@@ -25,26 +24,17 @@ const useV86ScreenSize = (
   const { updateWindowSize } = useWindowSize(id);
   const [isGraphical, setIsGraphical] = useState(false);
 
-  const setScreenMode = useCallback<ModeCallback>(
-    (isGfxMode) => setIsGraphical(isGfxMode),
-    []
-  );
-
-  const setScreenGfx = useCallback<SizeCallback>(
-    ([width, height]) => updateWindowSize(height, width),
-    [updateWindowSize]
-  );
-
-  const setScreenText = useCallback<SizeCallback>(
-    ([cols, rows]) =>
+  useEffect(() => {
+    const setScreenMode: ModeCallback = (isGfxMode) =>
+      setIsGraphical(isGfxMode);
+    const setScreenGfx: SizeCallback = ([width, height]) =>
+      updateWindowSize(height, width);
+    const setScreenText: SizeCallback = ([cols, rows]) =>
       updateWindowSize(
         rows * pxToNum(lineHeight) + 3, // Why + 3?
         (cols / 2 + 4) * pxToNum(lineHeight) // Why + 4?
-      ),
-    [lineHeight, updateWindowSize]
-  );
+      );
 
-  useEffect(() => {
     emulator?.add_listener?.(SET_SCREEN_MODE, setScreenMode);
     emulator?.add_listener?.(SET_SCREEN_GFX, setScreenGfx);
     emulator?.add_listener?.(SET_SCREEN_TXT, setScreenText);
@@ -54,7 +44,7 @@ const useV86ScreenSize = (
       emulator?.remove_listener?.(SET_SCREEN_GFX, setScreenGfx);
       emulator?.remove_listener?.(SET_SCREEN_TXT, setScreenText);
     };
-  }, [emulator, setScreenGfx, setScreenMode, setScreenText]);
+  }, [emulator, lineHeight, updateWindowSize]);
 
   return {
     font: `${lineHeight} monospace`,
