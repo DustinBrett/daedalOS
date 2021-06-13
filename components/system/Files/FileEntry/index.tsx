@@ -5,7 +5,7 @@ import useFileInfo from 'components/system/Files/FileEntry/useFileInfo';
 import { FileEntryIconSize } from 'components/system/Files/Views';
 import useDoubleClick from 'components/system/useDoubleClick';
 import { useMenu } from 'contexts/menu';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import Button from 'styles/common/Button';
 import Icon from 'styles/common/Icon';
 
@@ -28,10 +28,10 @@ const FileEntry = ({
   const [renaming, setRenaming] = useState(false);
   const { contextMenu } = useMenu();
   const openFile = useFile(url, pid);
-  const deleteEntry = useCallback(() => deleteFile(path), [deleteFile, path]);
-  const renameEntry = useCallback(() => setRenaming(true), [setRenaming]);
+  const deleteEntry = () => deleteFile(path);
+  const renameEntry = () => setRenaming(true);
   const menu = useContextMenu(url, pid, deleteEntry, renameEntry);
-  const singleClick = useMemo(() => view === 'list', [view]);
+  const singleClick = view === 'list';
 
   return (
     <Button
