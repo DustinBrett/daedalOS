@@ -1,3 +1,4 @@
+import useWindowPeak from 'components/system/Taskbar/TaskbarEntry/Peak/useWindowPeak';
 import StyledTaskbarEntry from 'components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry';
 import useNextFocusable from 'components/system/Window/useNextFocusable';
 import { useProcesses } from 'contexts/process';
@@ -33,9 +34,11 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
 
     setForegroundId(isForeground ? nextFocusableId : id);
   };
+  const { PeakComponent, peakEvents } = useWindowPeak(id);
 
   return (
-    <StyledTaskbarEntry foreground={isForeground} title={title}>
+    <StyledTaskbarEntry foreground={isForeground} title={title} {...peakEvents}>
+      {PeakComponent && <PeakComponent />}
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
           <Icon src={icon} alt={title} imgSize={16} />

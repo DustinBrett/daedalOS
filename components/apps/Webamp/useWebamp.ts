@@ -5,6 +5,8 @@ import {
 } from 'components/apps/Webamp/functions';
 import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
 import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
+import { useProcesses } from 'contexts/process';
+import type { Process } from 'contexts/process/types';
 import { useSession } from 'contexts/session';
 import { parseBuffer } from 'music-metadata-browser';
 import { useState } from 'react';
@@ -32,6 +34,11 @@ const useWebamp = (id: string): Webamp => {
       taskbar: { height: taskbarHeight }
     }
   } = useTheme();
+  const {
+    linkElement,
+    processes: { [id]: windowProcess = {} }
+  } = useProcesses();
+  const { componentWindow } = windowProcess as Process;
   const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
   const loadWebamp = async (
     containerElement: HTMLDivElement | null,
@@ -70,6 +77,16 @@ const useWebamp = (id: string): Webamp => {
       }
 
       const webamp: WebampCI = new window.Webamp(options);
+      const setupElements = () => {
+        const webampElement = getWebampElement();
+        const [main] = webampElement.getElementsByClassName('window');
+
+        if (!componentWindow && main && Object.keys(windowProcess).length) {
+          linkElement(id, 'componentWindow', main as HTMLElement);
+        }
+
+        containerElement.appendChild(webampElement);
+      };
 
       webamp.onWillClose(() => {
         const [main] = getWebampElement().getElementsByClassName('window');
@@ -93,7 +110,7 @@ const useWebamp = (id: string): Webamp => {
       webamp.renderWhenReady(containerElement).then(() => {
         closeEqualizer(webamp);
         updateWebampPosition(webamp, taskbarHeight, position);
-        containerElement.appendChild(getWebampElement());
+        setupElements();
       });
 
       setWebampCI(webamp);
