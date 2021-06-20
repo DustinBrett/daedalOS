@@ -30,7 +30,6 @@ export const IMAGE_FILE_EXTENSIONS = [
   '.pjp',
   '.pjpeg',
   '.png',
-  '.svg',
   '.tif',
   '.tiff',
   '.webp',
