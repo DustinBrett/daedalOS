@@ -13,7 +13,6 @@ import useTitle from 'components/system/Window/useTitle';
 import useWindowSize from 'components/system/Window/useWindowSize';
 import { useFileSystem } from 'contexts/fileSystem';
 import { useProcesses } from 'contexts/process';
-import { extname } from 'path';
 import { useEffect, useState } from 'react';
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from 'utils/functions';
 
@@ -40,10 +39,7 @@ const useJSDOS = (
     if (!dos && fs && url) {
       fs.readFile(url, (_error, contents = Buffer.from('')) =>
         loadFiles(libs).then(async () => {
-          const isZip = extname(url).toLowerCase() === '.zip';
-          const objectURL = bufferToUrl(
-            isZip ? await addJsDosConfig(contents, fs) : contents
-          );
+          const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
 
           if (screenRef?.current) {
             window.emulators.pathPrefix = pathPrefix;
