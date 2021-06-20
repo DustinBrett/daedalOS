@@ -1,6 +1,6 @@
 import { useFileSystem } from 'contexts/fileSystem';
 import { basename } from 'path';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SHORTCUT_EXTENSION } from 'utils/constants';
 
 type Files = {
@@ -13,12 +13,15 @@ type Files = {
 const useFiles = (directory: string): Files => {
   const [files, setFiles] = useState<string[]>([]);
   const { fs } = useFileSystem();
-  const updateFiles = (appendFile = '') =>
-    fs?.readdir(directory, (_error, contents = []) =>
-      setFiles((currentFiles) =>
-        appendFile ? [...currentFiles, basename(appendFile)] : contents
-      )
-    );
+  const updateFiles = useCallback(
+    (appendFile = '') =>
+      fs?.readdir(directory, (_error, contents = []) =>
+        setFiles((currentFiles) =>
+          appendFile ? [...currentFiles, basename(appendFile)] : contents
+        )
+      ),
+    [directory, fs]
+  );
   const deleteFile = (path: string) =>
     fs?.unlink(path, () =>
       setFiles((currentFiles) =>
