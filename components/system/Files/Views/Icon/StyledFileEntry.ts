@@ -40,7 +40,7 @@ const StyledFileEntry = styled.li`
         line-height: 15px;
         margin: 1px 0;
         overflow: hidden;
-        padding: 2px;
+        padding: 2px 1px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }
