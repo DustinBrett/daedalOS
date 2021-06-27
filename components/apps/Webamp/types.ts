@@ -1,14 +1,12 @@
 import type { Position } from 'react-rnd';
 
 type WebampDispatchOptionalProps = {
-  absolute?: boolean;
   positions?: {
     main: Position;
     playlist: Position;
   };
   windowId?: string;
   window?: string;
-  zIndex?: number;
 };
 
 type WebampDispatch = WebampDispatchOptionalProps & {
