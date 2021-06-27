@@ -1,32 +1,42 @@
-export const getIconByFileExtension = (extension: string): string => {
-  switch (extension) {
-    case '.img':
-    case '.iso':
-      return '/icons/image.png';
-    case '.jsdos':
-    case '.zip':
-      return '/icons/compressed.png';
-    case '.mp3':
-    case '.wsz':
-      return '/icons/music.png';
-    default:
-      return '/icons/unknown.png';
+type Extensions = {
+  [extension: string]: {
+    icon: string;
+    process: string[];
+  };
+};
+
+export const extensions: Extensions = {
+  '.img': {
+    icon: 'image',
+    process: ['V86']
+  },
+  '.iso': {
+    icon: 'image',
+    process: ['FileExplorer', 'V86']
+  },
+  '.jsdos': {
+    icon: 'compressed',
+    process: ['JSDOS']
+  },
+  '.mp3': {
+    icon: 'music',
+    process: ['Webamp']
+  },
+  '.wsz': {
+    icon: 'music',
+    process: ['Webamp']
+  },
+  '.zip': {
+    icon: 'compressed',
+    process: ['FileExplorer', 'JSDOS']
   }
 };
 
+export const getIconByFileExtension = (extension: string): string =>
+  `/icons/${extensions[extension]?.icon || 'unknown'}.png`;
+
 export const getProcessByFileExtension = (extension: string): string => {
-  switch (extension) {
-    case '.img':
-      return 'V86';
-    case '.iso':
-    case '.zip':
-      return 'FileExplorer';
-    case '.jsdos':
-      return 'JSDOS';
-    case '.mp3':
-    case '.wsz':
-      return 'Webamp';
-    default:
-      return '';
-  }
+  const [defaultProcess = ''] = extensions[extension]?.process || [];
+
+  return defaultProcess;
 };
