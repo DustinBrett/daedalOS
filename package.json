@@ -75,6 +75,7 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-sonarjs": "^0.8.0-125",
     "eslint-plugin-testing-library": "^4.6.0",
     "husky": "^6.0.0",
     "jest": "^27.0.4",
