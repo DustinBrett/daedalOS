@@ -46,22 +46,7 @@ const useWebamp = (id: string): Webamp => {
     file?: Buffer
   ): Promise<void> => {
     if (containerElement && window.Webamp && !webampCI) {
-      const options: WebampOptions = {
-        __butterchurnOptions: {
-          importButterchurn: () => Promise.resolve(window.butterchurn),
-          getPresets: () => {
-            const presets = window.butterchurnPresets.getPresets();
-
-            return Object.keys(presets).map((name) => {
-              return {
-                name,
-                butterchurnPresetObject: presets[name]
-              };
-            });
-          },
-          butterchurnOpen: true
-        }
-      };
+      const options: WebampOptions = {};
 
       if (file) {
         const { common: { artist = '', title = fileName } = {} } =

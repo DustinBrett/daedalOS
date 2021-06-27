@@ -23,14 +23,13 @@ export const updateWebampPosition = (
 ): void => {
   const { height, width } = BASE_WINDOW_SIZE;
   const { x, y } =
-    position || centerPosition({ height: height * 3, width }, taskbarHeight);
+    position || centerPosition({ height: height * 2, width }, taskbarHeight);
 
   webamp.store.dispatch({
     type: 'UPDATE_WINDOW_POSITIONS',
     positions: {
       main: { x, y },
-      playlist: { x, y: height + y },
-      milkdrop: { x, y: height * 2 + y }
+      playlist: { x, y: height + y }
     }
   });
 };

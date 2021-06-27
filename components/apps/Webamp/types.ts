@@ -4,7 +4,6 @@ type WebampDispatchOptionalProps = {
   absolute?: boolean;
   positions?: {
     main: Position;
-    milkdrop: Position;
     playlist: Position;
   };
   windowId?: string;
@@ -36,7 +35,6 @@ type Track = {
 };
 
 export type WebampOptions = {
-  __butterchurnOptions: unknown;
   initialSkin?: {
     url: string;
   };
@@ -50,10 +48,6 @@ interface WebampConstructor {
 
 declare global {
   interface Window {
-    butterchurn: unknown;
-    butterchurnPresets: {
-      getPresets: () => { [preset: string]: unknown };
-    };
     Webamp: WebampConstructor;
   }
 }

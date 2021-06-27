@@ -32,11 +32,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   useEffect(() => {
     if (fs) {
       fs?.readFile(url, (_error, contents) => {
-        loadFiles([
-          '/libs/webamp/butterchurn.min.js',
-          '/libs/webamp/butterchurnPresets.min.js',
-          '/libs/webamp/webamp.bundle.min.js'
-        ]).then(() =>
+        loadFiles(['/libs/webamp/webamp.bundle.min.js']).then(() =>
           loadWebamp(containerRef?.current, basename(url), contents)
         );
       });
