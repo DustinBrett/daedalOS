@@ -44,7 +44,7 @@ const useFiles = (directory: string): Files => {
     }
   };
 
-  useEffect(updateFiles, [directory, fs]);
+  useEffect(updateFiles, [directory, fs, updateFiles]);
 
   return {
     deleteFile,
