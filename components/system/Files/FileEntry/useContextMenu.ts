@@ -1,16 +1,21 @@
 import { extensions } from 'components/system/Files/FileEntry/functions';
 import useFile from 'components/system/Files/FileEntry/useFile';
 import type { MenuItem } from 'contexts/menu/useMenuContextState';
+import { useProcesses } from 'contexts/process';
 import processDirectory from 'contexts/process/directory';
-import { extname } from 'path';
+import { dirname, extname } from 'path';
+import { SHORTCUT_EXTENSION } from 'utils/constants';
 
 const useContextMenu = (
   url: string,
   pid: string,
+  path: string,
   deleteFile: () => void,
   renameFile: () => void
 ): MenuItem[] => {
+  const { open } = useProcesses();
   const { process: [, ...openWith] = [] } = extensions[extname(url)] || {};
+  const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
   const menuItems: MenuItem[] = [
@@ -19,12 +24,15 @@ const useContextMenu = (
   ];
 
   if (pid) {
+    const isShortcut =
+      extname(path) === SHORTCUT_EXTENSION && url && url !== '/';
+
     menuItems.unshift({ separator: 1 });
 
-    if (openWith.length) {
+    if (openWithFiltered.length) {
       menuItems.unshift({
         label: 'Open with',
-        menu: openWith.map((id): MenuItem => {
+        menu: openWithFiltered.map((id): MenuItem => {
           const { icon, title: label } = processDirectory[id] || {};
           const action = () => openFile(id);
 
@@ -33,8 +41,15 @@ const useContextMenu = (
       });
     }
 
+    if (isShortcut) {
+      menuItems.unshift({
+        label: 'Open file location',
+        action: () => open('FileExplorer', dirname(url))
+      });
+    }
+
     menuItems.unshift({
-      icon: pidIcon,
+      icon: isShortcut || extname(url) ? pidIcon : undefined,
       label: 'Open',
       primary: true,
       action: () => openFile(pid)

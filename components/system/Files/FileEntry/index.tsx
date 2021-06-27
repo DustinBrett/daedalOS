@@ -30,7 +30,7 @@ const FileEntry = ({
   const openFile = useFile(url);
   const deleteEntry = () => deleteFile(path);
   const renameEntry = () => setRenaming(true);
-  const menu = useContextMenu(url, pid, deleteEntry, renameEntry);
+  const menu = useContextMenu(url, pid, path, deleteEntry, renameEntry);
   const singleClick = view === 'list';
 
   return (
