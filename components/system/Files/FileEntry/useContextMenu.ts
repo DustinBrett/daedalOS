@@ -1,6 +1,8 @@
+import { extensions } from 'components/system/Files/FileEntry/functions';
 import useFile from 'components/system/Files/FileEntry/useFile';
 import type { MenuItem } from 'contexts/menu/useMenuContextState';
 import processDirectory from 'contexts/process/directory';
+import { extname } from 'path';
 
 const useContextMenu = (
   url: string,
@@ -8,6 +10,7 @@ const useContextMenu = (
   deleteFile: () => void,
   renameFile: () => void
 ): MenuItem[] => {
+  const { process: [, ...openWith] = [] } = extensions[extname(url)] || {};
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
   const menuItems: MenuItem[] = [
@@ -16,15 +19,26 @@ const useContextMenu = (
   ];
 
   if (pid) {
-    menuItems.unshift(
-      {
-        icon: pidIcon,
-        label: 'Open',
-        primary: true,
-        action: () => openFile(pid)
-      },
-      { separator: 1 }
-    );
+    menuItems.unshift({ separator: 1 });
+
+    if (openWith.length) {
+      menuItems.unshift({
+        label: 'Open with',
+        menu: openWith.map((id): MenuItem => {
+          const { icon, title: label } = processDirectory[id] || {};
+          const action = () => openFile(id);
+
+          return { icon, label, action };
+        })
+      });
+    }
+
+    menuItems.unshift({
+      icon: pidIcon,
+      label: 'Open',
+      primary: true,
+      action: () => openFile(pid)
+    });
   }
 
   return menuItems;
