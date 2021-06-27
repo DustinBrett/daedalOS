@@ -37,7 +37,6 @@ export type WebampOptions = {
     url: string;
   };
   initialTracks?: Track[];
-  zIndex?: number;
 };
 
 interface WebampConstructor {
