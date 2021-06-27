@@ -5,34 +5,45 @@ type StyledTaskbarEntryProps = {
 };
 
 const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
-  background-color: ${({ foreground, theme }) =>
-    foreground ? theme.colors.taskbar.active : ''};
-  border-bottom: ${({ theme }) => `
-    ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
-  `};
+  border-bottom: ${({ theme }) =>
+    `${theme.sizes.taskbar.entry.borderSize} solid transparent`};
   display: flex;
-  margin: ${({ foreground }) => (foreground ? '' : '0 4px')};
   min-width: 0;
-  padding: ${({ foreground }) => (foreground ? '0 4px' : '')};
-  transition: all 0.075s;
-  width: ${({ foreground, theme }) =>
-    foreground
-      ? theme.sizes.taskbar.entry.maxWidth
-      : `calc(${theme.sizes.taskbar.entry.maxWidth} - 8px)`};
+  width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
+
+  &::before {
+    background-color: ${({ foreground, theme }) =>
+      foreground ? theme.colors.taskbar.active : ''};
+    border-bottom: ${({ theme }) => `
+        ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
+      `};
+    content: '';
+    height: 100%;
+    margin: ${({ foreground }) => (foreground ? '' : '0 4px')};
+    position: absolute;
+    transition: all 0.075s;
+    width: ${({ foreground, theme }) =>
+      foreground
+        ? theme.sizes.taskbar.entry.maxWidth
+        : `calc(${theme.sizes.taskbar.entry.maxWidth} - 8px)`};
+    z-index: -1;
+  }
 
   &:hover {
-    background-color: ${({ foreground, theme }) =>
-      foreground
-        ? theme.colors.taskbar.activeHover
-        : theme.colors.taskbar.hover};
-    margin: 0;
-    padding: 0 4px;
-    width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
+    &::before {
+      background-color: ${({ foreground, theme }) =>
+        foreground
+          ? theme.colors.taskbar.activeHover
+          : theme.colors.taskbar.hover};
+      margin: 0;
+      width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
+    }
   }
 
   figure {
     align-items: center;
     display: flex;
+    margin-left: 4px;
     padding: 4px;
 
     figcaption {
