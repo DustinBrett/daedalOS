@@ -1,98 +1,15 @@
 import 'styled-components';
 
-export type WallpaperEffect = (el: HTMLElement | null) => void;
+import type colors from 'styles/defaultTheme/colors';
+import type formats from 'styles/defaultTheme/formats';
+import type sizes from 'styles/defaultTheme/sizes';
+import type wallpaper from 'styles/defaultTheme/wallpaper';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
-    colors: {
-      background: string;
-      fileEntry: {
-        background: string;
-        backgroundFocused: string;
-        backgroundFocusedHover: string;
-        border: string;
-        borderFocused: string;
-        borderFocusedHover: string;
-        text: string;
-        textShadow: string;
-      };
-      highlight: string;
-      startButton: string;
-      taskbar: {
-        active: string;
-        activeHover: string;
-        background: string;
-        hover: string;
-      };
-      text: string;
-      titleBar: {
-        background: string;
-        backgroundHover: string;
-        backgroundInactive: string;
-        buttonInactive: string;
-        closeHover: string;
-        text: string;
-        textInactive: string;
-      };
-      window: {
-        background: string;
-        outline: string;
-        outlineInactive: string;
-        shadow: string;
-        shadowInactive: string;
-      };
-    };
-    formats: {
-      date: Intl.DateTimeFormatOptions;
-      time: Intl.DateTimeFormatOptions;
-    };
-    sizes: {
-      clock: {
-        fontSize: string;
-        width: string;
-      };
-      contextMenu: {
-        subMenuOffset: number;
-      };
-      fileEntry: {
-        fontSize: string;
-        iconSize: string;
-      };
-      fileManager: {
-        gridEntryHeight: string;
-        gridEntryWidth: string;
-        padding: string;
-        rowGap: string;
-      };
-      startButton: {
-        iconSize: string;
-        width: string;
-      };
-      taskbar: {
-        blur: string;
-        entry: {
-          borderSize: string;
-          fontSize: string;
-          icon: {
-            size: string;
-          };
-          maxWidth: string;
-        };
-        height: string;
-      };
-      titleBar: {
-        buttonIconWidth: string;
-        buttonWidth: string;
-        fontSize: string;
-        height: string;
-        iconMargin: string;
-        iconSize: string;
-      };
-      window: {
-        lineHeight: string;
-        outline: string;
-      };
-    };
-    wallpaper?: WallpaperEffect;
+    colors: typeof colors;
+    formats: typeof formats;
+    sizes: typeof sizes;
+    wallpaper?: typeof wallpaper;
   }
 }
