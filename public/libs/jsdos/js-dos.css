@@ -150,6 +150,7 @@
 }
 
 .emulator-button {
+    position: absolute;
     background-color: rgba(128, 128, 128, 0.5);
     background-size: 50%;
     background-repeat: no-repeat;
