@@ -7,6 +7,7 @@ export const getIconByFileExtension = (extension: string): string => {
     case '.zip':
       return '/icons/compressed.png';
     case '.mp3':
+    case '.wsz':
       return '/icons/music.png';
     default:
       return '/icons/unknown.png';
@@ -23,6 +24,7 @@ export const getProcessByFileExtension = (extension: string): string => {
     case '.jsdos':
       return 'JSDOS';
     case '.mp3':
+    case '.wsz':
       return 'Webamp';
     default:
       return '';

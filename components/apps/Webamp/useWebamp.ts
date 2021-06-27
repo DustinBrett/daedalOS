@@ -1,4 +1,6 @@
 import {
+  BASE_WEBAMP_OPTIONS,
+  cleanBufferOnSkinLoad,
   closeEqualizer,
   getWebampElement,
   parseTrack,
@@ -9,10 +11,11 @@ import useWindowActions from 'components/system/Window/Titlebar/useWindowActions
 import { useProcesses } from 'contexts/process';
 import type { Process } from 'contexts/process/types';
 import { useSession } from 'contexts/session';
-import { basename } from 'path';
+import { basename, extname } from 'path';
 import { useState } from 'react';
 import { useTheme } from 'styled-components';
 import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from 'utils/constants';
+import { bufferToUrl } from 'utils/functions';
 
 type Webamp = {
   loadWebamp: (
@@ -47,7 +50,10 @@ const useWebamp = (id: string): Webamp => {
   ): void => {
     if (containerElement && window.Webamp && !webampCI) {
       const runWebamp = (options?: WebampOptions) => {
-        const webamp: WebampCI = new window.Webamp(options);
+        const webamp: WebampCI = new window.Webamp({
+          ...BASE_WEBAMP_OPTIONS,
+          ...options
+        });
         const setupElements = () => {
           const webampElement = getWebampElement();
           const [main] = webampElement.getElementsByClassName('window');
@@ -81,6 +87,10 @@ const useWebamp = (id: string): Webamp => {
           webamp.onMinimize(() => onMinimize())
         ];
 
+        if (options?.initialSkin?.url) {
+          cleanBufferOnSkinLoad(webamp, options.initialSkin.url);
+        }
+
         webamp.renderWhenReady(containerElement).then(() => {
           closeEqualizer(webamp);
           updateWebampPosition(webamp, taskbarHeight, position);
@@ -91,9 +101,13 @@ const useWebamp = (id: string): Webamp => {
       };
 
       if (file) {
-        parseTrack(file, basename(url)).then((track) =>
-          runWebamp({ initialTracks: [track] })
-        );
+        if (extname(url) === '.mp3') {
+          parseTrack(file, basename(url)).then((track) =>
+            runWebamp({ initialTracks: [track] })
+          );
+        } else {
+          runWebamp({ initialSkin: { url: bufferToUrl(file) } });
+        }
       } else {
         runWebamp();
       }
