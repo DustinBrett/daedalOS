@@ -5,7 +5,7 @@ export type VantaWavesConfig = {
   touchControls?: boolean;
   waveHeight: number;
   waveSpeed: number;
-  zoom: number;
+  zoom?: number;
 };
 
 type VantaWavesSettings = VantaWavesConfig & {
