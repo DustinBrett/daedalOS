@@ -3,6 +3,9 @@ const sizes = {
     fontSize: '12px',
     width: '76px'
   },
+  contextMenu: {
+    subMenuOffset: 3
+  },
   fileEntry: {
     fontSize: '12px',
     iconSize: '48px'

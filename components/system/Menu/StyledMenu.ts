@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 type StyledMenuProps = {
+  isSubMenu: boolean;
   x: number;
   y: number;
 };
@@ -17,6 +18,7 @@ const StyledMenu = styled.nav<StyledMenuProps>`
   position: absolute;
   transform: ${({ x, y }) => `translate(${x}px, ${y}px);`};
   width: fit-content;
+  z-index: ${({ isSubMenu }) => isSubMenu && 1};
 
   ol {
     hr {
@@ -29,7 +31,8 @@ const StyledMenu = styled.nav<StyledMenuProps>`
       display: flex;
       padding: 3px 0;
 
-      &:hover {
+      &:hover,
+      &.active {
         background-color: rgb(65, 65, 65);
       }
 
@@ -38,6 +41,7 @@ const StyledMenu = styled.nav<StyledMenuProps>`
         margin-right: 64px;
         position: relative;
         top: -1px;
+        width: max-content;
 
         &.primary {
           font-weight: 600;
@@ -46,6 +50,15 @@ const StyledMenu = styled.nav<StyledMenuProps>`
 
       img {
         margin: 0 -24px 0 8px;
+      }
+
+      svg {
+        fill: #fff;
+        height: 13px;
+        margin-top: 1px;
+        position: absolute;
+        right: 8px;
+        width: 13px;
       }
     }
   }

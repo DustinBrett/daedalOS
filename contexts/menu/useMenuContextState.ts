@@ -4,11 +4,12 @@ export type MenuItem = {
   action?: () => void;
   icon?: string;
   label?: string;
+  menu?: MenuItem[];
   primary?: boolean;
   separator?: number;
 };
 
-type MenuState = {
+export type MenuState = {
   items?: MenuItem[];
   x?: number;
   y?: number;
