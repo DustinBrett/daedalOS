@@ -5,8 +5,6 @@ type StyledTaskbarEntryProps = {
 };
 
 const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
-  border-bottom: ${({ theme }) =>
-    `${theme.sizes.taskbar.entry.borderSize} solid transparent`};
   display: flex;
   min-width: 0;
   place-content: center;
@@ -19,15 +17,12 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
     border-bottom: ${({ theme }) => `
         ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
       `};
+    bottom: 0;
     content: '';
-    height: 100%;
+    height: ${({ foreground }) => (foreground ? '100%' : 0)};
     margin: ${({ foreground }) => (foreground ? '' : '0 4px')};
     position: absolute;
-    transition: all 0.075s;
-    width: ${({ foreground, theme }) =>
-      foreground
-        ? theme.sizes.taskbar.entry.maxWidth
-        : `calc(${theme.sizes.taskbar.entry.maxWidth} - 8px)`};
+    transition: ${({ foreground }) => (foreground ? 'all 0.2s' : 'width 0.1s')};
     width: ${({ foreground }) => (foreground ? '100%' : `calc(100% - 8px)`)};
     z-index: -1;
   }
@@ -38,6 +33,7 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
         foreground
           ? theme.colors.taskbar.activeHover
           : theme.colors.taskbar.hover};
+      height: 100%;
       margin: 0;
       width: 100%;
     }
@@ -46,6 +42,7 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
   figure {
     align-items: center;
     display: flex;
+    margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
     margin-left: 4px;
     padding: 4px;
 
@@ -53,7 +50,6 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
       letter-spacing: -0.1px;
-      margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
       margin-left: 5px;
       overflow-x: hidden;
       text-overflow: ellipsis;
