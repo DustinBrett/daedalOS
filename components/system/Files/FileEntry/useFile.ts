@@ -7,7 +7,8 @@ type UseFile = (pid: string) => void;
 const useFile = (url: string): UseFile => {
   const { setForegroundId } = useSession();
   const { minimize, open, processes } = useProcesses();
-  const openFile = (pid: string) => {
+
+  return (pid: string) => {
     const id = createPid(pid, url);
 
     if (processes[id]) {
@@ -17,8 +18,6 @@ const useFile = (url: string): UseFile => {
       open(pid, url);
     }
   };
-
-  return openFile;
 };
 
 export default useFile;

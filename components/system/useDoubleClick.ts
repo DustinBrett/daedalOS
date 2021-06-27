@@ -13,7 +13,8 @@ const useDoubleClick: DoubleClick = (
   timeout = DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS
 ) => {
   const timer = useRef<NodeJS.Timeout | null>(null);
-  const onClick: React.MouseEventHandler = (event) => {
+
+  return (event) => {
     const runHandler = () => {
       event.stopPropagation();
       handler(event);
@@ -31,8 +32,6 @@ const useDoubleClick: DoubleClick = (
       timer.current = null;
     }
   };
-
-  return onClick;
 };
 
 export default useDoubleClick;
