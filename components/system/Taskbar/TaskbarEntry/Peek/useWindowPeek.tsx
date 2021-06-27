@@ -1,11 +1,11 @@
-import StyledPeekWindow from 'components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow';
-import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
-import { CloseIcon } from 'components/system/Window/Titlebar/WindowActionIcons';
-import { useProcesses } from 'contexts/process';
-import { toPng } from 'html-to-image';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Button from 'styles/common/Button';
-import { MILLISECONDS_IN_SECOND } from 'utils/constants';
+import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
+import { useProcesses } from "contexts/process";
+import { toPng } from "html-to-image";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Button from "styles/common/Button";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 type WindowPeek = {
   PeekComponent?: React.ComponentType;
@@ -18,13 +18,13 @@ type WindowPeek = {
 const useWindowPeek = (id: string): WindowPeek => {
   const {
     processes: {
-      [id]: { componentWindow = undefined, minimized = false, title = '' } = {}
-    }
+      [id]: { componentWindow = undefined, minimized = false, title = "" } = {},
+    },
   } = useProcesses();
   const mouseTimer = useRef<NodeJS.Timer | null>(null);
   const previewTimer = useRef<NodeJS.Timer | null>(null);
   const [showPeek, setShowPeek] = useState(false);
-  const [previewSrc, setPreviewSrc] = useState('');
+  const [previewSrc, setPreviewSrc] = useState("");
   const { onClose } = useWindowActions(id);
   const PeekWindow = (): JSX.Element => (
     <StyledPeekWindow>
@@ -56,13 +56,13 @@ const useWindowPeek = (id: string): WindowPeek => {
     if (previewTimer?.current) clearInterval(previewTimer.current);
 
     setShowPeek(false);
-    setPreviewSrc('');
+    setPreviewSrc("");
   }, []);
 
   useEffect(() => {
     if (minimized) {
       setShowPeek(false);
-      setPreviewSrc('');
+      setPreviewSrc("");
     }
   }, [minimized]);
 
@@ -74,8 +74,8 @@ const useWindowPeek = (id: string): WindowPeek => {
       ? {}
       : {
           onMouseEnter,
-          onMouseLeave
-        }
+          onMouseLeave,
+        },
   };
 };
 

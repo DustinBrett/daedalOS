@@ -1,49 +1,49 @@
 const sizes = {
   clock: {
-    fontSize: '12px',
-    width: '76px'
+    fontSize: "12px",
+    width: "76px",
   },
   contextMenu: {
-    subMenuOffset: 3
+    subMenuOffset: 3,
   },
   fileEntry: {
-    fontSize: '12px',
-    iconSize: '48px'
+    fontSize: "12px",
+    iconSize: "48px",
   },
   fileManager: {
-    gridEntryHeight: '70px',
-    gridEntryWidth: '74px',
-    padding: '5px 0',
-    rowGap: '28px'
+    gridEntryHeight: "70px",
+    gridEntryWidth: "74px",
+    padding: "5px 0",
+    rowGap: "28px",
   },
   startButton: {
-    iconSize: '19px',
-    width: '36px'
+    iconSize: "19px",
+    width: "36px",
   },
   taskbar: {
-    blur: '5px',
+    blur: "5px",
     entry: {
-      borderSize: '2px',
-      fontSize: '12px',
+      borderSize: "2px",
+      fontSize: "12px",
       icon: {
-        size: '16px'
+        size: "16px",
       },
-      maxWidth: '160px'
+      maxWidth: "160px",
     },
-    height: '30px'
+    height: "30px",
   },
   titleBar: {
-    buttonIconWidth: '10px',
-    buttonWidth: '45px',
-    fontSize: '12px',
-    height: '30px',
-    iconMargin: '0 5px 0 8px',
-    iconSize: '16px'
+    buttonIconWidth: "10px",
+    buttonWidth: "45px",
+    fontSize: "12px",
+    height: "30px",
+    iconMargin: "0 5px 0 8px",
+    iconSize: "16px",
   },
   window: {
-    lineHeight: '14px',
-    outline: '1px'
-  }
+    lineHeight: "14px",
+    outline: "1px",
+  },
 };
 
 export default sizes;

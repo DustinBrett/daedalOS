@@ -1,16 +1,16 @@
 import type {
   ModeCallback,
   SizeCallback,
-  V86Starter
-} from 'components/apps/V86/types';
-import useWindowSize from 'components/system/Window/useWindowSize';
-import { useEffect, useState } from 'react';
-import { useTheme } from 'styled-components';
-import { pxToNum } from 'utils/functions';
+  V86Starter,
+} from "components/apps/V86/types";
+import useWindowSize from "components/system/Window/useWindowSize";
+import { useEffect, useState } from "react";
+import { useTheme } from "styled-components";
+import { pxToNum } from "utils/functions";
 
-const SET_SCREEN_MODE = 'screen-set-mode';
-const SET_SCREEN_GFX = 'screen-set-size-graphical';
-const SET_SCREEN_TXT = 'screen-set-size-text';
+const SET_SCREEN_MODE = "screen-set-mode";
+const SET_SCREEN_GFX = "screen-set-size-graphical";
+const SET_SCREEN_TXT = "screen-set-size-text";
 
 const useV86ScreenSize = (
   id: string,
@@ -18,8 +18,8 @@ const useV86ScreenSize = (
 ): React.CSSProperties => {
   const {
     sizes: {
-      window: { lineHeight }
-    }
+      window: { lineHeight },
+    },
   } = useTheme();
   const { updateWindowSize } = useWindowSize(id);
   const [isGraphical, setIsGraphical] = useState(false);
@@ -49,8 +49,8 @@ const useV86ScreenSize = (
   return {
     font: `${lineHeight} monospace`,
     lineHeight,
-    position: 'relative',
-    top: isGraphical ? '' : '2px' // Why + 2?
+    position: "relative",
+    top: isGraphical ? "" : "2px", // Why + 2?
   };
 };
 

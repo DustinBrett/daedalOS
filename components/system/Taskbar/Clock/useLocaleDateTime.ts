@@ -1,5 +1,5 @@
-import { useTheme } from 'styled-components';
-import { DEFAULT_LOCALE } from 'utils/constants';
+import { useTheme } from "styled-components";
+import { DEFAULT_LOCALE } from "utils/constants";
 
 type LocaleTimeDate = {
   date: string;
@@ -14,7 +14,7 @@ const useLocaleDateTime = (now: Date): LocaleTimeDate => {
     formats.date
   ).format(now);
   const day = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
-    weekday: 'long'
+    weekday: "long",
   }).format(now);
   const date = `${formattedDate}\n${day}`;
   const time = new Intl.DateTimeFormat(DEFAULT_LOCALE, formats.time).format(

@@ -1,21 +1,21 @@
-import FileManager from 'components/system/Files/FileManager';
-import Sidebar from 'components/system/StartMenu/Sidebar';
-import StyledStartMenu from 'components/system/StartMenu/StyledStartMenu';
-import { useSession } from 'contexts/session';
-import { useEffect, useRef } from 'react';
+import FileManager from "components/system/Files/FileManager";
+import Sidebar from "components/system/StartMenu/Sidebar";
+import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
+import { useSession } from "contexts/session";
+import { useEffect, useRef } from "react";
 
 const StartMenu = (): JSX.Element => {
   const { toggleStartMenu } = useSession();
   const menuRef = useRef<HTMLElement | null>(null);
   const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
-    relatedTarget
+    relatedTarget,
   }) => {
     if (!menuRef.current?.contains(relatedTarget as HTMLElement)) {
       if (
         menuRef.current?.nextSibling &&
         ![
           relatedTarget,
-          (relatedTarget as HTMLElement)?.parentElement
+          (relatedTarget as HTMLElement)?.parentElement,
         ].includes(menuRef.current?.nextSibling)
       ) {
         toggleStartMenu(false);

@@ -1,10 +1,10 @@
-import processDirectory from 'contexts/process/directory';
+import processDirectory from "contexts/process/directory";
 import type {
   Process,
   ProcessElements,
-  Processes
-} from 'contexts/process/types';
-import { PROCESS_DELIMITER } from 'utils/constants';
+  Processes,
+} from "contexts/process/types";
+import { PROCESS_DELIMITER } from "utils/constants";
 
 export const setProcessSettings =
   (processId: string, settings: Partial<Process>) =>
@@ -13,7 +13,7 @@ export const setProcessSettings =
 
     newProcesses[processId] = {
       ...newProcesses[processId],
-      ...settings
+      ...settings,
     };
 
     return newProcesses;
@@ -52,8 +52,8 @@ export const openProcess =
           ...currentProcesses,
           [id]: {
             ...processDirectory[processId],
-            url
-          }
+            url,
+          },
         };
   };
 
@@ -61,14 +61,14 @@ export const maximizeProcess =
   (processId: string) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, {
-      maximized: !currentProcesses[processId].maximized
+      maximized: !currentProcesses[processId].maximized,
     })(currentProcesses);
 
 export const minimizeProcess =
   (processId: string) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, {
-      minimized: !currentProcesses[processId].minimized
+      minimized: !currentProcesses[processId].minimized,
     })(currentProcesses);
 
 export const setProcessElement =

@@ -1,22 +1,22 @@
-import colorCycle from 'components/system/Desktop/wallpapers/colorCycle';
-import type { VantaWavesConfig } from 'components/system/Desktop/wallpapers/vantaWaves/types';
-import { loadFiles } from 'utils/functions';
+import colorCycle from "components/system/Desktop/wallpapers/colorCycle";
+import type { VantaWavesConfig } from "components/system/Desktop/wallpapers/vantaWaves/types";
+import { loadFiles } from "utils/functions";
 
 const disableControls = {
   mouseControls: false,
-  touchControls: false
+  touchControls: false,
 };
 
-const isWebGLAvailable = typeof WebGLRenderingContext !== 'undefined';
+const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
 
-const libs = ['/libs/vanta/three.min.js', '/libs/vanta/vanta.waves.min.js'];
+const libs = ["/libs/vanta/three.min.js", "/libs/vanta/vanta.waves.min.js"];
 
 const vantaWaves =
   (config: VantaWavesConfig) =>
   (el: HTMLElement | null): void => {
     loadFiles(libs).then(() => {
       const {
-        VANTA: { current: currentEffect, WAVES }
+        VANTA: { current: currentEffect, WAVES },
       } = window;
       currentEffect?.destroy();
 
@@ -25,7 +25,7 @@ const vantaWaves =
           ? WAVES({
               el,
               ...disableControls,
-              ...config
+              ...config,
             })
           : undefined;
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledFileEntry = styled.li`
   display: flex;
@@ -13,7 +13,7 @@ const StyledFileEntry = styled.li`
 
     &::before {
       bottom: -1px;
-      content: '';
+      content: "";
       left: -1px;
       position: absolute;
       right: -1px;

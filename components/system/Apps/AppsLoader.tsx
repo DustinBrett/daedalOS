@@ -1,6 +1,6 @@
-import RenderComponent from 'components/system/Apps/RenderComponent';
-import { ProcessConsumer } from 'contexts/process';
-import { AnimatePresence } from 'framer-motion';
+import RenderComponent from "components/system/Apps/RenderComponent";
+import { ProcessConsumer } from "contexts/process";
+import { AnimatePresence } from "framer-motion";
 
 const AppsLoader = (): JSX.Element => (
   <ProcessConsumer>

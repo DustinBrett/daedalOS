@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useTheme } from 'styled-components';
+import { useEffect } from "react";
+import { useTheme } from "styled-components";
 
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>

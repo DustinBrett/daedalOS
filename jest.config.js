@@ -1,8 +1,8 @@
 module.exports = {
-  moduleDirectories: ['.', 'node_modules'],
+  moduleDirectories: [".", "node_modules"],
   setupFilesAfterEnv: [
-    '@testing-library/jest-dom/extend-expect',
-    '<rootDir>/jest.setup.js'
+    "@testing-library/jest-dom/extend-expect",
+    "<rootDir>/jest.setup.js",
   ],
-  testEnvironment: 'jsdom'
+  testEnvironment: "jsdom",
 };

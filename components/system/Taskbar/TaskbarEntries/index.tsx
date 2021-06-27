@@ -1,6 +1,6 @@
-import StyledTaskbarEntries from 'components/system/Taskbar/TaskbarEntries/StyledTaskbarEntries';
-import TaskbarEntry from 'components/system/Taskbar/TaskbarEntry';
-import { ProcessConsumer } from 'contexts/process';
+import StyledTaskbarEntries from "components/system/Taskbar/TaskbarEntries/StyledTaskbarEntries";
+import TaskbarEntry from "components/system/Taskbar/TaskbarEntry";
+import { ProcessConsumer } from "contexts/process";
 
 const TaskbarEntries = (): JSX.Element => (
   <StyledTaskbarEntries>

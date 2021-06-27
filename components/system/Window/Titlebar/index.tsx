@@ -1,16 +1,16 @@
-import useDoubleClick from 'components/system/useDoubleClick';
-import StyledTitlebar from 'components/system/Window/Titlebar/StyledTitlebar';
-import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
+import useDoubleClick from "components/system/useDoubleClick";
+import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import {
   CloseIcon,
   MaximizedIcon,
   MaximizeIcon,
-  MinimizeIcon
-} from 'components/system/Window/Titlebar/WindowActionIcons';
-import { useProcesses } from 'contexts/process';
-import { useSession } from 'contexts/session';
-import Button from 'styles/common/Button';
-import Icon from 'styles/common/Icon';
+  MinimizeIcon,
+} from "components/system/Window/Titlebar/WindowActionIcons";
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import Button from "styles/common/Button";
+import Icon from "styles/common/Icon";
 
 type TitlebarProps = {
   id: string;
@@ -21,12 +21,12 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
     processes: {
       [id]: {
         autoSizing = false,
-        icon = '',
+        icon = "",
         lockAspectRatio = false,
-        title = '',
-        maximized = false
-      } = {}
-    }
+        title = "",
+        maximized = false,
+      } = {},
+    },
   } = useProcesses();
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;

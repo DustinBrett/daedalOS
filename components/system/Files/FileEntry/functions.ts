@@ -6,37 +6,37 @@ type Extensions = {
 };
 
 export const extensions: Extensions = {
-  '.img': {
-    icon: 'image',
-    process: ['V86']
+  ".img": {
+    icon: "image",
+    process: ["V86"],
   },
-  '.iso': {
-    icon: 'image',
-    process: ['FileExplorer', 'V86']
+  ".iso": {
+    icon: "image",
+    process: ["FileExplorer", "V86"],
   },
-  '.jsdos': {
-    icon: 'compressed',
-    process: ['JSDOS']
+  ".jsdos": {
+    icon: "compressed",
+    process: ["JSDOS"],
   },
-  '.mp3': {
-    icon: 'music',
-    process: ['Webamp']
+  ".mp3": {
+    icon: "music",
+    process: ["Webamp"],
   },
-  '.wsz': {
-    icon: 'music',
-    process: ['Webamp']
+  ".wsz": {
+    icon: "music",
+    process: ["Webamp"],
   },
-  '.zip': {
-    icon: 'compressed',
-    process: ['FileExplorer', 'JSDOS']
-  }
+  ".zip": {
+    icon: "compressed",
+    process: ["FileExplorer", "JSDOS"],
+  },
 };
 
 export const getIconByFileExtension = (extension: string): string =>
-  `/icons/${extensions[extension]?.icon || 'unknown'}.png`;
+  `/icons/${extensions[extension]?.icon || "unknown"}.png`;
 
 export const getProcessByFileExtension = (extension: string): string => {
-  const [defaultProcess = ''] = extensions[extension]?.process || [];
+  const [defaultProcess = ""] = extensions[extension]?.process || [];
 
   return defaultProcess;
 };

@@ -1,11 +1,11 @@
-import useWindowPeek from 'components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek';
-import StyledTaskbarEntry from 'components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry';
-import useNextFocusable from 'components/system/Window/useNextFocusable';
-import { useProcesses } from 'contexts/process';
-import { useSession } from 'contexts/session';
-import { useCallback } from 'react';
-import Button from 'styles/common/Button';
-import Icon from 'styles/common/Icon';
+import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
+import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
+import useNextFocusable from "components/system/Window/useNextFocusable";
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import { useCallback } from "react";
+import Button from "styles/common/Button";
+import Icon from "styles/common/Icon";
 
 type TaskbarEntryProps = {
   icon: string;
@@ -20,11 +20,11 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   const {
     linkElement,
     minimize,
-    processes: { [id]: { minimized = false } = {} }
+    processes: { [id]: { minimized = false } = {} },
   } = useProcesses();
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement) =>
-      taskbarEntry && linkElement(id, 'taskbarEntry', taskbarEntry),
+      taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
     [id, linkElement]
   );
   const onClick = () => {

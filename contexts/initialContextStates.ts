@@ -1,18 +1,18 @@
-import type { FileSystemContextState } from 'contexts/fileSystem/useFileSystemContextState';
-import type { MenuContextState } from 'contexts/menu/useMenuContextState';
-import type { ProcessContextState } from 'contexts/process/useProcessContextState';
-import type { SessionContextState } from 'contexts/session/useSessionContextState';
+import type { FileSystemContextState } from "contexts/fileSystem/useFileSystemContextState";
+import type { MenuContextState } from "contexts/menu/useMenuContextState";
+import type { ProcessContextState } from "contexts/process/useProcessContextState";
+import type { SessionContextState } from "contexts/session/useSessionContextState";
 
 export const initialFileSystemContextState: FileSystemContextState = {
   fs: null,
   mountFs: () => undefined,
-  unMountFs: () => undefined
+  unMountFs: () => undefined,
 };
 
 export const initialMenuContextState: MenuContextState = {
   contextMenu: () => () => undefined,
   menu: {},
-  setMenu: () => undefined
+  setMenu: () => undefined,
 };
 
 export const initialProcessContextState: ProcessContextState = {
@@ -22,11 +22,11 @@ export const initialProcessContextState: ProcessContextState = {
   minimize: () => undefined,
   open: () => undefined,
   processes: {},
-  title: () => undefined
+  title: () => undefined,
 };
 
 export const initialSessionContextState: SessionContextState = {
-  foregroundId: '',
+  foregroundId: "",
   prependToStack: () => undefined,
   removeFromStack: () => undefined,
   setForegroundId: () => undefined,
@@ -34,7 +34,7 @@ export const initialSessionContextState: SessionContextState = {
   setWindowStates: () => undefined,
   stackOrder: [],
   startMenuVisible: false,
-  themeName: '',
+  themeName: "",
   toggleStartMenu: () => undefined,
-  windowStates: {}
+  windowStates: {},
 };

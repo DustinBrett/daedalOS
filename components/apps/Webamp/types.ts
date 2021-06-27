@@ -1,4 +1,4 @@
-import type { Position } from 'react-rnd';
+import type { Position } from "react-rnd";
 
 type WebampDispatchOptionalProps = {
   positions?: {

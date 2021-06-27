@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 type StyledTaskbarEntryProps = {
   foreground: boolean;
@@ -13,17 +13,17 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
 
   &::before {
     background-color: ${({ foreground, theme }) =>
-      foreground ? theme.colors.taskbar.active : ''};
+      foreground ? theme.colors.taskbar.active : ""};
     border-bottom: ${({ theme }) => `
         ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
       `};
     bottom: 0;
-    content: '';
-    height: ${({ foreground }) => (foreground ? '100%' : 0)};
-    margin: ${({ foreground }) => (foreground ? '' : '0 4px')};
+    content: "";
+    height: ${({ foreground }) => (foreground ? "100%" : 0)};
+    margin: ${({ foreground }) => (foreground ? "" : "0 4px")};
     position: absolute;
-    transition: ${({ foreground }) => (foreground ? 'all 0.2s' : 'width 0.1s')};
-    width: ${({ foreground }) => (foreground ? '100%' : `calc(100% - 8px)`)};
+    transition: ${({ foreground }) => (foreground ? "all 0.2s" : "width 0.1s")};
+    width: ${({ foreground }) => (foreground ? "100%" : `calc(100% - 8px)`)};
     z-index: -1;
   }
 

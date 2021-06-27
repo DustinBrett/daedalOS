@@ -1,6 +1,6 @@
-import { useProcesses } from 'contexts/process';
-import { createPid } from 'contexts/process/functions';
-import { useSession } from 'contexts/session';
+import { useProcesses } from "contexts/process";
+import { createPid } from "contexts/process/functions";
+import { useSession } from "contexts/session";
 
 type UseFile = (pid: string) => void;
 

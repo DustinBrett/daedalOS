@@ -1,62 +1,62 @@
-import type { HandleStyles } from 'react-rnd';
+import type { HandleStyles } from "react-rnd";
 
 const rndDefaults = {
-  bounds: 'main',
-  cancel: '.cancel',
-  dragHandleClassName: 'handle',
+  bounds: "main",
+  cancel: ".cancel",
+  dragHandleClassName: "handle",
   enableUserSelectHack: false,
-  minHeight: '30px',
-  minWidth: '167px',
+  minHeight: "30px",
+  minWidth: "167px",
   resizeHandleStyles: {
     bottom: {
-      bottom: '-3px',
-      cursor: 'ns-resize',
-      height: '6px'
+      bottom: "-3px",
+      cursor: "ns-resize",
+      height: "6px",
     },
     bottomLeft: {
-      bottom: '-3px',
-      cursor: 'nesw-resize',
-      height: '12px',
-      left: '-3px',
-      width: '12px'
+      bottom: "-3px",
+      cursor: "nesw-resize",
+      height: "12px",
+      left: "-3px",
+      width: "12px",
     },
     bottomRight: {
-      bottom: '-3px',
-      cursor: 'nwse-resize',
-      height: '12px',
-      right: '-3px',
-      width: '12px'
+      bottom: "-3px",
+      cursor: "nwse-resize",
+      height: "12px",
+      right: "-3px",
+      width: "12px",
     },
     left: {
-      cursor: 'ew-resize',
-      left: '-3px',
-      width: '6px'
+      cursor: "ew-resize",
+      left: "-3px",
+      width: "6px",
     },
     right: {
-      cursor: 'ew-resize',
-      right: '-3px',
-      width: '6px'
+      cursor: "ew-resize",
+      right: "-3px",
+      width: "6px",
     },
     top: {
-      cursor: 'ns-resize',
-      height: '6px',
-      top: '-3px'
+      cursor: "ns-resize",
+      height: "6px",
+      top: "-3px",
     },
     topLeft: {
-      cursor: 'nwse-resize',
-      height: '12px',
-      left: '-3px',
-      top: '-3px',
-      width: '12px'
+      cursor: "nwse-resize",
+      height: "12px",
+      left: "-3px",
+      top: "-3px",
+      width: "12px",
     },
     topRight: {
-      cursor: 'nesw-resize',
-      height: '12px',
-      right: '-3px',
-      top: '-3px',
-      width: '12px'
-    }
-  } as HandleStyles
+      cursor: "nesw-resize",
+      height: "12px",
+      right: "-3px",
+      top: "-3px",
+      width: "12px",
+    },
+  } as HandleStyles,
 };
 
 export default rndDefaults;

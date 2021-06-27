@@ -1,8 +1,8 @@
-import MenuItemEntry from 'components/system/Menu/MenuItemEntry';
-import StyledMenu from 'components/system/Menu/StyledMenu';
-import { useMenu } from 'contexts/menu/index';
-import type { MenuState } from 'contexts/menu/useMenuContextState';
-import { useEffect, useRef } from 'react';
+import MenuItemEntry from "components/system/Menu/MenuItemEntry";
+import StyledMenu from "components/system/Menu/StyledMenu";
+import { useMenu } from "contexts/menu/index";
+import type { MenuState } from "contexts/menu/useMenuContextState";
+import { useEffect, useRef } from "react";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -13,7 +13,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   const { items, x = 0, y = 0 } = subMenu || baseMenu;
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = ({
-    relatedTarget
+    relatedTarget,
   }: Partial<FocusEvent | MouseEvent> = {}) => {
     if (!menuRef.current?.contains(relatedTarget as HTMLElement)) {
       setMenu({});

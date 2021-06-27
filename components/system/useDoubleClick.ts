@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS } from 'utils/constants';
+import { useRef } from "react";
+import { DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS } from "utils/constants";
 
 type DoubleClick = (
   handler: React.MouseEventHandler,

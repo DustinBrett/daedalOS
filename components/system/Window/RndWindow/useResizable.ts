@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import type { Props } from 'react-rnd';
-import { DEFAULT_WINDOW_SIZE } from 'utils/constants';
+import { useEffect, useState } from "react";
+import type { Props } from "react-rnd";
+import { DEFAULT_WINDOW_SIZE } from "utils/constants";
 
-export type Size = NonNullable<Props['size']>;
+export type Size = NonNullable<Props["size"]>;
 
 type Resizable = [Size, React.Dispatch<React.SetStateAction<Size>>];
 

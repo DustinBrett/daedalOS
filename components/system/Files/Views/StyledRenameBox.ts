@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledRenameBox = styled.input.attrs({
   spellCheck: false,
-  type: 'text'
+  type: "text",
 })`
   border: 1px solid rgb(100, 100, 100);
   font-family: inherit;

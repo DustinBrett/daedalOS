@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import type { config as v86Config } from 'components/apps/V86/config';
-import type { V86ImageConfig } from 'components/apps/V86/image';
+import type { config as v86Config } from "components/apps/V86/config";
+import type { V86ImageConfig } from "components/apps/V86/image";
 
 export type ModeCallback = (isGraphical: boolean) => void;
 export type SizeCallback = (dimensions: number[]) => void;

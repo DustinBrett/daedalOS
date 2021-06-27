@@ -2,10 +2,10 @@ import {
   AllApps,
   Documents,
   Power,
-  SideMenu
-} from 'components/system/StartMenu/Sidebar/SidebarIcons';
-import StyledSidebar from 'components/system/StartMenu/Sidebar/StyledSidebar';
-import StyledSidebarButton from 'components/system/StartMenu/Sidebar/StyledSidebarButton';
+  SideMenu,
+} from "components/system/StartMenu/Sidebar/SidebarIcons";
+import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
+import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 
 type SidebarButtonProps = {
   active?: boolean;
@@ -14,13 +14,13 @@ type SidebarButtonProps = {
 };
 
 const topButtons = [
-  { name: 'START', icon: <SideMenu /> },
-  { name: 'All apps', icon: <AllApps />, active: true }
+  { name: "START", icon: <SideMenu /> },
+  { name: "All apps", icon: <AllApps />, active: true },
 ];
 
 const bottomButtons = [
-  { name: 'Documents', icon: <Documents /> },
-  { name: 'Power', icon: <Power /> }
+  { name: "Documents", icon: <Documents /> },
+  { name: "Power", icon: <Power /> },
 ];
 
 const SidebarButton = ({ active, icon, name }: SidebarButtonProps) => (

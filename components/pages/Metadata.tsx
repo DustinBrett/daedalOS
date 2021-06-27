@@ -1,5 +1,5 @@
-import Head from 'next/head';
-import packageJson from 'package.json';
+import Head from "next/head";
+import packageJson from "package.json";
 
 const { description, name } = packageJson;
 

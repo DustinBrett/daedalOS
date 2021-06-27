@@ -1,7 +1,7 @@
-import { basename, dirname } from 'path';
-import { memo, useEffect } from 'react';
-import styled from 'styled-components';
-import { cleanUpBufferUrl } from 'utils/functions';
+import { basename, dirname } from "path";
+import { memo, useEffect } from "react";
+import styled from "styled-components";
+import { cleanUpBufferUrl } from "utils/functions";
 
 export type IconProps = {
   displaySize?: number;
@@ -9,18 +9,18 @@ export type IconProps = {
 };
 
 const onLoad: React.ReactEventHandler = ({ target }) =>
-  (target as HTMLImageElement).style.setProperty('visibility', 'visible');
+  (target as HTMLImageElement).style.setProperty("visibility", "visible");
 
 const StyledIcon = styled.img.attrs<IconProps>(
-  ({ imgSize, displaySize, src = '' }) => ({
+  ({ imgSize, displaySize, src = "" }) => ({
     draggable: false,
     height: `${displaySize || imgSize}px`,
     onLoad,
     src:
-      !src || src.startsWith('blob:')
+      !src || src.startsWith("blob:")
         ? src
         : `${dirname(src)}/${imgSize}x${imgSize}/${basename(src)}`,
-    width: `${displaySize || imgSize}px`
+    width: `${displaySize || imgSize}px`,
   })
 )<IconProps>`
   visibility: hidden;
@@ -31,7 +31,7 @@ const Icon = (
 ): JSX.Element => {
   useEffect(
     () => () => {
-      if (props?.src?.startsWith('blob:')) cleanUpBufferUrl(props?.src);
+      if (props?.src?.startsWith("blob:")) cleanUpBufferUrl(props?.src);
     },
     [props]
   );

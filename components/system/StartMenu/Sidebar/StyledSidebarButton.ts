@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 type StyledSidebarButtonProps = {
   active?: boolean;
@@ -14,8 +14,8 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
 
   &::before {
     border-left: ${({ active, theme }) =>
-      `4px solid ${active ? theme.colors.highlight : 'transparent'}`};
-    content: '';
+      `4px solid ${active ? theme.colors.highlight : "transparent"}`};
+    content: "";
     height: 48px;
     position: absolute;
     width: 48px;

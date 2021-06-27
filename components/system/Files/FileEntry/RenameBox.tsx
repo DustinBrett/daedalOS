@@ -1,6 +1,6 @@
-import StyledRenameBox from 'components/system/Files/Views/StyledRenameBox';
-import { extname } from 'path';
-import { useEffect, useRef } from 'react';
+import StyledRenameBox from "components/system/Files/Views/StyledRenameBox";
+import { extname } from "path";
+import { useEffect, useRef } from "react";
 
 type RenameBoxProps = {
   name: string;
@@ -21,7 +21,7 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
     <StyledRenameBox
       defaultValue={name}
       onBlur={saveRename}
-      onKeyDown={({ key }) => key === 'Enter' && saveRename()}
+      onKeyDown={({ key }) => key === "Enter" && saveRename()}
       ref={inputRef}
     />
   );

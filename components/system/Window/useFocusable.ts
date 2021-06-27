@@ -1,6 +1,6 @@
-import { useProcesses } from 'contexts/process';
-import { useSession } from 'contexts/session';
-import { useCallback, useEffect } from 'react';
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import { useCallback, useEffect } from "react";
 
 type Events = {
   onBlur: (event: React.FocusEvent<HTMLElement>) => void;
@@ -21,8 +21,8 @@ const useFocusable = (
     useSession();
   const {
     processes: {
-      [id]: { minimized = false, taskbarEntry = undefined, url = '' } = {}
-    }
+      [id]: { minimized = false, taskbarEntry = undefined, url = "" } = {},
+    },
   } = useProcesses();
   const zIndex =
     stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
@@ -30,7 +30,7 @@ const useFocusable = (
   const onBlur: React.FocusEventHandler<HTMLElement> = (event) => {
     const { relatedTarget } = event;
 
-    if (isForeground && relatedTarget !== taskbarEntry) setForegroundId('');
+    if (isForeground && relatedTarget !== taskbarEntry) setForegroundId("");
 
     callbackEvents?.onBlur?.(event);
   };
@@ -52,7 +52,7 @@ const useFocusable = (
       prependToStack,
       setForegroundId,
       taskbarEntry,
-      windowRef
+      windowRef,
     ]
   );
 
@@ -66,7 +66,7 @@ const useFocusable = (
     onBlur,
     onFocus: moveToFront,
     tabIndex: -1,
-    zIndex
+    zIndex,
   };
 };
 

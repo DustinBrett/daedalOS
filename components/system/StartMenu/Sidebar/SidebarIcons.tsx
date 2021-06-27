@@ -1,4 +1,4 @@
-import { useTheme } from 'styled-components';
+import { useTheme } from "styled-components";
 
 export const AllApps = (): JSX.Element => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">

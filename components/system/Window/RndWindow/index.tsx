@@ -1,9 +1,9 @@
-import useRnd from 'components/system/Window/RndWindow/useRnd';
-import { useProcesses } from 'contexts/process';
-import type { Process } from 'contexts/process/types';
-import { useSession } from 'contexts/session';
-import { useEffect, useRef } from 'react';
-import { Rnd } from 'react-rnd';
+import useRnd from "components/system/Window/RndWindow/useRnd";
+import { useProcesses } from "contexts/process";
+import type { Process } from "contexts/process/types";
+import { useSession } from "contexts/session";
+import { useEffect, useRef } from "react";
+import { Rnd } from "react-rnd";
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -14,8 +14,8 @@ type RndWindowProps = {
 const reRouteFocus =
   (focusElement?: HTMLElement) =>
   (element?: Element): void => {
-    element?.setAttribute('tabindex', '-1');
-    element?.addEventListener('mousedown', (event) => {
+    element?.setAttribute("tabindex", "-1");
+    element?.addEventListener("mousedown", (event) => {
       event.preventDefault();
       focusElement?.focus();
     });
@@ -24,7 +24,7 @@ const reRouteFocus =
 const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   const {
     linkElement,
-    processes: { [id]: windowProcess = {} }
+    processes: { [id]: windowProcess = {} },
   } = useProcesses();
   const { componentWindow, maximized, minimized } = windowProcess as Process;
   const rndRef = useRef<Rnd | null>(null);
@@ -44,7 +44,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
       windowContainer &&
       Object.keys(windowProcess).length
     ) {
-      linkElement(id, 'componentWindow', windowContainer as HTMLElement);
+      linkElement(id, "componentWindow", windowContainer as HTMLElement);
     }
 
     return () =>
@@ -52,8 +52,8 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
         ...currentWindowStates,
         [id]: {
           position: currentWindow?.props?.position,
-          size: currentWindow?.props?.size
-        }
+          size: currentWindow?.props?.size,
+        },
       }));
   }, [
     componentWindow,
@@ -61,15 +61,15 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
     linkElement,
     maximized,
     setWindowStates,
-    windowProcess
+    windowProcess,
   ]);
 
   return (
     <Rnd
       ref={rndRef}
       style={{
-        pointerEvents: minimized ? 'none' : 'all',
-        zIndex
+        pointerEvents: minimized ? "none" : "all",
+        zIndex,
       }}
       {...rndProps}
     >

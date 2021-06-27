@@ -1,20 +1,20 @@
-import type { FSModule } from 'browserfs/dist/node/core/FS';
+import type { FSModule } from "browserfs/dist/node/core/FS";
 import {
   defaultConfig,
   globals,
   libs,
   pathPrefix,
-  zipConfigPath
-} from 'components/apps/JSDOS/config';
-import type { DosCI } from 'components/apps/JSDOS/types';
-import { addFileToZip, isFileInZip } from 'components/apps/JSDOS/zipFunctions';
-import { closeWithTransition } from 'components/system/Window/functions';
-import useTitle from 'components/system/Window/useTitle';
-import useWindowSize from 'components/system/Window/useWindowSize';
-import { useFileSystem } from 'contexts/fileSystem';
-import { useProcesses } from 'contexts/process';
-import { useEffect, useState } from 'react';
-import { bufferToUrl, cleanUpBufferUrl, loadFiles } from 'utils/functions';
+  zipConfigPath,
+} from "components/apps/JSDOS/config";
+import type { DosCI } from "components/apps/JSDOS/types";
+import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
+import { closeWithTransition } from "components/system/Window/functions";
+import useTitle from "components/system/Window/useTitle";
+import useWindowSize from "components/system/Window/useWindowSize";
+import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
+import { useEffect, useState } from "react";
+import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
   (await isFileInZip(buffer, zipConfigPath))
@@ -37,7 +37,7 @@ const useJSDOS = (
 
   useEffect(() => {
     if (!dos && fs && url) {
-      fs.readFile(url, (_error, contents = Buffer.from('')) =>
+      fs.readFile(url, (_error, contents = Buffer.from("")) =>
         loadFiles(libs).then(async () => {
           const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
 
@@ -70,12 +70,12 @@ const useJSDOS = (
       updateWindowSize(dos.frameHeight, dos.frameWidth);
 
       dos.events().onMessage((_msgType, _eventType, command, message) => {
-        if (command === 'LOG_EXEC') {
+        if (command === "LOG_EXEC") {
           const [dosCommand] = message
-            .replace('Parsing command line: ', '')
-            .split(' ');
+            .replace("Parsing command line: ", "")
+            .split(" ");
 
-          if (dosCommand.toUpperCase() === 'EXIT') {
+          if (dosCommand.toUpperCase() === "EXIT") {
             closeWithTransition(close, id);
           }
         }

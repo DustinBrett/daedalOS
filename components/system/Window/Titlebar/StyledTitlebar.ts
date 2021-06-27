@@ -1,5 +1,5 @@
-import type { DefaultTheme } from 'styled-components';
-import styled from 'styled-components';
+import type { DefaultTheme } from "styled-components";
+import styled from "styled-components";
 
 type StyledTitlebarProps = {
   foreground: boolean;
@@ -7,7 +7,7 @@ type StyledTitlebarProps = {
 
 const styledBorder = ({
   foreground,
-  theme
+  theme,
 }: StyledTitlebarProps & { theme: DefaultTheme }) =>
   foreground
     ? `1px solid ${theme.colors.titleBar.background}`
@@ -107,7 +107,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       &:disabled {
         svg {
           fill: ${({ foreground }) =>
-            foreground ? 'rgb(50, 50, 50)' : 'rgb(60, 60, 60)'};
+            foreground ? "rgb(50, 50, 50)" : "rgb(60, 60, 60)"};
         }
 
         &:hover {

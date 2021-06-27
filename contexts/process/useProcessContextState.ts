@@ -4,10 +4,10 @@ import {
   minimizeProcess,
   openProcess,
   setProcessElement,
-  setTitle
-} from 'contexts/process/functions';
-import type { ProcessElements, Processes } from 'contexts/process/types';
-import { useCallback, useState } from 'react';
+  setTitle,
+} from "contexts/process/functions";
+import type { ProcessElements, Processes } from "contexts/process/types";
+import { useCallback, useState } from "react";
 
 export type ProcessContextState = {
   close: (id: string, closing?: boolean) => void;
@@ -58,7 +58,7 @@ const useProcessContextState = (): ProcessContextState => {
     minimize,
     open,
     processes,
-    title
+    title,
   };
 };
 

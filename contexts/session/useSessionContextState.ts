@@ -1,7 +1,7 @@
-import type { Size } from 'components/system/Window/RndWindow/useResizable';
-import { useFileSystem } from 'contexts/fileSystem';
-import { useCallback, useEffect, useState } from 'react';
-import type { Position } from 'react-rnd';
+import type { Size } from "components/system/Window/RndWindow/useResizable";
+import { useFileSystem } from "contexts/fileSystem";
+import { useCallback, useEffect, useState } from "react";
+import type { Position } from "react-rnd";
 
 type WindowState = {
   position?: Position;
@@ -26,14 +26,14 @@ export type SessionContextState = {
   windowStates: WindowStates;
 };
 
-const SESSION_FILE = '/session.json';
+const SESSION_FILE = "/session.json";
 
 const useSessionContextState = (): SessionContextState => {
   const { fs } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
-  const [foregroundId, setForegroundId] = useState('');
+  const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
-  const [themeName, setThemeName] = useState('');
+  const [themeName, setThemeName] = useState("");
   const [windowStates, setWindowStates] = useState<WindowStates>({});
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const toggleStartMenu = (showMenu?: boolean) =>
@@ -42,7 +42,7 @@ const useSessionContextState = (): SessionContextState => {
     (id: string) =>
       setStackOrder((currentStackOrder) => [
         id,
-        ...currentStackOrder.filter((stackId) => stackId !== id)
+        ...currentStackOrder.filter((stackId) => stackId !== id),
       ]),
     []
   );
@@ -62,7 +62,7 @@ const useSessionContextState = (): SessionContextState => {
           foregroundId,
           stackOrder,
           themeName,
-          windowStates
+          windowStates,
         })
       );
     }
@@ -72,7 +72,7 @@ const useSessionContextState = (): SessionContextState => {
     () =>
       fs?.readFile(SESSION_FILE, (_error, contents) => {
         if (contents) {
-          const session = JSON.parse(contents.toString() || '{}');
+          const session = JSON.parse(contents.toString() || "{}");
 
           setThemeName(session.themeName);
           setWindowStates(session.windowStates);
@@ -94,7 +94,7 @@ const useSessionContextState = (): SessionContextState => {
     startMenuVisible,
     themeName,
     toggleStartMenu,
-    windowStates
+    windowStates,
   };
 };
 

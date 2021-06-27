@@ -1,36 +1,36 @@
-import { useProcesses } from 'contexts/process';
-import type { MotionProps, Variant } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { useTheme } from 'styled-components';
+import { useProcesses } from "contexts/process";
+import type { MotionProps, Variant } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
-  WINDOW_TRANSITION_DURATION_IN_MILLISECONDS
-} from 'utils/constants';
-import { pxToNum } from 'utils/functions';
+  WINDOW_TRANSITION_DURATION_IN_MILLISECONDS,
+} from "utils/constants";
+import { pxToNum } from "utils/functions";
 
 const active = {
-  height: 'inherit',
+  height: "inherit",
   opacity: 1,
   scale: 1,
-  width: 'inherit'
+  width: "inherit",
 };
 
 const initial = {
-  height: 'inherit',
+  height: "inherit",
   opacity: 0,
   scale: 0.95,
-  width: 'inherit'
+  width: "inherit",
 };
 
 const baseMaximize = {
   opacity: 1,
   scale: 1,
-  width: '100vw'
+  width: "100vw",
 };
 
 const baseMinimize = {
   opacity: 0,
-  scale: 0.7
+  scale: 0.7,
 };
 
 const useWindowTransitions = (
@@ -42,9 +42,9 @@ const useWindowTransitions = (
       [id]: {
         maximized = false,
         minimized = false,
-        taskbarEntry = undefined
-      } = {}
-    }
+        taskbarEntry = undefined,
+      } = {},
+    },
   } = useProcesses();
   const { sizes: { taskbar } = {} } = useTheme();
   const [maximize, setMaximize] = useState<Variant>({});
@@ -58,7 +58,7 @@ const useWindowTransitions = (
       ...baseMaximize,
       height: `${window.innerHeight - pxToNum(taskbar?.height)}px`,
       x: -windowX,
-      y: -windowY
+      y: -windowY,
     });
   }, [maximized, taskbar?.height, windowRef]);
 
@@ -67,31 +67,31 @@ const useWindowTransitions = (
       height: taskbarHeight = 0,
       width: taskbarWidth = 0,
       x: taskbarX = 0,
-      y: taskbarY = 0
+      y: taskbarY = 0,
     } = taskbarEntry?.getBoundingClientRect() || {};
     const {
       height: windowHeight = 0,
       width: windowWidth = 0,
       x: windowX = 0,
-      y: windowY = 0
+      y: windowY = 0,
     } = windowRef?.current?.getBoundingClientRect() || {};
 
     setMinimize({
       ...baseMinimize,
       x: taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2,
-      y: taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2
+      y: taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2,
     });
   }, [minimized, taskbarEntry, windowRef]);
 
   return {
-    animate: (minimized && 'minimize') || (maximized && 'maximize') || 'active',
-    exit: 'initial',
-    initial: 'initial',
+    animate: (minimized && "minimize") || (maximized && "maximize") || "active",
+    exit: "initial",
+    initial: "initial",
     transition: {
       duration:
-        WINDOW_TRANSITION_DURATION_IN_MILLISECONDS / MILLISECONDS_IN_SECOND
+        WINDOW_TRANSITION_DURATION_IN_MILLISECONDS / MILLISECONDS_IN_SECOND,
     },
-    variants: { active, initial, maximize, minimize }
+    variants: { active, initial, maximize, minimize },
   };
 };
 

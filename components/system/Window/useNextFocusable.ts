@@ -1,5 +1,5 @@
-import { useProcesses } from 'contexts/process';
-import { useSession } from 'contexts/session';
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 
 const useNextFocusable = (id: string): string => {
   const { stackOrder } = useSession();
@@ -9,7 +9,7 @@ const useNextFocusable = (id: string): string => {
     (stackId) => stackId !== id && !processes?.[stackId]?.minimized
   );
 
-  return nextFocusableId || '';
+  return nextFocusableId || "";
 };
 
 export default useNextFocusable;

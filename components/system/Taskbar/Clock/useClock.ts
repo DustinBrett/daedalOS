@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { MILLISECONDS_IN_SECOND } from 'utils/constants';
+import { useEffect, useState } from "react";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 const useClock = (): Date => {
   const [now, setNow] = useState(new Date());

@@ -1,13 +1,13 @@
-import StyledV86 from 'components/apps/V86/StyledV86';
-import useV86 from 'components/apps/V86/useV86';
-import useV86ScreenSize from 'components/apps/V86/useV86ScreenSize';
-import type { ComponentProcessProps } from 'components/system/Apps/RenderComponent';
-import { useProcesses } from 'contexts/process';
-import { useRef } from 'react';
+import StyledV86 from "components/apps/V86/StyledV86";
+import useV86 from "components/apps/V86/useV86";
+import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
+import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { useProcesses } from "contexts/process";
+import { useRef } from "react";
 
 const V86 = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
-    processes: { [id]: { url = '' } = {} }
+    processes: { [id]: { url = "" } = {} },
   } = useProcesses();
   const screenRef = useRef<HTMLDivElement | null>(null);
   const { emulator, lockMouse } = useV86(id, url, screenRef);

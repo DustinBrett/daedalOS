@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledPeekWindow = styled.div`
   background-color: ${({ theme }) => theme.colors.taskbar.hover};

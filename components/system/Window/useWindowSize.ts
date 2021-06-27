@@ -1,7 +1,7 @@
-import { useSession } from 'contexts/session';
-import { useCallback } from 'react';
-import { useTheme } from 'styled-components';
-import { pxToNum } from 'utils/functions';
+import { useSession } from "contexts/session";
+import { useCallback } from "react";
+import { useTheme } from "styled-components";
+import { pxToNum } from "utils/functions";
 
 type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
@@ -10,7 +10,7 @@ type WindowSize = {
 const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSession();
   const {
-    sizes: { titleBar }
+    sizes: { titleBar },
   } = useTheme();
 
   const updateWindowSize = useCallback(
@@ -20,15 +20,15 @@ const useWindowSize = (id: string): WindowSize => {
         [id]: {
           size: {
             height: height + pxToNum(titleBar.height),
-            width
-          }
-        }
+            width,
+          },
+        },
       })),
     [id, setWindowStates, titleBar.height]
   );
 
   return {
-    updateWindowSize
+    updateWindowSize,
   };
 };
 

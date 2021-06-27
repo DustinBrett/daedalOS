@@ -5,13 +5,13 @@ export const config = {
   autostart: true,
   log_level: 0,
   filesystem: {
-    basefs: '/.index/fs.9p.json',
-    baseurl: '/'
+    basefs: "/.index/fs.9p.json",
+    baseurl: "/",
   },
-  network_relay_url: 'wss://relay.widgetry.org/',
-  wasm_path: '/libs/v86/v86.wasm',
-  bios: { url: '/libs/v86/bios/seabios.bin' },
-  vga_bios: { url: '/libs/v86/bios/vgabios.bin' }
+  network_relay_url: "wss://relay.widgetry.org/",
+  wasm_path: "/libs/v86/v86.wasm",
+  bios: { url: "/libs/v86/bios/seabios.bin" },
+  vga_bios: { url: "/libs/v86/bios/vgabios.bin" },
 };
 
-export const libs = ['/libs/v86/libv86.js'];
+export const libs = ["/libs/v86/libv86.js"];

@@ -4,18 +4,18 @@ import {
   closeEqualizer,
   getWebampElement,
   parseTrack,
-  updateWebampPosition
-} from 'components/apps/Webamp/functions';
-import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
-import useWindowActions from 'components/system/Window/Titlebar/useWindowActions';
-import { useProcesses } from 'contexts/process';
-import type { Process } from 'contexts/process/types';
-import { useSession } from 'contexts/session';
-import { basename, extname } from 'path';
-import { useState } from 'react';
-import { useTheme } from 'styled-components';
-import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from 'utils/constants';
-import { bufferToUrl } from 'utils/functions';
+  updateWebampPosition,
+} from "components/apps/Webamp/functions";
+import type { WebampCI, WebampOptions } from "components/apps/Webamp/types";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { useProcesses } from "contexts/process";
+import type { Process } from "contexts/process/types";
+import { useSession } from "contexts/session";
+import { basename, extname } from "path";
+import { useState } from "react";
+import { useTheme } from "styled-components";
+import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from "utils/constants";
+import { bufferToUrl } from "utils/functions";
 
 type Webamp = {
   loadWebamp: (
@@ -30,16 +30,16 @@ const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
   const {
     setWindowStates,
-    windowStates: { [id]: { position = undefined } = {} } = {}
+    windowStates: { [id]: { position = undefined } = {} } = {},
   } = useSession();
   const {
     sizes: {
-      taskbar: { height: taskbarHeight }
-    }
+      taskbar: { height: taskbarHeight },
+    },
   } = useTheme();
   const {
     linkElement,
-    processes: { [id]: windowProcess = {} }
+    processes: { [id]: windowProcess = {} },
   } = useProcesses();
   const { componentWindow } = windowProcess as Process;
   const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
@@ -52,14 +52,14 @@ const useWebamp = (id: string): Webamp => {
       const runWebamp = (options?: WebampOptions) => {
         const webamp: WebampCI = new window.Webamp({
           ...BASE_WEBAMP_OPTIONS,
-          ...options
+          ...options,
         });
         const setupElements = () => {
           const webampElement = getWebampElement();
-          const [main] = webampElement.getElementsByClassName('window');
+          const [main] = webampElement.getElementsByClassName("window");
 
           if (!componentWindow && main && Object.keys(windowProcess).length) {
-            linkElement(id, 'componentWindow', main as HTMLElement);
+            linkElement(id, "componentWindow", main as HTMLElement);
           }
 
           containerElement.appendChild(webampElement);
@@ -68,15 +68,15 @@ const useWebamp = (id: string): Webamp => {
           webamp.onWillClose((cancel) => {
             cancel();
 
-            const [main] = getWebampElement().getElementsByClassName('window');
+            const [main] = getWebampElement().getElementsByClassName("window");
             const { x, y } = main.getBoundingClientRect();
 
             onClose();
             setWindowStates((currentWindowStates) => ({
               ...currentWindowStates,
               [id]: {
-                position: { x, y }
-              }
+                position: { x, y },
+              },
             }));
 
             setTimeout(() => {
@@ -84,7 +84,7 @@ const useWebamp = (id: string): Webamp => {
               webamp.close();
             }, WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
           }),
-          webamp.onMinimize(() => onMinimize())
+          webamp.onMinimize(() => onMinimize()),
         ];
 
         if (options?.initialSkin?.url) {
@@ -101,7 +101,7 @@ const useWebamp = (id: string): Webamp => {
       };
 
       if (file) {
-        if (extname(url) === '.mp3') {
+        if (extname(url) === ".mp3") {
           parseTrack(file, basename(url)).then((track) =>
             runWebamp({ initialTracks: [track] })
           );
@@ -116,7 +116,7 @@ const useWebamp = (id: string): Webamp => {
 
   return {
     loadWebamp,
-    webampCI
+    webampCI,
   };
 };
 

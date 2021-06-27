@@ -1,6 +1,6 @@
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const Window = dynamic(() => import('components/system/Window'));
+const Window = dynamic(() => import("components/system/Window"));
 
 export type ComponentProcessProps = {
   id: string;
@@ -15,7 +15,7 @@ type RenderComponentProps = {
 const RenderComponent = ({
   Component,
   hasWindow = true,
-  id
+  id,
 }: RenderComponentProps): JSX.Element =>
   hasWindow ? (
     <Window id={id}>

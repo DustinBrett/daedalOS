@@ -1,5 +1,5 @@
-import { extname } from 'path';
-import { stripUnit } from 'polished';
+import { extname } from "path";
+import { stripUnit } from "polished";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
   new Blob([new Uint8Array(buffer)]);
@@ -14,9 +14,9 @@ export const loadScript = (src: string): Promise<Event> =>
     const loadedScripts = [...document.scripts];
 
     if (loadedScripts.find((script) => script.src.endsWith(src))) {
-      resolve(new Event('Already loaded.'));
+      resolve(new Event("Already loaded."));
     } else {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
 
       script.async = false;
       script.src = src;
@@ -29,14 +29,14 @@ export const loadScript = (src: string): Promise<Event> =>
 
 export const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
-    const loadedLinks = [...document.getElementsByTagName('link')];
+    const loadedLinks = [...document.getElementsByTagName("link")];
 
     if (loadedLinks.find((link) => link.href.endsWith(href))) {
-      resolve(new Event('Already loaded.'));
+      resolve(new Event("Already loaded."));
     } else {
-      const link = document.createElement('link');
+      const link = document.createElement("link");
 
-      link.rel = 'stylesheet';
+      link.rel = "stylesheet";
       link.href = href;
       link.onerror = reject;
       link.onload = resolve;
@@ -50,8 +50,8 @@ export const loadFiles = async (files: string[]): Promise<Event[]> =>
     files.reduce((filesToLoad: Promise<Event>[], file) => {
       const ext = extname(file).toLowerCase();
 
-      if (ext === '.css') filesToLoad.push(loadStyle(file));
-      else if (ext === '.js') filesToLoad.push(loadScript(file));
+      if (ext === ".css") filesToLoad.push(loadStyle(file));
+      else if (ext === ".js") filesToLoad.push(loadScript(file));
 
       return filesToLoad;
     }, [])

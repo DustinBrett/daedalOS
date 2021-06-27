@@ -1,5 +1,5 @@
-import StyledWindow from 'components/system/Window/StyledWindow';
-import styled from 'styled-components';
+import StyledWindow from "components/system/Window/StyledWindow";
+import styled from "styled-components";
 
 const StyledFileManager = styled.ol`
   display: grid;

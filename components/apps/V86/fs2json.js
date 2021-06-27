@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, no-console */
 
-const { readdir, readlink, stat, writeFile } = require('fs');
-const { basename, relative, join, resolve: resolvePath } = require('path');
+const { readdir, readlink, stat, writeFile } = require("fs");
+const { basename, relative, join, resolve: resolvePath } = require("path");
 
 const VERSION = 3;
 
@@ -16,11 +16,11 @@ const IDX_TARGET = 6;
 const args = process.argv.slice(2);
 const argPath = resolvePath(args[args.length - 1]);
 const excludedPaths = [];
-let outputPath = '';
+let outputPath = "";
 
 args.forEach((arg, index) => {
-  if (arg === '--exclude') excludedPaths.push(args[index + 1]);
-  if (arg === '--out') outputPath = resolvePath(args[index + 1]);
+  if (arg === "--exclude") excludedPaths.push(args[index + 1]);
+  if (arg === "--out") outputPath = resolvePath(args[index + 1]);
 });
 
 const fs2json = (dir) => {
@@ -101,17 +101,17 @@ const fs2json = (dir) => {
     });
   };
 
-  console.info('Creating file tree ...');
+  console.info("Creating file tree ...");
 
   return walk(dir).then((data) => {
-    console.info('Creating json ...');
+    console.info("Creating json ...");
 
     writeFile(
       outputPath,
       JSON.stringify({
         fsroot: data,
         version: VERSION,
-        size: totalSize
+        size: totalSize,
       }),
       () => process.exit()
     );

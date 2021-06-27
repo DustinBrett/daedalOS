@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledTaskbarEntries = styled.ol`
   column-gap: 1px;
