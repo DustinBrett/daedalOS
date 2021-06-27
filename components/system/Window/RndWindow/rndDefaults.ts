@@ -7,7 +7,7 @@ const rndDefaults = {
   enableUserSelectHack: false,
   minHeight: '30px',
   minWidth: '167px',
-  resizeHandleStyles: <HandleStyles>{
+  resizeHandleStyles: {
     bottom: {
       bottom: '-3px',
       cursor: 'ns-resize',
@@ -56,7 +56,7 @@ const rndDefaults = {
       top: '-3px',
       width: '12px'
     }
-  }
+  } as HandleStyles
 };
 
 export default rndDefaults;

@@ -44,7 +44,7 @@ const useJSDOS = (
           if (screenRef?.current) {
             window.emulators.pathPrefix = pathPrefix;
             window
-              .Dos(screenRef.current as HTMLDivElement)
+              .Dos(screenRef.current)
               .run(objectURL)
               .then((ci) => {
                 setDos(ci);
