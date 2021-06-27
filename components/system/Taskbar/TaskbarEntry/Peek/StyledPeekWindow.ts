@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledPeakWindow = styled.div`
+const StyledPeekWindow = styled.div`
   background-color: ${({ theme }) => theme.colors.taskbar.hover};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.background}`};
   border-bottom: 0;
@@ -39,4 +39,4 @@ const StyledPeakWindow = styled.div`
   }
 `;
 
-export default StyledPeakWindow;
+export default StyledPeekWindow;
