@@ -1,18 +1,24 @@
+import type { DefaultTheme } from 'styled-components';
 import styled from 'styled-components';
 
 type StyledTitlebarProps = {
   foreground: boolean;
 };
 
+const styledBorder = ({
+  foreground,
+  theme
+}: StyledTitlebarProps & { theme: DefaultTheme }) =>
+  foreground
+    ? `1px solid ${theme.colors.titleBar.background}`
+    : `1px solid ${theme.colors.titleBar.backgroundInactive}`;
+
 const StyledTitlebar = styled.header<StyledTitlebarProps>`
   background-color: ${({ foreground, theme }) =>
     foreground
       ? theme.colors.titleBar.background
       : theme.colors.titleBar.backgroundInactive};
-  border-bottom: ${({ foreground, theme }) =>
-    foreground
-      ? `1px solid ${theme.colors.titleBar.background}`
-      : `1px solid ${theme.colors.titleBar.backgroundInactive}`};
+  border-bottom: ${styledBorder};
   display: flex;
   height: ${({ theme }) => theme.sizes.titleBar.height};
 
@@ -53,10 +59,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     display: flex;
 
     button {
-      border-left: ${({ foreground, theme }) =>
-        foreground
-          ? `1px solid ${theme.colors.titleBar.background}`
-          : `1px solid ${theme.colors.titleBar.backgroundInactive}`};
+      border-left: ${styledBorder};
       box-sizing: content-box;
       display: flex;
       place-content: center;
