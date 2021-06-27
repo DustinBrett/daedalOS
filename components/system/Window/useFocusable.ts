@@ -20,7 +20,9 @@ const useFocusable = (
   const { foregroundId, prependToStack, setForegroundId, stackOrder } =
     useSession();
   const {
-    processes: { [id]: { minimized = false, taskbarEntry = undefined } = {} }
+    processes: {
+      [id]: { minimized = false, taskbarEntry = undefined, url = '' } = {}
+    }
   } = useProcesses();
   const zIndex =
     stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
@@ -58,7 +60,7 @@ const useFocusable = (
     if (isForeground) moveToFront();
   }, [isForeground, moveToFront]);
 
-  useEffect(() => setForegroundId(id), [id, setForegroundId]);
+  useEffect(() => setForegroundId(id), [id, setForegroundId, url]);
 
   return {
     onBlur,
