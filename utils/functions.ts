@@ -1,8 +1,11 @@
 import { extname } from 'path';
 import { stripUnit } from 'polished';
 
+export const bufferToBlob = (buffer: Buffer): Blob =>
+  new Blob([new Uint8Array(buffer)]);
+
 export const bufferToUrl = (buffer: Buffer): string =>
-  URL.createObjectURL(new Blob([new Uint8Array(buffer)]));
+  URL.createObjectURL(bufferToBlob(buffer));
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 

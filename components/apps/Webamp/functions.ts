@@ -1,6 +1,9 @@
-import type { WebampCI } from 'components/apps/Webamp/types';
+import type { Track, WebampCI } from 'components/apps/Webamp/types';
 import { centerPosition } from 'components/system/Window/functions';
+import type { IAudioMetadata } from 'music-metadata-browser';
+import { parseBuffer } from 'music-metadata-browser';
 import type { Position } from 'react-rnd';
+import { bufferToBlob } from 'utils/functions';
 
 const BASE_WINDOW_SIZE = {
   height: 116,
@@ -45,3 +48,18 @@ export const unFocus = (webamp: WebampCI): void =>
     type: 'SET_FOCUSED_WINDOW',
     window: ''
   });
+
+export const parseTrack = (file: Buffer, fileName: string): Promise<Track> =>
+  new Promise((resolve) =>
+    parseBuffer(file).then(
+      ({
+        common: { artist = '', title = fileName },
+        format: { duration = 0 }
+      }: IAudioMetadata) =>
+        resolve({
+          blob: bufferToBlob(file),
+          duration: Math.floor(duration),
+          metaData: { artist, title }
+        })
+    )
+  );

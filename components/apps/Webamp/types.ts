@@ -13,7 +13,17 @@ type WebampDispatch = WebampDispatchOptionalProps & {
   type: string;
 };
 
+export type Track = {
+  blob: Blob;
+  duration: number;
+  metaData: {
+    artist?: string;
+    title: string;
+  };
+};
+
 export type WebampCI = {
+  appendTracks: (tracks: Track[]) => void;
   close: () => void;
   dispose: () => void;
   onWillClose: (cb: (cancel: () => void) => void) => () => void;
@@ -22,14 +32,6 @@ export type WebampCI = {
   store: {
     dispatch: (command: WebampDispatch) => void;
   };
-};
-
-type Track = {
-  metaData: {
-    artist?: string;
-    title: string;
-  };
-  url: string;
 };
 
 export type WebampOptions = {

@@ -1,6 +1,7 @@
 import {
   closeEqualizer,
   getWebampElement,
+  parseTrack,
   updateWebampPosition
 } from 'components/apps/Webamp/functions';
 import type { WebampCI, WebampOptions } from 'components/apps/Webamp/types';
@@ -8,16 +9,15 @@ import useWindowActions from 'components/system/Window/Titlebar/useWindowActions
 import { useProcesses } from 'contexts/process';
 import type { Process } from 'contexts/process/types';
 import { useSession } from 'contexts/session';
-import { parseBuffer } from 'music-metadata-browser';
+import { basename } from 'path';
 import { useState } from 'react';
 import { useTheme } from 'styled-components';
 import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from 'utils/constants';
-import { bufferToUrl, cleanUpBufferUrl } from 'utils/functions';
 
 type Webamp = {
   loadWebamp: (
     containerElement: HTMLDivElement | null,
-    fileName: string,
+    url: string,
     file?: Buffer
   ) => void;
   webampCI: WebampCI | null;
@@ -40,73 +40,63 @@ const useWebamp = (id: string): Webamp => {
   } = useProcesses();
   const { componentWindow } = windowProcess as Process;
   const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
-  const loadWebamp = async (
+  const loadWebamp = (
     containerElement: HTMLDivElement | null,
-    fileName: string,
+    url: string,
     file?: Buffer
-  ): Promise<void> => {
+  ): void => {
     if (containerElement && window.Webamp && !webampCI) {
-      const options: WebampOptions = {};
+      const runWebamp = (options?: WebampOptions) => {
+        const webamp: WebampCI = new window.Webamp(options);
+        const setupElements = () => {
+          const webampElement = getWebampElement();
+          const [main] = webampElement.getElementsByClassName('window');
+
+          if (!componentWindow && main && Object.keys(windowProcess).length) {
+            linkElement(id, 'componentWindow', main as HTMLElement);
+          }
+
+          containerElement.appendChild(webampElement);
+        };
+        const subscriptions = [
+          webamp.onWillClose((cancel) => {
+            cancel();
+
+            const [main] = getWebampElement().getElementsByClassName('window');
+            const { x, y } = main.getBoundingClientRect();
+
+            onClose();
+            setWindowStates((currentWindowStates) => ({
+              ...currentWindowStates,
+              [id]: {
+                position: { x, y }
+              }
+            }));
+
+            setTimeout(() => {
+              subscriptions.forEach((unsubscribe) => unsubscribe());
+              webamp.close();
+            }, WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
+          }),
+          webamp.onMinimize(() => onMinimize())
+        ];
+
+        webamp.renderWhenReady(containerElement).then(() => {
+          closeEqualizer(webamp);
+          updateWebampPosition(webamp, taskbarHeight, position);
+          setupElements();
+        });
+
+        setWebampCI(webamp);
+      };
 
       if (file) {
-        const { common: { artist = '', title = fileName } = {} } =
-          (await parseBuffer(file)) || {};
-
-        options.initialTracks = [
-          {
-            metaData: { artist, title },
-            url: bufferToUrl(file)
-          }
-        ];
+        parseTrack(file, basename(url)).then((track) =>
+          runWebamp({ initialTracks: [track] })
+        );
+      } else {
+        runWebamp();
       }
-
-      const webamp: WebampCI = new window.Webamp(options);
-      const setupElements = () => {
-        const webampElement = getWebampElement();
-        const [main] = webampElement.getElementsByClassName('window');
-
-        if (!componentWindow && main && Object.keys(windowProcess).length) {
-          linkElement(id, 'componentWindow', main as HTMLElement);
-        }
-
-        containerElement.appendChild(webampElement);
-      };
-      const subscriptions = [
-        webamp.onWillClose((cancel) => {
-          cancel();
-
-          const [main] = getWebampElement().getElementsByClassName('window');
-          const { x, y } = main.getBoundingClientRect();
-
-          onClose();
-          setWindowStates((currentWindowStates) => ({
-            ...currentWindowStates,
-            [id]: {
-              position: { x, y }
-            }
-          }));
-
-          if (options.initialTracks) {
-            const [{ url: objectUrl }] = options.initialTracks;
-
-            cleanUpBufferUrl(objectUrl);
-          }
-
-          setTimeout(() => {
-            subscriptions.forEach((unsubscribe) => unsubscribe());
-            webamp.close();
-          }, WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
-        }),
-        webamp.onMinimize(() => onMinimize())
-      ];
-
-      webamp.renderWhenReady(containerElement).then(() => {
-        closeEqualizer(webamp);
-        updateWebampPosition(webamp, taskbarHeight, position);
-        setupElements();
-      });
-
-      setWebampCI(webamp);
     }
   };
 
