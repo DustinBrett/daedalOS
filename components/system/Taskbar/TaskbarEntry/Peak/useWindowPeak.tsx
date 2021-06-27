@@ -5,6 +5,7 @@ import { useProcesses } from 'contexts/process';
 import { toPng } from 'html-to-image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Button from 'styles/common/Button';
+import { MILLISECONDS_IN_SECOND } from 'utils/constants';
 
 type WindowPeak = {
   PeakComponent?: React.ComponentType;
@@ -46,8 +47,8 @@ const useWindowPeak = (id: string): WindowPeak => {
       mouseTimer.current = setTimeout(() => {
         renderFrame();
         setShowPeak(true);
-        previewTimer.current = setInterval(renderFrame, 1000);
-      }, 250);
+        previewTimer.current = setInterval(renderFrame, MILLISECONDS_IN_SECOND);
+      }, MILLISECONDS_IN_SECOND / 2);
     }
   };
   const onMouseLeave = useCallback(() => {
