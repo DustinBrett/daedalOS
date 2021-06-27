@@ -17,6 +17,7 @@ type WebampDispatch = WebampDispatchOptionalProps & {
 };
 
 export type WebampCI = {
+  close: () => void;
   dispose: () => void;
   onWillClose: (cb: (cancel: () => void) => void) => () => void;
   onMinimize: (cb: () => void) => () => void;

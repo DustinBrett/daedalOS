@@ -11,6 +11,7 @@ import { useSession } from 'contexts/session';
 import { parseBuffer } from 'music-metadata-browser';
 import { useState } from 'react';
 import { useTheme } from 'styled-components';
+import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from 'utils/constants';
 import { bufferToUrl, cleanUpBufferUrl } from 'utils/functions';
 
 type Webamp = {
@@ -85,26 +86,35 @@ const useWebamp = (id: string): Webamp => {
 
         containerElement.appendChild(webampElement);
       };
+      const subscriptions = [
+        webamp.onWillClose((cancel) => {
+          cancel();
 
-      webamp.onWillClose(() => {
-        const [main] = getWebampElement().getElementsByClassName('window');
-        const { x, y } = main.getBoundingClientRect();
+          const [main] = getWebampElement().getElementsByClassName('window');
+          const { x, y } = main.getBoundingClientRect();
 
-        onClose();
-        setWindowStates((currentWindowStates) => ({
-          ...currentWindowStates,
-          [id]: {
-            position: { x, y }
+          onClose();
+          setWindowStates((currentWindowStates) => ({
+            ...currentWindowStates,
+            [id]: {
+              position: { x, y }
+            }
+          }));
+
+          if (options.initialTracks) {
+            const [{ url: objectUrl }] = options.initialTracks;
+
+            cleanUpBufferUrl(objectUrl);
           }
-        }));
 
-        if (options.initialTracks) {
-          const [{ url: objectUrl }] = options.initialTracks;
+          setTimeout(() => {
+            subscriptions.forEach((unsubscribe) => unsubscribe());
+            webamp.close();
+          }, WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
+        }),
+        webamp.onMinimize(() => onMinimize())
+      ];
 
-          cleanUpBufferUrl(objectUrl);
-        }
-      });
-      webamp.onMinimize(() => onMinimize());
       webamp.renderWhenReady(containerElement).then(() => {
         closeEqualizer(webamp);
         updateWebampPosition(webamp, taskbarHeight, position);
