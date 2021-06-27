@@ -23,7 +23,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
   const windowTransitions = useWindowTransitions(id, windowRef);
 
   return (
-    <RndWindow id={id} style={{ zIndex }}>
+    <RndWindow id={id} zIndex={zIndex}>
       <StyledWindow
         foreground={isForeground}
         ref={windowRef}

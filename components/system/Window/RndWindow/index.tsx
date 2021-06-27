@@ -2,14 +2,13 @@ import useRnd from 'components/system/Window/RndWindow/useRnd';
 import { useProcesses } from 'contexts/process';
 import type { Process } from 'contexts/process/types';
 import { useSession } from 'contexts/session';
-import type { CSSProperties } from 'react';
 import { useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 
 type RndWindowProps = {
   children: React.ReactNode;
   id: string;
-  style: CSSProperties;
+  zIndex: number;
 };
 
 const reRouteFocus =
@@ -22,12 +21,12 @@ const reRouteFocus =
     });
   };
 
-const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
+const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   const {
     linkElement,
     processes: { [id]: windowProcess = {} }
   } = useProcesses();
-  const { componentWindow, maximized } = windowProcess as Process;
+  const { componentWindow, maximized, minimized } = windowProcess as Process;
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
   const { setWindowStates } = useSession();
@@ -66,7 +65,14 @@ const RndWindow = ({ children, id, style }: RndWindowProps): JSX.Element => {
   ]);
 
   return (
-    <Rnd ref={rndRef} style={style} {...rndProps}>
+    <Rnd
+      ref={rndRef}
+      style={{
+        pointerEvents: minimized ? 'none' : 'all',
+        zIndex
+      }}
+      {...rndProps}
+    >
       {children}
     </Rnd>
   );
