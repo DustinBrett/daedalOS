@@ -27,7 +27,7 @@ const FileEntry = ({
   const { icon, pid, url } = useFileInfo(path);
   const [renaming, setRenaming] = useState(false);
   const { contextMenu } = useMenu();
-  const openFile = useFile(url, pid);
+  const openFile = useFile(url);
   const deleteEntry = () => deleteFile(path);
   const renameEntry = () => setRenaming(true);
   const menu = useContextMenu(url, pid, deleteEntry, renameEntry);
@@ -35,7 +35,7 @@ const FileEntry = ({
 
   return (
     <Button
-      onClick={useDoubleClick(openFile, singleClick)}
+      onClick={useDoubleClick(() => openFile(pid), singleClick)}
       onContextMenu={contextMenu(menu)}
     >
       <figure>
