@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import type { config as v86Config } from "components/apps/V86/config";
+import type { config } from "components/apps/V86/config";
 import type { V86ImageConfig } from "components/apps/V86/image";
 
 export type ModeCallback = (isGraphical: boolean) => void;
@@ -22,16 +22,14 @@ export type V86 = {
   lockMouse?: () => void;
 };
 
-type V86Config = typeof v86Config &
+type V86Config = typeof config &
   V86ImageConfig & {
-    memory_size: number;
-    vga_memory_size: number;
     boot_order: number;
     screen_container: HTMLDivElement | null;
   };
 
 interface V86Constructor {
-  new (config: V86Config): V86Starter;
+  new (v86Config: V86Config): V86Starter;
 }
 
 declare global {

@@ -28,8 +28,6 @@ const useV86 = (
         loadFiles(libs).then(() => {
           if (screenContainer?.current) {
             const isISO = extname(url).toLowerCase() === ".iso";
-            const { deviceMemory = 8 } = navigator;
-            const memoryRatio = deviceMemory / 8;
             const bufferUrl = bufferToUrl(contents);
             const v86ImageConfig: V86ImageConfig = {
               [isISO ? "cdrom" : getImageType(contents.length)]: {
@@ -40,8 +38,6 @@ const useV86 = (
               },
             };
             const v86 = new window.V86Starter({
-              memory_size: memoryRatio * 1024 * 1024 * 1024,
-              vga_memory_size: memoryRatio * 32 * 1024 * 1024,
               boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
               screen_container: screenContainer.current,
               ...v86ImageConfig,
