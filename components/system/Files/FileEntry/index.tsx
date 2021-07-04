@@ -2,6 +2,7 @@ import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useContextMenu from "components/system/Files/FileEntry/useContextMenu";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import type { FileActions } from "components/system/Files/FileManager/useFiles";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import useDoubleClick from "components/system/useDoubleClick";
 import { useMenu } from "contexts/menu";
@@ -10,37 +11,23 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 
 type FileEntryProps = {
-  deleteFile: (path: string) => void;
-  downloadFile: (path: string) => void;
+  fileActions: FileActions;
   name: string;
   path: string;
-  renameFile: (path: string, name?: string) => void;
   view: string;
 };
 
 const FileEntry = ({
-  deleteFile,
-  downloadFile,
+  fileActions,
   name,
   path,
-  renameFile,
   view,
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
   const [renaming, setRenaming] = useState(false);
   const { contextMenu } = useMenu();
   const openFile = useFile(url);
-  const deleteEntry = () => deleteFile(path);
-  const downloadEntry = () => downloadFile(path);
-  const renameEntry = () => setRenaming(true);
-  const menu = useContextMenu(
-    url,
-    pid,
-    path,
-    deleteEntry,
-    downloadEntry,
-    renameEntry
-  );
+  const menu = useContextMenu(url, pid, path, setRenaming, fileActions);
   const singleClick = view === "list";
 
   return (
@@ -55,7 +42,7 @@ const FileEntry = ({
             name={name}
             path={path}
             renameFile={(origPath, newName) => {
-              renameFile(origPath, newName);
+              fileActions.renameFile(origPath, newName);
               setRenaming(false);
             }}
           />

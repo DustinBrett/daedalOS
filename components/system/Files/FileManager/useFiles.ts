@@ -4,11 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
-type Files = {
+export type FileActions = {
   deleteFile: (path: string) => void;
   downloadFile: (path: string) => void;
-  files: string[];
   renameFile: (path: string, name?: string) => void;
+};
+
+type Files = {
+  fileActions: FileActions;
+  files: string[];
   updateFiles: (appendFile?: string) => void;
 };
 
@@ -68,10 +72,12 @@ const useFiles = (directory: string): Files => {
   );
 
   return {
-    deleteFile,
-    downloadFile,
+    fileActions: {
+      deleteFile,
+      downloadFile,
+      renameFile,
+    },
     files,
-    renameFile,
     updateFiles,
   };
 };
