@@ -57,22 +57,25 @@ const useWebamp = (id: string): Webamp => {
         }) as WebampCI;
         const setupElements = () => {
           const webampElement = getWebampElement();
-          const mainWindow =
-            webampElement.querySelector<HTMLDivElement>(MAIN_WINDOW);
 
-          if (process && !componentWindow && mainWindow) {
-            linkElement(id, "componentWindow", containerElement);
-            linkElement(id, "peekElement", mainWindow);
+          if (webampElement) {
+            const mainWindow =
+              webampElement.querySelector<HTMLDivElement>(MAIN_WINDOW);
+
+            if (process && !componentWindow && mainWindow) {
+              linkElement(id, "componentWindow", containerElement);
+              linkElement(id, "peekElement", mainWindow);
+            }
+
+            containerElement.appendChild(webampElement);
           }
-
-          containerElement.appendChild(webampElement);
         };
         const subscriptions = [
           webamp.onWillClose((cancel) => {
             cancel();
 
             const mainWindow =
-              getWebampElement().querySelector<HTMLDivElement>(MAIN_WINDOW);
+              getWebampElement()?.querySelector<HTMLDivElement>(MAIN_WINDOW);
             const { x = 0, y = 0 } = mainWindow?.getBoundingClientRect() || {};
 
             onClose();
