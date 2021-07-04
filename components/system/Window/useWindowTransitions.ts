@@ -33,26 +33,18 @@ const baseMinimize = {
   scale: 0.7,
 };
 
-const useWindowTransitions = (
-  id: string,
-  windowRef: React.MutableRefObject<HTMLElement | null>
-): MotionProps => {
+const useWindowTransitions = (id: string): MotionProps => {
   const {
-    processes: {
-      [id]: {
-        maximized = false,
-        minimized = false,
-        taskbarEntry = undefined,
-      } = {},
-    },
+    processes: { [id]: process },
   } = useProcesses();
+  const { componentWindow, maximized, minimized, taskbarEntry } = process || {};
   const { sizes: { taskbar } = {} } = useTheme();
   const [maximize, setMaximize] = useState<Variant>({});
   const [minimize, setMinimize] = useState<Variant>({});
 
   useEffect(() => {
     const { x: windowX = 0, y: windowY = 0 } =
-      windowRef?.current?.getBoundingClientRect() || {};
+      componentWindow?.getBoundingClientRect() || {};
 
     setMaximize({
       ...baseMaximize,
@@ -60,7 +52,7 @@ const useWindowTransitions = (
       x: -windowX,
       y: -windowY,
     });
-  }, [maximized, taskbar?.height, windowRef]);
+  }, [componentWindow, maximized, taskbar?.height]);
 
   useEffect(() => {
     const {
@@ -74,14 +66,14 @@ const useWindowTransitions = (
       width: windowWidth = 0,
       x: windowX = 0,
       y: windowY = 0,
-    } = windowRef?.current?.getBoundingClientRect() || {};
+    } = componentWindow?.getBoundingClientRect() || {};
 
     setMinimize({
       ...baseMinimize,
       x: taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2,
       y: taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2,
     });
-  }, [minimized, taskbarEntry, windowRef]);
+  }, [componentWindow, minimized, taskbarEntry]);
 
   return {
     animate: (minimized && "minimize") || (maximized && "maximize") || "active",

@@ -21,6 +21,8 @@ const BASE_WINDOW_SIZE = {
   width: 275,
 };
 
+export const MAIN_WINDOW = "#main-window";
+
 export const cleanBufferOnSkinLoad = (
   webamp: WebampCI,
   url = ""

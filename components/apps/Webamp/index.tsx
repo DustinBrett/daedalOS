@@ -21,7 +21,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: { url = "" } = {} } = {} } = useProcesses();
   const [currentUrl, setCurrentUrl] = useState(url);
   const { loadWebamp, webampCI } = useWebamp(id);
-  const windowTransitions = useWindowTransitions(id, containerRef);
+  const windowTransitions = useWindowTransitions(id);
   const focusEvents = useMemo(
     () => ({
       onBlur: () => webampCI && unFocus(webampCI),
@@ -29,11 +29,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
     }),
     [webampCI]
   );
-  const { zIndex, ...focusableProps } = useFocusable(
-    id,
-    containerRef,
-    focusEvents
-  );
+  const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
 
   useEffect(() => {
     if (fs) {

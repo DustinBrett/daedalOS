@@ -17,10 +17,9 @@ type WindowPeek = {
 
 const useWindowPeek = (id: string): WindowPeek => {
   const {
-    processes: {
-      [id]: { componentWindow = undefined, minimized = false, title = "" } = {},
-    },
+    processes: { [id]: process },
   } = useProcesses();
+  const { peekElement, componentWindow, minimized, title } = process || {};
   const mouseTimer = useRef<NodeJS.Timer>();
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
@@ -35,21 +34,19 @@ const useWindowPeek = (id: string): WindowPeek => {
     </StyledPeekWindow>
   );
   const onMouseEnter = () => {
-    if (componentWindow) {
-      const renderFrame = () =>
-        toPng(componentWindow).then((dataUrl) => {
-          const previewImage = new Image();
+    const renderFrame = () =>
+      toPng(peekElement || componentWindow).then((dataUrl) => {
+        const previewImage = new Image();
 
-          previewImage.src = dataUrl;
-          previewImage.onload = () => setPreviewSrc(dataUrl);
-        });
+        previewImage.src = dataUrl;
+        previewImage.onload = () => setPreviewSrc(dataUrl);
+      });
 
-      mouseTimer.current = setTimeout(() => {
-        renderFrame();
-        setShowPeek(true);
-        previewTimer.current = setInterval(renderFrame, MILLISECONDS_IN_SECOND);
-      }, MILLISECONDS_IN_SECOND / 2);
-    }
+    mouseTimer.current = setTimeout(() => {
+      renderFrame();
+      setShowPeek(true);
+      previewTimer.current = setInterval(renderFrame, MILLISECONDS_IN_SECOND);
+    }, MILLISECONDS_IN_SECOND / 2);
   };
   const onMouseLeave = useCallback(() => {
     if (mouseTimer?.current) clearTimeout(mouseTimer.current);

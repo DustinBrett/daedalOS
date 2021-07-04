@@ -3,13 +3,13 @@ import {
   cleanBufferOnSkinLoad,
   closeEqualizer,
   getWebampElement,
+  MAIN_WINDOW,
   parseTrack,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
 import type { WebampCI, WebampOptions } from "components/apps/Webamp/types";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcesses } from "contexts/process";
-import type { Process } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import { basename, extname } from "path";
 import { useState } from "react";
@@ -39,9 +39,9 @@ const useWebamp = (id: string): Webamp => {
   } = useTheme();
   const {
     linkElement,
-    processes: { [id]: windowProcess = {} },
+    processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow } = windowProcess as Process;
+  const { componentWindow } = process || {};
   const [webampCI, setWebampCI] = useState<WebampCI>();
   const loadWebamp = (
     containerElement: HTMLDivElement | null,
@@ -56,14 +56,12 @@ const useWebamp = (id: string): Webamp => {
         });
         const setupElements = () => {
           const webampElement = getWebampElement();
-          const [main] = webampElement.getElementsByClassName("window");
+          const mainWindow =
+            webampElement.querySelector<HTMLDivElement>(MAIN_WINDOW);
 
-          if (
-            !componentWindow &&
-            main &&
-            Object.keys(windowProcess).length > 0
-          ) {
-            linkElement(id, "componentWindow", main as HTMLElement);
+          if (process && !componentWindow && mainWindow) {
+            linkElement(id, "componentWindow", containerElement);
+            linkElement(id, "peekElement", mainWindow);
           }
 
           containerElement.appendChild(webampElement);
@@ -72,8 +70,9 @@ const useWebamp = (id: string): Webamp => {
           webamp.onWillClose((cancel) => {
             cancel();
 
-            const [main] = getWebampElement().getElementsByClassName("window");
-            const { x, y } = main.getBoundingClientRect();
+            const mainWindow =
+              getWebampElement().querySelector<HTMLDivElement>(MAIN_WINDOW);
+            const { x = 0, y = 0 } = mainWindow?.getBoundingClientRect() || {};
 
             onClose();
             setWindowStates((currentWindowStates) => ({
