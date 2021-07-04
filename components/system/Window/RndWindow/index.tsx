@@ -42,7 +42,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
     if (
       !componentWindow &&
       windowContainer &&
-      Object.keys(windowProcess).length
+      Object.keys(windowProcess).length > 0
     ) {
       linkElement(id, "componentWindow", windowContainer as HTMLElement);
     }

@@ -26,7 +26,7 @@ const useFileDrop = (
   const onDrop = (event: React.DragEvent<HTMLElement>) => {
     haltDragEvent(event);
 
-    if (event?.dataTransfer?.files.length) {
+    if (event?.dataTransfer?.files.length > 0) {
       const files = [...event?.dataTransfer?.files];
       const writeUniqueName = (
         path: string,

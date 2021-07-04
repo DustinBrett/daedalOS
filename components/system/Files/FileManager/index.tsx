@@ -21,10 +21,10 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
-    if (isMountable && !files.length) mountFs(url, updateFiles);
+    if (isMountable && files.length === 0) mountFs(url, updateFiles);
 
     return () => {
-      if (isMountable && files.length) unMountFs(url);
+      if (isMountable && files.length > 0) unMountFs(url);
     };
   }, [files, mountFs, unMountFs, updateFiles, url]);
 

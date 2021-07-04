@@ -29,7 +29,7 @@ const useContextMenu = (
 
     menuItems.unshift({ separator: 1 });
 
-    if (openWithFiltered.length) {
+    if (openWithFiltered.length > 0) {
       menuItems.unshift({
         label: "Open with",
         menu: openWithFiltered.map((id): MenuItem => {

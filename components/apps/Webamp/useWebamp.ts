@@ -58,7 +58,11 @@ const useWebamp = (id: string): Webamp => {
           const webampElement = getWebampElement();
           const [main] = webampElement.getElementsByClassName("window");
 
-          if (!componentWindow && main && Object.keys(windowProcess).length) {
+          if (
+            !componentWindow &&
+            main &&
+            Object.keys(windowProcess).length > 0
+          ) {
             linkElement(id, "componentWindow", main as HTMLElement);
           }
 
