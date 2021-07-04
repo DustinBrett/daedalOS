@@ -19,7 +19,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
 
   useEffect(() => {
-    const isMountable = MOUNTABLE_EXTENSIONS.includes(extname(url));
+    const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
     if (isMountable && !files.length) mountFs(url, updateFiles);
 

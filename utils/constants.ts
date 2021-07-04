@@ -15,7 +15,7 @@ export const DEFAULT_WINDOW_SIZE: Size = {
 
 export const DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS = 500;
 
-export const IMAGE_FILE_EXTENSIONS = [
+export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",
   ".bmp",
@@ -34,11 +34,11 @@ export const IMAGE_FILE_EXTENSIONS = [
   ".tiff",
   ".webp",
   ".xbm",
-];
+]);
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
-export const MOUNTABLE_EXTENSIONS = [".iso", ".zip"];
+export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".zip"]);
 
 export const PROCESS_DELIMITER = "__";
 

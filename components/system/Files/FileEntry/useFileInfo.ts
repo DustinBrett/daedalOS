@@ -62,7 +62,7 @@ const useFileInfo = (path: string): FileInfo => {
               setInfo({ icon, pid, url });
             }
           });
-        } else if (IMAGE_FILE_EXTENSIONS.includes(extension)) {
+        } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
           fs.readFile(path, (error, contents = Buffer.from("")) =>
             getInfoByFileExtension(
               error ? "/icons/photo.png" : bufferToUrl(contents)
