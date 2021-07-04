@@ -7,7 +7,7 @@ const AppsLoader = (): JSX.Element => (
     {({ processes = {} }) => (
       <AnimatePresence>
         {Object.entries(processes)
-          .filter(([_id, { closing }]) => !closing)
+          .filter(([, { closing }]) => !closing)
           .map(([id, { Component, hasWindow }]) => (
             <RenderComponent
               key={id}
