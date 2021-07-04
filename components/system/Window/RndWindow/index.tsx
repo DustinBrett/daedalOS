@@ -1,6 +1,5 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
-import type { Process } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import { Rnd } from "react-rnd";
@@ -24,9 +23,9 @@ const reRouteFocus =
 const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   const {
     linkElement,
-    processes: { [id]: windowProcess = {} },
+    processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, maximized, minimized } = windowProcess as Process;
+  const { componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
   const { setWindowStates } = useSession();
@@ -39,11 +38,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
 
     resizeHandles.forEach(reRouteFocus(windowContainer as HTMLElement));
 
-    if (
-      !componentWindow &&
-      windowContainer &&
-      Object.keys(windowProcess).length > 0
-    ) {
+    if (process && !componentWindow && windowContainer) {
       linkElement(id, "componentWindow", windowContainer as HTMLElement);
     }
 
@@ -55,14 +50,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
           size: currentWindow?.props?.size,
         },
       }));
-  }, [
-    componentWindow,
-    id,
-    linkElement,
-    maximized,
-    setWindowStates,
-    windowProcess,
-  ]);
+  }, [componentWindow, id, linkElement, maximized, process, setWindowStates]);
 
   return (
     <Rnd
