@@ -15,6 +15,14 @@ const getProcessByFileExtension = (extension: string): string => {
   return defaultProcess;
 };
 
+const getShortcutInfo = (contents: Buffer) => {
+  const {
+    InternetShortcut: { BaseURL: pid = "", IconFile: icon = "", URL: url = "" },
+  } = ini.parse(contents.toString());
+
+  return { icon, pid, url };
+};
+
 export const getInfoWithoutExtension = (
   fs: FSModule,
   path: string,
@@ -48,15 +56,7 @@ export const getInfoWithExtension = (
       if (error) {
         getInfoByFileExtension();
       } else {
-        const {
-          InternetShortcut: {
-            BaseURL: pid = "",
-            IconFile: icon = "",
-            URL: url = "",
-          },
-        } = ini.parse(contents.toString());
-
-        callback({ icon, pid, url });
+        callback(getShortcutInfo(contents));
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
