@@ -37,7 +37,7 @@ const StyledFileEntry = styled.li`
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         letter-spacing: -0.1px;
         -webkit-line-clamp: 2;
-        line-height: 15px;
+        line-height: 1.2;
         margin: 1px 0;
         overflow: hidden;
         padding: 2px 1px;
