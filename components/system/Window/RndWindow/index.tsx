@@ -25,7 +25,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, maximized, minimized } = process || {};
+  const { closing, componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
   const { setWindowStates } = useSession();
@@ -44,15 +44,26 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
       linkElement(id, "componentWindow", windowContainer);
     }
 
-    return () =>
-      setWindowStates((currentWindowStates) => ({
-        ...currentWindowStates,
-        [id]: {
-          position: currentWindow?.props?.position,
-          size: currentWindow?.props?.size,
-        },
-      }));
-  }, [componentWindow, id, linkElement, maximized, process, setWindowStates]);
+    return () => {
+      if (closing) {
+        setWindowStates((currentWindowStates) => ({
+          ...currentWindowStates,
+          [id]: {
+            position: currentWindow?.props?.position,
+            size: currentWindow?.props?.size,
+          },
+        }));
+      }
+    };
+  }, [
+    closing,
+    componentWindow,
+    id,
+    linkElement,
+    maximized,
+    process,
+    setWindowStates,
+  ]);
 
   return (
     <Rnd
