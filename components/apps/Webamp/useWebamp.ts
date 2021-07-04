@@ -7,7 +7,7 @@ import {
   parseTrack,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
-import type { WebampCI, WebampOptions } from "components/apps/Webamp/types";
+import type { WebampCI } from "components/apps/Webamp/types";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useTheme } from "styled-components";
 import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
+import type { Options } from "webamp";
 
 type Webamp = {
   loadWebamp: (
@@ -49,11 +50,11 @@ const useWebamp = (id: string): Webamp => {
     file?: Buffer
   ): void => {
     if (containerElement && window.Webamp && !webampCI) {
-      const runWebamp = (options?: WebampOptions) => {
-        const webamp: WebampCI = new window.Webamp({
+      const runWebamp = (options?: Options) => {
+        const webamp = new window.Webamp({
           ...BASE_WEBAMP_OPTIONS,
           ...options,
-        });
+        }) as WebampCI;
         const setupElements = () => {
           const webampElement = getWebampElement();
           const mainWindow =
