@@ -12,7 +12,7 @@ const useDoubleClick: DoubleClick = (
   singleClick = false,
   timeout = DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS
 ) => {
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  const timer = useRef<NodeJS.Timeout>();
 
   return (event) => {
     const runHandler = () => {
@@ -24,12 +24,12 @@ const useDoubleClick: DoubleClick = (
       runHandler();
     } else if (!timer.current) {
       timer.current = setTimeout(() => {
-        timer.current = null;
+        timer.current = undefined;
       }, timeout);
     } else {
       clearTimeout(timer.current);
       runHandler();
-      timer.current = null;
+      timer.current = undefined;
     }
   };
 };

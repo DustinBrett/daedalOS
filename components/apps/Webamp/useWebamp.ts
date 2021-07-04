@@ -23,7 +23,7 @@ type Webamp = {
     url: string,
     file?: Buffer
   ) => void;
-  webampCI: WebampCI | null;
+  webampCI?: WebampCI;
 };
 
 const useWebamp = (id: string): Webamp => {
@@ -42,7 +42,7 @@ const useWebamp = (id: string): Webamp => {
     processes: { [id]: windowProcess = {} },
   } = useProcesses();
   const { componentWindow } = windowProcess as Process;
-  const [webampCI, setWebampCI] = useState<WebampCI | null>(null);
+  const [webampCI, setWebampCI] = useState<WebampCI>();
   const loadWebamp = (
     containerElement: HTMLDivElement | null,
     url: string,

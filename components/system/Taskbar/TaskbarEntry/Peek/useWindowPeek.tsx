@@ -21,8 +21,8 @@ const useWindowPeek = (id: string): WindowPeek => {
       [id]: { componentWindow = undefined, minimized = false, title = "" } = {},
     },
   } = useProcesses();
-  const mouseTimer = useRef<NodeJS.Timer | null>(null);
-  const previewTimer = useRef<NodeJS.Timer | null>(null);
+  const mouseTimer = useRef<NodeJS.Timer>();
+  const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
   const [previewSrc, setPreviewSrc] = useState("");
   const { onClose } = useWindowActions(id);

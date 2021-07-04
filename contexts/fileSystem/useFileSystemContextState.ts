@@ -9,13 +9,13 @@ import { extname } from "path";
 import { useEffect, useState } from "react";
 
 export type FileSystemContextState = {
-  fs: FSModule | null;
+  fs?: FSModule;
   mountFs: (url: string, callback: () => void) => void;
   unMountFs: (url: string) => void;
 };
 
 const useFileSystemContextState = (): FileSystemContextState => {
-  const [fs, setFs] = useState<FSModule | null>(null);
+  const [fs, setFs] = useState<FSModule>();
   const rootFs = fs?.getRootFS() as MountableFileSystem;
   const mountFs = (url: string, callback: () => void): void =>
     fs?.readFile(url, (_readError, fileData = Buffer.from("")) => {

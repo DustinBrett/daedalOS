@@ -31,7 +31,7 @@ const useJSDOS = (
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
-  const [dos, setDos] = useState<DosCI | null>(null);
+  const [dos, setDos] = useState<DosCI>();
   const { fs } = useFileSystem();
   const { close } = useProcesses();
 
