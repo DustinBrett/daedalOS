@@ -41,6 +41,7 @@ const sizes = {
     iconSize: "16px",
   },
   window: {
+    cascadeOffset: 26,
     lineHeight: "14px",
     outline: "1px",
   },
