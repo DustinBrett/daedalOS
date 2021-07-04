@@ -1,10 +1,7 @@
-import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
-import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
+import PeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/PeekWindow";
 import { useProcesses } from "contexts/process";
 import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Button from "styles/common/Button";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 type WindowPeek = {
@@ -19,20 +16,12 @@ const useWindowPeek = (id: string): WindowPeek => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { peekElement, componentWindow, minimized, title } = process || {};
+  const { peekElement, componentWindow, minimized } = process || {};
   const mouseTimer = useRef<NodeJS.Timer>();
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
   const [previewSrc, setPreviewSrc] = useState("");
-  const { onClose } = useWindowActions(id);
-  const PeekWindow = (): JSX.Element => (
-    <StyledPeekWindow>
-      <img alt={title} src={previewSrc} />
-      <Button onClick={onClose} title="Close">
-        <CloseIcon />
-      </Button>
-    </StyledPeekWindow>
-  );
+
   const onMouseEnter = () => {
     const renderFrame = () =>
       toPng(peekElement || componentWindow).then((dataUrl) => {
@@ -66,7 +55,10 @@ const useWindowPeek = (id: string): WindowPeek => {
   useEffect(() => onMouseLeave, [onMouseLeave]);
 
   return {
-    PeekComponent: showPeek && previewSrc ? PeekWindow : undefined,
+    PeekComponent:
+      showPeek && previewSrc
+        ? () => <PeekWindow id={id} image={previewSrc} />
+        : undefined,
     peekEvents: minimized
       ? {}
       : {
