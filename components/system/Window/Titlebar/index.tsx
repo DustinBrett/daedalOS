@@ -31,13 +31,12 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const isMaximizable = autoSizing && !lockAspectRatio;
+  const disableMaximize = autoSizing && !lockAspectRatio;
+  const maximizeDoubleClick = useDoubleClick(onMaximize);
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
-      <h1
-        onClick={useDoubleClick(isMaximizable ? () => undefined : onMaximize)}
-      >
+      <h1 onClick={disableMaximize ? undefined : maximizeDoubleClick}>
         <figure>
           <Icon
             src={icon}
@@ -54,7 +53,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         </Button>
         <Button
           className="maximize"
-          disabled={isMaximizable}
+          disabled={disableMaximize}
           onClick={onMaximize}
           title="Maximize"
         >
