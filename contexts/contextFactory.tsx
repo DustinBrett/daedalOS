@@ -4,22 +4,15 @@ type ProcessProviderProps = {
   children: React.ReactNode;
 };
 
-type ContextFactory = <T>(
-  initialContextState: T,
+const contextFactory = <T,>(
   useContextState: () => T,
   ContextComponent?: React.ComponentType
-) => {
+): {
   Consumer: React.Consumer<T>;
   Provider: (props: ProcessProviderProps) => JSX.Element;
   useContext: () => T;
-};
-
-const contextFactory: ContextFactory = (
-  initialContextState,
-  useContextState,
-  ContextComponent
-) => {
-  const Context = createContext(initialContextState);
+} => {
+  const Context = createContext<T>({} as T);
   const ProcessProvider = ({ children }: ProcessProviderProps): JSX.Element => (
     <Context.Provider value={useContextState()}>
       {children}

@@ -4,7 +4,7 @@ import { AnimatePresence } from "framer-motion";
 
 const AppsLoader = (): JSX.Element => (
   <ProcessConsumer>
-    {({ processes }) => (
+    {({ processes = {} }) => (
       <AnimatePresence>
         {Object.entries(processes)
           .filter(([_id, { closing }]) => !closing)
