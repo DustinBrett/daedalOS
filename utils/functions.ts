@@ -13,7 +13,7 @@ export const loadScript = (src: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
 
-    if (loadedScripts.find((script) => script.src.endsWith(src))) {
+    if (loadedScripts.some((script) => script.src.endsWith(src))) {
       resolve(new Event("Already loaded."));
     } else {
       const script = document.createElement("script");
@@ -31,7 +31,7 @@ export const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedLinks = [...document.getElementsByTagName("link")];
 
-    if (loadedLinks.find((link) => link.href.endsWith(href))) {
+    if (loadedLinks.some((link) => link.href.endsWith(href))) {
       resolve(new Event("Already loaded."));
     } else {
       const link = document.createElement("link");
