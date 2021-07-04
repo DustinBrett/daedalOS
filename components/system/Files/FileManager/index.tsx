@@ -14,7 +14,8 @@ type FileManagerProps = {
 };
 
 const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
-  const { deleteFile, files, renameFile, updateFiles } = useFiles(url);
+  const { deleteFile, downloadFile, files, renameFile, updateFiles } =
+    useFiles(url);
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
 
@@ -34,6 +35,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
         <StyledFileEntry key={file}>
           <FileEntry
             deleteFile={deleteFile}
+            downloadFile={downloadFile}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={resolve(url, file)}
             renameFile={renameFile}

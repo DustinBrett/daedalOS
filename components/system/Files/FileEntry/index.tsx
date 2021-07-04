@@ -11,6 +11,7 @@ import Icon from "styles/common/Icon";
 
 type FileEntryProps = {
   deleteFile: (path: string) => void;
+  downloadFile: (path: string) => void;
   name: string;
   path: string;
   renameFile: (path: string, name?: string) => void;
@@ -19,6 +20,7 @@ type FileEntryProps = {
 
 const FileEntry = ({
   deleteFile,
+  downloadFile,
   name,
   path,
   renameFile,
@@ -29,8 +31,16 @@ const FileEntry = ({
   const { contextMenu } = useMenu();
   const openFile = useFile(url);
   const deleteEntry = () => deleteFile(path);
+  const downloadEntry = () => downloadFile(path);
   const renameEntry = () => setRenaming(true);
-  const menu = useContextMenu(url, pid, path, deleteEntry, renameEntry);
+  const menu = useContextMenu(
+    url,
+    pid,
+    path,
+    deleteEntry,
+    downloadEntry,
+    renameEntry
+  );
   const singleClick = view === "list";
 
   return (

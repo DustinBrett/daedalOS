@@ -11,6 +11,7 @@ const useContextMenu = (
   pid: string,
   path: string,
   deleteFile: () => void,
+  downloadFile: () => void,
   renameFile: () => void
 ): MenuItem[] => {
   const { open } = useProcesses();
@@ -22,12 +23,20 @@ const useContextMenu = (
     { label: "Delete", action: deleteFile },
     { label: "Rename", action: renameFile },
   ];
+  const extension = extname(path);
+  const isShortcut = extension === SHORTCUT_EXTENSION;
+
+  if (!isShortcut && url && (extension || pid !== "FileExplorer")) {
+    menuItems.unshift({ group: 1 });
+
+    menuItems.unshift({
+      label: "Download",
+      action: downloadFile,
+    });
+  }
 
   if (pid) {
-    const isShortcut =
-      extname(path) === SHORTCUT_EXTENSION && url && url !== "/";
-
-    menuItems.unshift({ separator: 1 });
+    menuItems.unshift({ group: 2 });
 
     if (openWithFiltered.length > 0) {
       menuItems.unshift({

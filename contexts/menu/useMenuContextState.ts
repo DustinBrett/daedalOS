@@ -2,11 +2,11 @@ import { useState } from "react";
 
 export type MenuItem = {
   action?: () => void;
+  group?: number;
   icon?: string;
   label?: string;
   menu?: MenuItem[];
   primary?: boolean;
-  separator?: number;
 };
 
 export type MenuState = {

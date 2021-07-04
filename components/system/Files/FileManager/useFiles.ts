@@ -2,9 +2,11 @@ import { useFileSystem } from "contexts/fileSystem";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
+import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 type Files = {
   deleteFile: (path: string) => void;
+  downloadFile: (path: string) => void;
   files: string[];
   renameFile: (path: string, name?: string) => void;
   updateFiles: (appendFile?: string) => void;
@@ -12,6 +14,7 @@ type Files = {
 
 const useFiles = (directory: string): Files => {
   const [files, setFiles] = useState<string[]>([]);
+  const [downloadLink, setDownloadLink] = useState<string>("");
   const { fs } = useFileSystem();
   const updateFiles = useCallback(
     (appendFile = "") =>
@@ -28,6 +31,17 @@ const useFiles = (directory: string): Files => {
         currentFiles.filter((file) => file !== basename(path))
       )
     );
+  const downloadFile = (path: string) =>
+    fs?.readFile(path, (_error, contents = Buffer.from("")) => {
+      const link = document.createElement("a");
+
+      link.href = bufferToUrl(contents);
+      link.download = basename(path);
+
+      link.click();
+
+      setDownloadLink(link.href);
+    });
   const renameFile = (path: string, name?: string) => {
     if (name) {
       const newPath = `${directory}/${name}${
@@ -46,8 +60,16 @@ const useFiles = (directory: string): Files => {
 
   useEffect(updateFiles, [directory, fs, updateFiles]);
 
+  useEffect(
+    () => () => {
+      if (downloadLink) cleanUpBufferUrl(downloadLink);
+    },
+    [downloadLink]
+  );
+
   return {
     deleteFile,
+    downloadFile,
     files,
     renameFile,
     updateFiles,

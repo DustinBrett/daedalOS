@@ -36,7 +36,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       <ol>
         {items.map((item) => (
           <MenuItemEntry
-            key={item.label || item.separator}
+            key={item.label || item.group}
             resetMenu={resetMenu}
             {...item}
           />
