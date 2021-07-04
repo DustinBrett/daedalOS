@@ -23,13 +23,18 @@ const useWindowPeek = (id: string): WindowPeek => {
   const [previewSrc, setPreviewSrc] = useState("");
 
   const onMouseEnter = () => {
-    const renderFrame = () =>
-      toPng(peekElement || componentWindow).then((dataUrl) => {
-        const previewImage = new Image();
+    const renderFrame = () => {
+      const previewElement = peekElement || componentWindow;
 
-        previewImage.src = dataUrl;
-        previewImage.onload = () => setPreviewSrc(dataUrl);
-      });
+      if (previewElement) {
+        toPng(previewElement).then((dataUrl) => {
+          const previewImage = new Image();
+
+          previewImage.src = dataUrl;
+          previewImage.onload = () => setPreviewSrc(dataUrl);
+        });
+      }
+    };
 
     mouseTimer.current = setTimeout(() => {
       renderFrame();
