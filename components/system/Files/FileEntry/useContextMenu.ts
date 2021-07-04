@@ -1,4 +1,4 @@
-import { extensions } from "components/system/Files/FileEntry/functions";
+import extensions from "components/system/Files/FileEntry/extensions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
