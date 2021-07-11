@@ -21,7 +21,11 @@ const useRuffle = (
 
   useEffect(() => {
     loadFiles(libs).then(() => {
-      window.RufflePlayer.config = { polyfills: false };
+      window.RufflePlayer.config = {
+        backgroundColor: "#000000",
+        letterbox: "on",
+        polyfills: false,
+      };
       setPlayer(window.RufflePlayer?.newest()?.createPlayer());
     });
   }, []);
@@ -33,10 +37,7 @@ const useRuffle = (
       fs.readFile(url, (error, contents = Buffer.from("")) => {
         if (!error) {
           player
-            .load({
-              allowScriptAccess: false,
-              data: contents,
-            })
+            .load({ data: contents })
             .then(() => appendFileToTitle(basename(url, extname(url))));
         }
       });
