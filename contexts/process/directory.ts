@@ -16,6 +16,13 @@ const processDirectory: Processes = {
     lockAspectRatio: true,
     title: "js-dos v7",
   },
+  Ruffle: {
+    autoSizing: true,
+    backgroundColor: "#000",
+    Component: dynamic(() => import("components/apps/Ruffle")),
+    icon: "/icons/ruffle.png",
+    title: "Ruffle",
+  },
   V86: {
     autoSizing: true,
     backgroundColor: "#000",

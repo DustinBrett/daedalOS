@@ -22,6 +22,10 @@ const extensions: Extensions = {
     icon: "music",
     process: ["Webamp"],
   },
+  ".swf": {
+    icon: "unknown",
+    process: ["Ruffle"],
+  },
   ".wsz": {
     icon: "music",
     process: ["Webamp"],
