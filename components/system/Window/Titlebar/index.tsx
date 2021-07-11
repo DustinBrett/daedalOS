@@ -1,4 +1,3 @@
-import { doubleClick } from "utils/functions";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import {
@@ -11,6 +10,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { doubleClick } from "utils/functions";
 
 type TitlebarProps = {
   id: string;
