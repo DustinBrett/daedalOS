@@ -1,6 +1,9 @@
 import { extname } from "path";
 import { stripUnit } from "polished";
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
   new Blob([new Uint8Array(buffer)]);
@@ -60,3 +63,31 @@ export const loadFiles = async (files: string[]): Promise<Event[]> =>
 
 export const pxToNum = (value: string | number = 0): number =>
   Number(stripUnit(value));
+
+export const doubleClick = (
+  handler: React.MouseEventHandler,
+  singleClick = false,
+  timeout = DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS
+): React.MouseEventHandler => {
+  let timer: NodeJS.Timeout | undefined;
+
+  return (event) => {
+    const runHandler = () => {
+      event.stopPropagation();
+      handler(event);
+    };
+    const clearTimer = () => {
+      timer = undefined;
+    };
+
+    if (singleClick) {
+      runHandler();
+    } else if (typeof timer === "undefined") {
+      timer = setTimeout(clearTimer, timeout);
+    } else {
+      clearTimeout(timer);
+      runHandler();
+      clearTimer();
+    }
+  };
+};

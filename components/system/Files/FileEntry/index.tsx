@@ -4,7 +4,7 @@ import useFile from "components/system/Files/FileEntry/useFile";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import type { FileActions } from "components/system/Files/FileManager/useFiles";
 import { FileEntryIconSize } from "components/system/Files/Views";
-import useDoubleClick from "components/system/useDoubleClick";
+import { doubleClick } from "utils/functions";
 import { useMenu } from "contexts/menu";
 import { useState } from "react";
 import Button from "styles/common/Button";
@@ -32,7 +32,7 @@ const FileEntry = ({
 
   return (
     <Button
-      onClick={useDoubleClick(() => openFile(pid), singleClick)}
+      onClick={doubleClick(() => openFile(pid), singleClick)}
       onContextMenu={contextMenu(menu)}
     >
       <figure>

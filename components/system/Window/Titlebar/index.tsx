@@ -1,4 +1,4 @@
-import useDoubleClick from "components/system/useDoubleClick";
+import { doubleClick } from "utils/functions";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import {
@@ -32,19 +32,18 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const disableMaximize = autoSizing && !lockAspectRatio;
-  const maximizeDoubleClick = useDoubleClick(onMaximize);
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
       <Button
         as="h1"
-        onClick={disableMaximize ? undefined : maximizeDoubleClick}
+        onClick={disableMaximize ? undefined : doubleClick(onMaximize)}
       >
         <figure>
           <Icon
             src={icon}
             alt={title}
-            onClick={useDoubleClick(onClose)}
+            onClick={doubleClick(onClose)}
             imgSize={16}
           />
           <figcaption>{title}</figcaption>
