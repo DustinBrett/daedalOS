@@ -1,6 +1,7 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import {
   IMAGE_FILE_EXTENSIONS,
@@ -9,8 +10,14 @@ import {
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
-const getIconByFileExtension = (extension: string): string =>
-  `/icons/${extensions[extension]?.icon || "unknown"}.png`;
+const getIconByFileExtension = (extension: string): string => {
+  const { icon: extensionIcon, process: [defaultProcess = ""] = [] } =
+    extensions[extension] || {};
+
+  if (extensionIcon) return `/icons/${extensionIcon}.png`;
+
+  return processDirectory[defaultProcess]?.icon || "/icons/unknown.png";
+};
 
 const getProcessByFileExtension = (extension: string): string => {
   const [defaultProcess = ""] = extensions[extension]?.process || [];
