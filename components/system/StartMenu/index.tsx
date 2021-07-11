@@ -10,15 +10,15 @@ const StartMenu = (): JSX.Element => {
   const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
     relatedTarget,
   }) => {
-    const clickedElement = relatedTarget as HTMLElement;
-    const clickedInsideMenu = menuRef.current?.contains(clickedElement);
+    const focusedElement = relatedTarget as HTMLElement;
+    const focusedInsideMenu = menuRef.current?.contains(focusedElement);
 
-    if (!clickedInsideMenu) {
-      const clickedTaskbar = clickedElement === menuRef.current?.nextSibling;
-      const clickedStartButton =
-        clickedElement?.parentElement === menuRef.current?.nextSibling;
+    if (!focusedInsideMenu) {
+      const focusedTaskbar = focusedElement === menuRef.current?.nextSibling;
+      const focusedStartButton =
+        focusedElement?.parentElement === menuRef.current?.nextSibling;
 
-      if (!clickedTaskbar && !clickedStartButton) {
+      if (!focusedTaskbar && !focusedStartButton) {
         toggleStartMenu(false);
       } else {
         menuRef.current?.focus();
