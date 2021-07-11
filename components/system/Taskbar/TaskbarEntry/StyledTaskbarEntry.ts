@@ -1,10 +1,11 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 type StyledTaskbarEntryProps = {
   foreground: boolean;
 };
 
-const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
+const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
   display: flex;
   min-width: 0;
   place-content: center;

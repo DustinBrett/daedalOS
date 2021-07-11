@@ -1,5 +1,6 @@
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
+import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -37,7 +38,12 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   const { PeekComponent, peekEvents } = useWindowPeek(id);
 
   return (
-    <StyledTaskbarEntry foreground={isForeground} title={title} {...peekEvents}>
+    <StyledTaskbarEntry
+      foreground={isForeground}
+      title={title}
+      {...peekEvents}
+      {...useTaskbarTransition()}
+    >
       {PeekComponent && <PeekComponent />}
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
