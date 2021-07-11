@@ -1,6 +1,5 @@
 import type { RufflePlayer } from "components/apps/Ruffle/types";
 import useTitle from "components/system/Window/useTitle";
-import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
@@ -18,7 +17,6 @@ const useRuffle = (
   const {
     processes: { [id]: { url = "" } = {} },
   } = useProcesses();
-  const { updateWindowSize } = useWindowSize(id);
   const { fs } = useFileSystem();
 
   useEffect(() => {
@@ -39,19 +37,13 @@ const useRuffle = (
               allowScriptAccess: false,
               data: contents,
             })
-            .then(() => {
-              const { height = 0, width = 0 } =
-                player?.shadowRoot?.querySelector("canvas") || {};
-
-              updateWindowSize(height, width);
-              appendFileToTitle(basename(url, extname(url)));
-            });
+            .then(() => appendFileToTitle(basename(url, extname(url))));
         }
       });
     }
 
     return () => player?.remove();
-  }, [appendFileToTitle, containerElement, fs, player, updateWindowSize, url]);
+  }, [appendFileToTitle, containerElement, fs, player, url]);
 };
 
 export default useRuffle;

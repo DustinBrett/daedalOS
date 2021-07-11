@@ -17,9 +17,12 @@ const processDirectory: Processes = {
     title: "js-dos v7",
   },
   Ruffle: {
-    autoSizing: true,
     backgroundColor: "#000",
     Component: dynamic(() => import("components/apps/Ruffle")),
+    defaultSize: {
+      height: 400,
+      width: 550,
+    },
     icon: "/icons/ruffle.png",
     title: "Ruffle",
   },

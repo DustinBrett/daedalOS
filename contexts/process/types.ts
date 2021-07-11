@@ -1,4 +1,5 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import type { Size } from "components/system/Window/RndWindow/useResizable";
 
 export type ProcessElements = {
   componentWindow?: HTMLElement;
@@ -11,6 +12,7 @@ export type Process = ProcessElements & {
   backgroundColor?: string;
   closing?: boolean;
   Component: React.ComponentType<ComponentProcessProps>;
+  defaultSize?: Size;
   hasWindow?: boolean;
   icon: string;
   lockAspectRatio?: boolean;
