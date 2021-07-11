@@ -11,11 +11,12 @@ const V86 = ({ id }: ComponentProcessProps): JSX.Element => {
   } = useProcesses();
   const screenRef = useRef<HTMLDivElement | null>(null);
   const { emulator, lockMouse } = useV86(id, url, screenRef);
-  const txtStyle = useV86ScreenSize(id, emulator);
+
+  useV86ScreenSize(id, screenRef, emulator);
 
   return (
     <StyledV86 ref={screenRef} onClick={lockMouse}>
-      <div style={txtStyle} />
+      <div />
       <canvas />
     </StyledV86>
   );

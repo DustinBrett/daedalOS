@@ -2,11 +2,15 @@ import styled from "styled-components";
 
 const StyledV86 = styled.div`
   canvas {
-    height: 100% !important;
-    width: 100% !important;
+    background-color: #000;
   }
 
   div {
+    font-family: Liberation Mono, DejaVu Sans Mono, Courier New, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: normal;
+    position: relative;
     white-space: pre;
   }
 `;

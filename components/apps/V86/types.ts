@@ -2,13 +2,9 @@
 import type { config } from "components/apps/V86/config";
 import type { V86ImageConfig } from "components/apps/V86/image";
 
-export type ModeCallback = (isGraphical: boolean) => void;
 export type SizeCallback = (dimensions: number[]) => void;
 
-type EventListener = (
-  event: string,
-  callback: SizeCallback | ModeCallback
-) => void;
+type EventListener = (event: string, callback: SizeCallback) => void;
 
 export type V86Starter = {
   add_listener: EventListener;

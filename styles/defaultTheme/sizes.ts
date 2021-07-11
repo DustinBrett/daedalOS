@@ -42,7 +42,6 @@ const sizes = {
   },
   window: {
     cascadeOffset: 26,
-    lineHeight: "14px",
     outline: "1px",
   },
 };
