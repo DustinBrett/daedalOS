@@ -15,7 +15,8 @@ const StyledJSDOS = styled.div`
     width: 100%;
   }
 
-  div {
+  div,
+  video {
     display: none;
   }
 `;
