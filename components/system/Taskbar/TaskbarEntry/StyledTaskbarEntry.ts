@@ -22,7 +22,8 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
     height: ${({ foreground }) => (foreground ? "100%" : 0)};
     margin: ${({ foreground }) => (foreground ? "" : "0 4px")};
     position: absolute;
-    transition: ${({ foreground }) => (foreground ? "all 0.2s" : "width 0.1s")};
+    transition-duration: 0.1s;
+    transition-property: ${({ foreground }) => (foreground ? "all" : "width")};
     width: ${({ foreground }) => (foreground ? "100%" : `calc(100% - 8px)`)};
     z-index: -1;
   }
