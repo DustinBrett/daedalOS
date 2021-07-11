@@ -14,7 +14,7 @@ import { useSession } from "contexts/session";
 import { basename, extname } from "path";
 import { useState } from "react";
 import { useTheme } from "styled-components";
-import { WINDOW_TRANSITION_DURATION_IN_MILLISECONDS } from "utils/constants";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 import type { Options } from "webamp";
 
@@ -88,7 +88,7 @@ const useWebamp = (id: string): Webamp => {
             setTimeout(() => {
               subscriptions.forEach((unsubscribe) => unsubscribe());
               webamp.close();
-            }, WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
+            }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
           }),
           webamp.onMinimize(() => onMinimize()),
         ];

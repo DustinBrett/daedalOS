@@ -4,7 +4,7 @@ import type { ProcessContextState } from "contexts/process/useProcessContextStat
 import type { Position } from "react-rnd";
 import {
   PROCESS_DELIMITER,
-  WINDOW_TRANSITION_DURATION_IN_MILLISECONDS,
+  TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { pxToNum } from "utils/functions";
 
@@ -45,5 +45,5 @@ export const centerPosition = (
 
 export const closeWithTransition = (close: processCloser, id: string): void => {
   close(id, true);
-  setTimeout(() => close(id), WINDOW_TRANSITION_DURATION_IN_MILLISECONDS);
+  setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
 };

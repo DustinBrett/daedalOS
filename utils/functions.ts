@@ -1,7 +1,7 @@
 import { stripUnit } from "polished";
 import {
-  DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS,
   ONE_TIME_PASSIVE_EVENT,
+  TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
@@ -39,7 +39,7 @@ export const pxToNum = (value: string | number = 0): number =>
 export const doubleClick = (
   handler: React.MouseEventHandler,
   singleClick = false,
-  timeout = DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS
+  timeout = TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK
 ): React.MouseEventHandler => {
   let timer: NodeJS.Timeout | undefined;
 

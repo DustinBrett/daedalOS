@@ -7,8 +7,6 @@ export const DEFAULT_WINDOW_SIZE: Size = {
   width: "250px",
 };
 
-export const DOUBLE_CLICK_TIMEOUT_IN_MILLISECONDS = 500;
-
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",
@@ -45,4 +43,7 @@ export const PROCESS_DELIMITER = "__";
 
 export const SHORTCUT_EXTENSION = ".url";
 
-export const WINDOW_TRANSITION_DURATION_IN_MILLISECONDS = 250;
+export const TRANSITIONS_IN_MILLISECONDS = {
+  DOUBLE_CLICK: 500,
+  WINDOW: 250,
+};
