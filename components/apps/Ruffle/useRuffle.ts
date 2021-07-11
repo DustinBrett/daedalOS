@@ -41,9 +41,7 @@ const useRuffle = (
             })
             .then(() => {
               const { height = 0, width = 0 } =
-                player?.shadowRoot
-                  ?.querySelector("canvas")
-                  ?.getBoundingClientRect() || {};
+                player?.shadowRoot?.querySelector("canvas") || {};
 
               updateWindowSize(height, width);
               appendFileToTitle(basename(url, extname(url)));
