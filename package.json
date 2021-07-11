@@ -18,18 +18,14 @@
     "stylelint": "stylelint **/*.ts",
     "prettier": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepare": "husky install"
   },
   "browserslist": [
     "defaults and supports es6 and not ie 11"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*": "prettier --write",
+    "*": "prettier --ignore-unknown --write",
     "*.{js,ts,tsx}": "eslint --fix",
     "*.ts": "stylelint --fix"
   },
@@ -78,7 +74,7 @@
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "eslint-plugin-testing-library": "^4.6.0",
     "eslint-plugin-unicorn": "^34.0.1",
-    "husky": "^7.0.0",
+    "husky": "^7.0.1",
     "jest": "^27.0.6",
     "jest-next-dynamic": "^1.0.1",
     "lint-staged": "^11.0.0",
