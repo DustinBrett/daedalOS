@@ -7,7 +7,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useRef, useState } from "react";
-import { bufferToUrl, loadFiles } from "utils/functions";
+import { loadFiles } from "utils/functions";
 
 const libs = ["/libs/ruffle/ruffle.js"];
 
@@ -22,9 +22,10 @@ const Ruffle = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    loadFiles(libs).then(() =>
-      setPlayer(window.RufflePlayer?.newest()?.createPlayer())
-    );
+    loadFiles(libs).then(() => {
+      window.RufflePlayer.config = { polyfills: false };
+      setPlayer(window.RufflePlayer?.newest()?.createPlayer());
+    });
   }, []);
 
   useEffect(() => {
@@ -33,18 +34,25 @@ const Ruffle = ({ id }: ComponentProcessProps): JSX.Element => {
 
       fs.readFile(url, (error, contents = Buffer.from("")) => {
         if (!error) {
-          player.load(bufferToUrl(contents)).then(() => {
-            const { height = 0, width = 0 } =
-              player?.shadowRoot
-                ?.querySelector("canvas")
-                ?.getBoundingClientRect() || {};
+          player
+            .load({
+              allowScriptAccess: false,
+              data: contents,
+            })
+            .then(() => {
+              const { height = 0, width = 0 } =
+                player?.shadowRoot
+                  ?.querySelector("canvas")
+                  ?.getBoundingClientRect() || {};
 
-            updateWindowSize(height, width);
-            appendFileToTitle(basename(url, extname(url)));
-          });
+              updateWindowSize(height, width);
+              appendFileToTitle(basename(url, extname(url)));
+            });
         }
       });
     }
+
+    return () => player?.remove();
   }, [appendFileToTitle, fs, player, updateWindowSize, url]);
 
   return <StyledRuffle ref={containerRef} />;

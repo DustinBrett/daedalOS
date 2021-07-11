@@ -1,5 +1,17 @@
+type BaseLoadOptions = {
+  allowScriptAccess?: boolean;
+};
+
+type Config = {
+  polyfills?: boolean;
+};
+
+type DataLoadOptions = {
+  data: Iterable<number>;
+};
+
 export type RufflePlayer = HTMLElement & {
-  load: (url: string) => Promise<void>;
+  load: (options: DataLoadOptions & BaseLoadOptions) => Promise<void>;
 };
 
 type SourceAPI = {
@@ -7,6 +19,7 @@ type SourceAPI = {
 };
 
 type PublicAPI = {
+  config: Config & BaseLoadOptions;
   newest(): SourceAPI;
 };
 
