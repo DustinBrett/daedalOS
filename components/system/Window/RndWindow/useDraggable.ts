@@ -19,10 +19,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
     },
   } = useTheme();
   const { processes } = useProcesses();
-  const {
-    stackOrder,
-    windowStates: { [id]: windowState },
-  } = useSession();
+  const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
   const { position } = windowState || {};
   const [{ x, y }, setPosition] = useState<Position>(
     position ||
