@@ -13,7 +13,7 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
 
   &::before {
     background-color: ${({ foreground, theme }) =>
-      foreground ? theme.colors.taskbar.active : ""};
+      foreground ? theme.colors.taskbar.foreground : ""};
     border-bottom: ${({ theme }) => `
         ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
       `};
@@ -32,11 +32,20 @@ const StyledTaskbarEntry = styled.li<StyledTaskbarEntryProps>`
     &::before {
       background-color: ${({ foreground, theme }) =>
         foreground
-          ? theme.colors.taskbar.activeHover
+          ? theme.colors.taskbar.foregroundHover
           : theme.colors.taskbar.hover};
       height: 100%;
       margin: 0;
       width: 100%;
+    }
+  }
+
+  &:active {
+    &::before {
+      background-color: ${({ foreground, theme }) =>
+        foreground
+          ? theme.colors.taskbar.activeForeground
+          : theme.colors.taskbar.active};
     }
   }
 

@@ -21,9 +21,11 @@ const colors = {
   highlight: "hsl(207deg 100% 72% / 90%)",
   startButton: "#FFF",
   taskbar: {
-    active: "hsla(0, 0%, 35%, 70%)",
-    activeHover: "hsla(0, 0%, 45%, 70%)",
+    active: "hsla(0, 0%, 20%, 70%)",
+    activeForeground: "hsla(0, 0%, 40%, 70%)",
     background: "hsla(0, 0%, 10%, 70%)",
+    foreground: "hsla(0, 0%, 35%, 70%)",
+    foregroundHover: "hsla(0, 0%, 45%, 70%)",
     hover: "hsla(0, 0%, 25%, 70%)",
   },
   text: "rgba(255, 255, 255, 90%)",
