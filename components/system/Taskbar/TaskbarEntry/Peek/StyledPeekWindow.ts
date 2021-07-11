@@ -9,11 +9,10 @@ const StyledPeekWindow = styled.div`
   place-content: center;
   place-items: flex-start;
   position: absolute;
-  width: 150px;
 
   img {
-    padding: 8px;
-    width: 100%;
+    height: 82px;
+    margin: 8px;
   }
 
   button {
