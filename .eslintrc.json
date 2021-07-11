@@ -53,7 +53,7 @@
     ],
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
-    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
     "simple-import-sort/exports": "error",
