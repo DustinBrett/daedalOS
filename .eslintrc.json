@@ -59,12 +59,5 @@
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
     "sonarjs/cognitive-complexity": "off"
-  },
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "project": "tsconfig.json"
-      }
-    }
   }
 }
