@@ -7,7 +7,7 @@ type StyledStartButtonProps = {
 
 const StyledStartButton = styled(Button)<StyledStartButtonProps>`
   background-color: ${({ active, theme }) =>
-    active && theme.colors.taskbar.active};
+    active && theme.colors.taskbar.foreground};
   display: flex;
   fill: ${({ theme }) => theme.colors.startButton};
   height: 100%;
