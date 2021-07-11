@@ -1,6 +1,5 @@
 import type { WebampCI } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import type { IAudioMetadata } from "music-metadata-browser";
 import { parseBuffer } from "music-metadata-browser";
 import type { Position } from "react-rnd";
 import { MP3_MIME_TYPE } from "utils/constants";
@@ -74,24 +73,25 @@ export const unFocus = (webamp: WebampCI): void =>
     window: "",
   });
 
-export const parseTrack = (file: Buffer, fileName: string): Promise<Track> =>
-  new Promise((resolve) =>
-    parseBuffer(
-      file,
-      {
-        mimeType: MP3_MIME_TYPE,
-        size: file.length,
-      },
-      { duration: true, skipCovers: true, skipPostHeaders: true }
-    ).then(
-      ({
-        common: { artist = "", title = fileName },
-        format: { duration = 0 },
-      }: IAudioMetadata) =>
-        resolve({
-          blob: bufferToBlob(file),
-          duration: Math.floor(duration),
-          metaData: { artist, title },
-        })
-    )
+export const parseTrack = async (
+  file: Buffer,
+  fileName: string
+): Promise<Track> => {
+  const {
+    common: { artist = "", title = fileName },
+    format: { duration = 0 },
+  } = await parseBuffer(
+    file,
+    {
+      mimeType: MP3_MIME_TYPE,
+      size: file.length,
+    },
+    { duration: true, skipCovers: true, skipPostHeaders: true }
   );
+
+  return {
+    blob: bufferToBlob(file),
+    duration: Math.floor(duration),
+    metaData: { artist, title },
+  };
+};
