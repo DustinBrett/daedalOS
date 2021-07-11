@@ -1,59 +1,12 @@
 import StyledRuffle from "components/apps/Ruffle/StyledRuffle";
-import type { RufflePlayer } from "components/apps/Ruffle/types";
+import useRuffle from "components/apps/Ruffle/useRuffle";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import useTitle from "components/system/Window/useTitle";
-import useWindowSize from "components/system/Window/useWindowSize";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useEffect, useRef, useState } from "react";
-import { loadFiles } from "utils/functions";
-
-const libs = ["/libs/ruffle/ruffle.js"];
+import { useRef } from "react";
 
 const Ruffle = ({ id }: ComponentProcessProps): JSX.Element => {
-  const { appendFileToTitle } = useTitle(id);
-  const {
-    processes: { [id]: { url = "" } = {} },
-  } = useProcesses();
-  const { updateWindowSize } = useWindowSize(id);
-  const { fs } = useFileSystem();
-  const [player, setPlayer] = useState<RufflePlayer>();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    loadFiles(libs).then(() => {
-      window.RufflePlayer.config = { polyfills: false };
-      setPlayer(window.RufflePlayer?.newest()?.createPlayer());
-    });
-  }, []);
-
-  useEffect(() => {
-    if (fs && player) {
-      containerRef.current?.appendChild(player);
-
-      fs.readFile(url, (error, contents = Buffer.from("")) => {
-        if (!error) {
-          player
-            .load({
-              allowScriptAccess: false,
-              data: contents,
-            })
-            .then(() => {
-              const { height = 0, width = 0 } =
-                player?.shadowRoot
-                  ?.querySelector("canvas")
-                  ?.getBoundingClientRect() || {};
-
-              updateWindowSize(height, width);
-              appendFileToTitle(basename(url, extname(url)));
-            });
-        }
-      });
-    }
-
-    return () => player?.remove();
-  }, [appendFileToTitle, fs, player, updateWindowSize, url]);
+  useRuffle(id, containerRef.current);
 
   return <StyledRuffle ref={containerRef} />;
 };
