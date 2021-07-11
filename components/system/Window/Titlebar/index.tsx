@@ -36,7 +36,10 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
 
   return (
     <StyledTitlebar className="handle" foreground={isForeground}>
-      <h1 onClick={disableMaximize ? undefined : maximizeDoubleClick}>
+      <Button
+        as="h1"
+        onClick={disableMaximize ? undefined : maximizeDoubleClick}
+      >
         <figure>
           <Icon
             src={icon}
@@ -46,7 +49,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
           />
           <figcaption>{title}</figcaption>
         </figure>
-      </h1>
+      </Button>
       <nav className="cancel">
         <Button className="minimize" onClick={onMinimize} title="Minimize">
           <MinimizeIcon />

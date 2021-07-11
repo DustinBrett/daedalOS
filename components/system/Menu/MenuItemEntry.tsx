@@ -4,6 +4,7 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
+import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 
 type MenuItemEntryProps = MenuItem & {
@@ -47,7 +48,8 @@ const MenuItemEntry = ({
       {group ? (
         <hr />
       ) : (
-        <figure
+        <Button
+          as="figure"
           className={showSubMenu ? "active" : ""}
           onClick={() => {
             action?.();
@@ -58,7 +60,7 @@ const MenuItemEntry = ({
           {icon && <Icon src={icon} alt={label} imgSize={16} />}
           <figcaption className={primary ? "primary" : ""}>{label}</figcaption>
           {menu && <ChevronRight />}
-        </figure>
+        </Button>
       )}
       {showSubMenu && <Menu subMenu={{ items: menu, ...subMenuOffset }} />}
     </li>
