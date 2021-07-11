@@ -15,6 +15,10 @@ const StyledClock = styled.time`
   &:hover {
     background-color: ${({ theme }) => theme.colors.taskbar.hover};
   }
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.taskbar.foreground};
+  }
 `;
 
 export default StyledClock;
