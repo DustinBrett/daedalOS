@@ -1,5 +1,6 @@
 import { extname } from "path";
 import { stripUnit } from "polished";
+import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
   new Blob([new Uint8Array(buffer)]);
@@ -20,8 +21,8 @@ export const loadScript = (src: string): Promise<Event> =>
 
       script.async = false;
       script.src = src;
-      script.onerror = reject;
-      script.onload = resolve;
+      script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
+      script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
       document.head.appendChild(script);
     }
@@ -29,7 +30,7 @@ export const loadScript = (src: string): Promise<Event> =>
 
 export const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
-    const loadedLinks = [...document.getElementsByTagName("link")];
+    const loadedLinks = [...document.querySelectorAll("link")];
 
     if (loadedLinks.some((link) => link.href.endsWith(href))) {
       resolve(new Event("Already loaded."));
@@ -38,8 +39,8 @@ export const loadStyle = (href: string): Promise<Event> =>
 
       link.rel = "stylesheet";
       link.href = href;
-      link.onerror = reject;
-      link.onload = resolve;
+      link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
+      link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
       document.head.appendChild(link);
     }

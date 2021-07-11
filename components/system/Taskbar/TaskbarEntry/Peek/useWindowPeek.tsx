@@ -1,7 +1,10 @@
 import PeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/PeekWindow";
 import { useProcesses } from "contexts/process";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import {
+  MILLISECONDS_IN_SECOND,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 
 type WindowPeek = {
   PeekComponent?: React.ComponentType;
@@ -9,6 +12,24 @@ type WindowPeek = {
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
   };
+};
+
+const renderFrame = (
+  previewElement: HTMLElement,
+  callback: (url: string) => void
+): void => {
+  import("html-to-image").then(({ toPng }) =>
+    toPng(previewElement).then((dataUrl) => {
+      const previewImage = new Image();
+
+      previewImage.src = dataUrl;
+      previewImage.addEventListener(
+        "load",
+        () => callback(dataUrl),
+        ONE_TIME_PASSIVE_EVENT
+      );
+    })
+  );
 };
 
 const useWindowPeek = (id: string): WindowPeek => {
@@ -20,28 +41,18 @@ const useWindowPeek = (id: string): WindowPeek => {
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
   const [previewSrc, setPreviewSrc] = useState("");
-
   const onMouseEnter = () => {
-    const renderFrame = () => {
-      const previewElement = peekElement || componentWindow;
+    const previewElement = peekElement || componentWindow;
 
-      if (previewElement) {
-        import("html-to-image").then(({ toPng }) =>
-          toPng(previewElement).then((dataUrl) => {
-            const previewImage = new Image();
+    if (previewElement) {
+      const render = () => renderFrame(previewElement, setPreviewSrc);
 
-            previewImage.src = dataUrl;
-            previewImage.onload = () => setPreviewSrc(dataUrl);
-          })
-        );
-      }
-    };
-
-    mouseTimer.current = setTimeout(() => {
-      renderFrame();
-      setShowPeek(true);
-      previewTimer.current = setInterval(renderFrame, MILLISECONDS_IN_SECOND);
-    }, MILLISECONDS_IN_SECOND / 2);
+      mouseTimer.current = setTimeout(() => {
+        render();
+        setShowPeek(true);
+        previewTimer.current = setInterval(render, MILLISECONDS_IN_SECOND);
+      }, MILLISECONDS_IN_SECOND / 2);
+    }
   };
   const onMouseLeave = useCallback(() => {
     if (mouseTimer?.current) clearTimeout(mouseTimer.current);

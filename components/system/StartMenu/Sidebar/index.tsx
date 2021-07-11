@@ -24,7 +24,7 @@ const bottomButtons = [
 ];
 
 const SidebarButton = ({ active, icon, name }: SidebarButtonProps) => (
-  <StyledSidebarButton key={name} active={active}>
+  <StyledSidebarButton active={active}>
     <figure>
       {icon}
       <figcaption>{name}</figcaption>
@@ -35,7 +35,11 @@ const SidebarButton = ({ active, icon, name }: SidebarButtonProps) => (
 const Sidebar = (): JSX.Element => (
   <StyledSidebar>
     {Object.entries({ topButtons, bottomButtons }).map(([key, buttons]) => (
-      <ol key={key}>{buttons.map(SidebarButton)}</ol>
+      <ol key={key}>
+        {buttons.map((button) => (
+          <SidebarButton key={button.name} {...button} />
+        ))}
+      </ol>
     ))}
   </StyledSidebar>
 );

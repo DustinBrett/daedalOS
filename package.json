@@ -77,6 +77,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "eslint-plugin-testing-library": "^4.6.0",
+    "eslint-plugin-unicorn": "^34.0.1",
     "husky": "^7.0.0",
     "jest": "^27.0.6",
     "jest-next-dynamic": "^1.0.1",

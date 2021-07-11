@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires, no-console */
+/* eslint-disable @typescript-eslint/no-var-requires, no-console, unicorn/no-process-exit */
 
 const { readdir, readlink, stat, writeFile } = require("fs");
 const { basename, relative, join, resolve: resolvePath } = require("path");

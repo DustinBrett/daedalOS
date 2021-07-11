@@ -13,6 +13,7 @@
     "plugin:testing-library/react",
     "plugin:prettier/recommended",
     "plugin:sonarjs/recommended",
+    "plugin:unicorn/recommended",
     "prettier",
     "next",
     "next/core-web-vitals",
@@ -29,7 +30,8 @@
     "react-hooks",
     "simple-import-sort",
     "sonarjs",
-    "testing-library"
+    "testing-library",
+    "unicorn"
   ],
   "rules": {
     "@next/next/no-img-element": "off",
@@ -58,6 +60,15 @@
     "react/require-default-props": "off",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
-    "sonarjs/cognitive-complexity": "off"
+    "sonarjs/cognitive-complexity": "off",
+    "unicorn/filename-case": "off",
+    "unicorn/import-style": "off",
+    "unicorn/no-array-for-each": "off",
+    "unicorn/no-array-reduce": "off",
+    "unicorn/numeric-separators-style": "off",
+    "unicorn/prefer-dom-node-append": "off",
+    "unicorn/prefer-module": "off",
+    "unicorn/prefer-node-protocol": "off",
+    "unicorn/prevent-abbreviations": "off"
   }
 }

@@ -29,10 +29,9 @@ type Webamp = {
 
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
-  const {
-    setWindowStates,
-    windowStates: { [id]: { position = undefined } = {} } = {},
-  } = useSession();
+  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
+    useSession();
+  const { position } = windowState || {};
   const {
     sizes: {
       taskbar: { height: taskbarHeight },
