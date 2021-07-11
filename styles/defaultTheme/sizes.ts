@@ -20,6 +20,9 @@ const sizes = {
     iconSize: "19px",
     width: "36px",
   },
+  startMenu: {
+    height: "350px",
+  },
   taskbar: {
     blur: "5px",
     entry: {
