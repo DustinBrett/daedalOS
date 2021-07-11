@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 const Button = styled.button.attrs({
-  onKeyDown: (event) => event?.preventDefault(),
+  onKeyDown: (event) => {
+    if (!(event.target instanceof HTMLInputElement)) event?.preventDefault();
+  },
   type: "button",
 })`
   background-color: transparent;
