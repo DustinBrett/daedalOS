@@ -61,6 +61,7 @@
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
     "sonarjs/cognitive-complexity": "off",
+    "sonarjs/no-nested-template-literals": "off",
     "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-array-for-each": "off",
