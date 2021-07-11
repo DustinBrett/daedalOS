@@ -22,6 +22,10 @@ const extensions: Extensions = {
     icon: "music",
     process: ["Webamp"],
   },
+  ".spl": {
+    icon: "unknown",
+    process: ["Ruffle"],
+  },
   ".swf": {
     icon: "unknown",
     process: ["Ruffle"],
