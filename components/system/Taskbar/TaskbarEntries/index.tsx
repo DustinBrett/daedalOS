@@ -1,7 +1,11 @@
 import StyledTaskbarEntries from "components/system/Taskbar/TaskbarEntries/StyledTaskbarEntries";
-import TaskbarEntry from "components/system/Taskbar/TaskbarEntry";
 import { ProcessConsumer } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const TaskbarEntry = dynamic(
+  () => import("components/system/Taskbar/TaskbarEntry")
+);
 
 const TaskbarEntries = (): JSX.Element => (
   <StyledTaskbarEntries>

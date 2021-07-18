@@ -1,6 +1,10 @@
-import RenderComponent from "components/system/Apps/RenderComponent";
 import { ProcessConsumer } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const RenderComponent = dynamic(
+  () => import("components/system/Apps/RenderComponent")
+);
 
 const AppsLoader = (): JSX.Element => (
   <ProcessConsumer>
