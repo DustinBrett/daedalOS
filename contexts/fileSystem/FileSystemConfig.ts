@@ -8,7 +8,7 @@ const FileSystemConfig: FileSystemConfiguration = {
       fs: "OverlayFS",
       options: {
         readable: {
-          fs: "XmlHttpRequest",
+          fs: "HTTPRequest",
           options: {
             index: bfsJson,
           },
