@@ -26,10 +26,10 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
   const viewportRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (viewportRef.current && !peekElement) {
+    if (process && !peekElement && viewportRef.current) {
       linkElement(id, "peekElement", viewportRef.current);
     }
-  }, [id, linkElement, peekElement]);
+  }, [id, linkElement, peekElement, process]);
 
   return (
     <RndWindow id={id} zIndex={zIndex}>
