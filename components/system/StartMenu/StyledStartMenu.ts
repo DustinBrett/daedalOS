@@ -1,3 +1,4 @@
+import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
@@ -11,6 +12,10 @@ const StyledStartMenu = styled(motion.nav)`
   position: absolute;
   width: 320px;
   z-index: 1000;
+
+  ${StyledFileManager} {
+    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+  }
 `;
 
 export default StyledStartMenu;

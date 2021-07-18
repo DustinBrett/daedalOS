@@ -7,18 +7,18 @@ type StyledSidebarButtonProps = {
 const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   border: 1px solid transparent;
   display: flex;
-  height: 48px;
+  height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
   place-content: center;
   place-items: center;
-  width: 48px;
+  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
 
   &::before {
     border-left: ${({ active, theme }) =>
       `4px solid ${active ? theme.colors.highlight : "transparent"}`};
     content: "";
-    height: 48px;
+    height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
     position: absolute;
-    width: 48px;
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
   }
 
   figure {

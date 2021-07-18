@@ -7,6 +7,8 @@ const StyledSidebar = styled.nav`
   justify-content: space-between;
   margin-right: 7px;
   margin-top: 4px;
+  position: absolute;
+  top: 0;
 `;
 
 export default StyledSidebar;
