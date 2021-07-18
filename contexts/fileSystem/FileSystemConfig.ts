@@ -1,5 +1,5 @@
 import type { FileSystemConfiguration } from "browserfs";
-import bfsJson from "public/.index/fs.bfs.json";
+import index from "public/.index/fs.bfs.json";
 
 const FileSystemConfig: FileSystemConfiguration = {
   fs: "MountableFileSystem",
@@ -9,15 +9,10 @@ const FileSystemConfig: FileSystemConfiguration = {
       options: {
         readable: {
           fs: "HTTPRequest",
-          options: {
-            index: bfsJson,
-          },
+          options: { index },
         },
         writable: {
           fs: "IndexedDB",
-          options: {
-            storeName: "browser-fs-cache",
-          },
         },
       },
     },
