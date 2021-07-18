@@ -13,11 +13,6 @@ export type V86Starter = {
   remove_listener: EventListener;
 };
 
-export type V86 = {
-  emulator?: V86Starter;
-  lockMouse?: () => void;
-};
-
 type V86Config = typeof config &
   V86ImageConfig & {
     boot_order: number;
