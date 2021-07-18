@@ -24,8 +24,8 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const windowTransitions = useWindowTransitions(id);
   const focusEvents = useMemo(
     () => ({
-      onBlur: () => webampCI && unFocus(webampCI),
-      onFocus: () => webampCI && focusWindow(webampCI, "main"),
+      onBlurCapture: () => webampCI && unFocus(webampCI),
+      onFocusCapture: () => webampCI && focusWindow(webampCI, "main"),
     }),
     [webampCI]
   );

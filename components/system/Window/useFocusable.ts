@@ -3,8 +3,8 @@ import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";
 
 type Events = {
-  onBlur: (event: React.FocusEvent<HTMLElement>) => void;
-  onFocus: (event?: React.FocusEvent<HTMLElement>) => void;
+  onBlurCapture: (event: React.FocusEvent<HTMLElement>) => void;
+  onFocusCapture: (event?: React.FocusEvent<HTMLElement>) => void;
 };
 
 type Focusable = Events & {
@@ -26,7 +26,7 @@ const useFocusable = (
   const zIndex =
     stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
   const isForeground = id === foregroundId;
-  const onBlur: React.FocusEventHandler<HTMLElement> = (event) => {
+  const onBlurCapture: React.FocusEventHandler<HTMLElement> = (event) => {
     const { relatedTarget } = event;
     const focusedElement = relatedTarget as HTMLElement;
     const focusedOnTaskbarEntry = focusedElement === taskbarEntry;
@@ -42,7 +42,7 @@ const useFocusable = (
       !focusedOnInsideWindow
     ) {
       setForegroundId("");
-      callbackEvents?.onBlur?.(event);
+      callbackEvents?.onBlurCapture?.(event);
     }
   };
   const moveToFront = useCallback(
@@ -54,7 +54,7 @@ const useFocusable = (
         setForegroundId(id);
       } else if (!relatedTarget || document.activeElement === taskbarEntry) {
         componentWindow?.focus();
-        callbackEvents?.onFocus?.(event);
+        callbackEvents?.onFocusCapture?.(event);
       }
     },
     [
@@ -76,8 +76,8 @@ const useFocusable = (
   }, [closing, id, process, setForegroundId, url]);
 
   return {
-    onBlur,
-    onFocus: moveToFront,
+    onBlurCapture,
+    onFocusCapture: moveToFront,
     tabIndex: -1,
     zIndex,
   };

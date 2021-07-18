@@ -26,7 +26,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
 
   return items ? (
     <StyledMenu
-      onBlur={resetMenu}
+      onBlurCapture={resetMenu}
       ref={menuRef}
       isSubMenu={!!subMenu}
       tabIndex={-1}

@@ -20,7 +20,7 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   return (
     <StyledRenameBox
       defaultValue={name}
-      onBlur={saveRename}
+      onBlurCapture={saveRename}
       onKeyDown={({ key }) => key === "Enter" && saveRename()}
       ref={inputRef}
     />
