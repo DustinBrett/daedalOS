@@ -11,7 +11,8 @@ type ContainerHook = (
 const ContainerComponent = (
   id: string,
   useHook: ContainerHook,
-  Component: StyledComponent<"div", DefaultTheme>
+  Component: StyledComponent<"div", DefaultTheme>,
+  children?: JSX.Element
 ): JSX.Element => {
   const {
     processes: { [id]: { url = "" } = {} },
@@ -20,7 +21,7 @@ const ContainerComponent = (
 
   useHook(id, url, containerRef);
 
-  return <Component ref={containerRef} />;
+  return <Component ref={containerRef}>{children}</Component>;
 };
 
 export default ContainerComponent;
