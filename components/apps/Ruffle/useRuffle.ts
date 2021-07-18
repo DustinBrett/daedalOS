@@ -1,7 +1,6 @@
 import type { RufflePlayer } from "components/apps/Ruffle/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
@@ -10,13 +9,12 @@ const libs = ["/libs/ruffle/ruffle.js"];
 
 const useRuffle = (
   id: string,
-  containerElement: HTMLDivElement | null
+  url: string,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
 ): void => {
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
-  const {
-    processes: { [id]: { url = "" } = {} },
-  } = useProcesses();
+
   const { fs } = useFileSystem();
 
   useEffect(() => {
@@ -31,8 +29,8 @@ const useRuffle = (
   }, []);
 
   useEffect(() => {
-    if (containerElement && fs && player) {
-      containerElement.appendChild(player);
+    if (containerRef.current && fs && player) {
+      containerRef.current.appendChild(player);
 
       fs.readFile(url, (error, contents = Buffer.from("")) => {
         if (!error) {
@@ -44,7 +42,7 @@ const useRuffle = (
     }
 
     return () => player?.remove();
-  }, [appendFileToTitle, containerElement, fs, player, url]);
+  }, [appendFileToTitle, containerRef, fs, player, url]);
 };
 
 export default useRuffle;
