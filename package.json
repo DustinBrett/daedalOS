@@ -1,33 +1,29 @@
 {
   "name": "x",
   "version": "2.0.0",
-  "description": "Desktop environment in the browser.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DustinBrett/x.git"
-  },
+  "description": "OS in the browser",
   "author": "Dustin Brett",
   "license": "MIT",
-  "scripts": {
-    "dev": "next dev",
-    "build": "npm run build:fs && next build",
-    "build:fs": "cd public && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json && node ../components/apps/V86/fs2json.js --exclude .index --out .index/fs.9p.json .",
-    "export": "next export",
-    "start": "next start",
-    "eslint": "eslint .",
-    "stylelint": "stylelint **/*.ts",
-    "prettier": "prettier --write .",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "prepare": "husky install"
-  },
   "browserslist": [
     "defaults and supports es6 and not ie 11"
   ],
+  "scripts": {
+    "build": "npm run build:fs && next build",
+    "build:fs": "cd public && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json && node ../components/apps/V86/fs2json.js --exclude .index --out .index/fs.9p.json .",
+    "dev": "next dev",
+    "eslint": "eslint .",
+    "export": "next export",
+    "prepare": "husky install",
+    "prettier": "prettier --write .",
+    "start": "next start",
+    "stylelint": "stylelint **/*.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
-    "*.{js,ts,tsx}": "eslint --fix",
-    "*.ts": "stylelint --fix"
+    "*.ts": "stylelint --fix",
+    "*.{js,ts,tsx}": "eslint --fix"
   },
   "resolutions": {
     "styled-components": "^5"
