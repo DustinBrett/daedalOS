@@ -21,7 +21,7 @@ const sizes = {
     width: "36px",
   },
   startMenu: {
-    height: "350px",
+    size: "350px",
     sideBar: {
       height: "48px",
       width: "48px",

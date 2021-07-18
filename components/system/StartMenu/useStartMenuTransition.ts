@@ -20,12 +20,12 @@ const useStartMenuTransition = (): MotionProps => {
     },
     variants: {
       active: {
-        height: startMenu.height,
+        height: startMenu.size,
         paddingTop: 0,
       },
       initial: {
         height: 0,
-        paddingTop: startMenu.height,
+        paddingTop: startMenu.size,
       },
     },
   };
