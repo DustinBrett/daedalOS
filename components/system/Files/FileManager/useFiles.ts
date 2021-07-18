@@ -58,7 +58,7 @@ const useFiles = (directory: string): Files => {
       fs?.rename(path, newPath, () =>
         setFiles((currentFiles) =>
           currentFiles.map((file) =>
-            file.replace(basename(path), basename(newPath))
+            file === basename(path) ? basename(newPath) : file
           )
         )
       );
