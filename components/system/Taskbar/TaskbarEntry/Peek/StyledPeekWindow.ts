@@ -8,7 +8,7 @@ const StyledPeekWindow = styled.div`
   display: flex;
   place-content: center;
   place-items: flex-start;
-  position: absolute;
+  position: fixed;
 
   img {
     height: 82px;
