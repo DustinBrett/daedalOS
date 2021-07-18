@@ -27,7 +27,7 @@ const StyledFileEntry = styled.li`
     figure {
       display: flex;
       flex-direction: column;
-      margin-bottom: -3px;
+      margin-bottom: -2px;
       place-items: center;
 
       figcaption {
