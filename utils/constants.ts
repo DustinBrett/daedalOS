@@ -3,8 +3,8 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 export const DEFAULT_LOCALE = "en";
 
 export const DEFAULT_WINDOW_SIZE: Size = {
-  height: "200px",
-  width: "250px",
+  height: 200,
+  width: 250,
 };
 
 export const IMAGE_FILE_EXTENSIONS = new Set([

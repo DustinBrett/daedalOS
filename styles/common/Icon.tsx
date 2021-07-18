@@ -14,13 +14,13 @@ const onLoad: React.ReactEventHandler = ({ target }) =>
 const StyledIcon = styled.img.attrs<IconProps>(
   ({ imgSize, displaySize, src = "" }) => ({
     draggable: false,
-    height: `${displaySize || imgSize}px`,
+    height: displaySize || imgSize,
     onLoad,
     src:
       !src || src.startsWith("blob:")
         ? src
         : `${dirname(src)}/${imgSize}x${imgSize}/${basename(src)}`,
-    width: `${displaySize || imgSize}px`,
+    width: displaySize || imgSize,
   })
 )<IconProps>`
   visibility: hidden;
