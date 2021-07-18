@@ -18,16 +18,25 @@ const renderFrame = (
   previewElement: HTMLElement,
   callback: (url: string) => void
 ): void => {
-  import("html-to-image").then(({ toPng }) =>
-    toPng(previewElement).then((dataUrl) => {
-      const previewImage = new Image();
+  import("html-to-image").then(({ toCanvas }) =>
+    toCanvas(previewElement).then((canvas) => {
+      const { height, width } = canvas;
+      const { data: pixelData } =
+        canvas.getContext("2d")?.getImageData(0, 0, width, height) || {};
 
-      previewImage.src = dataUrl;
-      previewImage.addEventListener(
-        "load",
-        () => callback(dataUrl),
-        ONE_TIME_PASSIVE_EVENT
-      );
+      if (pixelData?.some(Boolean)) {
+        const dataUrl = canvas.toDataURL();
+        const previewImage = new Image();
+
+        previewImage.src = dataUrl;
+        previewImage.addEventListener(
+          "load",
+          () => callback(dataUrl),
+          ONE_TIME_PASSIVE_EVENT
+        );
+      } else {
+        renderFrame(previewElement, callback);
+      }
     })
   );
 };
