@@ -63,3 +63,14 @@ export const doubleClick = (
     }
   };
 };
+
+export const isRectOutsideWindow = (
+  x = 0,
+  y = 0,
+  height = 0,
+  width = 0
+): boolean =>
+  x < 0 ||
+  y < 0 ||
+  x + width > window.innerWidth ||
+  y + height > window.innerHeight;

@@ -8,6 +8,7 @@ import { useSession } from "contexts/session";
 import { useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
+import { isRectOutsideWindow, pxToNum } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -20,9 +21,15 @@ const useDraggable = (id: string, size: Size): Draggable => {
   } = useTheme();
   const { processes } = useProcesses();
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
-  const { position } = windowState || {};
+  const { position, size: windowSize } = windowState || {};
+  const isOffscreen = isRectOutsideWindow(
+    position?.x,
+    position?.y,
+    pxToNum(windowSize?.height),
+    pxToNum(windowSize?.width)
+  );
   const [{ x, y }, setPosition] = useState<Position>(
-    position ||
+    (!isOffscreen && position) ||
       cascadePosition(id, processes, stackOrder, cascadeOffset) ||
       centerPosition(size, taskbarHeight)
   );
