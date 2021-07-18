@@ -14,7 +14,6 @@ const useRuffle = (
 ): void => {
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
-
   const { fs } = useFileSystem();
 
   useEffect(() => {

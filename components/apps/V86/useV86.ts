@@ -23,6 +23,8 @@ const useV86 = (
   const [emulator, setEmulator] = useState<V86Starter>();
   const { fs } = useFileSystem();
 
+  useV86ScreenSize(id, containerRef, emulator);
+
   useEffect(() => {
     if (!emulator && fs && url) {
       fs?.readFile(url, (_error, contents = Buffer.from("")) => {
@@ -60,8 +62,6 @@ const useV86 = (
 
     return () => emulator?.destroy?.();
   }, [appendFileToTitle, containerRef, emulator, fs, url]);
-
-  useV86ScreenSize(id, containerRef, emulator);
 };
 
 export default useV86;
