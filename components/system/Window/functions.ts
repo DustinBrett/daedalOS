@@ -1,6 +1,7 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes } from "contexts/process/types";
 import type { ProcessContextState } from "contexts/process/useProcessContextState";
+import type { WindowState } from "contexts/session/useSessionContextState";
 import type { Position } from "react-rnd";
 import {
   PROCESS_DELIMITER,
@@ -46,4 +47,20 @@ export const centerPosition = (
 export const closeWithTransition = (close: processCloser, id: string): void => {
   close(id, true);
   setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
+};
+
+export const isWindowOutsideBounds = (
+  windowState: WindowState,
+  bounds: Position
+): boolean => {
+  const { position, size } = windowState || {};
+  const { x = 0, y = 0 } = position || {};
+  const { height = 0, width = 0 } = size || {};
+
+  return (
+    x < 0 ||
+    y < 0 ||
+    x + pxToNum(width) > bounds.x ||
+    y + pxToNum(height) > bounds.y
+  );
 };

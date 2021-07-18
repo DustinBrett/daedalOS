@@ -3,7 +3,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useCallback, useEffect, useState } from "react";
 import type { Position } from "react-rnd";
 
-type WindowState = {
+export type WindowState = {
   position?: Position;
   size?: Size;
 };

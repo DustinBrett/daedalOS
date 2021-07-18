@@ -1,6 +1,7 @@
 import {
   cascadePosition,
   centerPosition,
+  isWindowOutsideBounds,
 } from "components/system/Window/functions";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
@@ -8,7 +9,7 @@ import { useSession } from "contexts/session";
 import { useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import { isRectOutsideWindow, pxToNum } from "utils/functions";
+import { pxToNum } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -21,13 +22,11 @@ const useDraggable = (id: string, size: Size): Draggable => {
   } = useTheme();
   const { processes } = useProcesses();
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
-  const { position, size: windowSize } = windowState || {};
-  const isOffscreen = isRectOutsideWindow(
-    position?.x,
-    position?.y,
-    pxToNum(windowSize?.height),
-    pxToNum(windowSize?.width)
-  );
+  const { position } = windowState || {};
+  const isOffscreen = isWindowOutsideBounds(windowState, {
+    x: window?.innerWidth || 0,
+    y: (window?.innerHeight || 0) - pxToNum(taskbarHeight),
+  });
   const [{ x, y }, setPosition] = useState<Position>(
     (!isOffscreen && position) ||
       cascadePosition(id, processes, stackOrder, cascadeOffset) ||
