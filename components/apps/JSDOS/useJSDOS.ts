@@ -27,7 +27,7 @@ const cleanUpLoader = () =>
 const useJSDOS = (
   id: string,
   url: string,
-  screenRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
@@ -41,16 +41,15 @@ const useJSDOS = (
         loadFiles(libs).then(async () => {
           const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
 
-          if (screenRef?.current) {
+          if (containerRef?.current) {
             window.emulators.pathPrefix = pathPrefix;
             window
-              .Dos(screenRef.current)
+              .Dos(containerRef.current)
               .run(objectURL)
               .then((ci) => {
-                const canvas =
-                  screenRef.current?.querySelector<HTMLCanvasElement>("canvas");
+                const canvas = containerRef.current?.querySelector("canvas");
 
-                if (canvas) linkElement(id, "peekElement", canvas);
+                linkElement(id, "peekElement", canvas as HTMLCanvasElement);
                 setDos(ci);
                 appendFileToTitle(url);
                 cleanUpBufferUrl(objectURL);
@@ -67,7 +66,7 @@ const useJSDOS = (
         window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.();
       }
     };
-  }, [appendFileToTitle, dos, fs, id, linkElement, screenRef, url]);
+  }, [appendFileToTitle, containerRef, dos, fs, id, linkElement, url]);
 
   useEffect(() => {
     if (dos) {
