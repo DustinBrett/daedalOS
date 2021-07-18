@@ -36,7 +36,8 @@ const useWindowPeek = (id: string): WindowPeek => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { peekElement, componentWindow, maximized, minimized } = process || {};
+  const { closing, componentWindow, maximized, minimized, peekElement } =
+    process || {};
   const mouseTimer = useRef<NodeJS.Timer>();
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
@@ -73,7 +74,7 @@ const useWindowPeek = (id: string): WindowPeek => {
 
   return {
     PeekComponent:
-      showPeek && previewSrc
+      showPeek && previewSrc && !closing
         ? () => <PeekWindow id={id} image={previewSrc} />
         : undefined,
     peekEvents:
