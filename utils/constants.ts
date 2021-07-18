@@ -43,6 +43,8 @@ export const PROCESS_DELIMITER = "__";
 
 export const SHORTCUT_EXTENSION = ".url";
 
+export const SYSTEM_FILES = new Set(["/.deletedFiles.log"]);
+
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
   START_MENU: 400,

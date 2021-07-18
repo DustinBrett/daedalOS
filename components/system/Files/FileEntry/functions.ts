@@ -7,6 +7,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
   SHORTCUT_EXTENSION,
+  SYSTEM_FILES,
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
@@ -98,3 +99,8 @@ export const getInfoWithExtension = (
     getInfoByFileExtension();
   }
 };
+
+export const filterSystemFiles =
+  (directory: string) =>
+  (file: string): boolean =>
+    !SYSTEM_FILES.has(`${directory}${file}`);

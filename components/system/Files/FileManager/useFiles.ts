@@ -1,3 +1,4 @@
+import { filterSystemFiles } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -24,7 +25,9 @@ const useFiles = (directory: string): Files => {
     (appendFile = "") =>
       fs?.readdir(directory, (_error, contents = []) =>
         setFiles((currentFiles) =>
-          appendFile ? [...currentFiles, basename(appendFile)] : contents
+          appendFile
+            ? [...currentFiles, basename(appendFile)]
+            : contents.filter(filterSystemFiles(directory))
         )
       ),
     [directory, fs]
