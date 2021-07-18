@@ -1,4 +1,4 @@
-import { BFSRequire, configure, FileSystem } from "browserfs";
+import type * as IBrowserFS from "browserfs";
 import type IsoFS from "browserfs/dist/node/backend/IsoFS";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import type ZipFS from "browserfs/dist/node/backend/ZipFS";
@@ -6,6 +6,7 @@ import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { extname } from "path";
+import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
 import { useEffect, useState } from "react";
 
 export type FileSystemContextState = {
@@ -13,6 +14,8 @@ export type FileSystemContextState = {
   mountFs: (url: string, callback: () => void) => void;
   unMountFs: (url: string) => void;
 };
+
+const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const [fs, setFs] = useState<FSModule>();

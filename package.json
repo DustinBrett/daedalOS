@@ -29,7 +29,6 @@
     "styled-components": "^5"
   },
   "dependencies": {
-    "browserfs": "https://github.com/jvilk/BrowserFS.git",
     "fflate": "^0.7.1",
     "framer-motion": "^4.1.17",
     "html-to-image": "^1.6.2",
@@ -54,6 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "babel-plugin-styled-components": "^1.13.2",
+    "browserfs": "https://github.com/jvilk/BrowserFS.git",
     "eslint": "^7.31.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-next": "^11.0.1",
