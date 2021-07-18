@@ -33,7 +33,7 @@ const useJSDOS = (
   const { updateWindowSize } = useWindowSize(id);
   const [dos, setDos] = useState<DosCI>();
   const { fs } = useFileSystem();
-  const { close } = useProcesses();
+  const { close, linkElement } = useProcesses();
 
   useEffect(() => {
     if (!dos && fs && url) {
@@ -47,6 +47,10 @@ const useJSDOS = (
               .Dos(screenRef.current)
               .run(objectURL)
               .then((ci) => {
+                const canvas =
+                  screenRef.current?.querySelector<HTMLCanvasElement>("canvas");
+
+                if (canvas) linkElement(id, "peekElement", canvas);
                 setDos(ci);
                 appendFileToTitle(url);
                 cleanUpBufferUrl(objectURL);
@@ -63,7 +67,7 @@ const useJSDOS = (
         window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.();
       }
     };
-  }, [appendFileToTitle, dos, fs, screenRef, url]);
+  }, [appendFileToTitle, dos, fs, id, linkElement, screenRef, url]);
 
   useEffect(() => {
     if (dos) {
