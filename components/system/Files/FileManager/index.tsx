@@ -5,7 +5,7 @@ import useFolderContextMenu from "components/system/Files/FileManager/useFolderC
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename, extname, resolve } from "path";
+import { basename, extname, join } from "path";
 import { useEffect } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
@@ -39,7 +39,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
           <FileEntry
             fileActions={fileActions}
             name={basename(file, SHORTCUT_EXTENSION)}
-            path={resolve(url, file)}
+            path={join(url, file)}
             view={view}
           />
         </StyledFileEntry>

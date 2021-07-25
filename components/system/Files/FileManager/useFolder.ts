@@ -5,7 +5,7 @@ import {
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename, resolve } from "path";
+import { basename, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
@@ -85,7 +85,7 @@ const useFolder = (directory: string): Folder => {
   };
   const newPath = (name: string, fileBuffer?: Buffer, iteration = 0): void => {
     const uniqueName = !iteration ? name : iterateFileName(name, iteration);
-    const resolvedPath = resolve(directory, uniqueName);
+    const resolvedPath = join(directory, uniqueName);
     const checkWrite: BFSOneArgCallback = (error) => {
       if (!error) {
         updateFiles(uniqueName);
