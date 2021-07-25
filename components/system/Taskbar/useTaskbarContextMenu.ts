@@ -8,7 +8,7 @@ const useTaskbarContextMenu = (): {
 } => {
   const { contextMenu } = useMenu();
   const { minimize, processes } = useProcesses();
-  const processArray = Object.entries(processes);
+  const processArray = Object.entries(processes || {});
   const allWindowsMinimized = useMemo(
     () =>
       processArray.length > 0 &&
@@ -29,7 +29,7 @@ const useTaskbarContextMenu = (): {
   ];
 
   return {
-    onContextMenuCapture: contextMenu(menuItems),
+    onContextMenuCapture: contextMenu?.(menuItems),
   };
 };
 

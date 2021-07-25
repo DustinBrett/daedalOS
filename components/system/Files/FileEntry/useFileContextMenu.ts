@@ -68,7 +68,7 @@ const useFileContextMenu = (
   }
 
   return {
-    onContextMenuCapture: contextMenu(menuItems),
+    onContextMenuCapture: contextMenu?.(menuItems),
   };
 };
 

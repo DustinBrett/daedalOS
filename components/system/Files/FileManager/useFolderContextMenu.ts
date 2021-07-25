@@ -27,7 +27,7 @@ const useFolderContextMenu = (
   ];
 
   return {
-    onContextMenuCapture: contextMenu(menuItems),
+    onContextMenuCapture: contextMenu?.(menuItems),
   };
 };
 

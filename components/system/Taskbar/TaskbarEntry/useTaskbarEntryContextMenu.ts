@@ -17,7 +17,7 @@ const useTaskbarEntryContextMenu = (
   ];
 
   return {
-    onContextMenuCapture: contextMenu(menuItems),
+    onContextMenuCapture: contextMenu?.(menuItems),
   };
 };
 
