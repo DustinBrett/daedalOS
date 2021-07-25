@@ -8,6 +8,7 @@ type StyledTaskbarEntryProps = {
 const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
   display: flex;
   min-width: 0;
+  overflow: hidden;
   place-content: center;
   position: relative;
   width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
