@@ -101,6 +101,10 @@ const useWebamp = (id: string): Webamp => {
           closeEqualizer(webamp);
           updateWebampPosition(webamp, taskbarHeight, position);
           setupElements();
+
+          if (options?.initialTracks) {
+            webamp.play();
+          }
         });
 
         setWebampCI(webamp);

@@ -47,7 +47,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
         if (extname(url) === ".mp3") {
           parseTrack(contents, basename(url)).then((track) => {
             setCurrentUrl(url);
-            webampCI?.appendTracks([track]);
+            webampCI?.setTracksToPlay([track]);
           });
         } else {
           const bufferUrl = bufferToUrl(contents);
