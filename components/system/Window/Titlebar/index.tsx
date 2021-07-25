@@ -1,4 +1,5 @@
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
+import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import {
   CloseIcon,
@@ -34,7 +35,11 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const disableMaximize = autoSizing && !lockAspectRatio;
 
   return (
-    <StyledTitlebar className="handle" foreground={isForeground}>
+    <StyledTitlebar
+      className="handle"
+      foreground={isForeground}
+      {...useTitlebarContextMenu(id)}
+    >
       <Button
         as="h1"
         onClick={disableMaximize ? undefined : doubleClick(onMaximize)}

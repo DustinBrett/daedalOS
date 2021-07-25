@@ -13,6 +13,7 @@ type MenuItemEntryProps = MenuItem & {
 
 const MenuItemEntry = ({
   action,
+  disabled,
   icon,
   label,
   menu,
@@ -44,7 +45,7 @@ const MenuItemEntry = ({
   }, [menu, sizes.contextMenu.subMenuOffset]);
 
   return (
-    <li ref={entryRef}>
+    <li className={disabled ? "disabled" : ""} ref={entryRef}>
       {group ? (
         <hr />
       ) : (
