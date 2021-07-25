@@ -1,4 +1,5 @@
 import { filterSystemFiles } from "components/system/Files/FileEntry/functions";
+import { sortContents } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, resolve } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -33,7 +34,7 @@ const useFolder = (directory: string): Folder => {
         setFiles((currentFiles) => [...currentFiles, basename(appendFile)]);
       } else {
         fs?.readdir(directory, (_error, contents = []) =>
-          setFiles(contents.filter(filterSystemFiles(directory)))
+          setFiles(sortContents(contents).filter(filterSystemFiles(directory)))
         );
       }
     },
