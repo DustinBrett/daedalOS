@@ -1,18 +1,20 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
-const StyledPeekWindow = styled.div`
+const StyledPeekWindow = styled(motion.div)`
   background-color: ${({ theme }) => theme.colors.taskbar.hover};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.background}`};
   border-bottom: 0;
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   display: flex;
+  overflow: hidden;
   place-content: center;
   place-items: flex-start;
   position: fixed;
 
   img {
-    height: 82px;
-    margin: 8px;
+    height: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.height};
+    margin: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.margin};
   }
 
   button {

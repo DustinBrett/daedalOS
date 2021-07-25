@@ -36,6 +36,10 @@ const sizes = {
         size: "16px",
       },
       maxWidth: "160px",
+      peekImage: {
+        height: "82px",
+        margin: "8px",
+      },
     },
     height: "30px",
   },

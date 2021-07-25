@@ -1,4 +1,5 @@
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
+import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePeekTransition";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
@@ -16,7 +17,7 @@ const PeekWindow = ({ id, image }: PeekWindowProps): JSX.Element => {
   const { onClose } = useWindowActions(id);
 
   return (
-    <StyledPeekWindow>
+    <StyledPeekWindow {...usePeekTransition()}>
       <img alt={title} src={image} />
       <Button onClick={onClose} title="Close">
         <CloseIcon />

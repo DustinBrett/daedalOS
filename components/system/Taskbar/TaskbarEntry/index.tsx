@@ -4,6 +4,7 @@ import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTask
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { AnimatePresence } from "framer-motion";
 import { useCallback } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -44,7 +45,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       {...peekEvents}
       {...useTaskbarTransition()}
     >
-      {PeekComponent && <PeekComponent />}
+      <AnimatePresence>{PeekComponent && <PeekComponent />}</AnimatePresence>
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
           <Icon src={icon} alt={title} imgSize={16} />
