@@ -53,8 +53,10 @@ const MenuItemEntry = ({
           as="figure"
           className={showSubMenu ? "active" : ""}
           onClick={() => {
-            action?.();
-            resetMenu();
+            if (!menu) {
+              action?.();
+              resetMenu();
+            }
           }}
           {...subMenuEvents}
         >
