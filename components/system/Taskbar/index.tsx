@@ -2,6 +2,7 @@ import Clock from "components/system/Taskbar/Clock";
 import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
+import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useSession } from "contexts/session";
 import dynamic from "next/dynamic";
 
@@ -13,7 +14,7 @@ const Taskbar = (): JSX.Element => {
   return (
     <>
       {startMenuVisible && <StartMenu />}
-      <StyledTaskbar tabIndex={-1}>
+      <StyledTaskbar tabIndex={-1} {...useTaskbarContextMenu()}>
         <StartButton />
         <TaskbarEntries />
         <Clock />
