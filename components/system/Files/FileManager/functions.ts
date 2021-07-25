@@ -1,4 +1,4 @@
-import { extname } from "path";
+import { basename, dirname, extname } from "path";
 
 const sortCaseInsensitive = (a: string, b: string) =>
   a.localeCompare(b, "en", { sensitivity: "base" });
@@ -19,4 +19,11 @@ export const sortContents = (contents: string[]): string[] => {
     ...folders.sort(sortCaseInsensitive),
     ...files.sort(sortCaseInsensitive),
   ];
+};
+
+export const iterateFileName = (path: string, iteration: number): string => {
+  const extension = extname(path);
+  const fileName = basename(path, extension);
+
+  return `${dirname(path)}/${fileName} (${iteration})${extension}`;
 };

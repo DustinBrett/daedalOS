@@ -31,7 +31,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
 
   return (
     <StyledFileManager
-      {...useFileDrop(url, updateFiles)}
+      {...useFileDrop(folderActions.newPath)}
       {...useFolderContextMenu(folderActions, updateFiles)}
     >
       {files.map((file) => (

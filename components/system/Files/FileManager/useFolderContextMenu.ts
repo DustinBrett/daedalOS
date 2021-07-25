@@ -3,7 +3,7 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 
 const useFolderContextMenu = (
-  { newFile, newFolder }: FolderActions,
+  { newPath }: FolderActions,
   updateFiles: (appendFile?: string | undefined) => void
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
@@ -15,12 +15,12 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
-          action: () => newFolder("New folder"),
+          action: () => newPath("New folder"),
         },
         { group: 2 },
         {
           label: "Text Document",
-          action: () => newFile("New Text Document.txt"),
+          action: () => newPath("New Text Document.txt", Buffer.from("")),
         },
       ],
     },

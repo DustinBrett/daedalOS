@@ -1,5 +1,3 @@
-import { useFileSystem } from "contexts/fileSystem";
-import { basename, dirname, extname } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const haltDragEvent = (event: React.DragEvent<HTMLElement>): void => {
@@ -12,38 +10,14 @@ type FileDrop = {
   onDrop: (event: React.DragEvent<HTMLElement>) => void;
 };
 
-const iterateFileName = (path: string, iteration: number): string => {
-  const extension = extname(path);
-  const fileName = basename(path, extension);
-
-  return `${dirname(path)}/${fileName} (${iteration})${extension}`;
-};
-
 const useFileDrop = (
-  directory: string,
-  updateFiles: (appendFile?: string) => void
+  newPath: (path: string, fileBuffer?: Buffer) => void
 ): FileDrop => {
-  const { fs } = useFileSystem();
   const onDrop = (event: React.DragEvent<HTMLElement>) => {
     haltDragEvent(event);
 
     if (event?.dataTransfer?.files.length > 0) {
       const files = [...event?.dataTransfer?.files];
-      const writeUniqueName = (
-        path: string,
-        fileBuffer: Buffer,
-        iteration = 0
-      ): void => {
-        const writePath = !iteration ? path : iterateFileName(path, iteration);
-
-        fs?.writeFile(writePath, fileBuffer, { flag: "wx" }, (error) => {
-          if (error?.code === "EEXIST") {
-            writeUniqueName(path, fileBuffer, iteration + 1);
-          } else if (!error) {
-            updateFiles(writePath);
-          }
-        });
-      };
 
       files.forEach((file) => {
         const reader = new FileReader();
@@ -51,8 +25,8 @@ const useFileDrop = (
         reader.addEventListener(
           "load",
           ({ target }) =>
-            writeUniqueName(
-              `${directory}/${file.name}`,
+            newPath(
+              file.name,
               Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
             ),
           ONE_TIME_PASSIVE_EVENT

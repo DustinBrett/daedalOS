@@ -1,5 +1,9 @@
+import type { BFSOneArgCallback } from "browserfs/dist/node/core/file_system";
 import { filterSystemFiles } from "components/system/Files/FileEntry/functions";
-import { sortContents } from "components/system/Files/FileManager/functions";
+import {
+  iterateFileName,
+  sortContents,
+} from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, resolve } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -13,8 +17,7 @@ export type FileActions = {
 };
 
 export type FolderActions = {
-  newFile: (path: string) => void;
-  newFolder: (path: string) => void;
+  newPath: (path: string, fileBuffer?: Buffer) => void;
 };
 
 type Folder = {
@@ -80,12 +83,23 @@ const useFolder = (directory: string): Folder => {
       );
     }
   };
-  const newFile = (path: string) =>
-    fs?.writeFile(resolve(directory, path), Buffer.from(""), () =>
-      updateFiles(path)
-    );
-  const newFolder = (path: string) =>
-    fs?.mkdir(resolve(directory, path), () => updateFiles(path));
+  const newPath = (name: string, fileBuffer?: Buffer, iteration = 0): void => {
+    const uniqueName = !iteration ? name : iterateFileName(name, iteration);
+    const resolvedPath = resolve(directory, uniqueName);
+    const checkWrite: BFSOneArgCallback = (error) => {
+      if (!error) {
+        updateFiles(uniqueName);
+      } else if (error.code === "EEXIST") {
+        newPath(name, fileBuffer, iteration + 1);
+      }
+    };
+
+    if (fileBuffer) {
+      fs?.writeFile(resolvedPath, fileBuffer, { flag: "wx" }, checkWrite);
+    } else {
+      fs?.mkdir(resolvedPath, { flag: "wx" }, checkWrite);
+    }
+  };
 
   useEffect(updateFiles, [directory, fs, updateFiles]);
 
@@ -103,8 +117,7 @@ const useFolder = (directory: string): Folder => {
       renameFile,
     },
     folderActions: {
-      newFile,
-      newFolder,
+      newPath,
     },
     files,
     updateFiles,
