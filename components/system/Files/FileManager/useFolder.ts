@@ -28,14 +28,15 @@ const useFolder = (directory: string): Folder => {
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { fs } = useFileSystem();
   const updateFiles = useCallback(
-    (appendFile = "") =>
-      fs?.readdir(directory, (_error, contents = []) =>
-        setFiles((currentFiles) =>
-          appendFile
-            ? [...currentFiles, basename(appendFile)]
-            : contents.filter(filterSystemFiles(directory))
-        )
-      ),
+    (appendFile = "") => {
+      if (appendFile) {
+        setFiles((currentFiles) => [...currentFiles, basename(appendFile)]);
+      } else {
+        fs?.readdir(directory, (_error, contents = []) =>
+          setFiles(contents.filter(filterSystemFiles(directory)))
+        );
+      }
+    },
     [directory, fs]
   );
   const deleteFile = (path: string) => {
@@ -79,9 +80,11 @@ const useFolder = (directory: string): Folder => {
     }
   };
   const newFile = (path: string) =>
-    fs?.writeFile(resolve(directory, path), Buffer.from(""), updateFiles);
+    fs?.writeFile(resolve(directory, path), Buffer.from(""), () =>
+      updateFiles(path)
+    );
   const newFolder = (path: string) =>
-    fs?.mkdir(resolve(directory, path), updateFiles);
+    fs?.mkdir(resolve(directory, path), () => updateFiles(path));
 
   useEffect(updateFiles, [directory, fs, updateFiles]);
 
