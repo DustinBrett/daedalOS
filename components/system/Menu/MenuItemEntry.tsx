@@ -45,7 +45,11 @@ const MenuItemEntry = ({
   }, [menu, sizes.contextMenu.subMenuOffset]);
 
   return (
-    <li className={disabled ? "disabled" : ""} ref={entryRef}>
+    <li
+      className={disabled ? "disabled" : ""}
+      ref={entryRef}
+      {...subMenuEvents}
+    >
       {group ? (
         <hr />
       ) : (
@@ -58,7 +62,6 @@ const MenuItemEntry = ({
               resetMenu();
             }
           }}
-          {...subMenuEvents}
         >
           {icon && <Icon src={icon} alt={label} imgSize={16} />}
           <figcaption className={primary ? "primary" : ""}>{label}</figcaption>
