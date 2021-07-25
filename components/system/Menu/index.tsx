@@ -1,4 +1,5 @@
 import MenuItemEntry from "components/system/Menu/MenuItemEntry";
+import menuTransition from "components/system/Menu/menuTransition";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
@@ -49,6 +50,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       tabIndex={-1}
       x={x - offset.x}
       y={y - offset.y}
+      {...menuTransition}
     >
       <ol>
         {items.map((item) => (
