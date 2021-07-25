@@ -18,8 +18,8 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
     relatedTarget,
   }: Partial<FocusEvent | MouseEvent> = {}) => {
     if (
-      relatedTarget instanceof HTMLElement &&
-      !menuRef.current?.contains(relatedTarget)
+      !relatedTarget ||
+      !menuRef.current?.contains(relatedTarget as HTMLElement)
     ) {
       setMenu({});
     }

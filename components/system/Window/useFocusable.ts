@@ -28,23 +28,21 @@ const useFocusable = (
   const isForeground = id === foregroundId;
   const onBlurCapture: React.FocusEventHandler<HTMLElement> = (event) => {
     const { relatedTarget } = event;
+    const focusedElement = relatedTarget as HTMLElement | null;
+    const focusedOnTaskbarEntry = relatedTarget === taskbarEntry;
+    const focusedOnTaskbarPeek =
+      focusedElement && taskbarEntry?.previousSibling?.contains(focusedElement);
+    const focusedOnInsideWindow =
+      focusedElement && componentWindow?.contains(focusedElement);
 
-    if (relatedTarget instanceof HTMLElement) {
-      const focusedOnTaskbarEntry = relatedTarget === taskbarEntry;
-      const focusedOnTaskbarPeek =
-        taskbarEntry?.previousSibling?.contains(relatedTarget);
-      const focusedOnInsideWindow =
-        relatedTarget && componentWindow?.contains(relatedTarget);
-
-      if (
-        isForeground &&
-        !focusedOnTaskbarEntry &&
-        !focusedOnTaskbarPeek &&
-        !focusedOnInsideWindow
-      ) {
-        setForegroundId("");
-        callbackEvents?.onBlurCapture?.(event);
-      }
+    if (
+      isForeground &&
+      !focusedOnTaskbarEntry &&
+      !focusedOnTaskbarPeek &&
+      !focusedOnInsideWindow
+    ) {
+      setForegroundId("");
+      callbackEvents?.onBlurCapture?.(event);
     }
   };
   const moveToFront = useCallback(
