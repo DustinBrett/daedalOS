@@ -4,8 +4,6 @@ import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
-import { useTheme } from "styled-components";
-import { pxToNum } from "utils/functions";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -15,9 +13,6 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
   const { items, x = 0, y = 0 } = subMenu || baseMenu;
   const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
-  const {
-    sizes: { taskbar },
-  } = useTheme();
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = ({
     relatedTarget,
@@ -38,14 +33,13 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
     const { height = 0, width = 0 } =
       menuRef.current?.getBoundingClientRect() || {};
     const { innerHeight, innerWidth } = window;
+    const bottomOffset = y + height > innerHeight ? innerHeight - y : 0;
 
     setOffset({
       x: Math.round(Math.max(0, x + width - innerWidth)),
-      y: Math.round(
-        Math.max(0, y + height - (innerHeight - pxToNum(taskbar.height)))
-      ),
+      y: Math.round(Math.max(0, y + height - (innerHeight - bottomOffset))),
     });
-  }, [taskbar.height, x, y]);
+  }, [x, y]);
 
   return items ? (
     <StyledMenu
