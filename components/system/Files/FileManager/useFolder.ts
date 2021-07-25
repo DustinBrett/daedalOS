@@ -1,6 +1,6 @@
 import { filterSystemFiles } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename } from "path";
+import { basename, resolve } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
@@ -11,13 +11,19 @@ export type FileActions = {
   renameFile: (path: string, name?: string) => void;
 };
 
-type Files = {
+export type FolderActions = {
+  newFile: (path: string) => void;
+  newFolder: (path: string) => void;
+};
+
+type Folder = {
   fileActions: FileActions;
+  folderActions: FolderActions;
   files: string[];
   updateFiles: (appendFile?: string) => void;
 };
 
-const useFiles = (directory: string): Files => {
+const useFolder = (directory: string): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { fs } = useFileSystem();
@@ -64,6 +70,10 @@ const useFiles = (directory: string): Files => {
       );
     }
   };
+  const newFile = (path: string) =>
+    fs?.writeFile(resolve(directory, path), Buffer.from(""), updateFiles);
+  const newFolder = (path: string) =>
+    fs?.mkdir(resolve(directory, path), updateFiles);
 
   useEffect(updateFiles, [directory, fs, updateFiles]);
 
@@ -80,9 +90,13 @@ const useFiles = (directory: string): Files => {
       downloadFile,
       renameFile,
     },
+    folderActions: {
+      newFile,
+      newFolder,
+    },
     files,
     updateFiles,
   };
 };
 
-export default useFiles;
+export default useFolder;

@@ -1,19 +1,20 @@
 import extensions from "components/system/Files/FileEntry/extensions";
 import useFile from "components/system/Files/FileEntry/useFile";
-import type { FileActions } from "components/system/Files/FileManager/useFiles";
+import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { dirname, extname } from "path";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 
-const useContextMenu = (
+const useFileContextMenu = (
   url: string,
   pid: string,
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<boolean>>,
   { deleteFile, downloadFile }: FileActions
-): MenuItem[] => {
+): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { process: [, ...openWith] = [] } = extensions[extname(url)] || {};
   const openWithFiltered = openWith.filter((id) => id !== pid);
@@ -25,6 +26,7 @@ const useContextMenu = (
   ];
   const extension = extname(path);
   const isShortcut = extension === SHORTCUT_EXTENSION;
+  const { contextMenu } = useMenu();
 
   if (!isShortcut && url && (extension || pid !== "FileExplorer")) {
     menuItems.unshift({ group: 1 });
@@ -65,7 +67,9 @@ const useContextMenu = (
     });
   }
 
-  return menuItems;
+  return {
+    onContextMenuCapture: contextMenu(menuItems),
+  };
 };
 
-export default useContextMenu;
+export default useFileContextMenu;

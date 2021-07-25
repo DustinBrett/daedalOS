@@ -1,6 +1,7 @@
 import FileEntry from "components/system/Files/FileEntry";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import useFiles from "components/system/Files/FileManager/useFiles";
+import useFolder from "components/system/Files/FileManager/useFolder";
+import useFolderContextMenu from "components/system/Files/FileManager/useFolderContextMenu";
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
@@ -14,7 +15,7 @@ type FileManagerProps = {
 };
 
 const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
-  const { fileActions, files, updateFiles } = useFiles(url);
+  const { fileActions, files, folderActions, updateFiles } = useFolder(url);
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
 
@@ -29,7 +30,10 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   }, [files, mountFs, unMountFs, updateFiles, url]);
 
   return (
-    <StyledFileManager {...useFileDrop(url, updateFiles)}>
+    <StyledFileManager
+      {...useFileDrop(url, updateFiles)}
+      {...useFolderContextMenu(folderActions, updateFiles)}
+    >
       {files.map((file) => (
         <StyledFileEntry key={file}>
           <FileEntry
