@@ -22,7 +22,10 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   const resetMenu = ({
     relatedTarget,
   }: Partial<FocusEvent | MouseEvent> = {}) => {
-    if (!menuRef.current?.contains(relatedTarget as HTMLElement)) {
+    if (
+      relatedTarget instanceof HTMLElement &&
+      !menuRef.current?.contains(relatedTarget)
+    ) {
       setMenu({});
     }
   };
