@@ -38,12 +38,20 @@ const useFolder = (directory: string): Folder => {
       ),
     [directory, fs]
   );
-  const deleteFile = (path: string) =>
-    fs?.unlink(path, () =>
+  const deleteFile = (path: string) => {
+    const removeFile = () =>
       setFiles((currentFiles) =>
         currentFiles.filter((file) => file !== basename(path))
-      )
-    );
+      );
+
+    fs?.stat(path, (_error, stats) => {
+      if (stats?.isDirectory()) {
+        fs?.rmdir(path, removeFile);
+      } else {
+        fs?.unlink(path, removeFile);
+      }
+    });
+  };
   const downloadFile = (path: string) =>
     fs?.readFile(path, (_error, contents = Buffer.from("")) => {
       const link = document.createElement("a");
