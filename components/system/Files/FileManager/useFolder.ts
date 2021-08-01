@@ -72,8 +72,7 @@ const useFolder = (directory: string): Folder => {
     if (name) {
       const newPath = join(
         directory,
-        name,
-        path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
+        `${name}${path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""}`
       );
 
       fs?.rename(path, newPath, () =>
