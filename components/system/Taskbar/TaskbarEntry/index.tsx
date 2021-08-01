@@ -1,4 +1,4 @@
-import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
+import PeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/PeekWindow";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import useTaskbarEntryContextMenu from "components/system/Taskbar/TaskbarEntry/useTaskbarEntryContextMenu";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
@@ -6,7 +6,7 @@ import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { AnimatePresence } from "framer-motion";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 
@@ -30,25 +30,30 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
     [id, linkElement]
   );
-  const { hidePeek, PeekComponent, peekEvents } = useWindowPeek(id);
+  const [isPeekVisible, setPeekVisible] = useState(false);
+  const hidePeek = () => setPeekVisible(false);
+  const showPeek = () => setPeekVisible(true);
   const onClick = () => {
     if (minimized || isForeground) {
       minimize(id);
     }
 
     setForegroundId(isForeground ? nextFocusableId : id);
-    hidePeek();
   };
 
   return (
     <StyledTaskbarEntry
       foreground={isForeground}
       title={title}
-      {...peekEvents}
+      onClick={hidePeek}
+      onMouseEnter={showPeek}
+      onMouseLeave={hidePeek}
       {...useTaskbarTransition()}
       {...useTaskbarEntryContextMenu(id)}
     >
-      <AnimatePresence>{PeekComponent && <PeekComponent />}</AnimatePresence>
+      <AnimatePresence>
+        {isPeekVisible && <PeekWindow id={id} />}
+      </AnimatePresence>
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
           <Icon src={icon} alt={title} imgSize={16} />
