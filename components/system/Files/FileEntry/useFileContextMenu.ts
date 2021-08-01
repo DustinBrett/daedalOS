@@ -5,15 +5,14 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { dirname, extname } from "path";
-import type React from "react";
+import { basename, dirname, extname } from "path";
 import { MENU_SEPERATOR, SHORTCUT_EXTENSION } from "utils/constants";
 
 const useFileContextMenu = (
   url: string,
   pid: string,
   path: string,
-  setRenaming: React.Dispatch<React.SetStateAction<boolean>>,
+  setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { deleteFile, downloadFile }: FileActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
@@ -23,7 +22,7 @@ const useFileContextMenu = (
   const openFile = useFile(url);
   const menuItems: MenuItem[] = [
     { label: "Delete", action: () => deleteFile(path) },
-    { label: "Rename", action: () => setRenaming(true) },
+    { label: "Rename", action: () => setRenaming(basename(path)) },
   ];
   const extension = extname(path);
   const isShortcut = extension === SHORTCUT_EXTENSION;

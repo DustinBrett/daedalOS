@@ -4,7 +4,6 @@ import useFileContextMenu from "components/system/Files/FileEntry/useFileContext
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { FileEntryIconSize } from "components/system/Files/Views";
-import { useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { doubleClick } from "utils/functions";
@@ -13,6 +12,8 @@ type FileEntryProps = {
   fileActions: FileActions;
   name: string;
   path: string;
+  renaming: boolean;
+  setRenaming: React.Dispatch<React.SetStateAction<string>>;
   view: string;
 };
 
@@ -20,10 +21,11 @@ const FileEntry = ({
   fileActions,
   name,
   path,
+  renaming,
+  setRenaming,
   view,
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
-  const [renaming, setRenaming] = useState(false);
   const openFile = useFile(url);
   const singleClick = view === "list";
 
@@ -40,7 +42,7 @@ const FileEntry = ({
             path={path}
             renameFile={(origPath, newName) => {
               fileActions.renameFile(origPath, newName);
-              setRenaming(false);
+              setRenaming("");
             }}
           />
         ) : (

@@ -6,7 +6,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname, join } from "path";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
 type FileManagerProps = {
@@ -18,6 +18,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { fileActions, files, folderActions, updateFiles } = useFolder(url);
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
+  const [renaming, setRenaming] = useState("");
 
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
@@ -32,7 +33,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   return (
     <StyledFileManager
       {...useFileDrop(folderActions.newPath)}
-      {...useFolderContextMenu(folderActions, updateFiles)}
+      {...useFolderContextMenu(folderActions, updateFiles, setRenaming)}
     >
       {files.map((file) => (
         <StyledFileEntry key={file}>
@@ -40,6 +41,8 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
             fileActions={fileActions}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}
+            renaming={renaming === file}
+            setRenaming={setRenaming}
             view={view}
           />
         </StyledFileEntry>
