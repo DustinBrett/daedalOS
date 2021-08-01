@@ -7,6 +7,7 @@ import {
 } from "utils/constants";
 
 type WindowPeek = {
+  hidePeek: () => void;
   PeekComponent?: React.ComponentType;
   peekEvents: {
     onMouseEnter?: () => void;
@@ -50,6 +51,7 @@ const useWindowPeek = (id: string): WindowPeek => {
   const previewTimer = useRef<NodeJS.Timer>();
   const [showPeek, setShowPeek] = useState(false);
   const [previewSrc, setPreviewSrc] = useState("");
+  const hidePeek = () => setShowPeek(false);
   const onMouseEnter = () => {
     const previewElement = peekElement || componentWindow;
 
@@ -77,6 +79,7 @@ const useWindowPeek = (id: string): WindowPeek => {
   useEffect(() => onMouseLeave, [onMouseLeave]);
 
   return {
+    hidePeek,
     PeekComponent:
       showPeek && previewSrc && !closing
         ? () => <PeekWindow id={id} image={previewSrc} />

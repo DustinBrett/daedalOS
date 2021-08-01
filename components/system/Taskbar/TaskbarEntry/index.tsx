@@ -30,14 +30,15 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
     [id, linkElement]
   );
+  const { hidePeek, PeekComponent, peekEvents } = useWindowPeek(id);
   const onClick = () => {
     if (minimized || isForeground) {
       minimize(id);
     }
 
     setForegroundId(isForeground ? nextFocusableId : id);
+    hidePeek();
   };
-  const { PeekComponent, peekEvents } = useWindowPeek(id);
 
   return (
     <StyledTaskbarEntry
