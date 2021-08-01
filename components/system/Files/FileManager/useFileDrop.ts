@@ -24,11 +24,11 @@ const useFileDrop = (
 
         reader.addEventListener(
           "load",
-          ({ target }) =>
-            newPath(
-              file.name,
-              Buffer.from(new Uint8Array(target?.result as ArrayBuffer))
-            ),
+          ({ target }) => {
+            if (target?.result instanceof ArrayBuffer) {
+              newPath(file.name, Buffer.from(new Uint8Array(target?.result)));
+            }
+          },
           ONE_TIME_PASSIVE_EVENT
         );
 
