@@ -17,7 +17,8 @@ export type FileActions = {
 };
 
 export type FolderActions = {
-  newPath: (path: string, fileBuffer?: Buffer) => void;
+  newPath: (path: string, buffer?: Buffer) => void;
+  addToFolder: () => void;
 };
 
 type Folder = {
@@ -30,7 +31,7 @@ type Folder = {
 const useFolder = (directory: string): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
-  const { fs } = useFileSystem();
+  const { addFile, fs } = useFileSystem();
   const updateFiles = useCallback(
     (appendFile = "") => {
       if (appendFile) {
@@ -84,19 +85,19 @@ const useFolder = (directory: string): Folder => {
       );
     }
   };
-  const newPath = (name: string, fileBuffer?: Buffer, iteration = 0): void => {
+  const newPath = (name: string, buffer?: Buffer, iteration = 0): void => {
     const uniqueName = !iteration ? name : iterateFileName(name, iteration);
     const resolvedPath = join(directory, uniqueName);
     const checkWrite: BFSOneArgCallback = (error) => {
       if (!error) {
         updateFiles(uniqueName);
       } else if (error.code === "EEXIST") {
-        newPath(name, fileBuffer, iteration + 1);
+        newPath(name, buffer, iteration + 1);
       }
     };
 
-    if (fileBuffer) {
-      fs?.writeFile(resolvedPath, fileBuffer, { flag: "wx" }, checkWrite);
+    if (buffer) {
+      fs?.writeFile(resolvedPath, buffer, { flag: "wx" }, checkWrite);
     } else {
       fs?.mkdir(resolvedPath, { flag: "wx" }, checkWrite);
     }
@@ -119,6 +120,7 @@ const useFolder = (directory: string): Folder => {
     },
     folderActions: {
       newPath,
+      addToFolder: () => addFile(newPath),
     },
     files,
     updateFiles,

@@ -1,9 +1,8 @@
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-
-const haltDragEvent = (event: React.DragEvent<HTMLElement>): void => {
-  event.preventDefault();
-  event.stopPropagation();
-};
+import {
+  haltEvent,
+  handleFileInputEvent,
+} from "components/system/Files/FileManager/functions";
+import type React from "react";
 
 type FileDrop = {
   onDragOver: (event: React.DragEvent<HTMLElement>) => void;
@@ -11,36 +10,10 @@ type FileDrop = {
 };
 
 const useFileDrop = (
-  newPath: (path: string, fileBuffer?: Buffer) => void
-): FileDrop => {
-  const onDrop = (event: React.DragEvent<HTMLElement>) => {
-    haltDragEvent(event);
-
-    if (event?.dataTransfer?.files.length > 0) {
-      const files = [...event?.dataTransfer?.files];
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-
-        reader.addEventListener(
-          "load",
-          ({ target }) => {
-            if (target?.result instanceof ArrayBuffer) {
-              newPath(file.name, Buffer.from(new Uint8Array(target?.result)));
-            }
-          },
-          ONE_TIME_PASSIVE_EVENT
-        );
-
-        reader.readAsArrayBuffer(file);
-      });
-    }
-  };
-
-  return {
-    onDragOver: haltDragEvent,
-    onDrop,
-  };
-};
+  newPath: (path: string, buffer?: Buffer) => void
+): FileDrop => ({
+  onDragOver: haltEvent,
+  onDrop: (event) => handleFileInputEvent(event, newPath),
+});
 
 export default useFileDrop;

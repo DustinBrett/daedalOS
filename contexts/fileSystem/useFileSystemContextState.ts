@@ -4,22 +4,29 @@ import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileS
 import type ZipFS from "browserfs/dist/node/backend/ZipFS";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { extname } from "path";
 import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
+import type React from "react";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 
 export type FileSystemContextState = {
   fs?: FSModule;
   mountFs: (url: string, callback: () => void) => void;
+  setFileInput: React.Dispatch<
+    React.SetStateAction<HTMLInputElement | undefined>
+  >;
   unMountFs: (url: string) => void;
+  addFile: (callback: (name: string, buffer: Buffer) => void) => void;
 };
 
 const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const [fs, setFs] = useState<FSModule>();
+  const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const rootFs = fs?.getRootFS() as MountableFileSystem;
   const mountFs = (url: string, callback: () => void): void =>
     fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
@@ -38,6 +45,16 @@ const useFileSystemContextState = (): FileSystemContextState => {
       }
     });
   const unMountFs = (url: string): void => rootFs?.umount(url);
+  const addFile = (callback: (name: string, buffer: Buffer) => void): void => {
+    if (fileInput) {
+      const inputListener: EventListenerOrEventListenerObject = (event) => {
+        fileInput.removeEventListener("change", inputListener);
+        handleFileInputEvent(event, callback);
+      };
+      fileInput.addEventListener("change", inputListener);
+      fileInput.click();
+    }
+  };
 
   useEffect(() => {
     if (!fs) {
@@ -45,7 +62,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     }
   }, [fs]);
 
-  return { fs, mountFs, unMountFs };
+  return { fs, mountFs, setFileInput, unMountFs, addFile };
 };
 
 export default useFileSystemContextState;
