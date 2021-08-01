@@ -1,13 +1,13 @@
 import FileEntry from "components/system/Files/FileEntry";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
 import useFolder from "components/system/Files/FileManager/useFolder";
 import useFolderContextMenu from "components/system/Files/FileManager/useFolderContextMenu";
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
 import { basename, extname, join } from "path";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
 type FileManagerProps = {
@@ -20,7 +20,8 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const [renaming, setRenaming] = useState("");
-  const { focusedEntries, blurEntry, focusEntry } = useSession();
+  const fileManagerRef = useRef<HTMLOListElement | null>(null);
+  const { focusableEntry } = useFocusableEntries(fileManagerRef);
 
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
@@ -34,18 +35,12 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
 
   return (
     <StyledFileManager
+      ref={fileManagerRef}
       {...useFileDrop(folderActions.newPath)}
       {...useFolderContextMenu(folderActions, updateFiles, setRenaming)}
     >
       {files.map((file) => (
-        <StyledFileEntry
-          key={file}
-          className={focusedEntries.includes(file) ? "focus-within" : ""}
-          onBlurCapture={() =>
-            focusedEntries.forEach((focusedEntry) => blurEntry(focusedEntry))
-          }
-          onFocusCapture={() => focusEntry(file)}
-        >
+        <StyledFileEntry key={file} {...focusableEntry(file)}>
           <FileEntry
             fileActions={fileActions}
             name={basename(file, SHORTCUT_EXTENSION)}
