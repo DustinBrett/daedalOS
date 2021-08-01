@@ -5,7 +5,7 @@ const StyledFileEntry = styled.li`
   height: min-content;
   padding: 2px;
 
-  &:focus-within,
+  &.focus-within,
   &:hover {
     border: 2px solid transparent;
     padding: 0;
@@ -59,7 +59,7 @@ const StyledFileEntry = styled.li`
     }
   }
 
-  &:focus-within {
+  &.focus-within {
     background-color: ${({ theme }) =>
       theme.colors.fileEntry.backgroundFocused};
     z-index: 1;

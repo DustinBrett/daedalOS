@@ -5,6 +5,7 @@ import useFolderContextMenu from "components/system/Files/FileManager/useFolderC
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
+import { useSession } from "contexts/session";
 import { basename, extname, join } from "path";
 import { useEffect, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
@@ -19,6 +20,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const [renaming, setRenaming] = useState("");
+  const { focusedEntries, blurEntry, focusEntry } = useSession();
 
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
@@ -36,7 +38,14 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
       {...useFolderContextMenu(folderActions, updateFiles, setRenaming)}
     >
       {files.map((file) => (
-        <StyledFileEntry key={file}>
+        <StyledFileEntry
+          key={file}
+          className={focusedEntries.includes(file) ? "focus-within" : ""}
+          onBlurCapture={() =>
+            focusedEntries.forEach((focusedEntry) => blurEntry(focusedEntry))
+          }
+          onFocusCapture={() => focusEntry(file)}
+        >
           <FileEntry
             fileActions={fileActions}
             name={basename(file, SHORTCUT_EXTENSION)}

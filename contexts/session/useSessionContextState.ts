@@ -13,6 +13,9 @@ type WindowStates = {
 };
 
 export type SessionContextState = {
+  blurEntry: (entry: string) => void;
+  focusEntry: (entry: string) => void;
+  focusedEntries: string[];
   foregroundId: string;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
@@ -53,6 +56,16 @@ const useSessionContextState = (): SessionContextState => {
       ),
     []
   );
+  const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
+  const blurEntry = (entry: string) =>
+    setFocusedEntries((currentFocusedEntries) =>
+      currentFocusedEntries.filter((focusedEntry) => focusedEntry !== entry)
+    );
+  const focusEntry = (entry: string) =>
+    setFocusedEntries((currentFocusedEntries) => [
+      ...currentFocusedEntries,
+      entry,
+    ]);
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -84,6 +97,9 @@ const useSessionContextState = (): SessionContextState => {
   );
 
   return {
+    blurEntry,
+    focusEntry,
+    focusedEntries,
     foregroundId,
     prependToStack,
     removeFromStack,
