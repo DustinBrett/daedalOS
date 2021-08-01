@@ -44,6 +44,10 @@ const useFocusable = (
       setForegroundId("");
       callbackEvents?.onBlurCapture?.(event);
     }
+
+    if (isForeground && focusedOnTaskbarPeek) {
+      componentWindow?.focus();
+    }
   };
   const moveToFront = useCallback(
     (event?: React.FocusEvent<HTMLElement>) => {

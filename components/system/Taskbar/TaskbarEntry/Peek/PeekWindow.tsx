@@ -4,6 +4,7 @@ import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindow
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 
 type PeekWindowProps = {
@@ -12,14 +13,21 @@ type PeekWindowProps = {
 
 const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
   const {
-    processes: { [id]: { title = id } = {} },
+    minimize,
+    processes: { [id]: { minimized = false, title = id } = {} },
   } = useProcesses();
+  const { setForegroundId } = useSession();
   const { onClose } = useWindowActions(id);
   const image = useWindowPeek(id);
   const peekTransition = usePeekTransition();
+  const onClick = () => {
+    if (minimized) minimize(id);
+
+    setForegroundId(id);
+  };
 
   return image ? (
-    <StyledPeekWindow {...peekTransition}>
+    <StyledPeekWindow {...peekTransition} onClick={onClick} tabIndex={-1}>
       <img alt={title} src={image} />
       <Button onClick={onClose} title="Close">
         <CloseIcon />
