@@ -6,7 +6,7 @@ import type { FileActions } from "components/system/Files/FileManager/useFolder"
 import { FileEntryIconSize } from "components/system/Files/Views";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { doubleClick } from "utils/functions";
+import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
   fileActions: FileActions;
@@ -31,7 +31,7 @@ const FileEntry = ({
 
   return (
     <Button
-      onClick={doubleClick(() => openFile(pid), singleClick)}
+      {...useDoubleClick(() => openFile(pid), singleClick)}
       {...useFileContextMenu(url, pid, path, setRenaming, fileActions)}
     >
       <figure>

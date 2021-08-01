@@ -11,7 +11,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { doubleClick } from "utils/functions";
+import useDoubleClick from "utils/useDoubleClick";
 
 type TitlebarProps = {
   id: string;
@@ -33,6 +33,8 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const disableMaximize = autoSizing && !lockAspectRatio;
+  const onClickClose = useDoubleClick(onClose);
+  const onClickMaximize = useDoubleClick(onMaximize);
 
   return (
     <StyledTitlebar
@@ -40,17 +42,9 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       foreground={isForeground}
       {...useTitlebarContextMenu(id)}
     >
-      <Button
-        as="h1"
-        onClick={disableMaximize ? undefined : doubleClick(onMaximize)}
-      >
+      <Button as="h1" {...(!disableMaximize ? onClickMaximize : {})}>
         <figure>
-          <Icon
-            src={icon}
-            alt={title}
-            onClick={doubleClick(onClose)}
-            imgSize={16}
-          />
+          <Icon src={icon} alt={title} imgSize={16} {...onClickClose} />
           <figcaption>{title}</figcaption>
         </figure>
       </Button>
