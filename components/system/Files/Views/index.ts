@@ -5,9 +5,17 @@ import StyledListFileManager from "components/system/Files/Views/List/StyledFile
 import type { DefaultTheme, StyledComponent } from "styled-components";
 import type { IconProps } from "styles/common/Icon";
 
+export type StyledFileManagerProps = {
+  selecting?: boolean;
+};
+
 type FileManagerView = {
   StyledFileEntry: StyledComponent<"li", DefaultTheme>;
-  StyledFileManager: StyledComponent<"ol", DefaultTheme>;
+  StyledFileManager: StyledComponent<
+    "ol",
+    DefaultTheme,
+    StyledFileManagerProps
+  >;
 };
 
 export type FileManagerViewNames = "icon" | "list";

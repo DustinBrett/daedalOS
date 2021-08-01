@@ -1,7 +1,8 @@
+import type { StyledFileManagerProps } from "components/system/Files/Views";
 import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 
-const StyledFileManager = styled.ol`
+const StyledFileManager = styled.ol<StyledFileManagerProps>`
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: ${({ theme }) =>
@@ -11,6 +12,10 @@ const StyledFileManager = styled.ol`
   height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
+
+  li {
+    pointer-events: ${({ selecting }) => (selecting ? "none" : "all")};
+  }
 
   main > & {
     padding-bottom: 20px;
