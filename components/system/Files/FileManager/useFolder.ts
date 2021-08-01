@@ -7,7 +7,7 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SHORTCUT_EXTENSION } from "utils/constants";
+import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 export type FileActions = {
@@ -58,7 +58,7 @@ const useFolder = (directory: string): Folder => {
     });
   };
   const downloadFile = (path: string) =>
-    fs?.readFile(path, (_error, contents = Buffer.from("")) => {
+    fs?.readFile(path, (_error, contents = EMPTY_BUFFER) => {
       const link = document.createElement("a");
 
       link.href = bufferToUrl(contents);

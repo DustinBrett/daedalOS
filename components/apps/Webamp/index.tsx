@@ -13,6 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, loadFiles } from "utils/functions";
 
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
@@ -43,7 +44,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
 
   useEffect(() => {
     if (url && url !== currentUrl && webampCI) {
-      fs?.readFile(url, (_error, contents = Buffer.from("")) => {
+      fs?.readFile(url, (_error, contents = EMPTY_BUFFER) => {
         if (extname(url) === ".mp3") {
           parseTrack(contents, basename(url)).then((track) => {
             setCurrentUrl(url);

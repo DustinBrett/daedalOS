@@ -8,6 +8,7 @@ import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { extname } from "path";
 import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
 import { useEffect, useState } from "react";
+import { EMPTY_BUFFER } from "utils/constants";
 
 export type FileSystemContextState = {
   fs?: FSModule;
@@ -21,7 +22,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const [fs, setFs] = useState<FSModule>();
   const rootFs = fs?.getRootFS() as MountableFileSystem;
   const mountFs = (url: string, callback: () => void): void =>
-    fs?.readFile(url, (_readError, fileData = Buffer.from("")) => {
+    fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
       const isISO = extname(url) === ".iso";
       const createFs: BFSCallback<IsoFS | ZipFS> = (_createError, newFs) => {
         if (newFs) {

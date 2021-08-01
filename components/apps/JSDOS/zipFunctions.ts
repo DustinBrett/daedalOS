@@ -1,6 +1,7 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
+import { EMPTY_BUFFER } from "utils/constants";
 
 const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
   path.split("/").reduce((zippableData, pathPart, index, { length }) => {
@@ -22,7 +23,7 @@ export const addFileToZip = (
 ): Promise<Buffer> =>
   new Promise((resolve) =>
     unzip(buffer, (_unzipError, zipData) =>
-      fs.readFile(filePath, (_readError, contents = Buffer.from("")) =>
+      fs.readFile(filePath, (_readError, contents = EMPTY_BUFFER) =>
         zip(
           {
             ...zipData,

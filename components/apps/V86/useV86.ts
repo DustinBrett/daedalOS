@@ -12,6 +12,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { extname } from "path";
 import { useEffect, useState } from "react";
+import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const useV86 = (
@@ -27,7 +28,7 @@ const useV86 = (
 
   useEffect(() => {
     if (!emulator && fs && url) {
-      fs?.readFile(url, (_error, contents = Buffer.from("")) => {
+      fs?.readFile(url, (_error, contents = EMPTY_BUFFER) => {
         loadFiles(libs).then(() => {
           if (containerRef?.current) {
             const isISO = extname(url).toLowerCase() === ".iso";

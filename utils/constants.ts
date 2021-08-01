@@ -7,6 +7,8 @@ export const DEFAULT_WINDOW_SIZE: Size = {
   width: 250,
 };
 
+export const EMPTY_BUFFER = Buffer.from("");
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",

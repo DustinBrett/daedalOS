@@ -14,6 +14,7 @@ import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useEffect, useState } from "react";
+import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
@@ -37,7 +38,7 @@ const useJSDOS = (
 
   useEffect(() => {
     if (!dos && fs && url) {
-      fs.readFile(url, (_error, contents = Buffer.from("")) =>
+      fs.readFile(url, (_error, contents = EMPTY_BUFFER) =>
         loadFiles(libs).then(async () => {
           const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
 

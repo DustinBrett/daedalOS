@@ -2,7 +2,7 @@ import type { FolderActions } from "components/system/Files/FileManager/useFolde
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import type React from "react";
-import { MENU_SEPERATOR } from "utils/constants";
+import { EMPTY_BUFFER, MENU_SEPERATOR } from "utils/constants";
 
 const useFolderContextMenu = (
   { newPath }: FolderActions,
@@ -22,7 +22,7 @@ const useFolderContextMenu = (
         MENU_SEPERATOR,
         {
           label: "Text Document",
-          action: () => newPath("New Text Document.txt", Buffer.from("")),
+          action: () => newPath("New Text Document.txt", EMPTY_BUFFER),
         },
       ],
     },
