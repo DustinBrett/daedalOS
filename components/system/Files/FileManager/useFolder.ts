@@ -70,9 +70,11 @@ const useFolder = (directory: string): Folder => {
     });
   const renameFile = (path: string, name?: string) => {
     if (name) {
-      const newPath = `${directory}${directory === "/" ? "" : "/"}${name}${
+      const newPath = join(
+        directory,
+        name,
         path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
-      }`;
+      );
 
       fs?.rename(path, newPath, () =>
         setFiles((currentFiles) =>

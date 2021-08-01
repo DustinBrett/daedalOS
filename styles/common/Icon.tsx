@@ -1,4 +1,4 @@
-import { basename, dirname } from "path";
+import { basename, dirname, join } from "path";
 import { memo, useEffect } from "react";
 import styled from "styled-components";
 import { cleanUpBufferUrl } from "utils/functions";
@@ -19,7 +19,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
     src:
       !src || src.startsWith("blob:")
         ? src
-        : `${dirname(src)}/${imgSize}x${imgSize}/${basename(src)}`,
+        : join(dirname(src), `${imgSize}x${imgSize}`, basename(src)),
     width: displaySize || imgSize,
   })
 )<IconProps>`

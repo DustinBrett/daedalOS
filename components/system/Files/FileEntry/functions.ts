@@ -3,7 +3,9 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
+import { join } from "path";
 import {
+  EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
   SHORTCUT_EXTENSION,
@@ -103,4 +105,4 @@ export const getInfoWithExtension = (
 export const filterSystemFiles =
   (directory: string) =>
   (file: string): boolean =>
-    !SYSTEM_FILES.has(`${directory}${file}`);
+    !SYSTEM_FILES.has(join(directory, file));

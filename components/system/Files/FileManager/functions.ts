@@ -1,4 +1,4 @@
-import { basename, dirname, extname } from "path";
+import { basename, dirname, extname, join } from "path";
 
 const sortCaseInsensitive = (a: string, b: string) =>
   a.localeCompare(b, "en", { sensitivity: "base" });
@@ -25,5 +25,5 @@ export const iterateFileName = (path: string, iteration: number): string => {
   const extension = extname(path);
   const fileName = basename(path, extension);
 
-  return `${dirname(path)}/${fileName} (${iteration})${extension}`;
+  return join(dirname(path), `${fileName} (${iteration})${extension}`);
 };

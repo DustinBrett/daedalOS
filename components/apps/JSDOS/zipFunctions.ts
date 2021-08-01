@@ -1,13 +1,14 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
+import { join } from "path";
 import { EMPTY_BUFFER } from "utils/constants";
 
 const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
   path.split("/").reduce((zippableData, pathPart, index, { length }) => {
     const endOfPath = index === length - 1;
     const walkedPath = Object.keys(zippableData)[index - 1] || "";
-    const currentPath = `${walkedPath}${pathPart}${endOfPath ? "" : "/"}`;
+    const currentPath = join(walkedPath, pathPart, endOfPath ? "" : "/");
 
     return {
       ...zippableData,
