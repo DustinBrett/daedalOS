@@ -7,6 +7,7 @@ import {
 
 const renderFrame = (
   previewElement: HTMLElement,
+  previewTimer: React.MutableRefObject<NodeJS.Timer | undefined>,
   callback: (url: string) => void
 ): void => {
   import("html-to-image").then(({ toCanvas }) =>
@@ -24,11 +25,15 @@ const renderFrame = (
           previewImage.src = dataUrl;
           previewImage.addEventListener(
             "load",
-            () => callback(dataUrl),
+            () => {
+              if (typeof previewTimer.current !== "undefined") {
+                callback(dataUrl);
+              }
+            },
             ONE_TIME_PASSIVE_EVENT
           );
         } else {
-          renderFrame(previewElement, callback);
+          renderFrame(previewElement, previewTimer, callback);
         }
       }
     })
@@ -48,13 +53,16 @@ const useWindowPeek = (id: string): string => {
 
     if (!previewTimer.current && previewElement) {
       previewTimer.current = setInterval(
-        () => renderFrame(previewElement, setImageSrc),
+        () => renderFrame(previewElement, previewTimer, setImageSrc),
         MILLISECONDS_IN_SECOND / 2
       );
     }
 
     return () => {
-      if (previewTimer.current) clearTimeout(previewTimer.current);
+      if (previewTimer.current) {
+        clearTimeout(previewTimer.current);
+        previewTimer.current = undefined;
+      }
     };
   }, [componentWindow, peekElement]);
 
