@@ -13,15 +13,14 @@ const libs = ["/libs/vanta/three.min.js", "/libs/vanta/vanta.waves.min.js"];
 
 const vantaWaves =
   (config: VantaWavesConfig) =>
-  (el: HTMLElement | null): void => {
+  (el?: HTMLElement | null): void => {
     loadFiles(libs).then(() => {
-      const {
-        VANTA: { current: currentEffect, WAVES },
-      } = window;
+      const { VANTA: { current: currentEffect, WAVES } = {} } = window;
+
       currentEffect?.destroy();
 
       const vantaEffect =
-        el && isWebGLAvailable
+        el && isWebGLAvailable && WAVES
           ? WAVES({
               el,
               ...disableControls,

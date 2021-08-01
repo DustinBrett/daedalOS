@@ -5,8 +5,13 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
+import { useSession } from "contexts/session";
 import { basename, dirname, extname } from "path";
-import { MENU_SEPERATOR, SHORTCUT_EXTENSION } from "utils/constants";
+import {
+  IMAGE_FILE_EXTENSIONS,
+  MENU_SEPERATOR,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
 
 const useFileContextMenu = (
   url: string,
@@ -16,6 +21,7 @@ const useFileContextMenu = (
   { deleteFile, downloadFile }: FileActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
+  const { setWallpaper } = useSession();
   const { process: [, ...openWith] = [] } = extensions[extname(url)] || {};
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
@@ -34,6 +40,34 @@ const useFileContextMenu = (
     menuItems.unshift({
       label: "Download",
       action: () => downloadFile(path),
+    });
+  }
+
+  if (IMAGE_FILE_EXTENSIONS.has(extension)) {
+    menuItems.unshift({
+      label: "Set as desktop background",
+      menu: [
+        {
+          label: "Fill",
+          action: () => setWallpaper(path, "fill"),
+        },
+        {
+          label: "Fit",
+          action: () => setWallpaper(path, "fit"),
+        },
+        {
+          label: "Stretch",
+          action: () => setWallpaper(path, "stretch"),
+        },
+        {
+          label: "Tile",
+          action: () => setWallpaper(path, "tile"),
+        },
+        {
+          label: "Center",
+          action: () => setWallpaper(path, "center"),
+        },
+      ],
     });
   }
 

@@ -1,33 +1,10 @@
-import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useFileSystem } from "contexts/fileSystem";
+import type {
+  SessionContextState,
+  WallpaperFit,
+  WindowStates,
+} from "contexts/session/types";
 import { useCallback, useEffect, useState } from "react";
-import type { Position } from "react-rnd";
-
-export type WindowState = {
-  position?: Position;
-  size?: Size;
-};
-
-type WindowStates = {
-  [id: string]: WindowState;
-};
-
-export type SessionContextState = {
-  blurEntry: (entry: string) => void;
-  focusEntry: (entry: string) => void;
-  focusedEntries: string[];
-  foregroundId: string;
-  prependToStack: (id: string) => void;
-  removeFromStack: (id: string) => void;
-  setForegroundId: React.Dispatch<React.SetStateAction<string>>;
-  setThemeName: React.Dispatch<React.SetStateAction<string>>;
-  setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
-  stackOrder: string[];
-  startMenuVisible: boolean;
-  themeName: string;
-  toggleStartMenu: (showMenu?: boolean) => void;
-  windowStates: WindowStates;
-};
 
 const SESSION_FILE = "/session.json";
 
@@ -39,6 +16,8 @@ const useSessionContextState = (): SessionContextState => {
   const [themeName, setThemeName] = useState("");
   const [windowStates, setWindowStates] = useState<WindowStates>({});
   const [startMenuVisible, setStartMenuVisible] = useState(false);
+  const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
+  const [wallpaperImage, setWallpaperImage] = useState("");
   const toggleStartMenu = (showMenu?: boolean) =>
     setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
   const prependToStack = useCallback(
@@ -66,6 +45,10 @@ const useSessionContextState = (): SessionContextState => {
       ...currentFocusedEntries,
       entry,
     ]);
+  const setWallpaper = (image: string, fit: WallpaperFit) => {
+    setWallpaperFit(fit);
+    setWallpaperImage(image);
+  };
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -75,11 +58,22 @@ const useSessionContextState = (): SessionContextState => {
           foregroundId,
           stackOrder,
           themeName,
+          wallpaperFit,
+          wallpaperImage,
           windowStates,
         })
       );
     }
-  }, [fs, foregroundId, sessionLoaded, stackOrder, themeName, windowStates]);
+  }, [
+    foregroundId,
+    fs,
+    sessionLoaded,
+    stackOrder,
+    themeName,
+    wallpaperFit,
+    wallpaperImage,
+    windowStates,
+  ]);
 
   useEffect(
     () =>
@@ -88,6 +82,7 @@ const useSessionContextState = (): SessionContextState => {
           const session = JSON.parse(contents.toString() || "{}");
 
           setThemeName(session.themeName);
+          setWallpaper(session.wallpaperImage, session.wallpaperFit);
           setWindowStates(session.windowStates);
         }
 
@@ -105,11 +100,14 @@ const useSessionContextState = (): SessionContextState => {
     removeFromStack,
     setForegroundId,
     setThemeName,
+    setWallpaper,
     setWindowStates,
     stackOrder,
     startMenuVisible,
     themeName,
     toggleStartMenu,
+    wallpaperImage,
+    wallpaperFit,
     windowStates,
   };
 };

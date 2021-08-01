@@ -1,4 +1,4 @@
-import type { SessionContextState } from "contexts/session/useSessionContextState";
+import type { SessionContextState } from "contexts/session/types";
 import useSessionContextState from "contexts/session/useSessionContextState";
 import contextFactory from "utils/contextFactory";
 
