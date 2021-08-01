@@ -53,9 +53,9 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       {...menuTransition}
     >
       <ol>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <MenuItemEntry
-            key={item.label || item.group}
+            key={item.label || index}
             resetMenu={resetMenu}
             {...item}
           />

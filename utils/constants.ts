@@ -28,6 +28,8 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".xbm",
 ]);
 
+export const MENU_SEPERATOR = { seperator: true };
+
 export const MILLISECONDS_IN_SECOND = 1000;
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".zip"]);

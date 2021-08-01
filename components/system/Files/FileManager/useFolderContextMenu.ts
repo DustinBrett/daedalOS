@@ -1,6 +1,8 @@
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type React from "react";
+import { MENU_SEPERATOR } from "utils/constants";
 
 const useFolderContextMenu = (
   { newPath }: FolderActions,
@@ -9,7 +11,7 @@ const useFolderContextMenu = (
   const { contextMenu } = useMenu();
   const menuItems: MenuItem[] = [
     { label: "Refresh", action: () => updateFiles() },
-    { group: 1 },
+    MENU_SEPERATOR,
     {
       label: "New",
       menu: [
@@ -17,7 +19,7 @@ const useFolderContextMenu = (
           label: "Folder",
           action: () => newPath("New folder"),
         },
-        { group: 2 },
+        MENU_SEPERATOR,
         {
           label: "Text Document",
           action: () => newPath("New Text Document.txt", Buffer.from("")),

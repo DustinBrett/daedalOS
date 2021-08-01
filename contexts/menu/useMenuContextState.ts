@@ -3,11 +3,11 @@ import { useState } from "react";
 export type MenuItem = {
   action?: () => void;
   disabled?: boolean;
-  group?: number;
   icon?: string;
   label?: string;
   menu?: MenuItem[];
   primary?: boolean;
+  seperator?: boolean;
 };
 
 export type MenuState = {

@@ -6,7 +6,8 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { dirname, extname } from "path";
-import { SHORTCUT_EXTENSION } from "utils/constants";
+import type React from "react";
+import { MENU_SEPERATOR, SHORTCUT_EXTENSION } from "utils/constants";
 
 const useFileContextMenu = (
   url: string,
@@ -29,7 +30,7 @@ const useFileContextMenu = (
   const { contextMenu } = useMenu();
 
   if (!isShortcut && url && (extension || pid !== "FileExplorer")) {
-    menuItems.unshift({ group: 1 });
+    menuItems.unshift(MENU_SEPERATOR);
 
     menuItems.unshift({
       label: "Download",
@@ -38,7 +39,7 @@ const useFileContextMenu = (
   }
 
   if (pid) {
-    menuItems.unshift({ group: 2 });
+    menuItems.unshift(MENU_SEPERATOR);
 
     if (openWithFiltered.length > 0) {
       menuItems.unshift({
