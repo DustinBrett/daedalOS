@@ -52,9 +52,11 @@ const useFileContextMenu = (
       });
     }
 
-    if (isShortcut) {
+    if (isShortcut && url && url !== "/") {
+      const isFolder = extname(url) === "";
+
       menuItems.unshift({
-        label: "Open file location",
+        label: `Open ${isFolder ? "folder" : "file"} location`,
         action: () => open("FileExplorer", dirname(url)),
       });
     }
