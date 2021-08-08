@@ -72,19 +72,27 @@ const useFolder = (directory: string): Folder => {
       setDownloadLink(link.href);
     });
   const renameFile = (path: string, name?: string) => {
-    if (name) {
+    const newName = name?.trim();
+
+    if (newName) {
       const newPath = join(
         directory,
-        `${name}${path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""}`
+        `${newName}${
+          path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
+        }`
       );
 
-      fs?.rename(path, newPath, () =>
-        setFiles((currentFiles) =>
-          currentFiles.map((file) =>
-            file === basename(path) ? basename(newPath) : file
-          )
-        )
-      );
+      fs?.exists(newPath, (exists) => {
+        if (!exists) {
+          fs?.rename(path, newPath, () =>
+            setFiles((currentFiles) =>
+              currentFiles.map((file) =>
+                file === basename(path) ? basename(newPath) : file
+              )
+            )
+          );
+        }
+      });
     }
   };
   const newPath = (name: string, buffer?: Buffer, iteration = 0): void => {

@@ -22,6 +22,7 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
       defaultValue={name}
       onBlurCapture={saveRename}
       onKeyDown={({ key }) => key === "Enter" && saveRename()}
+      onKeyUp={(event) => event.preventDefault()}
       ref={inputRef}
     />
   );
