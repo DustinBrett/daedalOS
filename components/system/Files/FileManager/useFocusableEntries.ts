@@ -10,9 +10,10 @@ type FocusableEntry = (file: string) => FocusedEntryProps;
 
 const useFocusableEntries = (
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
-): { focusableEntry: FocusableEntry } => {
+): FocusableEntry => {
   const { focusedEntries, blurEntry, focusEntry } = useSession();
-  const focusableEntry = (file: string) => {
+
+  return (file: string) => {
     const focusedFile = focusedEntries.includes(file);
     const className = focusedFile ? "focus-within" : "";
     const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
@@ -38,8 +39,6 @@ const useFocusableEntries = (
 
     return { className, onBlurCapture, onClick };
   };
-
-  return { focusableEntry };
 };
 
 export default useFocusableEntries;

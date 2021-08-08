@@ -1,6 +1,7 @@
+import type { StyledFileEntryProps } from "components/system/Files/Views";
 import styled from "styled-components";
 
-const StyledFileEntry = styled.li`
+const StyledFileEntry = styled.li<StyledFileEntryProps>`
   display: flex;
   height: min-content;
   padding: 2px;
@@ -52,21 +53,23 @@ const StyledFileEntry = styled.li`
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.fileEntry.background};
+    background-color: ${({ dragging, theme }) =>
+      !dragging && theme.colors.fileEntry.background};
 
     &::before {
-      border: ${({ theme }) => `1px solid ${theme.colors.fileEntry.border}`};
+      border: ${({ dragging, theme }) =>
+        !dragging && `1px solid ${theme.colors.fileEntry.border}`};
     }
   }
 
   &.focus-within {
-    background-color: ${({ theme }) =>
-      theme.colors.fileEntry.backgroundFocused};
+    background-color: ${({ dragging, theme }) =>
+      !dragging && theme.colors.fileEntry.backgroundFocused};
     z-index: 1;
 
     &::before {
-      border: ${({ theme }) =>
-        `1px solid ${theme.colors.fileEntry.borderFocused}`};
+      border: ${({ dragging, theme }) =>
+        !dragging && `1px solid ${theme.colors.fileEntry.borderFocused}`};
     }
 
     figcaption:not(.truncate) {
@@ -74,11 +77,12 @@ const StyledFileEntry = styled.li`
     }
 
     &:hover {
-      background-color: ${({ theme }) =>
-        theme.colors.fileEntry.backgroundFocusedHover};
+      background-color: ${({ dragging, theme }) =>
+        !dragging && theme.colors.fileEntry.backgroundFocusedHover};
 
       &::before {
-        border: ${({ theme }) =>
+        border: ${({ dragging, theme }) =>
+          !dragging &&
           `1px solid ${theme.colors.fileEntry.borderFocusedHover}`};
       }
     }

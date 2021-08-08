@@ -1,6 +1,7 @@
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
+import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
 import useFolder from "components/system/Files/FileManager/useFolder";
@@ -23,7 +24,8 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const [renaming, setRenaming] = useState("");
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const { focusableEntry } = useFocusableEntries(fileManagerRef);
+  const draggableEntry = useDraggableEntries();
+  const focusableEntry = useFocusableEntries(fileManagerRef);
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
 
@@ -47,7 +49,11 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
       {files.map((file) => (
-        <StyledFileEntry key={file} {...focusableEntry(file)}>
+        <StyledFileEntry
+          key={file}
+          {...draggableEntry(file)}
+          {...focusableEntry(file)}
+        >
           <FileEntry
             fileActions={fileActions}
             fileManagerRef={fileManagerRef}
