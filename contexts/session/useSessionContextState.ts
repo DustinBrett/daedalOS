@@ -36,9 +36,14 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
-  const blurEntry = (entry: string) =>
-    setFocusedEntries((currentFocusedEntries) =>
-      currentFocusedEntries.filter((focusedEntry) => focusedEntry !== entry)
+  const blurEntry = (entry?: string) =>
+    setFocusedEntries(
+      entry
+        ? (currentFocusedEntries) =>
+            currentFocusedEntries.filter(
+              (focusedEntry) => focusedEntry !== entry
+            )
+        : []
     );
   const focusEntry = (entry: string) =>
     setFocusedEntries((currentFocusedEntries) => [
