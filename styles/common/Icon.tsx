@@ -23,6 +23,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
     width: displaySize || imgSize,
   })
 )<IconProps>`
+  object-fit: contain;
   visibility: hidden;
 `;
 
