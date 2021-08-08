@@ -9,12 +9,13 @@ import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSideb
 
 type SidebarButtonProps = {
   active?: boolean;
+  heading?: boolean;
   icon: JSX.Element;
   name: string;
 };
 
 const topButtons = [
-  { name: "START", icon: <SideMenu /> },
+  { name: "START", icon: <SideMenu />, heading: true },
   { name: "All apps", icon: <AllApps />, active: true },
 ];
 
@@ -23,11 +24,11 @@ const bottomButtons = [
   { name: "Power", icon: <Power /> },
 ];
 
-const SidebarButton = ({ active, icon, name }: SidebarButtonProps) => (
+const SidebarButton = ({ active, heading, icon, name }: SidebarButtonProps) => (
   <StyledSidebarButton active={active}>
     <figure>
       {icon}
-      <figcaption>{name}</figcaption>
+      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
     </figure>
   </StyledSidebarButton>
 );

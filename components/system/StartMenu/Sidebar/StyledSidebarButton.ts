@@ -36,6 +36,10 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
 
     figcaption {
       display: none;
+
+      strong {
+        font-weight: 600;
+      }
     }
   }
 
