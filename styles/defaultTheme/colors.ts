@@ -19,7 +19,7 @@ const colors = {
       0 2px 2px rgba(0, 0, 0, 50%)`,
   },
   highlight: "hsl(207deg 100% 72% / 90%)",
-  highlightBackground: "hsl(207deg 100% 72% / 30%)",
+  highlightBackground: "hsl(207deg 100% 72% / 20%)",
   startButton: "#FFF",
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",

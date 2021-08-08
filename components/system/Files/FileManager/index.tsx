@@ -24,7 +24,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const [renaming, setRenaming] = useState("");
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusableEntry } = useFocusableEntries(fileManagerRef);
-  const { isSelecting, selectionStyling, selectionEvents } =
+  const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}
             renaming={renaming === file}
+            selectionRect={selectionRect}
             setRenaming={setRenaming}
             view={view}
           />
