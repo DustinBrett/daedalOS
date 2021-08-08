@@ -6,7 +6,7 @@ const StyledSidebar = styled.nav`
   height: ${({ theme }) => theme.sizes.startMenu.size};
   justify-content: space-between;
   margin-right: 7px;
-  margin-top: 4px;
+  padding-top: 4px;
   position: absolute;
   top: 0;
 `;
