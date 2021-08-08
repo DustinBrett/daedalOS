@@ -70,7 +70,14 @@ const FileEntry = ({
     <Button
       ref={buttonRef}
       {...useDoubleClick(() => openFile(pid), singleClick)}
-      {...useFileContextMenu(url, pid, path, setRenaming, fileActions)}
+      {...useFileContextMenu(
+        url,
+        pid,
+        path,
+        setRenaming,
+        fileActions,
+        focusEntry
+      )}
     >
       <figure>
         <Icon src={icon} alt={name} {...FileEntryIconSize[view]} />

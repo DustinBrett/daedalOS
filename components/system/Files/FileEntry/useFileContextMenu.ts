@@ -18,7 +18,8 @@ const useFileContextMenu = (
   pid: string,
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
-  { deleteFile, downloadFile }: FileActions
+  { deleteFile, downloadFile }: FileActions,
+  focusEntry: (entry: string) => void
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { setWallpaper } = useSession();
@@ -104,7 +105,10 @@ const useFileContextMenu = (
   }
 
   return {
-    onContextMenuCapture: contextMenu?.(menuItems),
+    onContextMenuCapture: (event) => {
+      focusEntry(basename(path));
+      contextMenu?.(menuItems)(event);
+    },
   };
 };
 
