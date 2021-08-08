@@ -37,7 +37,7 @@ export const haltEvent = (event: Event | React.DragEvent): void => {
 
 export const handleFileInputEvent = (
   event: Event | React.DragEvent,
-  callback: (fileName: string, buffer: Buffer) => void
+  callback: (fileName: string, buffer?: Buffer) => void
 ): void => {
   haltEvent(event);
 
@@ -61,5 +61,9 @@ export const handleFileInputEvent = (
       );
       reader.readAsArrayBuffer(file);
     });
+  } else {
+    const filePath = eventTarget?.getData("text");
+
+    if (filePath) callback(filePath);
   }
 };

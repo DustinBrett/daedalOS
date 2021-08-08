@@ -1,4 +1,6 @@
 import { useSession } from "contexts/session";
+import { join } from "path";
+import type { DragEventHandler } from "react";
 import { useState } from "react";
 
 type DraggableEntryProps = {
@@ -8,22 +10,25 @@ type DraggableEntryProps = {
   onDragEnd: React.DragEventHandler;
 };
 
-type DraggableEntry = (file: string) => DraggableEntryProps;
+type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
 const useDraggableEntries = (): DraggableEntry => {
   const { focusedEntries, blurEntry, focusEntry } = useSession();
   const [dragging, setDragging] = useState(false);
-  const onDragStart = (file: string) => () => {
-    setDragging(true);
-    focusedEntries.forEach((focusedEntry) => blurEntry(focusedEntry));
-    focusEntry(file);
-  };
+  const onDragStart =
+    (url: string, file: string): DragEventHandler =>
+    (event) => {
+      setDragging(true);
+      focusedEntries.forEach((focusedEntry) => blurEntry(focusedEntry));
+      focusEntry(file);
+      event.dataTransfer.setData("text/plain", join(url, file));
+    };
   const onDragEnd = () => setDragging(false);
 
-  return (file: string) => ({
+  return (url: string, file: string) => ({
     draggable: true,
     dragging,
-    onDragStart: onDragStart(file),
+    onDragStart: onDragStart(url, file),
     onDragEnd,
   });
 };

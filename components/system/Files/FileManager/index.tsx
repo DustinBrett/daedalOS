@@ -51,7 +51,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
       {files.map((file) => (
         <StyledFileEntry
           key={file}
-          {...draggableEntry(file)}
+          {...draggableEntry(url, file)}
           {...focusableEntry(file)}
         >
           <FileEntry
