@@ -1,5 +1,5 @@
-/.husky
-/.next
-/node_modules
-/out
-/public
+.husky
+.next
+node_modules
+out
+public
