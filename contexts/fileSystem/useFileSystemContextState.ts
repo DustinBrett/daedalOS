@@ -47,11 +47,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const unMountFs = (url: string): void => rootFs?.umount(url);
   const addFile = (callback: (name: string, buffer: Buffer) => void): void => {
     if (fileInput) {
-      const inputListener: EventListenerOrEventListenerObject = (event) => {
-        fileInput.removeEventListener("change", inputListener);
-        handleFileInputEvent(event, callback);
-      };
-      fileInput.addEventListener("change", inputListener);
+      fileInput.addEventListener(
+        "change",
+        (event) => handleFileInputEvent(event, callback),
+        { once: true }
+      );
       fileInput.click();
     }
   };
