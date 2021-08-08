@@ -5,6 +5,7 @@ import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -47,10 +48,10 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       onBlurCapture={resetMenu}
       ref={menuRef}
       isSubMenu={!!subMenu}
-      tabIndex={-1}
       x={x - offset.x}
       y={y - offset.y}
       {...menuTransition}
+      {...FOCUSABLE_ELEMENT}
     >
       <ol>
         {items.map((item, index) => (

@@ -1,16 +1,17 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 type Events = {
   onBlurCapture: (event: React.FocusEvent<HTMLElement>) => void;
   onFocusCapture: (event?: React.FocusEvent<HTMLElement>) => void;
 };
 
-type Focusable = Events & {
-  tabIndex: number;
-  zIndex: number;
-};
+type Focusable = Events &
+  typeof FOCUSABLE_ELEMENT & {
+    zIndex: number;
+  };
 
 const useFocusable = (
   id: string,
@@ -82,8 +83,8 @@ const useFocusable = (
   return {
     onBlurCapture,
     onFocusCapture: moveToFront,
-    tabIndex: -1,
     zIndex,
+    ...FOCUSABLE_ELEMENT,
   };
 };
 

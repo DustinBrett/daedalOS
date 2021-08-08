@@ -9,6 +9,8 @@ export const DEFAULT_WINDOW_SIZE: Size = {
 
 export const EMPTY_BUFFER = Buffer.from("");
 
+export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",

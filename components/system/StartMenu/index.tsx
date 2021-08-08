@@ -4,6 +4,7 @@ import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const StartMenu = (): JSX.Element => {
   const { toggleStartMenu } = useSession();
@@ -33,9 +34,9 @@ const StartMenu = (): JSX.Element => {
   return (
     <StyledStartMenu
       onBlurCapture={maybeCloseMenu}
-      tabIndex={-1}
       ref={menuRef}
       {...useStartMenuTransition()}
+      {...FOCUSABLE_ELEMENT}
     >
       <Sidebar />
       <FileManager url="/start" view="list" />

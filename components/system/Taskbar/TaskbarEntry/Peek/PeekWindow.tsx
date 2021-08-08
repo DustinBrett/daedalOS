@@ -6,6 +6,7 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 type PeekWindowProps = {
   id: string;
@@ -27,7 +28,11 @@ const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
   };
 
   return image ? (
-    <StyledPeekWindow {...peekTransition} onClick={onClick} tabIndex={-1}>
+    <StyledPeekWindow
+      onClick={onClick}
+      {...peekTransition}
+      {...FOCUSABLE_ELEMENT}
+    >
       <img alt={title} src={image} />
       <Button onClick={onClose} title="Close">
         <CloseIcon />

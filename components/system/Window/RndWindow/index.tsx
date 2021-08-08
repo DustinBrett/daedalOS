@@ -3,6 +3,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import { Rnd } from "react-rnd";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ type RndWindowProps = {
 const reRouteFocus =
   (focusElement?: HTMLElement) =>
   (element?: Element): void => {
-    element?.setAttribute("tabindex", "-1");
+    element?.setAttribute("tabindex", FOCUSABLE_ELEMENT.tabIndex.toString());
     element?.addEventListener("mousedown", (event) => {
       event.preventDefault();
       focusElement?.focus();

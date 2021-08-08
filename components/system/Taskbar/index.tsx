@@ -5,6 +5,7 @@ import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useSession } from "contexts/session";
 import dynamic from "next/dynamic";
+import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
 
@@ -14,7 +15,7 @@ const Taskbar = (): JSX.Element => {
   return (
     <>
       {startMenuVisible && <StartMenu />}
-      <StyledTaskbar tabIndex={-1} {...useTaskbarContextMenu()}>
+      <StyledTaskbar {...useTaskbarContextMenu()} {...FOCUSABLE_ELEMENT}>
         <StartButton />
         <TaskbarEntries />
         <Clock />
