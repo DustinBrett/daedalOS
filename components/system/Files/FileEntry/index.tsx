@@ -74,7 +74,11 @@ const FileEntry = ({
             }}
           />
         ) : (
-          <figcaption>{name}</figcaption>
+          <figcaption
+            className={focusedEntries.length > 1 ? "truncate" : undefined}
+          >
+            {name}
+          </figcaption>
         )}
       </figure>
     </Button>

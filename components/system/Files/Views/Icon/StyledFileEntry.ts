@@ -69,7 +69,7 @@ const StyledFileEntry = styled.li`
         `1px solid ${theme.colors.fileEntry.borderFocused}`};
     }
 
-    figcaption {
+    figcaption:not(.truncate) {
       -webkit-line-clamp: initial;
     }
 
