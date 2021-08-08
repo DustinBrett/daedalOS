@@ -23,6 +23,8 @@ const sizes = {
   startMenu: {
     size: "350px",
     sideBar: {
+      expandedWidth: "220px",
+      iconSize: "16px",
       height: "48px",
       width: "48px",
     },
