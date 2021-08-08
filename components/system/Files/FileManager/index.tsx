@@ -50,6 +50,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
         <StyledFileEntry key={file} {...focusableEntry(file)}>
           <FileEntry
             fileActions={fileActions}
+            fileManagerRef={fileManagerRef}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}
             renaming={renaming === file}

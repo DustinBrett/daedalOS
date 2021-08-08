@@ -15,6 +15,7 @@ import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
   fileActions: FileActions;
+  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   name: string;
   path: string;
   renaming: boolean;
@@ -25,6 +26,7 @@ type FileEntryProps = {
 
 const FileEntry = ({
   fileActions,
+  fileManagerRef,
   name,
   path,
   renaming,
@@ -40,10 +42,11 @@ const FileEntry = ({
   const fileName = basename(path);
 
   useEffect(() => {
-    if (selectionRect && buttonRef.current) {
+    if (selectionRect && buttonRef.current && fileManagerRef.current) {
       const isFocused = focusedEntries.includes(fileName);
       const selected = isSelectionIntersecting(
         buttonRef.current.getBoundingClientRect(),
+        fileManagerRef.current.getBoundingClientRect(),
         selectionRect
       );
 
@@ -54,7 +57,14 @@ const FileEntry = ({
         blurEntry(fileName);
       }
     }
-  }, [blurEntry, fileName, focusEntry, focusedEntries, selectionRect]);
+  }, [
+    blurEntry,
+    fileManagerRef,
+    fileName,
+    focusEntry,
+    focusedEntries,
+    selectionRect,
+  ]);
 
   return (
     <Button
