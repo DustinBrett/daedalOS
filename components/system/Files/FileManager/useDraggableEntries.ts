@@ -12,7 +12,9 @@ type DraggableEntryProps = {
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
-const useDraggableEntries = (): DraggableEntry => {
+const useDraggableEntries = (
+  updateFiles: (appendFile?: string | undefined) => void
+): DraggableEntry => {
   const { focusedEntries, blurEntry, focusEntry } = useSession();
   const [dragging, setDragging] = useState(false);
   const onDragStart =
@@ -23,7 +25,10 @@ const useDraggableEntries = (): DraggableEntry => {
       focusEntry(file);
       event.dataTransfer.setData("text/plain", join(url, file));
     };
-  const onDragEnd = () => setDragging(false);
+  const onDragEnd = () => {
+    setDragging(false);
+    updateFiles();
+  };
 
   return (url: string, file: string) => ({
     draggable: true,

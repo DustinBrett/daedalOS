@@ -24,7 +24,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const [renaming, setRenaming] = useState("");
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const draggableEntry = useDraggableEntries();
+  const draggableEntry = useDraggableEntries(updateFiles);
   const focusableEntry = useFocusableEntries(fileManagerRef);
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
