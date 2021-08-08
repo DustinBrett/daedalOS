@@ -15,6 +15,7 @@ const reRouteFocus =
   (focusElement?: HTMLElement) =>
   (element?: Element): void => {
     element?.setAttribute("tabindex", FOCUSABLE_ELEMENT.tabIndex.toString());
+    element?.addEventListener("contextmenu", (event) => event.preventDefault());
     element?.addEventListener("mousedown", (event) => {
       event.preventDefault();
       focusElement?.focus();
