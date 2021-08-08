@@ -5,6 +5,7 @@ import {
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
+import { useSession } from "contexts/session";
 import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
@@ -32,6 +33,7 @@ const useFolder = (directory: string): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { addFile, fs } = useFileSystem();
+  const { focusEntry } = useSession();
   const updateFiles = useCallback(
     (appendFile = "") => {
       if (appendFile) {
@@ -94,6 +96,7 @@ const useFolder = (directory: string): Folder => {
       const checkWrite: BFSOneArgCallback = (error) => {
         if (!error) {
           updateFiles(uniqueName);
+          focusEntry(uniqueName);
         } else if (error.code === "EEXIST") {
           newPath(name, buffer, iteration + 1);
         }

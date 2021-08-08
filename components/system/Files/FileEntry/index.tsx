@@ -42,19 +42,24 @@ const FileEntry = ({
   const fileName = basename(path);
 
   useEffect(() => {
-    if (selectionRect && buttonRef.current && fileManagerRef.current) {
+    if (buttonRef.current) {
       const isFocused = focusedEntries.includes(fileName);
-      const selected = isSelectionIntersecting(
-        buttonRef.current.getBoundingClientRect(),
-        fileManagerRef.current.getBoundingClientRect(),
-        selectionRect
-      );
 
-      if (selected && !isFocused) {
-        focusEntry(fileName);
-        buttonRef.current?.focus();
-      } else if (!selected && isFocused) {
-        blurEntry(fileName);
+      if (selectionRect && fileManagerRef.current) {
+        const selected = isSelectionIntersecting(
+          buttonRef.current.getBoundingClientRect(),
+          fileManagerRef.current.getBoundingClientRect(),
+          selectionRect
+        );
+
+        if (selected && !isFocused) {
+          focusEntry(fileName);
+          buttonRef.current.focus();
+        } else if (!selected && isFocused) {
+          blurEntry(fileName);
+        }
+      } else if (isFocused && document.activeElement !== buttonRef.current) {
+        buttonRef.current.focus();
       }
     }
   }, [
