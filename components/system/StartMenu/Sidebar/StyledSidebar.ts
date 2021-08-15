@@ -15,6 +15,7 @@ const StyledSidebar = styled.nav`
 
   &:hover {
     backdrop-filter: blur(10px);
+    background-color: hsla(0, 0%, 10%, 75%);
     box-shadow: 8px 0 5px -5px hsla(0, 0%, 10%, 50%);
     transition: all 400ms 400ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
