@@ -5,6 +5,7 @@ import {
   globals,
   libs,
   pathPrefix,
+  saveExtension,
   zipConfigPath,
 } from "components/apps/JSDOS/config";
 import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
@@ -15,8 +16,9 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
+import { basename, join } from "path";
 import { useEffect, useState } from "react";
-import { EMPTY_BUFFER } from "utils/constants";
+import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
@@ -52,26 +54,54 @@ const useJSDOS = (
   }, [containerRef, dosInstance]);
 
   useEffect(() => {
-    if (dosInstance && fs && url) {
-      fs.readFile(url, async (_error, contents = EMPTY_BUFFER) => {
-        const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
+    if (dosInstance && !dosCI && fs && url) {
+      fs.readFile(url, async (_urlError, urlContents = EMPTY_BUFFER) => {
+        const bundleURL = bufferToUrl(await addJsDosConfig(urlContents, fs));
 
-        dosInstance.run(objectURL).then((ci) => {
-          const canvas = containerRef.current?.querySelector("canvas");
+        fs.readFile(
+          join(SAVE_PATH, `${basename(url)}${saveExtension}`),
+          (_saveError, saveContents = EMPTY_BUFFER) => {
+            const optionalChangesUrl = bufferToUrl(saveContents);
 
-          linkElement(id, "peekElement", canvas as HTMLCanvasElement);
-          setDosCI(ci);
-          appendFileToTitle(url);
-          cleanUpBufferUrl(objectURL);
-          cleanUpLoader();
-        });
+            // NOTE: js-dos v7 appends `?dt=` (Removed in lib, for now...)
+            dosInstance.run(bundleURL, optionalChangesUrl).then((ci) => {
+              const canvas = containerRef.current?.querySelector("canvas");
+
+              linkElement(id, "peekElement", canvas as HTMLCanvasElement);
+              setDosCI(ci);
+              appendFileToTitle(url);
+              cleanUpBufferUrl(bundleURL);
+              cleanUpBufferUrl(optionalChangesUrl);
+              cleanUpLoader();
+            });
+          }
+        );
       });
     }
 
     return () => {
-      dosInstance?.stop?.();
+      if (dosCI && fs && url) {
+        dosCI.persist().then((saveZip) => {
+          fs.mkdir(SAVE_PATH, () =>
+            fs.writeFile(
+              join(SAVE_PATH, `${basename(url)}${saveExtension}`),
+              Buffer.from(saveZip),
+              () => dosInstance?.stop()
+            )
+          );
+        });
+      }
     };
-  }, [appendFileToTitle, containerRef, dosInstance, fs, id, linkElement, url]);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    dosCI,
+    dosInstance,
+    fs,
+    id,
+    linkElement,
+    url,
+  ]);
 
   useEffect(() => {
     if (dosCI) {

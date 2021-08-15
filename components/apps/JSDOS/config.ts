@@ -23,4 +23,6 @@ export const libs = ["/libs/jsdos/js-dos.js"];
 
 export const pathPrefix = "/libs/jsdos/";
 
+export const saveExtension = ".save.zip";
+
 export const zipConfigPath = ".jsdos/dosbox.conf";
