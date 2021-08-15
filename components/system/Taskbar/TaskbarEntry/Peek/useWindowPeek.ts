@@ -16,7 +16,9 @@ const renderFrame = (
 
       if (height && width) {
         const { data: pixelData } =
-          canvas.getContext("2d")?.getImageData(0, 0, width, height) || {};
+          canvas
+            .getContext("2d", { alpha: false, desynchronized: true })
+            ?.getImageData(0, 0, width, height) || {};
 
         if (pixelData?.some(Boolean)) {
           const dataUrl = canvas.toDataURL();
