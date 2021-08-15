@@ -69,10 +69,7 @@ const useJSDOS = (
     }
 
     return () => {
-      if (dosInstance) {
-        dosInstance?.stop?.();
-        window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.();
-      }
+      dosInstance?.stop?.();
     };
   }, [appendFileToTitle, containerRef, dosInstance, fs, id, linkElement, url]);
 
@@ -96,6 +93,12 @@ const useJSDOS = (
         .events()
         .onFrameSize((width, height) =>
           updateWindowSize(height * 2, width * 2)
+        );
+
+      dosCI
+        .events()
+        .onExit(() =>
+          window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.()
         );
     }
   }, [close, dosCI, id, updateWindowSize]);
