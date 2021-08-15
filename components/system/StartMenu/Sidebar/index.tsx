@@ -27,7 +27,7 @@ const SidebarButton = ({
   heading,
   icon,
   name,
-}: SidebarButtonProps) => (
+}: SidebarButtonProps): JSX.Element => (
   <StyledSidebarButton active={active} onClick={action}>
     <figure>
       {icon}

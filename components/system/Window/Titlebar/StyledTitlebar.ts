@@ -8,7 +8,7 @@ type StyledTitlebarProps = {
 const styledBorder = ({
   foreground,
   theme,
-}: StyledTitlebarProps & { theme: DefaultTheme }) =>
+}: StyledTitlebarProps & { theme: DefaultTheme }): string =>
   foreground
     ? `1px solid ${theme.colors.titleBar.background}`
     : `1px solid ${theme.colors.titleBar.backgroundInactive}`;

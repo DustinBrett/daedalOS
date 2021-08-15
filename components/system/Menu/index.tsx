@@ -44,7 +44,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
         const menuUnfocused = ({
           relatedTarget,
           type,
-        }: MouseEvent | FocusEvent) => {
+        }: MouseEvent | FocusEvent): void => {
           if (
             !(relatedTarget instanceof HTMLElement) ||
             !menuRef.current?.contains(relatedTarget)

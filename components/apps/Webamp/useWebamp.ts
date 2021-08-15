@@ -49,12 +49,12 @@ const useWebamp = (id: string): Webamp => {
     file?: Buffer
   ): void => {
     if (containerElement && window.Webamp && !webampCI) {
-      const runWebamp = (options?: Options) => {
+      const runWebamp = (options?: Options): void => {
         const webamp = new window.Webamp({
           ...BASE_WEBAMP_OPTIONS,
           ...options,
         }) as WebampCI;
-        const setupElements = () => {
+        const setupElements = (): void => {
           const webampElement = getWebampElement();
 
           if (webampElement) {

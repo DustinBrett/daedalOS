@@ -18,7 +18,7 @@ const useSessionContextState = (): SessionContextState => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("");
-  const toggleStartMenu = (showMenu?: boolean) =>
+  const toggleStartMenu = (showMenu?: boolean): void =>
     setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
   const prependToStack = useCallback(
     (id: string) =>
@@ -36,7 +36,7 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
-  const blurEntry = (entry?: string) =>
+  const blurEntry = (entry?: string): void =>
     setFocusedEntries(
       entry
         ? (currentFocusedEntries) =>
@@ -45,12 +45,12 @@ const useSessionContextState = (): SessionContextState => {
             )
         : []
     );
-  const focusEntry = (entry: string) =>
+  const focusEntry = (entry: string): void =>
     setFocusedEntries((currentFocusedEntries) => [
       ...currentFocusedEntries,
       entry,
     ]);
-  const setWallpaper = (image: string, fit: WallpaperFit) => {
+  const setWallpaper = (image: string, fit: WallpaperFit): void => {
     setWallpaperFit(fit);
     setWallpaperImage(image);
   };

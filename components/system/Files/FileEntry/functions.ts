@@ -28,7 +28,7 @@ const getProcessByFileExtension = (extension: string): string => {
   return defaultProcess;
 };
 
-const getShortcutInfo = (contents: Buffer) => {
+const getShortcutInfo = (contents: Buffer): FileInfo => {
   const {
     InternetShortcut: { BaseURL: pid = "", IconFile: icon = "", URL: url = "" },
   } = ini.parse(contents.toString());
@@ -57,7 +57,7 @@ export const getInfoWithExtension = (
   extension: string,
   callback: React.Dispatch<React.SetStateAction<FileInfo>>
 ): void => {
-  const getInfoByFileExtension = (icon?: string) =>
+  const getInfoByFileExtension = (icon?: string): void =>
     callback({
       icon: icon || getIconByFileExtension(extension),
       pid: getProcessByFileExtension(extension),

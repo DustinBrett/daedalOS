@@ -3,7 +3,7 @@ import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 const useClock = (): Date => {
   const [now, setNow] = useState(new Date());
-  const updateClock = () => setNow(new Date());
+  const updateClock = (): void => setNow(new Date());
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;

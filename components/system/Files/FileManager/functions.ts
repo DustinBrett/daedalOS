@@ -2,7 +2,7 @@ import { basename, dirname, extname, join } from "path";
 import type React from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
-const sortCaseInsensitive = (a: string, b: string) =>
+const sortCaseInsensitive = (a: string, b: string): number =>
   a.localeCompare(b, "en", { sensitivity: "base" });
 
 export const sortContents = (contents: string[]): string[] => {

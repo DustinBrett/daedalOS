@@ -11,7 +11,7 @@ type RenameBoxProps = {
 
 const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const saveRename = () => renameFile(path, inputRef?.current?.value);
+  const saveRename = (): void => renameFile(path, inputRef?.current?.value);
 
   useEffect(() => {
     inputRef?.current?.focus();

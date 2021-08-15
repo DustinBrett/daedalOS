@@ -24,7 +24,7 @@ const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
   const image = useWindowPeek(id);
   const peekTransition = usePeekTransition();
   const peekRef = useRef<HTMLDivElement | null>(null);
-  const onClick = () => {
+  const onClick = (): void => {
     if (minimized) minimize(id);
 
     setForegroundId(id);

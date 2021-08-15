@@ -22,7 +22,7 @@ const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
     ? buffer
     : addFileToZip(buffer, defaultConfig, zipConfigPath, fs);
 
-const cleanUpLoader = () =>
+const cleanUpLoader = (): void =>
   globals.forEach((global) => delete (window as never)[global]);
 
 const useJSDOS = (

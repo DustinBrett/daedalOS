@@ -39,19 +39,18 @@
       "error",
       { "prefer": "type-imports" }
     ],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { "allowExpressions": true }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
-      {
-        "ignoreRestSiblings": true
-      }
+      { "ignoreRestSiblings": true }
     ],
     "import/extensions": [
       "error",
       "ignorePackages",
-      {
-        "ts": "never",
-        "tsx": "never"
-      }
+      { "ts": "never", "tsx": "never" }
     ],
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",

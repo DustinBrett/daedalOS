@@ -26,7 +26,7 @@ const useDraggableEntries = (
       event.dataTransfer.setData("text/plain", join(url, file));
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
     };
-  const onDragEnd = () => {
+  const onDragEnd = (): void => {
     setDragging(false);
     updateFiles();
   };
