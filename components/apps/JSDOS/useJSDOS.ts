@@ -1,45 +1,21 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import {
-  defaultConfig,
-  dosOptions,
-  globals,
-  libs,
-  pathPrefix,
-  saveExtension,
-  zipConfigPath,
-} from "components/apps/JSDOS/config";
-import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
+import { dosOptions, libs, pathPrefix } from "components/apps/JSDOS/config";
+import useDosCI from "components/apps/JSDOS/useDosCI";
 import { closeWithTransition } from "components/system/Window/functions";
-import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
-import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, join } from "path";
 import { useEffect, useState } from "react";
-import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
-
-const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
-  (await isFileInZip(buffer, zipConfigPath))
-    ? buffer
-    : addFileToZip(buffer, defaultConfig, zipConfigPath, fs);
-
-const cleanUpLoader = (): void =>
-  globals.forEach((global) => delete (window as never)[global]);
+import { loadFiles } from "utils/functions";
 
 const useJSDOS = (
   id: string,
   url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>
 ): void => {
-  const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
-  const [dosCI, setDosCI] = useState<CommandInterface>();
   const [dosInstance, setDosInstance] = useState<DosInstance>();
-  const { fs } = useFileSystem();
-  const { close, linkElement } = useProcesses();
+  const dosCI = useDosCI(id, url, containerRef, dosInstance);
+  const { close } = useProcesses();
 
   useEffect(() => {
     if (!dosInstance && containerRef.current) {
@@ -52,56 +28,6 @@ const useJSDOS = (
       });
     }
   }, [containerRef, dosInstance]);
-
-  useEffect(() => {
-    if (dosInstance && !dosCI && fs && url) {
-      fs.readFile(url, async (_urlError, urlContents = EMPTY_BUFFER) => {
-        const bundleURL = bufferToUrl(await addJsDosConfig(urlContents, fs));
-
-        fs.readFile(
-          join(SAVE_PATH, `${basename(url)}${saveExtension}`),
-          (_saveError, saveContents = EMPTY_BUFFER) => {
-            const optionalChangesUrl = bufferToUrl(saveContents);
-
-            // NOTE: js-dos v7 appends `?dt=` (Removed in lib, for now...)
-            dosInstance.run(bundleURL, optionalChangesUrl).then((ci) => {
-              const canvas = containerRef.current?.querySelector("canvas");
-
-              linkElement(id, "peekElement", canvas as HTMLCanvasElement);
-              setDosCI(ci);
-              appendFileToTitle(url);
-              cleanUpBufferUrl(bundleURL);
-              cleanUpBufferUrl(optionalChangesUrl);
-              cleanUpLoader();
-            });
-          }
-        );
-      });
-    }
-
-    return () => {
-      if (dosCI && fs && url) {
-        dosCI.persist().then((saveZip) => {
-          fs.mkdir(SAVE_PATH, () =>
-            fs.writeFile(
-              join(SAVE_PATH, `${basename(url)}${saveExtension}`),
-              Buffer.from(saveZip),
-              () => dosInstance?.stop()
-            )
-          );
-        });
-      }
-    };
-  }, [
-    appendFileToTitle,
-    containerRef,
-    dosCI,
-    dosInstance,
-    fs,
-    id,
-    linkElement,
-    url,
-  ]);
 
   useEffect(() => {
     if (dosCI) {
