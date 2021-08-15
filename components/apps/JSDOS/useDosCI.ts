@@ -42,8 +42,12 @@ const useDosCI = (
 
         fs.readFile(
           join(SAVE_PATH, `${basename(url)}${saveExtension}`),
-          (_saveError, saveContents = EMPTY_BUFFER) => {
-            const optionalChangesUrl = bufferToUrl(saveContents);
+          (saveError, saveContents = EMPTY_BUFFER) => {
+            let optionalChangesUrl = "";
+
+            if (!saveError) {
+              optionalChangesUrl = bufferToUrl(saveContents);
+            }
 
             // NOTE: js-dos v7 appends `?dt=` (Removed in lib, for now...)
             dosInstance.run(bundleURL, optionalChangesUrl).then((ci) => {
@@ -53,7 +57,7 @@ const useDosCI = (
               setDosCI(ci);
               appendFileToTitle(url);
               cleanUpBufferUrl(bundleURL);
-              cleanUpBufferUrl(optionalChangesUrl);
+              if (optionalChangesUrl) cleanUpBufferUrl(optionalChangesUrl);
               cleanUpLoader();
             });
           }
