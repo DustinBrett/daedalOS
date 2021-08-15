@@ -18,7 +18,7 @@ export type FileActions = {
 };
 
 export type FolderActions = {
-  newPath: (path: string, buffer?: Buffer) => void;
+  newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
   addToFolder: () => void;
 };
 
@@ -29,7 +29,10 @@ type Folder = {
   updateFiles: (appendFile?: string) => void;
 };
 
-const useFolder = (directory: string): Folder => {
+const useFolder = (
+  directory: string,
+  setRenaming: React.Dispatch<React.SetStateAction<string>>
+): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { addFile, fs } = useFileSystem();
@@ -95,7 +98,12 @@ const useFolder = (directory: string): Folder => {
       });
     }
   };
-  const newPath = (name: string, buffer?: Buffer, iteration = 0): void => {
+  const newPath = (
+    name: string,
+    buffer?: Buffer,
+    rename = false,
+    iteration = 0
+  ): void => {
     if (!buffer && ![".", directory].includes(dirname(name))) {
       fs?.rename(name, join(directory, basename(name)), () => updateFiles());
     } else {
@@ -104,9 +112,14 @@ const useFolder = (directory: string): Folder => {
       const checkWrite: BFSOneArgCallback = (error) => {
         if (!error) {
           updateFiles(uniqueName);
-          focusEntry(uniqueName);
+
+          if (rename) {
+            setRenaming(uniqueName);
+          } else {
+            focusEntry(uniqueName);
+          }
         } else if (error.code === "EEXIST") {
-          newPath(name, buffer, iteration + 1);
+          newPath(name, buffer, rename, iteration + 1);
         }
       };
 

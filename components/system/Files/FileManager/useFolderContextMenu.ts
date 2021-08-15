@@ -8,8 +8,7 @@ const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 
 const useFolderContextMenu = (
   { newPath, addToFolder }: FolderActions,
-  updateFiles: (appendFile?: string | undefined) => void,
-  setRenaming: React.Dispatch<React.SetStateAction<string>>
+  updateFiles: (appendFile?: string | undefined) => void
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
   const menuItems: MenuItem[] = [
@@ -22,18 +21,12 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
-          action: () => {
-            newPath(NEW_FOLDER);
-            setRenaming(NEW_FOLDER);
-          },
+          action: () => newPath(NEW_FOLDER, undefined, true),
         },
         MENU_SEPERATOR,
         {
           label: "Text Document",
-          action: () => {
-            newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER);
-            setRenaming(NEW_TEXT_DOCUMENT);
-          },
+          action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
         },
       ],
     },
