@@ -4,13 +4,13 @@ import withStyledComponents from "styles/withStyledComponents";
 import { DEFAULT_LOCALE } from "utils/constants";
 
 class MyDocument extends Document {
-  static async getInitialProps(
+  public static async getInitialProps(
     ctx: DocumentContext
   ): Promise<DocumentInitialProps> {
     return withStyledComponents(ctx);
   }
 
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return (
       <Html lang={DEFAULT_LOCALE}>
         <Head />
