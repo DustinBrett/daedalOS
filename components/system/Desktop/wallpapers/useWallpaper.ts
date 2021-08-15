@@ -22,32 +22,34 @@ const useWallpaper = (
 ): void => {
   const { fs } = useFileSystem();
   const { wallpaper } = useTheme();
-  const { wallpaperImage, wallpaperFit } = useSession();
+  const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
 
   useEffect(() => {
-    if (wallpaperImage) {
-      fs?.readFile(wallpaperImage, (error, contents = EMPTY_BUFFER) => {
-        if (!error) {
-          const [, currentWallpaperUrl] =
-            desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
+    if (sessionLoaded) {
+      if (wallpaperImage) {
+        fs?.readFile(wallpaperImage, (error, contents = EMPTY_BUFFER) => {
+          if (!error) {
+            const [, currentWallpaperUrl] =
+              desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
 
-          if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+            if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-          wallpaper?.();
-          desktopRef.current?.setAttribute(
-            "style",
-            `
-            background-image: url("${bufferToUrl(contents)}");
-            ${cssFit[wallpaperFit]}
-            `
-          );
-        }
-      });
-    } else {
-      desktopRef.current?.setAttribute("style", "");
-      wallpaper?.(desktopRef.current);
+            wallpaper?.();
+            desktopRef.current?.setAttribute(
+              "style",
+              `
+              background-image: url("${bufferToUrl(contents)}");
+              ${cssFit[wallpaperFit]}
+              `
+            );
+          }
+        });
+      } else {
+        desktopRef.current?.setAttribute("style", "");
+        wallpaper?.(desktopRef.current);
+      }
     }
-  }, [desktopRef, fs, wallpaper, wallpaperFit, wallpaperImage]);
+  }, [desktopRef, fs, sessionLoaded, wallpaper, wallpaperFit, wallpaperImage]);
 };
 
 export default useWallpaper;
