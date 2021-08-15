@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-const StyledRenameBox = styled.input.attrs({
+const StyledRenameBox = styled.textarea.attrs({
+  autocomplete: "off",
+  rows: 1,
   spellCheck: false,
-  type: "text",
 })`
   border: 1px solid rgb(100, 100, 100);
   font-family: inherit;
@@ -10,9 +11,10 @@ const StyledRenameBox = styled.input.attrs({
   margin-bottom: 2px;
   padding: 1px 5px;
   position: relative;
+  resize: none;
   text-align: center;
   top: 2px;
-  width: 64px;
+  width: 70px;
 `;
 
 export default StyledRenameBox;
