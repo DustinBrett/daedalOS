@@ -2,6 +2,8 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 
 export const DEFAULT_LOCALE = "en";
 
+export const DEFAULT_THEME = "defaultTheme";
+
 export const DEFAULT_WINDOW_SIZE: Size = {
   height: 200,
   width: 250,
