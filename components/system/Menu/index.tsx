@@ -41,8 +41,17 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
           ...ONE_TIME_PASSIVE_EVENT,
         };
 
-        const menuUnfocused: EventListener = ({ type }) => {
-          resetMenu();
+        const menuUnfocused = ({
+          relatedTarget,
+          type,
+        }: MouseEvent | FocusEvent) => {
+          if (
+            !(relatedTarget instanceof HTMLElement) ||
+            !menuRef.current?.contains(relatedTarget)
+          ) {
+            resetMenu();
+          }
+
           focusedElement.removeEventListener(
             type === "click" ? "blur" : "click",
             menuUnfocused
