@@ -69,10 +69,10 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     }
 
     img {
-      height: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
+      height: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
       position: relative;
       top: 1px;
-      width: ${({ theme }) => theme.sizes.taskbar.entry.icon.size};
+      width: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
     }
   }
 `;

@@ -34,9 +34,7 @@ const sizes = {
     entry: {
       borderSize: "2px",
       fontSize: "12px",
-      icon: {
-        size: "16px",
-      },
+      iconSize: "16px",
       maxWidth: "160px",
       peekImage: {
         height: "82px",
