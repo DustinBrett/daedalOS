@@ -1,27 +1,8 @@
-type FrameSizeCallback = (width: number, height: number) => void;
-
-type MessageCallback = (
-  msgType: string,
-  eventType: string,
-  command: string,
-  message: string
-) => void;
-
-export type DosCI = {
-  exit: () => void;
-  frameHeight: number;
-  frameWidth: number;
-  events: () => {
-    onFrameSize: (callback: FrameSizeCallback) => void;
-    onMessage: (callback: MessageCallback) => void;
-  };
-};
+import type { DosFactoryType } from "emulators-ui/dist/types/js-dos";
 
 declare global {
   interface Window {
-    Dos: (element: HTMLElement) => {
-      run: (url: string) => Promise<DosCI>;
-    };
+    Dos: DosFactoryType;
     emulators: {
       pathPrefix: string;
     };

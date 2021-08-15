@@ -1,18 +1,20 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import {
   defaultConfig,
+  dosOptions,
   globals,
   libs,
   pathPrefix,
   zipConfigPath,
 } from "components/apps/JSDOS/config";
-import type { DosCI } from "components/apps/JSDOS/types";
 import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
 import { closeWithTransition } from "components/system/Window/functions";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import type { CommandInterface } from "emulators";
+import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
@@ -32,48 +34,53 @@ const useJSDOS = (
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
-  const [dos, setDos] = useState<DosCI>();
+  const [dosCI, setDosCI] = useState<CommandInterface>();
+  const [dosInstance, setDosInstance] = useState<DosInstance>();
   const { fs } = useFileSystem();
   const { close, linkElement } = useProcesses();
 
   useEffect(() => {
-    if (!dos && fs && url) {
-      fs.readFile(url, (_error, contents = EMPTY_BUFFER) =>
-        loadFiles(libs).then(async () => {
-          const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
+    if (!dosInstance && containerRef.current) {
+      loadFiles(libs).then(() => {
+        window.emulators.pathPrefix = pathPrefix;
 
-          if (containerRef?.current) {
-            window.emulators.pathPrefix = pathPrefix;
-            window
-              .Dos(containerRef.current)
-              .run(objectURL)
-              .then((ci) => {
-                const canvas = containerRef.current?.querySelector("canvas");
+        setDosInstance(
+          window.Dos(containerRef.current as HTMLDivElement, dosOptions)
+        );
+      });
+    }
+  }, [containerRef, dosInstance]);
 
-                linkElement(id, "peekElement", canvas as HTMLCanvasElement);
-                setDos(ci);
-                appendFileToTitle(url);
-                cleanUpBufferUrl(objectURL);
-                cleanUpLoader();
-              });
-          }
-        })
-      );
+  useEffect(() => {
+    if (dosInstance && fs && url) {
+      fs.readFile(url, async (_error, contents = EMPTY_BUFFER) => {
+        const objectURL = bufferToUrl(await addJsDosConfig(contents, fs));
+
+        dosInstance.run(objectURL).then((ci) => {
+          const canvas = containerRef.current?.querySelector("canvas");
+
+          linkElement(id, "peekElement", canvas as HTMLCanvasElement);
+          setDosCI(ci);
+          appendFileToTitle(url);
+          cleanUpBufferUrl(objectURL);
+          cleanUpLoader();
+        });
+      });
     }
 
     return () => {
-      if (dos) {
-        dos.exit?.();
+      if (dosInstance) {
+        dosInstance?.stop?.();
         window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy?.();
       }
     };
-  }, [appendFileToTitle, containerRef, dos, fs, id, linkElement, url]);
+  }, [appendFileToTitle, containerRef, dosInstance, fs, id, linkElement, url]);
 
   useEffect(() => {
-    if (dos) {
-      updateWindowSize(dos.frameHeight, dos.frameWidth);
+    if (dosCI) {
+      updateWindowSize(dosCI.height(), dosCI.width());
 
-      dos.events().onMessage((_msgType, _eventType, command, message) => {
+      dosCI.events().onMessage((_msgType, _eventType, command, message) => {
         if (command === "LOG_EXEC") {
           const [dosCommand] = message
             .replace("Parsing command line: ", "")
@@ -85,13 +92,13 @@ const useJSDOS = (
         }
       });
 
-      dos
+      dosCI
         .events()
         .onFrameSize((width, height) =>
           updateWindowSize(height * 2, width * 2)
         );
     }
-  }, [close, dos, id, updateWindowSize]);
+  }, [close, dosCI, id, updateWindowSize]);
 };
 
 export default useJSDOS;
