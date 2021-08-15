@@ -56,7 +56,7 @@ export const handleFileInputEvent = (
         "load",
         ({ target }) => {
           if (target?.result instanceof ArrayBuffer) {
-            callback(file.name, Buffer.from(new Uint8Array(target?.result)));
+            callback(file.name, Buffer.from(new Uint8Array(target.result)));
           }
         },
         ONE_TIME_PASSIVE_EVENT
