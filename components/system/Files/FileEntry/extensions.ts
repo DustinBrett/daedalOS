@@ -15,8 +15,8 @@ const extensions: Extensions = {
     process: ["FileExplorer", "V86"],
   },
   ".jsdos": {
-    icon: "compressed",
-    process: ["JSDOS"],
+    icon: "jsdos",
+    process: ["JSDOS", "FileExplorer"],
   },
   ".mp3": {
     icon: "music",
