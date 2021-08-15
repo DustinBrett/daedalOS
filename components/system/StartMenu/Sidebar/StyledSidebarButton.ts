@@ -1,6 +1,5 @@
+import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import styled from "styled-components";
-
-import StyledSidebar from "./StyledSidebar";
 
 type StyledSidebarButtonProps = {
   active?: boolean;
@@ -53,7 +52,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   ${StyledSidebar}:hover & {
-    transition: width 400ms 400ms;
+    transition: width 300ms 700ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
   }
