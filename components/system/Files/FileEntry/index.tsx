@@ -11,6 +11,7 @@ import { basename } from "path";
 import { useEffect, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { PREVENT_SCROLL } from "utils/constants";
 import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
@@ -54,7 +55,7 @@ const FileEntry = ({
 
         if (selected && !isFocused) {
           focusEntry(fileName);
-          buttonRef.current.focus();
+          buttonRef.current.focus(PREVENT_SCROLL);
         } else if (!selected && isFocused) {
           blurEntry(fileName);
         }
@@ -62,7 +63,7 @@ const FileEntry = ({
         isFocused &&
         !buttonRef.current.contains(document.activeElement)
       ) {
-        buttonRef.current.focus();
+        buttonRef.current.focus(PREVENT_SCROLL);
       }
     }
   }, [

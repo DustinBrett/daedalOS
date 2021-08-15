@@ -47,6 +47,8 @@ export const ONE_TIME_PASSIVE_EVENT = {
   passive: true,
 } as AddEventListenerOptions;
 
+export const PREVENT_SCROLL = { preventScroll: true };
+
 export const PROCESS_DELIMITER = "__";
 
 export const SAVE_PATH = "/saves";

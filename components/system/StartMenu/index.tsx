@@ -4,7 +4,7 @@ import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 const StartMenu = (): JSX.Element => {
   const { toggleStartMenu } = useSession();
@@ -24,12 +24,12 @@ const StartMenu = (): JSX.Element => {
       if (!focusedTaskbar && !focusedStartButton) {
         toggleStartMenu(false);
       } else {
-        menuRef.current?.focus();
+        menuRef.current?.focus(PREVENT_SCROLL);
       }
     }
   };
 
-  useEffect(() => menuRef.current?.focus(), []);
+  useEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
   return (
     <StyledStartMenu

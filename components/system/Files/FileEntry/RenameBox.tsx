@@ -2,6 +2,7 @@ import { haltEvent } from "components/system/Files/FileManager/functions";
 import StyledRenameBox from "components/system/Files/Views/StyledRenameBox";
 import { extname } from "path";
 import { useEffect, useRef } from "react";
+import { PREVENT_SCROLL } from "utils/constants";
 
 type RenameBoxProps = {
   name: string;
@@ -14,7 +15,7 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const saveRename = (): void => renameFile(path, inputRef?.current?.value);
 
   useEffect(() => {
-    inputRef?.current?.focus();
+    inputRef?.current?.focus(PREVENT_SCROLL);
     inputRef?.current?.setSelectionRange(0, name.length - extname(name).length);
   }, [name]);
 

@@ -3,7 +3,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import { Rnd } from "react-rnd";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ const reRouteFocus =
     element?.addEventListener("contextmenu", (event) => event.preventDefault());
     element?.addEventListener("mousedown", (event) => {
       event.preventDefault();
-      focusElement?.focus();
+      focusElement?.focus(PREVENT_SCROLL);
     });
   };
 

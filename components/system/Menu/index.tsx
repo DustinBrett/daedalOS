@@ -5,7 +5,11 @@ import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
-import { FOCUSABLE_ELEMENT, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  FOCUSABLE_ELEMENT,
+  ONE_TIME_PASSIVE_EVENT,
+  PREVENT_SCROLL,
+} from "utils/constants";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -61,7 +65,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
         focusedElement.addEventListener("click", menuUnfocused, options);
         focusedElement.addEventListener("blur", menuUnfocused, options);
       } else {
-        menuRef.current?.focus();
+        menuRef.current?.focus(PREVENT_SCROLL);
       }
     }
   }, [items, resetMenu, subMenu]);

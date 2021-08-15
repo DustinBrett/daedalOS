@@ -1,7 +1,7 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
   onBlurCapture: (event: React.FocusEvent<HTMLElement>) => void;
@@ -47,7 +47,7 @@ const useFocusable = (
     }
 
     if (isForeground && focusedOnTaskbarPeek) {
-      componentWindow?.focus();
+      componentWindow?.focus(PREVENT_SCROLL);
     }
   };
   const moveToFront = useCallback(
@@ -58,7 +58,7 @@ const useFocusable = (
         prependToStack(id);
         setForegroundId(id);
       } else if (!relatedTarget || document.activeElement === taskbarEntry) {
-        componentWindow?.focus();
+        componentWindow?.focus(PREVENT_SCROLL);
         callbackEvents?.onFocusCapture?.(event);
       }
     },
