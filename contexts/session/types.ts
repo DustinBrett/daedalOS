@@ -33,7 +33,4 @@ export type SessionContextState = {
   wallpaperFit: WallpaperFit;
   wallpaperImage: string;
   windowStates: WindowStates;
-  updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
-  addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
 };

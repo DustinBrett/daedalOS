@@ -1,7 +1,7 @@
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
+import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
-import { useSession } from "contexts/session";
 import { EMPTY_BUFFER, MENU_SEPERATOR } from "utils/constants";
 
 const NEW_FOLDER = "New folder";
@@ -12,7 +12,7 @@ const useFolderContextMenu = (
   { newPath, addToFolder }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
-  const { updateFolder } = useSession();
+  const { updateFolder } = useFileSystem();
   const menuItems: MenuItem[] = [
     { label: "Refresh", action: () => updateFolder(url) },
     MENU_SEPERATOR,

@@ -34,9 +34,9 @@ const useFolder = (
 ): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
-  const { addFile, fs } = useFileSystem();
-  const { addFsWatcher, focusEntry, removeFsWatcher, updateFolder } =
-    useSession();
+  const { addFile, addFsWatcher, fs, removeFsWatcher, updateFolder } =
+    useFileSystem();
+  const { focusEntry } = useSession();
   const updateFiles = useCallback(
     (newFile = "", oldFile = "") => {
       if (oldFile && newFile) {

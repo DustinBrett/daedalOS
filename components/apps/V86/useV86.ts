@@ -11,7 +11,6 @@ import type { V86Config, V86Starter } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
 import { basename, extname, join } from "path";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
@@ -24,8 +23,7 @@ const useV86 = (
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<V86Starter>();
-  const { fs } = useFileSystem();
-  const { updateFolder } = useSession();
+  const { fs, updateFolder } = useFileSystem();
 
   useV86ScreenSize(id, containerRef, emulator);
 

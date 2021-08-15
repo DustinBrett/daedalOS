@@ -1,3 +1,4 @@
+import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import { join } from "path";
 import type { DragEventHandler } from "react";
@@ -13,7 +14,8 @@ type DraggableEntryProps = {
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
 const useDraggableEntries = (url: string): DraggableEntry => {
-  const { blurEntry, focusEntry, updateFolder } = useSession();
+  const { updateFolder } = useFileSystem();
+  const { blurEntry, focusEntry } = useSession();
   const [dragging, setDragging] = useState(false);
   const onDragStart =
     (entryUrl: string, file: string): DragEventHandler =>
