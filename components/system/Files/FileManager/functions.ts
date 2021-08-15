@@ -30,7 +30,9 @@ export const iterateFileName = (path: string, iteration: number): string => {
   return join(dirname(path), `${fileName} (${iteration})${extension}`);
 };
 
-export const haltEvent = (event: Event | React.DragEvent): void => {
+export const haltEvent = (
+  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+): void => {
   event.preventDefault();
   event.stopPropagation();
 };

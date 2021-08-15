@@ -1,3 +1,4 @@
+import { haltEvent } from "components/system/Files/FileManager/functions";
 import StyledRenameBox from "components/system/Files/Views/StyledRenameBox";
 import { extname } from "path";
 import { useEffect, useRef } from "react";
@@ -21,8 +22,9 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
     <StyledRenameBox
       defaultValue={name}
       onBlurCapture={saveRename}
+      onClick={haltEvent}
       onKeyDown={({ key }) => key === "Enter" && saveRename()}
-      onKeyUp={(event) => event.preventDefault()}
+      onKeyUp={haltEvent}
       ref={inputRef}
     />
   );
