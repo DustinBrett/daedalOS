@@ -32,15 +32,11 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       place-items: center;
 
       figcaption {
-        -webkit-box-orient: vertical; /* stylelint-disable-line property-no-vendor-prefix */
         color: ${({ theme }) => theme.colors.fileEntry.text};
-        display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         letter-spacing: -0.1px;
-        -webkit-line-clamp: 2;
         line-height: 1.2;
         margin: 1px 0;
-        overflow: hidden;
         padding: 2px 1px;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
@@ -70,10 +66,6 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     &::before {
       border: ${({ dragging, theme }) =>
         !dragging && `1px solid ${theme.colors.fileEntry.borderFocused}`};
-    }
-
-    figcaption:not(.truncate) {
-      -webkit-line-clamp: initial;
     }
 
     &:hover {

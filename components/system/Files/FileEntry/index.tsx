@@ -25,6 +25,13 @@ type FileEntryProps = {
   view: string;
 };
 
+const truncateName = (name: string): string => {
+  const maxLength = 15;
+  const useFullName = name.length <= maxLength;
+
+  return useFullName ? name : `${name.slice(0, maxLength)}...`;
+};
+
 const FileEntry = ({
   fileActions,
   fileManagerRef,
@@ -41,6 +48,8 @@ const FileEntry = ({
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
+  const showFullName =
+    focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -100,11 +109,7 @@ const FileEntry = ({
             }}
           />
         ) : (
-          <figcaption
-            className={focusedEntries.length > 1 ? "truncate" : undefined}
-          >
-            {name}
-          </figcaption>
+          <figcaption>{showFullName ? name : truncateName(name)}</figcaption>
         )}
       </figure>
     </Button>
