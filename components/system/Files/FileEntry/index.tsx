@@ -58,7 +58,10 @@ const FileEntry = ({
         } else if (!selected && isFocused) {
           blurEntry(fileName);
         }
-      } else if (isFocused && document.activeElement !== buttonRef.current) {
+      } else if (
+        isFocused &&
+        !buttonRef.current.contains(document.activeElement)
+      ) {
         buttonRef.current.focus();
       }
     }
