@@ -1,6 +1,8 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Position } from "react-rnd";
 
+export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
+
 export type WindowState = {
   position?: Position;
   size?: Size;
@@ -31,4 +33,7 @@ export type SessionContextState = {
   wallpaperFit: WallpaperFit;
   wallpaperImage: string;
   windowStates: WindowStates;
+  updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
+  addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+  removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
 };

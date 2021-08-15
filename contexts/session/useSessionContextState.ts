@@ -1,9 +1,11 @@
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   SessionContextState,
+  UpdateFiles,
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
+import { dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 
 const SESSION_FILE = "/session.json";
@@ -18,6 +20,9 @@ const useSessionContextState = (): SessionContextState => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("");
+  const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
+    {}
+  );
   const toggleStartMenu = (showMenu?: boolean): void =>
     setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
   const prependToStack = useCallback(
@@ -54,6 +59,42 @@ const useSessionContextState = (): SessionContextState => {
     setWallpaperFit(fit);
     setWallpaperImage(image);
   };
+  const updateFolder = useCallback(
+    (folder: string, newFile?: string, oldFile?: string): void => {
+      const relevantPaths = Object.keys(fsWatchers).filter(
+        (watchedFolder) =>
+          watchedFolder === folder ||
+          watchedFolder === dirname(folder) ||
+          watchedFolder.startsWith(join(folder, "/"))
+      );
+
+      relevantPaths.forEach((watchedFolder) =>
+        fsWatchers[watchedFolder].forEach((updateFiles) =>
+          updateFiles(newFile, oldFile)
+        )
+      );
+    },
+
+    [fsWatchers]
+  );
+  const addFsWatcher = useCallback(
+    (folder: string, updateFiles: UpdateFiles): void =>
+      setFsWatchers((currentFsWatcher) => ({
+        ...currentFsWatcher,
+        [folder]: [...(currentFsWatcher?.[folder] || []), updateFiles],
+      })),
+    []
+  );
+  const removeFsWatcher = useCallback(
+    (folder: string, updateFiles: UpdateFiles): void =>
+      setFsWatchers((currentFsWatcher) => ({
+        ...currentFsWatcher,
+        [folder]: currentFsWatcher?.[folder]?.filter(
+          (updateFilesInstance) => updateFilesInstance !== updateFiles
+        ),
+      })),
+    []
+  );
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -115,6 +156,9 @@ const useSessionContextState = (): SessionContextState => {
     wallpaperImage,
     wallpaperFit,
     windowStates,
+    updateFolder,
+    addFsWatcher,
+    removeFsWatcher,
   };
 };
 

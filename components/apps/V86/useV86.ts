@@ -11,6 +11,7 @@ import type { V86Config, V86Starter } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { useSession } from "contexts/session";
 import { basename, extname, join } from "path";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
@@ -24,6 +25,7 @@ const useV86 = (
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<V86Starter>();
   const { fs } = useFileSystem();
+  const { updateFolder } = useSession();
 
   useV86ScreenSize(id, containerRef, emulator);
 
@@ -83,13 +85,16 @@ const useV86 = (
             fs.writeFile(
               join(SAVE_PATH, `${basename(url)}${saveExtension}`),
               Buffer.from(new Uint8Array(newState)),
-              () => emulator?.destroy?.()
+              () => {
+                emulator?.destroy?.();
+                updateFolder(SAVE_PATH);
+              }
             )
           )
         );
       }
     };
-  }, [appendFileToTitle, containerRef, emulator, fs, url]);
+  }, [appendFileToTitle, containerRef, emulator, fs, updateFolder, url]);
 };
 
 export default useV86;

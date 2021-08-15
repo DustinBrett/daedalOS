@@ -9,6 +9,7 @@ import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, join } from "path";
@@ -34,6 +35,7 @@ const useDosCI = (
   const { fs } = useFileSystem();
   const { linkElement } = useProcesses();
   const [dosCI, setDosCI] = useState<CommandInterface>();
+  const { updateFolder } = useSession();
 
   useEffect(() => {
     if (dosInstance && !dosCI && fs && url) {
@@ -72,7 +74,10 @@ const useDosCI = (
             fs.writeFile(
               join(SAVE_PATH, `${basename(url)}${saveExtension}`),
               Buffer.from(saveZip),
-              () => dosInstance?.stop()
+              () => {
+                dosInstance?.stop();
+                updateFolder(SAVE_PATH);
+              }
             )
           );
         });
@@ -86,6 +91,7 @@ const useDosCI = (
     fs,
     id,
     linkElement,
+    updateFolder,
     url,
   ]);
 

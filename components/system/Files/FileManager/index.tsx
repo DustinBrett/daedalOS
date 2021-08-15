@@ -20,14 +20,11 @@ type FileManagerProps = {
 
 const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const [renaming, setRenaming] = useState("");
-  const { fileActions, files, folderActions, updateFiles } = useFolder(
-    url,
-    setRenaming
-  );
+  const { fileActions, files, folderActions } = useFolder(url, setRenaming);
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const draggableEntry = useDraggableEntries(updateFiles);
+  const draggableEntry = useDraggableEntries(url);
   const focusableEntry = useFocusableEntries(fileManagerRef);
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
@@ -35,12 +32,12 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
-    if (isMountable && files.length === 0) mountFs(url, updateFiles);
+    if (isMountable && files.length === 0) mountFs(url);
 
     return () => {
       if (isMountable && files.length > 0) unMountFs(url);
     };
-  }, [files, mountFs, unMountFs, updateFiles, url]);
+  }, [files, mountFs, unMountFs, url]);
 
   return (
     <StyledFileManager
@@ -48,7 +45,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
       selecting={isSelecting}
       {...selectionEvents}
       {...useFileDrop(folderActions.newPath)}
-      {...useFolderContextMenu(folderActions, updateFiles)}
+      {...useFolderContextMenu(url, folderActions)}
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
       {files.map((file) => (
