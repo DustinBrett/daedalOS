@@ -17,3 +17,5 @@ export const config = {
 };
 
 export const libs = ["/libs/v86/libv86.js"];
+
+export const saveExtension = ".save.bin";
