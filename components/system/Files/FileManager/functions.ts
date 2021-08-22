@@ -1,4 +1,4 @@
-import { basename, dirname, extname, join } from "path";
+import { basename, extname } from "path";
 import type React from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
@@ -23,11 +23,11 @@ export const sortContents = (contents: string[]): string[] => {
   ];
 };
 
-export const iterateFileName = (path: string, iteration: number): string => {
-  const extension = extname(path);
-  const fileName = basename(path, extension);
+export const iterateFileName = (name: string, iteration: number): string => {
+  const extension = extname(name);
+  const fileName = basename(name, extension);
 
-  return join(dirname(path), `${fileName} (${iteration})${extension}`);
+  return `${fileName} (${iteration})${extension}`;
 };
 
 export const haltEvent = (
