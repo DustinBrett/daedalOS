@@ -47,7 +47,7 @@ const useFolder = (
     updateFolder,
   } = useFileSystem();
   const updateFiles = useCallback(
-    (newFile = "", oldFile = "") => {
+    (newFile?: string, oldFile?: string) => {
       if (oldFile && newFile) {
         setFiles((currentFiles) =>
           currentFiles.map((file) =>
