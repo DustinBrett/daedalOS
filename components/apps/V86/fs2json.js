@@ -36,7 +36,7 @@ const fs2json = (dir) => {
 
     obj[IDX_NAME] = name;
     obj[IDX_SIZE] = st.size;
-    obj[IDX_MTIME] = +st.mtime;
+    obj[IDX_MTIME] = Number(st.mtime);
     obj[IDX_MODE] = st.mode;
     obj[IDX_UID] = st.uid;
     obj[IDX_GID] = st.gid;
