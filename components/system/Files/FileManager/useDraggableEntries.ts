@@ -1,4 +1,4 @@
-import { useSession } from "contexts/session";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { join } from "path";
 import type { DragEventHandler } from "react";
 import { useState } from "react";
@@ -12,8 +12,10 @@ type DraggableEntryProps = {
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
-const useDraggableEntries = (): DraggableEntry => {
-  const { blurEntry, focusEntry } = useSession();
+const useDraggableEntries = ({
+  blurEntry,
+  focusEntry,
+}: FocusEntryFunctions): DraggableEntry => {
   const [dragging, setDragging] = useState(false);
   const onDragStart =
     (entryUrl: string, file: string): DragEventHandler =>

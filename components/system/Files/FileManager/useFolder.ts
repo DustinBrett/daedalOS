@@ -4,8 +4,8 @@ import {
   iterateFileName,
   sortContents,
 } from "components/system/Files/FileManager/functions";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
 import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
@@ -30,13 +30,13 @@ type Folder = {
 
 const useFolder = (
   directory: string,
-  setRenaming: React.Dispatch<React.SetStateAction<string>>
+  setRenaming: React.Dispatch<React.SetStateAction<string>>,
+  { blurEntry, focusEntry }: FocusEntryFunctions
 ): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
   const { addFile, addFsWatcher, fs, removeFsWatcher, updateFolder } =
     useFileSystem();
-  const { focusEntry } = useSession();
   const updateFiles = useCallback(
     (newFile = "", oldFile = "") => {
       if (oldFile && newFile) {
@@ -103,12 +103,23 @@ const useFolder = (
     iteration = 0
   ): void => {
     if (!buffer && dirname(name) !== ".") {
-      const renamedPath = join(directory, basename(name));
+      const uniqueName = !iteration
+        ? basename(name)
+        : iterateFileName(basename(name), iteration);
+      const renamedPath = join(directory, uniqueName);
 
       if (name !== renamedPath) {
-        fs?.rename(name, renamedPath, () => {
-          updateFolder(directory, name);
-          updateFolder(dirname(name), "", name);
+        fs?.exists(renamedPath, (exists) => {
+          if (exists) {
+            newPath(name, buffer, rename, iteration + 1);
+          } else {
+            fs?.rename(name, renamedPath, () => {
+              updateFolder(directory, uniqueName);
+              updateFolder(dirname(name), "", name);
+              blurEntry();
+              focusEntry(uniqueName);
+            });
+          }
         });
       }
     } else {

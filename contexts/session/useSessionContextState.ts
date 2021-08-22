@@ -35,21 +35,6 @@ const useSessionContextState = (): SessionContextState => {
       ),
     []
   );
-  const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
-  const blurEntry = (entry?: string): void =>
-    setFocusedEntries(
-      entry
-        ? (currentFocusedEntries) =>
-            currentFocusedEntries.filter(
-              (focusedEntry) => focusedEntry !== entry
-            )
-        : []
-    );
-  const focusEntry = (entry: string): void =>
-    setFocusedEntries((currentFocusedEntries) => [
-      ...currentFocusedEntries,
-      entry,
-    ]);
   const setWallpaper = (image: string, fit: WallpaperFit): void => {
     setWallpaperFit(fit);
     setWallpaperImage(image);
@@ -97,9 +82,6 @@ const useSessionContextState = (): SessionContextState => {
   );
 
   return {
-    blurEntry,
-    focusEntry,
-    focusedEntries,
     foregroundId,
     prependToStack,
     removeFromStack,

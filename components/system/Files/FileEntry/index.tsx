@@ -2,12 +2,11 @@ import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
-import useFocusChecker from "components/system/Files/FileEntry/useFocusChecker";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { FileEntryIconSize } from "components/system/Files/Views";
-import { useSession } from "contexts/session";
 import { basename } from "path";
 import { useEffect, useRef } from "react";
 import Button from "styles/common/Button";
@@ -18,6 +17,8 @@ import useDoubleClick from "utils/useDoubleClick";
 type FileEntryProps = {
   fileActions: FileActions;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
+  focusedEntries: string[];
+  focusFunctions: FocusEntryFunctions;
   name: string;
   path: string;
   renaming: boolean;
@@ -36,6 +37,8 @@ const truncateName = (name: string): string => {
 const FileEntry = ({
   fileActions,
   fileManagerRef,
+  focusedEntries,
+  focusFunctions: { blurEntry, focusEntry },
   name,
   path,
   renaming,
@@ -44,16 +47,17 @@ const FileEntry = ({
   view,
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
-  const { focusedEntries, blurEntry, focusEntry } = useSession();
   const openFile = useFile(url);
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
-  const isFocused = useFocusChecker(fileManagerRef);
-  const isOnlyFocusedEntry = isFocused(fileName) && focusedEntries.length === 1;
+  const isOnlyFocusedEntry =
+    focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
   useEffect(() => {
     if (buttonRef.current) {
+      const isFocused = focusedEntries.includes(fileName);
+
       if (selectionRect && fileManagerRef.current) {
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
@@ -61,14 +65,14 @@ const FileEntry = ({
           selectionRect
         );
 
-        if (selected && !isFocused(fileName)) {
+        if (selected && !isFocused) {
           focusEntry(fileName);
           buttonRef.current.focus(PREVENT_SCROLL);
-        } else if (!selected && isFocused(fileName)) {
+        } else if (!selected && isFocused) {
           blurEntry(fileName);
         }
       } else if (
-        isFocused(fileName) &&
+        isFocused &&
         focusedEntries.length === 1 &&
         !buttonRef.current.contains(document.activeElement)
       ) {
@@ -81,8 +85,7 @@ const FileEntry = ({
     fileManagerRef,
     fileName,
     focusEntry,
-    focusedEntries.length,
-    isFocused,
+    focusedEntries,
     selectionRect,
   ]);
 

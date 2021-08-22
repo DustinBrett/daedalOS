@@ -20,12 +20,17 @@ type FileManagerProps = {
 
 const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const [renaming, setRenaming] = useState("");
-  const { fileActions, files, folderActions } = useFolder(url, setRenaming);
+  const fileManagerRef = useRef<HTMLOListElement | null>(null);
+  const { focusedEntries, focusableEntry, ...focusFunctions } =
+    useFocusableEntries(fileManagerRef);
+  const draggableEntry = useDraggableEntries(focusFunctions);
+  const { fileActions, files, folderActions } = useFolder(
+    url,
+    setRenaming,
+    focusFunctions
+  );
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
-  const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const draggableEntry = useDraggableEntries();
-  const focusableEntry = useFocusableEntries(fileManagerRef);
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
 
@@ -57,6 +62,8 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
           <FileEntry
             fileActions={fileActions}
             fileManagerRef={fileManagerRef}
+            focusedEntries={focusedEntries}
+            focusFunctions={focusFunctions}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}
             renaming={renaming === file}

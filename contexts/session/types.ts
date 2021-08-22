@@ -15,9 +15,6 @@ export type WindowStates = {
 export type WallpaperFit = "fill" | "fit" | "stretch" | "tile" | "center";
 
 export type SessionContextState = {
-  blurEntry: (entry?: string) => void;
-  focusEntry: (entry: string) => void;
-  focusedEntries: string[];
   foregroundId: string;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
