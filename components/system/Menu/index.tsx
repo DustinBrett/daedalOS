@@ -71,16 +71,26 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
-    const { height = 0, width = 0 } =
-      menuRef.current?.getBoundingClientRect() || {};
+    const {
+      height = 0,
+      width = 0,
+      x: menuX = 0,
+      y: menuY = 0,
+    } = menuRef.current?.getBoundingClientRect() || {};
     const { innerHeight, innerWidth } = window;
     const bottomOffset = y + height > innerHeight ? innerHeight - y : 0;
+    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > innerWidth;
+    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > innerHeight;
 
     setOffset({
-      x: Math.round(Math.max(0, x + width - innerWidth)),
-      y: Math.round(Math.max(0, y + height - (innerHeight - bottomOffset))),
+      x:
+        Math.round(Math.max(0, x + width - innerWidth)) +
+        (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
+      y:
+        Math.round(Math.max(0, y + height - (innerHeight - bottomOffset))) +
+        (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
     });
-  }, [x, y]);
+  }, [subMenu, x, y]);
 
   return items ? (
     <StyledMenu
