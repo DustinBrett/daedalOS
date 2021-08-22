@@ -13,6 +13,14 @@ import {
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
+type InternetShortcut = {
+  InternetShortcut: {
+    BaseURL: string;
+    IconFile: string;
+    URL: string;
+  };
+};
+
 const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon, process: [defaultProcess = ""] = [] } =
     extensions[extension] || {};
@@ -31,7 +39,7 @@ const getProcessByFileExtension = (extension: string): string => {
 const getShortcutInfo = (contents: Buffer): FileInfo => {
   const {
     InternetShortcut: { BaseURL: pid = "", IconFile: icon = "", URL: url = "" },
-  } = ini.parse(contents.toString());
+  } = ini.parse(contents.toString()) as InternetShortcut;
 
   return { icon, pid, url };
 };

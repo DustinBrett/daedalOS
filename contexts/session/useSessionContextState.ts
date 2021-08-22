@@ -1,6 +1,7 @@
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   SessionContextState,
+  SessionData,
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
@@ -62,7 +63,9 @@ const useSessionContextState = (): SessionContextState => {
     () =>
       fs?.readFile(SESSION_FILE, (_error, contents) => {
         if (contents) {
-          const session = JSON.parse(contents.toString() || "{}");
+          const session = JSON.parse(
+            contents.toString() || "{}"
+          ) as SessionData;
 
           setThemeName(session.themeName);
           setWallpaper(session.wallpaperImage, session.wallpaperFit);

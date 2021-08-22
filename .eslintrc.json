@@ -35,21 +35,6 @@
   ],
   "rules": {
     "@next/next/no-img-element": "off",
-    "@typescript-eslint/consistent-indexed-object-style": "error",
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      { "prefer": "type-imports" }
-    ],
-    "@typescript-eslint/explicit-function-return-type": [
-      "error",
-      { "allowExpressions": true }
-    ],
-    "@typescript-eslint/explicit-member-accessibility": "error",
-    "@typescript-eslint/explicit-module-boundary-types": "error",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "ignoreRestSiblings": true }
-    ],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -74,5 +59,32 @@
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prevent-abbreviations": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/consistent-indexed-object-style": "error",
+        "@typescript-eslint/consistent-type-imports": [
+          "error",
+          { "prefer": "type-imports" }
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+          "error",
+          { "allowExpressions": true }
+        ],
+        "@typescript-eslint/explicit-member-accessibility": "error",
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/no-unsafe-assignment": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { "ignoreRestSiblings": true }
+        ]
+      },
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["tsconfig.json"]
+      }
+    }
+  ]
 }

@@ -12,7 +12,14 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "fill" | "fit" | "stretch" | "tile" | "center";
 
-export type SessionContextState = {
+export type SessionData = {
+  themeName: string;
+  wallpaperFit: WallpaperFit;
+  wallpaperImage: string;
+  windowStates: WindowStates;
+};
+
+export type SessionContextState = SessionData & {
   foregroundId: string;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
@@ -22,8 +29,4 @@ export type SessionContextState = {
   setWallpaper: (image: string, fit: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
-  themeName: string;
-  wallpaperFit: WallpaperFit;
-  wallpaperImage: string;
-  windowStates: WindowStates;
 };

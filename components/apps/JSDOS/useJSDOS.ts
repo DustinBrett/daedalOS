@@ -33,17 +33,19 @@ const useJSDOS = (
     if (dosCI) {
       updateWindowSize(dosCI.height(), dosCI.width());
 
-      dosCI.events().onMessage((_msgType, _eventType, command, message) => {
-        if (command === "LOG_EXEC") {
-          const [dosCommand] = message
-            .replace("Parsing command line: ", "")
-            .split(" ");
+      dosCI
+        .events()
+        .onMessage((_msgType, _eventType, command: string, message: string) => {
+          if (command === "LOG_EXEC") {
+            const [dosCommand] = message
+              .replace("Parsing command line: ", "")
+              .split(" ");
 
-          if (dosCommand.toUpperCase() === "EXIT") {
-            closeWithTransition(close, id);
+            if (dosCommand.toUpperCase() === "EXIT") {
+              closeWithTransition(close, id);
+            }
           }
-        }
-      });
+        });
 
       dosCI
         .events()
