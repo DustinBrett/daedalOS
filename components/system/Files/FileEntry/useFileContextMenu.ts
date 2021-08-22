@@ -1,12 +1,13 @@
 import extensions from "components/system/Files/FileEntry/extensions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname } from "path";
+import { basename, dirname, extname, join } from "path";
 import {
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
@@ -19,7 +20,8 @@ const useFileContextMenu = (
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { deleteFile, downloadFile }: FileActions,
-  focusEntry: (entry: string) => void
+  focusEntry: (entry: string) => void,
+  focusedEntries: string[]
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { setWallpaper } = useSession();
@@ -27,8 +29,17 @@ const useFileContextMenu = (
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
+  const { copyEntries, moveEntries } = useFileSystem();
+  const absoluteEntries = (): string[] =>
+    focusedEntries.map((entry) => join(dirname(path), entry));
   const menuItems: MenuItem[] = [
-    { label: "Delete", action: () => deleteFile(path) },
+    { label: "Cut", action: () => moveEntries(absoluteEntries()) },
+    { label: "Copy", action: () => copyEntries(absoluteEntries()) },
+    MENU_SEPERATOR,
+    {
+      label: "Delete",
+      action: () => absoluteEntries().forEach((entry) => deleteFile(entry)),
+    },
     { label: "Rename", action: () => setRenaming(basename(path)) },
   ];
   const extension = extname(path);

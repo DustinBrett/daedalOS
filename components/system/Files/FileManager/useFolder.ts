@@ -18,8 +18,9 @@ export type FileActions = {
 };
 
 export type FolderActions = {
-  newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
   addToFolder: () => void;
+  newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
+  pasteToFolder: () => void;
 };
 
 type Folder = {
@@ -36,8 +37,15 @@ const useFolder = (
 ): Folder => {
   const [files, setFiles] = useState<string[]>([]);
   const [downloadLink, setDownloadLink] = useState<string>("");
-  const { addFile, addFsWatcher, fs, removeFsWatcher, updateFolder } =
-    useFileSystem();
+  const {
+    addFile,
+    addFsWatcher,
+    copyEntries,
+    fs,
+    pasteList,
+    removeFsWatcher,
+    updateFolder,
+  } = useFileSystem();
   const updateFiles = useCallback(
     (newFile = "", oldFile = "") => {
       if (oldFile && newFile) {
@@ -147,6 +155,17 @@ const useFolder = (
       }
     }
   };
+  const pasteToFolder = (): void =>
+    Object.entries(pasteList).forEach(([fileEntry, operation]) => {
+      if (operation === "move") {
+        newPath(fileEntry);
+        copyEntries([]);
+      } else {
+        fs?.readFile(fileEntry, (_readError, buffer = EMPTY_BUFFER) =>
+          newPath(basename(fileEntry), buffer)
+        );
+      }
+    });
 
   useEffect(updateFiles, [directory, fs, updateFiles]);
 
@@ -170,8 +189,9 @@ const useFolder = (
       renameFile,
     },
     folderActions: {
-      newPath,
       addToFolder: () => addFile(newPath),
+      newPath,
+      pasteToFolder,
     },
     files,
     updateFiles,

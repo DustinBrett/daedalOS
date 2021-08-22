@@ -7,6 +7,7 @@ import type { SelectionRect } from "components/system/Files/FileManager/Selectio
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { FileEntryIconSize } from "components/system/Files/Views";
+import { useFileSystem } from "contexts/fileSystem";
 import { basename } from "path";
 import { useEffect, useRef } from "react";
 import Button from "styles/common/Button";
@@ -48,6 +49,7 @@ const FileEntry = ({
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
   const openFile = useFile(url);
+  const { pasteList } = useFileSystem();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
@@ -99,11 +101,17 @@ const FileEntry = ({
         path,
         setRenaming,
         fileActions,
-        focusEntry
+        focusEntry,
+        focusedEntries
       )}
     >
       <figure>
-        <Icon src={icon} alt={name} {...FileEntryIconSize[view]} />
+        <Icon
+          src={icon}
+          alt={name}
+          moving={pasteList[path] === "move"}
+          {...FileEntryIconSize[view]}
+        />
         {renaming ? (
           <RenameBox
             name={name}

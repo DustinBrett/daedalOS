@@ -6,6 +6,7 @@ import { cleanUpBufferUrl } from "utils/functions";
 export type IconProps = {
   displaySize?: number;
   imgSize: number;
+  moving?: boolean;
 };
 
 const onLoad: React.ReactEventHandler = ({ target }) =>
@@ -24,6 +25,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
   })
 )<IconProps>`
   object-fit: contain;
+  opacity: ${({ moving }) => (moving ? 0.5 : 1)};
   visibility: hidden;
 `;
 

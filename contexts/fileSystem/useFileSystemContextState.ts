@@ -16,6 +16,8 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 
+type FilePasteOperations = Record<string, "copy" | "move">;
+
 export type FileSystemContextState = {
   fs?: FSModule;
   mountFs: (url: string) => Promise<void>;
@@ -28,6 +30,9 @@ export type FileSystemContextState = {
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+  pasteList: FilePasteOperations;
+  copyEntries: (entries: string[]) => void;
+  moveEntries: (entries: string[]) => void;
 };
 
 const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
@@ -38,6 +43,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
   );
+  const [pasteList, setPasteList] = useState<FilePasteOperations>({});
+  const updatePasteEntries = (
+    entries: string[],
+    operation: "copy" | "move"
+  ): void =>
+    setPasteList(
+      Object.fromEntries(entries.map((entry) => [entry, operation]))
+    );
+  const copyEntries = (entries: string[]): void =>
+    updatePasteEntries(entries, "copy");
+  const moveEntries = (entries: string[]): void =>
+    updatePasteEntries(entries, "move");
   const addFsWatcher = useCallback(
     (folder: string, updateFiles: UpdateFiles): void =>
       setFsWatchers((currentFsWatcher) => ({
@@ -137,6 +154,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
     updateFolder,
     addFsWatcher,
     removeFsWatcher,
+    pasteList,
+    copyEntries,
+    moveEntries,
   };
 };
 
