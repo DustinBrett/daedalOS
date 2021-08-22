@@ -24,9 +24,7 @@ export type SessionContextState = {
   setWallpaper: (image: string, fit: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
-  startMenuVisible: boolean;
   themeName: string;
-  toggleStartMenu: (showMenu?: boolean) => void;
   wallpaperFit: WallpaperFit;
   wallpaperImage: string;
   windowStates: WindowStates;

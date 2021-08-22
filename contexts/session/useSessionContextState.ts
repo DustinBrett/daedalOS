@@ -15,11 +15,8 @@ const useSessionContextState = (): SessionContextState => {
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState("");
   const [windowStates, setWindowStates] = useState<WindowStates>({});
-  const [startMenuVisible, setStartMenuVisible] = useState(false);
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("");
-  const toggleStartMenu = (showMenu?: boolean): void =>
-    setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) => [
@@ -91,9 +88,7 @@ const useSessionContextState = (): SessionContextState => {
     setWallpaper,
     setWindowStates,
     stackOrder,
-    startMenuVisible,
     themeName,
-    toggleStartMenu,
     wallpaperImage,
     wallpaperFit,
     windowStates,

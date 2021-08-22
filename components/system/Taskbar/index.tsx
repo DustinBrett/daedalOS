@@ -3,20 +3,25 @@ import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { useSession } from "contexts/session";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
 
 const Taskbar = (): JSX.Element => {
-  const { startMenuVisible } = useSession();
+  const [startMenuVisible, setStartMenuVisible] = useState(false);
+  const toggleStartMenu = (showMenu?: boolean): void =>
+    setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
 
   return (
     <>
-      {startMenuVisible && <StartMenu />}
+      {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
       <StyledTaskbar {...useTaskbarContextMenu()} {...FOCUSABLE_ELEMENT}>
-        <StartButton />
+        <StartButton
+          startMenuVisible={startMenuVisible}
+          toggleStartMenu={toggleStartMenu}
+        />
         <TaskbarEntries />
         <Clock />
       </StyledTaskbar>

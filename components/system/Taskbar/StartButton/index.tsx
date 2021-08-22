@@ -1,19 +1,22 @@
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import WindowsIcon from "components/system/Taskbar/StartButton/WindowsIcon";
-import { useSession } from "contexts/session";
 
-const StartButton = (): JSX.Element => {
-  const { startMenuVisible, toggleStartMenu } = useSession();
-
-  return (
-    <StyledStartButton
-      active={startMenuVisible}
-      title="Start"
-      onClick={() => toggleStartMenu()}
-    >
-      <WindowsIcon />
-    </StyledStartButton>
-  );
+type StartButtonProps = {
+  startMenuVisible: boolean;
+  toggleStartMenu: (showMenu?: boolean) => void;
 };
+
+const StartButton = ({
+  startMenuVisible,
+  toggleStartMenu,
+}: StartButtonProps): JSX.Element => (
+  <StyledStartButton
+    active={startMenuVisible}
+    title="Start"
+    onClick={() => toggleStartMenu()}
+  >
+    <WindowsIcon />
+  </StyledStartButton>
+);
 
 export default StartButton;
