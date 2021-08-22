@@ -67,7 +67,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       relevantPaths.forEach((watchedFolder) =>
         fsWatchers[watchedFolder].forEach((updateFiles) =>
-          updateFiles(newFile, oldFile)
+          watchedFolder === folder
+            ? updateFiles(newFile, oldFile)
+            : updateFiles()
         )
       );
     },
