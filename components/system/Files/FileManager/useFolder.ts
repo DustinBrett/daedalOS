@@ -6,6 +6,8 @@ import {
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useFileSystem } from "contexts/fileSystem";
+import type { AsyncZippable } from "fflate";
+import { zip } from "fflate";
 import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
@@ -13,7 +15,7 @@ import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 export type FileActions = {
   deleteFile: (path: string) => void;
-  downloadFile: (path: string) => void;
+  downloadFiles: (paths: string[]) => void;
   renameFile: (path: string, name?: string) => void;
 };
 
@@ -74,17 +76,39 @@ const useFolder = (
 
       fsDelete(path, () => updateFolder(directory, "", path));
     });
-  const downloadFile = (path: string): void =>
-    fs?.readFile(path, (_error, contents = EMPTY_BUFFER) => {
-      const link = document.createElement("a");
+  const createLink = (contents: Buffer, fileName?: string): void => {
+    const link = document.createElement("a");
 
-      link.href = bufferToUrl(contents);
-      link.download = basename(path);
+    link.href = bufferToUrl(contents);
+    link.download = fileName || "download.zip";
 
-      link.click();
+    link.click();
 
-      setDownloadLink(link.href);
-    });
+    setDownloadLink(link.href);
+  };
+  const getFile = (path: string): Promise<Buffer> =>
+    new Promise((resolve) =>
+      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) => resolve(contents))
+    );
+  const downloadFiles = (paths: string[]): void => {
+    if (paths.length === 1) {
+      const [path] = paths;
+
+      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) =>
+        createLink(contents, basename(path))
+      );
+    } else {
+      Promise.all(
+        paths.map(async (path) => [basename(path), await getFile(path)])
+      ).then((zipContents) => {
+        zip(
+          Object.fromEntries(zipContents) as AsyncZippable,
+          (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
+        );
+      });
+    }
+  };
+
   const renameFile = (path: string, name?: string): void => {
     const newName = name?.trim();
 
@@ -185,7 +209,7 @@ const useFolder = (
   return {
     fileActions: {
       deleteFile,
-      downloadFile,
+      downloadFiles,
       renameFile,
     },
     folderActions: {

@@ -19,7 +19,7 @@ const useFileContextMenu = (
   pid: string,
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
-  { deleteFile, downloadFile }: FileActions,
+  { deleteFile, downloadFiles }: FileActions,
   focusEntry: (entry: string) => void,
   focusedEntries: string[]
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
@@ -51,7 +51,7 @@ const useFileContextMenu = (
 
     menuItems.unshift({
       label: "Download",
-      action: () => downloadFile(path),
+      action: () => downloadFiles(absoluteEntries()),
     });
   }
 
