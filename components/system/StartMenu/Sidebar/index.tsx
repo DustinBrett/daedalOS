@@ -7,6 +7,7 @@ import {
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 
 type SidebarButtonProps = {
   action?: () => void;
@@ -38,8 +39,13 @@ const SidebarButton = ({
 
 const Sidebar = (): JSX.Element => {
   const fs = useFileSystem();
+  const { open } = useProcesses();
   const bottomButtons = [
-    { name: "Documents", icon: <Documents /> },
+    {
+      name: "Documents",
+      icon: <Documents />,
+      action: () => open("FileExplorer", "/documents"),
+    },
     {
       name: "Power",
       icon: <Power />,

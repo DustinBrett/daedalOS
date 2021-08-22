@@ -8,10 +8,10 @@ import type { Track } from "webamp";
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
-    { url: "/skins/Aqua_X.wsz", name: "Aqua X" },
-    { url: "/skins/Nucleo_NLog_v102.wsz", name: "Nucleo NLog v2G" },
+    { url: "/documents/skins/Aqua_X.wsz", name: "Aqua X" },
+    { url: "/documents/skins/Nucleo_NLog_v102.wsz", name: "Nucleo NLog v2G" },
     {
-      url: "/skins/SpyAMP_Professional_Edition_v5.wsz",
+      url: "/documents/skins/SpyAMP_Professional_Edition_v5.wsz",
       name: "SpyAMP Professional Edition v5",
     },
   ],
