@@ -8,9 +8,7 @@ export type WindowState = {
   size?: Size;
 };
 
-export type WindowStates = {
-  [id: string]: WindowState;
-};
+export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "fill" | "fit" | "stretch" | "tile" | "center";
 

@@ -1,9 +1,10 @@
-type Extensions = {
-  [extension: string]: {
+type Extensions = Record<
+  string,
+  {
     icon?: string;
     process: string[];
-  };
-};
+  }
+>;
 
 const extensions: Extensions = {
   ".img": {

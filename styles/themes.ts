@@ -1,9 +1,7 @@
 import type { DefaultTheme } from "styled-components";
 import defaultTheme from "styles/defaultTheme";
 
-type Themes = {
-  [name: string]: DefaultTheme;
-};
+type Themes = Record<string, DefaultTheme>;
 
 const themes: Themes = { defaultTheme };
 

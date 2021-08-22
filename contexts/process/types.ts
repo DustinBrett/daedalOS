@@ -23,6 +23,4 @@ export type Process = ProcessElements & {
   url?: string;
 };
 
-export type Processes = {
-  [id: string]: Process;
-};
+export type Processes = Record<string, Process>;
