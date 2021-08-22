@@ -102,10 +102,12 @@ const useFolder = (
     rename = false,
     iteration = 0
   ): void => {
-    if (!buffer && ![".", directory].includes(dirname(name))) {
-      fs?.rename(name, join(directory, basename(name)), () =>
-        updateFolder(dirname(name), "", name)
-      );
+    if (!buffer && dirname(name) !== ".") {
+      const renamedPath = join(directory, basename(name));
+
+      if (name !== renamedPath) {
+        fs?.rename(name, renamedPath, () => updateFolder(directory, name));
+      }
     } else {
       const uniqueName = !iteration ? name : iterateFileName(name, iteration);
       const resolvedPath = join(directory, uniqueName);
