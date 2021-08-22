@@ -53,12 +53,14 @@ const useDosCI = (
             dosInstance.run(bundleURL, optionalChangesUrl).then((ci) => {
               const canvas = containerRef.current?.querySelector("canvas");
 
-              linkElement(id, "peekElement", canvas as HTMLCanvasElement);
-              setDosCI(ci);
-              appendFileToTitle(url);
-              cleanUpBufferUrl(bundleURL);
-              if (optionalChangesUrl) cleanUpBufferUrl(optionalChangesUrl);
-              cleanUpLoader();
+              if (canvas instanceof HTMLCanvasElement) {
+                linkElement(id, "peekElement", canvas);
+                setDosCI(ci);
+                appendFileToTitle(url);
+                cleanUpBufferUrl(bundleURL);
+                if (optionalChangesUrl) cleanUpBufferUrl(optionalChangesUrl);
+                cleanUpLoader();
+              }
             });
           }
         );

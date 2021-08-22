@@ -18,13 +18,13 @@ const useJSDOS = (
   const { close } = useProcesses();
 
   useEffect(() => {
-    if (!dosInstance && containerRef.current) {
+    if (!dosInstance) {
       loadFiles(libs).then(() => {
         window.emulators.pathPrefix = pathPrefix;
 
-        setDosInstance(
-          window.Dos(containerRef.current as HTMLDivElement, dosOptions)
-        );
+        if (containerRef.current instanceof HTMLDivElement) {
+          setDosInstance(window.Dos(containerRef.current, dosOptions));
+        }
       });
     }
   }, [containerRef, dosInstance]);

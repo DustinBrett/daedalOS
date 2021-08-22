@@ -30,7 +30,7 @@ export const addFileToZip = (
             ...zipData,
             ...addFileToZippable(zipFilePath, contents),
           },
-          (_zipError, newZipFile) => resolve(newZipFile as Buffer)
+          (_zipError, newZipFile) => resolve(Buffer.from(newZipFile))
         )
       )
     )
