@@ -10,9 +10,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   } = useProcesses();
 
   useEffect(() => {
-    if (url) {
-      title(id, url);
-    }
+    if (url) title(id, url);
   }, [id, url, title]);
 
   return url ? <FileManager url={url} view="icon" /> : <></>;

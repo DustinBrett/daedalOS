@@ -21,9 +21,7 @@ const useV86ScreenSize = (
           ?.querySelector("span:last-of-type")
           ?.getBoundingClientRect() || {};
 
-      if (height && width) {
-        updateWindowSize(rows * height, width);
-      }
+      if (height && width) updateWindowSize(rows * height, width);
     };
 
     emulator?.add_listener?.(SET_SCREEN_GFX, setScreenGfx);
