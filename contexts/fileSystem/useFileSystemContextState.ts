@@ -59,7 +59,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     (folder: string, updateFiles: UpdateFiles): void =>
       setFsWatchers((currentFsWatcher) => ({
         ...currentFsWatcher,
-        [folder]: [...(currentFsWatcher?.[folder] || []), updateFiles],
+        [folder]: [...(currentFsWatcher[folder] || []), updateFiles],
       })),
     []
   );
@@ -67,7 +67,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     (folder: string, updateFiles: UpdateFiles): void =>
       setFsWatchers((currentFsWatcher) => ({
         ...currentFsWatcher,
-        [folder]: currentFsWatcher?.[folder]?.filter(
+        [folder]: (currentFsWatcher[folder] || []).filter(
           (updateFilesInstance) => updateFilesInstance !== updateFiles
         ),
       })),

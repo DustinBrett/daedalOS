@@ -12,7 +12,7 @@ const useDoubleClick = (
       handler(event);
     };
     const clearTimer = (): void => {
-      if (timer?.current) {
+      if (timer.current) {
         clearTimeout(timer.current);
         timer.current = undefined;
       }

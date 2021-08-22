@@ -18,7 +18,7 @@ const useWindowSize = (id: string): WindowSize => {
       setWindowStates((currentWindowStates) => ({
         ...currentWindowStates,
         [id]: {
-          position: currentWindowStates?.[id]?.position,
+          position: currentWindowStates[id]?.position,
           size: {
             height: height + pxToNum(titleBar.height),
             width,
