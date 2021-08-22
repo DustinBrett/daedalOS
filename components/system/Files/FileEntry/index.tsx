@@ -72,6 +72,7 @@ const FileEntry = ({
         focusedEntries.length === 1 &&
         !buttonRef.current.contains(document.activeElement)
       ) {
+        focusEntry(fileName);
         buttonRef.current.focus(PREVENT_SCROLL);
       }
     }
