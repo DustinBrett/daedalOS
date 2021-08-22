@@ -6,6 +6,7 @@ import type {
   WindowStates,
 } from "contexts/session/types";
 import { useCallback, useEffect, useState } from "react";
+import { EMPTY_BUFFER } from "utils/constants";
 
 const SESSION_FILE = "/session.json";
 
@@ -61,7 +62,7 @@ const useSessionContextState = (): SessionContextState => {
 
   useEffect(
     () =>
-      fs?.readFile(SESSION_FILE, (_error, contents) => {
+      fs?.readFile(SESSION_FILE, (_error, contents = EMPTY_BUFFER) => {
         if (contents) {
           const session = JSON.parse(
             contents.toString() || "{}"
