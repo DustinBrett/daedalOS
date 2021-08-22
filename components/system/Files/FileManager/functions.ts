@@ -64,8 +64,8 @@ export const handleFileInputEvent = (
       reader.readAsArrayBuffer(file);
     });
   } else {
-    const filePath = eventTarget?.getData("text");
+    const filePaths = eventTarget?.getData("text").split(",");
 
-    if (filePath) callback(filePath);
+    filePaths.forEach((path) => callback(path));
   }
 };

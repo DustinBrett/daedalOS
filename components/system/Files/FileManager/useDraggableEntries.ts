@@ -12,10 +12,10 @@ type DraggableEntryProps = {
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
-const useDraggableEntries = ({
-  blurEntry,
-  focusEntry,
-}: FocusEntryFunctions): DraggableEntry => {
+const useDraggableEntries = (
+  focusedEntries: string[],
+  { blurEntry, focusEntry }: FocusEntryFunctions
+): DraggableEntry => {
   const [dragging, setDragging] = useState(false);
   const onDragStart =
     (entryUrl: string, file: string): DragEventHandler =>
@@ -23,7 +23,10 @@ const useDraggableEntries = ({
       setDragging(true);
       blurEntry();
       focusEntry(file);
-      event.dataTransfer.setData("text/plain", join(entryUrl, file));
+      event.dataTransfer.setData(
+        "text/plain",
+        focusedEntries.map((entryFile) => join(entryUrl, entryFile)).toString()
+      );
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
     };
   const onDragEnd = (): void => setDragging(false);

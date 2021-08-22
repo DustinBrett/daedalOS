@@ -23,7 +23,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
-  const draggableEntry = useDraggableEntries(focusFunctions);
+  const draggableEntry = useDraggableEntries(focusedEntries, focusFunctions);
   const { fileActions, files, folderActions } = useFolder(
     url,
     setRenaming,
