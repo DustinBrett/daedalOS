@@ -2,6 +2,7 @@ import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import useFocusChecker from "components/system/Files/FileEntry/useFocusChecker";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
@@ -48,27 +49,27 @@ const FileEntry = ({
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
-  const isOnlyFocusedEntry =
-    focusedEntries.length === 1 && focusedEntries[0] === fileName;
+  const isFocused = useFocusChecker(fileManagerRef);
+  const isOnlyFocusedEntry = isFocused(fileName) && focusedEntries.length === 1;
 
   useEffect(() => {
     if (buttonRef.current) {
       if (selectionRect && fileManagerRef.current) {
-        const isFocused = focusedEntries.includes(fileName);
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
           fileManagerRef.current.getBoundingClientRect(),
           selectionRect
         );
 
-        if (selected && !isFocused) {
+        if (selected && !isFocused(fileName)) {
           focusEntry(fileName);
           buttonRef.current.focus(PREVENT_SCROLL);
-        } else if (!selected && isFocused) {
+        } else if (!selected && isFocused(fileName)) {
           blurEntry(fileName);
         }
       } else if (
-        isOnlyFocusedEntry &&
+        isFocused(fileName) &&
+        focusedEntries.length === 1 &&
         !buttonRef.current.contains(document.activeElement)
       ) {
         buttonRef.current.focus(PREVENT_SCROLL);
@@ -79,8 +80,8 @@ const FileEntry = ({
     fileManagerRef,
     fileName,
     focusEntry,
-    focusedEntries,
-    isOnlyFocusedEntry,
+    focusedEntries.length,
+    isFocused,
     selectionRect,
   ]);
 

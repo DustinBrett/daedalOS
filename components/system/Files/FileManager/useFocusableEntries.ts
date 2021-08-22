@@ -1,3 +1,4 @@
+import useFocusChecker from "components/system/Files/FileEntry/useFocusChecker";
 import { useSession } from "contexts/session";
 
 type FocusedEntryProps = {
@@ -11,7 +12,7 @@ type FocusableEntry = (file: string) => FocusedEntryProps;
 const useFocusableEntries = (
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
 ): FocusableEntry => {
-  const { focusedEntries, blurEntry, focusEntry } = useSession();
+  const { blurEntry, focusEntry } = useSession();
   const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||
@@ -20,13 +21,13 @@ const useFocusableEntries = (
       blurEntry();
     }
   };
+  const isFocused = useFocusChecker(fileManagerRef);
 
   return (file: string) => {
-    const focusedFile = focusedEntries.includes(file);
-    const className = focusedFile ? "focus-within" : "";
+    const className = isFocused(file) ? "focus-within" : "";
     const onClick: React.MouseEventHandler = ({ ctrlKey }) => {
       if (ctrlKey) {
-        if (focusedEntries.includes(file)) {
+        if (isFocused(file)) {
           blurEntry(file);
         } else {
           focusEntry(file);
