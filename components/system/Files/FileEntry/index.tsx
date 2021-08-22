@@ -78,6 +78,7 @@ const FileEntry = ({
         focusedEntries.length === 1 &&
         !buttonRef.current.contains(document.activeElement)
       ) {
+        blurEntry();
         focusEntry(fileName);
         buttonRef.current.focus(PREVENT_SCROLL);
       }
