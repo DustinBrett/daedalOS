@@ -86,9 +86,11 @@ const useFolder = (
 
     setDownloadLink(link.href);
   };
-  const getFile = (path: string): Promise<Buffer> =>
+  const getFile = (path: string): Promise<[string, Buffer]> =>
     new Promise((resolve) =>
-      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) => resolve(contents))
+      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) =>
+        resolve([basename(path), contents])
+      )
     );
   const downloadFiles = (paths: string[]): void => {
     if (paths.length === 1) {
@@ -98,9 +100,7 @@ const useFolder = (
         createLink(contents, basename(path))
       );
     } else {
-      Promise.all(
-        paths.map(async (path) => [basename(path), await getFile(path)])
-      ).then((zipContents) => {
+      Promise.all(paths.map((path) => getFile(path))).then((zipContents) => {
         zip(
           Object.fromEntries(zipContents) as AsyncZippable,
           (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
