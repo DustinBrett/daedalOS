@@ -12,7 +12,7 @@ const useFolderContextMenu = (
   { addToFolder, newPath, pasteToFolder }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
-  const { pasteList, updateFolder } = useFileSystem();
+  const { pasteList = {}, updateFolder } = useFileSystem();
   const menuItems: MenuItem[] = [
     { label: "Refresh", action: () => updateFolder(url) },
     MENU_SEPERATOR,
