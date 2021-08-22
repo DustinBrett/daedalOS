@@ -11,6 +11,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
   place-content: center;
   place-items: center;
+  transition-duration: 150ms;
   width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
 
   &::before {
@@ -51,8 +52,8 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     }
   }
 
-  ${StyledSidebar}:hover & {
-    transition: width 300ms 700ms;
+  ${StyledSidebar}:hover:not(${StyledSidebar}.collapsed) & {
+    transition: width 300ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
   }

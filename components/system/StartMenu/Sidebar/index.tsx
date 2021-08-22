@@ -1,3 +1,5 @@
+import type { SidebarButtonType } from "components/system/StartMenu/Sidebar/SidebarButton";
+import SidebarButton from "components/system/StartMenu/Sidebar/SidebarButton";
 import {
   AllApps,
   Documents,
@@ -5,42 +7,26 @@ import {
   SideMenu,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
-import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-
-type SidebarButtonProps = {
-  action?: () => void;
-  active?: boolean;
-  heading?: boolean;
-  icon: JSX.Element;
-  name: string;
-};
-
-const topButtons = [
-  { name: "START", icon: <SideMenu />, heading: true },
-  { name: "All apps", icon: <AllApps />, active: true },
-];
-
-const SidebarButton = ({
-  action,
-  active,
-  heading,
-  icon,
-  name,
-}: SidebarButtonProps): JSX.Element => (
-  <StyledSidebarButton active={active} onClick={action}>
-    <figure>
-      {icon}
-      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
-    </figure>
-  </StyledSidebarButton>
-);
+import { useRef, useState } from "react";
 
 const Sidebar = (): JSX.Element => {
   const fs = useFileSystem();
   const { open } = useProcesses();
-  const bottomButtons = [
+  const [collapsed, setCollapsed] = useState(true);
+  const expandTimer = useRef<NodeJS.Timer>();
+  const topButtons: SidebarButtonType[] = [
+    {
+      name: "START",
+      icon: <SideMenu />,
+      tooltip: "Expand",
+      heading: true,
+      action: () => setCollapsed((collapsedState) => !collapsedState),
+    },
+    { name: "All apps", icon: <AllApps />, active: true },
+  ];
+  const bottomButtons: SidebarButtonType[] = [
     {
       name: "Documents",
       icon: <Documents />,
@@ -54,11 +40,24 @@ const Sidebar = (): JSX.Element => {
   ];
 
   return (
-    <StyledSidebar>
+    <StyledSidebar
+      className={collapsed ? "collapsed" : undefined}
+      onMouseEnter={() => {
+        expandTimer.current = setTimeout(() => setCollapsed(false), 700);
+      }}
+      onMouseLeave={() => {
+        if (expandTimer.current) clearTimeout(expandTimer.current);
+        setCollapsed(true);
+      }}
+    >
       {Object.entries({ topButtons, bottomButtons }).map(([key, buttons]) => (
         <ol key={key}>
           {buttons.map((button) => (
-            <SidebarButton key={button.name} {...button} />
+            <SidebarButton
+              key={button.name}
+              collapsed={collapsed}
+              {...button}
+            />
           ))}
         </ol>
       ))}
