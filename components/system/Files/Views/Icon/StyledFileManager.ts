@@ -14,7 +14,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
   li {
-    pointer-events: ${({ selecting }) => (selecting ? "none" : "all")};
+    pointer-events: ${({ selecting }) => (selecting ? "none" : undefined)};
   }
 
   main > & {
