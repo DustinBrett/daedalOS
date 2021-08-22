@@ -26,6 +26,7 @@ type Folder = {
   fileActions: FileActions;
   folderActions: FolderActions;
   files: string[];
+  updateFiles: (newFile?: string, oldFile?: string) => void;
 };
 
 const useFolder = (
@@ -173,6 +174,7 @@ const useFolder = (
       addToFolder: () => addFile(newPath),
     },
     files,
+    updateFiles,
   };
 };
 

@@ -24,7 +24,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
   const draggableEntry = useDraggableEntries(focusedEntries, focusFunctions);
-  const { fileActions, files, folderActions } = useFolder(
+  const { fileActions, files, folderActions, updateFiles } = useFolder(
     url,
     setRenaming,
     focusFunctions
@@ -37,12 +37,14 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
-    if (isMountable && files.length === 0) mountFs(url);
+    if (isMountable && files.length === 0) {
+      mountFs(url).then(() => updateFiles());
+    }
 
     return () => {
       if (isMountable && files.length > 0) unMountFs(url);
     };
-  }, [files, mountFs, unMountFs, url]);
+  }, [files, mountFs, unMountFs, updateFiles, url]);
 
   return (
     <StyledFileManager

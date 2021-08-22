@@ -18,7 +18,7 @@ import { EMPTY_BUFFER } from "utils/constants";
 
 export type FileSystemContextState = {
   fs?: FSModule;
-  mountFs: (url: string) => void;
+  mountFs: (url: string) => Promise<void>;
   setFileInput: React.Dispatch<
     React.SetStateAction<HTMLInputElement | undefined>
   >;
@@ -80,22 +80,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [fsWatchers]
   );
   const rootFs = fs?.getRootFS() as MountableFileSystem;
-  const mountFs = (url: string): void =>
-    fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
-      const isISO = extname(url) === ".iso";
-      const createFs: BFSCallback<IsoFS | ZipFS> = (_createError, newFs) => {
-        if (newFs) {
-          rootFs?.mount(url, newFs);
-          updateFolder(url);
-        }
-      };
+  const mountFs = (url: string): Promise<void> =>
+    new Promise((resolve) =>
+      fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
+        const isISO = extname(url) === ".iso";
+        const createFs: BFSCallback<IsoFS | ZipFS> = (_createError, newFs) => {
+          if (newFs) {
+            rootFs?.mount(url, newFs);
+            resolve();
+          }
+        };
 
-      if (isISO) {
-        FileSystem.IsoFS.Create({ data: fileData }, createFs);
-      } else {
-        FileSystem.ZipFS.Create({ zipData: fileData }, createFs);
-      }
-    });
+        if (isISO) {
+          FileSystem.IsoFS.Create({ data: fileData }, createFs);
+        } else {
+          FileSystem.ZipFS.Create({ zipData: fileData }, createFs);
+        }
+      })
+    );
   const unMountFs = (url: string): void => rootFs?.umount(url);
   const addFile = (callback: (name: string, buffer?: Buffer) => void): void => {
     if (fileInput) {
