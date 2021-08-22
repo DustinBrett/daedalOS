@@ -1,5 +1,4 @@
 /* eslint-disable
-  @typescript-eslint/explicit-function-return-type,
   @typescript-eslint/no-var-requires,
   no-console,
   unicorn/no-process-exit
