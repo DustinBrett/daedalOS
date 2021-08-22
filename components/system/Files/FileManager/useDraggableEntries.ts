@@ -25,7 +25,11 @@ const useDraggableEntries = (
       focusEntry(file);
       event.dataTransfer.setData(
         "text/plain",
-        focusedEntries.map((entryFile) => join(entryUrl, entryFile)).toString()
+        focusedEntries.length === 0
+          ? join(entryUrl, file)
+          : focusedEntries
+              .map((entryFile) => join(entryUrl, entryFile))
+              .toString()
       );
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
     };
