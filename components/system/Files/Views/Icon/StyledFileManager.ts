@@ -11,11 +11,8 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryHeight})`};
   height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
+  pointer-events: ${({ selecting }) => (selecting ? "auto" : undefined)};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
-
-  li {
-    pointer-events: ${({ selecting }) => (selecting ? "none" : undefined)};
-  }
 
   main > & {
     padding-bottom: 20px;
