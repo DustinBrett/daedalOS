@@ -48,14 +48,13 @@ const FileEntry = ({
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
-  const showFullName =
+  const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
   useEffect(() => {
     if (buttonRef.current) {
-      const isFocused = focusedEntries.includes(fileName);
-
       if (selectionRect && fileManagerRef.current) {
+        const isFocused = focusedEntries.includes(fileName);
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
           fileManagerRef.current.getBoundingClientRect(),
@@ -69,7 +68,7 @@ const FileEntry = ({
           blurEntry(fileName);
         }
       } else if (
-        isFocused &&
+        isOnlyFocusedEntry &&
         !buttonRef.current.contains(document.activeElement)
       ) {
         buttonRef.current.focus(PREVENT_SCROLL);
@@ -81,6 +80,7 @@ const FileEntry = ({
     fileName,
     focusEntry,
     focusedEntries,
+    isOnlyFocusedEntry,
     selectionRect,
   ]);
 
@@ -109,7 +109,9 @@ const FileEntry = ({
             }}
           />
         ) : (
-          <figcaption>{showFullName ? name : truncateName(name)}</figcaption>
+          <figcaption>
+            {isOnlyFocusedEntry ? name : truncateName(name)}
+          </figcaption>
         )}
       </figure>
     </Button>
