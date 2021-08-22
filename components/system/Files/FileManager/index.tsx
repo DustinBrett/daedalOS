@@ -24,7 +24,7 @@ const FileManager = ({ url, view }: FileManagerProps): JSX.Element => {
   const { mountFs, unMountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const draggableEntry = useDraggableEntries(url);
+  const draggableEntry = useDraggableEntries();
   const focusableEntry = useFocusableEntries(fileManagerRef);
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
