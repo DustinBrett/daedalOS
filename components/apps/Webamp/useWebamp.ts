@@ -111,12 +111,16 @@ const useWebamp = (id: string): Webamp => {
       };
 
       if (file) {
-        if (extname(url) === ".mp3") {
+        const extension = extname(url);
+
+        if (extension === ".mp3") {
           parseTrack(file, basename(url)).then((track) =>
             runWebamp({ initialTracks: [track] })
           );
-        } else {
+        } else if (extension === ".wsz") {
           runWebamp({ initialSkin: { url: bufferToUrl(file) } });
+        } else {
+          runWebamp();
         }
       } else {
         runWebamp();

@@ -34,7 +34,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
 
   useEffect(() => {
     if (fs) {
-      fs?.readFile(url, (_error, contents = EMPTY_BUFFER) => {
+      fs?.readFile(url, (_error, contents) => {
         loadFiles(["/libs/webamp/webamp.bundle.min.js"]).then(() =>
           loadWebamp(containerRef.current, url, contents)
         );
