@@ -33,13 +33,11 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
 
   useEffect(() => {
-    if (fs) {
-      fs?.readFile(url, (_error, contents) => {
-        loadFiles(["/libs/webamp/webamp.bundle.min.js"]).then(() =>
-          loadWebamp(containerRef.current, url, contents)
-        );
-      });
-    }
+    fs?.readFile(url, (_error, contents) => {
+      loadFiles(["/libs/webamp/webamp.bundle.min.js"]).then(() =>
+        loadWebamp(containerRef.current, url, contents)
+      );
+    });
   }, [containerRef, fs, loadWebamp, url]);
 
   useEffect(() => {
@@ -48,13 +46,13 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
         if (extname(url) === ".mp3") {
           parseTrack(contents, basename(url)).then((track) => {
             setCurrentUrl(url);
-            webampCI?.setTracksToPlay([track]);
+            webampCI.setTracksToPlay([track]);
           });
         } else {
           const bufferUrl = bufferToUrl(contents);
 
           cleanBufferOnSkinLoad(webampCI, bufferUrl);
-          webampCI?.setSkinFromUrl(bufferUrl);
+          webampCI.setSkinFromUrl(bufferUrl);
         }
       });
     }

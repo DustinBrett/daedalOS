@@ -27,6 +27,6 @@ type PublicAPI = {
 
 declare global {
   interface Window {
-    RufflePlayer: PublicAPI;
+    RufflePlayer?: PublicAPI;
   }
 }

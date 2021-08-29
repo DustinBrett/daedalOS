@@ -45,7 +45,7 @@ export const handleFileInputEvent = (
 
   const eventTarget =
     (event as React.DragEvent)?.dataTransfer ||
-    (event?.currentTarget as HTMLInputElement);
+    (event.currentTarget as HTMLInputElement);
   const eventFiles = eventTarget?.files || [];
 
   if (eventFiles.length > 0) {

@@ -6,8 +6,8 @@ declare global {
     emulators: {
       pathPrefix: string;
     };
-    SimpleKeyboardInstances: {
-      emulatorKeyboard: {
+    SimpleKeyboardInstances?: {
+      emulatorKeyboard?: {
         destroy: () => void;
       };
     };

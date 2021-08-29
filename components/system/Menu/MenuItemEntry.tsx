@@ -38,7 +38,7 @@ const MenuItemEntry = ({
 
   useEffect(() => {
     if (menu && entryRef.current) {
-      const { height, width } = entryRef.current?.getBoundingClientRect() || {};
+      const { height, width } = entryRef.current.getBoundingClientRect();
 
       setSubMenuOffset({
         x: width - sizes.contextMenu.subMenuOffset,

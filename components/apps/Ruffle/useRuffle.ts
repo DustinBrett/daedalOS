@@ -19,12 +19,14 @@ const useRuffle = (
 
   useEffect(() => {
     loadFiles(libs).then(() => {
-      window.RufflePlayer.config = {
-        backgroundColor: "#000000",
-        letterbox: "on",
-        polyfills: false,
-      };
-      setPlayer(window.RufflePlayer?.newest()?.createPlayer());
+      if (window.RufflePlayer) {
+        window.RufflePlayer.config = {
+          backgroundColor: "#000000",
+          letterbox: "on",
+          polyfills: false,
+        };
+        setPlayer(window.RufflePlayer.newest().createPlayer());
+      }
     });
   }, []);
 

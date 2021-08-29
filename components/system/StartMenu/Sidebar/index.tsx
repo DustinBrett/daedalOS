@@ -12,7 +12,7 @@ import { useProcesses } from "contexts/process";
 import { useRef, useState } from "react";
 
 const Sidebar = (): JSX.Element => {
-  const fs = useFileSystem();
+  const { resetFs } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<NodeJS.Timer>();
@@ -35,7 +35,7 @@ const Sidebar = (): JSX.Element => {
     {
       name: "Power",
       icon: <Power />,
-      action: () => fs?.resetFs().finally(() => window.location.reload()),
+      action: () => resetFs().finally(() => window.location.reload()),
     },
   ];
 

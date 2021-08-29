@@ -34,7 +34,7 @@ const Icon = (
 ): JSX.Element => {
   useEffect(
     () => () => {
-      if (props?.src?.startsWith("blob:")) cleanUpBufferUrl(props?.src);
+      if (props.src?.startsWith("blob:")) cleanUpBufferUrl(props.src);
     },
     [props]
   );

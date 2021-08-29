@@ -51,8 +51,8 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
         setWindowStates((currentWindowStates) => ({
           ...currentWindowStates,
           [id]: {
-            position: currentWindow?.props?.position,
-            size: currentWindow?.props?.size,
+            position: currentWindow?.props.position,
+            size: currentWindow?.props.size,
           },
         }));
       }
