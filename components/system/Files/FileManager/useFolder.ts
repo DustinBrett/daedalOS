@@ -8,7 +8,7 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useFileSystem } from "contexts/fileSystem";
 import type { AsyncZippable } from "fflate";
 import { zip } from "fflate";
-import { basename, dirname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
@@ -24,6 +24,8 @@ export type FolderActions = {
   newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
   pasteToFolder: () => void;
 };
+
+type File = [string, Buffer];
 
 type Folder = {
   fileActions: FileActions;
@@ -86,12 +88,22 @@ const useFolder = (
 
     setDownloadLink(link.href);
   };
-  const getFile = (path: string): Promise<[string, Buffer]> =>
-    new Promise((resolve) =>
-      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) =>
-        resolve([basename(path), contents])
-      )
-    );
+  const getFile = (path: string): Promise<File | void> =>
+    new Promise((resolve) => {
+      if (extname(path) === SHORTCUT_EXTENSION) {
+        resolve();
+      } else {
+        fs?.stat(path, (_statError, stats) => {
+          if (stats?.isDirectory()) {
+            resolve();
+          } else {
+            fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
+              resolve([basename(path), contents])
+            );
+          }
+        });
+      }
+    });
   const downloadFiles = (paths: string[]): void => {
     if (paths.length === 1) {
       const [path] = paths;
@@ -100,12 +112,14 @@ const useFolder = (
         createLink(contents, basename(path))
       );
     } else {
-      Promise.all(paths.map((path) => getFile(path))).then((zipContents) => {
+      Promise.all(paths.map((path) => getFile(path))).then((zipContents) =>
         zip(
-          Object.fromEntries(zipContents) as AsyncZippable,
+          Object.fromEntries(
+            zipContents.filter(Boolean) as File[]
+          ) as AsyncZippable,
           (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
-        );
-      });
+        )
+      );
     }
   };
 
