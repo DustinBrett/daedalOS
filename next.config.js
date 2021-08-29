@@ -1,11 +1,9 @@
 // @ts-check
 
 /**
- * @type {import('next/dist/next-server/server/config').NextConfig}
+ * @type {import('next').NextConfig}
  * */
 const nextConfig = {
-  experimental: {},
-  future: {},
   reactStrictMode: true,
 };
 
