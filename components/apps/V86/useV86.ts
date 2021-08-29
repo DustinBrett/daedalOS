@@ -23,7 +23,7 @@ const useV86 = (
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<V86Starter>();
-  const { fs, updateFolder } = useFileSystem();
+  const { fs, mkdirRecursive, updateFolder } = useFileSystem();
 
   useV86ScreenSize(id, containerRef, emulator);
 
@@ -79,20 +79,30 @@ const useV86 = (
     return () => {
       if (emulator && fs && url) {
         emulator.save_state((_error, newState) =>
-          fs.mkdir(SAVE_PATH, () =>
+          mkdirRecursive(SAVE_PATH, () => {
+            const saveName = `${basename(url)}${saveExtension}`;
+
             fs.writeFile(
-              join(SAVE_PATH, `${basename(url)}${saveExtension}`),
+              join(SAVE_PATH, saveName),
               Buffer.from(new Uint8Array(newState)),
               () => {
                 emulator?.destroy?.();
-                updateFolder(SAVE_PATH);
+                updateFolder(SAVE_PATH, saveName);
               }
-            )
-          )
+            );
+          })
         );
       }
     };
-  }, [appendFileToTitle, containerRef, emulator, fs, updateFolder, url]);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    emulator,
+    fs,
+    mkdirRecursive,
+    updateFolder,
+    url,
+  ]);
 };
 
 export default useV86;

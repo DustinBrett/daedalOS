@@ -10,7 +10,7 @@ import type { FSModule } from "browserfs/dist/node/core/FS";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import type { UpdateFiles } from "contexts/session/types";
-import { dirname, extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -33,6 +33,7 @@ export type FileSystemContextState = {
   pasteList: FilePasteOperations;
   copyEntries: (entries: string[]) => void;
   moveEntries: (entries: string[]) => void;
+  mkdirRecursive: (path: string, callback: () => void) => void;
 };
 
 const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
@@ -137,6 +138,28 @@ const useFileSystemContextState = (): FileSystemContextState => {
       readable.empty();
       writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
     });
+  const mkdirRecursive = (path: string, callback: () => void): void => {
+    const pathParts = path.split("/").filter(Boolean);
+    const recursePath = (position = 1): void => {
+      const makePath = join("/", pathParts.slice(0, position).join("/"));
+      const nextPart = (): void =>
+        position === pathParts.length ? callback() : recursePath(position + 1);
+
+      fs?.exists(makePath, (exists) => {
+        if (exists) nextPart();
+        else {
+          fs.mkdir(makePath, { flag: "w" }, (error) => {
+            if (!error) {
+              updateFolder(dirname(makePath), basename(makePath));
+              nextPart();
+            }
+          });
+        }
+      });
+    };
+
+    recursePath();
+  };
 
   useEffect(() => {
     if (!fs) {
@@ -157,6 +180,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     pasteList,
     copyEntries,
     moveEntries,
+    mkdirRecursive,
   };
 };
 

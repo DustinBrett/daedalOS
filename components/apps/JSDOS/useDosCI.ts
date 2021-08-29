@@ -31,7 +31,7 @@ const useDosCI = (
   dosInstance?: DosInstance
 ): CommandInterface | undefined => {
   const { appendFileToTitle } = useTitle(id);
-  const { fs, updateFolder } = useFileSystem();
+  const { fs, mkdirRecursive, updateFolder } = useFileSystem();
   const { linkElement } = useProcesses();
   const [dosCI, setDosCI] = useState<CommandInterface>();
 
@@ -69,18 +69,20 @@ const useDosCI = (
 
     return () => {
       if (dosCI && fs && url) {
-        dosCI.persist().then((saveZip) => {
-          fs.mkdir(SAVE_PATH, () =>
+        dosCI.persist().then((saveZip) =>
+          mkdirRecursive(SAVE_PATH, () => {
+            const saveName = `${basename(url)}${saveExtension}`;
+
             fs.writeFile(
-              join(SAVE_PATH, `${basename(url)}${saveExtension}`),
+              join(SAVE_PATH, saveName),
               Buffer.from(saveZip),
               () => {
                 dosInstance?.stop();
-                updateFolder(SAVE_PATH);
+                updateFolder(SAVE_PATH, saveName);
               }
-            )
-          );
-        });
+            );
+          })
+        );
       }
     };
   }, [
@@ -91,6 +93,7 @@ const useDosCI = (
     fs,
     id,
     linkElement,
+    mkdirRecursive,
     updateFolder,
     url,
   ]);
