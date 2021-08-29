@@ -26,6 +26,10 @@ const extensions = {
   ".swf": {
     process: ["Ruffle"],
   },
+  ".whtml": {
+    icon: "tinymce",
+    process: ["TinyMCE"],
+  },
   ".wsz": {
     icon: "music",
     process: ["Webamp"],

@@ -29,6 +29,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
+    "@tinymce/tinymce-react": "^3.12.6",
     "fflate": "^0.7.1",
     "framer-motion": "^4.1.17",
     "html-to-image": "^1.7.0",

@@ -26,6 +26,16 @@ const processDirectory: Processes = {
     icon: "/icons/ruffle.png",
     title: "Ruffle",
   },
+  TinyMCE: {
+    backgroundColor: "#FFF",
+    Component: dynamic(() => import("components/apps/TinyMCE")),
+    defaultSize: {
+      height: 400,
+      width: 400,
+    },
+    icon: "/icons/tinymce.png",
+    title: "TinyMCE",
+  },
   V86: {
     autoSizing: true,
     backgroundColor: "#000",
