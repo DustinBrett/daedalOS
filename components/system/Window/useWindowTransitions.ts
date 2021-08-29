@@ -1,5 +1,6 @@
 import { useProcesses } from "contexts/process";
 import type { MotionProps, Variant } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
@@ -39,18 +40,22 @@ const useWindowTransitions = (id: string): MotionProps => {
   const { closing, componentWindow, maximized, minimized, taskbarEntry } =
     process || {};
   const { sizes: { taskbar } = {} } = useTheme();
-  const maximize: Variant = () => {
+  const [maximize, setMaximize] = useState<Variant>({});
+  const [minimize, setMinimize] = useState<Variant>({});
+
+  useEffect(() => {
     const { x: windowX = 0, y: windowY = 0 } =
       componentWindow?.getBoundingClientRect() || {};
 
-    return {
+    setMaximize({
       ...baseMaximize,
       height: window.innerHeight - pxToNum(taskbar?.height),
       x: -windowX,
       y: -windowY,
-    };
-  };
-  const minimize: Variant = () => {
+    });
+  }, [componentWindow, maximized, taskbar?.height]);
+
+  useEffect(() => {
     const {
       height: taskbarHeight = 0,
       width: taskbarWidth = 0,
@@ -64,12 +69,12 @@ const useWindowTransitions = (id: string): MotionProps => {
       y: windowY = 0,
     } = componentWindow?.getBoundingClientRect() || {};
 
-    return {
+    setMinimize({
       ...baseMinimize,
       x: taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2,
       y: taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2,
-    };
-  };
+    });
+  }, [componentWindow, minimized, taskbarEntry]);
 
   return {
     animate:
