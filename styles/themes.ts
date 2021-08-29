@@ -1,8 +1,8 @@
 import type { DefaultTheme } from "styled-components";
 import defaultTheme from "styles/defaultTheme";
 
-type Themes = Record<string, DefaultTheme>;
+const themes = { defaultTheme };
 
-const themes: Themes = { defaultTheme };
+export type ThemeName = keyof typeof themes;
 
-export default themes;
+export default themes as Record<ThemeName, DefaultTheme>;

@@ -1,3 +1,4 @@
+import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
@@ -25,7 +26,9 @@ const useFileContextMenu = (
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { setWallpaper } = useSession();
-  const { process: [, ...openWith] = [] } = extensions[extname(url)] || {};
+  const urlExtension = extname(url);
+  const { process: [, ...openWith] = [] } =
+    urlExtension in extensions ? extensions[urlExtension as ExtensionType] : {};
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
@@ -46,11 +49,11 @@ const useFileContextMenu = (
     },
     { label: "Rename", action: () => setRenaming(basename(path)) },
   ];
-  const extension = extname(path);
-  const isShortcut = extension === SHORTCUT_EXTENSION;
+  const pathExtension = extname(path);
+  const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
 
-  if (!isShortcut && url && (extension || pid !== "FileExplorer")) {
+  if (!isShortcut && url && (pathExtension || pid !== "FileExplorer")) {
     menuItems.unshift(MENU_SEPERATOR);
 
     menuItems.unshift({
@@ -59,7 +62,7 @@ const useFileContextMenu = (
     });
   }
 
-  if (IMAGE_FILE_EXTENSIONS.has(extension)) {
+  if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {
     menuItems.unshift({
       label: "Set as desktop background",
       menu: [

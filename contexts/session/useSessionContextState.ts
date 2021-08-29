@@ -6,6 +6,8 @@ import type {
   WindowStates,
 } from "contexts/session/types";
 import { useCallback, useEffect, useState } from "react";
+import type { ThemeName } from "styles/themes";
+import { DEFAULT_THEME } from "utils/constants";
 
 const SESSION_FILE = "/session.json";
 
@@ -14,7 +16,7 @@ const useSessionContextState = (): SessionContextState => {
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
-  const [themeName, setThemeName] = useState("");
+  const [themeName, setThemeName] = useState<ThemeName>(DEFAULT_THEME);
   const [windowStates, setWindowStates] = useState<WindowStates>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("");

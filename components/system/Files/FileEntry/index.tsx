@@ -6,6 +6,7 @@ import { isSelectionIntersecting } from "components/system/Files/FileManager/Sel
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename } from "path";
@@ -25,7 +26,7 @@ type FileEntryProps = {
   renaming: boolean;
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
-  view: string;
+  view: FileManagerViewNames;
 };
 
 const truncateName = (name: string): string => {

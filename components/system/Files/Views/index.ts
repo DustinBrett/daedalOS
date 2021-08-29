@@ -35,7 +35,7 @@ export const FileManagerViews: Record<FileManagerViewNames, FileManagerView> = {
   },
 };
 
-export const FileEntryIconSize: Record<string, IconProps> = {
+export const FileEntryIconSize: Record<FileManagerViewNames, IconProps> = {
   icon: {
     imgSize: 48,
   },

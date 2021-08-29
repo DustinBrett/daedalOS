@@ -1,12 +1,9 @@
-type Extensions = Record<
-  string,
-  {
-    icon?: string;
-    process: string[];
-  }
->;
+type Extension = {
+  icon?: string;
+  process: string[];
+};
 
-const extensions: Extensions = {
+const extensions = {
   ".img": {
     icon: "image",
     process: ["V86"],
@@ -39,4 +36,6 @@ const extensions: Extensions = {
   },
 };
 
-export default extensions;
+export type ExtensionType = keyof typeof extensions;
+
+export default extensions as Record<ExtensionType, Extension>;

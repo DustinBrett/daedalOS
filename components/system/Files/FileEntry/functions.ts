@@ -1,4 +1,5 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import processDirectory from "contexts/process/directory";
@@ -22,8 +23,8 @@ type InternetShortcut = {
 };
 
 const getIconByFileExtension = (extension: string): string => {
-  const { icon: extensionIcon, process: [defaultProcess = ""] = [] } =
-    extensions[extension] || {};
+  const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
+    extension in extensions ? extensions[extension as ExtensionType] : {};
 
   if (extensionIcon) return `/icons/${extensionIcon}.png`;
 
@@ -31,7 +32,10 @@ const getIconByFileExtension = (extension: string): string => {
 };
 
 const getProcessByFileExtension = (extension: string): string => {
-  const [defaultProcess = ""] = extensions[extension]?.process || [];
+  const [defaultProcess = ""] =
+    extension in extensions
+      ? extensions[extension as ExtensionType].process
+      : [];
 
   return defaultProcess;
 };
