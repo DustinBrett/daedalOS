@@ -1,4 +1,4 @@
-import type { SidebarButtonType } from "components/system/StartMenu/Sidebar/SidebarButton";
+import type { SidebarButtons } from "components/system/StartMenu/Sidebar/SidebarButton";
 import SidebarButton from "components/system/StartMenu/Sidebar/SidebarButton";
 import {
   AllApps,
@@ -16,7 +16,7 @@ const Sidebar = (): JSX.Element => {
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<NodeJS.Timer>();
-  const topButtons: SidebarButtonType[] = [
+  const topButtons: SidebarButtons = [
     {
       name: "START",
       icon: <SideMenu />,
@@ -26,7 +26,7 @@ const Sidebar = (): JSX.Element => {
     },
     { name: "All apps", icon: <AllApps />, active: true },
   ];
-  const bottomButtons: SidebarButtonType[] = [
+  const bottomButtons: SidebarButtons = [
     {
       name: "Documents",
       icon: <Documents />,

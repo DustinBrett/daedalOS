@@ -1,6 +1,6 @@
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 
-export type SidebarButtonType = {
+type SidebarButton = {
   action?: () => void;
   active?: boolean;
   heading?: boolean;
@@ -9,7 +9,9 @@ export type SidebarButtonType = {
   tooltip?: string;
 };
 
-type SidebarButtonProps = SidebarButtonType & { collapsed: boolean };
+export type SidebarButtons = SidebarButton[];
+
+type SidebarButtonProps = SidebarButton & { collapsed: boolean };
 
 const SidebarButton = ({
   action,
