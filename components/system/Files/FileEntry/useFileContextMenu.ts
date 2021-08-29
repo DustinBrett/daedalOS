@@ -30,10 +30,12 @@ const useFileContextMenu = (
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
   const { copyEntries, moveEntries } = useFileSystem();
-  const absoluteEntries = (): string[] =>
-    [...new Set([path, ...focusedEntries])].map((entry) =>
-      join(dirname(path), entry)
-    );
+  const absoluteEntries = (): string[] => [
+    ...new Set([
+      path,
+      ...focusedEntries.map((entry) => join(dirname(path), entry)),
+    ]),
+  ];
   const menuItems: MenuItem[] = [
     { label: "Cut", action: () => moveEntries(absoluteEntries()) },
     { label: "Copy", action: () => copyEntries(absoluteEntries()) },
