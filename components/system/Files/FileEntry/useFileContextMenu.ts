@@ -31,7 +31,9 @@ const useFileContextMenu = (
   const openFile = useFile(url);
   const { copyEntries, moveEntries } = useFileSystem();
   const absoluteEntries = (): string[] =>
-    focusedEntries.map((entry) => join(dirname(path), entry));
+    [...new Set([path, ...focusedEntries])].map((entry) =>
+      join(dirname(path), entry)
+    );
   const menuItems: MenuItem[] = [
     { label: "Cut", action: () => moveEntries(absoluteEntries()) },
     { label: "Copy", action: () => copyEntries(absoluteEntries()) },
