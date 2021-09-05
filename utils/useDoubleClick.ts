@@ -8,7 +8,7 @@ const useDoubleClick = (
   singleClick = false
 ): { onClick: React.MouseEventHandler } => {
   const timer = useRef<NodeJS.Timeout | undefined>();
-  const moveCount = useRef(1);
+  const moveCount = useRef(0);
   const onClick: React.MouseEventHandler = (event) => {
     const runHandler = (): void => {
       event.stopPropagation();
@@ -21,9 +21,13 @@ const useDoubleClick = (
       }
     };
     const clearWhenPointerMoved = (): void => {
-      if (moveCount.current > MAX_MOVES) {
+      if (moveCount.current >= MAX_MOVES) {
         clearTimer();
+      }
+
+      if (typeof timer.current === "undefined") {
         event.target.removeEventListener("pointermove", clearWhenPointerMoved);
+        moveCount.current = 0;
       } else {
         moveCount.current += 1;
       }
