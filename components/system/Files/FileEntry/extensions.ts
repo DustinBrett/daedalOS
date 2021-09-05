@@ -34,7 +34,7 @@ const extensions = {
   },
   ".wsz": {
     icon: "music",
-    process: ["Webamp"],
+    process: ["Webamp", "FileExplorer"],
   },
   ".zip": {
     icon: "compressed",
