@@ -14,15 +14,12 @@ import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, join } from "path";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import { bufferToUrl, cleanUpBufferUrl, cleanUpGlobals } from "utils/functions";
 
 const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
   (await isFileInZip(buffer, zipConfigPath))
     ? buffer
     : addFileToZip(buffer, defaultConfig, zipConfigPath, fs);
-
-const cleanUpLoader = (): void =>
-  globals.forEach((global) => delete (window as never)[global]);
 
 const useDosCI = (
   id: string,
@@ -59,7 +56,7 @@ const useDosCI = (
                 appendFileToTitle(url);
                 cleanUpBufferUrl(bundleURL);
                 if (optionalChangesUrl) cleanUpBufferUrl(optionalChangesUrl);
-                cleanUpLoader();
+                cleanUpGlobals(globals);
               }
             });
           }
