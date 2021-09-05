@@ -14,6 +14,7 @@ const config = {
     plugins,
     toolbar,
   },
+  scriptLoading: { async: true },
   tinymceScriptSrc: "/libs/tinymce/tinymce.min.js",
 };
 
