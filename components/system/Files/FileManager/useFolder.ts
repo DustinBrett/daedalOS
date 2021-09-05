@@ -31,6 +31,7 @@ type Folder = {
   fileActions: FileActions;
   folderActions: FolderActions;
   files: string[];
+  isLoading: boolean;
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };
 
@@ -40,7 +41,8 @@ const useFolder = (
   { blurEntry, focusEntry }: FocusEntryFunctions
 ): Folder => {
   const [files, setFiles] = useState<string[]>([]);
-  const [downloadLink, setDownloadLink] = useState<string>("");
+  const [downloadLink, setDownloadLink] = useState("");
+  const [isLoading, setLoading] = useState(true);
   const {
     addFile,
     addFsWatcher,
@@ -64,10 +66,12 @@ const useFolder = (
         );
       } else if (newFile) {
         setFiles((currentFiles) => [...currentFiles, basename(newFile)]);
-      } else {
-        fs?.readdir(directory, (_error, contents = []) =>
-          setFiles(sortContents(contents).filter(filterSystemFiles(directory)))
-        );
+      } else if (fs) {
+        setLoading(true);
+        fs.readdir(directory, (_error, contents = []) => {
+          setLoading(false);
+          setFiles(sortContents(contents).filter(filterSystemFiles(directory)));
+        });
       }
     },
     [directory, fs]
@@ -122,7 +126,6 @@ const useFolder = (
       );
     }
   };
-
   const renameFile = (path: string, name?: string): void => {
     const newName = name?.trim();
 
@@ -232,6 +235,7 @@ const useFolder = (
       pasteToFolder,
     },
     files,
+    isLoading,
     updateFiles,
   };
 };

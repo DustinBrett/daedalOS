@@ -41,7 +41,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
       {...FOCUSABLE_ELEMENT}
     >
       <Sidebar />
-      <FileManager url="/start" view="list" />
+      <FileManager url="/start" view="list" hideLoading />
     </StyledStartMenu>
   );
 };
