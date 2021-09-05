@@ -1,4 +1,15 @@
 {
-  "presets": ["next/babel"],
+  "presets": [
+    [
+      "next/babel",
+      {
+        "preset-env": {
+          "targets": {
+            "browsers": "defaults and supports es6 and not ie 11"
+          }
+        }
+      }
+    ]
+  ],
   "plugins": [["styled-components", { "pure": true, "ssr": true }]]
 }
