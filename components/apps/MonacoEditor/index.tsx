@@ -1,5 +1,4 @@
 import Editor, { loader } from "@monaco-editor/react";
-import { overrideSubMenuStyling } from "components/apps/MonacoEditor/functions";
 import StyledMonacoEditor from "components/apps/MonacoEditor/StyledMonacoEditor";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
@@ -42,7 +41,7 @@ const MonacoEditor = ({ id }: ComponentProcessProps): JSX.Element => {
   loader.config({ paths: { vs: "/libs/monaco/vs" } });
 
   return (
-    <StyledMonacoEditor onBlur={overrideSubMenuStyling}>
+    <StyledMonacoEditor>
       <Editor
         onMount={(mountedEditor) => setEditor(mountedEditor)}
         path={url}
