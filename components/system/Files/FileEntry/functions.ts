@@ -6,6 +6,7 @@ import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { join } from "path";
 import {
+  DEFAULT_FILE_VIEWER,
   EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
@@ -28,14 +29,17 @@ const getIconByFileExtension = (extension: string): string => {
 
   if (extensionIcon) return `/icons/${extensionIcon}.png`;
 
-  return processDirectory[defaultProcess]?.icon || "/icons/unknown.png";
+  return (
+    processDirectory[defaultProcess || DEFAULT_FILE_VIEWER]?.icon ||
+    "/icons/unknown.png"
+  );
 };
 
 const getProcessByFileExtension = (extension: string): string => {
   const [defaultProcess = ""] =
     extension in extensions
       ? extensions[extension as ExtensionType].process
-      : [];
+      : [DEFAULT_FILE_VIEWER];
 
   return defaultProcess;
 };
@@ -58,7 +62,7 @@ export const getInfoWithoutExtension = (
 
     callback({
       icon: `/icons/${isDirectory ? "folder.png" : "unknown.png"}`,
-      pid: isDirectory ? "FileExplorer" : "",
+      pid: isDirectory ? "FileExplorer" : DEFAULT_FILE_VIEWER,
       url: path,
     });
   });

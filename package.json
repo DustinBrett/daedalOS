@@ -29,6 +29,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.2.2",
     "@tinymce/tinymce-react": "^3.12.6",
     "fflate": "^0.7.1",
     "framer-motion": "^4.1.17",

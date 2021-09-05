@@ -16,6 +16,16 @@ const processDirectory: Processes = {
     lockAspectRatio: true,
     title: "js-dos v7",
   },
+  MonacoEditor: {
+    backgroundColor: "#1E1E1E",
+    Component: dynamic(() => import("components/apps/MonacoEditor")),
+    defaultSize: {
+      height: 400,
+      width: 400,
+    },
+    icon: "/icons/monaco.png",
+    title: "Monaco Editor",
+  },
   Ruffle: {
     backgroundColor: "#000",
     Component: dynamic(() => import("components/apps/Ruffle")),
