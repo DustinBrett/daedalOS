@@ -1,8 +1,11 @@
 import type { StyledFileManagerProps } from "components/system/Files/Views";
 import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
+  ${ScrollBars};
+
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
   display: grid;
   grid-auto-flow: column;
