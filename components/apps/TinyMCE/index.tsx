@@ -33,7 +33,7 @@ const TinyMCE = ({ id }: ComponentProcessProps): JSX.Element => {
     if (url && editor) {
       fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
-          setReadOnlyMode(editor);
+          if (contents.length > 0) setReadOnlyMode(editor);
           editor.setContent(contents.toString());
           appendFileToTitle(basename(url, extname(url)));
         }
