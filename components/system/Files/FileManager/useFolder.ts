@@ -237,7 +237,10 @@ const useFolder = (
       zip(
         Object.fromEntries(zipFiles) as AsyncZippable,
         (_zipError, newZipFile) => {
-          newPath(`${basename(directory)}.zip`, Buffer.from(newZipFile));
+          newPath(
+            `${basename(directory) || "archive"}.zip`,
+            Buffer.from(newZipFile)
+          );
         }
       );
     });
