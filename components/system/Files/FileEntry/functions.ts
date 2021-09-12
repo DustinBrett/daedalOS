@@ -23,8 +23,12 @@ type InternetShortcut = {
   };
 };
 
-const getDefaultFileViewer = (extension: string): string =>
-  monacoExtensions.has(extension) ? "MonacoEditor" : "";
+const getDefaultFileViewer = (extension: string): string => {
+  if (monacoExtensions.has(extension)) return "MonacoEditor";
+  if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";
+
+  return "";
+};
 
 export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =

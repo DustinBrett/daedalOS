@@ -26,6 +26,17 @@ const processDirectory: Processes = {
     icon: "/icons/monaco.png",
     title: "Monaco Editor",
   },
+  Photos: {
+    backgroundColor: "#222",
+    Component: dynamic(() => import("components/apps/Photos")),
+    defaultSize: {
+      height: 400,
+      width: 500,
+    },
+    icon: "/icons/photos.png",
+    prependTaskbarTitle: true,
+    title: "Photos",
+  },
   Ruffle: {
     backgroundColor: "#000",
     Component: dynamic(() => import("components/apps/Ruffle")),
