@@ -1,4 +1,5 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import { monacoDefaultLanguages } from "components/apps/MonacoEditor/config";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -6,7 +7,6 @@ import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { join } from "path";
 import {
-  DEFAULT_FILE_VIEWER,
   EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
@@ -23,6 +23,9 @@ type InternetShortcut = {
   };
 };
 
+const getDefaultFileViewer = (extension: string): string =>
+  monacoDefaultLanguages.has(extension) ? "MonacoEditor" : "";
+
 const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension as ExtensionType] : {};
@@ -30,7 +33,7 @@ const getIconByFileExtension = (extension: string): string => {
   if (extensionIcon) return `/icons/${extensionIcon}.png`;
 
   return (
-    processDirectory[defaultProcess || DEFAULT_FILE_VIEWER]?.icon ||
+    processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
     "/icons/unknown.png"
   );
 };
@@ -39,7 +42,7 @@ const getProcessByFileExtension = (extension: string): string => {
   const [defaultProcess = ""] =
     extension in extensions
       ? extensions[extension as ExtensionType].process
-      : [DEFAULT_FILE_VIEWER];
+      : [getDefaultFileViewer(extension)];
 
   return defaultProcess;
 };
@@ -62,7 +65,7 @@ export const getInfoWithoutExtension = (
 
     callback({
       icon: `/icons/${isDirectory ? "folder.png" : "unknown.png"}`,
-      pid: isDirectory ? "FileExplorer" : DEFAULT_FILE_VIEWER,
+      pid: isDirectory ? "FileExplorer" : "",
       url: path,
     });
   });
@@ -89,30 +92,30 @@ export const getInfoWithExtension = (
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) =>
-      getInfoByFileExtension(error ? "/icons/photo.png" : bufferToUrl(contents))
-    );
+    getInfoByFileExtension("/icons/photo.png");
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      if (!error) getInfoByFileExtension(bufferToUrl(contents));
+    });
   } else if (extension === ".mp3") {
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) =>
-      import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
-        parseBuffer(
-          contents,
-          {
-            mimeType: MP3_MIME_TYPE,
-            size: contents.length,
-          },
-          { skipPostHeaders: true }
-        ).then(({ common: { picture } = {} }) => {
-          const { data: coverPicture } = selectCover(picture) || {};
+    getInfoByFileExtension("/icons/music.png");
+    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      if (!error) {
+        import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
+          parseBuffer(
+            contents,
+            {
+              mimeType: MP3_MIME_TYPE,
+              size: contents.length,
+            },
+            { skipPostHeaders: true }
+          ).then(({ common: { picture } = {} }) => {
+            const { data: coverPicture } = selectCover(picture) || {};
 
-          getInfoByFileExtension(
-            !error && coverPicture
-              ? bufferToUrl(coverPicture)
-              : "/icons/music.png"
-          );
-        })
-      )
-    );
+            if (coverPicture) getInfoByFileExtension(bufferToUrl(coverPicture));
+          })
+        );
+      }
+    });
   } else {
     getInfoByFileExtension();
   }

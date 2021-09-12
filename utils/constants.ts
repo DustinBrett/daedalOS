@@ -1,7 +1,5 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 
-export const DEFAULT_FILE_VIEWER = "MonacoEditor";
-
 export const DEFAULT_LOCALE = "en";
 
 export const DEFAULT_THEME = "defaultTheme";

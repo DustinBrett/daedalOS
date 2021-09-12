@@ -1,5 +1,3 @@
-import { DEFAULT_FILE_VIEWER } from "utils/constants";
-
 type Extension = {
   icon?: string;
   process: string[];
@@ -30,7 +28,7 @@ const extensions = {
   },
   ".whtml": {
     icon: "tinymce",
-    process: ["TinyMCE", DEFAULT_FILE_VIEWER],
+    process: ["TinyMCE", "MonacoEditor"],
   },
   ".wsz": {
     icon: "music",
