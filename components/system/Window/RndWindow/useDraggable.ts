@@ -25,8 +25,8 @@ const useDraggable = (id: string, size: Size): Draggable => {
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
   const { position: sessionPosition, size: sessionSize } = windowState || {};
   const isOffscreen = isWindowOutsideBounds(windowState, {
-    x: window?.innerWidth || 0,
-    y: (window?.innerHeight || 0) - pxToNum(taskbarHeight),
+    x: window.innerWidth,
+    y: window.innerHeight - pxToNum(taskbarHeight),
   });
   const [{ x, y }, setPosition] = useState<Position>(
     (!isOffscreen && sessionPosition) ||

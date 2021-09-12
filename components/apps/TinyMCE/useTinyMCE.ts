@@ -22,7 +22,7 @@ const useTinyMCE = (
       if (containerRef.current) {
         window.tinymce.init({
           save_onsavecallback: (activeEditor: Editor) =>
-            fs?.writeFile(url, activeEditor?.getContent(), (error) => {
+            fs?.writeFile(url, activeEditor.getContent(), (error) => {
               activeEditor.notificationManager.open({
                 closeButton: true,
                 text: error
