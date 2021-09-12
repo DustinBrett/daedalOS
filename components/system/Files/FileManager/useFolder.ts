@@ -65,7 +65,13 @@ const useFolder = (
           currentFiles.filter((file) => file !== basename(oldFile))
         );
       } else if (newFile) {
-        setFiles((currentFiles) => [...currentFiles, basename(newFile)]);
+        setFiles((currentFiles) => {
+          const newName = basename(newFile);
+
+          return currentFiles.includes(newName)
+            ? currentFiles
+            : [...currentFiles, newName];
+        });
       } else if (fs) {
         setLoading(true);
         fs.readdir(directory, (_error, contents = []) => {
