@@ -26,7 +26,7 @@ type InternetShortcut = {
 const getDefaultFileViewer = (extension: string): string =>
   monacoExtensions.has(extension) ? "MonacoEditor" : "";
 
-const getIconByFileExtension = (extension: string): string => {
+export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension as ExtensionType] : {};
 

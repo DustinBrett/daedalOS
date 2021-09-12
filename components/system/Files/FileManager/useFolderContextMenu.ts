@@ -1,3 +1,4 @@
+import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
@@ -29,15 +30,18 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
+          icon: "/icons/folder.png",
           action: () => newPath(NEW_FOLDER, undefined, true),
         },
         MENU_SEPERATOR,
         {
           label: "Rich Text Document",
+          icon: getIconByFileExtension(".whtml"),
           action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
         },
         {
           label: "Text Document",
+          icon: getIconByFileExtension(".txt"),
           action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
         },
       ],
