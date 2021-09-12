@@ -1,5 +1,6 @@
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
@@ -20,14 +21,14 @@ const useFileContextMenu = (
   pid: string,
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
-  { deleteFile, downloadFiles }: FileActions,
+  { deleteFile, downloadFiles, newShortcut }: FileActions,
   focusEntry: (entry: string) => void,
   focusedEntries: string[]
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { setWallpaper } = useSession();
   const urlExtension = extname(url);
-  const { process: [, ...openWith] = [] } =
+  const { process: [extensionProcess, ...openWith] = [] } =
     urlExtension in extensions ? extensions[urlExtension as ExtensionType] : {};
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
@@ -43,15 +44,30 @@ const useFileContextMenu = (
     { label: "Cut", action: () => moveEntries(absoluteEntries()) },
     { label: "Copy", action: () => copyEntries(absoluteEntries()) },
     MENU_SEPERATOR,
-    {
-      label: "Delete",
-      action: () => absoluteEntries().forEach((entry) => deleteFile(entry)),
-    },
-    { label: "Rename", action: () => setRenaming(basename(path)) },
   ];
   const pathExtension = extname(path);
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
+
+  if (!isShortcut) {
+    const defaultProcess =
+      extensionProcess || getProcessByFileExtension(urlExtension);
+
+    if (defaultProcess || (!pathExtension && !urlExtension)) {
+      menuItems.push({
+        label: "Create shortcut",
+        action: () => newShortcut(path, defaultProcess || "FileExplorer"),
+      });
+    }
+  }
+
+  menuItems.push(
+    {
+      label: "Delete",
+      action: () => absoluteEntries().forEach((entry) => deleteFile(entry)),
+    },
+    { label: "Rename", action: () => setRenaming(basename(path)) }
+  );
 
   if (!isShortcut && url && (pathExtension || pid !== "FileExplorer")) {
     menuItems.unshift(MENU_SEPERATOR);

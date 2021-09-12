@@ -1,5 +1,8 @@
 import type { BFSOneArgCallback } from "browserfs/dist/node/core/file_system";
-import { filterSystemFiles } from "components/system/Files/FileEntry/functions";
+import {
+  filterSystemFiles,
+  getIconByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import {
   iterateFileName,
   sortContents,
@@ -8,14 +11,20 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useFileSystem } from "contexts/fileSystem";
 import type { AsyncZippable } from "fflate";
 import { zip } from "fflate";
+import ini from "ini";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { EMPTY_BUFFER, SHORTCUT_EXTENSION } from "utils/constants";
+import {
+  EMPTY_BUFFER,
+  SHORTCUT_APPEND,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 export type FileActions = {
   deleteFile: (path: string) => void;
   downloadFiles: (paths: string[]) => void;
+  newShortcut: (path: string, process: string) => void;
   renameFile: (path: string, name?: string) => void;
 };
 
@@ -202,6 +211,26 @@ const useFolder = (
       }
     }
   };
+  const newShortcut = (path: string, process: string): void => {
+    const baseName = basename(path);
+    const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
+    const pathExtension = extname(path);
+    const shortcutData = ini.encode(
+      {
+        BaseURL: process,
+        IconFile: pathExtension
+          ? getIconByFileExtension(pathExtension)
+          : "/icons/folder.png",
+        URL: path,
+      },
+      {
+        section: "InternetShortcut",
+        whitespace: false,
+      }
+    );
+
+    newPath(shortcutPath, Buffer.from(shortcutData));
+  };
   const pasteToFolder = (): void =>
     Object.entries(pasteList).forEach(([fileEntry, operation]) => {
       if (operation === "move") {
@@ -233,6 +262,7 @@ const useFolder = (
     fileActions: {
       deleteFile,
       downloadFiles,
+      newShortcut,
       renameFile,
     },
     folderActions: {

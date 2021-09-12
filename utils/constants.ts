@@ -53,6 +53,8 @@ export const PROCESS_DELIMITER = "__";
 
 export const SAVE_PATH = "/saves";
 
+export const SHORTCUT_APPEND = " - Shortcut";
+
 export const SHORTCUT_EXTENSION = ".url";
 
 export const SYSTEM_FILES = new Set(["/.deletedFiles.log"]);

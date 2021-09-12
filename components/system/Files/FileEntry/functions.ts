@@ -38,7 +38,7 @@ export const getIconByFileExtension = (extension: string): string => {
   );
 };
 
-const getProcessByFileExtension = (extension: string): string => {
+export const getProcessByFileExtension = (extension: string): string => {
   const [defaultProcess = ""] =
     extension in extensions
       ? extensions[extension as ExtensionType].process
