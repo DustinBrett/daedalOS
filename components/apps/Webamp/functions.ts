@@ -78,7 +78,7 @@ export const parseTrack = async (
   fileName: string
 ): Promise<Track> => {
   const {
-    common: { artist = "", title = fileName },
+    common: { album = "", artist = "", title = fileName },
     format: { duration = 0 },
   } = await parseBuffer(
     file,
@@ -92,6 +92,6 @@ export const parseTrack = async (
   return {
     blob: bufferToBlob(file),
     duration: Math.floor(duration),
-    metaData: { artist, title },
+    metaData: { album, artist, title },
   };
 };
