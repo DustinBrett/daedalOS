@@ -21,6 +21,17 @@ const useTinyMCE = (
     loadFiles(libs).then(() => {
       if (containerRef.current) {
         window.tinymce.init({
+          save_onsavecallback: (activeEditor: Editor) =>
+            fs?.writeFile(url, activeEditor?.getContent(), (error) => {
+              activeEditor.notificationManager.open({
+                closeButton: true,
+                text: error
+                  ? "Error occurred while saving."
+                  : "Successfully saved.",
+                timeout: 5000,
+                type: error ? "error" : "success",
+              });
+            }),
           selector: `.${[...containerRef.current.classList].join(".")} div`,
           setup: (activeEditor: Editor) =>
             activeEditor.on("load", () => setEditor(activeEditor)),
@@ -28,7 +39,7 @@ const useTinyMCE = (
         });
       }
     });
-  }, [containerRef]);
+  }, [containerRef, fs, url]);
 
   useEffect(() => {
     if (url && editor) {

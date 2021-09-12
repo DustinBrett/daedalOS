@@ -1,9 +1,9 @@
 const plugins = `
   code fullscreen help image link lists media paste
-  preview print searchreplace table wordcount`;
+  preview print save searchreplace table wordcount`;
 
 const toolbar = `
-  undo redo | formatselect | bold italic underline | forecolor backcolor |
+  save undo redo | formatselect | bold italic underline | forecolor backcolor |
   alignleft aligncenter alignright | bullist outdent indent | code | help`;
 
 export const config = {
