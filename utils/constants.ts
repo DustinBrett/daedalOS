@@ -57,6 +57,8 @@ export const SHORTCUT_EXTENSION = ".url";
 
 export const SYSTEM_FILES = new Set(["/.deletedFiles.log"]);
 
+export const TEMP_PATH = "/temp";
+
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
   START_MENU: 400,

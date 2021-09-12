@@ -5,6 +5,7 @@ import {
   openProcess,
   setProcessElement,
   setTitle,
+  setUrl,
 } from "contexts/process/functions";
 import type { ProcessElements, Processes } from "contexts/process/types";
 import { useCallback, useState } from "react";
@@ -21,6 +22,7 @@ export type ProcessContextState = {
   open: (id: string, url: string) => void;
   processes: Processes;
   title: (id: string, newTitle: string) => void;
+  url: (id: string, newUrl: string) => void;
 };
 
 const useProcessContextState = (): ProcessContextState => {
@@ -50,6 +52,10 @@ const useProcessContextState = (): ProcessContextState => {
     (id: string, newTitle: string) => setProcesses(setTitle(id, newTitle)),
     []
   );
+  const url = useCallback(
+    (id: string, newUrl: string) => setProcesses(setUrl(id, newUrl)),
+    []
+  );
 
   return {
     close,
@@ -59,6 +65,7 @@ const useProcessContextState = (): ProcessContextState => {
     open,
     processes,
     title,
+    url,
   };
 };
 

@@ -80,3 +80,8 @@ export const setTitle =
   (processId: string, title: string) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, { title })(currentProcesses);
+
+export const setUrl =
+  (processId: string, url: string) =>
+  (currentProcesses: Processes): Processes =>
+    setProcessSettings(processId, { url })(currentProcesses);
