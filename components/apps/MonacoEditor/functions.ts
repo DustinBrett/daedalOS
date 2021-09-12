@@ -1,3 +1,12 @@
+import { monacoExtensions } from "./config";
+
+const customExtensionLanguages: Record<string, string> = {
+  ".whtml": "html",
+};
+
+export const detectLanguage = (ext: string): string | undefined =>
+  !monacoExtensions.has(ext) ? customExtensionLanguages[ext] : undefined;
+
 export const overrideSubMenuStyling: React.FocusEventHandler = ({
   relatedTarget,
 }): void => {

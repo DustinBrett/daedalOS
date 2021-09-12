@@ -8,7 +8,7 @@ export const globals = ["monaco"];
 
 export const theme = "vs-dark";
 
-export const monacoDefaultLanguages = new Set([
+export const monacoExtensions = new Set([
   ".abap",
   ".aes",
   ".ascx",

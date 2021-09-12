@@ -1,5 +1,5 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import { monacoDefaultLanguages } from "components/apps/MonacoEditor/config";
+import { monacoExtensions } from "components/apps/MonacoEditor/config";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -24,7 +24,7 @@ type InternetShortcut = {
 };
 
 const getDefaultFileViewer = (extension: string): string =>
-  monacoDefaultLanguages.has(extension) ? "MonacoEditor" : "";
+  monacoExtensions.has(extension) ? "MonacoEditor" : "";
 
 const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =

@@ -1,9 +1,10 @@
 import { loader } from "@monaco-editor/react";
 import { config, globals, theme } from "components/apps/MonacoEditor/config";
+import { detectLanguage } from "components/apps/MonacoEditor/functions";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename } from "path";
+import { basename, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 import { cleanUpGlobals } from "utils/functions";
@@ -43,7 +44,7 @@ const useMonaco = (
       if (url) {
         fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
           if (!error) {
-            loadMonaco(contents.toString());
+            loadMonaco(contents.toString(), detectLanguage(extname(url)));
             appendFileToTitle(basename(url));
           }
         });
