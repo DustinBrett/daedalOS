@@ -9,13 +9,16 @@ import {
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Sidebar = (): JSX.Element => {
   const { resetFs } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<NodeJS.Timer>();
+  const clearTimer = (): void => {
+    if (expandTimer.current) clearTimeout(expandTimer.current);
+  };
   const topButtons: SidebarButtons = [
     {
       name: "START",
@@ -39,6 +42,8 @@ const Sidebar = (): JSX.Element => {
     },
   ];
 
+  useEffect(() => clearTimer, []);
+
   return (
     <StyledSidebar
       className={collapsed ? "collapsed" : undefined}
@@ -46,7 +51,7 @@ const Sidebar = (): JSX.Element => {
         expandTimer.current = setTimeout(() => setCollapsed(false), 700);
       }}
       onMouseLeave={() => {
-        if (expandTimer.current) clearTimeout(expandTimer.current);
+        clearTimer();
         setCollapsed(true);
       }}
     >
