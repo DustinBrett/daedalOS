@@ -25,7 +25,7 @@ const useDraggableEntries = (
       focusEntry(file);
       event.dataTransfer.setData(
         "text/plain",
-        focusedEntries.length === 0
+        focusedEntries.length <= 1
           ? join(entryUrl, file)
           : focusedEntries
               .map((entryFile) => join(entryUrl, entryFile))
