@@ -1,7 +1,7 @@
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useTheme } from "styled-components";
 import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
@@ -23,6 +23,10 @@ const useWallpaper = (
   const { fs } = useFileSystem();
   const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
+  const loadThemeWallpaper = useCallback(() => {
+    desktopRef.current?.setAttribute("style", "");
+    wallpaper?.(desktopRef.current);
+  }, [desktopRef, wallpaper]);
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -42,14 +46,23 @@ const useWallpaper = (
               ${cssFit[wallpaperFit]}
               `
             );
+          } else {
+            loadThemeWallpaper();
           }
         });
       } else {
-        desktopRef.current?.setAttribute("style", "");
-        wallpaper?.(desktopRef.current);
+        loadThemeWallpaper();
       }
     }
-  }, [desktopRef, fs, sessionLoaded, wallpaper, wallpaperFit, wallpaperImage]);
+  }, [
+    desktopRef,
+    fs,
+    loadThemeWallpaper,
+    sessionLoaded,
+    wallpaper,
+    wallpaperFit,
+    wallpaperImage,
+  ]);
 };
 
 export default useWallpaper;
