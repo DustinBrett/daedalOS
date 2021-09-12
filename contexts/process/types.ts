@@ -18,6 +18,7 @@ export type Process = ProcessElements & {
   lockAspectRatio?: boolean;
   maximized?: boolean;
   minimized?: boolean;
+  prependTaskbarTitle?: boolean;
   singleton?: boolean;
   title: string;
   url?: string;

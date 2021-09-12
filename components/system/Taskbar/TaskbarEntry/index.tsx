@@ -4,11 +4,13 @@ import useTaskbarEntryContextMenu from "components/system/Taskbar/TaskbarEntry/u
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
+import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { AnimatePresence } from "framer-motion";
 import { useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { PROCESS_DELIMITER } from "utils/constants";
 
 type TaskbarEntryProps = {
   icon: string;
@@ -23,8 +25,11 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   const {
     linkElement,
     minimize,
-    processes: { [id]: { minimized = false } = {} },
+    processes: { [id]: process },
   } = useProcesses();
+  const { minimized, prependTaskbarTitle } = process || {};
+  const [pid] = id.split(PROCESS_DELIMITER);
+  const { title: defaultTitle } = processDirectory[pid];
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement) =>
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
@@ -38,11 +43,14 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
 
     setForegroundId(isForeground ? nextFocusableId : id);
   };
+  const taskbarTitle = prependTaskbarTitle
+    ? `${title.replace(`${defaultTitle} - `, "")} - ${defaultTitle}`
+    : title;
 
   return (
     <StyledTaskbarEntry
       foreground={isForeground}
-      title={title}
+      title={taskbarTitle}
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}
@@ -54,8 +62,8 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       </AnimatePresence>
       <Button onClick={onClick} ref={linkTaskbarEntry}>
         <figure>
-          <Icon src={icon} alt={title} imgSize={16} />
-          <figcaption>{title}</figcaption>
+          <Icon src={icon} alt={taskbarTitle} imgSize={16} />
+          <figcaption>{taskbarTitle}</figcaption>
         </figure>
       </Button>
     </StyledTaskbarEntry>
