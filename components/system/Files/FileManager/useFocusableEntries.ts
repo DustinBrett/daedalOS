@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 type FocusedEntryProps = {
-  className: string;
+  className?: string;
   onBlurCapture: React.FocusEventHandler;
   onClick: React.MouseEventHandler;
 };
@@ -46,7 +46,7 @@ const useFocusableEntries = (
   };
   const focusableEntry = (file: string): FocusedEntryProps => {
     const isFocused = focusedEntries.includes(file);
-    const className = isFocused ? "focus-within" : "";
+    const className = isFocused ? "focus-within" : undefined;
     const onClick: React.MouseEventHandler = ({ ctrlKey }) => {
       if (ctrlKey) {
         if (isFocused) {

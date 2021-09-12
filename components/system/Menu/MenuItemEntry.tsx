@@ -49,7 +49,7 @@ const MenuItemEntry = ({
 
   return (
     <li
-      className={disabled ? "disabled" : ""}
+      className={disabled ? "disabled" : undefined}
       ref={entryRef}
       {...subMenuEvents}
     >
@@ -58,7 +58,7 @@ const MenuItemEntry = ({
       ) : (
         <Button
           as="figure"
-          className={showSubMenu ? "active" : ""}
+          className={showSubMenu ? "active" : undefined}
           onClick={() => {
             if (!menu) {
               action?.();
@@ -67,7 +67,9 @@ const MenuItemEntry = ({
           }}
         >
           {icon && <Icon src={icon} alt={label} imgSize={16} />}
-          <figcaption className={primary ? "primary" : ""}>{label}</figcaption>
+          <figcaption className={primary ? "primary" : undefined}>
+            {label}
+          </figcaption>
           {menu && <ChevronRight />}
         </Button>
       )}
