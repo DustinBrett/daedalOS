@@ -13,6 +13,7 @@ import { basename, dirname, extname, join } from "path";
 import {
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
+  MOUNTABLE_EXTENSIONS,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 
@@ -21,7 +22,13 @@ const useFileContextMenu = (
   pid: string,
   path: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
-  { deleteFile, downloadFiles, newShortcut }: FileActions,
+  {
+    archiveFiles,
+    deleteFile,
+    downloadFiles,
+    extractFiles,
+    newShortcut,
+  }: FileActions,
   focusEntry: (entry: string) => void,
   focusedEntries: string[]
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
@@ -72,10 +79,23 @@ const useFileContextMenu = (
   if (!isShortcut && url && (pathExtension || pid !== "FileExplorer")) {
     menuItems.unshift(MENU_SEPERATOR);
 
-    menuItems.unshift({
-      label: "Download",
-      action: () => downloadFiles(absoluteEntries()),
-    });
+    if (MOUNTABLE_EXTENSIONS.has(pathExtension)) {
+      menuItems.unshift({
+        label: "Extract Here",
+        action: () => extractFiles(path),
+      });
+    }
+
+    menuItems.unshift(
+      {
+        label: "Add to archive...",
+        action: () => archiveFiles(absoluteEntries()),
+      },
+      {
+        label: "Download",
+        action: () => downloadFiles(absoluteEntries()),
+      }
+    );
   }
 
   if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {

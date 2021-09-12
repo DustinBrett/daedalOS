@@ -10,7 +10,7 @@ import {
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useFileSystem } from "contexts/fileSystem";
 import type { AsyncZippable } from "fflate";
-import { zip } from "fflate";
+import { unzip, zip } from "fflate";
 import ini from "ini";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -22,8 +22,10 @@ import {
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 export type FileActions = {
+  archiveFiles: (paths: string[]) => void;
   deleteFile: (path: string) => void;
   downloadFiles: (paths: string[]) => void;
+  extractFiles: (path: string) => void;
   newShortcut: (path: string, process: string) => void;
   renameFile: (path: string, name?: string) => void;
 };
@@ -123,24 +125,21 @@ const useFolder = (
         });
       }
     });
-  const downloadFiles = (paths: string[]): void => {
-    if (paths.length === 1) {
-      const [path] = paths;
+  const downloadFiles = (paths: string[]): Promise<void> =>
+    Promise.all(paths.map((path) => getFile(path))).then((filePaths) => {
+      const zipFiles = filePaths.filter(Boolean) as File[];
 
-      fs?.readFile(path, (_error, contents = EMPTY_BUFFER) =>
-        createLink(contents, basename(path))
-      );
-    } else {
-      Promise.all(paths.map((path) => getFile(path))).then((zipContents) =>
+      if (zipFiles.length === 1) {
+        const [[path, contents]] = zipFiles;
+
+        createLink(contents, basename(path));
+      } else {
         zip(
-          Object.fromEntries(
-            zipContents.filter(Boolean) as File[]
-          ) as AsyncZippable,
+          Object.fromEntries(zipFiles) as AsyncZippable,
           (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
-        )
-      );
-    }
-  };
+        );
+      }
+    });
   const renameFile = (path: string, name?: string): void => {
     const newName = name?.trim();
 
@@ -231,14 +230,49 @@ const useFolder = (
 
     newPath(shortcutPath, Buffer.from(shortcutData));
   };
+  const archiveFiles = (paths: string[]): Promise<void> =>
+    Promise.all(paths.map((path) => getFile(path))).then((filePaths) => {
+      const zipFiles = filePaths.filter(Boolean) as File[];
+
+      zip(
+        Object.fromEntries(zipFiles) as AsyncZippable,
+        (_zipError, newZipFile) => {
+          newPath(`${basename(directory)}.zip`, Buffer.from(newZipFile));
+        }
+      );
+    });
+  const extractFiles = (path: string): void =>
+    fs?.readFile(path, (readError, zipContents = EMPTY_BUFFER) => {
+      if (!readError) {
+        unzip(zipContents, (_unzipError, unzippedFiles) => {
+          const zipFolderName = basename(path, extname(path));
+
+          fs.mkdir(join(directory, zipFolderName), { flag: "w" }, () => {
+            Object.entries(unzippedFiles).forEach(
+              ([extractPath, fileContents]) => {
+                if (extractPath.endsWith("/")) {
+                  fs.mkdir(join(directory, zipFolderName, extractPath));
+                } else {
+                  fs.writeFile(
+                    join(directory, zipFolderName, extractPath),
+                    Buffer.from(fileContents)
+                  );
+                }
+              }
+            );
+            updateFolder(directory, zipFolderName);
+          });
+        });
+      }
+    });
   const pasteToFolder = (): void =>
     Object.entries(pasteList).forEach(([fileEntry, operation]) => {
       if (operation === "move") {
         newPath(fileEntry);
         copyEntries([]);
       } else {
-        fs?.readFile(fileEntry, (_readError, buffer = EMPTY_BUFFER) =>
-          newPath(basename(fileEntry), buffer)
+        fs?.readFile(fileEntry, (_readError, contents = EMPTY_BUFFER) =>
+          newPath(basename(fileEntry), contents)
         );
       }
     });
@@ -260,8 +294,10 @@ const useFolder = (
 
   return {
     fileActions: {
+      archiveFiles,
       deleteFile,
       downloadFiles,
+      extractFiles,
       newShortcut,
       renameFile,
     },
