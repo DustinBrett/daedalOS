@@ -1,5 +1,4 @@
 import { basename, extname } from "path";
-import type React from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const sortCaseInsensitive = (a: string, b: string): number =>

@@ -2,7 +2,6 @@ import {
   haltEvent,
   handleFileInputEvent,
 } from "components/system/Files/FileManager/functions";
-import type React from "react";
 
 type FileDrop = {
   onDragOver: (event: React.DragEvent<HTMLElement>) => void;
