@@ -5,7 +5,6 @@ export const setReadOnlyMode = (editor: EditorInstance): void => {
   const toolbars = editor.editorContainer?.querySelector(".tox-editor-header");
 
   if (toolbars instanceof HTMLDivElement) {
-    toolbars.title = "Click toolbar item to switch to design mode.";
     toolbars.addEventListener(
       "click",
       () => {
