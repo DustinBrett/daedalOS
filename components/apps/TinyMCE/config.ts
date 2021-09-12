@@ -6,16 +6,14 @@ const toolbar = `
   undo redo | formatselect | bold italic underline | forecolor backcolor |
   alignleft aligncenter alignright | bullist outdent indent | code | help`;
 
-const config = {
-  init: {
-    branding: false,
-    draggable_modal: true,
-    image_advtab: true,
-    plugins,
-    toolbar,
-  },
-  scriptLoading: { async: true },
-  tinymceScriptSrc: "/libs/tinymce/tinymce.min.js",
+export const config = {
+  base_url: "/libs/tinymce/",
+  branding: false,
+  draggable_modal: true,
+  image_advtab: true,
+  plugins,
+  suffix: ".min",
+  toolbar,
 };
 
-export default config;
+export const libs = ["/libs/tinymce/tinymce.min.js"];
