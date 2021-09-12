@@ -6,14 +6,14 @@ import { useEffect } from "react";
 const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
     title,
-    processes: { [id]: { url = "" } = {} },
+    processes: { [id]: { closing = false, url = "" } = {} },
   } = useProcesses();
 
   useEffect(() => {
     if (url) title(id, url);
   }, [id, url, title]);
 
-  return url ? <FileManager url={url} view="icon" /> : <></>;
+  return url ? <FileManager closing={closing} url={url} view="icon" /> : <></>;
 };
 
 export default FileExplorer;
