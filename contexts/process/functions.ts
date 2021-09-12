@@ -46,7 +46,15 @@ export const openProcess =
 
     const id = singleton ? processId : createPid(processId, url);
 
-    return currentProcesses[id] || !processDirectory[processId]
+    if (currentProcesses[id]) {
+      const { componentWindow } = currentProcesses[id];
+
+      componentWindow?.focus();
+
+      return currentProcesses;
+    }
+
+    return !processDirectory[processId]
       ? currentProcesses
       : {
           ...currentProcesses,
