@@ -1,8 +1,7 @@
-import { monacoExtensions } from "./config";
-
-const customExtensionLanguages: Record<string, string> = {
-  ".whtml": "html",
-};
+import {
+  customExtensionLanguages,
+  monacoExtensions,
+} from "components/apps/MonacoEditor/config";
 
 export const detectLanguage = (ext: string): string | undefined =>
   !monacoExtensions.has(ext) ? customExtensionLanguages[ext] : undefined;

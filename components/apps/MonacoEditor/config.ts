@@ -8,6 +8,10 @@ export const globals = ["monaco"];
 
 export const theme = "vs-dark";
 
+export const customExtensionLanguages: Record<string, string> = {
+  ".whtml": "html",
+};
+
 export const monacoExtensions = new Set([
   ".abap",
   ".aes",
