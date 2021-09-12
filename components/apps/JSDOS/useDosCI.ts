@@ -29,7 +29,10 @@ const useDosCI = (
 ): CommandInterface | undefined => {
   const { appendFileToTitle } = useTitle(id);
   const { fs, mkdirRecursive, updateFolder } = useFileSystem();
-  const { linkElement } = useProcesses();
+  const {
+    linkElement,
+    processes: { [id]: { closing = false } = {} },
+  } = useProcesses();
   const [dosCI, setDosCI] = useState<CommandInterface>();
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const useDosCI = (
     }
 
     return () => {
-      if (dosCI && fs && url) {
+      if (closing && dosCI && fs && url) {
         dosCI.persist().then((saveZip) =>
           mkdirRecursive(SAVE_PATH, () => {
             const saveName = `${basename(url)}${saveExtension}`;
@@ -84,6 +87,7 @@ const useDosCI = (
     };
   }, [
     appendFileToTitle,
+    closing,
     containerRef,
     dosCI,
     dosInstance,
