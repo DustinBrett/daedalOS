@@ -32,9 +32,7 @@ const useDragZoom = (
 ): DragZoom => {
   const [scale, setScale] = useState(MIN_ZOOM);
   const {
-    processes: {
-      [id]: { url = "" },
-    },
+    processes: { [id]: { url = "" } = {} },
   } = useProcesses();
   const { appendFileToTitle } = useTitle(id);
   const [dragging, setDragging] = useState<DragPositions | []>([]);
