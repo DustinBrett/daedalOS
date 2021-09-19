@@ -1,6 +1,5 @@
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { join } from "path";
-import type { DragEventHandler } from "react";
 import { useState } from "react";
 
 type DraggableEntryProps = {
@@ -18,7 +17,7 @@ const useDraggableEntries = (
 ): DraggableEntry => {
   const [dragging, setDragging] = useState(false);
   const onDragStart =
-    (entryUrl: string, file: string): DragEventHandler =>
+    (entryUrl: string, file: string): React.DragEventHandler =>
     (event) => {
       setDragging(true);
       blurEntry();

@@ -21,7 +21,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = useCallback(
-    ({ relatedTarget }: Partial<FocusEvent | MouseEvent> = {}) => {
+    ({ relatedTarget }: Partial<React.FocusEvent | React.MouseEvent> = {}) => {
       if (
         !(relatedTarget instanceof HTMLElement) ||
         !menuRef.current?.contains(relatedTarget)
