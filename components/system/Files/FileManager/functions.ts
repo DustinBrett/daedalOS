@@ -1,14 +1,41 @@
 import type { Files } from "components/system/Files/FileManager/useFolder";
+import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { Stats } from "fs";
 import { basename, extname } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
-const sortCaseInsensitive = (
-  [a]: [string, Stats],
-  [b]: [string, Stats]
-): number => a.localeCompare(b, "en", { sensitivity: "base" });
+export type FileStats = [string, Stats];
 
-export const sortContents = (contents: Files, sortOrder: string[]): Files => {
+type SortFunction = (a: FileStats, b: FileStats) => number;
+
+const sortByName = ([a]: FileStats, [b]: FileStats): number =>
+  a.localeCompare(b, "en", { sensitivity: "base" });
+
+const sortBySize = (
+  [, { size: aSize }]: FileStats,
+  [, { size: bSize }]: FileStats
+): number => aSize - bSize;
+
+const sortByType = ([a]: FileStats, [b]: FileStats): number =>
+  extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
+
+const sortByDate = (
+  [, { mtimeMs: aTime }]: FileStats,
+  [, { mtimeMs: bTime }]: FileStats
+): number => aTime - bTime;
+
+const sortFunctionMap: Record<string, SortFunction> = {
+  name: sortByName,
+  size: sortBySize,
+  type: sortByType,
+  date: sortByDate,
+};
+
+export const sortContents = (
+  contents: Files,
+  sortOrder: string[],
+  sortFunction?: SortFunction
+): Files => {
   if (sortOrder.length > 0) {
     const contentOrder = Object.keys(contents);
 
@@ -20,8 +47,9 @@ export const sortContents = (contents: Files, sortOrder: string[]): Files => {
     );
   }
 
-  const files: [string, Stats][] = [];
-  const folders: [string, Stats][] = [];
+  const files: FileStats[] = [];
+  const folders: FileStats[] = [];
+  const preSort = sortFunction && sortFunction !== sortByName;
 
   Object.entries(contents).forEach((entry) => {
     const [, stat] = entry;
@@ -33,11 +61,22 @@ export const sortContents = (contents: Files, sortOrder: string[]): Files => {
     }
   });
 
-  return Object.fromEntries([
-    ...folders.sort(sortCaseInsensitive),
-    ...files.sort(sortCaseInsensitive),
-  ]);
+  const sortedContents = [
+    ...(preSort
+      ? folders.sort(sortByName).sort(sortFunction)
+      : folders.sort(sortByName)),
+    ...(preSort
+      ? files.sort(sortByName).sort(sortFunction)
+      : files.sort(sortByName)),
+  ];
+
+  return Object.fromEntries(sortedContents);
 };
+
+export const sortFiles = (files: Files, sortBy: SortBy): Files =>
+  sortBy in sortFunctionMap
+    ? sortContents(files, [], sortFunctionMap[sortBy])
+    : files;
 
 export const iterateFileName = (name: string, iteration: number): string => {
   const extension = extname(name);

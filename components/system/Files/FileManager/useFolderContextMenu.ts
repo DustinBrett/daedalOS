@@ -11,11 +11,32 @@ const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 
 const useFolderContextMenu = (
   url: string,
-  { addToFolder, newPath, pasteToFolder }: FolderActions
+  { addToFolder, newPath, pasteToFolder, setSortBy }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
   const { pasteList = {}, updateFolder } = useFileSystem();
   const menuItems: MenuItem[] = [
+    {
+      label: "Sort by",
+      menu: [
+        {
+          label: "Name",
+          action: () => setSortBy("name"),
+        },
+        {
+          label: "Size",
+          action: () => setSortBy("size"),
+        },
+        {
+          label: "Item type",
+          action: () => setSortBy("type"),
+        },
+        {
+          label: "Date modified",
+          action: () => setSortBy("date"),
+        },
+      ],
+    },
     { label: "Refresh", action: () => updateFolder(url) },
     MENU_SEPERATOR,
     { label: "Add file", action: () => addToFolder() },

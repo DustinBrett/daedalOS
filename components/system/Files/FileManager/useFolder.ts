@@ -3,11 +3,14 @@ import {
   filterSystemFiles,
   getIconByFileExtension,
 } from "components/system/Files/FileEntry/functions";
+import type { FileStats } from "components/system/Files/FileManager/functions";
 import {
   iterateFileName,
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import type { SortBy } from "components/system/Files/FileManager/useSortBy";
+import useSortBy from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { AsyncZippable } from "fflate";
@@ -36,6 +39,7 @@ export type FolderActions = {
   addToFolder: () => void;
   newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
   pasteToFolder: () => void;
+  setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
 };
 
 type File = [string, Buffer];
@@ -76,7 +80,7 @@ const useFolder = (
     (fileNames: string[]): Promise<Files> =>
       Promise.all(
         fileNames.map(
-          (file): Promise<[string, Stats]> =>
+          (file): Promise<FileStats> =>
             new Promise((resolve, reject) =>
               fs?.stat(join(directory, file), (error, stats) =>
                 error ? reject(error) : resolve([file, stats as Stats])
@@ -358,6 +362,7 @@ const useFolder = (
       addToFolder: () => addFile(newPath),
       newPath,
       pasteToFolder,
+      setSortBy: useSortBy(setFiles),
     },
     files: files || {},
     isLoading,
