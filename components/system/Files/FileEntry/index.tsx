@@ -12,9 +12,14 @@ import { useFileSystem } from "contexts/fileSystem";
 import type { Stats } from "fs";
 import { basename, extname } from "path";
 import { useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { PREVENT_SCROLL, SHORTCUT_EXTENSION } from "utils/constants";
+import {
+  DEFAULT_LOCALE,
+  PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
 import { getFormattedSize } from "utils/functions";
 import useDoubleClick from "utils/useDoubleClick";
 
@@ -55,6 +60,7 @@ const FileEntry = ({
   const { icon, pid, url } = useFileInfo(path);
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
+  const { formats } = useTheme();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
@@ -97,14 +103,31 @@ const FileEntry = ({
     selectionRect,
   ]);
 
+  const createTooltip = (): string | undefined => {
+    const isShortcut = extname(path) === SHORTCUT_EXTENSION;
+
+    if (isShortcut || stats.isDirectory()) return undefined;
+
+    const { atimeMs, ctimeMs, mtimeMs, size } = stats;
+    const unknownTime = atimeMs === ctimeMs && ctimeMs === mtimeMs;
+    const formattedSize = getFormattedSize(size);
+
+    if (unknownTime) return `Size: ${formattedSize}`;
+
+    const date = new Date(mtimeMs).toISOString().slice(0, 10);
+    const time = new Intl.DateTimeFormat(
+      DEFAULT_LOCALE,
+      formats.dateModified
+    ).format(mtimeMs);
+    const dateModified = `${date} ${time}`;
+
+    return `Size: ${formattedSize}\nDate modified: ${dateModified}`;
+  };
+
   return (
     <Button
       ref={buttonRef}
-      title={
-        extname(path) !== SHORTCUT_EXTENSION && !stats.isDirectory()
-          ? `Size: ${getFormattedSize(stats.size)}`
-          : undefined
-      }
+      title={createTooltip()}
       {...useDoubleClick(() => openFile(pid), singleClick)}
       {...useFileContextMenu(
         url,

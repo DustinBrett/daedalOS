@@ -10,6 +10,11 @@ const formats = {
     second: "2-digit",
     hour12: true,
   } as Intl.DateTimeFormatOptions,
+  dateModified: {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  } as Intl.DateTimeFormatOptions,
 };
 
 export default formats;
