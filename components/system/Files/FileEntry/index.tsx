@@ -1,3 +1,5 @@
+import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
+import extensions from "components/system/Files/FileEntry/extensions";
 import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
@@ -104,15 +106,20 @@ const FileEntry = ({
   ]);
 
   const createTooltip = (): string | undefined => {
-    const isShortcut = extname(path) === SHORTCUT_EXTENSION;
+    const extension = extname(path);
+    const isShortcut = extension === SHORTCUT_EXTENSION;
 
     if (isShortcut || stats.isDirectory()) return undefined;
 
-    const { atimeMs, ctimeMs, mtimeMs, size } = stats;
+    const type =
+      extensions[extension as ExtensionType]?.type ||
+      `${extension.toUpperCase().replace(".", "")} File`;
+    const { atimeMs, ctimeMs, mtimeMs, size: sizeInBytes } = stats;
     const unknownTime = atimeMs === ctimeMs && ctimeMs === mtimeMs;
-    const formattedSize = getFormattedSize(size);
+    const size = getFormattedSize(sizeInBytes);
+    const toolTip = `Type: ${type}\nSize: ${size}`;
 
-    if (unknownTime) return `Size: ${formattedSize}`;
+    if (unknownTime) return toolTip;
 
     const date = new Date(mtimeMs).toISOString().slice(0, 10);
     const time = new Intl.DateTimeFormat(
@@ -121,7 +128,7 @@ const FileEntry = ({
     ).format(mtimeMs);
     const dateModified = `${date} ${time}`;
 
-    return `Size: ${formattedSize}\nDate modified: ${dateModified}`;
+    return `${toolTip}\nDate modified: ${dateModified}`;
   };
 
   return (
