@@ -60,19 +60,13 @@ const getShortcutInfo = (contents: Buffer): FileInfo => {
 };
 
 export const getInfoWithoutExtension = (
-  fs: FSModule,
   path: string,
-  callback: React.Dispatch<React.SetStateAction<FileInfo>>
-): void =>
-  fs.stat(path, (_error, stats) => {
-    const isDirectory = stats ? stats.isDirectory() : false;
-
-    callback({
-      icon: `/System/Icons/${isDirectory ? "folder.png" : "unknown.png"}`,
-      pid: isDirectory ? "FileExplorer" : "",
-      url: path,
-    });
-  });
+  isDirectory: boolean
+): FileInfo => ({
+  icon: `/System/Icons/${isDirectory ? "folder.png" : "unknown.png"}`,
+  pid: isDirectory ? "FileExplorer" : "",
+  url: path,
+});
 
 export const getInfoWithExtension = (
   fs: FSModule,

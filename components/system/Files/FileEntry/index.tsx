@@ -59,7 +59,7 @@ const FileEntry = ({
   stats,
   view,
 }: FileEntryProps): JSX.Element => {
-  const { icon, pid, url } = useFileInfo(path);
+  const { icon, pid, url } = useFileInfo(path, stats.isDirectory());
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
   const { formats } = useTheme();

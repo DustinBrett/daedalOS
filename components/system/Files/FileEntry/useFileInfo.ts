@@ -12,7 +12,7 @@ export type FileInfo = {
   url: string;
 };
 
-const useFileInfo = (path: string): FileInfo => {
+const useFileInfo = (path: string, isDirectory: boolean): FileInfo => {
   const [info, setInfo] = useState<FileInfo>({
     icon: "",
     pid: "",
@@ -24,13 +24,13 @@ const useFileInfo = (path: string): FileInfo => {
     if (fs) {
       const extension = extname(path).toLowerCase();
 
-      if (!extension) {
-        getInfoWithoutExtension(fs, path, setInfo);
+      if (!extension || isDirectory) {
+        setInfo(getInfoWithoutExtension(path, isDirectory));
       } else {
         getInfoWithExtension(fs, path, extension, setInfo);
       }
     }
-  }, [fs, path]);
+  }, [fs, isDirectory, path]);
 
   return info;
 };

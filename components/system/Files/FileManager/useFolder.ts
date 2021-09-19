@@ -131,12 +131,15 @@ const useFolder = (
     },
     [directory, fs, getFiles]
   );
-  const deleteFile = (path: string): void =>
-    fs?.stat(path, (_error, stats) => {
-      const fsDelete = stats?.isDirectory() ? fs.rmdir : fs.unlink;
+  const deleteFile = (path: string): void => {
+    if (fs) {
+      const fsDelete = files?.[basename(path)]?.isDirectory()
+        ? fs.rmdir
+        : fs.unlink;
 
       fsDelete(path, () => updateFolder(directory, "", path));
-    });
+    }
+  };
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
 
@@ -151,16 +154,12 @@ const useFolder = (
     new Promise((resolve) => {
       if (extname(path) === SHORTCUT_EXTENSION) {
         resolve();
+      } else if (files?.[basename(path)]?.isDirectory()) {
+        resolve();
       } else {
-        fs?.stat(path, (_statError, stats) => {
-          if (stats?.isDirectory()) {
-            resolve();
-          } else {
-            fs.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
-              resolve([basename(path), contents])
-            );
-          }
-        });
+        fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
+          resolve([basename(path), contents])
+        );
       }
     });
   const downloadFiles = (paths: string[]): Promise<void> =>
