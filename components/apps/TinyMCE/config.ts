@@ -7,7 +7,7 @@ const toolbar = `
   alignleft aligncenter alignright | bullist outdent indent | code | help`;
 
 export const config = {
-  base_url: "/libs/tinymce/",
+  base_url: "/Program Files/TinyMCE/",
   branding: false,
   draggable_modal: true,
   image_advtab: true,
@@ -16,4 +16,4 @@ export const config = {
   toolbar,
 };
 
-export const libs = ["/libs/tinymce/tinymce.min.js"];
+export const libs = ["/Program Files/TinyMCE/tinymce.min.js"];

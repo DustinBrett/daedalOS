@@ -28,7 +28,7 @@ export const loadScript = (src: string): Promise<Event> =>
   });
 
 export const loadFiles = async (files: string[]): Promise<Event[]> =>
-  Promise.all(files.map((file) => loadScript(file)));
+  Promise.all(files.map((file) => loadScript(encodeURI(file))));
 
 export const pxToNum = (value: string | number = 0): number =>
   Number(stripUnit(value));

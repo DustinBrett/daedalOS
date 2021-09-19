@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
-const libs = ["/libs/ruffle/ruffle.js"];
+const libs = ["/Program Files/Ruffle/ruffle.js"];
 
 const useRuffle = (
   id: string,

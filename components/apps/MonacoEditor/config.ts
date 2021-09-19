@@ -1,6 +1,6 @@
 export const config = {
   paths: {
-    vs: "/libs/monaco/vs",
+    vs: "/Program Files/MonacoEditor/vs",
   },
 };
 

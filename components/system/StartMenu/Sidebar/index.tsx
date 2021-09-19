@@ -33,7 +33,7 @@ const Sidebar = (): JSX.Element => {
     {
       name: "Documents",
       icon: <Documents />,
-      action: () => open("FileExplorer", "/documents"),
+      action: () => open("FileExplorer", "/Users/Public/Documents"),
     },
     {
       name: "Power",

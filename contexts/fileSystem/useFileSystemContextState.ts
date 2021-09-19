@@ -11,7 +11,7 @@ import { handleFileInputEvent } from "components/system/Files/FileManager/functi
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, join } from "path";
-import * as BrowserFS from "public/libs/browserfs/browserfs.min.js";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 

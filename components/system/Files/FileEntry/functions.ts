@@ -34,11 +34,11 @@ export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension as ExtensionType] : {};
 
-  if (extensionIcon) return `/icons/${extensionIcon}.png`;
+  if (extensionIcon) return `/System/Icons/${extensionIcon}.png`;
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
-    "/icons/unknown.png"
+    "/System/Icons/unknown.png"
   );
 };
 
@@ -68,7 +68,7 @@ export const getInfoWithoutExtension = (
     const isDirectory = stats ? stats.isDirectory() : false;
 
     callback({
-      icon: `/icons/${isDirectory ? "folder.png" : "unknown.png"}`,
+      icon: `/System/Icons/${isDirectory ? "folder.png" : "unknown.png"}`,
       pid: isDirectory ? "FileExplorer" : "",
       url: path,
     });
@@ -96,12 +96,12 @@ export const getInfoWithExtension = (
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension("/icons/photo.png");
+    getInfoByFileExtension("/System/Icons/photo.png");
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) getInfoByFileExtension(bufferToUrl(contents));
     });
   } else if (extension === ".mp3") {
-    getInfoByFileExtension("/icons/music.png");
+    getInfoByFileExtension("/System/Icons/music.png");
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) {
         import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>

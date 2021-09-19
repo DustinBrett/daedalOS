@@ -30,7 +30,7 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
-          icon: "/icons/folder.png",
+          icon: "/System/Icons/folder.png",
           action: () => newPath(NEW_FOLDER, undefined, true),
         },
         MENU_SEPERATOR,

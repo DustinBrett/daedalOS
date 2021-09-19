@@ -51,7 +51,7 @@ export const PREVENT_SCROLL = { preventScroll: true };
 
 export const PROCESS_DELIMITER = "__";
 
-export const SAVE_PATH = "/saves";
+export const SAVE_PATH = "/Users/Public/Snaphosts";
 
 export const SHORTCUT_APPEND = " - Shortcut";
 
@@ -59,7 +59,7 @@ export const SHORTCUT_EXTENSION = ".url";
 
 export const SYSTEM_FILES = new Set(["/.deletedFiles.log"]);
 
-export const TEMP_PATH = "/temp";
+export const TEMP_PATH = "/Users/Public/Temp";
 
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,

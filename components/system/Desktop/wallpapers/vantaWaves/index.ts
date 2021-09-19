@@ -9,7 +9,10 @@ const disableControls = {
 
 const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
 
-const libs = ["/libs/vanta/three.min.js", "/libs/vanta/vanta.waves.min.js"];
+const libs = [
+  "/System/Vanta.js/three.min.js",
+  "/System/Vanta.js/vanta.waves.min.js",
+];
 
 const vantaWaves =
   (config: VantaWavesConfig) =>
