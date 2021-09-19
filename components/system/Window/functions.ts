@@ -29,8 +29,8 @@ export const cascadePosition = (
     height = 0,
   } = componentWindow?.getBoundingClientRect() || {};
   const isOffscreen =
-    x + offset + width > window.innerWidth ||
-    y + offset + height > window.innerHeight;
+    x + offset + width > window.screen.width ||
+    y + offset + height > window.screen.height;
 
   return !isOffscreen && (x || y)
     ? {
@@ -44,7 +44,7 @@ export const centerPosition = (
   { height, width }: Size,
   taskbarHeight: string
 ): Position => {
-  const { innerHeight: vh, innerWidth: vw } = window;
+  const { height: vh, width: vw } = window.screen;
 
   return {
     x: Math.floor(vw / 2 - pxToNum(width) / 2),

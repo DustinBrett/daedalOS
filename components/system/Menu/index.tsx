@@ -77,17 +77,17 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       x: menuX = 0,
       y: menuY = 0,
     } = menuRef.current?.getBoundingClientRect() || {};
-    const { innerHeight, innerWidth } = window;
-    const bottomOffset = y + height > innerHeight ? innerHeight - y : 0;
-    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > innerWidth;
-    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > innerHeight;
+    const { height: screenHeight, width: screenWidth } = window.screen;
+    const bottomOffset = y + height > screenHeight ? screenHeight - y : 0;
+    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > screenWidth;
+    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > screenHeight;
 
     setOffset({
       x:
-        Math.round(Math.max(0, x + width - innerWidth)) +
+        Math.round(Math.max(0, x + width - screenWidth)) +
         (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
       y:
-        Math.round(Math.max(0, y + height - (innerHeight - bottomOffset))) +
+        Math.round(Math.max(0, y + height - (screenHeight - bottomOffset))) +
         (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
     });
   }, [subMenu, x, y]);
