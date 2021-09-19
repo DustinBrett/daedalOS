@@ -1,3 +1,4 @@
+import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
@@ -37,7 +38,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
   const dragHandle = {
-    className: "handle",
+    className: rndDefaults.dragHandleClassName,
     onTouchStartCapture: ({ target }: React.TouchEvent) => {
       if (target instanceof HTMLElement) target.click();
       componentWindow?.focus(PREVENT_SCROLL);
