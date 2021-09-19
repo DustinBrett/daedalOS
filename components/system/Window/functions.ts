@@ -7,7 +7,7 @@ import {
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum } from "utils/functions";
+import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 
 type processCloser = ProcessContextState["close"];
 
@@ -29,8 +29,7 @@ export const cascadePosition = (
     height = 0,
   } = componentWindow?.getBoundingClientRect() || {};
   const isOffscreen =
-    x + offset + width > window.screen.width ||
-    y + offset + height > window.screen.height;
+    x + offset + width > viewWidth() || y + offset + height > viewHeight();
 
   return !isOffscreen && (x || y)
     ? {
@@ -44,7 +43,7 @@ export const centerPosition = (
   { height, width }: Size,
   taskbarHeight: string
 ): Position => {
-  const { height: vh, width: vw } = window.screen;
+  const [vh, vw] = [viewHeight(), viewWidth()];
 
   return {
     x: Math.floor(vw / 2 - pxToNum(width) / 2),

@@ -35,3 +35,9 @@ export const pxToNum = (value: string | number = 0): number =>
 
 export const cleanUpGlobals = (globals: string[]): void =>
   globals.forEach((global) => delete (window as never)[global]);
+
+export const viewHeight = (): number =>
+  Math.min(window.innerHeight, window.screen.height);
+
+export const viewWidth = (): number =>
+  Math.min(window.innerWidth, window.screen.width);

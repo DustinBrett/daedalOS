@@ -9,7 +9,7 @@ import { useSession } from "contexts/session";
 import { useEffect, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import { pxToNum } from "utils/functions";
+import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -25,8 +25,8 @@ const useDraggable = (id: string, size: Size): Draggable => {
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
   const { position: sessionPosition, size: sessionSize } = windowState || {};
   const isOffscreen = isWindowOutsideBounds(windowState, {
-    x: window.screen.width,
-    y: window.screen.height - pxToNum(taskbarHeight),
+    x: viewWidth(),
+    y: viewHeight() - pxToNum(taskbarHeight),
   });
   const [{ x, y }, setPosition] = useState<Position>(
     (!isOffscreen && sessionPosition) ||

@@ -8,6 +8,7 @@ import { useSession } from "contexts/session";
 import { useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { viewWidth } from "utils/functions";
 
 type PeekWindowProps = {
   id: string;
@@ -34,11 +35,12 @@ const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
     if (image) {
       const { left = 0, right = 0 } =
         peekRef.current?.getBoundingClientRect() || {};
+      const vw = viewWidth();
 
       if (left < 0) {
         setOffsetX(Math.abs(left));
-      } else if (right > window.screen.width) {
-        setOffsetX(window.screen.width - right);
+      } else if (right > vw) {
+        setOffsetX(vw - right);
       }
     }
   }, [image]);

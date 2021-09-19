@@ -10,6 +10,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
 } from "utils/constants";
+import { viewHeight, viewWidth } from "utils/functions";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -77,17 +78,17 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       x: menuX = 0,
       y: menuY = 0,
     } = menuRef.current?.getBoundingClientRect() || {};
-    const { height: screenHeight, width: screenWidth } = window.screen;
-    const bottomOffset = y + height > screenHeight ? screenHeight - y : 0;
-    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > screenWidth;
-    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > screenHeight;
+    const [vh, vw] = [viewHeight(), viewWidth()];
+    const bottomOffset = y + height > vh ? vh - y : 0;
+    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
+    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
 
     setOffset({
       x:
-        Math.round(Math.max(0, x + width - screenWidth)) +
+        Math.round(Math.max(0, x + width - vw)) +
         (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
       y:
-        Math.round(Math.max(0, y + height - (screenHeight - bottomOffset))) +
+        Math.round(Math.max(0, y + height - (vh - bottomOffset))) +
         (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
     });
   }, [subMenu, x, y]);

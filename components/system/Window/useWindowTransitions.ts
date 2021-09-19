@@ -6,7 +6,7 @@ import {
   MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum } from "utils/functions";
+import { pxToNum, viewHeight } from "utils/functions";
 
 const active = {
   height: "inherit",
@@ -49,7 +49,7 @@ const useWindowTransitions = (id: string): MotionProps => {
 
     setMaximize({
       ...baseMaximize,
-      height: window.innerHeight - pxToNum(taskbar?.height),
+      height: viewHeight() - pxToNum(taskbar?.height),
       x: -windowX,
       y: -windowY,
     });
