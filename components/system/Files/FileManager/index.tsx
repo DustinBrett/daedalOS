@@ -44,12 +44,12 @@ const FileManager = ({
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
-    if (isMountable && files.length === 0) {
+    if (isMountable && Object.keys(files).length === 0) {
       mountFs(url).then(() => updateFiles());
     }
 
     return () => {
-      if (isMountable && files.length > 0 && closing) {
+      if (isMountable && Object.keys(files).length > 0 && closing) {
         unMountFs(url);
       }
     };
@@ -66,7 +66,7 @@ const FileManager = ({
       {...folderContextMenu}
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
-      {files.map((file) => (
+      {Object.keys(files).map((file) => (
         <StyledFileEntry
           key={file}
           {...draggableEntry(url, file)}
@@ -82,6 +82,7 @@ const FileManager = ({
             renaming={renaming === file}
             selectionRect={selectionRect}
             setRenaming={setRenaming}
+            stats={files[file]}
             view={view}
           />
         </StyledFileEntry>

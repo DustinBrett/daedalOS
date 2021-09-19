@@ -9,11 +9,13 @@ import type { FileActions } from "components/system/Files/FileManager/useFolder"
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename } from "path";
+import type { Stats } from "fs";
+import { basename, extname } from "path";
 import { useEffect, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { PREVENT_SCROLL } from "utils/constants";
+import { PREVENT_SCROLL, SHORTCUT_EXTENSION } from "utils/constants";
+import { getFormattedSize } from "utils/functions";
 import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
@@ -26,6 +28,7 @@ type FileEntryProps = {
   renaming: boolean;
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
+  stats: Stats;
   view: FileManagerViewNames;
 };
 
@@ -46,6 +49,7 @@ const FileEntry = ({
   renaming,
   selectionRect,
   setRenaming,
+  stats,
   view,
 }: FileEntryProps): JSX.Element => {
   const { icon, pid, url } = useFileInfo(path);
@@ -96,6 +100,11 @@ const FileEntry = ({
   return (
     <Button
       ref={buttonRef}
+      title={
+        extname(path) !== SHORTCUT_EXTENSION && !stats.isDirectory()
+          ? `Size: ${getFormattedSize(stats.size)}`
+          : undefined
+      }
       {...useDoubleClick(() => openFile(pid), singleClick)}
       {...useFileContextMenu(
         url,

@@ -41,3 +41,26 @@ export const viewHeight = (): number =>
 
 export const viewWidth = (): number =>
   Math.min(window.innerWidth, window.screen.width);
+
+const bytesInKB = 1024;
+const bytesInMB = 1024 * 999;
+const bytesInGB = 1024 * 1024 * 999;
+const bytesInTB = 1024 * 1024 * 1024 * 999;
+
+const formatNumber = (number: number): string =>
+  new Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: 3,
+    minimumSignificantDigits: 3,
+  }).format(number);
+
+export const getFormattedSize = (size = 0): string => {
+  if (size === 1) return "1 byte";
+  if (size < bytesInKB) return `${size} bytes`;
+  if (size < bytesInMB) return `${formatNumber(size / bytesInKB)} KB`;
+  if (size < bytesInGB)
+    return `${formatNumber(size / bytesInKB / bytesInKB)} MB`;
+  if (size < bytesInTB)
+    return `${formatNumber(size / bytesInKB / bytesInKB / bytesInKB)} GB`;
+
+  return `${size} bytes`;
+};

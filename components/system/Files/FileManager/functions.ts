@@ -1,25 +1,31 @@
+import type { Files } from "components/system/Files/FileManager/useFolder";
+import type { Stats } from "fs";
 import { basename, extname } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
-const sortCaseInsensitive = (a: string, b: string): number =>
-  a.localeCompare(b, "en", { sensitivity: "base" });
+const sortCaseInsensitive = (
+  [a]: [string, Stats],
+  [b]: [string, Stats]
+): number => a.localeCompare(b, "en", { sensitivity: "base" });
 
-export const sortContents = (contents: string[]): string[] => {
-  const files: string[] = [];
-  const folders: string[] = [];
+export const sortContents = (contents: Files): Files => {
+  const files: [string, Stats][] = [];
+  const folders: [string, Stats][] = [];
 
-  contents.forEach((entry) => {
-    if (extname(entry)) {
+  Object.entries(contents).forEach((entry) => {
+    const [, stat] = entry;
+
+    if (!stat.isDirectory()) {
       files.push(entry);
     } else {
       folders.push(entry);
     }
   });
 
-  return [
+  return Object.fromEntries([
     ...folders.sort(sortCaseInsensitive),
     ...files.sort(sortCaseInsensitive),
-  ];
+  ]);
 };
 
 export const iterateFileName = (name: string, iteration: number): string => {
