@@ -10,7 +10,7 @@ import type { FSModule } from "browserfs/dist/node/core/FS";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import type { UpdateFiles } from "contexts/session/types";
-import { basename, dirname, extname, join } from "path";
+import { dirname, extname, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
@@ -148,10 +148,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         if (exists) nextPart();
         else {
           fs.mkdir(makePath, { flag: "w" }, (error) => {
-            if (!error) {
-              updateFolder(dirname(makePath), basename(makePath));
-              nextPart();
-            }
+            if (!error) nextPart();
           });
         }
       });
