@@ -11,6 +11,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { PREVENT_SCROLL } from "utils/constants";
 import useDoubleClick from "utils/useDoubleClick";
 
 type TitlebarProps = {
@@ -19,27 +20,34 @@ type TitlebarProps = {
 
 const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const {
-    processes: {
-      [id]: {
-        autoSizing = false,
-        icon = "",
-        lockAspectRatio = false,
-        title = "",
-        maximized = false,
-      } = {},
-    },
+    processes: { [id]: process },
   } = useProcesses();
+  const {
+    autoSizing,
+    componentWindow,
+    icon,
+    lockAspectRatio,
+    title,
+    maximized,
+  } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const disableMaximize = autoSizing && !lockAspectRatio;
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
+  const dragHandle = {
+    className: "handle",
+    onTouchStartCapture: ({ target }: TouchEvent) => {
+      if (target instanceof HTMLElement) target.click();
+      componentWindow?.focus(PREVENT_SCROLL);
+    },
+  };
 
   return (
     <StyledTitlebar
-      className="handle"
       foreground={isForeground}
+      {...dragHandle}
       {...useTitlebarContextMenu(id)}
     >
       <Button as="h1" {...(!disableMaximize ? onClickMaximize : {})}>
