@@ -4,7 +4,7 @@ import type {
   ProcessElements,
   Processes,
 } from "contexts/process/types";
-import { PROCESS_DELIMITER } from "utils/constants";
+import { PREVENT_SCROLL, PROCESS_DELIMITER } from "utils/constants";
 
 export const setProcessSettings =
   (processId: string, settings: Partial<Process>) =>
@@ -49,7 +49,7 @@ export const openProcess =
     if (currentProcesses[id]) {
       const { componentWindow } = currentProcesses[id];
 
-      componentWindow?.focus();
+      componentWindow?.focus(PREVENT_SCROLL);
 
       return currentProcesses;
     }
