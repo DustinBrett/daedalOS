@@ -9,6 +9,7 @@ import {
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useFileSystem } from "contexts/fileSystem";
+import { useSession } from "contexts/session";
 import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
 import type { Stats } from "fs";
@@ -54,7 +55,7 @@ const useFolder = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions
 ): Folder => {
-  const [files, setFiles] = useState<Files>({});
+  const [files, setFiles] = useState<Files>();
   const [downloadLink, setDownloadLink] = useState("");
   const [isLoading, setLoading] = useState(true);
   const {
@@ -66,6 +67,11 @@ const useFolder = (
     removeFsWatcher,
     updateFolder,
   } = useFileSystem();
+  const {
+    sessionLoaded,
+    setSortOrders,
+    sortOrders: { [directory]: sortOrder } = {},
+  } = useSession();
   const getFiles = useCallback(
     (fileNames: string[]): Promise<Files> =>
       Promise.all(
@@ -81,20 +87,23 @@ const useFolder = (
     [directory, fs]
   );
   const updateFiles = useCallback(
-    (newFile?: string, oldFile?: string) => {
+    (newFile?: string, oldFile?: string, initialOrder?: string[]) => {
       if (oldFile && newFile) {
-        setFiles(({ [basename(oldFile)]: fileStats, ...currentFiles }) => ({
-          ...currentFiles,
-          [basename(newFile)]: fileStats,
-        }));
+        setFiles(
+          ({ [basename(oldFile)]: fileStats, ...currentFiles } = {}) => ({
+            ...currentFiles,
+            [basename(newFile)]: fileStats,
+          })
+        );
       } else if (oldFile) {
         setFiles(
-          ({ [basename(oldFile)]: _fileStats, ...currentFiles }) => currentFiles
+          ({ [basename(oldFile)]: _fileStats, ...currentFiles } = {}) =>
+            currentFiles
         );
       } else if (newFile) {
         fs?.stat(join(directory, newFile), (error, stats) => {
           if (!error && stats) {
-            setFiles((currentFiles) => ({
+            setFiles((currentFiles = {}) => ({
               ...currentFiles,
               [basename(newFile)]: stats,
             }));
@@ -105,10 +114,17 @@ const useFolder = (
         fs?.readdir(directory, async (error, contents = []) => {
           setLoading(false);
           if (!error) {
-            const filtersFiles = contents.filter(filterSystemFiles(directory));
-            const sortedFiles = sortContents(await getFiles(filtersFiles));
+            const filteredFiles = contents.filter(filterSystemFiles(directory));
+            const updatedFiles = await getFiles(filteredFiles);
 
-            setFiles(sortedFiles);
+            setFiles((currentFiles = {}) =>
+              sortContents(
+                updatedFiles,
+                initialOrder || Object.keys(currentFiles)
+              )
+            );
+          } else {
+            setFiles({});
           }
         });
       }
@@ -302,7 +318,20 @@ const useFolder = (
       }
     });
 
-  useEffect(updateFiles, [directory, fs, updateFiles]);
+  useEffect(() => {
+    if (sessionLoaded) {
+      if (!files) {
+        updateFiles(undefined, undefined, sortOrder);
+      } else if (
+        !Object.keys(files).every((file, index) => file === sortOrder?.[index])
+      ) {
+        setSortOrders((currentSortOrder) => ({
+          ...currentSortOrder,
+          [directory]: Object.keys(files),
+        }));
+      }
+    }
+  }, [directory, files, sessionLoaded, setSortOrders, sortOrder, updateFiles]);
 
   useEffect(
     () => () => {
@@ -331,7 +360,7 @@ const useFolder = (
       newPath,
       pasteToFolder,
     },
-    files,
+    files: files || {},
     isLoading,
     updateFiles,
   };

@@ -8,7 +8,18 @@ const sortCaseInsensitive = (
   [b]: [string, Stats]
 ): number => a.localeCompare(b, "en", { sensitivity: "base" });
 
-export const sortContents = (contents: Files): Files => {
+export const sortContents = (contents: Files, sortOrder: string[]): Files => {
+  if (sortOrder.length > 0) {
+    const contentOrder = Object.keys(contents);
+
+    return Object.fromEntries(
+      [
+        ...sortOrder.filter((entry) => contentOrder.includes(entry)),
+        ...contentOrder.filter((entry) => !sortOrder.includes(entry)),
+      ].map((entry) => [entry, contents[entry]])
+    );
+  }
+
   const files: [string, Stats][] = [];
   const folders: [string, Stats][] = [];
 

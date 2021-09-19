@@ -13,7 +13,10 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "fill" | "fit" | "stretch" | "tile" | "center";
 
+export type SortOrders = Record<string, string[]>;
+
 export type SessionData = {
+  sortOrders: SortOrders;
   themeName: ThemeName;
   wallpaperFit: WallpaperFit;
   wallpaperImage: string;
@@ -26,8 +29,10 @@ export type SessionContextState = SessionData & {
   removeFromStack: (id: string) => void;
   sessionLoaded: boolean;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
+  setSortOrders: React.Dispatch<React.SetStateAction<SortOrders>>;
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
   setWallpaper: (image: string, fit: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
+  sortOrders: SortOrders;
   stackOrder: string[];
 };
