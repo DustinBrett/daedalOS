@@ -36,13 +36,14 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     figure {
       align-items: center;
       display: flex;
+      margin-left: 8px;
       min-width: inherit;
       position: relative;
       top: -1px;
 
       img {
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
-        margin: ${({ theme }) => theme.sizes.titleBar.iconMargin};
+        margin-right: ${({ theme }) => theme.sizes.titleBar.iconMarginRight};
         width: ${({ theme }) => theme.sizes.titleBar.iconSize};
       }
 

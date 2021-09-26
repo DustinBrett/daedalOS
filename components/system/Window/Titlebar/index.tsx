@@ -26,6 +26,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const {
     autoSizing,
     componentWindow,
+    hideTitlebarIcon,
     icon,
     lockAspectRatio,
     title,
@@ -53,7 +54,9 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
     >
       <Button as="h1" {...(!disableMaximize ? onClickMaximize : {})}>
         <figure>
-          <Icon src={icon} alt={title} imgSize={16} {...onClickClose} />
+          {!hideTitlebarIcon && (
+            <Icon src={icon} alt={title} imgSize={16} {...onClickClose} />
+          )}
           <figcaption>{title}</figcaption>
         </figure>
       </Button>

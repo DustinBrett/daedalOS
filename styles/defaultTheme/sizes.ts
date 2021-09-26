@@ -49,7 +49,7 @@ const sizes = {
     buttonWidth: "45px",
     fontSize: "12px",
     height: "30px",
-    iconMargin: "0 5px 0 8px",
+    iconMarginRight: "5px",
     iconSize: "16px",
   },
   window: {

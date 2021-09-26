@@ -14,6 +14,7 @@ export type Process = ProcessElements & {
   Component: React.ComponentType<ComponentProcessProps>;
   defaultSize?: Size;
   hasWindow?: boolean;
+  hideTitlebarIcon?: boolean;
   icon: string;
   lockAspectRatio?: boolean;
   maximized?: boolean;

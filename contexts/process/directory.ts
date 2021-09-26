@@ -33,6 +33,7 @@ const processDirectory: Processes = {
       height: 400,
       width: 500,
     },
+    hideTitlebarIcon: true,
     icon: "/System/Icons/photos.png",
     prependTaskbarTitle: true,
     title: "Photos",
