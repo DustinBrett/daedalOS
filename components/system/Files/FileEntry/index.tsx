@@ -22,6 +22,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
+  VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { getFormattedSize } from "utils/functions";
 import useDoubleClick from "utils/useDoubleClick";
@@ -68,7 +69,9 @@ const FileEntry = ({
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
-  const isImageExtension = IMAGE_FILE_EXTENSIONS.has(extname(url));
+  const urlExt = extname(url);
+  const isDynamicIcon =
+    IMAGE_FILE_EXTENSIONS.has(urlExt) || VIDEO_FILE_EXTENSIONS.has(urlExt);
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
@@ -139,7 +142,7 @@ const FileEntry = ({
       ref={buttonRef}
       title={createTooltip()}
       {...useDoubleClick(
-        () => openFile(pid, !isImageExtension ? icon : undefined),
+        () => openFile(pid, !isDynamicIcon ? icon : undefined),
         singleClick
       )}
       {...useFileContextMenu(
