@@ -5,9 +5,15 @@ type VideoSource = {
 
 export type VideoOptions = {
   autoplay: boolean;
+  controlBar: {
+    children: string[];
+    volumePanel: {
+      inline: boolean;
+    };
+  };
   controls?: boolean;
+  inactivityTimeout?: number;
   preload: string;
-  responsive: boolean;
   sources: VideoSource[];
   techOrder?: string[];
   youtube?: {

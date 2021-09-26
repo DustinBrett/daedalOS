@@ -2,8 +2,21 @@ import { extname } from "path";
 
 export const config = {
   autoplay: true,
+  controlBar: {
+    children: [
+      "playToggle",
+      "currentTimeDisplay",
+      "progressControl",
+      "durationDisplay",
+      "volumePanel",
+      "pictureInPictureToggle",
+      "fullscreenToggle",
+    ],
+    volumePanel: {
+      inline: false,
+    },
+  },
   preload: "auto",
-  responsive: true,
 };
 
 export const libs = [
