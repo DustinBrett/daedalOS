@@ -1,9 +1,8 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import {
-  defaultConfig,
   globals,
   saveExtension,
-  zipConfigPath,
+  zipConfigFiles,
 } from "components/apps/JSDOS/config";
 import { addFileToZip, isFileInZip } from "components/apps/JSDOS/zipFunctions";
 import useTitle from "components/system/Window/useTitle";
@@ -17,9 +16,13 @@ import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, cleanUpGlobals } from "utils/functions";
 
 const addJsDosConfig = async (buffer: Buffer, fs: FSModule): Promise<Buffer> =>
-  (await isFileInZip(buffer, zipConfigPath))
-    ? buffer
-    : addFileToZip(buffer, defaultConfig, zipConfigPath, fs);
+  Object.entries(zipConfigFiles).reduce(
+    async (newBuffer, [zipPath, fsPath]) =>
+      (await isFileInZip(await newBuffer, zipPath))
+        ? newBuffer
+        : addFileToZip(await newBuffer, fsPath, zipPath, fs),
+    Promise.resolve(buffer)
+  );
 
 const useDosCI = (
   id: string,
