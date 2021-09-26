@@ -1,3 +1,4 @@
+import { extname } from "path";
 import { stripUnit } from "polished";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
@@ -27,8 +28,32 @@ export const loadScript = (src: string): Promise<Event> =>
     }
   });
 
+export const loadStyle = (href: string): Promise<Event> =>
+  new Promise((resolve, reject) => {
+    const loadedStyles = [...document.querySelectorAll("link")];
+
+    if (loadedStyles.some((link) => link.href.endsWith(href))) {
+      resolve(new Event("Already loaded."));
+    } else {
+      const link = document.createElement("link");
+
+      link.rel = "stylesheet";
+      link.href = href;
+      link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
+      link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
+
+      document.head.appendChild(link);
+    }
+  });
+
 export const loadFiles = async (files: string[]): Promise<Event[]> =>
-  Promise.all(files.map((file) => loadScript(encodeURI(file))));
+  Promise.all(
+    files.map((file) =>
+      extname(file) === ".css"
+        ? loadStyle(encodeURI(file))
+        : loadScript(encodeURI(file))
+    )
+  );
 
 export const pxToNum = (value: string | number = 0): number =>
   Number(stripUnit(value));
