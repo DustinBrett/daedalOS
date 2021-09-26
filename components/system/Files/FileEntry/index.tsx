@@ -51,7 +51,7 @@ const FileEntry = ({
   fileActions,
   fileManagerRef,
   focusedEntries,
-  focusFunctions: { blurEntry, focusEntry },
+  focusFunctions,
   name,
   path,
   renaming,
@@ -60,6 +60,7 @@ const FileEntry = ({
   stats,
   view,
 }: FileEntryProps): JSX.Element => {
+  const { blurEntry, focusEntry } = focusFunctions;
   const { icon, pid, url } = useFileInfo(path, stats.isDirectory());
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
@@ -147,7 +148,7 @@ const FileEntry = ({
         path,
         setRenaming,
         fileActions,
-        focusEntry,
+        focusFunctions,
         focusedEntries
       )}
     >

@@ -2,6 +2,7 @@ import type { ExtensionType } from "components/system/Files/FileEntry/extensions
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
@@ -29,7 +30,7 @@ const useFileContextMenu = (
     extractFiles,
     newShortcut,
   }: FileActions,
-  focusEntry: (entry: string) => void,
+  { blurEntry, focusEntry }: FocusEntryFunctions,
   focusedEntries: string[]
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
@@ -162,6 +163,7 @@ const useFileContextMenu = (
 
   return {
     onContextMenuCapture: (event) => {
+      blurEntry();
       focusEntry(basename(path));
       contextMenu?.(menuItems)(event);
     },
