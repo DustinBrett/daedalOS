@@ -44,6 +44,10 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
 
       img {
         width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
+
+        &:not(:first-of-type) {
+          position: absolute;
+        }
       }
     }
   }

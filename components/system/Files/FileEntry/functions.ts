@@ -121,22 +121,26 @@ export const getInfoWithExtension = (
   extension: string,
   callback: (value: FileInfo) => void
 ): void => {
+  const subIcons: string[] = [];
   const getInfoByFileExtension = (icon?: string): void =>
     callback({
       icon: icon || getIconByFileExtension(extension),
       pid: getProcessByFileExtension(extension),
+      subIcons,
       url: path,
     });
 
   if (extension === SHORTCUT_EXTENSION) {
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      subIcons.push("/System/Icons/shortcut.png");
+
       if (error) {
         getInfoByFileExtension();
       } else {
         const { icon, pid, url } = getShortcutInfo(contents);
         const urlExt = extname(url);
 
-        callback({ icon, pid, url });
+        callback({ icon, pid, subIcons, url });
 
         if (
           IMAGE_FILE_EXTENSIONS.has(urlExt) ||
@@ -145,7 +149,7 @@ export const getInfoWithExtension = (
         ) {
           getInfoWithExtension(fs, url, urlExt, ({ icon: urlIcon }) => {
             if (urlIcon && urlIcon !== icon) {
-              callback({ icon: urlIcon, pid, url });
+              callback({ icon: urlIcon, pid, subIcons, url });
             }
           });
         }

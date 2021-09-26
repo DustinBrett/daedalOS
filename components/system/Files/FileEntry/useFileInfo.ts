@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export type FileInfo = {
   icon: string;
+  subIcons?: string[];
   pid: string;
   url: string;
 };

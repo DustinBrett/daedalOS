@@ -62,7 +62,7 @@ const FileEntry = ({
   view,
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
-  const { icon, pid, url } = useFileInfo(path, stats.isDirectory());
+  const { icon, pid, subIcons, url } = useFileInfo(path, stats.isDirectory());
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
   const { formats } = useTheme();
@@ -156,12 +156,15 @@ const FileEntry = ({
       )}
     >
       <figure>
-        <Icon
-          src={icon}
-          alt={name}
-          moving={pasteList[path] === "move"}
-          {...FileEntryIconSize[view]}
-        />
+        {[icon, ...(subIcons || [])].map((entryIcon) => (
+          <Icon
+            key={entryIcon}
+            src={entryIcon}
+            alt={name}
+            moving={icon === entryIcon && pasteList[path] === "move"}
+            {...FileEntryIconSize[view]}
+          />
+        ))}
         {renaming ? (
           <RenameBox
             name={name}
