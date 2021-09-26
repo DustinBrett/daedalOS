@@ -14,7 +14,6 @@ export type VideoOptions = {
   controls?: boolean;
   inactivityTimeout?: number;
   preload: string;
-  sources: VideoSource[];
   techOrder?: string[];
   youtube?: {
     ytControls: number;
@@ -23,7 +22,10 @@ export type VideoOptions = {
 
 export type VideoPlayer = {
   dispose: () => void;
+  on: (event: string, callback: () => void) => void;
   src: (sources: VideoSource[]) => void;
+  videoHeight: () => number;
+  videoWidth: () => number;
 };
 
 declare global {
