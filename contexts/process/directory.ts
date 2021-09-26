@@ -64,6 +64,12 @@ const processDirectory: Processes = {
     icon: "/System/Icons/v86.png",
     title: "Virtual x86",
   },
+  VideoPlayer: {
+    backgroundColor: "#000",
+    Component: dynamic(() => import("components/apps/VideoPlayer")),
+    icon: "/System/Icons/vlc.png",
+    title: "Video Player",
+  },
   Webamp: {
     Component: dynamic(() => import("components/apps/Webamp")),
     hasWindow: false,

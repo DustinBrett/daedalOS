@@ -19,10 +19,15 @@ const extensions = {
     icon: "jsdos",
     process: ["JSDOS", "FileExplorer"],
   },
+  ".mkv": { process: ["VideoPlayer"] },
   ".mp3": {
     icon: "music",
     process: ["Webamp"],
   },
+  ".mp4": { process: ["VideoPlayer"] },
+  ".ogg": { process: ["VideoPlayer"] },
+  ".ogm": { process: ["VideoPlayer"] },
+  ".ogv": { process: ["VideoPlayer"] },
   ".spl": {
     process: ["Ruffle"],
     type: "FutureSplash File",
@@ -36,6 +41,7 @@ const extensions = {
     process: ["TinyMCE", "MonacoEditor"],
     type: "WYSIWYG HTML File",
   },
+  ".webm": { process: ["VideoPlayer"] },
   ".wsz": {
     icon: "music",
     process: ["Webamp", "FileExplorer"],
