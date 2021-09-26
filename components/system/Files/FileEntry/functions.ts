@@ -5,7 +5,7 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
-import { join } from "path";
+import { extname, join } from "path";
 import {
   EMPTY_BUFFER,
   IMAGE_FILE_EXTENSIONS,
@@ -76,7 +76,7 @@ export const getInfoWithExtension = (
   fs: FSModule,
   path: string,
   extension: string,
-  callback: React.Dispatch<React.SetStateAction<FileInfo>>
+  callback: (value: FileInfo) => void
 ): void => {
   const getInfoByFileExtension = (icon?: string): void =>
     callback({
@@ -90,7 +90,18 @@ export const getInfoWithExtension = (
       if (error) {
         getInfoByFileExtension();
       } else {
-        callback(getShortcutInfo(contents));
+        const { icon, pid, url } = getShortcutInfo(contents);
+        const urlExt = extname(url);
+
+        callback({ icon, pid, url });
+
+        if (IMAGE_FILE_EXTENSIONS.has(urlExt) || urlExt === ".mp3") {
+          getInfoWithExtension(fs, url, urlExt, ({ icon: urlIcon }) => {
+            if (urlIcon && urlIcon !== icon) {
+              callback({ icon: urlIcon, pid, url });
+            }
+          });
+        }
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
