@@ -21,7 +21,7 @@ const extensions = {
   },
   ".mkv": { process: ["VideoPlayer"] },
   ".mp3": {
-    icon: "music",
+    icon: "audio",
     process: ["Webamp"],
   },
   ".mp4": { process: ["VideoPlayer"] },
@@ -43,7 +43,7 @@ const extensions = {
   },
   ".webm": { process: ["VideoPlayer"] },
   ".wsz": {
-    icon: "music",
+    icon: "audio",
     process: ["Webamp", "FileExplorer"],
     type: "Winamp Skin File",
   },
