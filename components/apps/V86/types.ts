@@ -27,6 +27,6 @@ interface V86Constructor {
 
 declare global {
   interface Window {
-    V86Starter?: V86Constructor;
+    V86Starter: V86Constructor;
   }
 }

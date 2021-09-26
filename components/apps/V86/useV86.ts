@@ -61,21 +61,19 @@ const useV86 = (
                 };
               }
 
-              if (window.V86Starter) {
-                const v86 = new window.V86Starter(v86StarterConfig);
+              const v86 = new window.V86Starter(v86StarterConfig);
 
-                v86.add_listener("emulator-loaded", () => {
-                  appendFileToTitle(url);
-                  cleanUpBufferUrl(bufferUrl);
-                  if (v86StarterConfig.initial_state) {
-                    cleanUpBufferUrl(v86StarterConfig.initial_state.url);
-                  }
-                });
+              v86.add_listener("emulator-loaded", () => {
+                appendFileToTitle(url);
+                cleanUpBufferUrl(bufferUrl);
+                if (v86StarterConfig.initial_state) {
+                  cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+                }
+              });
 
-                containerRef.current?.addEventListener("click", v86.lock_mouse);
+              containerRef.current?.addEventListener("click", v86.lock_mouse);
 
-                setEmulator(v86);
-              }
+              setEmulator(v86);
             }
           );
         });
