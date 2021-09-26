@@ -134,7 +134,7 @@ const useFileContextMenu = (
         label: "Open with",
         menu: openWithFiltered.map((id): MenuItem => {
           const { icon, title: label } = processDirectory[id] || {};
-          const action = (): void => openFile(id);
+          const action = (): void => openFile(id, icon);
 
           return { icon, label, action };
         }),
@@ -150,11 +150,13 @@ const useFileContextMenu = (
       });
     }
 
+    const openIcon = isShortcut || extname(url) ? pidIcon : undefined;
+
     menuItems.unshift({
-      icon: isShortcut || extname(url) ? pidIcon : undefined,
+      icon: openIcon,
       label: "Open",
       primary: true,
-      action: () => openFile(pid),
+      action: () => openFile(pid, openIcon),
     });
   }
 

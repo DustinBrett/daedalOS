@@ -19,6 +19,7 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
+  IMAGE_FILE_EXTENSIONS,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
@@ -66,6 +67,7 @@ const FileEntry = ({
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
+  const isImageExtension = IMAGE_FILE_EXTENSIONS.has(extname(url));
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
@@ -135,7 +137,10 @@ const FileEntry = ({
     <Button
       ref={buttonRef}
       title={createTooltip()}
-      {...useDoubleClick(() => openFile(pid), singleClick)}
+      {...useDoubleClick(
+        () => openFile(pid, !isImageExtension ? icon : undefined),
+        singleClick
+      )}
       {...useFileContextMenu(
         url,
         pid,
