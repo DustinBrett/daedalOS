@@ -9,7 +9,7 @@ import {
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { SortBy } from "components/system/Files/FileManager/useSortBy";
+import type { SetSortBy } from "components/system/Files/FileManager/useSortBy";
 import useSortBy from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
@@ -39,7 +39,7 @@ export type FolderActions = {
   addToFolder: () => void;
   newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
   pasteToFolder: () => void;
-  setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
+  setSortBy: SetSortBy;
 };
 
 type File = [string, Buffer];
