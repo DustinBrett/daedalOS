@@ -214,12 +214,17 @@ export const filterSystemFiles =
   (file: string): boolean =>
     !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);
 
-export const getLineCount = (
+type WrapData = {
+  lines: string[];
+  width: number;
+};
+
+export const getTextWrapData = (
   text: string,
   fontSize: string,
   fontFamily: string,
   maxWidth: number
-): number => {
+): WrapData => {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext(
     "2d",
@@ -229,12 +234,15 @@ export const getLineCount = (
 
   context.font = `${fontSize} ${fontFamily}`;
 
-  if (context.measureText(text).width > maxWidth) {
+  const { width: totalWidth } = context.measureText(text);
+
+  if (totalWidth > maxWidth) {
     [...text].forEach((character) => {
       const lineCount = lines.length - 1;
       const lineText = `${lines[lineCount]}${character}`;
+      const { width: lineWidth } = context.measureText(lineText);
 
-      if (context.measureText(lineText).width > maxWidth) {
+      if (lineWidth > maxWidth) {
         lines.push(character);
       } else {
         lines[lineCount] = lineText;
@@ -242,5 +250,5 @@ export const getLineCount = (
     });
   }
 
-  return lines.length;
+  return { lines, width: Math.min(maxWidth, totalWidth) };
 };

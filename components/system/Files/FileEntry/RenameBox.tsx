@@ -1,4 +1,4 @@
-import { getLineCount } from "components/system/Files/FileEntry/functions";
+import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import { haltEvent } from "components/system/Files/FileManager/functions";
 import StyledRenameBox from "components/system/Files/Views/StyledRenameBox";
 import { extname } from "path";
@@ -16,16 +16,21 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
   const { formats, sizes } = useTheme();
-  const updateRows = useCallback(
+  const updateDimensions = useCallback(
     (text: string): void => {
-      const lines = getLineCount(
+      const textPadding = sizes.fileEntry.renamePadding * 2 + 2;
+      const { lines, width } = getTextWrapData(
         text,
         sizes.fileEntry.fontSize,
         formats.systemFont,
-        sizes.fileEntry.renameWidth - sizes.fileEntry.renamePadding * 2
+        sizes.fileEntry.renameWidth - textPadding
       );
 
-      inputRef.current?.setAttribute("rows", lines.toString());
+      inputRef.current?.setAttribute("rows", lines.length.toString());
+      inputRef.current?.setAttribute(
+        "style",
+        `width: ${Math.ceil(width + textPadding)}px`
+      );
     },
     [
       formats.systemFont,
@@ -38,18 +43,24 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   useEffect(() => {
     inputRef.current?.focus(PREVENT_SCROLL);
     inputRef.current?.setSelectionRange(0, name.length - extname(name).length);
-    updateRows(name);
-  }, [name, updateRows]);
+    updateDimensions(name);
+  }, [name, updateDimensions]);
 
   return (
     <StyledRenameBox
       defaultValue={name}
       onBlurCapture={saveRename}
       onClick={haltEvent}
-      onKeyDown={({ key }) => key === "Enter" && saveRename()}
+      onKeyDown={({ key, target }) => {
+        if (key === "Enter") {
+          saveRename();
+        } else if (key.length === 1 && target instanceof HTMLTextAreaElement) {
+          updateDimensions(`${target.value}${key}`);
+        }
+      }}
       onKeyUp={(event) => {
         if (event.target instanceof HTMLTextAreaElement) {
-          updateRows(event.target.value);
+          updateDimensions(event.target.value);
         }
 
         haltEvent(event);
