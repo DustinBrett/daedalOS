@@ -22,6 +22,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
+  SHORTCUT_ICON,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { getFormattedSize } from "utils/functions";
@@ -32,6 +33,7 @@ type FileEntryProps = {
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   focusedEntries: string[];
   focusFunctions: FocusEntryFunctions;
+  hideShortcutIcon?: boolean;
   name: string;
   path: string;
   renaming: boolean;
@@ -53,6 +55,7 @@ const FileEntry = ({
   fileManagerRef,
   focusedEntries,
   focusFunctions,
+  hideShortcutIcon,
   name,
   path,
   renaming,
@@ -72,6 +75,9 @@ const FileEntry = ({
   const urlExt = extname(url);
   const isDynamicIcon =
     IMAGE_FILE_EXTENSIONS.has(urlExt) || VIDEO_FILE_EXTENSIONS.has(urlExt);
+  const filteredSubIcons = hideShortcutIcon
+    ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
+    : subIcons;
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
@@ -156,7 +162,7 @@ const FileEntry = ({
       )}
     >
       <figure>
-        {[icon, ...(subIcons || [])].map((entryIcon) => (
+        {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
           <Icon
             key={entryIcon}
             src={entryIcon}

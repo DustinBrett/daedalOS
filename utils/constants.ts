@@ -64,6 +64,8 @@ export const SHORTCUT_APPEND = " - Shortcut";
 
 export const SHORTCUT_EXTENSION = ".url";
 
+export const SHORTCUT_ICON = "/System/Icons/shortcut.png";
+
 export const SYSTEM_FILES = new Set(["desktop.ini"]);
 
 export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
