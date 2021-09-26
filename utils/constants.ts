@@ -49,6 +49,8 @@ export const ONE_TIME_PASSIVE_EVENT = {
 
 export const PREVENT_SCROLL = { preventScroll: true };
 
+export const PREVIEW_FRAME_SECOND = 3;
+
 export const PROCESS_DELIMITER = "__";
 
 export const SAVE_PATH = "/Users/Public/Snaphosts";
@@ -68,3 +70,12 @@ export const TRANSITIONS_IN_MILLISECONDS = {
   START_MENU: 400,
   WINDOW: 250,
 };
+
+export const VIDEO_FILE_EXTENSIONS = new Set([
+  ".mkv",
+  ".mp4",
+  ".ogg",
+  ".ogm",
+  ".ogv",
+  ".webm",
+]);
