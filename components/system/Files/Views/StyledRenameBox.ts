@@ -9,12 +9,13 @@ const StyledRenameBox = styled.textarea.attrs({
   font-family: inherit;
   font-size: 11.5px;
   margin-bottom: 2px;
-  padding: 1px 5px;
+  overflow: hidden;
+  padding: ${({ theme }) => `1px ${theme.sizes.fileEntry.renamePadding}px`};
   position: relative;
   resize: none;
   text-align: center;
   top: 2px;
-  width: 70px;
+  width: ${({ theme }) => `${theme.sizes.fileEntry.renameWidth}px`};
 `;
 
 export default StyledRenameBox;

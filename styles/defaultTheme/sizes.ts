@@ -9,6 +9,8 @@ const sizes = {
   fileEntry: {
     fontSize: "12px",
     iconSize: "48px",
+    renamePadding: 5,
+    renameWidth: 75,
   },
   fileManager: {
     columnGap: "1px",

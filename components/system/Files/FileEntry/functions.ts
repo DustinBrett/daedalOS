@@ -176,3 +176,37 @@ export const filterSystemFiles =
   (directory: string) =>
   (file: string): boolean =>
     !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);
+
+export const getLineCount = (
+  text: string,
+  fontSize: string,
+  fontFamily: string,
+  maxWidth: number
+): number => {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d", {
+    alpha: false,
+    desynchronized: true,
+  }) as CanvasRenderingContext2D;
+
+  context.font = `${fontSize} ${fontFamily}`;
+
+  if (context.measureText(text).width > maxWidth) {
+    const lines = [""];
+
+    [...text].forEach((character) => {
+      const lineCount = lines.length - 1;
+      const lineText = `${lines[lineCount]}${character}`;
+
+      if (context.measureText(lineText).width > maxWidth) {
+        lines.push(character);
+      } else {
+        lines[lineCount] = lineText;
+      }
+    });
+
+    return lines.length;
+  }
+
+  return 1;
+};

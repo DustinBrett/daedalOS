@@ -11,7 +11,12 @@ const Home = (): React.ReactElement => {
 
   return (
     <Desktop>
-      <FileManager url="/Users/Public/Desktop" view="icon" hideLoading />
+      <FileManager
+        url="/Users/Public/Desktop"
+        view="icon"
+        hideLoading
+        hideScrolling
+      />
       <Taskbar />
       <AppsLoader />
     </Desktop>

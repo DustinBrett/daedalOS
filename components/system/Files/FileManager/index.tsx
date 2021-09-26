@@ -17,6 +17,7 @@ import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 type FileManagerProps = {
   closing?: boolean;
   hideLoading?: boolean;
+  hideScrolling?: boolean;
   url: string;
   view: FileManagerViewNames;
 };
@@ -24,6 +25,7 @@ type FileManagerProps = {
 const FileManager = ({
   closing,
   hideLoading,
+  hideScrolling,
   url,
   view,
 }: FileManagerProps): JSX.Element => {
@@ -60,6 +62,7 @@ const FileManager = ({
   ) : (
     <StyledFileManager
       ref={fileManagerRef}
+      scrollable={!hideScrolling}
       selecting={isSelecting}
       {...selectionEvents}
       {...fileDrop}

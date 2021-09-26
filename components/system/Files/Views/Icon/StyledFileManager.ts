@@ -14,6 +14,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   grid-template-rows: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryHeight})`};
   height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+  overflow: ${({ scrollable }) => (scrollable ? undefined : "hidden")};
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
   pointer-events: ${({ selecting }) => (selecting ? "auto" : undefined)};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
