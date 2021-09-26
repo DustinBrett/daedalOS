@@ -1,6 +1,7 @@
 import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
 import {
+  BASE_2D_CONTEXT_OPTIONS,
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
@@ -17,7 +18,7 @@ const renderFrame = (
       if (height && width) {
         const { data: pixelData } =
           canvas
-            .getContext("2d", { alpha: false, desynchronized: true })
+            .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
             ?.getImageData(0, 0, width, height) || {};
 
         if (pixelData?.some(Boolean)) {
