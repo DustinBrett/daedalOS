@@ -1,5 +1,6 @@
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
+import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
@@ -51,7 +52,7 @@ const useFolderContextMenu = (
       menu: [
         {
           label: "Folder",
-          icon: "/System/Icons/folder.png",
+          icon: FOLDER_ICON,
           action: () => newPath(NEW_FOLDER, undefined, true),
         },
         MENU_SEPERATOR,

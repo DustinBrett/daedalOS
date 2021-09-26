@@ -1,3 +1,4 @@
+import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
 import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
 
@@ -5,7 +6,7 @@ const processDirectory: Processes = {
   FileExplorer: {
     backgroundColor: "#202020",
     Component: dynamic(() => import("components/apps/FileExplorer")),
-    icon: "/System/Icons/folder.png",
+    icon: FOLDER_ICON,
     title: "File Explorer",
   },
   JSDOS: {

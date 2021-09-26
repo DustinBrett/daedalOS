@@ -150,7 +150,7 @@ const useFileContextMenu = (
 
       menuItems.unshift({
         label: `Open ${isFolder ? "folder" : "file"} location`,
-        action: () => open("FileExplorer", dirname(url)),
+        action: () => open("FileExplorer", dirname(url), ""),
       });
     }
 

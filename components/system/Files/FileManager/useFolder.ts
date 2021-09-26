@@ -54,6 +54,9 @@ type Folder = {
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };
 
+export const FOLDER_ICON = "/System/Icons/folder.png";
+export const UNKNOWN_ICON = "/System/Icons/unknown.png";
+
 const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
@@ -260,7 +263,7 @@ const useFolder = (
         BaseURL: process,
         IconFile: pathExtension
           ? getIconByFileExtension(pathExtension)
-          : "/System/Icons/folder.png",
+          : FOLDER_ICON,
         URL: path,
       },
       {

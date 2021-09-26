@@ -3,6 +3,7 @@ import {
   maximizeProcess,
   minimizeProcess,
   openProcess,
+  setIcon,
   setProcessElement,
   setTitle,
   setUrl,
@@ -12,6 +13,7 @@ import { useCallback, useState } from "react";
 
 export type ProcessContextState = {
   close: (id: string, closing?: boolean) => void;
+  icon: (id: string, newIcon: string) => void;
   linkElement: (
     id: string,
     name: keyof ProcessElements,
@@ -31,6 +33,10 @@ const useProcessContextState = (): ProcessContextState => {
     (id: string, closing?: boolean) => setProcesses(closeProcess(id, closing)),
     []
   );
+  const icon = useCallback(
+    (id: string, newIcon: string) => setProcesses(setIcon(id, newIcon)),
+    []
+  );
   const maximize = useCallback(
     (id: string) => setProcesses(maximizeProcess(id)),
     []
@@ -40,8 +46,8 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, url: string, icon?: string) =>
-      setProcesses(openProcess(id, url, icon)),
+    (id: string, url: string, initialIcon?: string) =>
+      setProcesses(openProcess(id, url, initialIcon)),
     []
   );
   const linkElement = useCallback(
@@ -60,6 +66,7 @@ const useProcessContextState = (): ProcessContextState => {
 
   return {
     close,
+    icon,
     linkElement,
     maximize,
     minimize,
