@@ -12,6 +12,7 @@ import {
   MP3_MIME_TYPE,
   SHORTCUT_EXTENSION,
   SYSTEM_FILES,
+  SYSTEM_PATHS,
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
 
@@ -20,6 +21,12 @@ type InternetShortcut = {
     BaseURL: string;
     IconFile: string;
     URL: string;
+  };
+};
+
+type ShellClassInfo = {
+  ShellClassInfo: {
+    IconFile: string;
   };
 };
 
@@ -64,13 +71,30 @@ const getShortcutInfo = (contents: Buffer): FileInfo => {
 };
 
 export const getInfoWithoutExtension = (
+  fs: FSModule,
   path: string,
-  isDirectory: boolean
-): FileInfo => ({
-  icon: `/System/Icons/${isDirectory ? "folder.png" : "unknown.png"}`,
-  pid: isDirectory ? "FileExplorer" : "",
-  url: path,
-});
+  isDirectory: boolean,
+  callback: (value: FileInfo) => void
+): void => {
+  if (isDirectory) {
+    const setFolderInfo = (icon: string): void =>
+      callback({ icon, pid: "FileExplorer", url: path });
+
+    setFolderInfo("/System/Icons/folder.png");
+
+    fs.readFile(join(path, "desktop.ini"), (error, contents = EMPTY_BUFFER) => {
+      if (!error) {
+        const {
+          ShellClassInfo: { IconFile = "" },
+        } = ini.parse(contents.toString()) as ShellClassInfo;
+
+        if (IconFile) setFolderInfo(IconFile);
+      }
+    });
+  } else {
+    callback({ icon: "/System/Icons/unknown.png", pid: "", url: "" });
+  }
+};
 
 export const getInfoWithExtension = (
   fs: FSModule,
@@ -110,7 +134,7 @@ export const getInfoWithExtension = (
       if (!error) getInfoByFileExtension(bufferToUrl(contents));
     });
   } else if (extension === ".mp3") {
-    getInfoByFileExtension("/System/Icons/music.png");
+    getInfoByFileExtension("/System/Icons/audio.png");
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) {
         import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
@@ -137,4 +161,4 @@ export const getInfoWithExtension = (
 export const filterSystemFiles =
   (directory: string) =>
   (file: string): boolean =>
-    !SYSTEM_FILES.has(join(directory, file));
+    !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);

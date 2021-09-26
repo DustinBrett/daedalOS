@@ -57,7 +57,9 @@ export const SHORTCUT_APPEND = " - Shortcut";
 
 export const SHORTCUT_EXTENSION = ".url";
 
-export const SYSTEM_FILES = new Set(["/.deletedFiles.log"]);
+export const SYSTEM_FILES = new Set(["desktop.ini"]);
+
+export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
 export const TEMP_PATH = "/Users/Public/Temp";
 

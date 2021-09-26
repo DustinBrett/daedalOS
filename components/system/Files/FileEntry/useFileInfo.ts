@@ -25,7 +25,7 @@ const useFileInfo = (path: string, isDirectory: boolean): FileInfo => {
       const extension = extname(path).toLowerCase();
 
       if (!extension || isDirectory) {
-        setInfo(getInfoWithoutExtension(path, isDirectory));
+        getInfoWithoutExtension(fs, path, isDirectory, setInfo);
       } else {
         getInfoWithExtension(fs, path, extension, setInfo);
       }
