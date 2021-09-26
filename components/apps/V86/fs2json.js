@@ -4,8 +4,14 @@
   unicorn/no-process-exit
 */
 
-const { readdir, readlink, stat, writeFile } = require("fs");
-const { basename, relative, join, resolve: resolvePath } = require("path");
+const { mkdir, readdir, readlink, stat, writeFile } = require("fs");
+const {
+  basename,
+  dirname,
+  relative,
+  join,
+  resolve: resolvePath,
+} = require("path");
 
 const VERSION = 3;
 
@@ -110,14 +116,16 @@ const fs2json = (dir) => {
   return walk(dir).then((data) => {
     console.info("Creating json ...");
 
-    writeFile(
-      outputPath,
-      JSON.stringify({
-        fsroot: data,
-        version: VERSION,
-        size: totalSize,
-      }),
-      () => process.exit()
+    mkdir(dirname(outputPath), { recursive: true }, () =>
+      writeFile(
+        outputPath,
+        JSON.stringify({
+          fsroot: data,
+          version: VERSION,
+          size: totalSize,
+        }),
+        () => process.exit()
+      )
     );
   });
 };
