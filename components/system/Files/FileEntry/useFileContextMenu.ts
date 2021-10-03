@@ -160,13 +160,11 @@ const useFileContextMenu = (
       });
     }
 
-    const openIcon = isShortcut || extname(url) ? pidIcon : undefined;
-
     menuItems.unshift({
-      icon: openIcon,
+      icon: pidIcon,
       label: "Open",
       primary: true,
-      action: () => openFile(pid, openIcon),
+      action: () => openFile(pid, pidIcon),
     });
   }
 
