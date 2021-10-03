@@ -198,7 +198,7 @@ const FileEntry = ({
                   name,
                   sizes.fileEntry.fontSize,
                   formats.systemFont,
-                  sizes.fileEntry.maxTextDisplayLength
+                  sizes.fileEntry.maxTextDisplayWidth
                 )}
           </figcaption>
         )}
