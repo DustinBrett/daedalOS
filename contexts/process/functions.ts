@@ -6,7 +6,7 @@ import type {
 } from "contexts/process/types";
 import { PREVENT_SCROLL, PROCESS_DELIMITER } from "utils/constants";
 
-export const setProcessSettings =
+const setProcessSettings =
   (processId: string, settings: Partial<Process>) =>
   (currentProcesses: Processes): Processes => {
     const { ...newProcesses } = currentProcesses;

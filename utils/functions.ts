@@ -10,7 +10,7 @@ export const bufferToUrl = (buffer: Buffer): string =>
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
-export const loadScript = (src: string): Promise<Event> =>
+const loadScript = (src: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
 
@@ -28,7 +28,7 @@ export const loadScript = (src: string): Promise<Event> =>
     }
   });
 
-export const loadStyle = (href: string): Promise<Event> =>
+const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedStyles = [...document.querySelectorAll("link")];
 
