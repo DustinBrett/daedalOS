@@ -5,6 +5,7 @@ out
 public/.index/fs.*
 public/Users/Public/**
 
+!public/Users/**/desktop.ini
 !public/Users/Public/Desktop
 !public/Users/Public/Desktop/My PC.url
 !public/Users/Public/Desktop/Public.url
@@ -16,4 +17,3 @@ public/Users/Public/**
 !public/Users/Public/Start Menu
 !public/Users/Public/Start Menu/*.url
 !public/Users/Public/Videos
-!public/Users/Public/*/desktop.ini
