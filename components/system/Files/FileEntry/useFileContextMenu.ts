@@ -172,8 +172,10 @@ const useFileContextMenu = (
 
   return {
     onContextMenuCapture: (event) => {
-      if (!isFocusedEntry) blurEntry();
-      focusEntry(baseName);
+      if (!isFocusedEntry) {
+        blurEntry();
+        focusEntry(baseName);
+      }
       contextMenu?.(menuItems)(event);
     },
   };
