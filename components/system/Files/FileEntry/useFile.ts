@@ -1,4 +1,5 @@
 import { useProcesses } from "contexts/process";
+import processDirectory from "contexts/process/directory";
 import { createPid } from "contexts/process/functions";
 import { useSession } from "contexts/session";
 
@@ -10,12 +11,15 @@ const useFile = (url: string): UseFile => {
 
   return (pid: string, icon?: string) => {
     const id = createPid(pid, url);
+    const { [id]: process } = processes;
 
-    if (processes[id]) {
-      if (processes[id].minimized) minimize(id);
+    if (process) {
+      if (process.minimized) minimize(id);
       setForegroundId(id);
     } else {
-      open(pid, url, icon);
+      const { singleton, icon: processIcon } = processDirectory[pid] || {};
+
+      open(pid, url, singleton ? processIcon : icon);
     }
   };
 };
