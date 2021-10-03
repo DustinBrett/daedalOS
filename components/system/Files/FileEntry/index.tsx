@@ -1,5 +1,6 @@
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
+import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
@@ -44,11 +45,17 @@ type FileEntryProps = {
   view: FileManagerViewNames;
 };
 
-const truncateName = (name: string): string => {
-  const maxLength = 15;
-  const useFullName = name.length <= maxLength;
+const truncateName = (
+  name: string,
+  fontSize: string,
+  fontFamily: string,
+  maxWidth: number
+): string => {
+  const { lines } = getTextWrapData(name, fontSize, fontFamily, maxWidth);
 
-  return useFullName ? name : `${name.slice(0, maxLength)}...`;
+  return lines.length > 2
+    ? `${lines.slice(0, 2).join("").slice(0, -3)}...`
+    : name;
 };
 
 const FileEntry = ({
@@ -70,7 +77,7 @@ const FileEntry = ({
   const { icon, pid, subIcons, url } = useFileInfo(path, stats.isDirectory());
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
-  const { formats } = useTheme();
+  const { formats, sizes } = useTheme();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
@@ -185,7 +192,14 @@ const FileEntry = ({
           />
         ) : (
           <figcaption>
-            {isOnlyFocusedEntry ? name : truncateName(name)}
+            {isOnlyFocusedEntry
+              ? name
+              : truncateName(
+                  name,
+                  sizes.fileEntry.fontSize,
+                  formats.systemFont,
+                  sizes.fileEntry.maxTextDisplayLength
+                )}
           </figcaption>
         )}
       </figure>

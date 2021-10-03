@@ -9,6 +9,7 @@ const sizes = {
   fileEntry: {
     fontSize: "12px",
     iconSize: "48px",
+    maxTextDisplayLength: 68,
     renamePadding: 5,
     renameWidth: 75,
   },
