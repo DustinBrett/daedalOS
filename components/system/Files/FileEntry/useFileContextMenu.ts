@@ -64,7 +64,7 @@ const useFileContextMenu = (
   const defaultProcess =
     extensionProcess || getProcessByFileExtension(urlExtension);
 
-  if (defaultProcess || ((!pathExtension || isShortcut) && !urlExtension)) {
+  if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
     menuItems.push({
       label: "Create shortcut",
       action: () =>
@@ -82,7 +82,7 @@ const useFileContextMenu = (
     { label: "Rename", action: () => setRenaming(baseName) }
   );
 
-  if (!isShortcut && url && (pathExtension || pid !== "FileExplorer")) {
+  if (url && (pathExtension || pid !== "FileExplorer")) {
     menuItems.unshift(MENU_SEPERATOR);
 
     if (MOUNTABLE_EXTENSIONS.has(pathExtension)) {

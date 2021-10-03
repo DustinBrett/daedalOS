@@ -177,9 +177,7 @@ const useFolder = (
   };
   const getFile = (path: string): Promise<File | void> =>
     new Promise((resolve) => {
-      if (extname(path) === SHORTCUT_EXTENSION) {
-        resolve();
-      } else if (files?.[basename(path)]?.isDirectory()) {
+      if (files?.[basename(path)]?.isDirectory()) {
         resolve();
       } else {
         fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
