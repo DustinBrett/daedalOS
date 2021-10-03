@@ -40,6 +40,7 @@ type FileEntryProps = {
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
   stats: Stats;
+  systemShortcut: boolean;
   view: FileManagerViewNames;
 };
 
@@ -62,6 +63,7 @@ const FileEntry = ({
   selectionRect,
   setRenaming,
   stats,
+  systemShortcut,
   view,
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
@@ -75,9 +77,10 @@ const FileEntry = ({
   const urlExt = extname(url);
   const isDynamicIcon =
     IMAGE_FILE_EXTENSIONS.has(urlExt) || VIDEO_FILE_EXTENSIONS.has(urlExt);
-  const filteredSubIcons = hideShortcutIcon
-    ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
-    : subIcons;
+  const filteredSubIcons =
+    hideShortcutIcon || systemShortcut
+      ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
+      : subIcons;
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
 
