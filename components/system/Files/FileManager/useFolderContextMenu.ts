@@ -10,6 +10,9 @@ const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 
+const richTextDocumentIcon = getIconByFileExtension(".whtml");
+const textDocumentIcon = getIconByFileExtension(".txt");
+
 const useFolderContextMenu = (
   url: string,
   { addToFolder, newPath, pasteToFolder, setSortBy }: FolderActions
@@ -58,12 +61,12 @@ const useFolderContextMenu = (
         MENU_SEPERATOR,
         {
           label: "Rich Text Document",
-          icon: getIconByFileExtension(".whtml"),
+          icon: richTextDocumentIcon,
           action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
         },
         {
           label: "Text Document",
-          icon: getIconByFileExtension(".txt"),
+          icon: textDocumentIcon,
           action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
         },
       ],
