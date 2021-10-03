@@ -24,6 +24,7 @@ import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
+  INVALID_FILE_CHARACTERS,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
@@ -202,7 +203,7 @@ const useFolder = (
       }
     });
   const renameFile = (path: string, name?: string): void => {
-    const newName = name?.trim();
+    const newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
 
     if (newName) {
       const newPath = join(
