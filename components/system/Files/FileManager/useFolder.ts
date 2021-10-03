@@ -8,6 +8,7 @@ import {
 } from "components/system/Files/FileEntry/functions";
 import type { FileStats } from "components/system/Files/FileManager/functions";
 import {
+  findPathsRecursive,
   iterateFileName,
   sortContents,
 } from "components/system/Files/FileManager/functions";
@@ -20,7 +21,7 @@ import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
 import type { Stats } from "fs";
 import ini from "ini";
-import { basename, dirname, extname, isAbsolute, join } from "path";
+import { basename, dirname, extname, isAbsolute, join, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
@@ -46,7 +47,7 @@ export type FolderActions = {
   setSortBy: SetSortBy;
 };
 
-type File = [string, Buffer];
+type ZipFile = [string, Buffer];
 
 export type Files = Record<string, Stats>;
 
@@ -164,7 +165,6 @@ const useFolder = (
       })
     );
   };
-
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
 
@@ -175,31 +175,30 @@ const useFolder = (
 
     setDownloadLink(link.href);
   };
-  const getFile = (path: string): Promise<File | void> =>
-    new Promise((resolve) => {
-      if (files?.[basename(path)]?.isDirectory()) {
-        resolve();
-      } else {
-        fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
-          resolve([basename(path), contents])
-        );
-      }
-    });
+  const getFile = (path: string): Promise<ZipFile> =>
+    new Promise((resolve) =>
+      fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
+        resolve([relative(directory, path), contents])
+      )
+    );
   const downloadFiles = (paths: string[]): Promise<void> =>
-    Promise.all(paths.map((path) => getFile(path))).then((filePaths) => {
-      const zipFiles = filePaths.filter(Boolean) as File[];
+    findPathsRecursive(fs, paths).then((allPaths) =>
+      Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
+        const zipFiles = filePaths.filter(Boolean) as ZipFile[];
 
-      if (zipFiles.length === 1) {
-        const [[path, contents]] = zipFiles;
+        if (zipFiles.length === 1) {
+          const [[path, contents]] = zipFiles;
 
-        createLink(contents, basename(path));
-      } else {
-        zip(
-          Object.fromEntries(zipFiles) as AsyncZippable,
-          (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
-        );
-      }
-    });
+          createLink(contents, basename(path));
+        } else {
+          zip(
+            Object.fromEntries(zipFiles) as AsyncZippable,
+            (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
+          );
+        }
+      })
+    );
+
   const renameFile = (path: string, name?: string): void => {
     const newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
 
@@ -307,19 +306,21 @@ const useFolder = (
     }
   };
   const archiveFiles = (paths: string[]): Promise<void> =>
-    Promise.all(paths.map((path) => getFile(path))).then((filePaths) => {
-      const zipFiles = filePaths.filter(Boolean) as File[];
+    findPathsRecursive(fs, paths).then((allPaths) =>
+      Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
+        const zipFiles = filePaths.filter(Boolean) as ZipFile[];
 
-      zip(
-        Object.fromEntries(zipFiles) as AsyncZippable,
-        (_zipError, newZipFile) => {
-          newPath(
-            `${basename(directory) || "archive"}.zip`,
-            Buffer.from(newZipFile)
-          );
-        }
-      );
-    });
+        zip(
+          Object.fromEntries(zipFiles) as AsyncZippable,
+          (_zipError, newZipFile) => {
+            newPath(
+              `${basename(directory) || "archive"}.zip`,
+              Buffer.from(newZipFile)
+            );
+          }
+        );
+      })
+    );
   const extractFiles = (path: string): void =>
     fs?.readFile(path, (readError, zipContents = EMPTY_BUFFER) => {
       if (!readError) {

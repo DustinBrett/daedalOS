@@ -1,7 +1,8 @@
+import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { Stats } from "fs";
-import { basename, extname } from "path";
+import { basename, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export type FileStats = [string, Stats];
@@ -124,3 +125,31 @@ export const handleFileInputEvent = (
     filePaths.forEach((path) => callback(path));
   }
 };
+
+export const findPathsRecursive = (
+  fs: FSModule | undefined,
+  paths: string[]
+): Promise<string[]> =>
+  new Promise((resolve) =>
+    Promise.all(
+      paths.map(
+        (path): Promise<string[]> =>
+          new Promise((pathResolve) =>
+            fs?.stat(path, (_statError, stats) => {
+              if (stats?.isDirectory()) {
+                fs?.readdir(path, (_readError, files = []) =>
+                  pathResolve(
+                    findPathsRecursive(
+                      fs,
+                      files.map((file) => join(path, file))
+                    )
+                  )
+                );
+              } else {
+                pathResolve([path]);
+              }
+            })
+          )
+      )
+    ).then((newPaths) => resolve(newPaths.flat()))
+  );

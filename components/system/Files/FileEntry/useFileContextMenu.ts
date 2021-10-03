@@ -82,7 +82,7 @@ const useFileContextMenu = (
     { label: "Rename", action: () => setRenaming(baseName) }
   );
 
-  if (url && (pathExtension || pid !== "FileExplorer")) {
+  if (url) {
     menuItems.unshift(MENU_SEPERATOR);
 
     if (MOUNTABLE_EXTENSIONS.has(pathExtension)) {
