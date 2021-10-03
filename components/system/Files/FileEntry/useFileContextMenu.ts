@@ -64,7 +64,7 @@ const useFileContextMenu = (
   const defaultProcess =
     extensionProcess || getProcessByFileExtension(urlExtension);
 
-  if (defaultProcess || (!pathExtension && !urlExtension)) {
+  if (defaultProcess || ((!pathExtension || isShortcut) && !urlExtension)) {
     menuItems.push({
       label: "Create shortcut",
       action: () =>
