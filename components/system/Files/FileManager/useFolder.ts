@@ -141,24 +141,29 @@ const useFolder = (
     },
     [directory, fs, getFiles]
   );
-  const deleteFile = (path: string): Promise<void> =>
-    new Promise((resolve) => {
-      const baseName = basename(path);
-      const updateCurrentFolder = (): void => {
-        updateFolder(directory, "", baseName);
-        resolve();
-      };
+  const deleteFile = (path: string, updatePath = true): Promise<void> => {
+    const updateDirectory = (): void => {
+      if (updatePath) updateFolder(directory, undefined, basename(path));
+    };
 
-      if (files?.[baseName]?.isDirectory()) {
-        fs?.readdir(path, (_error, contents = []) =>
-          Promise.all(
-            contents.map((entry) => deleteFile(join(path, entry)))
-          ).then(() => fs.rmdir(path, updateCurrentFolder))
-        );
-      } else {
-        fs?.unlink(path, updateCurrentFolder);
-      }
-    });
+    return new Promise((resolve) =>
+      fs?.unlink(path, (unlinkError) => {
+        if (unlinkError?.code === "EISDIR") {
+          fs?.readdir(path, (_error, contents = []) =>
+            Promise.all(
+              contents.map((entry) => deleteFile(join(path, entry), false))
+            )
+              .then(() => fs.rmdir(path, updateDirectory))
+              .finally(resolve)
+          );
+        } else {
+          updateDirectory();
+          resolve();
+        }
+      })
+    );
+  };
+
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
 
