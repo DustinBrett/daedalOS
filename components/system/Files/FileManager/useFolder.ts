@@ -1,4 +1,7 @@
-import type { BFSOneArgCallback } from "browserfs/dist/node/core/file_system";
+import type {
+  BFSCallback,
+  BFSOneArgCallback,
+} from "browserfs/dist/node/core/file_system";
 import {
   filterSystemFiles,
   getIconByFileExtension,
@@ -17,7 +20,7 @@ import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
 import type { Stats } from "fs";
 import ini from "ini";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
@@ -218,51 +221,60 @@ const useFolder = (
     buffer?: Buffer,
     rename = false,
     iteration = 0
-  ): void => {
-    const isInternal = !buffer && dirname(name) !== ".";
-    const baseName = isInternal ? basename(name) : name;
-    const uniqueName = !iteration
-      ? baseName
-      : iterateFileName(baseName, iteration);
-    const fullNewPath = join(directory, uniqueName);
+  ): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const isInternal = !buffer && isAbsolute(name);
+      const baseName = isInternal ? basename(name) : name;
+      const uniqueName = !iteration
+        ? baseName
+        : iterateFileName(baseName, iteration);
+      const fullNewPath = join(directory, uniqueName);
 
-    if (isInternal) {
-      if (name !== fullNewPath) {
-        fs?.exists(fullNewPath, (exists) => {
-          if (exists) {
-            newPath(name, buffer, rename, iteration + 1);
-          } else {
-            fs.rename(name, fullNewPath, () => {
-              updateFolder(directory, uniqueName);
-              updateFolder(dirname(name), "", name);
-              blurEntry();
-              focusEntry(uniqueName);
-            });
-          }
-        });
-      }
-    } else {
-      const checkWrite: BFSOneArgCallback = (error) => {
-        if (!error) {
-          updateFolder(directory, uniqueName);
-
-          if (rename) {
-            setRenaming(uniqueName);
-          } else {
-            focusEntry(uniqueName);
-          }
-        } else if (error.code === "EEXIST") {
-          newPath(name, buffer, rename, iteration + 1);
+      if (isInternal) {
+        if (name !== fullNewPath) {
+          fs?.exists(fullNewPath, (exists) => {
+            if (exists) {
+              newPath(name, buffer, rename, iteration + 1).then(resolve);
+            } else {
+              fs.rename(name, fullNewPath, () => {
+                updateFolder(directory, uniqueName);
+                updateFolder(dirname(name), "", name);
+                blurEntry();
+                focusEntry(uniqueName);
+                resolve(uniqueName);
+              });
+            }
+          });
         }
-      };
-
-      if (buffer) {
-        fs?.writeFile(fullNewPath, buffer, { flag: "wx" }, checkWrite);
       } else {
-        fs?.mkdir(fullNewPath, { flag: "wx" }, checkWrite);
+        const checkWrite: BFSOneArgCallback = (error) => {
+          if (!error) {
+            if (!uniqueName.includes("/")) {
+              updateFolder(directory, uniqueName);
+
+              if (rename) {
+                setRenaming(uniqueName);
+              } else {
+                focusEntry(uniqueName);
+              }
+            }
+
+            resolve(uniqueName);
+          } else if (error.code === "EEXIST") {
+            newPath(name, buffer, rename, iteration + 1).then(resolve);
+          } else {
+            reject();
+          }
+        };
+
+        if (buffer) {
+          fs?.writeFile(fullNewPath, buffer, { flag: "wx" }, checkWrite);
+        } else {
+          fs?.mkdir(fullNewPath, { flag: "wx" }, checkWrite);
+        }
       }
-    }
-  };
+    });
+
   const newShortcut = (path: string, process: string): void => {
     const baseName = basename(path);
     const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
@@ -322,14 +334,29 @@ const useFolder = (
       }
     });
   const pasteToFolder = (): void =>
-    Object.entries(pasteList).forEach(([fileEntry, operation]) => {
+    Object.entries(pasteList).forEach(([pasteEntry, operation]) => {
       if (operation === "move") {
-        newPath(fileEntry);
+        newPath(pasteEntry);
         copyEntries([]);
       } else {
-        fs?.readFile(fileEntry, (_readError, contents = EMPTY_BUFFER) =>
-          newPath(basename(fileEntry), contents)
-        );
+        const copyFiles =
+          (entry: string, basePath = ""): BFSCallback<Buffer> =>
+          (readError, fileContents) =>
+            newPath(join(basePath, basename(entry)), fileContents).then(
+              (uniquePath) => {
+                if (readError?.code === "EISDIR") {
+                  fs?.readdir(entry, (_dirError, dirContents) =>
+                    dirContents?.forEach((dirEntry) => {
+                      const dirPath = join(entry, dirEntry);
+
+                      fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
+                    })
+                  );
+                }
+              }
+            );
+
+        fs?.readFile(pasteEntry, copyFiles(pasteEntry));
       }
     });
 
