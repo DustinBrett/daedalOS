@@ -37,8 +37,8 @@ const useMonaco = (
     }
 
     return () => {
-      if (editor) {
-        editor.getModel()?.dispose();
+      if (editor && monaco) {
+        monaco.editor.getModels().forEach((model) => model.dispose());
         editor.dispose();
         cleanUpGlobals(globals);
       }
