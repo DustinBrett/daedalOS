@@ -16,6 +16,7 @@ const StyledRenameBox = styled.textarea.attrs({
   text-align: center;
   top: 2px;
   width: ${({ theme }) => `${theme.sizes.fileEntry.renameWidth}px`};
+  z-index: 1;
 `;
 
 export default StyledRenameBox;
