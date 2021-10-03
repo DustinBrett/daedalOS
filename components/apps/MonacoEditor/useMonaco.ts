@@ -5,7 +5,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { basename, extname } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 import { cleanUpGlobals } from "utils/functions";
 
@@ -17,40 +17,23 @@ const useMonaco = (
   const { fs } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
-  const loadMonaco = useCallback(
-    (value?: string, language?: string): void => {
-      loader.config(config);
-      loader.init().then((monaco) => {
-        if (containerRef.current) {
-          setEditor(
-            monaco.editor.create(containerRef.current, {
-              model: monaco.editor.createModel(
-                value || "",
-                language,
-                monaco.Uri.parse(url)
-              ),
-              theme,
-              automaticLayout: true,
-            })
-          );
-        }
-      });
-    },
-    [containerRef, url]
-  );
+  const [monaco, setMonaco] = useState<typeof Monaco>();
 
   useEffect(() => {
-    if (!editor) {
-      if (url) {
-        fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
-          if (!error) {
-            loadMonaco(contents.toString(), detectLanguage(extname(url)));
-            appendFileToTitle(basename(url));
-          }
-        });
-      } else {
-        loadMonaco();
-      }
+    if (!monaco) {
+      loader.config(config);
+      loader.init().then((monacoInstance) => setMonaco(monacoInstance));
+    }
+  }, [monaco]);
+
+  useEffect(() => {
+    if (monaco && !editor && containerRef.current) {
+      setEditor(
+        monaco.editor.create(containerRef.current, {
+          theme,
+          automaticLayout: true,
+        })
+      );
     }
 
     return () => {
@@ -60,7 +43,25 @@ const useMonaco = (
         cleanUpGlobals(globals);
       }
     };
-  }, [appendFileToTitle, editor, fs, loadMonaco, url]);
+  }, [containerRef, editor, monaco]);
+
+  useEffect(() => {
+    if (monaco && editor && url) {
+      fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
+        if (!error) {
+          editor.getModel()?.dispose();
+          editor.setModel(
+            monaco.editor.createModel(
+              contents.toString(),
+              detectLanguage(extname(url)),
+              monaco.Uri.parse(url)
+            )
+          );
+          appendFileToTitle(basename(url));
+        }
+      });
+    }
+  }, [appendFileToTitle, editor, fs, monaco, url]);
 };
 
 export default useMonaco;
