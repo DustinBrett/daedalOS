@@ -15,7 +15,6 @@ const Desktop = ({ children }: DesktopProps): JSX.Element => {
   return (
     <StyledDesktop ref={desktopRef}>
       <FileManager
-        systemShortcuts={["My PC.url", "Public.url"]}
         url="/Users/Public/Desktop"
         view="icon"
         hideLoading

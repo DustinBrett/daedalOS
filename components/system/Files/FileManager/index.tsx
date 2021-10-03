@@ -19,7 +19,6 @@ type FileManagerProps = {
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
-  systemShortcuts?: string[];
   url: string;
   view: FileManagerViewNames;
 };
@@ -29,7 +28,6 @@ const FileManager = ({
   hideLoading,
   hideScrolling,
   hideShortcutIcons,
-  systemShortcuts = [],
   url,
   view,
 }: FileManagerProps): JSX.Element => {
@@ -51,16 +49,16 @@ const FileManager = ({
   useEffect(() => {
     const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
 
-    if (isMountable && Object.keys(files).length === 0) {
+    if (isMountable && fileNames.length === 0) {
       mountFs(url).then(() => updateFiles());
     }
 
     return () => {
-      if (isMountable && Object.keys(files).length > 0 && closing) {
+      if (isMountable && fileNames.length > 0 && closing) {
         unMountFs(url);
       }
     };
-  }, [closing, files, mountFs, unMountFs, updateFiles, url]);
+  }, [closing, fileNames, mountFs, unMountFs, updateFiles, url]);
 
   return !hideLoading && isLoading ? (
     <StyledLoading />
@@ -74,33 +72,28 @@ const FileManager = ({
       {...folderContextMenu}
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
-      {fileNames.length > 0 &&
-        [
-          ...systemShortcuts.filter((file) => fileNames.includes(file)),
-          ...fileNames.filter((file) => !systemShortcuts.includes(file)),
-        ].map((file) => (
-          <StyledFileEntry
-            key={file}
-            {...draggableEntry(url, file)}
-            {...focusableEntry(file)}
-          >
-            <FileEntry
-              fileActions={fileActions}
-              fileManagerRef={fileManagerRef}
-              focusedEntries={focusedEntries}
-              focusFunctions={focusFunctions}
-              hideShortcutIcon={hideShortcutIcons}
-              name={basename(file, SHORTCUT_EXTENSION)}
-              path={join(url, file)}
-              renaming={renaming === file}
-              selectionRect={selectionRect}
-              setRenaming={setRenaming}
-              systemShortcut={systemShortcuts.includes(file)}
-              stats={files[file]}
-              view={view}
-            />
-          </StyledFileEntry>
-        ))}
+      {fileNames.map((file) => (
+        <StyledFileEntry
+          key={file}
+          {...draggableEntry(url, file)}
+          {...focusableEntry(file)}
+        >
+          <FileEntry
+            fileActions={fileActions}
+            fileManagerRef={fileManagerRef}
+            focusedEntries={focusedEntries}
+            focusFunctions={focusFunctions}
+            hideShortcutIcon={hideShortcutIcons}
+            name={basename(file, SHORTCUT_EXTENSION)}
+            path={join(url, file)}
+            renaming={renaming === file}
+            selectionRect={selectionRect}
+            setRenaming={setRenaming}
+            stats={files[file]}
+            view={view}
+          />
+        </StyledFileEntry>
+      ))}
     </StyledFileManager>
   );
 };

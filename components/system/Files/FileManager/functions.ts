@@ -5,7 +5,11 @@ import type { Stats } from "fs";
 import { basename, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
-export type FileStats = [string, Stats];
+export type FileStat = Stats & {
+  systemShortcut?: boolean;
+};
+
+export type FileStats = [string, FileStat];
 
 type SortFunction = (a: FileStats, b: FileStats) => number;
 
@@ -24,6 +28,11 @@ const sortByDate = (
   [, { mtimeMs: aTime }]: FileStats,
   [, { mtimeMs: bTime }]: FileStats
 ): number => aTime - bTime;
+
+const sortSystemShortcuts = (
+  [, { systemShortcut: aSystem }]: FileStats,
+  [, { systemShortcut: bSystem }]: FileStats
+): number => (aSystem === bSystem ? 0 : aSystem ? -1 : 1);
 
 const sortFunctionMap: Record<string, SortFunction> = {
   name: sortByName,
@@ -69,7 +78,7 @@ export const sortContents = (
     ...(preSort
       ? files.sort(sortByName).sort(sortFunction)
       : files.sort(sortByName)),
-  ];
+  ].sort(sortSystemShortcuts);
 
   return Object.fromEntries(sortedContents);
 };

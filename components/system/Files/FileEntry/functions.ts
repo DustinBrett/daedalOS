@@ -29,6 +29,7 @@ type InternetShortcut = {
   InternetShortcut: {
     BaseURL: string;
     IconFile: string;
+    Type: string;
     URL: string;
   };
 };
@@ -87,16 +88,21 @@ export const getProcessByFileExtension = (extension: string): string => {
   return defaultProcess;
 };
 
-const getShortcutInfo = (contents: Buffer): FileInfo => {
+export const getShortcutInfo = (contents: Buffer): FileInfo => {
   const {
-    InternetShortcut: { BaseURL: pid = "", IconFile: icon = "", URL: url = "" },
+    InternetShortcut: {
+      BaseURL: pid = "",
+      IconFile: icon = "",
+      Type: type = "",
+      URL: url = "",
+    },
   } = ini.parse(contents.toString()) as InternetShortcut;
 
   if (!icon && pid) {
-    return { icon: processDirectory[pid]?.icon, pid, url };
+    return { icon: processDirectory[pid]?.icon, pid, type, url };
   }
 
-  return { icon, pid, url };
+  return { icon, pid, type, url };
 };
 
 export const getInfoWithoutExtension = (

@@ -10,6 +10,7 @@ export type FileInfo = {
   icon: string;
   subIcons?: string[];
   pid: string;
+  type?: string;
   url: string;
 };
 

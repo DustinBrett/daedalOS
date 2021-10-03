@@ -5,6 +5,7 @@ import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
@@ -12,7 +13,6 @@ import type { FileActions } from "components/system/Files/FileManager/useFolder"
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import type { Stats } from "fs";
 import { basename, extname } from "path";
 import { useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
@@ -40,8 +40,7 @@ type FileEntryProps = {
   renaming: boolean;
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
-  stats: Stats;
-  systemShortcut: boolean;
+  stats: FileStat;
   view: FileManagerViewNames;
 };
 
@@ -70,7 +69,6 @@ const FileEntry = ({
   selectionRect,
   setRenaming,
   stats,
-  systemShortcut,
   view,
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
@@ -85,7 +83,7 @@ const FileEntry = ({
   const isDynamicIcon =
     IMAGE_FILE_EXTENSIONS.has(urlExt) || VIDEO_FILE_EXTENSIONS.has(urlExt);
   const filteredSubIcons =
-    hideShortcutIcon || systemShortcut
+    hideShortcutIcon || stats.systemShortcut
       ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
       : subIcons;
   const isOnlyFocusedEntry =
