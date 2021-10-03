@@ -28,7 +28,7 @@ import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
-  deleteFile: (path: string) => void;
+  deleteFile: (path: string) => Promise<void>;
   downloadFiles: (paths: string[]) => void;
   extractFiles: (path: string) => void;
   newShortcut: (path: string, process: string) => void;
@@ -138,15 +138,24 @@ const useFolder = (
     },
     [directory, fs, getFiles]
   );
-  const deleteFile = (path: string): void => {
-    if (fs) {
-      const fsDelete = files?.[basename(path)]?.isDirectory()
-        ? fs.rmdir
-        : fs.unlink;
+  const deleteFile = (path: string): Promise<void> =>
+    new Promise((resolve) => {
+      const baseName = basename(path);
+      const updateCurrentFolder = (): void => {
+        updateFolder(directory, "", baseName);
+        resolve();
+      };
 
-      fsDelete(path, () => updateFolder(directory, "", path));
-    }
-  };
+      if (files?.[baseName]?.isDirectory()) {
+        fs?.readdir(path, (_error, contents = []) =>
+          Promise.all(
+            contents.map((entry) => deleteFile(join(path, entry)))
+          ).then(() => fs.rmdir(path, updateCurrentFolder))
+        );
+      } else {
+        fs?.unlink(path, updateCurrentFolder);
+      }
+    });
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
 
