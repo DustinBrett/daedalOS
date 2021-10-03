@@ -4,7 +4,6 @@ import {
   libs,
   ytLib,
 } from "components/apps/VideoPlayer/config";
-import type { VideoPlayer } from "components/apps/VideoPlayer/types";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
@@ -18,6 +17,7 @@ import {
   viewHeight,
   viewWidth,
 } from "utils/functions";
+import type videojs from "video.js";
 
 const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
@@ -32,7 +32,7 @@ const useVideoPlayer = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
-  const [player, setPlayer] = useState<VideoPlayer>();
+  const [player, setPlayer] = useState<ReturnType<typeof videojs>>();
   const { appendFileToTitle } = useTitle(id);
 
   useEffect(() => {

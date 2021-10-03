@@ -51,6 +51,7 @@
     "@types/node": "^16.9.2",
     "@types/react": "^17.0.21",
     "@types/styled-components": "^5.1.14",
+    "@types/video.js": "^7.3.27",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "babel-plugin-styled-components": "^1.13.2",
