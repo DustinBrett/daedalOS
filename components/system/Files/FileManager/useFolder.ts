@@ -282,24 +282,31 @@ const useFolder = (
     });
 
   const newShortcut = (path: string, process: string): void => {
-    const baseName = basename(path);
-    const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
     const pathExtension = extname(path);
-    const shortcutData = ini.encode(
-      {
-        BaseURL: process,
-        IconFile: pathExtension
-          ? getIconByFileExtension(pathExtension)
-          : FOLDER_ICON,
-        URL: path,
-      },
-      {
-        section: "InternetShortcut",
-        whitespace: false,
-      }
-    );
 
-    newPath(shortcutPath, Buffer.from(shortcutData));
+    if (pathExtension === SHORTCUT_EXTENSION) {
+      fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
+        newPath(basename(path), contents)
+      );
+    } else {
+      const baseName = basename(path);
+      const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
+      const shortcutData = ini.encode(
+        {
+          BaseURL: process,
+          IconFile: pathExtension
+            ? getIconByFileExtension(pathExtension)
+            : FOLDER_ICON,
+          URL: path,
+        },
+        {
+          section: "InternetShortcut",
+          whitespace: false,
+        }
+      );
+
+      newPath(shortcutPath, Buffer.from(shortcutData));
+    }
   };
   const archiveFiles = (paths: string[]): Promise<void> =>
     Promise.all(paths.map((path) => getFile(path))).then((filePaths) => {

@@ -61,20 +61,17 @@ const useFileContextMenu = (
   const pathExtension = extname(path);
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
+  const defaultProcess =
+    extensionProcess || getProcessByFileExtension(urlExtension);
 
-  if (!isShortcut) {
-    const defaultProcess =
-      extensionProcess || getProcessByFileExtension(urlExtension);
-
-    if (defaultProcess || (!pathExtension && !urlExtension)) {
-      menuItems.push({
-        label: "Create shortcut",
-        action: () =>
-          absoluteEntries().forEach((entry) =>
-            newShortcut(entry, defaultProcess || "FileExplorer")
-          ),
-      });
-    }
+  if (defaultProcess || (!pathExtension && !urlExtension)) {
+    menuItems.push({
+      label: "Create shortcut",
+      action: () =>
+        absoluteEntries().forEach((entry) =>
+          newShortcut(entry, defaultProcess || "FileExplorer")
+        ),
+    });
   }
 
   menuItems.push(
