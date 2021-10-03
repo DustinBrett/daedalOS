@@ -69,7 +69,10 @@ const useFileContextMenu = (
     if (defaultProcess || (!pathExtension && !urlExtension)) {
       menuItems.push({
         label: "Create shortcut",
-        action: () => newShortcut(path, defaultProcess || "FileExplorer"),
+        action: () =>
+          absoluteEntries().forEach((entry) =>
+            newShortcut(entry, defaultProcess || "FileExplorer")
+          ),
       });
     }
   }
