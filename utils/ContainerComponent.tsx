@@ -1,10 +1,7 @@
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { join } from "path";
 import { useRef } from "react";
 import type { DefaultTheme, StyledComponent } from "styled-components";
-import { TEMP_PATH } from "utils/constants";
 
 type ContainerHook = (
   id: string,
@@ -19,32 +16,14 @@ const ContainerComponent = (
   children?: JSX.Element
 ): JSX.Element => {
   const {
-    url,
     processes: { [id]: { url: currentUrl = "" } = {} },
   } = useProcesses();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { fs, mkdirRecursive, updateFolder } = useFileSystem();
-  const fileDrop = useFileDrop((filePath: string, fileData?: Buffer) => {
-    if (!fileData) {
-      url(id, filePath);
-    } else {
-      const tempPath = join(TEMP_PATH, filePath);
-
-      mkdirRecursive(TEMP_PATH, () => {
-        fs?.writeFile(tempPath, fileData, (error) => {
-          if (!error) {
-            url(id, tempPath);
-            updateFolder(TEMP_PATH, filePath);
-          }
-        });
-      });
-    }
-  });
 
   useHook(id, currentUrl, containerRef);
 
   return (
-    <Component ref={containerRef} {...fileDrop}>
+    <Component ref={containerRef} {...useFileDrop({ id })}>
       {children}
     </Component>
   );

@@ -8,6 +8,7 @@ import StyledPhotos from "components/apps/Photos/StyledPhotos";
 import useDragZoom from "components/apps/Photos/useDragZoom";
 import useFullscreen from "components/apps/Photos/useFullscreen";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -20,7 +21,7 @@ import useDoubleClick from "utils/useDoubleClick";
 
 const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: process } = {} } = useProcesses();
-  const { url = "" } = process || {};
+  const { closing = false, url = "" } = process || {};
   const [src, setSrc] = useState("");
   const { appendFileToTitle } = useTitle(id);
   const { fs } = useFileSystem();
@@ -35,7 +36,7 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
 
   useEffect(() => {
-    if (fs && url && !src) {
+    if (fs && url && !closing) {
       fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
           setSrc(bufferToUrl(contents));
@@ -45,10 +46,10 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
     }
 
     return () => cleanUpBufferUrl(src);
-  }, [appendFileToTitle, fs, src, url]);
+  }, [appendFileToTitle, closing, fs, src, url]);
 
   return (
-    <StyledPhotos ref={containerRef}>
+    <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
       <nav className="top">
         <Button title="Zoom in" disabled={isMaxZoom} onClick={() => zoom("in")}>
           <ZoomIn />
