@@ -32,6 +32,7 @@ const FileManager = ({
   view,
 }: FileManagerProps): JSX.Element => {
   const [renaming, setRenaming] = useState("");
+  const [mounted, setMounted] = useState<boolean>(false);
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
@@ -44,25 +45,19 @@ const FileManager = ({
     useSelection(fileManagerRef);
   const fileDrop = useFileDrop({ callback: folderActions.newPath });
   const folderContextMenu = useFolderContextMenu(url, folderActions);
-  const [mountPoints, setMountPoints] = useState<string[]>([]);
 
   useEffect(() => {
-    if (MOUNTABLE_EXTENSIONS.has(extname(url)) && !mountPoints.includes(url)) {
+    if (MOUNTABLE_EXTENSIONS.has(extname(url)) && !mounted) {
       mountFs(url).then(() => {
-        setMountPoints((currentMountPoints) => [...currentMountPoints, url]);
+        setMounted(true);
         updateFiles();
       });
     }
 
     return () => {
-      if (mountPoints.includes(url) && closing) {
-        setMountPoints((currentMountPoints) =>
-          currentMountPoints.filter((mountPoint) => mountPoint !== url)
-        );
-        unMountFs(url);
-      }
+      if (mounted && closing) unMountFs(url);
     };
-  }, [closing, mountFs, mountPoints, unMountFs, updateFiles, url]);
+  }, [closing, mountFs, mounted, unMountFs, updateFiles, url]);
 
   return !hideLoading && isLoading ? (
     <StyledLoading />
