@@ -16,7 +16,7 @@ const useStartMenuTransition = (): MotionProps => {
     initial: "initial",
     transition: {
       duration: TRANSITIONS_IN_MILLISECONDS.START_MENU / MILLISECONDS_IN_SECOND,
-      ease: [-0.15, 1, 0, 1],
+      ease: "circOut",
     },
     variants: {
       active: {
@@ -24,8 +24,8 @@ const useStartMenuTransition = (): MotionProps => {
         paddingTop: 0,
       },
       initial: {
-        height: 0,
-        paddingTop: startMenu.size,
+        height: `calc(${startMenu.size} * 0.75)`,
+        paddingTop: `calc(${startMenu.size} * 0.75)`,
       },
     },
   };

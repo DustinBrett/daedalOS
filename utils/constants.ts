@@ -78,7 +78,7 @@ export const TEMP_PATH = "/Users/Public/Temp";
 
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
-  START_MENU: 400,
+  START_MENU: 450,
   WINDOW: 250,
 };
 
