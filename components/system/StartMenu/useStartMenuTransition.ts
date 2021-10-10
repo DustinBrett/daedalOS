@@ -25,7 +25,7 @@ const useStartMenuTransition = (): MotionProps => {
       },
       initial: {
         height: `calc(${startMenu.size} * 0.75)`,
-        paddingTop: `calc(${startMenu.size} * 0.75)`,
+        paddingTop: `calc(${startMenu.size} * 0.5)`,
       },
     },
   };
