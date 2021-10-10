@@ -1,10 +1,12 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import type React from "react";
 import { useCallback, useEffect } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
   onBlurCapture: (event: React.FocusEvent<HTMLElement>) => void;
+  onClickCapture: (event?: React.MouseEvent<HTMLElement>) => void;
   onFocusCapture: (event?: React.FocusEvent<HTMLElement>) => void;
 };
 
@@ -51,7 +53,7 @@ const useFocusable = (
     }
   };
   const moveToFront = useCallback(
-    (event?: React.FocusEvent<HTMLElement>) => {
+    (event?: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => {
       const { relatedTarget } = event || {};
 
       if (componentWindow?.contains(document.activeElement)) {
@@ -59,7 +61,9 @@ const useFocusable = (
         setForegroundId(id);
       } else if (!relatedTarget || document.activeElement === taskbarEntry) {
         componentWindow?.focus(PREVENT_SCROLL);
-        callbackEvents?.onFocusCapture?.(event);
+        callbackEvents?.onFocusCapture?.(
+          event as React.FocusEvent<HTMLElement>
+        );
       }
     },
     [
@@ -84,6 +88,7 @@ const useFocusable = (
 
   return {
     onBlurCapture,
+    onClickCapture: moveToFront,
     onFocusCapture: moveToFront,
     zIndex,
     ...FOCUSABLE_ELEMENT,
