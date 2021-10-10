@@ -61,6 +61,7 @@ const processDirectory: Processes = {
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),
+    allowResizing: false,
     autoSizing: true,
     backgroundColor: "#000",
     icon: "/System/Icons/v86.png",
@@ -71,7 +72,6 @@ const processDirectory: Processes = {
     autoSizing: true,
     backgroundColor: "#000",
     icon: "/System/Icons/vlc.png",
-    lockAspectRatio: true,
     title: "Video Player",
   },
   Webamp: {

@@ -7,7 +7,13 @@ import type { Props, RndResizeCallback } from "react-rnd";
 
 const useRnd = (id: string, maximized = false): Props => {
   const {
-    processes: { [id]: { autoSizing = false, lockAspectRatio = false } = {} },
+    processes: {
+      [id]: {
+        allowResizing = true,
+        autoSizing = false,
+        lockAspectRatio = false,
+      } = {},
+    },
   } = useProcesses();
   const [size, setSize] = useResizable(id, autoSizing);
   const [position, setPosition] = useDraggable(id, size);
@@ -28,7 +34,7 @@ const useRnd = (id: string, maximized = false): Props => {
 
   return {
     disableDragging: maximized,
-    enableResizing: !maximized && (!autoSizing || lockAspectRatio),
+    enableResizing: allowResizing && !maximized,
     lockAspectRatio,
     onDragStop,
     onResizeStop,

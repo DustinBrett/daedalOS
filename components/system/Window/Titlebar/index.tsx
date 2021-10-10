@@ -24,18 +24,16 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
     processes: { [id]: process },
   } = useProcesses();
   const {
-    autoSizing,
+    allowResizing = true,
     componentWindow,
     hideTitlebarIcon,
     icon,
-    lockAspectRatio,
     title,
     maximized,
   } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const disableMaximize = autoSizing && !lockAspectRatio;
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
   const dragHandle = {
@@ -52,7 +50,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       {...dragHandle}
       {...useTitlebarContextMenu(id)}
     >
-      <Button as="h1" {...(!disableMaximize ? onClickMaximize : {})}>
+      <Button as="h1" {...(allowResizing ? onClickMaximize : {})}>
         <figure>
           {!hideTitlebarIcon && (
             <Icon alt={title} imgSize={16} src={icon} {...onClickClose} />
@@ -66,7 +64,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         </Button>
         <Button
           className="maximize"
-          disabled={disableMaximize}
+          disabled={!allowResizing}
           onClick={onMaximize}
           title="Maximize"
         >
