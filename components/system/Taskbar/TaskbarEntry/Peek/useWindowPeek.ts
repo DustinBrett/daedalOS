@@ -6,41 +6,44 @@ import {
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
 
-const renderFrame = (
+const renderFrame = async (
   previewElement: HTMLElement,
-  previewTimer: React.MutableRefObject<NodeJS.Timer | undefined>,
+  animate: React.MutableRefObject<boolean>,
   callback: (url: string) => void
-): void => {
-  import("html-to-image").then(({ toCanvas }) =>
-    toCanvas(previewElement).then((canvas) => {
-      const { height = 0, width = 0 } = canvas;
+): Promise<void> => {
+  const htmlToImage = await import("html-to-image");
+  const canvas = await htmlToImage.toCanvas(previewElement);
+  const { height = 0, width = 0 } = canvas;
+  const nextFrame = (): number =>
+    window.requestAnimationFrame(() =>
+      renderFrame(previewElement, animate, callback)
+    );
 
-      if (height && width) {
-        const { data: pixelData } =
-          canvas
-            .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
-            ?.getImageData(0, 0, width, height) || {};
+  if (animate.current && height && width) {
+    const { data: pixelData } =
+      canvas
+        .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
+        ?.getImageData(0, 0, width, height) || {};
 
-        if (pixelData?.some(Boolean)) {
-          const dataUrl = canvas.toDataURL();
-          const previewImage = new Image();
+    if (pixelData?.some(Boolean)) {
+      const dataUrl = canvas.toDataURL();
+      const previewImage = new Image();
 
-          previewImage.src = dataUrl;
-          previewImage.addEventListener(
-            "load",
-            () => {
-              if (typeof previewTimer.current !== "undefined") {
-                callback(dataUrl);
-              }
-            },
-            ONE_TIME_PASSIVE_EVENT
-          );
-        } else {
-          renderFrame(previewElement, previewTimer, callback);
-        }
-      }
-    })
-  );
+      previewImage.src = dataUrl;
+      previewImage.addEventListener(
+        "load",
+        () => {
+          if (animate.current) {
+            callback(dataUrl);
+            nextFrame();
+          }
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
+    } else {
+      nextFrame();
+    }
+  }
 };
 
 const useWindowPeek = (id: string): string => {
@@ -50,22 +53,24 @@ const useWindowPeek = (id: string): string => {
   const { peekElement, componentWindow } = process || {};
   const previewTimer = useRef<NodeJS.Timer>();
   const [imageSrc, setImageSrc] = useState("");
+  const animate = useRef(true);
 
   useEffect(() => {
     const previewElement = peekElement || componentWindow;
 
     if (!previewTimer.current && previewElement) {
-      previewTimer.current = setInterval(
-        () => renderFrame(previewElement, previewTimer, setImageSrc),
+      previewTimer.current = setTimeout(
+        () =>
+          window.requestAnimationFrame(() =>
+            renderFrame(previewElement, animate, setImageSrc)
+          ),
         MILLISECONDS_IN_SECOND / 2
       );
     }
 
     return () => {
-      if (previewTimer.current) {
-        clearTimeout(previewTimer.current);
-        previewTimer.current = undefined;
-      }
+      if (previewTimer.current) clearTimeout(previewTimer.current);
+      animate.current = false;
     };
   }, [componentWindow, peekElement]);
 
