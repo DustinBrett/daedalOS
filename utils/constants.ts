@@ -41,6 +41,8 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
 
 export const INVALID_FILE_CHARACTERS = /["*/:<>?\\|]/g;
 
+export const MAX_FILE_NAME_LENGTH = 223;
+
 export const MENU_SEPERATOR = { seperator: true };
 
 export const MILLISECONDS_IN_SECOND = 1000;
