@@ -22,7 +22,7 @@ import useDoubleClick from "utils/useDoubleClick";
 const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: process } = {} } = useProcesses();
   const { closing = false, url = "" } = process || {};
-  const [src, setSrc] = useState("");
+  const [src, setSrc] = useState<Record<string, string>>({});
   const { appendFileToTitle } = useTitle(id);
   const { fs } = useFileSystem();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -36,16 +36,22 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
 
   useEffect(() => {
-    if (fs && url && !closing) {
+    if (fs && url && !src[url] && !closing) {
       fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
-          setSrc(bufferToUrl(contents));
+          setSrc((currentSrc) => {
+            const [currentUrl] = Object.keys(currentSrc);
+
+            if (currentUrl) cleanUpBufferUrl(currentUrl);
+
+            return { [url]: bufferToUrl(contents) };
+          });
           appendFileToTitle(basename(url));
         }
       });
     }
 
-    return () => cleanUpBufferUrl(src);
+    return () => cleanUpBufferUrl(src[url]);
   }, [appendFileToTitle, closing, fs, src, url]);
 
   return (
@@ -70,7 +76,7 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         <img
           alt={basename(url, extname(url))}
           ref={imageRef}
-          src={src}
+          src={src[url]}
           {...dragZoomProps}
         />
       </figure>
