@@ -31,9 +31,11 @@ const useDragZoom = (
   containerRef: React.RefObject<HTMLElement>
 ): DragZoom => {
   const [scale, setScale] = useState(MIN_ZOOM);
+  const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
   const {
-    processes: { [id]: { url = "" } = {} },
+    processes: { [id]: process },
   } = useProcesses();
+  const { componentWindow, url = "" } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const [dragging, setDragging] = useState<DragPositions | []>([]);
   const [translate, setTranslate] = useState<Position>();
@@ -120,12 +122,22 @@ const useDragZoom = (
   const resetDrag = (): void => setDragging([]);
 
   useEffect(() => {
-    if (containerRef.current) {
-      new ResizeObserver(() => {
-        if (scale !== MIN_ZOOM) adjustDragZoom(MIN_ZOOM);
-      }).observe(containerRef.current);
+    if (!resizeObserver) {
+      setResizeObserver(new ResizeObserver(() => adjustDragZoom(MIN_ZOOM)));
     }
-  }, [adjustDragZoom, containerRef, scale]);
+  }, [adjustDragZoom, resizeObserver]);
+
+  useEffect(() => {
+    if (componentWindow instanceof HTMLElement) {
+      resizeObserver?.observe(componentWindow);
+    }
+
+    return () => {
+      if (componentWindow instanceof HTMLElement) {
+        resizeObserver?.unobserve(componentWindow);
+      }
+    };
+  }, [componentWindow, resizeObserver]);
 
   return {
     dragZoomProps: {
