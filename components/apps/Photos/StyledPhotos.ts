@@ -7,7 +7,7 @@ const paddingSize = "32px";
 const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
   background-color: #222;
   display: flex;
-  height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+  height: 100%;
   padding-bottom: ${paddingSize};
   padding-top: ${buttonSize};
   position: relative;

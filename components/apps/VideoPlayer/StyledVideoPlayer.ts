@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 const StyledVideoPlayer = styled.div`
   display: flex;
-  height: ${({ theme }) =>
-    `calc(100% - ${theme.sizes.titleBar.height}) !important`};
+  height: 100%;
   width: 100%;
 
   .video-js {

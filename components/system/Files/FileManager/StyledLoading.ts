@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledLoading = styled.div`
   cursor: wait;
-  height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+  height: 100%;
   width: 100%;
 
   &::before {

@@ -4,8 +4,7 @@ const StyledJSDOS = styled.div`
   align-items: center;
   background-color: #000;
   display: flex;
-  height: ${({ theme }) =>
-    `calc(100% - ${theme.sizes.titleBar.height}) !important`};
+  height: 100%;
   width: 100%;
 
   canvas {

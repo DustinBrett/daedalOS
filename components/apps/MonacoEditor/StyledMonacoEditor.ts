@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledMonacoEditor = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
   color: ${({ theme }) => theme.colors.text};
-  height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+  height: 100%;
   width: 100%;
 `;
 
