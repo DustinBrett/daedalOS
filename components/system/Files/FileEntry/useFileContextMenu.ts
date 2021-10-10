@@ -85,7 +85,7 @@ const useFileContextMenu = (
   if (url) {
     menuItems.unshift(MENU_SEPERATOR);
 
-    if (MOUNTABLE_EXTENSIONS.has(pathExtension)) {
+    if (MOUNTABLE_EXTENSIONS.has(pathExtension) && pathExtension !== ".iso") {
       menuItems.unshift({
         action: () => extractFiles(path),
         label: "Extract Here",
