@@ -81,8 +81,8 @@ const FileManager = ({
           <FileEntry
             fileActions={fileActions}
             fileManagerRef={fileManagerRef}
-            focusedEntries={focusedEntries}
             focusFunctions={focusFunctions}
+            focusedEntries={focusedEntries}
             hideShortcutIcon={hideShortcutIcons}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}

@@ -31,8 +31,8 @@ const useMonaco = (
     if (monaco && !editor && containerRef.current) {
       setEditor(
         monaco.editor.create(containerRef.current, {
-          theme,
           automaticLayout: true,
+          theme,
         })
       );
       setLoading(false);

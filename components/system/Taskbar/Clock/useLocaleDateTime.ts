@@ -22,7 +22,7 @@ const useLocaleDateTime = (now: Date): LocaleTimeDate => {
   );
   const dateTime = now.toISOString();
 
-  return { date, time, dateTime };
+  return { date, dateTime, time };
 };
 
 export default useLocaleDateTime;

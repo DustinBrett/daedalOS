@@ -30,6 +30,7 @@
     "react-hooks",
     "simple-import-sort",
     "sonarjs",
+    "sort-keys-fix",
     "testing-library",
     "unicorn"
   ],
@@ -43,14 +44,23 @@
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
     "no-implicit-coercion": "error",
+    "no-shadow": ["error", { "hoist": "all" }],
     "no-unsafe-optional-chaining": "error",
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": "off",
+    "react/jsx-sort-props": [
+      "error",
+      {
+        "reservedFirst": true,
+        "shorthandLast": true
+      }
+    ],
     "react/require-default-props": "off",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/no-nested-template-literals": "off",
+    "sort-keys-fix/sort-keys-fix": "error",
     "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-array-for-each": "off",
@@ -59,6 +69,7 @@
     "unicorn/prefer-dom-node-append": "off",
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
+    "unicorn/prefer-object-from-entries": "off",
     "unicorn/prevent-abbreviations": "off"
   },
   "overrides": [
@@ -76,6 +87,15 @@
         ],
         "@typescript-eslint/explicit-member-accessibility": "error",
         "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/method-signature-style": "error",
+        "@typescript-eslint/no-redeclare": "error",
+        "@typescript-eslint/no-shadow": [
+          "error",
+          {
+            "ignoreFunctionTypeParameterNameValueShadow": false,
+            "ignoreTypeValueShadow": false
+          }
+        ],
         "@typescript-eslint/no-unsafe-argument": "error",
         "@typescript-eslint/no-unsafe-assignment": "error",
         "@typescript-eslint/no-unsafe-call": "error",
@@ -83,7 +103,10 @@
         "@typescript-eslint/no-unused-vars": [
           "error",
           { "ignoreRestSiblings": true }
-        ]
+        ],
+        "@typescript-eslint/prefer-function-type": "error",
+        "@typescript-eslint/prefer-reduce-type-parameter": "error",
+        "@typescript-eslint/sort-type-union-intersection-members": "error"
       },
       "parser": "@typescript-eslint/parser",
       "parserOptions": {

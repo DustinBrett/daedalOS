@@ -30,7 +30,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
 `;
 
 const Icon = (
-  props: React.ImgHTMLAttributes<HTMLImageElement> & IconProps
+  props: IconProps & React.ImgHTMLAttributes<HTMLImageElement>
 ): JSX.Element => {
   useEffect(
     () => () => {

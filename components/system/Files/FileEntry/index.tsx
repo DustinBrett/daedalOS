@@ -173,9 +173,9 @@ const FileEntry = ({
         {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
           <Icon
             key={entryIcon}
-            src={entryIcon}
             alt={name}
             moving={icon === entryIcon && pasteList[path] === "move"}
+            src={entryIcon}
             {...FileEntryIconSize[view]}
           />
         ))}

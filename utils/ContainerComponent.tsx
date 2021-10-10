@@ -30,8 +30,8 @@ const ContainerComponent = (
     <>
       {loading && <StyledLoading />}
       <Component
-        style={{ visibility: loading ? "hidden" : "visible" }}
         ref={containerRef}
+        style={{ visibility: loading ? "hidden" : "visible" }}
         {...useFileDrop({ id })}
       >
         {children}

@@ -49,7 +49,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
         const menuUnfocused = ({
           relatedTarget,
           type,
-        }: MouseEvent | FocusEvent): void => {
+        }: FocusEvent | MouseEvent): void => {
           if (
             !(relatedTarget instanceof HTMLElement) ||
             !menuRef.current?.contains(relatedTarget)
@@ -95,9 +95,9 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
 
   return items ? (
     <StyledMenu
-      onBlurCapture={resetMenu}
       ref={menuRef}
       isSubMenu={Boolean(subMenu)}
+      onBlurCapture={resetMenu}
       x={x - offset.x}
       y={y - offset.y}
       {...menuTransition}

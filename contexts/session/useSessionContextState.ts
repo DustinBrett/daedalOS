@@ -97,8 +97,8 @@ const useSessionContextState = (): SessionContextState => {
     sortOrders,
     stackOrder,
     themeName,
-    wallpaperImage,
     wallpaperFit,
+    wallpaperImage,
     windowStates,
   };
 };

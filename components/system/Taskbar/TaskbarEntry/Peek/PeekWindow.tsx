@@ -47,8 +47,8 @@ const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
 
   return image ? (
     <StyledPeekWindow
-      onClick={onClick}
       ref={peekRef}
+      onClick={onClick}
       style={offsetX ? { transform: `translateX(${offsetX}px)` } : undefined}
       {...peekTransition}
       {...FOCUSABLE_ELEMENT}

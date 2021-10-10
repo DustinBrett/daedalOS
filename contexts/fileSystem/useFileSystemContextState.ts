@@ -164,19 +164,19 @@ const useFileSystemContextState = (): FileSystemContextState => {
   }, [fs]);
 
   return {
+    addFile,
+    addFsWatcher,
+    copyEntries,
     fs,
+    mkdirRecursive,
     mountFs,
+    moveEntries,
+    pasteList,
+    removeFsWatcher,
+    resetFs,
     setFileInput,
     unMountFs,
-    addFile,
-    resetFs,
     updateFolder,
-    addFsWatcher,
-    removeFsWatcher,
-    pasteList,
-    copyEntries,
-    moveEntries,
-    mkdirRecursive,
   };
 };
 

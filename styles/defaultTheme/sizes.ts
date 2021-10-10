@@ -25,13 +25,13 @@ const sizes = {
     width: "36px",
   },
   startMenu: {
-    size: "350px",
     sideBar: {
       expandedWidth: "220px",
-      iconSize: "16px",
       height: "48px",
+      iconSize: "16px",
       width: "48px",
     },
+    size: "350px",
   },
   taskbar: {
     blur: "5px",

@@ -21,29 +21,29 @@ const Sidebar = (): JSX.Element => {
   };
   const topButtons: SidebarButtons = [
     {
-      name: "START",
-      icon: <SideMenu />,
-      tooltip: "Expand",
-      heading: true,
       action: () => setCollapsed((collapsedState) => !collapsedState),
+      heading: true,
+      icon: <SideMenu />,
+      name: "START",
+      tooltip: "Expand",
     },
-    { name: "All apps", icon: <AllApps />, active: true },
+    { active: true, icon: <AllApps />, name: "All apps" },
   ];
   const bottomButtons: SidebarButtons = [
     {
-      name: "Documents",
-      icon: <Documents />,
       action: () =>
         open(
           "FileExplorer",
           "/Users/Public/Documents",
           "/System/Icons/documents.png"
         ),
+      icon: <Documents />,
+      name: "Documents",
     },
     {
-      name: "Power",
-      icon: <Power />,
       action: () => resetFs().finally(() => window.location.reload()),
+      icon: <Power />,
+      name: "Power",
     },
   ];
 
@@ -60,7 +60,7 @@ const Sidebar = (): JSX.Element => {
         setCollapsed(true);
       }}
     >
-      {Object.entries({ topButtons, bottomButtons }).map(([key, buttons]) => (
+      {Object.entries({ bottomButtons, topButtons }).map(([key, buttons]) => (
         <ol key={key}>
           {buttons.map((button) => (
             <SidebarButton

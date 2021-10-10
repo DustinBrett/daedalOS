@@ -30,6 +30,7 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
 
   return (
     <StyledRenameBox
+      ref={inputRef}
       defaultValue={name}
       onBlurCapture={saveRename}
       onClick={haltEvent}
@@ -40,7 +41,6 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
         updateDimensions(event.target);
         haltEvent(event);
       }}
-      ref={inputRef}
     />
   );
 };

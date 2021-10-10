@@ -23,8 +23,8 @@ const useTaskbarContextMenu = (): {
     );
   const menuItems: MenuItem[] = [
     {
-      label: allWindowsMinimized ? "Show open windows" : "Show the desktop",
       action: toggleDesktop,
+      label: allWindowsMinimized ? "Show open windows" : "Show the desktop",
     },
   ];
 

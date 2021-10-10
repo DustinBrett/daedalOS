@@ -13,7 +13,7 @@ export type SidebarButtons = SidebarButton[];
 
 type SidebarButtonProps = SidebarButton & { collapsed: boolean };
 
-const SidebarButton = ({
+const SidebarButtonComponent = ({
   action,
   active,
   collapsed,
@@ -34,4 +34,4 @@ const SidebarButton = ({
   </StyledSidebarButton>
 );
 
-export default SidebarButton;
+export default SidebarButtonComponent;

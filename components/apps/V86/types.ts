@@ -14,16 +14,14 @@ export type V86Starter = {
   save_state: (callback: (error: Error, newState: ArrayBuffer) => void) => void;
 };
 
-export type V86Config = typeof config &
-  V86ImageConfig & {
+export type V86Config = V86ImageConfig &
+  typeof config & {
     boot_order: number;
     initial_state?: { url: string };
     screen_container: HTMLDivElement | null;
   };
 
-interface V86Constructor {
-  new (v86Config: V86Config): V86Starter;
-}
+type V86Constructor = new (v86Config: V86Config) => V86Starter;
 
 declare global {
   interface Window {

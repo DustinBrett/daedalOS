@@ -12,8 +12,8 @@ const StartButton = ({
 }: StartButtonProps): JSX.Element => (
   <StyledStartButton
     active={startMenuVisible}
-    title="Start"
     onClick={() => toggleStartMenu()}
+    title="Start"
   >
     <WindowsIcon />
   </StyledStartButton>

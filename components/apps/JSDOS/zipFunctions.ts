@@ -5,16 +5,18 @@ import { join } from "path";
 import { EMPTY_BUFFER } from "utils/constants";
 
 const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
-  path.split("/").reduce((zippableData, pathPart, index, { length }) => {
-    const endOfPath = index === length - 1;
-    const walkedPath = Object.keys(zippableData)[index - 1] || "";
-    const currentPath = join(walkedPath, pathPart, endOfPath ? "" : "/");
+  path
+    .split("/")
+    .reduce<AsyncZippable>((zippableData, pathPart, index, { length }) => {
+      const endOfPath = index === length - 1;
+      const walkedPath = Object.keys(zippableData)[index - 1] || "";
+      const currentPath = join(walkedPath, pathPart, endOfPath ? "" : "/");
 
-    return {
-      ...zippableData,
-      [currentPath]: endOfPath ? [file, { level: 0 }] : new Uint8Array(),
-    };
-  }, {} as AsyncZippable);
+      return {
+        ...zippableData,
+        [currentPath]: endOfPath ? [file, { level: 0 }] : new Uint8Array(),
+      };
+    }, {});
 
 export const addFileToZip = (
   buffer: Buffer,

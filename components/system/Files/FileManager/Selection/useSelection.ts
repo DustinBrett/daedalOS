@@ -2,7 +2,7 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useState } from "react";
 import type { Position } from "react-rnd";
 
-export type SelectionRect = Partial<Size> & Partial<Position>;
+export type SelectionRect = Partial<Position> & Partial<Size>;
 
 type Selection = {
   isSelecting: boolean;
@@ -31,8 +31,8 @@ const useSelection = (
       containerRef.current?.getBoundingClientRect() || {};
 
     setSize({
-      width: clientX - targetX - (x || 0),
       height: clientY - targetY - (y || 0),
+      width: clientX - targetX - (x || 0),
     });
   };
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
@@ -61,27 +61,27 @@ const useSelection = (
   const selectionStyling = isSelecting
     ? {
         height: `${Math.abs(Number(h))}px`,
-        width: `${Math.abs(Number(w))}px`,
         transform: `translate(
             ${Number(x) + (Number(w) < 0 ? Number(w) : 0)}px,
             ${Number(y) + (Number(h) < 0 ? Number(h) : 0)}px)`,
+        width: `${Math.abs(Number(w))}px`,
       }
     : {};
 
   return {
     isSelecting,
-    selectionRect: isSelecting ? { ...position, ...size } : undefined,
-    selectionStyling,
     selectionEvents: {
       onMouseDown,
       ...(hasPosition
         ? {
-            onMouseMove,
             onMouseLeave: resetSelection,
+            onMouseMove,
             onMouseUp: resetSelection,
           }
         : {}),
     },
+    selectionRect: isSelecting ? { ...position, ...size } : undefined,
+    selectionStyling,
   };
 };
 

@@ -121,8 +121,8 @@ const fs2json = (dir) => {
         outputPath,
         JSON.stringify({
           fsroot: data,
-          version: VERSION,
           size: totalSize,
+          version: VERSION,
         }),
         () => process.exit()
       )

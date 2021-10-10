@@ -2,7 +2,7 @@ import { sortFiles } from "components/system/Files/FileManager/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import { useSession } from "contexts/session";
 
-type SortTypes = "name" | "size" | "type" | "date";
+type SortTypes = "date" | "name" | "size" | "type";
 
 export type SortBy = SortTypes | `!${SortTypes}`;
 

@@ -35,10 +35,10 @@ const sortSystemShortcuts = (
 ): number => (aSystem === bSystem ? 0 : aSystem ? -1 : 1);
 
 const sortFunctionMap: Record<string, SortFunction> = {
+  date: sortByDate,
   name: sortByName,
   size: sortBySize,
   type: sortByType,
-  date: sortByDate,
 };
 
 export const sortContents = (

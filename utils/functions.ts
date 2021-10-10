@@ -55,7 +55,7 @@ export const loadFiles = async (files: string[]): Promise<Event[]> =>
     )
   );
 
-export const pxToNum = (value: string | number = 0): number =>
+export const pxToNum = (value: number | string = 0): number =>
   Number(stripUnit(value));
 
 export const cleanUpGlobals = (globals: string[]): void =>

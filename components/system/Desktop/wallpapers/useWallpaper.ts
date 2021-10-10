@@ -7,6 +7,7 @@ import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 const cssFit: Record<WallpaperFit, string> = {
+  center: "background-repeat: no-repeat;",
   fill: "background-size: cover;",
   fit: `
     background-repeat: no-repeat;
@@ -14,7 +15,6 @@ const cssFit: Record<WallpaperFit, string> = {
   `,
   stretch: "background-size: 100% 100%;",
   tile: "",
-  center: "background-repeat: no-repeat;",
 };
 
 const useWallpaper = (

@@ -249,17 +249,17 @@ const useFolder = (
     const newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
 
     if (newName) {
-      const newPath = join(
+      const renamedPath = join(
         directory,
         `${newName}${
           path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
         }`
       );
 
-      fs?.exists(newPath, (exists) => {
+      fs?.exists(renamedPath, (exists) => {
         if (!exists) {
-          fs.rename(path, newPath, () =>
-            updateFolder(directory, newPath, path)
+          fs.rename(path, renamedPath, () =>
+            updateFolder(directory, renamedPath, path)
           );
         }
       });
@@ -473,13 +473,13 @@ const useFolder = (
       newShortcut,
       renameFile,
     },
+    files: files || {},
     folderActions: {
       addToFolder: () => addFile(newPath),
       newPath,
       pasteToFolder,
       setSortBy: useSortBy(directory, files),
     },
-    files: files || {},
     isLoading,
     updateFiles,
   };

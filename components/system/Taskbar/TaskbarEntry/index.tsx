@@ -50,19 +50,19 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
   return (
     <StyledTaskbarEntry
       foreground={isForeground}
-      title={taskbarTitle}
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}
+      title={taskbarTitle}
       {...useTaskbarTransition()}
       {...useTaskbarEntryContextMenu(id)}
     >
       <AnimatePresence>
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
-      <Button onClick={onClick} ref={linkTaskbarEntry}>
+      <Button ref={linkTaskbarEntry} onClick={onClick}>
         <figure>
-          <Icon src={icon} alt={taskbarTitle} imgSize={16} />
+          <Icon alt={taskbarTitle} imgSize={16} src={icon} />
           <figcaption>{taskbarTitle}</figcaption>
         </figure>
       </Button>

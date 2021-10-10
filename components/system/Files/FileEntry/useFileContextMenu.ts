@@ -54,8 +54,8 @@ const useFileContextMenu = (
           ]),
         ];
   const menuItems: MenuItem[] = [
-    { label: "Cut", action: () => moveEntries(absoluteEntries()) },
-    { label: "Copy", action: () => copyEntries(absoluteEntries()) },
+    { action: () => moveEntries(absoluteEntries()), label: "Cut" },
+    { action: () => copyEntries(absoluteEntries()), label: "Copy" },
     MENU_SEPERATOR,
   ];
   const pathExtension = extname(path);
@@ -66,20 +66,20 @@ const useFileContextMenu = (
 
   if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
     menuItems.push({
-      label: "Create shortcut",
       action: () =>
         absoluteEntries().forEach((entry) =>
           newShortcut(entry, defaultProcess || "FileExplorer")
         ),
+      label: "Create shortcut",
     });
   }
 
   menuItems.push(
     {
-      label: "Delete",
       action: () => absoluteEntries().forEach((entry) => deleteFile(entry)),
+      label: "Delete",
     },
-    { label: "Rename", action: () => setRenaming(baseName) }
+    { action: () => setRenaming(baseName), label: "Rename" }
   );
 
   if (url) {
@@ -87,19 +87,19 @@ const useFileContextMenu = (
 
     if (MOUNTABLE_EXTENSIONS.has(pathExtension)) {
       menuItems.unshift({
-        label: "Extract Here",
         action: () => extractFiles(path),
+        label: "Extract Here",
       });
     }
 
     menuItems.unshift(
       {
-        label: "Add to archive...",
         action: () => archiveFiles(absoluteEntries()),
+        label: "Add to archive...",
       },
       {
-        label: "Download",
         action: () => downloadFiles(absoluteEntries()),
+        label: "Download",
       }
     );
   }
@@ -109,24 +109,24 @@ const useFileContextMenu = (
       label: "Set as desktop background",
       menu: [
         {
-          label: "Fill",
           action: () => setWallpaper(path, "fill"),
+          label: "Fill",
         },
         {
-          label: "Fit",
           action: () => setWallpaper(path, "fit"),
+          label: "Fit",
         },
         {
-          label: "Stretch",
           action: () => setWallpaper(path, "stretch"),
+          label: "Stretch",
         },
         {
-          label: "Tile",
           action: () => setWallpaper(path, "tile"),
+          label: "Tile",
         },
         {
-          label: "Center",
           action: () => setWallpaper(path, "center"),
+          label: "Center",
         },
       ],
     });
@@ -145,7 +145,7 @@ const useFileContextMenu = (
         const { icon, title: label } = processDirectory[id] || {};
         const action = (): void => openFile(id, icon);
 
-        return { icon, label, action };
+        return { action, icon, label };
       }),
     });
   }
@@ -155,16 +155,16 @@ const useFileContextMenu = (
       const isFolder = extname(url) === "";
 
       menuItems.unshift({
-        label: `Open ${isFolder ? "folder" : "file"} location`,
         action: () => open("FileExplorer", dirname(url), ""),
+        label: `Open ${isFolder ? "folder" : "file"} location`,
       });
     }
 
     menuItems.unshift({
+      action: () => openFile(pid, pidIcon),
       icon: pidIcon,
       label: "Open",
       primary: true,
-      action: () => openFile(pid, pidIcon),
     });
   }
 

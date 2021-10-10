@@ -49,8 +49,8 @@ const MenuItemEntry = ({
 
   return (
     <li
-      className={disabled ? "disabled" : undefined}
       ref={entryRef}
+      className={disabled ? "disabled" : undefined}
       {...subMenuEvents}
     >
       {seperator ? (
@@ -66,7 +66,7 @@ const MenuItemEntry = ({
             }
           }}
         >
-          {icon && <Icon src={icon} alt={label} imgSize={16} />}
+          {icon && <Icon alt={label} imgSize={16} src={icon} />}
           <figcaption className={primary ? "primary" : undefined}>
             {label}
           </figcaption>

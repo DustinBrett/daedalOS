@@ -63,7 +63,7 @@ const useFocusableEntries = (
     return { className, onBlurCapture, onClick };
   };
 
-  return { blurEntry, focusableEntry, focusedEntries, focusEntry };
+  return { blurEntry, focusEntry, focusableEntry, focusedEntries };
 };
 
 export default useFocusableEntries;

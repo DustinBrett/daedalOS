@@ -57,13 +57,13 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   return (
     <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
       <nav className="top">
-        <Button title="Zoom in" disabled={isMaxZoom} onClick={() => zoom("in")}>
+        <Button disabled={isMaxZoom} onClick={() => zoom("in")} title="Zoom in">
           <ZoomIn />
         </Button>
         <Button
-          title="Zoom out"
           disabled={isMinZoom}
           onClick={() => zoom("out")}
+          title="Zoom out"
         >
           <ZoomOut />
         </Button>
@@ -75,15 +75,15 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
       >
         {src[url] && (
           <img
-            alt={basename(url, extname(url))}
             ref={imageRef}
+            alt={basename(url, extname(url))}
             src={src[url]}
             {...dragZoomProps}
           />
         )}
       </figure>
       <nav className="bottom">
-        <Button title="Full-screen" onClick={toggleFullscreen}>
+        <Button onClick={toggleFullscreen} title="Full-screen">
           {fullscreen ? <ExitFullscreen /> : <Fullscreen />}
         </Button>
       </nav>

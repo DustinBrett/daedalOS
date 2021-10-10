@@ -35,8 +35,8 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
 
   return (
     <StyledStartMenu
-      onBlurCapture={maybeCloseMenu}
       ref={menuRef}
+      onBlurCapture={maybeCloseMenu}
       {...useStartMenuTransition()}
       {...FOCUSABLE_ELEMENT}
     >

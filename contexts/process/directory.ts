@@ -4,22 +4,22 @@ import dynamic from "next/dynamic";
 
 const processDirectory: Processes = {
   FileExplorer: {
-    backgroundColor: "#202020",
     Component: dynamic(() => import("components/apps/FileExplorer")),
+    backgroundColor: "#202020",
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
   JSDOS: {
+    Component: dynamic(() => import("components/apps/JSDOS")),
     autoSizing: true,
     backgroundColor: "#000",
-    Component: dynamic(() => import("components/apps/JSDOS")),
     icon: "/System/Icons/jsdos.png",
     lockAspectRatio: true,
     title: "js-dos v7",
   },
   MonacoEditor: {
-    backgroundColor: "#1E1E1E",
     Component: dynamic(() => import("components/apps/MonacoEditor")),
+    backgroundColor: "#1E1E1E",
     defaultSize: {
       height: 400,
       width: 400,
@@ -28,8 +28,8 @@ const processDirectory: Processes = {
     title: "Monaco Editor",
   },
   Photos: {
-    backgroundColor: "#222",
     Component: dynamic(() => import("components/apps/Photos")),
+    backgroundColor: "#222",
     defaultSize: {
       height: 400,
       width: 500,
@@ -40,8 +40,8 @@ const processDirectory: Processes = {
     title: "Photos",
   },
   Ruffle: {
-    backgroundColor: "#000",
     Component: dynamic(() => import("components/apps/Ruffle")),
+    backgroundColor: "#000",
     defaultSize: {
       height: 400,
       width: 550,
@@ -50,8 +50,8 @@ const processDirectory: Processes = {
     title: "Ruffle",
   },
   TinyMCE: {
-    backgroundColor: "#FFF",
     Component: dynamic(() => import("components/apps/TinyMCE")),
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 400,
       width: 400,
@@ -60,16 +60,16 @@ const processDirectory: Processes = {
     title: "TinyMCE",
   },
   V86: {
+    Component: dynamic(() => import("components/apps/V86")),
     autoSizing: true,
     backgroundColor: "#000",
-    Component: dynamic(() => import("components/apps/V86")),
     icon: "/System/Icons/v86.png",
     title: "Virtual x86",
   },
   VideoPlayer: {
+    Component: dynamic(() => import("components/apps/VideoPlayer")),
     autoSizing: true,
     backgroundColor: "#000",
-    Component: dynamic(() => import("components/apps/VideoPlayer")),
     icon: "/System/Icons/vlc.png",
     lockAspectRatio: true,
     title: "Video Player",
