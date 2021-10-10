@@ -10,7 +10,7 @@ import type { FSModule } from "browserfs/dist/node/core/FS";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import type { UpdateFiles } from "contexts/session/types";
-import { dirname, extname, join } from "path";
+import { extname, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
@@ -79,10 +79,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         folder === "/"
           ? [folder]
           : Object.keys(fsWatchers).filter(
-              (watchedPath) =>
-                watchedPath === folder ||
-                (watchedPath !== "/" && watchedPath === dirname(folder)) ||
-                watchedPath.startsWith(join(folder, "/"))
+              (watchedPath) => watchedPath === folder
             );
 
       relevantPaths.forEach((watchedFolder) =>
