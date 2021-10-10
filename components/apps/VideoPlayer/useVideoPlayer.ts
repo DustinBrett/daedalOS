@@ -42,22 +42,32 @@ const useVideoPlayer = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && url) {
+    if (!loading) {
       const isYT = isYouTubeUrl(url);
-      const [videoElement] = containerRef.current
-        ?.childNodes as NodeListOf<HTMLVideoElement>;
-      const type = isYT ? "video/youtube" : getVideoType(url) || "video/mp4";
-      const loadPlayer = (src: string): void => {
+      const loadPlayer = (src?: string): void => {
+        const [videoElement] = containerRef.current
+          ?.childNodes as NodeListOf<HTMLVideoElement>;
+
         if (player) {
-          player.src([{ src, type }]);
+          if (src && url) {
+            player.src([
+              {
+                src,
+                type: isYT ? "video/youtube" : getVideoType(url) || "video/mp4",
+              },
+            ]);
+          }
+
           player.on("firstplay", () => {
             const [height, width] = [player.videoHeight(), player.videoWidth()];
             const [vh, vw] = [viewHeight(), viewWidth()];
 
-            if (height > vh || width > vw) {
-              updateWindowSize(vw * (height / width), vw);
-            } else {
-              updateWindowSize(height, width);
+            if (height && width) {
+              if (height > vh || width > vw) {
+                updateWindowSize(vw * (height / width), vw);
+              } else {
+                updateWindowSize(height, width);
+              }
             }
           });
         } else {
@@ -71,18 +81,22 @@ const useVideoPlayer = (
           );
         }
 
-        if (!isYT) {
+        if (url && !isYT) {
           appendFileToTitle(url);
           cleanUpBufferUrl(url);
         }
       };
 
-      if (isYT) {
-        loadFiles([ytLib]).then(() => loadPlayer(url));
+      if (url) {
+        if (isYT) {
+          loadFiles([ytLib]).then(() => loadPlayer(url));
+        } else {
+          fs?.readFile(url, (_error, contents = EMPTY_BUFFER) =>
+            loadPlayer(bufferToUrl(contents))
+          );
+        }
       } else {
-        fs?.readFile(url, (_error, contents = EMPTY_BUFFER) =>
-          loadPlayer(bufferToUrl(contents))
-        );
+        loadPlayer();
       }
     }
   }, [
