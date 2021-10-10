@@ -11,6 +11,22 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
 
+type SidebarGroupProps = {
+  collapsed: boolean;
+  sidebarButtons: SidebarButtons;
+};
+
+const SidebarGroup = ({
+  collapsed,
+  sidebarButtons,
+}: SidebarGroupProps): JSX.Element => (
+  <ol>
+    {sidebarButtons.map((button) => (
+      <SidebarButton key={button.name} collapsed={collapsed} {...button} />
+    ))}
+  </ol>
+);
+
 const Sidebar = (): JSX.Element => {
   const { resetFs } = useFileSystem();
   const { open } = useProcesses();
@@ -60,17 +76,8 @@ const Sidebar = (): JSX.Element => {
         setCollapsed(true);
       }}
     >
-      {Object.entries({ bottomButtons, topButtons }).map(([key, buttons]) => (
-        <ol key={key}>
-          {buttons.map((button) => (
-            <SidebarButton
-              key={button.name}
-              collapsed={collapsed}
-              {...button}
-            />
-          ))}
-        </ol>
-      ))}
+      <SidebarGroup collapsed={collapsed} sidebarButtons={topButtons} />
+      <SidebarGroup collapsed={collapsed} sidebarButtons={bottomButtons} />
     </StyledSidebar>
   );
 };
