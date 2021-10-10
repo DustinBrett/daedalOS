@@ -19,7 +19,9 @@ import {
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { SetSortBy } from "components/system/Files/FileManager/useSortBy";
 import useSortBy from "components/system/Files/FileManager/useSortBy";
+import { closeWithTransition } from "components/system/Window/functions";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import type { AsyncZippable } from "fflate";
 import { unzip, zip } from "fflate";
@@ -30,6 +32,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
   INVALID_FILE_CHARACTERS,
+  PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
@@ -88,6 +91,7 @@ const useFolder = (
     setSortOrders,
     sortOrders: { [directory]: sortOrder } = {},
   } = useSession();
+  const { close } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     (fileName: string, stats: Stats): Promise<FileStat> =>
       new Promise((resolve) => {
@@ -159,6 +163,7 @@ const useFolder = (
         setLoading(true);
         fs?.readdir(directory, async (error, contents = []) => {
           setLoading(false);
+
           if (!error) {
             const filteredFiles = contents.filter(filterSystemFiles(directory));
             const updatedFiles = await getFiles(filteredFiles);
@@ -170,12 +175,19 @@ const useFolder = (
               )
             );
           } else {
+            if (error.code === "ENOENT") {
+              closeWithTransition(
+                close,
+                `FileExplorer${PROCESS_DELIMITER}${directory}`
+              );
+            }
+
             setFiles({});
           }
         });
       }
     },
-    [directory, fs, getFiles, statsWithShortcutInfo]
+    [close, directory, fs, getFiles, statsWithShortcutInfo]
   );
   const deleteFile = (path: string, updatePath = true): Promise<void> => {
     const updateDirectory = (): void => {
