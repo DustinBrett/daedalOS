@@ -49,7 +49,7 @@ export type FileActions = {
 
 export type FolderActions = {
   addToFolder: () => void;
-  newPath: (path: string, buffer?: Buffer, rename?: boolean) => void;
+  newPath: (path: string, buffer?: Buffer, rename?: boolean) => Promise<string>;
   pasteToFolder: () => void;
   setSortBy: SetSortBy;
 };
