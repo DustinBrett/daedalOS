@@ -44,21 +44,25 @@ const FileManager = ({
     useSelection(fileManagerRef);
   const fileDrop = useFileDrop({ callback: folderActions.newPath });
   const folderContextMenu = useFolderContextMenu(url, folderActions);
-  const fileNames = Object.keys(files);
+  const [mountPoints, setMountPoints] = useState<string[]>([]);
 
   useEffect(() => {
-    const isMountable = MOUNTABLE_EXTENSIONS.has(extname(url));
-
-    if (isMountable && fileNames.length === 0) {
-      mountFs(url).then(() => updateFiles());
+    if (MOUNTABLE_EXTENSIONS.has(extname(url)) && !mountPoints.includes(url)) {
+      mountFs(url).then(() => {
+        setMountPoints((currentMountPoints) => [...currentMountPoints, url]);
+        updateFiles();
+      });
     }
 
     return () => {
-      if (isMountable && fileNames.length > 0 && closing) {
+      if (mountPoints.includes(url) && closing) {
+        setMountPoints((currentMountPoints) =>
+          currentMountPoints.filter((mountPoint) => mountPoint !== url)
+        );
         unMountFs(url);
       }
     };
-  }, [closing, fileNames, mountFs, unMountFs, updateFiles, url]);
+  }, [closing, mountFs, mountPoints, unMountFs, updateFiles, url]);
 
   return !hideLoading && isLoading ? (
     <StyledLoading />
@@ -72,7 +76,7 @@ const FileManager = ({
       {...folderContextMenu}
     >
       {isSelecting && <StyledSelection style={selectionStyling} />}
-      {fileNames.map((file) => (
+      {Object.keys(files).map((file) => (
         <StyledFileEntry
           key={file}
           {...(renaming !== file && draggableEntry(url, file))}
