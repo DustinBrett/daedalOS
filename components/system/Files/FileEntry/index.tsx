@@ -21,6 +21,7 @@ import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
   IMAGE_FILE_EXTENSIONS,
+  MOUNTABLE_EXTENSIONS,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -129,7 +130,12 @@ const FileEntry = ({
     const extension = extname(path);
     const isShortcut = extension === SHORTCUT_EXTENSION;
 
-    if (isShortcut || stats.isDirectory()) return undefined;
+    if (
+      isShortcut ||
+      (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension))
+    ) {
+      return undefined;
+    }
 
     const type =
       extensions[extension as ExtensionType]?.type ||

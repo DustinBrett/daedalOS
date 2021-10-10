@@ -5,6 +5,7 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { extname } from "path";
 import { useEffect, useState } from "react";
+import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 export type FileInfo = {
   icon: string;
@@ -26,7 +27,7 @@ const useFileInfo = (path: string, isDirectory: boolean): FileInfo => {
     if (fs) {
       const extension = extname(path).toLowerCase();
 
-      if (!extension || isDirectory) {
+      if (!extension || (isDirectory && !MOUNTABLE_EXTENSIONS.has(extension))) {
         getInfoWithoutExtension(fs, path, isDirectory, setInfo);
       } else {
         getInfoWithExtension(fs, path, extension, setInfo);
