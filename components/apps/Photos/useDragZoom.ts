@@ -121,11 +121,11 @@ const useDragZoom = (
 
   useEffect(() => {
     if (containerRef.current) {
-      new ResizeObserver(() => adjustDragZoom(MIN_ZOOM)).observe(
-        containerRef.current
-      );
+      new ResizeObserver(() => {
+        if (scale !== MIN_ZOOM) adjustDragZoom(MIN_ZOOM);
+      }).observe(containerRef.current);
     }
-  }, [adjustDragZoom, containerRef]);
+  }, [adjustDragZoom, containerRef, scale]);
 
   return {
     dragZoomProps: {
