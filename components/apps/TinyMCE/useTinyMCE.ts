@@ -11,7 +11,8 @@ import { loadFiles } from "utils/functions";
 const useTinyMCE = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const [editor, setEditor] = useState<Editor>();
   const { appendFileToTitle } = useTitle(id);
@@ -20,26 +21,29 @@ const useTinyMCE = (
   useEffect(() => {
     loadFiles(libs).then(() => {
       if (containerRef.current) {
-        window.tinymce.init({
-          save_onsavecallback: (activeEditor: Editor) =>
-            fs?.writeFile(url, activeEditor.getContent(), (error) => {
-              activeEditor.notificationManager.open({
-                closeButton: true,
-                text: error
-                  ? "Error occurred while saving."
-                  : "Successfully saved.",
-                timeout: 5000,
-                type: error ? "error" : "success",
-              });
-            }),
-          selector: `.${[...containerRef.current.classList].join(".")} div`,
-          setup: (activeEditor: Editor) =>
-            activeEditor.on("load", () => setEditor(activeEditor)),
-          ...config,
-        });
+        window.tinymce
+          .init({
+            save_onsavecallback: (activeEditor: Editor) =>
+              fs?.writeFile(url, activeEditor.getContent(), (error) => {
+                activeEditor.notificationManager.open({
+                  closeButton: true,
+                  text: error
+                    ? "Error occurred while saving."
+                    : "Successfully saved.",
+                  timeout: 5000,
+                  type: error ? "error" : "success",
+                });
+              }),
+            selector: `.${[...containerRef.current.classList].join(".")} div`,
+            ...config,
+          })
+          .then(([activeEditor]) => {
+            setEditor(activeEditor);
+            setLoading(false);
+          });
       }
     });
-  }, [containerRef, fs, url]);
+  }, [containerRef, fs, setLoading, url]);
 
   useEffect(() => {
     if (url && editor) {

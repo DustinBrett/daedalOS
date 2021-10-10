@@ -11,6 +11,7 @@ const StyledLoading = styled.div`
     display: flex;
     font-size: 12px;
     justify-content: center;
+    mix-blend-mode: difference;
     padding-top: 18px;
   }
 `;

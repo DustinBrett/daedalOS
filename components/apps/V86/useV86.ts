@@ -20,7 +20,9 @@ import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 const useV86 = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean
 ): void => {
   const {
     processes: { [id]: { closing = false } = {} },
@@ -53,60 +55,62 @@ const useV86 = (
   useV86ScreenSize(id, containerRef, emulator[url]);
 
   useEffect(() => {
-    if (fs && url && !emulator[url]) {
+    if (loading) loadFiles(libs).then(() => setLoading(false));
+  }, [loading, setLoading]);
+
+  useEffect(() => {
+    if (!loading && fs && url && !emulator[url]) {
       fs.readFile(url, (_imageError, imageContents = EMPTY_BUFFER) => {
-        loadFiles(libs).then(() => {
-          const isISO = extname(url).toLowerCase() === ".iso";
-          const bufferUrl = bufferToUrl(imageContents);
-          const v86ImageConfig: V86ImageConfig = {
-            [isISO ? "cdrom" : getImageType(imageContents.length)]: {
-              async: false,
-              size: imageContents.length,
-              url: bufferUrl,
-              use_parts: false,
-            },
-          };
-          const v86StarterConfig: V86Config = {
-            boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
-            screen_container: containerRef.current,
-            ...v86ImageConfig,
-            ...config,
-          };
+        const isISO = extname(url).toLowerCase() === ".iso";
+        const bufferUrl = bufferToUrl(imageContents);
+        const v86ImageConfig: V86ImageConfig = {
+          [isISO ? "cdrom" : getImageType(imageContents.length)]: {
+            async: false,
+            size: imageContents.length,
+            url: bufferUrl,
+            use_parts: false,
+          },
+        };
+        const v86StarterConfig: V86Config = {
+          boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
+          screen_container: containerRef.current,
+          ...v86ImageConfig,
+          ...config,
+        };
 
-          fs.readFile(
-            join(SAVE_PATH, `${basename(url)}${saveExtension}`),
-            (saveError, saveContents = EMPTY_BUFFER) => {
-              const [currentUrl] = Object.keys(emulator);
-              const loadEmulator = (): void => {
-                if (!saveError) {
-                  v86StarterConfig.initial_state = {
-                    url: bufferToUrl(saveContents),
-                  };
-                }
-
-                const v86 = new window.V86Starter(v86StarterConfig);
-
-                v86.add_listener("emulator-loaded", () => {
-                  appendFileToTitle(url);
-                  cleanUpBufferUrl(bufferUrl);
-                  if (v86StarterConfig.initial_state) {
-                    cleanUpBufferUrl(v86StarterConfig.initial_state.url);
-                  }
-                });
-
-                containerRef.current?.addEventListener("click", v86.lock_mouse);
-
-                setEmulator({ [url]: v86 });
-              };
-
-              if (currentUrl) {
-                closeDiskImage(currentUrl).then(loadEmulator);
-              } else {
-                loadEmulator();
+        fs.readFile(
+          join(SAVE_PATH, `${basename(url)}${saveExtension}`),
+          (saveError, saveContents = EMPTY_BUFFER) => {
+            const [currentUrl] = Object.keys(emulator);
+            const loadEmulator = (): void => {
+              if (!saveError) {
+                v86StarterConfig.initial_state = {
+                  url: bufferToUrl(saveContents),
+                };
               }
+
+              const v86 = new window.V86Starter(v86StarterConfig);
+
+              v86.add_listener("emulator-loaded", () => {
+                appendFileToTitle(url);
+                cleanUpBufferUrl(bufferUrl);
+                if (v86StarterConfig.initial_state) {
+                  cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+                }
+              });
+
+              containerRef.current?.addEventListener("click", v86.lock_mouse);
+
+              setEmulator({ [url]: v86 });
+            };
+
+            if (currentUrl) {
+              closeDiskImage(currentUrl).then(loadEmulator);
+            } else {
+              loadEmulator();
             }
-          );
-        });
+          }
+        );
       });
     }
 
@@ -120,6 +124,7 @@ const useV86 = (
     containerRef,
     emulator,
     fs,
+    loading,
     url,
   ]);
 };

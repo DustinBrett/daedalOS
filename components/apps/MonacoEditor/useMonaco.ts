@@ -12,7 +12,8 @@ import { cleanUpGlobals } from "utils/functions";
 const useMonaco = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { fs } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
@@ -34,6 +35,7 @@ const useMonaco = (
           automaticLayout: true,
         })
       );
+      setLoading(false);
     }
 
     return () => {
@@ -43,7 +45,7 @@ const useMonaco = (
         cleanUpGlobals(globals);
       }
     };
-  }, [containerRef, editor, monaco]);
+  }, [containerRef, editor, monaco, setLoading]);
 
   useEffect(() => {
     if (monaco && editor && url) {

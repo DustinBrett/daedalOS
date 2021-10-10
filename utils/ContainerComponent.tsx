@@ -1,12 +1,15 @@
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { DefaultTheme, StyledComponent } from "styled-components";
 
 type ContainerHook = (
   id: string,
   url: string,
-  container: React.MutableRefObject<HTMLDivElement | null>
+  container: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean
 ) => void;
 
 const ContainerComponent = (
@@ -19,13 +22,21 @@ const ContainerComponent = (
     processes: { [id]: { url: currentUrl = "" } = {} },
   } = useProcesses();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useHook(id, currentUrl, containerRef);
+  useHook(id, currentUrl, containerRef, setLoading, loading);
 
   return (
-    <Component ref={containerRef} {...useFileDrop({ id })}>
-      {children}
-    </Component>
+    <>
+      {loading && <StyledLoading />}
+      <Component
+        style={{ visibility: loading ? "hidden" : "visible" }}
+        ref={containerRef}
+        {...useFileDrop({ id })}
+      >
+        {children}
+      </Component>
+    </>
   );
 };
 

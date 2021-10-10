@@ -25,7 +25,9 @@ const isYouTubeUrl = (url: string): boolean =>
 const useVideoPlayer = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean
 ): void => {
   const { fs } = useFileSystem();
   const {
@@ -36,7 +38,11 @@ const useVideoPlayer = (
   const { appendFileToTitle } = useTitle(id);
 
   useEffect(() => {
-    if (url) {
+    if (loading) loadFiles(libs).then(() => setLoading(false));
+  }, [loading, setLoading]);
+
+  useEffect(() => {
+    if (!loading && url) {
       const isYT = isYouTubeUrl(url);
       const [videoElement] = containerRef.current
         ?.childNodes as NodeListOf<HTMLVideoElement>;
@@ -71,17 +77,23 @@ const useVideoPlayer = (
         }
       };
 
-      loadFiles(isYT ? [...libs, ytLib] : libs).then(() => {
-        if (isYT) {
-          loadPlayer(url);
-        } else {
-          fs?.readFile(url, (_error, contents = EMPTY_BUFFER) =>
-            loadPlayer(bufferToUrl(contents))
-          );
-        }
-      });
+      if (isYT) {
+        loadFiles([ytLib]).then(() => loadPlayer(url));
+      } else {
+        fs?.readFile(url, (_error, contents = EMPTY_BUFFER) =>
+          loadPlayer(bufferToUrl(contents))
+        );
+      }
     }
-  }, [appendFileToTitle, containerRef, fs, player, updateWindowSize, url]);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    fs,
+    loading,
+    player,
+    updateWindowSize,
+    url,
+  ]);
 
   useEffect(
     () => () => {

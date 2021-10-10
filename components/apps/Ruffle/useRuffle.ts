@@ -11,7 +11,8 @@ const libs = ["/Program Files/Ruffle/ruffle.js"];
 const useRuffle = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
@@ -31,10 +32,17 @@ const useRuffle = (
   }, []);
 
   useEffect(() => {
-    if (containerRef.current && fs && player) {
+    if (containerRef.current && player) {
       containerRef.current.appendChild(player);
+      setLoading(false);
+    }
 
-      fs.readFile(url, (error, contents = EMPTY_BUFFER) => {
+    return () => player?.remove();
+  }, [containerRef, player, setLoading]);
+
+  useEffect(() => {
+    if (containerRef.current && player && url) {
+      fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
           player
             .load({ data: contents })
@@ -42,8 +50,6 @@ const useRuffle = (
         }
       });
     }
-
-    return () => player?.remove();
   }, [appendFileToTitle, containerRef, fs, player, url]);
 };
 

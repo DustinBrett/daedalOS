@@ -10,7 +10,8 @@ import { loadFiles } from "utils/functions";
 const useJSDOS = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
@@ -22,12 +23,13 @@ const useJSDOS = (
       loadFiles(libs).then(() => {
         window.emulators.pathPrefix = pathPrefix;
 
-        if (containerRef.current instanceof HTMLDivElement) {
+        if (containerRef.current) {
           setDosInstance(window.Dos(containerRef.current, dosOptions));
+          setLoading(false);
         }
       });
     }
-  }, [containerRef, dosInstance]);
+  }, [containerRef, dosInstance, setLoading]);
 
   useEffect(() => {
     if (dosCI) {
