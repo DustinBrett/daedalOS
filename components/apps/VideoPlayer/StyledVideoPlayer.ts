@@ -159,6 +159,9 @@ const StyledVideoPlayer = styled.div`
     }
 
     video {
+      background-image: url("/System/Icons/48x48/vlc.png");
+      background-position: center calc(50% - 15px);
+      background-repeat: no-repeat;
       padding-bottom: 30px;
     }
   }
