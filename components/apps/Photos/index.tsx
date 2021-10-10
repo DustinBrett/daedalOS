@@ -73,12 +73,14 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         onWheel={({ deltaY }) => zoom(deltaY < 0 ? "in" : "out")}
         {...useDoubleClick(() => zoom("toggle"))}
       >
-        <img
-          alt={basename(url, extname(url))}
-          ref={imageRef}
-          src={src[url]}
-          {...dragZoomProps}
-        />
+        {src[url] && (
+          <img
+            alt={basename(url, extname(url))}
+            ref={imageRef}
+            src={src[url]}
+            {...dragZoomProps}
+          />
+        )}
       </figure>
       <nav className="bottom">
         <Button title="Full-screen" onClick={toggleFullscreen}>
