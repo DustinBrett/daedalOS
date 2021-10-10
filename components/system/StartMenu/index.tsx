@@ -1,6 +1,7 @@
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
+import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import { useEffect, useRef } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
@@ -40,6 +41,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
       {...useStartMenuTransition()}
       {...FOCUSABLE_ELEMENT}
     >
+      <StyledStartMenuBackground />
       <Sidebar />
       <FileManager
         url="/Users/Public/Start Menu"
