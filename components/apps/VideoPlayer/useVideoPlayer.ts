@@ -76,7 +76,7 @@ const useVideoPlayer = (
               ...config,
               ...(isYT
                 ? { techOrder: ["youtube"], youtube: { ytControls: 2 } }
-                : { controls: true, inactivityTimeout: 0 }),
+                : { controls: true, inactivityTimeout: 1000 }),
             })
           );
         }

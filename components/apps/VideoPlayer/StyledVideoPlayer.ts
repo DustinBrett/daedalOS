@@ -16,7 +16,14 @@ const StyledVideoPlayer = styled.div`
     .vjs-control-bar {
       background-color: rgb(240, 240, 240);
       display: flex !important;
-      padding: 0 1px;
+      opacity: 1 !important;
+      padding: 0 1;
+    }
+
+    &.vjs-fullscreen.vjs-user-inactive {
+      .vjs-control-bar {
+        opacity: 0 !important;
+      }
     }
 
     .vjs-button {
