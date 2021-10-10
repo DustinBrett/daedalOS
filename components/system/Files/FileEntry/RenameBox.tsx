@@ -1,5 +1,5 @@
+import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { haltEvent } from "components/system/Files/FileManager/functions";
-import StyledRenameBox from "components/system/Files/Views/StyledRenameBox";
 import { extname } from "path";
 import { useEffect, useRef } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
