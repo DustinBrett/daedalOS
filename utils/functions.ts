@@ -59,7 +59,19 @@ export const pxToNum = (value: string | number = 0): number =>
   Number(stripUnit(value));
 
 export const cleanUpGlobals = (globals: string[]): void =>
-  globals.forEach((global) => delete (window as never)[global]);
+  globals.forEach((globalKey) => {
+    const resetKey = (): void => {
+      Object.assign(window, { [globalKey]: undefined });
+    };
+
+    if (globalKey in window) {
+      try {
+        if (!delete (window as never)[globalKey]) resetKey();
+      } catch {
+        resetKey();
+      }
+    }
+  });
 
 export const viewHeight = (): number =>
   Math.min(window.innerHeight, window.screen.height);
