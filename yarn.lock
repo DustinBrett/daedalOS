@@ -734,6 +734,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@panzoom/panzoom@^4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@panzoom/panzoom/-/panzoom-4.4.1.tgz#c265e814303abf47620c84208f43e420520b2afd"
+  integrity sha512-7s3HT/hoA1YE8OhGDhTgnhGurQ7X5EpiyJgWgQSjMhoSsiEI/iRphAZK0aEJfUGo/ak77k/4CAQLS0iqgtpkrQ==
+
 "@rushstack/eslint-patch@^1.0.6":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.0.7.tgz#82f83dcc2eb9b1e1d559b3aca96783e285eb8592"

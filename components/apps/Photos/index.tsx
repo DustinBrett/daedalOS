@@ -5,8 +5,8 @@ import {
   ZoomOut,
 } from "components/apps/Photos/PhotoIcons";
 import StyledPhotos from "components/apps/Photos/StyledPhotos";
-import useDragZoom from "components/apps/Photos/useDragZoom";
 import useFullscreen from "components/apps/Photos/useFullscreen";
+import usePanZoom, { panZoomConfig } from "components/apps/Photos/usePanZoom";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
@@ -19,6 +19,8 @@ import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import useDoubleClick from "utils/useDoubleClick";
 
+const { maxScale, minScale } = panZoomConfig;
+
 const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: process } = {} } = useProcesses();
   const { closing = false, url = "" } = process || {};
@@ -28,10 +30,10 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
-  const { dragZoomProps, isMaxZoom, isMinZoom, zoom } = useDragZoom(
+  const { reset, scale, zoomIn, zoomOut, zoomToPoint } = usePanZoom(
     id,
-    imageRef,
-    imageContainerRef
+    imageRef.current,
+    imageContainerRef.current
   );
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
 
@@ -57,12 +59,12 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   return (
     <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
       <nav className="top">
-        <Button disabled={isMaxZoom} onClick={() => zoom("in")} title="Zoom in">
+        <Button disabled={scale === maxScale} onClick={zoomIn} title="Zoom in">
           <ZoomIn />
         </Button>
         <Button
-          disabled={isMinZoom}
-          onClick={() => zoom("out")}
+          disabled={scale === minScale}
+          onClick={zoomOut}
           title="Zoom out"
         >
           <ZoomOut />
@@ -70,15 +72,19 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
       </nav>
       <figure
         ref={imageContainerRef}
-        onWheel={({ deltaY }) => zoom(deltaY < 0 ? "in" : "out")}
-        {...useDoubleClick(() => zoom("toggle"))}
+        {...useDoubleClick((event) => {
+          if (scale === minScale) {
+            zoomToPoint?.(minScale * 2, event, { animate: true });
+          } else {
+            reset?.();
+          }
+        })}
       >
         {src[url] && (
           <img
             ref={imageRef}
             alt={basename(url, extname(url))}
             src={src[url]}
-            {...dragZoomProps}
           />
         )}
       </figure>

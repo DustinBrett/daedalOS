@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.3.1",
+    "@panzoom/panzoom": "^4.4.1",
     "fflate": "^0.7.1",
     "framer-motion": "^4.1.17",
     "html-to-image": "^1.9.0",
