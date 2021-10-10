@@ -75,7 +75,7 @@ const FileManager = ({
       {fileNames.map((file) => (
         <StyledFileEntry
           key={file}
-          {...draggableEntry(url, file)}
+          {...(renaming !== file && draggableEntry(url, file))}
           {...focusableEntry(file)}
         >
           <FileEntry

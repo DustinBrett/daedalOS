@@ -6,7 +6,7 @@ import type { DefaultTheme, StyledComponent } from "styled-components";
 import type { IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
-  dragging: boolean;
+  dragging?: boolean;
 };
 
 export type StyledFileManagerProps = {
