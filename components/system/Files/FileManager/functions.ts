@@ -2,7 +2,7 @@ import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { Stats } from "fs";
-import { basename, extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export type FileStat = Stats & {
@@ -131,7 +131,7 @@ export const handleFileInputEvent = (
   } else {
     const filePaths = eventTarget?.getData("text").split(",");
 
-    filePaths.forEach((path) => callback(path));
+    filePaths.forEach((path) => dirname(path) !== "." && callback(path));
   }
 };
 
