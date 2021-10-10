@@ -3,3 +3,5 @@
 node_modules
 out
 public
+scripts
+*.config.js

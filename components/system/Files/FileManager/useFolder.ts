@@ -230,7 +230,7 @@ const useFolder = (
   const downloadFiles = (paths: string[]): Promise<void> =>
     findPathsRecursive(fs, paths).then((allPaths) =>
       Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
-        const zipFiles = filePaths.filter(Boolean) as ZipFile[];
+        const zipFiles = filePaths.filter(Boolean);
 
         if (zipFiles.length === 1) {
           const [[path, contents]] = zipFiles;
@@ -354,7 +354,7 @@ const useFolder = (
   const archiveFiles = (paths: string[]): Promise<void> =>
     findPathsRecursive(fs, paths).then((allPaths) =>
       Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
-        const zipFiles = filePaths.filter(Boolean) as ZipFile[];
+        const zipFiles = filePaths.filter(Boolean);
 
         zip(
           Object.fromEntries(zipFiles) as AsyncZippable,

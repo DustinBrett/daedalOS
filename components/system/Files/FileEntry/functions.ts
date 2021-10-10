@@ -202,7 +202,9 @@ export const getInfoWithExtension = (
       }
     });
   } else if (extension === ".mp3") {
-    getInfoByFileExtension(`/System/Icons/${extensions[".mp3"].icon}.png`);
+    getInfoByFileExtension(
+      `/System/Icons/${extensions[".mp3"].icon as string}.png`
+    );
     fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
       if (!error) {
         import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>

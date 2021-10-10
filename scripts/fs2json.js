@@ -1,9 +1,3 @@
-/* eslint-disable
-  @typescript-eslint/no-var-requires,
-  no-console,
-  unicorn/no-process-exit
-*/
-
 const { mkdir, readdir, readlink, stat, writeFile } = require("fs");
 const {
   basename,
