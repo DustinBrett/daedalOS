@@ -1,7 +1,9 @@
+import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { haltEvent } from "components/system/Files/FileManager/functions";
 import { extname } from "path";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import { PREVENT_SCROLL } from "utils/constants";
 
 type RenameBoxProps = {
@@ -13,20 +15,31 @@ type RenameBoxProps = {
 const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
-  const updateDimensions = (
-    textArea: EventTarget | HTMLTextAreaElement | null
-  ): void => {
-    if (textArea instanceof HTMLTextAreaElement) {
-      textArea.setAttribute("style", "height: 1px;");
-      textArea.setAttribute("style", `height: ${textArea.scrollHeight + 2}px;`);
-    }
-  };
+  const { formats, sizes } = useTheme();
+  const updateDimensions = useCallback(
+    (textArea: EventTarget | HTMLTextAreaElement | null): void => {
+      if (textArea instanceof HTMLTextAreaElement) {
+        const { width } = getTextWrapData(
+          textArea.value,
+          sizes.fileEntry.fontSize,
+          formats.systemFont
+        );
+
+        /* eslint-disable no-param-reassign */
+        textArea.style.height = "1px";
+        textArea.style.height = `${textArea.scrollHeight + 2}px`;
+        textArea.style.width = `${width + 22}px`;
+        /* eslint-enable no-param-reassign */
+      }
+    },
+    [formats.systemFont, sizes.fileEntry.fontSize]
+  );
 
   useEffect(() => {
     updateDimensions(inputRef.current);
     inputRef.current?.focus(PREVENT_SCROLL);
     inputRef.current?.setSelectionRange(0, name.length - extname(name).length);
-  }, [name]);
+  }, [name, updateDimensions]);
 
   return (
     <StyledRenameBox
