@@ -1,6 +1,5 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type React from "react";
 import { useCallback, useEffect } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
