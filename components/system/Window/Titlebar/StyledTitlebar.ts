@@ -21,6 +21,8 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
   border-bottom: ${styledBorder};
   display: flex;
   height: ${({ theme }) => theme.sizes.titleBar.height};
+  position: relative;
+  top: 0;
 
   h1 {
     color: ${({ foreground, theme }) =>
