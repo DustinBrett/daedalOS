@@ -77,7 +77,6 @@ const usePanZoom = (
 
   useEffect(() => {
     if (imgElement && containerElement && zoomWithWheel) {
-      console.log("SHDJKFHJKSD");
       imgElement.addEventListener("panzoomchange", zoomUpdate);
       containerElement.addEventListener("wheel", (event) =>
         zoomWithWheel(event, { step: 0.3 })
