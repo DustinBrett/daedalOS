@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: ${({ theme }) => theme.formats.systemFont};
+    height: 100%;
     overflow: hidden;
   }
 
