@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders main role 1`] = `
+<div>
+  <main
+    class="StyledDesktop-sc-dxgv8o-0 gcQesV"
+  >
+    <ol
+      class="StyledFileManager-sc-v65khk-0 bumNlj"
+    />
+    <nav
+      class="StyledTaskbar-sc-62k5ap-0 jonnHT"
+      tabindex="-1"
+    >
+      <button
+        class="Button-sc-1syhe5i-0 StyledStartButton-sc-mkvmmd-0 iTTbMn eQdgWS"
+        title="Start"
+        type="button"
+      >
+        <svg
+          viewBox="0 0 448 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"
+          />
+        </svg>
+      </button>
+      <ol
+        class="StyledTaskbarEntries-sc-vxgei1-0 eVzSCY"
+      />
+      <time
+        class="StyledClock-sc-1plr57p-0 dpPYvM"
+        datetime=""
+        title=""
+      />
+    </nav>
+  </main>
+</div>
+`;

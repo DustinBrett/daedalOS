@@ -15,14 +15,20 @@ const useWorker = <T extends unknown>(
 
     setWorker(new Worker(workerUrl));
 
-    URL.revokeObjectURL(workerUrl);
+    URL.revokeObjectURL?.(workerUrl);
   }, [workerFunction]);
 
   useEffect(() => {
     worker?.addEventListener("message", onMessage, { passive: true });
     worker?.postMessage("init");
 
-    return () => worker?.terminate();
+    return () => {
+      try {
+        worker?.terminate();
+      } catch (error) {
+        if ((error as Error).message !== "Not Supported") throw error;
+      }
+    };
   }, [onMessage, worker]);
 };
 
