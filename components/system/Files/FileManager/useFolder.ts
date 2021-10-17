@@ -390,32 +390,34 @@ const useFolder = (
       updateFolder(directory, zipFolderName);
     }
   };
-  const pasteToFolder = (): void =>
-    Object.entries(pasteList).forEach(([pasteEntry, operation]) => {
-      if (operation === "move") {
-        newPath(pasteEntry);
-        copyEntries([]);
-      } else {
-        const copyFiles =
-          (entry: string, basePath = ""): BFSCallback<Buffer> =>
-          (readError, fileContents) =>
-            newPath(join(basePath, basename(entry)), fileContents).then(
-              (uniquePath) => {
-                if (readError?.code === "EISDIR") {
-                  fs?.readdir(entry, (_dirError, dirContents) =>
-                    dirContents?.forEach((dirEntry) => {
-                      const dirPath = join(entry, dirEntry);
+  const pasteToFolder = (): void => {
+    const pasteEntries = Object.entries(pasteList);
+    const moving = pasteEntries.some(([, operation]) => operation === "move");
+    const copyFiles =
+      (entry: string, basePath = ""): BFSCallback<Buffer> =>
+      (readError, fileContents) =>
+        newPath(join(basePath, basename(entry)), fileContents).then(
+          (uniquePath) => {
+            if (readError?.code === "EISDIR") {
+              fs?.readdir(entry, (_dirError, dirContents) =>
+                dirContents?.forEach((dirEntry) => {
+                  const dirPath = join(entry, dirEntry);
 
-                      fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
-                    })
-                  );
-                }
-              }
-            );
+                  fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
+                })
+              );
+            }
+          }
+        );
 
-        fs?.readFile(pasteEntry, copyFiles(pasteEntry));
-      }
-    });
+    pasteEntries.forEach(([pasteEntry]) =>
+      moving
+        ? newPath(pasteEntry)
+        : fs?.readFile(pasteEntry, copyFiles(pasteEntry))
+    );
+
+    if (moving) copyEntries([]);
+  };
 
   useEffect(() => {
     if (sessionLoaded) {
