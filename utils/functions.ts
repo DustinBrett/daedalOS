@@ -86,9 +86,9 @@ const bytesInTB = 1024 * 1024 * 1024 * 999;
 
 const formatNumber = (number: number): string =>
   new Intl.NumberFormat("en-US", {
-    maximumSignificantDigits: 3,
-    minimumSignificantDigits: 3,
-  }).format(number);
+    maximumSignificantDigits: number < 1 ? 2 : 3,
+    minimumSignificantDigits: number < 1 ? 2 : 3,
+  }).format(Number(number.toFixed(4).slice(0, -2)));
 
 export const getFormattedSize = (size = 0): string => {
   if (size === 1) return "1 byte";
