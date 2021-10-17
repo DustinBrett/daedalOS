@@ -36,6 +36,37 @@
   ],
   "rules": {
     "@next/next/no-img-element": "off",
+    "@typescript-eslint/consistent-indexed-object-style": "error",
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { "allowExpressions": true }
+    ],
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "error",
+    "@typescript-eslint/method-signature-style": "error",
+    "@typescript-eslint/no-redeclare": "error",
+    "@typescript-eslint/no-shadow": [
+      "error",
+      {
+        "ignoreFunctionTypeParameterNameValueShadow": false,
+        "ignoreTypeValueShadow": false
+      }
+    ],
+    "@typescript-eslint/no-unsafe-argument": "error",
+    "@typescript-eslint/no-unsafe-assignment": "error",
+    "@typescript-eslint/no-unsafe-call": "error",
+    "@typescript-eslint/no-unsafe-member-access": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "ignoreRestSiblings": true }
+    ],
+    "@typescript-eslint/prefer-function-type": "error",
+    "@typescript-eslint/prefer-reduce-type-parameter": "error",
+    "@typescript-eslint/sort-type-union-intersection-members": "error",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -72,46 +103,7 @@
     "unicorn/prefer-object-from-entries": "off",
     "unicorn/prevent-abbreviations": "off"
   },
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "@typescript-eslint/consistent-indexed-object-style": "error",
-        "@typescript-eslint/consistent-type-imports": [
-          "error",
-          { "prefer": "type-imports" }
-        ],
-        "@typescript-eslint/explicit-function-return-type": [
-          "error",
-          { "allowExpressions": true }
-        ],
-        "@typescript-eslint/explicit-member-accessibility": "error",
-        "@typescript-eslint/explicit-module-boundary-types": "error",
-        "@typescript-eslint/method-signature-style": "error",
-        "@typescript-eslint/no-redeclare": "error",
-        "@typescript-eslint/no-shadow": [
-          "error",
-          {
-            "ignoreFunctionTypeParameterNameValueShadow": false,
-            "ignoreTypeValueShadow": false
-          }
-        ],
-        "@typescript-eslint/no-unsafe-argument": "error",
-        "@typescript-eslint/no-unsafe-assignment": "error",
-        "@typescript-eslint/no-unsafe-call": "error",
-        "@typescript-eslint/no-unsafe-member-access": "error",
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          { "ignoreRestSiblings": true }
-        ],
-        "@typescript-eslint/prefer-function-type": "error",
-        "@typescript-eslint/prefer-reduce-type-parameter": "error",
-        "@typescript-eslint/sort-type-union-intersection-members": "error"
-      },
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": ["tsconfig.json"]
-      }
-    }
-  ]
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  }
 }
