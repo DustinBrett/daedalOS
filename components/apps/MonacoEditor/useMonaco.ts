@@ -7,7 +7,7 @@ import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
-import { cleanUpGlobals } from "utils/functions";
+import { cleanUpGlobals, lockGlobal, unlockGlobal } from "utils/globals";
 
 const useMonaco = (
   id: string,
@@ -22,8 +22,12 @@ const useMonaco = (
 
   useEffect(() => {
     if (!monaco) {
+      unlockGlobal("define");
       loader.config(config);
-      loader.init().then((monacoInstance) => setMonaco(monacoInstance));
+      loader.init().then((monacoInstance) => {
+        lockGlobal("define");
+        setMonaco(monacoInstance);
+      });
     }
   }, [monaco]);
 
@@ -49,6 +53,7 @@ const useMonaco = (
 
   useEffect(() => {
     if (monaco && editor && url) {
+      unlockGlobal("define");
       fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
           editor.getModel()?.dispose();
@@ -61,6 +66,7 @@ const useMonaco = (
           );
           appendFileToTitle(basename(url));
         }
+        setTimeout(() => lockGlobal("define"), 3000);
       });
     }
   }, [appendFileToTitle, editor, fs, monaco, url]);

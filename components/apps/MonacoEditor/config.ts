@@ -4,7 +4,7 @@ export const config = {
   },
 };
 
-export const globals = ["define", "monaco"];
+export const globals = ["monaco"];
 
 export const theme = "vs-dark";
 

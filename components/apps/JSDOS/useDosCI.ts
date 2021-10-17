@@ -11,7 +11,8 @@ import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { SAVE_PATH } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl, cleanUpGlobals } from "utils/functions";
+import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import { cleanUpGlobals } from "utils/globals";
 import { addFileToZip, isFileInZip } from "utils/zipFunctions";
 
 const addJsDosConfig = async (
