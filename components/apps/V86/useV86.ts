@@ -14,7 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
+import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const useV86 = (
@@ -29,28 +29,88 @@ const useV86 = (
   } = useProcesses();
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<Record<string, V86Starter>>({});
-  const { fs, mkdirRecursive, updateFolder } = useFileSystem();
-  const closeDiskImage = useCallback(
-    (diskImageUrl: string): Promise<void> =>
-      new Promise((resolve) => {
-        emulator[diskImageUrl]?.save_state((_error, newState) =>
-          mkdirRecursive(SAVE_PATH, () => {
-            const saveName = `${basename(diskImageUrl)}${saveExtension}`;
-
-            fs?.writeFile(
-              join(SAVE_PATH, saveName),
-              Buffer.from(new Uint8Array(newState)),
-              () => {
-                emulator[diskImageUrl].destroy();
-                updateFolder(SAVE_PATH, saveName);
-                resolve();
-              }
-            );
-          })
-        );
-      }),
-    [emulator, fs, mkdirRecursive, updateFolder]
+  const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
+    useFileSystem();
+  const saveStateAsync = useCallback(
+    (diskImageUrl: string): Promise<ArrayBuffer> =>
+      new Promise((resolve, reject) =>
+        emulator[diskImageUrl]?.save_state((error, state) =>
+          error ? reject(error) : resolve(state)
+        )
+      ),
+    [emulator]
   );
+  const closeDiskImage = useCallback(
+    async (diskImageUrl: string): Promise<void> => {
+      const saveName = `${basename(diskImageUrl)}${saveExtension}`;
+
+      if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
+
+      if (
+        await writeFile(
+          join(SAVE_PATH, saveName),
+          Buffer.from(new Uint8Array(await saveStateAsync(diskImageUrl))),
+          true
+        )
+      ) {
+        emulator[diskImageUrl].destroy();
+        updateFolder(SAVE_PATH, saveName);
+      }
+    },
+    [emulator, exists, mkdirRecursive, saveStateAsync, updateFolder, writeFile]
+  );
+  const loadDiskImage = useCallback(async () => {
+    const [currentUrl] = Object.keys(emulator);
+
+    if (currentUrl) await closeDiskImage(currentUrl);
+
+    const imageContents = await readFile(url);
+    const isISO = extname(url).toLowerCase() === ".iso";
+    const bufferUrl = bufferToUrl(imageContents);
+    const v86ImageConfig: V86ImageConfig = {
+      [isISO ? "cdrom" : getImageType(imageContents.length)]: {
+        async: false,
+        size: imageContents.length,
+        url: bufferUrl,
+        use_parts: false,
+      },
+    };
+    const v86StarterConfig: V86Config = {
+      boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
+      screen_container: containerRef.current,
+      ...v86ImageConfig,
+      ...config,
+    };
+    const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
+    const saveContents = (await exists(savePath))
+      ? bufferToUrl(await readFile(savePath))
+      : undefined;
+
+    if (saveContents) v86StarterConfig.initial_state = { url: saveContents };
+
+    const v86 = new window.V86Starter(v86StarterConfig);
+
+    v86.add_listener("emulator-loaded", () => {
+      appendFileToTitle(url);
+      cleanUpBufferUrl(bufferUrl);
+
+      if (v86StarterConfig.initial_state) {
+        cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+      }
+    });
+
+    containerRef.current?.addEventListener("click", v86.lock_mouse);
+
+    setEmulator({ [url]: v86 });
+  }, [
+    appendFileToTitle,
+    closeDiskImage,
+    containerRef,
+    emulator,
+    exists,
+    readFile,
+    url,
+  ]);
 
   useV86ScreenSize(id, containerRef, emulator[url]);
 
@@ -59,72 +119,20 @@ const useV86 = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && fs && url && !emulator[url]) {
-      fs.readFile(url, (_imageError, imageContents = EMPTY_BUFFER) => {
-        const isISO = extname(url).toLowerCase() === ".iso";
-        const bufferUrl = bufferToUrl(imageContents);
-        const v86ImageConfig: V86ImageConfig = {
-          [isISO ? "cdrom" : getImageType(imageContents.length)]: {
-            async: false,
-            size: imageContents.length,
-            url: bufferUrl,
-            use_parts: false,
-          },
-        };
-        const v86StarterConfig: V86Config = {
-          boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
-          screen_container: containerRef.current,
-          ...v86ImageConfig,
-          ...config,
-        };
-
-        fs.readFile(
-          join(SAVE_PATH, `${basename(url)}${saveExtension}`),
-          (saveError, saveContents = EMPTY_BUFFER) => {
-            const [currentUrl] = Object.keys(emulator);
-            const loadEmulator = (): void => {
-              if (!saveError) {
-                v86StarterConfig.initial_state = {
-                  url: bufferToUrl(saveContents),
-                };
-              }
-
-              const v86 = new window.V86Starter(v86StarterConfig);
-
-              v86.add_listener("emulator-loaded", () => {
-                appendFileToTitle(url);
-                cleanUpBufferUrl(bufferUrl);
-                if (v86StarterConfig.initial_state) {
-                  cleanUpBufferUrl(v86StarterConfig.initial_state.url);
-                }
-              });
-
-              containerRef.current?.addEventListener("click", v86.lock_mouse);
-
-              setEmulator({ [url]: v86 });
-            };
-
-            if (currentUrl) {
-              closeDiskImage(currentUrl).then(loadEmulator);
-            } else {
-              loadEmulator();
-            }
-          }
-        );
-      });
+    if (!loading && readFile && url && !emulator[url]) {
+      loadDiskImage();
     }
 
     return () => {
       if (closing) closeDiskImage(url);
     };
   }, [
-    appendFileToTitle,
     closeDiskImage,
     closing,
-    containerRef,
     emulator,
-    fs,
+    loadDiskImage,
     loading,
+    readFile,
     url,
   ]);
 };

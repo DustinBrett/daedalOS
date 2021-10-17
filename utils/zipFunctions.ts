@@ -1,8 +1,6 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import type { AsyncZippable } from "fflate";
+import type { AsyncZipOptions, AsyncZippable, Unzipped } from "fflate";
 import { unzip, zip } from "fflate";
 import { join } from "path";
-import { EMPTY_BUFFER } from "utils/constants";
 
 const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
   path
@@ -18,24 +16,32 @@ const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
       };
     }, {});
 
-export const addFileToZip = (
+const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
+  new Promise((resolve, reject) =>
+    unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)))
+  );
+
+const zipAsync = (
+  data: AsyncZippable,
+  opts: AsyncZipOptions = {}
+): Promise<Uint8Array> =>
+  new Promise((resolve, reject) =>
+    zip(data, opts, (error, zipData) =>
+      error ? reject(error) : resolve(zipData)
+    )
+  );
+
+export const addFileToZip = async (
   buffer: Buffer,
   filePath: string,
   zipFilePath: string,
-  fs: FSModule
+  readFile: (path: string) => Promise<Buffer>
 ): Promise<Buffer> =>
-  new Promise((resolve) =>
-    unzip(buffer, (_unzipError, zipData) =>
-      fs.readFile(filePath, (_readError, contents = EMPTY_BUFFER) =>
-        zip(
-          {
-            ...zipData,
-            ...addFileToZippable(zipFilePath, contents),
-          },
-          (_zipError, newZipFile) => resolve(Buffer.from(newZipFile))
-        )
-      )
-    )
+  Buffer.from(
+    await zipAsync({
+      ...(await unzipAsync(buffer)),
+      ...addFileToZippable(zipFilePath, await readFile(filePath)),
+    })
   );
 
 export const isFileInZip = (
@@ -47,3 +53,5 @@ export const isFileInZip = (
       resolve(Object.keys(zipData).includes(zipFilePath))
     )
   );
+
+export { unzipAsync as unzip };

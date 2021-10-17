@@ -25,7 +25,7 @@ const useFileContextMenu = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   {
     archiveFiles,
-    deleteFile,
+    deletePath,
     downloadFiles,
     extractFiles,
     newShortcut,
@@ -76,7 +76,7 @@ const useFileContextMenu = (
 
   menuItems.push(
     {
-      action: () => absoluteEntries().forEach((entry) => deleteFile(entry)),
+      action: () => absoluteEntries().forEach((entry) => deletePath(entry)),
       label: "Delete",
     },
     { action: () => setRenaming(baseName), label: "Rename" }

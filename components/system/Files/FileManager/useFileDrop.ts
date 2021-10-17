@@ -19,22 +19,23 @@ type FileDropProps = {
 
 const useFileDrop = ({ callback, id }: FileDropProps): FileDrop => {
   const { url } = useProcesses();
-  const { fs, mkdirRecursive, updateFolder } = useFileSystem();
-  const updateProcessUrl = (filePath: string, fileData?: Buffer): void => {
+  const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
+  const updateProcessUrl = async (
+    filePath: string,
+    fileData?: Buffer
+  ): Promise<void> => {
     if (id) {
       if (!fileData) {
         url(id, filePath);
       } else {
         const tempPath = join(TEMP_PATH, filePath);
 
-        mkdirRecursive(TEMP_PATH, () => {
-          fs?.writeFile(tempPath, fileData, (error) => {
-            if (!error) {
-              url(id, tempPath);
-              updateFolder(TEMP_PATH, filePath);
-            }
-          });
-        });
+        await mkdirRecursive(TEMP_PATH);
+
+        if (await writeFile(tempPath, fileData, true)) {
+          url(id, tempPath);
+          updateFolder(TEMP_PATH, filePath);
+        }
       }
     }
   };

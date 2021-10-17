@@ -1,7 +1,6 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
+import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
-import type { Stats } from "fs";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
@@ -135,30 +134,23 @@ export const handleFileInputEvent = (
   }
 };
 
-export const findPathsRecursive = (
-  fs: FSModule | undefined,
-  paths: string[]
-): Promise<string[]> =>
-  new Promise((resolve) =>
-    Promise.all(
-      paths.map(
-        (path): Promise<string[]> =>
-          new Promise((pathResolve) =>
-            fs?.stat(path, (_statError, stats) => {
-              if (stats?.isDirectory()) {
-                fs?.readdir(path, (_readError, files = []) =>
-                  pathResolve(
-                    findPathsRecursive(
-                      fs,
-                      files.map((file) => join(path, file))
-                    )
-                  )
-                );
-              } else {
-                pathResolve([path]);
-              }
-            })
-          )
-      )
-    ).then((newPaths) => resolve(newPaths.flat()))
+export const findPathsRecursive = async (
+  paths: string[],
+  readdir: (path: string) => Promise<string[]>,
+  stat: (path: string) => Promise<Stats>
+): Promise<string[]> => {
+  const pathArrays = await Promise.all(
+    paths.map(
+      async (path): Promise<string[]> =>
+        (await stat(path)).isDirectory()
+          ? findPathsRecursive(
+              (await readdir(path)).map((file) => join(path, file)),
+              readdir,
+              stat
+            )
+          : [path]
+    )
   );
+
+  return pathArrays.flat();
+};

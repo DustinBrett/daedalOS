@@ -3,7 +3,6 @@ import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import { useCallback, useEffect } from "react";
 import { useTheme } from "styled-components";
-import { EMPTY_BUFFER } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
 const cssFit: Record<WallpaperFit, string> = {
@@ -20,49 +19,43 @@ const cssFit: Record<WallpaperFit, string> = {
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
 ): void => {
-  const { fs } = useFileSystem();
+  const { readFile } = useFileSystem();
   const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
   const loadThemeWallpaper = useCallback(() => {
     desktopRef.current?.setAttribute("style", "");
     wallpaper?.(desktopRef.current);
   }, [desktopRef, wallpaper]);
+  const loadFileWallpaper = useCallback(async () => {
+    const [, currentWallpaperUrl] =
+      desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
+
+    if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+
+    wallpaper?.();
+
+    desktopRef.current?.setAttribute(
+      "style",
+      `
+        background-image: url("${bufferToUrl(await readFile(wallpaperImage))}");
+        ${cssFit[wallpaperFit]}
+      `
+    );
+  }, [desktopRef, readFile, wallpaper, wallpaperFit, wallpaperImage]);
 
   useEffect(() => {
     if (sessionLoaded) {
       if (wallpaperImage) {
-        fs?.readFile(wallpaperImage, (error, contents = EMPTY_BUFFER) => {
-          if (!error) {
-            const [, currentWallpaperUrl] =
-              desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
-
-            if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
-
-            wallpaper?.();
-            desktopRef.current?.setAttribute(
-              "style",
-              `
-              background-image: url("${bufferToUrl(contents)}");
-              ${cssFit[wallpaperFit]}
-              `
-            );
-          } else {
-            loadThemeWallpaper();
-          }
-        });
+        try {
+          loadFileWallpaper();
+        } catch {
+          loadThemeWallpaper();
+        }
       } else {
         loadThemeWallpaper();
       }
     }
-  }, [
-    desktopRef,
-    fs,
-    loadThemeWallpaper,
-    sessionLoaded,
-    wallpaper,
-    wallpaperFit,
-    wallpaperImage,
-  ]);
+  }, [loadFileWallpaper, loadThemeWallpaper, sessionLoaded, wallpaperImage]);
 };
 
 export default useWallpaper;

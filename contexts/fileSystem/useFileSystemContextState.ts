@@ -9,15 +9,16 @@ import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import type { AsyncFSModule } from "contexts/fileSystem/useAsyncFs";
+import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
-import { extname, join } from "path";
+import { dirname, extname, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useState } from "react";
-import { EMPTY_BUFFER } from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
-export type FileSystemContextState = {
+export type FileSystemContextState = AsyncFSModule & {
   fs?: FSModule;
   mountFs: (url: string) => Promise<void>;
   setFileInput: React.Dispatch<
@@ -32,13 +33,15 @@ export type FileSystemContextState = {
   pasteList: FilePasteOperations;
   copyEntries: (entries: string[]) => void;
   moveEntries: (entries: string[]) => void;
-  mkdirRecursive: (path: string, callback: () => void) => void;
+  mkdirRecursive: (path: string) => Promise<void>;
 };
 
 const { BFSRequire, configure, FileSystem } = BrowserFS as typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const [fs, setFs] = useState<FSModule>();
+  const asyncFs = useAsyncFs(fs);
+  const { exists, mkdir, readFile } = asyncFs;
   const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
@@ -79,7 +82,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
         folder === "/"
           ? [folder]
           : Object.keys(fsWatchers).filter(
-              (watchedPath) => watchedPath === folder
+              (watchedPath) =>
+                watchedPath === folder ||
+                (watchedPath !== "/" && watchedPath === dirname(folder))
             );
 
       relevantPaths.forEach((watchedFolder) =>
@@ -94,34 +99,34 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [fsWatchers]
   );
   const rootFs = fs?.getRootFS() as MountableFileSystem;
-  const mountFs = (url: string): Promise<void> =>
-    new Promise((resolve) =>
-      fs?.readFile(url, (_readError, fileData = EMPTY_BUFFER) => {
-        const isISO = extname(url) === ".iso";
-        const createFs: BFSCallback<IsoFS | ZipFS> = (_createError, newFs) => {
-          if (newFs) {
-            rootFs?.mount(url, newFs);
-            resolve();
-          }
-        };
+  const mountFs = async (url: string): Promise<void> => {
+    const fileData = await readFile(url);
 
-        if (isISO) {
-          FileSystem.IsoFS.Create({ data: fileData }, createFs);
-        } else {
-          FileSystem.ZipFS.Create({ zipData: fileData }, createFs);
+    return new Promise((resolve, reject) => {
+      const createFs: BFSCallback<IsoFS | ZipFS> = (createError, newFs) => {
+        if (createError) reject();
+        else if (newFs) {
+          rootFs?.mount(url, newFs);
+          resolve();
         }
-      })
-    );
+      };
+
+      if (extname(url) === ".iso") {
+        FileSystem.IsoFS.Create({ data: fileData }, createFs);
+      } else {
+        FileSystem.ZipFS.Create({ zipData: fileData }, createFs);
+      }
+    });
+  };
+
   const unMountFs = (url: string): void => rootFs?.umount(url);
   const addFile = (callback: (name: string, buffer?: Buffer) => void): void => {
-    if (fileInput) {
-      fileInput.addEventListener(
-        "change",
-        (event) => handleFileInputEvent(event, callback),
-        { once: true }
-      );
-      fileInput.click();
-    }
+    fileInput?.addEventListener(
+      "change",
+      (event) => handleFileInputEvent(event, callback),
+      { once: true }
+    );
+    fileInput?.click();
   };
   const resetFs = (): Promise<void> =>
     new Promise((resolve, reject) => {
@@ -134,30 +139,22 @@ const useFileSystemContextState = (): FileSystemContextState => {
       readable.empty();
       writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
     });
-  const mkdirRecursive = (path: string, callback: () => void): void => {
+  const mkdirRecursive = async (path: string): Promise<void> => {
     const pathParts = path.split("/").filter(Boolean);
-    const recursePath = (position = 1): void => {
+    const recursePath = async (position = 1): Promise<void> => {
       const makePath = join("/", pathParts.slice(0, position).join("/"));
-      const nextPart = (): void =>
-        position === pathParts.length ? callback() : recursePath(position + 1);
+      const created = (await exists(makePath)) || (await mkdir(makePath));
 
-      fs?.exists(makePath, (exists) => {
-        if (exists) nextPart();
-        else {
-          fs.mkdir(makePath, { flag: "w" }, (error) => {
-            if (!error) nextPart();
-          });
-        }
-      });
+      if (created && position !== pathParts.length) {
+        await recursePath(position + 1);
+      }
     };
 
-    recursePath();
+    await recursePath();
   };
 
   useEffect(() => {
-    if (!fs) {
-      configure(FileSystemConfig, () => setFs(BFSRequire("fs")));
-    }
+    if (!fs) configure(FileSystemConfig, () => setFs(BFSRequire("fs")));
   }, [fs]);
 
   return {
@@ -174,6 +171,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     setFileInput,
     unMountFs,
     updateFolder,
+    ...asyncFs,
   };
 };
 
