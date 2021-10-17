@@ -34,7 +34,7 @@ const StyledStartButton = styled(Button)<StyledStartButtonProps>`
     background-color: hsla(0, 0%, 20%, 70%);
 
     svg {
-      fill: hsl(207, 100%, 60%, 80%);
+      fill: hsla(207, 100%, 60%, 80%);
     }
   }
 `;
