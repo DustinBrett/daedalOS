@@ -104,7 +104,7 @@ const useDosCI = (
     if (dosInstance && readFile && url && !dosCI[url]) loadBundle();
 
     return () => {
-      if (closing) closeBundle(url, closing);
+      if (url && closing) closeBundle(url, closing);
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, readFile, url]);
 

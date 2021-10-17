@@ -124,7 +124,7 @@ const useV86 = (
     }
 
     return () => {
-      if (closing) closeDiskImage(url);
+      if (url && closing) closeDiskImage(url);
     };
   }, [
     closeDiskImage,
