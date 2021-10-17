@@ -1,13 +1,13 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import StyledApp from "components/pages/StyledApp";
 import Index from "pages/index";
 
 test("renders main role", () => {
-  const { container } = render(
+  render(
     <StyledApp>
       <Index />
     </StyledApp>
   );
 
-  expect(container).toMatchSnapshot();
+  expect(screen.getByRole("main")).toBeInTheDocument();
 });
