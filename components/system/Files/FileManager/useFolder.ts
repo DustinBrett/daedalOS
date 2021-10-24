@@ -83,6 +83,7 @@ const useFolder = (
     exists,
     fs,
     mkdir,
+    mkdirRecursive,
     pasteList,
     readdir,
     readFile,
@@ -359,30 +360,22 @@ const useFolder = (
     const zipFolderName = basename(path, extname(path));
 
     if (await mkdir(join(directory, zipFolderName))) {
-      await Promise.all(
-        Object.entries(unzippedFiles).map(
-          async ([extractPath, fileContents]): Promise<void> => {
-            const localPath = join(directory, zipFolderName, extractPath);
+      for (const [extractPath, fileContents] of Object.entries(unzippedFiles)) {
+        const localPath = join(directory, zipFolderName, extractPath);
 
-            if (fileContents.length === 0 && extractPath.endsWith("/")) {
-              await mkdir(localPath);
-            } else {
-              const fileData = Buffer.from(fileContents);
-
-              try {
-                await writeFile(localPath, fileData);
-              } catch (error) {
-                const { code, path: missingPath } = error as ApiError;
-
-                if (code === "ENOENT" && missingPath) {
-                  await mkdir(missingPath);
-                  await writeFile(localPath, fileData);
-                }
-              }
-            }
+        /* eslint-disable no-await-in-loop */
+        if (fileContents.length === 0 && extractPath.endsWith("/")) {
+          await mkdir(localPath);
+        } else {
+          if (!(await exists(dirname(localPath)))) {
+            await mkdirRecursive(dirname(localPath));
           }
-        )
-      );
+
+          await writeFile(localPath, Buffer.from(fileContents));
+        }
+        /* eslint-enable no-await-in-loop */
+      }
+
       updateFolder(directory, zipFolderName);
     }
   };

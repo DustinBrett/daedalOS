@@ -75,6 +75,12 @@
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
     "no-implicit-coercion": "error",
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
     "no-shadow": ["error", { "hoist": "all" }],
     "no-unsafe-optional-chaining": "error",
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
