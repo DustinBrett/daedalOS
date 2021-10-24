@@ -49,6 +49,18 @@ const processDirectory: Processes = {
     icon: "/System/Icons/ruffle.png",
     title: "Ruffle",
   },
+  SpaceCadet: {
+    Component: dynamic(() => import("components/apps/SpaceCadet")),
+    backgroundColor: "#000",
+    defaultSize: {
+      height: 440,
+      width: 600,
+    },
+    icon: "/System/Icons/pinball.png",
+    lockAspectRatio: true,
+    singleton: true,
+    title: "Space Cadet",
+  },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
     backgroundColor: "#FFF",
