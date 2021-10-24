@@ -42,7 +42,7 @@ const sortFunctionMap: Record<string, SortFunction> = {
 
 export const sortContents = (
   contents: Files,
-  sortOrder: string[],
+  sortOrder: string[] = [],
   sortFunction?: SortFunction
 ): Files => {
   if (sortOrder.length > 0) {

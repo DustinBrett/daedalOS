@@ -6,10 +6,7 @@ import {
   getIconByFileExtension,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
-import type {
-  FileStat,
-  FileStats,
-} from "components/system/Files/FileManager/functions";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import {
   findPathsRecursive,
   iterateFileName,
@@ -120,25 +117,8 @@ const useFolder = (
       }),
     [directory, fs]
   );
-  const getFiles = useCallback(
-    async (fileNames: string[]): Promise<Files> =>
-      Object.fromEntries(
-        await Promise.all(
-          fileNames.map(
-            async (file): Promise<FileStats> => [
-              file,
-              await statsWithShortcutInfo(
-                file,
-                await stat(join(directory, file))
-              ),
-            ]
-          )
-        )
-      ),
-    [directory, stat, statsWithShortcutInfo]
-  );
   const updateFiles = useCallback(
-    async (newFile?: string, oldFile?: string, initialOrder?: string[]) => {
+    async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
       if (oldFile && newFile) {
         setFiles(
           ({ [basename(oldFile)]: fileStats, ...currentFiles } = {}) => ({
@@ -167,16 +147,29 @@ const useFolder = (
 
         try {
           const dirContents = await readdir(directory);
-          const updatedFiles = await getFiles(
-            dirContents.filter(filterSystemFiles(directory))
-          );
+          const sortedFiles = await dirContents
+            .filter(filterSystemFiles(directory))
+            .reduce(async (processedFiles, file) => {
+              const newFiles = sortContents(
+                {
+                  ...(await processedFiles),
+                  [file]: await statsWithShortcutInfo(
+                    file,
+                    await stat(join(directory, file))
+                  ),
+                },
+                customSortOrder || (files ? Object.keys(files) : [])
+              );
 
-          setFiles((currentFiles = {}) =>
-            sortContents(
-              updatedFiles,
-              initialOrder || Object.keys(currentFiles)
-            )
-          );
+              setFiles(newFiles);
+
+              return newFiles;
+            }, {});
+
+          setSortOrders((currentSortOrder) => ({
+            ...currentSortOrder,
+            [directory]: Object.keys(sortedFiles),
+          }));
         } catch (error) {
           if ((error as ApiError).code === "ENOENT") {
             closeWithTransition(
@@ -189,7 +182,15 @@ const useFolder = (
         setLoading(false);
       }
     },
-    [close, directory, getFiles, readdir, stat, statsWithShortcutInfo]
+    [
+      close,
+      directory,
+      files,
+      readdir,
+      setSortOrders,
+      stat,
+      statsWithShortcutInfo,
+    ]
   );
   const deletePath = async (path: string, updatePath = true): Promise<void> => {
     try {
@@ -415,27 +416,30 @@ const useFolder = (
       } else {
         const fileNames = Object.keys(files);
 
-        if (!sortOrder || fileNames.length !== sortOrder.length) {
-          setSortOrders((currentSortOrder) => ({
-            ...currentSortOrder,
-            [directory]: fileNames,
-          }));
-        } else if (fileNames.some((file) => !sortOrder.includes(file))) {
-          const oldName = sortOrder.find((entry) => !fileNames.includes(entry));
-          const newName = fileNames.find((entry) => !sortOrder.includes(entry));
+        if (sortOrder && fileNames.length === sortOrder.length) {
+          if (fileNames.some((file) => !sortOrder.includes(file))) {
+            const oldName = sortOrder.find(
+              (entry) => !fileNames.includes(entry)
+            );
+            const newName = fileNames.find(
+              (entry) => !sortOrder.includes(entry)
+            );
 
-          if (oldName && newName) {
-            setSortOrders((currentSortOrder) => ({
-              ...currentSortOrder,
-              [directory]: sortOrder.map((entry) =>
-                entry === oldName ? newName : entry
-              ),
-            }));
+            if (oldName && newName) {
+              setSortOrders((currentSortOrder) => ({
+                ...currentSortOrder,
+                [directory]: sortOrder.map((entry) =>
+                  entry === oldName ? newName : entry
+                ),
+              }));
+            }
+          } else if (
+            fileNames.some((file, index) => file !== sortOrder[index])
+          ) {
+            setFiles((currentFiles) =>
+              sortContents(currentFiles || files, sortOrder)
+            );
           }
-        } else if (fileNames.some((file, index) => file !== sortOrder[index])) {
-          setFiles((currentFiles) =>
-            sortContents(currentFiles || files, sortOrder)
-          );
         }
       }
     }
