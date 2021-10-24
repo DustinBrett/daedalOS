@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useWorker = <T extends unknown>(
+const useWorker = <T>(
   workerFunction: () => void,
   onMessage: (message: { data: T }) => void
 ): void => {
