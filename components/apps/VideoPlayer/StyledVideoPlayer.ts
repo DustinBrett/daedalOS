@@ -20,6 +20,7 @@ const StyledVideoPlayer = styled.div`
       padding: 0 1;
     }
 
+    &.vjs-youtube,
     &.vjs-fullscreen.vjs-user-inactive {
       .vjs-control-bar {
         opacity: 0 !important;
