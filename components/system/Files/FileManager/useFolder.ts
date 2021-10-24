@@ -361,29 +361,25 @@ const useFolder = (
     if (await mkdir(join(directory, zipFolderName))) {
       await Promise.all(
         Object.entries(unzippedFiles).map(
-          async ([extractPath, fileContents]): Promise<boolean> => {
+          async ([extractPath, fileContents]): Promise<void> => {
             const localPath = join(directory, zipFolderName, extractPath);
 
             if (fileContents.length === 0 && extractPath.endsWith("/")) {
-              return mkdir(localPath);
-            }
+              await mkdir(localPath);
+            } else {
+              const fileData = Buffer.from(fileContents);
 
-            const fileData = Buffer.from(fileContents);
-            let created = false;
+              try {
+                await writeFile(localPath, fileData);
+              } catch (error) {
+                const { code, path: missingPath } = error as ApiError;
 
-            try {
-              created = await writeFile(localPath, fileData);
-            } catch (error) {
-              const { code, path: missingPath } = error as ApiError;
-
-              if (code === "ENOENT" && missingPath) {
-                return (
-                  (await mkdir(missingPath)) && writeFile(localPath, fileData)
-                );
+                if (code === "ENOENT" && missingPath) {
+                  await mkdir(missingPath);
+                  await writeFile(localPath, fileData);
+                }
               }
             }
-
-            return created;
           }
         )
       );
