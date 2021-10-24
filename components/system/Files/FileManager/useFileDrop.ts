@@ -8,8 +8,8 @@ import { join } from "path";
 import { TEMP_PATH } from "utils/constants";
 
 type FileDrop = {
-  onDragOver: (event: React.DragEvent<HTMLElement>) => void;
-  onDrop: (event: React.DragEvent<HTMLElement>) => void;
+  onDragOver: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
+  onDrop: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
 };
 
 type FileDropProps = {

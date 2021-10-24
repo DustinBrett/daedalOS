@@ -1,5 +1,6 @@
 import { config, libs } from "components/apps/TinyMCE/config";
 import { setReadOnlyMode } from "components/apps/TinyMCE/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname } from "path";
@@ -16,6 +17,7 @@ const useTinyMCE = (
   const [editor, setEditor] = useState<Editor>();
   const { appendFileToTitle } = useTitle(id);
   const { readFile, writeFile } = useFileSystem();
+  const { onDragOver, onDrop } = useFileDrop({ id });
   const onSave = useCallback(
     async (activeEditor: Editor) => {
       const saveSpec: NotificationSpec = {
@@ -46,27 +48,36 @@ const useTinyMCE = (
   }, [appendFileToTitle, editor, readFile, url]);
 
   useEffect(() => {
-    loadFiles(libs).then(() => {
-      if (containerRef.current) {
-        window.tinymce
-          .init({
-            save_onsavecallback: onSave,
-            selector: `.${[...containerRef.current.classList].join(".")} div`,
-            ...config,
-          })
-          .then(([activeEditor]) => {
-            setEditor(activeEditor);
-            setLoading(false);
-          });
-      }
-    });
-  }, [containerRef, onSave, setLoading]);
+    if (!editor) {
+      loadFiles(libs).then(() => {
+        if (containerRef.current) {
+          window.tinymce
+            .init({
+              save_onsavecallback: onSave,
+              selector: `.${[...containerRef.current.classList].join(".")} div`,
+              ...config,
+            })
+            .then(([activeEditor]) => {
+              const iframe = containerRef.current?.querySelector("iframe");
+
+              if (iframe?.contentWindow) {
+                iframe.contentWindow.addEventListener("dragover", onDragOver);
+                iframe.contentWindow.addEventListener("drop", onDrop);
+              }
+
+              setEditor(activeEditor);
+              setLoading(false);
+            });
+        }
+      });
+    }
+  }, [containerRef, editor, onDragOver, onDrop, onSave, setLoading]);
 
   useEffect(() => {
     if (url && editor && readFile) loadFile();
-
-    return () => editor?.destroy();
   }, [editor, loadFile, readFile, url]);
+
+  useEffect(() => () => editor?.destroy(), [editor]);
 };
 
 export default useTinyMCE;
