@@ -4,7 +4,7 @@ import Taskbar from "components/system/Taskbar";
 import useIFrameFocuser from "utils/useIFrameFocuser";
 import useUrlLoader from "utils/useUrlLoader";
 
-const Home = (): React.ReactElement => {
+const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
 
@@ -16,4 +16,4 @@ const Home = (): React.ReactElement => {
   );
 };
 
-export default Home;
+export default Index;
