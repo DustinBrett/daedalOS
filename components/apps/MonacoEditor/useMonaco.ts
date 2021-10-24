@@ -5,8 +5,8 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { basename, extname } from "path";
-import { useEffect, useState } from "react";
-import { EMPTY_BUFFER } from "utils/constants";
+import { useCallback, useEffect, useState } from "react";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { cleanUpGlobals, lockGlobal, unlockGlobal } from "utils/globals";
 
 const useMonaco = (
@@ -15,10 +15,25 @@ const useMonaco = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { fs } = useFileSystem();
+  const { readFile } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const [monaco, setMonaco] = useState<typeof Monaco>();
+  const loadFile = useCallback(async () => {
+    if (monaco && editor) {
+      unlockGlobal("define");
+      editor.getModel()?.dispose();
+      editor.setModel(
+        monaco.editor.createModel(
+          (await readFile(url)).toString(),
+          detectLanguage(extname(url)),
+          monaco.Uri.parse(url)
+        )
+      );
+      appendFileToTitle(basename(url));
+      setTimeout(() => lockGlobal("define"), 2.5 * MILLISECONDS_IN_SECOND);
+    }
+  }, [appendFileToTitle, editor, monaco, readFile, url]);
 
   useEffect(() => {
     if (!monaco) {
@@ -52,24 +67,8 @@ const useMonaco = (
   }, [containerRef, editor, monaco, setLoading]);
 
   useEffect(() => {
-    if (monaco && editor && url) {
-      unlockGlobal("define");
-      fs?.readFile(url, (error, contents = EMPTY_BUFFER) => {
-        if (!error) {
-          editor.getModel()?.dispose();
-          editor.setModel(
-            monaco.editor.createModel(
-              contents.toString(),
-              detectLanguage(extname(url)),
-              monaco.Uri.parse(url)
-            )
-          );
-          appendFileToTitle(basename(url));
-        }
-        setTimeout(() => lockGlobal("define"), 3000);
-      });
-    }
-  }, [appendFileToTitle, editor, fs, monaco, url]);
+    if (monaco && editor && url) loadFile();
+  }, [editor, loadFile, monaco, url]);
 };
 
 export default useMonaco;
