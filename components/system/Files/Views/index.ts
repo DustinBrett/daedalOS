@@ -7,6 +7,7 @@ import type { IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
   dragging?: boolean;
+  visible?: boolean;
 };
 
 export type StyledFileManagerProps = {

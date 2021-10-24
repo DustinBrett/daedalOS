@@ -112,11 +112,12 @@ export const getInfoWithoutExtension = (
   callback: (value: FileInfo) => void
 ): void => {
   if (isDirectory) {
-    const setFolderInfo = (icon: string): void =>
-      callback({ icon, pid: "FileExplorer", url: path });
+    const setFolderInfo = (icon: string, getIcon?: () => void): void =>
+      callback({ getIcon, icon, pid: "FileExplorer", url: path });
 
-    setFolderInfo(FOLDER_ICON);
-    getIconFromIni(fs, path).then(setFolderInfo);
+    setFolderInfo(FOLDER_ICON, () =>
+      getIconFromIni(fs, path).then(setFolderInfo)
+    );
   } else {
     callback({ icon: UNKNOWN_ICON, pid: "", url: "" });
   }
@@ -129,8 +130,9 @@ export const getInfoWithExtension = (
   callback: (value: FileInfo) => void
 ): void => {
   const subIcons: string[] = [];
-  const getInfoByFileExtension = (icon?: string): void =>
+  const getInfoByFileExtension = (icon?: string, getIcon?: () => void): void =>
     callback({
+      getIcon,
       icon: icon || getIconByFileExtension(extension),
       pid: getProcessByFileExtension(extension),
       subIcons,
@@ -147,82 +149,96 @@ export const getInfoWithExtension = (
         const { icon, pid, url } = getShortcutInfo(contents);
         const urlExt = extname(url);
 
-        callback({ icon, pid, subIcons, url });
-
         if (pid === "FileExplorer") {
-          getIconFromIni(fs, url).then((iniIcon) =>
-            callback({ icon: iniIcon, pid, subIcons, url })
-          );
+          const getIcon = (): void => {
+            getIconFromIni(fs, url).then((iniIcon) =>
+              callback({ getIcon, icon: iniIcon, pid, subIcons, url })
+            );
+          };
+
+          callback({ getIcon, icon, pid, subIcons, url });
         } else if (
           IMAGE_FILE_EXTENSIONS.has(urlExt) ||
           VIDEO_FILE_EXTENSIONS.has(urlExt) ||
           urlExt === ".mp3"
         ) {
-          getInfoWithExtension(fs, url, urlExt, ({ icon: urlIcon }) => {
+          getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
+            const { icon: urlIcon, getIcon } = fileInfo;
+
             if (urlIcon && urlIcon !== icon) {
-              callback({ icon: urlIcon, pid, subIcons, url });
+              callback({ getIcon, icon: urlIcon, pid, subIcons, url });
             }
           });
+        } else {
+          callback({ icon, pid, subIcons, url });
         }
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension("/System/Icons/photo.png");
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-      if (!error) getInfoByFileExtension(bufferToUrl(contents));
-    });
+    getInfoByFileExtension("/System/Icons/photo.png", () =>
+      fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+        if (!error) getInfoByFileExtension(bufferToUrl(contents));
+      })
+    );
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
-    // eslint-disable-next-line dot-notation
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon);
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-      if (!error) {
-        const video = document.createElement("video");
+    getInfoByFileExtension(
+      // eslint-disable-next-line dot-notation
+      processDirectory["VideoPlayer"].icon,
+      () =>
+        fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+          if (!error) {
+            const video = document.createElement("video");
 
-        video.currentTime = PREVIEW_FRAME_SECOND;
-        video.addEventListener(
-          "loadeddata",
-          () => {
-            const canvas = document.createElement("canvas");
-            canvas.height = video.videoHeight;
-            canvas.width = video.videoWidth;
+            video.currentTime = PREVIEW_FRAME_SECOND;
+            video.addEventListener(
+              "loadeddata",
+              () => {
+                const canvas = document.createElement("canvas");
 
-            canvas
-              .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
-              ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-            canvas.toBlob((blob) => {
-              if (blob instanceof Blob) {
-                getInfoByFileExtension(URL.createObjectURL(blob));
-              }
-            });
-          },
-          ONE_TIME_PASSIVE_EVENT
-        );
-        video.src = bufferToUrl(contents);
-        video.load();
-      }
-    });
+                canvas.height = video.videoHeight;
+                canvas.width = video.videoWidth;
+                canvas
+                  .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
+                  ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                canvas.toBlob((blob) => {
+                  if (blob instanceof Blob) {
+                    getInfoByFileExtension(URL.createObjectURL(blob));
+                  }
+                });
+              },
+              ONE_TIME_PASSIVE_EVENT
+            );
+            video.src = bufferToUrl(contents);
+            video.load();
+          }
+        })
+    );
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
-      `/System/Icons/${extensions[".mp3"].icon as string}.png`
-    );
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-      if (!error) {
-        import("music-metadata-browser").then(({ parseBuffer, selectCover }) =>
-          parseBuffer(
-            contents,
-            {
-              mimeType: MP3_MIME_TYPE,
-              size: contents.length,
-            },
-            { skipPostHeaders: true }
-          ).then(({ common: { picture } = {} }) => {
-            const { data: coverPicture } = selectCover(picture) || {};
+      `/System/Icons/${extensions[".mp3"].icon as string}.png`,
+      () =>
+        fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+          if (!error) {
+            import("music-metadata-browser").then(
+              ({ parseBuffer, selectCover }) =>
+                parseBuffer(
+                  contents,
+                  {
+                    mimeType: MP3_MIME_TYPE,
+                    size: contents.length,
+                  },
+                  { skipPostHeaders: true }
+                ).then(({ common: { picture } = {} }) => {
+                  const { data: coverPicture } = selectCover(picture) || {};
 
-            if (coverPicture) getInfoByFileExtension(bufferToUrl(coverPicture));
-          })
-        );
-      }
-    });
+                  if (coverPicture) {
+                    getInfoByFileExtension(bufferToUrl(coverPicture));
+                  }
+                })
+            );
+          }
+        })
+    );
   } else {
     getInfoByFileExtension();
   }

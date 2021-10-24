@@ -36,6 +36,7 @@ type FileEntryProps = {
   focusedEntries: string[];
   focusFunctions: FocusEntryFunctions;
   hideShortcutIcon?: boolean;
+  isLoadingFileManager: boolean;
   name: string;
   path: string;
   renaming: boolean;
@@ -64,6 +65,7 @@ const FileEntry = ({
   focusedEntries,
   focusFunctions,
   hideShortcutIcon,
+  isLoadingFileManager,
   name,
   path,
   renaming,
@@ -73,7 +75,10 @@ const FileEntry = ({
   view,
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
-  const { icon, pid, subIcons, url } = useFileInfo(path, stats.isDirectory());
+  const { getIcon, icon, pid, subIcons, url } = useFileInfo(
+    path,
+    stats.isDirectory()
+  );
   const openFile = useFile(url);
   const { pasteList } = useFileSystem();
   const { formats, sizes } = useTheme();
@@ -125,6 +130,12 @@ const FileEntry = ({
     focusedEntries,
     selectionRect,
   ]);
+
+  useEffect(() => {
+    if (!isLoadingFileManager && getIcon && !icon.startsWith("blob:")) {
+      getIcon();
+    }
+  }, [getIcon, icon, isLoadingFileManager]);
 
   const createTooltip = (): string | undefined => {
     const extension = extname(path);

@@ -2,7 +2,7 @@ import type { StyledFileEntryProps } from "components/system/Files/Views";
 import styled from "styled-components";
 
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
-  display: flex;
+  display: ${({ visible }) => (visible ? "flex" : "none")};
   height: min-content;
   padding: 2px;
 

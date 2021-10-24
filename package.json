@@ -22,7 +22,6 @@
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
-    "*.ts": "stylelint --fix",
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "resolutions": {

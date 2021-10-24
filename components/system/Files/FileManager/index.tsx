@@ -74,6 +74,7 @@ const FileManager = ({
       {Object.keys(files).map((file) => (
         <StyledFileEntry
           key={file}
+          visible={!isLoading}
           {...(renaming !== file && draggableEntry(url, file))}
           {...focusableEntry(file)}
         >
@@ -83,6 +84,7 @@ const FileManager = ({
             focusFunctions={focusFunctions}
             focusedEntries={focusedEntries}
             hideShortcutIcon={hideShortcutIcons}
+            isLoadingFileManager={isLoading}
             name={basename(file, SHORTCUT_EXTENSION)}
             path={join(url, file)}
             renaming={renaming === file}
