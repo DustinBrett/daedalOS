@@ -5,7 +5,10 @@ const { description, name } = packageJson;
 
 const Metadata = (): JSX.Element => (
   <Head>
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+      name="viewport"
+    />
     <meta content={description} name="description" />
     <title>{name}</title>
   </Head>
