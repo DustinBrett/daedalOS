@@ -1,6 +1,9 @@
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getTextWrapData } from "components/system/Files/FileEntry/functions";
+import {
+  get9pModifiedTime,
+  getTextWrapData,
+} from "components/system/Files/FileEntry/functions";
 import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
@@ -167,16 +170,14 @@ const FileEntry = ({
       `${extension.toUpperCase().replace(".", "")} File`;
     const { atimeMs, ctimeMs, mtimeMs, size: sizeInBytes } = stats;
     const unknownTime = atimeMs === ctimeMs && ctimeMs === mtimeMs;
+    const modifiedTime = unknownTime ? get9pModifiedTime(path) : mtimeMs;
     const size = getFormattedSize(sizeInBytes);
     const toolTip = `Type: ${type}\nSize: ${size}`;
-
-    if (unknownTime) return toolTip;
-
-    const date = new Date(mtimeMs).toISOString().slice(0, 10);
+    const date = new Date(modifiedTime).toISOString().slice(0, 10);
     const time = new Intl.DateTimeFormat(
       DEFAULT_LOCALE,
       formats.dateModified
-    ).format(mtimeMs);
+    ).format(modifiedTime);
     const dateModified = `${date} ${time}`;
 
     return `${toolTip}\nDate modified: ${dateModified}`;

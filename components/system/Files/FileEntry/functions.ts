@@ -10,6 +10,7 @@ import {
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
+import index from "public/.index/fs.9p.json";
 import {
   BASE_2D_CONTEXT_OPTIONS,
   EMPTY_BUFFER,
@@ -38,6 +39,32 @@ type ShellClassInfo = {
   ShellClassInfo: {
     IconFile: string;
   };
+};
+
+type FS9P = [string, number, number, number, number, number, FS9P[] | string];
+
+const IDX_MTIME = 2;
+const IDX_TARGET = 6;
+
+export const get9pModifiedTime = (path: string): number => {
+  let fsPath = index.fsroot as FS9P[];
+  let mTime = 0;
+
+  path
+    .split("/")
+    .filter(Boolean)
+    .forEach((pathPart) => {
+      const pathBranch = fsPath.find(([name]) => name === pathPart);
+
+      if (pathBranch) {
+        const isBranch = Array.isArray(pathBranch[IDX_TARGET]);
+
+        if (!isBranch) mTime = pathBranch[IDX_MTIME];
+        fsPath = isBranch ? (pathBranch[IDX_TARGET] as FS9P[]) : [];
+      }
+    });
+
+  return mTime;
 };
 
 export const getIconFromIni = (
