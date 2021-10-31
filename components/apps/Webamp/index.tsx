@@ -12,16 +12,16 @@ import useWindowTransitions from "components/system/Window/useWindowTransitions"
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { EMPTY_BUFFER } from "utils/constants";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { bufferToUrl, loadFiles } from "utils/functions";
+import type { Options } from "webamp";
 
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { fs } = useFileSystem();
+  const { readFile } = useFileSystem();
   const { processes: { [id]: { url = "" } = {} } = {} } = useProcesses();
   const [currentUrl, setCurrentUrl] = useState(url);
-  const { loadWebamp, webampCI } = useWebamp(id);
+  const { initWebamp, webampCI } = useWebamp(id);
   const windowTransitions = useWindowTransitions(id);
   const focusEvents = useMemo(
     () => ({
@@ -31,32 +31,56 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
     [webampCI]
   );
   const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
+  const getUrlOptions = useCallback(async (): Promise<Options> => {
+    if (url) {
+      const extension = extname(url);
 
-  useEffect(() => {
-    fs?.readFile(url, (_error, contents) => {
-      loadFiles(["/Program Files/Webamp/webamp.bundle.min.js"]).then(() =>
-        loadWebamp(containerRef.current, url, contents)
-      );
-    });
-  }, [containerRef, fs, loadWebamp, url]);
+      if (extension === ".mp3") {
+        return {
+          initialTracks: [await parseTrack(await readFile(url), basename(url))],
+        };
+      }
 
-  useEffect(() => {
-    if (url && url !== currentUrl && webampCI) {
-      fs?.readFile(url, (_error, contents = EMPTY_BUFFER) => {
-        if (extname(url) === ".mp3") {
-          parseTrack(contents, basename(url)).then((track) => {
-            setCurrentUrl(url);
-            webampCI.setTracksToPlay([track]);
-          });
-        } else {
-          const bufferUrl = bufferToUrl(contents);
-
-          cleanBufferOnSkinLoad(webampCI, bufferUrl);
-          webampCI.setSkinFromUrl(bufferUrl);
-        }
-      });
+      if (extension === ".wsz") {
+        return { initialSkin: { url: bufferToUrl(await readFile(url)) } };
+      }
     }
-  }, [currentUrl, fs, url, webampCI]);
+
+    return {};
+  }, [readFile, url]);
+  const loadWebampUrl = useCallback(async () => {
+    if (webampCI) {
+      const { initialTracks, initialSkin } = await getUrlOptions();
+
+      if (initialTracks) webampCI.setTracksToPlay(initialTracks);
+      else if (initialSkin) {
+        cleanBufferOnSkinLoad(webampCI, initialSkin.url);
+        webampCI.setSkinFromUrl(initialSkin.url);
+      }
+    }
+  }, [getUrlOptions, webampCI]);
+
+  useEffect(() => {
+    if (containerRef.current && !webampCI) {
+      loadFiles(["/Program Files/Webamp/webamp.bundle.min.js"]).then(
+        async () => {
+          if (window.Webamp) {
+            initWebamp(
+              containerRef.current as HTMLDivElement,
+              await getUrlOptions()
+            );
+          }
+        }
+      );
+    }
+  }, [getUrlOptions, initWebamp, webampCI]);
+
+  useEffect(() => {
+    if (url !== currentUrl) {
+      loadWebampUrl();
+      setCurrentUrl(url);
+    }
+  }, [currentUrl, loadWebampUrl, url, webampCI]);
 
   return (
     <StyledWebamp
