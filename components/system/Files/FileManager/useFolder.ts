@@ -122,17 +122,17 @@ const useFolder = (
     async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
       if (oldFile) {
         if (!(await exists(join(directory, oldFile)))) {
+          const oldName = basename(oldFile);
+
           if (newFile) {
-            setFiles(
-              ({ [basename(oldFile)]: fileStats, ...currentFiles } = {}) => ({
-                ...currentFiles,
-                [basename(newFile)]: fileStats,
-              })
-            );
+            setFiles(({ [oldName]: fileStats, ...currentFiles } = {}) => ({
+              ...currentFiles,
+              [basename(newFile)]: fileStats,
+            }));
           } else {
+            blurEntry(oldName);
             setFiles(
-              ({ [basename(oldFile)]: _fileStats, ...currentFiles } = {}) =>
-                currentFiles
+              ({ [oldName]: _fileStats, ...currentFiles } = {}) => currentFiles
             );
           }
         }
