@@ -85,6 +85,7 @@ const useTinyMCE = (
     if (!editor) {
       loadFiles(libs).then(() => {
         if (containerRef.current) {
+          window.tinymce.remove();
           window.tinymce
             .init({
               selector: `.${[...containerRef.current.classList].join(".")} div`,

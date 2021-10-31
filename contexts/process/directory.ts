@@ -69,6 +69,7 @@ const processDirectory: Processes = {
       width: 400,
     },
     icon: "/System/Icons/tinymce.png",
+    singleton: true,
     title: "TinyMCE",
   },
   V86: {
