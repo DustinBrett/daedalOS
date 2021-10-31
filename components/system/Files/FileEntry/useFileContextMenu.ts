@@ -44,7 +44,7 @@ const useFileContextMenu = (
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
-  const { copyEntries, moveEntries } = useFileSystem();
+  const { copyEntries, moveEntries, stat } = useFileSystem();
   const absoluteEntries = (): string[] =>
     focusedEntries.length === 1 || !isFocusedEntry
       ? [path]
@@ -68,9 +68,14 @@ const useFileContextMenu = (
   if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
     menuItems.push({
       action: () =>
-        absoluteEntries().forEach((entry) =>
-          newShortcut(entry, defaultProcess || "FileExplorer")
-        ),
+        absoluteEntries().forEach(async (entry) => {
+          const shortcutProcess =
+            defaultProcess && !(await stat(entry)).isDirectory()
+              ? defaultProcess
+              : "FileExplorer";
+
+          newShortcut(entry, shortcutProcess);
+        }),
       label: "Create shortcut",
     });
   }
