@@ -1,4 +1,5 @@
 {
+  "customSyntax": "@stylelint/postcss-css-in-js",
   "extends": [
     "stylelint-config-recommended",
     "stylelint-config-sass-guidelines",
@@ -6,7 +7,6 @@
     "stylelint-config-prettier"
   ],
   "rules": {
-    "declaration-bang-space-before": null,
     "max-nesting-depth": null,
     "selector-no-qualifying-type": null
   }
