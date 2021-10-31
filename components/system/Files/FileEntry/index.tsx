@@ -54,9 +54,13 @@ const truncateName = (
 ): string => {
   const { lines } = getTextWrapData(name, fontSize, fontFamily, maxWidth);
 
-  return lines.length > 2
-    ? `${lines.slice(0, 2).join("").slice(0, -3)}...`
-    : name;
+  if (lines.length > 2) {
+    const text = !name.includes(" ") ? lines[0] : lines.slice(0, 2).join("");
+
+    return `${text.slice(0, -3)}...`;
+  }
+
+  return name;
 };
 
 const FileEntry = ({
