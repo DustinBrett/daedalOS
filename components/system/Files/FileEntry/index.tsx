@@ -192,6 +192,7 @@ const FileEntry = ({
       {...useDoubleClick(() => {
         if (pid === "FileExplorer" && fileManagerId) {
           changeUrl(fileManagerId, url);
+          blurEntry();
         } else {
           openFile(pid, !isDynamicIcon ? icon : undefined);
         }

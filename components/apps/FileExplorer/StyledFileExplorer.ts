@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledFileExplorer = styled.div`
   ${StyledFileManager} {
-    height: calc(100% - 43px);
+    height: calc(100% - 42px - 23px);
   }
 `;
 
