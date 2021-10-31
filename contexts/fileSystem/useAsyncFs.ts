@@ -55,15 +55,13 @@ const useAsyncFs = (): AsyncFSModule => {
       readFile: (path) =>
         new Promise((resolve, reject) =>
           fs?.readFile(path, (error, data = EMPTY_BUFFER) => {
-            if (error) {
-              if (error.code === "EISDIR" && rootFs?.mntMap[path]?.data) {
-                resolve(rootFs.mntMap[path].data);
-              } else {
-                reject(error);
-              }
+            if (!error) return resolve(data);
+
+            if (error.code === "EISDIR" && rootFs?.mntMap[path]?.data) {
+              return resolve(rootFs.mntMap[path].data);
             }
 
-            resolve(data);
+            return reject(error);
           })
         ),
       readdir: (path) =>
@@ -74,9 +72,21 @@ const useAsyncFs = (): AsyncFSModule => {
         ),
       rename: (oldPath, newPath) =>
         new Promise((resolve, reject) =>
-          fs?.rename(oldPath, newPath, (error) =>
-            error ? reject(error) : resolve(true)
-          )
+          fs?.rename(oldPath, newPath, (renameError) => {
+            if (!renameError) {
+              resolve(true);
+            } else if (renameError.code === "ENOTSUP") {
+              fs.readFile(oldPath, (readError, data) =>
+                fs.writeFile(newPath, data, (writeError) =>
+                  readError || writeError
+                    ? reject(readError || writeError)
+                    : resolve(false)
+                )
+              );
+            } else {
+              reject(renameError);
+            }
+          })
         ),
       rmdir: (path) =>
         new Promise((resolve, reject) =>

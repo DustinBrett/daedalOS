@@ -119,18 +119,22 @@ const useFolder = (
   );
   const updateFiles = useCallback(
     async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
-      if (oldFile && newFile) {
-        setFiles(
-          ({ [basename(oldFile)]: fileStats, ...currentFiles } = {}) => ({
-            ...currentFiles,
-            [basename(newFile)]: fileStats,
-          })
-        );
-      } else if (oldFile) {
-        setFiles(
-          ({ [basename(oldFile)]: _fileStats, ...currentFiles } = {}) =>
-            currentFiles
-        );
+      if (oldFile) {
+        if (!(await exists(join(directory, oldFile)))) {
+          if (newFile) {
+            setFiles(
+              ({ [basename(oldFile)]: fileStats, ...currentFiles } = {}) => ({
+                ...currentFiles,
+                [basename(newFile)]: fileStats,
+              })
+            );
+          } else {
+            setFiles(
+              ({ [basename(oldFile)]: _fileStats, ...currentFiles } = {}) =>
+                currentFiles
+            );
+          }
+        }
       } else if (newFile) {
         const baseName = basename(newFile);
         const allStats = await statsWithShortcutInfo(
@@ -185,6 +189,7 @@ const useFolder = (
     [
       close,
       directory,
+      exists,
       files,
       readdir,
       setSortOrders,
@@ -279,13 +284,14 @@ const useFolder = (
         }
 
         if (await rename(name, fullNewPath)) {
-          updateFolder(directory, uniqueName);
           updateFolder(dirname(name), "", name);
-          blurEntry();
-          focusEntry(uniqueName);
-
-          return uniqueName;
         }
+
+        updateFolder(directory, uniqueName);
+        blurEntry();
+        focusEntry(uniqueName);
+
+        return uniqueName;
       }
     } else {
       try {
