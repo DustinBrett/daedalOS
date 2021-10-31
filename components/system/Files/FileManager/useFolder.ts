@@ -182,6 +182,8 @@ const useFolder = (
               ...currentSortOrder,
               [directory]: Object.keys(sortedFiles),
             }));
+          } else {
+            setFiles({});
           }
         } catch (error) {
           if ((error as ApiError).code === "ENOENT") {
