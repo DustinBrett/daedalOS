@@ -2,6 +2,7 @@ type V86Image = {
   async?: boolean;
   size?: number;
   url: string;
+  // eslint-disable-next-line camelcase
   use_parts?: boolean;
 };
 
