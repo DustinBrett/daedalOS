@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 type FocusedEntryProps = {
   className?: string;
@@ -22,20 +22,26 @@ const useFocusableEntries = (
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
 ): FocusableEntries => {
   const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
-  const blurEntry = (entry?: string): void =>
-    setFocusedEntries(
-      entry
-        ? (currentFocusedEntries) =>
-            currentFocusedEntries.filter(
-              (focusedEntry) => focusedEntry !== entry
-            )
-        : []
-    );
-  const focusEntry = (entry: string): void =>
-    setFocusedEntries((currentFocusedEntries) => [
-      ...currentFocusedEntries,
-      entry,
-    ]);
+  const blurEntry = useCallback(
+    (entry?: string): void =>
+      setFocusedEntries(
+        entry
+          ? (currentFocusedEntries) =>
+              currentFocusedEntries.filter(
+                (focusedEntry) => focusedEntry !== entry
+              )
+          : []
+      ),
+    []
+  );
+  const focusEntry = useCallback(
+    (entry: string): void =>
+      setFocusedEntries((currentFocusedEntries) => [
+        ...currentFocusedEntries,
+        entry,
+      ]),
+    []
+  );
   const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||

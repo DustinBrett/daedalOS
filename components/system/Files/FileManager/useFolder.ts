@@ -196,6 +196,7 @@ const useFolder = (
       }
     },
     [
+      blurEntry,
       close,
       currentDirectory,
       directory,
