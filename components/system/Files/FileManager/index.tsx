@@ -36,6 +36,7 @@ const FileManager = ({
   url,
   view,
 }: FileManagerProps): JSX.Element => {
+  const [currentUrl, setCurrentUrl] = useState(url);
   const [renaming, setRenaming] = useState("");
   const [mounted, setMounted] = useState<boolean>(false);
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
@@ -64,7 +65,14 @@ const FileManager = ({
     };
   }, [closing, mountFs, mounted, unMountFs, updateFiles, url]);
 
-  return !hideLoading && isLoading ? (
+  useEffect(() => {
+    if (url !== currentUrl) {
+      folderActions.resetFiles();
+      setCurrentUrl(url);
+    }
+  }, [currentUrl, folderActions, url]);
+
+  return (!hideLoading && isLoading) || url !== currentUrl ? (
     <StyledLoading />
   ) : (
     <>

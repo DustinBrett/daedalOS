@@ -47,6 +47,7 @@ export type FolderActions = {
   addToFolder: () => void;
   newPath: (path: string, buffer?: Buffer, rename?: boolean) => Promise<string>;
   pasteToFolder: () => void;
+  resetFiles: () => void;
   setSortBy: SetSortBy;
 };
 
@@ -70,7 +71,6 @@ const useFolder = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions
 ): Folder => {
-  const [currentDirectory, setCurrentDirectory] = useState(directory);
   const [files, setFiles] = useState<Files>();
   const [downloadLink, setDownloadLink] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -164,10 +164,7 @@ const useFolder = (
                     await stat(join(directory, file))
                   ),
                 },
-                customSortOrder ||
-                  (directory === currentDirectory && files
-                    ? Object.keys(files)
-                    : [])
+                customSortOrder || Object.keys(files || {})
               );
 
               setFiles(newFiles);
@@ -200,7 +197,6 @@ const useFolder = (
     [
       blurEntry,
       close,
-      currentDirectory,
       directory,
       exists,
       files,
@@ -431,9 +427,8 @@ const useFolder = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (!files || directory !== currentDirectory) {
+      if (!files) {
         updateFiles(undefined, undefined, sortOrder);
-        setCurrentDirectory(directory);
       } else {
         const fileNames = Object.keys(files);
 
@@ -464,15 +459,7 @@ const useFolder = (
         }
       }
     }
-  }, [
-    currentDirectory,
-    directory,
-    files,
-    sessionLoaded,
-    setSortOrders,
-    sortOrder,
-    updateFiles,
-  ]);
+  }, [directory, files, sessionLoaded, setSortOrders, sortOrder, updateFiles]);
 
   useEffect(
     () => () => {
@@ -501,6 +488,8 @@ const useFolder = (
       addToFolder: () => addFile(newPath),
       newPath,
       pasteToFolder,
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      resetFiles: () => setFiles(undefined),
       setSortBy: useSortBy(directory, files),
     },
     isLoading,
