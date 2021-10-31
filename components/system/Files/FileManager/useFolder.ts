@@ -456,7 +456,15 @@ const useFolder = (
         }
       }
     }
-  }, [directory, files, sessionLoaded, setSortOrders, sortOrder, updateFiles]);
+  }, [
+    currentDirectory,
+    directory,
+    files,
+    sessionLoaded,
+    setSortOrders,
+    sortOrder,
+    updateFiles,
+  ]);
 
   useEffect(
     () => () => {
