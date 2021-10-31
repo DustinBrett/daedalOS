@@ -4,7 +4,7 @@ import FileManager from "components/system/Files/FileManager";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
@@ -14,6 +14,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   } = useProcesses();
   const { closing = false, icon = "", url = "" } = process || {};
   const { fs } = useFileSystem();
+  const [currentUrl, setCurrentUrl] = useState(url);
 
   useEffect(() => {
     const directoryName = basename(url);
@@ -21,7 +22,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
     if (url) {
       title(id, directoryName || "My PC");
 
-      if (!icon && fs) {
+      if (fs && (!icon || url !== currentUrl)) {
         setProcessIcon(
           id,
           `/System/Icons/${directoryName ? "folder" : "pc"}.png`
@@ -29,11 +30,16 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
         getIconFromIni(fs, url).then((iconFile) =>
           setProcessIcon(id, iconFile)
         );
+        setCurrentUrl(url);
       }
     }
-  }, [fs, icon, id, setProcessIcon, title, url]);
+  }, [currentUrl, fs, icon, id, setProcessIcon, title, url]);
 
-  return url ? <FileManager closing={closing} url={url} view="icon" /> : <></>;
+  return url ? (
+    <FileManager closing={closing} id={id} url={url} view="icon" />
+  ) : (
+    <></>
+  );
 };
 
 export default FileExplorer;

@@ -16,6 +16,7 @@ import type { FileActions } from "components/system/Files/FileManager/useFolder"
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename, dirname, extname } from "path";
 import { useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
@@ -36,6 +37,7 @@ import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
   fileActions: FileActions;
+  fileManagerId?: string;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   focusedEntries: string[];
   focusFunctions: FocusEntryFunctions;
@@ -75,6 +77,7 @@ const truncateName = (
 
 const FileEntry = ({
   fileActions,
+  fileManagerId,
   fileManagerRef,
   focusedEntries,
   focusFunctions,
@@ -89,6 +92,7 @@ const FileEntry = ({
   view,
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
+  const { url: changeUrl } = useProcesses();
   const { getIcon, icon, pid, subIcons, url } = useFileInfo(
     path,
     stats.isDirectory()
@@ -185,10 +189,13 @@ const FileEntry = ({
     <Button
       ref={buttonRef}
       title={createTooltip()}
-      {...useDoubleClick(
-        () => openFile(pid, !isDynamicIcon ? icon : undefined),
-        singleClick
-      )}
+      {...useDoubleClick(() => {
+        if (pid === "FileExplorer" && fileManagerId) {
+          changeUrl(fileManagerId, url);
+        } else {
+          openFile(pid, !isDynamicIcon ? icon : undefined);
+        }
+      }, singleClick)}
       {...useFileContextMenu(
         url,
         pid,
@@ -196,7 +203,8 @@ const FileEntry = ({
         setRenaming,
         fileActions,
         focusFunctions,
-        focusedEntries
+        focusedEntries,
+        fileManagerId
       )}
     >
       <figure>

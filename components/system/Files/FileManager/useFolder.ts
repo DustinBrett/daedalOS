@@ -70,6 +70,7 @@ const useFolder = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions
 ): Folder => {
+  const [currentDirectory, setCurrentDirectory] = useState(directory);
   const [files, setFiles] = useState<Files>();
   const [downloadLink, setDownloadLink] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -422,8 +423,9 @@ const useFolder = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (!files) {
+      if (!files || directory !== currentDirectory) {
         updateFiles(undefined, undefined, sortOrder);
+        setCurrentDirectory(directory);
       } else {
         const fileNames = Object.keys(files);
 

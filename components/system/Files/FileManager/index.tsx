@@ -19,6 +19,7 @@ type FileManagerProps = {
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
+  id?: string;
   url: string;
   view: FileManagerViewNames;
 };
@@ -28,6 +29,7 @@ const FileManager = ({
   hideLoading,
   hideScrolling,
   hideShortcutIcons,
+  id,
   url,
   view,
 }: FileManagerProps): JSX.Element => {
@@ -80,6 +82,7 @@ const FileManager = ({
         >
           <FileEntry
             fileActions={fileActions}
+            fileManagerId={id}
             fileManagerRef={fileManagerRef}
             focusFunctions={focusFunctions}
             focusedEntries={focusedEntries}

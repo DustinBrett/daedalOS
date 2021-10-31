@@ -31,7 +31,8 @@ const useFileContextMenu = (
     newShortcut,
   }: FileActions,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  focusedEntries: string[]
+  focusedEntries: string[],
+  fileManagerId?: string
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open } = useProcesses();
   const { setWallpaper } = useSession();
@@ -157,6 +158,13 @@ const useFileContextMenu = (
       menuItems.unshift({
         action: () => open("FileExplorer", dirname(url), ""),
         label: `Open ${isFolder ? "folder" : "file"} location`,
+      });
+    }
+
+    if (fileManagerId && pid === "FileExplorer") {
+      menuItems.unshift({
+        action: () => openFile(pid, pidIcon),
+        label: "Open in new window",
       });
     }
 
