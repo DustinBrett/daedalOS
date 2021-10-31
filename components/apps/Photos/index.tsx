@@ -41,12 +41,15 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
     setSrc((currentSrc) => {
       const [currentUrl] = Object.keys(currentSrc);
 
-      if (currentUrl) cleanUpBufferUrl(currentUrl);
+      if (currentUrl) {
+        cleanUpBufferUrl(currentUrl);
+        reset?.();
+      }
 
       return { [url]: bufferToUrl(fileContents) };
     });
     appendFileToTitle(basename(url));
-  }, [appendFileToTitle, readFile, url]);
+  }, [appendFileToTitle, readFile, reset, url]);
 
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
@@ -78,13 +81,12 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
           }
         })}
       >
-        {src[url] && (
-          <img
-            ref={imageRef}
-            alt={basename(url, extname(url))}
-            src={src[url]}
-          />
-        )}
+        <img
+          ref={imageRef}
+          alt={basename(url, extname(url))}
+          src={src[url]}
+          style={{ visibility: src[url] ? "visible" : "hidden" }}
+        />
       </figure>
       <nav className="bottom">
         <Button onClick={toggleFullscreen} title="Full-screen">

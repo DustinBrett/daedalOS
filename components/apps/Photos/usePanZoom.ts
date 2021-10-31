@@ -88,6 +88,8 @@ const usePanZoom = (
     if (imgElement && !panZoom) {
       setPanZoom(Panzoom(imgElement, panZoomConfig));
     }
+
+    return () => panZoom?.destroy();
   }, [imgElement, panZoom, zoomUpdate]);
 
   return { reset, scale: getScale?.(), zoomIn, zoomOut, zoomToPoint };
