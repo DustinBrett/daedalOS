@@ -22,6 +22,8 @@ import {
   DEFAULT_LOCALE,
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
+  NON_BREAKING_HYPHEN,
+  NON_BREAKING_SPACE,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -52,7 +54,15 @@ const truncateName = (
   fontFamily: string,
   maxWidth: number
 ): string => {
-  const { lines } = getTextWrapData(name, fontSize, fontFamily, maxWidth);
+  const nonBreakingName = name
+    .replace(/-/g, NON_BREAKING_HYPHEN)
+    .replace(/ /g, NON_BREAKING_SPACE);
+  const { lines } = getTextWrapData(
+    nonBreakingName,
+    fontSize,
+    fontFamily,
+    maxWidth
+  );
 
   if (lines.length > 2) {
     const text = !name.includes(" ") ? lines[0] : lines.slice(0, 2).join("");
@@ -60,7 +70,7 @@ const truncateName = (
     return `${text.slice(0, -3)}...`;
   }
 
-  return name;
+  return nonBreakingName;
 };
 
 const FileEntry = ({
