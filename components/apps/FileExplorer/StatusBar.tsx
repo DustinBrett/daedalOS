@@ -15,25 +15,30 @@ const StatusBar = ({
   directory,
   selected,
 }: StatusBarProps): JSX.Element => {
-  const { stat } = useFileSystem();
+  const { exists, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(-1);
   const updateSelectedSize = useCallback(async (): Promise<void> => {
     let totalSize = 0;
 
     for (const file of selected) {
-      // eslint-disable-next-line no-await-in-loop
-      const stats = await stat(join(directory, file));
+      const path = join(directory, file);
 
-      if (stats.isDirectory()) {
-        totalSize = -1;
-        break;
+      /* eslint-disable no-await-in-loop */
+      if (await exists(path)) {
+        const stats = await stat(path);
+
+        if (stats.isDirectory()) {
+          totalSize = -1;
+          break;
+        }
+
+        totalSize += stats.size;
       }
-
-      totalSize += stats.size;
+      /* eslint-enable no-await-in-loop */
     }
 
     setSelectedSize(totalSize);
-  }, [directory, selected, stat]);
+  }, [directory, exists, selected, stat]);
 
   useEffect(() => {
     updateSelectedSize();
