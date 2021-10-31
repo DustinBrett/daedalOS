@@ -16,7 +16,7 @@ import type { FileActions } from "components/system/Files/FileManager/useFolder"
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename, extname } from "path";
+import { basename, dirname, extname } from "path";
 import { useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
@@ -155,11 +155,12 @@ const FileEntry = ({
     const extension = extname(path);
     const isShortcut = extension === SHORTCUT_EXTENSION;
 
-    if (
-      isShortcut ||
-      (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension))
-    ) {
+    if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
       return undefined;
+    }
+
+    if (isShortcut) {
+      return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
     }
 
     const type =
