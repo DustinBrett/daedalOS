@@ -26,7 +26,6 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
-  NON_BREAKING_SPACE,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -57,9 +56,7 @@ const truncateName = (
   fontFamily: string,
   maxWidth: number
 ): string => {
-  const nonBreakingName = name
-    .replace(/-/g, NON_BREAKING_HYPHEN)
-    .replace(/ /g, NON_BREAKING_SPACE);
+  const nonBreakingName = name.replace(/-/g, NON_BREAKING_HYPHEN);
   const { lines } = getTextWrapData(
     nonBreakingName,
     fontSize,
