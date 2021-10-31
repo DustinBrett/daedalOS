@@ -83,6 +83,9 @@ const useAsyncFs = (): AsyncFSModule => {
                     : resolve(false)
                 )
               );
+            } else if (renameError.code === "EISDIR") {
+              rootFs?.umount(oldPath);
+              asyncFs.rename(oldPath, newPath).then(resolve, reject);
             } else {
               reject(renameError);
             }
