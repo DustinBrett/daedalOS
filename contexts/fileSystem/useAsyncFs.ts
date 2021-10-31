@@ -1,9 +1,13 @@
+import type * as IBrowserFS from "browserfs";
+import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { useMemo } from "react";
+import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
+import { useEffect, useMemo, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
 
-export type AsyncFSModule = {
+export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
   mkdir: (path: string, overwrite?: boolean) => Promise<boolean>;
   readFile: (path: string) => Promise<Buffer>;
@@ -19,8 +23,27 @@ export type AsyncFSModule = {
   ) => Promise<boolean>;
 };
 
-const useAsyncFs = (fs?: FSModule): AsyncFSModule =>
-  useMemo(
+const {
+  BFSRequire,
+  configure,
+  FileSystem: { IsoFS, ZipFS },
+} = BrowserFS as typeof IBrowserFS;
+
+type RootFileSystem = Omit<MountableFileSystem, "mntMap"> & {
+  mntMap: Record<string, { data: Buffer }>;
+};
+
+type AsyncFSModule = AsyncFS & {
+  fs?: FSModule;
+  IsoFS?: typeof IsoFS;
+  rootFs?: RootFileSystem;
+  ZipFS?: typeof ZipFS;
+};
+
+const useAsyncFs = (): AsyncFSModule => {
+  const [fs, setFs] = useState<FSModule>();
+  const [rootFs, setRootFs] = useState<RootFileSystem>();
+  const asyncFs: AsyncFS = useMemo(
     () => ({
       exists: (path) => new Promise((resolve) => fs?.exists(path, resolve)),
       mkdir: (path, overwrite = false) =>
@@ -31,9 +54,17 @@ const useAsyncFs = (fs?: FSModule): AsyncFSModule =>
         ),
       readFile: (path) =>
         new Promise((resolve, reject) =>
-          fs?.readFile(path, (error, data = EMPTY_BUFFER) =>
-            error ? reject(error) : resolve(data)
-          )
+          fs?.readFile(path, (error, data = EMPTY_BUFFER) => {
+            if (error) {
+              if (error.code === "EISDIR" && rootFs?.mntMap[path]?.data) {
+                resolve(rootFs.mntMap[path].data);
+              } else {
+                reject(error);
+              }
+            }
+
+            resolve(data);
+          })
         ),
       readdir: (path) =>
         new Promise((resolve, reject) =>
@@ -68,7 +99,26 @@ const useAsyncFs = (fs?: FSModule): AsyncFSModule =>
           )
         ),
     }),
-    [fs]
+    [fs, rootFs]
   );
+
+  useEffect(() => {
+    if (!fs)
+      configure(FileSystemConfig, () => {
+        const loadedFs = BFSRequire("fs");
+
+        setFs(loadedFs);
+        setRootFs(loadedFs.getRootFS() as RootFileSystem);
+      });
+  }, [fs]);
+
+  return {
+    ...asyncFs,
+    IsoFS,
+    ZipFS,
+    fs,
+    rootFs,
+  };
+};
 
 export default useAsyncFs;
