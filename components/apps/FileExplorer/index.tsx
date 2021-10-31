@@ -1,3 +1,6 @@
+import { ROOT_NAME } from "components/apps/FileExplorer/config";
+import Navigation from "components/apps/FileExplorer/Navigation";
+import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
@@ -20,7 +23,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
     const directoryName = basename(url);
 
     if (url) {
-      title(id, directoryName || "My PC");
+      title(id, directoryName || ROOT_NAME);
 
       if (fs && (!icon || url !== currentUrl)) {
         setProcessIcon(
@@ -36,7 +39,10 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   }, [currentUrl, fs, icon, id, setProcessIcon, title, url]);
 
   return url ? (
-    <FileManager closing={closing} id={id} url={url} view="icon" />
+    <StyledFileExplorer>
+      <Navigation id={id} />
+      <FileManager closing={closing} id={id} url={url} view="icon" />
+    </StyledFileExplorer>
   ) : (
     <></>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export type MenuItem = {
   action?: () => void;
+  checked?: boolean;
   disabled?: boolean;
   icon?: string;
   label?: string;

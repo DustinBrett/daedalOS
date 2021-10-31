@@ -50,7 +50,7 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
         width: max-content;
 
         &.primary {
-          font-weight: 600;
+          font-weight: 700;
         }
       }
 
@@ -63,8 +63,15 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
         height: 13px;
         margin-top: 1px;
         position: absolute;
-        right: 8px;
         width: 13px;
+
+        &.left {
+          left: 8px;
+        }
+
+        &.right {
+          right: 8px;
+        }
       }
     }
   }

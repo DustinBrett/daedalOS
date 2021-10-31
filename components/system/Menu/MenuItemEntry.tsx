@@ -1,5 +1,5 @@
 import Menu from "components/system/Menu";
-import { ChevronRight } from "components/system/Menu/MenuIcons";
+import { Checkmark, ChevronRight } from "components/system/Menu/MenuIcons";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
@@ -13,6 +13,7 @@ type MenuItemEntryProps = MenuItem & {
 
 const MenuItemEntry = ({
   action,
+  checked,
   disabled,
   icon,
   label,
@@ -67,10 +68,11 @@ const MenuItemEntry = ({
           }}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
+          {checked && <Checkmark className="left" />}
           <figcaption className={primary ? "primary" : undefined}>
             {label}
           </figcaption>
-          {menu && <ChevronRight />}
+          {menu && <ChevronRight className="right" />}
         </Button>
       )}
       {showSubMenu && <Menu subMenu={{ items: menu, ...subMenuOffset }} />}
