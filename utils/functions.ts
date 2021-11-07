@@ -86,3 +86,7 @@ export const getFormattedSize = (size = 0): string => {
 
   return `${size} bytes`;
 };
+
+export const lockTitle = (): void => {
+  Object.defineProperty(document, "title", { set: undefined });
+};
