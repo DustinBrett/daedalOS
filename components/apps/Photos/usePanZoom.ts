@@ -7,6 +7,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
+import useResizeObserver from "utils/useResizeObserver";
 
 export const panZoomConfig = {
   cursor: "default",
@@ -30,7 +31,6 @@ const usePanZoom = (
   const [panZoom, setPanZoom] = useState<ReturnType<typeof Panzoom>>();
   const { getScale, reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } =
     panZoom || {};
-  const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
   const {
     processes: { [id]: process },
   } = useProcesses();
@@ -57,23 +57,7 @@ const usePanZoom = (
     [appendFileToTitle, panZoom, url]
   );
 
-  useEffect(() => {
-    if (!resizeObserver && reset) {
-      setResizeObserver(new ResizeObserver(reset));
-    }
-  }, [reset, resizeObserver]);
-
-  useEffect(() => {
-    if (componentWindow instanceof HTMLElement) {
-      resizeObserver?.observe(componentWindow);
-    }
-
-    return () => {
-      if (componentWindow instanceof HTMLElement) {
-        resizeObserver?.unobserve(componentWindow);
-      }
-    };
-  }, [componentWindow, resizeObserver]);
+  useResizeObserver(componentWindow, reset);
 
   useEffect(() => {
     if (imgElement && containerElement && zoomWithWheel) {
