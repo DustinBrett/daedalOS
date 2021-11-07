@@ -60,6 +60,7 @@ const Sidebar = (): JSX.Element => {
       action: () => resetFs().finally(() => window.location.reload()),
       icon: <Power />,
       name: "Power",
+      tooltip: "Clears session data and reloads the page.",
     },
   ];
 
