@@ -46,7 +46,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
 
   return (
     <StyledTitlebar
-      foreground={isForeground}
+      $foreground={isForeground}
       {...dragHandle}
       {...useTitlebarContextMenu(id)}
     >

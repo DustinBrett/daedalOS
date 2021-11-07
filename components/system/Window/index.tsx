@@ -34,7 +34,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
   return (
     <RndWindow id={id} zIndex={zIndex}>
       <StyledWindow
-        foreground={isForeground}
+        $foreground={isForeground}
         style={{ backgroundColor }}
         {...focusableProps}
         {...windowTransitions}

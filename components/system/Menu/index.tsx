@@ -96,10 +96,10 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   return items ? (
     <StyledMenu
       ref={menuRef}
-      isSubMenu={Boolean(subMenu)}
+      $isSubMenu={Boolean(subMenu)}
+      $x={x - offset.x}
+      $y={y - offset.y}
       onBlurCapture={resetMenu}
-      x={x - offset.x}
-      y={y - offset.y}
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >

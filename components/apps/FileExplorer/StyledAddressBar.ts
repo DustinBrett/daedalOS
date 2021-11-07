@@ -1,15 +1,15 @@
 import styled from "styled-components";
 
 type StyledAddressBarProps = {
-  icon: string;
+  $icon: string;
 };
 
 const StyledAddressBar = styled.input.attrs({
   type: "text",
 })<StyledAddressBarProps>`
   background-color: rgb(25, 25, 25);
-  background-image: ${({ icon }) =>
-    `url('${icon.replace("/Icons/", "/Icons/16x16/")}')`};
+  background-image: ${({ $icon }) =>
+    `url('${$icon.replace("/Icons/", "/Icons/16x16/")}')`};
   background-position: 2px 5px;
   background-repeat: no-repeat;
   border: 1px solid rgb(83, 83, 83);

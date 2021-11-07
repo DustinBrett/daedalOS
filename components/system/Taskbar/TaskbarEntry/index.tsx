@@ -49,7 +49,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
 
   return (
     <StyledTaskbarEntry
-      foreground={isForeground}
+      $foreground={isForeground}
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}

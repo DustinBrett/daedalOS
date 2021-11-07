@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 type StyledMenuProps = {
-  isSubMenu: boolean;
-  x: number;
-  y: number;
+  $isSubMenu: boolean;
+  $x: number;
+  $y: number;
 };
 
 const StyledMenu = styled(motion.nav)<StyledMenuProps>`
@@ -17,9 +17,9 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
   height: fit-content;
   padding: 4px 2px;
   position: absolute;
-  transform: ${({ x, y }) => `translate(${x}px, ${y}px);`};
+  transform: ${({ $x, $y }) => `translate(${$x}px, ${$y}px);`};
   width: fit-content;
-  z-index: ${({ isSubMenu }) => isSubMenu && 1};
+  z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
   ol {
     li.disabled {

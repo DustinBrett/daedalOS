@@ -23,7 +23,7 @@ const SidebarButtonComponent = ({
   tooltip,
 }: SidebarButtonProps): JSX.Element => (
   <StyledSidebarButton
-    active={active}
+    $active={active}
     onClick={action}
     title={collapsed ? tooltip || name : undefined}
   >
