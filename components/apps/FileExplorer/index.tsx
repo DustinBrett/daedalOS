@@ -15,7 +15,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
     title,
     processes: { [id]: process },
   } = useProcesses();
-  const { closing = false, icon = "", url = "" } = process || {};
+  const { icon = "", url = "" } = process || {};
   const { fs } = useFileSystem();
   const [currentUrl, setCurrentUrl] = useState(url);
 
@@ -41,7 +41,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   return url ? (
     <StyledFileExplorer>
       <Navigation id={id} />
-      <FileManager closing={closing} id={id} url={url} view="icon" statusBar />
+      <FileManager id={id} url={url} view="icon" statusBar />
     </StyledFileExplorer>
   ) : (
     <></>
