@@ -287,7 +287,7 @@ const measureText = (
   text: string,
   fontSize: string,
   fontFamily: string
-): TextMetrics => {
+): number => {
   const font = `${fontSize} ${fontFamily}`;
 
   if (!canvasContexts[font]) {
@@ -300,8 +300,10 @@ const measureText = (
     context.font = font;
     canvasContexts[font] = context;
   }
+  const { actualBoundingBoxLeft, actualBoundingBoxRight } =
+    canvasContexts[font].measureText(text);
 
-  return canvasContexts[font].measureText(text);
+  return Math.abs(actualBoundingBoxLeft) + Math.abs(actualBoundingBoxRight);
 };
 
 export const getTextWrapData = (
@@ -312,7 +314,7 @@ export const getTextWrapData = (
 ): WrapData => {
   const lines = [""];
 
-  const { width: totalWidth } = measureText(text, fontSize, fontFamily);
+  const totalWidth = measureText(text, fontSize, fontFamily);
 
   if (!maxWidth) return { lines: [text], width: totalWidth };
 
@@ -320,7 +322,7 @@ export const getTextWrapData = (
     [...text].forEach((character) => {
       const lineCount = lines.length - 1;
       const lineText = `${lines[lineCount]}${character}`;
-      const { width: lineWidth } = measureText(lineText, fontSize, fontFamily);
+      const lineWidth = measureText(lineText, fontSize, fontFamily);
 
       if (lineWidth > maxWidth) {
         lines.push(character);
