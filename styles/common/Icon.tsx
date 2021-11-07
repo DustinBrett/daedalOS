@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import styled from "styled-components";
 import { cleanUpBufferUrl } from "utils/functions";
 
@@ -9,14 +9,10 @@ export type IconProps = {
   moving?: boolean;
 };
 
-const onLoad: React.ReactEventHandler = ({ target }) =>
-  (target as HTMLImageElement).style.setProperty("visibility", "visible");
-
 const StyledIcon = styled.img.attrs<IconProps>(
   ({ imgSize, displaySize, src = "" }) => ({
     draggable: false,
     height: displaySize || imgSize,
-    onLoad,
     src:
       !src || src.startsWith("blob:")
         ? src
@@ -26,20 +22,27 @@ const StyledIcon = styled.img.attrs<IconProps>(
 )<IconProps>`
   object-fit: contain;
   opacity: ${({ moving }) => (moving ? 0.5 : 1)};
-  visibility: hidden;
 `;
 
 const Icon = (
   props: IconProps & React.ImgHTMLAttributes<HTMLImageElement>
 ): JSX.Element => {
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(
     () => () => {
-      if (props.src?.startsWith("blob:")) cleanUpBufferUrl(props.src);
+      if (loaded && props.src?.startsWith("blob:")) cleanUpBufferUrl(props.src);
     },
-    [props]
+    [loaded, props]
   );
 
-  return <StyledIcon {...props} />;
+  return (
+    <StyledIcon
+      onLoad={() => setLoaded(true)}
+      style={{ visibility: loaded ? "visible" : "hidden" }}
+      {...props}
+    />
+  );
 };
 
 export default memo(Icon);
