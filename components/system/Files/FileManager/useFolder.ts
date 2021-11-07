@@ -1,5 +1,4 @@
 import type { ApiError } from "browserfs/dist/node/core/api_error";
-import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import {
   filterSystemFiles,
@@ -374,31 +373,33 @@ const useFolder = (
       updateFolder(directory, zipFolderName);
     }
   };
-  const pasteToFolder = (): void => {
+  const pasteToFolder = async (): Promise<void> => {
     const pasteEntries = Object.entries(pasteList);
     const moving = pasteEntries.some(([, operation]) => operation === "move");
-    const copyFiles =
-      (entry: string, basePath = ""): BFSCallback<Buffer> =>
-      (readError, fileContents) =>
-        newPath(join(basePath, basename(entry)), fileContents).then(
-          (uniquePath) => {
-            if (readError?.code === "EISDIR") {
-              fs?.readdir(entry, (_dirError, dirContents) =>
-                dirContents?.forEach((dirEntry) => {
-                  const dirPath = join(entry, dirEntry);
+    const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
+      const newBasePath = join(basePath, basename(entry));
 
-                  fs.readFile(dirPath, copyFiles(dirPath, uniquePath));
-                })
-              );
-            }
-          }
+      if ((await stat(entry)).isDirectory()) {
+        const uniquePath = await createPath(newBasePath, directory);
+
+        await Promise.all(
+          (
+            await readdir(entry)
+          ).map((dirEntry) => copyFiles(join(entry, dirEntry), uniquePath))
         );
+      } else {
+        await createPath(newBasePath, directory, await readFile(entry));
+      }
+    };
 
-    pasteEntries.forEach(([pasteEntry]) =>
-      moving
-        ? newPath(pasteEntry)
-        : fs?.readFile(pasteEntry, copyFiles(pasteEntry))
+    await Promise.all(
+      pasteEntries.map(
+        ([pasteEntry]): Promise<string | void> =>
+          moving ? createPath(pasteEntry, directory) : copyFiles(pasteEntry)
+      )
     );
+
+    updateFolder(directory);
 
     if (moving) copyEntries([]);
   };
