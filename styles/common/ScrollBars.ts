@@ -1,11 +1,16 @@
+import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
 
-const ScrollBars = css`
+const ScrollBars = (
+  size = 17,
+  verticalX?: number,
+  verticalY?: number
+): FlattenSimpleInterpolation => css`
   overflow: auto;
 
   ::-webkit-scrollbar {
-    height: 17px;
-    width: 17px;
+    height: ${size}px;
+    width: ${size}px;
   }
 
   ::-webkit-scrollbar-corner,
@@ -46,6 +51,7 @@ const ScrollBars = css`
     background-size: 10px;
     border: 1px solid rgb(23, 23, 23);
     display: block;
+    height: ${size ? `${size}px` : "initial"};
 
     &:hover {
       background-color: rgb(55, 55, 55);
@@ -58,7 +64,8 @@ const ScrollBars = css`
 
   ::-webkit-scrollbar-button:single-button:vertical:decrement,
   ::-webkit-scrollbar-button:single-button:vertical:increment {
-    background-position: center;
+    background-position-x: ${verticalX ? `${verticalX}px` : "center"};
+    background-position-y: ${verticalY ? `${verticalY}px` : "center"};
     background-size: 16px;
     border-bottom: 0;
     border-top: 0;

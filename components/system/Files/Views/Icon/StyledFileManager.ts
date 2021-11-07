@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
-  ${ScrollBars};
+  ${ScrollBars()};
 
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
   display: grid;
