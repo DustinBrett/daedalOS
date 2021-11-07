@@ -129,10 +129,16 @@ const useFolder = (
           const oldName = basename(oldFile);
 
           if (newFile) {
-            setFiles(({ [oldName]: fileStats, ...currentFiles } = {}) => ({
-              ...currentFiles,
-              [basename(newFile)]: fileStats,
-            }));
+            setFiles((currentFiles = {}) =>
+              Object.entries(currentFiles).reduce<Files>(
+                (newFiles, [fileName, fileStats]) => ({
+                  ...newFiles,
+                  [fileName === oldName ? basename(newFile) : fileName]:
+                    fileStats,
+                }),
+                {}
+              )
+            );
           } else {
             blurEntry(oldName);
             setFiles(
