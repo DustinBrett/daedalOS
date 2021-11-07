@@ -1,14 +1,17 @@
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { useFileSystem } from "contexts/fileSystem";
 import { join } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getFormattedSize } from "utils/functions";
+import useResizeObserver from "utils/useResizeObserver";
 
 type StatusBarProps = {
   count: number;
   directory: string;
   selected: string[];
 };
+
+const MINIMUM_STATUSBAR_WIDTH = 225;
 
 const StatusBar = ({
   count,
@@ -17,6 +20,10 @@ const StatusBar = ({
 }: StatusBarProps): JSX.Element => {
   const { exists, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(0);
+  const [showSelected, setShowSelected] = useState(false);
+  const updateShowSelected = (width: number): void =>
+    setShowSelected(width > MINIMUM_STATUSBAR_WIDTH);
+  const statusBarRef = useRef<HTMLDivElement | null>(null);
   const updateSelectedSize = useCallback(async (): Promise<void> => {
     let totalSize = -1;
 
@@ -44,12 +51,23 @@ const StatusBar = ({
     updateSelectedSize();
   }, [selected, updateSelectedSize]);
 
+  useEffect(() => {
+    if (statusBarRef.current) {
+      updateShowSelected(statusBarRef.current.getBoundingClientRect().width);
+    }
+  }, []);
+
+  useResizeObserver(
+    statusBarRef.current,
+    ([{ contentRect: { width = 0 } = {} }]) => updateShowSelected(width)
+  );
+
   return (
-    <StyledStatusBar>
+    <StyledStatusBar ref={statusBarRef}>
       <div title="Total item count">
         {count} item{count !== 1 ? "s" : ""}
       </div>
-      {selected.length > 0 && (
+      {showSelected && selected.length > 0 && (
         <div title="Selected item count and size">
           {selected.length} item{selected.length !== 1 ? "s" : ""} selected
           {selectedSize > -1
