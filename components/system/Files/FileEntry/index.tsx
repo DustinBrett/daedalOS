@@ -11,6 +11,7 @@ import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import type { FileManagerViewNames } from "components/system/Files/Views";
@@ -98,7 +99,7 @@ const FileEntry = ({
     stats.isDirectory()
   );
   const openFile = useFile(url);
-  const { pasteList } = useFileSystem();
+  const { createPath, pasteList, updateFolder } = useFileSystem();
   const { formats, sizes } = useTheme();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -112,6 +113,16 @@ const FileEntry = ({
       : subIcons;
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
+  const extension = extname(path);
+  const isShortcut = extension === SHORTCUT_EXTENSION;
+  const fileDrop = useFileDrop({
+    callback: async (fileDropName, data) => {
+      const directory = isShortcut ? url : path;
+      const uniqueName = await createPath(fileDropName, directory, data);
+
+      if (uniqueName) updateFolder(directory, uniqueName);
+    },
+  });
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -156,9 +167,6 @@ const FileEntry = ({
   }, [getIcon, icon, isLoadingFileManager]);
 
   const createTooltip = (): string | undefined => {
-    const extension = extname(path);
-    const isShortcut = extension === SHORTCUT_EXTENSION;
-
     if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
       return undefined;
     }
@@ -197,6 +205,7 @@ const FileEntry = ({
           openFile(pid, !isDynamicIcon ? icon : undefined);
         }
       }, singleClick)}
+      {...(pid === "FileExplorer" && fileDrop)}
       {...useFileContextMenu(
         url,
         pid,

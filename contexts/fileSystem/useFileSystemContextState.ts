@@ -3,13 +3,17 @@ import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
+import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
+import {
+  handleFileInputEvent,
+  iterateFileName,
+} from "components/system/Files/FileManager/functions";
 import type { AsyncFS } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
-import { dirname, extname, join } from "path";
+import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
@@ -27,6 +31,11 @@ export type FileSystemContextState = AsyncFS & {
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   pasteList: FilePasteOperations;
+  createPath: (
+    name: string,
+    directory: string,
+    buffer?: Buffer
+  ) => Promise<string>;
   copyEntries: (entries: string[]) => void;
   moveEntries: (entries: string[]) => void;
   mkdirRecursive: (path: string) => Promise<void>;
@@ -34,7 +43,7 @@ export type FileSystemContextState = AsyncFS & {
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const { rootFs, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
-  const { exists, mkdir, readFile } = asyncFs;
+  const { exists, mkdir, readFile, rename, writeFile } = asyncFs;
   const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
@@ -140,6 +149,49 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     await recursePath();
   };
+  const createPath = async (
+    name: string,
+    directory: string,
+    buffer?: Buffer,
+    iteration = 0
+  ): Promise<string> => {
+    const isInternal = !buffer && isAbsolute(name);
+    const baseName = isInternal ? basename(name) : name;
+    const uniqueName = !iteration
+      ? baseName
+      : iterateFileName(baseName, iteration);
+    const fullNewPath = join(directory, uniqueName);
+
+    if (isInternal) {
+      if (name !== fullNewPath) {
+        if (await exists(fullNewPath)) {
+          return createPath(name, directory, buffer, iteration + 1);
+        }
+
+        if (await rename(name, fullNewPath)) {
+          updateFolder(dirname(name), "", name);
+        }
+
+        return uniqueName;
+      }
+    } else {
+      try {
+        if (
+          buffer
+            ? await writeFile(fullNewPath, buffer)
+            : await mkdir(fullNewPath)
+        ) {
+          return uniqueName;
+        }
+      } catch (error) {
+        if ((error as ApiError)?.code === "EEXIST") {
+          return createPath(name, directory, buffer, iteration + 1);
+        }
+      }
+    }
+
+    return "";
+  };
 
   useEffect(() => {
     const watchedPaths = Object.keys(fsWatchers).filter(
@@ -162,6 +214,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     addFile,
     addFsWatcher,
     copyEntries,
+    createPath,
     mkdirRecursive,
     mountFs,
     moveEntries,
