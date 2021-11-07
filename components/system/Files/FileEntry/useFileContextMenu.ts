@@ -34,7 +34,7 @@ const useFileContextMenu = (
   focusedEntries: string[],
   fileManagerId?: string
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
-  const { open } = useProcesses();
+  const { open, url: changeUrl } = useProcesses();
   const { setWallpaper } = useSession();
   const urlExtension = extname(url);
   const baseName = basename(path);
@@ -158,7 +158,7 @@ const useFileContextMenu = (
 
   if (pid) {
     if (isShortcut && url && url !== "/") {
-      const isFolder = extname(url) === "";
+      const isFolder = urlExtension === "" || urlExtension === ".zip";
 
       menuItems.unshift({
         action: () => open("FileExplorer", dirname(url), ""),
@@ -166,7 +166,11 @@ const useFileContextMenu = (
       });
     }
 
-    if (fileManagerId && pid === "FileExplorer") {
+    if (
+      fileManagerId &&
+      pid === "FileExplorer" &&
+      !MOUNTABLE_EXTENSIONS.has(urlExtension)
+    ) {
       menuItems.unshift({
         action: () => openFile(pid, pidIcon),
         label: "Open in new window",
@@ -174,7 +178,17 @@ const useFileContextMenu = (
     }
 
     menuItems.unshift({
-      action: () => openFile(pid, pidIcon),
+      action: () => {
+        if (
+          pid === "FileExplorer" &&
+          fileManagerId &&
+          !MOUNTABLE_EXTENSIONS.has(urlExtension)
+        ) {
+          changeUrl(fileManagerId, url);
+        } else {
+          openFile(pid, pidIcon);
+        }
+      },
       icon: pidIcon,
       label: "Open",
       primary: true,
