@@ -29,6 +29,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
   INVALID_FILE_CHARACTERS,
+  MOUNTABLE_EXTENSIONS,
   PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
@@ -317,7 +318,9 @@ const useFolder = (
         {
           BaseURL: process,
           IconFile:
-            process !== "FileExplorer" && pathExtension
+            pathExtension &&
+            (process !== "FileExplorer" ||
+              MOUNTABLE_EXTENSIONS.has(pathExtension))
               ? getIconByFileExtension(pathExtension)
               : FOLDER_ICON,
           URL: path,
