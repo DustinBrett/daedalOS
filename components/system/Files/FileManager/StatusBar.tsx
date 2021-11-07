@@ -1,4 +1,4 @@
-import StyledStatusBar from "components/apps/FileExplorer/StyledStatusBar";
+import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { useFileSystem } from "contexts/fileSystem";
 import { join } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -16,9 +16,9 @@ const StatusBar = ({
   selected,
 }: StatusBarProps): JSX.Element => {
   const { exists, stat } = useFileSystem();
-  const [selectedSize, setSelectedSize] = useState(-1);
+  const [selectedSize, setSelectedSize] = useState(0);
   const updateSelectedSize = useCallback(async (): Promise<void> => {
-    let totalSize = 0;
+    let totalSize = -1;
 
     for (const file of selected) {
       const path = join(directory, file);
@@ -32,7 +32,7 @@ const StatusBar = ({
           break;
         }
 
-        totalSize += stats.size;
+        totalSize = totalSize === -1 ? stats.size : totalSize + stats.size;
       }
       /* eslint-enable no-await-in-loop */
     }
