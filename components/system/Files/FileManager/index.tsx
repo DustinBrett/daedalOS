@@ -59,10 +59,6 @@ const FileManager = ({
         return true;
       });
     }
-
-    return () => {
-      if (mounted && closing) unMountFs(url);
-    };
   }, [closing, mountFs, mounted, unMountFs, updateFiles, url]);
 
   useEffect(() => {

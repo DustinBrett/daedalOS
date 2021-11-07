@@ -10,7 +10,7 @@ import type { AsyncFS } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { dirname, extname, join } from "path";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -107,7 +107,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
       }
     });
   };
-
   const unMountFs = (url: string): void => rootFs?.umount?.(url);
   const addFile = (callback: (name: string, buffer?: Buffer) => void): void => {
     fileInput?.addEventListener(
@@ -141,6 +140,23 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     await recursePath();
   };
+
+  useEffect(() => {
+    const watchedPaths = Object.keys(fsWatchers).filter(
+      (watchedPath) => fsWatchers[watchedPath].length > 0
+    );
+    const mountedPaths = Object.keys(rootFs?.mntMap || {}).filter(
+      (mountedPath) => mountedPath !== "/"
+    );
+
+    mountedPaths.forEach((mountedPath) => {
+      if (
+        !watchedPaths.some((watchedPath) => watchedPath.startsWith(mountedPath))
+      ) {
+        rootFs?.umount?.(mountedPath);
+      }
+    });
+  }, [fsWatchers, rootFs]);
 
   return {
     addFile,
