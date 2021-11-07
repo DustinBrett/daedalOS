@@ -53,7 +53,7 @@ export const centerPosition = (
 
 export const closeWithTransition = (close: processCloser, id: string): void => {
   close(id, true);
-  setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
+  window.setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
 };
 
 export const isWindowOutsideBounds = (

@@ -77,7 +77,7 @@ const useWebamp = (id: string): Webamp => {
             },
           }));
 
-          setTimeout(() => {
+          window.setTimeout(() => {
             subscriptions.forEach((unsubscribe) => unsubscribe());
             webamp.close();
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);

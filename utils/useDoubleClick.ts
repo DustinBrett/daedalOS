@@ -7,7 +7,7 @@ const useDoubleClick = (
   handler: React.MouseEventHandler,
   singleClick = false
 ): { onClick: React.MouseEventHandler } => {
-  const timer = useRef<NodeJS.Timeout | undefined>();
+  const timer = useRef<number | undefined>();
   const moveCount = useRef(0);
   const onClick: React.MouseEventHandler = (event) => {
     const runHandler = (): void => {
@@ -36,7 +36,7 @@ const useDoubleClick = (
     if (singleClick) {
       runHandler();
     } else if (typeof timer.current === "undefined") {
-      timer.current = setTimeout(
+      timer.current = window.setTimeout(
         clearTimer,
         TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK
       );

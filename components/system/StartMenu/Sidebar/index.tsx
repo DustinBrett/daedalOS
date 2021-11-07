@@ -31,7 +31,7 @@ const Sidebar = (): JSX.Element => {
   const { resetFs } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
-  const expandTimer = useRef<NodeJS.Timer>();
+  const expandTimer = useRef<number>();
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
@@ -70,7 +70,7 @@ const Sidebar = (): JSX.Element => {
     <StyledSidebar
       className={collapsed ? "collapsed" : undefined}
       onMouseEnter={() => {
-        expandTimer.current = setTimeout(() => setCollapsed(false), 700);
+        expandTimer.current = window.setTimeout(() => setCollapsed(false), 700);
       }}
       onMouseLeave={() => {
         clearTimer();

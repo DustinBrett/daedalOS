@@ -51,7 +51,7 @@ const useWindowPeek = (id: string): string => {
     processes: { [id]: process },
   } = useProcesses();
   const { peekElement, componentWindow } = process || {};
-  const previewTimer = useRef<NodeJS.Timer>();
+  const previewTimer = useRef<number>();
   const [imageSrc, setImageSrc] = useState("");
   const animate = useRef(true);
 
@@ -59,7 +59,7 @@ const useWindowPeek = (id: string): string => {
     const previewElement = peekElement || componentWindow;
 
     if (!previewTimer.current && previewElement) {
-      previewTimer.current = setTimeout(
+      previewTimer.current = window.setTimeout(
         () =>
           window.requestAnimationFrame(() =>
             renderFrame(previewElement, animate, setImageSrc)

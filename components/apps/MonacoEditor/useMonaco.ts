@@ -31,7 +31,10 @@ const useMonaco = (
         )
       );
       appendFileToTitle(basename(url));
-      setTimeout(() => lockGlobal("define"), 2.5 * MILLISECONDS_IN_SECOND);
+      window.setTimeout(
+        () => lockGlobal("define"),
+        2.5 * MILLISECONDS_IN_SECOND
+      );
     }
   }, [appendFileToTitle, editor, monaco, readFile, url]);
 
