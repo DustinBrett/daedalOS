@@ -10,7 +10,7 @@ export type ProcessElements = {
 export type Process = ProcessElements & {
   allowResizing?: boolean;
   autoSizing?: boolean;
-  backgroundColor?: string;
+  background?: string;
   closing?: boolean;
   Component: React.ComponentType<ComponentProcessProps>;
   defaultSize?: Size;

@@ -18,7 +18,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { backgroundColor, peekElement } = process || {};
+  const { background, peekElement } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
@@ -35,7 +35,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
     <RndWindow id={id} zIndex={zIndex}>
       <StyledWindow
         $foreground={isForeground}
-        style={{ backgroundColor }}
+        style={{ background }}
         {...focusableProps}
         {...windowTransitions}
       >
