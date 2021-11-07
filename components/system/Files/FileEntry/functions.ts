@@ -29,6 +29,7 @@ import { bufferToUrl } from "utils/functions";
 type InternetShortcut = {
   InternetShortcut: {
     BaseURL: string;
+    Comment: string;
     IconFile: string;
     Type: string;
     URL: string;
@@ -119,6 +120,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
   const {
     InternetShortcut: {
       BaseURL: pid = "",
+      Comment: comment = "",
       IconFile: icon = "",
       Type: type = "",
       URL: url = "",
@@ -126,10 +128,10 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
   } = ini.parse(contents.toString()) as InternetShortcut;
 
   if (!icon && pid) {
-    return { icon: processDirectory[pid]?.icon, pid, type, url };
+    return { comment, icon: processDirectory[pid]?.icon, pid, type, url };
   }
 
-  return { icon, pid, type, url };
+  return { comment, icon, pid, type, url };
 };
 
 export const getInfoWithoutExtension = (
@@ -173,17 +175,17 @@ export const getInfoWithExtension = (
       if (error) {
         getInfoByFileExtension();
       } else {
-        const { icon, pid, url } = getShortcutInfo(contents);
+        const { comment, icon, pid, url } = getShortcutInfo(contents);
         const urlExt = extname(url);
 
         if (pid === "FileExplorer") {
           const getIcon = (): void => {
             getIconFromIni(fs, url).then((iniIcon) =>
-              callback({ getIcon, icon: iniIcon, pid, subIcons, url })
+              callback({ comment, getIcon, icon: iniIcon, pid, subIcons, url })
             );
           };
 
-          callback({ getIcon, icon, pid, subIcons, url });
+          callback({ comment, getIcon, icon, pid, subIcons, url });
         } else if (
           IMAGE_FILE_EXTENSIONS.has(urlExt) ||
           VIDEO_FILE_EXTENSIONS.has(urlExt) ||
@@ -193,11 +195,11 @@ export const getInfoWithExtension = (
             const { icon: urlIcon, getIcon } = fileInfo;
 
             if (urlIcon && urlIcon !== icon) {
-              callback({ getIcon, icon: urlIcon, pid, subIcons, url });
+              callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
             }
           });
         } else {
-          callback({ icon, pid, subIcons, url });
+          callback({ comment, icon, pid, subIcons, url });
         }
       }
     });

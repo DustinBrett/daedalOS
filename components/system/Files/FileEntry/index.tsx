@@ -94,7 +94,7 @@ const FileEntry = ({
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
   const { url: changeUrl } = useProcesses();
-  const { getIcon, icon, pid, subIcons, url } = useFileInfo(
+  const { comment, getIcon, icon, pid, subIcons, url } = useFileInfo(
     path,
     stats.isDirectory()
   );
@@ -172,7 +172,11 @@ const FileEntry = ({
     }
 
     if (isShortcut) {
-      return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
+      if (comment) return comment;
+      if (url) {
+        return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
+      }
+      return "";
     }
 
     const type =

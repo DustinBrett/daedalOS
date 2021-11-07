@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 export type FileInfo = {
+  comment?: string;
   getIcon?: () => void;
   icon: string;
   subIcons?: string[];
