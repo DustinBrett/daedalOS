@@ -1,6 +1,10 @@
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
+import type {
+  SortBy,
+  SortByOrder,
+} from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
@@ -13,9 +17,19 @@ const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 const richTextDocumentIcon = getIconByFileExtension(".whtml");
 const textDocumentIcon = getIconByFileExtension(".txt");
 
+const updateSortBy =
+  (value: SortBy, defaultIsAscending: boolean) =>
+  ([sortBy, isAscending]: SortByOrder): SortByOrder =>
+    [value, sortBy === value ? !isAscending : defaultIsAscending];
+
 const useFolderContextMenu = (
   url: string,
-  { addToFolder, newPath, pasteToFolder, setSortBy }: FolderActions
+  {
+    addToFolder,
+    newPath,
+    pasteToFolder,
+    sortByOrder: [[sortBy, isAscending], setSortBy],
+  }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
   const { pasteList = {}, updateFolder } = useFileSystem();
@@ -24,20 +38,35 @@ const useFolderContextMenu = (
       label: "Sort by",
       menu: [
         {
-          action: () => setSortBy("name"),
+          action: () => setSortBy(updateSortBy("name", true)),
           label: "Name",
+          toggle: sortBy === "name",
         },
         {
-          action: () => setSortBy("size"),
+          action: () => setSortBy(updateSortBy("size", false)),
           label: "Size",
+          toggle: sortBy === "size",
         },
         {
-          action: () => setSortBy("type"),
+          action: () => setSortBy(updateSortBy("type", true)),
           label: "Item type",
+          toggle: sortBy === "type",
         },
         {
-          action: () => setSortBy("date"),
+          action: () => setSortBy(updateSortBy("date", false)),
           label: "Date modified",
+          toggle: sortBy === "date",
+        },
+        MENU_SEPERATOR,
+        {
+          action: () => setSortBy(([value]) => [value, true]),
+          label: "Ascending",
+          toggle: isAscending,
+        },
+        {
+          action: () => setSortBy(([value]) => [value, false]),
+          label: "Descending",
+          toggle: !isAscending,
         },
       ],
     },

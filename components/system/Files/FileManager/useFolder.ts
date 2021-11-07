@@ -12,7 +12,10 @@ import {
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { SetSortBy } from "components/system/Files/FileManager/useSortBy";
+import type {
+  SetSortBy,
+  SortByOrder,
+} from "components/system/Files/FileManager/useSortBy";
 import useSortBy from "components/system/Files/FileManager/useSortBy";
 import { closeWithTransition } from "components/system/Window/functions";
 import { useFileSystem } from "contexts/fileSystem";
@@ -51,7 +54,7 @@ export type FolderActions = {
   ) => Promise<void>;
   pasteToFolder: () => void;
   resetFiles: () => void;
-  setSortBy: SetSortBy;
+  sortByOrder: [SortByOrder, SetSortBy];
 };
 
 type ZipFile = [string, Buffer];
@@ -462,7 +465,7 @@ const useFolder = (
       pasteToFolder,
       // eslint-disable-next-line unicorn/no-useless-undefined
       resetFiles: () => setFiles(undefined),
-      setSortBy: useSortBy(directory, files),
+      sortByOrder: useSortBy(directory, files),
     },
     isLoading,
     updateFiles,

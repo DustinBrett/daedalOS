@@ -1,5 +1,9 @@
 import Menu from "components/system/Menu";
-import { Checkmark, ChevronRight } from "components/system/Menu/MenuIcons";
+import {
+  Checkmark,
+  ChevronRight,
+  Circle,
+} from "components/system/Menu/MenuIcons";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
@@ -21,6 +25,7 @@ const MenuItemEntry = ({
   primary,
   resetMenu,
   seperator,
+  toggle,
 }: MenuItemEntryProps): JSX.Element => {
   const entryRef = useRef<HTMLLIElement | null>(null);
   const [subMenuOffset, setSubMenuOffset] = useState<Position>({ x: 0, y: 0 });
@@ -69,6 +74,7 @@ const MenuItemEntry = ({
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}
+          {toggle && <Circle className="left" />}
           <figcaption className={primary ? "primary" : undefined}>
             {label}
           </figcaption>

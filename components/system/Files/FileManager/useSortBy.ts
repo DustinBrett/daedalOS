@@ -1,24 +1,40 @@
 import { sortFiles } from "components/system/Files/FileManager/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import { useSession } from "contexts/session";
+import { useState } from "react";
 
-type SortTypes = "date" | "name" | "size" | "type";
+export type SortBy = "date" | "name" | "size" | "type";
 
-export type SortBy = SortTypes | `!${SortTypes}`;
+export type SortByOrder = [SortBy, boolean];
 
-export type SetSortBy = (value: SortTypes) => void;
+export type SetSortBy = (sortBy: (current: SortByOrder) => SortByOrder) => void;
 
-const useSortBy = (directory: string, files?: Files): SetSortBy => {
+const useSortBy = (
+  directory: string,
+  files?: Files
+): [SortByOrder, SetSortBy] => {
   const { setSortOrders } = useSession();
+  const [currentSortBy, setCurrentSortBy] = useState<SortByOrder>([
+    "name",
+    true,
+  ]);
 
-  return (sortBy: SortTypes): void => {
-    if (files) {
-      setSortOrders((currentSortOrder) => ({
-        ...currentSortOrder,
-        [directory]: Object.keys(sortFiles(files, sortBy)),
-      }));
-    }
-  };
+  return [
+    currentSortBy,
+    (sortBy: (current: SortByOrder) => SortByOrder): void => {
+      const newSortBy = sortBy(currentSortBy);
+      const [sortByValue, isAscending] = newSortBy;
+
+      if (files) {
+        setSortOrders((currentSortOrder) => ({
+          ...currentSortOrder,
+          [directory]: Object.keys(sortFiles(files, sortByValue, isAscending)),
+        }));
+      }
+
+      setCurrentSortBy(newSortBy);
+    },
+  ];
 };
 
 export default useSortBy;

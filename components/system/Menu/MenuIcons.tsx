@@ -23,3 +23,9 @@ export const Checkmark = (props: SvgProps): JSX.Element => {
     </svg>
   );
 };
+
+export const Circle = (props: SvgProps): JSX.Element => (
+  <svg {...props} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 10q1.234 0 2.328.469t1.914 1.289 1.289 1.914T22 16q0 1.25-.469 2.336t-1.289 1.906-1.914 1.289T16 22q-1.25 0-2.336-.469t-1.906-1.289-1.289-1.906T10 16q0-1.234.469-2.328t1.289-1.914 1.906-1.289T16 10z" />
+  </svg>
+);

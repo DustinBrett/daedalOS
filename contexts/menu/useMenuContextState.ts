@@ -9,6 +9,7 @@ export type MenuItem = {
   menu?: MenuItem[];
   primary?: boolean;
   seperator?: boolean;
+  toggle?: boolean;
 };
 
 export type MenuState = {

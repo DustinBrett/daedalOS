@@ -43,7 +43,8 @@ const sortFunctionMap: Record<string, SortFunction> = {
 export const sortContents = (
   contents: Files,
   sortOrder: string[] = [],
-  sortFunction?: SortFunction
+  sortFunction?: SortFunction,
+  ascending = true
 ): Files => {
   if (sortOrder.length > 0) {
     const contentOrder = Object.keys(contents);
@@ -58,7 +59,6 @@ export const sortContents = (
 
   const files: FileStats[] = [];
   const folders: FileStats[] = [];
-  const preSort = sortFunction && sortFunction !== sortByName;
 
   Object.entries(contents).forEach((entry) => {
     const [, stat] = entry;
@@ -70,21 +70,36 @@ export const sortContents = (
     }
   });
 
-  const sortedContents = [
-    ...(preSort
-      ? folders.sort(sortByName).sort(sortFunction)
-      : folders.sort(sortByName)),
-    ...(preSort
-      ? files.sort(sortByName).sort(sortFunction)
-      : files.sort(sortByName)),
-  ].sort(sortSystemShortcuts);
+  const sortContent = (fileStats: FileStats[]): FileStats[] => {
+    const sortedByName = fileStats.sort(sortByName);
 
-  return Object.fromEntries(sortedContents);
+    return sortFunction && sortFunction !== sortByName
+      ? sortedByName.sort(sortFunction)
+      : sortedByName;
+  };
+  const sortedFolders = sortContent(folders);
+  const sortedFiles = sortContent(files);
+
+  if (!ascending) {
+    sortedFolders.reverse();
+    sortedFiles.reverse();
+  }
+
+  return Object.fromEntries(
+    (ascending
+      ? [...sortedFolders, ...sortedFiles]
+      : [...sortedFiles, ...sortedFolders]
+    ).sort(sortSystemShortcuts)
+  );
 };
 
-export const sortFiles = (files: Files, sortBy: SortBy): Files =>
+export const sortFiles = (
+  files: Files,
+  sortBy: SortBy,
+  ascending: boolean
+): Files =>
   sortBy in sortFunctionMap
-    ? sortContents(files, [], sortFunctionMap[sortBy])
+    ? sortContents(files, [], sortFunctionMap[sortBy], ascending)
     : files;
 
 export const iterateFileName = (name: string, iteration: number): string => {
