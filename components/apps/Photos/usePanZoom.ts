@@ -41,7 +41,7 @@ const usePanZoom = (
       const { detail: { scale = 0, x = 0, y = 0 } = {} } =
         (panZoomEvent as PanZoomEvent) || {};
 
-      if (scale) {
+      if (url && scale) {
         const { minScale, step } = panZoomConfig;
         const isMinScale = scale < minScale + step;
 
