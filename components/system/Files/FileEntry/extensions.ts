@@ -5,6 +5,10 @@ type Extension = {
 };
 
 const extensions = {
+  ".html": {
+    process: ["Browser", "MonacoEditor"],
+    type: "HTML Document",
+  },
   ".img": {
     icon: "image",
     process: ["V86"],

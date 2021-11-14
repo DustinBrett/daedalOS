@@ -98,3 +98,11 @@ export const getTimezoneOffsetISOString = (): string => {
     date.getTime() - date.getTimezoneOffset() * 60000
   ).toISOString();
 };
+
+export const isValidUrl = (url: string): boolean => {
+  try {
+    return typeof new URL(url) === "object";
+  } catch {
+    return false;
+  }
+};

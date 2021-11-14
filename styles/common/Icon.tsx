@@ -14,7 +14,10 @@ const StyledIcon = styled.img.attrs<IconProps>(
     draggable: false,
     height: displaySize || imgSize,
     src:
-      !src || src.startsWith("blob:")
+      !src ||
+      src.startsWith("blob:") ||
+      src.startsWith("http:") ||
+      src.startsWith("https:")
         ? src
         : join(dirname(src), `${imgSize}x${imgSize}`, basename(src)),
     width: displaySize || imgSize,
