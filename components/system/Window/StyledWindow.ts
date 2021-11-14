@@ -11,6 +11,7 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
     $foreground
       ? theme.colors.window.shadow
       : theme.colors.window.shadowInactive};
+  contain: strict;
   height: 100%;
   outline: ${({ $foreground, theme }) =>
     `${theme.sizes.window.outline} solid ${

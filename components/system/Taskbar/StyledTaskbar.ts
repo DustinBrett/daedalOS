@@ -4,6 +4,7 @@ const StyledTaskbar = styled.nav`
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.blur})`};
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   bottom: 0;
+  contain: size layout;
   height: ${({ theme }) => theme.sizes.taskbar.height};
   left: 0;
   position: absolute;

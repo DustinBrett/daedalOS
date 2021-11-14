@@ -7,6 +7,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   ${ScrollBars()};
 
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
+  contain: strict;
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: ${({ theme }) =>

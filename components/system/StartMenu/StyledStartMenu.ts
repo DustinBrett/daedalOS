@@ -7,6 +7,7 @@ const StyledStartMenu = styled(motion.nav)`
   background-color: hsla(0, 0%, 13%, 70%);
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
+  contain: strict;
   display: flex;
   height: ${({ theme }) => theme.sizes.startMenu.size};
   left: 0;
