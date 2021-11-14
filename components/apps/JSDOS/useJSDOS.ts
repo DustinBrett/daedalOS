@@ -1,6 +1,5 @@
 import { dosOptions, libs, pathPrefix } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
-import { closeWithTransition } from "components/system/Window/functions";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
@@ -16,7 +15,7 @@ const useJSDOS = (
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
-  const { close } = useProcesses();
+  const { closeWithTransition } = useProcesses();
 
   useEffect(() => {
     if (!dosInstance) {
@@ -44,7 +43,7 @@ const useJSDOS = (
               .split(" ");
 
             if (dosCommand.toUpperCase() === "EXIT") {
-              closeWithTransition(close, id);
+              closeWithTransition(id);
             }
           }
         });
@@ -74,7 +73,14 @@ const useJSDOS = (
           window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
         );
     }
-  }, [close, containerRef, dosCI, dosInstance, id, updateWindowSize]);
+  }, [
+    closeWithTransition,
+    containerRef,
+    dosCI,
+    dosInstance,
+    id,
+    updateWindowSize,
+  ]);
 };
 
 export default useJSDOS;

@@ -18,6 +18,8 @@ export const EMPTY_BUFFER = Buffer.from("");
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
+export const HOME = "/Users/Public";
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",
@@ -85,6 +87,8 @@ export const TRANSITIONS_IN_MILLISECONDS = {
   START_MENU: 450,
   WINDOW: 250,
 };
+
+export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
 export const VIDEO_FILE_EXTENSIONS = new Set([
   ".mkv",

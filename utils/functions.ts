@@ -90,3 +90,11 @@ export const getFormattedSize = (size = 0): string => {
 export const lockTitle = (): void => {
   Object.defineProperty(document, "title", { set: undefined });
 };
+
+export const getTimezoneOffsetISOString = (): string => {
+  const date = new Date();
+
+  return new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000
+  ).toISOString();
+};

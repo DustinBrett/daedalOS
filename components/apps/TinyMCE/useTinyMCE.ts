@@ -48,7 +48,6 @@ const useTinyMCE = (
       [...iframe.contentWindow.document.links].forEach((link) =>
         link.addEventListener("click", (event) => {
           const isRelative =
-            // eslint-disable-next-line dot-notation
             relative(link.dataset["mceHref"] || "", link.pathname) === "";
 
           if (isRelative) {
@@ -72,7 +71,6 @@ const useTinyMCE = (
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
       editor.setContent(fileContents.toString());
-      // eslint-disable-next-line dot-notation
       editor.settings["save_onsavecallback"] = onSave;
 
       linksToProcesses();

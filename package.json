@@ -1,5 +1,6 @@
 {
   "name": "x",
+  "alias": "daedalOS",
   "version": "2.0.0",
   "description": "OS in the browser",
   "author": "Dustin Brett",
@@ -91,6 +92,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "tinymce": "^5.10.1",
     "typescript": "^4.4.4",
-    "webamp": "^1.5.0"
+    "webamp": "^1.5.0",
+    "xterm": "^4.15.0"
   }
 }

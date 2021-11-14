@@ -10,9 +10,11 @@ import {
 } from "contexts/process/functions";
 import type { ProcessElements, Processes } from "contexts/process/types";
 import { useCallback, useState } from "react";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 export type ProcessContextState = {
   close: (id: string, closing?: boolean) => void;
+  closeWithTransition: (id: string) => void;
   icon: (id: string, newIcon: string) => void;
   linkElement: (
     id: string,
@@ -63,9 +65,17 @@ const useProcessContextState = (): ProcessContextState => {
     (id: string, newUrl: string) => setProcesses(setUrl(id, newUrl)),
     []
   );
+  const closeWithTransition = useCallback(
+    (id: string): void => {
+      close(id, true);
+      window.setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
+    },
+    [close]
+  );
 
   return {
     close,
+    closeWithTransition,
     icon,
     linkElement,
     maximize,

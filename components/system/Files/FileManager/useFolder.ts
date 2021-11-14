@@ -16,7 +16,6 @@ import type {
   SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
 import useSortBy from "components/system/Files/FileManager/useSortBy";
-import { closeWithTransition } from "components/system/Window/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -105,7 +104,7 @@ const useFolder = (
     setSortOrders,
     sortOrders: { [directory]: sortOrder } = {},
   } = useSession();
-  const { close } = useProcesses();
+  const { closeWithTransition } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     (fileName: string, stats: Stats): Promise<FileStat> =>
       new Promise((resolve) => {
@@ -197,10 +196,7 @@ const useFolder = (
           }
         } catch (error) {
           if ((error as ApiError).code === "ENOENT") {
-            closeWithTransition(
-              close,
-              `FileExplorer${PROCESS_DELIMITER}${directory}`
-            );
+            closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${directory}`);
           }
         }
 
@@ -209,7 +205,7 @@ const useFolder = (
     },
     [
       blurEntry,
-      close,
+      closeWithTransition,
       directory,
       exists,
       files,

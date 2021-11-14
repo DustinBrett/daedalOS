@@ -210,37 +210,34 @@ export const getInfoWithExtension = (
       })
     );
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension(
-      // eslint-disable-next-line dot-notation
-      processDirectory["VideoPlayer"].icon,
-      () =>
-        fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-          if (!error) {
-            const video = document.createElement("video");
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () =>
+      fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+        if (!error) {
+          const video = document.createElement("video");
 
-            video.currentTime = PREVIEW_FRAME_SECOND;
-            video.addEventListener(
-              "loadeddata",
-              () => {
-                const canvas = document.createElement("canvas");
+          video.currentTime = PREVIEW_FRAME_SECOND;
+          video.addEventListener(
+            "loadeddata",
+            () => {
+              const canvas = document.createElement("canvas");
 
-                canvas.height = video.videoHeight;
-                canvas.width = video.videoWidth;
-                canvas
-                  .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
-                  ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                canvas.toBlob((blob) => {
-                  if (blob instanceof Blob) {
-                    getInfoByFileExtension(URL.createObjectURL(blob));
-                  }
-                });
-              },
-              ONE_TIME_PASSIVE_EVENT
-            );
-            video.src = bufferToUrl(contents);
-            video.load();
-          }
-        })
+              canvas.height = video.videoHeight;
+              canvas.width = video.videoWidth;
+              canvas
+                .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
+                ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+              canvas.toBlob((blob) => {
+                if (blob instanceof Blob) {
+                  getInfoByFileExtension(URL.createObjectURL(blob));
+                }
+              });
+            },
+            ONE_TIME_PASSIVE_EVENT
+          );
+          video.src = bufferToUrl(contents);
+          video.load();
+        }
+      })
     );
   } else if (extension === ".mp3") {
     getInfoByFileExtension(

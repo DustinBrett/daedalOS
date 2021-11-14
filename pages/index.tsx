@@ -6,11 +6,22 @@ import { lockTitle } from "utils/functions";
 import useIFrameFocuser from "utils/useIFrameFocuser";
 import useUrlLoader from "utils/useUrlLoader";
 
-const Index = (): React.ReactElement => {
+declare global {
+  interface Window {
+    commit: string;
+  }
+}
+
+type IndexProps = { commit: string };
+
+const Index = ({ commit }: IndexProps): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
 
-  useEffect(lockTitle, []);
+  useEffect(() => {
+    lockTitle();
+    window.commit = commit;
+  }, [commit]);
 
   return (
     <Desktop>
@@ -18,6 +29,17 @@ const Index = (): React.ReactElement => {
       <AppsLoader />
     </Desktop>
   );
+};
+
+export const getStaticProps = async (): Promise<{ props: IndexProps }> => {
+  const { execSync } = await import("child_process");
+  const HEAD = await execSync("git rev-parse --short HEAD", { cwd: __dirname });
+
+  return {
+    props: {
+      commit: HEAD.toString().trim(),
+    },
+  };
 };
 
 export default Index;

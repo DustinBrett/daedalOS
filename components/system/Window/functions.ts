@@ -1,15 +1,9 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes } from "contexts/process/types";
-import type { ProcessContextState } from "contexts/process/useProcessContextState";
 import type { WindowState } from "contexts/session/types";
 import type { Position } from "react-rnd";
-import {
-  PROCESS_DELIMITER,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { PROCESS_DELIMITER } from "utils/constants";
 import { pxToNum, viewHeight, viewWidth } from "utils/functions";
-
-type processCloser = ProcessContextState["close"];
 
 export const cascadePosition = (
   id: string,
@@ -49,11 +43,6 @@ export const centerPosition = (
     x: Math.floor(vw / 2 - pxToNum(width) / 2),
     y: Math.floor((vh - pxToNum(taskbarHeight)) / 2 - pxToNum(height) / 2),
   };
-};
-
-export const closeWithTransition = (close: processCloser, id: string): void => {
-  close(id, true);
-  window.setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
 };
 
 export const isWindowOutsideBounds = (

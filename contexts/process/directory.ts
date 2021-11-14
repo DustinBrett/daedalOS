@@ -72,6 +72,17 @@ const processDirectory: Processes = {
     singleton: true,
     title: "Space Cadet",
   },
+  Terminal: {
+    Component: dynamic(() => import("components/apps/Terminal")),
+    allowResizing: false,
+    background: "rgba(12, 12, 12, 0.6)",
+    defaultSize: {
+      height: 340,
+      width: 560,
+    },
+    icon: "/System/Icons/xterm.png",
+    title: "Terminal",
+  },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
     background: "#FFF",

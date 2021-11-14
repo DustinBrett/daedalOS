@@ -1,4 +1,3 @@
-import { closeWithTransition } from "components/system/Window/functions";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -12,7 +11,7 @@ type WindowActions = {
 const useWindowActions = (id: string): WindowActions => {
   const nextFocusableId = useNextFocusable(id);
   const { setForegroundId, removeFromStack } = useSession();
-  const { close, maximize, minimize } = useProcesses();
+  const { closeWithTransition, maximize, minimize } = useProcesses();
   const onMinimize = (): void => {
     minimize(id);
     setForegroundId(nextFocusableId);
@@ -20,7 +19,7 @@ const useWindowActions = (id: string): WindowActions => {
   const onMaximize = (): void => maximize(id);
   const onClose = (): void => {
     removeFromStack(id);
-    closeWithTransition(close, id);
+    closeWithTransition(id);
     setForegroundId(nextFocusableId);
   };
 
