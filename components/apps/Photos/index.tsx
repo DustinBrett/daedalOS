@@ -60,11 +60,15 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   return (
     <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
       <nav className="top">
-        <Button disabled={scale === maxScale} onClick={zoomIn} title="Zoom in">
+        <Button
+          disabled={!url || scale === maxScale}
+          onClick={zoomIn}
+          title="Zoom in"
+        >
           <ZoomIn />
         </Button>
         <Button
-          disabled={scale === minScale}
+          disabled={!url || scale === minScale}
           onClick={zoomOut}
           title="Zoom out"
         >
@@ -89,7 +93,7 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         />
       </figure>
       <nav className="bottom">
-        <Button onClick={toggleFullscreen} title="Full-screen">
+        <Button disabled={!url} onClick={toggleFullscreen} title="Full-screen">
           {fullscreen ? <ExitFullscreen /> : <Fullscreen />}
         </Button>
       </nav>
