@@ -1,4 +1,5 @@
 import { BACKSPACE } from "components/apps/Terminal/config";
+import help from "components/apps/Terminal/help";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
@@ -142,6 +143,9 @@ const useCommandInterpreter = (
         }
         break;
       }
+      case "help":
+        if (terminal) help(commandArgs, terminal);
+        break;
       case "history": {
         const newHistory = [...history.slice(0, -1), command];
 
