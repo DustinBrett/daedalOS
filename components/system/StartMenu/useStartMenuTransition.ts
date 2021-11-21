@@ -4,6 +4,7 @@ import {
   MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
+import { pxToNum } from "utils/functions";
 
 const useStartMenuTransition = (): MotionProps => {
   const {
@@ -24,8 +25,8 @@ const useStartMenuTransition = (): MotionProps => {
         paddingTop: 0,
       },
       initial: {
-        height: `calc(${startMenu.size} * 0.75)`,
-        paddingTop: `calc(${startMenu.size} * 0.5)`,
+        height: `${pxToNum(startMenu.size) * 0.75}px`,
+        paddingTop: `${pxToNum(startMenu.size) * 0.5}px`,
       },
     },
   };
