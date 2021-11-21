@@ -48,6 +48,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
         view="list"
         hideLoading
         hideShortcutIcons
+        readOnly
       />
     </StyledStartMenu>
   );

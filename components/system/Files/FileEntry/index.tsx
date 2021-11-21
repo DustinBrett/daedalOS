@@ -47,6 +47,7 @@ type FileEntryProps = {
   isLoadingFileManager: boolean;
   name: string;
   path: string;
+  readOnly?: boolean;
   renaming: boolean;
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
@@ -87,6 +88,7 @@ const FileEntry = ({
   isLoadingFileManager,
   name,
   path,
+  readOnly,
   renaming,
   selectionRect,
   setRenaming,
@@ -223,7 +225,8 @@ const FileEntry = ({
         fileActions,
         focusFunctions,
         focusedEntries,
-        fileManagerId
+        fileManagerId,
+        readOnly
       )}
     >
       <figure>

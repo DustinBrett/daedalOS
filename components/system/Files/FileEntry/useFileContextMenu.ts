@@ -32,7 +32,8 @@ const useFileContextMenu = (
   }: FileActions,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   focusedEntries: string[],
-  fileManagerId?: string
+  fileManagerId?: string,
+  readOnly?: boolean
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { open, url: changeUrl } = useProcesses();
   const { setWallpaper } = useSession();
@@ -54,91 +55,95 @@ const useFileContextMenu = (
             ...focusedEntries.map((entry) => join(dirname(path), entry)),
           ]),
         ];
-  const menuItems: MenuItem[] = [
-    { action: () => moveEntries(absoluteEntries()), label: "Cut" },
-    { action: () => copyEntries(absoluteEntries()), label: "Copy" },
-    MENU_SEPERATOR,
-  ];
+  const menuItems: MenuItem[] = [];
   const pathExtension = extname(path);
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
   const defaultProcess =
     extensionProcess || getProcessByFileExtension(urlExtension);
 
-  if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
-    menuItems.push({
-      action: () =>
-        absoluteEntries().forEach(async (entry) => {
-          const shortcutProcess =
-            defaultProcess && !(await stat(entry)).isDirectory()
-              ? defaultProcess
-              : "FileExplorer";
+  if (!readOnly) {
+    menuItems.push(
+      { action: () => moveEntries(absoluteEntries()), label: "Cut" },
+      { action: () => copyEntries(absoluteEntries()), label: "Copy" },
+      MENU_SEPERATOR
+    );
 
-          newShortcut(entry, shortcutProcess);
-        }),
-      label: "Create shortcut",
-    });
-  }
+    if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
+      menuItems.push({
+        action: () =>
+          absoluteEntries().forEach(async (entry) => {
+            const shortcutProcess =
+              defaultProcess && !(await stat(entry)).isDirectory()
+                ? defaultProcess
+                : "FileExplorer";
 
-  menuItems.push(
-    {
-      action: () => absoluteEntries().forEach((entry) => deletePath(entry)),
-      label: "Delete",
-    },
-    { action: () => setRenaming(baseName), label: "Rename" }
-  );
-
-  if (url) {
-    menuItems.unshift(MENU_SEPERATOR);
-
-    if (MOUNTABLE_EXTENSIONS.has(pathExtension) && pathExtension !== ".iso") {
-      menuItems.unshift({
-        action: () => extractFiles(path),
-        label: "Extract Here",
+            newShortcut(entry, shortcutProcess);
+          }),
+        label: "Create shortcut",
       });
     }
 
-    menuItems.unshift(
+    menuItems.push(
       {
-        action: () => archiveFiles(absoluteEntries()),
-        label: "Add to archive...",
+        action: () => absoluteEntries().forEach((entry) => deletePath(entry)),
+        label: "Delete",
       },
-      {
-        action: () => downloadFiles(absoluteEntries()),
-        label: "Download",
-      }
+      { action: () => setRenaming(baseName), label: "Rename" }
     );
-  }
 
-  if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {
-    menuItems.unshift({
-      label: "Set as desktop background",
-      menu: [
-        {
-          action: () => setWallpaper(path, "fill"),
-          label: "Fill",
-        },
-        {
-          action: () => setWallpaper(path, "fit"),
-          label: "Fit",
-        },
-        {
-          action: () => setWallpaper(path, "stretch"),
-          label: "Stretch",
-        },
-        {
-          action: () => setWallpaper(path, "tile"),
-          label: "Tile",
-        },
-        {
-          action: () => setWallpaper(path, "center"),
-          label: "Center",
-        },
-      ],
-    });
-  }
+    if (url) {
+      menuItems.unshift(MENU_SEPERATOR);
 
-  menuItems.unshift(MENU_SEPERATOR);
+      if (MOUNTABLE_EXTENSIONS.has(pathExtension) && pathExtension !== ".iso") {
+        menuItems.unshift({
+          action: () => extractFiles(path),
+          label: "Extract Here",
+        });
+      }
+
+      menuItems.unshift(
+        {
+          action: () => archiveFiles(absoluteEntries()),
+          label: "Add to archive...",
+        },
+        {
+          action: () => downloadFiles(absoluteEntries()),
+          label: "Download",
+        }
+      );
+    }
+
+    if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {
+      menuItems.unshift({
+        label: "Set as desktop background",
+        menu: [
+          {
+            action: () => setWallpaper(path, "fill"),
+            label: "Fill",
+          },
+          {
+            action: () => setWallpaper(path, "fit"),
+            label: "Fit",
+          },
+          {
+            action: () => setWallpaper(path, "stretch"),
+            label: "Stretch",
+          },
+          {
+            action: () => setWallpaper(path, "tile"),
+            label: "Tile",
+          },
+          {
+            action: () => setWallpaper(path, "center"),
+            label: "Center",
+          },
+        ],
+      });
+    }
+
+    menuItems.unshift(MENU_SEPERATOR);
+  }
 
   if (!pid && openWithFiltered.length === 0) {
     openWithFiltered.push("MonacoEditor");
