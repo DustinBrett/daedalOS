@@ -11,6 +11,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { basename, dirname, extname, join } from "path";
+import { useCallback } from "react";
 import {
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
@@ -46,15 +47,18 @@ const useFileContextMenu = (
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
   const { copyEntries, moveEntries, stat } = useFileSystem();
-  const absoluteEntries = (): string[] =>
-    focusedEntries.length === 1 || !isFocusedEntry
-      ? [path]
-      : [
-          ...new Set([
-            path,
-            ...focusedEntries.map((entry) => join(dirname(path), entry)),
-          ]),
-        ];
+  const absoluteEntries = useCallback(
+    (): string[] =>
+      focusedEntries.length === 1 || !isFocusedEntry
+        ? [path]
+        : [
+            ...new Set([
+              path,
+              ...focusedEntries.map((entry) => join(dirname(path), entry)),
+            ]),
+          ],
+    [focusedEntries, isFocusedEntry, path]
+  );
   const menuItems: MenuItem[] = [];
   const pathExtension = extname(path);
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
