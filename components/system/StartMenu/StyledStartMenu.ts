@@ -23,6 +23,7 @@ const StyledStartMenu = styled(motion.nav)`
     margin-top: 0;
 
     ${StyledFileManager} {
+      overflow: hidden;
       padding: 0;
       margin: 0;
 
