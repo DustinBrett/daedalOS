@@ -55,11 +55,11 @@ const useDraggableEntries = (
       focusEntry(file);
       event.dataTransfer.setData(
         "text/plain",
-        focusedEntries.length <= 1
-          ? join(entryUrl, file)
-          : focusedEntries
-              .map((entryFile) => join(entryUrl, entryFile))
-              .toString()
+        JSON.stringify(
+          focusedEntries.length <= 1
+            ? [join(entryUrl, file)]
+            : focusedEntries.map((entryFile) => join(entryUrl, entryFile))
+        )
       );
 
       if (focusedEntries.length > 1 && dragImageRef.current) {

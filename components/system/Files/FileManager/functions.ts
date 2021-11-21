@@ -143,7 +143,7 @@ export const handleFileInputEvent = (
       reader.readAsArrayBuffer(file);
     });
   } else {
-    const filePaths = eventTarget?.getData("text").split(",");
+    const filePaths = JSON.parse(eventTarget?.getData("text")) as string[];
 
     filePaths.forEach((path) => dirname(path) !== "." && callback(path));
   }
