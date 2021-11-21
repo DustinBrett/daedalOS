@@ -28,6 +28,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
+  NON_BREAKING_SPACE,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -70,7 +71,7 @@ const truncateName = (
   if (lines.length > 2) {
     const text = !name.includes(" ") ? lines[0] : lines.slice(0, 2).join("");
 
-    return `${text.slice(0, -3)}...`;
+    return `${text.replace(/ /g, NON_BREAKING_SPACE).slice(0, -3)}...`;
   }
 
   return nonBreakingName;
