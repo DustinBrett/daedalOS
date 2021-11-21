@@ -231,7 +231,10 @@ const useFolder = (
       }
     }
 
-    if (updatePath) updateFolder(directory, undefined, basename(path));
+    if (updatePath) {
+      updateFolder(path);
+      updateFolder(directory, undefined, basename(path));
+    }
   };
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
