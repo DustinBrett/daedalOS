@@ -190,7 +190,7 @@ export const getInfoWithExtension = (
         if (pid === "FileExplorer") {
           const getIcon = (): void => {
             getIconFromIni(fs, url).then((iniIcon) =>
-              callback({ comment, getIcon, icon: iniIcon, pid, subIcons, url })
+              callback({ comment, icon: iniIcon, pid, subIcons, url })
             );
           };
 
