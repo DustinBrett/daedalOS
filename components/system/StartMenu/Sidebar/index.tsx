@@ -10,6 +10,7 @@ import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
+import { HOME } from "utils/constants";
 
 type SidebarGroupProps = {
   collapsed: boolean;
@@ -50,7 +51,7 @@ const Sidebar = (): JSX.Element => {
       action: () =>
         open(
           "FileExplorer",
-          "/Users/Public/Documents",
+          `${HOME}/Documents`,
           "/System/Icons/documents.png"
         ),
       icon: <Documents />,

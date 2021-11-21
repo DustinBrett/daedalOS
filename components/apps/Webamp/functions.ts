@@ -2,11 +2,11 @@ import type { WebampCI } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
 import { parseBuffer } from "music-metadata-browser";
 import type { Position } from "react-rnd";
-import { MP3_MIME_TYPE } from "utils/constants";
+import { HOME, MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl } from "utils/functions";
 import type { Track } from "webamp";
 
-const WEBAMP_SKINS_PATH = "/Users/Public/Documents/Winamp Skins";
+const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [

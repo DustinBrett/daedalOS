@@ -4,7 +4,7 @@ import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
 import { useEffect, useRef } from "react";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import { FOCUSABLE_ELEMENT, HOME, PREVENT_SCROLL } from "utils/constants";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -44,7 +44,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
       <StyledStartMenuBackground />
       <Sidebar />
       <FileManager
-        url="/Users/Public/Start Menu"
+        url={`${HOME}/Start Menu`}
         view="list"
         hideLoading
         hideShortcutIcons

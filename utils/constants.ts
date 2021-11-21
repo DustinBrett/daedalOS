@@ -68,7 +68,7 @@ export const PREVIEW_FRAME_SECOND = 3;
 
 export const PROCESS_DELIMITER = "__";
 
-export const SAVE_PATH = "/Users/Public/Snaphosts";
+export const SAVE_PATH = `${HOME}/Snaphosts`;
 
 export const SHORTCUT_APPEND = " - Shortcut";
 
@@ -80,7 +80,7 @@ export const SYSTEM_FILES = new Set(["desktop.ini"]);
 
 export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
-export const TEMP_PATH = "/Users/Public/Temp";
+export const TEMP_PATH = `${HOME}/Temp`;
 
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
