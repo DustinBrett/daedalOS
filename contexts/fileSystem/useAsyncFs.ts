@@ -111,7 +111,9 @@ const useAsyncFs = (): AsyncFSModule => {
       writeFile: (path, data, overwrite = false) =>
         new Promise((resolve, reject) => {
           fs?.writeFile(path, data, { flag: overwrite ? "w" : "wx" }, (error) =>
-            error ? reject(error) : resolve(true)
+            error && (!overwrite || error.code !== "EEXIST")
+              ? reject(error)
+              : resolve(!error)
           );
         }),
     }),
