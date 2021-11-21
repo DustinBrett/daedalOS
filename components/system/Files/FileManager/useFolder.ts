@@ -169,12 +169,17 @@ const useFolder = (
           );
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
-              const fileStats = await stat(join(directory, file));
+              const hideEntry =
+                hideFolders &&
+                (await stat(join(directory, file))).isDirectory();
               const newFiles = sortContents(
                 {
                   ...(await processedFiles),
-                  ...((!hideFolders || !fileStats.isDirectory()) && {
-                    [file]: await statsWithShortcutInfo(file, fileStats),
+                  ...(!hideEntry && {
+                    [file]: await statsWithShortcutInfo(
+                      file,
+                      await stat(join(directory, file))
+                    ),
                   }),
                 },
                 customSortOrder || Object.keys(files || {})
