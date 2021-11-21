@@ -64,7 +64,9 @@ const FileManager = ({
   useEffect(() => {
     if (MOUNTABLE_EXTENSIONS.has(extname(url)) && !mounted) {
       setMounted((currentlyMounted) => {
-        if (!currentlyMounted) mountFs(url).then(() => updateFiles());
+        if (!currentlyMounted) {
+          mountFs(url).then(() => setTimeout(updateFiles, 100));
+        }
         return true;
       });
     }
