@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useCallback, useState } from "react";
 
 type FocusedEntryProps = {
@@ -53,7 +54,12 @@ const useFocusableEntries = (
   };
   const focusableEntry = (file: string): FocusedEntryProps => {
     const isFocused = focusedEntries.includes(file);
-    const className = isFocused ? "focus-within" : undefined;
+    const isOnlyFocusedEntry =
+      focusedEntries.length === 1 && focusedEntries[0] === file;
+    const className = clsx({
+      "focus-within": isFocused,
+      "only-focused": isOnlyFocusedEntry,
+    });
     const onClick: React.MouseEventHandler = ({ ctrlKey }) => {
       if (ctrlKey) {
         if (isFocused) {

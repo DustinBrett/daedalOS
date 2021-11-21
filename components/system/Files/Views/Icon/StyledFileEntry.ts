@@ -66,6 +66,10 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     background-color: ${({ theme }) =>
       theme.colors.fileEntry.backgroundFocused};
 
+    &.only-focused {
+      margin-bottom: -1000px;
+    }
+
     &::before {
       border: ${({ theme }) =>
         `1px solid ${theme.colors.fileEntry.borderFocused}`};
