@@ -9,7 +9,7 @@ const useUrlLoader = (): void => {
     const app = searchParams.get("app");
     const url = searchParams.get("url");
 
-    if (app && url) open(app, url);
+    if (app) open(app, url ?? "");
   }, [open]);
 };
 
