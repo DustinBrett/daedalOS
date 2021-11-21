@@ -4,9 +4,12 @@ import {
   closeEqualizer,
   getWebampElement,
   MAIN_WINDOW,
+  PLAYLIST_WINDOW,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
 import type { WebampCI } from "components/apps/Webamp/types";
+import { haltEvent } from "components/system/Files/FileManager/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -36,6 +39,7 @@ const useWebamp = (id: string): Webamp => {
   } = useProcesses();
   const { componentWindow } = process || {};
   const [webampCI, setWebampCI] = useState<WebampCI>();
+  const { onDrop } = useFileDrop({ id });
   const initWebamp = useCallback(
     async (
       containerElement: HTMLDivElement,
@@ -52,6 +56,13 @@ const useWebamp = (id: string): Webamp => {
         if (webampElement) {
           const mainWindow =
             webampElement.querySelector<HTMLDivElement>(MAIN_WINDOW);
+          const playlistWindow =
+            webampElement.querySelector<HTMLDivElement>(PLAYLIST_WINDOW);
+
+          [mainWindow, playlistWindow].forEach((element) => {
+            element?.addEventListener("drop", onDrop);
+            element?.addEventListener("dragover", haltEvent);
+          });
 
           if (process && !componentWindow && mainWindow) {
             linkElement(id, "componentWindow", containerElement);
@@ -102,6 +113,7 @@ const useWebamp = (id: string): Webamp => {
       id,
       linkElement,
       onClose,
+      onDrop,
       onMinimize,
       position,
       process,
