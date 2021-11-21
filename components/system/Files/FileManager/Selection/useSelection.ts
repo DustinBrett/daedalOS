@@ -27,11 +27,12 @@ const useSelection = (
     clientX,
     clientY,
   }) => {
+    const { scrollTop = 0 } = containerRef.current || {};
     const { x: targetX = 0, y: targetY = 0 } =
       containerRef.current?.getBoundingClientRect() || {};
 
     setSize({
-      height: clientY - targetY - (y || 0),
+      height: clientY - targetY - (y || 0) + scrollTop,
       width: clientX - targetX - (x || 0),
     });
   };
@@ -41,13 +42,14 @@ const useSelection = (
     target,
   }) => {
     if (target === containerRef.current) {
+      const { scrollTop } = containerRef.current;
       const { x: targetX = 0, y: targetY = 0 } =
         containerRef.current.getBoundingClientRect();
 
       setSize({} as Size);
       setPosition({
         x: clientX - targetX,
-        y: clientY - targetY,
+        y: clientY - targetY + scrollTop,
       });
     }
   };
