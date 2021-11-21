@@ -23,8 +23,14 @@ const useTerminal = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const [terminal, setTerminal] = useState<Terminal>();
-  const { cd, command, processCommand, setCommand, welcome } =
-    useCommandInterpreter(id, terminal);
+  const {
+    cd,
+    command,
+    processCommand,
+    setCommand,
+    setHistoryPosition,
+    welcome,
+  } = useCommandInterpreter(id, terminal);
   const pasteClipboard = useCallback(
     async (currentTerminal?: Terminal): Promise<void> => {
       const clipboardText = await navigator.clipboard.readText();
@@ -54,6 +60,12 @@ const useTerminal = (
             setCommand((currentCommand) => currentCommand.slice(0, -1));
             break;
           }
+          case "ArrowDown":
+            setHistoryPosition(+1);
+            break;
+          case "ArrowUp":
+            setHistoryPosition(-1);
+            break;
           default:
             if (key.length === 1) {
               terminal?.write(key);
@@ -61,7 +73,15 @@ const useTerminal = (
             }
         }
     },
-    [cd, command, pasteClipboard, processCommand, setCommand, terminal]
+    [
+      cd,
+      command,
+      pasteClipboard,
+      processCommand,
+      setCommand,
+      setHistoryPosition,
+      terminal,
+    ]
   );
 
   useEffect(() => {

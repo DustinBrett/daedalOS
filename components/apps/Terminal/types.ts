@@ -5,6 +5,7 @@ export type CommandInterpreter = {
   command: string;
   processCommand: () => void;
   setCommand: React.Dispatch<React.SetStateAction<string>>;
+  setHistoryPosition: (step: number) => void;
   welcome: () => void;
 };
 

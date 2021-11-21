@@ -1,10 +1,11 @@
+import { BACKSPACE } from "components/apps/Terminal/config";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import packageJson from "package.json";
 import { join } from "path";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { getTimezoneOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
@@ -23,8 +24,17 @@ const useCommandInterpreter = (
   terminal?: Terminal
 ): CommandInterpreter => {
   const [cd, setCd] = useState<string>(HOME);
+  const [history, setHistory] = useState([""]);
+  const [position, setPosition] = useState(0);
   const [command, setCommand] = useState<string>("");
   const { exists, readdir, readFile, resetFs, stat } = useFileSystem();
+  const setHistoryPosition = (step: number): void => {
+    const newPosition = position + step;
+
+    if (newPosition < 0 || newPosition > history.length - 2) return;
+
+    setPosition(newPosition);
+  };
   const clear = (): void => {
     terminal?.clear();
     terminal?.write("\u001B[2K\r");
@@ -123,6 +133,16 @@ const useCommandInterpreter = (
       case "quit":
         closeWithTransition(id);
         break;
+      case "history": {
+        const newHistory = [...history.slice(0, -1), command];
+
+        newLine();
+        newHistory.forEach((entry, index) =>
+          terminal?.writeln(`${index.toString().padStart(4)} ${entry}`)
+        );
+        break;
+      }
+
       case "kill":
       case "taskkill": {
         const processName = commandArgs[0];
@@ -229,14 +249,48 @@ const useCommandInterpreter = (
 
     terminal?.write(`\r\n${cd !== currentCd ? "\r\n" : ""}${currentCd}>`);
 
-    return setCommand("");
+    if (command !== "") {
+      if (command !== history[history.length - 2]) {
+        setHistory((currentHistory) => [
+          ...currentHistory.slice(0, -1),
+          command,
+          "",
+        ]);
+        setPosition(history.length);
+      } else {
+        setPosition(history.length - 1);
+      }
+
+      setCommand("");
+    }
   };
+
+  useEffect(() => {
+    if (
+      position < history.length - 1 &&
+      typeof history[position] === "string"
+    ) {
+      let promptCleared = false;
+
+      setCommand((currentCommand) => {
+        if (!promptCleared) {
+          terminal?.write(
+            `${BACKSPACE.repeat(currentCommand.length)}${history[position]}`
+          );
+          promptCleared = true;
+        }
+
+        return history[position];
+      });
+    }
+  }, [history, position, terminal]);
 
   return {
     cd,
     command,
     processCommand,
     setCommand,
+    setHistoryPosition,
     welcome,
   };
 };
