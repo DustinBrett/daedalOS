@@ -166,7 +166,13 @@ const useFileContextMenu = (
   }
 
   if (pid) {
-    if (isShortcut && url && url !== "/") {
+    if (
+      isShortcut &&
+      url &&
+      url !== "/" &&
+      !url.startsWith("http:") &&
+      !url.startsWith("https:")
+    ) {
       const isFolder = urlExtension === "" || urlExtension === ".zip";
 
       menuItems.unshift({
