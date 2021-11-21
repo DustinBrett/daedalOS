@@ -169,7 +169,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     const fullNewPath = join(directory, uniqueName);
 
     if (isInternal) {
-      if (name !== fullNewPath) {
+      if (name !== fullNewPath && !directory.startsWith(name)) {
         if (await exists(fullNewPath)) {
           return createPath(name, directory, buffer, iteration + 1);
         }
