@@ -36,6 +36,7 @@ import {
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { getFormattedSize } from "utils/functions";
+import { spotlightEffect } from "utils/spotlightEffect";
 import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
@@ -111,6 +112,7 @@ const FileEntry = ({
   const { formats, sizes } = useTheme();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
   const urlExt = extname(url);
   const isDynamicIcon =
@@ -238,7 +240,10 @@ const FileEntry = ({
           readOnly
         )}
       >
-        <figure>
+        <figure
+          ref={figureRef}
+          {...(view === "list" && spotlightEffect(figureRef.current))}
+        >
           {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
             <Icon
               key={entryIcon}

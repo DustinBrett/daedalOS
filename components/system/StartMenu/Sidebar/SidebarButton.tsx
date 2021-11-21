@@ -1,4 +1,6 @@
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
+import { useRef } from "react";
+import { spotlightEffect } from "utils/spotlightEffect";
 
 type SidebarButton = {
   action?: () => void;
@@ -18,13 +20,23 @@ const SidebarButtonComponent = ({
   icon,
   name,
   tooltip,
-}: SidebarButton): JSX.Element => (
-  <StyledSidebarButton $active={active} onClick={action} title={tooltip}>
-    <figure>
-      {icon}
-      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
-    </figure>
-  </StyledSidebarButton>
-);
+}: SidebarButton): JSX.Element => {
+  const buttonRef = useRef<HTMLLIElement | null>(null);
+
+  return (
+    <StyledSidebarButton
+      ref={buttonRef}
+      $active={active}
+      onClick={action}
+      title={tooltip}
+      {...spotlightEffect(buttonRef.current, true)}
+    >
+      <figure>
+        {icon}
+        <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
+      </figure>
+    </StyledSidebarButton>
+  );
+};
 
 export default SidebarButtonComponent;
