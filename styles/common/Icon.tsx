@@ -10,9 +10,9 @@ export type IconProps = {
 };
 
 const StyledIcon = styled.img.attrs<IconProps>(
-  ({ imgSize, displaySize, src = "" }) => ({
+  ({ imgSize = 0, displaySize = 0, src = "" }) => ({
     draggable: false,
-    height: displaySize || imgSize,
+    height: displaySize > imgSize ? imgSize : displaySize || imgSize,
     src:
       !src ||
       src.startsWith("blob:") ||
@@ -20,11 +20,15 @@ const StyledIcon = styled.img.attrs<IconProps>(
       src.startsWith("https:")
         ? src
         : join(dirname(src), `${imgSize}x${imgSize}`, basename(src)),
-    width: displaySize || imgSize,
+    width: displaySize > imgSize ? imgSize : displaySize || imgSize,
   })
 )<IconProps>`
+  left: ${({ displaySize = 0, imgSize = 0 }) =>
+    displaySize > imgSize ? `${displaySize - imgSize}px` : undefined};
   object-fit: contain;
   opacity: ${({ moving }) => (moving ? 0.5 : 1)};
+  top: ${({ displaySize = 0, imgSize = 0 }) =>
+    displaySize > imgSize ? `${displaySize - imgSize}px` : undefined};
 `;
 
 const Icon = (

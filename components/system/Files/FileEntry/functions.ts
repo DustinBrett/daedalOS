@@ -228,6 +228,7 @@ export const getInfoWithExtension = (
                 ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
               canvas.toBlob((blob) => {
                 if (blob instanceof Blob) {
+                  subIcons.push(processDirectory["VideoPlayer"].icon);
                   getInfoByFileExtension(URL.createObjectURL(blob));
                 }
               });

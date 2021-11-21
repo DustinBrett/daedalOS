@@ -236,7 +236,9 @@ const FileEntry = ({
             alt={name}
             moving={icon === entryIcon && pasteList[path] === "move"}
             src={entryIcon}
-            {...FileEntryIconSize[view]}
+            {...FileEntryIconSize[
+              entryIcon !== icon && entryIcon !== SHORTCUT_ICON ? "sub" : view
+            ]}
           />
         ))}
         {renaming ? (
