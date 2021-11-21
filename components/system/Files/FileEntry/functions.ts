@@ -72,7 +72,7 @@ export const getIconFromIni = (
   fs: FSModule,
   directory: string
 ): Promise<string> =>
-  new Promise((resolve) =>
+  new Promise((resolve) => {
     fs.readFile(
       join(directory, "desktop.ini"),
       (error, contents = EMPTY_BUFFER) => {
@@ -84,8 +84,8 @@ export const getIconFromIni = (
           if (IconFile) resolve(IconFile);
         }
       }
-    )
-  );
+    );
+  });
 
 const getDefaultFileViewer = (extension: string): string => {
   if (monacoExtensions.has(extension)) return "MonacoEditor";

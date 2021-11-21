@@ -103,7 +103,11 @@ const useVideoPlayer = (
   ]);
 
   useEffect(() => {
-    if (loading) loadFiles(libs).then(() => setLoading(false));
+    if (loading) {
+      loadFiles(libs).then(() => {
+        if (window.videojs !== undefined) setLoading(false);
+      });
+    }
   }, [loading, setLoading]);
 
   useEffect(() => {

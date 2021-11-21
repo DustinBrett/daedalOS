@@ -17,19 +17,19 @@ const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
     }, {});
 
 const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
-  new Promise((resolve, reject) =>
-    unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)))
-  );
+  new Promise((resolve, reject) => {
+    unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)));
+  });
 
 const zipAsync = (
   data: AsyncZippable,
   opts: AsyncZipOptions = {}
 ): Promise<Uint8Array> =>
-  new Promise((resolve, reject) =>
+  new Promise((resolve, reject) => {
     zip(data, opts, (error, zipData) =>
       error ? reject(error) : resolve(zipData)
-    )
-  );
+    );
+  });
 
 export const addFileToZip = async (
   buffer: Buffer,
@@ -48,10 +48,10 @@ export const isFileInZip = (
   buffer: Buffer,
   zipFilePath: string
 ): Promise<boolean> =>
-  new Promise((resolve) =>
+  new Promise((resolve) => {
     unzip(buffer, (_unzipError, zipData) =>
       resolve(Object.keys(zipData).includes(zipFilePath))
-    )
-  );
+    );
+  });
 
 export { unzipAsync as unzip };

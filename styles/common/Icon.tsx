@@ -31,12 +31,13 @@ const Icon = (
   props: IconProps & React.ImgHTMLAttributes<HTMLImageElement>
 ): JSX.Element => {
   const [loaded, setLoaded] = useState(false);
+  const { src = "" } = props;
 
   useEffect(
     () => () => {
-      if (loaded && props.src?.startsWith("blob:")) cleanUpBufferUrl(props.src);
+      if (loaded && src.startsWith("blob:")) cleanUpBufferUrl(src);
     },
-    [loaded, props]
+    [loaded, src]
   );
 
   return (

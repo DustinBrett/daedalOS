@@ -20,6 +20,8 @@ const useJSDOS = (
   useEffect(() => {
     if (!dosInstance) {
       loadFiles(libs).then(() => {
+        if (!window.emulators) return;
+
         window.emulators.pathPrefix = pathPrefix;
 
         if (containerRef.current) {

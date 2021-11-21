@@ -82,7 +82,7 @@ const useTinyMCE = (
   useEffect(() => {
     if (!editor) {
       loadFiles(libs).then(() => {
-        if (containerRef.current) {
+        if (window.tinymce && containerRef.current) {
           window.tinymce.remove();
           window.tinymce
             .init({

@@ -84,7 +84,12 @@
     ],
     "no-shadow": ["error", { "hoist": "all" }],
     "no-unsafe-optional-chaining": "error",
+    "react/function-component-definition": [
+      "error",
+      { "namedComponents": "arrow-function" }
+    ],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-no-useless-fragment": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-sort-props": [
       "error",

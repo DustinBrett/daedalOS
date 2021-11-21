@@ -2,7 +2,7 @@ import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
 
 const ScrollBars = (
-  size = 17,
+  size: number,
   verticalX?: number,
   verticalY?: number
 ): FlattenSimpleInterpolation => css`
