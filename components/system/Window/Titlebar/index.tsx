@@ -12,7 +12,6 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { PREVENT_SCROLL } from "utils/constants";
 import useDoubleClick from "utils/useDoubleClick";
 
 type TitlebarProps = {
@@ -25,7 +24,6 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   } = useProcesses();
   const {
     allowResizing = true,
-    componentWindow,
     hideTitlebarIcon,
     icon,
     title,
@@ -36,18 +34,11 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
-  const dragHandle = {
-    className: rndDefaults.dragHandleClassName,
-    onTouchStartCapture: ({ target }: React.TouchEvent) => {
-      if (target instanceof HTMLElement) target.click();
-      componentWindow?.focus(PREVENT_SCROLL);
-    },
-  };
 
   return (
     <StyledTitlebar
       $foreground={isForeground}
-      {...dragHandle}
+      className={rndDefaults.dragHandleClassName}
       {...useTitlebarContextMenu(id)}
     >
       <Button as="h1" {...(allowResizing ? onClickMaximize : {})}>
