@@ -22,7 +22,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: { url = "" } = {} } = {} } = useProcesses();
   const [currentUrl, setCurrentUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
-  const windowTransitions = useWindowTransitions(id);
+  const windowTransitions = useWindowTransitions(id, true);
   const focusEvents = useMemo(
     () => ({
       onBlurCapture: () => webampCI && unFocus(webampCI),
