@@ -82,15 +82,22 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
     const bottomOffset = y + height > vh ? vh - y : 0;
     const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
     const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
-
-    setOffset({
+    const newOffset = {
       x:
         Math.round(Math.max(0, x + width - vw)) +
         (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
       y:
         Math.round(Math.max(0, y + height - (vh - bottomOffset))) +
         (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
-    });
+    };
+    const adjustedOffsetX =
+      subMenuOffscreenX && menuX - newOffset.x < 0
+        ? newOffset.x - (newOffset.x - menuX)
+        : 0;
+
+    setOffset(
+      adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
+    );
   }, [subMenu, x, y]);
 
   return items ? (
