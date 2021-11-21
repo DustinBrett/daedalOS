@@ -3,15 +3,15 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 
 const StyledPeekWindow = styled(motion.div)`
-  background-color: ${({ theme }) => theme.colors.taskbar.background};
-  border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
-  border-bottom: 0;
+  position: fixed;
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
   display: flex;
   overflow: hidden;
+  border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
+  border-bottom: 0;
+  background-color: ${({ theme }) => theme.colors.taskbar.background};
   place-content: center;
   place-items: flex-start;
-  position: fixed;
 
   ${StyledTaskbarEntry}:hover & {
     background-color: ${({ theme }) => theme.colors.taskbar.hover};
@@ -27,16 +27,16 @@ const StyledPeekWindow = styled(motion.div)`
   }
 
   button {
-    background-color: rgb(40, 40, 40);
-    height: 32px;
     position: absolute;
-    right: 0;
     top: 0;
+    right: 0;
     width: 32px;
+    height: 32px;
+    background-color: rgb(40, 40, 40);
 
     svg {
-      fill: rgb(252, 246, 247);
       width: 12px;
+      fill: rgb(252, 246, 247);
     }
 
     &:active {

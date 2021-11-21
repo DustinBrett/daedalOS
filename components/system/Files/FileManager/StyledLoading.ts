@@ -2,9 +2,9 @@ import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer"
 import styled from "styled-components";
 
 const StyledLoading = styled.div`
-  cursor: wait;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  cursor: wait;
 
   ${StyledFileExplorer} & {
     height: ${({ theme }) =>
@@ -12,13 +12,13 @@ const StyledLoading = styled.div`
   }
 
   &::before {
+    display: flex;
+    justify-content: center;
+    padding-top: 18px;
     color: #fff;
     content: "Working on it...";
-    display: flex;
     font-size: 12px;
-    justify-content: center;
     mix-blend-mode: difference;
-    padding-top: 18px;
   }
 `;
 

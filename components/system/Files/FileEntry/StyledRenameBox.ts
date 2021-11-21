@@ -7,20 +7,20 @@ const StyledRenameBox = styled.textarea.attrs({
   rows: 1,
   spellCheck: false,
 })`
+  position: relative;
+  z-index: 1;
+  top: 2px;
+  overflow: hidden;
+  min-width: 30px;
+  max-width: ${({ theme }) => `${theme.sizes.fileEntry.renameWidth}px`};
+  padding: ${({ theme }) => `1px ${theme.sizes.fileEntry.renamePadding}px`};
   border: 1px solid rgb(100, 100, 100);
+  margin-bottom: 2px;
   font-family: inherit;
   font-size: 11.5px;
-  margin-bottom: 2px;
-  max-width: ${({ theme }) => `${theme.sizes.fileEntry.renameWidth}px`};
-  min-width: 30px;
-  overflow: hidden;
-  padding: ${({ theme }) => `1px ${theme.sizes.fileEntry.renamePadding}px`};
-  position: relative;
   resize: none;
   text-align: center;
-  top: 2px;
   white-space: break-spaces;
-  z-index: 1;
 `;
 
 export default StyledRenameBox;

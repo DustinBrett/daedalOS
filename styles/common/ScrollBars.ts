@@ -9,8 +9,8 @@ const ScrollBars = (
   overflow: auto;
 
   ::-webkit-scrollbar {
-    height: ${size}px;
     width: ${size}px;
+    height: ${size}px;
   }
 
   ::-webkit-scrollbar-corner,
@@ -24,15 +24,15 @@ const ScrollBars = (
   }
 
   ::-webkit-scrollbar-thumb:vertical {
+    border-right: 1px solid transparent;
+    border-left: 1px solid transparent;
     background-clip: padding-box;
     background-color: rgb(77, 77, 77);
-    border-left: 1px solid transparent;
-    border-right: 1px solid transparent;
   }
 
   ::-webkit-scrollbar-thumb:horizontal {
-    border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -44,14 +44,14 @@ const ScrollBars = (
   }
 
   ::-webkit-scrollbar-button:single-button {
+    display: block;
+    height: ${size ? `${size}px` : "initial"};
+    border: 1px solid rgb(23, 23, 23);
     background-clip: padding-box;
     background-color: rgb(23, 23, 23);
     background-position: center 4px;
     background-repeat: no-repeat;
     background-size: 10px;
-    border: 1px solid rgb(23, 23, 23);
-    display: block;
-    height: ${size ? `${size}px` : "initial"};
 
     &:hover {
       background-color: rgb(55, 55, 55);
@@ -64,11 +64,11 @@ const ScrollBars = (
 
   ::-webkit-scrollbar-button:single-button:vertical:decrement,
   ::-webkit-scrollbar-button:single-button:vertical:increment {
+    border-top: 0;
+    border-bottom: 0;
     background-position-x: ${verticalX ? `${verticalX}px` : "center"};
     background-position-y: ${verticalY ? `${verticalY}px` : "center"};
     background-size: 16px;
-    border-bottom: 0;
-    border-top: 0;
     image-rendering: pixelated;
   }
 
@@ -82,10 +82,10 @@ const ScrollBars = (
 
   ::-webkit-scrollbar-button:single-button:horizontal:decrement,
   ::-webkit-scrollbar-button:single-button:horizontal:increment {
+    border-right: 0;
+    border-left: 0;
     background-position: center;
     background-size: 16px;
-    border-left: 0;
-    border-right: 0;
     image-rendering: pixelated;
   }
 

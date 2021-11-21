@@ -4,27 +4,27 @@ import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
 const StyledStartMenu = styled(motion.nav)`
-  background-color: hsla(0, 0%, 13%, 70%);
+  position: absolute;
+  z-index: 1000;
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
+  left: 0;
+  display: flex;
+  width: ${({ theme }) => theme.sizes.startMenu.size};
+  height: ${({ theme }) => theme.sizes.startMenu.size};
+  background-color: hsla(0, 0%, 13%, 70%);
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
   contain: strict;
-  display: flex;
-  height: ${({ theme }) => theme.sizes.startMenu.size};
-  left: 0;
-  position: absolute;
-  width: ${({ theme }) => theme.sizes.startMenu.size};
-  z-index: 1000;
 
   ${StyledFileManager} {
     ${ScrollBars(13, -2, -1)};
 
-    margin-top: 0;
-    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     padding-top: 7px;
+    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    margin-top: 0;
 
     ${StyledFileManager} {
-      margin: 0;
       padding: 0;
+      margin: 0;
 
       figure {
         img {
@@ -50,8 +50,8 @@ const StyledStartMenu = styled(motion.nav)`
       }
 
       ::-webkit-scrollbar-button:single-button {
-        background-color: transparent;
         border: 1px solid transparent;
+        background-color: transparent;
       }
 
       ::-webkit-scrollbar-thumb {

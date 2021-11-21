@@ -23,12 +23,12 @@ const StyledIcon = styled.img.attrs<IconProps>(
     width: displaySize > imgSize ? imgSize : displaySize || imgSize,
   })
 )<IconProps>`
+  top: ${({ displaySize = 0, imgSize = 0 }) =>
+    displaySize > imgSize ? `${displaySize - imgSize}px` : undefined};
   left: ${({ displaySize = 0, imgSize = 0 }) =>
     displaySize > imgSize ? `${displaySize - imgSize}px` : undefined};
   object-fit: contain;
   opacity: ${({ moving }) => (moving ? 0.5 : 1)};
-  top: ${({ displaySize = 0, imgSize = 0 }) =>
-    displaySize > imgSize ? `${displaySize - imgSize}px` : undefined};
 `;
 
 const Icon = (

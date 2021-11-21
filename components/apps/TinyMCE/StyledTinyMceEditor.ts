@@ -12,19 +12,19 @@ const StyledEditor = styled.div`
 
     &[aria-disabled="true"] {
       .tox-editor-header {
-        cursor: pointer;
         position: relative;
+        cursor: pointer;
 
         &::before {
+          position: absolute;
+          display: flex;
+          width: 100%;
+          height: calc(100% - 1px);
           background-color: rgba(255, 255, 255, 0.8);
           content: "Click to switch to design mode.";
-          display: flex;
-          height: calc(100% - 1px);
           place-content: center;
           place-items: center;
-          position: absolute;
           text-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
-          width: 100%;
         }
       }
     }

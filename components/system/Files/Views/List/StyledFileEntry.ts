@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 const StyledFileEntry = styled.li`
   figure {
-    border: 1px solid transparent;
     display: flex;
     height: 36px;
     padding-bottom: 1px;
+    border: 1px solid transparent;
     place-items: center;
 
     figcaption {
@@ -13,8 +13,8 @@ const StyledFileEntry = styled.li`
     }
 
     img {
-      margin-left: 3px;
       margin-right: 8px;
+      margin-left: 3px;
     }
 
     &:active {
@@ -29,8 +29,8 @@ const StyledFileEntry = styled.li`
     }
 
     &:hover {
-      background-color: hsla(0, 0%, 35%, 70%);
       border: 1px solid hsla(0, 0%, 45%, 70%);
+      background-color: hsla(0, 0%, 35%, 70%);
     }
   }
 `;

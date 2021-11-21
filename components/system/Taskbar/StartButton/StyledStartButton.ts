@@ -6,16 +6,16 @@ type StyledStartButtonProps = {
 };
 
 const StyledStartButton = styled(Button)<StyledStartButtonProps>`
+  position: absolute;
+  left: 0;
+  display: flex;
+  width: ${({ theme }) => theme.sizes.startButton.width};
+  height: 100%;
   background-color: ${({ $active, theme }) =>
     $active && theme.colors.taskbar.foreground};
-  display: flex;
   fill: ${({ theme }) => theme.colors.startButton};
-  height: 100%;
-  left: 0;
   place-content: center;
   place-items: center;
-  position: absolute;
-  width: ${({ theme }) => theme.sizes.startButton.width};
 
   svg {
     height: ${({ theme }) => theme.sizes.startButton.iconSize};

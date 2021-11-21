@@ -6,23 +6,23 @@ import ScrollBars from "styles/common/ScrollBars";
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
   ${ScrollBars(17)};
 
+  display: grid;
+  overflow: ${({ scrollable }) => (scrollable ? undefined : "hidden")};
+  height: 100%;
+  padding: ${({ theme }) => theme.sizes.fileManager.padding};
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
   contain: strict;
-  display: grid;
   grid-auto-flow: column;
   grid-template-columns: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryWidth})`};
   grid-template-rows: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryHeight})`};
-  height: 100%;
-  overflow: ${({ scrollable }) => (scrollable ? undefined : "hidden")};
-  padding: ${({ theme }) => theme.sizes.fileManager.padding};
   pointer-events: ${({ selecting }) => (selecting ? "auto" : undefined)};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
   main > & {
-    height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
     overflow: visible;
+    height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
     padding-bottom: 21px;
   }
 

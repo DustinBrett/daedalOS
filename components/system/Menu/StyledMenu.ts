@@ -8,19 +8,19 @@ type StyledMenuProps = {
 };
 
 const StyledMenu = styled(motion.nav)<StyledMenuProps>`
-  background-color: rgb(43, 43, 43);
+  position: absolute;
+  z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
+  width: fit-content;
+  height: fit-content;
+  padding: 4px 2px;
   border: 1px solid rgb(160, 160, 160);
+  background-color: rgb(43, 43, 43);
   box-shadow: 1px 1px 1px hsla(0, 0%, 20%, 70%),
     2px 2px 2px hsla(0, 0%, 10%, 70%);
   color: rgb(255, 255, 255);
   contain: layout;
   font-size: 12px;
-  height: fit-content;
-  padding: 4px 2px;
-  position: absolute;
   transform: ${({ $x, $y }) => `translate(${$x}px, ${$y}px);`};
-  width: fit-content;
-  z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
   ol {
     li.disabled {
@@ -29,9 +29,9 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
     }
 
     hr {
-      background-color: rgb(128, 128, 128);
       height: 1px;
       margin: 3px 8px;
+      background-color: rgb(128, 128, 128);
     }
 
     figure {
@@ -44,11 +44,11 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
       }
 
       figcaption {
-        margin-left: 32px;
-        margin-right: 64px;
         position: relative;
         top: -1px;
         width: max-content;
+        margin-right: 64px;
+        margin-left: 32px;
 
         &.primary {
           font-weight: 700;
@@ -60,11 +60,11 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
       }
 
       svg {
-        fill: #fff;
-        height: 13px;
-        margin-top: 1px;
         position: absolute;
         width: 13px;
+        height: 13px;
+        margin-top: 1px;
+        fill: #fff;
 
         &.left {
           left: 8px;

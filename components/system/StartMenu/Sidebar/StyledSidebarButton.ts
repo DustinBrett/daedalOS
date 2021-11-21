@@ -6,44 +6,44 @@ type StyledSidebarButtonProps = {
 };
 
 const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
-  border: 1px solid transparent;
   display: flex;
+  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
   height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
+  border: 1px solid transparent;
   place-content: center;
   place-items: center;
   transition-duration: 150ms;
-  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
 
   &::before {
+    position: absolute;
+    left: 0;
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
     border-left: ${({ $active, theme }) =>
       `4px solid ${$active ? theme.colors.highlight : "transparent"}`};
     content: "";
-    height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
-    left: 0;
-    position: absolute;
-    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
   }
 
   figure {
+    display: flex;
     color: ${({ $active, theme }) =>
       $active ? theme.colors.highlight : theme.colors.text};
-    display: flex;
     place-items: center;
 
     svg {
+      position: absolute;
+      left: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
+      width: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
+      height: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
+      margin-left: 1px;
       fill: ${({ $active, theme }) =>
         $active ? theme.colors.highlight : theme.colors.text};
-      height: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
-      left: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
-      margin-left: 1px;
-      position: absolute;
-      width: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
     }
 
     figcaption {
-      border: 1px solid transparent;
-      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
       position: absolute;
+      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+      border: 1px solid transparent;
       white-space: nowrap;
 
       strong {
@@ -53,14 +53,14 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   ${StyledSidebar}:hover:not(${StyledSidebar}.collapsed) & {
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
     transition: width 300ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
-    width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
   }
 
   &:hover {
-    background-color: hsla(0, 0%, 35%, 70%);
     border: 1px solid hsla(0, 0%, 45%, 70%);
+    background-color: hsla(0, 0%, 35%, 70%);
   }
 
   &:active {

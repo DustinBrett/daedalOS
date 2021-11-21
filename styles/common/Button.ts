@@ -6,9 +6,9 @@ const Button = styled.button.attrs({
   },
   type: "button",
 })`
+  width: 100%;
   background-color: transparent;
   font-family: inherit;
-  width: 100%;
 `;
 
 export default Button;

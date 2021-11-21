@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 const StyledPeekViewport = styled.div`
-  background-color: inherit;
-  height: inherit;
   width: inherit;
+  height: inherit;
+  background-color: inherit;
 `;
 
 export default StyledPeekViewport;

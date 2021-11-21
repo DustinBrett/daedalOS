@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 const StyledStartMenuBackground = styled.span`
-  backdrop-filter: blur(12px);
-  height: 100%;
-  inset: 0;
   position: absolute;
-  width: 100%;
   z-index: -1;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(12px);
+  inset: 0;
 `;
 
 export default StyledStartMenuBackground;
