@@ -81,6 +81,8 @@ const truncateName = (
   return nonBreakingName;
 };
 
+const focusing: string[] = [];
+
 const FileEntry = ({
   fileActions,
   fileManagerId,
@@ -144,7 +146,13 @@ const FileEntry = ({
 
   useEffect(() => {
     if (buttonRef.current) {
-      const isFocused = focusedEntries.includes(fileName);
+      const inFocusedEntries = focusedEntries.includes(fileName);
+      const inFocusing = focusing.includes(fileName);
+      const isFocused = inFocusedEntries || inFocusing;
+
+      if (inFocusedEntries && inFocusing) {
+        focusing.splice(focusing.indexOf(fileName), 1);
+      }
 
       if (selectionRect && fileManagerRef.current) {
         const selected = isSelectionIntersecting(
@@ -154,6 +162,7 @@ const FileEntry = ({
         );
 
         if (selected && !isFocused) {
+          focusing.push(fileName);
           focusEntry(fileName);
           buttonRef.current.focus(PREVENT_SCROLL);
         } else if (!selected && isFocused) {
