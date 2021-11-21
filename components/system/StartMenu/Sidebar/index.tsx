@@ -13,17 +13,13 @@ import { useEffect, useRef, useState } from "react";
 import { HOME } from "utils/constants";
 
 type SidebarGroupProps = {
-  collapsed: boolean;
   sidebarButtons: SidebarButtons;
 };
 
-const SidebarGroup = ({
-  collapsed,
-  sidebarButtons,
-}: SidebarGroupProps): JSX.Element => (
+const SidebarGroup = ({ sidebarButtons }: SidebarGroupProps): JSX.Element => (
   <ol>
     {sidebarButtons.map((button) => (
-      <SidebarButton key={button.name} collapsed={collapsed} {...button} />
+      <SidebarButton key={button.name} {...button} />
     ))}
   </ol>
 );
@@ -42,9 +38,14 @@ const Sidebar = (): JSX.Element => {
       heading: true,
       icon: <SideMenu />,
       name: "START",
-      tooltip: "Expand",
+      ...(collapsed && { tooltip: "Expand" }),
     },
-    { active: true, icon: <AllApps />, name: "All apps" },
+    {
+      active: true,
+      icon: <AllApps />,
+      name: "All apps",
+      ...(collapsed && { tooltip: "All apps" }),
+    },
   ];
   const bottomButtons: SidebarButtons = [
     {
@@ -56,6 +57,7 @@ const Sidebar = (): JSX.Element => {
         ),
       icon: <Documents />,
       name: "Documents",
+      ...(collapsed && { tooltip: "Documents" }),
     },
     {
       action: () => resetFs().finally(() => window.location.reload()),
@@ -78,8 +80,8 @@ const Sidebar = (): JSX.Element => {
         setCollapsed(true);
       }}
     >
-      <SidebarGroup collapsed={collapsed} sidebarButtons={topButtons} />
-      <SidebarGroup collapsed={collapsed} sidebarButtons={bottomButtons} />
+      <SidebarGroup sidebarButtons={topButtons} />
+      <SidebarGroup sidebarButtons={bottomButtons} />
     </StyledSidebar>
   );
 };

@@ -11,22 +11,15 @@ type SidebarButton = {
 
 export type SidebarButtons = SidebarButton[];
 
-type SidebarButtonProps = SidebarButton & { collapsed: boolean };
-
 const SidebarButtonComponent = ({
   action,
   active,
-  collapsed,
   heading,
   icon,
   name,
   tooltip,
-}: SidebarButtonProps): JSX.Element => (
-  <StyledSidebarButton
-    $active={active}
-    onClick={action}
-    title={collapsed ? tooltip || name : undefined}
-  >
+}: SidebarButton): JSX.Element => (
+  <StyledSidebarButton $active={active} onClick={action} title={tooltip}>
     <figure>
       {icon}
       <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
