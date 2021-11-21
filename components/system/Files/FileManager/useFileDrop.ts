@@ -8,6 +8,7 @@ import { join } from "path";
 import { TEMP_PATH } from "utils/constants";
 
 type FileDrop = {
+  onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDragOver: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDrop: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
 };
@@ -15,9 +16,16 @@ type FileDrop = {
 type FileDropProps = {
   callback?: (path: string, buffer?: Buffer) => void;
   id?: string;
+  onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
+  onDragOver?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
 };
 
-const useFileDrop = ({ callback, id }: FileDropProps): FileDrop => {
+const useFileDrop = ({
+  callback,
+  id,
+  onDragLeave,
+  onDragOver,
+}: FileDropProps): FileDrop => {
   const { url } = useProcesses();
   const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
   const updateProcessUrl = async (
@@ -41,7 +49,11 @@ const useFileDrop = ({ callback, id }: FileDropProps): FileDrop => {
   };
 
   return {
-    onDragOver: haltEvent,
+    onDragLeave,
+    onDragOver: (event) => {
+      onDragOver?.(event);
+      haltEvent(event);
+    },
     onDrop: (event) =>
       handleFileInputEvent(event, callback || updateProcessUrl),
   };

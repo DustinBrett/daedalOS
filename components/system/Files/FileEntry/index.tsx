@@ -132,6 +132,10 @@ const FileEntry = ({
 
       if (uniqueName) updateFolder(directory, uniqueName);
     },
+    onDragLeave: () =>
+      buttonRef.current?.parentElement?.classList.remove("focus-within"),
+    onDragOver: () =>
+      buttonRef.current?.parentElement?.classList.add("focus-within"),
   });
   const openInFileExplorer = pid === "FileExplorer";
 
