@@ -98,3 +98,9 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".ogv",
   ".webm",
 ]);
+
+export const FOLDER_ICON = "/System/Icons/folder.png";
+
+export const NEW_FOLDER_ICON = "/System/Icons/new_folder.png";
+
+export const UNKNOWN_ICON = "/System/Icons/unknown.png";

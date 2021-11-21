@@ -1,6 +1,6 @@
-import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
 import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
+import { FOLDER_ICON } from "utils/constants";
 
 const processDirectory: Processes = {
   Browser: {

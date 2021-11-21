@@ -26,6 +26,7 @@ import { basename, dirname, extname, join, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   EMPTY_BUFFER,
+  FOLDER_ICON,
   INVALID_FILE_CHARACTERS,
   MOUNTABLE_EXTENSIONS,
   SHORTCUT_APPEND,
@@ -66,10 +67,6 @@ type Folder = {
   isLoading: boolean;
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };
-
-export const FOLDER_ICON = "/System/Icons/folder.png";
-export const NEW_FOLDER_ICON = "/System/Icons/new_folder.png";
-export const UNKNOWN_ICON = "/System/Icons/unknown.png";
 
 const useFolder = (
   directory: string,

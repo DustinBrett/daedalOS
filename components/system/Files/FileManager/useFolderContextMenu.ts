@@ -1,6 +1,5 @@
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
-import { FOLDER_ICON } from "components/system/Files/FileManager/useFolder";
 import type {
   SortBy,
   SortByOrder,
@@ -8,7 +7,7 @@ import type {
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
-import { EMPTY_BUFFER, MENU_SEPERATOR } from "utils/constants";
+import { EMPTY_BUFFER, FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";

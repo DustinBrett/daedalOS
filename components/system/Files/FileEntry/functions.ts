@@ -3,11 +3,6 @@ import { monacoExtensions } from "components/apps/MonacoEditor/config";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
-import {
-  FOLDER_ICON,
-  NEW_FOLDER_ICON,
-  UNKNOWN_ICON,
-} from "components/system/Files/FileManager/useFolder";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
@@ -15,14 +10,17 @@ import index from "public/.index/fs.9p.json";
 import {
   BASE_2D_CONTEXT_OPTIONS,
   EMPTY_BUFFER,
+  FOLDER_ICON,
   IMAGE_FILE_EXTENSIONS,
   MP3_MIME_TYPE,
+  NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
   PREVIEW_FRAME_SECOND,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
   SYSTEM_FILES,
   SYSTEM_PATHS,
+  UNKNOWN_ICON,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import { bufferToUrl } from "utils/functions";
