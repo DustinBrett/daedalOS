@@ -13,6 +13,10 @@ const sizes = {
     renamePadding: 5,
     renameWidth: 75,
   },
+  fileExplorer: {
+    navBarHeight: "42px",
+    statusBarHeight: "23px",
+  },
   fileManager: {
     columnGap: "1px",
     gridEntryHeight: "70px",

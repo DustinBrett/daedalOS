@@ -41,7 +41,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   return url ? (
     <StyledFileExplorer>
       <Navigation id={id} />
-      <FileManager id={id} url={url} view="icon" statusBar />
+      <FileManager id={id} url={url} view="icon" showStatusBar />
     </StyledFileExplorer>
   ) : (
     <></>

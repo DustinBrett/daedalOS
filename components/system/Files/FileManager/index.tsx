@@ -19,7 +19,7 @@ type FileManagerProps = {
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
-  statusBar?: boolean;
+  showStatusBar?: boolean;
   id?: string;
   url: string;
   view: FileManagerViewNames;
@@ -30,7 +30,7 @@ const FileManager = ({
   hideScrolling,
   hideShortcutIcons,
   id,
-  statusBar,
+  showStatusBar,
   url,
   view,
 }: FileManagerProps): JSX.Element => {
@@ -49,6 +49,7 @@ const FileManager = ({
     useSelection(fileManagerRef);
   const fileDrop = useFileDrop({ callback: folderActions.newPath });
   const folderContextMenu = useFolderContextMenu(url, folderActions);
+  const loading = (!hideLoading && isLoading) || url !== currentUrl;
 
   useEffect(() => {
     if (MOUNTABLE_EXTENSIONS.has(extname(url)) && !mounted) {
@@ -66,48 +67,50 @@ const FileManager = ({
     }
   }, [currentUrl, folderActions, url]);
 
-  return (!hideLoading && isLoading) || url !== currentUrl ? (
-    <StyledLoading />
-  ) : (
+  return (
     <>
-      <StyledFileManager
-        ref={fileManagerRef}
-        scrollable={!hideScrolling}
-        selecting={isSelecting}
-        {...selectionEvents}
-        {...fileDrop}
-        {...folderContextMenu}
-      >
-        {isSelecting && <StyledSelection style={selectionStyling} />}
-        {Object.keys(files).map((file) => (
-          <StyledFileEntry
-            key={file}
-            visible={!isLoading}
-            {...(renaming !== file && draggableEntry(url, file))}
-            {...focusableEntry(file)}
-          >
-            <FileEntry
-              fileActions={fileActions}
-              fileManagerId={id}
-              fileManagerRef={fileManagerRef}
-              focusFunctions={focusFunctions}
-              focusedEntries={focusedEntries}
-              hideShortcutIcon={hideShortcutIcons}
-              isLoadingFileManager={isLoading}
-              name={basename(file, SHORTCUT_EXTENSION)}
-              path={join(url, file)}
-              renaming={renaming === file}
-              selectionRect={selectionRect}
-              setRenaming={setRenaming}
-              stats={files[file]}
-              view={view}
-            />
-          </StyledFileEntry>
-        ))}
-      </StyledFileManager>
-      {statusBar && (
+      {loading ? (
+        <StyledLoading />
+      ) : (
+        <StyledFileManager
+          ref={fileManagerRef}
+          scrollable={!hideScrolling}
+          selecting={isSelecting}
+          {...selectionEvents}
+          {...fileDrop}
+          {...folderContextMenu}
+        >
+          {isSelecting && <StyledSelection style={selectionStyling} />}
+          {Object.keys(files).map((file) => (
+            <StyledFileEntry
+              key={file}
+              visible={!isLoading}
+              {...(renaming !== file && draggableEntry(url, file))}
+              {...focusableEntry(file)}
+            >
+              <FileEntry
+                fileActions={fileActions}
+                fileManagerId={id}
+                fileManagerRef={fileManagerRef}
+                focusFunctions={focusFunctions}
+                focusedEntries={focusedEntries}
+                hideShortcutIcon={hideShortcutIcons}
+                isLoadingFileManager={isLoading}
+                name={basename(file, SHORTCUT_EXTENSION)}
+                path={join(url, file)}
+                renaming={renaming === file}
+                selectionRect={selectionRect}
+                setRenaming={setRenaming}
+                stats={files[file]}
+                view={view}
+              />
+            </StyledFileEntry>
+          ))}
+        </StyledFileManager>
+      )}
+      {showStatusBar && (
         <StatusBar
-          count={Object.keys(files).length}
+          count={loading ? 0 : Object.keys(files).length}
           directory={url}
           selected={focusedEntries}
         />
