@@ -22,6 +22,23 @@ const StyledStartMenu = styled(motion.nav)`
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     padding-top: 7px;
 
+    ${StyledFileManager} {
+      margin: 0;
+      padding: 0;
+
+      figure {
+        img {
+          margin-left: 9px;
+        }
+
+        &:active {
+          img {
+            margin-left: 13px;
+          }
+        }
+      }
+    }
+
     &:not(:hover) {
       ::-webkit-scrollbar {
         width: 1px;

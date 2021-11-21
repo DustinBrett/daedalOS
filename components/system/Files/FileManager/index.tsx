@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
 
 type FileManagerProps = {
+  hideFolders?: boolean;
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
@@ -28,6 +29,7 @@ type FileManagerProps = {
 };
 
 const FileManager = ({
+  hideFolders,
   hideLoading,
   hideScrolling,
   hideShortcutIcons,
@@ -46,7 +48,7 @@ const FileManager = ({
     useFocusableEntries(fileManagerRef);
   const draggableEntry = useDraggableEntries(focusedEntries, focusFunctions);
   const { fileActions, files, folderActions, isLoading, updateFiles } =
-    useFolder(url, setRenaming, focusFunctions);
+    useFolder(url, setRenaming, focusFunctions, hideFolders);
   const { mountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =

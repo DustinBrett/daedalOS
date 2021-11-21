@@ -8,6 +8,7 @@ import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import FileManager from "components/system/Files/FileManager";
 import type { FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
@@ -19,7 +20,7 @@ import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname, extname } from "path";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -106,6 +107,7 @@ const FileEntry = ({
   );
   const openFile = useFile(url);
   const { createPath, pasteList, updateFolder } = useFileSystem();
+  const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
   const singleClick = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -129,6 +131,7 @@ const FileEntry = ({
       if (uniqueName) updateFolder(directory, uniqueName);
     },
   });
+  const openInFileExplorer = pid === "FileExplorer";
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -204,69 +207,87 @@ const FileEntry = ({
   };
 
   return (
-    <Button
-      ref={buttonRef}
-      title={createTooltip()}
-      {...useDoubleClick(() => {
-        if (
-          pid === "FileExplorer" &&
-          fileManagerId &&
-          !MOUNTABLE_EXTENSIONS.has(urlExt)
-        ) {
-          changeUrl(fileManagerId, url);
-          blurEntry();
-        } else {
-          openFile(pid, !isDynamicIcon ? icon : undefined);
-        }
-      }, singleClick)}
-      {...(pid === "FileExplorer" && fileDrop)}
-      {...useFileContextMenu(
-        url,
-        pid,
-        path,
-        setRenaming,
-        fileActions,
-        focusFunctions,
-        focusedEntries,
-        fileManagerId,
-        readOnly
-      )}
-    >
-      <figure>
-        {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
-          <Icon
-            key={entryIcon}
-            alt={name}
-            moving={icon === entryIcon && pasteList[path] === "move"}
-            src={entryIcon}
-            {...FileEntryIconSize[
-              entryIcon !== icon && entryIcon !== SHORTCUT_ICON ? "sub" : view
-            ]}
-          />
-        ))}
-        {renaming ? (
-          <RenameBox
-            name={name}
-            path={path}
-            renameFile={(origPath, newName) => {
-              fileActions.renameFile(origPath, newName);
-              setRenaming("");
-            }}
-          />
-        ) : (
-          <figcaption>
-            {isOnlyFocusedEntry
-              ? name
-              : truncateName(
-                  name,
-                  sizes.fileEntry.fontSize,
-                  formats.systemFont,
-                  sizes.fileEntry.maxTextDisplayWidth
-                )}
-          </figcaption>
+    <>
+      <Button
+        ref={buttonRef}
+        title={createTooltip()}
+        {...useDoubleClick(() => {
+          if (
+            openInFileExplorer &&
+            fileManagerId &&
+            !MOUNTABLE_EXTENSIONS.has(urlExt)
+          ) {
+            changeUrl(fileManagerId, url);
+            blurEntry();
+          } else if (openInFileExplorer && view === "list") {
+            setShowInFileManager((currentState) => !currentState);
+          } else {
+            openFile(pid, !isDynamicIcon ? icon : undefined);
+          }
+        }, singleClick)}
+        {...(openInFileExplorer && fileDrop)}
+        {...useFileContextMenu(
+          url,
+          pid,
+          path,
+          setRenaming,
+          fileActions,
+          focusFunctions,
+          focusedEntries,
+          fileManagerId,
+          readOnly
         )}
-      </figure>
-    </Button>
+      >
+        <figure>
+          {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
+            <Icon
+              key={entryIcon}
+              alt={name}
+              moving={icon === entryIcon && pasteList[path] === "move"}
+              src={entryIcon}
+              {...FileEntryIconSize[
+                entryIcon !== icon && entryIcon !== SHORTCUT_ICON ? "sub" : view
+              ]}
+            />
+          ))}
+          {renaming ? (
+            <RenameBox
+              name={name}
+              path={path}
+              renameFile={(origPath, newName) => {
+                fileActions.renameFile(origPath, newName);
+                setRenaming("");
+              }}
+            />
+          ) : (
+            <figcaption>
+              {isOnlyFocusedEntry
+                ? name
+                : truncateName(
+                    name,
+                    sizes.fileEntry.fontSize,
+                    formats.systemFont,
+                    sizes.fileEntry[
+                      view === "list"
+                        ? "maxListTextDisplayWidth"
+                        : "maxIconTextDisplayWidth"
+                    ]
+                  )}
+            </figcaption>
+          )}
+        </figure>
+      </Button>
+      {showInFileManager && (
+        <FileManager
+          url={url}
+          view="list"
+          hideFolders
+          hideLoading
+          hideShortcutIcons
+          readOnly
+        />
+      )}
+    </>
   );
 };
 

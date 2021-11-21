@@ -74,7 +74,8 @@ export const UNKNOWN_ICON = "/System/Icons/unknown.png";
 const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
-  { blurEntry, focusEntry }: FocusEntryFunctions
+  { blurEntry, focusEntry }: FocusEntryFunctions,
+  hideFolders = false
 ): Folder => {
   const [files, setFiles] = useState<Files>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -168,13 +169,13 @@ const useFolder = (
           );
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
+              const fileStats = await stat(join(directory, file));
               const newFiles = sortContents(
                 {
                   ...(await processedFiles),
-                  [file]: await statsWithShortcutInfo(
-                    file,
-                    await stat(join(directory, file))
-                  ),
+                  ...((!hideFolders || !fileStats.isDirectory()) && {
+                    [file]: await statsWithShortcutInfo(file, fileStats),
+                  }),
                 },
                 customSortOrder || Object.keys(files || {})
               );
@@ -209,6 +210,7 @@ const useFolder = (
       directory,
       exists,
       files,
+      hideFolders,
       readdir,
       setSortOrders,
       stat,
