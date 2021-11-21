@@ -21,6 +21,26 @@ const StyledStartMenu = styled(motion.nav)`
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     padding-top: 7px;
+
+    &:not(:hover) {
+      ::-webkit-scrollbar {
+        width: 1px;
+      }
+
+      ::-webkit-scrollbar-corner,
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+
+      ::-webkit-scrollbar-button:single-button {
+        background-color: transparent;
+        border: 1px solid transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: rgb(170, 170, 170);
+      }
+    }
   }
 `;
 
