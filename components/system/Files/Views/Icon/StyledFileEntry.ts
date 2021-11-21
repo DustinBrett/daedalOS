@@ -53,32 +53,29 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
   }
 
   &:hover {
-    background-color: ${({ dragging, theme }) =>
-      !dragging && theme.colors.fileEntry.background};
+    background-color: ${({ theme }) => theme.colors.fileEntry.background};
 
     &::before {
-      border: ${({ dragging, theme }) =>
-        !dragging && `1px solid ${theme.colors.fileEntry.border}`};
+      border: ${({ theme }) => `1px solid ${theme.colors.fileEntry.border}`};
     }
   }
 
   &.focus-within {
-    background-color: ${({ dragging, theme }) =>
-      !dragging && theme.colors.fileEntry.backgroundFocused};
+    background-color: ${({ theme }) =>
+      theme.colors.fileEntry.backgroundFocused};
     z-index: 1;
 
     &::before {
-      border: ${({ dragging, theme }) =>
-        !dragging && `1px solid ${theme.colors.fileEntry.borderFocused}`};
+      border: ${({ theme }) =>
+        `1px solid ${theme.colors.fileEntry.borderFocused}`};
     }
 
     &:hover {
-      background-color: ${({ dragging, theme }) =>
-        !dragging && theme.colors.fileEntry.backgroundFocusedHover};
+      background-color: ${({ theme }) =>
+        theme.colors.fileEntry.backgroundFocusedHover};
 
       &::before {
-        border: ${({ dragging, theme }) =>
-          !dragging &&
+        border: ${({ theme }) =>
           `1px solid ${theme.colors.fileEntry.borderFocusedHover}`};
       }
     }

@@ -46,7 +46,11 @@ const FileManager = ({
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
-  const draggableEntry = useDraggableEntries(focusedEntries, focusFunctions);
+  const draggableEntry = useDraggableEntries(
+    focusedEntries,
+    focusFunctions,
+    fileManagerRef
+  );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, hideFolders);
   const { mountFs } = useFileSystem();
