@@ -15,7 +15,7 @@ const StyledStatusBar = styled.footer`
   div {
     display: flex;
     margin-top: -1px;
-    padding: 0 10px;
+    padding: 0 3px 0 10px;
 
     &::after {
       border-right-color: #fff;
@@ -23,12 +23,12 @@ const StyledStatusBar = styled.footer`
       border-right-width: 1px;
       content: "";
       height: 11px;
-      margin-left: 10px;
+      margin-left: 11px;
       position: relative;
       top: 3px;
     }
 
-    &:last-child {
+    .selected {
       margin-right: 10px;
       overflow: hidden;
     }

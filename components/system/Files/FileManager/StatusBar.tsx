@@ -68,7 +68,7 @@ const StatusBar = ({
         {count} item{count !== 1 ? "s" : ""}
       </div>
       {showSelected && selected.length > 0 && (
-        <div title="Selected item count and size">
+        <div className="selected" title="Selected item count and size">
           {selected.length} item{selected.length !== 1 ? "s" : ""} selected
           {selectedSize > -1
             ? `${"\u00A0\u00A0"}${getFormattedSize(selectedSize)}`
