@@ -49,7 +49,13 @@ export const MENU_SEPERATOR = { seperator: true };
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
-export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".jsdos", ".wsz", ".zip"]);
+export const MOUNTABLE_EXTENSIONS = new Set([
+  ".iso",
+  ".jsdos",
+  ".rar",
+  ".wsz",
+  ".zip",
+]);
 
 export const MP3_MIME_TYPE = "audio/mpeg";
 
