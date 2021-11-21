@@ -1,7 +1,7 @@
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
-  get9pModifiedTime,
+  getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
 import RenameBox from "components/system/Files/FileEntry/RenameBox";
@@ -200,9 +200,8 @@ const FileEntry = ({
     const type =
       extensions[extension as ExtensionType]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
-    const { atimeMs, ctimeMs, mtimeMs, size: sizeInBytes } = stats;
-    const unknownTime = atimeMs === ctimeMs && ctimeMs === mtimeMs;
-    const modifiedTime = unknownTime ? get9pModifiedTime(path) : mtimeMs;
+    const { size: sizeInBytes } = stats;
+    const modifiedTime = getModifiedTime(path, stats);
     const size = getFormattedSize(sizeInBytes);
     const toolTip = `Type: ${type}\nSize: ${size}`;
     const date = new Date(modifiedTime).toISOString().slice(0, 10);

@@ -28,7 +28,9 @@ const useSortBy = (
       if (files) {
         setSortOrders((currentSortOrder) => ({
           ...currentSortOrder,
-          [directory]: Object.keys(sortFiles(files, sortByValue, isAscending)),
+          [directory]: Object.keys(
+            sortFiles(directory, files, sortByValue, isAscending)
+          ),
         }));
       }
 

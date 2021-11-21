@@ -3,6 +3,7 @@ import { monacoExtensions } from "components/apps/MonacoEditor/config";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
@@ -65,6 +66,14 @@ export const get9pModifiedTime = (path: string): number => {
     });
 
   return mTime;
+};
+
+export const getModifiedTime = (path: string, stats: FileStat): number => {
+  const { atimeMs, ctimeMs, mtimeMs } = stats;
+
+  return atimeMs === ctimeMs && ctimeMs === mtimeMs
+    ? get9pModifiedTime(path) || mtimeMs
+    : mtimeMs;
 };
 
 export const getIconFromIni = (

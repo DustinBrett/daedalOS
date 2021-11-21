@@ -1,4 +1,5 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { basename, dirname, extname, join } from "path";
@@ -23,22 +24,10 @@ const sortBySize = (
 const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
 
-const sortByDate = (
-  [, { mtimeMs: aTime }]: FileStats,
-  [, { mtimeMs: bTime }]: FileStats
-): number => aTime - bTime;
-
 const sortSystemShortcuts = (
   [, { systemShortcut: aSystem }]: FileStats,
   [, { systemShortcut: bSystem }]: FileStats
 ): number => (aSystem === bSystem ? 0 : aSystem ? -1 : 1);
-
-const sortFunctionMap: Record<string, SortFunction> = {
-  date: sortByDate,
-  name: sortByName,
-  size: sortBySize,
-  type: sortByType,
-};
 
 export const sortContents = (
   contents: Files,
@@ -94,13 +83,24 @@ export const sortContents = (
 };
 
 export const sortFiles = (
+  directory: string,
   files: Files,
   sortBy: SortBy,
   ascending: boolean
-): Files =>
-  sortBy in sortFunctionMap
+): Files => {
+  const sortFunctionMap: Record<string, SortFunction> = {
+    date: ([aPath, aStats]: FileStats, [bPath, bStats]: FileStats): number =>
+      getModifiedTime(join(directory, aPath), aStats) -
+      getModifiedTime(join(directory, bPath), bStats),
+    name: sortByName,
+    size: sortBySize,
+    type: sortByType,
+  };
+
+  return sortBy in sortFunctionMap
     ? sortContents(files, [], sortFunctionMap[sortBy], ascending)
     : files;
+};
 
 export const iterateFileName = (name: string, iteration: number): string => {
   const extension = extname(name);
