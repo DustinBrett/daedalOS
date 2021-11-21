@@ -105,6 +105,7 @@ const useFolder = (
     setSortOrders,
     sortOrders: { [directory]: sortOrder } = {},
   } = useSession();
+  const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     (fileName: string, stats: Stats): Promise<FileStat> =>
@@ -441,13 +442,25 @@ const useFolder = (
   };
 
   useEffect(() => {
+    if (directory !== currentDirectory) {
+      setCurrentDirectory(directory);
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setFiles(undefined);
+    }
+  }, [currentDirectory, directory]);
+
+  useEffect(() => {
     if (sessionLoaded) {
       if (!files) {
         updateFiles(undefined, undefined, sortOrder);
       } else {
         const fileNames = Object.keys(files);
 
-        if (sortOrder && fileNames.length === sortOrder.length) {
+        if (
+          sortOrder &&
+          fileNames.length === sortOrder.length &&
+          directory === currentDirectory
+        ) {
           if (fileNames.some((file) => !sortOrder.includes(file))) {
             const oldName = sortOrder.find(
               (entry) => !fileNames.includes(entry)
@@ -474,7 +487,15 @@ const useFolder = (
         }
       }
     }
-  }, [directory, files, sessionLoaded, setSortOrders, sortOrder, updateFiles]);
+  }, [
+    currentDirectory,
+    directory,
+    files,
+    sessionLoaded,
+    setSortOrders,
+    sortOrder,
+    updateFiles,
+  ]);
 
   useEffect(
     () => () => {
