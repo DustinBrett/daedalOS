@@ -28,7 +28,6 @@ import {
   EMPTY_BUFFER,
   INVALID_FILE_CHARACTERS,
   MOUNTABLE_EXTENSIONS,
-  PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
@@ -104,7 +103,7 @@ const useFolder = (
     setSortOrders,
     sortOrders: { [directory]: sortOrder } = {},
   } = useSession();
-  const { closeWithTransition } = useProcesses();
+  const { closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     (fileName: string, stats: Stats): Promise<FileStat> =>
       new Promise((resolve) => {
@@ -196,7 +195,7 @@ const useFolder = (
           }
         } catch (error) {
           if ((error as ApiError).code === "ENOENT") {
-            closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${directory}`);
+            closeProcessesByUrl(directory);
           }
         }
 
@@ -205,7 +204,7 @@ const useFolder = (
     },
     [
       blurEntry,
-      closeWithTransition,
+      closeProcessesByUrl,
       directory,
       exists,
       files,

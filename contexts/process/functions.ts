@@ -32,19 +32,33 @@ export const closeProcess =
     return remainingProcesses;
   };
 
-export const createPid = (processId: string, url: string): string =>
-  url ? `${processId}${PROCESS_DELIMITER}${url}` : processId;
+export const createPid = (
+  processId: string,
+  url: string,
+  currentProcesses: Processes
+): string => {
+  const pid = url ? `${processId}${PROCESS_DELIMITER}${url}` : processId;
+  const uniquePid = (instance = 0): string => {
+    const newPid = `${pid}${instance ? `${PROCESS_DELIMITER}${instance}` : ""}`;
+
+    return currentProcesses[newPid] ? uniquePid(instance + 1) : newPid;
+  };
+
+  return uniquePid();
+};
 
 export const openProcess =
   (processId: string, url: string, icon?: string) =>
   (currentProcesses: Processes): Processes => {
     const { singleton } = processDirectory[processId] || {};
 
-    if (singleton && Object.keys(currentProcesses).includes(processId)) {
+    if (singleton && currentProcesses[processId]) {
       return setProcessSettings(processId, { url })(currentProcesses);
     }
 
-    const id = singleton ? processId : createPid(processId, url);
+    const id = singleton
+      ? processId
+      : createPid(processId, url, currentProcesses);
 
     if (currentProcesses[id]) {
       const { componentWindow } = currentProcesses[id];

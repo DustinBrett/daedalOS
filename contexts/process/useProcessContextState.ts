@@ -14,6 +14,7 @@ import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 export type ProcessContextState = {
   close: (id: string, closing?: boolean) => void;
+  closeProcessesByUrl: (closeUrl: string) => void;
   closeWithTransition: (id: string) => void;
   icon: (id: string, newIcon: string) => void;
   linkElement: (
@@ -72,9 +73,17 @@ const useProcessContextState = (): ProcessContextState => {
     },
     [close]
   );
+  const closeProcessesByUrl = useCallback(
+    (closeUrl: string): void =>
+      Object.entries(processes).forEach(([id, { url: processUrl }]) => {
+        if (processUrl === closeUrl) closeWithTransition(id);
+      }),
+    [closeWithTransition, processes]
+  );
 
   return {
     close,
+    closeProcessesByUrl,
     closeWithTransition,
     icon,
     linkElement,

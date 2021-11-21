@@ -26,6 +26,7 @@ const processDirectory: Processes = {
     background: "#000",
     icon: "/System/Icons/jsdos.png",
     lockAspectRatio: true,
+    singleton: true,
     title: "js-dos v7",
   },
   MonacoEditor: {
@@ -100,6 +101,7 @@ const processDirectory: Processes = {
     autoSizing: true,
     background: "#000",
     icon: "/System/Icons/v86.png",
+    singleton: true,
     title: "Virtual x86",
   },
   VideoPlayer: {
