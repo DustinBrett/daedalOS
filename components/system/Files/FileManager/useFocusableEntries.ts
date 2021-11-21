@@ -36,10 +36,11 @@ const useFocusableEntries = (
   );
   const focusEntry = useCallback(
     (entry: string): void =>
-      setFocusedEntries((currentFocusedEntries) => [
-        ...currentFocusedEntries,
-        entry,
-      ]),
+      setFocusedEntries((currentFocusedEntries) =>
+        currentFocusedEntries.includes(entry)
+          ? currentFocusedEntries
+          : [...currentFocusedEntries, entry]
+      ),
     []
   );
   const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
@@ -60,7 +61,7 @@ const useFocusableEntries = (
         } else {
           focusEntry(file);
         }
-      } else {
+      } else if (!isFocused) {
         blurEntry();
         focusEntry(file);
       }

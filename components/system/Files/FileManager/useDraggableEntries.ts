@@ -36,6 +36,8 @@ const useDraggableEntries = (
           };
         });
       }
+
+      blurEntry();
     };
   const onDragOver =
     (file: string): React.DragEventHandler =>
@@ -50,7 +52,6 @@ const useDraggableEntries = (
   const onDragStart =
     (entryUrl: string, file: string): React.DragEventHandler =>
     (event) => {
-      blurEntry();
       focusEntry(file);
       event.dataTransfer.setData(
         "text/plain",
