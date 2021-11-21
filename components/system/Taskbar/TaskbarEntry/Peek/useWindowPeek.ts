@@ -1,48 +1,43 @@
 import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
 import {
-  BASE_2D_CONTEXT_OPTIONS,
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
+
+const EMPTY_PNG =
+  "gACBrIABzFYvOAECBtAPECCQFTCA2eoFJ0DAAPoBAgSyAgYwW73gBAgYQD9AgEBWwABmqxecAAED6AcIEMgKGMBs9YITIGAA%2FQABAlkBA5itXnACBAygHyBAICtgALPVC06AgAH0AwQIZAUMYLZ6wQkQMIB%2B";
+const FPS = 10;
 
 const renderFrame = async (
   previewElement: HTMLElement,
   animate: React.MutableRefObject<boolean>,
   callback: (url: string) => void
 ): Promise<void> => {
-  const htmlToImage = await import("html-to-image");
-  const canvas = await htmlToImage.toCanvas(previewElement);
-  const { height = 0, width = 0 } = canvas;
   const nextFrame = (): number =>
     window.requestAnimationFrame(() =>
       renderFrame(previewElement, animate, callback)
     );
+  const htmlToImage = await import("html-to-image");
+  const dataUrl = await htmlToImage.toSvg(previewElement, {
+    skipAutoScale: true,
+  });
 
-  if (animate.current && height && width) {
-    const { data: pixelData } =
-      canvas
-        .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
-        ?.getImageData(0, 0, width, height) || {};
+  if (dataUrl.includes(EMPTY_PNG)) nextFrame();
+  else {
+    const previewImage = new Image();
 
-    if (pixelData?.some(Boolean)) {
-      const dataUrl = canvas.toDataURL();
-      const previewImage = new Image();
-
-      previewImage.src = dataUrl;
-      previewImage.addEventListener(
-        "load",
-        () => {
-          if (animate.current) {
-            callback(dataUrl);
-            nextFrame();
-          }
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-    } else {
-      nextFrame();
-    }
+    previewImage.addEventListener(
+      "load",
+      () => {
+        if (animate.current) {
+          callback(dataUrl);
+          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
+        }
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
+    previewImage.src = dataUrl;
   }
 };
 
