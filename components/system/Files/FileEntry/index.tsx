@@ -128,9 +128,12 @@ const FileEntry = ({
   const fileDrop = useFileDrop({
     callback: async (fileDropName, data) => {
       const directory = isShortcut ? url : path;
-      const uniqueName = await createPath(fileDropName, directory, data);
 
-      if (uniqueName) updateFolder(directory, uniqueName);
+      if (!focusedEntries.includes(fileName)) {
+        const uniqueName = await createPath(fileDropName, directory, data);
+
+        if (uniqueName) updateFolder(directory, uniqueName);
+      }
     },
     onDragLeave: () =>
       buttonRef.current?.parentElement?.classList.remove("focus-within"),
