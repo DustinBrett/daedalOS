@@ -42,7 +42,8 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
           extname(addressInput) === ".html" && (await exists(addressInput));
 
         setLoading(true);
-        setSrcDoc(isHtml ? (await readFile(addressInput)).toString() : "");
+        setSrcDoc("");
+        if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
         setIcon(id, processDirectory["Browser"].icon);
 
         if (!isHtml) {
