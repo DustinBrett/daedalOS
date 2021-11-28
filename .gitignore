@@ -17,3 +17,5 @@ public/Users/Public/**
 !public/Users/Public/Start Menu
 !public/Users/Public/Start Menu/*.url
 !public/Users/Public/Videos
+!public/Users/Public/Videos/Make an OS with ReactJS & Next.js
+!public/Users/Public/Videos/Make an OS with ReactJS & Next.js/*.url
