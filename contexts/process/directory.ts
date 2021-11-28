@@ -94,13 +94,13 @@ const processDirectory: Processes = {
   },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
-    allowResizing: false,
     background: "rgba(12, 12, 12, 0.6)",
     defaultSize: {
       height: 340,
-      width: 560,
+      width: 553,
     },
     icon: "/System/Icons/xterm.png",
+    lockAspectRatio: true,
     title: "Terminal",
   },
   TinyMCE: {

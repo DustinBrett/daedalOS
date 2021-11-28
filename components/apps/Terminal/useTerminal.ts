@@ -4,12 +4,13 @@ import {
   libs,
   PROMPT_CHARACTER,
 } from "components/apps/Terminal/config";
-import type { OnKeyEvent } from "components/apps/Terminal/types";
+import type { FitAddon, OnKeyEvent } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
 import { haltEvent } from "components/system/Files/FileManager/functions";
 import { useProcesses } from "contexts/process";
 import { useCallback, useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
+import useResizeObserver from "utils/useResizeObserver";
 import type { Terminal } from "xterm";
 
 const getClipboardText = (): Promise<string> => navigator.clipboard.readText();
@@ -25,6 +26,7 @@ const useTerminal = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const [terminal, setTerminal] = useState<Terminal>();
+  const [fitAddon, setFitAddon] = useState<FitAddon>();
   const {
     cd,
     command,
@@ -91,6 +93,7 @@ const useTerminal = (
       terminal,
     ]
   );
+  const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
 
   useEffect(() => {
     if (url) pasteToTerminal(url, terminal);
@@ -116,7 +119,17 @@ const useTerminal = (
           pasteToTerminal(await getClipboardText(), terminal);
         }
       });
-      terminal.open(containerRef.current);
+
+      if (window.FitAddon) {
+        const newFitAddon = new window.FitAddon.FitAddon();
+
+        terminal.loadAddon(newFitAddon);
+        terminal.open(containerRef.current);
+        newFitAddon.fit();
+        setFitAddon(newFitAddon);
+      } else {
+        terminal.open(containerRef.current);
+      }
 
       setLoading(false);
 
@@ -143,6 +156,8 @@ const useTerminal = (
 
     return () => currentOnKey?.dispose();
   }, [keyHandler, terminal]);
+
+  useResizeObserver(containerRef.current, autoFit);
 };
 
 export default useTerminal;

@@ -27,6 +27,7 @@ export const config: ITerminalOptions = {
 export const libs = [
   "/Program Files/Xterm.js/xterm.css",
   "/Program Files/Xterm.js/xterm.js",
+  "/Program Files/Xterm.js/xterm-addon-fit.js",
 ];
 
 export const PROMPT_CHARACTER = ">";

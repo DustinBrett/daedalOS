@@ -7,10 +7,10 @@ const useResizeObserver = (
   const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
 
   useEffect(() => {
-    if (!resizeObserver && callback) {
+    if (callback) {
       setResizeObserver(new ResizeObserver(callback));
     }
-  }, [callback, resizeObserver]);
+  }, [callback]);
 
   useEffect(() => {
     if (componentWindow instanceof HTMLElement) {

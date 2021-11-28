@@ -1,4 +1,4 @@
-import type { Terminal } from "xterm";
+import type { ITerminalAddon, Terminal } from "xterm";
 
 export type CommandInterpreter = {
   cd: string;
@@ -14,8 +14,13 @@ export type OnKeyEvent = {
   domEvent: KeyboardEvent;
 };
 
+export type FitAddon = ITerminalAddon & { fit: () => void };
+
 declare global {
   interface Window {
     Terminal?: typeof Terminal;
+    FitAddon?: {
+      FitAddon: new () => FitAddon;
+    };
   }
 }

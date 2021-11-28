@@ -59,7 +59,10 @@ const StatusBar = ({
 
   useResizeObserver(
     statusBarRef.current,
-    ([{ contentRect: { width = 0 } = {} }]) => updateShowSelected(width)
+    useCallback<ResizeObserverCallback>(
+      ([{ contentRect: { width = 0 } = {} }]) => updateShowSelected(width),
+      []
+    )
   );
 
   return (
