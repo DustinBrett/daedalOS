@@ -8,7 +8,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import packageJson from "package.json";
 import { join } from "path";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { getTimezoneOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
@@ -73,6 +73,13 @@ const useCommandInterpreter = (
     const newPosition = position + step;
 
     if (newPosition < 0 || newPosition > history.length - 2) return;
+
+    if (typeof history[newPosition] === "string") {
+      terminal?.write(
+        `${BACKSPACE.repeat(command.length)}${history[newPosition]}`
+      );
+      setCommand(history[newPosition]);
+    }
 
     setPosition(newPosition);
   };
@@ -319,26 +326,6 @@ const useCommandInterpreter = (
       setCommand("");
     }
   };
-
-  useEffect(() => {
-    if (
-      position < history.length - 1 &&
-      typeof history[position] === "string"
-    ) {
-      let promptCleared = false;
-
-      setCommand((currentCommand) => {
-        if (!promptCleared) {
-          terminal?.write(
-            `${BACKSPACE.repeat(currentCommand.length)}${history[position]}`
-          );
-          promptCleared = true;
-        }
-
-        return history[position];
-      });
-    }
-  }, [history, position, terminal]);
 
   return {
     cd,
