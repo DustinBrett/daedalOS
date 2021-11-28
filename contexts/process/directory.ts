@@ -5,8 +5,7 @@ import { FOLDER_ICON } from "utils/constants";
 const processDirectory: Processes = {
   Browser: {
     Component: dynamic(() => import("components/apps/Browser")),
-    background:
-      "radial-gradient(closest-side, rgb(50, 47, 50), rgb(42, 39, 42))",
+    background: "#fff",
     defaultSize: {
       height: 500,
       width: 550,
