@@ -1,4 +1,5 @@
 import { config } from "components/apps/Terminal/config";
+import { convertNewLines } from "components/apps/Terminal/useTerminal";
 import type { Terminal } from "xterm";
 
 type WASIError = Error & {
@@ -44,9 +45,7 @@ const loadWapm = async (
       const output = await wasmFs.getStdOut();
 
       if (typeof output === "string") {
-        terminal?.write(
-          output.replace(/[\n\r]+/g, "\n").replace(/\n/g, "\r\n")
-        );
+        terminal?.write(convertNewLines(output));
       }
     }
   } catch (error) {

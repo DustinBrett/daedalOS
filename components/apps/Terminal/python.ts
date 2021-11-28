@@ -1,3 +1,4 @@
+import { convertNewLines } from "components/apps/Terminal/useTerminal";
 import { loadFiles } from "utils/functions";
 import type { Terminal } from "xterm";
 
@@ -38,12 +39,7 @@ export const runPython = async (
     );
 
     if (typeof result !== "undefined") {
-      terminal?.write(
-        `\r\n${result
-          .toString()
-          .replace(/[\n\r]+/g, "\n")
-          .replace(/\n/g, "\r\n")}`
-      );
+      terminal?.write(`\r\n${convertNewLines(result.toString())}`);
     }
   }
 

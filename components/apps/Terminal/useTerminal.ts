@@ -15,6 +15,9 @@ import type { Terminal } from "xterm";
 
 const getClipboardText = (): Promise<string> => navigator.clipboard.readText();
 
+export const convertNewLines = (text: string): string =>
+  text.replace(/[\n\r]+/g, "\n").replace(/\n/g, "\r\n");
+
 const useTerminal = (
   id: string,
   url: string,
