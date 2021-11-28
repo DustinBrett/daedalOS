@@ -1,4 +1,4 @@
-import { BACKSPACE } from "components/apps/Terminal/config";
+import { BACKSPACE, LEFT, RIGHT } from "components/apps/Terminal/config";
 import help from "components/apps/Terminal/help";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
@@ -68,10 +68,19 @@ const useCommandInterpreter = (
 ): CommandInterpreter => {
   const [cd, setCd] = useState<string>(HOME);
   const [history, setHistory] = useState([""]);
+  const [cursor, setCursor] = useState(0);
   const [position, setPosition] = useState(0);
   const [command, setCommand] = useState<string>("");
   const { exists, fs, readdir, readFile, resetFs, stat, updateFolder } =
     useFileSystem();
+  const setCommandLine: React.Dispatch<React.SetStateAction<string>> = (
+    cmd
+  ): void => {
+    const newCommand = typeof cmd === "function" ? cmd(command) : cmd;
+
+    setCommand(newCommand);
+    setCursor(newCommand.length);
+  };
   const setHistoryPosition = (step: number): void => {
     const newPosition = position + step;
 
@@ -81,10 +90,21 @@ const useCommandInterpreter = (
       terminal?.write(
         `${BACKSPACE.repeat(command.length)}${history[newPosition]}`
       );
-      setCommand(history[newPosition]);
+      setCommandLine(history[newPosition]);
     }
 
     setPosition(newPosition);
+  };
+  const setCursorPosition = (step: number): void => {
+    const cursorMove = cursor + step;
+
+    if (cursorMove < 0 || cursorMove > command.length) return;
+
+    terminal?.write(
+      step > 0 ? RIGHT.repeat(step) : LEFT.repeat(Math.abs(step))
+    );
+
+    setCursor(cursorMove);
   };
   const clear = (): void => {
     terminal?.clear();
@@ -333,7 +353,7 @@ const useCommandInterpreter = (
         setPosition(history.length - 1);
       }
 
-      setCommand("");
+      setCommandLine("");
     }
   };
 
@@ -341,7 +361,8 @@ const useCommandInterpreter = (
     cd,
     command,
     processCommand,
-    setCommand,
+    setCommand: setCommandLine,
+    setCursorPosition,
     setHistoryPosition,
     welcome,
   };
