@@ -1,6 +1,6 @@
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
 const SCROLLBAR_WIDTH = 13;
@@ -8,6 +8,31 @@ const SCROLLBAR_WIDTH = 13;
 type StyledStartMenuProps = {
   $showScrolling: boolean;
 };
+
+const ThinScrollBars = css<StyledStartMenuProps>`
+  ::-webkit-scrollbar {
+    width: ${({ $showScrolling }) =>
+      $showScrolling ? `${SCROLLBAR_WIDTH}px` : "1px"};
+  }
+
+  ::-webkit-scrollbar-corner,
+  ::-webkit-scrollbar-track {
+    background-color: ${({ $showScrolling }) =>
+      !$showScrolling && "transparent"};
+  }
+
+  ::-webkit-scrollbar-button:single-button {
+    border: ${({ $showScrolling }) =>
+      !$showScrolling && "1px solid transparent"};
+    background-color: ${({ $showScrolling }) =>
+      !$showScrolling && "transparent"};
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    background-color: ${({ $showScrolling }) =>
+      !$showScrolling && "rgb(170, 170, 170)"};
+  }
+`;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   position: absolute;
@@ -51,27 +76,14 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     }
 
     &:hover {
-      ::-webkit-scrollbar {
-        width: ${({ $showScrolling }) =>
-          $showScrolling ? `${SCROLLBAR_WIDTH}px` : "1px"};
-      }
+      ${ThinScrollBars};
+    }
 
-      ::-webkit-scrollbar-corner,
+    @media (hover: none) {
+      ${ThinScrollBars};
+
       ::-webkit-scrollbar-track {
-        background-color: ${({ $showScrolling }) =>
-          !$showScrolling && "transparent"};
-      }
-
-      ::-webkit-scrollbar-button:single-button {
-        border: ${({ $showScrolling }) =>
-          !$showScrolling && "1px solid transparent"};
-        background-color: ${({ $showScrolling }) =>
-          !$showScrolling && "transparent"};
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background-color: ${({ $showScrolling }) =>
-          !$showScrolling && "rgb(170, 170, 170)"};
+        margin: 13px 0;
       }
     }
   }
