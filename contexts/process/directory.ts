@@ -13,6 +13,16 @@ const processDirectory: Processes = {
     icon: "/System/Icons/chromium.png",
     title: "Browser",
   },
+  DevTools: {
+    Component: dynamic(() => import("components/apps/DevTools")),
+    background: "rgb(36, 36, 36)",
+    defaultSize: {
+      height: 345,
+      width: 545,
+    },
+    icon: "/System/Icons/eruda.png",
+    title: "DevTools",
+  },
   Dialog: {
     Component: dynamic(() => import("components/system/Dialog")),
     allowResizing: false,
