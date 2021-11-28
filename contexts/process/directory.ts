@@ -46,7 +46,6 @@ const processDirectory: Processes = {
     background: "#000",
     icon: "/System/Icons/jsdos.png",
     lockAspectRatio: true,
-    singleton: true,
     title: "js-dos v7",
   },
   MonacoEditor: {

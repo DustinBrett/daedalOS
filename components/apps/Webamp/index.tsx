@@ -19,8 +19,9 @@ import type { Options } from "webamp";
 const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { readFile } = useFileSystem();
-  const { processes: { [id]: { url = "" } = {} } = {} } = useProcesses();
-  const [currentUrl, setCurrentUrl] = useState(url);
+  const { processes: { [id]: { url = "" } = {} } = {}, url: setUrl } =
+    useProcesses();
+  const [loadedUrl, setLoadedUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
   const windowTransitions = useWindowTransitions(id, true);
   const focusEvents = useMemo(
@@ -76,11 +77,14 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   }, [getUrlOptions, initWebamp, webampCI]);
 
   useEffect(() => {
-    if (url !== currentUrl) {
+    if (url !== loadedUrl) {
       loadWebampUrl();
-      setCurrentUrl(url);
+      setLoadedUrl(url);
+    } else if (url) {
+      setUrl(id, "");
+      setLoadedUrl("");
     }
-  }, [currentUrl, loadWebampUrl, url, webampCI]);
+  }, [loadedUrl, id, loadWebampUrl, setUrl, url, webampCI]);
 
   return (
     <StyledWebamp
