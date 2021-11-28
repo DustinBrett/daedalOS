@@ -2,6 +2,7 @@ import { BACKSPACE } from "components/apps/Terminal/config";
 import help from "components/apps/Terminal/help";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
+import { runPython } from "components/apps/Terminal/python";
 import type { CommandInterpreter } from "components/apps/Terminal/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -34,6 +35,7 @@ const commands: Record<string, string> = {
   history: "Displays command history list.",
   license: "Displays license.",
   pwd: "Prints the working directory.",
+  python: "Run code through Python interpreter.",
   shutdown: "Allows proper local shutdown of machine.",
   taskkill: "Kill or stop a running process or application.",
   tasklist: "Displays all currently running processes.",
@@ -51,6 +53,7 @@ const aliases: Record<string, string[]> = {
   clear: ["cls"],
   dir: ["ls"],
   exit: ["quit"],
+  python: ["py"],
   shutdown: ["reboot", "restart"],
   taskkill: ["kill"],
   tasklist: ["ps"],
@@ -235,6 +238,11 @@ const useCommandInterpreter = (
           );
         });
         break;
+      case "py":
+      case "python": {
+        if (terminal) await runPython(commandArgs.join(" "), terminal);
+        break;
+      }
       case "reboot":
       case "restart":
       case "shutdown":
