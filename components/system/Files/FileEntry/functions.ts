@@ -48,7 +48,7 @@ type FS9P = [string, number, number, number, number, number, FS9P[] | string];
 const IDX_MTIME = 2;
 const IDX_TARGET = 6;
 
-export const get9pModifiedTime = (path: string): number => {
+const get9pModifiedTime = (path: string): number => {
   let fsPath = index.fsroot as FS9P[];
   let mTime = 0;
 
