@@ -339,7 +339,11 @@ export const getTextWrapData = (
         const spacesInLine = lineText.split(" ").length - 1;
         const lineWithWords = words.splice(0, spacesInLine).join(" ");
 
-        if (lines.length === 1 && lines[0] !== lineWithWords) {
+        if (
+          lines.length === 1 &&
+          spacesInLine > 0 &&
+          lines[0] !== lineWithWords
+        ) {
           lines[0] = lineText.slice(0, lineWithWords.length);
           lines.push(lineText.slice(lineWithWords.length));
         } else {
