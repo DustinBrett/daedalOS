@@ -1,9 +1,15 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import help from "components/apps/Terminal/help";
 import type { MessageCallback, ProgressCallback } from "isomorphic-git";
 import { join } from "path";
 import type { Terminal } from "xterm";
 
 const corsProxy = "https://cors.isomorphic-git.org";
+
+const commands: Record<string, string> = {
+  checkout: "Switch branches or restore working tree files",
+  clone: "Clone a repository into a new directory",
+};
 
 const processGit = async (
   [command, ...args]: string[],
@@ -68,7 +74,7 @@ const processGit = async (
     }
     case "help":
     default:
-      console.log("git help");
+      if (terminal) help(terminal, commands);
   }
 
   updateFolder(cd);
