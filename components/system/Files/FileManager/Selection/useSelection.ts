@@ -1,6 +1,7 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Position } from "react-rnd";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export type SelectionRect = Partial<Position> & Partial<Size>;
 
@@ -16,6 +17,9 @@ type Selection = {
   };
 };
 
+const FPS = 60;
+const DEBOUNCE_TIME = MILLISECONDS_IN_SECOND / FPS;
+
 const useSelection = (
   containerRef: React.MutableRefObject<HTMLElement | null>
 ): Selection => {
@@ -23,6 +27,7 @@ const useSelection = (
   const [size, setSize] = useState<Size>();
   const { x, y } = position || {};
   const { height: h, width: w } = size || {};
+  const debounceTimer = useRef<number>();
   const onMouseMove: React.MouseEventHandler<HTMLElement> = ({
     clientX,
     clientY,
@@ -31,10 +36,15 @@ const useSelection = (
     const { x: targetX = 0, y: targetY = 0 } =
       containerRef.current?.getBoundingClientRect() || {};
 
-    setSize({
-      height: clientY - targetY - (y || 0) + scrollTop,
-      width: clientX - targetX - (x || 0),
-    });
+    if (!debounceTimer.current) {
+      setSize({
+        height: clientY - targetY - (y || 0) + scrollTop,
+        width: clientX - targetX - (x || 0),
+      });
+      debounceTimer.current = window.setTimeout(() => {
+        debounceTimer.current = undefined;
+      }, DEBOUNCE_TIME);
+    }
   };
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
     clientX,
