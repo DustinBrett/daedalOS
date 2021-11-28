@@ -169,7 +169,8 @@ const FileEntry = ({
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
           fileManagerRef.current.getBoundingClientRect(),
-          selectionRect
+          selectionRect,
+          fileManagerRef.current.scrollTop
         );
 
         if (selected && !isFocused) {
