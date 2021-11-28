@@ -6,6 +6,7 @@ import type { ThemeName } from "styles/themes";
 export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
 
 export type WindowState = {
+  maximized?: boolean;
   position?: Position;
   size?: Size;
 };

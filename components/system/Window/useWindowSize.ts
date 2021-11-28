@@ -1,3 +1,4 @@
+import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { useTheme } from "styled-components";
@@ -9,6 +10,8 @@ type WindowSize = {
 
 const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSession();
+  const { processes: { [id]: { maximized = false } = {} } = {} } =
+    useProcesses();
   const {
     sizes: { titleBar },
   } = useTheme();
@@ -18,6 +21,7 @@ const useWindowSize = (id: string): WindowSize => {
       setWindowStates((currentWindowStates) => ({
         ...currentWindowStates,
         [id]: {
+          maximized,
           position: currentWindowStates[id]?.position,
           size: {
             height: height + pxToNum(titleBar.height),
@@ -25,7 +29,7 @@ const useWindowSize = (id: string): WindowSize => {
           },
         },
       })),
-    [id, setWindowStates, titleBar.height]
+    [id, maximized, setWindowStates, titleBar.height]
   );
 
   return {
