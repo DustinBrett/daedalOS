@@ -11,7 +11,7 @@ export type StyledFileEntryProps = {
 
 export type StyledFileManagerProps = {
   scrollable: boolean;
-  selecting: boolean;
+  selecting?: boolean;
 };
 
 type FileManagerView = {
