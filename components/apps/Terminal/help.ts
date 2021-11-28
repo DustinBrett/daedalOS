@@ -11,7 +11,7 @@ const help = (
 
   if (aliases) {
     terminal?.writeln("");
-    terminal?.writeln("Aliases:");
+    terminal?.writeln("Aliases:\r\n");
     Object.entries(aliases).forEach(([baseCommand, aliasCommands]) => {
       aliasCommands.forEach((aliasCommand) => {
         terminal?.writeln(

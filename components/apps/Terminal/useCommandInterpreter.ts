@@ -25,11 +25,11 @@ const displayVersion = (): string => {
 };
 
 const commands: Record<string, string> = {
-  cd: "Displays the name of or changes the current directory.",
+  cd: "Changes the current directory.",
   clear: "Clears the screen.",
   date: "Displays the date.",
-  dir: "Displays list of files and directories in a directory.",
-  echo: "Displays messages that are passed to it as arguments.",
+  dir: "Displays list of entries in current directory.",
+  echo: "Displays messages that are passed to it.",
   exit: "Quits the command interpreter.",
   git: "Read from git repositories.",
   help: "Provides Help information for commands.",
@@ -56,7 +56,7 @@ const aliases: Record<string, string[]> = {
   dir: ["ls"],
   exit: ["quit"],
   python: ["py"],
-  shutdown: ["reboot", "restart"],
+  shutdown: ["restart"],
   taskkill: ["kill"],
   tasklist: ["ps"],
   type: ["cat"],
@@ -266,7 +266,6 @@ const useCommandInterpreter = (
         if (terminal) await runPython(commandArgs.join(" "), terminal);
         break;
       }
-      case "reboot":
       case "restart":
       case "shutdown":
         newLine();
