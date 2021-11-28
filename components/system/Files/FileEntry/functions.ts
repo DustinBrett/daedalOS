@@ -328,15 +328,25 @@ export const getTextWrapData = (
   if (!maxWidth) return { lines: [text], width: totalWidth };
 
   if (totalWidth > maxWidth) {
+    const words = text.split(" ");
+
     [...text].forEach((character) => {
-      const lineCount = lines.length - 1;
-      const lineText = `${lines[lineCount]}${character}`;
+      const lineIndex = lines.length - 1;
+      const lineText = `${lines[lineIndex]}${character}`;
       const lineWidth = measureText(lineText, fontSize, fontFamily);
 
       if (lineWidth > maxWidth) {
-        lines.push(character);
+        const spacesInLine = lineText.split(" ").length - 1;
+        const lineWithWords = words.splice(0, spacesInLine).join(" ");
+
+        if (lines.length === 1 && lines[0] !== lineWithWords) {
+          lines[0] = lineText.slice(0, lineWithWords.length);
+          lines.push(lineText.slice(lineWithWords.length));
+        } else {
+          lines.push(character);
+        }
       } else {
-        lines[lineCount] = lineText;
+        lines[lineIndex] = lineText;
       }
     });
   }

@@ -20,7 +20,7 @@ import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname, extname } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -29,7 +29,6 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
-  NON_BREAKING_SPACE,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -75,7 +74,7 @@ const truncateName = (
   if (lines.length > 2) {
     const text = !name.includes(" ") ? lines[0] : lines.slice(0, 2).join("");
 
-    return `${text.replace(/ /g, NON_BREAKING_SPACE).slice(0, -3)}...`;
+    return `${text.slice(0, -3)}...`;
   }
 
   return nonBreakingName;
@@ -143,6 +142,18 @@ const FileEntry = ({
       buttonRef.current?.parentElement?.classList.add("focus-within"),
   });
   const openInFileExplorer = pid === "FileExplorer";
+  const truncatedName = useMemo(
+    () =>
+      truncateName(
+        name,
+        sizes.fileEntry.fontSize,
+        formats.systemFont,
+        sizes.fileEntry[
+          listView ? "maxListTextDisplayWidth" : "maxIconTextDisplayWidth"
+        ]
+      ),
+    [formats, listView, name, sizes]
+  );
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -281,20 +292,7 @@ const FileEntry = ({
               }}
             />
           ) : (
-            <figcaption>
-              {isOnlyFocusedEntry
-                ? name
-                : truncateName(
-                    name,
-                    sizes.fileEntry.fontSize,
-                    formats.systemFont,
-                    sizes.fileEntry[
-                      listView
-                        ? "maxListTextDisplayWidth"
-                        : "maxIconTextDisplayWidth"
-                    ]
-                  )}
-            </figcaption>
+            <figcaption>{isOnlyFocusedEntry ? name : truncatedName}</figcaption>
           )}
         </figure>
       </Button>
