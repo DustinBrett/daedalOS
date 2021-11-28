@@ -40,7 +40,10 @@ const processGit = async (
     case "clone": {
       const http = await import("isomorphic-git/http/node");
       const [url] = args;
-      const dirName = url.split("/").pop();
+      const dirName = url
+        .split("/")
+        .pop()
+        ?.replace(/\.git$/, "");
       const dir = dirName ? join(cd, dirName) : cd;
 
       try {
