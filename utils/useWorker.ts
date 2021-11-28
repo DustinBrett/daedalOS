@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 
 const useWorker = <T>(
-  workerFunction: () => void,
+  workerFunction: string | (() => void),
   onMessage: (message: { data: T }) => void
 ): void => {
   const [worker, setWorker] = useState<Worker>();
 
   useEffect(() => {
-    const workerUrl = URL.createObjectURL(
-      new Blob(["(", workerFunction.toString(), ")()"], {
-        type: "application/javascript",
-      })
-    );
+    if (typeof workerFunction === "string") {
+      setWorker(new Worker(workerFunction));
+    } else if (typeof workerFunction === "function") {
+      const workerUrl = URL.createObjectURL(
+        new Blob(["(", workerFunction.toString(), ")()"], {
+          type: "application/javascript",
+        })
+      );
 
-    setWorker(new Worker(workerUrl));
+      setWorker(new Worker(workerUrl));
 
-    URL.revokeObjectURL?.(workerUrl);
+      URL.revokeObjectURL?.(workerUrl);
+    }
   }, [workerFunction]);
 
   useEffect(() => {
