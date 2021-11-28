@@ -21,7 +21,7 @@ import {
   viewWidth,
 } from "utils/functions";
 
-const isYouTubeUrl = (url: string): boolean =>
+export const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
 
 const useVideoPlayer = (

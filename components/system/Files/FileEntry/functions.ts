@@ -1,5 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/config";
+import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -206,6 +207,14 @@ export const getInfoWithExtension = (
             if (urlIcon && urlIcon !== icon) {
               callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
             }
+          });
+        } else if (isYouTubeUrl(url)) {
+          callback({
+            comment,
+            icon: `https://img.youtube.com/vi${new URL(url).pathname}/1.jpg`,
+            pid,
+            subIcons: [processDirectory["VideoPlayer"].icon],
+            url,
           });
         } else {
           callback({ comment, icon, pid, subIcons, url });
