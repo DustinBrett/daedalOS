@@ -1,3 +1,4 @@
+import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -117,7 +118,9 @@ const FileEntry = ({
   const fileName = basename(path);
   const urlExt = extname(url);
   const isDynamicIcon =
-    IMAGE_FILE_EXTENSIONS.has(urlExt) || VIDEO_FILE_EXTENSIONS.has(urlExt);
+    IMAGE_FILE_EXTENSIONS.has(urlExt) ||
+    VIDEO_FILE_EXTENSIONS.has(urlExt) ||
+    isYouTubeUrl(url);
   const filteredSubIcons =
     hideShortcutIcon || stats.systemShortcut
       ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
