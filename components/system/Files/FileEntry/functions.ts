@@ -202,11 +202,9 @@ export const getInfoWithExtension = (
           urlExt === ".mp3"
         ) {
           getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-            const { icon: urlIcon, getIcon } = fileInfo;
+            const { icon: urlIcon = icon, getIcon } = fileInfo;
 
-            if (urlIcon && urlIcon !== icon) {
-              callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
-            }
+            callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
           });
         } else if (isYouTubeUrl(url)) {
           callback({
