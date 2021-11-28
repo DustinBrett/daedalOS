@@ -12,9 +12,11 @@ import { useCallback, useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
 import type { Terminal } from "xterm";
 
+const getClipboardText = (): Promise<string> => navigator.clipboard.readText();
+
 const useTerminal = (
   id: string,
-  _url: string,
+  url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loading: boolean
@@ -31,23 +33,21 @@ const useTerminal = (
     setHistoryPosition,
     welcome,
   } = useCommandInterpreter(id, terminal);
-  const pasteClipboard = useCallback(
-    async (currentTerminal?: Terminal): Promise<void> => {
-      const clipboardText = await navigator.clipboard.readText();
-
-      currentTerminal?.write(clipboardText);
-      setCommand((currentCommand) => `${currentCommand}${clipboardText}`);
+  const pasteToTerminal = useCallback(
+    async (data: string, currentTerminal?: Terminal): Promise<void> => {
+      currentTerminal?.write(data);
+      setCommand((currentCommand) => `${currentCommand}${data}`);
     },
     [setCommand]
   );
   const keyHandler = useCallback(
-    ({ domEvent: { ctrlKey, code, key } }: OnKeyEvent) => {
+    async ({ domEvent: { ctrlKey, code, key } }: OnKeyEvent) => {
       if (ctrlKey) {
         if (code === "KeyC") {
           terminal?.write(`\r\n\r\n${cd}${PROMPT_CHARACTER}`);
           setCommand("");
         } else if (code === "KeyV") {
-          pasteClipboard(terminal);
+          pasteToTerminal(await getClipboardText(), terminal);
         }
       } else
         switch (code) {
@@ -76,13 +76,17 @@ const useTerminal = (
     [
       cd,
       command,
-      pasteClipboard,
+      pasteToTerminal,
       processCommand,
       setCommand,
       setHistoryPosition,
       terminal,
     ]
   );
+
+  useEffect(() => {
+    if (url) pasteToTerminal(url, terminal);
+  }, [pasteToTerminal, terminal, url]);
 
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -101,7 +105,7 @@ const useTerminal = (
           navigator.clipboard.writeText(textSelection);
           terminal.clearSelection();
         } else {
-          pasteClipboard(terminal);
+          pasteToTerminal(await getClipboardText(), terminal);
         }
       });
       terminal.open(containerRef.current);
@@ -120,7 +124,7 @@ const useTerminal = (
     closing,
     containerRef,
     loading,
-    pasteClipboard,
+    pasteToTerminal,
     setLoading,
     terminal,
     welcome,
