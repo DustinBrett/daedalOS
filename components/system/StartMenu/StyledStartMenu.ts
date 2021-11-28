@@ -3,7 +3,13 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
-const StyledStartMenu = styled(motion.nav)`
+const SCROLLBAR_WIDTH = 13;
+
+type StyledStartMenuProps = {
+  $showScrolling: boolean;
+};
+
+const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   position: absolute;
   z-index: 1000;
   bottom: ${({ theme }) => theme.sizes.taskbar.height};
@@ -16,7 +22,7 @@ const StyledStartMenu = styled(motion.nav)`
   contain: strict;
 
   ${StyledFileManager} {
-    ${ScrollBars(13, -2, -1)};
+    ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
 
     padding-top: 7px;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
@@ -40,23 +46,32 @@ const StyledStartMenu = styled(motion.nav)`
       }
     }
 
-    &:not(:hover) {
+    ::-webkit-scrollbar {
+      width: 0;
+    }
+
+    &:hover {
       ::-webkit-scrollbar {
-        width: 1px;
+        width: ${({ $showScrolling }) =>
+          $showScrolling ? `${SCROLLBAR_WIDTH}px` : "1px"};
       }
 
       ::-webkit-scrollbar-corner,
       ::-webkit-scrollbar-track {
-        background-color: transparent;
+        background-color: ${({ $showScrolling }) =>
+          !$showScrolling && "transparent"};
       }
 
       ::-webkit-scrollbar-button:single-button {
-        border: 1px solid transparent;
-        background-color: transparent;
+        border: ${({ $showScrolling }) =>
+          !$showScrolling && "1px solid transparent"};
+        background-color: ${({ $showScrolling }) =>
+          !$showScrolling && "transparent"};
       }
 
       ::-webkit-scrollbar-thumb {
-        background-color: rgb(170, 170, 170);
+        background-color: ${({ $showScrolling }) =>
+          !$showScrolling && "rgb(170, 170, 170)"};
       }
     }
   }

@@ -2,9 +2,10 @@ import type { StyledFileManagerProps } from "components/system/Files/Views";
 import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
-  ${ScrollBars(17)};
+  ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
 
   display: grid;
   overflow: ${({ scrollable }) => (scrollable ? undefined : "hidden")};

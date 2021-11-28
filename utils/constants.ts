@@ -108,3 +108,5 @@ export const FOLDER_ICON = "/System/Icons/folder.png";
 export const NEW_FOLDER_ICON = "/System/Icons/new_folder.png";
 
 export const UNKNOWN_ICON = "/System/Icons/unknown.png";
+
+export const DEFAULT_SCROLLBAR_WIDTH = 17;

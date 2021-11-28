@@ -3,8 +3,13 @@ import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
-import { useEffect, useRef } from "react";
-import { FOCUSABLE_ELEMENT, HOME, PREVENT_SCROLL } from "utils/constants";
+import { useEffect, useRef, useState } from "react";
+import {
+  DEFAULT_SCROLLBAR_WIDTH,
+  FOCUSABLE_ELEMENT,
+  HOME,
+  PREVENT_SCROLL,
+} from "utils/constants";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -12,6 +17,12 @@ type StartMenuProps = {
 
 const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
   const menuRef = useRef<HTMLElement | null>(null);
+  const [showScrolling, setShowScrolling] = useState(false);
+  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) => {
+    const { width = 0 } = menuRef.current?.getBoundingClientRect() || {};
+
+    setShowScrolling(clientX > width - DEFAULT_SCROLLBAR_WIDTH);
+  };
   const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
     relatedTarget,
   }) => {
@@ -37,7 +48,9 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
   return (
     <StyledStartMenu
       ref={menuRef}
+      $showScrolling={showScrolling}
       onBlurCapture={maybeCloseMenu}
+      onMouseMove={revealScrolling}
       {...useStartMenuTransition()}
       {...FOCUSABLE_ELEMENT}
     >
