@@ -1,6 +1,9 @@
 import { config, libs } from "components/apps/TinyMCE/config";
 import { setReadOnlyMode } from "components/apps/TinyMCE/functions";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getModifiedTime,
+  getProcessByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -19,7 +22,7 @@ const useTinyMCE = (
   const { open } = useProcesses();
   const [editor, setEditor] = useState<Editor>();
   const { appendFileToTitle } = useTitle(id);
-  const { readFile, writeFile } = useFileSystem();
+  const { readFile, stat, writeFile } = useFileSystem();
   const { onDragOver, onDrop } = useFileDrop({ id });
   const onSave = useCallback(
     async (activeEditor: Editor) => {
@@ -67,6 +70,10 @@ const useTinyMCE = (
   const loadFile = useCallback(async () => {
     if (editor) {
       const fileContents = await readFile(url);
+      const modifiedDate = new Date(getModifiedTime(url, await stat(url)));
+      const date = new Intl.DateTimeFormat("en-US", {
+        dateStyle: "medium",
+      }).format(modifiedDate);
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
@@ -75,9 +82,17 @@ const useTinyMCE = (
 
       linksToProcesses();
 
-      appendFileToTitle(basename(url, extname(url)));
+      appendFileToTitle(`${basename(url, extname(url))} (${date})`);
     }
-  }, [appendFileToTitle, editor, linksToProcesses, onSave, readFile, url]);
+  }, [
+    appendFileToTitle,
+    editor,
+    linksToProcesses,
+    onSave,
+    readFile,
+    stat,
+    url,
+  ]);
 
   useEffect(() => {
     if (!editor) {
