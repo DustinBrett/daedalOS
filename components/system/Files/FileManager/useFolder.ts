@@ -99,8 +99,8 @@ const useFolder = (
   } = useFileSystem();
   const {
     sessionLoaded,
-    setSortOrders,
-    sortOrders: { [directory]: sortOrder } = {},
+    setSortOrder,
+    sortOrders: { [directory]: [sortOrder] = [] } = {},
   } = useSession();
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
@@ -191,10 +191,7 @@ const useFolder = (
           );
 
           if (dirContents.length > 0) {
-            setSortOrders((currentSortOrder) => ({
-              ...currentSortOrder,
-              [directory]: Object.keys(sortedFiles),
-            }));
+            setSortOrder(directory, Object.keys(sortedFiles));
           } else {
             setFiles({});
           }
@@ -215,7 +212,7 @@ const useFolder = (
       files,
       hideFolders,
       readdir,
-      setSortOrders,
+      setSortOrder,
       stat,
       statsWithShortcutInfo,
     ]
@@ -467,12 +464,10 @@ const useFolder = (
             );
 
             if (oldName && newName) {
-              setSortOrders((currentSortOrder) => ({
-                ...currentSortOrder,
-                [directory]: sortOrder.map((entry) =>
-                  entry === oldName ? newName : entry
-                ),
-              }));
+              setSortOrder(
+                directory,
+                sortOrder.map((entry) => (entry === oldName ? newName : entry))
+              );
             }
           } else if (
             fileNames.some((file, index) => file !== sortOrder[index])
@@ -489,7 +484,7 @@ const useFolder = (
     directory,
     files,
     sessionLoaded,
-    setSortOrders,
+    setSortOrder,
     sortOrder,
     updateFiles,
   ]);

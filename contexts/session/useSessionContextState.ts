@@ -1,3 +1,4 @@
+import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   SessionContextState,
@@ -78,6 +79,30 @@ const useSessionContextState = (): SessionContextState => {
     wallpaperImage,
     windowStates,
   ]);
+  const setSortOrder = useCallback(
+    (
+      directory: string,
+      order: string[] | ((currentSortOrder: string[]) => string[]),
+      sortBy?: SortBy,
+      ascending?: boolean
+    ): void =>
+      setSortOrders((currentSortOrder) => {
+        const [currentOrder, currentSortBy, currentAscending] =
+          currentSortOrder[directory] || [];
+        const newOrder =
+          typeof order === "function" ? order(currentOrder) : order;
+
+        return {
+          ...currentSortOrder,
+          [directory]: [
+            newOrder,
+            sortBy ?? currentSortBy,
+            ascending ?? currentAscending,
+          ],
+        };
+      }),
+    []
+  );
 
   useEffect(() => {
     initSession();
@@ -89,7 +114,7 @@ const useSessionContextState = (): SessionContextState => {
     removeFromStack,
     sessionLoaded,
     setForegroundId,
-    setSortOrders,
+    setSortOrder,
     setThemeName,
     setWallpaper,
     setWindowStates,

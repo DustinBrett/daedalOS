@@ -17,23 +17,20 @@ const useDraggableEntries = (
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
 ): DraggableEntry => {
   const [dropIndex, setDropIndex] = useState(-1);
-  const { setSortOrders } = useSession();
+  const { setSortOrder } = useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
   const onDragEnd =
     (entryUrl: string): React.DragEventHandler =>
     () => {
       if (dropIndex !== -1) {
-        setSortOrders((currentSortOrders) => {
-          const sortedEntries = currentSortOrders[entryUrl].filter(
+        setSortOrder(entryUrl, (currentSortOrders) => {
+          const sortedEntries = currentSortOrders.filter(
             (entry) => !focusedEntries.includes(entry)
           );
 
           sortedEntries.splice(dropIndex, 0, ...focusedEntries);
 
-          return {
-            ...currentSortOrders,
-            [entryUrl]: sortedEntries,
-          };
+          return sortedEntries;
         });
       }
 
