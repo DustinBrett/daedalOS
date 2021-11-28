@@ -52,7 +52,7 @@ const Sidebar = (): JSX.Element => {
       action: () =>
         open(
           "FileExplorer",
-          `${HOME}/Documents`,
+          { url: `${HOME}/Documents` },
           "/System/Icons/documents.png"
         ),
       icon: <Documents />,

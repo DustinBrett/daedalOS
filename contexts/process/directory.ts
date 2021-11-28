@@ -13,6 +13,17 @@ const processDirectory: Processes = {
     icon: "/System/Icons/chromium.png",
     title: "Browser",
   },
+  Dialog: {
+    Component: dynamic(() => import("components/system/Dialog")),
+    allowResizing: false,
+    background: "#fff",
+    defaultSize: {
+      height: 163,
+      width: 400,
+    },
+    icon: "/System/Icons/copying.png",
+    title: "Dialog",
+  },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
     background: "#202020",

@@ -300,7 +300,9 @@ const useCommandInterpreter = (
             const file = commandArgs.join(" ");
             const fullPath = file.startsWith("/") ? file : join(cd, file);
 
-            open(pid, fullPath && (await exists(fullPath)) ? fullPath : "");
+            open(pid, {
+              url: fullPath && (await exists(fullPath)) ? fullPath : "",
+            });
 
             newLine();
           } else {

@@ -7,9 +7,9 @@ const useUrlLoader = (): void => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const app = searchParams.get("app");
-    const url = searchParams.get("url");
+    const url = searchParams.get("url") || "";
 
-    if (app) open(app, url ?? "");
+    if (app) open(app, { url });
   }, [open]);
 };
 

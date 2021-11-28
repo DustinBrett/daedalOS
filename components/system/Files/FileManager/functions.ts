@@ -4,6 +4,7 @@ import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import type { FileReaders } from "utils/useDialog";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;
@@ -118,7 +119,9 @@ export const haltEvent = (
 
 export const handleFileInputEvent = (
   event: Event | React.DragEvent,
-  callback: (fileName: string, buffer?: Buffer) => void
+  callback: (fileName: string, buffer?: Buffer) => void,
+  directory: string,
+  openTransferDialog: (fileReaders: FileReaders) => void
 ): void => {
   haltEvent(event);
 
@@ -128,6 +131,8 @@ export const handleFileInputEvent = (
   const eventFiles = eventTarget?.files || [];
 
   if (eventFiles.length > 0) {
+    const fileReaders: FileReaders = [];
+
     [...eventFiles].forEach((file) => {
       const reader = new FileReader();
 
@@ -140,8 +145,11 @@ export const handleFileInputEvent = (
         },
         ONE_TIME_PASSIVE_EVENT
       );
-      reader.readAsArrayBuffer(file);
+
+      fileReaders.push([file, directory, reader]);
     });
+
+    openTransferDialog(fileReaders);
   } else {
     const filePaths = JSON.parse(eventTarget?.getData("text")) as string[];
 

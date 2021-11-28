@@ -8,7 +8,11 @@ import {
   setTitle,
   setUrl,
 } from "contexts/process/functions";
-import type { ProcessElements, Processes } from "contexts/process/types";
+import type {
+  ProcessArguments,
+  ProcessElements,
+  Processes,
+} from "contexts/process/types";
 import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
@@ -24,7 +28,7 @@ export type ProcessContextState = {
   ) => void;
   maximize: (id: string) => void;
   minimize: (id: string) => void;
-  open: (id: string, url: string, icon?: string) => void;
+  open: (id: string, processArguments: ProcessArguments, icon?: string) => void;
   processes: Processes;
   title: (id: string, newTitle: string) => void;
   url: (id: string, newUrl: string) => void;
@@ -49,8 +53,8 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, openUrl: string, initialIcon?: string) =>
-      setProcesses(openProcess(id, openUrl, initialIcon)),
+    (id: string, processArguments: ProcessArguments, initialIcon?: string) =>
+      setProcesses(openProcess(id, processArguments, initialIcon)),
     []
   );
   const linkElement = useCallback(

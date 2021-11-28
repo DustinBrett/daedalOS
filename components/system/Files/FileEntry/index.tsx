@@ -126,16 +126,16 @@ const FileEntry = ({
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
   const extension = extname(path);
   const isShortcut = extension === SHORTCUT_EXTENSION;
+  const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({
     callback: async (fileDropName, data) => {
-      const directory = isShortcut ? url : path;
-
       if (!focusedEntries.includes(fileName)) {
         const uniqueName = await createPath(fileDropName, directory, data);
 
         if (uniqueName) updateFolder(directory, uniqueName);
       }
     },
+    directory,
     onDragLeave: () =>
       buttonRef.current?.parentElement?.classList.remove("focus-within"),
     onDragOver: () =>

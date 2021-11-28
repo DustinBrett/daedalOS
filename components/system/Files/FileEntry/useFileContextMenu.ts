@@ -176,7 +176,7 @@ const useFileContextMenu = (
       const isFolder = urlExtension === "" || urlExtension === ".zip";
 
       menuItems.unshift({
-        action: () => open("FileExplorer", dirname(url), ""),
+        action: () => open("FileExplorer", { url: dirname(url) }, ""),
         label: `Open ${isFolder ? "folder" : "file"} location`,
       });
     }

@@ -15,6 +15,7 @@ import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
+import useDialog from "utils/useDialog";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -25,7 +26,10 @@ export type FileSystemContextState = AsyncFS & {
     React.SetStateAction<HTMLInputElement | undefined>
   >;
   unMountFs: (url: string) => void;
-  addFile: (callback: (name: string, buffer?: Buffer) => void) => void;
+  addFile: (
+    directory: string,
+    callback: (name: string, buffer?: Buffer) => void
+  ) => void;
   resetFs: () => Promise<void>;
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
@@ -117,10 +121,15 @@ const useFileSystemContextState = (): FileSystemContextState => {
     });
   };
   const unMountFs = (url: string): void => rootFs?.umount?.(url);
-  const addFile = (callback: (name: string, buffer?: Buffer) => void): void => {
+  const { openTransferDialog } = useDialog();
+  const addFile = (
+    directory: string,
+    callback: (name: string, buffer?: Buffer) => void
+  ): void => {
     fileInput?.addEventListener(
       "change",
-      (event) => handleFileInputEvent(event, callback),
+      (event) =>
+        handleFileInputEvent(event, callback, directory, openTransferDialog),
       { once: true }
     );
     fileInput?.click();

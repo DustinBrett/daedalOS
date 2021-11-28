@@ -58,7 +58,7 @@ const useTinyMCE = (
               extname(link.pathname)
             );
 
-            if (defaultProcess) open(defaultProcess, link.pathname);
+            if (defaultProcess) open(defaultProcess, { url: link.pathname });
           }
         })
       );

@@ -518,7 +518,7 @@ const useFolder = (
     },
     files: files || {},
     folderActions: {
-      addToFolder: () => addFile(newPath),
+      addToFolder: () => addFile(directory, newPath),
       newPath,
       pasteToFolder,
       // eslint-disable-next-line unicorn/no-useless-undefined

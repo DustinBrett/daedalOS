@@ -6,6 +6,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { join } from "path";
 import { TEMP_PATH } from "utils/constants";
+import useDialog from "utils/useDialog";
 
 type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -15,6 +16,7 @@ type FileDrop = {
 
 type FileDropProps = {
   callback?: (path: string, buffer?: Buffer) => void;
+  directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDragOver?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -22,6 +24,7 @@ type FileDropProps = {
 
 const useFileDrop = ({
   callback,
+  directory = TEMP_PATH,
   id,
   onDragLeave,
   onDragOver,
@@ -47,6 +50,7 @@ const useFileDrop = ({
       }
     }
   };
+  const { openTransferDialog } = useDialog();
 
   return {
     onDragLeave,
@@ -55,7 +59,12 @@ const useFileDrop = ({
       haltEvent(event);
     },
     onDrop: (event) =>
-      handleFileInputEvent(event, callback || updateProcessUrl),
+      handleFileInputEvent(
+        event,
+        callback || updateProcessUrl,
+        directory,
+        openTransferDialog
+      ),
   };
 };
 

@@ -17,7 +17,7 @@ const useFile = (url: string): UseFile => {
         if (processes[pid].minimized) minimize(pid);
         setForegroundId(pid);
       } else {
-        open(pid, url, singleton ? processIcon : icon);
+        open(pid, { url }, singleton ? processIcon : icon);
       }
     },
     [minimize, open, processes, setForegroundId, url]
