@@ -21,7 +21,7 @@ const useSortBy = (
 
   useEffect(() => {
     const { [directory]: [, sessionSortBy, sessionAscending] = [] } =
-      sortOrders;
+      sortOrders || {};
 
     if (
       typeof sessionSortBy === "string" &&
