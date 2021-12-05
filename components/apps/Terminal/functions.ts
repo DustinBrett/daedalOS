@@ -64,3 +64,15 @@ export const aliases: Record<string, string[]> = {
 
 export const unknownCommand = (baseCommand: string): string =>
   `'${baseCommand}' is not recognized as an internal or external command, operable program or batch file.`;
+
+export const autoComplete = (
+  directory: string[],
+  localEcho: LocalEcho
+): void => {
+  // eslint-disable-next-line no-param-reassign
+  localEcho._autocompleteHandlers = [];
+
+  localEcho.addAutocompleteHandler((index: number): string[] =>
+    index === 0 ? Object.keys(commands) : directory || []
+  );
+};

@@ -5,8 +5,10 @@ export type CommandInterpreter = (command?: string) => Promise<string>;
 export type FitAddon = ITerminalAddon & { fit: () => void };
 
 export type LocalEcho = ITerminalAddon & {
+  _autocompleteHandlers: string[];
   _cursor: number;
   _input: string;
+
   addAutocompleteHandler: (
     callback: (index: number, tokens: string[]) => string[]
   ) => void;

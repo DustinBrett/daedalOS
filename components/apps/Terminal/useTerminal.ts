@@ -3,6 +3,7 @@ import {
   libs,
   PROMPT_CHARACTER,
 } from "components/apps/Terminal/config";
+import { autoComplete } from "components/apps/Terminal/functions";
 import type {
   FitAddon,
   LocalEcho,
@@ -10,6 +11,7 @@ import type {
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
 import { haltEvent } from "components/system/Files/FileManager/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import packageJson from "package.json";
 import { useCallback, useEffect, useState } from "react";
@@ -50,6 +52,7 @@ const useTerminal = (
   const {
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
+  const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
@@ -147,8 +150,10 @@ const useTerminal = (
       prompt(HOME);
       setPrompted(true);
       terminal.focus();
+
+      readdir(HOME).then((files) => autoComplete(files, localEcho));
     }
-  }, [localEcho, processCommand, prompted, terminal]);
+  }, [localEcho, processCommand, prompted, readdir, terminal]);
 
   useResizeObserver(containerRef.current, autoFit);
 };

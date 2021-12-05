@@ -1,5 +1,6 @@
 import {
   aliases,
+  autoComplete,
   commands,
   help,
   unknownCommand,
@@ -46,7 +47,7 @@ const useCommandInterpreter = (
     switch (lcBaseCommand) {
       case "cat":
       case "type": {
-        const file = commandArgs.join(" ");
+        const file = commandArgs.join(" ").trim();
 
         if (file) {
           const fullPath = file.startsWith("/") ? file : join(cd.current, file);
@@ -68,16 +69,19 @@ const useCommandInterpreter = (
       case "cd":
       case "chdir":
       case "pwd": {
-        const directory = commandArgs.join(" ");
+        const directory = commandArgs.join(" ").trim();
 
         if (directory && lcBaseCommand !== "pwd") {
           const fullPath = directory.startsWith("/")
             ? directory
             : join(cd.current, directory);
 
-          if (await exists(fullPath)) {
-            if (cd.current !== fullPath) {
+          if ((await exists(fullPath)) && localEcho) {
+            if (!(await stat(fullPath)).isDirectory()) {
+              localEcho?.println("The directory name is invalid.");
+            } else if (cd.current !== fullPath) {
               cd.current = fullPath;
+              readdir(fullPath).then((files) => autoComplete(files, localEcho));
             }
           } else {
             localEcho?.println("The system cannot find the path specified.");
@@ -230,7 +234,7 @@ const useCommandInterpreter = (
           );
 
           if (pid) {
-            const file = commandArgs.join(" ");
+            const file = commandArgs.join(" ").trim();
             const fullPath =
               !file || file.startsWith("/") ? file : join(cd.current, file);
 
