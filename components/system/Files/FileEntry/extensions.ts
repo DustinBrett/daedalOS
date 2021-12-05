@@ -27,6 +27,10 @@ const extensions = {
     icon: "audio",
     process: ["Webamp"],
   },
+  ".pdf": {
+    icon: "pdf",
+    process: ["PDF"],
+  },
   ".spl": {
     process: ["Ruffle"],
     type: "FutureSplash File",

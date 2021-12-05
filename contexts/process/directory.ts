@@ -58,6 +58,12 @@ const processDirectory: Processes = {
     icon: "/System/Icons/monaco.png",
     title: "Monaco Editor",
   },
+  PDF: {
+    Component: dynamic(() => import("components/apps/PDF")),
+    background: "rgb(82, 86, 89)",
+    icon: "/System/Icons/pdf.png",
+    title: "PDF",
+  },
   Photos: {
     Component: dynamic(() => import("components/apps/Photos")),
     background: "#222",
