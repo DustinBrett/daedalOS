@@ -30,18 +30,6 @@ export const displayVersion = (): string => {
   return `${version}${commit ? `-${commit}` : ""}`;
 };
 
-const pasteToLocalEcho = (text: string, localEcho: LocalEcho): void => {
-  const { _cursor: cursor, _input: input } = localEcho;
-  const newInput = `${input.slice(0, cursor)}${text}${input.slice(cursor)}`;
-
-  localEcho.print(text);
-
-  /* eslint-disable no-param-reassign */
-  localEcho._input = newInput;
-  localEcho._cursor = cursor + text.length;
-  /* eslint-enable no-param-reassign */
-};
-
 const useTerminal = (
   id: string,
   url: string,
@@ -61,7 +49,7 @@ const useTerminal = (
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
 
   useEffect(() => {
-    if (localEcho && url) pasteToLocalEcho(url, localEcho);
+    if (localEcho && url) localEcho.handleCursorInsert(url);
   }, [localEcho, url]);
 
   useEffect(() => {
@@ -104,7 +92,7 @@ const useTerminal = (
           navigator.clipboard
             .readText()
             .then((clipboardText) =>
-              pasteToLocalEcho(clipboardText, newLocalEcho)
+              newLocalEcho.handleCursorInsert(clipboardText)
             );
         }
       });
@@ -127,7 +115,7 @@ const useTerminal = (
             navigator.clipboard
               .readText()
               .then((clipboardText) =>
-                pasteToLocalEcho(clipboardText, localEcho)
+                localEcho.handleCursorInsert(clipboardText)
               );
           }
         }

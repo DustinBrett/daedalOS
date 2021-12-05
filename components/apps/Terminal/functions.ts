@@ -69,8 +69,9 @@ export const autoComplete = (
   directory: string[],
   localEcho: LocalEcho
 ): void => {
-  // eslint-disable-next-line no-param-reassign
-  localEcho._autocompleteHandlers = [];
+  const { _autocompleteHandlers: handlers } = localEcho;
+
+  handlers.forEach(({ fn }) => localEcho.removeAutocompleteHandler(fn));
 
   localEcho.addAutocompleteHandler((index: number): string[] =>
     index === 0 ? Object.keys(commands) : directory || []
