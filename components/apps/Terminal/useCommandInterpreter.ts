@@ -55,8 +55,12 @@ const useCommandInterpreter = (
     processes,
     title: changeTitle,
   } = useProcesses();
-  const getFullPath = (file: string): string =>
-    isAbsolute(file) ? file : join(cd.current, file);
+  const getFullPath = (file: string): string => {
+    if (!file) return "";
+
+    return isAbsolute(file) ? file : join(cd.current, file);
+  };
+
   const updateFile = useCallback(
     (filePath: string, isDeleted = false): void => {
       const dirPath = dirname(filePath);
