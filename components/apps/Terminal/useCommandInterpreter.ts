@@ -79,7 +79,7 @@ const useCommandInterpreter = (
   );
   const commandInterpreter = useCallback(
     async (command: string = ""): Promise<string> => {
-      const [baseCommand, ...commandArgs] = parseCommand(command);
+      const [baseCommand = "", ...commandArgs] = parseCommand(command);
       const lcBaseCommand = baseCommand.toLowerCase();
 
       switch (lcBaseCommand) {
