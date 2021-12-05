@@ -2,22 +2,22 @@ import styled from "styled-components";
 
 const StyledVideoPlayer = styled.div`
   display: flex;
-  width: 100%;
   height: 100%;
+  width: 100%;
 
   .video-js {
-    width: 100%;
     height: 100%;
+    width: 100%;
 
     .vjs-big-play-button {
       display: none;
     }
 
     .vjs-control-bar {
-      display: flex !important;
-      padding: 0 1;
       background-color: rgb(240, 240, 240);
+      display: flex !important;
       opacity: 1 !important;
+      padding: 0 1;
     }
 
     &.vjs-youtube,
@@ -28,36 +28,36 @@ const StyledVideoPlayer = styled.div`
     }
 
     .vjs-button {
-      position: relative;
-      z-index: 0;
-      width: 28px;
-      height: 28px;
       color: rgb(116, 116, 116);
+      height: 28px;
+      position: relative;
+      width: 28px;
+      z-index: 0;
 
       &::after {
-        position: absolute;
-        z-index: -1;
-        top: 1px;
-        left: 0;
-        width: calc(100% - 4px);
-        height: calc(100% - 4px);
-        border: 1px solid rgb(173, 173, 173);
-        margin: 2px 0 0 2px;
         background-color: rgb(225, 225, 225);
+        border: 1px solid rgb(173, 173, 173);
         content: "";
+        height: calc(100% - 4px);
+        left: 0;
+        margin: 2px 0 0 2px;
+        position: absolute;
+        top: 1px;
+        width: calc(100% - 4px);
+        z-index: -1;
       }
 
       &:hover {
         &::after {
-          border-color: rgb(0, 120, 215);
           background-color: rgb(229, 241, 251);
+          border-color: rgb(0, 120, 215);
         }
       }
 
       &:active {
         &::after {
-          border-color: rgb(0, 84, 153);
           background-color: rgb(204, 228, 247);
+          border-color: rgb(0, 84, 153);
         }
       }
     }
@@ -68,13 +68,13 @@ const StyledVideoPlayer = styled.div`
     }
 
     .vjs-current-time {
-      padding-right: 2px;
       padding-left: 8px;
+      padding-right: 2px;
     }
 
     .vjs-duration {
-      padding-right: 8px;
       padding-left: 2px;
+      padding-right: 8px;
     }
 
     .vjs-current-time-display,
@@ -110,24 +110,24 @@ const StyledVideoPlayer = styled.div`
       border-radius: 5px;
 
       &::before {
-        top: -3px;
         color: rgb(237, 237, 237);
         text-shadow: 1px 2px 3px rgb(160, 160, 160);
         -webkit-text-stroke: 1px rgba(164, 164, 164, 0.8);
+        top: -3px;
       }
     }
 
     .vjs-progress-holder {
-      height: 9px;
       border-radius: 5px;
       font-size: 1.7em !important;
+      height: 9px;
     }
 
     .vjs-volume-control {
-      position: relative;
-      left: -28px !important;
       background-color: rgb(240, 240, 240);
       border-radius: 5px 5px 0 0;
+      left: -28px !important;
+      position: relative;
 
       .vjs-volume-bar {
         height: 5.5em;
@@ -156,8 +156,8 @@ const StyledVideoPlayer = styled.div`
     .vjs-play-control {
       .vjs-icon-placeholder {
         &::before {
-          top: -5px;
           font-size: 2.4em;
+          top: -5px;
         }
       }
     }
@@ -167,10 +167,10 @@ const StyledVideoPlayer = styled.div`
     }
 
     video {
-      padding-bottom: 30px;
       background-image: url("/System/Icons/48x48/vlc.png");
       background-position: center calc(50% - 15px);
       background-repeat: no-repeat;
+      padding-bottom: 30px;
     }
   }
 `;

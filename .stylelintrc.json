@@ -4,13 +4,11 @@
     "stylelint-config-recommended",
     "stylelint-config-sass-guidelines",
     "stylelint-config-styled-components",
-    "stylelint-config-prettier",
-    "stylelint-config-idiomatic-order"
+    "stylelint-config-prettier"
   ],
   "plugins": ["stylelint-order"],
   "rules": {
     "max-nesting-depth": null,
-    "order/properties-alphabetical-order": null,
     "selector-max-compound-selectors": null,
     "selector-no-qualifying-type": null
   }

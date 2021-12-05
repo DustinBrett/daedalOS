@@ -6,40 +6,40 @@ type StyledTaskbarEntryProps = {
 };
 
 const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
-  position: relative;
   display: flex;
-  overflow: hidden;
-  width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
   min-width: 0;
+  overflow: hidden;
   place-content: center;
+  position: relative;
+  width: ${({ theme }) => theme.sizes.taskbar.entry.maxWidth};
 
   &::before {
-    position: absolute;
-    z-index: -1;
-    bottom: 0;
-    width: ${({ $foreground }) => ($foreground ? "100%" : `calc(100% - 8px)`)};
-    height: ${({ $foreground }) => ($foreground ? "100%" : 0)};
+    background-color: ${({ $foreground, theme }) =>
+      $foreground ? theme.colors.taskbar.foreground : ""};
     border-bottom: ${({ theme }) => `
         ${theme.sizes.taskbar.entry.borderSize} solid ${theme.colors.highlight}
       `};
-    margin: ${({ $foreground }) => ($foreground ? "" : "0 4px")};
-    background-color: ${({ $foreground, theme }) =>
-      $foreground ? theme.colors.taskbar.foreground : ""};
+    bottom: 0;
     content: "";
+    height: ${({ $foreground }) => ($foreground ? "100%" : 0)};
+    margin: ${({ $foreground }) => ($foreground ? "" : "0 4px")};
+    position: absolute;
     transition-duration: 0.1s;
     transition-property: ${({ $foreground }) =>
       $foreground ? "all" : "width"};
+    width: ${({ $foreground }) => ($foreground ? "100%" : `calc(100% - 8px)`)};
+    z-index: -1;
   }
 
   &:hover {
     &::before {
-      width: 100%;
-      height: 100%;
-      margin: 0;
       background-color: ${({ $foreground, theme }) =>
         $foreground
           ? theme.colors.taskbar.foregroundHover
           : theme.colors.taskbar.hover};
+      height: 100%;
+      margin: 0;
+      width: 100%;
     }
   }
 
@@ -53,27 +53,27 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
   }
 
   figure {
-    display: flex;
     align-items: center;
-    padding: 4px;
+    display: flex;
     margin-bottom: ${({ theme }) => theme.sizes.taskbar.entry.borderSize};
     margin-left: 4px;
+    padding: 4px;
 
     figcaption {
-      margin-left: 5px;
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
       letter-spacing: -0.1px;
+      margin-left: 5px;
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     img {
+      height: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
       position: relative;
       top: 1px;
       width: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
-      height: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
     }
   }
 `;

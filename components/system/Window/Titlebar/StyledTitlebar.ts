@@ -14,45 +14,45 @@ const styledBorder = ({
     : `1px solid ${theme.colors.titleBar.backgroundInactive}`;
 
 const StyledTitlebar = styled.header<StyledTitlebarProps>`
-  position: relative;
-  z-index: 2;
-  top: 0;
-  display: flex;
-  height: ${({ theme }) => theme.sizes.titleBar.height};
-  border-bottom: ${styledBorder};
   background-color: ${({ $foreground, theme }) =>
     $foreground
       ? theme.colors.titleBar.background
       : theme.colors.titleBar.backgroundInactive};
+  border-bottom: ${styledBorder};
+  display: flex;
+  height: ${({ theme }) => theme.sizes.titleBar.height};
+  position: relative;
+  top: 0;
+  z-index: 2;
 
   h1 {
-    display: flex;
-    min-width: 0;
-    flex-grow: 1;
     color: ${({ $foreground, theme }) =>
       $foreground
         ? theme.colors.titleBar.text
         : theme.colors.titleBar.textInactive};
+    display: flex;
+    flex-grow: 1;
     font-size: ${({ theme }) => theme.sizes.titleBar.fontSize};
     font-weight: normal;
+    min-width: 0;
 
     figure {
+      align-items: center;
+      display: flex;
+      margin-left: 8px;
+      min-width: inherit;
       position: relative;
       top: -1px;
-      display: flex;
-      min-width: inherit;
-      align-items: center;
-      margin-left: 8px;
 
       img {
-        width: ${({ theme }) => theme.sizes.titleBar.iconSize};
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
         margin-right: ${({ theme }) => theme.sizes.titleBar.iconMarginRight};
+        width: ${({ theme }) => theme.sizes.titleBar.iconSize};
       }
 
       figcaption {
-        overflow: hidden;
         letter-spacing: -0.1px;
+        overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -63,26 +63,26 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     display: flex;
 
     button {
-      display: flex;
-      width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
-      box-sizing: content-box;
       border-left: ${styledBorder};
+      box-sizing: content-box;
+      display: flex;
       place-content: center;
       place-items: center;
+      width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
 
       svg {
-        width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
-        margin: 0 1px 2px 0;
         fill: ${({ $foreground, theme }) =>
           $foreground
             ? theme.colors.titleBar.text
             : theme.colors.titleBar.buttonInactive};
+        margin: 0 1px 2px 0;
+        width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
       }
 
       &.minimize {
         svg {
-          margin-right: 0;
           margin-bottom: 1px;
+          margin-right: 0;
         }
       }
 

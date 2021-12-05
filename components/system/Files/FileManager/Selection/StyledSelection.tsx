@@ -7,10 +7,10 @@ const NoGlobalPointerEvents = createGlobalStyle`
 `;
 
 const StyledSelectionComponent = styled.span`
+  background-color: ${({ theme }) => theme.colors.highlightBackground};
+  border: ${({ theme }) => `1px solid ${theme.colors.highlight}`};
   position: absolute;
   z-index: 2;
-  border: ${({ theme }) => `1px solid ${theme.colors.highlight}`};
-  background-color: ${({ theme }) => theme.colors.highlightBackground};
 `;
 
 const StyledSelection = (

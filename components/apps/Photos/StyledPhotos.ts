@@ -5,12 +5,12 @@ const buttonSize = "48px";
 const paddingSize = "32px";
 
 const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
-  position: relative;
+  background-color: #222;
   display: flex;
   height: 100%;
-  padding-top: ${buttonSize};
   padding-bottom: ${paddingSize};
-  background-color: #222;
+  padding-top: ${buttonSize};
+  position: relative;
 
   svg {
     fill: #fff;
@@ -18,25 +18,25 @@ const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
 
   figure {
     display: flex;
-    overflow: hidden;
-    width: 100%;
     height: 100%;
     margin: 0 ${paddingSize} ${paddingSize};
+    overflow: hidden;
     place-content: center;
     place-items: center;
+    width: 100%;
 
     img {
-      max-width: 100%;
       max-height: 100%;
+      max-width: 100%;
     }
   }
 
   nav {
-    position: absolute;
     display: flex;
     height: ${buttonSize};
     place-content: center;
     place-items: center;
+    position: absolute;
 
     &.top {
       top: 0;
@@ -48,8 +48,8 @@ const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
     }
 
     &.bottom {
-      right: 0;
       bottom: 0;
+      right: 0;
 
       svg {
         height: 20px;
@@ -58,8 +58,8 @@ const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
     }
 
     button {
-      width: ${buttonSize};
       height: ${buttonSize};
+      width: ${buttonSize};
 
       &:disabled {
         pointer-events: none;

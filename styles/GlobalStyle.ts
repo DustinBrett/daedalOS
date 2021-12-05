@@ -4,18 +4,18 @@ const GlobalStyle = createGlobalStyle`
   *,
   *::before,
   *::after {
-    box-sizing: border-box;
-    padding: 0;
     border: 0;
+    box-sizing: border-box;
     margin: 0;
     outline: 0;
+    padding: 0;
     user-select: none;
   }
 
   body {
-    overflow: hidden;
-    height: 100%;
     font-family: ${({ theme }) => theme.formats.systemFont};
+    height: 100%;
+    overflow: hidden;
   }
 
   ol,

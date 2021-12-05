@@ -22,10 +22,10 @@ const ThinScrollBars = css<StyledStartMenuProps>`
   }
 
   ::-webkit-scrollbar-button:single-button {
-    border: ${({ $showScrolling }) =>
-      !$showScrolling && "1px solid transparent"};
     background-color: ${({ $showScrolling }) =>
       !$showScrolling && "transparent"};
+    border: ${({ $showScrolling }) =>
+      !$showScrolling && "1px solid transparent"};
   }
 
   ::-webkit-scrollbar-thumb:vertical {
@@ -35,28 +35,28 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 `;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
-  position: absolute;
-  z-index: 1000;
-  bottom: ${({ theme }) => theme.sizes.taskbar.height};
-  left: 0;
-  display: flex;
-  width: ${({ theme }) => theme.sizes.startMenu.size};
-  height: ${({ theme }) => theme.sizes.startMenu.size};
   background-color: hsla(0, 0%, 13%, 70%);
+  bottom: ${({ theme }) => theme.sizes.taskbar.height};
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
   contain: strict;
+  display: flex;
+  height: ${({ theme }) => theme.sizes.startMenu.size};
+  left: 0;
+  position: absolute;
+  width: ${({ theme }) => theme.sizes.startMenu.size};
+  z-index: 1000;
 
   ${StyledFileManager} {
     ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
 
-    padding-top: 7px;
-    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
     margin-top: 0;
+    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    padding-top: 7px;
 
     ${StyledFileManager} {
+      margin: 0;
       overflow: hidden;
       padding: 0;
-      margin: 0;
 
       figure {
         img {

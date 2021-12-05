@@ -4,17 +4,17 @@ import Button from "styles/common/Button";
 const StyledDialog = styled.div`
   h1,
   div {
-    display: flex;
-    height: calc(100% - 40px - 41px - 2px);
-    flex-direction: column;
     align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 40px - 41px - 2px);
     justify-content: space-around;
     padding: 0 22px;
 
     progress {
-      width: 100%;
-      height: 15px;
       border: 1px solid rgb(188, 188, 188);
+      height: 15px;
+      width: 100%;
 
       &::-webkit-progress-bar {
         background-color: rgb(230, 230, 230);
@@ -31,18 +31,18 @@ const StyledDialog = styled.div`
   }
 
   h1 {
-    display: flex;
-    width: 100%;
-    height: 40px;
     background: linear-gradient(
       to right,
       rgb(220, 229, 244),
       rgb(155, 192, 227),
       rgb(0, 43, 85)
     );
+    display: flex;
     font-size: 15px;
     font-weight: 400;
+    height: 40px;
     place-items: flex-start;
+    width: 100%;
   }
 
   h2 {
@@ -51,40 +51,40 @@ const StyledDialog = styled.div`
   }
 
   nav {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    width: 100%;
-    height: 41px;
-    box-sizing: content-box;
-    padding-bottom: 1px;
-    border-top: 1px solid rgb(223, 223, 223);
     background-color: rgb(240, 240, 240);
+    border-top: 1px solid rgb(223, 223, 223);
+    bottom: 0;
+    box-sizing: content-box;
+    display: flex;
+    height: 41px;
+    padding-bottom: 1px;
     place-items: center;
+    position: absolute;
+    width: 100%;
 
     ${Button} {
-      position: absolute;
-      right: 23px;
-      width: 73px;
+      background-color: rgb(225, 225, 225);
+      border: 1px solid rgb(173, 173, 173);
+      font-size: 12px;
       height: 23px;
       padding-bottom: 1px;
-      border: 1px solid rgb(173, 173, 173);
-      background-color: rgb(225, 225, 225);
-      font-size: 12px;
+      position: absolute;
+      right: 23px;
       transition: all 0.25s ease-in-out;
+      width: 73px;
 
       &:focus {
         border: 2px solid rgb(0, 120, 215);
       }
 
       &:hover {
-        border: 1px solid rgb(0, 120, 215);
         background-color: rgb(229, 241, 251);
+        border: 1px solid rgb(0, 120, 215);
       }
 
       &:active {
-        border: 1px solid rgb(0, 84, 153);
         background-color: rgb(204, 228, 247);
+        border: 1px solid rgb(0, 84, 153);
         transition: none;
       }
     }
