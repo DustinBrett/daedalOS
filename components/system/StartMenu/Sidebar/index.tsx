@@ -25,7 +25,7 @@ const SidebarGroup = ({ sidebarButtons }: SidebarGroupProps): JSX.Element => (
 );
 
 const Sidebar = (): JSX.Element => {
-  const { resetFs } = useFileSystem();
+  const { resetStorage } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<number>();
@@ -60,7 +60,7 @@ const Sidebar = (): JSX.Element => {
       ...(collapsed && { tooltip: "Documents" }),
     },
     {
-      action: () => resetFs().finally(() => window.location.reload()),
+      action: () => resetStorage().finally(() => window.location.reload()),
       icon: <Power />,
       name: "Power",
       tooltip: "Clears session data and reloads the page.",

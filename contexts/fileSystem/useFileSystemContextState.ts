@@ -30,7 +30,7 @@ export type FileSystemContextState = AsyncFS & {
     directory: string,
     callback: (name: string, buffer?: Buffer) => void
   ) => void;
-  resetFs: () => Promise<void>;
+  resetStorage: () => Promise<void>;
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
@@ -134,16 +134,25 @@ const useFileSystemContextState = (): FileSystemContextState => {
     );
     fileInput?.click();
   };
-  const resetFs = (): Promise<void> =>
+  const resetStorage = (): Promise<void> =>
     new Promise((resolve, reject) => {
-      // eslint-disable-next-line no-underscore-dangle
-      const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
-      const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
-      const readable = overlayedFileSystems.readable as HTTPRequest;
-      const writable = overlayedFileSystems.writable as IndexedDBFileSystem;
+      localStorage.clear();
+      sessionStorage.clear();
 
-      readable.empty();
-      writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
+      indexedDB.databases().then((databases) => {
+        databases
+          .filter(({ name }) => name !== "browserfs")
+          .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
+
+        // eslint-disable-next-line no-underscore-dangle
+        const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
+        const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
+        const readable = overlayedFileSystems.readable as HTTPRequest;
+        const writable = overlayedFileSystems.writable as IndexedDBFileSystem;
+
+        readable.empty();
+        writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
+      });
     });
   const mkdirRecursive = async (path: string): Promise<void> => {
     const pathParts = path.split("/").filter(Boolean);
@@ -235,7 +244,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     moveEntries,
     pasteList,
     removeFsWatcher,
-    resetFs,
+    resetStorage,
     setFileInput,
     unMountFs,
     updateFolder,

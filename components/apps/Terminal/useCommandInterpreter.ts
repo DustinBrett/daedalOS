@@ -74,7 +74,7 @@ const useCommandInterpreter = (
   const [cursor, setCursor] = useState(0);
   const [position, setPosition] = useState(0);
   const [command, setCommand] = useState<string>("");
-  const { exists, fs, readdir, readFile, resetFs, stat, updateFolder } =
+  const { exists, fs, readdir, readFile, resetStorage, stat, updateFolder } =
     useFileSystem();
   const setCommandLine: React.Dispatch<React.SetStateAction<string>> = (
     cmd
@@ -269,7 +269,7 @@ const useCommandInterpreter = (
       case "restart":
       case "shutdown":
         newLine();
-        resetFs().finally(() => window.location.reload());
+        resetStorage().finally(() => window.location.reload());
         break;
       case "time":
         terminal?.writeln(
