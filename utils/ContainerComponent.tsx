@@ -16,7 +16,8 @@ const ContainerComponent = (
   id: string,
   useHook: ContainerHook,
   Component: StyledComponent<"div", DefaultTheme>,
-  children?: JSX.Element
+  children?: JSX.Element,
+  siblings?: JSX.Element
 ): JSX.Element => {
   const {
     processes: { [id]: { url: currentUrl = "" } = {} },
@@ -39,6 +40,7 @@ const ContainerComponent = (
       >
         {children}
       </Component>
+      {siblings}
     </>
   );
 };
