@@ -68,6 +68,8 @@ const usePanZoom = (
         zoomWithWheel(event, { step: 0.3 })
       );
     }
+
+    return () => imgElement?.removeEventListener("panzoomchange", zoomUpdate);
   }, [containerElement, imgElement, zoomUpdate, zoomWithWheel]);
 
   useEffect(() => {
