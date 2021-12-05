@@ -77,3 +77,51 @@ export const autoComplete = (
     index === 0 ? Object.keys(commands) : directory || []
   );
 };
+
+export const parseCommand = (commandString: string): string[] => {
+  let readingQuotedArg = false;
+  let currentArg = "";
+  const addArg = (acc: string[]): void => {
+    if (currentArg) acc.push(currentArg);
+    currentArg = "";
+  };
+  const parsedCommand = [...commandString].reduce<string[]>((acc, char) => {
+    if (char === " " && !readingQuotedArg) addArg(acc);
+    else if (char === '"') {
+      readingQuotedArg = !readingQuotedArg;
+      if (!readingQuotedArg) addArg(acc);
+    } else {
+      currentArg += char;
+    }
+
+    return acc;
+  }, []);
+
+  return currentArg ? [...parsedCommand, currentArg] : parsedCommand;
+};
+
+export const printTable = (
+  headers: [string, number][],
+  data: string[][],
+  localEcho?: LocalEcho,
+  paddingCharacter = "="
+): void => {
+  const header = headers
+    .map(([key, padding]) => key.padEnd(padding, " "))
+    .join(" ");
+  const divider = headers
+    .map(([, padding]) => paddingCharacter.repeat(padding))
+    .join(" ");
+  const content = data.map((row) =>
+    row
+      .map((rowData, index) =>
+        rowData.padEnd(headers[index][1], " ").slice(0, headers[index][1])
+      )
+      .join(" ")
+  );
+
+  localEcho?.println(header);
+  localEcho?.println(divider);
+
+  if (content.length > 0) content.forEach((entry) => localEcho?.println(entry));
+};

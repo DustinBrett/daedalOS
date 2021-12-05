@@ -130,7 +130,7 @@ const useTerminal = (
       const prompt = (cd: string): Promise<void> =>
         localEcho
           .read(`\r\n${cd}${PROMPT_CHARACTER}`)
-          .then((command) => processCommand(command).then(prompt));
+          .then((command) => processCommand.current?.(command).then(prompt));
 
       localEcho.println(`${alias || name} [Version ${displayVersion()}]`);
       localEcho.println(`By ${author}. ${displayLicense}.`);
