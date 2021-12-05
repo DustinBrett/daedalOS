@@ -101,6 +101,15 @@ export const setIcon =
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, { icon })(currentProcesses);
 
+export const setProcessArgument =
+  (
+    processId: string,
+    name: keyof ProcessArguments,
+    value: ProcessArguments[keyof ProcessArguments]
+  ) =>
+  (currentProcesses: Processes): Processes =>
+    setProcessSettings(processId, { [name]: value })(currentProcesses);
+
 export const setProcessElement =
   (processId: string, name: keyof ProcessElements, element: HTMLElement) =>
   (currentProcesses: Processes): Processes =>
