@@ -1,6 +1,11 @@
 import { loader } from "@monaco-editor/react";
-import { config, theme } from "components/apps/MonacoEditor/config";
+import {
+  config,
+  theme,
+  URL_DELIMITER,
+} from "components/apps/MonacoEditor/config";
 import { detectLanguage } from "components/apps/MonacoEditor/functions";
+import type { Model } from "components/apps/MonacoEditor/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -21,26 +26,52 @@ const useMonaco = (
   const { prependFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const [monaco, setMonaco] = useState<typeof Monaco>();
+  const createModelUri = useCallback(
+    (modelUrl: string, instance = 0): Monaco.Uri | undefined => {
+      const uriName = `${modelUrl}${URL_DELIMITER}${instance}`;
+      const models = monaco?.editor.getModels();
+
+      return models?.some(
+        (model) => (model as Model)._associatedResource.path === uriName
+      )
+        ? createModelUri(modelUrl, instance + 1)
+        : monaco?.Uri.parse(uriName);
+    },
+    [monaco?.Uri, monaco?.editor]
+  );
   const createModel = useCallback(async () => {
     const newModel = monaco?.editor.createModel(
       (await readFile(url)).toString(),
       detectLanguage(extname(url)),
-      monaco?.Uri.parse(url)
+      createModelUri(url)
     );
 
     newModel?.onDidChangeContent(() => prependFileToTitle(basename(url), true));
     editor?.onKeyDown(async (event) => {
       const { ctrlKey, code } = event;
 
-      if (ctrlKey && code === "KeyS" && url === editor?.getModel()?.uri.path) {
-        event.preventDefault();
-        await writeFile(url, editor?.getValue(), true);
-        prependFileToTitle(basename(url));
+      if (ctrlKey && code === "KeyS") {
+        const [baseUrl] =
+          editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
+
+        if (url === baseUrl) {
+          event.preventDefault();
+          await writeFile(url, editor?.getValue(), true);
+          prependFileToTitle(basename(url));
+        }
       }
     });
 
     return newModel as Monaco.editor.ITextModel;
-  }, [editor, monaco, prependFileToTitle, readFile, url, writeFile]);
+  }, [
+    createModelUri,
+    editor,
+    monaco?.editor,
+    prependFileToTitle,
+    readFile,
+    url,
+    writeFile,
+  ]);
   const loadFile = useCallback(async () => {
     if (monaco && editor) {
       unlockGlobal("define");
@@ -79,7 +110,7 @@ const useMonaco = (
 
     return () => {
       if (editor && monaco) {
-        monaco.editor.getModels().forEach((model) => model.dispose());
+        editor.getModel()?.dispose();
         editor.dispose();
       }
     };

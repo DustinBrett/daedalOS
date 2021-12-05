@@ -190,3 +190,5 @@ export const monacoExtensions = new Set([
   ".yaml",
   ".yml",
 ]);
+
+export const URL_DELIMITER = "|";
