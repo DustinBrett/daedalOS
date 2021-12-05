@@ -1,14 +1,20 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import type { FileReaders } from "utils/useDialog";
 
 type DialogProcessArguments = {
   fileReaders?: FileReaders;
 };
 
-export type ProcessArguments = DialogProcessArguments & {
-  url?: string;
+type MonacoProcessArguments = {
+  editor?: Monaco.editor.IStandaloneCodeEditor;
 };
+
+export type ProcessArguments = DialogProcessArguments &
+  MonacoProcessArguments & {
+    url?: string;
+  };
 
 export type ProcessElements = {
   componentWindow?: HTMLElement;

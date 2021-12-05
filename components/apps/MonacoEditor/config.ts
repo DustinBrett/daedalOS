@@ -4,8 +4,6 @@ export const config = {
   },
 };
 
-export const globals = ["monaco"];
-
 export const theme = "vs-dark";
 
 export const customExtensionLanguages: Record<string, string> = {
