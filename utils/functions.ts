@@ -95,7 +95,7 @@ export const lockTitle = (): void => {
   } catch {}
 };
 
-export const getTimezoneOffsetISOString = (): string => {
+export const getTZOffsetISOString = (): string => {
   const date = new Date();
 
   return new Date(

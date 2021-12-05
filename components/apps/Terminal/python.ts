@@ -1,6 +1,5 @@
-import { convertNewLines } from "components/apps/Terminal/useTerminal";
+import type { LocalEcho } from "components/apps/Terminal/types";
 import { loadFiles } from "utils/functions";
-import type { Terminal } from "xterm";
 
 type Pyodide = {
   runPythonAsync: (code: string) => Promise<string>;
@@ -24,7 +23,7 @@ const versionCommand = `
 
 export const runPython = async (
   code: string,
-  terminal: Terminal
+  localEcho: LocalEcho
 ): Promise<void> => {
   await loadFiles(["/Program Files/Pyodide/pyodide.js"]);
 
@@ -39,9 +38,7 @@ export const runPython = async (
     );
 
     if (typeof result !== "undefined") {
-      terminal?.write(`\r\n${convertNewLines(result.toString())}`);
+      localEcho?.println(result.toString());
     }
   }
-
-  terminal?.writeln("");
 };

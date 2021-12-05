@@ -144,7 +144,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
           .filter(({ name }) => name !== "browserfs")
           .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
 
-        // eslint-disable-next-line no-underscore-dangle
         const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
         const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
         const readable = overlayedFileSystems.readable as HTTPRequest;

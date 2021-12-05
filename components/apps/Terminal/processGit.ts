@@ -1,8 +1,8 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import help from "components/apps/Terminal/help";
+import { help } from "components/apps/Terminal/functions";
+import type { LocalEcho } from "components/apps/Terminal/types";
 import type { MessageCallback, ProgressCallback } from "isomorphic-git";
 import { join } from "path";
-import type { Terminal } from "xterm";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 
@@ -14,7 +14,7 @@ const commands: Record<string, string> = {
 const processGit = async (
   [command, ...args]: string[],
   cd: string,
-  terminal: Terminal,
+  localEcho: LocalEcho,
   fs: FSModule,
   exists: (path: string) => Promise<boolean>,
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void
@@ -22,10 +22,10 @@ const processGit = async (
   const { checkout, clone, version } = await import("isomorphic-git");
   const events: string[] = [];
   const onMessage: MessageCallback = (message) =>
-    terminal.writeln(`remote: ${message.trim()}`);
+    localEcho.println(`remote: ${message.trim()}`);
   const onProgress: ProgressCallback = ({ phase }): void => {
     if (events[events.length - 1] !== phase) {
-      terminal.writeln(phase);
+      localEcho.println(phase);
       events.push(phase);
     }
   };
@@ -33,8 +33,6 @@ const processGit = async (
     fs,
     onProgress,
   };
-
-  terminal?.writeln("");
 
   switch (command) {
     case "clone": {
@@ -47,11 +45,11 @@ const processGit = async (
       const dir = dirName ? join(cd, dirName) : cd;
 
       try {
-        terminal?.writeln(`Cloning into '${dirName}'...`);
+        localEcho.println(`Cloning into '${dirName}'...`);
 
         await clone({ ...options, corsProxy, dir, http, onMessage, url });
       } catch (error) {
-        terminal.writeln((error as Error).message);
+        localEcho.println((error as Error).message);
       }
       break;
     }
@@ -62,22 +60,22 @@ const processGit = async (
         try {
           await checkout({ ...options, dir: cd, force: true, ref });
 
-          terminal?.writeln(`Switched to branch '${ref}'`);
+          localEcho.println(`Switched to branch '${ref}'`);
         } catch (error) {
-          terminal.writeln((error as Error).message);
+          localEcho.println((error as Error).message);
         }
       } else {
-        terminal.writeln("fatal: not a git repository: .git");
+        localEcho.println("fatal: not a git repository: .git");
       }
       break;
     }
     case "version": {
-      terminal.writeln(`git version ${version()}.isomorphic-git`);
+      localEcho.println(`git version ${version()}.isomorphic-git`);
       break;
     }
     case "help":
     default:
-      if (terminal) help(terminal, commands);
+      help(localEcho, commands);
   }
 
   updateFolder(cd);

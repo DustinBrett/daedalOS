@@ -28,6 +28,7 @@ export const libs = [
   "/Program Files/Xterm.js/xterm.css",
   "/Program Files/Xterm.js/xterm.js",
   "/Program Files/Xterm.js/xterm-addon-fit.js",
+  "/Program Files/Xterm.js/local-echo.js",
 ];
 
 export const PROMPT_CHARACTER = ">";

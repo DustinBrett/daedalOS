@@ -1,6 +1,5 @@
 import { config } from "components/apps/Terminal/config";
-import { convertNewLines } from "components/apps/Terminal/useTerminal";
-import type { Terminal } from "xterm";
+import type { LocalEcho } from "components/apps/Terminal/types";
 
 type WASIError = Error & {
   code: number;
@@ -8,14 +7,12 @@ type WASIError = Error & {
 
 const loadWapm = async (
   commandArgs: string[],
-  terminal?: Terminal
+  localEcho: LocalEcho
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
   const { WASI } = await import("@wasmer/wasi");
   const { WasmFs } = await import("@wasmer/wasmfs");
-
-  terminal?.writeln("");
 
   try {
     const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
@@ -45,15 +42,15 @@ const loadWapm = async (
       const output = await wasmFs.getStdOut();
 
       if (typeof output === "string") {
-        terminal?.write(convertNewLines(output));
+        localEcho?.print(output);
       }
     }
   } catch (error) {
     const { code, message } = error as WASIError;
 
-    if (code) terminal?.writeln(message);
+    if (code) localEcho?.println(message);
     else if (message.startsWith("command not found")) {
-      terminal?.writeln(`WAPM: ${message}`);
+      localEcho?.println(`WAPM: ${message}`);
     }
   }
 };

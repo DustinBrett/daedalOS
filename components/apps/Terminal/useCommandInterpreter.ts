@@ -1,137 +1,47 @@
-import { BACKSPACE, LEFT, RIGHT } from "components/apps/Terminal/config";
-import help from "components/apps/Terminal/help";
+import {
+  aliases,
+  commands,
+  help,
+  unknownCommand,
+} from "components/apps/Terminal/functions";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import { runPython } from "components/apps/Terminal/python";
-import type { CommandInterpreter } from "components/apps/Terminal/types";
-import { convertNewLines } from "components/apps/Terminal/useTerminal";
+import type {
+  CommandInterpreter,
+  LocalEcho,
+} from "components/apps/Terminal/types";
+import {
+  displayLicense,
+  displayVersion,
+} from "components/apps/Terminal/useTerminal";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import packageJson from "package.json";
 import { join } from "path";
-import { useState } from "react";
+import { useRef } from "react";
 import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
-import { getTimezoneOffsetISOString } from "utils/functions";
+import { getTZOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
-
-const { alias, author, license, name, version } = packageJson;
-
-const displayLicense = `${license} License`;
-const displayVersion = (): string => {
-  const { commit } = window;
-
-  return `${version}${commit ? `-${commit}` : ""}`;
-};
-
-const commands: Record<string, string> = {
-  cd: "Changes the current directory.",
-  clear: "Clears the screen.",
-  date: "Displays the date.",
-  dir: "Displays list of entries in current directory.",
-  echo: "Displays messages that are passed to it.",
-  exit: "Quits the command interpreter.",
-  git: "Read from git repositories.",
-  help: "Provides Help information for commands.",
-  history: "Displays command history list.",
-  license: "Displays license.",
-  pwd: "Prints the working directory.",
-  python: "Run code through Python interpreter.",
-  shutdown: "Allows proper local shutdown of machine.",
-  taskkill: "Kill or stop a running process or application.",
-  tasklist: "Displays all currently running processes.",
-  time: "Displays the system time.",
-  title: "Sets the window title for the command interpreter.",
-  type: "Displays the contents of a file.",
-  uptime: "Display the current uptime of the local system.",
-  ver: "Displays the system version.",
-  wapm: "Run universal Wasm binaries.",
-  weather: "Weather forecast service",
-  whoami: "Displays user information.",
-};
-
-const aliases: Record<string, string[]> = {
-  cd: ["chdir"],
-  clear: ["cls"],
-  dir: ["ls"],
-  exit: ["quit"],
-  python: ["py"],
-  shutdown: ["restart"],
-  taskkill: ["kill"],
-  tasklist: ["ps"],
-  type: ["cat"],
-  ver: ["version"],
-  wapm: ["wax"],
-  weather: ["wttr"],
-};
 
 const useCommandInterpreter = (
   id: string,
-  terminal?: Terminal
+  terminal?: Terminal,
+  localEcho?: LocalEcho
 ): CommandInterpreter => {
-  const [cd, setCd] = useState<string>(HOME);
-  const [history, setHistory] = useState([""]);
-  const [cursor, setCursor] = useState(0);
-  const [position, setPosition] = useState(0);
-  const [command, setCommand] = useState<string>("");
+  const cd = useRef(HOME);
   const { exists, fs, readdir, readFile, resetStorage, stat, updateFolder } =
     useFileSystem();
-  const setCommandLine: React.Dispatch<React.SetStateAction<string>> = (
-    cmd
-  ): void => {
-    const newCommand = typeof cmd === "function" ? cmd(command) : cmd;
-
-    setCommand(newCommand);
-    setCursor(newCommand.length);
-  };
-  const setHistoryPosition = (step: number): void => {
-    const newPosition = position + step;
-
-    if (newPosition < 0 || newPosition > history.length - 2) return;
-
-    if (typeof history[newPosition] === "string") {
-      terminal?.write(
-        `${BACKSPACE.repeat(command.length)}${history[newPosition]}`
-      );
-      setCommandLine(history[newPosition]);
-    }
-
-    setPosition(newPosition);
-  };
-  const setCursorPosition = (step: number): void => {
-    const cursorMove = cursor + step;
-
-    if (cursorMove < 0 || cursorMove > command.length) return;
-
-    terminal?.write(
-      step > 0 ? RIGHT.repeat(step) : LEFT.repeat(Math.abs(step))
-    );
-
-    setCursor(cursorMove);
-  };
-  const clear = (): void => {
-    terminal?.clear();
-    terminal?.write("\u001B[2K\r");
-  };
   const {
     closeWithTransition,
     open,
     processes,
     title: changeTitle,
   } = useProcesses();
-  const newLine = (): void => terminal?.writeln("");
-  const welcome = (): void => {
-    terminal?.writeln(`${alias || name} [Version ${displayVersion()}]`);
-    terminal?.writeln(`By ${author}. ${displayLicense}.`);
-  };
-  const unknownCommand = (baseCommand: string): void =>
-    terminal?.writeln(
-      `\r\n'${baseCommand}' is not recognized as an internal or external command, operable program or batch file.`
-    );
-  const processCommand = async (): Promise<void> => {
+
+  return async (command = ""): Promise<string> => {
     const [baseCommand, ...commandArgs] = command.split(" ");
     const lcBaseCommand = baseCommand.toLowerCase();
-    let currentCd = cd;
 
     switch (lcBaseCommand) {
       case "cat":
@@ -139,19 +49,19 @@ const useCommandInterpreter = (
         const file = commandArgs.join(" ");
 
         if (file) {
-          const fullPath = file.startsWith("/") ? file : join(cd, file);
+          const fullPath = file.startsWith("/") ? file : join(cd.current, file);
 
           if (await exists(fullPath)) {
             if ((await stat(fullPath)).isDirectory()) {
-              terminal?.writeln("\r\nAccess is denied.");
+              localEcho?.println("Access is denied.");
             } else {
-              terminal?.write(`\r\n${await readFile(fullPath)}`);
+              localEcho?.print((await readFile(fullPath)).toString());
             }
           } else {
-            terminal?.writeln(`\r\nThe system cannot find the path specified.`);
+            localEcho?.println("The system cannot find the path specified.");
           }
         } else {
-          terminal?.writeln(`\r\nThe syntax of the command is incorrect.`);
+          localEcho?.println("The syntax of the command is incorrect.");
         }
         break;
       }
@@ -163,66 +73,63 @@ const useCommandInterpreter = (
         if (directory && lcBaseCommand !== "pwd") {
           const fullPath = directory.startsWith("/")
             ? directory
-            : join(cd, directory);
+            : join(cd.current, directory);
 
           if (await exists(fullPath)) {
-            if (currentCd !== fullPath) {
-              currentCd = fullPath;
-              setCd(fullPath);
-            } else {
-              newLine();
+            if (cd.current !== fullPath) {
+              cd.current = fullPath;
             }
           } else {
-            terminal?.writeln(`\r\nThe system cannot find the path specified.`);
+            localEcho?.println("The system cannot find the path specified.");
           }
         } else {
-          terminal?.writeln(`\r\n${cd}`);
+          localEcho?.println(cd.current);
         }
         break;
       }
       case "clear":
       case "cls":
-        clear();
+        terminal?.clear();
+        terminal?.write("\u001B[2J");
         break;
       case "date": {
-        terminal?.writeln(
-          `\r\nThe current date is: ${getTimezoneOffsetISOString().slice(
-            0,
-            10
-          )}`
+        localEcho?.println(
+          `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
         );
         break;
       }
       case "dir":
       case "ls":
-        newLine();
-        (await readdir(currentCd)).forEach((directory) =>
-          terminal?.writeln(directory)
+        (await readdir(cd.current)).forEach((directory) =>
+          localEcho?.println(directory)
         );
         break;
       case "echo":
-        terminal?.writeln(`\r\n${commandArgs.join(" ")}`);
+        localEcho?.println(commandArgs.join(" "));
         break;
       case "exit":
       case "quit":
         closeWithTransition(id);
         break;
       case "git": {
-        if (fs && terminal) {
-          await processGit(commandArgs, cd, terminal, fs, exists, updateFolder);
+        if (fs && localEcho) {
+          await processGit(
+            commandArgs,
+            cd.current,
+            localEcho,
+            fs,
+            exists,
+            updateFolder
+          );
         }
         break;
       }
       case "help":
-        newLine();
-        if (terminal) help(terminal, commands, aliases);
+        if (localEcho) help(localEcho, commands, aliases);
         break;
       case "history": {
-        const newHistory = [...history.slice(0, -1), command];
-
-        newLine();
-        newHistory.forEach((entry, index) =>
-          terminal?.writeln(`${index.toString().padStart(4)} ${entry}`)
+        localEcho?.history.entries.forEach((entry, index) =>
+          localEcho.println(`${(index + 1).toString().padStart(4)} ${entry}`)
         );
         break;
       }
@@ -232,29 +139,25 @@ const useCommandInterpreter = (
 
         if (processes[processName]) {
           closeWithTransition(processName);
-          terminal?.writeln(
-            `\r\nSUCCESS: Sent termination signal to the process "${processName}".`
+          localEcho?.println(
+            `SUCCESS: Sent termination signal to the process "${processName}".`
           );
         } else {
-          terminal?.writeln(
-            `\r\nERROR: The process "${processName}" not found.`
-          );
+          localEcho?.println(`ERROR: The process "${processName}" not found.`);
         }
         break;
       }
       case "license":
-        terminal?.writeln(`\r\n\r\n${displayLicense}`);
+        localEcho?.println(displayLicense);
         break;
       case "ps":
       case "tasklist":
-        newLine();
-        newLine();
-        terminal?.writeln(
+        localEcho?.println(
           `${"PID".padEnd(25, " ")} ${"Title".padEnd(20, " ")}`
         );
-        terminal?.writeln(`${"".padEnd(25, "=")} ${"".padEnd(20, "=")}`);
+        localEcho?.println(`${"".padEnd(25, "=")} ${"".padEnd(20, "=")}`);
         Object.entries(processes).forEach(([pid, { title }]) => {
-          terminal?.writeln(
+          localEcho?.println(
             `${pid.slice(0, 25).padEnd(25, " ")} ${title
               .slice(0, 20)
               .padEnd(20, " ")}`
@@ -263,24 +166,19 @@ const useCommandInterpreter = (
         break;
       case "py":
       case "python": {
-        if (terminal) await runPython(commandArgs.join(" "), terminal);
+        if (localEcho) await runPython(commandArgs.join(" "), localEcho);
         break;
       }
       case "restart":
       case "shutdown":
-        newLine();
         resetStorage().finally(() => window.location.reload());
         break;
       case "time":
-        terminal?.writeln(
-          `\r\nThe current time is: ${getTimezoneOffsetISOString().slice(
-            11,
-            22
-          )}`
+        localEcho?.println(
+          `The current time is: ${getTZOffsetISOString().slice(11, 22)}`
         );
         break;
       case "title":
-        newLine();
         changeTitle(id, commandArgs.join(" "));
         break;
       case "uptime": {
@@ -296,35 +194,33 @@ const useCommandInterpreter = (
             .toISOString()
             .slice(11, 19);
 
-          terminal?.writeln(
-            `\r\nUptime: ${daysOfUptime} days, ${displayUptime}`
-          );
+          localEcho?.println(`Uptime: ${daysOfUptime} days, ${displayUptime}`);
         } else {
-          unknownCommand(baseCommand);
+          localEcho?.println(unknownCommand(baseCommand));
         }
         break;
       }
       case "ver":
       case "version":
-        terminal?.writeln(`\r\n\r\n${displayVersion()}`);
+        localEcho?.println(displayVersion());
         break;
       case "wapm":
       case "wax": {
-        await loadWapm(commandArgs, terminal);
+        if (localEcho) await loadWapm(commandArgs, localEcho);
         break;
       }
       case "weather":
       case "wttr": {
         const response = await fetch("https://wttr.in/?1nAF");
 
-        terminal?.write(`\r\n${convertNewLines(await response.text())}`);
+        localEcho?.println(await response.text());
         break;
       }
       case "whoami":
         if (window.navigator.userAgent) {
-          terminal?.writeln(`\r\n${window.navigator.userAgent}`);
+          localEcho?.println(window.navigator.userAgent);
         } else {
-          unknownCommand(baseCommand);
+          localEcho?.println(unknownCommand(baseCommand));
         }
         break;
       default:
@@ -335,45 +231,19 @@ const useCommandInterpreter = (
 
           if (pid) {
             const file = commandArgs.join(" ");
-            const fullPath = file.startsWith("/") ? file : join(cd, file);
+            const fullPath =
+              !file || file.startsWith("/") ? file : join(cd.current, file);
 
             open(pid, {
               url: fullPath && (await exists(fullPath)) ? fullPath : "",
             });
-
-            newLine();
           } else {
-            unknownCommand(baseCommand);
+            localEcho?.println(unknownCommand(baseCommand));
           }
         }
     }
 
-    terminal?.write(`\r\n${cd !== currentCd ? "\r\n" : ""}${currentCd}>`);
-
-    if (command !== "") {
-      if (command !== history[history.length - 2]) {
-        setHistory((currentHistory) => [
-          ...currentHistory.slice(0, -1),
-          command,
-          "",
-        ]);
-        setPosition(history.length);
-      } else {
-        setPosition(history.length - 1);
-      }
-
-      setCommandLine("");
-    }
-  };
-
-  return {
-    cd,
-    command,
-    processCommand,
-    setCommand: setCommandLine,
-    setCursorPosition,
-    setHistoryPosition,
-    welcome,
+    return cd.current;
   };
 };
 

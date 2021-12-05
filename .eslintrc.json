@@ -83,6 +83,7 @@
       "WithStatement"
     ],
     "no-shadow": ["error", { "hoist": "all" }],
+    "no-underscore-dangle": "off",
     "no-unsafe-optional-chaining": "error",
     "react/function-component-definition": [
       "error",
