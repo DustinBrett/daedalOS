@@ -38,6 +38,7 @@ const useTerminal = (
   loading: boolean
 ): void => {
   const {
+    url: setUrl,
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { readdir } = useFileSystem();
@@ -49,8 +50,11 @@ const useTerminal = (
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
 
   useEffect(() => {
-    if (localEcho && url) localEcho.handleCursorInsert(url);
-  }, [localEcho, url]);
+    if (localEcho && url) {
+      localEcho.handleCursorInsert(url);
+      setUrl(id, "");
+    }
+  }, [id, localEcho, setUrl, url]);
 
   useEffect(() => {
     loadFiles(libs).then(() => {
