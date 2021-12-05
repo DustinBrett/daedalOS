@@ -1,3 +1,4 @@
+import type { ApiError } from "browserfs/dist/node/core/api_error";
 import {
   aliases,
   autoComplete,
@@ -21,9 +22,9 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { basename, isAbsolute, join } from "path";
+import { basename, dirname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
-import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
+import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { getTZOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
 
@@ -33,8 +34,20 @@ const useCommandInterpreter = (
   localEcho?: LocalEcho
 ): React.MutableRefObject<CommandInterpreter> => {
   const cd = useRef(HOME);
-  const { exists, fs, readdir, readFile, resetStorage, stat, updateFolder } =
-    useFileSystem();
+  const {
+    exists,
+    fs,
+    mkdirRecursive,
+    readdir,
+    readFile,
+    rename,
+    resetStorage,
+    rmdir,
+    stat,
+    unlink,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
   const {
     closeWithTransition,
     open,
@@ -43,6 +56,22 @@ const useCommandInterpreter = (
   } = useProcesses();
   const getFullPath = (file: string): string =>
     isAbsolute(file) ? file : join(cd.current, file);
+  const updateFile = useCallback(
+    (filePath: string, isDeleted = false): void => {
+      const dirPath = dirname(filePath);
+
+      if (isDeleted) {
+        updateFolder(dirPath, undefined, basename(filePath));
+      } else {
+        updateFolder(dirPath, basename(filePath));
+      }
+
+      if (dirPath === cd.current && localEcho) {
+        readdir(dirPath).then((files) => autoComplete(files, localEcho));
+      }
+    },
+    [localEcho, readdir, updateFolder]
+  );
   const commandInterpreter = useCallback(
     async (command: string = ""): Promise<string> => {
       const [baseCommand, ...commandArgs] = parseCommand(command);
@@ -95,6 +124,30 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "copy":
+        case "cp": {
+          const [source, destination] = commandArgs;
+          const fullSourcePath = getFullPath(source);
+
+          if (await exists(fullSourcePath)) {
+            if (destination) {
+              const fullDestinationPath = getFullPath(destination);
+
+              await writeFile(
+                fullDestinationPath,
+                await readFile(fullSourcePath)
+              );
+              localEcho?.println("\t1 file(s) copied.");
+              updateFile(fullDestinationPath);
+            } else {
+              localEcho?.println("The file cannot be copied onto itself.");
+              localEcho?.println("\t0 file(s) copied.");
+            }
+          } else {
+            localEcho?.println("The system cannot find the file specified.");
+          }
+          break;
+        }
         case "clear":
         case "cls":
           terminal?.reset();
@@ -103,6 +156,33 @@ const useCommandInterpreter = (
           localEcho?.println(
             `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
           );
+          break;
+        }
+        case "del":
+        case "rd":
+        case "rm":
+        case "rmdir": {
+          const [commandPath] = commandArgs;
+
+          if (commandPath) {
+            const fullPath = getFullPath(commandPath);
+
+            if (await exists(fullPath)) {
+              if ((await stat(fullPath)).isDirectory()) {
+                try {
+                  await rmdir(fullPath);
+                } catch (error) {
+                  if ((error as ApiError).code === "ENOTEMPTY") {
+                    localEcho?.println("The directory is not empty.");
+                  }
+                }
+              } else {
+                await unlink(fullPath);
+              }
+
+              updateFile(fullPath, true);
+            }
+          }
           break;
         }
         case "dir":
@@ -178,6 +258,40 @@ const useCommandInterpreter = (
         case "license":
           localEcho?.println(displayLicense);
           break;
+        case "md":
+        case "mkdir": {
+          const [directory] = commandArgs;
+
+          if (directory) {
+            const fullPath = getFullPath(directory);
+
+            await mkdirRecursive(fullPath);
+            updateFile(fullPath);
+          }
+          break;
+        }
+        case "move":
+        case "mv":
+        case "ren":
+        case "rename": {
+          const [source, destination] = commandArgs;
+          const fullSourcePath = getFullPath(source);
+
+          if (await exists(fullSourcePath)) {
+            if (destination) {
+              const fullDestinationPath = getFullPath(destination);
+
+              await rename(fullSourcePath, fullDestinationPath);
+              updateFile(fullSourcePath, true);
+              updateFile(fullDestinationPath);
+            } else {
+              localEcho?.println("The syntax of the command is incorrect.");
+            }
+          } else {
+            localEcho?.println("The system cannot find the file specified.");
+          }
+          break;
+        }
         case "ps":
         case "tasklist": {
           printTable(
@@ -209,6 +323,17 @@ const useCommandInterpreter = (
         case "title":
           changeTitle(id, command.slice(command.indexOf(" ") + 1));
           break;
+        case "touch": {
+          const [file] = commandArgs;
+
+          if (file) {
+            const fullPath = getFullPath(file);
+
+            await writeFile(fullPath, EMPTY_BUFFER);
+            updateFile(fullPath);
+          }
+          break;
+        }
         case "uptime": {
           if (window.performance) {
             const [{ duration }] =
@@ -282,14 +407,20 @@ const useCommandInterpreter = (
       fs,
       id,
       localEcho,
+      mkdirRecursive,
       open,
       processes,
       readFile,
       readdir,
+      rename,
       resetStorage,
+      rmdir,
       stat,
       terminal,
+      unlink,
+      updateFile,
       updateFolder,
+      writeFile,
     ]
   );
   const commandInterpreterRef = useRef<CommandInterpreter>(commandInterpreter);
