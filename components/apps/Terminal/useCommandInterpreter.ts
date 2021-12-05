@@ -19,6 +19,7 @@ import {
   displayLicense,
   displayVersion,
 } from "components/apps/Terminal/useTerminal";
+import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -188,15 +189,64 @@ const useCommandInterpreter = (
         case "dir":
         case "ls": {
           const [directory] = commandArgs;
+          const listDir = async (dirPath: string): Promise<void> => {
+            let totalSize = 0;
+            let fileCount = 0;
+            let directoryCount = 0;
+            const entries = await readdir(dirPath);
+            const entriesWithStats = await Promise.all(
+              entries.map(async (entry) => {
+                const filePath = join(dirPath, entry);
+                const fileStats = await stat(filePath);
+                const mDate = new Date(getModifiedTime(filePath, fileStats));
+                const date = mDate.toISOString().slice(0, 10);
+                const time = new Intl.DateTimeFormat("en-US", {
+                  timeStyle: "short",
+                })
+                  .format(mDate)
+                  .padStart(8, "0");
+                const isDirectory = fileStats.isDirectory();
+
+                totalSize += fileStats.size;
+                if (isDirectory) {
+                  directoryCount += 1;
+                } else {
+                  fileCount += 1;
+                }
+
+                return [
+                  `${date}  ${time}`,
+                  isDirectory
+                    ? "<DIR>        "
+                    : fileStats.size.toLocaleString(),
+                  entry,
+                ];
+              })
+            );
+            localEcho?.println(` Directory of ${dirPath}`);
+            localEcho?.println("");
+            printTable(
+              [
+                ["Date", 22],
+                ["Type/Size", 15, true],
+                ["Name", terminal?.cols ? terminal.cols - 40 : 30],
+              ],
+              entriesWithStats,
+              localEcho,
+              true
+            );
+            localEcho?.println(
+              `\t\t${fileCount} File(s) ${totalSize.toLocaleString()} bytes`
+            );
+            localEcho?.println(`\t\t${directoryCount} Dir(s)`);
+          };
 
           if (directory) {
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
               if ((await stat(fullPath)).isDirectory()) {
-                (await readdir(fullPath)).forEach((entry) =>
-                  localEcho?.println(entry)
-                );
+                await listDir(fullPath);
               } else {
                 localEcho?.println(basename(fullPath));
               }
@@ -204,9 +254,7 @@ const useCommandInterpreter = (
               localEcho?.println("File Not Found");
             }
           } else {
-            (await readdir(cd.current)).forEach((entry) =>
-              localEcho?.println(entry)
-            );
+            await listDir(cd.current);
           }
           break;
         }
@@ -296,8 +344,8 @@ const useCommandInterpreter = (
         case "tasklist": {
           printTable(
             [
-              ["PID", 25],
-              ["Title", 20],
+              ["PID", 30],
+              ["Title", 25],
             ],
             Object.entries(processes).map(([pid, { title }]) => [pid, title]),
             localEcho

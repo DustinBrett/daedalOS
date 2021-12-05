@@ -115,27 +115,36 @@ export const parseCommand = (commandString: string): string[] => {
 };
 
 export const printTable = (
-  headers: [string, number][],
+  headers: [string, number, boolean?][],
   data: string[][],
   localEcho?: LocalEcho,
+  hideHeader?: boolean,
   paddingCharacter = "="
 ): void => {
-  const header = headers
-    .map(([key, padding]) => key.padEnd(padding, " "))
-    .join(" ");
-  const divider = headers
-    .map(([, padding]) => paddingCharacter.repeat(padding))
-    .join(" ");
+  if (!hideHeader) {
+    const header = headers
+      .map(([key, padding]) => key.padEnd(padding, " "))
+      .join(" ");
+    const divider = headers
+      .map(([, padding]) => paddingCharacter.repeat(padding))
+      .join(" ");
+
+    localEcho?.println(header);
+    localEcho?.println(divider);
+  }
+
   const content = data.map((row) =>
     row
-      .map((rowData, index) =>
-        rowData.padEnd(headers[index][1], " ").slice(0, headers[index][1])
-      )
+      .map((rowData, index) => {
+        const [, padding, alignRight] = headers[index];
+        const trunctatedText = rowData.slice(0, padding);
+
+        return alignRight
+          ? trunctatedText.padStart(padding, " ")
+          : trunctatedText.padEnd(padding, " ");
+      })
       .join(" ")
   );
-
-  localEcho?.println(header);
-  localEcho?.println(divider);
 
   if (content.length > 0) content.forEach((entry) => localEcho?.println(entry));
 };
