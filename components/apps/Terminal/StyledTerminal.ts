@@ -6,8 +6,14 @@ const StyledTerminal = styled.div`
   height: 100%;
   width: 100%;
 
+  .terminal {
+    height: 100% !important;
+  }
+
   .xterm-viewport {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
+
+    width: 100% !important;
   }
 `;
 
