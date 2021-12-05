@@ -93,8 +93,7 @@ const useCommandInterpreter = (
       }
       case "clear":
       case "cls":
-        terminal?.clear();
-        terminal?.write("\u001B[2J");
+        terminal?.reset();
         break;
       case "date": {
         localEcho?.println(
