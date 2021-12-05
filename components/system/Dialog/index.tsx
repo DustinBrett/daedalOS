@@ -16,23 +16,20 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
   const { fileReaders = [] } = process || {};
   const [[cd, { name = "" } = {}] = [], setCurrentTransfer] =
     useState<[string, File]>();
-  const [progress, setProgress] = useState<number>(0);
-  const [, setFileProgress] = useState<number>(0);
+  const [progress, setProgress] = useState(0);
   const processReader = useCallback(
     ([[file, directory, reader], ...remainingReaders]: FileReaders) => {
+      let fileProgress = 0;
+
       setCurrentTransfer([directory, file]);
 
       reader.addEventListener("progress", ({ loaded = 0 }) => {
-        setFileProgress((currentLoaded) => {
-          setProgress(
-            (currentProgress) => currentProgress + (loaded - currentLoaded)
-          );
-          return loaded;
-        });
+        setProgress(
+          (currentProgress) => currentProgress + (loaded - fileProgress)
+        );
+        fileProgress = loaded;
       });
       reader.addEventListener("loadend", () => {
-        setFileProgress(0);
-
         if (remainingReaders.length > 0) {
           processReader(remainingReaders);
         } else {
@@ -71,7 +68,14 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
         <progress max={totalTransferSize} value={progress} />
       </div>
       <nav>
-        <Button onClick={() => closeWithTransition(id)}>Cancel</Button>
+        <Button
+          onClick={() => {
+            fileReaders.forEach(([, _, reader]) => reader.abort());
+            closeWithTransition(id);
+          }}
+        >
+          Cancel
+        </Button>
       </nav>
     </StyledDialog>
   );

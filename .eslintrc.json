@@ -63,7 +63,10 @@
     "@typescript-eslint/no-unsafe-member-access": "error",
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { "ignoreRestSiblings": true }
+      {
+        "argsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
     ],
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
