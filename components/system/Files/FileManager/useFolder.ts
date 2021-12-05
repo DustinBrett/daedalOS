@@ -261,7 +261,7 @@ const useFolder = (
         Promise.all(allPaths.map((path) => getFile(path))).then((filePaths) => {
           const zipFiles = filePaths.filter(Boolean);
 
-          if (zipFiles.length === 1) {
+          if (zipFiles.length === 1 && extname(zipFiles[0][0])) {
             const [[path, contents]] = zipFiles;
 
             createLink(contents, basename(path));
