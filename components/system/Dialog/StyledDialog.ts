@@ -71,6 +71,22 @@ const StyledDialog = styled.div`
       border: 1px solid rgb(173, 173, 173);
       background-color: rgb(225, 225, 225);
       font-size: 12px;
+      transition: all 0.25s ease-in-out;
+
+      &:focus {
+        border: 2px solid rgb(0, 120, 215);
+      }
+
+      &:hover {
+        border: 1px solid rgb(0, 120, 215);
+        background-color: rgb(229, 241, 251);
+      }
+
+      &:active {
+        border: 1px solid rgb(0, 84, 153);
+        background-color: rgb(204, 228, 247);
+        transition: none;
+      }
     }
   }
 `;
