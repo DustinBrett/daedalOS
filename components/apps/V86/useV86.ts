@@ -28,7 +28,9 @@ const useV86 = (
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
   const { appendFileToTitle } = useTitle(id);
-  const [emulator, setEmulator] = useState<Record<string, V86Starter>>({});
+  const [emulator, setEmulator] = useState<
+    Record<string, V86Starter | undefined>
+  >({});
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
   const saveStateAsync = useCallback(
@@ -53,7 +55,7 @@ const useV86 = (
           true
         )
       ) {
-        emulator[diskImageUrl].destroy();
+        emulator[diskImageUrl]?.destroy();
         updateFolder(SAVE_PATH, saveName);
       }
     },
@@ -123,22 +125,15 @@ const useV86 = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && readFile && url && !emulator[url]) {
+    if (!loading && url && !(url in emulator)) {
+      setEmulator({ [url]: undefined });
       loadDiskImage();
     }
 
     return () => {
       if (url && closing) closeDiskImage(url);
     };
-  }, [
-    closeDiskImage,
-    closing,
-    emulator,
-    loadDiskImage,
-    loading,
-    readFile,
-    url,
-  ]);
+  }, [closeDiskImage, closing, emulator, loadDiskImage, loading, url]);
 };
 
 export default useV86;
