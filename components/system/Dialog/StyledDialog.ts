@@ -20,7 +20,8 @@ const StyledDialog = styled.div`
         background-color: rgb(230, 230, 230);
       }
 
-      &::-webkit-progress-value {
+      &::-webkit-progress-value,
+      &::-moz-progress-bar {
         background: rgb(6, 176, 37);
       }
     }
