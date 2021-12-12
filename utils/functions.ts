@@ -103,10 +103,22 @@ export const getTZOffsetISOString = (): string => {
   ).toISOString();
 };
 
-export const isValidUrl = (url: string): boolean => {
+export const getUrlOrSearch = (input: string): string => {
+  const hasHttpSchema =
+    input.startsWith("http://") || input.startsWith("https://");
+  const hasTld =
+    input.endsWith(".com") ||
+    input.endsWith(".ca") ||
+    input.endsWith(".net") ||
+    input.endsWith(".org");
+
   try {
-    return typeof new URL(url) === "object";
+    const { href } = new URL(
+      hasHttpSchema || !hasTld ? input : `https://${input}`
+    );
+
+    return href;
   } catch {
-    return false;
+    return `https://www.google.com/search?igu=1&q=${input}`;
   }
 };

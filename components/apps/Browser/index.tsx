@@ -9,7 +9,7 @@ import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import { isValidUrl } from "utils/functions";
+import { getUrlOrSearch } from "utils/functions";
 import useHistory from "utils/useHistory";
 
 const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
@@ -47,9 +47,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
         setIcon(id, processDirectory["Browser"].icon);
 
         if (!isHtml) {
-          const addressUrl = isValidUrl(addressInput)
-            ? addressInput
-            : `https://www.google.com/search?igu=1&q=${addressInput}`;
+          const addressUrl = getUrlOrSearch(addressInput);
 
           contentWindow.location.replace(addressUrl);
 
