@@ -1,0 +1,73 @@
+import styled from "styled-components";
+
+const StyledControls = styled.nav`
+  background-color: rgb(50, 54, 57);
+  box-shadow: 0 0 5px hsla(0, 0%, 10%, 50%);
+  height: 40px;
+  position: absolute;
+  top: ${({ theme }) => theme.sizes.titleBar.height};
+  width: 100%;
+  z-index: 1;
+
+  ol {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    place-content: center;
+    place-items: center;
+
+    li {
+      color: #fff;
+      display: flex;
+      flex-direction: row;
+      font-size: 13px;
+
+      &:not(:last-child)::after {
+        background-color: rgb(112, 115, 117);
+        content: "";
+        margin-left: 20px;
+        width: 1px;
+      }
+
+      &.pages {
+        padding-right: 10px;
+      }
+
+      &.scale {
+        display: flex;
+        place-items: center;
+
+        button {
+          border-radius: 50%;
+          color: #fff;
+          display: flex;
+          font-size: 24px;
+          height: 30px;
+          padding-bottom: 6px;
+          place-content: center;
+          place-items: center;
+          width: 30px;
+
+          &:first-child {
+            margin-right: 5px;
+          }
+
+          &:last-child {
+            margin-left: 5px;
+          }
+
+          &:hover {
+            background-color: rgb(66, 70, 73);
+          }
+
+          &:disabled {
+            background-color: initial;
+            color: rgb(110, 112, 114);
+          }
+        }
+      }
+    }
+  }
+`;
+
+export default StyledControls;

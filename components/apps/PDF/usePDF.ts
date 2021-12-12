@@ -1,4 +1,5 @@
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import type * as PdfjsLib from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { useCallback, useEffect, useState } from "react";
@@ -13,13 +14,14 @@ declare global {
 }
 
 const usePDF = (
-  _id: string,
+  id: string,
   url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { readFile } = useFileSystem();
-  const [scale] = useState(1);
+  const { argument, processes: { [id]: process } = {} } = useProcesses();
+  const { scale = 1 } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const renderPage = useCallback(
     async (
@@ -47,6 +49,7 @@ const usePDF = (
       const doc = await window.pdfjsLib.getDocument(await readFile(url))
         .promise;
 
+      argument(id, "count", doc.numPages);
       setPages(
         await Promise.all(
           Array.from({ length: doc.numPages }).map((_, i) =>
@@ -57,7 +60,7 @@ const usePDF = (
     }
 
     setLoading(false);
-  }, [containerRef, readFile, renderPage, setLoading, url]);
+  }, [argument, containerRef, id, readFile, renderPage, setLoading, url]);
 
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -72,20 +75,37 @@ const usePDF = (
 
   useEffect(() => {
     if (pages.length > 0) {
-      const ol = containerRef.current?.querySelector("ol") as HTMLOListElement;
+      const ol = containerRef.current?.querySelector(
+        "#pages"
+      ) as HTMLOListElement;
 
       if (ol) {
         [...ol.children].forEach((li) => li.remove());
 
-        pages.forEach((page) => {
+        pages.forEach((page, pageNumber) => {
           const li = document.createElement("li") as HTMLLIElement;
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  argument(id, "page", pageNumber + 1);
+                }
+              });
+            },
+            {
+              root: containerRef.current,
+              threshold: 0.4,
+            }
+          );
 
           li.appendChild(page);
           ol.appendChild(li);
+
+          observer.observe(li);
         });
       }
     }
-  }, [containerRef, pages]);
+  }, [argument, containerRef, id, pages]);
 };
 
 export default usePDF;

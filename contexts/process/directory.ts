@@ -61,6 +61,10 @@ const processDirectory: Processes = {
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
     background: "rgb(82, 86, 89)",
+    defaultSize: {
+      height: 500,
+      width: 650,
+    },
     icon: "/System/Icons/pdf.png",
     title: "PDF",
   },

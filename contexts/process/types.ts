@@ -11,8 +11,15 @@ type MonacoProcessArguments = {
   editor?: Monaco.editor.IStandaloneCodeEditor;
 };
 
+type PdfProcessArguments = {
+  count?: number;
+  page?: number;
+  scale?: number;
+};
+
 export type ProcessArguments = DialogProcessArguments &
-  MonacoProcessArguments & {
+  MonacoProcessArguments &
+  PdfProcessArguments & {
     url?: string;
   };
 
