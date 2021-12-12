@@ -26,8 +26,8 @@ const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
 
 const sortSystemShortcuts = (
-  [, { systemShortcut: aSystem }]: FileStats,
-  [, { systemShortcut: bSystem }]: FileStats
+  [, { systemShortcut: aSystem = false }]: FileStats,
+  [, { systemShortcut: bSystem = false }]: FileStats
 ): number => (aSystem === bSystem ? 0 : aSystem ? -1 : 1);
 
 export const sortContents = (
