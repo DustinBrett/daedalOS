@@ -27,10 +27,19 @@ const StyledStatusBar = styled.footer`
     }
 
     li {
-      display: inline;
       margin: 0 4px;
       padding: 4px 8px;
       white-space: nowrap;
+
+      button {
+        color: inherit;
+        font-size: inherit;
+
+        &.pretty {
+          position: relative;
+          top: -2px;
+        }
+      }
 
       &:hover {
         background-color: rgb(37, 37, 37);

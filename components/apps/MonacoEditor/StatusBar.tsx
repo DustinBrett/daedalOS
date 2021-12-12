@@ -1,14 +1,20 @@
+import {
+  isPrettyLanguage,
+  prettyPrint,
+} from "components/apps/MonacoEditor/language";
 import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
 import type { Model } from "components/apps/MonacoEditor/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
 import { useEffect, useState } from "react";
+import Button from "styles/common/Button";
 
 const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { editor } = process || {};
+  const { editor, url } = process || {};
   const [language, setLanguage] = useState("");
   const [position, setPosition] = useState("");
   const [lineCount, setLineCount] = useState(0);
@@ -58,6 +64,18 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
     <StyledStatusBar>
       <ol>{lineCount > 0 && <li>Lines {lineCount}</li>}</ol>
       <ol>
+        {url && isPrettyLanguage(language) && (
+          <li title={`Pretty print ${basename(url)}`}>
+            <Button
+              className="pretty"
+              onClick={async () =>
+                editor?.setValue(await prettyPrint(language, editor.getValue()))
+              }
+            >
+              {"{ }"}
+            </Button>
+          </li>
+        )}
         {position && <li>{position}</li>}
         {language !== "" && <li>{language}</li>}
       </ol>
