@@ -54,7 +54,9 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
 
-    return () => cleanUpBufferUrl(src[url]);
+    return () => {
+      if (closing) cleanUpBufferUrl(src[url]);
+    };
   }, [closing, loadPhoto, src, url]);
 
   return (
