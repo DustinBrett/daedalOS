@@ -166,15 +166,14 @@ const useFileSystemContextState = (): FileSystemContextState => {
         writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
       };
 
-      if (indexedDB.databases) {
+      if (!indexedDB.databases) clearFs();
+      else {
         indexedDB.databases().then((databases) => {
           databases
             .filter(({ name }) => name !== "browserfs")
             .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
           clearFs();
         });
-      } else {
-        clearFs();
       }
     });
   const mkdirRecursive = async (path: string): Promise<void> => {
