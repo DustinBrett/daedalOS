@@ -6,6 +6,10 @@ type Extension = {
 };
 
 const extensions = {
+  ".htm": {
+    process: ["Browser", "MonacoEditor"],
+    type: "HTML Document",
+  },
   ".html": {
     process: ["Browser", "MonacoEditor"],
     type: "HTML Document",
