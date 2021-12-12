@@ -156,11 +156,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
       localStorage.clear();
       sessionStorage.clear();
 
-      indexedDB.databases().then((databases) => {
-        databases
-          .filter(({ name }) => name !== "browserfs")
-          .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
-
+      const clearFs = (): void => {
         const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
         const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
         const readable = overlayedFileSystems.readable as HTTPRequest;
@@ -168,7 +164,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
         readable.empty();
         writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
-      });
+      };
+
+      if (indexedDB.databases) {
+        indexedDB.databases().then((databases) => {
+          databases
+            .filter(({ name }) => name !== "browserfs")
+            .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
+          clearFs();
+        });
+      } else {
+        clearFs();
+      }
     });
   const mkdirRecursive = async (path: string): Promise<void> => {
     const pathParts = path.split("/").filter(Boolean);
