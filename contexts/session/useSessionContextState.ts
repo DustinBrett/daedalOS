@@ -86,7 +86,7 @@ const useSessionContextState = (): SessionContextState => {
       sortBy?: SortBy,
       ascending?: boolean
     ): void =>
-      setSortOrders((currentSortOrder) => {
+      setSortOrders((currentSortOrder = {}) => {
         const [currentOrder, currentSortBy, currentAscending] =
           currentSortOrder[directory] || [];
         const newOrder =
