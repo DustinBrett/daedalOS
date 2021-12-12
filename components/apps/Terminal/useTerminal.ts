@@ -10,10 +10,13 @@ import type {
   OnKeyEvent,
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
+import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
+import extensions from "components/system/Files/FileEntry/extensions";
 import { haltEvent } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import packageJson from "package.json";
+import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { HOME } from "utils/constants";
 import { loadFiles } from "utils/functions";
@@ -45,13 +48,26 @@ const useTerminal = (
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
+  const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, terminal, localEcho);
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
 
   useEffect(() => {
-    if (localEcho && url) {
-      localEcho.handleCursorInsert(url);
+    if (url) {
+      if (localEcho) {
+        localEcho.handleCursorInsert(url);
+      } else {
+        const fileExtension = extname(url) as ExtensionType;
+
+        if (
+          extensions[fileExtension].process.includes("Terminal") &&
+          extensions[fileExtension].command
+        ) {
+          setInitialCommand(`${extensions[fileExtension].command} ${url}`);
+        }
+      }
+
       setUrl(id, "");
     }
   }, [id, localEcho, setUrl, url]);
@@ -131,7 +147,7 @@ const useTerminal = (
 
   useEffect(() => {
     if (localEcho && terminal && !prompted) {
-      const prompt = (cd: string): Promise<void> =>
+      const prompt = (cd = HOME): Promise<void> =>
         localEcho
           .read(`\r\n${cd}${PROMPT_CHARACTER}`)
           .then((command) => processCommand.current?.(command).then(prompt));
@@ -139,13 +155,22 @@ const useTerminal = (
       localEcho.println(`${alias || name} [Version ${displayVersion()}]`);
       localEcho.println(`By ${author}. ${displayLicense}.`);
 
-      prompt(HOME);
+      if (initialCommand) {
+        localEcho.println(
+          `\r\n${HOME}${PROMPT_CHARACTER}${initialCommand}\r\n`
+        );
+        localEcho.history.entries = [initialCommand];
+        processCommand.current(initialCommand).then(prompt);
+      } else {
+        prompt();
+      }
+
       setPrompted(true);
       terminal.focus();
 
       readdir(HOME).then((files) => autoComplete(files, localEcho));
     }
-  }, [localEcho, processCommand, prompted, readdir, terminal]);
+  }, [initialCommand, localEcho, processCommand, prompted, readdir, terminal]);
 
   useResizeObserver(containerRef.current, autoFit);
 };

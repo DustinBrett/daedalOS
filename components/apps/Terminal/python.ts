@@ -5,6 +5,8 @@ type Pyodide = {
   runPythonAsync: (code: string) => Promise<string>;
 };
 
+type PyError = Error & { message: string };
+
 declare global {
   interface Window {
     loadPyodide: (cfg: { indexURL: string }) => Promise<Pyodide>;
@@ -17,9 +19,12 @@ const config = {
 };
 
 const versionCommand = `
-  import sys
-  sys.version
+import sys
+sys.version
 `;
+
+const captureStdOut =
+  "import sys\r\nimport io\r\nsys.stdout = io.StringIO()\r\n";
 
 export const runPython = async (
   code: string,
@@ -33,12 +38,21 @@ export const runPython = async (
 
   if (window.pyodide) {
     const getVersion = code === "ver" || code === "version";
-    const result = await window.pyodide.runPythonAsync(
-      getVersion ? versionCommand : code
-    );
 
-    if (typeof result !== "undefined") {
-      localEcho?.println(result.toString());
+    try {
+      const result = await window.pyodide.runPythonAsync(
+        getVersion ? versionCommand : captureStdOut + code
+      );
+      const stdOut = await window.pyodide.runPythonAsync(
+        "sys.stdout.getvalue()"
+      );
+
+      if (result) localEcho?.println(result.toString());
+      if (stdOut) localEcho?.println(stdOut.toString());
+    } catch (error) {
+      const { message } = error as PyError;
+
+      if (message) localEcho?.println(message);
     }
   }
 };

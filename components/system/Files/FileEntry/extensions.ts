@@ -1,4 +1,5 @@
 type Extension = {
+  command?: string;
   icon?: string;
   process: string[];
   type?: string;
@@ -22,6 +23,7 @@ const extensions = {
   ".jsdos": {
     icon: "jsdos",
     process: ["JSDOS", "FileExplorer"],
+    type: "JSDOS Bundle",
   },
   ".mp3": {
     icon: "audio",
@@ -30,6 +32,13 @@ const extensions = {
   ".pdf": {
     icon: "pdf",
     process: ["PDF"],
+    type: "PDF Document",
+  },
+  ".py": {
+    command: "py",
+    icon: "python",
+    process: ["Terminal", "MonacoEditor"],
+    type: "Python File",
   },
   ".spl": {
     process: ["Ruffle"],

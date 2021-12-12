@@ -19,11 +19,13 @@ import {
   displayLicense,
   displayVersion,
 } from "components/apps/Terminal/useTerminal";
+import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
+import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { basename, dirname, isAbsolute, join } from "path";
+import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { getTZOffsetISOString } from "utils/functions";
@@ -359,7 +361,19 @@ const useCommandInterpreter = (
         case "py":
         case "python": {
           if (localEcho) {
-            await runPython(command.slice(command.indexOf(" ") + 1), localEcho);
+            const [file] = commandArgs;
+            const fullSourcePath = getFullPath(file);
+
+            if (await exists(fullSourcePath)) {
+              const code = await readFile(fullSourcePath);
+
+              await runPython(code.toString(), localEcho);
+            } else {
+              await runPython(
+                command.slice(command.indexOf(" ") + 1),
+                localEcho
+              );
+            }
           }
           break;
         }
@@ -444,6 +458,17 @@ const useCommandInterpreter = (
                 url:
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
+            } else if (await exists(baseCommand)) {
+              const fileExtension = extname(baseCommand) as ExtensionType;
+
+              if (
+                extensions[fileExtension].process.includes("Terminal") &&
+                extensions[fileExtension].command
+              ) {
+                await commandInterpreter(
+                  `${extensions[fileExtension].command} ${baseCommand}`
+                );
+              }
             } else {
               localEcho?.println(unknownCommand(baseCommand));
             }
