@@ -1036,6 +1036,11 @@
   resolved "https://registry.yarnpkg.com/@types/video.js/-/video.js-7.3.27.tgz#d5e10c8529a52bad0c2a3f04d652e0c435b53925"
   integrity sha512-EiAQiVUbgp4dhR6Ury0tYXSmBaP0FuX2HMe5lCk1fuwqpTvk5UCDwlgkMfWDxzHY41LKEewn/0+/OHBuQvMrcg==
 
+"@types/wicg-file-system-access@^2020.9.4":
+  version "2020.9.4"
+  resolved "https://registry.yarnpkg.com/@types/wicg-file-system-access/-/wicg-file-system-access-2020.9.4.tgz#83f255d6bd20b0ae131d555693473d15a0574e92"
+  integrity sha512-o43jUljwP0ZrQ927mPjGdJaBMfS12nf3VPj6Z52fMucxILrSs8tnfLbMDSn6cP3hrrLChc3SYneeEvecknNVtA==
+
 "@types/yargs-parser@*":
   version "20.2.1"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-20.2.1.tgz#3b9ce2489919d9e4fea439b76916abc34b2df129"

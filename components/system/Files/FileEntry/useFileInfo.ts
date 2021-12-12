@@ -27,15 +27,16 @@ const useFileInfo = (
     pid: "",
     url: "",
   });
-  const { fs } = useFileSystem();
+  const { fs, rootFs } = useFileSystem();
 
   useEffect(() => {
-    if (fs) {
+    if (fs && rootFs) {
       const extension = extname(path).toLowerCase();
 
       if (!extension || (isDirectory && !MOUNTABLE_EXTENSIONS.has(extension))) {
         getInfoWithoutExtension(
           fs,
+          rootFs,
           path,
           isDirectory,
           useNewFolderIcon,
@@ -45,7 +46,7 @@ const useFileInfo = (
         getInfoWithExtension(fs, path, extension, setInfo);
       }
     }
-  }, [fs, isDirectory, path, useNewFolderIcon]);
+  }, [fs, isDirectory, path, rootFs, useNewFolderIcon]);
 
   return info;
 };

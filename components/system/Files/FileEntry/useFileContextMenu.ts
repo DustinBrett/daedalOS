@@ -46,7 +46,7 @@ const useFileContextMenu = (
   const openWithFiltered = openWith.filter((id) => id !== pid);
   const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
-  const { copyEntries, moveEntries, stat } = useFileSystem();
+  const { copyEntries, moveEntries, rootFs, stat } = useFileSystem();
   const absoluteEntries = useCallback(
     (): string[] =>
       focusedEntries.length === 1 || !isFocusedEntry
@@ -65,8 +65,13 @@ const useFileContextMenu = (
   const { contextMenu } = useMenu();
   const defaultProcess =
     extensionProcess || getProcessByFileExtension(urlExtension);
+  const remoteMount = rootFs?.mountList.some(
+    (mountPath) =>
+      mountPath === path &&
+      rootFs?.mntMap[mountPath]?.getName() === "FileSystemAccess"
+  );
 
-  if (!readOnly) {
+  if (!readOnly && !remoteMount) {
     menuItems.push(
       { action: () => moveEntries(absoluteEntries()), label: "Cut" },
       { action: () => copyEntries(absoluteEntries()), label: "Copy" },

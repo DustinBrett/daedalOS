@@ -10,7 +10,7 @@ import {
   handleFileInputEvent,
   iterateFileName,
 } from "components/system/Files/FileManager/functions";
-import type { AsyncFS } from "contexts/fileSystem/useAsyncFs";
+import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
@@ -21,6 +21,8 @@ type FilePasteOperations = Record<string, "copy" | "move">;
 
 export type FileSystemContextState = AsyncFS & {
   fs?: FSModule;
+  rootFs?: RootFileSystem;
+  mapFs: (directory: string) => Promise<string>;
   mountFs: (url: string) => Promise<void>;
   setFileInput: React.Dispatch<
     React.SetStateAction<HTMLInputElement | undefined>
@@ -46,7 +48,7 @@ export type FileSystemContextState = AsyncFS & {
 };
 
 const useFileSystemContextState = (): FileSystemContextState => {
-  const { rootFs, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
+  const { rootFs, FileSystemAccess, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
   const { exists, mkdir, readFile, rename, writeFile } = asyncFs;
   const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
@@ -101,6 +103,21 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     [fsWatchers]
   );
+  const mapFs = async (directory: string): Promise<string> => {
+    const handle = await window.showDirectoryPicker();
+
+    return new Promise((resolve, reject) => {
+      if (!(handle instanceof FileSystemDirectoryHandle)) reject();
+
+      FileSystemAccess?.Create({ handle }, (error, newFs) => {
+        if (error || !newFs) reject();
+        else {
+          rootFs?.mount?.(join(directory, handle.name), newFs);
+          resolve(handle.name);
+        }
+      });
+    });
+  };
   const mountFs = async (url: string): Promise<void> => {
     const fileData = await readFile(url);
 
@@ -226,7 +243,10 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     mountedPaths.forEach((mountedPath) => {
       if (
-        !watchedPaths.some((watchedPath) => watchedPath.startsWith(mountedPath))
+        !watchedPaths.some((watchedPath) =>
+          watchedPath.startsWith(mountedPath)
+        ) &&
+        rootFs?.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
       ) {
         rootFs?.umount?.(mountedPath);
       }
@@ -238,12 +258,14 @@ const useFileSystemContextState = (): FileSystemContextState => {
     addFsWatcher,
     copyEntries,
     createPath,
+    mapFs,
     mkdirRecursive,
     mountFs,
     moveEntries,
     pasteList,
     removeFsWatcher,
     resetStorage,
+    rootFs,
     setFileInput,
     unMountFs,
     updateFolder,

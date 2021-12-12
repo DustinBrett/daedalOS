@@ -31,7 +31,18 @@ const useFolderContextMenu = (
   }: FolderActions
 ): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
   const { contextMenu } = useMenu();
-  const { pasteList = {}, updateFolder } = useFileSystem();
+  const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
+  const ADD_FILE = { action: () => addToFolder(), label: "Add file" };
+  const MAP_DIRECTORY = {
+    action: () =>
+      mapFs(url).then((mappedFolder) => updateFolder(url, mappedFolder)),
+    label: "Map directory",
+  };
+  const FS_COMMANDS =
+    typeof FileSystemHandle === "function"
+      ? [ADD_FILE, MAP_DIRECTORY]
+      : [ADD_FILE];
+
   const menuItems: MenuItem[] = [
     {
       label: "Sort by",
@@ -71,7 +82,7 @@ const useFolderContextMenu = (
     },
     { action: () => updateFolder(url), label: "Refresh" },
     MENU_SEPERATOR,
-    { action: () => addToFolder(), label: "Add file" },
+    ...FS_COMMANDS,
     {
       action: () => pasteToFolder(),
       disabled: Object.keys(pasteList).length === 0,

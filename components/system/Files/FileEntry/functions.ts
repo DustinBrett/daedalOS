@@ -5,6 +5,7 @@ import type { ExtensionType } from "components/system/Files/FileEntry/extensions
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
+import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
@@ -14,6 +15,7 @@ import {
   EMPTY_BUFFER,
   FOLDER_ICON,
   IMAGE_FILE_EXTENSIONS,
+  MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
@@ -145,6 +147,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
 
 export const getInfoWithoutExtension = (
   fs: FSModule,
+  rootFs: RootFileSystem,
   path: string,
   isDirectory: boolean,
   useNewFolderIcon: boolean,
@@ -153,8 +156,13 @@ export const getInfoWithoutExtension = (
   if (isDirectory) {
     const setFolderInfo = (icon: string, getIcon?: () => void): void =>
       callback({ getIcon, icon, pid: "FileExplorer", url: path });
+    const getFolderIcon = (): string => {
+      if (rootFs?.mntMap[path]) return MOUNTED_FOLDER_ICON;
+      if (useNewFolderIcon) return NEW_FOLDER_ICON;
+      return FOLDER_ICON;
+    };
 
-    setFolderInfo(useNewFolderIcon ? NEW_FOLDER_ICON : FOLDER_ICON, () =>
+    setFolderInfo(getFolderIcon(), () =>
       getIconFromIni(fs, path).then(setFolderInfo)
     );
   } else {

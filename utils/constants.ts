@@ -105,6 +105,8 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
 
 export const FOLDER_ICON = "/System/Icons/folder.png";
 
+export const MOUNTED_FOLDER_ICON = "/System/Icons/mounted.png";
+
 export const NEW_FOLDER_ICON = "/System/Icons/new_folder.png";
 
 export const UNKNOWN_ICON = "/System/Icons/unknown.png";

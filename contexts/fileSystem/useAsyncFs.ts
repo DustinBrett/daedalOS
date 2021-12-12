@@ -1,5 +1,9 @@
 import type * as IBrowserFS from "browserfs";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
+import type {
+  BFSCallback,
+  FileSystem,
+} from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
@@ -23,18 +27,40 @@ export type AsyncFS = {
   ) => Promise<boolean>;
 };
 
+type IFileSystemAccess = {
+  FileSystem: {
+    FileSystemAccess: {
+      Create: (
+        opts: { handle: FileSystemDirectoryHandle },
+        cb: BFSCallback<FileSystem>
+      ) => void;
+    };
+  };
+};
+
 const {
   BFSRequire,
   configure,
-  FileSystem: { IsoFS, ZipFS },
-} = BrowserFS as typeof IBrowserFS;
+  FileSystem: { FileSystemAccess, IsoFS, ZipFS },
+} = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
 
-type RootFileSystem = Omit<MountableFileSystem, "mntMap"> & {
-  mntMap: Record<string, { data: Buffer }>;
+export type RootFileSystem = Omit<
+  MountableFileSystem,
+  "mntMap" | "mountList"
+> & {
+  mntMap: Record<
+    string,
+    {
+      data: Buffer;
+      getName: () => string;
+    }
+  >;
+  mountList: string[];
 };
 
 type AsyncFSModule = AsyncFS & {
   fs?: FSModule;
+  FileSystemAccess?: typeof FileSystemAccess;
   IsoFS?: typeof IsoFS;
   rootFs?: RootFileSystem;
   ZipFS?: typeof ZipFS;
@@ -132,6 +158,7 @@ const useAsyncFs = (): AsyncFSModule => {
 
   return {
     ...asyncFs,
+    FileSystemAccess,
     IsoFS,
     ZipFS,
     fs,
