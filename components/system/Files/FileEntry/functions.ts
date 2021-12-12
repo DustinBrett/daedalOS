@@ -230,7 +230,9 @@ export const getInfoWithExtension = (
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
     getInfoByFileExtension("/System/Icons/photo.png", () =>
       fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
-        if (!error) getInfoByFileExtension(bufferToUrl(contents));
+        if (!error && contents.length > 0) {
+          getInfoByFileExtension(bufferToUrl(contents));
+        }
       })
     );
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
