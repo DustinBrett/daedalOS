@@ -3,8 +3,18 @@ import {
   monacoExtensions,
 } from "components/apps/MonacoEditor/config";
 
-export const detectLanguage = (ext: string): string | undefined =>
-  !monacoExtensions.has(ext) ? customExtensionLanguages[ext] : undefined;
+export const detectLanguage = (ext: string): string => {
+  const extension = customExtensionLanguages[ext] || ext;
+
+  if (!monacoExtensions.has(extension)) return "";
+
+  const { id = "" } =
+    window.monaco.languages
+      .getLanguages()
+      .find((language) => language.extensions?.includes(extension)) || {};
+
+  return id;
+};
 
 export const overrideSubMenuStyling: React.FocusEventHandler = ({
   relatedTarget,
