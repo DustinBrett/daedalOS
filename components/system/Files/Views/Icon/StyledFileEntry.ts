@@ -30,7 +30,6 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       flex-direction: column;
       margin-bottom: -2px;
       place-items: center;
-      pointer-events: none;
 
       figcaption {
         color: ${({ theme }) => theme.colors.fileEntry.text};
