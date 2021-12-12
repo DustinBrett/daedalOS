@@ -105,13 +105,19 @@ const useAsyncFs = (): AsyncFSModule => {
             if (!renameError) {
               resolve(true);
             } else if (renameError.code === "ENOTSUP") {
-              fs.readFile(oldPath, (readError, data) =>
-                fs.writeFile(newPath, data, (writeError) =>
-                  readError || writeError
-                    ? reject(readError || writeError)
-                    : resolve(false)
-                )
-              );
+              fs.stat(oldPath, (_statsError, stats = {} as Stats) => {
+                if (stats.isDirectory()) {
+                  reject();
+                } else {
+                  fs.readFile(oldPath, (readError, data) =>
+                    fs.writeFile(newPath, data, (writeError) =>
+                      readError || writeError
+                        ? reject(readError || writeError)
+                        : resolve(false)
+                    )
+                  );
+                }
+              });
             } else if (renameError.code === "EISDIR") {
               rootFs?.umount(oldPath);
               asyncFs.rename(oldPath, newPath).then(resolve, reject);
