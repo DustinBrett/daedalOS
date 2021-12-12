@@ -24,6 +24,7 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
   const { processes: { [id]: process } = {} } = useProcesses();
   const { closing = false, url = "" } = process || {};
   const [src, setSrc] = useState<Record<string, string>>({});
+  const [brokenImage, setBrokenImage] = useState(false);
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -63,14 +64,14 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
     <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
       <nav className="top">
         <Button
-          disabled={!url || scale === maxScale}
+          disabled={!url || scale === maxScale || brokenImage}
           onClick={zoomIn}
           title="Zoom in"
         >
           <ZoomIn />
         </Button>
         <Button
-          disabled={!url || scale === minScale}
+          disabled={!url || scale === minScale || brokenImage}
           onClick={zoomOut}
           title="Zoom out"
         >
@@ -90,9 +91,21 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         <img
           ref={imageRef}
           alt={basename(url, extname(url))}
+          onError={() => setBrokenImage(true)}
+          onLoad={() => setBrokenImage(false)}
           src={src[url]}
-          style={{ visibility: src[url] ? "visible" : "hidden" }}
+          style={{
+            display: src[url] && !brokenImage ? "block" : "none",
+          }}
         />
+        {brokenImage && (
+          <div>
+            {basename(url)}
+            <br />
+            Sorry, Photos can&apos;t open this file because the format is
+            currently unsupported, or the file is corrupted
+          </div>
+        )}
       </figure>
       <nav className="bottom">
         <Button disabled={!url} onClick={toggleFullscreen} title="Full-screen">
