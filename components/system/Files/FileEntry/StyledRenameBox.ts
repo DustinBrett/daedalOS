@@ -19,6 +19,7 @@ const StyledRenameBox = styled.textarea.attrs({
   resize: none;
   text-align: center;
   top: 2px;
+  user-select: text;
   white-space: break-spaces;
   z-index: 1;
 `;
