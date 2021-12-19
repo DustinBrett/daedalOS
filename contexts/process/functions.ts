@@ -86,14 +86,14 @@ export const maximizeProcess =
   (processId: string) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, {
-      maximized: !currentProcesses[processId].maximized,
+      maximized: !currentProcesses[processId]?.maximized,
     })(currentProcesses);
 
 export const minimizeProcess =
   (processId: string) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, {
-      minimized: !currentProcesses[processId].minimized,
+      minimized: !currentProcesses[processId]?.minimized,
     })(currentProcesses);
 
 export const setIcon =
