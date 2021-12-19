@@ -268,7 +268,11 @@ const useFolder = (
           } else {
             zip(
               Object.fromEntries(zipFiles) as AsyncZippable,
-              (_zipError, newZipFile) => createLink(Buffer.from(newZipFile))
+              (_zipError, newZipFile) => {
+                if (newZipFile) {
+                  createLink(Buffer.from(newZipFile));
+                }
+              }
             );
           }
         })
@@ -354,10 +358,12 @@ const useFolder = (
           zip(
             Object.fromEntries(zipFiles) as AsyncZippable,
             (_zipError, newZipFile) => {
-              newPath(
-                `${basename(directory) || "archive"}.zip`,
-                Buffer.from(newZipFile)
-              );
+              if (newZipFile) {
+                newPath(
+                  `${basename(directory) || "archive"}.zip`,
+                  Buffer.from(newZipFile)
+                );
+              }
             }
           );
         })
