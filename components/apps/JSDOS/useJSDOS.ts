@@ -10,7 +10,8 @@ const useJSDOS = (
   id: string,
   url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean
 ): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
@@ -26,14 +27,13 @@ const useJSDOS = (
 
         if (containerRef.current) {
           setDosInstance(window.Dos(containerRef.current, dosOptions));
-          setLoading(false);
         }
       });
     }
   }, [containerRef, dosInstance, setLoading]);
 
   useEffect(() => {
-    if (dosCI) {
+    if (dosCI && loading) {
       updateWindowSize(dosCI.height(), dosCI.width());
 
       dosCI
@@ -74,6 +74,8 @@ const useJSDOS = (
         .onExit(() =>
           window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
         );
+
+      setLoading(false);
     }
   }, [
     closeWithTransition,
@@ -81,6 +83,8 @@ const useJSDOS = (
     dosCI,
     dosInstance,
     id,
+    loading,
+    setLoading,
     updateWindowSize,
   ]);
 };
