@@ -18,12 +18,12 @@ const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
       };
     }, {});
 
-const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
+export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
   new Promise((resolve, reject) => {
     unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)));
   });
 
-const zipAsync = (
+export const zipAsync = (
   data: AsyncZippable,
   opts: AsyncZipOptions = {}
 ): Promise<Uint8Array> =>

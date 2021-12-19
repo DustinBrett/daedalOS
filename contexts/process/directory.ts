@@ -3,6 +3,17 @@ import dynamic from "next/dynamic";
 import { FOLDER_ICON } from "utils/constants";
 
 const processDirectory: Processes = {
+  BoxedWine: {
+    Component: dynamic(() => import("components/apps/BoxedWine")),
+    allowResizing: false,
+    background: "#000",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/boxedwine.png",
+    title: "BoxedWine",
+  },
   Browser: {
     Component: dynamic(() => import("components/apps/Browser")),
     background: "#fff",

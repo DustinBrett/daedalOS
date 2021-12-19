@@ -6,6 +6,11 @@ type Extension = {
 };
 
 const extensions = {
+  ".exe": {
+    icon: "executable",
+    process: ["BoxedWine"],
+    type: "Application",
+  },
   ".htm": {
     process: ["Browser", "MonacoEditor"],
     type: "HTML Document",
@@ -64,7 +69,7 @@ const extensions = {
   },
   ".zip": {
     icon: "compressed",
-    process: ["FileExplorer", "JSDOS"],
+    process: ["FileExplorer", "BoxedWine", "JSDOS"],
     type: "Compressed (zipped) Folder",
   },
 };
