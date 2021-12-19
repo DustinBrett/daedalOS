@@ -76,7 +76,18 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
             </Button>
           </li>
         )}
-        {position && <li>{position}</li>}
+        {position && (
+          <li title="Go to Line/Column">
+            <Button
+              onClick={() => {
+                editor?.focus();
+                editor?.getAction("editor.action.gotoLine").run();
+              }}
+            >
+              {position}
+            </Button>
+          </li>
+        )}
         {language !== "" && <li>{language}</li>}
       </ol>
     </StyledStatusBar>
