@@ -4,7 +4,7 @@ import {
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { extname } from "path";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 export type FileInfo = {
@@ -27,6 +27,10 @@ const useFileInfo = (
     pid: "",
     url: "",
   });
+  const visible = useRef(true);
+  const updateInfo = (newInfo: FileInfo): void => {
+    if (visible.current) setInfo(newInfo);
+  };
   const { fs, rootFs } = useFileSystem();
 
   useEffect(() => {
@@ -40,12 +44,16 @@ const useFileInfo = (
           path,
           isDirectory,
           useNewFolderIcon,
-          setInfo
+          updateInfo
         );
       } else {
-        getInfoWithExtension(fs, path, extension, setInfo);
+        getInfoWithExtension(fs, path, extension, updateInfo);
       }
     }
+
+    return () => {
+      visible.current = false;
+    };
   }, [fs, isDirectory, path, rootFs, useNewFolderIcon]);
 
   return info;
