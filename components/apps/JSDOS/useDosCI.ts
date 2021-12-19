@@ -40,7 +40,9 @@ const useDosCI = (
     linkElement,
     processes: { [id]: { closing = false } = {} },
   } = useProcesses();
-  const [dosCI, setDosCI] = useState<Record<string, CommandInterface>>({});
+  const [dosCI, setDosCI] = useState<
+    Record<string, CommandInterface | undefined>
+  >({});
   const closeBundle = useCallback(
     async (bundleUrl: string, closeInstance = false) => {
       const saveName = `${basename(bundleUrl)}${saveExtension}`;
@@ -102,12 +104,15 @@ const useDosCI = (
   ]);
 
   useEffect(() => {
-    if (dosInstance && readFile && url && !dosCI[url]) loadBundle();
+    if (dosInstance && url && !(url in dosCI)) {
+      setDosCI({ [url]: undefined });
+      loadBundle();
+    }
 
     return () => {
       if (url && closing) closeBundle(url, closing);
     };
-  }, [closeBundle, closing, dosCI, dosInstance, loadBundle, readFile, url]);
+  }, [closeBundle, closing, dosCI, dosInstance, loadBundle, url]);
 
   return dosCI[url];
 };
