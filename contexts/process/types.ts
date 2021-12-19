@@ -17,11 +17,20 @@ type PdfProcessArguments = {
   scale?: number;
 };
 
-export type ProcessArguments = DialogProcessArguments &
+type BaseProcessArguments = {
+  allowResizing?: boolean;
+  autoSizing?: boolean;
+  background?: string;
+  hideTitlebarIcon?: boolean;
+  lockAspectRatio?: boolean;
+  prependTaskbarTitle?: boolean;
+  url?: string;
+};
+
+export type ProcessArguments = BaseProcessArguments &
+  DialogProcessArguments &
   MonacoProcessArguments &
-  PdfProcessArguments & {
-    url?: string;
-  };
+  PdfProcessArguments;
 
 export type ProcessElements = {
   componentWindow?: HTMLElement;
@@ -31,19 +40,13 @@ export type ProcessElements = {
 
 export type Process = ProcessArguments &
   ProcessElements & {
-    allowResizing?: boolean;
-    autoSizing?: boolean;
-    background?: string;
     closing?: boolean;
     Component: React.ComponentType<ComponentProcessProps>;
     defaultSize?: Size;
     hasWindow?: boolean;
-    hideTitlebarIcon?: boolean;
     icon: string;
-    lockAspectRatio?: boolean;
     maximized?: boolean;
     minimized?: boolean;
-    prependTaskbarTitle?: boolean;
     singleton?: boolean;
     title: string;
   };
