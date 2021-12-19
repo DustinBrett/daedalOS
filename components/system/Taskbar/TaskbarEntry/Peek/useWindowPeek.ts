@@ -14,6 +14,7 @@ const renderFrame = async (
   animate: React.MutableRefObject<boolean>,
   callback: (url: string) => void
 ): Promise<void> => {
+  if (!animate.current) return;
   const nextFrame = (): number =>
     window.requestAnimationFrame(() =>
       renderFrame(previewElement, animate, callback)
@@ -30,10 +31,9 @@ const renderFrame = async (
     previewImage.addEventListener(
       "load",
       () => {
-        if (animate.current) {
-          callback(dataUrl);
-          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
-        }
+        if (!animate.current) return;
+        callback(dataUrl);
+        window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
       },
       ONE_TIME_PASSIVE_EVENT
     );
