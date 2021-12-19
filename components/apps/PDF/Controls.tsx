@@ -15,12 +15,14 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
   return (
     <StyledControls>
       <ol>
-        <li className="pages">
-          {currentPage} / {count}
-        </li>
+        {count !== 0 && (
+          <li className="pages">
+            {currentPage} / {count}
+          </li>
+        )}
         <li className="scale">
           <Button
-            disabled={scale === 0.25}
+            disabled={scale === 0.25 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
@@ -30,7 +32,7 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
           </Button>
           {Math.round(scale * 100)}%
           <Button
-            disabled={scale === 5}
+            disabled={scale === 5 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
