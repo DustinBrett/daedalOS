@@ -50,11 +50,12 @@ const useDosCI = (
       if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
 
       if (
-        await writeFile(
+        typeof dosCI[bundleUrl] !== "undefined" &&
+        (await writeFile(
           join(SAVE_PATH, saveName),
-          Buffer.from(await dosCI[bundleUrl]?.persist()),
+          Buffer.from(await (dosCI[bundleUrl] as CommandInterface).persist()),
           true
-        )
+        ))
       ) {
         if (closeInstance) dosInstance?.stop();
         updateFolder(SAVE_PATH, saveName);
