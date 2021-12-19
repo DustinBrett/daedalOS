@@ -7,7 +7,7 @@ export const config = {
 export const theme = "vs-dark";
 
 export const customExtensionLanguages: Record<string, string> = {
-  ".whtml": "html",
+  ".whtml": ".html",
 };
 
 export const monacoExtensions = new Set([
