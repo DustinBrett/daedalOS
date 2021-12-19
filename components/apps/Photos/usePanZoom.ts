@@ -34,7 +34,7 @@ const usePanZoom = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, url = "" } = process || {};
+  const { closing, componentWindow, url = "" } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const zoomUpdate = useCallback(
     (panZoomEvent) => {
@@ -49,28 +49,35 @@ const usePanZoom = (
           window.setTimeout(() => panZoom?.reset(), 50);
         }
 
-        appendFileToTitle(
-          isMinScale
-            ? basename(url)
-            : `${basename(url)} (${Math.floor(scale * 100)}%)`
-        );
+        if (!closing) {
+          appendFileToTitle(
+            isMinScale
+              ? basename(url)
+              : `${basename(url)} (${Math.floor(scale * 100)}%)`
+          );
+        }
       }
     },
-    [appendFileToTitle, panZoom, url]
+    [appendFileToTitle, closing, panZoom, url]
+  );
+  const zoomWheel = useCallback(
+    (event: WheelEvent) => zoomWithWheel?.(event, { step: 0.3 }),
+    [zoomWithWheel]
   );
 
   useResizeObserver(componentWindow, reset);
 
   useEffect(() => {
-    if (imgElement && containerElement && zoomWithWheel) {
+    if (imgElement && containerElement) {
       imgElement.addEventListener("panzoomchange", zoomUpdate);
-      containerElement.addEventListener("wheel", (event) =>
-        zoomWithWheel(event, { step: 0.3 })
-      );
+      containerElement.addEventListener("wheel", zoomWheel);
     }
 
-    return () => imgElement?.removeEventListener("panzoomchange", zoomUpdate);
-  }, [containerElement, imgElement, zoomUpdate, zoomWithWheel]);
+    return () => {
+      imgElement?.removeEventListener("panzoomchange", zoomUpdate);
+      containerElement?.removeEventListener("wheel", zoomWheel);
+    };
+  }, [containerElement, imgElement, zoomUpdate, zoomWheel, zoomWithWheel]);
 
   useEffect(() => {
     if (imgElement && !panZoom) {
