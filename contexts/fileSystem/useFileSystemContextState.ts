@@ -104,7 +104,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [fsWatchers]
   );
   const mapFs = async (directory: string): Promise<string> => {
-    const handle = await window.showDirectoryPicker();
+    let handle: FileSystemDirectoryHandle;
+
+    try {
+      handle = await window.showDirectoryPicker();
+      // eslint-disable-next-line no-empty
+    } catch {}
 
     return new Promise((resolve, reject) => {
       if (!(handle instanceof FileSystemDirectoryHandle)) reject();
