@@ -7,18 +7,18 @@ import { SessionProvider } from "contexts/session";
 import type { AppProps } from "next/app";
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => (
-  <FileSystemProvider>
-    <SessionProvider>
-      <ProcessProvider>
+  <ProcessProvider>
+    <FileSystemProvider>
+      <SessionProvider>
         <StyledApp>
           <Metadata />
           <MenuProvider>
             <Component {...pageProps} />
           </MenuProvider>
         </StyledApp>
-      </ProcessProvider>
-    </SessionProvider>
-  </FileSystemProvider>
+      </SessionProvider>
+    </FileSystemProvider>
+  </ProcessProvider>
 );
 
 export default App;
