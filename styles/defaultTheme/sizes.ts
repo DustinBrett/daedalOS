@@ -36,7 +36,7 @@ const sizes = {
       iconSize: "16px",
       width: "48px",
     },
-    size: "350px",
+    size: "320px",
   },
   taskbar: {
     blur: "5px",
