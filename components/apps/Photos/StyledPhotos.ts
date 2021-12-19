@@ -1,10 +1,9 @@
-import { overrideSubMenuStyling } from "components/apps/MonacoEditor/functions";
 import styled from "styled-components";
 
 const buttonSize = "48px";
 const paddingSize = "32px";
 
-const StyledPhotos = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
+const StyledPhotos = styled.div`
   background-color: #222;
   display: flex;
   height: 100%;

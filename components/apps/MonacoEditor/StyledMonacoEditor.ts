@@ -1,8 +1,8 @@
-import { overrideSubMenuStyling } from "components/apps/MonacoEditor/functions";
+import { relocateShadowRoot } from "components/apps/MonacoEditor/functions";
 import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 
-const StyledMonacoEditor = styled.div.attrs({ onBlur: overrideSubMenuStyling })`
+const StyledMonacoEditor = styled.div.attrs({ onBlur: relocateShadowRoot })`
   color: ${({ theme }) => theme.colors.text};
   height: 100%;
   width: 100%;
