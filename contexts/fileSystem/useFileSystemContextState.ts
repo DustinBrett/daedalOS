@@ -214,7 +214,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
     const fullNewPath = join(directory, uniqueName);
 
     if (isInternal) {
-      if (name !== fullNewPath && !directory.startsWith(name)) {
+      if (
+        name !== fullNewPath &&
+        !directory.startsWith(name) &&
+        !rootFs?.mntMap[name]
+      ) {
         if (await exists(fullNewPath)) {
           return createPath(name, directory, buffer, iteration + 1);
         }
