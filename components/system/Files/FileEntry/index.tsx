@@ -297,7 +297,11 @@ const FileEntry = ({
               }}
             />
           ) : (
-            <figcaption>{isOnlyFocusedEntry ? name : truncatedName}</figcaption>
+            <figcaption>
+              {!isOnlyFocusedEntry || name.length === truncatedName.length
+                ? truncatedName
+                : name}
+            </figcaption>
           )}
         </figure>
       </Button>
