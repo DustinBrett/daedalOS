@@ -158,6 +158,7 @@ const useCommandInterpreter = (
         case "clear":
         case "cls":
           terminal?.reset();
+          terminal?.write("\u001Bc");
           break;
         case "date": {
           localEcho?.println(
