@@ -10,6 +10,9 @@ type StyledStartMenuProps = {
 };
 
 const ThinScrollBars = css<StyledStartMenuProps>`
+  scrollbar-width: ${({ $showScrolling }) =>
+    $showScrolling ? "auto" : "thin"};
+
   ::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
       $showScrolling ? `${SCROLLBAR_WIDTH}px` : "1px"};
@@ -48,6 +51,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
   ${StyledFileManager} {
     ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
+    scrollbar-width: none;
 
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
