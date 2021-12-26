@@ -25,8 +25,9 @@ const useV86 = (
   loading: boolean
 ): void => {
   const {
-    processes: { [id]: { closing = false } = {} },
+    processes: { [id]: process },
   } = useProcesses();
+  const { closing } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const [emulator, setEmulator] = useState<
     Record<string, V86Starter | undefined>
@@ -126,7 +127,7 @@ const useV86 = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && !(url in emulator)) {
+    if (process && !closing && !loading && !(url in emulator)) {
       setEmulator({ [url]: undefined });
       loadDiskImage();
     }
@@ -134,7 +135,7 @@ const useV86 = (
     return () => {
       if (url && closing) closeDiskImage(url);
     };
-  }, [closeDiskImage, closing, emulator, loadDiskImage, loading, url]);
+  }, [closeDiskImage, closing, emulator, loadDiskImage, loading, process, url]);
 };
 
 export default useV86;

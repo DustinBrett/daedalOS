@@ -39,8 +39,9 @@ const useDosCI = (
     useFileSystem();
   const {
     linkElement,
-    processes: { [id]: { closing = false } = {} },
+    processes: { [id]: process },
   } = useProcesses();
+  const { closing } = process || {};
   const [dosCI, setDosCI] = useState<
     Record<string, CommandInterface | undefined>
   >({});
@@ -110,7 +111,7 @@ const useDosCI = (
   ]);
 
   useEffect(() => {
-    if (dosInstance && !(url in dosCI)) {
+    if (process && !closing && dosInstance && !(url in dosCI)) {
       setDosCI({ [url]: undefined });
       loadBundle();
     }
@@ -118,7 +119,7 @@ const useDosCI = (
     return () => {
       if (url && closing) closeBundle(url, closing);
     };
-  }, [closeBundle, closing, dosCI, dosInstance, loadBundle, url]);
+  }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);
 
   return dosCI[url];
 };
