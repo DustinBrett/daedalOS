@@ -16,11 +16,13 @@ const useTitle = (id: string): Title => {
   const [pid] = id.split(PROCESS_DELIMITER);
   const { title: originalTitle } = processDirectory[pid] || {};
   const appendFileToTitle = useCallback(
-    (url: string, unSaved?: boolean) =>
-      title(
-        id,
-        `${originalTitle} - ${basename(url)}${unSaved ? ` ${SAVE_CHAR}` : ""}`
-      ),
+    (url: string, unSaved?: boolean) => {
+      const appendedFile = url
+        ? ` - ${basename(url)}${unSaved ? ` ${SAVE_CHAR}` : ""}`
+        : "";
+
+      title(id, `${originalTitle}${appendedFile}`);
+    },
     [id, originalTitle, title]
   );
   const prependFileToTitle = useCallback(

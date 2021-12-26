@@ -10,7 +10,7 @@ import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SAVE_PATH } from "utils/constants";
+import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 import { addFileToZip, isFileInZip } from "utils/zipFunctions";
@@ -21,6 +21,7 @@ const addJsDosConfig = async (
 ): Promise<Buffer> =>
   Object.entries(zipConfigFiles).reduce(
     async (newBuffer, [zipPath, fsPath]) =>
+      (await newBuffer) !== EMPTY_BUFFER &&
       (await isFileInZip(await newBuffer, zipPath))
         ? newBuffer
         : addFileToZip(await newBuffer, fsPath, zipPath, readFile),
@@ -68,13 +69,13 @@ const useDosCI = (
 
     if (currentUrl) closeBundle(currentUrl);
 
-    const bundleURL = bufferToUrl(
-      await addJsDosConfig(await readFile(url), readFile)
-    );
+    const urlBuffer = url ? await readFile(url) : EMPTY_BUFFER;
+    const bundleURL = bufferToUrl(await addJsDosConfig(urlBuffer, readFile));
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
-    const stateUrl = (await exists(savePath))
-      ? bufferToUrl(await readFile(savePath))
-      : undefined;
+    const stateUrl =
+      url && (await exists(savePath))
+        ? bufferToUrl(await readFile(savePath))
+        : undefined;
 
     // NOTE: js-dos v7 appends `?dt=` (Removed in lib, for now...)
     const ci = await dosInstance?.run(bundleURL, stateUrl);
@@ -105,7 +106,7 @@ const useDosCI = (
   ]);
 
   useEffect(() => {
-    if (dosInstance && url && !(url in dosCI)) {
+    if (dosInstance && !(url in dosCI)) {
       setDosCI({ [url]: undefined });
       loadBundle();
     }
