@@ -236,6 +236,7 @@ export const getInfoWithExtension = (
       })
     );
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
+    subIcons.push(processDirectory["VideoPlayer"].icon);
     getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () =>
       fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
         if (!error) {
@@ -254,7 +255,6 @@ export const getInfoWithExtension = (
                 ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
               canvas.toBlob((blob) => {
                 if (blob instanceof Blob) {
-                  subIcons.push(processDirectory["VideoPlayer"].icon);
                   getInfoByFileExtension(URL.createObjectURL(blob));
                 }
               });

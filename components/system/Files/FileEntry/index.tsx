@@ -20,22 +20,25 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, dirname, extname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { basename, dirname, extname, join } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
+  ICON_CACHE,
+  ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
+  USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { getFormattedSize } from "utils/functions";
+import { bufferToUrl, getFormattedSize } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 import useDoubleClick from "utils/useDoubleClick";
 
@@ -83,6 +86,8 @@ const truncateName = (
 
 const focusing: string[] = [];
 
+const cacheQueue: (() => Promise<void>)[] = [];
+
 const FileEntry = ({
   fileActions,
   fileManagerId,
@@ -103,13 +108,21 @@ const FileEntry = ({
 }: FileEntryProps): JSX.Element => {
   const { blurEntry, focusEntry } = focusFunctions;
   const { url: changeUrl } = useProcesses();
-  const { comment, getIcon, icon, pid, subIcons, url } = useFileInfo(
+  const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
     useNewFolderIcon
   );
   const openFile = useFile(url);
-  const { createPath, pasteList, updateFolder } = useFileSystem();
+  const {
+    createPath,
+    exists,
+    mkdirRecursive,
+    pasteList,
+    readFile,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
   const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
   const listView = view === "list";
@@ -121,10 +134,11 @@ const FileEntry = ({
     IMAGE_FILE_EXTENSIONS.has(urlExt) ||
     VIDEO_FILE_EXTENSIONS.has(urlExt) ||
     isYouTubeUrl(url);
-  const filteredSubIcons =
+  const filteredSubIcons = (
     hideShortcutIcon || stats.systemShortcut
       ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
-      : subIcons;
+      : subIcons
+  )?.filter((subIcon) => subIcon !== icon);
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
   const extension = extname(path).toLowerCase();
@@ -157,6 +171,87 @@ const FileEntry = ({
       ),
     [formats, listView, name, sizes]
   );
+  const iconRef = useRef<HTMLImageElement | null>(null);
+  const isIconCached = useRef(false);
+  const isDynamicIconLoaded = useRef(false);
+  const updateIcon = useCallback(async (): Promise<void> => {
+    if (!isLoadingFileManager && !isIconCached.current) {
+      if (icon.startsWith("blob:")) {
+        isIconCached.current = true;
+
+        const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+
+        if (
+          urlExt !== ".ico" &&
+          !url.startsWith(ICON_PATH) &&
+          !url.startsWith(USER_ICON_PATH) &&
+          !(await exists(cachedIconPath)) &&
+          iconRef.current instanceof HTMLImageElement
+        ) {
+          const cacheIcon = async (): Promise<void> => {
+            if (iconRef.current instanceof HTMLImageElement) {
+              const htmlToImage = await import("html-to-image");
+              const generatedIcon = await htmlToImage.toPng(iconRef.current);
+
+              cacheQueue.push(async () => {
+                const baseCachedPath = dirname(cachedIconPath);
+
+                await mkdirRecursive(baseCachedPath);
+                await writeFile(
+                  cachedIconPath,
+                  Buffer.from(
+                    generatedIcon.replace("data:image/png;base64,", ""),
+                    "base64"
+                  ),
+                  true
+                );
+
+                updateFolder(baseCachedPath, cachedIconPath);
+
+                cacheQueue.shift();
+                await cacheQueue[0]?.();
+              });
+
+              if (cacheQueue.length === 1) await cacheQueue[0]();
+            }
+          };
+
+          if (iconRef.current.complete) cacheIcon();
+          else iconRef.current.addEventListener("load", cacheIcon);
+        }
+      } else if (getIcon) {
+        const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+
+        if (await exists(cachedIconPath)) {
+          isIconCached.current = true;
+
+          const cachedIconData = await readFile(cachedIconPath);
+
+          setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
+        } else if (!isDynamicIconLoaded.current) {
+          isDynamicIconLoaded.current = true;
+          getIcon();
+        }
+      }
+    }
+  }, [
+    exists,
+    getIcon,
+    icon,
+    isLoadingFileManager,
+    mkdirRecursive,
+    path,
+    readFile,
+    setInfo,
+    updateFolder,
+    url,
+    urlExt,
+    writeFile,
+  ]);
+
+  useEffect(() => {
+    updateIcon();
+  }, [updateIcon]);
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -201,12 +296,6 @@ const FileEntry = ({
     focusedEntries,
     selectionRect,
   ]);
-
-  useEffect(() => {
-    if (!isLoadingFileManager && getIcon && !icon.startsWith("blob:")) {
-      getIcon();
-    }
-  }, [getIcon, icon, isLoadingFileManager]);
 
   const createTooltip = (): string | undefined => {
     if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
@@ -280,7 +369,10 @@ const FileEntry = ({
             <Icon
               key={entryIcon}
               alt={name}
-              moving={icon === entryIcon && pasteList[path] === "move"}
+              {...(icon === entryIcon && {
+                imgRef: iconRef,
+                moving: pasteList[path] === "move",
+              })}
               src={entryIcon}
               {...FileEntryIconSize[
                 entryIcon !== icon && entryIcon !== SHORTCUT_ICON ? "sub" : view

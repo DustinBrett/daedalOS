@@ -21,7 +21,7 @@ const useFileInfo = (
   path: string,
   isDirectory: boolean,
   useNewFolderIcon = false
-): FileInfo => {
+): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>({
     icon: "",
     pid: "",
@@ -56,7 +56,7 @@ const useFileInfo = (
     };
   }, [fs, isDirectory, path, rootFs, useNewFolderIcon]);
 
-  return info;
+  return [info, setInfo];
 };
 
 export default useFileInfo;

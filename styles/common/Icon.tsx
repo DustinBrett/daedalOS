@@ -5,6 +5,7 @@ import { cleanUpBufferUrl } from "utils/functions";
 
 export type IconProps = {
   displaySize?: number;
+  imgRef?: React.RefObject<HTMLImageElement>;
   imgSize: number;
   moving?: boolean;
 };
@@ -35,7 +36,7 @@ const Icon = (
   props: IconProps & React.ImgHTMLAttributes<HTMLImageElement>
 ): JSX.Element => {
   const [loaded, setLoaded] = useState(false);
-  const { src = "" } = props;
+  const { imgRef, src = "" } = props;
 
   useEffect(
     () => () => {
@@ -46,6 +47,7 @@ const Icon = (
 
   return (
     <StyledIcon
+      ref={imgRef}
       onLoad={() => setLoaded(true)}
       style={{ visibility: loaded ? "visible" : "hidden" }}
       {...props}

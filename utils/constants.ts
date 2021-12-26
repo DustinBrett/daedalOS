@@ -78,8 +78,6 @@ export const SHORTCUT_APPEND = " - Shortcut";
 
 export const SHORTCUT_EXTENSION = ".url";
 
-export const SHORTCUT_ICON = "/System/Icons/shortcut.png";
-
 export const SYSTEM_FILES = new Set(["desktop.ini"]);
 
 export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
@@ -103,12 +101,20 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
-export const FOLDER_ICON = "/System/Icons/folder.png";
+export const ICON_PATH = "/System/Icons";
 
-export const MOUNTED_FOLDER_ICON = "/System/Icons/mounted.png";
+export const USER_ICON_PATH = "/Users/Public/Icons";
 
-export const NEW_FOLDER_ICON = "/System/Icons/new_folder.png";
+export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
-export const UNKNOWN_ICON = "/System/Icons/unknown.png";
+export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.png`;
+
+export const FOLDER_ICON = `${ICON_PATH}/folder.png`;
+
+export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.png`;
+
+export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.png`;
+
+export const UNKNOWN_ICON = `${ICON_PATH}/unknown.png`;
 
 export const DEFAULT_SCROLLBAR_WIDTH = 17;
