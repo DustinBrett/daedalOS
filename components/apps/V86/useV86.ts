@@ -14,7 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SAVE_PATH } from "utils/constants";
+import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const useV86 = (
@@ -66,7 +66,7 @@ const useV86 = (
 
     if (currentUrl) await closeDiskImage(currentUrl);
 
-    const imageContents = await readFile(url);
+    const imageContents = url ? await readFile(url) : EMPTY_BUFFER;
     const isISO = extname(url).toLowerCase() === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {
@@ -84,9 +84,10 @@ const useV86 = (
       ...config,
     };
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
-    const saveContents = (await exists(savePath))
-      ? bufferToUrl(await readFile(savePath))
-      : undefined;
+    const saveContents =
+      url && (await exists(savePath))
+        ? bufferToUrl(await readFile(savePath))
+        : undefined;
 
     if (saveContents) v86StarterConfig.initial_state = { url: saveContents };
 
@@ -125,7 +126,7 @@ const useV86 = (
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && url && !(url in emulator)) {
+    if (!loading && !(url in emulator)) {
       setEmulator({ [url]: undefined });
       loadDiskImage();
     }
