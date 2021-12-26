@@ -27,7 +27,7 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
       title(id, directoryName || ROOT_NAME);
 
       if (fs && rootFs && (!icon || url !== currentUrl)) {
-        if (rootFs?.mntMap[url]) {
+        if (rootFs?.mntMap[url] && directoryName) {
           setProcessIcon(id, MOUNTED_FOLDER_ICON);
         } else {
           setProcessIcon(
