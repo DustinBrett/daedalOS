@@ -135,7 +135,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         }
       };
 
-      if (extname(url) === ".iso") {
+      if (extname(url).toLowerCase() === ".iso") {
         IsoFS?.Create({ data: fileData }, createFs);
       } else {
         ZipFS?.Create({ zipData: fileData }, createFs);

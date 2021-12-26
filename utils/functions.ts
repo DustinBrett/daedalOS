@@ -49,7 +49,7 @@ const loadStyle = (href: string): Promise<Event> =>
 export const loadFiles = async (files: string[]): Promise<Event[]> =>
   Promise.all(
     files.map((file) =>
-      extname(file) === ".css"
+      extname(file).toLowerCase() === ".css"
         ? loadStyle(encodeURI(file))
         : loadScript(encodeURI(file))
     )

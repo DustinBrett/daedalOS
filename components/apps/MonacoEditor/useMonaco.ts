@@ -42,7 +42,7 @@ const useMonaco = (
   const createModel = useCallback(async () => {
     const newModel = monaco?.editor.createModel(
       (await readFile(url)).toString(),
-      detectLanguage(extname(url)),
+      detectLanguage(extname(url).toLowerCase()),
       createModelUri(url)
     );
 

@@ -58,7 +58,7 @@ const useTerminal = (
       if (localEcho) {
         localEcho.handleCursorInsert(url);
       } else {
-        const fileExtension = extname(url) as ExtensionType;
+        const fileExtension = extname(url).toLowerCase() as ExtensionType;
 
         if (
           extensions[fileExtension].process.includes("Terminal") &&

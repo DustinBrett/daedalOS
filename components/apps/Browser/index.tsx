@@ -39,7 +39,8 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
 
       if (contentWindow?.location) {
         const isHtml =
-          extname(addressInput) === ".html" && (await exists(addressInput));
+          extname(addressInput).toLowerCase() === ".html" &&
+          (await exists(addressInput));
 
         setLoading(true);
         setSrcDoc("");

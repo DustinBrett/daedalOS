@@ -34,7 +34,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
   const getUrlOptions = useCallback(async (): Promise<Options> => {
     if (url) {
-      const extension = extname(url);
+      const extension = extname(url).toLowerCase();
 
       if (extension === ".mp3") {
         return {

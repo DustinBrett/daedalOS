@@ -194,7 +194,7 @@ export const getInfoWithExtension = (
         getInfoByFileExtension();
       } else {
         const { comment, icon, pid, url } = getShortcutInfo(contents);
-        const urlExt = extname(url);
+        const urlExt = extname(url).toLowerCase();
 
         if (pid === "FileExplorer") {
           const getIcon = (): void => {

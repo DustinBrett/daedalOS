@@ -460,7 +460,9 @@ const useCommandInterpreter = (
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
             } else if (await exists(baseCommand)) {
-              const fileExtension = extname(baseCommand) as ExtensionType;
+              const fileExtension = extname(
+                baseCommand
+              ).toLowerCase() as ExtensionType;
 
               if (
                 extensions[fileExtension].process.includes("Terminal") &&

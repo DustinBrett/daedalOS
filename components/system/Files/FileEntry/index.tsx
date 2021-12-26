@@ -116,7 +116,7 @@ const FileEntry = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
-  const urlExt = extname(url);
+  const urlExt = extname(url).toLowerCase();
   const isDynamicIcon =
     IMAGE_FILE_EXTENSIONS.has(urlExt) ||
     VIDEO_FILE_EXTENSIONS.has(urlExt) ||
@@ -127,7 +127,7 @@ const FileEntry = ({
       : subIcons;
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
-  const extension = extname(path);
+  const extension = extname(path).toLowerCase();
   const isShortcut = extension === SHORTCUT_EXTENSION;
   const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({

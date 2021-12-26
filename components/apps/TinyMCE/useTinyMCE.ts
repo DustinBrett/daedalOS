@@ -58,7 +58,7 @@ const useTinyMCE = (
             event.preventDefault();
 
             const defaultProcess = getProcessByFileExtension(
-              extname(link.pathname)
+              extname(link.pathname).toLowerCase()
             );
 
             if (defaultProcess) open(defaultProcess, { url: link.pathname });

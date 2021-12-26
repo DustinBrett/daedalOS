@@ -107,7 +107,7 @@ const useFolder = (
   const statsWithShortcutInfo = useCallback(
     (fileName: string, stats: Stats): Promise<FileStat> =>
       new Promise((resolve) => {
-        if (extname(fileName) === SHORTCUT_EXTENSION) {
+        if (extname(fileName).toLowerCase() === SHORTCUT_EXTENSION) {
           fs?.readFile(
             join(directory, fileName),
             (_readError, contents = EMPTY_BUFFER) =>
@@ -318,7 +318,7 @@ const useFolder = (
   );
   const newShortcut = useCallback(
     (path: string, process: string): void => {
-      const pathExtension = extname(path);
+      const pathExtension = extname(path).toLowerCase();
 
       if (pathExtension === SHORTCUT_EXTENSION) {
         fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
@@ -375,7 +375,9 @@ const useFolder = (
     async (path: string): Promise<void> => {
       const data = await readFile(path);
       const unzippedFiles =
-        extname(path) === ".rar" ? await unrar(data) : await unzip(data);
+        extname(path).toLowerCase() === ".rar"
+          ? await unrar(data)
+          : await unzip(data);
       const zipFolderName = basename(path, extname(path));
 
       if (await mkdir(join(directory, zipFolderName))) {
