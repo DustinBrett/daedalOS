@@ -8,11 +8,11 @@ import useUrlLoader from "utils/useUrlLoader";
 
 declare global {
   interface Window {
-    commit: string;
+    commit?: string;
   }
 }
 
-type IndexProps = { commit: string };
+type IndexProps = { commit?: string };
 
 const Index = ({ commit }: IndexProps): React.ReactElement => {
   useIFrameFocuser();
