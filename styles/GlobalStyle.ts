@@ -18,6 +18,12 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
   }
 
+  input::selection,
+  textarea::selection {
+    background-color: rgb(0, 120, 215);
+    color: #fff;
+  }
+
   ol,
   ul {
     list-style: none;
