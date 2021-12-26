@@ -14,6 +14,18 @@ const StyledBrowser = styled.div`
     place-content: center;
     place-items: center;
 
+    &:not(:first-child) {
+      border-bottom: 1px solid rgb(118, 115, 118);
+      height: 33px;
+      justify-content: left;
+      padding: 0 8px;
+
+      button {
+        margin-right: 4px;
+        margin-bottom: 4px;
+      }
+    }
+
     div {
       display: flex;
       justify-content: space-around;
@@ -38,11 +50,11 @@ const StyledBrowser = styled.div`
       }
 
       &:hover {
-        background-color: rgb(100, 100, 100);
+        background-color: rgb(103, 103, 103);
       }
 
       &:active {
-        background-color: rgb(109, 109, 109);
+        background-color: rgb(110, 110, 110);
       }
 
       &:disabled {
@@ -62,7 +74,7 @@ const StyledBrowser = styled.div`
       font-size: 13px;
       height: 28px;
       letter-spacing: 0.2px;
-      line-height: 30px;
+      line-height: 26px;
       margin: 0 6px;
       padding: 0 13px;
       width: 100%;

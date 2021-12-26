@@ -1,13 +1,20 @@
-import { config, HOME_PAGE } from "components/apps/Browser/config";
+import {
+  bookmarks,
+  config,
+  GOOGLE_SEARCH_QUERY,
+  HOME_PAGE,
+} from "components/apps/Browser/config";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import Icon from "styles/common/Icon";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { getUrlOrSearch } from "utils/functions";
 import useHistory from "utils/useHistory";
@@ -18,6 +25,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
     url: changeUrl,
     processes: { [id]: process },
   } = useProcesses();
+  const { prependFileToTitle } = useTitle(id);
   const { url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
@@ -52,9 +60,32 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
 
           contentWindow.location.replace(addressUrl);
 
+          if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
+            prependFileToTitle(`${addressInput} - Google Search`);
+          } else {
+            const { name = "" } =
+              bookmarks?.find(
+                ({ url: bookmarkUrl }) => bookmarkUrl === addressInput
+              ) || {};
+
+            prependFileToTitle(name);
+          }
+
           const favicon = new Image();
           const faviconUrl = `${new URL(addressUrl).origin}/favicon.ico`;
 
+          favicon.addEventListener(
+            "error",
+            () => {
+              const { icon } =
+                bookmarks?.find(
+                  ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
+                ) || {};
+
+              if (icon) setIcon(id, icon);
+            },
+            ONE_TIME_PASSIVE_EVENT
+          );
           favicon.addEventListener(
             "load",
             () => setIcon(id, faviconUrl),
@@ -64,7 +95,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
         }
       }
     },
-    [exists, id, readFile, setIcon]
+    [exists, id, prependFileToTitle, readFile, setIcon]
   );
 
   useEffect(() => {
@@ -112,6 +143,23 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
           }}
           type="text"
         />
+      </nav>
+      <nav>
+        {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
+          <Button
+            key={name}
+            onClick={() => {
+              if (inputRef.current) {
+                inputRef.current.value = bookmarkUrl;
+              }
+
+              changeUrl(id, bookmarkUrl);
+            }}
+            title={name}
+          >
+            <Icon alt={name} imgSize={16} src={icon} />
+          </Button>
+        ))}
       </nav>
       <iframe
         ref={iframeRef}

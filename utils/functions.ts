@@ -1,3 +1,4 @@
+import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
 import { extname } from "path";
 import { stripUnit } from "polished";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
@@ -119,6 +120,6 @@ export const getUrlOrSearch = (input: string): string => {
 
     return href;
   } catch {
-    return `https://www.google.com/search?igu=1&q=${input}`;
+    return `${GOOGLE_SEARCH_QUERY}${input}`;
   }
 };
