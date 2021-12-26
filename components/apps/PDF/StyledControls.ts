@@ -22,6 +22,17 @@ const StyledControls = styled.nav`
       flex-direction: row;
       font-size: 13px;
 
+      input {
+        background-color: rgb(25, 27, 28);
+        color: #fff;
+        text-align: center;
+        height: 20px;
+
+        &:disabled {
+          color: rgb(110, 112, 114);
+        }
+      }
+
       &:not(:last-child)::after {
         background-color: rgb(112, 115, 117);
         content: "";
@@ -30,7 +41,13 @@ const StyledControls = styled.nav`
       }
 
       &.pages {
+        letter-spacing: 1.5px;
         padding-right: 10px;
+
+        input {
+          margin: 0 5px;
+          width: 24px;
+        }
       }
 
       &.scale {
@@ -64,6 +81,10 @@ const StyledControls = styled.nav`
             background-color: initial;
             color: rgb(110, 112, 114);
           }
+        }
+
+        input {
+          width: 46px;
         }
       }
     }

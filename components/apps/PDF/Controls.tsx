@@ -17,7 +17,7 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
       <ol>
         {count !== 0 && (
           <li className="pages">
-            {currentPage} / {count}
+            <input value={currentPage} /> / {count}
           </li>
         )}
         <li className="scale">
@@ -30,7 +30,8 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
           >
             -
           </Button>
-          {Math.round(scale * 100)}%
+          <input disabled={count === 0} value={`${Math.round(scale * 100)}%`} />
+
           <Button
             disabled={scale === 5 || count === 0}
             onClick={() =>
