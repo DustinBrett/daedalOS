@@ -41,10 +41,10 @@ const useFileContextMenu = (
   const urlExtension = extname(url).toLowerCase();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
-  const { process: [extensionProcess, ...openWith] = [] } =
+  const { process: extensionProcesses = [] } =
     urlExtension in extensions ? extensions[urlExtension as ExtensionType] : {};
+  const openWith = extensionProcesses.filter((process) => process !== pid);
   const openWithFiltered = openWith.filter((id) => id !== pid);
-  const { icon: pidIcon } = processDirectory[pid] || {};
   const openFile = useFile(url);
   const { copyEntries, moveEntries, rootFs, stat } = useFileSystem();
   const absoluteEntries = useCallback(
@@ -63,8 +63,6 @@ const useFileContextMenu = (
   const pathExtension = extname(path).toLowerCase();
   const isShortcut = pathExtension === SHORTCUT_EXTENSION;
   const { contextMenu } = useMenu();
-  const defaultProcess =
-    extensionProcess || getProcessByFileExtension(urlExtension);
   const remoteMount = rootFs?.mountList.some(
     (mountPath) =>
       mountPath === path &&
@@ -72,6 +70,8 @@ const useFileContextMenu = (
   );
 
   if (!readOnly && !remoteMount) {
+    const defaultProcess = getProcessByFileExtension(urlExtension);
+
     menuItems.push(
       { action: () => moveEntries(absoluteEntries()), label: "Cut" },
       { action: () => copyEntries(absoluteEntries()), label: "Copy" },
@@ -171,6 +171,8 @@ const useFileContextMenu = (
   }
 
   if (pid) {
+    const { icon: pidIcon } = processDirectory[pid] || {};
+
     if (
       isShortcut &&
       url &&
