@@ -8,12 +8,12 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, join } from "path";
+import { basename, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
-import { addFileToZip, isFileInZip } from "utils/zipFunctions";
+import { addFileToZip, isFileInZip, zipAsync } from "utils/zipFunctions";
 
 const addJsDosConfig = async (
   buffer: Buffer,
@@ -70,7 +70,11 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : EMPTY_BUFFER;
-    const bundleURL = bufferToUrl(await addJsDosConfig(urlBuffer, readFile));
+    const zipBuffer =
+      extname(url).toLowerCase() !== ".exe"
+        ? urlBuffer
+        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
+    const bundleURL = bufferToUrl(await addJsDosConfig(zipBuffer, readFile));
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
     const stateUrl =
       url && (await exists(savePath))

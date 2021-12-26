@@ -8,7 +8,7 @@ type Extension = {
 const extensions = {
   ".exe": {
     icon: "executable",
-    process: ["BoxedWine"],
+    process: ["BoxedWine", "JSDOS"],
     type: "Application",
   },
   ".htm": {
