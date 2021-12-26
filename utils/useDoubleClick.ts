@@ -6,11 +6,19 @@ const MAX_MOVES = 5;
 const useDoubleClick = (
   handler: React.MouseEventHandler,
   singleClick = false
-): { onClick: React.MouseEventHandler } => {
+): {
+  onClick: React.MouseEventHandler;
+  onDoubleClick: React.MouseEventHandler;
+} => {
   const timer = useRef<number | undefined>();
   const moveCount = useRef(0);
   const onClick: React.MouseEventHandler = useCallback(
     (event) => {
+      const mouseEvent = event.clientX || event.clientY;
+      const doubleClickEvent = event.type === "dblclick";
+
+      if (!mouseEvent && !doubleClickEvent) return;
+
       const runHandler = (): void => {
         event.stopPropagation();
         handler(event);
@@ -37,7 +45,7 @@ const useDoubleClick = (
         }
       };
 
-      if (singleClick) {
+      if (singleClick || (!mouseEvent && doubleClickEvent)) {
         runHandler();
       } else if (typeof timer.current === "undefined") {
         timer.current = window.setTimeout(
@@ -55,7 +63,7 @@ const useDoubleClick = (
     [handler, singleClick]
   );
 
-  return { onClick };
+  return { onClick, onDoubleClick: onClick };
 };
 
 export default useDoubleClick;
