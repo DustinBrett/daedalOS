@@ -64,7 +64,7 @@ const useBoxedWine = (
     };
 
     loadFiles(libs).then(() => {
-      if (url) appendFileToTitle(appName || url);
+      if (url) appendFileToTitle(appName || basename(url));
       window.BoxedWineShell(() => setLoading(false));
     });
   }, [appendFileToTitle, readFile, setLoading, url]);

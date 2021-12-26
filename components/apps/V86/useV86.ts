@@ -94,7 +94,7 @@ const useV86 = (
     const v86 = new window.V86Starter(v86StarterConfig);
 
     v86.add_listener("emulator-loaded", () => {
-      appendFileToTitle(url);
+      appendFileToTitle(basename(url));
       cleanUpBufferUrl(bufferUrl);
 
       if (v86StarterConfig.initial_state) {

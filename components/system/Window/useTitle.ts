@@ -1,6 +1,5 @@
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { basename } from "path";
 import { useCallback } from "react";
 import { PROCESS_DELIMITER } from "utils/constants";
 
@@ -18,7 +17,7 @@ const useTitle = (id: string): Title => {
   const appendFileToTitle = useCallback(
     (url: string, unSaved?: boolean) => {
       const appendedFile = url
-        ? ` - ${basename(url)}${unSaved ? ` ${SAVE_CHAR}` : ""}`
+        ? ` - ${url}${unSaved ? ` ${SAVE_CHAR}` : ""}`
         : "";
 
       title(id, `${originalTitle}${appendedFile}`);
@@ -26,11 +25,13 @@ const useTitle = (id: string): Title => {
     [id, originalTitle, title]
   );
   const prependFileToTitle = useCallback(
-    (url: string, unSaved?: boolean) =>
-      title(
-        id,
-        `${unSaved ? `${SAVE_CHAR} ` : ""}${basename(url)} - ${originalTitle}`
-      ),
+    (url: string, unSaved?: boolean) => {
+      const prependedFile = url
+        ? `${unSaved ? `${SAVE_CHAR} ` : ""}${url} - `
+        : "";
+
+      title(id, `${prependedFile}${originalTitle}`);
+    },
     [id, originalTitle, title]
   );
 
