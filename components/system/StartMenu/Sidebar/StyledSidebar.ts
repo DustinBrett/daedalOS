@@ -15,11 +15,15 @@ const StyledSidebar = styled.nav`
 
   &:hover:not(&.collapsed) {
     backdrop-filter: blur(12px);
-    background-color: hsla(0, 0%, 10%, 75%);
+    background-color: hsla(0, 0%, 10%, 95%);
     box-shadow: 8px 0 5px -5px hsla(0, 0%, 10%, 50%);
     transition: all 300ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
+
+    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+      background-color: hsla(0, 0%, 10%, 75%);
+    }
   }
 `;
 
