@@ -82,7 +82,7 @@ export const SYSTEM_FILES = new Set(["desktop.ini"]);
 
 export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
-export const TEMP_PATH = `${HOME}/Temp`;
+export const DESKTOP_PATH = `${HOME}/Desktop`;
 
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,

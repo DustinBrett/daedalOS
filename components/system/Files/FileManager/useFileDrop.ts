@@ -5,7 +5,7 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { join } from "path";
-import { TEMP_PATH } from "utils/constants";
+import { DESKTOP_PATH } from "utils/constants";
 import useDialog from "utils/useDialog";
 
 type FileDrop = {
@@ -24,7 +24,7 @@ type FileDropProps = {
 
 const useFileDrop = ({
   callback,
-  directory = TEMP_PATH,
+  directory = DESKTOP_PATH,
   id,
   onDragLeave,
   onDragOver,
@@ -39,13 +39,13 @@ const useFileDrop = ({
       if (!fileData) {
         url(id, filePath);
       } else {
-        const tempPath = join(TEMP_PATH, filePath);
+        const tempPath = join(DESKTOP_PATH, filePath);
 
-        await mkdirRecursive(TEMP_PATH);
+        await mkdirRecursive(DESKTOP_PATH);
 
         if (await writeFile(tempPath, fileData, true)) {
           url(id, tempPath);
-          updateFolder(TEMP_PATH, filePath);
+          updateFolder(DESKTOP_PATH, filePath);
         }
       }
     }
