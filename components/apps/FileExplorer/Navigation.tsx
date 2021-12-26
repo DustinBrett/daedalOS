@@ -13,7 +13,7 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import useHistory from "utils/useHistory";
 
@@ -42,6 +42,12 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
     label: basename(historyUrl) || ROOT_NAME,
     primary: position === index,
   }));
+  const style = useMemo(
+    () => ({
+      backgroundImage: `url('${icon.replace("/Icons/", "/Icons/16x16/")}')`,
+    }),
+    [icon]
+  );
 
   useEffect(() => {
     if (addressBarRef.current) {
@@ -99,7 +105,6 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
       </Button>
       <StyledAddressBar
         ref={addressBarRef}
-        $icon={icon}
         onBlur={() => setAddressBar(displayName)}
         onChange={({ target }) => setAddressBar(target.value)}
         onFocus={() => setAddressBar(url)}
@@ -114,6 +119,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
             addressBarRef.current.blur();
           }
         }}
+        style={style}
         value={addressBar}
       />
       <Button onClick={() => updateFolder(url)} title="Refresh">
