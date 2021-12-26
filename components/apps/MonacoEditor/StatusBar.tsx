@@ -16,8 +16,8 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
   } = useProcesses();
   const { editor, url } = process || {};
   const [language, setLanguage] = useState("");
-  const [position, setPosition] = useState("");
-  const [lineCount, setLineCount] = useState(0);
+  const [position, setPosition] = useState("Ln 1, Col 1");
+  const [lineCount, setLineCount] = useState(1);
 
   useEffect(() => {
     const updatePosition = (): void => {
@@ -62,34 +62,42 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
 
   return (
     <StyledStatusBar>
-      <ol>{lineCount > 0 && <li>Lines {lineCount}</li>}</ol>
-      <ol>
-        {url && isPrettyLanguage(language) && (
-          <li title={`Pretty print ${basename(url)}`}>
-            <Button
-              className="pretty"
-              onClick={async () =>
-                editor?.setValue(await prettyPrint(language, editor.getValue()))
-              }
-            >
-              {"{ }"}
-            </Button>
-          </li>
-        )}
-        {position && (
-          <li title="Go to Line/Column">
-            <Button
-              onClick={() => {
-                editor?.focus();
-                editor?.getAction("editor.action.gotoLine").run();
-              }}
-            >
-              {position}
-            </Button>
-          </li>
-        )}
-        {language !== "" && <li>{language}</li>}
-      </ol>
+      {editor && (
+        <>
+          <ol>
+            <li>Lines {lineCount}</li>
+          </ol>
+          <ol>
+            {url && isPrettyLanguage(language) && (
+              <li title={`Pretty print ${basename(url)}`}>
+                <Button
+                  className="pretty"
+                  onClick={async () =>
+                    editor?.setValue(
+                      await prettyPrint(language, editor.getValue())
+                    )
+                  }
+                >
+                  {"{ }"}
+                </Button>
+              </li>
+            )}
+            {position && (
+              <li title="Go to Line/Column">
+                <Button
+                  onClick={() => {
+                    editor?.focus();
+                    editor?.getAction("editor.action.gotoLine").run();
+                  }}
+                >
+                  {position}
+                </Button>
+              </li>
+            )}
+            {language !== "" && <li>{language}</li>}
+          </ol>
+        </>
+      )}
     </StyledStatusBar>
   );
 };
