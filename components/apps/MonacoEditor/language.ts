@@ -3,15 +3,14 @@ import type { Plugin } from "prettier";
 type Parser = { parser: string; plugins: Plugin[] };
 
 const prettyLanguages = new Set([
-  "typescript",
-  "javascript",
   "json",
+  "javascript",
+  "typescript",
   "css",
-  "scss",
+  "sass",
   "less",
   "html",
-  "md",
-  "mdx",
+  "markdown",
 ]);
 
 export const getLanguageParser = async (
@@ -23,9 +22,9 @@ export const getLanguageParser = async (
       plugins: [await import("prettier/parser-babel")],
     };
   }
-  if (language === "css" || language === "scss" || language === "less") {
+  if (language === "css" || language === "sass" || language === "less") {
     return {
-      parser: "postcss",
+      parser: language,
       plugins: [await import("prettier/parser-postcss")],
     };
   }
@@ -35,7 +34,7 @@ export const getLanguageParser = async (
       plugins: [await import("prettier/parser-html")],
     };
   }
-  if (language === "md" || language === "mdx") {
+  if (language === "markdown") {
     return {
       parser: "markdown",
       plugins: [await import("prettier/parser-markdown")],
