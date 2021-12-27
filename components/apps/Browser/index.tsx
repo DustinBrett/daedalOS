@@ -139,6 +139,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
             if (inputRef.current && code === "Enter") {
               changeUrl(id, inputRef.current.value);
               window.getSelection()?.removeAllRanges();
+              inputRef.current.blur();
             }
           }}
           type="text"

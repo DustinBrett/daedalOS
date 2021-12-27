@@ -78,6 +78,10 @@ const StyledBrowser = styled.div`
       margin: 0 6px;
       padding: 0 13px;
       width: 100%;
+
+      &:focus {
+        outline: 2px solid rgb(138, 180, 248);
+      }
     }
   }
 `;
