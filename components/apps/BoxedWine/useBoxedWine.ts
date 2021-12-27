@@ -48,7 +48,7 @@ const useBoxedWine = (
 
       if (isExecutable) {
         appPayload = Buffer.from(
-          await zipAsync({ [basename(url)]: appPayload })
+          await zipAsync({ [basename(url)]: appPayload }, { level: 0 })
         );
       }
 

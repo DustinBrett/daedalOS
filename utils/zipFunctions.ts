@@ -41,10 +41,13 @@ export const addFileToZip = async (
   readFile: (path: string) => Promise<Buffer>
 ): Promise<Buffer> =>
   Buffer.from(
-    await zipAsync({
-      ...(buffer !== EMPTY_BUFFER && (await unzipAsync(buffer))),
-      ...addFileToZippable(zipFilePath, await readFile(filePath)),
-    })
+    await zipAsync(
+      {
+        ...(buffer !== EMPTY_BUFFER && (await unzipAsync(buffer))),
+        ...addFileToZippable(zipFilePath, await readFile(filePath)),
+      },
+      { level: 0 }
+    )
   );
 
 export const isFileInZip = (

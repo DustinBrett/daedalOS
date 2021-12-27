@@ -74,7 +74,9 @@ const useDosCI = (
     const zipBuffer =
       extname(url).toLowerCase() !== ".exe"
         ? urlBuffer
-        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
+        : Buffer.from(
+            await zipAsync({ [basename(url)]: urlBuffer }, { level: 0 })
+          );
     const bundleURL = bufferToUrl(await addJsDosConfig(zipBuffer, readFile));
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
     const stateUrl =
