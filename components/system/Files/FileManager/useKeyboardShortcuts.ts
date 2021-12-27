@@ -17,7 +17,7 @@ const useKeyboardShortcuts = (
   { pasteToFolder }: FolderActions,
   updateFiles: () => void
 ): KeyboardShortcutEntry => {
-  const { copyEntries, moveEntries, rmdir, stat, unlink } = useFileSystem();
+  const { copyEntries, deletePath, moveEntries } = useFileSystem();
 
   return (file: string): React.KeyboardEventHandler =>
     (event) => {
@@ -44,13 +44,8 @@ const useKeyboardShortcuts = (
         focusedEntries.forEach(async (entry) => {
           const path = join(url, entry);
 
-          if (
-            await ((await stat(path)).isDirectory()
-              ? rmdir(path)
-              : unlink(path))
-          ) {
-            updateFiles();
-          }
+          await deletePath(path);
+          updateFiles();
         });
 
         blurEntry();

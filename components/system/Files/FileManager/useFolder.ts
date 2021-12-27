@@ -37,7 +37,7 @@ import { unrar, unzip } from "utils/zipFunctions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
-  deletePath: (path: string) => Promise<void>;
+  deleteLocalPath: (path: string) => Promise<void>;
   downloadFiles: (paths: string[]) => void;
   extractFiles: (path: string) => void;
   newShortcut: (path: string, process: string) => void;
@@ -82,6 +82,7 @@ const useFolder = (
     addFsWatcher,
     copyEntries,
     createPath,
+    deletePath,
     exists,
     fs,
     mkdir,
@@ -91,9 +92,7 @@ const useFolder = (
     readFile,
     removeFsWatcher,
     rename,
-    rmdir,
     stat,
-    unlink,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -217,24 +216,12 @@ const useFolder = (
       statsWithShortcutInfo,
     ]
   );
-  const deletePath = useCallback(
-    async (path: string, updatePath = true): Promise<void> => {
-      try {
-        await unlink(path);
-      } catch (error) {
-        if ((error as ApiError).code === "EISDIR") {
-          const dirContents = await readdir(path);
-
-          await Promise.all(
-            dirContents.map((entry) => deletePath(join(path, entry), false))
-          );
-          await rmdir(path);
-        }
-      }
-
-      if (updatePath) updateFolder(directory, undefined, basename(path));
+  const deleteLocalPath = useCallback(
+    async (path: string): Promise<void> => {
+      await deletePath(path);
+      updateFolder(directory, undefined, basename(path));
     },
-    [directory, readdir, rmdir, unlink, updateFolder]
+    [deletePath, directory, updateFolder]
   );
   const createLink = (contents: Buffer, fileName?: string): void => {
     const link = document.createElement("a");
@@ -513,7 +500,7 @@ const useFolder = (
   return {
     fileActions: {
       archiveFiles,
-      deletePath,
+      deleteLocalPath,
       downloadFiles,
       extractFiles,
       newShortcut,

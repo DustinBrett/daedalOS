@@ -45,11 +45,13 @@ export type FileSystemContextState = AsyncFS & {
   copyEntries: (entries: string[]) => void;
   moveEntries: (entries: string[]) => void;
   mkdirRecursive: (path: string) => Promise<void>;
+  deletePath: (path: string) => Promise<void>;
 };
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const { rootFs, FileSystemAccess, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
-  const { exists, mkdir, readFile, rename, writeFile } = asyncFs;
+  const { exists, mkdir, readdir, readFile, rename, rmdir, unlink, writeFile } =
+    asyncFs;
   const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
@@ -200,6 +202,20 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     await recursePath();
   };
+  const deletePath = async (path: string): Promise<void> => {
+    try {
+      await unlink(path);
+    } catch (error) {
+      if ((error as ApiError).code === "EISDIR") {
+        const dirContents = await readdir(path);
+
+        await Promise.all(
+          dirContents.map((entry) => deletePath(join(path, entry)))
+        );
+        await rmdir(path);
+      }
+    }
+  };
   const createPath = async (
     name: string,
     directory: string,
@@ -273,6 +289,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     addFsWatcher,
     copyEntries,
     createPath,
+    deletePath,
     mapFs,
     mkdirRecursive,
     mountFs,
