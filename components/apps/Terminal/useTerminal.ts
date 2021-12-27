@@ -167,10 +167,19 @@ const useTerminal = (
 
       setPrompted(true);
       terminal.focus();
+      autoFit();
 
       readdir(HOME).then((files) => autoComplete(files, localEcho));
     }
-  }, [initialCommand, localEcho, processCommand, prompted, readdir, terminal]);
+  }, [
+    autoFit,
+    initialCommand,
+    localEcho,
+    processCommand,
+    prompted,
+    readdir,
+    terminal,
+  ]);
 
   useResizeObserver(containerRef.current, autoFit);
 };
