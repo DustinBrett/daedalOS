@@ -51,9 +51,11 @@ export const isFileInZip = (
   buffer: Buffer,
   zipFilePath: string
 ): Promise<boolean> =>
-  new Promise((resolve) => {
-    unzip(buffer, (_unzipError, zipData) =>
-      resolve(Object.keys(zipData).includes(zipFilePath))
+  new Promise((resolve, reject) => {
+    unzip(buffer, (unzipError, zipData) =>
+      unzipError
+        ? reject(unzipError)
+        : resolve(Object.keys(zipData).includes(zipFilePath))
     );
   });
 
