@@ -53,7 +53,7 @@ const useTinyMCE = (
           const isRelative =
             relative(link.dataset["mceHref"] || "", link.pathname) === "";
 
-          if (isRelative) {
+          if (isRelative && editor?.mode.isReadOnly()) {
             event.stopPropagation();
             event.preventDefault();
 
@@ -66,7 +66,7 @@ const useTinyMCE = (
         })
       );
     }
-  }, [containerRef, open]);
+  }, [containerRef, editor, open]);
   const loadFile = useCallback(async () => {
     if (editor) {
       const fileContents = await readFile(url);
@@ -108,8 +108,12 @@ const useTinyMCE = (
               const iframe = containerRef.current?.querySelector("iframe");
 
               if (iframe?.contentWindow) {
-                iframe.contentWindow.addEventListener("dragover", onDragOver);
-                iframe.contentWindow.addEventListener("drop", onDrop);
+                iframe.contentWindow.addEventListener("dragover", (event) => {
+                  if (activeEditor?.mode.isReadOnly()) onDragOver(event);
+                });
+                iframe.contentWindow.addEventListener("drop", (event) => {
+                  if (activeEditor?.mode.isReadOnly()) onDrop(event);
+                });
               }
 
               setEditor(activeEditor);
