@@ -71,13 +71,18 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : EMPTY_BUFFER;
+    const extension = extname(url).toLowerCase();
     const zipBuffer =
-      extname(url).toLowerCase() !== ".exe"
+      extension !== ".exe"
         ? urlBuffer
         : Buffer.from(
             await zipAsync({ [basename(url)]: urlBuffer }, { level: 0 })
           );
-    const bundleURL = bufferToUrl(await addJsDosConfig(zipBuffer, readFile));
+    const bundleURL = bufferToUrl(
+      extension === ".jsdos"
+        ? zipBuffer
+        : await addJsDosConfig(zipBuffer, readFile)
+    );
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
     const stateUrl =
       url && (await exists(savePath))
