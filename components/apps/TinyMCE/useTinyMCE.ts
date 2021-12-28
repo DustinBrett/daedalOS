@@ -21,7 +21,7 @@ const useTinyMCE = (
 ): void => {
   const { open } = useProcesses();
   const [editor, setEditor] = useState<Editor>();
-  const { appendFileToTitle } = useTitle(id);
+  const { prependFileToTitle } = useTitle(id);
   const { readFile, stat, writeFile } = useFileSystem();
   const { onDragOver, onDrop } = useFileDrop({ id });
   const onSave = useCallback(
@@ -82,13 +82,13 @@ const useTinyMCE = (
 
       linksToProcesses();
 
-      appendFileToTitle(`${basename(url, extname(url))} (${date})`);
+      prependFileToTitle(`${basename(url, extname(url))} (${date})`);
     }
   }, [
-    appendFileToTitle,
     editor,
     linksToProcesses,
     onSave,
+    prependFileToTitle,
     readFile,
     stat,
     url,
