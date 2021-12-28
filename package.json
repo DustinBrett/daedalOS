@@ -2,7 +2,7 @@
   "name": "x",
   "alias": "daedalOS",
   "version": "2.0.0",
-  "description": "OS in the browser",
+  "description": "Desktop environment in the browser",
   "author": "Dustin Brett",
   "license": "MIT",
   "browserslist": [
