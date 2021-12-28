@@ -1,7 +1,7 @@
 import PeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/PeekWindow";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
-import useTaskbarEntryContextMenu from "components/system/Taskbar/TaskbarEntry/useTaskbarEntryContextMenu";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
+import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -55,7 +55,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       onMouseLeave={hidePeek}
       title={taskbarTitle}
       {...useTaskbarTransition()}
-      {...useTaskbarEntryContextMenu(id)}
+      {...useTitlebarContextMenu(id)}
     >
       <AnimatePresence>
         {isPeekVisible && <PeekWindow id={id} />}
