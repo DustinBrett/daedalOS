@@ -425,7 +425,9 @@ const useFolder = (
       )
     );
 
-    updateFolder(directory);
+    pasteEntries.forEach(([pasteEntry]) =>
+      updateFolder(directory, basename(pasteEntry))
+    );
 
     if (moving) copyEntries([]);
   };
