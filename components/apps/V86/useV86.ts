@@ -13,7 +13,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname, join } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
@@ -29,6 +29,7 @@ const useV86 = (
   } = useProcesses();
   const { closing } = process || {};
   const { appendFileToTitle } = useTitle(id);
+  const shutdown = useRef(false);
   const [emulator, setEmulator] = useState<
     Record<string, V86Starter | undefined>
   >({});
@@ -95,17 +96,21 @@ const useV86 = (
     const v86 = new window.V86Starter(v86StarterConfig);
 
     v86.add_listener("emulator-loaded", () => {
-      appendFileToTitle(basename(url));
-      cleanUpBufferUrl(bufferUrl);
+      if (shutdown.current) {
+        v86?.destroy();
+      } else {
+        appendFileToTitle(basename(url));
+        cleanUpBufferUrl(bufferUrl);
 
-      if (v86StarterConfig.initial_state) {
-        cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+        if (v86StarterConfig.initial_state) {
+          cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+        }
+
+        containerRef.current?.addEventListener("click", v86.lock_mouse);
+
+        setEmulator({ [url]: v86 });
       }
     });
-
-    containerRef.current?.addEventListener("click", v86.lock_mouse);
-
-    setEmulator({ [url]: v86 });
   }, [
     appendFileToTitle,
     closeDiskImage,
@@ -133,7 +138,10 @@ const useV86 = (
     }
 
     return () => {
-      if (url && closing) closeDiskImage(url);
+      if (url && closing) {
+        shutdown.current = true;
+        if (emulator[url]) closeDiskImage(url);
+      }
     };
   }, [closeDiskImage, closing, emulator, loadDiskImage, loading, process, url]);
 };
