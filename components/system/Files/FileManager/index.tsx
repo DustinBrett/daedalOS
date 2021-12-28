@@ -14,7 +14,11 @@ import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname, join } from "path";
 import { useEffect, useRef, useState } from "react";
-import { MOUNTABLE_EXTENSIONS, SHORTCUT_EXTENSION } from "utils/constants";
+import {
+  FOCUSABLE_ELEMENT,
+  MOUNTABLE_EXTENSIONS,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
 
 type FileManagerProps = {
   hideFolders?: boolean;
@@ -71,7 +75,8 @@ const FileManager = ({
     setRenaming,
     focusFunctions,
     folderActions,
-    updateFiles
+    updateFiles,
+    id
   );
 
   useEffect(() => {
@@ -106,6 +111,8 @@ const FileManager = ({
             ...folderContextMenu,
             ...selectionEvents,
           })}
+          {...(renaming === "" && { onKeyDown: keyShortcuts() })}
+          {...FOCUSABLE_ELEMENT}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}
           {Object.keys(files).map((file) => (
@@ -113,7 +120,7 @@ const FileManager = ({
               key={file}
               visible={!isLoading}
               {...(renaming !== file && !readOnly && draggableEntry(url, file))}
-              {...(renaming !== file && { onKeyDown: keyShortcuts(file) })}
+              {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
               {...focusableEntry(file)}
             >
               <FileEntry

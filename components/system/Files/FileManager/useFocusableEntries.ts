@@ -47,6 +47,7 @@ const useFocusableEntries = (
   const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||
+      fileManagerRef.current === relatedTarget ||
       !fileManagerRef.current?.contains(relatedTarget)
     ) {
       blurEntry();

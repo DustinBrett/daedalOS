@@ -4,9 +4,10 @@ import type {
   FolderActions,
 } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
-import { join } from "path";
+import { useProcesses } from "contexts/process";
+import { dirname, join } from "path";
 
-type KeyboardShortcutEntry = (file: string) => React.KeyboardEventHandler;
+type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
 const useKeyboardShortcuts = (
   files: Files,
@@ -15,11 +16,13 @@ const useKeyboardShortcuts = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   { pasteToFolder }: FolderActions,
-  updateFiles: () => void
+  updateFiles: () => void,
+  id?: string
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
+  const { url: changeUrl } = useProcesses();
 
-  return (file: string): React.KeyboardEventHandler =>
+  return (file?: string): React.KeyboardEventHandler =>
     (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -30,6 +33,11 @@ const useKeyboardShortcuts = (
         const lKey = key.toLowerCase();
 
         if (lKey === "a") {
+          if (target instanceof HTMLOListElement) {
+            const [firstEntry] = target.querySelectorAll("button");
+
+            firstEntry?.focus();
+          }
           Object.keys(files).forEach((fileName) => focusEntry(fileName));
         } else if (lKey === "c") {
           copyEntries(focusedEntries.map((entry) => join(url, entry)));
@@ -38,7 +46,7 @@ const useKeyboardShortcuts = (
         } else if (lKey === "v") {
           pasteToFolder();
         }
-      } else if (key === "F2") {
+      } else if (key === "F2" && file) {
         setRenaming(file);
       } else if (key === "Delete") {
         focusedEntries.forEach(async (entry) => {
@@ -49,6 +57,8 @@ const useKeyboardShortcuts = (
         });
 
         blurEntry();
+      } else if (key === "Backspace" && id) {
+        changeUrl(id, dirname(url));
       } else if (target instanceof HTMLButtonElement) {
         if (key === "Enter") {
           target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
