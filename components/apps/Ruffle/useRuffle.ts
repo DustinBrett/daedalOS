@@ -17,22 +17,26 @@ const useRuffle = (
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
   const loadFlash = useCallback(async () => {
+    containerRef.current?.classList.remove("drop");
     await player?.load({ data: await readFile(url) });
     appendFileToTitle(basename(url, extname(url)));
-  }, [appendFileToTitle, player, readFile, url]);
+  }, [appendFileToTitle, containerRef, player, readFile, url]);
 
   useEffect(() => {
-    loadFiles(libs).then(() => {
-      if (window.RufflePlayer) {
-        window.RufflePlayer.config = {
-          backgroundColor: "#000000",
-          letterbox: "on",
-          polyfills: false,
-        };
-        setPlayer(window.RufflePlayer.newest().createPlayer());
-      }
-    });
-  }, []);
+    if (!window.RufflePlayer) {
+      loadFiles(libs).then(() => {
+        if (window.RufflePlayer) {
+          window.RufflePlayer.config = {
+            backgroundColor: "#000000",
+            letterbox: "on",
+            polyfills: false,
+          };
+          setPlayer(window.RufflePlayer.newest().createPlayer());
+          if (!url) containerRef.current?.classList.add("drop");
+        }
+      });
+    }
+  }, [containerRef, url]);
 
   useEffect(() => {
     if (containerRef.current && player) {
