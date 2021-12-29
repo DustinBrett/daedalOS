@@ -8,6 +8,7 @@ import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
@@ -24,6 +25,7 @@ const useTinyMCE = (
   const { prependFileToTitle } = useTitle(id);
   const { readFile, stat, writeFile } = useFileSystem();
   const { onDragOver, onDrop } = useFileDrop({ id });
+  const { setForegroundId } = useSession();
   const onSave = useCallback(
     async (activeEditor: Editor) => {
       const saveSpec: NotificationSpec = {
@@ -114,6 +116,10 @@ const useTinyMCE = (
                 iframe.contentWindow.addEventListener("drop", (event) => {
                   if (activeEditor?.mode.isReadOnly()) onDrop(event);
                 });
+                iframe?.contentWindow.addEventListener("focus", () => {
+                  setForegroundId(id);
+                  containerRef.current?.closest("section")?.focus();
+                });
               }
 
               setEditor(activeEditor);
@@ -122,7 +128,15 @@ const useTinyMCE = (
         }
       });
     }
-  }, [containerRef, editor, onDragOver, onDrop, onSave, setLoading]);
+  }, [
+    containerRef,
+    editor,
+    id,
+    onDragOver,
+    onDrop,
+    setForegroundId,
+    setLoading,
+  ]);
 
   useEffect(() => {
     if (url && editor && readFile) loadFile();
