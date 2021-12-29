@@ -12,6 +12,7 @@ const processDirectory: Processes = {
       width: 640,
     },
     icon: "/System/Icons/boxedwine.png",
+    singleton: true,
     title: "BoxedWine",
   },
   Browser: {
