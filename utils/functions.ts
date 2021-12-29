@@ -47,14 +47,14 @@ const loadStyle = (href: string): Promise<Event> =>
     }
   });
 
-export const loadFiles = async (files: string[]): Promise<Event[]> =>
-  Promise.all(
-    files.map((file) =>
-      extname(file).toLowerCase() === ".css"
-        ? loadStyle(encodeURI(file))
-        : loadScript(encodeURI(file))
-    )
-  );
+export const loadFiles = async (files: string[]): Promise<void> => {
+  for (const file of files) {
+    // eslint-disable-next-line no-await-in-loop
+    await (extname(file).toLowerCase() === ".css"
+      ? loadStyle(encodeURI(file))
+      : loadScript(encodeURI(file)));
+  }
+};
 
 export const pxToNum = (value: number | string = 0): number =>
   Number(stripUnit(value));
