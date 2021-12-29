@@ -4,7 +4,7 @@ import {
   config,
   libs,
   saveExtension,
-} from "components/apps/V86//config";
+} from "components/apps/V86/config";
 import type { V86ImageConfig } from "components/apps/V86/image";
 import { getImageType } from "components/apps/V86/image";
 import type { V86Config, V86Starter } from "components/apps/V86/types";
