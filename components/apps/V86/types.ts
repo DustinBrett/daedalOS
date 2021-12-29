@@ -24,6 +24,7 @@ type V86Constructor = new (v86Config: V86Config) => V86Starter;
 
 declare global {
   interface Window {
+    DEBUG?: boolean;
     V86Starter: V86Constructor;
   }
 }
