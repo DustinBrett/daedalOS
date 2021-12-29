@@ -23,19 +23,17 @@ const useRuffle = (
   }, [appendFileToTitle, containerRef, player, readFile, url]);
 
   useEffect(() => {
-    if (!window.RufflePlayer) {
-      loadFiles(libs).then(() => {
-        if (window.RufflePlayer) {
-          window.RufflePlayer.config = {
-            backgroundColor: "#000000",
-            letterbox: "on",
-            polyfills: false,
-          };
-          setPlayer(window.RufflePlayer.newest().createPlayer());
-          if (!url) containerRef.current?.classList.add("drop");
-        }
-      });
-    }
+    loadFiles(libs).then(() => {
+      if (window.RufflePlayer) {
+        window.RufflePlayer.config = {
+          backgroundColor: "#000000",
+          letterbox: "on",
+          polyfills: false,
+        };
+        setPlayer(window.RufflePlayer.newest().createPlayer());
+        if (!url) containerRef.current?.classList.add("drop");
+      }
+    });
   }, [containerRef, url]);
 
   useEffect(() => {
