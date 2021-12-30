@@ -7,29 +7,33 @@ import type {
 import { useProcesses } from "contexts/process";
 import { MENU_SEPERATOR } from "utils/constants";
 
-const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
+const useTitlebarContextMenu = (
+  id: string,
+  hideDisabled = false
+): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { maximized } = process || {};
-  const menuItems: MenuItem[] = [
-    {
+  const { allowResizing = true, maximized, minimized } = process || {};
+  const disableMaximize = maximized || !allowResizing;
+  const menuItems: (MenuItem | boolean)[] = [
+    !(hideDisabled && (!disableMaximize || minimized)) && {
       action: () => onMaximize(),
-      disabled: !maximized,
-      icon: `/System/Icons/restore${!maximized ? "_disabled" : ""}.png`,
+      disabled: !disableMaximize,
+      icon: `/System/Icons/restore${!disableMaximize ? "_disabled" : ""}.png`,
       label: "Restore",
     },
     {
       action: () => onMinimize(),
       icon: "/System/Icons/minimize.png",
-      label: "Minimize",
+      label: minimized ? "Restore" : "Minimize",
     },
-    {
+    !(hideDisabled && (disableMaximize || minimized)) && {
       action: () => onMaximize(),
-      disabled: maximized,
-      icon: `/System/Icons/maximize${maximized ? "_disabled" : ""}.png`,
+      disabled: disableMaximize,
+      icon: `/System/Icons/maximize${disableMaximize ? "_disabled" : ""}.png`,
       label: "Maximize",
     },
     MENU_SEPERATOR,
@@ -40,7 +44,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     },
   ];
 
-  return contextMenu?.(menuItems);
+  return contextMenu?.(menuItems.filter(Boolean) as MenuItem[]);
 };
 
 export default useTitlebarContextMenu;
