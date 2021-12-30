@@ -12,7 +12,7 @@ type ContainerHook = (
   loading: boolean
 ) => void;
 
-const ContainerComponent = (
+const AppContainer = (
   id: string,
   useHook: ContainerHook,
   Component: StyledComponent<"div", DefaultTheme>,
@@ -45,4 +45,4 @@ const ContainerComponent = (
   );
 };
 
-export default ContainerComponent;
+export default AppContainer;

@@ -13,9 +13,9 @@ import {
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
+import useDialog from "hooks/useDialog";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import useDialog from "utils/useDialog";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 

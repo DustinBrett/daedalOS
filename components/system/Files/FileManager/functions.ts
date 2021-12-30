@@ -2,9 +2,9 @@ import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
+import type { FileReaders } from "hooks/useDialog";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import type { FileReaders } from "utils/useDialog";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;

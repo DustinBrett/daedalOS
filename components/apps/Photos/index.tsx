@@ -12,11 +12,11 @@ import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
-import useDoubleClick from "utils/useDoubleClick";
 
 const { maxScale, minScale } = panZoomConfig;
 

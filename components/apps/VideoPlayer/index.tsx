@@ -1,7 +1,7 @@
+import ContainerComponent from "components/apps/AppContainer";
 import StyledVideoPlayer from "components/apps/VideoPlayer/StyledVideoPlayer";
 import useVideoPlayer from "components/apps/VideoPlayer/useVideoPlayer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import ContainerComponent from "utils/ContainerComponent";
 
 const VideoPlayer = ({ id }: ComponentProcessProps): JSX.Element =>
   ContainerComponent(

@@ -1,9 +1,9 @@
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { useFileSystem } from "contexts/fileSystem";
+import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getFormattedSize } from "utils/functions";
-import useResizeObserver from "utils/useResizeObserver";
 
 type StatusBarProps = {
   count: number;

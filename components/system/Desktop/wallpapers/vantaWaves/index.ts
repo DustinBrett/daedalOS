@@ -1,5 +1,5 @@
-import colorCycle from "components/system/Desktop/wallpapers/colorCycle";
-import type { VantaWavesConfig } from "components/system/Desktop/wallpapers/vantaWaves/types";
+import colorCycle from "components/system/Desktop/Wallpapers/colorCycle";
+import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";
 
 const disableControls = {

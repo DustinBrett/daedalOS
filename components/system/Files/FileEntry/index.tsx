@@ -20,6 +20,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import useDoubleClick from "hooks/useDoubleClick";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
@@ -40,7 +41,6 @@ import {
 } from "utils/constants";
 import { bufferToUrl, getFormattedSize } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-import useDoubleClick from "utils/useDoubleClick";
 
 type FileEntryProps = {
   fileActions: FileActions;

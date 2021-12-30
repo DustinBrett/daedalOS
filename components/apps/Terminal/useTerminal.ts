@@ -15,12 +15,12 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import { haltEvent } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import useResizeObserver from "hooks/useResizeObserver";
 import packageJson from "package.json";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { HOME } from "utils/constants";
 import { isFirefox, loadFiles } from "utils/functions";
-import useResizeObserver from "utils/useResizeObserver";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, name, version } = packageJson;

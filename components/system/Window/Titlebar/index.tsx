@@ -10,9 +10,9 @@ import {
 } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import useDoubleClick from "utils/useDoubleClick";
 
 type TitlebarProps = {
   id: string;

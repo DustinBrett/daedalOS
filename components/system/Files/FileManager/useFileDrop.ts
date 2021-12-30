@@ -4,9 +4,9 @@ import {
 } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import useDialog from "hooks/useDialog";
 import { join } from "path";
 import { DESKTOP_PATH } from "utils/constants";
-import useDialog from "utils/useDialog";
 
 type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
