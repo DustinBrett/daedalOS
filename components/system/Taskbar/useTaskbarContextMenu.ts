@@ -29,7 +29,7 @@ const useTaskbarContextMenu = (): ContextMenuCapture => {
     },
   ];
 
-  return contextMenu(menuItems);
+  return contextMenu?.(menuItems);
 };
 
 export default useTaskbarContextMenu;

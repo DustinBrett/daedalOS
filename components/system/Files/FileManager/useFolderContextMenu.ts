@@ -115,7 +115,7 @@ const useFolderContextMenu = (
     },
   ];
 
-  return contextMenu(menuItems);
+  return contextMenu?.(menuItems);
 };
 
 export default useFolderContextMenu;

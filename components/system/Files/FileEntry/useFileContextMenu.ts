@@ -222,7 +222,7 @@ const useFileContextMenu = (
   }
 
   const { onContextMenuCapture, ...contextMenuHandlers } =
-    contextMenu(menuItems);
+    contextMenu?.(menuItems) || {};
 
   return {
     onContextMenuCapture: (event: React.MouseEvent | React.TouchEvent) => {
