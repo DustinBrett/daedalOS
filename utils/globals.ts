@@ -20,12 +20,14 @@ export const cleanUpGlobals = (globals: string[]): void =>
   });
 
 const addGlobalLock = (key: string): void => {
+  let currentValue: unknown;
+
   Object.defineProperty(window, key, <PropertyDescriptor>{
     get() {
-      return window.lockedGlobals?.[key] ? undefined : this.value;
+      return window.lockedGlobals?.[key] ? undefined : currentValue;
     },
     set(value: unknown) {
-      if (!window.lockedGlobals?.[key]) this.value = value;
+      if (!window.lockedGlobals?.[key]) currentValue = value;
     },
   });
 };
