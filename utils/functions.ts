@@ -124,4 +124,9 @@ export const getUrlOrSearch = (input: string): string => {
   }
 };
 
-export const isFirefox = (): boolean => /firefox/i.test(navigator.userAgent);
+export const isFirefox = (): boolean =>
+  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
+
+export const isSafari = (): boolean =>
+  typeof window !== "undefined" &&
+  /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);

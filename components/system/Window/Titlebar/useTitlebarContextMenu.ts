@@ -40,9 +40,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     },
   ];
 
-  return {
-    onContextMenuCapture: contextMenu?.(menuItems),
-  };
+  return contextMenu(menuItems);
 };
 
 export default useTitlebarContextMenu;
