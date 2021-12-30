@@ -19,7 +19,7 @@ import packageJson from "package.json";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { HOME } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { isFirefox, loadFiles } from "utils/functions";
 import useResizeObserver from "utils/useResizeObserver";
 import type { IDisposable, Terminal } from "xterm";
 
@@ -118,6 +118,8 @@ const useTerminal = (
       });
 
       setLoading(false);
+
+      if (isFirefox()) terminal.options.letterSpacing = 0;
     }
 
     return () => {

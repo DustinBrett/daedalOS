@@ -123,3 +123,5 @@ export const getUrlOrSearch = (input: string): string => {
     return `${GOOGLE_SEARCH_QUERY}${input}`;
   }
 };
+
+export const isFirefox = (): boolean => /firefox/i.test(navigator.userAgent);
