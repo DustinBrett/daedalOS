@@ -10,6 +10,7 @@ const GlobalStyle = createGlobalStyle`
     outline: 0;
     padding: 0;
     user-select: none;
+    -webkit-touch-callout: none;
   }
 
   body {
