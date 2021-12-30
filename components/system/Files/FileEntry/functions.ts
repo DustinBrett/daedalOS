@@ -98,7 +98,7 @@ export const getIconFromIni = (
     );
   });
 
-const getDefaultFileViewer = (extension: string): string => {
+export const getDefaultFileViewer = (extension: string): string => {
   if (monacoExtensions.has(extension)) return "MonacoEditor";
   if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";
   if (VIDEO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";

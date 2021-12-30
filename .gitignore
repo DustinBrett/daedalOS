@@ -2,6 +2,7 @@
 node_modules
 out
 
+public/robots.txt
 public/.index/fs.*
 public/Users/Public/**
 
