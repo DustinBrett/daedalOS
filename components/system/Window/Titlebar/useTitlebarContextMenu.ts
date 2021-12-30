@@ -1,14 +1,13 @@
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { MENU_SEPERATOR } from "utils/constants";
 
-const useTitlebarContextMenu = (
-  id: string
-): {
-  onContextMenuCapture: React.MouseEventHandler<HTMLElement>;
-} => {
+const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const {

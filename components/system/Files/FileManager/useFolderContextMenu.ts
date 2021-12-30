@@ -6,7 +6,10 @@ import type {
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { EMPTY_BUFFER, FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
 const NEW_FOLDER = "New folder";
@@ -29,7 +32,7 @@ const useFolderContextMenu = (
     pasteToFolder,
     sortByOrder: [[sortBy, isAscending], setSortBy],
   }: FolderActions
-): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
+): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
   const ADD_FILE = { action: () => addToFolder(), label: "Add file" };

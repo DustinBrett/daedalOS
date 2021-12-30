@@ -24,6 +24,10 @@ export type MenuContextState = {
   contextMenu: (items: MenuItem[]) => React.MouseEventHandler;
 };
 
+export type ContextMenuCapture = {
+  onContextMenuCapture: React.MouseEventHandler<HTMLElement>;
+};
+
 const useMenuContextState = (): MenuContextState => {
   const [menu, setMenu] = useState<MenuState>({});
   const contextMenu =

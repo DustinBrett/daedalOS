@@ -1,11 +1,12 @@
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useMemo } from "react";
 
-const useTaskbarContextMenu = (): {
-  onContextMenuCapture: React.MouseEventHandler<HTMLElement>;
-} => {
+const useTaskbarContextMenu = (): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { minimize, processes } = useProcesses();
   const processArray = Object.entries(processes || {});

@@ -6,7 +6,10 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
@@ -35,7 +38,7 @@ const useFileContextMenu = (
   focusedEntries: string[],
   fileManagerId?: string,
   readOnly?: boolean
-): { onContextMenuCapture: React.MouseEventHandler<HTMLElement> } => {
+): ContextMenuCapture => {
   const { open, url: changeUrl } = useProcesses();
   const { setWallpaper } = useSession();
   const urlExtension = extname(url).toLowerCase();
