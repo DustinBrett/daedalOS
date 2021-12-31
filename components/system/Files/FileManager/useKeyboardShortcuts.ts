@@ -21,13 +21,13 @@ const useKeyboardShortcuts = (
   id?: string
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
-  const { url: changeUrl } = useProcesses();
+  const { open, url: changeUrl } = useProcesses();
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
       const { ctrlKey, key, target, shiftKey } = event;
 
-      if (key === "F12") return;
+      if (key === "F12" && !shiftKey) return;
 
       haltEvent(event);
 
@@ -48,14 +48,20 @@ const useKeyboardShortcuts = (
         } else if (lKey === "v") {
           pasteToFolder();
         }
-      } else if (shiftKey && key === "Escape") {
-        const startButton = document.querySelector(
-          "button[title='Start']"
-        ) as HTMLButtonElement;
+      } else if (shiftKey) {
+        if (key === "Escape") {
+          const startButton = document.querySelector(
+            "button[title='Start']"
+          ) as HTMLButtonElement;
 
-        startButton?.click();
+          startButton?.click();
+        } else if (key === "F12") {
+          open("DevTools");
+        }
       } else if (key === "F2" && file) {
         setRenaming(file);
+      } else if (key === "F5") {
+        updateFiles();
       } else if (key === "Delete") {
         focusedEntries.forEach(async (entry) => {
           const path = join(url, entry);
