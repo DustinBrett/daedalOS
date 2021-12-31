@@ -25,7 +25,7 @@ const useKeyboardShortcuts = (
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
-      const { ctrlKey, key, target } = event;
+      const { ctrlKey, key, target, shiftKey } = event;
 
       if (key === "F12") return;
 
@@ -48,6 +48,12 @@ const useKeyboardShortcuts = (
         } else if (lKey === "v") {
           pasteToFolder();
         }
+      } else if (shiftKey && key === "Escape") {
+        const startButton = document.querySelector(
+          "button[title='Start']"
+        ) as HTMLButtonElement;
+
+        startButton?.click();
       } else if (key === "F2" && file) {
         setRenaming(file);
       } else if (key === "Delete") {
