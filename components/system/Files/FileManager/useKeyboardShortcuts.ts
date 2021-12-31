@@ -6,6 +6,7 @@ import type {
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { dirname, join } from "path";
+import { haltEvent } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
@@ -24,10 +25,11 @@ const useKeyboardShortcuts = (
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       const { ctrlKey, key, target } = event;
+
+      if (key === "F12") return;
+
+      haltEvent(event);
 
       if (ctrlKey) {
         const lKey = key.toLowerCase();
