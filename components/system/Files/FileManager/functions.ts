@@ -1,4 +1,5 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
@@ -27,9 +28,15 @@ const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
 
 const sortSystemShortcuts = (
-  [, { systemShortcut: aSystem = false }]: FileStats,
+  [aName, { systemShortcut: aSystem = false }]: FileStats,
   [, { systemShortcut: bSystem = false }]: FileStats
-): number => (aSystem === bSystem ? 0 : aSystem ? -1 : 1);
+): number => {
+  if (aSystem === bSystem) {
+    return aSystem && aName !== ROOT_NAME ? -1 : 0;
+  }
+
+  return aSystem ? -1 : 1;
+};
 
 export const sortContents = (
   contents: Files,
