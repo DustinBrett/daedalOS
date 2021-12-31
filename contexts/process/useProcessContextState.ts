@@ -34,7 +34,11 @@ export type ProcessContextState = {
   ) => void;
   maximize: (id: string) => void;
   minimize: (id: string) => void;
-  open: (id: string, processArguments: ProcessArguments, icon?: string) => void;
+  open: (
+    id: string,
+    processArguments?: ProcessArguments,
+    icon?: string
+  ) => void;
   processes: Processes;
   title: (id: string, newTitle: string) => void;
   url: (id: string, newUrl: string) => void;
@@ -67,8 +71,8 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, processArguments: ProcessArguments, initialIcon?: string) =>
-      setProcesses(openProcess(id, processArguments, initialIcon)),
+    (id: string, processArguments?: ProcessArguments, initialIcon?: string) =>
+      setProcesses(openProcess(id, processArguments || {}, initialIcon)),
     []
   );
   const linkElement = useCallback(
