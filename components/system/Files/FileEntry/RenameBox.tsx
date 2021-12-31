@@ -1,10 +1,10 @@
 import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
-import { haltEvent } from "components/system/Files/FileManager/functions";
 import { extname } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import { PREVENT_SCROLL } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 type RenameBoxProps = {
   name: string;

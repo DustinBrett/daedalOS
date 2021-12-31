@@ -8,7 +8,6 @@ import {
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
 import type { WebampCI } from "components/apps/Webamp/types";
-import { haltEvent } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcesses } from "contexts/process";
@@ -16,6 +15,7 @@ import { useSession } from "contexts/session";
 import { useCallback, useState } from "react";
 import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
+import { haltEvent } from "utils/functions";
 import type { Options } from "webamp";
 
 type Webamp = {

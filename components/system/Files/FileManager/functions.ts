@@ -5,6 +5,7 @@ import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { FileReaders } from "hooks/useDialog";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;
@@ -108,13 +109,6 @@ export const iterateFileName = (name: string, iteration: number): string => {
   const fileName = basename(name, extension);
 
   return `${fileName} (${iteration})${extension}`;
-};
-
-export const haltEvent = (
-  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
-): void => {
-  event.preventDefault();
-  event.stopPropagation();
 };
 
 export const handleFileInputEvent = (

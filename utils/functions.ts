@@ -130,3 +130,10 @@ export const isFirefox = (): boolean =>
 export const isSafari = (): boolean =>
   typeof window !== "undefined" &&
   /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+
+export const haltEvent = (
+  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+): void => {
+  event.preventDefault();
+  event.stopPropagation();
+};
