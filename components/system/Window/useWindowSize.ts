@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { useTheme } from "styled-components";
-import { pxToNum } from "utils/functions";
+import { maxSize, pxToNum } from "utils/functions";
 
 type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
@@ -10,8 +10,11 @@ type WindowSize = {
 
 const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSession();
-  const { processes: { [id]: { maximized = false } = {} } = {} } =
-    useProcesses();
+  const {
+    processes: {
+      [id]: { lockAspectRatio = false, maximized = false } = {},
+    } = {},
+  } = useProcesses();
   const {
     sizes: { titleBar },
   } = useTheme();
@@ -23,13 +26,16 @@ const useWindowSize = (id: string): WindowSize => {
         [id]: {
           maximized,
           position: currentWindowStates[id]?.position,
-          size: {
-            height: height + pxToNum(titleBar.height),
-            width,
-          },
+          size: maxSize(
+            {
+              height: height + pxToNum(titleBar.height),
+              width,
+            },
+            lockAspectRatio
+          ),
         },
       })),
-    [id, maximized, setWindowStates, titleBar.height]
+    [id, lockAspectRatio, maximized, setWindowStates, titleBar.height]
   );
 
   return {

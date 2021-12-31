@@ -1,4 +1,5 @@
 import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
+import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
 import { stripUnit } from "polished";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
@@ -64,6 +65,37 @@ export const viewHeight = (): number =>
 
 export const viewWidth = (): number =>
   Math.min(window.innerWidth, window.screen.width);
+
+export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
+  const [vh, vw] = [viewHeight(), viewWidth()];
+  const setHeight = Number(size.height);
+  const setWidth = Number(size.width);
+  const height = Math.min(setHeight, vh);
+  const width = Math.min(setWidth, vw);
+
+  if (!lockAspectRatio) return { height, width };
+
+  const forcedHeight = setHeight !== height;
+  const forcedWidth = setWidth !== width;
+
+  if (!forcedHeight && !forcedWidth) return { height, width };
+
+  return setWidth > setHeight
+    ? {
+        height: height * (setHeight / setWidth),
+        width:
+          setWidth === vw && forcedHeight
+            ? width * (setHeight / setWidth)
+            : width,
+      }
+    : {
+        height: width * (setWidth / setHeight),
+        width:
+          setHeight === vh && forcedWidth
+            ? height * (setWidth / setHeight)
+            : height,
+      };
+};
 
 const bytesInKB = 1024;
 const bytesInMB = 1024 * 999;
