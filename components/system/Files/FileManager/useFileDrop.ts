@@ -1,12 +1,10 @@
-import {
-  haltEvent,
-  handleFileInputEvent,
-} from "components/system/Files/FileManager/functions";
+import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDialog from "hooks/useDialog";
 import { join } from "path";
 import { DESKTOP_PATH } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
