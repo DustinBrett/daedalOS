@@ -19,7 +19,7 @@ const cssFit: Record<WallpaperFit, string> = {
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
 ): void => {
-  const { readFile } = useFileSystem();
+  const { exists, readFile } = useFileSystem();
   const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
   const loadThemeWallpaper = useCallback(() => {
@@ -27,21 +27,33 @@ const useWallpaper = (
     wallpaper?.(desktopRef.current);
   }, [desktopRef, wallpaper]);
   const loadFileWallpaper = useCallback(async () => {
-    const [, currentWallpaperUrl] =
-      desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
+    if (await exists(wallpaperImage)) {
+      const [, currentWallpaperUrl] =
+        desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
 
-    if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+      if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-    wallpaper?.();
+      wallpaper?.();
 
-    desktopRef.current?.setAttribute(
-      "style",
-      `
+      desktopRef.current?.setAttribute(
+        "style",
+        `
         background-image: url("${bufferToUrl(await readFile(wallpaperImage))}");
         ${cssFit[wallpaperFit]}
       `
-    );
-  }, [desktopRef, readFile, wallpaper, wallpaperFit, wallpaperImage]);
+      );
+    } else {
+      loadThemeWallpaper();
+    }
+  }, [
+    desktopRef,
+    exists,
+    loadThemeWallpaper,
+    readFile,
+    wallpaper,
+    wallpaperFit,
+    wallpaperImage,
+  ]);
 
   useEffect(() => {
     if (sessionLoaded) {
