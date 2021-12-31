@@ -1,7 +1,7 @@
 const { readdirSync, statSync, writeFileSync } = require("fs");
 const { extname, join } = require("path");
 
-const APPS_PATH = "components\\apps";
+const APPS_PATH = "components/apps";
 const PUBLIC_PATH = "public";
 const INDEXED_FILE_TYPES = new Set([".md", ".whtml"]);
 
