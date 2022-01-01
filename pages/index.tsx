@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
@@ -24,10 +25,12 @@ const Index = ({ commit }: IndexProps): React.ReactElement => {
   }, [commit]);
 
   return (
-    <Desktop>
-      <Taskbar />
-      <AppsLoader />
-    </Desktop>
+    <ErrorBoundary>
+      <Desktop>
+        <Taskbar />
+        <AppsLoader />
+      </Desktop>
+    </ErrorBoundary>
   );
 };
 
