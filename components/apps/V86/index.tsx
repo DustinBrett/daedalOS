@@ -3,7 +3,7 @@ import StyledV86 from "components/apps/V86/StyledV86";
 import useV86 from "components/apps/V86/useV86";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const V86Children: JSX.Element = (
+const V86Children: React.ReactNode = (
   <>
     <div />
     <canvas />

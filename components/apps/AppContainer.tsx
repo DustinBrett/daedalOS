@@ -16,8 +16,8 @@ const AppContainer = (
   id: string,
   useHook: ContainerHook,
   Component: StyledComponent<"div", DefaultTheme>,
-  children?: JSX.Element,
-  siblings?: JSX.Element
+  children?: React.ReactNode,
+  siblings?: React.ReactNode
 ): JSX.Element => {
   const {
     processes: { [id]: { url: currentUrl = "" } = {} },
