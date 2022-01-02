@@ -33,6 +33,7 @@ const processDirectory: Processes = {
       width: 545,
     },
     icon: "/System/Icons/eruda.png",
+    singleton: true,
     title: "DevTools",
   },
   Dialog: {
