@@ -36,6 +36,7 @@ yarn dev
 - File Explorer
   - Back, Forward, Recent locations, Address bar
 - [Drag & Drop](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) File Support (internal & external)
+  - Loading progress dialog
 - ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [RAR extract](https://www.npmjs.com/package/node-unrar-js) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort
@@ -56,6 +57,7 @@ yarn dev
 ### Windows
 
 - [Resizable and Draggable](https://github.com/bokuweb/react-rnd)
+- Minimize, Maximize & Close
 - Persists size/position/maximized states
 - [Animates](https://www.framer.com/motion/) opening and closing
 
@@ -101,6 +103,7 @@ yarn dev
 - Bookmark bar
 - Favicon support
 - Back/Forward & Reload
+- Google search via Address bar
 
 ### [DevTools](https://eruda.liriliri.io/)
 
@@ -140,6 +143,7 @@ yarn dev
 ### [Terminal](https://xtermjs.org/)
 
 - File system support
+- Autocomplete & history
 - Command list via `help`
 - [Git support](https://isomorphic-git.org/) (checkout & clone)
 - [Python support](https://pyodide.org/) (**_.py_**)
@@ -151,7 +155,7 @@ yarn dev
 
 ### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)
 
-- View & design modes
+- Read & WYSIWYG modes
 - File save support
 
 ### [Virtual x86](https://copy.sh/v86/) (**_.img, .iso_**)
@@ -164,6 +168,7 @@ yarn dev
 ### [Video Player](https://videojs.com/)
 
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs)
+- Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
 
 ### [Webamp](https://webamp.org/) (**_.mp3, .wsz_**)
 
