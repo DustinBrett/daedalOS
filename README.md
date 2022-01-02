@@ -1,4 +1,6 @@
-## 🌌 **daedalOS** 🌌 (_Desktop environment in the browser_)
+## 🌌 **daedalOS** 🌌
+
+### _Desktop environment in the browser_
 
 > [52 x Live Coding Streams of the Project w/Dustin Brett](https://www.youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN)
 
