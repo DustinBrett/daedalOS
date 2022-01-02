@@ -36,7 +36,12 @@ const Index = ({ commit }: IndexProps): React.ReactElement => {
 
 export const getStaticProps = async (): Promise<{ props: IndexProps }> => {
   const { execSync } = await import("child_process");
-  const HEAD = await execSync("git rev-parse --short HEAD", { cwd: __dirname });
+  let HEAD: Buffer | string = "";
+
+  try {
+    HEAD = await execSync("git rev-parse --short HEAD", { cwd: __dirname });
+    // eslint-disable-next-line no-empty
+  } catch {}
 
   return {
     props: {
