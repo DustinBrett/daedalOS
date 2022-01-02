@@ -72,7 +72,7 @@ export const PREVIEW_FRAME_SECOND = 3;
 
 export const PROCESS_DELIMITER = "__";
 
-export const SAVE_PATH = `${HOME}/Snaphosts`;
+export const SAVE_PATH = `${HOME}/Snapshots`;
 
 export const SHORTCUT_APPEND = " - Shortcut";
 
