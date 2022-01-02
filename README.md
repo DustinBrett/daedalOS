@@ -2,6 +2,9 @@
 
 > [52 x Live Coding Streams of the Project w/Dustin Brett](https://www.youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN)
 
+![Stars](https://badgen.net/github/stars/DustinBrett/x)
+![Stars](https://badgen.net/github/license/DustinBrett/x)
+
 # Demo ⚡
 
 ![Demo](demo.gif)
@@ -34,7 +37,7 @@ yarn dev
 - ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [RAR extract](https://www.npmjs.com/package/node-unrar-js) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort
-- Dynamic icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & desktop.ini
+- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images & video
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](<(https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)>)
@@ -44,7 +47,9 @@ yarn dev
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
   - F2, F5, Backspace, Arrows, Enter
-- File Information Tooltips
+- File information tooltips
+- Allow sorting by name, date, type or extension
+  - Persists states
 
 ### Windows
 
@@ -55,7 +60,7 @@ yarn dev
 ### Start Menu
 
 - Expandable Sidebar
-  - Apps list, Documents shortcut, Power Off (clears session)
+  - Apps list, Documents shortcut, Power (clears session)
 - Spotlight visual effect
 - Folder support
 
@@ -66,7 +71,7 @@ yarn dev
 
 ### Clock
 
-- Runs in web worker
+- Runs in a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
 - Synced to system clock on load
 - Date tooltip
 
@@ -104,7 +109,7 @@ yarn dev
 
 - DOS emulator
 - Automatic save states on close
-  - /Users/Public/Snaphosts
+  - /Users/Public/Snapshots
 - Automatic window resize
 
 ### [Monaco Editor](https://microsoft.github.io/monaco-editor/)
@@ -151,7 +156,7 @@ yarn dev
 
 - x86 emulator
 - Automatic save states on close
-  - /Users/Public/Snaphosts
+  - /Users/Public/Snapshots
 - Automatic window resize
 
 ### [Video Player](https://videojs.com/)
