@@ -20,8 +20,8 @@
 ### Build & Run
 
 ```shell
-git clone https://github.com/DustinBrett/x.git
-cd x
+git clone https://github.com/DustinBrett/daedalOS.git
+cd daedalOS
 yarn
 yarn build:fs
 yarn dev
