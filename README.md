@@ -67,6 +67,7 @@ yarn dev
   - Apps list, Documents shortcut, Power (clears session)
 - Spotlight visual effect
 - Folder support
+- Keyboard shortcut opens with **_SHIFT+ESC_**
 
 ### Taskbar
 
@@ -174,3 +175,67 @@ yarn dev
 
 - Winamp audio player
 - [Skin support](https://skins.webamp.org/)
+
+# To Do 🔨
+
+### ASAP
+
+- Add custom session.json for sort orders
+- File search in Terminal & File Explorer
+- Status bar button to save Monaco on mobile
+- PDF change page/zoom inputs
+- IRC Client
+
+### Soon
+
+- Add 96x96 icons for higher dpi devices
+- Make desktop icons draggable around grid
+- Window Menu Bar
+- Open/Save File Dialog
+- File Explorer Column View
+- File Properties Dialog
+- NES/SNES Emulator
+- Light theme
+- FFMpeg Support
+- ImageMagik Support
+- System Tray
+
+### Eventually
+
+- Event Viewer
+- Task Manager
+- Run Dialog
+- Drag/Drop Taskbar Entries
+- Wapm I/O
+- Terminal piping
+- Virtual Assistant
+- Calendar
+- Spreadsheet Viewer
+- Browser Tabs
+- Fancy Zones
+- Service Worker
+
+# Bugs 🐛
+
+### General
+
+- Initial sort order is not based on session
+- Layout shifts when text is untruncated
+- Closing File Manager too quickly causes memory leak
+- Monaco breaks Vanta is loaded via url query
+- Space Cadet loads too big if BoxedWine is loaded
+
+### Mobile
+
+- Titlebar menu/clicking doesn't work properly when draggable
+
+### Safari Mobile
+
+- Drag image is black
+- V86 not working
+- Eruda is missing titlebar
+
+### Firefox
+
+- TinyMCE styling is reset on 2nd load
+- Webamp stays in front during File Explorer drags
