@@ -9,7 +9,7 @@
     "defaults and supports es6 and not ie 11"
   ],
   "scripts": {
-    "build": "npm run build:fs && npm run build:robots && next build",
+    "build": "npm run build:fs && next build",
     "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
     "build:robots": "node scripts/robots.js",
     "dev": "next dev",
