@@ -170,7 +170,14 @@ const useFileSystemContextState = (): FileSystemContextState => {
         const writable = overlayedFileSystems.writable as IndexedDBFileSystem;
 
         readable.empty();
-        writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
+
+        if (writable.getName() === "InMemory") {
+          resolve();
+        } else {
+          writable.empty((apiError) =>
+            apiError ? reject(apiError) : resolve()
+          );
+        }
       };
 
       if (!indexedDB.databases) clearFs();
