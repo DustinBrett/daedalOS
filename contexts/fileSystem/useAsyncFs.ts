@@ -153,13 +153,30 @@ const useAsyncFs = (): AsyncFSModule => {
   );
 
   useEffect(() => {
-    if (!fs)
-      configure(FileSystemConfig, () => {
-        const loadedFs = BFSRequire("fs");
+    if (!fs) {
+      const setupFs = (writeToMemory = false): void => {
+        if (writeToMemory) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, no-param-reassign
+          FileSystemConfig.options["/"].options.writable.fs = "InMemory";
+        }
 
-        setFs(loadedFs);
-        setRootFs(loadedFs.getRootFS() as RootFileSystem);
-      });
+        configure(FileSystemConfig, () => {
+          const loadedFs = BFSRequire("fs");
+
+          setFs(loadedFs);
+          setRootFs(loadedFs.getRootFS() as RootFileSystem);
+        });
+      };
+
+      if (!window.indexedDB) {
+        setupFs(true);
+      } else {
+        const db = window.indexedDB.open("");
+
+        db.addEventListener("error", () => setupFs(true));
+        db.addEventListener("success", () => setupFs());
+      }
+    }
   }, [fs]);
 
   return {
