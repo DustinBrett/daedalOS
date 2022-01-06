@@ -156,7 +156,7 @@ const useAsyncFs = (): AsyncFSModule => {
     if (!fs) {
       const setupFs = (writeToMemory = false): void => {
         if (writeToMemory) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, no-param-reassign
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           FileSystemConfig.options["/"].options.writable.fs = "InMemory";
         }
 
