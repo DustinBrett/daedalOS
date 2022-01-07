@@ -11,6 +11,11 @@ export const bookmarks: Bookmark[] = [
     url: "https://www.google.com/webhp?igu=1",
   },
   {
+    icon: "/favicon.ico",
+    name: "daedalOS",
+    url: "https://dustinbrett.com/",
+  },
+  {
     icon: "/System/Icons/minecraft.png",
     name: "Minecraft Classic",
     url: "https://classic.minecraft.net/",
