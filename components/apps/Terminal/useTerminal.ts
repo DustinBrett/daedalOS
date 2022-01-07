@@ -109,7 +109,7 @@ const useTerminal = (
           terminal.clearSelection();
         } else {
           navigator.clipboard
-            .readText()
+            .readText?.()
             .then((clipboardText) =>
               newLocalEcho.handleCursorInsert(clipboardText)
             );
@@ -134,7 +134,7 @@ const useTerminal = (
         ({ domEvent: { ctrlKey, code } }: OnKeyEvent) => {
           if (ctrlKey && code === "KeyV") {
             navigator.clipboard
-              .readText()
+              .readText?.()
               .then((clipboardText) =>
                 localEcho.handleCursorInsert(clipboardText)
               );
