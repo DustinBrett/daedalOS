@@ -156,7 +156,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
 
               changeUrl(id, bookmarkUrl);
             }}
-            title={name}
+            title={`${name}\n${bookmarkUrl}`}
           >
             <Icon alt={name} imgSize={16} src={icon} />
           </Button>
