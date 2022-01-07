@@ -8,6 +8,7 @@ import {
   PREVENT_SCROLL,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
+import { pxToNum } from "utils/functions";
 
 type RndWindowProps = {
   children: React.ReactNode;
@@ -68,7 +69,12 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
           [id]: {
             maximized,
             position: currentWindow?.props.position,
-            size: currentWindow?.props.size,
+            size: currentWindow?.props.size
+              ? {
+                  height: pxToNum(currentWindow?.props.size.height),
+                  width: pxToNum(currentWindow?.props.size.width),
+                }
+              : undefined,
           },
         }));
       }
