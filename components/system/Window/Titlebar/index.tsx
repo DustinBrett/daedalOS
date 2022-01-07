@@ -24,6 +24,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
   } = useProcesses();
   const {
     allowResizing = true,
+    closing,
     hideTitlebarIcon,
     icon,
     title,
@@ -41,7 +42,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       className={rndDefaults.dragHandleClassName}
       {...useTitlebarContextMenu(id)}
     >
-      <Button as="h1" {...(allowResizing ? onClickMaximize : {})}>
+      <Button as="h1" {...(allowResizing && !closing ? onClickMaximize : {})}>
         <figure>
           {!hideTitlebarIcon && (
             <Icon alt={title} imgSize={16} src={icon} {...onClickClose} />
