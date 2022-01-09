@@ -44,7 +44,7 @@
     "ini": "^2.0.0",
     "isomorphic-git": "^1.10.3",
     "music-metadata-browser": "^2.5.0",
-    "next": "^12.0.7",
+    "next": "^12.0.8-canary.19",
     "node-unrar-js": "^1.0.3",
     "polished": "^4.1.3",
     "prettier": "^2.5.1",
