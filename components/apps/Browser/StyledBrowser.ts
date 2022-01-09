@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledBrowser = styled.div`
   iframe {
     border: 0;
-    height: calc(100% - 36px);
+    height: calc(100% - 36px - 33px);
     width: 100%;
   }
 
