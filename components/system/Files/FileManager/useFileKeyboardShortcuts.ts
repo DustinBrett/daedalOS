@@ -10,7 +10,7 @@ import { haltEvent } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
-const useKeyboardShortcuts = (
+const useFileKeyboardShortcuts = (
   files: Files,
   url: string,
   focusedEntries: string[],
@@ -21,7 +21,7 @@ const useKeyboardShortcuts = (
   id?: string
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
-  const { open, url: changeUrl } = useProcesses();
+  const { url: changeUrl } = useProcesses();
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
@@ -47,16 +47,6 @@ const useKeyboardShortcuts = (
           moveEntries(focusedEntries.map((entry) => join(url, entry)));
         } else if (lKey === "v") {
           pasteToFolder();
-        }
-      } else if (shiftKey) {
-        if (key === "Escape") {
-          const startButton = document.querySelector(
-            "button[title='Start']"
-          ) as HTMLButtonElement;
-
-          startButton?.click();
-        } else if (key === "F12") {
-          open("DevTools");
         }
       } else if (key === "F2" && file) {
         setRenaming(file);
@@ -95,4 +85,4 @@ const useKeyboardShortcuts = (
     };
 };
 
-export default useKeyboardShortcuts;
+export default useFileKeyboardShortcuts;

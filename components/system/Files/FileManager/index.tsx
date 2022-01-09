@@ -5,10 +5,10 @@ import StatusBar from "components/system/Files/FileManager/StatusBar";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import useFileKeyboardShortcuts from "components/system/Files/FileManager/useFileKeyboardShortcuts";
 import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
 import useFolder from "components/system/Files/FileManager/useFolder";
 import useFolderContextMenu from "components/system/Files/FileManager/useFolderContextMenu";
-import useKeyboardShortcuts from "components/system/Files/FileManager/useKeyboardShortcuts";
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
@@ -68,7 +68,7 @@ const FileManager = ({
   });
   const folderContextMenu = useFolderContextMenu(url, folderActions);
   const loading = (!hideLoading && isLoading) || url !== currentUrl;
-  const keyShortcuts = useKeyboardShortcuts(
+  const keyShortcuts = useFileKeyboardShortcuts(
     files,
     url,
     focusedEntries,

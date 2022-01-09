@@ -2,6 +2,7 @@ import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
+import useGlobalKeyboardShortcuts from "hooks/useGlobalKeyboardShortcuts";
 import useIFrameFocuser from "hooks/useIFrameFocuser";
 import useUrlLoader from "hooks/useUrlLoader";
 import { useEffect } from "react";
@@ -18,6 +19,7 @@ type IndexProps = { commit?: string };
 const Index = ({ commit }: IndexProps): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
+  useGlobalKeyboardShortcuts();
 
   useEffect(() => {
     lockTitle();
