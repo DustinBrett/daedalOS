@@ -2,6 +2,7 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -89,9 +90,15 @@ const useDraggableEntries = (
       }
     }
   }, [fileManagerRef]);
+  const debounceTimer = useRef<number>();
 
   useEffect(() => {
-    updateDragImage();
+    if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
+
+    debounceTimer.current = window.setTimeout(() => {
+      debounceTimer.current = undefined;
+      updateDragImage();
+    }, MILLISECONDS_IN_SECOND / 2);
   }, [focusedEntries, updateDragImage]);
 
   return (entryUrl: string, file: string) => ({
