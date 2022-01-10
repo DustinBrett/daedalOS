@@ -248,6 +248,37 @@ const FileEntry = ({
     urlExt,
     writeFile,
   ]);
+  const createTooltip = useCallback((): string => {
+    if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
+      return "";
+    }
+
+    if (isShortcut) {
+      if (comment) return comment;
+      if (url) {
+        if (url.startsWith("http:") || url.startsWith("https:")) return url;
+        return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
+      }
+      return "";
+    }
+
+    const type =
+      extensions[extension as ExtensionType]?.type ||
+      `${extension.toUpperCase().replace(".", "")} File`;
+    const { size: sizeInBytes } = stats;
+    const modifiedTime = getModifiedTime(path, stats);
+    const size = getFormattedSize(sizeInBytes);
+    const toolTip = `Type: ${type}\nSize: ${size}`;
+    const date = new Date(modifiedTime).toISOString().slice(0, 10);
+    const time = new Intl.DateTimeFormat(
+      DEFAULT_LOCALE,
+      formats.dateModified
+    ).format(modifiedTime);
+    const dateModified = `${date} ${time}`;
+
+    return `${toolTip}\nDate modified: ${dateModified}`;
+  }, [comment, extension, formats.dateModified, isShortcut, path, stats, url]);
+  const [tooltip, setTooltip] = useState("");
 
   useEffect(() => {
     updateIcon();
@@ -297,42 +328,14 @@ const FileEntry = ({
     selectionRect,
   ]);
 
-  const createTooltip = (): string | undefined => {
-    if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
-      return undefined;
-    }
-
-    if (isShortcut) {
-      if (comment) return comment;
-      if (url) {
-        if (url.startsWith("http:") || url.startsWith("https:")) return url;
-        return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
-      }
-      return "";
-    }
-
-    const type =
-      extensions[extension as ExtensionType]?.type ||
-      `${extension.toUpperCase().replace(".", "")} File`;
-    const { size: sizeInBytes } = stats;
-    const modifiedTime = getModifiedTime(path, stats);
-    const size = getFormattedSize(sizeInBytes);
-    const toolTip = `Type: ${type}\nSize: ${size}`;
-    const date = new Date(modifiedTime).toISOString().slice(0, 10);
-    const time = new Intl.DateTimeFormat(
-      DEFAULT_LOCALE,
-      formats.dateModified
-    ).format(modifiedTime);
-    const dateModified = `${date} ${time}`;
-
-    return `${toolTip}\nDate modified: ${dateModified}`;
-  };
-
   return (
     <>
       <Button
         ref={buttonRef}
-        title={createTooltip()}
+        onMouseOver={() => {
+          if (!tooltip) setTooltip(createTooltip());
+        }}
+        title={tooltip}
         {...useDoubleClick(() => {
           if (
             openInFileExplorer &&
