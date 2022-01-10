@@ -16,14 +16,24 @@ export const bookmarks: Bookmark[] = [
     url: "https://dustinbrett.com/",
   },
   {
-    icon: "/System/Icons/minecraft.png",
-    name: "Minecraft Classic",
-    url: "https://classic.minecraft.net/",
+    icon: "/System/Icons/win96.png",
+    name: "Windows 96",
+    url: "https://windows96.net/",
+  },
+  {
+    icon: "/System/Icons/aos.png",
+    name: "AaronOS",
+    url: "https://aaronos.dev/AaronOS/",
   },
   {
     icon: "/System/Icons/jspaint.png",
     name: "JS Paint",
     url: "https://jspaint.app/",
+  },
+  {
+    icon: "/System/Icons/minecraft.png",
+    name: "Minecraft Classic",
+    url: "https://classic.minecraft.net/",
   },
   {
     icon: "/System/Icons/diablo.png",
