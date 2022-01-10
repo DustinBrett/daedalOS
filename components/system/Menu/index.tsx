@@ -10,7 +10,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
 } from "utils/constants";
-import { viewHeight, viewWidth } from "utils/functions";
+import { haltEvent, viewHeight, viewWidth } from "utils/functions";
 
 type MenuProps = {
   subMenu?: MenuState;
@@ -107,6 +107,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
       $x={x - offset.x}
       $y={y - offset.y}
       onBlurCapture={resetMenu}
+      onContextMenu={haltEvent}
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >
