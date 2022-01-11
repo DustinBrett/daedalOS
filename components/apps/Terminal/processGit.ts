@@ -36,7 +36,7 @@ const processGit = async (
 
   switch (command) {
     case "clone": {
-      const http = await import("isomorphic-git/http/node");
+      const http = await import("isomorphic-git/http/web");
       const [url] = args;
       const dirName = url
         .split("/")
