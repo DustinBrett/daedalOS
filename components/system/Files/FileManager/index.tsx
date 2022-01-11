@@ -57,7 +57,7 @@ const FileManager = ({
     fileManagerRef
   );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
-    useFolder(url, setRenaming, focusFunctions, hideFolders);
+    useFolder(url, setRenaming, focusFunctions, hideFolders, hideLoading);
   const { mountFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =

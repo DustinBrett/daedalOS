@@ -72,7 +72,8 @@ const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  hideFolders = false
+  hideFolders = false,
+  hideLoading = false
 ): Folder => {
   const [files, setFiles] = useState<Files>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -182,7 +183,7 @@ const useFolder = (
                 customSortOrder || Object.keys(files || {})
               );
 
-              setFiles(newFiles);
+              if (hideLoading) setFiles(newFiles);
 
               return newFiles;
             },
@@ -190,6 +191,8 @@ const useFolder = (
           );
 
           if (dirContents.length > 0) {
+            if (!hideLoading) setFiles(sortedFiles);
+
             setSortOrder(directory, Object.keys(sortedFiles));
           } else {
             setFiles({});
@@ -210,6 +213,7 @@ const useFolder = (
       exists,
       files,
       hideFolders,
+      hideLoading,
       readdir,
       setSortOrder,
       stat,
