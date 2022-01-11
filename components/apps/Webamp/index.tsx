@@ -60,6 +60,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
       }
     }
   }, [getUrlOptions, webampCI]);
+  const style = useMemo<React.CSSProperties>(() => ({ zIndex }), [zIndex]);
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
@@ -89,7 +90,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
   return (
     <StyledWebamp
       ref={containerRef}
-      style={{ zIndex }}
+      style={style}
       {...focusableProps}
       {...windowTransitions}
     />

@@ -13,7 +13,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
 import { extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
@@ -97,6 +97,10 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
     },
     [exists, id, prependFileToTitle, readFile, setIcon]
   );
+  const style = useMemo<React.CSSProperties>(
+    () => ({ backgroundColor: srcDoc ? "#fff" : "initial" }),
+    [srcDoc]
+  );
 
   useEffect(() => {
     if (process && history[position] !== currentUrl) {
@@ -166,7 +170,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
         ref={iframeRef}
         onLoad={() => setLoading(false)}
         srcDoc={srcDoc || undefined}
-        style={{ backgroundColor: srcDoc ? "#fff" : "initial" }}
+        style={style}
         title={id}
         {...config}
       />

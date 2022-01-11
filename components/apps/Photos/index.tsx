@@ -14,7 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 
@@ -51,6 +51,12 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
     });
     appendFileToTitle(basename(url));
   }, [appendFileToTitle, readFile, reset, url]);
+  const style = useMemo<React.CSSProperties>(
+    () => ({
+      display: src[url] && !brokenImage ? "block" : "none",
+    }),
+    [brokenImage, src, url]
+  );
 
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
@@ -94,9 +100,7 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
           onError={() => setBrokenImage(true)}
           onLoad={() => setBrokenImage(false)}
           src={src[url]}
-          style={{
-            display: src[url] && !brokenImage ? "block" : "none",
-          }}
+          style={style}
         />
         {brokenImage && (
           <div>

@@ -1,7 +1,7 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
@@ -40,6 +40,13 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
     useSession();
   const { maximized: wasMaximized } = windowState || {};
   const [openedMaximized, setOpenedMaximized] = useState(false);
+  const style = useMemo<React.CSSProperties>(
+    () => ({
+      pointerEvents: minimized ? "none" : undefined,
+      zIndex,
+    }),
+    [minimized, zIndex]
+  );
 
   useEffect(() => {
     if (wasMaximized && !openedMaximized && process) {
@@ -90,14 +97,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
   ]);
 
   return (
-    <Rnd
-      ref={rndRef}
-      style={{
-        pointerEvents: minimized ? "none" : undefined,
-        zIndex,
-      }}
-      {...rndProps}
-    >
+    <Rnd ref={rndRef} style={style} {...rndProps}>
       {children}
     </Rnd>
   );

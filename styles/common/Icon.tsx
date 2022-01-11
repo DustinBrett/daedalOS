@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { cleanUpBufferUrl } from "utils/functions";
 
@@ -38,6 +38,10 @@ const Icon = (
 ): JSX.Element => {
   const [loaded, setLoaded] = useState(false);
   const { imgRef, src = "" } = props;
+  const style = useMemo<React.CSSProperties>(
+    () => ({ visibility: loaded ? "visible" : "hidden" }),
+    [loaded]
+  );
 
   useEffect(
     () => () => {
@@ -50,7 +54,7 @@ const Icon = (
     <StyledIcon
       ref={imgRef}
       onLoad={() => setLoaded(true)}
-      style={{ visibility: loaded ? "visible" : "hidden" }}
+      style={style}
       {...props}
     />
   );

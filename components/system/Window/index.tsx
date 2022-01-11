@@ -7,7 +7,7 @@ import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 type WindowProps = ComponentProcessProps & {
   children: React.ReactNode;
@@ -24,6 +24,10 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const style = useMemo<React.CSSProperties>(
+    () => ({ background }),
+    [background]
+  );
 
   useEffect(() => {
     if (process && !peekElement && viewportRef.current) {
@@ -35,7 +39,7 @@ const Window = ({ children, id }: WindowProps): JSX.Element => {
     <RndWindow id={id} zIndex={zIndex}>
       <StyledWindow
         $foreground={isForeground}
-        style={{ background }}
+        style={style}
         {...focusableProps}
         {...windowTransitions}
       >
