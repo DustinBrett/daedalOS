@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledEditor = styled.div`
+const StyledTinyMceEditor = styled.div`
   height: 100%;
 
   [role="application"] {
@@ -35,4 +35,4 @@ const StyledEditor = styled.div`
   }
 `;
 
-export default StyledEditor;
+export default StyledTinyMceEditor;

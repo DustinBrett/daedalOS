@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useCallback, useEffect } from "react";
 import { haltEvent } from "utils/functions";
 
-const useSystemKeyboardShortcuts = (): void => {
+const useGlobalKeyboardShortcuts = (): void => {
   const { open } = useProcesses();
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -35,4 +35,4 @@ const useSystemKeyboardShortcuts = (): void => {
   }, [onKeyDown]);
 };
 
-export default useSystemKeyboardShortcuts;
+export default useGlobalKeyboardShortcuts;
