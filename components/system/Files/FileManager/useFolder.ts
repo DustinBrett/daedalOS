@@ -167,25 +167,29 @@ const useFolder = (
           );
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
-              const hideEntry =
-                hideFolders &&
-                (await stat(join(directory, file))).isDirectory();
-              const newFiles = sortContents(
-                {
-                  ...(await processedFiles),
-                  ...(!hideEntry && {
-                    [file]: await statsWithShortcutInfo(
-                      file,
-                      await stat(join(directory, file))
-                    ),
-                  }),
-                },
-                customSortOrder || Object.keys(files || {})
-              );
+              try {
+                const hideEntry =
+                  hideFolders &&
+                  (await stat(join(directory, file))).isDirectory();
+                const newFiles = sortContents(
+                  {
+                    ...(await processedFiles),
+                    ...(!hideEntry && {
+                      [file]: await statsWithShortcutInfo(
+                        file,
+                        await stat(join(directory, file))
+                      ),
+                    }),
+                  },
+                  customSortOrder || Object.keys(files || {})
+                );
 
-              if (hideLoading) setFiles(newFiles);
+                if (hideLoading) setFiles(newFiles);
 
-              return newFiles;
+                return newFiles;
+              } catch {
+                return processedFiles;
+              }
             },
             {}
           );
