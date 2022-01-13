@@ -61,10 +61,14 @@ const useWindowPeek = (id: string): string => {
           ),
         MILLISECONDS_IN_SECOND / 2
       );
+      animate.current = true;
     }
 
     return () => {
-      if (previewTimer.current) clearTimeout(previewTimer.current);
+      if (previewTimer.current) {
+        clearTimeout(previewTimer.current);
+        previewTimer.current = undefined;
+      }
       animate.current = false;
     };
   }, [componentWindow, peekElement]);
