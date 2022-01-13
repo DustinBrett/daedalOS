@@ -49,6 +49,8 @@ const useFileInfo = (
       } else {
         getInfoWithExtension(fs, path, extension, updateInfo);
       }
+
+      visible.current = true;
     }
 
     return () => {
