@@ -126,10 +126,7 @@ const useV86 = (
   useEffect(() => {
     if (loading) {
       loadFiles(libs).then(() => {
-        if (window.V86Starter) {
-          window.DEBUG = false;
-          setLoading(false);
-        }
+        if (window.V86Starter) setLoading(false);
       });
     }
   }, [loading, setLoading]);
