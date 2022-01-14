@@ -10,8 +10,8 @@ export const DEFAULT_LOCALE = "en";
 export const DEFAULT_THEME = "defaultTheme";
 
 export const DEFAULT_WINDOW_SIZE: Size = {
-  height: 295,
-  width: 315,
+  height: 300,
+  width: 320,
 };
 
 export const EMPTY_BUFFER = Buffer.from("");
