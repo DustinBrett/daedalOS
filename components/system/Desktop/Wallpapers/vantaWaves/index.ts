@@ -3,7 +3,9 @@ import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vant
 import { loadFiles } from "utils/functions";
 
 const disableControls = {
+  gyroControls: false,
   mouseControls: false,
+  mouseEase: false,
   touchControls: false,
 };
 

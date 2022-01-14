@@ -1,7 +1,10 @@
 export type VantaWavesConfig = {
   color: number;
+  forceAnimate?: boolean;
+  gyroControls?: boolean;
   shininess: number;
   mouseControls?: boolean;
+  mouseEase?: boolean;
   touchControls?: boolean;
   waveHeight: number;
   waveSpeed: number;
