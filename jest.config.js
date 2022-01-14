@@ -3,6 +3,7 @@ module.exports = {
   setupFilesAfterEnv: [
     "@testing-library/jest-dom/extend-expect",
     "jsdom-worker",
+    "jest-next-dynamic",
   ],
   testEnvironment: "jsdom",
 };
