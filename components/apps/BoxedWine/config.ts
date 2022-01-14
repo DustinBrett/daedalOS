@@ -1,7 +1,11 @@
+import processDirectory from "contexts/process/directory";
+
+const { height, width } = processDirectory["BoxedWine"].defaultSize || {};
+
 const configParams = {
   "inline-default-ondemand-root-overlay": "/wine1.7.55-v8-min-online",
   ondemand: "root",
-  resolution: "640x480",
+  resolution: `${width}x${height}`,
   root: "/fullWine1.7.55-v8",
 };
 
