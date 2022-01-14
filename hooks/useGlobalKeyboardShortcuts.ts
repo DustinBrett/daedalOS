@@ -9,7 +9,10 @@ const useGlobalKeyboardShortcuts = (): void => {
       const { key, shiftKey } = event;
 
       if (shiftKey) {
-        if (key === "F12") {
+        if (key === "F10") {
+          haltEvent(event);
+          open("Terminal");
+        } else if (key === "F12") {
           haltEvent(event);
           open("DevTools");
         } else if (key === "Escape") {
