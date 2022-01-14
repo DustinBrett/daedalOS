@@ -27,12 +27,16 @@ const sortBySize = (
 const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
 
+const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
+
 const sortSystemShortcuts = (
   [aName, { systemShortcut: aSystem = false }]: FileStats,
-  [, { systemShortcut: bSystem = false }]: FileStats
+  [bName, { systemShortcut: bSystem = false }]: FileStats
 ): number => {
   if (aSystem === bSystem) {
-    return aSystem && aName !== ROOT_NAME ? -1 : 0;
+    if (bSystem && bName === ROOT_SHORTCUT) return 1;
+
+    return aSystem && aName === ROOT_SHORTCUT ? -1 : 0;
   }
 
   return aSystem ? -1 : 1;
