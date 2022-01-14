@@ -17,10 +17,10 @@ const processDirectory: Processes = {
   },
   Browser: {
     Component: dynamic(() => import("components/apps/Browser")),
-    background: "#fff",
+    background: "#FFF",
     defaultSize: {
-      height: 500,
-      width: 550,
+      height: 480,
+      width: 600,
     },
     icon: "/System/Icons/chromium.png",
     title: "Browser",
@@ -29,7 +29,7 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/DevTools")),
     background: "rgb(36, 36, 36)",
     defaultSize: {
-      height: 345,
+      height: 380,
       width: 545,
     },
     icon: "/System/Icons/eruda.png",
@@ -39,7 +39,7 @@ const processDirectory: Processes = {
   Dialog: {
     Component: dynamic(() => import("components/system/Dialog")),
     allowResizing: false,
-    background: "#fff",
+    background: "#FFF",
     defaultSize: {
       height: 163,
       width: 400,
@@ -57,6 +57,10 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/JSDOS")),
     autoSizing: true,
     background: "#000",
+    defaultSize: {
+      height: 200,
+      width: 320,
+    },
     icon: "/System/Icons/jsdos.png",
     lockAspectRatio: true,
     title: "js-dos v7",
@@ -65,8 +69,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
     background: "#1E1E1E",
     defaultSize: {
-      height: 400,
-      width: 400,
+      height: 480,
+      width: 480,
     },
     icon: "/System/Icons/monaco.png",
     title: "Monaco Editor",
@@ -75,8 +79,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/PDF")),
     background: "rgb(82, 86, 89)",
     defaultSize: {
-      height: 500,
-      width: 650,
+      height: 493,
+      width: 637,
     },
     icon: "/System/Icons/pdf.png",
     title: "PDF",
@@ -85,8 +89,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/Photos")),
     background: "#222",
     defaultSize: {
-      height: 400,
-      width: 500,
+      height: 432,
+      width: 576,
     },
     hideTitlebarIcon: true,
     icon: "/System/Icons/photos.png",
@@ -101,6 +105,7 @@ const processDirectory: Processes = {
       width: 550,
     },
     icon: "/System/Icons/ruffle.png",
+    lockAspectRatio: true,
     title: "Ruffle",
   },
   SpaceCadet: {
@@ -130,8 +135,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/TinyMCE")),
     background: "#FFF",
     defaultSize: {
-      height: 400,
-      width: 400,
+      height: 480,
+      width: 640,
     },
     icon: "/System/Icons/tinymce.png",
     singleton: true,
@@ -142,6 +147,10 @@ const processDirectory: Processes = {
     allowResizing: false,
     autoSizing: true,
     background: "#000",
+    defaultSize: {
+      height: 200,
+      width: 320,
+    },
     icon: "/System/Icons/v86.png",
     singleton: true,
     title: "Virtual x86",
