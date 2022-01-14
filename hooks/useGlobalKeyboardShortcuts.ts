@@ -9,20 +9,22 @@ const useGlobalKeyboardShortcuts = (): void => {
       const { key, shiftKey } = event;
 
       if (shiftKey) {
-        if (key === "F10") {
-          haltEvent(event);
-          open("Terminal");
-        } else if (key === "F12") {
-          haltEvent(event);
-          open("DevTools");
-        } else if (key === "Escape") {
-          haltEvent(event);
+        const shiftBindings: Record<string, () => void> = {
+          Escape: () => {
+            const startButton = document.querySelector(
+              "main>nav>button[title='Start']"
+            ) as HTMLButtonElement;
 
-          const startButton = document.querySelector(
-            "main>nav>button[title='Start']"
-          ) as HTMLButtonElement;
+            startButton?.click();
+          },
+          F10: () => open("Terminal"),
+          F12: () => open("DevTools"),
+          F5: () => window.location.reload(),
+        };
 
-          startButton?.click();
+        if (shiftBindings[key]) {
+          haltEvent(event);
+          shiftBindings[key]();
         }
       }
     },
