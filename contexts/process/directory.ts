@@ -69,8 +69,8 @@ const processDirectory: Processes = {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
     background: "#1E1E1E",
     defaultSize: {
-      height: 480,
-      width: 480,
+      height: 477,
+      width: 530,
     },
     icon: "/System/Icons/monaco.png",
     title: "Monaco Editor",
