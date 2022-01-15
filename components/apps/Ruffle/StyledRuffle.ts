@@ -5,19 +5,19 @@ const StyledRuffle = styled.div`
   width: 100%;
 
   &.drop {
-    &:before {
+    &::before {
       color: #ffad33;
       content: "Drop an SWF/SPL file";
-      position: absolute;
+      display: flex;
       font-size: 16px;
       font-weight: 600;
-      width: 100%;
       height: 100%;
-      top: 0;
       left: 0;
       place-content: center;
       place-items: center;
-      display: flex;
+      position: absolute;
+      top: 0;
+      width: 100%;
     }
   }
 

@@ -9,8 +9,8 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     outline: 0;
     padding: 0;
-    user-select: none;
     -webkit-touch-callout: none;
+    user-select: none;
   }
 
   body {

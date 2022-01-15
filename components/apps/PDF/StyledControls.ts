@@ -25,8 +25,8 @@ const StyledControls = styled.nav`
       input {
         background-color: rgb(25, 27, 28);
         color: #fff;
-        text-align: center;
         height: 20px;
+        text-align: center;
 
         &:disabled {
           color: rgb(110, 112, 114);

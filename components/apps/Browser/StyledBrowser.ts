@@ -14,18 +14,6 @@ const StyledBrowser = styled.div`
     place-content: center;
     place-items: center;
 
-    &:not(:first-child) {
-      border-bottom: 1px solid rgb(118, 115, 118);
-      height: 33px;
-      justify-content: left;
-      padding: 0 8px;
-
-      button {
-        margin-right: 4px;
-        margin-bottom: 4px;
-      }
-    }
-
     div {
       display: flex;
       justify-content: space-around;
@@ -63,6 +51,18 @@ const StyledBrowser = styled.div`
         svg {
           fill: rgb(152, 152, 152);
         }
+      }
+    }
+
+    &:not(:first-child) {
+      border-bottom: 1px solid rgb(118, 115, 118);
+      height: 33px;
+      justify-content: left;
+      padding: 0 8px;
+
+      button {
+        margin-bottom: 4px;
+        margin-right: 4px;
       }
     }
 
