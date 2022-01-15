@@ -30,21 +30,21 @@ export type ContextMenuCapture = {
 export type MenuContextState = {
   menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;
-  contextMenu: (items: MenuItem[]) => ContextMenuCapture;
+  contextMenu: (getItems: () => MenuItem[]) => ContextMenuCapture;
 };
 
 const useMenuContextState = (): MenuContextState => {
   const [menu, setMenu] = useState<MenuState>({});
   const touchTimer = useRef<number>(0);
   const touchEvent = useRef<React.TouchEvent>();
-  const contextMenu = (items: MenuItem[]): ContextMenuCapture => {
+  const contextMenu = (getItems: () => MenuItem[]): ContextMenuCapture => {
     const onContextMenuCapture = (
       event: React.MouseEvent | React.TouchEvent
     ): void => {
       event.preventDefault();
       const { pageX: x, pageY: y } =
         "touches" in event ? event.touches.item(0) : event;
-      setMenu({ items, x, y });
+      setMenu({ items: getItems(), x, y });
     };
 
     return {

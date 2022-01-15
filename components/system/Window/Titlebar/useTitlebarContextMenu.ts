@@ -5,6 +5,7 @@ import type {
   MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { useCallback } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (
@@ -16,35 +17,38 @@ const useTitlebarContextMenu = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { allowResizing = true, maximized, minimized } = process || {};
-  const disableMaximize = maximized || !allowResizing;
-  const menuItems: (MenuItem | boolean)[] = [
-    !(hideDisabled && (!disableMaximize || minimized)) && {
-      action: () => onMaximize(),
-      disabled: !disableMaximize,
-      icon: `/System/Icons/restore${!disableMaximize ? "_disabled" : ""}.png`,
-      label: "Restore",
-    },
-    {
-      action: () => onMinimize(),
-      icon: "/System/Icons/minimize.png",
-      label: minimized ? "Restore" : "Minimize",
-    },
-    !(hideDisabled && (disableMaximize || minimized)) && {
-      action: () => onMaximize(),
-      disabled: disableMaximize,
-      icon: `/System/Icons/maximize${disableMaximize ? "_disabled" : ""}.png`,
-      label: "Maximize",
-    },
-    MENU_SEPERATOR,
-    {
-      action: () => onClose(),
-      icon: "/System/Icons/close.png",
-      label: "Close",
-    },
-  ];
+  const getItems = useCallback(() => {
+    const { allowResizing = true, maximized, minimized } = process || {};
+    const disableMaximize = maximized || !allowResizing;
 
-  return contextMenu?.(menuItems.filter(Boolean) as MenuItem[]);
+    return [
+      !(hideDisabled && (!disableMaximize || minimized)) && {
+        action: () => onMaximize(),
+        disabled: !disableMaximize,
+        icon: `/System/Icons/restore${!disableMaximize ? "_disabled" : ""}.png`,
+        label: "Restore",
+      },
+      {
+        action: () => onMinimize(),
+        icon: "/System/Icons/minimize.png",
+        label: minimized ? "Restore" : "Minimize",
+      },
+      !(hideDisabled && (disableMaximize || minimized)) && {
+        action: () => onMaximize(),
+        disabled: disableMaximize,
+        icon: `/System/Icons/maximize${disableMaximize ? "_disabled" : ""}.png`,
+        label: "Maximize",
+      },
+      MENU_SEPERATOR,
+      {
+        action: () => onClose(),
+        icon: "/System/Icons/close.png",
+        label: "Close",
+      },
+    ].filter(Boolean) as MenuItem[];
+  }, [hideDisabled, onClose, onMaximize, onMinimize, process]);
+
+  return contextMenu?.(getItems);
 };
 
 export default useTitlebarContextMenu;

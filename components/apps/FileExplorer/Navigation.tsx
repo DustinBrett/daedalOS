@@ -10,11 +10,10 @@ import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 
 type NavigationProps = {
@@ -36,12 +35,16 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
   const addressBarRef = useRef<HTMLInputElement | null>(null);
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);
-  const menuItems: MenuItem[] = history.map((historyUrl, index) => ({
-    action: () => moveHistory(index - position),
-    checked: position === index,
-    label: basename(historyUrl) || ROOT_NAME,
-    primary: position === index,
-  }));
+  const getItems = useCallback(
+    () =>
+      history.map((historyUrl, index) => ({
+        action: () => moveHistory(index - position),
+        checked: position === index,
+        label: basename(historyUrl) || ROOT_NAME,
+        primary: position === index,
+      })),
+    [history, moveHistory, position]
+  );
   const style = useMemo(
     () => ({
       backgroundImage: `url('${icon.replace("/Icons/", "/Icons/16x16/")}')`,
@@ -87,7 +90,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
       </Button>
       <Button
         disabled={history.length === 1}
-        onClick={contextMenu?.(menuItems).onContextMenuCapture}
+        onClick={contextMenu?.(getItems).onContextMenuCapture}
         title="Recent locations"
       >
         <Down />

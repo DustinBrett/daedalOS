@@ -6,10 +6,8 @@ import type {
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type {
-  ContextMenuCapture,
-  MenuItem,
-} from "contexts/menu/useMenuContextState";
+import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import { useCallback } from "react";
 import { EMPTY_BUFFER, FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
 const NEW_FOLDER = "New folder";
@@ -35,87 +33,100 @@ const useFolderContextMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
-  const ADD_FILE = { action: () => addToFolder(), label: "Add file" };
-  const MAP_DIRECTORY = {
-    action: () =>
-      mapFs(url).then((mappedFolder) => updateFolder(url, mappedFolder)),
-    label: "Map directory",
-  };
-  const FS_COMMANDS =
-    typeof FileSystemHandle === "function"
-      ? [ADD_FILE, MAP_DIRECTORY]
-      : [ADD_FILE];
+  const getItems = useCallback(() => {
+    const ADD_FILE = { action: () => addToFolder(), label: "Add file" };
+    const MAP_DIRECTORY = {
+      action: () =>
+        mapFs(url).then((mappedFolder) => updateFolder(url, mappedFolder)),
+      label: "Map directory",
+    };
+    const FS_COMMANDS =
+      typeof FileSystemHandle === "function"
+        ? [ADD_FILE, MAP_DIRECTORY]
+        : [ADD_FILE];
 
-  const menuItems: MenuItem[] = [
-    {
-      label: "Sort by",
-      menu: [
-        {
-          action: () => setSortBy(updateSortBy("name", true)),
-          label: "Name",
-          toggle: sortBy === "name",
-        },
-        {
-          action: () => setSortBy(updateSortBy("size", false)),
-          label: "Size",
-          toggle: sortBy === "size",
-        },
-        {
-          action: () => setSortBy(updateSortBy("type", true)),
-          label: "Item type",
-          toggle: sortBy === "type",
-        },
-        {
-          action: () => setSortBy(updateSortBy("date", false)),
-          label: "Date modified",
-          toggle: sortBy === "date",
-        },
-        MENU_SEPERATOR,
-        {
-          action: () => setSortBy(([value]) => [value, true]),
-          label: "Ascending",
-          toggle: isAscending,
-        },
-        {
-          action: () => setSortBy(([value]) => [value, false]),
-          label: "Descending",
-          toggle: !isAscending,
-        },
-      ],
-    },
-    { action: () => updateFolder(url), label: "Refresh" },
-    MENU_SEPERATOR,
-    ...FS_COMMANDS,
-    {
-      action: () => pasteToFolder(),
-      disabled: Object.keys(pasteList).length === 0,
-      label: "Paste",
-    },
-    MENU_SEPERATOR,
-    {
-      label: "New",
-      menu: [
-        {
-          action: () => newPath(NEW_FOLDER, undefined, true),
-          icon: FOLDER_ICON,
-          label: "Folder",
-        },
-        MENU_SEPERATOR,
-        {
-          action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
-          icon: richTextDocumentIcon,
-          label: "Rich Text Document",
-        },
-        {
-          action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
-          icon: textDocumentIcon,
-          label: "Text Document",
-        },
-      ],
-    },
-  ];
+    return [
+      {
+        label: "Sort by",
+        menu: [
+          {
+            action: () => setSortBy(updateSortBy("name", true)),
+            label: "Name",
+            toggle: sortBy === "name",
+          },
+          {
+            action: () => setSortBy(updateSortBy("size", false)),
+            label: "Size",
+            toggle: sortBy === "size",
+          },
+          {
+            action: () => setSortBy(updateSortBy("type", true)),
+            label: "Item type",
+            toggle: sortBy === "type",
+          },
+          {
+            action: () => setSortBy(updateSortBy("date", false)),
+            label: "Date modified",
+            toggle: sortBy === "date",
+          },
+          MENU_SEPERATOR,
+          {
+            action: () => setSortBy(([value]) => [value, true]),
+            label: "Ascending",
+            toggle: isAscending,
+          },
+          {
+            action: () => setSortBy(([value]) => [value, false]),
+            label: "Descending",
+            toggle: !isAscending,
+          },
+        ],
+      },
+      { action: () => updateFolder(url), label: "Refresh" },
+      MENU_SEPERATOR,
+      ...FS_COMMANDS,
+      {
+        action: () => pasteToFolder(),
+        disabled: Object.keys(pasteList).length === 0,
+        label: "Paste",
+      },
+      MENU_SEPERATOR,
+      {
+        label: "New",
+        menu: [
+          {
+            action: () => newPath(NEW_FOLDER, undefined, true),
+            icon: FOLDER_ICON,
+            label: "Folder",
+          },
+          MENU_SEPERATOR,
+          {
+            action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
+            icon: richTextDocumentIcon,
+            label: "Rich Text Document",
+          },
+          {
+            action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
+            icon: textDocumentIcon,
+            label: "Text Document",
+          },
+        ],
+      },
+    ];
+  }, [
+    addToFolder,
+    isAscending,
+    mapFs,
+    newPath,
+    pasteList,
+    pasteToFolder,
+    setSortBy,
+    sortBy,
+    updateFolder,
+    url,
+  ]);
 
-  return contextMenu?.(menuItems);
+  return contextMenu?.(getItems);
 };
 
 export default useFolderContextMenu;
