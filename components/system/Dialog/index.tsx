@@ -2,7 +2,7 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledDialog from "components/system/Dialog/StyledDialog";
 import { useProcesses } from "contexts/process";
 import type { FileReaders } from "hooks/useDialog";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 
 const MAX_TITLE_LENGTH = 37;
@@ -44,15 +44,19 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
     () => fileReaders.reduce((acc, [{ size = 0 }]) => acc + size, 0) || 0,
     [fileReaders]
   );
+  const processing = useRef(false);
 
   useEffect(() => {
-    if (fileReaders.length > 0) {
-      title(id, "Copying...");
-      processReader(fileReaders);
-    } else {
-      closeWithTransition(id);
+    if (!processing.current) {
+      if (fileReaders.length > 0) {
+        title(id, "Copying...");
+        processing.current = true;
+        processReader(fileReaders);
+      } else {
+        closeWithTransition(id);
+      }
     }
-  }, [closeWithTransition, fileReaders, id, processReader, title]);
+  }, [closeWithTransition, fileReaders, id, processing, processReader, title]);
 
   return (
     <StyledDialog>
