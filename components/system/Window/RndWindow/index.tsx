@@ -6,6 +6,7 @@ import { Rnd } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
+  PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { pxToNum } from "utils/functions";
@@ -71,9 +72,11 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
 
     return () => {
       if (closing) {
+        const [pid] = id.split(PROCESS_DELIMITER);
+
         setWindowStates((currentWindowStates) => ({
           ...currentWindowStates,
-          [id]: {
+          [`${pid}${PROCESS_DELIMITER}${process.url}`]: {
             maximized,
             position: currentWindow?.props.position,
             size: currentWindow?.props.size
