@@ -76,7 +76,7 @@ const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
 
         setWindowStates((currentWindowStates) => ({
           ...currentWindowStates,
-          [`${pid}${PROCESS_DELIMITER}${process.url}`]: {
+          [pid === id ? id : `${pid}${PROCESS_DELIMITER}${process.url}`]: {
             maximized,
             position: currentWindow?.props.position,
             size: currentWindow?.props.size
