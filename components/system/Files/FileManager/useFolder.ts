@@ -412,9 +412,10 @@ const useFolder = (
     const moving = pasteEntries.some(([, operation]) => operation === "move");
     const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
       const newBasePath = join(basePath, basename(entry));
+      let uniquePath: string;
 
       if ((await stat(entry)).isDirectory()) {
-        const uniquePath = await createPath(newBasePath, directory);
+        uniquePath = await createPath(newBasePath, directory);
 
         await Promise.all(
           (
@@ -422,22 +423,30 @@ const useFolder = (
           ).map((dirEntry) => copyFiles(join(entry, dirEntry), uniquePath))
         );
       } else {
-        await createPath(newBasePath, directory, await readFile(entry));
+        uniquePath = await createPath(
+          newBasePath,
+          directory,
+          await readFile(entry)
+        );
       }
+
+      if (!basePath) updateFolder(directory, uniquePath);
     };
 
-    await Promise.all(
+    const movedPaths = await Promise.all(
       pasteEntries.map(
         ([pasteEntry]): Promise<string | void> =>
           moving ? createPath(pasteEntry, directory) : copyFiles(pasteEntry)
       )
     );
 
-    pasteEntries.forEach(([pasteEntry]) =>
-      updateFolder(directory, basename(pasteEntry))
-    );
+    if (moving) {
+      movedPaths
+        .filter(Boolean)
+        .forEach((movedPath) => updateFolder(directory, movedPath as string));
 
-    if (moving) copyEntries([]);
+      copyEntries([]);
+    }
   };
 
   useEffect(() => {
