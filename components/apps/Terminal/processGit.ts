@@ -39,13 +39,13 @@ const processGit = async (
       const http = await import("isomorphic-git/http/web");
       const [url] = args;
       const dirName = url
-        .split("/")
+        ?.split("/")
         .pop()
         ?.replace(/\.git$/, "");
       const dir = dirName ? join(cd, dirName) : cd;
 
       try {
-        localEcho.println(`Cloning into '${dirName}'...`);
+        if (dirName) localEcho.println(`Cloning into '${dirName}'...`);
 
         await clone({ ...options, corsProxy, dir, http, onMessage, url });
       } catch (error) {
