@@ -122,7 +122,7 @@ const processDirectory: Processes = {
   },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
-    background: "rgba(12, 12, 12, 0.6)",
+    background: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
       height: 340,
       width: 553,

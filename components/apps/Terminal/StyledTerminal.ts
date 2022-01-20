@@ -8,6 +8,7 @@ const StyledTerminal = styled.div`
 
   .terminal {
     height: 100% !important;
+    backdrop-filter: blur(8px);
   }
 
   .xterm-viewport {
