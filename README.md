@@ -2,7 +2,7 @@
 
 ### _Desktop environment in the browser_
 
-> [52 x Live Coding Streams of the Project w/Dustin Brett](https://www.youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN)
+> [Live Coding Streams of the Project w/Dustin Brett](https://www.youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN)
 
 ![Stars](https://badgen.net/github/stars/DustinBrett/x)
 ![Stars](https://badgen.net/github/license/DustinBrett/x)
@@ -153,6 +153,7 @@ yarn dev
     - `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
     - `wax fortune` ([\#](https://wapm.io/package/fortune))
 - [Weather information](https://wttr.in/)
+- Activate from Start Menu or **_SHIFT+F10_**
 
 ### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)
 
