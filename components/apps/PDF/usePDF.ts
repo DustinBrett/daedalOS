@@ -1,5 +1,7 @@
+import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
 import type * as PdfjsLib from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { useCallback, useEffect, useState } from "react";
@@ -42,6 +44,7 @@ const usePDF = (
     },
     [scale]
   );
+  const { prependFileToTitle } = useTitle(id);
   const renderPages = useCallback(async (): Promise<void> => {
     if (window.pdfjsLib && url && containerRef.current) {
       setLoading(true);
@@ -57,10 +60,20 @@ const usePDF = (
           )
         )
       );
+      prependFileToTitle(basename(url));
     }
 
     setLoading(false);
-  }, [argument, containerRef, id, readFile, renderPage, setLoading, url]);
+  }, [
+    argument,
+    containerRef,
+    id,
+    prependFileToTitle,
+    readFile,
+    renderPage,
+    setLoading,
+    url,
+  ]);
 
   useEffect(() => {
     loadFiles(libs).then(() => {
