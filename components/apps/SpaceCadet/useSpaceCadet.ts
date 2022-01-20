@@ -5,6 +5,9 @@ declare global {
   interface Window {
     Module: {
       canvas: HTMLCanvasElement;
+      SDL2?: {
+        audioContext: AudioContext;
+      };
     };
   }
 }
@@ -32,6 +35,12 @@ const useSpaceCadet = (
         setLoading(false)
       );
     }
+
+    return () => {
+      if (canvas && window.Module) {
+        window.Module.SDL2?.audioContext.close();
+      }
+    };
   }, [canvas, setLoading]);
 };
 
