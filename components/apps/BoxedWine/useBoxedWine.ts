@@ -82,7 +82,10 @@ const useBoxedWine = (
     }
 
     return () => {
-      window.BoxedWineConfig.isRunning = false;
+      try {
+        window.BoxedWineConfig.isRunning = false;
+        // eslint-disable-next-line no-empty
+      } catch {}
     };
   }, [loadEmulator, url]);
 };
