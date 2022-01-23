@@ -2,14 +2,16 @@
 
 ### _Desktop environment in the browser_
 
-> [Live Coding Streams of the Project w/Dustin Brett](https://www.youtube.com/playlist?list=PLM88opVjBuU7xSRoHhs3hZBz3JmHHBMMN)
-
 ![Stars](https://badgen.net/github/stars/DustinBrett/x)
-![Stars](https://badgen.net/github/license/DustinBrett/x)
+![License](https://badgen.net/github/license/DustinBrett/x)
 
 # Demo ⚡
 
 ![Demo](demo.gif)
+
+# Feature Overview
+
+[![Feature Overview](https://img.youtube.com/vi/geCNiJnw8iE/0.jpg)](http://www.youtube.com/watch?v=geCNiJnw8iE)
 
 # Try It 🏁
 
