@@ -5,6 +5,12 @@ import { useProcesses } from "contexts/process";
 import type { DraggableEventHandler } from "react-draggable";
 import type { Props, RndResizeCallback } from "react-rnd";
 
+const enableIframeCapture = (enable = true): void =>
+  document.querySelectorAll("iframe").forEach((iframe) => {
+    // eslint-disable-next-line no-param-reassign
+    iframe.style.pointerEvents = enable ? "initial" : "none";
+  });
+
 const useRnd = (id: string, maximized = false): Props => {
   const {
     processes: {
@@ -20,7 +26,10 @@ const useRnd = (id: string, maximized = false): Props => {
   const onDragStop: DraggableEventHandler = (
     _event,
     { x: positionX, y: positionY }
-  ) => setPosition({ x: positionX, y: positionY });
+  ) => {
+    enableIframeCapture();
+    setPosition({ x: positionX, y: positionY });
+  };
   const onResizeStop: RndResizeCallback = (
     _event,
     _direction,
@@ -28,6 +37,7 @@ const useRnd = (id: string, maximized = false): Props => {
     _delta,
     { x: positionX, y: positionY }
   ) => {
+    enableIframeCapture();
     setSize({ height: elementHeight, width: elementWidth });
     setPosition({ x: positionX, y: positionY });
   };
@@ -36,7 +46,9 @@ const useRnd = (id: string, maximized = false): Props => {
     disableDragging: maximized,
     enableResizing: allowResizing && !maximized,
     lockAspectRatio,
+    onDragStart: () => enableIframeCapture(false),
     onDragStop,
+    onResizeStart: () => enableIframeCapture(false),
     onResizeStop,
     position,
     size,
