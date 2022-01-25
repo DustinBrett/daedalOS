@@ -31,6 +31,13 @@ yarn build:fs
 yarn dev
 ```
 
+# News Mentions 📰
+
+- https://www.zive.cz/clanky/nadsenec-vytvoril-webovou-verzi-windows-10-funguji-v-nem-doom-i-winamp/sc-3-a-214442/default.aspx
+- https://www.justgeek.fr/daedalos-un-environnement-de-bureau-dans-votre-navigateur-web-92246/
+- https://touchit.sk/win-10-na-webe/394071
+- https://www.genbeta.com/windows/paso-52-semanas-modificando-su-web-personal-funcionara-como-windows-10-publico-codigo-ahora-trabaja-microsoft
+
 # System 🧠
 
 ### [File System](https://github.com/jvilk/BrowserFS)
