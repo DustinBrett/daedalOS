@@ -1,3 +1,4 @@
+import { commands as gitCommands } from "components/apps/Terminal/processGit";
 import type { LocalEcho } from "components/apps/Terminal/types";
 
 export const help = (
@@ -112,8 +113,9 @@ export const autoComplete = (
 
   localEcho.addAutocompleteHandler((index: number, [command]): string[] => {
     if (index === 0) return Object.keys(commands);
-    if (index === 1 && directoryCommands.has(command.toLowerCase())) {
-      return directory;
+    if (index === 1) {
+      if (directoryCommands.has(command)) return directory;
+      if (command === "git") return Object.keys(gitCommands);
     }
 
     return [];

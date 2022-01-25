@@ -6,7 +6,7 @@ import { join } from "path";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 
-const commands: Record<string, string> = {
+export const commands: Record<string, string> = {
   checkout: "Switch branches or restore working tree files",
   clone: "Clone a repository into a new directory",
 };
