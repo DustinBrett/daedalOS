@@ -31,12 +31,13 @@ yarn build:fs
 yarn dev
 ```
 
-# News Mentions 📰
+# Mentions 📰
 
 - https://www.zive.cz/clanky/nadsenec-vytvoril-webovou-verzi-windows-10-funguji-v-nem-doom-i-winamp/sc-3-a-214442/default.aspx
 - https://www.justgeek.fr/daedalos-un-environnement-de-bureau-dans-votre-navigateur-web-92246/
 - https://touchit.sk/win-10-na-webe/394071
 - https://www.genbeta.com/windows/paso-52-semanas-modificando-su-web-personal-funcionara-como-windows-10-publico-codigo-ahora-trabaja-microsoft
+- Reddit: [r/reactjs](https://www.reddit.com/r/reactjs/comments/rugj5a/after_1_year_of_hard_work_my_new_ultimate_web/), [r/itrunsdoom](https://www.reddit.com/r/itrunsdoom/comments/rv8l2m/after_1_year_of_hard_work_my_new_ultimate_web/), [r/programming](https://www.reddit.com/r/programming/comments/rvzdqt/after_1_year_of_hard_work_my_new_ultimate_web/), [r/javascript](https://www.reddit.com/r/javascript/comments/rws27k/after_1_year_of_hard_work_my_new_ultimate_web/), [r/selfhosted](https://www.reddit.com/r/selfhosted/comments/rxjfhx/after_1_year_of_hard_work_my_new_ultimate_web/), [r/web_design](https://www.reddit.com/r/web_design/comments/ryd14x/after_1_year_of_hard_work_my_new_ultimate_web/), [r/webdev](https://www.reddit.com/r/webdev/comments/rz4ypi/after_1_year_of_hard_work_my_new_ultimate_web/), [r/linux](https://www.reddit.com/r/linux/comments/s03y8e/after_1_year_of_hard_work_my_new_ultimate_web/), [r/UI_Design](https://www.reddit.com/r/UI_Design/comments/s1oete/after_1_year_of_hard_work_my_new_ultimate_web/), [r/desktops](https://www.reddit.com/r/desktops/comments/s3ais3/after_1_year_of_hard_work_my_new_ultimate_web/), [r/react](https://www.reddit.com/r/react/comments/s465by/after_1_year_of_hard_work_my_new_ultimate_web/), [r/InternetIsBeautiful](https://www.reddit.com/r/InternetIsBeautiful/comments/s466gw/after_1_year_of_hard_work_my_new_ultimate_web/), [r/Windows10](https://www.reddit.com/r/Windows10/comments/s5yufz/after_1_year_of_hard_work_my_new_ultimate_web/), [r/geek](https://www.reddit.com/r/geek/comments/s9som4/i_spent_2021_turning_my_personal_website_into_a/), [r/commandline](https://www.reddit.com/r/commandline/comments/s9srtu/i_turned_my_personal_website_into_an_os_with_a/), [r/WebAssembly](https://www.reddit.com/r/WebAssembly/comments/s9st0m/ive_turned_my_personal_website_into_an_os_and/), [r/emulation](https://www.reddit.com/r/emulation/comments/sb1qhr/ive_built_my_personal_website_into_the_ultimate/), [r/nostalgia](https://www.reddit.com/r/nostalgia/comments/sb3wq8/ive_turned_my_personal_website_into_a_web_os_ive/), [r/windows](https://www.reddit.com/r/windows/comments/sbt9p2/i_spent_2021_turning_my_personal_website_into_a/)
 
 # System 🧠
 
