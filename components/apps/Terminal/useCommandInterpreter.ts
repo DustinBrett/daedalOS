@@ -272,9 +272,30 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "help":
-          if (localEcho) help(localEcho, commands, aliases);
+        case "help": {
+          const [commandName] = commandArgs;
+
+          if (localEcho) {
+            if (commandName) {
+              const helpCommand = commands[commandName]
+                ? commandName
+                : Object.entries(aliases).find(
+                    ([, [baseCommandName]]) => baseCommandName === commandName
+                  )?.[0];
+
+              if (helpCommand && commands[helpCommand]) {
+                localEcho.println(commands[helpCommand]);
+              } else {
+                localEcho.println(
+                  "This command is not supported by the help utility."
+                );
+              }
+            } else {
+              help(localEcho, commands, aliases);
+            }
+          }
           break;
+        }
         case "history": {
           localEcho?.history.entries.forEach((entry, index) =>
             localEcho.println(`${(index + 1).toString().padStart(4)} ${entry}`)
