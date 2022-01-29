@@ -65,6 +65,16 @@ const processDirectory: Processes = {
     lockAspectRatio: true,
     title: "js-dos v7",
   },
+  Marked: {
+    Component: dynamic(() => import("components/apps/Marked")),
+    background: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 560,
+    },
+    icon: "/System/Icons/marked.png",
+    title: "Marked",
+  },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
     background: "#1E1E1E",

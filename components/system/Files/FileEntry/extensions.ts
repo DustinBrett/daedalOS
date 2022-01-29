@@ -34,6 +34,10 @@ const extensions = {
     process: ["JSDOS", "FileExplorer"],
     type: "JSDOS Bundle",
   },
+  ".md": {
+    icon: "marked",
+    process: ["Marked", "MonacoEditor"],
+  },
   ".mp3": {
     icon: "audio",
     process: ["Webamp"],
