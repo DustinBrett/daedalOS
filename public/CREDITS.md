@@ -40,6 +40,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Boxedwine](https://github.com/danoon2/Boxedwine)
 - [Ruffle](https://github.com/ruffle-rs/ruffle)
 - [Xterm.js](https://github.com/xtermjs/xterm.js)
+- [Marked](https://github.com/markedjs/marked)
 - [Monaco Editor](https://github.com/microsoft/monaco-editor)
 - [PDF.js](https://github.com/mozilla/pdf.js)
 - [Webamp](https://github.com/captbaritone/webamp)
