@@ -22,7 +22,7 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
   useEffect(() => {
     const updatePosition = (): void => {
       const selection = editor?.getSelection();
-      const { positionColumn, positionLineNumber } = selection || {};
+      const { positionColumn = 0, positionLineNumber = 0 } = selection || {};
       const selectedText = selection
         ? editor?.getModel()?.getValueInRange(selection)
         : "";
