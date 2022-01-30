@@ -1,4 +1,4 @@
-import vantaWorkerFunction from "components/system/Desktop/Wallpapers/vantaWaves/vantaWorker";
+import vantaWallpaperWorker from "components/system/Desktop/Wallpapers/vantaWaves/vantaWorker";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
@@ -28,7 +28,7 @@ const useWallpaper = (
   const { exists, readFile } = useFileSystem();
   const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
-  const vantaWorker = useWorker<void>(vantaWorkerFunction);
+  const vantaWorker = useWorker<void>(vantaWallpaperWorker, "Wallpaper");
   const loadThemeWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");

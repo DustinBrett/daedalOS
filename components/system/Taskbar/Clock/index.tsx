@@ -10,6 +10,7 @@ const Clock = (): JSX.Element => {
 
   useWorker<LocaleTimeDate>(
     clockWorker,
+    "Clock",
     useCallback(({ data }: { data: LocaleTimeDate }) => setNow(data), [])
   );
 

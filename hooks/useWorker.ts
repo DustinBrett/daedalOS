@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const useWorker = <T>(
   workerFunction: string | (() => void),
+  name: string,
   onMessage?: (message: { data: T }) => void
 ): Worker | undefined => {
   const [worker, setWorker] = useState<Worker>();
@@ -16,11 +17,11 @@ const useWorker = <T>(
         })
       );
 
-      setWorker(new Worker(workerUrl));
+      setWorker(new Worker(workerUrl, { name }));
 
       URL.revokeObjectURL?.(workerUrl);
     }
-  }, [workerFunction]);
+  }, [name, workerFunction]);
 
   useEffect(() => {
     if (onMessage) {
