@@ -1,4 +1,11 @@
-export type VantaWavesConfig = {
+type VantaWavesCycleColor = {
+  colorCycleSpeed?: number;
+  hue?: number;
+  lightness?: number;
+  saturation?: number;
+};
+
+export type VantaWavesConfig = VantaWavesCycleColor & {
   color: number;
   forceAnimate?: boolean;
   gyroControls?: boolean;
@@ -11,23 +18,34 @@ export type VantaWavesConfig = {
   zoom?: number;
 };
 
-type VantaWavesSettings = VantaWavesConfig & {
-  el: HTMLElement;
-  THREE?: unknown;
+export type OffscreenRenderProps = {
+  canvas: OffscreenCanvas;
+  devicePixelRatio: number;
 };
+
+type MainThreadRenderProps = {
+  el: HTMLElement;
+};
+
+type RenderProps = MainThreadRenderProps | OffscreenRenderProps;
+
+export type VantaWavesSettings = RenderProps &
+  VantaWavesConfig & {
+    THREE?: unknown;
+  };
 
 type VantaWaves = {
   destroy: () => void;
-  onDestroy: () => void;
-  setOptions: (settings: Partial<VantaWavesConfig>) => void;
+};
+
+export type VantaObject = {
+  current: VantaWaves;
+  WAVES: (settings: VantaWavesSettings) => VantaWaves;
 };
 
 declare global {
   interface Window {
     THREE: unknown;
-    VANTA: {
-      current: VantaWaves;
-      WAVES: (settings: VantaWavesSettings) => VantaWaves;
-    };
+    VANTA: VantaObject;
   }
 }

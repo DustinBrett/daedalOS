@@ -169,3 +169,16 @@ export const haltEvent = (
   event.preventDefault();
   event.stopPropagation();
 };
+
+export const createOffscreenCanvas = (
+  containerElement: HTMLElement
+): OffscreenCanvas => {
+  const canvas = document.createElement("canvas");
+
+  canvas.height = containerElement.clientHeight;
+  canvas.width = containerElement.clientWidth;
+
+  containerElement.appendChild(canvas);
+
+  return canvas.transferControlToOffscreen();
+};

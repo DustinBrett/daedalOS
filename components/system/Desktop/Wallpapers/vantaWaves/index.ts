@@ -1,4 +1,3 @@
-import colorCycle from "components/system/Desktop/Wallpapers/colorCycle";
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";
 
@@ -27,21 +26,13 @@ const vantaWaves =
 
     loadFiles(libs).then(() => {
       const { VANTA: { WAVES } = {} } = window;
-      const vantaEffect =
-        isWebGLAvailable && WAVES
-          ? WAVES({
-              el,
-              ...disableControls,
-              ...config,
-            })
-          : undefined;
 
-      if (vantaEffect) {
-        const { stop: stopColorCycle } = colorCycle(config.color, (color) =>
-          vantaEffect.setOptions({ color })
-        );
-
-        vantaEffect.onDestroy = stopColorCycle;
+      if (isWebGLAvailable && WAVES) {
+        WAVES({
+          el,
+          ...disableControls,
+          ...config,
+        });
       }
     });
   };
