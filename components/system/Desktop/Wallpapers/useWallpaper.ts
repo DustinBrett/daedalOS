@@ -70,6 +70,7 @@ const useWallpaper = (
     exists,
     loadThemeWallpaper,
     readFile,
+    vantaWorker,
     wallpaper,
     wallpaperFit,
     wallpaperImage,
