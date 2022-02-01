@@ -49,7 +49,11 @@ const useWallpaper = (
 
       if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-      wallpaper?.();
+      if (typeof OffscreenCanvas !== "undefined" && vantaWorker) {
+        desktopRef.current?.querySelector("canvas")?.remove();
+      } else {
+        wallpaper?.();
+      }
 
       desktopRef.current?.setAttribute(
         "style",
