@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const StyledFileInput = styled.input.attrs({
+  multiple: true,
   type: "file",
 })`
   display: none;

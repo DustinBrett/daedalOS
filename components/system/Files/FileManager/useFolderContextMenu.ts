@@ -34,7 +34,7 @@ const useFolderContextMenu = (
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
   const getItems = useCallback(() => {
-    const ADD_FILE = { action: () => addToFolder(), label: "Add file" };
+    const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
       action: () =>
         mapFs(url).then((mappedFolder) => updateFolder(url, mappedFolder)),
