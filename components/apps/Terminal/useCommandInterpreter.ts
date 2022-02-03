@@ -27,8 +27,13 @@ import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
+import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import type { Terminal } from "xterm";
+
+const FILE_NOT_FILE = "The system cannot find the file specified.";
+const PATH_NOT_FOUND = "The system cannot find the path specified.";
+const SYNTAX_ERROR = "The syntax of the command is incorrect.";
 
 const useCommandInterpreter = (
   id: string,
@@ -97,10 +102,10 @@ const useCommandInterpreter = (
                 localEcho?.println((await readFile(fullPath)).toString());
               }
             } else {
-              localEcho?.println("The system cannot find the path specified.");
+              localEcho?.println(PATH_NOT_FOUND);
             }
           } else {
-            localEcho?.println("The syntax of the command is incorrect.");
+            localEcho?.println(SYNTAX_ERROR);
           }
           break;
         }
@@ -122,7 +127,7 @@ const useCommandInterpreter = (
                 );
               }
             } else {
-              localEcho?.println("The system cannot find the path specified.");
+              localEcho?.println(PATH_NOT_FOUND);
             }
           } else {
             localEcho?.println(cd.current);
@@ -149,7 +154,7 @@ const useCommandInterpreter = (
               localEcho?.println("\t0 file(s) copied.");
             }
           } else {
-            localEcho?.println("The system cannot find the file specified.");
+            localEcho?.println(FILE_NOT_FILE);
           }
           break;
         }
@@ -259,6 +264,39 @@ const useCommandInterpreter = (
         case "quit":
           closeWithTransition(id);
           break;
+        case "ffmpeg": {
+          const [file, format] = commandArgs;
+
+          if (file && format) {
+            const fullPath = getFullPath(file);
+
+            if (
+              (await exists(fullPath)) &&
+              !(await stat(fullPath)).isDirectory()
+            ) {
+              const [[transcodedName, transcodedData]] = await transcode(
+                [[basename(fullPath), await readFile(fullPath)]],
+                format,
+                localEcho
+              );
+
+              if (transcodedName && transcodedData) {
+                const newPath = join(dirname(fullPath), transcodedName);
+
+                await writeFile(
+                  newPath,
+                  Buffer.from(transcodedData as Uint8Array)
+                );
+                updateFile(newPath);
+              }
+            } else {
+              localEcho?.println(FILE_NOT_FILE);
+            }
+          } else {
+            localEcho?.println(SYNTAX_ERROR);
+          }
+          break;
+        }
         case "git": {
           if (fs && localEcho) {
             await processGit(
@@ -348,10 +386,10 @@ const useCommandInterpreter = (
               updateFile(fullSourcePath, true);
               updateFile(fullDestinationPath);
             } else {
-              localEcho?.println("The syntax of the command is incorrect.");
+              localEcho?.println(SYNTAX_ERROR);
             }
           } else {
-            localEcho?.println("The system cannot find the file specified.");
+            localEcho?.println(FILE_NOT_FILE);
           }
           break;
         }
