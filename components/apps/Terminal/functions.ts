@@ -25,6 +25,7 @@ export const help = (
 export const commands: Record<string, string> = {
   cd: "Changes the current directory.",
   clear: "Clears the screen.",
+  color: "Specifies color attribute of console output.",
   copy: "Copies a file to another location.",
   date: "Displays the date.",
   del: "Deletes a file.",

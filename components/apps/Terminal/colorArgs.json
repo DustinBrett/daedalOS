@@ -1,0 +1,18 @@
+{
+  "0": { "color_code": "\u001b[30m", "color_name": "Black" },
+  "1": { "color_code": "\u001b[34m", "color_name": "Blue" },
+  "2": { "color_code": "\u001b[32m", "color_name": "Green" },
+  "3": { "color_code": "\u001b[36m", "color_name": "Aqua" },
+  "4": { "color_code": "\u001b[31m", "color_name": "Red" },
+  "5": { "color_code": "\u001b[35m", "color_name": "Purple" },
+  "6": { "color_code": "\u001b[33m", "color_name": "Yellow" },
+  "7": { "color_code": "\u001b[37m", "color_name": "White" },
+  "8": { "color_code": "\u001b[38;5;245m", "color_name": "Gray" },
+  "9": { "color_code": "\u001b[94m", "color_name": "Light Blue" },
+  "A": { "color_code": "\u001b[92m", "color_name": "Light Green" },
+  "B": { "color_code": "\u001b[96m", "color_name": "Light Aqua" },
+  "C": { "color_code": "\u001b[91m", "color_name": "Light Red" },
+  "D": { "color_code": "\u001b[95m", "color_name": "Light Purple" },
+  "E": { "color_code": "\u001b[93m", "color_name": "Light Yellow" },
+  "F": { "color_code": "\u001b[97m", "color_name": "Bright White" }
+}

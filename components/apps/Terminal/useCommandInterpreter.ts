@@ -1,3 +1,4 @@
+import * as colors from "components/apps/Terminal/colorArgs.json";
 import {
   aliases,
   autoComplete,
@@ -77,11 +78,11 @@ const useCommandInterpreter = (
     },
     [localEcho, readdir, updateFolder]
   );
+  let colorOutput: string;
   const commandInterpreter = useCallback(
     async (command: string = ""): Promise<string> => {
       const [baseCommand = "", ...commandArgs] = parseCommand(command);
       const lcBaseCommand = baseCommand.toLowerCase();
-
       switch (lcBaseCommand) {
         case "cat":
         case "type": {
@@ -129,6 +130,15 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "color": {
+          const colorArgument = commandArgs[0].toUpperCase();
+          if (colors[colorArgument as keyof typeof colors]) {
+            colorOutput =
+              colors[colorArgument as keyof typeof colors]["color_code"];
+            localEcho?.println(colorOutput);
+          }
+          break;
+        }
         case "copy":
         case "cp": {
           const [source, destination] = commandArgs;
@@ -156,7 +166,7 @@ const useCommandInterpreter = (
         case "clear":
         case "cls":
           terminal?.reset();
-          terminal?.write("\u001Bc");
+          terminal?.write(`\u001Bc${colorOutput}`);
           break;
         case "date": {
           localEcho?.println(
