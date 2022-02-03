@@ -173,7 +173,7 @@ const useFileContextMenu = (
                     )
                   );
                 },
-                label: `To ${extension.toUpperCase()}`,
+                label: extension.toUpperCase(),
               };
             }),
           });
