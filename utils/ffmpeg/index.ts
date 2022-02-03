@@ -1,5 +1,5 @@
 import type { LocalEcho } from "components/apps/Terminal/types";
-import { basename, extname } from "path";
+import { basename, dirname, extname, join } from "path";
 import type {
   FFmpegTranscodeFile,
   IFFmpegInstance,
@@ -12,7 +12,8 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
     await loadFiles(["/Program Files/ffmpeg/ffmpeg.min.js"]);
   }
 
-  if (!window.FFmpegInstance && window.FFmpeg) {
+  if (window.FFmpeg) {
+    window.FFmpegInstance?.exit();
     window.FFmpegInstance = window.FFmpeg.createFFmpeg({
       corePath: "/Program Files/ffmpeg/ffmpeg-core.js",
       log: false,
@@ -21,7 +22,6 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
       },
       mainName: "main",
     });
-
     await window.FFmpegInstance.load();
   }
 
@@ -30,7 +30,7 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
 
 export const transcode = async (
   files: FFmpegTranscodeFile[],
-  targetExtension: string,
+  extension: string,
   localEcho?: LocalEcho
 ): Promise<FFmpegTranscodeFile[]> => {
   const ffmpeg = await getFFmpeg(localEcho);
@@ -38,16 +38,14 @@ export const transcode = async (
 
   await Promise.all(
     files.map(async ([fileName, fileData]) => {
-      const newName = `${basename(
-        fileName,
-        extname(fileName)
-      )}.${targetExtension}`;
+      const baseName = basename(fileName);
+      const newName = `${basename(fileName, extname(fileName))}.${extension}`;
 
-      ffmpeg.FS("writeFile", fileName, fileData);
-      await ffmpeg.run("-i", fileName, newName);
+      ffmpeg.FS("writeFile", baseName, fileData);
+      await ffmpeg.run("-i", baseName, newName);
 
       returnFiles.push([
-        newName,
+        join(dirname(fileName), newName),
         Buffer.from(ffmpeg.FS("readFile", newName) as Uint8Array),
       ]);
     })

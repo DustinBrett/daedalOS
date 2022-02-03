@@ -1,4 +1,5 @@
 export type IFFmpegInstance = {
+  exit: () => void;
   FS: (
     command: string,
     fileName: string,

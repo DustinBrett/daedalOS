@@ -21,6 +21,14 @@ import {
   MOUNTABLE_EXTENSIONS,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
+import { transcode } from "utils/ffmpeg";
+import {
+  AUDIO_DECODE_FORMATS,
+  AUDIO_ENCODE_FORMATS,
+  VIDEO_DECODE_FORMATS,
+  VIDEO_ENCODE_FORMATS,
+} from "utils/ffmpeg/formats";
+import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
 
 const useFileContextMenu = (
   url: string,
@@ -44,7 +52,15 @@ const useFileContextMenu = (
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url);
-  const { copyEntries, moveEntries, rootFs, stat } = useFileSystem();
+  const {
+    copyEntries,
+    moveEntries,
+    readFile,
+    rootFs,
+    stat,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
   const { contextMenu } = useMenu();
   const getItems = useCallback(() => {
     const urlExtension = extname(url).toLowerCase();
@@ -115,6 +131,51 @@ const useFileContextMenu = (
           menuItems.unshift({
             action: () => extractFiles(path),
             label: "Extract Here",
+          });
+        }
+
+        const canRecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
+        const canRecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
+
+        if (canRecodeAudio || canRecodeVideo) {
+          const ENCODE_FORMATS = canRecodeAudio
+            ? AUDIO_ENCODE_FORMATS
+            : VIDEO_ENCODE_FORMATS;
+
+          menuItems.unshift(MENU_SEPERATOR, {
+            label: "Convert to",
+            menu: ENCODE_FORMATS.map((format) => {
+              const extension = format.replace(".", "");
+
+              return {
+                action: async () => {
+                  const transcodeFiles: FFmpegTranscodeFile[] =
+                    await Promise.all(
+                      absoluteEntries().map(async (absoluteEntry) => [
+                        absoluteEntry,
+                        await readFile(absoluteEntry),
+                      ])
+                    );
+                  const transcodedFiles = await transcode(
+                    transcodeFiles,
+                    extension
+                  );
+
+                  await Promise.all(
+                    transcodedFiles.map(
+                      async ([transcodedFileName, transcodedFileData]) => {
+                        writeFile(transcodedFileName, transcodedFileData);
+                        updateFolder(
+                          dirname(path),
+                          basename(transcodedFileName)
+                        );
+                      }
+                    )
+                  );
+                },
+                label: `To ${extension.toUpperCase()}`,
+              };
+            }),
           });
         }
 
@@ -242,13 +303,16 @@ const useFileContextMenu = (
     openFile,
     path,
     pid,
+    readFile,
     readOnly,
     rootFs?.mntMap,
     rootFs?.mountList,
     setRenaming,
     setWallpaper,
     stat,
+    updateFolder,
     url,
+    writeFile,
   ]);
 
   const { onContextMenuCapture, ...contextMenuHandlers } =
