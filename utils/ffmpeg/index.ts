@@ -20,7 +20,6 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
         if (type === "fferr") localEcho?.println(message);
       },
       mainName: "main",
-      workerPath: "/Program Files/ffmpeg/ffmpeg-core.worker.js",
     });
 
     await window.FFmpegInstance.load();

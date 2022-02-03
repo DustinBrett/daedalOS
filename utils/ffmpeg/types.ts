@@ -18,7 +18,6 @@ type FFmpegConfig = {
   log: boolean;
   logger: (log: IFFmpegLog) => void;
   mainName: string;
-  workerPath: string;
 };
 
 export type FFmpegTranscodeFile = [string, Buffer];
