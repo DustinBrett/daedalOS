@@ -15,20 +15,45 @@
 
 # Try It 🏁
 
-### Prerequisites
+### Clone repo
 
 - [Git](https://git-scm.com/downloads)
-- [Node.js](https://nodejs.org/en/download/) (LTS)
-- [Yarn](https://classic.yarnpkg.com/en/) (`npm install --global yarn`)
-
-### Build & Run
 
 ```
 git clone https://github.com/DustinBrett/daedalOS.git
 cd daedalOS
+```
+
+### Yarn
+
+- [Node.js](https://nodejs.org/en/download/) (LTS)
+- [Yarn](https://classic.yarnpkg.com/en/) (`npm install --global yarn`)
+
+```
 yarn
+```
+
+##### Development
+
+```
 yarn build:fs
 yarn dev
+```
+
+##### Production
+
+```
+yarn build
+yarn start
+```
+
+### Docker
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+```
+yarn docker:build
+yarn docker:run
 ```
 
 # Mentions 📰

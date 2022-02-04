@@ -12,6 +12,8 @@
     "build": "npm run build:fs && next build",
     "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
     "build:robots": "node scripts/robots.js",
+    "docker:build": "docker build -t daedalos .",
+    "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
     "dev": "next dev",
     "eslint": "eslint --report-unused-disable-directives .",
     "export": "next export",
