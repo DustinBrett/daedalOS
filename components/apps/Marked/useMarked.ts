@@ -1,8 +1,9 @@
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
+import { basename } from "path";
 import { useCallback, useEffect } from "react";
-import { useTheme } from "styled-components";
 import { loadFiles } from "utils/functions";
 
 type MarkedOptions = {
@@ -50,7 +51,7 @@ const useMarked = (
       });
     }
   }, [containerRef, id, onDragOver, onDrop, setForegroundId]);
-  const { formats } = useTheme();
+  const { prependFileToTitle } = useTitle(id);
   const loadFile = useCallback(async () => {
     const iframe = containerRef.current?.querySelector("iframe");
 
@@ -58,18 +59,15 @@ const useMarked = (
       const markdownFile = await readFile(url);
 
       iframe.srcdoc = `
-        <style>
-          body {
-            font-family: ${formats.systemFont};
-            padding: 0 16px;
-          }
-        </style>
+        <link rel="stylesheet" href="/Program Files/Marked/style.css" />
         ${window.marked.parse(markdownFile.toString(), {
           headerIds: false,
         })}
       `;
+
+      prependFileToTitle(basename(url));
     }
-  }, [containerRef, formats.systemFont, readFile, url]);
+  }, [containerRef, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (loading) {
