@@ -6,10 +6,10 @@ type ErrorBoundaryState = {
 };
 
 export class ErrorBoundary extends Component<
-  React.PropsWithChildren<void>,
+  React.PropsWithChildren<Record<never, unknown>>,
   ErrorBoundaryState
 > {
-  public constructor(props: React.PropsWithChildren<void>) {
+  public constructor(props: React.PropsWithChildren<Record<never, unknown>>) {
     super(props);
     this.state = { hasError: false };
   }

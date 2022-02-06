@@ -6,7 +6,7 @@ import { DEFAULT_THEME } from "utils/constants";
 
 const StyledApp = ({
   children,
-}: React.PropsWithChildren<void>): JSX.Element => (
+}: React.PropsWithChildren<Record<never, unknown>>): JSX.Element => (
   <SessionConsumer>
     {({ themeName }) => (
       <ThemeProvider theme={themes[themeName] || themes[DEFAULT_THEME]}>
