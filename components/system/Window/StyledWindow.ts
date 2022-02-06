@@ -1,3 +1,4 @@
+import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
@@ -23,7 +24,7 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
   position: absolute;
   width: 100%;
 
-  header + * {
+  ${StyledTitlebar} + * {
     height: ${({ theme }) =>
       `calc(100% - ${theme.sizes.titleBar.height}) !important`};
   }
