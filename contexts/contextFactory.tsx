@@ -1,19 +1,17 @@
 import { createContext, useContext } from "react";
 
-type ProcessProviderProps = {
-  children: React.ReactNode;
-};
-
 const contextFactory = <T,>(
   useContextState: () => T,
   ContextComponent?: React.ComponentType
 ): {
   Consumer: React.Consumer<T>;
-  Provider: (props: ProcessProviderProps) => JSX.Element;
+  Provider: (props: React.PropsWithChildren<void>) => JSX.Element;
   useContext: () => T;
 } => {
   const Context = createContext<T>({} as T);
-  const ProcessProvider = ({ children }: ProcessProviderProps): JSX.Element => (
+  const ProcessProvider = ({
+    children,
+  }: React.PropsWithChildren<void>): JSX.Element => (
     <Context.Provider value={useContextState()}>
       {children}
       {ContextComponent ? <ContextComponent /> : <></>}

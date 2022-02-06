@@ -1,14 +1,10 @@
 import StyledDesktop from "components/system/Desktop/StyledDesktop";
 import useWallpaper from "components/system/Desktop/Wallpapers/useWallpaper";
 import FileManager from "components/system/Files/FileManager";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 
-type DesktopProps = {
-  children: React.ReactNode;
-};
-
-const Desktop = ({ children }: DesktopProps): JSX.Element => {
+const Desktop = ({ children }: React.PropsWithChildren<void>): JSX.Element => {
   const desktopRef = useRef<HTMLElement | null>(null);
 
   useWallpaper(desktopRef);

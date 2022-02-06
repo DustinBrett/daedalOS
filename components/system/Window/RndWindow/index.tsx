@@ -12,7 +12,6 @@ import {
 import { pxToNum } from "utils/functions";
 
 type RndWindowProps = {
-  children: React.ReactNode;
   id: string;
   zIndex: number;
 };
@@ -28,7 +27,11 @@ const reRouteFocus =
     });
   };
 
-const RndWindow = ({ children, id, zIndex }: RndWindowProps): JSX.Element => {
+const RndWindow = ({
+  children,
+  id,
+  zIndex,
+}: React.PropsWithChildren<RndWindowProps>): JSX.Element => {
   const {
     linkElement,
     maximize,

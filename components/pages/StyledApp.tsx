@@ -4,11 +4,9 @@ import GlobalStyle from "styles/GlobalStyle";
 import themes from "styles/themes";
 import { DEFAULT_THEME } from "utils/constants";
 
-type StyledAppProps = {
-  children: React.ReactNode;
-};
-
-const StyledApp = ({ children }: StyledAppProps): JSX.Element => (
+const StyledApp = ({
+  children,
+}: React.PropsWithChildren<void>): JSX.Element => (
   <SessionConsumer>
     {({ themeName }) => (
       <ThemeProvider theme={themes[themeName] || themes[DEFAULT_THEME]}>

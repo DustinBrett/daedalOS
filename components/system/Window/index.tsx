@@ -7,13 +7,12 @@ import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
-type WindowProps = ComponentProcessProps & {
-  children: React.ReactNode;
-};
-
-const Window = ({ children, id }: WindowProps): JSX.Element => {
+const Window = ({
+  children,
+  id,
+}: React.PropsWithChildren<ComponentProcessProps>): JSX.Element => {
   const {
     linkElement,
     processes: { [id]: process },
