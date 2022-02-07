@@ -11,7 +11,7 @@ export const spotlightEffect = (
     ? {
         onMouseLeave: () => element.removeAttribute("style"),
         onMouseMove: ({ clientX, clientY, target }) => {
-          if (target === element) {
+          if (element.contains(target as Node)) {
             const { left, top } = element.getBoundingClientRect();
             const x = clientX - left;
             const y = clientY - top;
