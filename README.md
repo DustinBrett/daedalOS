@@ -80,9 +80,9 @@ yarn docker:run
 - Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images & video
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
-  - [Add file](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
+  - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
   - Open with, Open file/folder location, Open in new window
-  - Download, Add to archive, Extract here, Set as wallpaper
+  - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video
   - Sort by, New Folder, New Text Document
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
@@ -113,13 +113,14 @@ yarn docker:run
 
 ### Clock
 
-- Runs in a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+- Runs in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
 - Synced to system clock on load
 - Date tooltip
 
 ### Wallpaper
 
 - [Dynamic animated wallpaper](https://www.vantajs.com/)
+  - Uses [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
 - Set via images (Fill, Fit, Stretch, Tile, Center)
 
 ### URL
