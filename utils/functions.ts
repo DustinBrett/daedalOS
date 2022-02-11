@@ -2,7 +2,7 @@ import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
 import { stripUnit } from "polished";
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
   new Blob([new Uint8Array(buffer)]);
@@ -70,7 +70,7 @@ export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
   const [vh, vw] = [viewHeight(), viewWidth()];
   const setHeight = Number(size.height);
   const setWidth = Number(size.width);
-  const height = Math.min(setHeight, vh);
+  const height = Math.min(setHeight, vh - TASKBAR_HEIGHT);
   const width = Math.min(setWidth, vw);
 
   if (!lockAspectRatio) return { height, width };

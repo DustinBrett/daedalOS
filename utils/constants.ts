@@ -119,3 +119,5 @@ export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.png`;
 export const UNKNOWN_ICON = `${ICON_PATH}/unknown.png`;
 
 export const DEFAULT_SCROLLBAR_WIDTH = 17;
+
+export const TASKBAR_HEIGHT = 30;

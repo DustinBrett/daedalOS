@@ -1,3 +1,5 @@
+import { TASKBAR_HEIGHT } from "utils/constants";
+
 const sizes = {
   clock: {
     fontSize: "12px",
@@ -50,7 +52,7 @@ const sizes = {
         margin: "8px",
       },
     },
-    height: "30px",
+    height: `${TASKBAR_HEIGHT}px`,
   },
   titleBar: {
     buttonIconWidth: "10px",
