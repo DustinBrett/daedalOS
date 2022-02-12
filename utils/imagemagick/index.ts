@@ -1,5 +1,6 @@
 import type { LocalEcho } from "components/apps/Terminal/types";
 import { basename, dirname, extname, join } from "path";
+import { EMPTY_BUFFER } from "utils/constants";
 import { loadFiles } from "utils/functions";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 
@@ -21,19 +22,21 @@ export const convert = async (
       const baseName = basename(fileName);
       const newName = `${basename(fileName, extname(fileName))}.${extension}`;
       const {
-        exitCode,
         outputFiles: [image] = [],
         stderr,
         stdout,
       } = await call(
         [{ content: fileData, name: baseName }],
-        ["convert", baseName, newName]
+        ["convert", baseName, "-verbose", newName]
       );
-      const output = (exitCode !== 0 ? stdout : stderr).join("\n");
+      const output = [...stdout, ...stderr].join("\n");
 
       if (output) localEcho?.println(output);
 
-      returnFiles.push([join(dirname(fileName), newName), image?.buffer]);
+      returnFiles.push([
+        join(dirname(fileName), newName),
+        image.blob ? Buffer.from(await image.blob.arrayBuffer()) : EMPTY_BUFFER,
+      ]);
     })
   );
 

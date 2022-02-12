@@ -330,7 +330,7 @@ const useCommandInterpreter = (
               if (newName && newData) {
                 const newPath = join(dirname(fullPath), newName);
 
-                await writeFile(newPath, Buffer.from(newData as Uint8Array));
+                await writeFile(newPath, newData);
                 updateFile(newPath);
               }
             } else {

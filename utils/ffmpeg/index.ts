@@ -17,8 +17,9 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
     window.FFmpegInstance = window.FFmpeg.createFFmpeg({
       corePath: "/Program Files/ffmpeg/ffmpeg-core.js",
       log: false,
-      logger: ({ type, message }: IFFmpegLog) => {
-        if (type === "fferr") localEcho?.println(message);
+      logger: ({ message }: IFFmpegLog) => {
+        localEcho?.println(message);
+        console.info(message);
       },
       mainName: "main",
     });

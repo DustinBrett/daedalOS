@@ -6,7 +6,7 @@ type ImageMagickFile = {
 };
 
 type ImageMagickConvertedFile = {
-  buffer: Buffer;
+  blob: Blob;
   name: string;
 };
 

@@ -29,6 +29,9 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
+import { convert } from "utils/imagemagick";
+import { IMAGE_ENCODE_FORMATS } from "utils/imagemagick/formats";
+import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 
 const useFileContextMenu = (
   url: string,
@@ -134,29 +137,39 @@ const useFileContextMenu = (
           });
         }
 
-        const canRecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
-        const canRecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
+        const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
+        const canDecodeImage = IMAGE_FILE_EXTENSIONS.has(pathExtension);
+        const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
 
-        if (canRecodeAudio || canRecodeVideo) {
-          const ENCODE_FORMATS = canRecodeAudio
-            ? AUDIO_ENCODE_FORMATS
-            : VIDEO_ENCODE_FORMATS;
+        if (canDecodeAudio || canDecodeImage || canDecodeVideo) {
+          const isAudioVideo = canDecodeAudio || canDecodeVideo;
+          const ENCODE_FORMATS = isAudioVideo
+            ? canDecodeAudio
+              ? AUDIO_ENCODE_FORMATS
+              : VIDEO_ENCODE_FORMATS
+            : IMAGE_ENCODE_FORMATS;
 
           menuItems.unshift(MENU_SEPERATOR, {
             label: "Convert to",
-            menu: ENCODE_FORMATS.map((format) => {
+            menu: ENCODE_FORMATS.filter(
+              (format) => format !== pathExtension
+            ).map((format) => {
+              const transcodeFunction = isAudioVideo ? transcode : convert;
               const extension = format.replace(".", "");
 
               return {
                 action: async () => {
-                  const transcodeFiles: FFmpegTranscodeFile[] =
-                    await Promise.all(
-                      absoluteEntries().map(async (absoluteEntry) => [
-                        absoluteEntry,
-                        await readFile(absoluteEntry),
-                      ])
-                    );
-                  const transcodedFiles = await transcode(
+                  const transcodeFiles: (
+                    | FFmpegTranscodeFile
+                    | ImageMagickConvertFile
+                  )[] = await Promise.all(
+                    absoluteEntries().map(async (absoluteEntry) => [
+                      absoluteEntry,
+                      await readFile(absoluteEntry),
+                    ])
+                  );
+
+                  const transcodedFiles = await transcodeFunction(
                     transcodeFiles,
                     extension
                   );
