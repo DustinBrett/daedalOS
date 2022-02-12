@@ -7,7 +7,7 @@
 
 # Demo ⚡
 
-![Demo](demo.gif)
+![Demo](https://raw.githubusercontent.com/DustinBrett/daedalOS/main/demo.gif)
 
 # Feature Overview
 
