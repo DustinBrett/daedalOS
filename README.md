@@ -52,8 +52,8 @@ yarn start
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ```
-yarn docker:build
-yarn docker:run
+docker build -t daedalos .
+docker run -dp 3000:3000 --rm --name daedalos daedalos
 ```
 
 # Mentions 📰
