@@ -1,22 +1,22 @@
-export const DEFAULT_SERVER = "irc.unrealircd.org";
-export const DEFAULT_PORT = "443";
-export const DEFAULT_NAME = "daedalOS";
+import {
+  DATA_RPL,
+  RPL_MYINFO,
+  SYSTEM_RPL,
+} from "components/apps/IRC/constants";
+import type {
+  IrcOutput,
+  Message,
+  MessageTypes,
+} from "components/apps/IRC/types";
 
-export type Message = {
-  command?: string;
-  error?: string;
-  parameters?: string;
-  prefix?: string;
-  type?: string;
-};
-
-type IrcOutput = (output: Message) => void;
+let seenCommands: string[] = [];
+let connectedServer: string = "";
 
 const parseMessage = (message: string, name: string): Message => {
   let prefix = "";
   let command = message;
   let parameters: string[] = [];
-  let type = "message";
+  let type: MessageTypes = "message";
 
   if (message.startsWith(":")) {
     const prefixEnd = message.indexOf(" ");
@@ -29,6 +29,15 @@ const parseMessage = (message: string, name: string): Message => {
 
     if (parameters[0] === name) {
       parameters = parameters.slice(1);
+    }
+
+    if (DATA_RPL.has(command)) {
+      while (parameters[0] && !Number.isNaN(Number(parameters[0]))) {
+        parameters = parameters.slice(1);
+      }
+    } else if (command === RPL_MYINFO) {
+      // eslint-disable-next-line prefer-destructuring
+      connectedServer = parameters[0];
     }
   }
 
@@ -60,16 +69,29 @@ const processLine = (
 
     socket.send(response);
   } else {
-    cb?.(parseMessage(line, name));
+    const message = parseMessage(line, name);
+
+    if (message.command) {
+      cb?.(message, name, connectedServer, seenCommands);
+
+      if (
+        !SYSTEM_RPL.has(message.command) &&
+        !seenCommands.includes(message.command)
+      ) {
+        seenCommands.push(message.command);
+      }
+    }
   }
 };
 
 export const connect = (
   address: string,
-  port: string,
+  port: number | string,
   nickName: string,
   cb?: IrcOutput
 ): WebSocket => {
+  seenCommands = [];
+
   cb?.({
     parameters: `* Connecting to ${address} (${port})`,
     type: "system",

@@ -1,12 +1,17 @@
-import type { Message } from "components/apps/IRC/functions";
 import {
-  connect,
-  DEFAULT_NAME,
-  DEFAULT_PORT,
-  DEFAULT_SERVER,
-} from "components/apps/IRC/functions";
+  NOTICE_RPL,
+  RPL_UMODEIS,
+  servers,
+  SYSTEM_RPL,
+} from "components/apps/IRC/constants";
+import { connect } from "components/apps/IRC/functions";
 import StyledIRC from "components/apps/IRC/StyledIRC";
+import type { Message } from "components/apps/IRC/types";
+import packageJson from "package.json";
 import { useEffect, useRef, useState } from "react";
+
+const [{ port = 443, server }] = servers;
+const { alias } = packageJson;
 
 const IRC = (): JSX.Element => {
   const [log, setLog] = useState<string[]>([]);
@@ -18,9 +23,32 @@ const IRC = (): JSX.Element => {
   const commandRef = useRef<HTMLInputElement | null>(null);
   const outputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const newLine = ({ parameters }: Message): void => {
+  const newLine = (
+    { command, parameters }: Message,
+    name?: string,
+    connectedServer?: string,
+    seenCommands: string[] = []
+  ): void => {
     if (parameters) {
-      setLog((currentLog) => [...currentLog, parameters]);
+      let output = [parameters];
+
+      if (command === RPL_UMODEIS) {
+        output = [`${name} ${parameters}`];
+      } else if (command === "MODE") {
+        output = [`* ${name} sets mode: ${parameters}`];
+      } else if (command === "NOTICE") {
+        output = [`-${connectedServer}- ${parameters}`];
+      }
+
+      if (
+        command &&
+        (SYSTEM_RPL.has(command) ||
+          (NOTICE_RPL.has(command) && !seenCommands.includes(command)))
+      ) {
+        output.unshift("-");
+      }
+
+      setLog((currentLog) => [...currentLog, ...output]);
     }
   };
 
@@ -49,16 +77,16 @@ const IRC = (): JSX.Element => {
   return (
     <StyledIRC>
       <nav>
-        <input ref={addressRef} defaultValue={DEFAULT_SERVER} id="address" />
-        <input ref={portRef} defaultValue={DEFAULT_PORT} id="port" />
-        <input ref={nameRef} defaultValue={DEFAULT_NAME} id="name" />
+        <input ref={addressRef} defaultValue={server} id="address" />
+        <input ref={portRef} defaultValue={port} id="port" />
+        <input ref={nameRef} defaultValue={alias} id="name" />
         <button
           onClick={() =>
             setSocket(
               connect(
-                addressRef.current?.value ?? "",
-                portRef.current?.value ?? "",
-                nameRef.current?.value ?? "",
+                addressRef.current?.value ?? server,
+                portRef.current?.value ?? port,
+                nameRef.current?.value ?? alias,
                 newLine
               )
             )
