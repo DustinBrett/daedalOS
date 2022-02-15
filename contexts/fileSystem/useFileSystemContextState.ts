@@ -10,6 +10,10 @@ import {
   handleFileInputEvent,
   iterateFileName,
 } from "components/system/Files/FileManager/functions";
+import {
+  addFileSystemHandle,
+  getFileSystemHandles,
+} from "contexts/fileSystem/functions";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
@@ -105,26 +109,33 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     [fsWatchers]
   );
-  const mapFs = async (directory: string): Promise<string> => {
-    let handle: FileSystemDirectoryHandle;
+  const mapFs = useCallback(
+    async (
+      directory: string,
+      existingHandle?: FileSystemDirectoryHandle
+    ): Promise<string> => {
+      let handle: FileSystemDirectoryHandle;
 
-    try {
-      handle = await window.showDirectoryPicker();
-      // eslint-disable-next-line no-empty
-    } catch {}
+      try {
+        handle = existingHandle ?? (await window.showDirectoryPicker());
+        // eslint-disable-next-line no-empty
+      } catch {}
 
-    return new Promise((resolve, reject) => {
-      if (!(handle instanceof FileSystemDirectoryHandle)) reject();
+      return new Promise((resolve, reject) => {
+        if (!(handle instanceof FileSystemDirectoryHandle)) reject();
 
-      FileSystemAccess?.Create({ handle }, (error, newFs) => {
-        if (error || !newFs) reject();
-        else {
-          rootFs?.mount?.(join(directory, handle.name), newFs);
-          resolve(handle.name);
-        }
+        FileSystemAccess?.Create({ handle }, (error, newFs) => {
+          if (error || !newFs) reject();
+          else {
+            rootFs?.mount?.(join(directory, handle.name), newFs);
+            resolve(handle.name);
+            addFileSystemHandle(directory, handle);
+          }
+        });
       });
-    });
-  };
+    },
+    [FileSystemAccess, rootFs]
+  );
   const mountFs = async (url: string): Promise<void> => {
     const fileData = await readFile(url);
 
@@ -270,6 +281,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     return "";
   };
+  const restoreFsHandles = useCallback(
+    async (): Promise<void> =>
+      Object.entries(await getFileSystemHandles()).forEach(
+        async ([handleDirectory, handle]) => {
+          if (!(await exists(handleDirectory))) {
+            mapFs(
+              dirname(handleDirectory),
+              handle as FileSystemDirectoryHandle
+            );
+          }
+        }
+      ),
+    [exists, mapFs]
+  );
+
+  useEffect(() => {
+    restoreFsHandles();
+  }, [restoreFsHandles]);
 
   useEffect(() => {
     const watchedPaths = Object.keys(fsWatchers).filter(

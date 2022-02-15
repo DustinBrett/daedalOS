@@ -43,6 +43,7 @@
     "fflate": "^0.7.3",
     "framer-motion": "^6.2.3",
     "html-to-image": "^1.9.0",
+    "idb-keyval": "^6.1.0",
     "ini": "^2.0.0",
     "isomorphic-git": "^1.11.0",
     "music-metadata-browser": "^2.5.3",

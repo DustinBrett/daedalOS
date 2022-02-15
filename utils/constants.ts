@@ -18,6 +18,8 @@ export const EMPTY_BUFFER = Buffer.from("");
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
+export const FS_HANDLES = "FileSystemAccessHandles";
+
 export const HOME = "/Users/Public";
 
 export const IMAGE_FILE_EXTENSIONS = new Set([
