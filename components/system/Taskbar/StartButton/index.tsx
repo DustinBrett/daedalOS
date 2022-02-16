@@ -1,4 +1,4 @@
-import { SideMenu } from "components/system/StartMenu/Sidebar/SidebarIcons";
+import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 
 type StartButtonProps = {
@@ -15,7 +15,7 @@ const StartButton = ({
     onClick={() => toggleStartMenu()}
     title="Start"
   >
-    <SideMenu />
+    <StartButtonIcon />
   </StyledStartButton>
 );
 

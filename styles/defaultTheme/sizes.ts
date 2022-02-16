@@ -28,7 +28,7 @@ const sizes = {
     rowGap: "28px",
   },
   startButton: {
-    iconSize: "16px",
+    iconSize: "15px",
     width: "36px",
   },
   startMenu: {
