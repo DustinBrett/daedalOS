@@ -5,10 +5,6 @@
 ![Stars](https://badgen.net/github/stars/DustinBrett/x)
 ![License](https://badgen.net/github/license/DustinBrett/x)
 
-# Demo ⚡
-
-![Demo](https://raw.githubusercontent.com/DustinBrett/daedalOS/main/demo.gif)
-
 # Feature Overview
 
 [![Feature Overview](https://img.youtube.com/vi/geCNiJnw8iE/0.jpg)](http://www.youtube.com/watch?v=geCNiJnw8iE)
