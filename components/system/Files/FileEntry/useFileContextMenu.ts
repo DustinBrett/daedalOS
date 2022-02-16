@@ -331,6 +331,7 @@ const useFileContextMenu = (
     setRenaming,
     setWallpaper,
     stat,
+    unMapFs,
     updateFolder,
     url,
     writeFile,
