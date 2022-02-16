@@ -61,6 +61,7 @@ const useFileContextMenu = (
     readFile,
     rootFs,
     stat,
+    unMapFs,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -233,6 +234,13 @@ const useFileContextMenu = (
       }
 
       menuItems.unshift(MENU_SEPERATOR);
+    }
+
+    if (remoteMount) {
+      menuItems.push(MENU_SEPERATOR, {
+        action: () => unMapFs(path),
+        label: "Disconnect",
+      });
     }
 
     if (!pid && openWithFiltered.length === 0) {

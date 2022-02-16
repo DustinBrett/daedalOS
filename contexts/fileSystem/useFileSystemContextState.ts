@@ -13,6 +13,7 @@ import {
 import {
   addFileSystemHandle,
   getFileSystemHandles,
+  removeFileSystemHandle,
 } from "contexts/fileSystem/functions";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
@@ -47,6 +48,7 @@ export type FileSystemContextState = AsyncFS & {
     buffer?: Buffer
   ) => Promise<string>;
   copyEntries: (entries: string[]) => void;
+  unMapFs: (directory: string) => void;
   moveEntries: (entries: string[]) => void;
   mkdirRecursive: (path: string) => Promise<void>;
   deletePath: (path: string) => Promise<void>;
@@ -155,7 +157,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
       }
     });
   };
-  const unMountFs = (url: string): void => rootFs?.umount?.(url);
+  const unMountFs = useCallback(
+    (url: string): void => rootFs?.umount?.(url),
+    [rootFs]
+  );
+  const unMapFs = useCallback(
+    (directory: string): void => {
+      updateFolder(dirname(directory), undefined, directory);
+      removeFileSystemHandle(directory);
+      unMountFs(directory);
+    },
+    [unMountFs, updateFolder]
+  );
   const { openTransferDialog } = useDialog();
   const addFile = (
     directory: string,
@@ -335,6 +348,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     resetStorage,
     rootFs,
     setFileInput,
+    unMapFs,
     unMountFs,
     updateFolder,
     ...asyncFs,

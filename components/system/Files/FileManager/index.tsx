@@ -59,7 +59,7 @@ const FileManager = ({
   );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, hideFolders, hideLoading);
-  const { mountFs } = useFileSystem();
+  const { mountFs, rootFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
@@ -79,7 +79,7 @@ const FileManager = ({
     updateFiles,
     id
   );
-  const [permission, setPermission] = useState<PermissionState>("denied");
+  const [permission, setPermission] = useState<PermissionState>("prompt");
   const requestPermission = useCallback(async () => {
     const fsHandles = await getFileSystemHandles();
     const handle = fsHandles[currentUrl];
@@ -100,8 +100,13 @@ const FileManager = ({
   }, [updateFiles, currentUrl]);
 
   useEffect(() => {
-    if (permission !== "granted") requestPermission();
-  }, [requestPermission, permission]);
+    if (
+      permission !== "granted" &&
+      rootFs?.mntMap[url]?.getName() === "FileSystemAccess"
+    ) {
+      requestPermission();
+    }
+  }, [permission, requestPermission, rootFs?.mntMap, url]);
 
   useEffect(() => {
     if (MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) && !mounted) {
