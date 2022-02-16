@@ -17,7 +17,7 @@ const useFileKeyboardShortcuts = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   { pasteToFolder }: FolderActions,
-  updateFiles: () => void,
+  updateFiles: (newFile?: string, oldFile?: string) => void,
   id?: string
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
@@ -57,7 +57,7 @@ const useFileKeyboardShortcuts = (
           const path = join(url, entry);
 
           await deletePath(path);
-          updateFiles();
+          updateFiles(undefined, path);
         });
 
         blurEntry();
