@@ -182,3 +182,6 @@ export const createOffscreenCanvas = (
 
   return canvas.transferControlToOffscreen();
 };
+
+export const getSearchParam = (param: string): string =>
+  new URLSearchParams(window.location.search).get(param) || "";
