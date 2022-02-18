@@ -30,13 +30,13 @@ const StyledIRC = styled.div`
   }
 
   textarea {
-    border-top: 1px solid #e1e1e1;
     border-bottom: 1px solid #e1e1e1;
+    border-top: 1px solid #e1e1e1;
     height: 100%;
     resize: none;
   }
 
-  input {
+  input > {
     height: 25px;
   }
 `;
