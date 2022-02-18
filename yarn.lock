@@ -2014,12 +2014,12 @@ decode-uri-component@^0.2.0:
   resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
   integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
 
-decompress-response@^4.2.0:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/decompress-response/-/decompress-response-4.2.1.tgz#414023cc7a302da25ce2ec82d0d5238ccafd8986"
-  integrity sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==
+decompress-response@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/decompress-response/-/decompress-response-6.0.0.tgz#ca387612ddb7e104bd16d85aab00d5ecf09c66fc"
+  integrity sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==
   dependencies:
-    mimic-response "^2.0.0"
+    mimic-response "^3.1.0"
 
 dedent@^0.7.0:
   version "0.7.0"
@@ -2747,10 +2747,10 @@ form-data@^3.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
-framer-motion@^6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-6.2.3.tgz#1ff314c178566a286d2b985fd31cab3910cf1eed"
-  integrity sha512-2afb2KvqFi5bEgyKEVNm/RGvMThHbWvHPvdJMmm9DR+Lg2tvCmc9o459gQ20tNxLoRUmCGF8bKtm9lvPlqxh2Q==
+framer-motion@^6.2.6:
+  version "6.2.6"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-6.2.6.tgz#75277b4944a1234beaf7453da19028bbf4f75cce"
+  integrity sha512-7eGav5MxEEzDHozQTDY6+psTIOw2i2kM1QVoJOC3bCp9VOKoo+mKR5n7aT5JPh7ksEKFYJYz0GJDils/9S+oLA==
   dependencies:
     framesync "6.0.1"
     hey-listen "^1.0.8"
@@ -3339,10 +3339,10 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-isomorphic-git@^1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.11.0.tgz#c089491126eeef50375f7af64a0fb1aa947fbed0"
-  integrity sha512-zTz3P85TZWDvCE3zX7Yija9jgEvYlLCiX3SDlFLnczFx2jVJqUrhTBeEiigkX/xdFCKJNLcDbwfploXt6SlPMw==
+isomorphic-git@^1.11.2:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.11.2.tgz#58fd47f3e797ed9cc1364bb2cae02355499d6bea"
+  integrity sha512-7gSW+dMftHYyDufoeLCOagxlN0KsAYvR/qddSke9pnPH8vwL4OwqQ2BvkG0O02OnEFqg1pZXyIzBPFBfOMYXUA==
   dependencies:
     async-lock "^1.1.0"
     clean-git-ref "^2.0.1"
@@ -3354,7 +3354,7 @@ isomorphic-git@^1.11.0:
     pify "^4.0.1"
     readable-stream "^3.4.0"
     sha.js "^2.4.9"
-    simple-get "^3.0.2"
+    simple-get "^4.0.1"
 
 istanbul-lib-coverage@^3.0.0, istanbul-lib-coverage@^3.2.0:
   version "3.2.0"
@@ -4239,10 +4239,10 @@ mimic-fn@^2.1.0:
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
 
-mimic-response@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-2.1.0.tgz#d13763d35f613d09ec37ebb30bac0469c0ee8f43"
-  integrity sha512-wXqjST+SLt7R009ySCglWBCFpjUygmCIfD790/kVbiGmUgfYGuB14PiTd5DwVxSV4NcYHjzMkoj5LjQZwTQLEA==
+mimic-response@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
+  integrity sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==
 
 min-indent@^1.0.0:
   version "1.0.1"
@@ -4315,14 +4315,14 @@ music-metadata-browser@^0.6.1:
     remove "^0.1.5"
     typedarray-to-buffer "^3.1.5"
 
-music-metadata-browser@^2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/music-metadata-browser/-/music-metadata-browser-2.5.3.tgz#70a3c777676e161be5e73cff27d9f64e9c260e5b"
-  integrity sha512-xJ+Tv7PaheckF0/DdfzR+4M3HfXFTeDxJ0TsN55lKhtM4ACKqmFnTDyCr348ZFDSDYhYR57Kq3XLoeGs8byFqw==
+music-metadata-browser@^2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/music-metadata-browser/-/music-metadata-browser-2.5.4.tgz#31bb6a084a23d21833d23e58f5fc881acedd3a38"
+  integrity sha512-ehqKVPFQyyO2l9FtQ/xKd5N4x4JFb4wAk0JqAZ7ryeOaK/7ji0qSk8D33u9Qu4uDA/TC7kzI6tqkN3JyOgBdkg==
   dependencies:
     buffer "^6.0.3"
     debug "^4.3.3"
-    music-metadata "^7.11.7"
+    music-metadata "^7.11.8"
     readable-stream "^3.6.0"
     readable-web-to-node-stream "^3.0.2"
 
@@ -4337,11 +4337,12 @@ music-metadata@^3.4.0:
     strtok3 "^2.3.0"
     token-types "^1.0.1"
 
-music-metadata@^7.11.7:
-  version "7.11.7"
-  resolved "https://registry.yarnpkg.com/music-metadata/-/music-metadata-7.11.7.tgz#95051a6a62a94390985a20c49e2207f5b1cfd898"
-  integrity sha512-Ma1/eehmRFLOTCrUr/CuOA3ob7IbK9eCEDlGetqKAtaGj4wvMsQFu2YFwK6QyGPiJdPdbESVOxnPg8uRv3zZeg==
+music-metadata@^7.11.8:
+  version "7.11.8"
+  resolved "https://registry.yarnpkg.com/music-metadata/-/music-metadata-7.11.8.tgz#be67ff6d5e5499d2a31a7044079cb83c03544cc2"
+  integrity sha512-KaJzxDlYId05zN029WaKhJYcT5FB0QmTRSGDq5bRfPTBUw4Hl0VvJvaO5C5mm0ATWMREecMANV9YUatLMg+0Mg==
   dependencies:
+    "@tokenizer/token" "^0.3.0"
     content-type "^1.0.4"
     debug "^4.3.3"
     file-type "16.5.3"
@@ -4408,10 +4409,10 @@ node-releases@^2.0.1:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.1.tgz#3d1d395f204f1f2f29a54358b9fb678765ad2fc5"
   integrity sha512-CqyzN6z7Q6aMeF/ktcMVTzhAHCEpf8SOarwpzpf8pNBY2k5/oM34UHldUwp8VKI7uxct2HxSRdJjBaZeESzcxA==
 
-node-unrar-js@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/node-unrar-js/-/node-unrar-js-1.0.3.tgz#c76297a2d430be21f2329088cfeaf04f5ca89fb2"
-  integrity sha512-erEhBIhOxKYxxnIhB2CiIU1RQjPN7jjNKbpthWig0VTz3L6AwyORilvTdVzYOkxyTWGY9ZLqHB+EyqmnvvdI5g==
+node-unrar-js@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/node-unrar-js/-/node-unrar-js-1.0.4.tgz#db67cd623f51d1dd74b1fde12173a8b379272dfe"
+  integrity sha512-BRimnu+eHdFuemdpyUG3fFpyRFiekTczD+R2Q6i6ve3VW1FjuVo2bi66AiYavjGakWaVsQb3GH6c1SEEsGpEfA==
 
 normalize-package-data@^2.5.0:
   version "2.5.0"
@@ -5321,12 +5322,12 @@ simple-concat@^1.0.0:
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.1.tgz#f46976082ba35c2263f1c8ab5edfe26c41c9552f"
   integrity sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==
 
-simple-get@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-3.1.0.tgz#b45be062435e50d159540b576202ceec40b9c6b3"
-  integrity sha512-bCR6cP+aTdScaQCnQKbPKtJOKDp/hj9EDLJo3Nw4y1QksqaovlW/bnptB6/c1e+qmNIDHRK+oXFDdEqBT8WzUA==
+simple-get@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-4.0.1.tgz#4a39db549287c979d352112fa03fd99fd6bc3543"
+  integrity sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==
   dependencies:
-    decompress-response "^4.2.0"
+    decompress-response "^6.0.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
 
