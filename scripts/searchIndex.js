@@ -32,7 +32,7 @@ const createSearchIndex = (path) => {
         name: fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, ""),
         text: INDEX_EXTENSIONS.has(extname(entry))
           ? readFileSync(fullPath, "utf8")
-          : undefined,
+          : entry,
       });
     }
   });
