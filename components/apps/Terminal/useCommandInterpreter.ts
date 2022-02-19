@@ -31,6 +31,7 @@ import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
+import { search } from "utils/search";
 import type { Terminal } from "xterm";
 
 const FILE_NOT_FILE = "The system cannot find the file specified.";
@@ -308,6 +309,11 @@ const useCommandInterpreter = (
         case "quit":
           closeWithTransition(id);
           break;
+        case "find": {
+          const results = await search(commandArgs.join(" "));
+          results.forEach(({ ref }) => localEcho?.println(ref));
+          break;
+        }
         case "ffmpeg":
         case "imagemagick": {
           const [file, format] = commandArgs;
