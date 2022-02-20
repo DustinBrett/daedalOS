@@ -311,7 +311,7 @@ const useCommandInterpreter = (
           break;
         case "find": {
           const results = await search(commandArgs.join(" "));
-          results.forEach(({ ref }) => localEcho?.println(ref));
+          results?.forEach(({ ref }) => localEcho?.println(ref));
           break;
         }
         case "ffmpeg":

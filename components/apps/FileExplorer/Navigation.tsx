@@ -8,6 +8,7 @@ import {
 } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
+import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
@@ -15,6 +16,7 @@ import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import { useSearch } from "utils/search";
 
 type NavigationProps = {
   id: string;
@@ -30,9 +32,12 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
   const { exists, updateFolder } = useFileSystem();
   const displayName = basename(url) || ROOT_NAME;
   const [addressBar, setAddressBar] = useState(displayName);
+  const [searchTerm, setSearchTerm] = useState("");
+  const results = useSearch(searchTerm);
   const upTo = url !== "/" ? basename(dirname(url)) : undefined;
   const { contextMenu } = useMenu();
   const addressBarRef = useRef<HTMLInputElement | null>(null);
+  const searchBarRef = useRef<HTMLInputElement | null>(null);
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);
   const getItems = useCallback(
@@ -51,7 +56,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
     }),
     [icon]
   );
-
+  if (results.length > 0) console.info({ results });
   useEffect(() => {
     if (addressBarRef.current) {
       if (addressBar === url) {
@@ -63,6 +68,12 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
       }
     }
   }, [addressBar, displayName, url]);
+
+  useEffect(() => {
+    if (searchBarRef.current) {
+      searchBarRef.current.value = "";
+    }
+  }, [position]);
 
   return (
     <StyledNavigation>
@@ -125,9 +136,14 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
         style={style}
         value={addressBar}
       />
-      <Button onClick={() => updateFolder(url)} title="Refresh">
+      <Button id="refresh" onClick={() => updateFolder(url)} title="Refresh">
         <Refresh />
       </Button>
+      <StyledSearch
+        ref={searchBarRef}
+        onChange={({ target }) => setSearchTerm(target.value)}
+        placeholder={`Search ${displayName}`}
+      />
     </StyledNavigation>
   );
 };
