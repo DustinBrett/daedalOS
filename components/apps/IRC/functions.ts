@@ -12,20 +12,29 @@ import type {
 let seenCommands: string[] = [];
 let connectedServer: string = "";
 
+const trimColon = (string: string): string => string.replace(/^:/, "");
+
 const parseMessage = (message: string, name: string): Message => {
   let prefix = "";
   let command = message;
   let parameters: string[] = [];
   let type: MessageTypes = "message";
 
+  console.info({ message, name });
+
   if (message.startsWith(":")) {
     const prefixEnd = message.indexOf(" ");
 
     if (prefixEnd === -1) {
+      // TODO: Handle @tags
       return { error: "No prefix" };
     }
 
     [prefix, command, ...parameters] = message.slice(1).split(" ");
+
+    if (!prefix || prefix === name || prefix.startsWith(`${name}!~${name}@`)) {
+      type = "notice";
+    }
 
     if (parameters[0] === name) {
       parameters = parameters.slice(1);
@@ -41,17 +50,11 @@ const parseMessage = (message: string, name: string): Message => {
     }
   }
 
-  if (!prefix || prefix === name) {
-    type = "notice";
-  }
+  console.info({ command, parameters, prefix, type });
 
   return {
     command,
-    parameters: parameters
-      .map((parameter) =>
-        parameter.startsWith(":") ? parameter.slice(1) : parameter
-      )
-      .join(" "),
+    parameters: parameters.map((parameter) => trimColon(parameter)).join(" "),
     prefix,
     type,
   };

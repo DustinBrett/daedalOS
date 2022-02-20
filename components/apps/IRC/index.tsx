@@ -23,8 +23,9 @@ const IRC = (): JSX.Element => {
   const commandRef = useRef<HTMLInputElement | null>(null);
   const outputRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // TODO: Handle bold/color lines
   const newLine = (
-    { command, parameters }: Message,
+    { command, parameters, type }: Message,
     name?: string,
     connectedServer?: string,
     seenCommands: string[] = []
@@ -38,6 +39,9 @@ const IRC = (): JSX.Element => {
         output = [`* ${name} sets mode: ${parameters}`];
       } else if (command === "NOTICE") {
         output = [`-${connectedServer}- ${parameters}`];
+      } else if (command === "JOIN" && type === "notice") {
+        // TODO: Open a new tab for the channel
+        console.info(`Joined ${parameters}`);
       }
 
       if (
@@ -60,10 +64,6 @@ const IRC = (): JSX.Element => {
 
       if (command) {
         socket?.send(command);
-        newLine({
-          parameters: command,
-          type: "command",
-        });
       }
     }
   };

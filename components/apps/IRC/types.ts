@@ -1,4 +1,4 @@
-export type MessageTypes = "command" | "message" | "notice" | "system";
+export type MessageTypes = "message" | "notice" | "system";
 
 export type Message = {
   command?: string;
