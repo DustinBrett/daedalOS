@@ -53,12 +53,13 @@ export const openProcess =
   (currentProcesses: Processes): Processes => {
     const { url = "" } = processArguments;
     const { singleton } = processDirectory[processId] || {};
-
     if (singleton && currentProcesses[processId]) {
       return setProcessSettings(processId, { url })(currentProcesses);
     }
 
-    const id = createPid(processId, url, currentProcesses);
+    const id = singleton
+      ? processId
+      : createPid(processId, url, currentProcesses);
 
     if (currentProcesses[id]) {
       const { componentWindow } = currentProcesses[id];

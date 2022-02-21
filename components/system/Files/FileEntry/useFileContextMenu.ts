@@ -341,7 +341,7 @@ const useFileContextMenu = (
     contextMenu?.(getItems) || {};
 
   return {
-    onContextMenuCapture: (event: React.MouseEvent | React.TouchEvent) => {
+    onContextMenuCapture: (event?: React.MouseEvent | React.TouchEvent) => {
       if (!isFocusedEntry) {
         blurEntry();
         focusEntry(baseName);

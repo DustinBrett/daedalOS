@@ -84,7 +84,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
         <Up />
       </Button>
       <AddressBar id={id} />
-      <SearchBar id={id} position={position} />
+      <SearchBar id={id} />
     </StyledNavigation>
   );
 };

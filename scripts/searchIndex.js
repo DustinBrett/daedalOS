@@ -1,9 +1,9 @@
 const { readdirSync, readFileSync, statSync, writeFileSync } = require("fs");
-const { extname, join } = require("path");
+const { basename, extname, join } = require("path");
 const lunr = require("lunr");
 
 const PUBLIC_PATH = "public";
-const INDEX_EXTENSIONS = new Set([".md", ".whtml"]);
+const INDEX_EXTENSIONS = require("./indexExtensions.json");
 const IGNORE_FILES = new Set([
   "desktop.ini",
   "favicon.ico",
@@ -28,9 +28,11 @@ const createSearchIndex = (path) => {
         fullPath.startsWith(join(PUBLIC_PATH, ignoredPath))
       )
     ) {
+      const path = fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
       indexData.push({
-        name: fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, ""),
-        text: INDEX_EXTENSIONS.has(extname(entry))
+        path,
+        name: basename(path, extname(path)),
+        text: INDEX_EXTENSIONS.includes(extname(entry))
           ? readFileSync(fullPath, "utf8")
           : entry,
       });
@@ -41,7 +43,8 @@ const createSearchIndex = (path) => {
 createSearchIndex(PUBLIC_PATH);
 
 const searchIndex = lunr(function () {
-  this.ref("name");
+  this.ref("path");
+  this.field("name");
   this.field("text");
 
   indexData.forEach((doc) => this.add(doc));

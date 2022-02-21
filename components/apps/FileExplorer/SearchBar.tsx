@@ -1,47 +1,70 @@
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
-import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getIconByFileExtension,
+  getProcessByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import { useMenu } from "contexts/menu";
+import type { MenuItem } from "contexts/menu/useMenuContextState";
+import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearch } from "utils/search";
 
 type SearchBarProps = {
-  position: number;
+  id: string;
 };
 
-const SearchBar = ({ position }: SearchBarProps): JSX.Element => {
+const MAX_ENTRIES = 10;
+
+const SearchBar = ({ id }: SearchBarProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState("");
+  const {
+    open,
+    processes: {
+      [id]: { url = "" },
+    },
+  } = useProcesses();
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
-  const getItems = useCallback(
-    () =>
-      results.current.slice(0, 10).map(({ ref }) => ({
-        action: () => console.info(`GO TO ${ref}`),
-        icon: getIconByFileExtension(extname(ref)),
-        label: basename(ref),
-      })),
-    [results]
-  );
+
+  useEffect(() => {
+    if (searchBarRef.current) {
+      const getItems = (): MenuItem[] =>
+        results.slice(0, MAX_ENTRIES - 1).map(({ ref: path }) => ({
+          action: () => {
+            open(getProcessByFileExtension(extname(path)), { url: path });
+            setSearchTerm("");
+
+            if (searchBarRef.current) {
+              searchBarRef.current.value = "";
+              searchBarRef.current.blur();
+            }
+          },
+          icon: getIconByFileExtension(extname(path)),
+          label: basename(path),
+        }));
+
+      contextMenu?.(getItems).onContextMenuCapture(
+        undefined,
+        searchBarRef.current.getBoundingClientRect()
+      );
+    }
+  }, [contextMenu, open, results]);
 
   useEffect(() => {
     if (searchBarRef.current) {
       searchBarRef.current.value = "";
     }
-  }, [position]);
+  }, [url]);
 
   return (
     <StyledSearch>
       <Search />
       <input
         ref={searchBarRef}
-        onChange={(event) => {
-          // TODO: Results are acting odd, Ex: "Japan"
-          const { target } = event;
-          contextMenu?.(getItems).onContextMenuCapture(event);
-          setSearchTerm(target.value);
-        }}
+        onChange={({ target }) => setSearchTerm(target.value)}
         placeholder="Search"
         spellCheck={false}
         type="text"
