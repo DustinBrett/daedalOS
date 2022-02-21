@@ -4,7 +4,8 @@ import { useFileSystem } from "contexts/fileSystem";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import type { Index } from "lunr";
 import { extname } from "path";
-import { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 import { loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
@@ -55,16 +56,21 @@ const buildDynamicIndex = async (
   return window.lunr.Index.load(dynamicIndex.toJSON());
 };
 
-export const useSearch = (searchTerm: string): Index.Result[] => {
-  const [results, setResults] = useState([] as Index.Result[]);
+export const useSearch = (
+  searchTerm: string
+): React.MutableRefObject<Index.Result[]> => {
+  const results = useRef<Index.Result[]>([] as Index.Result[]);
   const { readFile, rootFs } = useFileSystem();
-  const addToResults = (searchResults: Index.Result[]): void =>
-    setResults((currentResults) =>
-      [...currentResults, ...searchResults].sort((a, b) => b.score - a.score)
-    );
+  const addToResults = (searchResults: Index.Result[]): void => {
+    if (searchResults.length > 0) {
+      results.current = [...results.current, ...searchResults].sort(
+        (a, b) => b.score - a.score
+      );
+    }
+  };
 
   useEffect(() => {
-    setResults([]);
+    results.current = [];
 
     if (searchTerm.length > 0) {
       loadFiles([LUNR_LIB]).then(() => {

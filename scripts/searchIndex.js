@@ -49,7 +49,7 @@ const searchIndex = lunr(function () {
 
 writeFileSync(
   join(PUBLIC_PATH, ".index/search.lunr.json"),
-  JSON.stringify(searchIndex).replace(/\\r\\n/g, " "),
+  JSON.stringify(searchIndex.toJSON()),
   {
     flag: "w",
   }

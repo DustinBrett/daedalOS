@@ -11,7 +11,7 @@ export const DEFAULT_THEME = "defaultTheme";
 
 export const DEFAULT_WINDOW_SIZE: Size = {
   height: 300,
-  width: 395,
+  width: 388,
 };
 
 export const EMPTY_BUFFER = Buffer.from("");

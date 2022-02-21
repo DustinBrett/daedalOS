@@ -7,7 +7,7 @@ const StyledSearch = styled.div`
   height: 30px;
   margin: 6px 12px 6px 0;
   max-width: 148px;
-  padding: 0 8px;
+  padding: 0;
   width: 100%;
   position: relative;
 
@@ -27,9 +27,10 @@ const StyledSearch = styled.div`
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 12px;
     font-weight: 400;
-    margin-left: 32px;
+    padding-left: 40px;
     width: 100%;
-    height: 26px;
+    height: 28px;
+    padding-bottom: 2px;
     text-overflow: ellipsis;
   }
 `;

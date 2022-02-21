@@ -1,3 +1,4 @@
+import type React from "react";
 import { useRef, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { isSafari } from "utils/functions";
@@ -21,7 +22,9 @@ export type MenuState = {
 };
 
 export type ContextMenuCapture = {
-  onContextMenuCapture: (event: React.MouseEvent | React.TouchEvent) => void;
+  onContextMenuCapture: (
+    event: React.ChangeEvent | React.MouseEvent | React.TouchEvent
+  ) => void;
   onTouchEnd?: React.TouchEventHandler;
   onTouchMove?: React.TouchEventHandler;
   onTouchStart?: React.TouchEventHandler;
@@ -39,12 +42,32 @@ const useMenuContextState = (): MenuContextState => {
   const touchEvent = useRef<React.TouchEvent>();
   const contextMenu = (getItems: () => MenuItem[]): ContextMenuCapture => {
     const onContextMenuCapture = (
-      event: React.MouseEvent | React.TouchEvent
+      event: React.ChangeEvent | React.MouseEvent | React.TouchEvent
     ): void => {
-      event.preventDefault();
-      const { pageX: x, pageY: y } =
-        "touches" in event ? event.touches.item(0) : event;
-      setMenu({ items: getItems(), x, y });
+      let x: number;
+      let y: number;
+
+      if (event.target instanceof HTMLInputElement) {
+        const {
+          height,
+          x: inputX,
+          y: inputY,
+        } = event.target.getBoundingClientRect();
+
+        x = inputX;
+        y = inputY + height;
+      } else {
+        event.preventDefault();
+
+        ({ pageX: x, pageY: y } =
+          "touches" in event
+            ? (event as React.TouchEvent).touches.item(0)
+            : (event as React.MouseEvent));
+      }
+
+      const items = getItems();
+
+      setMenu({ items: items.length > 0 ? items : undefined, x, y });
     };
 
     return {
