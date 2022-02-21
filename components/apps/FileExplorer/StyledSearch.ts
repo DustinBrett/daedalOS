@@ -1,24 +1,23 @@
 import styled from "styled-components";
 
 const StyledSearch = styled.div`
-  display: flex;
-  fill: red;
   border: 1px solid rgb(83, 83, 83);
+  display: flex;
   height: 30px;
   margin: 6px 12px 6px 0;
   max-width: 148px;
   padding: 0;
-  width: 100%;
   position: relative;
+  width: 100%;
 
   svg {
-    position: absolute;
     fill: rgb(113, 113, 113);
     height: 12px;
     left: 14px;
-    top: 7px;
+    position: absolute;
     stroke: rgb(113, 113, 113);
     stroke-width: 1;
+    top: 7px;
   }
 
   input {
@@ -27,11 +26,11 @@ const StyledSearch = styled.div`
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 12px;
     font-weight: 400;
-    padding-left: 40px;
-    width: 100%;
     height: 28px;
     padding-bottom: 2px;
+    padding-left: 40px;
     text-overflow: ellipsis;
+    width: 100%;
   }
 `;
 

@@ -19,10 +19,10 @@ const StyledAddressBar = styled.div`
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 12px;
     font-weight: 400;
-    text-overflow: ellipsis;
-    width: calc(100% - 6px);
     height: 28px;
     padding-bottom: 2px;
+    text-overflow: ellipsis;
+    width: calc(100% - 6px);
   }
 
   #refresh {

@@ -8,8 +8,10 @@
   ],
   "plugins": ["stylelint-order"],
   "rules": {
+    "function-no-unknown": null,
     "max-nesting-depth": null,
     "selector-max-compound-selectors": null,
+    "selector-max-id": null,
     "selector-no-qualifying-type": null
   }
 }
