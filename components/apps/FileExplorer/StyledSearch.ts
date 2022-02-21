@@ -1,26 +1,37 @@
 import styled from "styled-components";
 
-const StyledSearch = styled.input.attrs({
-  spellCheck: false,
-  type: "text",
-})`
-  background-color: rgb(25, 25, 25);
-  background-image: none;
-  background-position: 2px 5px;
-  background-repeat: no-repeat;
-  background-size: 16px;
+const StyledSearch = styled.div`
+  display: flex;
+  fill: red;
   border: 1px solid rgb(83, 83, 83);
-  color: #fff;
-  font-family: ${({ theme }) => theme.formats.systemFont};
-  font-size: 12px;
-  font-weight: 400;
   height: 30px;
   margin: 6px 12px 6px 0;
   max-width: 148px;
-  min-width: 100px;
-  padding: 0 22px 2px 40px;
-  text-overflow: ellipsis;
+  padding: 0 8px;
   width: 100%;
+  position: relative;
+
+  svg {
+    position: absolute;
+    fill: rgb(113, 113, 113);
+    height: 12px;
+    left: 14px;
+    top: 7px;
+    stroke: rgb(113, 113, 113);
+    stroke-width: 1;
+  }
+
+  input {
+    background-color: rgb(25, 25, 25);
+    color: #fff;
+    font-family: ${({ theme }) => theme.formats.systemFont};
+    font-size: 12px;
+    font-weight: 400;
+    margin-left: 32px;
+    width: 100%;
+    height: 26px;
+    text-overflow: ellipsis;
+  }
 `;
 
 export default StyledSearch;

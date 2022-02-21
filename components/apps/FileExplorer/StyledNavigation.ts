@@ -6,28 +6,6 @@ const StyledNavigation = styled.nav`
   height: 43px;
   margin-top: -1px;
 
-  #refresh {
-    background-color: rgb(25, 25, 25);
-    height: 28px;
-    margin: 0;
-    position: absolute;
-    right: 13px;
-    stroke: rgb(128, 128, 128);
-    stroke-width: 3;
-    top: ${({ theme }) => `calc(${theme.sizes.titleBar.height} + 6px)`};
-    width: 28px;
-
-    &:hover {
-      background-color: rgb(27, 41, 49);
-      border: 1px solid rgb(34, 114, 153);
-    }
-
-    &:active {
-      background-color: rgb(28, 57, 71);
-      border: 1px solid rgb(38, 160, 218);
-    }
-  }
-
   button {
     height: 16px;
     margin: 13px 9px;
