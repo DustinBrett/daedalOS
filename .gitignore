@@ -3,7 +3,7 @@ node_modules
 out
 
 public/robots.txt
-public/.index/fs.*
+public/.index/*
 public/Users/Public/**
 
 !public/Users/**/desktop.ini

@@ -32,19 +32,22 @@ const SearchBar = ({ id }: SearchBarProps): JSX.Element => {
   useEffect(() => {
     if (searchBarRef.current) {
       const getItems = (): MenuItem[] =>
-        results.slice(0, MAX_ENTRIES - 1).map(({ ref: path }) => ({
-          action: () => {
-            open(getProcessByFileExtension(extname(path)), { url: path });
-            setSearchTerm("");
+        results
+          .filter(({ ref: path }) => path.startsWith(url))
+          .slice(0, MAX_ENTRIES - 1)
+          .map(({ ref: path }) => ({
+            action: () => {
+              open(getProcessByFileExtension(extname(path)), { url: path });
+              setSearchTerm("");
 
-            if (searchBarRef.current) {
-              searchBarRef.current.value = "";
-              searchBarRef.current.blur();
-            }
-          },
-          icon: getIconByFileExtension(extname(path)),
-          label: basename(path),
-        }));
+              if (searchBarRef.current) {
+                searchBarRef.current.value = "";
+                searchBarRef.current.blur();
+              }
+            },
+            icon: getIconByFileExtension(extname(path)),
+            label: basename(path),
+          }));
 
       contextMenu?.(getItems).onContextMenuCapture(
         undefined,
