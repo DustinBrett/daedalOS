@@ -4,6 +4,7 @@ const lunr = require("lunr");
 
 const PUBLIC_PATH = "public";
 const INDEX_EXTENSIONS = require("./indexExtensions.json");
+const IGNORE_EXTENSIONS = new Set([".url"]);
 const IGNORE_FILES = new Set([
   "desktop.ini",
   "favicon.ico",
@@ -24,6 +25,7 @@ const createSearchIndex = (path) => {
       createSearchIndex(fullPath);
     } else if (
       !IGNORE_FILES.has(entry) &&
+      !IGNORE_EXTENSIONS.has(extname(entry)) &&
       !IGNORE_PATHS.some((ignoredPath) =>
         fullPath.startsWith(join(PUBLIC_PATH, ignoredPath))
       )

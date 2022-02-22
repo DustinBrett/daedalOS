@@ -54,7 +54,7 @@ const SearchBar = ({ id }: SearchBarProps): JSX.Element => {
         searchBarRef.current.getBoundingClientRect()
       );
     }
-  }, [contextMenu, open, results]);
+  }, [contextMenu, open, results, url]);
 
   useEffect(() => {
     if (searchBarRef.current) {
