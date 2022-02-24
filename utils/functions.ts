@@ -12,7 +12,7 @@ export const bufferToUrl = (buffer: Buffer): string =>
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
-const loadScript = (src: string): Promise<Event> =>
+const loadScript = (src: string, defer?: boolean): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
 
@@ -22,6 +22,7 @@ const loadScript = (src: string): Promise<Event> =>
       const script = document.createElement("script");
 
       script.async = false;
+      if (defer) script.defer = true;
       script.src = src;
       script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
       script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
@@ -48,12 +49,15 @@ const loadStyle = (href: string): Promise<Event> =>
     }
   });
 
-export const loadFiles = async (files: string[]): Promise<void> => {
+export const loadFiles = async (
+  files: string[],
+  defer?: boolean
+): Promise<void> => {
   for (const file of files) {
     // eslint-disable-next-line no-await-in-loop
     await (extname(file).toLowerCase() === ".css"
       ? loadStyle(encodeURI(file))
-      : loadScript(encodeURI(file)));
+      : loadScript(encodeURI(file), defer));
   }
 };
 

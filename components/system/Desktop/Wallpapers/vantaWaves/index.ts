@@ -24,7 +24,7 @@ const vantaWaves =
 
     if (!el) return;
 
-    loadFiles(libs).then(() => {
+    loadFiles(libs, true).then(() => {
       const { VANTA: { WAVES } = {} } = window;
 
       if (isWebGLAvailable && WAVES) {
