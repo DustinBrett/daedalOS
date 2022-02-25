@@ -122,23 +122,22 @@ export const iterateFileName = (name: string, iteration: number): string => {
   return `${fileName} (${iteration})${extension}`;
 };
 
-export const handleFileInputEvent = (
+export const handleFileInputEvent = async (
   event: Event | React.DragEvent,
   callback: (fileName: string, buffer?: Buffer) => void,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders) => void
-): void => {
+): Promise<void> => {
   haltEvent(event);
 
   const eventTarget =
     (event as React.DragEvent)?.dataTransfer ||
-    (event.currentTarget as HTMLInputElement);
-  const eventFiles = eventTarget?.files || [];
+    (event.currentTarget as HTMLInputElement) ||
+    {};
 
-  if (eventFiles.length > 0) {
+  if (eventTarget?.files.length > 0) {
     const fileReaders: FileReaders = [];
-
-    [...eventFiles].forEach((file) => {
+    const addFile = (file: File): void => {
       const reader = new FileReader();
 
       reader.addEventListener(
@@ -152,7 +151,23 @@ export const handleFileInputEvent = (
       );
 
       fileReaders.push([file, directory, reader]);
-    });
+    };
+
+    if (eventTarget?.items) {
+      await Promise.all(
+        [...eventTarget.items].map(async (item) => {
+          const fsHandle = await item.getAsFileSystemHandle();
+
+          if (fsHandle?.kind === "directory") {
+            // TODO: Parse a directory
+          } else if (fsHandle?.kind === "file") {
+            addFile(await (fsHandle as FileSystemFileHandle).getFile());
+          }
+        })
+      );
+    } else {
+      [...eventTarget.files].forEach((file) => addFile(file));
+    }
 
     openTransferDialog(fileReaders);
   } else {
