@@ -137,33 +137,50 @@ export const handleFileInputEvent = async (
 
   if (eventTarget?.files.length > 0) {
     const fileReaders: FileReaders = [];
-    const addFile = (file: File): void => {
+    const addFile = (file: File, subFolder = ""): void => {
       const reader = new FileReader();
 
       reader.addEventListener(
         "load",
         ({ target }) => {
           if (target?.result instanceof ArrayBuffer) {
-            callback(file.name, Buffer.from(new Uint8Array(target.result)));
+            callback(
+              join(subFolder, file.name),
+              Buffer.from(new Uint8Array(target.result))
+            );
           }
         },
         ONE_TIME_PASSIVE_EVENT
       );
 
-      fileReaders.push([file, directory, reader]);
+      fileReaders.push([file, join(directory, subFolder), reader]);
     };
 
     if (eventTarget?.items) {
-      await Promise.all(
-        [...eventTarget.items].map(async (item) => {
-          const fsHandle = await item.getAsFileSystemHandle();
+      const processHandle = async (
+        fsHandle: FileSystemHandle,
+        subFolder = ""
+      ): Promise<void> => {
+        if (fsHandle.kind === "directory") {
+          const directoryHandle = fsHandle as FileSystemDirectoryHandle;
 
-          if (fsHandle?.kind === "directory") {
-            // TODO: Parse a directory
-          } else if (fsHandle?.kind === "file") {
-            addFile(await (fsHandle as FileSystemFileHandle).getFile());
+          for await (const handle of directoryHandle.values()) {
+            processHandle(handle, join(subFolder, fsHandle.name));
           }
-        })
+        } else if (fsHandle.kind === "file") {
+          addFile(
+            await (fsHandle as FileSystemFileHandle).getFile(),
+            subFolder
+          );
+        }
+      };
+
+      await Promise.all(
+        [...eventTarget.items].map(async (item) =>
+          processHandle(
+            (await item.getAsFileSystemHandle()) as FileSystemHandle
+          )
+        )
       );
     } else {
       [...eventTarget.files].forEach((file) => addFile(file));

@@ -286,8 +286,23 @@ const useFileSystemContextState = (): FileSystemContextState => {
           return uniqueName;
         }
       } catch (error) {
-        if ((error as ApiError)?.code === "EEXIST") {
+        const { code, path } = (error as ApiError) || {};
+
+        if (code === "EEXIST") {
           return createPath(name, directory, buffer, iteration + 1);
+        }
+
+        if (code === "ENOENT" && path) {
+          try {
+            await mkdir(path);
+
+            if (directory === dirname(path)) {
+              updateFolder(dirname(path), basename(path));
+            }
+            // eslint-disable-next-line no-empty
+          } catch {}
+
+          return createPath(name, directory, buffer, iteration);
         }
       }
     }
