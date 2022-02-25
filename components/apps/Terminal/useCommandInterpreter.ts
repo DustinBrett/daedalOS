@@ -287,6 +287,7 @@ const useCommandInterpreter = (
               `\t\t${fileCount} File(s) ${totalSize.toLocaleString()} bytes`
             );
             localEcho?.println(`\t\t${directoryCount} Dir(s)`);
+            if (localEcho) autoComplete(entries, localEcho);
           };
 
           if (directory) {
