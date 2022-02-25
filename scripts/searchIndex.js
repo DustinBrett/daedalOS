@@ -3,8 +3,7 @@ const { basename, extname, join } = require("path");
 const lunr = require("lunr");
 
 const PUBLIC_PATH = "public";
-const INDEX_EXTENSIONS = require("./indexExtensions.json");
-const IGNORE_EXTENSIONS = new Set([".url"]);
+const SEARCH_EXTENSIONS = require("./searchExtensions.json");
 const IGNORE_FILES = new Set([
   "desktop.ini",
   "favicon.ico",
@@ -25,18 +24,20 @@ const createSearchIndex = (path) => {
       createSearchIndex(fullPath);
     } else if (
       !IGNORE_FILES.has(entry) &&
-      !IGNORE_EXTENSIONS.has(extname(entry)) &&
+      !SEARCH_EXTENSIONS.ignore.includes(extname(entry)) &&
       !IGNORE_PATHS.some((ignoredPath) =>
         fullPath.startsWith(join(PUBLIC_PATH, ignoredPath))
       )
     ) {
-      const path = fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
+      const keyPath = fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
       indexData.push({
-        path,
-        name: basename(path, extname(path)),
-        text: INDEX_EXTENSIONS.includes(extname(entry))
+        name: basename(keyPath, extname(keyPath)),
+        path: keyPath,
+        text: SEARCH_EXTENSIONS.index.includes(extname(entry))
           ? readFileSync(fullPath, "utf8")
-          : entry,
+              .replace(/\r?\n|\r/g, " ")
+              .replace(/<\/?[^>]+(>|$)/g, "")
+          : undefined,
       });
     }
   });

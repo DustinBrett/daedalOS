@@ -5,7 +5,7 @@ import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import type { Index } from "lunr";
 import { basename, extname } from "path";
 import { useEffect, useState } from "react";
-import INDEX_EXTENSIONS from "scripts/indexExtensions.json";
+import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import { loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
@@ -41,15 +41,21 @@ const buildDynamicIndex = async (
   const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
   const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
   const writable = overlayedFileSystems.writable as IWritableFs;
-  const filesToIndex = Object.keys(writable?._cache?.map).filter((file) =>
-    INDEX_EXTENSIONS.includes(extname(file))
+  const filesToIndex = Object.keys(writable?._cache?.map).filter(
+    (path) => !SEARCH_EXTENSIONS.ignore.includes(extname(path))
   );
   const indexedFiles = await Promise.all(
-    filesToIndex.map(async (path) => ({
-      name: basename(path, extname(path)),
-      path,
-      text: (await readFile(path)).toString(),
-    }))
+    filesToIndex.map(async (path) => {
+      const ext = extname(path);
+
+      return {
+        name: basename(path, ext),
+        path,
+        text: SEARCH_EXTENSIONS.index.includes(ext)
+          ? (await readFile(path)).toString()
+          : undefined,
+      };
+    })
   );
   const dynamicIndex = window.lunr(function buildIndex() {
     this.ref("path");
