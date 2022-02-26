@@ -1,7 +1,7 @@
 import Head from "next/head";
-import packageJson from "package.json";
+import { PACKAGE_DATA } from "utils/constants";
 
-const { alias, description, name } = packageJson;
+const { alias, description } = PACKAGE_DATA;
 
 const Metadata = (): JSX.Element => (
   <Head>
@@ -10,7 +10,7 @@ const Metadata = (): JSX.Element => (
       name="viewport"
     />
     <meta content={description} name="description" />
-    <title>{alias || name}</title>
+    <title>{alias}</title>
   </Head>
 );
 

@@ -15,14 +15,13 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useResizeObserver from "hooks/useResizeObserver";
-import packageJson from "package.json";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { HOME } from "utils/constants";
+import { HOME, PACKAGE_DATA } from "utils/constants";
 import { haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
-const { alias, author, license, name, version } = packageJson;
+const { alias, author, license, version } = PACKAGE_DATA;
 
 export const displayLicense = `${license} License`;
 
@@ -153,7 +152,7 @@ const useTerminal = (
           .read(`\r\n${cd}${PROMPT_CHARACTER}`)
           .then((command) => processCommand.current?.(command).then(prompt));
 
-      localEcho.println(`${alias || name} [Version ${displayVersion()}]`);
+      localEcho.println(`${alias} [Version ${displayVersion()}]`);
       localEcho.println(`By ${author}. ${displayLicense}.`);
 
       if (initialCommand) {

@@ -7,11 +7,11 @@ import {
 import { connect } from "components/apps/IRC/functions";
 import StyledIRC from "components/apps/IRC/StyledIRC";
 import type { Message } from "components/apps/IRC/types";
-import packageJson from "package.json";
 import { useEffect, useRef, useState } from "react";
+import { PACKAGE_DATA } from "utils/constants";
 
 const [{ port = 443, server }] = servers;
-const { alias } = packageJson;
+const { alias } = PACKAGE_DATA;
 
 const IRC = (): JSX.Element => {
   const [log, setLog] = useState<string[]>([]);
