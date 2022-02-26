@@ -1,8 +1,12 @@
-import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
+import dynamic from "next/dynamic";
 import { useMemo, useRef, useState } from "react";
 import type { DefaultTheme, StyledComponent } from "styled-components";
+
+const StyledLoading = dynamic(
+  () => import("components/system/Files/FileManager/StyledLoading")
+);
 
 type ContainerHook = (
   id: string,

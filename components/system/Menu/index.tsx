@@ -1,8 +1,8 @@
-import MenuItemEntry from "components/system/Menu/MenuItemEntry";
 import menuTransition from "components/system/Menu/menuTransition";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import {
@@ -11,6 +11,10 @@ import {
   PREVENT_SCROLL,
 } from "utils/constants";
 import { haltEvent, viewHeight, viewWidth } from "utils/functions";
+
+const MenuItemEntry = dynamic(
+  () => import("components/system/Menu/MenuItemEntry")
+);
 
 type MenuProps = {
   subMenu?: MenuState;

@@ -1,7 +1,5 @@
 import FileEntry from "components/system/Files/FileEntry";
-import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
-import StatusBar from "components/system/Files/FileManager/StatusBar";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
@@ -13,6 +11,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { getFileSystemHandles } from "contexts/fileSystem/functions";
+import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -20,6 +19,14 @@ import {
   MOUNTABLE_EXTENSIONS,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
+
+const StatusBar = dynamic(
+  () => import("components/system/Files/FileManager/StatusBar")
+);
+
+const StyledSelection = dynamic(
+  () => import("components/system/Files/FileManager/Selection/StyledSelection")
+);
 
 type FileManagerProps = {
   hideFolders?: boolean;

@@ -5,7 +5,6 @@ import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
-import RenameBox from "components/system/Files/FileEntry/RenameBox";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
@@ -21,6 +20,7 @@ import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
+import dynamic from "next/dynamic";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
@@ -41,6 +41,10 @@ import {
 } from "utils/constants";
 import { bufferToUrl, getFormattedSize } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
+
+const RenameBox = dynamic(
+  () => import("components/system/Files/FileEntry/RenameBox")
+);
 
 type FileEntryProps = {
   fileActions: FileActions;
