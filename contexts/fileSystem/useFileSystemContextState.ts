@@ -278,6 +278,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
       }
     } else {
       try {
+        const baseDir = dirname(fullNewPath);
+
+        if (!(await exists(baseDir))) {
+          await mkdir(baseDir);
+          updateFolder(dirname(baseDir), basename(baseDir));
+        }
+
         if (
           buffer
             ? await writeFile(fullNewPath, buffer)
@@ -286,23 +293,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
           return uniqueName;
         }
       } catch (error) {
-        const { code, path } = (error as ApiError) || {};
-
-        if (code === "EEXIST") {
+        if ((error as ApiError)?.code === "EEXIST") {
           return createPath(name, directory, buffer, iteration + 1);
-        }
-
-        if (code === "ENOENT" && path) {
-          try {
-            await mkdir(path);
-
-            if (directory === dirname(path)) {
-              updateFolder(dirname(path), basename(path));
-            }
-            // eslint-disable-next-line no-empty
-          } catch {}
-
-          return createPath(name, directory, buffer, iteration);
         }
       }
     }
