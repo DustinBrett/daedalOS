@@ -1,6 +1,6 @@
 import FileEntry from "components/system/Files/FileEntry";
+import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
-import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useFileKeyboardShortcuts from "components/system/Files/FileManager/useFileKeyboardShortcuts";
@@ -24,8 +24,8 @@ const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
 );
 
-const StyledSelection = dynamic(
-  () => import("components/system/Files/FileManager/Selection/StyledSelection")
+const StyledLoading = dynamic(
+  () => import("components/system/Files/FileManager/StyledLoading")
 );
 
 type FileManagerProps = {
