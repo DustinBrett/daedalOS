@@ -5,7 +5,7 @@
   "author": "Dustin Brett",
   "license": "MIT",
   "browserslist": [
-    "defaults and supports es6 and not ie 11"
+    "defaults and supports es6 and not ie 11 and >1%"
   ],
   "scripts": {
     "build": "npm run build:fs && next build",
