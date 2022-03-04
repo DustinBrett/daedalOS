@@ -12,6 +12,7 @@ export type IconProps = {
 
 const StyledIcon = styled.img.attrs<IconProps>(
   ({ imgSize = 0, displaySize = 0, src = "" }) => ({
+    decoding: "async",
     draggable: false,
     height: displaySize > imgSize ? imgSize : displaySize || imgSize,
     src:
