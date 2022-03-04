@@ -19,15 +19,15 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   const { icon = "", url = "" } = process || {};
   const { fs, rootFs } = useFileSystem();
   const [currentUrl, setCurrentUrl] = useState(url);
+  const directoryName = basename(url);
+  const isMounted = Boolean(rootFs?.mntMap[url] && directoryName);
 
   useEffect(() => {
-    const directoryName = basename(url);
-
     if (url) {
       title(id, directoryName || ROOT_NAME);
 
       if (fs && rootFs && (!icon || url !== currentUrl)) {
-        if (rootFs?.mntMap[url] && directoryName) {
+        if (isMounted) {
           setProcessIcon(id, MOUNTED_FOLDER_ICON);
         } else {
           setProcessIcon(
@@ -42,11 +42,22 @@ const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
         setCurrentUrl(url);
       }
     }
-  }, [currentUrl, fs, icon, id, rootFs, setProcessIcon, title, url]);
+  }, [
+    currentUrl,
+    directoryName,
+    fs,
+    icon,
+    id,
+    isMounted,
+    rootFs,
+    setProcessIcon,
+    title,
+    url,
+  ]);
 
   return url ? (
     <StyledFileExplorer>
-      <Navigation id={id} />
+      <Navigation hideSearch={isMounted} id={id} />
       <FileManager id={id} url={url} view="icon" showStatusBar />
     </StyledFileExplorer>
   ) : (

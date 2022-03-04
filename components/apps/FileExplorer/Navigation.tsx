@@ -16,10 +16,11 @@ import { useCallback } from "react";
 import Button from "styles/common/Button";
 
 type NavigationProps = {
+  hideSearch: boolean;
   id: string;
 };
 
-const Navigation = ({ id }: NavigationProps): JSX.Element => {
+const Navigation = ({ hideSearch, id }: NavigationProps): JSX.Element => {
   const {
     url: changeUrl,
     processes: {
@@ -84,7 +85,7 @@ const Navigation = ({ id }: NavigationProps): JSX.Element => {
         <Up />
       </Button>
       <AddressBar id={id} />
-      <SearchBar id={id} />
+      {!hideSearch && <SearchBar id={id} />}
     </StyledNavigation>
   );
 };
