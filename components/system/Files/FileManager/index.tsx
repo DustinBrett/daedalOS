@@ -10,10 +10,10 @@ import useFolderContextMenu from "components/system/Files/FileManager/useFolderC
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { getFileSystemHandles } from "contexts/fileSystem/functions";
+import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -87,33 +87,23 @@ const FileManager = ({
     id
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
-  const requestPermission = useCallback(async () => {
-    const fsHandles = await getFileSystemHandles();
-    const handle = fsHandles[currentUrl];
-
-    if (handle) {
-      if ((await handle.queryPermission()) === "prompt") {
-        await handle.requestPermission();
-      }
-
-      const currentPermissions = await handle.queryPermission();
-
-      if (currentPermissions === "granted") updateFiles();
-
-      setPermission(currentPermissions);
-    } else {
-      setPermission("granted");
-    }
-  }, [updateFiles, currentUrl]);
 
   useEffect(() => {
     if (
       permission !== "granted" &&
       rootFs?.mntMap[url]?.getName() === "FileSystemAccess"
     ) {
-      requestPermission();
+      requestPermission(currentUrl).then((permissions) => {
+        const isGranted = permissions === "granted";
+
+        if (!permissions || isGranted) {
+          setPermission("granted");
+
+          if (isGranted) updateFiles();
+        }
+      });
     }
-  }, [permission, requestPermission, rootFs?.mntMap, url]);
+  }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
 
   useEffect(() => {
     if (MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) && !mounted) {

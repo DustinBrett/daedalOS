@@ -22,3 +22,20 @@ export const removeFileSystemHandle = async (
 
   set(FS_HANDLES, handles);
 };
+
+export const requestPermission = async (
+  url: string
+): Promise<PermissionState | false> => {
+  const fsHandles = await getFileSystemHandles();
+  const handle = fsHandles[url];
+
+  if (handle) {
+    if ((await handle.queryPermission()) === "prompt") {
+      await handle.requestPermission();
+    }
+
+    return handle.queryPermission();
+  }
+
+  return false;
+};

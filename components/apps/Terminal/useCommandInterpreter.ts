@@ -26,6 +26,7 @@ import {
   getProcessByFileExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
+import { requestPermission } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
@@ -241,6 +242,7 @@ const useCommandInterpreter = (
             let totalSize = 0;
             let fileCount = 0;
             let directoryCount = 0;
+            await requestPermission(dirPath);
             const entries = await readdir(dirPath);
             const entriesWithStats = await Promise.all(
               entries.map(async (entry) => {
