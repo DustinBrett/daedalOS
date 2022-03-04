@@ -20,6 +20,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
   pointer-events: ${({ selecting }) => (selecting ? "auto" : undefined)};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
+  scrollbar-gutter: stable;
 
   main > & {
     height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
