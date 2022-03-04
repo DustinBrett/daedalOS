@@ -6,7 +6,6 @@
 const nextConfig = {
   compiler: {
     reactRemoveProperties: true,
-    removeConsole: true,
     styledComponents: true,
   },
   experimental: {
