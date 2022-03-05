@@ -6,11 +6,20 @@
 const nextConfig = {
   compiler: {
     reactRemoveProperties: true,
+    removeConsole: {
+      exclude: ["log"],
+    },
     styledComponents: true,
   },
-  experimental: {
-    reactRoot: true,
+  devIndicators: {
+    buildActivity: false,
   },
+  experimental: {
+    disablePostcssPresetEnv: true,
+    reactRoot: true,
+    swcFileReading: true,
+  },
+  optimizeFonts: false,
   reactStrictMode: true,
   swcMinify: true,
 };
