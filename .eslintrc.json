@@ -10,7 +10,6 @@
     "plugin:jest-dom/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:testing-library/react",
     "plugin:prettier/recommended",
     "plugin:sonarjs/recommended",
     "plugin:unicorn/recommended",
@@ -26,12 +25,10 @@
     "jest",
     "jest-dom",
     "prettier",
-    "react",
     "react-hooks",
     "simple-import-sort",
     "sonarjs",
     "sort-keys-fix",
-    "testing-library",
     "unicorn"
   ],
   "rules": {
