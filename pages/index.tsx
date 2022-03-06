@@ -41,7 +41,7 @@ export const getStaticProps = async (): Promise<{ props: IndexProps }> => {
   let HEAD: Buffer | string = "";
 
   try {
-    HEAD = await execSync("git rev-parse --short HEAD", { cwd: __dirname });
+    HEAD = execSync("git rev-parse --short HEAD", { cwd: __dirname });
     // eslint-disable-next-line no-empty
   } catch {}
 

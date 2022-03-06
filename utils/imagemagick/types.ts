@@ -16,12 +16,12 @@ declare global {
       call: (
         files: ImageMagickFile[],
         command: string[]
-      ) => {
+      ) => Promise<{
         stdout: string[];
         stderr: string[];
         exitCode: number;
         outputFiles: ImageMagickConvertedFile[];
-      };
+      }>;
     };
   }
 }

@@ -30,7 +30,7 @@ const usePDF = (
       pageNumber: number,
       doc: PDFDocumentProxy
     ): Promise<HTMLCanvasElement> => {
-      const canvas = document.createElement("canvas") as HTMLCanvasElement;
+      const canvas = document.createElement("canvas");
       const canvasContext = canvas.getContext("2d") as CanvasRenderingContext2D;
       const page = await doc.getPage(pageNumber);
       const viewport = page.getViewport({ scale });
@@ -96,7 +96,7 @@ const usePDF = (
         [...ol.children].forEach((li) => li.remove());
 
         pages.forEach((page, pageNumber) => {
-          const li = document.createElement("li") as HTMLLIElement;
+          const li = document.createElement("li");
           const observer = new IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {

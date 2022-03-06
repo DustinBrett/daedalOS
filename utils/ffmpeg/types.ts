@@ -6,7 +6,7 @@ export type IFFmpegInstance = {
     fileData?: Buffer
   ) => Uint8Array | void;
   load: () => Promise<void>;
-  run: (...commandArgs: string[]) => void;
+  run: (...commandArgs: string[]) => Promise<void>;
 };
 
 export type IFFmpegLog = {

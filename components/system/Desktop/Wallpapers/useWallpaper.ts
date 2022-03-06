@@ -79,11 +79,7 @@ const useWallpaper = (
   useEffect(() => {
     if (sessionLoaded) {
       if (wallpaperImage) {
-        try {
-          loadFileWallpaper();
-        } catch {
-          loadThemeWallpaper();
-        }
+        loadFileWallpaper().catch(loadThemeWallpaper);
       } else {
         loadThemeWallpaper();
       }

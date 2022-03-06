@@ -54,9 +54,7 @@ const useMenuContextState = (): MenuContextState => {
           event.preventDefault();
 
           ({ pageX: x, pageY: y } =
-            "touches" in event
-              ? (event as React.TouchEvent).touches.item(0)
-              : (event as React.MouseEvent));
+            "touches" in event ? event.touches.item(0) : event);
         } else if (domRect) {
           const { height, x: inputX, y: inputY } = domRect;
 

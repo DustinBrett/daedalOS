@@ -191,7 +191,7 @@ const useFolder = (
                 return processedFiles;
               }
             },
-            {}
+            Promise.resolve({})
           );
 
           if (dirContents.length > 0) {

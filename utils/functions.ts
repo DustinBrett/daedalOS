@@ -126,10 +126,14 @@ export const getFormattedSize = (size = 0): string => {
 
 export const lockTitle = (): void => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    Object.defineProperty(document, "title", { set: () => {} });
-    // eslint-disable-next-line no-empty
-  } catch {}
+    Object.defineProperty(document, "title", {
+      set: () => {
+        // Ignore requests to set the title
+      },
+    });
+  } catch {
+    // Ignore errors defining document.title setter
+  }
 };
 
 export const getTZOffsetISOString = (): string => {
