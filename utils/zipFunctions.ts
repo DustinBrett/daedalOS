@@ -1,5 +1,4 @@
 import type { AsyncZipOptions, AsyncZippable, Unzipped } from "fflate";
-import { unzip, zip } from "fflate";
 import { join } from "path";
 import { EMPTY_BUFFER } from "utils/constants";
 
@@ -21,7 +20,9 @@ const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
 
 export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
   new Promise((resolve, reject) => {
-    unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)));
+    import("fflate").then(({ unzip }) =>
+      unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)))
+    );
   });
 
 export const zipAsync = (
@@ -29,8 +30,10 @@ export const zipAsync = (
   opts: AsyncZipOptions = {}
 ): Promise<Uint8Array> =>
   new Promise((resolve, reject) => {
-    zip(data, opts, (error, zipData) =>
-      error ? reject(error) : resolve(zipData)
+    import("fflate").then(({ zip }) =>
+      zip(data, opts, (error, zipData) =>
+        error ? reject(error) : resolve(zipData)
+      )
     );
   });
 
@@ -55,10 +58,12 @@ export const isFileInZip = (
   zipFilePath: string
 ): Promise<boolean> =>
   new Promise((resolve, reject) => {
-    unzip(buffer, (unzipError, zipData) =>
-      unzipError
-        ? reject(unzipError)
-        : resolve(Object.keys(zipData).includes(zipFilePath))
+    import("fflate").then(({ unzip }) =>
+      unzip(buffer, (unzipError, zipData) =>
+        unzipError
+          ? reject(unzipError)
+          : resolve(Object.keys(zipData).includes(zipFilePath))
+      )
     );
   });
 

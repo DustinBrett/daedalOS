@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { useCallback, useState } from "react";
+import { clsx } from "utils/functions";
 
 type FocusedEntryProps = {
   className?: string;

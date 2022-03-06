@@ -1,7 +1,6 @@
 import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
-import { stripUnit } from "polished";
 import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
@@ -60,7 +59,7 @@ export const loadFiles = async (
   }, Promise.resolve());
 
 export const pxToNum = (value: number | string = 0): number =>
-  Number(stripUnit(value));
+  typeof value === "number" ? value : Number(value.replace("px", ""));
 
 export const viewHeight = (): number =>
   Math.min(window.innerHeight, window.screen.height);
@@ -191,3 +190,9 @@ export const createOffscreenCanvas = (
 
 export const getSearchParam = (param: string): string =>
   new URLSearchParams(window.location.search).get(param) || "";
+
+export const clsx = (classes: Record<string, boolean>): string =>
+  Object.entries(classes)
+    .filter(([, isActive]) => isActive)
+    .map(([className]) => className)
+    .join(" ");

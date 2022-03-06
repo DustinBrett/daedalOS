@@ -1,4 +1,4 @@
-import { get, set } from "idb-keyval";
+import { get } from "idb-keyval";
 import { join } from "path";
 import { FS_HANDLES } from "utils/constants";
 
@@ -17,13 +17,16 @@ export const getFileSystemHandles = async (): Promise<
 export const addFileSystemHandle = async (
   directory: string,
   handle: FileSystemDirectoryHandle
-): Promise<void> =>
-  (await supportsIndexedDB())
-    ? set(FS_HANDLES, {
-        ...(await getFileSystemHandles()),
-        [join(directory, handle.name)]: handle,
-      })
-    : undefined;
+): Promise<void> => {
+  if (!(await supportsIndexedDB())) return;
+
+  const { set } = await import("idb-keyval");
+
+  set(FS_HANDLES, {
+    ...(await getFileSystemHandles()),
+    [join(directory, handle.name)]: handle,
+  });
+};
 
 export const removeFileSystemHandle = async (
   directory: string
@@ -31,6 +34,7 @@ export const removeFileSystemHandle = async (
   if (!(await supportsIndexedDB())) return;
 
   const { [directory]: _, ...handles } = await getFileSystemHandles();
+  const { set } = await import("idb-keyval");
 
   set(FS_HANDLES, handles);
 };
