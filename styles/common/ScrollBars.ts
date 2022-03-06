@@ -7,7 +7,7 @@ const ScrollBars = (
   verticalY?: number
 ): FlattenSimpleInterpolation => css`
   overflow: auto;
-  scrollbar-color: dark;
+  scrollbar-color: rgb(77, 77, 77) rgb(23, 23, 23);
 
   ::-webkit-scrollbar {
     height: ${size}px;
