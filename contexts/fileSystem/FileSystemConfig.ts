@@ -1,7 +1,7 @@
 import type { FileSystemConfiguration } from "browserfs";
 import index from "public/.index/fs.bfs.json";
 
-const FileSystemConfig: FileSystemConfiguration = {
+const FileSystemConfig = (writeToMemory = false): FileSystemConfiguration => ({
   fs: "MountableFileSystem",
   options: {
     "/": {
@@ -12,11 +12,11 @@ const FileSystemConfig: FileSystemConfiguration = {
           options: { index },
         },
         writable: {
-          fs: "IndexedDB",
+          fs: writeToMemory ? "InMemory" : "IndexedDB",
         },
       },
     },
   },
-};
+});
 
 export default FileSystemConfig;

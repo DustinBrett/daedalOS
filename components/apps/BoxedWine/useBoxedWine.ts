@@ -67,8 +67,9 @@ const useBoxedWine = (
       if (url) appendFileToTitle(appName || basename(url));
       try {
         window.BoxedWineShell(() => setLoading(false));
-        // eslint-disable-next-line no-empty
-      } catch {}
+      } catch {
+        // Ignore BoxedWine errors
+      }
     });
   }, [appendFileToTitle, readFile, setLoading, url]);
 
@@ -82,10 +83,10 @@ const useBoxedWine = (
     }
 
     return () => {
-      try {
-        window.BoxedWineConfig.isRunning = false;
-        // eslint-disable-next-line no-empty
-      } catch {}
+      window.BoxedWineConfig = {
+        ...window.BoxedWineConfig,
+        isRunning: false,
+      };
     };
   }, [loadEmulator, url]);
 };

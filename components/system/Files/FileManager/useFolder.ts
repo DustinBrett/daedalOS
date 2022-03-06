@@ -68,6 +68,8 @@ type Folder = {
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };
 
+const NO_FILES = undefined;
+
 const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
@@ -75,7 +77,7 @@ const useFolder = (
   hideFolders = false,
   hideLoading = false
 ): Folder => {
-  const [files, setFiles] = useState<Files>();
+  const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
   const [isLoading, setLoading] = useState(true);
   const {
@@ -376,23 +378,23 @@ const useFolder = (
       const zipFolderName = basename(path, extname(path));
 
       if (await mkdir(join(directory, zipFolderName))) {
-        for (const [extractPath, fileContents] of Object.entries(
-          unzippedFiles
-        )) {
-          const localPath = join(directory, zipFolderName, extractPath);
+        await Promise.all(
+          Object.entries(unzippedFiles).map(
+            async ([extractPath, fileContents]) => {
+              const localPath = join(directory, zipFolderName, extractPath);
 
-          /* eslint-disable no-await-in-loop */
-          if (fileContents.length === 0 && extractPath.endsWith("/")) {
-            await mkdir(localPath);
-          } else {
-            if (!(await exists(dirname(localPath)))) {
-              await mkdirRecursive(dirname(localPath));
+              if (fileContents.length === 0 && extractPath.endsWith("/")) {
+                await mkdir(localPath);
+              } else {
+                if (!(await exists(dirname(localPath)))) {
+                  await mkdirRecursive(dirname(localPath));
+                }
+
+                await writeFile(localPath, Buffer.from(fileContents));
+              }
             }
-
-            await writeFile(localPath, Buffer.from(fileContents));
-          }
-          /* eslint-enable no-await-in-loop */
-        }
+          )
+        );
 
         updateFolder(directory, zipFolderName);
       }
@@ -452,8 +454,7 @@ const useFolder = (
   useEffect(() => {
     if (directory !== currentDirectory) {
       setCurrentDirectory(directory);
-      // eslint-disable-next-line unicorn/no-useless-undefined
-      setFiles(undefined);
+      setFiles(NO_FILES);
     }
   }, [currentDirectory, directory]);
 
@@ -530,8 +531,7 @@ const useFolder = (
       addToFolder: () => addFile(directory, newPath),
       newPath,
       pasteToFolder,
-      // eslint-disable-next-line unicorn/no-useless-undefined
-      resetFiles: () => setFiles(undefined),
+      resetFiles: () => setFiles(NO_FILES),
       sortByOrder: useSortBy(directory, files),
     },
     isLoading,

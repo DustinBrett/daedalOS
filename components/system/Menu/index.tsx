@@ -115,7 +115,7 @@ const Menu = ({ subMenu }: MenuProps): JSX.Element => {
         {items.map((item, index) => (
           <MenuItemEntry
             // eslint-disable-next-line react/no-array-index-key
-            key={`${item.label}-${index}`}
+            key={`${item.label || "item"}-${index}`}
             resetMenu={resetMenu}
             {...item}
           />

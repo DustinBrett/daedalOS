@@ -45,6 +45,7 @@ const parseMessage = (message: string, name: string): Message => {
         parameters = parameters.slice(1);
       }
     } else if (command === RPL_MYINFO) {
+      // TODO: Avoid the need for this eslint ignore
       // eslint-disable-next-line prefer-destructuring
       connectedServer = parameters[0];
     }

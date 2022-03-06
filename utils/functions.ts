@@ -52,14 +52,12 @@ const loadStyle = (href: string): Promise<Event> =>
 export const loadFiles = async (
   files: string[],
   defer?: boolean
-): Promise<void> => {
-  for (const file of files) {
-    // eslint-disable-next-line no-await-in-loop
+): Promise<void> =>
+  files.reduce(async (_promise, file) => {
     await (extname(file).toLowerCase() === ".css"
       ? loadStyle(encodeURI(file))
       : loadScript(encodeURI(file), defer));
-  }
-};
+  }, Promise.resolve());
 
 export const pxToNum = (value: number | string = 0): number =>
   Number(stripUnit(value));

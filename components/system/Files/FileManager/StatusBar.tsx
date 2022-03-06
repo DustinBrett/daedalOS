@@ -24,28 +24,27 @@ const StatusBar = ({
   const updateShowSelected = (width: number): void =>
     setShowSelected(width > MINIMUM_STATUSBAR_WIDTH);
   const statusBarRef = useRef<HTMLDivElement | null>(null);
-  const updateSelectedSize = useCallback(async (): Promise<void> => {
-    let totalSize = -1;
+  const updateSelectedSize = useCallback(
+    async (): Promise<void> =>
+      setSelectedSize(
+        await selected.reduce(async (totalSize, file) => {
+          const currentSize = await totalSize;
 
-    for (const file of selected) {
-      const path = join(directory, file);
+          if (currentSize === -1) return -1;
 
-      /* eslint-disable no-await-in-loop */
-      if (await exists(path)) {
-        const stats = await stat(path);
+          const path = join(directory, file);
 
-        if (stats.isDirectory()) {
-          totalSize = -1;
-          break;
-        }
+          if (await exists(path)) {
+            const stats = await stat(path);
 
-        totalSize = totalSize === -1 ? stats.size : totalSize + stats.size;
-      }
-      /* eslint-enable no-await-in-loop */
-    }
+            return stats.isDirectory() ? -1 : currentSize + stats.size;
+          }
 
-    setSelectedSize(totalSize);
-  }, [directory, exists, selected, stat]);
+          return totalSize;
+        }, Promise.resolve(0))
+      ),
+    [directory, exists, selected, stat]
+  );
 
   useEffect(() => {
     updateSelectedSize();

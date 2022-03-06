@@ -25,11 +25,12 @@ const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
           formats.systemFont
         );
 
-        /* eslint-disable no-param-reassign */
-        textArea.style.height = "1px";
-        textArea.style.height = `${textArea.scrollHeight + 2}px`;
-        textArea.style.width = `${width + 22}px`;
-        /* eslint-enable no-param-reassign */
+        // Force height to re-calculate
+        textArea.setAttribute("style", "height: 1px");
+        textArea.setAttribute(
+          "style",
+          `height: ${textArea.scrollHeight + 2}px; width: ${width + 22}px`
+        );
       }
     },
     [formats.systemFont, sizes.fileEntry.fontSize]

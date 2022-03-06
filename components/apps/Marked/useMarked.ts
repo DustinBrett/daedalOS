@@ -43,10 +43,9 @@ const useMarked = (
             containerRef.current?.closest("section")?.focus();
           });
 
-          [...iframe.contentWindow.document.links].forEach((link) => {
-            // eslint-disable-next-line no-param-reassign
-            link.target = "_blank";
-          });
+          [...iframe.contentWindow.document.links].forEach((link) =>
+            link.setAttribute("target", "_blank")
+          );
         }
       });
     }

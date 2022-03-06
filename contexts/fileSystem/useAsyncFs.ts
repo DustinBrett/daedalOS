@@ -7,6 +7,7 @@ import type {
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import { supportsIndexedDB } from "contexts/fileSystem/functions";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useEffect, useMemo, useState } from "react";
 import { EMPTY_BUFFER } from "utils/constants";
@@ -154,28 +155,17 @@ const useAsyncFs = (): AsyncFSModule => {
 
   useEffect(() => {
     if (!fs) {
-      const setupFs = (writeToMemory = false): void => {
-        if (writeToMemory) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          FileSystemConfig.options["/"].options.writable.fs = "InMemory";
-        }
-
-        configure(FileSystemConfig, () => {
+      const setupFs = (writeToMemory = false): void =>
+        configure(FileSystemConfig(writeToMemory), () => {
           const loadedFs = BFSRequire("fs");
 
           setFs(loadedFs);
           setRootFs(loadedFs.getRootFS() as RootFileSystem);
         });
-      };
 
-      if (!window.indexedDB) {
-        setupFs(true);
-      } else {
-        const db = window.indexedDB.open("");
-
-        db.addEventListener("error", () => setupFs(true));
-        db.addEventListener("success", () => setupFs());
-      }
+      supportsIndexedDB().then((writeToIndexedDB) =>
+        setupFs(!writeToIndexedDB)
+      );
     }
   }, [fs]);
 

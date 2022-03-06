@@ -4,7 +4,6 @@ import useMarked from "components/apps/Marked/useMarked";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const Marked = ({ id }: ComponentProcessProps): JSX.Element =>
-  // eslint-disable-next-line jsx-a11y/iframe-has-title
-  ContainerComponent(id, useMarked, StyledMarked, <iframe />);
+  ContainerComponent(id, useMarked, StyledMarked, <iframe title={id} />);
 
 export default Marked;

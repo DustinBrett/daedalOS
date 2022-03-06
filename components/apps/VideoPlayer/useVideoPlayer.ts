@@ -88,8 +88,9 @@ const useVideoPlayer = (
       try {
         player.src(await getSource());
         appendFileToTitle(basename(url));
-        // eslint-disable-next-line no-empty
-      } catch {}
+      } catch {
+        // Ignore player errors
+      }
     }
   }, [appendFileToTitle, getSource, player, url]);
 
