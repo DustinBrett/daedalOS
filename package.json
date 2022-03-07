@@ -8,10 +8,12 @@
     "defaults and supports es6 and not ie 11 and >1%"
   ],
   "scripts": {
-    "build": "npm run build:fs && next build",
+    "build": "npm run build:fs && npm run build:search && next build",
     "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
+    "build:html": "html-minifier-terser --config-file .html-minifier.json --input-dir out --output-dir out --file-ext html",
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
+    "deploy": "npm run build:robots && next export && npm run build:html",
     "docker:build": "docker build -t daedalos .",
     "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
     "dev": "next dev",
@@ -85,6 +87,7 @@
     "eslint-plugin-sonarjs": "^0.12.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-unicorn": "^41.0.0",
+    "html-minifier-terser": "^7.0.0-alpha.1",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-staged": "^12.3.5",
