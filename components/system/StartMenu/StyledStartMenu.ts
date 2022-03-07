@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
-const SCROLLBAR_WIDTH = 13;
+export const SCROLLBAR_WIDTH = 13;
 
 type StyledStartMenuProps = {
   $showScrolling: boolean;
@@ -15,7 +15,7 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 
   ::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
-      $showScrolling ? `${SCROLLBAR_WIDTH}px` : "1px"};
+      $showScrolling ? `${SCROLLBAR_WIDTH}px` : "3px"};
   }
 
   ::-webkit-scrollbar-corner,
@@ -33,7 +33,7 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 
   ::-webkit-scrollbar-thumb:vertical {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "rgb(170, 170, 170)"};
+      !$showScrolling && "rgb(167, 167, 167)"};
   }
 `;
 

@@ -1,3 +1,4 @@
+import { SCROLLBAR_WIDTH } from "components/system/StartMenu/StyledStartMenu";
 import styled from "styled-components";
 
 const StyledFileEntry = styled.li`
@@ -7,6 +8,7 @@ const StyledFileEntry = styled.li`
     height: 36px;
     padding-bottom: 1px;
     place-items: center;
+    width: calc(100% - ${SCROLLBAR_WIDTH}px);
 
     figcaption {
       color: #fff;
