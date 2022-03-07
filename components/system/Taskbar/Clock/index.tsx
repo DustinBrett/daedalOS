@@ -5,7 +5,7 @@ import useWorker from "hooks/useWorker";
 import { useCallback, useState } from "react";
 
 const Clock = (): JSX.Element => {
-  const [{ date = "", time = "", dateTime }, setNow] = useState<LocaleTimeDate>(
+  const [{ date, time, dateTime }, setNow] = useState<LocaleTimeDate>(
     {} as LocaleTimeDate
   );
 
@@ -14,6 +14,8 @@ const Clock = (): JSX.Element => {
     "Clock",
     useCallback(({ data }: { data: LocaleTimeDate }) => setNow(data), [])
   );
+
+  if (!time) return <></>;
 
   return (
     <StyledClock dateTime={dateTime} title={date} suppressHydrationWarning>
