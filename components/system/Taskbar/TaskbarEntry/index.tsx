@@ -66,7 +66,7 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       </AnimatePresence>
       <Button ref={linkTaskbarEntry} onClick={onClick}>
         <figure>
-          <Icon alt={taskbarTitle} imgSize={16} src={icon} />
+          <Icon $imgSize={16} alt={taskbarTitle} src={icon} />
           <figcaption>{taskbarTitle}</figcaption>
         </figure>
       </Button>

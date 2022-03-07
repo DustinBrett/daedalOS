@@ -162,7 +162,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
             }}
             title={`${name}\n${bookmarkUrl}`}
           >
-            <Icon alt={name} imgSize={16} src={icon} />
+            <Icon $imgSize={16} alt={name} src={icon} />
           </Button>
         ))}
       </nav>

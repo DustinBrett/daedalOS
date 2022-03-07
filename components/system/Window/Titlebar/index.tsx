@@ -45,7 +45,7 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
       <Button as="h1" {...(allowResizing && !closing ? onClickMaximize : {})}>
         <figure>
           {!hideTitlebarIcon && (
-            <Icon alt={title} imgSize={16} src={icon} {...onClickClose} />
+            <Icon $imgSize={16} alt={title} src={icon} {...onClickClose} />
           )}
           <figcaption>{title}</figcaption>
         </figure>

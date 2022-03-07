@@ -72,7 +72,7 @@ const MenuItemEntry = ({
             }
           }}
         >
-          {icon && <Icon alt={label} imgSize={16} src={icon} />}
+          {icon && <Icon $imgSize={16} alt={label} src={icon} />}
           {checked && <Checkmark className="left" />}
           {toggle && <Circle className="left" />}
           <figcaption className={primary ? "primary" : undefined}>
