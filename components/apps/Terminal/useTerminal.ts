@@ -26,9 +26,9 @@ const { alias, author, license, version } = PACKAGE_DATA;
 export const displayLicense = `${license} License`;
 
 export const displayVersion = (): string => {
-  const { commit } = window;
+  const { __NEXT_DATA__: { buildId } = {} } = window;
 
-  return `${version}${commit ? `-${commit}` : ""}`;
+  return `${version}${buildId ? `-${buildId}` : ""}`;
 };
 
 const useTerminal = (

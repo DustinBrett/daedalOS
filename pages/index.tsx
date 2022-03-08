@@ -8,23 +8,14 @@ import useUrlLoader from "hooks/useUrlLoader";
 import { useEffect } from "react";
 import { lockTitle } from "utils/functions";
 
-declare global {
-  interface Window {
-    commit?: string;
-  }
-}
-
-type IndexProps = { commit?: string };
-
-const Index = ({ commit }: IndexProps): React.ReactElement => {
+const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
   useGlobalKeyboardShortcuts();
 
   useEffect(() => {
     lockTitle();
-    window.commit = commit;
-  }, [commit]);
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -34,23 +25,6 @@ const Index = ({ commit }: IndexProps): React.ReactElement => {
       </Desktop>
     </ErrorBoundary>
   );
-};
-
-export const getStaticProps = async (): Promise<{ props: IndexProps }> => {
-  const { execSync } = await import("child_process");
-  let HEAD: Buffer | string = "";
-
-  try {
-    HEAD = execSync("git rev-parse --short HEAD", { cwd: __dirname });
-  } catch {
-    return { props: {} };
-  }
-
-  return {
-    props: {
-      commit: HEAD.toString().trim(),
-    },
-  };
 };
 
 export default Index;
