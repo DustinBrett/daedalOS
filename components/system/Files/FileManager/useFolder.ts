@@ -106,23 +106,18 @@ const useFolder = (
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
-    (fileName: string, stats: Stats): Promise<FileStat> =>
-      new Promise((resolve) => {
-        if (extname(fileName).toLowerCase() === SHORTCUT_EXTENSION) {
-          fs?.readFile(
-            join(directory, fileName),
-            (_readError, contents = EMPTY_BUFFER) =>
-              resolve(
-                Object.assign(stats, {
-                  systemShortcut: getShortcutInfo(contents).type === "System",
-                })
-              )
-          );
-        } else {
-          resolve(stats);
-        }
-      }),
-    [directory, fs]
+    async (fileName: string, stats: Stats): Promise<FileStat> => {
+      if (extname(fileName).toLowerCase() === SHORTCUT_EXTENSION) {
+        const contents = await readFile(join(directory, fileName));
+
+        return Object.assign(stats, {
+          systemShortcut: getShortcutInfo(contents).type === "System",
+        });
+      }
+
+      return stats;
+    },
+    [directory, readFile]
   );
   const updateFiles = useCallback(
     async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
@@ -243,13 +238,11 @@ const useFolder = (
     setDownloadLink(link.href);
   };
   const getFile = useCallback(
-    (path: string): Promise<ZipFile> =>
-      new Promise((resolve) => {
-        fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
-          resolve([relative(directory, path), contents])
-        );
-      }),
-    [directory, fs]
+    async (path: string): Promise<ZipFile> => [
+      relative(directory, path),
+      await readFile(path),
+    ],
+    [directory, readFile]
   );
   const downloadFiles = useCallback(
     async (paths: string[]): Promise<void> => {
