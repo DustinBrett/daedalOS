@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run build:fs && npm run build:search && next build",
     "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
-    "build:html": "html-minifier-terser --config-file .html-minifier.json --input-dir out --output-dir out --file-ext html",
+    "build:html": "node scripts/minifyHtml.js",
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
     "deploy": "npm run build:robots && next export && npm run build:html",
