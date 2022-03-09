@@ -377,8 +377,8 @@ const FileEntry = ({
               key={entryIcon}
               alt={name}
               {...(icon === entryIcon && {
-                imgRef: iconRef,
-                moving: pasteList[path] === "move",
+                $imgRef: iconRef,
+                $moving: pasteList[path] === "move",
               })}
               src={entryIcon}
               {...FileEntryIconSize[
