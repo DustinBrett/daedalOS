@@ -1,43 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const useWorker = <T>(
-  workerFunction: string | (() => void),
-  name: string,
+  workerInit: () => Worker,
   onMessage?: (message: { data: T }) => void
-): Worker | undefined => {
-  const [worker, setWorker] = useState<Worker>();
+): React.MutableRefObject<Worker | null> => {
+  const [initialized, setInitialized] = useState(false);
+  const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
-    if (typeof workerFunction === "string") {
-      setWorker(new Worker(workerFunction));
-    } else if (typeof workerFunction === "function") {
-      const workerUrl = URL.createObjectURL(
-        new Blob(["(", workerFunction.toString(), ")()"], {
-          type: "application/javascript",
-        })
-      );
+    if (worker.current === null) {
+      worker.current = workerInit();
 
-      setWorker(new Worker(workerUrl, { name }));
-
-      URL.revokeObjectURL?.(workerUrl);
-    }
-  }, [name, workerFunction]);
-
-  useEffect(() => {
-    if (onMessage) {
-      worker?.addEventListener("message", onMessage, { passive: true });
-    }
-
-    worker?.postMessage("init");
-
-    return () => {
-      try {
-        worker?.terminate();
-      } catch (error) {
-        if ((error as Error).message !== "Not Supported") throw error;
+      if (onMessage) {
+        worker.current.addEventListener("message", onMessage);
       }
-    };
-  }, [onMessage, worker]);
+
+      worker.current.postMessage("init");
+
+      setInitialized(true);
+    }
+  }, [onMessage, workerInit]);
+
+  useEffect(
+    () => () => {
+      if (initialized) worker.current?.terminate();
+    },
+    [initialized]
+  );
 
   return worker;
 };

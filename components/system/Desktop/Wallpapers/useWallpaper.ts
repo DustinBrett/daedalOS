@@ -1,4 +1,3 @@
-import vantaWallpaperWorker from "components/system/Desktop/Wallpapers/vantaWaves/vantaWorker";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
@@ -28,15 +27,26 @@ const useWallpaper = (
   const { exists, readFile } = useFileSystem();
   const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
-  const vantaWorker = useWorker<void>(vantaWallpaperWorker, "Wallpaper");
+  const vantaWorkerInit = useCallback(
+    () =>
+      new Worker(
+        new URL(
+          "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
+          import.meta.url
+        ),
+        { name: "Wallpaper" }
+      ),
+    []
+  );
+  const vantaWorker = useWorker<void>(vantaWorkerInit);
   const loadThemeWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
 
-      if (typeof OffscreenCanvas !== "undefined" && vantaWorker) {
+      if (typeof OffscreenCanvas !== "undefined" && vantaWorker.current) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
-        vantaWorker.postMessage({ canvas: offscreen }, [offscreen]);
+        vantaWorker.current.postMessage({ canvas: offscreen }, [offscreen]);
       } else {
         wallpaper?.(desktopRef.current);
       }
@@ -49,7 +59,7 @@ const useWallpaper = (
 
       if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-      if (typeof OffscreenCanvas !== "undefined" && vantaWorker) {
+      if (typeof OffscreenCanvas !== "undefined") {
         desktopRef.current?.querySelector("canvas")?.remove();
       } else {
         wallpaper?.();
@@ -70,7 +80,6 @@ const useWallpaper = (
     exists,
     loadThemeWallpaper,
     readFile,
-    vantaWorker,
     wallpaper,
     wallpaperFit,
     wallpaperImage,

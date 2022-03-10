@@ -1,19 +1,10 @@
+import {
+  disableControls,
+  isWebGLAvailable,
+  libs,
+} from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";
-
-const disableControls = {
-  gyroControls: false,
-  mouseControls: false,
-  mouseEase: false,
-  touchControls: false,
-};
-
-const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
-
-const libs = [
-  "/System/Vanta.js/three.min.js",
-  "/System/Vanta.js/vanta.waves.min.js",
-];
 
 const vantaWaves =
   (config: VantaWavesConfig) =>
