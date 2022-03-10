@@ -372,18 +372,19 @@ const FileEntry = ({
           style={renaming ? { pointerEvents: "all" } : undefined}
           {...(listView && spotlightEffect(figureRef.current))}
         >
-          {[icon, ...(filteredSubIcons || [])].map((entryIcon) => (
+          <Icon
+            $imgRef={iconRef}
+            $moving={pasteList[path] === "move"}
+            alt={name}
+            src={icon}
+            {...FileEntryIconSize[view]}
+          />
+          {(filteredSubIcons || []).map((entryIcon) => (
             <Icon
               key={entryIcon}
               alt={name}
-              {...(icon === entryIcon && {
-                $imgRef: iconRef,
-                $moving: pasteList[path] === "move",
-              })}
               src={entryIcon}
-              {...FileEntryIconSize[
-                entryIcon !== icon && entryIcon !== SHORTCUT_ICON ? "sub" : view
-              ]}
+              {...FileEntryIconSize[entryIcon !== SHORTCUT_ICON ? "sub" : view]}
             />
           ))}
           {renaming ? (
