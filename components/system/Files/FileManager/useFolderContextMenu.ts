@@ -8,7 +8,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
 import { useCallback } from "react";
-import { EMPTY_BUFFER, FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
+import { FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -101,12 +101,12 @@ const useFolderContextMenu = (
           },
           MENU_SEPERATOR,
           {
-            action: () => newPath(NEW_RTF_DOCUMENT, EMPTY_BUFFER, true),
+            action: () => newPath(NEW_RTF_DOCUMENT, Buffer.from(""), true),
             icon: richTextDocumentIcon,
             label: "Rich Text Document",
           },
           {
-            action: () => newPath(NEW_TEXT_DOCUMENT, EMPTY_BUFFER, true),
+            action: () => newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), true),
             icon: textDocumentIcon,
             label: "Text Document",
           },

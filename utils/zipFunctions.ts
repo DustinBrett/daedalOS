@@ -1,6 +1,5 @@
 import type { AsyncZipOptions, AsyncZippable, Unzipped } from "fflate";
 import { join } from "path";
-import { EMPTY_BUFFER } from "utils/constants";
 
 const unRarLib = "/System/Unrar.js/unrar.wasm";
 
@@ -46,7 +45,7 @@ export const addFileToZip = async (
   Buffer.from(
     await zipAsync(
       {
-        ...(buffer !== EMPTY_BUFFER && (await unzipAsync(buffer))),
+        ...(buffer.length > 0 && (await unzipAsync(buffer))),
         ...addFileToZippable(zipFilePath, await readFile(filePath)),
       },
       { level: 0 }

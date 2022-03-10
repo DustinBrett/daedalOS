@@ -1,6 +1,5 @@
 import type { LocalEcho } from "components/apps/Terminal/types";
 import { basename, dirname, extname, join } from "path";
-import { EMPTY_BUFFER } from "utils/constants";
 import { loadFiles } from "utils/functions";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 
@@ -35,7 +34,9 @@ export const convert = async (
 
       returnFiles.push([
         join(dirname(fileName), newName),
-        image.blob ? Buffer.from(await image.blob.arrayBuffer()) : EMPTY_BUFFER,
+        image.blob
+          ? Buffer.from(await image.blob.arrayBuffer())
+          : Buffer.from(""),
       ]);
     })
   );

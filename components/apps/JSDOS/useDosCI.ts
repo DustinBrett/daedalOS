@@ -10,7 +10,7 @@ import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
+import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 import { addFileToZip, isFileInZip, zipAsync } from "utils/zipFunctions";
@@ -21,7 +21,7 @@ const addJsDosConfig = async (
 ): Promise<Buffer> =>
   Object.entries(zipConfigFiles).reduce(
     async (newBuffer, [zipPath, fsPath]) =>
-      (await newBuffer) !== EMPTY_BUFFER &&
+      (await newBuffer).length > 0 &&
       (await isFileInZip(await newBuffer, zipPath))
         ? newBuffer
         : addFileToZip(await newBuffer, fsPath, zipPath, readFile),
@@ -66,11 +66,13 @@ const useDosCI = (
     [dosCI, dosInstance, exists, mkdirRecursive, updateFolder, writeFile]
   );
   const loadBundle = useCallback(async () => {
+    if (!url) return;
+
     const [currentUrl] = Object.keys(dosCI);
 
     if (currentUrl) closeBundle(currentUrl);
 
-    const urlBuffer = url ? await readFile(url) : EMPTY_BUFFER;
+    const urlBuffer = await readFile(url);
     const extension = extname(url).toLowerCase();
     const zipBuffer =
       extension !== ".exe"

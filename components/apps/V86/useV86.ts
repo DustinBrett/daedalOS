@@ -14,7 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { EMPTY_BUFFER, SAVE_PATH } from "utils/constants";
+import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const useV86 = (
@@ -64,11 +64,13 @@ const useV86 = (
     [emulator, exists, mkdirRecursive, saveStateAsync, updateFolder, writeFile]
   );
   const loadDiskImage = useCallback(async () => {
+    if (!url) return;
+
     const [currentUrl] = Object.keys(emulator);
 
     if (currentUrl) await closeDiskImage(currentUrl);
 
-    const imageContents = url ? await readFile(url) : EMPTY_BUFFER;
+    const imageContents = await readFile(url);
     const isISO = extname(url).toLowerCase() === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {

@@ -24,7 +24,6 @@ import ini from "ini";
 import { basename, dirname, extname, join, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
-  EMPTY_BUFFER,
   FOLDER_ICON,
   INVALID_FILE_CHARACTERS,
   MOUNTABLE_EXTENSIONS,
@@ -313,7 +312,7 @@ const useFolder = (
       const pathExtension = extname(path).toLowerCase();
 
       if (pathExtension === SHORTCUT_EXTENSION) {
-        fs?.readFile(path, (_readError, contents = EMPTY_BUFFER) =>
+        fs?.readFile(path, (_readError, contents = Buffer.from("")) =>
           newPath(basename(path), contents)
         );
       } else {

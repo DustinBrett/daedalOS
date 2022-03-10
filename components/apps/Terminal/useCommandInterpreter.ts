@@ -31,7 +31,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
-import { EMPTY_BUFFER, HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
+import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
@@ -503,7 +503,7 @@ const useCommandInterpreter = (
           if (file) {
             const fullPath = getFullPath(file);
 
-            await writeFile(fullPath, EMPTY_BUFFER);
+            await writeFile(fullPath, Buffer.from(""));
             updateFile(fullPath);
           }
           break;

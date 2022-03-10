@@ -12,7 +12,6 @@ import { extname, join } from "path";
 import index from "public/.index/fs.9p.json";
 import {
   BASE_2D_CONTEXT_OPTIONS,
-  EMPTY_BUFFER,
   FOLDER_ICON,
   IMAGE_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
@@ -86,7 +85,7 @@ export const getIconFromIni = (
   new Promise((resolve) => {
     fs.readFile(
       join(directory, "desktop.ini"),
-      (error, contents = EMPTY_BUFFER) => {
+      (error, contents = Buffer.from("")) => {
         if (!error) {
           const {
             ShellClassInfo: { IconFile = "" },
@@ -187,7 +186,7 @@ export const getInfoWithExtension = (
     });
 
   if (extension === SHORTCUT_EXTENSION) {
-    fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+    fs.readFile(path, (error, contents = Buffer.from("")) => {
       subIcons.push(SHORTCUT_ICON);
 
       if (error) {
@@ -229,7 +228,7 @@ export const getInfoWithExtension = (
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
     getInfoByFileExtension("/System/Icons/photo.png", () =>
-      fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
           getInfoByFileExtension(bufferToUrl(contents));
         }
@@ -238,7 +237,7 @@ export const getInfoWithExtension = (
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
     subIcons.push(processDirectory["VideoPlayer"].icon);
     getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () =>
-      fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+      fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error) {
           const video = document.createElement("video");
 
@@ -270,7 +269,7 @@ export const getInfoWithExtension = (
     getInfoByFileExtension(
       `/System/Icons/${extensions[".mp3"].icon as string}.png`,
       () =>
-        fs.readFile(path, (error, contents = EMPTY_BUFFER) => {
+        fs.readFile(path, (error, contents = Buffer.from("")) => {
           if (!error) {
             import("music-metadata-browser").then(
               ({ parseBuffer, selectCover }) =>

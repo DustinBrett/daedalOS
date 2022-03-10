@@ -10,7 +10,6 @@ import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { supportsIndexedDB } from "contexts/fileSystem/functions";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useEffect, useMemo, useState } from "react";
-import { EMPTY_BUFFER } from "utils/constants";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -84,7 +83,7 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       readFile: (path) =>
         new Promise((resolve, reject) => {
-          fs?.readFile(path, (error, data = EMPTY_BUFFER) => {
+          fs?.readFile(path, (error, data = Buffer.from("")) => {
             if (!error) return resolve(data);
 
             if (error.code === "EISDIR" && rootFs?.mntMap[path]?.data) {
