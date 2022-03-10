@@ -1,10 +1,10 @@
-import { DEFAULT_LOCALE } from "utils/constants";
-
 export type LocaleTimeDate = {
   date: string;
   dateTime: string;
   time: string;
 };
+
+const DEFAULT_LOCALE = "en";
 
 const dateFormat: Intl.DateTimeFormatOptions = {
   day: "numeric",

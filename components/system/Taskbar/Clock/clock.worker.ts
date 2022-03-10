@@ -1,5 +1,6 @@
 import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+
+const MILLISECONDS_IN_SECOND = 1000;
 
 const sendTick = (): void => postMessage(formatLocaleDateTime(new Date()));
 
