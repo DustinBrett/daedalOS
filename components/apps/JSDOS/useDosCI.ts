@@ -77,9 +77,7 @@ const useDosCI = (
     const zipBuffer =
       extension !== ".exe"
         ? urlBuffer
-        : Buffer.from(
-            await zipAsync({ [basename(url)]: urlBuffer }, { level: 0 })
-          );
+        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
     const bundleURL = bufferToUrl(
       extension === ".jsdos"
         ? zipBuffer

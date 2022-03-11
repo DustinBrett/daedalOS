@@ -1,21 +1,44 @@
-import type { AsyncZipOptions, AsyncZippable, Unzipped } from "fflate";
-import { join } from "path";
+import type {
+  AsyncZipOptions,
+  AsyncZippable,
+  AsyncZippableFile,
+  Unzipped,
+} from "fflate";
+
+export const BASE_ZIP_CONFIG: AsyncZipOptions = {
+  consume: true,
+  level: 0,
+  mem: 8,
+};
 
 const unRarLib = "/System/Unrar.js/unrar.wasm";
 
-const addFileToZippable = (path: string, file: Buffer): AsyncZippable =>
+export const createZippable = (path: string, file: Buffer): AsyncZippable =>
   path
     .split("/")
-    .reduce<AsyncZippable>((zippableData, pathPart, index, { length }) => {
-      const endOfPath = index === length - 1;
-      const walkedPath = Object.keys(zippableData)[index - 1] || "";
-      const currentPath = join(walkedPath, pathPart, endOfPath ? "" : "/");
+    .reduceRight<AsyncZippable>((value, key) => ({ [key]: value }), [
+      file,
+      BASE_ZIP_CONFIG,
+    ] as AsyncZippableFile as AsyncZippable);
 
-      return {
-        ...zippableData,
-        [currentPath]: endOfPath ? [file, { level: 0 }] : new Uint8Array(),
-      };
-    }, {});
+export const addEntryToZippable = (
+  oldZippable: AsyncZippable,
+  newZippable: AsyncZippable
+): AsyncZippable => {
+  const [[key, value]] = Object.entries(newZippable);
+
+  if (!(key in oldZippable)) {
+    return { ...oldZippable, [key]: value };
+  }
+
+  return {
+    ...oldZippable,
+    [key]: addEntryToZippable(
+      oldZippable[key] as AsyncZippable,
+      newZippable[key] as AsyncZippable
+    ),
+  };
+};
 
 export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
   new Promise((resolve, reject) => {
@@ -26,7 +49,7 @@ export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
 
 export const zipAsync = (
   data: AsyncZippable,
-  opts: AsyncZipOptions = {}
+  opts: AsyncZipOptions = BASE_ZIP_CONFIG
 ): Promise<Uint8Array> =>
   new Promise((resolve, reject) => {
     import("fflate").then(({ zip }) =>
@@ -44,11 +67,10 @@ export const addFileToZip = async (
 ): Promise<Buffer> =>
   Buffer.from(
     await zipAsync(
-      {
-        ...(buffer.length > 0 && (await unzipAsync(buffer))),
-        ...addFileToZippable(zipFilePath, await readFile(filePath)),
-      },
-      { level: 0 }
+      addEntryToZippable(
+        (buffer.length > 0 && (await unzipAsync(buffer))) || {},
+        createZippable(zipFilePath, await readFile(filePath))
+      )
     )
   );
 
