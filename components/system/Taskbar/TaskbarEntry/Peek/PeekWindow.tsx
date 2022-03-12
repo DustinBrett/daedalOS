@@ -8,7 +8,7 @@ import { useSession } from "contexts/session";
 import { useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
-import { viewWidth } from "utils/functions";
+import { label, viewWidth } from "utils/functions";
 
 type PeekWindowProps = {
   id: string;
@@ -54,7 +54,7 @@ const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
       {...FOCUSABLE_ELEMENT}
     >
       <img alt={title} src={image} />
-      <Button onClick={onClose} title="Close">
+      <Button onClick={onClose} {...label("Close")}>
         <CloseIcon />
       </Button>
     </StyledPeekWindow>

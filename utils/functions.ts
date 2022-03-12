@@ -1,6 +1,7 @@
 import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
+import type { HTMLAttributes } from "react";
 import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
@@ -196,3 +197,8 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .filter(([, isActive]) => isActive)
     .map(([className]) => className)
     .join(" ");
+
+export const label = (value: string): HTMLAttributes<HTMLElement> => ({
+  "aria-label": value,
+  title: value,
+});

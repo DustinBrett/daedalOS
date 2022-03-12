@@ -14,6 +14,7 @@ import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
 import { useCallback } from "react";
 import Button from "styles/common/Button";
+import { label } from "utils/functions";
 
 type NavigationProps = {
   hideSearch: boolean;
@@ -47,40 +48,40 @@ const Navigation = ({ hideSearch, id }: NavigationProps): JSX.Element => {
       <Button
         disabled={!canGoBack}
         onClick={() => moveHistory(-1)}
-        title={
+        {...label(
           canGoBack
             ? `Back to ${basename(history[position - 1]) || ROOT_NAME}`
             : "Back"
-        }
+        )}
       >
         <Back />
       </Button>
       <Button
         disabled={!canGoForward}
         onClick={() => moveHistory(+1)}
-        title={
+        {...label(
           canGoForward
             ? `Forward to ${basename(history[position + 1]) || ROOT_NAME}`
             : "Forward"
-        }
+        )}
       >
         <Forward />
       </Button>
       <Button
         disabled={history.length === 1}
         onClick={contextMenu?.(getItems).onContextMenuCapture}
-        title="Recent locations"
+        {...label("Recent locations")}
       >
         <Down />
       </Button>
       <Button
         disabled={url === "/"}
         onClick={() => changeUrl(id, dirname(url))}
-        title={
+        {...label(
           url === "/"
             ? "Up one level"
             : `Up to "${upTo === "" ? ROOT_NAME : upTo}"`
-        }
+        )}
       >
         <Up />
       </Button>

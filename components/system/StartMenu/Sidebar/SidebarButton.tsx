@@ -27,6 +27,7 @@ const SidebarButtonComponent = ({
     <StyledSidebarButton
       ref={buttonRef}
       $active={active}
+      aria-label={name}
       onClick={action}
       title={tooltip}
       {...spotlightEffect(buttonRef.current, true)}

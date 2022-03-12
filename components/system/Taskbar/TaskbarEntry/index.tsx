@@ -11,6 +11,7 @@ import { useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { PROCESS_DELIMITER } from "utils/constants";
+import { label } from "utils/functions";
 
 const PeekWindow = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry/Peek/PeekWindow")
@@ -57,14 +58,13 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}
-      title={taskbarTitle}
       {...useTaskbarTransition()}
       {...useTitlebarContextMenu(id, true)}
     >
       <AnimatePresence>
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
-      <Button ref={linkTaskbarEntry} onClick={onClick}>
+      <Button ref={linkTaskbarEntry} onClick={onClick} {...label(taskbarTitle)}>
         <figure>
           <Icon $imgSize={16} alt={taskbarTitle} src={icon} />
           <figcaption>{taskbarTitle}</figcaption>

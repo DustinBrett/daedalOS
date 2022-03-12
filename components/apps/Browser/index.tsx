@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import { getUrlOrSearch } from "utils/functions";
+import { getUrlOrSearch, label } from "utils/functions";
 
 const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
@@ -116,21 +116,21 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
           <Button
             disabled={!canGoBack}
             onClick={() => changeHistory(-1)}
-            title="Click to go back"
+            {...label("Click to go back")}
           >
             <Arrow direction="left" />
           </Button>
           <Button
             disabled={!canGoForward}
             onClick={() => changeHistory(+1)}
-            title="Click to go forward"
+            {...label("Click to go forward")}
           >
             <Arrow direction="right" />
           </Button>
           <Button
             disabled={loading}
             onClick={() => setUrl(history[position])}
-            title="Reload this page"
+            {...label("Reload this page")}
           >
             {loading ? <Stop /> : <Refresh />}
           </Button>
@@ -160,7 +160,7 @@ const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
 
               changeUrl(id, bookmarkUrl);
             }}
-            title={`${name}\n${bookmarkUrl}`}
+            {...label(`${name}\n${bookmarkUrl}`)}
           >
             <Icon $imgSize={16} alt={name} src={icon} />
           </Button>

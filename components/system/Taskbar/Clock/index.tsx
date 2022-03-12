@@ -28,7 +28,12 @@ const Clock = (): JSX.Element => {
   if (!time) return <></>;
 
   return (
-    <StyledClock dateTime={dateTime} title={date} suppressHydrationWarning>
+    <StyledClock
+      aria-label="Clock"
+      dateTime={dateTime}
+      title={date}
+      suppressHydrationWarning
+    >
       {time}
     </StyledClock>
   );

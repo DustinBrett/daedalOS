@@ -6,6 +6,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import { label } from "utils/functions";
 
 type AddressBarProps = {
   id: string;
@@ -59,7 +60,11 @@ const AddressBar = ({ id }: AddressBarProps): JSX.Element => {
         type="text"
         value={addressBar}
       />
-      <Button id="refresh" onClick={() => updateFolder(url)} title="Refresh">
+      <Button
+        id="refresh"
+        onClick={() => updateFolder(url)}
+        {...label("Refresh")}
+      >
         <Refresh />
       </Button>
     </StyledAddressBar>

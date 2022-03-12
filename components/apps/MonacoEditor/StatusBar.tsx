@@ -9,6 +9,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useState } from "react";
 import Button from "styles/common/Button";
+import { label } from "utils/functions";
 
 const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
   const {
@@ -69,7 +70,7 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
           </ol>
           <ol>
             {url && isPrettyLanguage(language) && (
-              <li title={`Pretty print ${basename(url)}`}>
+              <li>
                 <Button
                   className="pretty"
                   onClick={async () =>
@@ -77,18 +78,20 @@ const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
                       await prettyPrint(language, editor.getValue())
                     )
                   }
+                  {...label(`Pretty print ${basename(url)}`)}
                 >
                   {"{ }"}
                 </Button>
               </li>
             )}
             {position && (
-              <li title="Go to Line/Column">
+              <li>
                 <Button
                   onClick={() => {
                     editor?.focus();
                     editor?.getAction("editor.action.gotoLine").run();
                   }}
+                  {...label("Go to Line/Column")}
                 >
                   {position}
                 </Button>

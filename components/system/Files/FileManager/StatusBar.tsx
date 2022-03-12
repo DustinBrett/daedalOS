@@ -3,7 +3,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getFormattedSize } from "utils/functions";
+import { getFormattedSize, label } from "utils/functions";
 
 type StatusBarProps = {
   count: number;
@@ -66,11 +66,11 @@ const StatusBar = ({
 
   return (
     <StyledStatusBar ref={statusBarRef}>
-      <div title="Total item count">
+      <div {...label("Total item count")}>
         {count} item{count !== 1 ? "s" : ""}
       </div>
       {showSelected && selected.length > 0 && (
-        <div className="selected" title="Selected item count and size">
+        <div className="selected" {...label("Selected item count and size")}>
           {selected.length} item{selected.length !== 1 ? "s" : ""} selected
           {selectedSize > -1
             ? `${"\u00A0\u00A0"}${getFormattedSize(selectedSize)}`

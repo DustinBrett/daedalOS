@@ -16,7 +16,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import { bufferToUrl, cleanUpBufferUrl, label } from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -72,14 +72,14 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         <Button
           disabled={!url || scale === maxScale || brokenImage}
           onClick={zoomIn}
-          title="Zoom in"
+          {...label("Zoom in")}
         >
           <ZoomIn />
         </Button>
         <Button
           disabled={!url || scale === minScale || brokenImage}
           onClick={zoomOut}
-          title="Zoom out"
+          {...label("Zoom out")}
         >
           <ZoomOut />
         </Button>
@@ -112,7 +112,11 @@ const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
         )}
       </figure>
       <nav className="bottom">
-        <Button disabled={!url} onClick={toggleFullscreen} title="Full-screen">
+        <Button
+          disabled={!url}
+          onClick={toggleFullscreen}
+          {...label("Full-screen")}
+        >
           {fullscreen ? <ExitFullscreen /> : <Fullscreen />}
         </Button>
       </nav>

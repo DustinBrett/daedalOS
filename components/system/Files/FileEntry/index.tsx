@@ -336,6 +336,7 @@ const FileEntry = ({
     <>
       <Button
         ref={buttonRef}
+        aria-label={name}
         onMouseOver={() => {
           if (!tooltip) setTooltip(createTooltip());
         }}

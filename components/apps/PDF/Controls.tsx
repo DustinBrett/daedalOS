@@ -2,6 +2,7 @@ import StyledControls from "components/apps/PDF/StyledControls";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
+import { label } from "utils/functions";
 
 const scales = [
   0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4,
@@ -26,7 +27,7 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
-            title="Zoom out"
+            {...label("Zoom out")}
           >
             -
           </Button>
@@ -37,7 +38,7 @@ const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
-            title="Zoom in"
+            {...label("Zoom in")}
           >
             +
           </Button>

@@ -13,6 +13,7 @@ import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { label } from "utils/functions";
 
 type TitlebarProps = {
   id: string;
@@ -51,18 +52,22 @@ const Titlebar = ({ id }: TitlebarProps): JSX.Element => {
         </figure>
       </Button>
       <nav className="cancel">
-        <Button className="minimize" onClick={onMinimize} title="Minimize">
+        <Button
+          className="minimize"
+          onClick={onMinimize}
+          {...label("Minimize")}
+        >
           <MinimizeIcon />
         </Button>
         <Button
           className="maximize"
           disabled={!allowResizing}
           onClick={onMaximize}
-          title="Maximize"
+          {...label("Maximize")}
         >
           {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
         </Button>
-        <Button className="close" onClick={onClose} title="Close">
+        <Button className="close" onClick={onClose} {...label("Close")}>
           <CloseIcon />
         </Button>
       </nav>
