@@ -24,8 +24,14 @@ export const search = async (
 
     baseIndex = window.lunr.Index.load(indexFile);
   }
+  const searchIndex = index ?? baseIndex;
+  let results = searchIndex.search?.(searchTerm);
 
-  return (index ?? baseIndex).search?.(`${searchTerm}*`) ?? [];
+  if (results.length === 0) {
+    results = searchIndex.search?.(`${searchTerm}*`);
+  }
+
+  return results ?? [];
 };
 
 interface IWritableFs extends Omit<IndexedDBFileSystem, "_cache"> {
