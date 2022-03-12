@@ -17,7 +17,7 @@ const StyledSearch = styled.div`
     position: absolute;
     stroke: rgb(113, 113, 113);
     stroke-width: 1;
-    top: 7px;
+    top: 8px;
   }
 
   input {
