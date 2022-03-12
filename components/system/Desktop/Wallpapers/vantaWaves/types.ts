@@ -34,8 +34,12 @@ export type VantaWavesSettings = RenderProps &
     THREE?: unknown;
   };
 
-type VantaWaves = {
+export type VantaWaves = {
   destroy: () => void;
+  renderer: {
+    setSize: (width: number, height: number) => void;
+  };
+  resize: () => void;
 };
 
 export type VantaObject = {

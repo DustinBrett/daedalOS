@@ -7,6 +7,7 @@ import {
 import type {
   OffscreenRenderProps,
   VantaObject,
+  VantaWaves,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 
 declare global {
@@ -15,21 +16,29 @@ declare global {
   function importScripts(...urls: string[]): void;
 }
 
+let waveEffect: VantaWaves;
+
 globalThis.addEventListener(
   "message",
-  ({ data }: { data: OffscreenRenderProps | string }) => {
+  ({ data }: { data: DOMRect | OffscreenRenderProps | string }) => {
     if (!isWebGLAvailable) return;
 
     if (data === "init") {
       importScripts(...libs);
+    } else if (data instanceof DOMRect) {
+      const { width, height } = data;
+
+      waveEffect?.renderer.setSize(width, height);
+      waveEffect?.resize();
     } else {
       const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
-      const { VANTA: { current: currentEffect, WAVES } = {} } = globalThis;
+      const { VANTA: { current: currentEffect = waveEffect, WAVES } = {} } =
+        globalThis;
 
       if (!canvas || !WAVES) return;
       if (currentEffect) currentEffect.destroy();
 
-      WAVES({
+      waveEffect = WAVES({
         ...config,
         ...disableControls,
         canvas,

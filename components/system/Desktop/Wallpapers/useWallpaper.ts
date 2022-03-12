@@ -39,6 +39,13 @@ const useWallpaper = (
     []
   );
   const vantaWorker = useWorker<void>(vantaWorkerInit);
+  const resizeListener = useCallback(
+    () =>
+      vantaWorker.current?.postMessage(
+        desktopRef.current?.getBoundingClientRect()
+      ),
+    [desktopRef, vantaWorker]
+  );
   const loadThemeWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
@@ -47,11 +54,14 @@ const useWallpaper = (
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         vantaWorker.current.postMessage({ canvas: offscreen }, [offscreen]);
+
+        window.removeEventListener("resize", resizeListener);
+        window.addEventListener("resize", resizeListener, { passive: true });
       } else {
         wallpaper?.(desktopRef.current);
       }
     }
-  }, [desktopRef, vantaWorker, wallpaper]);
+  }, [desktopRef, resizeListener, vantaWorker, wallpaper]);
   const loadFileWallpaper = useCallback(async () => {
     if (await exists(wallpaperImage)) {
       const [, currentWallpaperUrl] =
