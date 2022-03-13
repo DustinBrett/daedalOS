@@ -48,9 +48,9 @@ readdirSync(OUT_PATH).forEach(async (entry) => {
     const html = await readFileSync(filPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);
 
-    CODE_REPLACE_FUNCTIONS.forEach(
-      (codeFunction) => (minifiedHtml = codeFunction(minifiedHtml))
-    );
+    CODE_REPLACE_FUNCTIONS.forEach((codeFunction) => {
+      minifiedHtml = codeFunction(minifiedHtml);
+    });
 
     await writeFileSync(filPath, minifiedHtml);
   }
