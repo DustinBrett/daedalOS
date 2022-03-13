@@ -21,7 +21,6 @@ import {
   MOUNTABLE_EXTENSIONS,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { transcode } from "utils/ffmpeg";
 import {
   AUDIO_DECODE_FORMATS,
   AUDIO_ENCODE_FORMATS,
@@ -29,7 +28,6 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { convert } from "utils/imagemagick";
 import { IMAGE_ENCODE_FORMATS } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 
@@ -155,7 +153,6 @@ const useFileContextMenu = (
             menu: ENCODE_FORMATS.filter(
               (format) => format !== pathExtension
             ).map((format) => {
-              const transcodeFunction = isAudioVideo ? transcode : convert;
               const extension = format.replace(".", "");
 
               return {
@@ -169,7 +166,9 @@ const useFileContextMenu = (
                       await readFile(absoluteEntry),
                     ])
                   );
-
+                  const transcodeFunction = isAudioVideo
+                    ? (await import("utils/ffmpeg")).transcode
+                    : (await import("utils/imagemagick")).convert;
                   const transcodedFiles = await transcodeFunction(
                     transcodeFiles,
                     extension
