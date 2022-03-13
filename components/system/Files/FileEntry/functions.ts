@@ -1,6 +1,5 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import { monacoExtensions } from "components/apps/MonacoEditor/config";
-import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
+import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -26,7 +25,7 @@ import {
   UNKNOWN_ICON,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { bufferToUrl } from "utils/functions";
+import { bufferToUrl, isYouTubeUrl } from "utils/functions";
 
 type InternetShortcut = {
   InternetShortcut: {

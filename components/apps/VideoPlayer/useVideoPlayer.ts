@@ -17,13 +17,11 @@ import { useCallback, useEffect, useState } from "react";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  isYouTubeUrl,
   loadFiles,
   viewHeight,
   viewWidth,
 } from "utils/functions";
-
-export const isYouTubeUrl = (url: string): boolean =>
-  url.includes("youtube.com/") || url.includes("youtu.be/");
 
 const useVideoPlayer = (
   id: string,

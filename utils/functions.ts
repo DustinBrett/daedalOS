@@ -1,8 +1,9 @@
-import { GOOGLE_SEARCH_QUERY } from "components/apps/Browser/config";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
 import type { HTMLAttributes } from "react";
 import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
+
+export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
 export const bufferToBlob = (buffer: Buffer): Blob =>
   new Blob([new Uint8Array(buffer)]);
@@ -202,3 +203,6 @@ export const label = (value: string): HTMLAttributes<HTMLElement> => ({
   "aria-label": value,
   title: value,
 });
+
+export const isYouTubeUrl = (url: string): boolean =>
+  url.includes("youtube.com/") || url.includes("youtu.be/");

@@ -1,4 +1,3 @@
-import { isYouTubeUrl } from "components/apps/VideoPlayer/useVideoPlayer";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -39,7 +38,7 @@ import {
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { bufferToUrl, getFormattedSize } from "utils/functions";
+import { bufferToUrl, getFormattedSize, isYouTubeUrl } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 const RenameBox = dynamic(

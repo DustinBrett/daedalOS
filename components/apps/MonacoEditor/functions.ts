@@ -1,7 +1,5 @@
-import {
-  customExtensionLanguages,
-  monacoExtensions,
-} from "components/apps/MonacoEditor/config";
+import { customExtensionLanguages } from "components/apps/MonacoEditor/config";
+import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 
 export const detectLanguage = (ext: string): string => {
   const extension = customExtensionLanguages[ext] || ext;

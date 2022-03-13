@@ -1,9 +1,4 @@
-import {
-  bookmarks,
-  config,
-  GOOGLE_SEARCH_QUERY,
-  HOME_PAGE,
-} from "components/apps/Browser/config";
+import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -17,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import { getUrlOrSearch, label } from "utils/functions";
+import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 
 const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
   const {

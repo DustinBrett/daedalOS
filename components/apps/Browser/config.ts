@@ -49,5 +49,3 @@ export const config = {
 };
 
 export const HOME_PAGE = "https://www.google.com/webhp?igu=1";
-
-export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
