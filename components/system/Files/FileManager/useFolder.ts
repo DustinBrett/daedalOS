@@ -24,6 +24,7 @@ import ini from "ini";
 import { basename, dirname, extname, join, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
+  BASE_ZIP_CONFIG,
   FOLDER_ICON,
   INVALID_FILE_CHARACTERS,
   MOUNTABLE_EXTENSIONS,
@@ -31,13 +32,6 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
-import {
-  addEntryToZippable,
-  BASE_ZIP_CONFIG,
-  createZippable,
-  unrar,
-  unzip,
-} from "utils/zipFunctions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -325,6 +319,9 @@ const useFolder = (
       const filePaths = await Promise.all(
         allPaths.map((path) => getFile(path))
       );
+      const { addEntryToZippable, createZippable } = await import(
+        "utils/zipFunctions"
+      );
 
       return filePaths
         .filter(Boolean)
@@ -380,6 +377,7 @@ const useFolder = (
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
       const data = await readFile(path);
+      const { unrar, unzip } = await import("utils/zipFunctions");
       const unzippedFiles =
         extname(path).toLowerCase() === ".rar"
           ? await unrar(data)

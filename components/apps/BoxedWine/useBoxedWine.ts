@@ -4,7 +4,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { loadFiles } from "utils/functions";
-import { unzipAsync, zipAsync } from "utils/zipFunctions";
 
 declare global {
   interface Window {
@@ -17,6 +16,7 @@ declare global {
 }
 
 const getExeName = async (zipData: Buffer): Promise<string | undefined> => {
+  const { unzipAsync } = await import("utils/zipFunctions");
   const fileList = Object.entries(await unzipAsync(zipData));
   const [[fileName] = []] = fileList
     .filter(([name]) => name.toLowerCase().endsWith(".exe"))
@@ -42,6 +42,7 @@ const useBoxedWine = (
       let appPayload = await readFile(url);
       const extension = extname(url).toLowerCase();
       const isExecutable = extension === ".exe";
+      const { zipAsync } = await import("utils/zipFunctions");
       appName = isExecutable
         ? basename(url, extension)
         : await getExeName(appPayload);

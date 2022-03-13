@@ -1,4 +1,5 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import type { AsyncZipOptions } from "fflate";
 
 export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
   alpha: false,
@@ -128,4 +129,10 @@ export const PACKAGE_DATA = {
   description: "Desktop environment in the browser",
   license: "MIT",
   version: "2.0.0",
+};
+
+export const BASE_ZIP_CONFIG: AsyncZipOptions = {
+  consume: true,
+  level: 0,
+  mem: 8,
 };

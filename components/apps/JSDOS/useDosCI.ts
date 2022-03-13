@@ -13,13 +13,14 @@ import { useCallback, useEffect, useState } from "react";
 import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
-import { addFileToZip, isFileInZip, zipAsync } from "utils/zipFunctions";
 
 const addJsDosConfig = async (
   buffer: Buffer,
   readFile: (path: string) => Promise<Buffer>
-): Promise<Buffer> =>
-  Object.entries(zipConfigFiles).reduce(
+): Promise<Buffer> => {
+  const { addFileToZip, isFileInZip } = await import("utils/zipFunctions");
+
+  return Object.entries(zipConfigFiles).reduce(
     async (newBuffer, [zipPath, fsPath]) =>
       (await newBuffer).length > 0 &&
       (await isFileInZip(await newBuffer, zipPath))
@@ -27,6 +28,7 @@ const addJsDosConfig = async (
         : addFileToZip(await newBuffer, fsPath, zipPath, readFile),
     Promise.resolve(buffer)
   );
+};
 
 const useDosCI = (
   id: string,
@@ -74,6 +76,7 @@ const useDosCI = (
 
     const urlBuffer = await readFile(url);
     const extension = extname(url).toLowerCase();
+    const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =
       extension !== ".exe"
         ? urlBuffer

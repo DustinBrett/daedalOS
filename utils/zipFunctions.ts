@@ -4,12 +4,7 @@ import type {
   AsyncZippableFile,
   Unzipped,
 } from "fflate";
-
-export const BASE_ZIP_CONFIG: AsyncZipOptions = {
-  consume: true,
-  level: 0,
-  mem: 8,
-};
+import { BASE_ZIP_CONFIG } from "utils/constants";
 
 const unRarLib = "/System/Unrar.js/unrar.wasm";
 
