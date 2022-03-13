@@ -1,5 +1,5 @@
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import styled from "styled-components";
 
 type StyledWindowProps = {

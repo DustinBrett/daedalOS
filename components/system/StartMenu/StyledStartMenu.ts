@@ -1,5 +1,5 @@
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
