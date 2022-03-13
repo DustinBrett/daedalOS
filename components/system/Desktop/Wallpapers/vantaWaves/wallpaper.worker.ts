@@ -24,7 +24,7 @@ globalThis.addEventListener(
     if (!isWebGLAvailable) return;
 
     if (data === "init") {
-      importScripts(...libs);
+      globalThis.importScripts(...libs);
     } else if (data instanceof DOMRect) {
       const { width, height } = data;
 
