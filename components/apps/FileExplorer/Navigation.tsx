@@ -1,5 +1,4 @@
 import AddressBar from "components/apps/FileExplorer/AddressBar";
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import {
   Back,
   Down,
@@ -14,6 +13,7 @@ import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
 import { useCallback } from "react";
 import Button from "styles/common/Button";
+import { ROOT_NAME } from "utils/constants";
 import { label } from "utils/functions";
 
 type NavigationProps = {

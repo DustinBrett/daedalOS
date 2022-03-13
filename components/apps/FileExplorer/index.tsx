@@ -1,4 +1,3 @@
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import Navigation from "components/apps/FileExplorer/Navigation";
 import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -8,7 +7,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useState } from "react";
-import { MOUNTED_FOLDER_ICON } from "utils/constants";
+import { MOUNTED_FOLDER_ICON, ROOT_NAME } from "utils/constants";
 
 const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
   const {

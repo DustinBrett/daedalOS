@@ -103,6 +103,10 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
+export const ROOT_NAME = "My PC";
+
+export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
+
 export const ICON_PATH = "/System/Icons";
 
 export const USER_ICON_PATH = "/Users/Public/Icons";

@@ -1,11 +1,10 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { FileReaders } from "hooks/useDialog";
 import { basename, dirname, extname, join } from "path";
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 export type FileStat = Stats & {
@@ -26,8 +25,6 @@ const sortBySize = (
 
 const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
-
-const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
 
 const sortSystemShortcuts = (
   [aName, { systemShortcut: aSystem = false }]: FileStats,

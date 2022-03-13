@@ -1,4 +1,3 @@
-import { ROOT_NAME } from "components/apps/FileExplorer/config";
 import { Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import { useFileSystem } from "contexts/fileSystem";
@@ -6,6 +5,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import { ROOT_NAME } from "utils/constants";
 import { label } from "utils/functions";
 
 type AddressBarProps = {
