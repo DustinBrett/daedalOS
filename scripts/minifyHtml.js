@@ -27,11 +27,19 @@ const HTML_MINIFIER_CONFIG = {
   useShortDoctype: true,
 };
 
-const CODE_REMOVE_FUNCTIONS = [
+const commit = process.env.npm_package_gitHead.slice(0, 8);
+
+const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),
+  (html) => html.replace(/><\/path>/, "/>"),
   (html) => html.replace(/<script (.*) nomodule=""><\/script>/, ""),
   (html) =>
     html.replace(/<style data-styled="" data-styled-version=(.*)>/, "<style>"),
+  (html) =>
+    html.replace(
+      /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
+      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
+    ),
 ];
 
 readdirSync(OUT_PATH).forEach(async (entry) => {
@@ -40,7 +48,7 @@ readdirSync(OUT_PATH).forEach(async (entry) => {
     const html = await readFileSync(filPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);
 
-    CODE_REMOVE_FUNCTIONS.forEach(
+    CODE_REPLACE_FUNCTIONS.forEach(
       (codeFunction) => (minifiedHtml = codeFunction(minifiedHtml))
     );
 
