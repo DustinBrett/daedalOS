@@ -2,8 +2,7 @@ import StyledFileManager from "components/system/Files/Views/List/StyledFileMana
 import { m as motion } from "framer-motion";
 import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
-
-export const SCROLLBAR_WIDTH = 13;
+import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledStartMenuProps = {
   $showScrolling: boolean;
@@ -15,7 +14,7 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 
   ::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
-      $showScrolling ? `${SCROLLBAR_WIDTH}px` : "3px"};
+      $showScrolling ? `${THIN_SCROLLBAR_WIDTH}px` : "3px"};
   }
 
   ::-webkit-scrollbar-corner,
@@ -54,7 +53,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   }
 
   ${StyledFileManager} {
-    ${ScrollBars(SCROLLBAR_WIDTH, -2, -1)};
+    ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
 
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
