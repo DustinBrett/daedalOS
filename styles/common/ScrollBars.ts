@@ -1,8 +1,6 @@
 import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
 
-export type StyledCSS = ReturnType<typeof css>;
-
 const ScrollBars = (
   size: number,
   verticalX?: number,

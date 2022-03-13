@@ -4,7 +4,6 @@ import StyledListFileEntry from "components/system/Files/Views/List/StyledFileEn
 import StyledListFileManager from "components/system/Files/Views/List/StyledFileManager";
 import type { DefaultTheme, StyledComponent } from "styled-components";
 import type { IconProps } from "styles/common/Icon";
-import type { StyledCSS } from "styles/common/ScrollBars";
 
 export type StyledFileEntryProps = {
   $visible?: boolean;
@@ -12,7 +11,6 @@ export type StyledFileEntryProps = {
 
 export type StyledFileManagerProps = {
   $scrollable: boolean;
-  $scrollBars?: StyledCSS;
   $selecting?: boolean;
 };
 

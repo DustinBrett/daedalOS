@@ -1,9 +1,12 @@
 import type { StyledFileManagerProps } from "components/system/Files/Views";
 import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
-  ${({ $scrollBars }) => $scrollBars};
+  ${({ $scrollable }) =>
+    $scrollable ? ScrollBars(DEFAULT_SCROLLBAR_WIDTH) : undefined};
 
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
   contain: strict;
