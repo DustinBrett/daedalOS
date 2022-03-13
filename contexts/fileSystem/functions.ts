@@ -2,23 +2,18 @@ import { get } from "idb-keyval";
 import { join } from "path";
 import { FS_HANDLES } from "utils/constants";
 
-export const supportsIndexedDB = (): Promise<boolean> =>
-  new Promise((resolve) => {
-    const db = window.indexedDB.open("");
-
-    db.addEventListener("error", () => resolve(false));
-    db.addEventListener("success", () => resolve(true));
-  });
+export const supportsIndexedDB = (): boolean =>
+  "indexedDB" in window && "databases" in window.indexedDB;
 
 export const getFileSystemHandles = async (): Promise<
   Record<string, FileSystemDirectoryHandle>
-> => ((await supportsIndexedDB()) ? (await get(FS_HANDLES)) || {} : {});
+> => (supportsIndexedDB() && (await get(FS_HANDLES))) || {};
 
 export const addFileSystemHandle = async (
   directory: string,
   handle: FileSystemDirectoryHandle
 ): Promise<void> => {
-  if (!(await supportsIndexedDB())) return;
+  if (!supportsIndexedDB()) return;
 
   const { set } = await import("idb-keyval");
 
@@ -31,7 +26,7 @@ export const addFileSystemHandle = async (
 export const removeFileSystemHandle = async (
   directory: string
 ): Promise<void> => {
-  if (!(await supportsIndexedDB())) return;
+  if (!supportsIndexedDB()) return;
 
   const { [directory]: _, ...handles } = await getFileSystemHandles();
   const { set } = await import("idb-keyval");

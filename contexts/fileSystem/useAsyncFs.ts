@@ -162,9 +162,7 @@ const useAsyncFs = (): AsyncFSModule => {
           setRootFs(loadedFs.getRootFS() as RootFileSystem);
         });
 
-      supportsIndexedDB().then((writeToIndexedDB) =>
-        setupFs(!writeToIndexedDB)
-      );
+      setupFs(!supportsIndexedDB());
     }
   }, [fs]);
 
