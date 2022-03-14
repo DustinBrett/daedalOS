@@ -4,7 +4,7 @@ import { FS_HANDLES } from "utils/constants";
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
-    const db = window.indexedDB.open("browserfs");
+    const db = window.indexedDB.open("");
 
     db.addEventListener("error", () => resolve(false));
     db.addEventListener("success", () => resolve(true));
