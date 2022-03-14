@@ -1,4 +1,3 @@
-import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 
 const StyledPDF = styled.div`
@@ -8,7 +7,7 @@ const StyledPDF = styled.div`
   text-align: center;
   top: 40px;
 
-  ${StyledWindow} & {
+  && {
     height: ${({ theme }) =>
       `calc(100% - ${theme.sizes.titleBar.height} - 40px) !important`};
   }
