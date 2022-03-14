@@ -1,5 +1,4 @@
 import type { StyledFileManagerProps } from "components/system/Files/Views";
-import StyledWindow from "components/system/Window/StyledWindow";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
@@ -11,7 +10,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   column-gap: ${({ theme }) => theme.sizes.fileManager.columnGap};
   contain: strict;
   display: grid;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
   grid-template-columns: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryWidth})`};
   grid-template-rows: ${({ theme }) =>
@@ -23,13 +22,10 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
   main > & {
+    grid-auto-flow: column;
     height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
     overflow: visible;
     padding-bottom: 21px;
-  }
-
-  ${StyledWindow} & {
-    grid-auto-flow: row;
   }
 `;
 
