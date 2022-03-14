@@ -207,10 +207,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       if (!window.indexedDB.databases) clearFs();
       else {
-        indexedDB.databases().then((databases) => {
+        window.indexedDB.databases().then((databases) => {
           databases
             .filter(({ name }) => name !== "browserfs")
-            .forEach(({ name }) => name && indexedDB.deleteDatabase(name));
+            .forEach(
+              ({ name }) => name && window.indexedDB.deleteDatabase(name)
+            );
           clearFs();
         });
       }

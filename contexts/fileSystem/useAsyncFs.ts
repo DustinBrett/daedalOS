@@ -154,15 +154,15 @@ const useAsyncFs = (): AsyncFSModule => {
 
   useEffect(() => {
     if (!fs) {
-      const setupFs = (writeToMemory = false): void =>
-        configure(FileSystemConfig(writeToMemory), () => {
+      const setupFs = (writeToIndexedDB: boolean): void =>
+        configure(FileSystemConfig(!writeToIndexedDB), () => {
           const loadedFs = BFSRequire("fs");
 
           setFs(loadedFs);
           setRootFs(loadedFs.getRootFS() as RootFileSystem);
         });
 
-      setupFs(!supportsIndexedDB());
+      supportsIndexedDB().then(setupFs);
     }
   }, [fs]);
 
