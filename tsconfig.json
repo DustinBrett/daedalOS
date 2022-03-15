@@ -7,7 +7,7 @@
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "dom.iterable", "esnext", "webworker"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,

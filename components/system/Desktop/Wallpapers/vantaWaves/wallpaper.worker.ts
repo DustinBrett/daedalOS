@@ -13,7 +13,6 @@ import type {
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
   var VANTA: VantaObject;
-  function importScripts(...urls: string[]): void;
 }
 
 let waveEffect: VantaWaves;
