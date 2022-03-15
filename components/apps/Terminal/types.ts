@@ -4,6 +4,11 @@ export type CommandInterpreter = (command?: string) => Promise<string>;
 
 export type FitAddon = ITerminalAddon & { fit: () => void };
 
+export type WebglAddon = ITerminalAddon & {
+  dispose: () => void;
+  onContextLoss: (callback: () => void) => void;
+};
+
 export type LocalEcho = ITerminalAddon & {
   _autocompleteHandlers: { fn: unknown }[];
   addAutocompleteHandler: (
@@ -33,6 +38,9 @@ declare global {
     Terminal?: typeof Terminal;
     FitAddon?: {
       FitAddon: new () => FitAddon;
+    };
+    WebglAddon?: {
+      WebglAddon: new () => WebglAddon;
     };
     LocalEchoController?: new (
       terminal?: Terminal,

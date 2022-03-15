@@ -2,6 +2,7 @@ import {
   config,
   libs,
   PROMPT_CHARACTER,
+  webGlAddon,
 } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -71,9 +72,11 @@ const useTerminal = (
   }, [id, localEcho, setUrl, url]);
 
   useEffect(() => {
-    loadFiles(libs).then(() => {
-      if (window.Terminal) setTerminal(new window.Terminal(config));
-    });
+    loadFiles(window.WebGLRenderingContext ? [...libs, webGlAddon] : libs).then(
+      () => {
+        if (window.Terminal) setTerminal(new window.Terminal(config));
+      }
+    );
   }, []);
 
   useEffect(() => {
@@ -92,6 +95,13 @@ const useTerminal = (
       terminal.loadAddon(newLocalEcho);
       terminal.loadAddon(newFitAddon);
       terminal.open(containerRef.current);
+
+      if (window.WebglAddon) {
+        const newWebglAddon = new window.WebglAddon.WebglAddon();
+
+        newWebglAddon.onContextLoss(newWebglAddon.dispose);
+        terminal.loadAddon(newWebglAddon);
+      }
 
       newFitAddon.fit();
 
