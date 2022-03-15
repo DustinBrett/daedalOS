@@ -22,7 +22,7 @@ export const addFileSystemHandle = async (
 
   const { set } = await import("idb-keyval");
 
-  set(FS_HANDLES, {
+  await set(FS_HANDLES, {
     ...(await getFileSystemHandles()),
     [join(directory, handle.name)]: handle,
   });
@@ -36,7 +36,7 @@ export const removeFileSystemHandle = async (
   const { [directory]: _, ...handles } = await getFileSystemHandles();
   const { set } = await import("idb-keyval");
 
-  set(FS_HANDLES, handles);
+  await set(FS_HANDLES, handles);
 };
 
 export const requestPermission = async (
