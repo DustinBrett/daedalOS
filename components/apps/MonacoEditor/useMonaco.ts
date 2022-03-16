@@ -110,7 +110,18 @@ const useMonaco = (
         editor.dispose();
       }
     };
-  }, [containerRef, editor, id, monaco, setArgument, setLoading]);
+  }, [
+    containerRef,
+    editor,
+    id,
+    monaco,
+    prependFileToTitle,
+    setArgument,
+    setLoading,
+    updateFolder,
+    url,
+    writeFile,
+  ]);
 
   useEffect(() => {
     if (monaco && editor && url) loadFile();
