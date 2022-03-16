@@ -1,3 +1,5 @@
+import { DESKTOP_PATH } from "utils/constants";
+
 export const config = {
   paths: {
     vs: "/Program Files/MonacoEditor/vs",
@@ -11,3 +13,5 @@ export const customExtensionLanguages: Record<string, string> = {
 };
 
 export const URL_DELIMITER = "|";
+
+export const DEFAULT_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
