@@ -10,6 +10,7 @@ const StyledDesktop = styled.main`
   width: 100vw;
 
   > canvas {
+    background-color: inherit;
     height: 100%;
     left: 0;
     object-fit: cover;

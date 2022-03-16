@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 const useWorker = <T>(
   workerInit: () => Worker,
   onMessage?: (message: { data: T }) => void
-): React.MutableRefObject<Worker | null> => {
+): React.MutableRefObject<Worker | undefined> => {
   const [initialized, setInitialized] = useState(false);
-  const worker = useRef<Worker | null>(null);
+  const worker = useRef<Worker>();
 
   useEffect(() => {
-    if (worker.current === null) {
+    if (!worker.current) {
       worker.current = workerInit();
 
       if (onMessage) {
@@ -23,7 +23,10 @@ const useWorker = <T>(
 
   useEffect(
     () => () => {
-      if (initialized) worker.current?.terminate();
+      if (initialized) {
+        worker.current?.terminate();
+        worker.current = undefined;
+      }
     },
     [initialized]
   );
