@@ -1,5 +1,8 @@
-import type { Editor as EditorInstance } from "tinymce";
+import type { Editor, Editor as EditorInstance } from "tinymce";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+
+export const draggableEditor = (activeEditor: Editor): boolean =>
+  activeEditor?.mode.isReadOnly() || !activeEditor?.getContent();
 
 export const setReadOnlyMode = (editor: EditorInstance): void => {
   const toolbars = editor.editorContainer?.querySelector(".tox-editor-header");

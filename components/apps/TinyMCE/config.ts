@@ -1,3 +1,5 @@
+import { DESKTOP_PATH } from "utils/constants";
+
 const plugins = `
   code fullscreen help image link lists media paste
   preview print save searchreplace table wordcount`;
@@ -17,3 +19,5 @@ export const config = {
 };
 
 export const libs = ["/Program Files/TinyMCE/tinymce.min.js"];
+
+export const DEFAULT_SAVE_PATH = `${DESKTOP_PATH}/New Rich Text Document.whtml`;

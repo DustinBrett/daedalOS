@@ -1,5 +1,12 @@
-import { config, libs } from "components/apps/TinyMCE/config";
-import { setReadOnlyMode } from "components/apps/TinyMCE/functions";
+import {
+  config,
+  DEFAULT_SAVE_PATH,
+  libs,
+} from "components/apps/TinyMCE/config";
+import {
+  draggableEditor,
+  setReadOnlyMode,
+} from "components/apps/TinyMCE/functions";
 import {
   getModifiedTime,
   getProcessByFileExtension,
@@ -9,7 +16,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, extname, relative } from "path";
+import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
 import { loadFiles } from "utils/functions";
@@ -23,28 +30,23 @@ const useTinyMCE = (
   const { open } = useProcesses();
   const [editor, setEditor] = useState<Editor>();
   const { prependFileToTitle } = useTitle(id);
-  const { readFile, stat, writeFile } = useFileSystem();
+  const { readFile, stat, updateFolder, writeFile } = useFileSystem();
   const { onDragOver, onDrop } = useFileDrop({ id });
   const { setForegroundId } = useSession();
-  const onSave = useCallback(
-    async (activeEditor: Editor) => {
-      const saveSpec: NotificationSpec = {
-        closeButton: true,
-        text: "Successfully saved.",
-        timeout: 5000,
-        type: "success",
-      };
+  const updateTitle = useCallback(
+    async (currentUrl: string) => {
+      const modifiedDate = new Date(
+        getModifiedTime(currentUrl, await stat(currentUrl))
+      );
+      const date = new Intl.DateTimeFormat("en-US", {
+        dateStyle: "medium",
+      }).format(modifiedDate);
 
-      try {
-        await writeFile(url, activeEditor.getContent(), true);
-      } catch {
-        saveSpec.text = "Error occurred while saving.";
-        saveSpec.type = "error";
-      }
-
-      activeEditor.notificationManager.open(saveSpec);
+      prependFileToTitle(
+        `${basename(currentUrl, extname(currentUrl))} (${date})`
+      );
     },
-    [url, writeFile]
+    [prependFileToTitle, stat]
   );
   const linksToProcesses = useCallback(() => {
     const iframe = containerRef.current?.querySelector("iframe");
@@ -72,29 +74,40 @@ const useTinyMCE = (
   const loadFile = useCallback(async () => {
     if (editor) {
       const fileContents = await readFile(url);
-      const modifiedDate = new Date(getModifiedTime(url, await stat(url)));
-      const date = new Intl.DateTimeFormat("en-US", {
-        dateStyle: "medium",
-      }).format(modifiedDate);
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
       editor.setContent(fileContents.toString());
-      editor.settings["save_onsavecallback"] = onSave;
 
       linksToProcesses();
-
-      prependFileToTitle(`${basename(url, extname(url))} (${date})`);
+      updateTitle(url);
     }
-  }, [
-    editor,
-    linksToProcesses,
-    onSave,
-    prependFileToTitle,
-    readFile,
-    stat,
-    url,
-  ]);
+  }, [editor, linksToProcesses, readFile, updateTitle, url]);
+
+  useEffect(() => {
+    if (editor) {
+      editor.settings["save_onsavecallback"] = async () => {
+        const saveSpec: NotificationSpec = {
+          closeButton: true,
+          text: "Successfully saved.",
+          timeout: 5000,
+          type: "success",
+        };
+        const saveUrl = url || DEFAULT_SAVE_PATH;
+
+        try {
+          await writeFile(saveUrl, editor.getContent(), true);
+          updateFolder(dirname(saveUrl), basename(saveUrl));
+          updateTitle(saveUrl);
+        } catch {
+          saveSpec.text = "Error occurred while saving.";
+          saveSpec.type = "error";
+        }
+
+        editor.notificationManager.open(saveSpec);
+      };
+    }
+  }, [containerRef, editor, updateFolder, updateTitle, url, writeFile]);
 
   useEffect(() => {
     if (!editor) {
@@ -111,10 +124,10 @@ const useTinyMCE = (
 
               if (iframe?.contentWindow) {
                 iframe.contentWindow.addEventListener("dragover", (event) => {
-                  if (activeEditor?.mode.isReadOnly()) onDragOver(event);
+                  if (draggableEditor(activeEditor)) onDragOver(event);
                 });
                 iframe.contentWindow.addEventListener("drop", (event) => {
-                  if (activeEditor?.mode.isReadOnly()) onDrop(event);
+                  if (draggableEditor(activeEditor)) onDrop(event);
                 });
                 iframe?.contentWindow.addEventListener("focus", () => {
                   setForegroundId(id);
