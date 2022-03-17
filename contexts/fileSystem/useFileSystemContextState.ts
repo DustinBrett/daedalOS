@@ -29,9 +29,6 @@ export type FileSystemContextState = AsyncFS & {
   rootFs?: RootFileSystem;
   mapFs: (directory: string) => Promise<string>;
   mountFs: (url: string) => Promise<void>;
-  setFileInput: React.Dispatch<
-    React.SetStateAction<HTMLInputElement | undefined>
-  >;
   unMountFs: (url: string) => void;
   addFile: (
     directory: string,
@@ -58,7 +55,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const { rootFs, FileSystemAccess, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
   const { exists, mkdir, readdir, readFile, rename, rmdir, unlink, writeFile } =
     asyncFs;
-  const [fileInput, setFileInput] = useState<HTMLInputElement>();
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
   );
@@ -175,13 +171,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
     directory: string,
     callback: (name: string, buffer?: Buffer) => void
   ): void => {
-    fileInput?.addEventListener(
+    const fileInput = document.createElement("input");
+
+    fileInput.type = "file";
+    fileInput.multiple = true;
+    fileInput.setAttribute("style", "display: none");
+    fileInput.addEventListener(
       "change",
       (event) =>
-        handleFileInputEvent(event, callback, directory, openTransferDialog),
+        handleFileInputEvent(
+          event,
+          callback,
+          directory,
+          openTransferDialog
+        ).then(() => fileInput.remove()),
       { once: true }
     );
-    fileInput?.click();
+    document.body.appendChild(fileInput);
+    fileInput.click();
   };
   const resetStorage = (): Promise<void> =>
     new Promise((resolve, reject) => {
@@ -354,7 +361,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
     removeFsWatcher,
     resetStorage,
     rootFs,
-    setFileInput,
     unMapFs,
     unMountFs,
     updateFolder,
