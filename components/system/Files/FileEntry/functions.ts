@@ -208,7 +208,17 @@ export const getInfoWithExtension = (
           urlExt === ".mp3"
         ) {
           getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-            const { icon: urlIcon = icon, getIcon } = fileInfo;
+            const {
+              icon: urlIcon = icon,
+              getIcon,
+              subIcons: fileSubIcons = [],
+            } = fileInfo;
+
+            if (fileSubIcons.length > 0) {
+              subIcons.push(
+                ...fileSubIcons.filter((subIcon) => !subIcons.includes(subIcon))
+              );
+            }
 
             callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
           });
