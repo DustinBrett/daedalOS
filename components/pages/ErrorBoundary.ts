@@ -24,12 +24,12 @@ export class ErrorBoundary extends Component<
     if (hasError && !("__REACT_DEVTOOLS_GLOBAL_HOOK__" in window)) {
       window.location.reload();
 
-      return;
+      // eslint-disable-next-line unicorn/no-null
+      return null;
     }
 
     const { children } = this.props;
 
-    // eslint-disable-next-line consistent-return
     return children;
   }
 }
