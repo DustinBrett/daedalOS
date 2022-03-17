@@ -1,9 +1,14 @@
 import Head from "next/head";
-import { PACKAGE_DATA } from "utils/constants";
+import { basename, dirname, join } from "path";
+import { ICON_PATH, PACKAGE_DATA, USER_ICON_PATH } from "utils/constants";
 
 const { alias, description } = PACKAGE_DATA;
 
-const Metadata = (): JSX.Element => (
+type MetadataProps = {
+  preloadIcons: string[];
+};
+
+const Metadata = ({ preloadIcons }: MetadataProps): JSX.Element => (
   <Head>
     <meta
       content="width=device-width, initial-scale=1, minimum-scale=1"
@@ -11,6 +16,18 @@ const Metadata = (): JSX.Element => (
     />
     <meta content={description} name="description" />
     <title>{alias}</title>
+    {preloadIcons?.map((icon) => (
+      <link
+        key={icon}
+        as="image"
+        href={
+          icon.startsWith(ICON_PATH) || icon.startsWith(USER_ICON_PATH)
+            ? join(dirname(icon), `48x48`, basename(icon)).replace(/\\/g, "/")
+            : icon
+        }
+        rel="preload"
+      />
+    ))}
   </Head>
 );
 
