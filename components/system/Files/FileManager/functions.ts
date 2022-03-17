@@ -128,11 +128,10 @@ export const handleFileInputEvent = async (
   haltEvent(event);
 
   const eventTarget =
-    (event as React.DragEvent)?.dataTransfer ||
-    (event.currentTarget as HTMLInputElement) ||
-    {};
+    (event as React.DragEvent)?.dataTransfer ??
+    ((event.currentTarget as HTMLInputElement) || {});
 
-  if (eventTarget?.files.length > 0) {
+  if (eventTarget.files.length > 0) {
     const fileReaders: FileReaders = [];
     const addFile = (file: File, subFolder = ""): void => {
       const reader = new FileReader();
@@ -153,7 +152,7 @@ export const handleFileInputEvent = async (
       fileReaders.push([file, join(directory, subFolder), reader]);
     };
 
-    if (eventTarget?.items) {
+    if (eventTarget.items) {
       const processHandle = async (
         fsHandle: FileSystemHandle,
         subFolder = ""
@@ -185,7 +184,7 @@ export const handleFileInputEvent = async (
 
     openTransferDialog(fileReaders);
   } else {
-    const filePaths = JSON.parse(eventTarget?.getData("text")) as string[];
+    const filePaths = JSON.parse(eventTarget.getData("text")) as string[];
 
     filePaths.forEach((path) => dirname(path) !== "." && callback(path));
   }

@@ -129,7 +129,7 @@ const useTinyMCE = (
                 iframe.contentWindow.addEventListener("drop", (event) => {
                   if (draggableEditor(activeEditor)) onDrop(event);
                 });
-                iframe?.contentWindow.addEventListener("focus", () => {
+                iframe.contentWindow.addEventListener("focus", () => {
                   setForegroundId(id);
                   containerRef.current?.closest("section")?.focus();
                 });

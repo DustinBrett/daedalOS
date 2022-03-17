@@ -58,8 +58,8 @@ const useVideoPlayer = (
     return { src, type, url };
   }, [cleanUpSource, readFile, url]);
   const loadPlayer = useCallback(() => {
-    const [videoElement] = containerRef.current
-      ?.childNodes as NodeListOf<HTMLVideoElement>;
+    const [videoElement] =
+      (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
     const videoPlayer = window.videojs(videoElement, config, () => {
       videoPlayer.on("firstplay", () => {
         const [height, width] = [

@@ -87,10 +87,9 @@ const useDosCI = (
         : await addJsDosConfig(zipBuffer, readFile)
     );
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
-    const stateUrl =
-      url && (await exists(savePath))
-        ? bufferToUrl(await readFile(savePath))
-        : undefined;
+    const stateUrl = (await exists(savePath))
+      ? bufferToUrl(await readFile(savePath))
+      : undefined;
 
     // NOTE: js-dos v7 appends `?dt=` (Removed in lib, for now...)
     const ci = await dosInstance?.run(bundleURL, stateUrl);

@@ -51,7 +51,7 @@ const AddressBar = ({ id }: AddressBarProps): JSX.Element => {
         onFocus={() => setAddressBar(url)}
         onKeyDown={async ({ key }) => {
           if (key === "Enter" && addressBarRef.current) {
-            const { value } = addressBarRef.current || {};
+            const { value } = addressBarRef.current;
             if (value && (await exists(value))) changeUrl(id, value);
             addressBarRef.current.blur();
           }

@@ -27,7 +27,7 @@ export const search = async (
   const searchIndex = index ?? baseIndex;
   let results = searchIndex.search?.(searchTerm);
 
-  if (results.length === 0) {
+  if (results?.length === 0) {
     results = searchIndex.search?.(`${searchTerm}*`);
   }
 
@@ -45,9 +45,9 @@ const buildDynamicIndex = async (
   rootFs?: RootFileSystem
 ): Promise<Index> => {
   const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
-  const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
-  const writable = overlayedFileSystems.writable as IWritableFs;
-  const filesToIndex = Object.keys(writable?._cache?.map).filter(
+  const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
+  const writable = overlayedFileSystems?.writable as IWritableFs;
+  const filesToIndex = Object.keys(writable?._cache?.map ?? {}).filter(
     (path) => !SEARCH_EXTENSIONS.ignore.includes(extname(path))
   );
   const indexedFiles = await Promise.all(

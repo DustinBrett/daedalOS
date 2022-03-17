@@ -88,10 +88,9 @@ const useV86 = (
       ...config,
     };
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
-    const saveContents =
-      url && (await exists(savePath))
-        ? bufferToUrl(await readFile(savePath))
-        : undefined;
+    const saveContents = (await exists(savePath))
+      ? bufferToUrl(await readFile(savePath))
+      : undefined;
 
     if (saveContents) v86StarterConfig.initial_state = { url: saveContents };
 
@@ -99,7 +98,7 @@ const useV86 = (
 
     v86.add_listener("emulator-loaded", () => {
       if (shutdown.current) {
-        v86?.destroy();
+        v86.destroy();
       } else {
         appendFileToTitle(basename(url));
         cleanUpBufferUrl(bufferUrl);

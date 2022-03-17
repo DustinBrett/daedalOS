@@ -197,16 +197,16 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       const clearFs = (): void => {
         const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
-        const overlayedFileSystems = overlayFs.getOverlayedFileSystems();
-        const readable = overlayedFileSystems.readable as HTTPRequest;
-        const writable = overlayedFileSystems.writable as IndexedDBFileSystem;
+        const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
+        const readable = overlayedFileSystems?.readable as HTTPRequest;
+        const writable = overlayedFileSystems?.writable as IndexedDBFileSystem;
 
-        readable.empty();
+        readable?.empty();
 
-        if (writable.getName() === "InMemory") {
+        if (writable?.getName() === "InMemory") {
           resolve();
         } else {
-          writable.empty((apiError) =>
+          writable?.empty((apiError) =>
             apiError ? reject(apiError) : resolve()
           );
         }

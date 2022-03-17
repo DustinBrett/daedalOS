@@ -122,13 +122,13 @@ const useCommandInterpreter = (
         case "pwd": {
           const [directory] = commandArgs;
 
-          if (localEcho && directory && lcBaseCommand !== "pwd") {
+          if (directory && lcBaseCommand !== "pwd") {
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
               if (!(await stat(fullPath)).isDirectory()) {
                 localEcho?.println("The directory name is invalid.");
-              } else if (cd.current !== fullPath) {
+              } else if (cd.current !== fullPath && localEcho) {
                 cd.current = fullPath;
                 readdir(fullPath).then((files) =>
                   autoComplete(files, localEcho)

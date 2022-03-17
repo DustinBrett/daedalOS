@@ -82,7 +82,7 @@ const useMonaco = (
         theme,
       });
 
-      currentEditor?.onKeyDown(async (event) => {
+      currentEditor.onKeyDown(async (event) => {
         const { ctrlKey, code } = event;
 
         if (ctrlKey && code === "KeyS") {
@@ -92,7 +92,7 @@ const useMonaco = (
 
           if (url === baseUrl || !url) {
             event.preventDefault();
-            await writeFile(saveUrl, currentEditor?.getValue(), true);
+            await writeFile(saveUrl, currentEditor.getValue(), true);
             updateFolder(dirname(saveUrl), basename(saveUrl));
             prependFileToTitle(basename(saveUrl));
           }
