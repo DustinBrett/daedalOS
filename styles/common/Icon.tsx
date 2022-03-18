@@ -5,7 +5,7 @@ import { cleanUpBufferUrl } from "utils/functions";
 
 export type IconProps = {
   $displaySize?: number;
-  $imgRef?: React.RefObject<HTMLImageElement>;
+  $imgRef?: React.MutableRefObject<HTMLImageElement>;
   $imgSize: number;
   $moving?: boolean;
 };

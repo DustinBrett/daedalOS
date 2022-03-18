@@ -22,7 +22,7 @@ const cssFit: Record<WallpaperFit, string> = {
 };
 
 const useWallpaper = (
-  desktopRef: React.RefObject<HTMLElement | null>
+  desktopRef: React.MutableRefObject<HTMLElement | null>
 ): void => {
   const { exists, readFile } = useFileSystem();
   const { wallpaper } = useTheme();

@@ -6,7 +6,7 @@ type Fullscreen = {
 };
 
 const useFullscreen = (
-  elementRef: React.RefObject<HTMLElement>
+  elementRef: React.MutableRefObject<HTMLElement>
 ): Fullscreen => {
   const [fullscreen, setFullscreen] = useState(false);
   const monitorFullscreenEvent = (): void => {
