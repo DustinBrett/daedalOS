@@ -2,7 +2,7 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -84,6 +84,7 @@ const useDraggableEntries = (
               focusedElements.some((focusedElement) =>
                 focusedElement.contains(element)
               ),
+            imagePlaceholder: UNKNOWN_ICON,
             skipAutoScale: true,
           }
         );

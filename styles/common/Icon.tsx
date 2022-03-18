@@ -20,6 +20,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
       src.startsWith("blob:") ||
       src.startsWith("http:") ||
       src.startsWith("https:") ||
+      src.startsWith("data:") ||
       src.endsWith(".ico")
         ? src
         : join(dirname(src), `${$imgSize}x${$imgSize}`, basename(src)),
