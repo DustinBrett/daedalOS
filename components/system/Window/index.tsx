@@ -7,7 +7,7 @@ import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 const Window = ({
   children,

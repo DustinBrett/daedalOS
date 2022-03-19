@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import React, { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { cleanUpBufferUrl } from "utils/functions";
 
