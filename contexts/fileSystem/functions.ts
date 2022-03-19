@@ -7,7 +7,16 @@ export const supportsIndexedDB = (): Promise<boolean> =>
     const db = window.indexedDB.open("");
 
     db.addEventListener("error", () => resolve(false));
-    db.addEventListener("success", () => resolve(true));
+    db.addEventListener("success", () => {
+      resolve(true);
+
+      try {
+        db.result.close();
+        window.indexedDB.deleteDatabase("");
+      } catch {
+        // Ignore errors to close/delete the test database
+      }
+    });
   });
 
 export const getFileSystemHandles = async (): Promise<
