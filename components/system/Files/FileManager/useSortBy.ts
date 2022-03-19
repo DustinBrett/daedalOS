@@ -9,15 +9,15 @@ export type SortByOrder = [SortBy, boolean];
 
 export type SetSortBy = (sortBy: (current: SortByOrder) => SortByOrder) => void;
 
+const DEFAULT_SORT_BY = ["name", true] as SortByOrder;
+
 const useSortBy = (
   directory: string,
   files?: Files
 ): [SortByOrder, SetSortBy] => {
   const { setSortOrder, sortOrders } = useSession();
-  const [currentSortBy, setCurrentSortBy] = useState<SortByOrder>([
-    "name",
-    true,
-  ]);
+  const [currentSortBy, setCurrentSortBy] =
+    useState<SortByOrder>(DEFAULT_SORT_BY);
 
   useEffect(() => {
     const { [directory]: [, sessionSortBy, sessionAscending] = [] } =

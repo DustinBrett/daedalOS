@@ -13,7 +13,7 @@ type History = {
 const useHistory = (url: string, id: string): History => {
   const { url: changeUrl } = useProcesses();
   const [currentUrl, setCurrentUrl] = useState(url);
-  const [history, setHistory] = useState<string[]>([url]);
+  const [history, setHistory] = useState<string[]>(() => [url]);
   const [position, setPosition] = useState<number>(0);
   const moveHistory = (step: number): void => {
     const newPosition = position + step;

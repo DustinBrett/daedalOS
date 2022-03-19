@@ -16,7 +16,7 @@ const useResizable = (id: string, autoSizing = false): Resizable => {
   const {
     processes: { [id]: { lockAspectRatio = false } = {} },
   } = useProcesses();
-  const [{ height, width }, setSize] = useState<Size>(
+  const [{ height, width }, setSize] = useState<Size>(() =>
     maxSize(size, lockAspectRatio)
   );
 

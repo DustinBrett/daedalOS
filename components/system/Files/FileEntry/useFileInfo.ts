@@ -22,11 +22,11 @@ const useFileInfo = (
   isDirectory: boolean,
   useNewFolderIcon = false
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
-  const [info, setInfo] = useState<FileInfo>({
+  const [info, setInfo] = useState<FileInfo>(() => ({
     icon: "",
     pid: "",
     url: "",
-  });
+  }));
   const visible = useRef(true);
   const updateInfo = (newInfo: FileInfo): void => {
     if (visible.current) setInfo(newInfo);

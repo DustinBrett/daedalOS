@@ -1,4 +1,4 @@
-import Menu from "components/system/Menu";
+import Menu, { topLeftPosition } from "components/system/Menu";
 import {
   Checkmark,
   ChevronRight,
@@ -28,7 +28,7 @@ const MenuItemEntry = ({
   toggle,
 }: MenuItemEntryProps): JSX.Element => {
   const entryRef = useRef<HTMLLIElement | null>(null);
-  const [subMenuOffset, setSubMenuOffset] = useState<Position>({ x: 0, y: 0 });
+  const [subMenuOffset, setSubMenuOffset] = useState<Position>(topLeftPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const { sizes } = useTheme();
   const onMouseEnter: React.MouseEventHandler = () => setShowSubMenu(true);

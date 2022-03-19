@@ -16,10 +16,15 @@ type MenuProps = {
   subMenu?: MenuState;
 };
 
+export const topLeftPosition = (): Position => ({
+  x: 0,
+  y: 0,
+});
+
 const Menu = ({ subMenu }: MenuProps): JSX.Element => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
   const { items, x = 0, y = 0 } = subMenu || baseMenu;
-  const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
+  const [offset, setOffset] = useState<Position>(topLeftPosition);
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = useCallback(
     ({ relatedTarget }: Partial<React.FocusEvent | React.MouseEvent> = {}) => {
