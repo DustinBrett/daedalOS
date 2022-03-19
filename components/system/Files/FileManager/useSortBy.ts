@@ -1,7 +1,7 @@
 import { sortFiles } from "components/system/Files/FileManager/functions";
 import type { Files } from "components/system/Files/FileManager/useFolder";
 import { useSession } from "contexts/session";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type SortBy = "date" | "name" | "size" | "type";
 
@@ -31,22 +31,25 @@ const useSortBy = (
     }
   }, [directory, sortOrders]);
 
-  return [
-    currentSortBy,
-    (sortBy: (current: SortByOrder) => SortByOrder): void => {
-      const newSortBy = sortBy(currentSortBy);
-      const [sortByValue, isAscending] = newSortBy;
+  return useMemo(
+    () => [
+      currentSortBy,
+      (sortBy: (current: SortByOrder) => SortByOrder): void => {
+        const newSortBy = sortBy(currentSortBy);
+        const [sortByValue, isAscending] = newSortBy;
 
-      if (files) {
-        setSortOrder(
-          directory,
-          Object.keys(sortFiles(directory, files, sortByValue, isAscending)),
-          sortByValue,
-          isAscending
-        );
-      }
-    },
-  ];
+        if (files) {
+          setSortOrder(
+            directory,
+            Object.keys(sortFiles(directory, files, sortByValue, isAscending)),
+            sortByValue,
+            isAscending
+          );
+        }
+      },
+    ],
+    [currentSortBy, directory, files, setSortOrder]
+  );
 };
 
 export default useSortBy;

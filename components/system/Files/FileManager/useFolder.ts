@@ -22,7 +22,7 @@ import { useSession } from "contexts/session";
 import type { AsyncZipOptions, AsyncZippable } from "fflate";
 import ini from "ini";
 import { basename, dirname, extname, join, relative } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   FOLDER_ICON,
@@ -416,7 +416,7 @@ const useFolder = (
       writeFile,
     ]
   );
-  const pasteToFolder = async (): Promise<void> => {
+  const pasteToFolder = useCallback(async (): Promise<void> => {
     const pasteEntries = Object.entries(pasteList);
     const moving = pasteEntries.some(([, operation]) => operation === "move");
     const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
@@ -456,7 +456,27 @@ const useFolder = (
 
       copyEntries([]);
     }
-  };
+  }, [
+    copyEntries,
+    createPath,
+    directory,
+    pasteList,
+    readFile,
+    readdir,
+    stat,
+    updateFolder,
+  ]);
+  const sortByOrder = useSortBy(directory, files);
+  const folderActions = useMemo(
+    () => ({
+      addToFolder: () => addFile(directory, newPath),
+      newPath,
+      pasteToFolder,
+      resetFiles: () => setFiles(NO_FILES),
+      sortByOrder,
+    }),
+    [addFile, directory, newPath, pasteToFolder, sortByOrder]
+  );
 
   useEffect(() => {
     if (directory !== currentDirectory) {
@@ -534,13 +554,7 @@ const useFolder = (
       renameFile,
     },
     files: files || {},
-    folderActions: {
-      addToFolder: () => addFile(directory, newPath),
-      newPath,
-      pasteToFolder,
-      resetFiles: () => setFiles(NO_FILES),
-      sortByOrder: useSortBy(directory, files),
-    },
+    folderActions,
     isLoading,
     updateFiles,
   };
