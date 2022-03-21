@@ -242,8 +242,16 @@ const useCommandInterpreter = (
             let totalSize = 0;
             let fileCount = 0;
             let directoryCount = 0;
-            await requestPermission(dirPath);
-            const entries = await readdir(dirPath);
+            let entries = await readdir(dirPath);
+
+            if (
+              entries.length === 0 &&
+              rootFs?.mntMap[dirPath]?.getName() === "FileSystemAccess"
+            ) {
+              await requestPermission(dirPath);
+              entries = await readdir(dirPath);
+            }
+
             const entriesWithStats = await Promise.all(
               entries.map(async (entry) => {
                 const filePath = join(dirPath, entry);
