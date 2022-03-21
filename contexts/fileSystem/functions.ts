@@ -1,6 +1,83 @@
 import { get } from "idb-keyval";
 import { join } from "path";
+import index from "public/.index/fs.9p.json";
 import { FS_HANDLES } from "utils/constants";
+
+type BFSFS = { [key: string]: BFSFS | null };
+type FS9PV3 = [
+  string,
+  number,
+  number,
+  number,
+  number,
+  number,
+  FS9PV3[] | string
+];
+type FS9PV4 = [string, number, number, FS9PV4[] | string | undefined];
+type FS9P = {
+  fsroot: FS9PV3[];
+  size: number;
+  version: 3;
+};
+
+const IDX_MTIME = 2;
+const IDX_TARGET = 3;
+const fsroot = index.fsroot as FS9PV4[];
+
+const reduceObjects = <T>(a: T, b: T): T => ({ ...a, ...b });
+
+export const get9pModifiedTime = (path: string): number => {
+  let fsPath = fsroot;
+  let mTime = 0;
+
+  path
+    .split("/")
+    .filter(Boolean)
+    .forEach((pathPart) => {
+      const pathBranch = fsPath.find(([name]) => name === pathPart);
+
+      if (pathBranch) {
+        const isBranch = Array.isArray(pathBranch[IDX_TARGET]);
+
+        if (!isBranch) mTime = pathBranch[IDX_MTIME];
+        fsPath = isBranch ? (pathBranch[IDX_TARGET] as FS9PV4[]) : [];
+      }
+    });
+
+  return mTime;
+};
+
+// eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+const parse9pEntry = ([name, , , pathOrArray]: FS9PV4): BFSFS => ({
+  [name]: Array.isArray(pathOrArray)
+    ? // eslint-disable-next-line unicorn/no-array-callback-reference
+      pathOrArray.map(parse9pEntry).reduce(reduceObjects)
+    : // eslint-disable-next-line unicorn/no-null
+      null,
+});
+
+export const fs9pToBfs = (): BFSFS =>
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  fsroot.map(parse9pEntry).reduce(reduceObjects);
+
+const parse9pV4ToV3 = (fs9p: FS9PV4[], path = "/"): FS9PV3[] =>
+  fs9p.map(([name, mtime, size, target]) => {
+    const targetPath = join(path, name);
+    const newTarget = Array.isArray(target)
+      ? parse9pV4ToV3(target, targetPath)
+      : target || targetPath;
+
+    return [name, mtime, size, 33206, 0, 0, newTarget] as FS9PV3;
+  });
+
+export const fs9pV4ToV3 = (): FS9P =>
+  index.version === 4
+    ? {
+        fsroot: parse9pV4ToV3(fsroot),
+        size: index.size,
+        version: 3,
+      }
+    : (index as FS9P);
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {

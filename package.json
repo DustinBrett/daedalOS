@@ -8,12 +8,12 @@
     "defaults and supports es6 and not ie 11 and >1%"
   ],
   "scripts": {
-    "build": "npm run build:fs && npm run build:search && next build",
-    "build:fs": "cd public && node ../scripts/fs2json.js --exclude .index --out .index/fs.9p.json . && node ../node_modules/browserfs/dist/scripts/make_http_index.js > .index/fs.bfs.json",
+    "build": "yarn build:fs && yarn build:search && next build",
+    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "build:html": "node scripts/minifyHtml.js",
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
-    "deploy": "npm run build:robots && next export && npm run build:html",
+    "deploy": "yarn build:robots && next export && yarn build:html",
     "docker:build": "docker build -t daedalos .",
     "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
     "dev": "next dev",

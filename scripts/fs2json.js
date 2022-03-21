@@ -7,15 +7,12 @@ const {
   resolve: resolvePath,
 } = require("path");
 
-const VERSION = 3;
+const VERSION = 4;
 
 const IDX_NAME = 0;
 const IDX_SIZE = 1;
 const IDX_MTIME = 2;
-const IDX_MODE = 3;
-const IDX_UID = 4;
-const IDX_GID = 5;
-const IDX_TARGET = 6;
+const IDX_TARGET = 3;
 
 const args = process.argv.slice(2);
 const argPath = resolvePath(args[args.length - 1]);
@@ -36,9 +33,6 @@ const fs2json = (dir) => {
     obj[IDX_NAME] = name;
     obj[IDX_SIZE] = st.size;
     obj[IDX_MTIME] = Number(st.mtime);
-    obj[IDX_MODE] = st.mode;
-    obj[IDX_UID] = st.uid;
-    obj[IDX_GID] = st.gid;
 
     totalSize += st.size;
 
@@ -85,10 +79,6 @@ const fs2json = (dir) => {
                       recur();
                     });
                   } else {
-                    if (fileStat.isFile()) {
-                      node[IDX_TARGET] = `./${relative(argPath, fullPath)}`;
-                    }
-
                     result.push(node);
                     recur();
                   }

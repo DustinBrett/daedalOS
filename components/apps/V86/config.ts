@@ -4,10 +4,6 @@ export const BOOT_FD_CD_HD = 0x231;
 export const config = {
   autostart: true,
   bios: { url: "/Program Files/Virtual x86/bios/seabios.bin" },
-  filesystem: {
-    basefs: "/.index/fs.9p.json",
-    baseurl: "/",
-  },
   log_level: 0,
   memory_size: 1024 * 1024 * 1024,
   network_relay_url: "wss://relay.widgetry.org/",

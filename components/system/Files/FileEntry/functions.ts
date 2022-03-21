@@ -4,11 +4,11 @@ import type { ExtensionType } from "components/system/Files/FileEntry/extensions
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
+import { get9pModifiedTime } from "contexts/fileSystem/functions";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
-import index from "public/.index/fs.9p.json";
 import {
   BASE_2D_CONTEXT_OPTIONS,
   FOLDER_ICON,
@@ -41,32 +41,6 @@ type ShellClassInfo = {
   ShellClassInfo: {
     IconFile: string;
   };
-};
-
-type FS9P = [string, number, number, number, number, number, FS9P[] | string];
-
-const IDX_MTIME = 2;
-const IDX_TARGET = 6;
-
-const get9pModifiedTime = (path: string): number => {
-  let fsPath = index.fsroot as FS9P[];
-  let mTime = 0;
-
-  path
-    .split("/")
-    .filter(Boolean)
-    .forEach((pathPart) => {
-      const pathBranch = fsPath.find(([name]) => name === pathPart);
-
-      if (pathBranch) {
-        const isBranch = Array.isArray(pathBranch[IDX_TARGET]);
-
-        if (!isBranch) mTime = pathBranch[IDX_MTIME];
-        fsPath = isBranch ? (pathBranch[IDX_TARGET] as FS9P[]) : [];
-      }
-    });
-
-  return mTime;
 };
 
 export const getModifiedTime = (path: string, stats: FileStat): number => {

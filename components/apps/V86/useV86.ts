@@ -11,6 +11,7 @@ import type { V86Config, V86Starter } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -94,6 +95,13 @@ const useV86 = (
 
     if (saveContents) v86StarterConfig.initial_state = { url: saveContents };
 
+    v86StarterConfig.filesystem = {
+      basefs: URL.createObjectURL(
+        new Blob([JSON.stringify(fs9pV4ToV3())], { type: "application/json" })
+      ),
+      baseurl: "/",
+    };
+
     const v86 = new window.V86Starter(v86StarterConfig);
 
     v86.add_listener("emulator-loaded", () => {
@@ -105,6 +113,10 @@ const useV86 = (
 
         if (v86StarterConfig.initial_state) {
           cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+        }
+
+        if (v86StarterConfig.filesystem) {
+          cleanUpBufferUrl(v86StarterConfig.filesystem.basefs);
         }
 
         containerRef.current?.addEventListener("click", v86.lock_mouse);

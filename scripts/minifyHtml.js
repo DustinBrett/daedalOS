@@ -1,6 +1,7 @@
 const { readdirSync, readFileSync, writeFileSync } = require("fs");
 const { minify } = require("html-minifier-terser");
 const { extname, join } = require("path");
+const { execSync } = require("child_process");
 
 const OUT_PATH = "out";
 
@@ -27,7 +28,17 @@ const HTML_MINIFIER_CONFIG = {
   useShortDoctype: true,
 };
 
-const commit = process.env.npm_package_gitHead.slice(0, 8);
+let commit = process.env.npm_package_gitHead?.slice(0, 8);
+
+if (!commit) {
+  try {
+    commit = execSync("git rev-parse --short HEAD", { cwd: __dirname })
+      .toString()
+      .trim();
+  } catch {
+    commit = new Date().toISOString().slice(0, 10);
+  }
+}
 
 const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),

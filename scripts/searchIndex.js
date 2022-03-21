@@ -8,7 +8,6 @@ const IGNORE_FILES = new Set([
   "desktop.ini",
   "favicon.ico",
   "fs.9p.json",
-  "fs.bfs.json",
   "robots.txt",
 ]);
 const IGNORE_PATHS = ["Program Files", "System", "Users/Public/Icons"];
