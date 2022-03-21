@@ -76,27 +76,29 @@ const useMonaco = (
   }, [monaco]);
 
   useEffect(() => {
+    editor?.onKeyDown(async (event) => {
+      const { ctrlKey, code } = event;
+
+      if (ctrlKey && code === "KeyS") {
+        const [baseUrl] =
+          editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
+        const saveUrl = url || DEFAULT_SAVE_PATH;
+
+        if (url === baseUrl || !url) {
+          event.preventDefault();
+          await writeFile(saveUrl, editor.getValue(), true);
+          updateFolder(dirname(saveUrl), basename(saveUrl));
+          prependFileToTitle(basename(saveUrl));
+        }
+      }
+    });
+  }, [editor, prependFileToTitle, updateFolder, url, writeFile]);
+
+  useEffect(() => {
     if (monaco && !editor && containerRef.current) {
       const currentEditor = monaco.editor.create(containerRef.current, {
         automaticLayout: true,
         theme,
-      });
-
-      currentEditor.onKeyDown(async (event) => {
-        const { ctrlKey, code } = event;
-
-        if (ctrlKey && code === "KeyS") {
-          const [baseUrl] =
-            currentEditor.getModel()?.uri.path.split(URL_DELIMITER) || [];
-          const saveUrl = url || DEFAULT_SAVE_PATH;
-
-          if (url === baseUrl || !url) {
-            event.preventDefault();
-            await writeFile(saveUrl, currentEditor.getValue(), true);
-            updateFolder(dirname(saveUrl), basename(saveUrl));
-            prependFileToTitle(basename(saveUrl));
-          }
-        }
       });
 
       setEditor(currentEditor);
@@ -110,18 +112,7 @@ const useMonaco = (
         editor.dispose();
       }
     };
-  }, [
-    containerRef,
-    editor,
-    id,
-    monaco,
-    prependFileToTitle,
-    setArgument,
-    setLoading,
-    updateFolder,
-    url,
-    writeFile,
-  ]);
+  }, [containerRef, editor, id, monaco, setArgument, setLoading]);
 
   useEffect(() => {
     if (monaco && editor && url) loadFile();
