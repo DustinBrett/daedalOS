@@ -56,7 +56,7 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
         closeWithTransition(id);
       }
     }
-  }, [closeWithTransition, fileReaders, id, processing, processReader, title]);
+  }, [closeWithTransition, fileReaders, id, processReader, title]);
 
   return (
     <StyledDialog>

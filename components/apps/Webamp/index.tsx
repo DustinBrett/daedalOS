@@ -85,7 +85,7 @@ const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
       setUrl(id, "");
       setLoadedUrl("");
     }
-  }, [loadedUrl, id, loadWebampUrl, setUrl, url, webampCI]);
+  }, [id, loadWebampUrl, loadedUrl, setUrl, url]);
 
   return (
     <StyledWebamp

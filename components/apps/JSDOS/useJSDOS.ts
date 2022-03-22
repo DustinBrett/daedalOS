@@ -30,7 +30,7 @@ const useJSDOS = (
         }
       });
     }
-  }, [containerRef, dosInstance, setLoading]);
+  }, [containerRef, dosInstance]);
 
   useEffect(() => {
     if (dosCI && loading) {
@@ -81,7 +81,7 @@ const useJSDOS = (
     closeWithTransition,
     containerRef,
     dosCI,
-    dosInstance,
+    dosInstance?.layers,
     id,
     loading,
     setLoading,

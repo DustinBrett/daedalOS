@@ -107,7 +107,7 @@ const useTinyMCE = (
         editor.notificationManager.open(saveSpec);
       };
     }
-  }, [containerRef, editor, updateFolder, updateTitle, url, writeFile]);
+  }, [editor, updateFolder, updateTitle, url, writeFile]);
 
   useEffect(() => {
     if (!editor) {

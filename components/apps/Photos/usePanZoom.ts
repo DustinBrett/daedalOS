@@ -77,7 +77,7 @@ const usePanZoom = (
       imgElement?.removeEventListener("panzoomchange", zoomUpdate);
       containerElement?.removeEventListener("wheel", zoomWheel);
     };
-  }, [containerElement, imgElement, zoomUpdate, zoomWheel, zoomWithWheel]);
+  }, [containerElement, imgElement, zoomUpdate, zoomWheel]);
 
   useEffect(() => {
     if (imgElement && !panZoom) {
@@ -85,7 +85,7 @@ const usePanZoom = (
     }
 
     return () => panZoom?.destroy();
-  }, [imgElement, panZoom, zoomUpdate]);
+  }, [imgElement, panZoom]);
 
   return { reset, scale: getScale?.(), zoomIn, zoomOut, zoomToPoint };
 };

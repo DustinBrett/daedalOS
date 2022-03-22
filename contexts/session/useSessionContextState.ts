@@ -71,13 +71,13 @@ const useSessionContextState = (): SessionContextState => {
       );
     }
   }, [
-    writeFile,
     sessionLoaded,
     sortOrders,
     themeName,
     wallpaperFit,
     wallpaperImage,
     windowStates,
+    writeFile,
   ]);
   const setSortOrder = useCallback(
     (
