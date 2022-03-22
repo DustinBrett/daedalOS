@@ -104,7 +104,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
         )
       );
     },
-
     [fsWatchers]
   );
   const mapFs = useCallback(

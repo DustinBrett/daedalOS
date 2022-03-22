@@ -70,7 +70,7 @@ const useTinyMCE = (
         })
       );
     }
-  }, [containerRef, editor, open]);
+  }, [containerRef, editor?.mode, open]);
   const loadFile = useCallback(async () => {
     if (editor) {
       const fileContents = await readFile(url);
