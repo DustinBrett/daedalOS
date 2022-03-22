@@ -172,7 +172,7 @@ const FileEntry = ({
           listView ? "maxListTextDisplayWidth" : "maxIconTextDisplayWidth"
         ]
       ),
-    [formats, listView, name, sizes]
+    [formats.systemFont, listView, name, sizes.fileEntry]
   );
   const iconRef = useRef<HTMLImageElement | null>(null);
   const isIconCached = useRef(false);
