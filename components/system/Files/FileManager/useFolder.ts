@@ -77,7 +77,7 @@ const useFolder = (
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const {
     addFile,
     addFsWatcher,
@@ -154,7 +154,7 @@ const useFolder = (
           [baseName]: allStats,
         }));
       } else {
-        setLoading(true);
+        setIsLoading(true);
 
         try {
           const dirContents = (await readdir(directory)).filter(
@@ -198,7 +198,7 @@ const useFolder = (
           }
         }
 
-        setLoading(false);
+        setIsLoading(false);
       }
     },
     [

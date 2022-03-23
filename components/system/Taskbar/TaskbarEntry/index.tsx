@@ -40,9 +40,9 @@ const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
     [id, linkElement]
   );
-  const [isPeekVisible, setPeekVisible] = useState(false);
-  const hidePeek = (): void => setPeekVisible(false);
-  const showPeek = (): void => setPeekVisible(true);
+  const [isPeekVisible, setIsPeekVisible] = useState(false);
+  const hidePeek = (): void => setIsPeekVisible(false);
+  const showPeek = (): void => setIsPeekVisible(true);
   const onClick = (): void => {
     if (minimized || isForeground) minimize(id);
 

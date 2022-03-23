@@ -32,7 +32,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
       }),
     [taskbarHeight, windowState]
   );
-  const [{ x, y }, setPosition] = useState<Position>(
+  const [position, setPosition] = useState<Position>(
     () =>
       (!isOffscreen && sessionPosition) ||
       cascadePosition(id, processes, stackOrder, cascadeOffset) ||
@@ -45,7 +45,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
     }
   }, [autoSizing, closing, sessionPosition, sessionSize, taskbarHeight]);
 
-  return [{ x, y }, setPosition];
+  return [position, setPosition];
 };
 
 export default useDraggable;

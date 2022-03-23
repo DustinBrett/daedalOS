@@ -11,20 +11,21 @@ type Resizable = [Size, React.Dispatch<React.SetStateAction<Size>>];
 
 const useResizable = (id: string, autoSizing = false): Resizable => {
   const defaultSize = useDefaultSize(id);
-  const { windowStates: { [id]: { size = defaultSize } = {} } = {} } =
-    useSession();
+  const {
+    windowStates: { [id]: { size: stateSize = defaultSize } = {} } = {},
+  } = useSession();
   const {
     processes: { [id]: { lockAspectRatio = false } = {} },
   } = useProcesses();
-  const [{ height, width }, setSize] = useState<Size>(() =>
-    maxSize(size, lockAspectRatio)
+  const [size, setSize] = useState<Size>(() =>
+    maxSize(stateSize, lockAspectRatio)
   );
 
   useEffect(() => {
-    if (autoSizing) setSize(maxSize(size, lockAspectRatio));
-  }, [autoSizing, lockAspectRatio, size]);
+    if (autoSizing) setSize(maxSize(stateSize, lockAspectRatio));
+  }, [autoSizing, lockAspectRatio, stateSize]);
 
-  return [{ height, width }, setSize];
+  return [size, setSize];
 };
 
 export default useResizable;

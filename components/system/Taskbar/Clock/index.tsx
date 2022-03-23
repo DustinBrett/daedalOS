@@ -4,9 +4,8 @@ import useWorker from "hooks/useWorker";
 import { useCallback, useState } from "react";
 
 const Clock = (): JSX.Element => {
-  const [{ date, time, dateTime }, setNow] = useState<LocaleTimeDate>(
-    {} as LocaleTimeDate
-  );
+  const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
+  const { date, time, dateTime } = now;
   const clockWorkerInit = useCallback(
     () =>
       new Worker(

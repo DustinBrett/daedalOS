@@ -14,8 +14,8 @@ const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
     title,
   } = useProcesses();
   const { fileReaders = [] } = process || {};
-  const [[cd, { name = "" } = {}] = [], setCurrentTransfer] =
-    useState<[string, File]>();
+  const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
+  const [cd, { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState(0);
   const processReader = useCallback(
     ([[file, directory, reader], ...remainingReaders]: FileReaders) => {
