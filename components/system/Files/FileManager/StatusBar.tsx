@@ -13,11 +13,7 @@ type StatusBarProps = {
 
 const MINIMUM_STATUSBAR_WIDTH = 225;
 
-const StatusBar = ({
-  count,
-  directory,
-  selected,
-}: StatusBarProps): JSX.Element => {
+const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   const { exists, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSelected, setShowSelected] = useState(false);

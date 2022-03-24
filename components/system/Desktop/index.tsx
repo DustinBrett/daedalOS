@@ -4,9 +4,7 @@ import FileManager from "components/system/Files/FileManager";
 import React, { useRef } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 
-const Desktop = ({
-  children,
-}: React.PropsWithChildren<Record<never, unknown>>): JSX.Element => {
+const Desktop: FC = ({ children }) => {
   const desktopRef = useRef<HTMLElement | null>(null);
 
   useWallpaper(desktopRef);

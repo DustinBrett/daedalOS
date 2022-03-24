@@ -9,10 +9,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useEffect, useMemo, useRef } from "react";
 
-const Window = ({
-  children,
-  id,
-}: React.PropsWithChildren<ComponentProcessProps>): JSX.Element => {
+const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const {
     linkElement,
     processes: { [id]: process },

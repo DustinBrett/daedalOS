@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { bufferToUrl, loadFiles } from "utils/functions";
 import type { Options } from "webamp";
 
-const Webamp = ({ id }: ComponentProcessProps): JSX.Element => {
+const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { readFile } = useFileSystem();
   const { processes: { [id]: { url = "" } = {} } = {}, url: setUrl } =

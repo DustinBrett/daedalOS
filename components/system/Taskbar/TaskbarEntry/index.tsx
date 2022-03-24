@@ -23,7 +23,7 @@ type TaskbarEntryProps = {
   title: string;
 };
 
-const TaskbarEntry = ({ icon, id, title }: TaskbarEntryProps): JSX.Element => {
+const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const nextFocusableId = useNextFocusable(id);
   const { foregroundId, setForegroundId } = useSession();
   const isForeground = id === foregroundId;

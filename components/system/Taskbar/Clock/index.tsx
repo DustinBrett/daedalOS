@@ -3,7 +3,7 @@ import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useWorker from "hooks/useWorker";
 import { useCallback, useState } from "react";
 
-const Clock = (): JSX.Element => {
+const Clock: FC = () => {
   const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
   const { date, time, dateTime } = now;
   const clockWorkerInit = useCallback(

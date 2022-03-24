@@ -9,7 +9,7 @@ const scales = [
   5,
 ];
 
-const Controls = ({ id }: ComponentProcessProps): JSX.Element => {
+const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { argument, processes: { [id]: process } = {} } = useProcesses();
   const { count = 0, page: currentPage = 1, scale = 1 } = process || {};
 

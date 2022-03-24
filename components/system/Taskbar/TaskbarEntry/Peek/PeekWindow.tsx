@@ -14,7 +14,7 @@ type PeekWindowProps = {
   id: string;
 };
 
-const PeekWindow = ({ id }: PeekWindowProps): JSX.Element => {
+const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   const {
     minimize,
     processes: { [id]: { minimized = false, title = id } = {} },

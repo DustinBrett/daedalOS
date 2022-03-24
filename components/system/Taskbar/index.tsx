@@ -9,7 +9,7 @@ import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
 
-const Taskbar = (): JSX.Element => {
+const Taskbar: FC = () => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const toggleStartMenu = (showMenu?: boolean): void =>
     setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);

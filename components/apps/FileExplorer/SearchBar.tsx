@@ -17,7 +17,7 @@ type SearchBarProps = {
 
 const MAX_ENTRIES = 10;
 
-const SearchBar = ({ id }: SearchBarProps): JSX.Element => {
+const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const {
     open,

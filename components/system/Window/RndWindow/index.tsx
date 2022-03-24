@@ -27,11 +27,7 @@ const reRouteFocus =
     });
   };
 
-const RndWindow = ({
-  children,
-  id,
-  zIndex,
-}: React.PropsWithChildren<RndWindowProps>): JSX.Element => {
+const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   const {
     linkElement,
     maximize,

@@ -4,7 +4,7 @@ import useSpaceCadet from "components/apps/SpaceCadet/useSpaceCadet";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { haltEvent } from "utils/functions";
 
-const SpaceCadet = ({ id }: ComponentProcessProps): JSX.Element =>
+const SpaceCadet: FC<ComponentProcessProps> = ({ id }) =>
   ContainerComponent(
     id,
     useSpaceCadet,

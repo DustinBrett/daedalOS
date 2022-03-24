@@ -6,7 +6,7 @@ const RenderComponent = dynamic(
   () => import("components/system/Apps/RenderComponent")
 );
 
-const AppsLoader = (): JSX.Element => (
+const AppsLoader: FC = () => (
   <ProcessConsumer>
     {({ processes = {} }) => (
       <AnimatePresence>

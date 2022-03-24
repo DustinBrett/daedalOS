@@ -15,7 +15,7 @@ type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
 };
 
-const StartMenu = ({ toggleStartMenu }: StartMenuProps): JSX.Element => {
+const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   const menuRef = useRef<HTMLElement | null>(null);
   const [showScrolling, setShowScrolling] = useState(false);
   const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) => {

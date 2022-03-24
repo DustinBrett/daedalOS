@@ -7,7 +7,7 @@ const TaskbarEntry = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry")
 );
 
-const TaskbarEntries = (): JSX.Element => (
+const TaskbarEntries: FC = () => (
   <StyledTaskbarEntries>
     <ProcessConsumer>
       {({ processes = {} }) => (

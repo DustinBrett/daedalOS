@@ -1,24 +1,24 @@
 import { useTheme } from "styled-components";
 
-export const AllApps = (): JSX.Element => (
+export const AllApps: FC = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 22v-6h6v6H0zm2-4v2h2v-2H2zm-2-4V8h6v6H0zm2-4v2h2v-2H2zM0 6V0h6v6H0zm2-4v2h2V2H2zm8 10v-2h18v2H10zm14 6v2H10v-2h14zM10 2h22v2H10V2zM0 30v-6h6v6H0zm2-4v2h2v-2H2zm8 2v-2h18v2H10z" />
   </svg>
 );
 
-export const SideMenu = (): JSX.Element => (
+export const SideMenu: FC = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M32 10H0V8h32v2zm0 16H0v-2h32v2zm0-8.016H0V16h32v1.984z" />
   </svg>
 );
 
-export const Documents = (): JSX.Element => (
+export const Documents: FC = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M28 8.578V32H2V0h17.422zM20 8h4.578L20 3.422V8zm6 22V10h-8V2H4v28h22z" />
   </svg>
 );
 
-export const Power = (): JSX.Element => {
+export const Power: FC = () => {
   const { colors } = useTheme();
 
   return (

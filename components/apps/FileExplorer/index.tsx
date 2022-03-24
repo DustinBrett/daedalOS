@@ -9,7 +9,7 @@ import { basename } from "path";
 import { useEffect, useState } from "react";
 import { MOUNTED_FOLDER_ICON, ROOT_NAME } from "utils/constants";
 
-const FileExplorer = ({ id }: ComponentProcessProps): JSX.Element => {
+const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
     icon: setProcessIcon,
     title,

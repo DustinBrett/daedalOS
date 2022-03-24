@@ -12,11 +12,11 @@ type RenderComponentProps = {
   id: string;
 };
 
-const RenderComponent = ({
+const RenderComponent: FC<RenderComponentProps> = ({
   Component,
   hasWindow = true,
   id,
-}: RenderComponentProps): JSX.Element =>
+}) =>
   hasWindow ? (
     <Window id={id}>
       <Component id={id} />

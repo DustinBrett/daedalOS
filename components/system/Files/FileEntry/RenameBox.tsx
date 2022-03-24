@@ -12,7 +12,7 @@ type RenameBoxProps = {
   renameFile: (path: string, name?: string) => void;
 };
 
-const RenameBox = ({ name, path, renameFile }: RenameBoxProps): JSX.Element => {
+const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
   const { formats, sizes } = useTheme();

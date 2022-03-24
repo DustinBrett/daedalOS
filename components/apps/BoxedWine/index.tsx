@@ -3,7 +3,7 @@ import StyledBoxedWine from "components/apps/BoxedWine/StyledBoxedWine";
 import useBoxedWine from "components/apps/BoxedWine/useBoxedWine";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const BoxedWine = ({ id }: ComponentProcessProps): JSX.Element =>
+const BoxedWine: FC<ComponentProcessProps> = ({ id }) =>
   ContainerComponent(id, useBoxedWine, StyledBoxedWine, <canvas id="canvas" />);
 
 export default BoxedWine;

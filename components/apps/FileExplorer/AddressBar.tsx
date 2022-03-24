@@ -12,7 +12,7 @@ type AddressBarProps = {
   id: string;
 };
 
-const AddressBar = ({ id }: AddressBarProps): JSX.Element => {
+const AddressBar: FC<AddressBarProps> = ({ id }) => {
   const addressBarRef = useRef<HTMLInputElement | null>(null);
   const {
     url: changeUrl,

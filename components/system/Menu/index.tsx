@@ -21,7 +21,7 @@ export const topLeftPosition = (): Position => ({
   y: 0,
 });
 
-const Menu = ({ subMenu }: MenuProps): JSX.Element => {
+const Menu: FC<MenuProps> = ({ subMenu }) => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
   const { items, x = 0, y = 0 } = subMenu || baseMenu;
   const [offset, setOffset] = useState<Position>(topLeftPosition);

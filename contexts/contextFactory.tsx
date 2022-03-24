@@ -5,15 +5,11 @@ const contextFactory = <T,>(
   ContextComponent?: React.ComponentType
 ): {
   Consumer: React.Consumer<T>;
-  Provider: (
-    props: React.PropsWithChildren<Record<never, unknown>>
-  ) => JSX.Element;
+  Provider: FC;
   useContext: () => T;
 } => {
   const Context = createContext<T>({} as T);
-  const ProcessProvider = ({
-    children,
-  }: React.PropsWithChildren<Record<never, unknown>>): JSX.Element => (
+  const ProcessProvider: FC = ({ children }) => (
     <Context.Provider value={useContextState()}>
       {children}
       {ContextComponent ? <ContextComponent /> : <></>}

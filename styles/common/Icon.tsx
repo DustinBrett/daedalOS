@@ -35,9 +35,9 @@ const StyledIcon = styled.img.attrs<IconProps>(
     $displaySize > $imgSize ? `${$displaySize - $imgSize}px` : undefined};
 `;
 
-const Icon = (
-  props: IconProps & React.ImgHTMLAttributes<HTMLImageElement>
-): JSX.Element => {
+const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
+  props
+) => {
   const [loaded, setLoaded] = useState(false);
   const { $imgRef, src = "" } = props;
   const style = useMemo<React.CSSProperties>(

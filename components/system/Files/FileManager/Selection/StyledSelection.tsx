@@ -13,9 +13,7 @@ const StyledSelectionComponent = styled.span`
   z-index: 2;
 `;
 
-const StyledSelection = (
-  props: React.HTMLAttributes<HTMLSpanElement>
-): JSX.Element => (
+const StyledSelection: FC<React.HTMLAttributes<HTMLSpanElement>> = (props) => (
   <>
     <NoGlobalPointerEvents />
     <StyledSelectionComponent {...props} />

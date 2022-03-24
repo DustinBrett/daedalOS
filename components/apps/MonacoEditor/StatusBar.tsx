@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import { label } from "utils/functions";
 
-const StatusBar = ({ id }: ComponentProcessProps): JSX.Element => {
+const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const {
     processes: { [id]: process },
   } = useProcesses();

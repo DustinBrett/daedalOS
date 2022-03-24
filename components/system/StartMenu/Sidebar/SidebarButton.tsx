@@ -13,14 +13,14 @@ type SidebarButton = {
 
 export type SidebarButtons = SidebarButton[];
 
-const SidebarButtonComponent = ({
+const SidebarButtonComponent: FC<SidebarButton> = ({
   action,
   active,
   heading,
   icon,
   name,
   tooltip,
-}: SidebarButton): JSX.Element => {
+}) => {
   const buttonRef = useRef<HTMLLIElement | null>(null);
 
   return (

@@ -7,10 +7,10 @@ type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
 };
 
-const StartButton = ({
+const StartButton: FC<StartButtonProps> = ({
   startMenuVisible,
   toggleStartMenu,
-}: StartButtonProps): JSX.Element => (
+}) => (
   <StyledStartButton
     $active={startMenuVisible}
     onClick={() => toggleStartMenu()}

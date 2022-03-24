@@ -8,7 +8,7 @@ type MetadataProps = {
   preloadIcons: string[];
 };
 
-const Metadata = ({ preloadIcons }: MetadataProps): JSX.Element => (
+const Metadata: FC<MetadataProps> = ({ preloadIcons }) => (
   <Head>
     <meta
       content="width=device-width, initial-scale=1, minimum-scale=1"

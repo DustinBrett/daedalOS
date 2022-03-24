@@ -7,7 +7,7 @@ import Button from "styles/common/Button";
 
 const MAX_TITLE_LENGTH = 37;
 
-const Dialog = ({ id }: ComponentProcessProps): JSX.Element => {
+const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   const {
     closeWithTransition,
     processes: { [id]: process } = {},

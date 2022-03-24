@@ -10,7 +10,7 @@ const V86Children: React.ReactNode = (
   </>
 );
 
-const V86 = ({ id }: ComponentProcessProps): JSX.Element =>
+const V86: FC<ComponentProcessProps> = ({ id }) =>
   ContainerComponent(id, useV86, StyledV86, V86Children);
 
 export default V86;

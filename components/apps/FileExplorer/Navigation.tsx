@@ -21,7 +21,7 @@ type NavigationProps = {
   id: string;
 };
 
-const Navigation = ({ hideSearch, id }: NavigationProps): JSX.Element => {
+const Navigation: FC<NavigationProps> = ({ hideSearch, id }) => {
   const {
     url: changeUrl,
     processes: {

@@ -41,7 +41,7 @@ type FileManagerProps = {
   view: FileManagerViewNames;
 };
 
-const FileManager = ({
+const FileManager: FC<FileManagerProps> = ({
   hideFolders,
   hideLoading,
   hideScrolling,
@@ -52,7 +52,7 @@ const FileManager = ({
   url,
   useNewFolderIcon,
   view,
-}: FileManagerProps): JSX.Element => {
+}) => {
   const [currentUrl, setCurrentUrl] = useState(url);
   const [renaming, setRenaming] = useState("");
   const [mounted, setMounted] = useState<boolean>(false);

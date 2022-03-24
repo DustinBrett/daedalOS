@@ -15,7 +15,7 @@ type MenuItemEntryProps = MenuItem & {
   resetMenu: () => void;
 };
 
-const MenuItemEntry = ({
+const MenuItemEntry: FC<MenuItemEntryProps> = ({
   action,
   checked,
   disabled,
@@ -26,7 +26,7 @@ const MenuItemEntry = ({
   resetMenu,
   seperator,
   toggle,
-}: MenuItemEntryProps): JSX.Element => {
+}) => {
   const entryRef = useRef<HTMLLIElement | null>(null);
   const [subMenuOffset, setSubMenuOffset] = useState<Position>(topLeftPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);

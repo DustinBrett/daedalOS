@@ -14,7 +14,7 @@ import Icon from "styles/common/Icon";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 
-const Browser = ({ id }: ComponentProcessProps): JSX.Element => {
+const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
     icon: setIcon,
     url: changeUrl,

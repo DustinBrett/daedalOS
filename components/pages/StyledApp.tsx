@@ -9,9 +9,7 @@ import { DEFAULT_THEME } from "utils/constants";
 const motionFeatures = async (): Promise<FeatureBundle> =>
   (await import("styles/motionFeatures")).default;
 
-const StyledApp = ({
-  children,
-}: React.PropsWithChildren<Record<never, unknown>>): JSX.Element => (
+const StyledApp: FC = ({ children }) => (
   <SessionConsumer>
     {({ themeName }) => (
       <ThemeProvider theme={themes[themeName] || themes[DEFAULT_THEME]}>

@@ -20,7 +20,7 @@ import { bufferToUrl, cleanUpBufferUrl, label } from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
 
-const Photos = ({ id }: ComponentProcessProps): JSX.Element => {
+const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { processes: { [id]: process } = {} } = useProcesses();
   const { closing = false, url = "" } = process || {};
   const [src, setSrc] = useState<Record<string, string>>({});

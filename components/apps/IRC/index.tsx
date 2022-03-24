@@ -13,7 +13,7 @@ import { PACKAGE_DATA } from "utils/constants";
 const [{ port = 443, server }] = servers;
 const { alias } = PACKAGE_DATA;
 
-const IRC = (): JSX.Element => {
+const IRC: FC = () => {
   const [log, setLog] = useState<string[]>([]);
   const [socket, setSocket] = useState<WebSocket>();
 

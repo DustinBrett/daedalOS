@@ -91,7 +91,7 @@ const focusing: string[] = [];
 
 const cacheQueue: (() => Promise<void>)[] = [];
 
-const FileEntry = ({
+const FileEntry: FC<FileEntryProps> = ({
   fileActions,
   fileManagerId,
   fileManagerRef,
@@ -108,7 +108,7 @@ const FileEntry = ({
   stats,
   useNewFolderIcon,
   view,
-}: FileEntryProps): JSX.Element => {
+}) => {
   const { blurEntry, focusEntry } = focusFunctions;
   const { url: changeUrl } = useProcesses();
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(

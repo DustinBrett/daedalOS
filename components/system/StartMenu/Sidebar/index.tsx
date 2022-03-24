@@ -16,7 +16,7 @@ type SidebarGroupProps = {
   sidebarButtons: SidebarButtons;
 };
 
-const SidebarGroup = ({ sidebarButtons }: SidebarGroupProps): JSX.Element => (
+const SidebarGroup: FC<SidebarGroupProps> = ({ sidebarButtons }) => (
   <ol>
     {sidebarButtons.map((button) => (
       <SidebarButton key={button.name} {...button} />
@@ -24,7 +24,7 @@ const SidebarGroup = ({ sidebarButtons }: SidebarGroupProps): JSX.Element => (
   </ol>
 );
 
-const Sidebar = (): JSX.Element => {
+const Sidebar: FC = () => {
   const { resetStorage } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
