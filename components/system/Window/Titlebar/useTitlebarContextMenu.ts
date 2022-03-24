@@ -6,6 +6,14 @@ import type {
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useCallback } from "react";
+import {
+  CLOSE,
+  MAXIMIZE,
+  MAXIMIZE_DISABLED,
+  MINIMIZE,
+  RESTORE,
+  RESTORE_DISABLED,
+} from "styles/SystemIcons";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (
@@ -25,24 +33,24 @@ const useTitlebarContextMenu = (
       !(hideDisabled && (!disableMaximize || minimized)) && {
         action: () => onMaximize(),
         disabled: !disableMaximize,
-        icon: `/System/Icons/restore${!disableMaximize ? "_disabled" : ""}.png`,
+        icon: !disableMaximize ? RESTORE_DISABLED : RESTORE,
         label: "Restore",
       },
       {
         action: () => onMinimize(),
-        icon: "/System/Icons/minimize.png",
+        icon: MINIMIZE,
         label: minimized ? "Restore" : "Minimize",
       },
       !(hideDisabled && (disableMaximize || minimized)) && {
         action: () => onMaximize(),
         disabled: disableMaximize,
-        icon: `/System/Icons/maximize${disableMaximize ? "_disabled" : ""}.png`,
+        icon: disableMaximize ? MAXIMIZE_DISABLED : MAXIMIZE,
         label: "Maximize",
       },
       MENU_SEPERATOR,
       {
         action: () => onClose(),
-        icon: "/System/Icons/close.png",
+        icon: CLOSE,
         label: "Close",
       },
     ].filter(Boolean) as MenuItem[];
