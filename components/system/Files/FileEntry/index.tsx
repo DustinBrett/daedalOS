@@ -123,6 +123,7 @@ const FileEntry: FC<FileEntryProps> = ({
     mkdirRecursive,
     pasteList,
     readFile,
+    stat,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -251,7 +252,7 @@ const FileEntry: FC<FileEntryProps> = ({
     urlExt,
     writeFile,
   ]);
-  const createTooltip = useCallback((): string => {
+  const createTooltip = useCallback(async (): Promise<string> => {
     if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
       return "";
     }
@@ -268,8 +269,9 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension as ExtensionType]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
-    const { size: sizeInBytes } = stats;
-    const modifiedTime = getModifiedTime(path, stats);
+    const fullStats = stats.size < 0 ? await stat(path) : stats;
+    const { size: sizeInBytes } = fullStats;
+    const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);
     const toolTip = `Type: ${type}\nSize: ${size}`;
     const date = new Date(modifiedTime).toISOString().slice(0, 10);
@@ -280,7 +282,16 @@ const FileEntry: FC<FileEntryProps> = ({
     const dateModified = `${date} ${time}`;
 
     return `${toolTip}\nDate modified: ${dateModified}`;
-  }, [comment, extension, formats.dateModified, isShortcut, path, stats, url]);
+  }, [
+    comment,
+    extension,
+    formats.dateModified,
+    isShortcut,
+    path,
+    stat,
+    stats,
+    url,
+  ]);
   const [tooltip, setTooltip] = useState("");
 
   useEffect(() => {
@@ -337,7 +348,7 @@ const FileEntry: FC<FileEntryProps> = ({
         ref={buttonRef}
         aria-label={name}
         onMouseOver={() => {
-          if (!tooltip) setTooltip(createTooltip());
+          if (!tooltip) createTooltip().then(setTooltip);
         }}
         title={tooltip}
         {...useDoubleClick(() => {

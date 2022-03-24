@@ -18,7 +18,7 @@ export type AsyncFS = {
   readdir: (path: string) => Promise<string[]>;
   rename: (oldPath: string, newPath: string) => Promise<boolean>;
   rmdir: (path: string) => Promise<boolean>;
-  stat: (path: string) => Promise<Stats>;
+  stat: (path: string, isLstat?: boolean) => Promise<Stats>;
   unlink: (path: string) => Promise<boolean>;
   writeFile: (
     path: string,
@@ -130,11 +130,13 @@ const useAsyncFs = (): AsyncFSModule => {
         new Promise((resolve, reject) => {
           fs?.rmdir(path, (error) => (error ? reject(error) : resolve(true)));
         }),
-      stat: (path) =>
+      stat: (path, isLstat) =>
         new Promise((resolve, reject) => {
-          fs?.stat(path, (error, stats = {} as Stats) =>
-            error ? reject(error) : resolve(stats)
-          );
+          if (fs) {
+            (isLstat ? fs.lstat : fs.stat)(path, (error, stats = {} as Stats) =>
+              error ? reject(error) : resolve(stats)
+            );
+          }
         }),
       unlink: (path) =>
         new Promise((resolve, reject) => {

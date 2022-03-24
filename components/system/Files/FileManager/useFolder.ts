@@ -100,7 +100,7 @@ const useFolder = (
   const {
     sessionLoaded,
     setSortOrder,
-    sortOrders: { [directory]: [sortOrder] = [] } = {},
+    sortOrders: { [directory]: [sortOrder, sortBy] = [] } = {},
   } = useSession();
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
@@ -163,7 +163,10 @@ const useFolder = (
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
               try {
-                const fileStats = await stat(join(directory, file));
+                const fileStats = await stat(
+                  join(directory, file),
+                  !sortBy || sortBy === "name" || sortBy === "type"
+                );
                 const hideEntry = hideFolders && fileStats.isDirectory();
                 const newFiles = hideEntry
                   ? await processedFiles
