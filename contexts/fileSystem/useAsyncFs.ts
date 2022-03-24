@@ -105,7 +105,7 @@ const useAsyncFs = (): AsyncFSModule => {
             if (!renameError) {
               resolve(true);
             } else if (renameError.code === "ENOTSUP") {
-              fs.stat(oldPath, (_statsError, stats = {} as Stats) => {
+              fs.lstat(oldPath, (_statsError, stats = {} as Stats) => {
                 if (stats.isDirectory()) {
                   reject();
                 } else {

@@ -104,7 +104,7 @@ const useFileContextMenu = (
           action: () =>
             absoluteEntries().forEach(async (entry) => {
               const shortcutProcess =
-                defaultProcess && !(await stat(entry)).isDirectory()
+                defaultProcess && !(await stat(entry, true)).isDirectory()
                   ? defaultProcess
                   : "FileExplorer";
 
