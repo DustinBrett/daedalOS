@@ -14,7 +14,7 @@ type StatusBarProps = {
 const MINIMUM_STATUSBAR_WIDTH = 225;
 
 const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
-  const { exists, stat } = useFileSystem();
+  const { exists, lstat, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSelected, setShowSelected] = useState(false);
   const updateShowSelected = (width: number): void =>
@@ -31,9 +31,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
           const path = join(directory, file);
 
           if (await exists(path)) {
-            const stats = await stat(path, true);
-
-            return stats.isDirectory()
+            return (await lstat(path)).isDirectory()
               ? -1
               : currentSize + (await stat(path)).size;
           }
@@ -41,7 +39,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
           return totalSize;
         }, Promise.resolve(0))
       ),
-    [directory, exists, selected, stat]
+    [directory, exists, lstat, selected, stat]
   );
 
   useEffect(() => {

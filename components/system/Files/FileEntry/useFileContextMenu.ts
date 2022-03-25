@@ -55,10 +55,10 @@ const useFileContextMenu = (
   const openFile = useFile(url);
   const {
     copyEntries,
+    lstat,
     moveEntries,
     readFile,
     rootFs,
-    stat,
     unMapFs,
     updateFolder,
     writeFile,
@@ -104,7 +104,7 @@ const useFileContextMenu = (
           action: () =>
             absoluteEntries().forEach(async (entry) => {
               const shortcutProcess =
-                defaultProcess && !(await stat(entry, true)).isDirectory()
+                defaultProcess && !(await lstat(entry)).isDirectory()
                   ? defaultProcess
                   : "FileExplorer";
 
@@ -317,6 +317,7 @@ const useFileContextMenu = (
     fileManagerId,
     focusedEntries,
     isFocusedEntry,
+    lstat,
     moveEntries,
     newShortcut,
     open,
@@ -329,7 +330,6 @@ const useFileContextMenu = (
     rootFs?.mountList,
     setRenaming,
     setWallpaper,
-    stat,
     unMapFs,
     updateFolder,
     url,

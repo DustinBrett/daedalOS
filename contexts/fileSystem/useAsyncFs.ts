@@ -13,12 +13,13 @@ import { useEffect, useMemo, useState } from "react";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
+  lstat: (path: string) => Promise<Stats>;
   mkdir: (path: string, overwrite?: boolean) => Promise<boolean>;
   readFile: (path: string) => Promise<Buffer>;
   readdir: (path: string) => Promise<string[]>;
   rename: (oldPath: string, newPath: string) => Promise<boolean>;
   rmdir: (path: string) => Promise<boolean>;
-  stat: (path: string, fromNode?: boolean) => Promise<Stats>;
+  stat: (path: string) => Promise<Stats>;
   unlink: (path: string) => Promise<boolean>;
   writeFile: (
     path: string,
@@ -75,6 +76,12 @@ const useAsyncFs = (): AsyncFSModule => {
         new Promise((resolve) => {
           fs?.exists(path, resolve);
         }),
+      lstat: (path) =>
+        new Promise((resolve, reject) => {
+          fs?.lstat(path, (error, stats = {} as Stats) =>
+            error ? reject(error) : resolve(stats)
+          );
+        }),
       mkdir: (path, overwrite = false) =>
         new Promise((resolve, reject) => {
           fs?.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error) =>
@@ -130,10 +137,9 @@ const useAsyncFs = (): AsyncFSModule => {
         new Promise((resolve, reject) => {
           fs?.rmdir(path, (error) => (error ? reject(error) : resolve(true)));
         }),
-      stat: (path, fromNode) =>
+      stat: (path) =>
         new Promise((resolve, reject) => {
-          const stat = fromNode ? fs?.lstat : fs?.stat;
-          stat?.(path, (error, stats = {} as Stats) =>
+          fs?.stat(path, (error, stats = {} as Stats) =>
             error ? reject(error) : resolve(stats)
           );
         }),

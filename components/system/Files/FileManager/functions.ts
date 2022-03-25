@@ -193,16 +193,16 @@ export const handleFileInputEvent = async (
 export const findPathsRecursive = async (
   paths: string[],
   readdir: (path: string) => Promise<string[]>,
-  stat: (path: string, fromNode?: boolean) => Promise<Stats>
+  lstat: (path: string) => Promise<Stats>
 ): Promise<string[]> => {
   const pathArrays = await Promise.all(
     paths.map(
       async (path): Promise<string[]> =>
-        (await stat(path, true)).isDirectory()
+        (await lstat(path)).isDirectory()
           ? findPathsRecursive(
               (await readdir(path)).map((file) => join(path, file)),
               readdir,
-              stat
+              lstat
             )
           : [path]
     )

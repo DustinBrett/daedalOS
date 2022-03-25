@@ -86,6 +86,7 @@ const useFolder = (
     deletePath,
     exists,
     fs,
+    lstat,
     mkdir,
     mkdirRecursive,
     pasteList,
@@ -145,9 +146,10 @@ const useFolder = (
         }
       } else if (newFile) {
         const baseName = basename(newFile);
+        const filePath = join(directory, newFile);
         const fileStats = await statsWithShortcutInfo(
           baseName,
-          await stat(join(directory, newFile), isSimpleSort)
+          isSimpleSort ? await lstat(filePath) : await stat(filePath)
         );
 
         setFiles((currentFiles = {}) => ({
@@ -164,10 +166,10 @@ const useFolder = (
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
               try {
-                const fileStats = await stat(
-                  join(directory, file),
-                  isSimpleSort
-                );
+                const filePath = join(directory, file);
+                const fileStats = isSimpleSort
+                  ? await lstat(filePath)
+                  : await stat(filePath);
                 const hideEntry = hideFolders && fileStats.isDirectory();
                 const newFiles = hideEntry
                   ? await processedFiles
@@ -214,6 +216,7 @@ const useFolder = (
       hideFolders,
       hideLoading,
       isSimpleSort,
+      lstat,
       readdir,
       setSortOrder,
       stat,
@@ -424,7 +427,7 @@ const useFolder = (
       const newBasePath = join(basePath, basename(entry));
       let uniquePath: string;
 
-      if ((await stat(entry, true)).isDirectory()) {
+      if ((await lstat(entry)).isDirectory()) {
         uniquePath = await createPath(newBasePath, directory);
 
         await Promise.all(
@@ -461,10 +464,10 @@ const useFolder = (
     copyEntries,
     createPath,
     directory,
+    lstat,
     pasteList,
     readFile,
     readdir,
-    stat,
     updateFolder,
   ]);
   const sortByOrder = useSortBy(directory, files);
