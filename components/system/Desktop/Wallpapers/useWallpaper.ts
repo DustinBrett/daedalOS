@@ -50,7 +50,10 @@ const useWallpaper = (
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
 
-      if (typeof OffscreenCanvas !== "undefined" && vantaWorker.current) {
+      if (
+        typeof window.OffscreenCanvas !== "undefined" &&
+        vantaWorker.current
+      ) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         vantaWorker.current.postMessage({ canvas: offscreen }, [offscreen]);
@@ -69,7 +72,7 @@ const useWallpaper = (
 
       if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-      if (typeof OffscreenCanvas !== "undefined") {
+      if (typeof window.OffscreenCanvas !== "undefined") {
         desktopRef.current?.querySelector("canvas")?.remove();
       } else {
         wallpaper?.();
