@@ -96,6 +96,7 @@ const useCommandInterpreter = (
       const [baseCommand = "", ...commandArgs] = parseCommand(command);
       const lcBaseCommand = baseCommand.toLowerCase();
 
+      // eslint-disable-next-line sonarjs/max-switch-cases
       switch (lcBaseCommand) {
         case "cat":
         case "type": {
@@ -461,6 +462,11 @@ const useCommandInterpreter = (
           } else {
             localEcho?.println(FILE_NOT_FILE);
           }
+          break;
+        }
+        case "sheep": {
+          const { default: spawnSheep } = await import("utils/eSheep");
+          spawnSheep();
           break;
         }
         case "ps":
