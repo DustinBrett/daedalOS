@@ -18,6 +18,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
 import { basename, dirname, extname, join } from "path";
@@ -345,6 +346,12 @@ const FileEntry: FC<FileEntryProps> = ({
   return (
     <>
       <Button
+        {...(listView && {
+          animate: { opacity: 1 },
+          as: motion.button,
+          initial: { opacity: 0 },
+          transition: { duration: 0.15 },
+        })}
         ref={buttonRef}
         aria-label={name}
         onMouseOver={() => {
