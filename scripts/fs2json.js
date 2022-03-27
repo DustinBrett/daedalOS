@@ -1,11 +1,5 @@
 const { mkdir, readdir, readlink, stat, writeFile } = require("fs");
-const {
-  basename,
-  dirname,
-  relative,
-  join,
-  resolve: resolvePath,
-} = require("path");
+const { basename, dirname, join, resolve: resolvePath } = require("path");
 
 const VERSION = 4;
 
