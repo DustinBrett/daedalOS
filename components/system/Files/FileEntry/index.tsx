@@ -28,6 +28,8 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
+  FOLDER_BACK_ICON,
+  FOLDER_FRONT_ICON,
   ICON_CACHE,
   ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
@@ -397,12 +399,30 @@ const FileEntry: FC<FileEntryProps> = ({
             src={icon}
             {...FileEntryIconSize[view]}
           />
-          {(filteredSubIcons || []).map((entryIcon) => (
+          {(filteredSubIcons || []).map((entryIcon, subIconIndex) => (
             <Icon
               key={entryIcon}
               alt={name}
               src={entryIcon}
-              {...FileEntryIconSize[entryIcon !== SHORTCUT_ICON ? "sub" : view]}
+              style={
+                (filteredSubIcons?.includes(FOLDER_FRONT_ICON) ||
+                  filteredSubIcons?.includes(FOLDER_BACK_ICON)) &&
+                ![FOLDER_FRONT_ICON, FOLDER_BACK_ICON].includes(entryIcon)
+                  ? {
+                      transform:
+                        subIconIndex === 0
+                          ? "matrix(0, 1.8, 1.8, 0.2, 1.2, 2) scaleX(-1) scale(0.4) translateZ(0px)"
+                          : "matrix(0, 1.8, 1.2, 0.4, -4, 4) scaleX(-1) scale(0.4) translateZ(0px)",
+                    }
+                  : {}
+              }
+              {...FileEntryIconSize[
+                ![SHORTCUT_ICON, FOLDER_FRONT_ICON, FOLDER_BACK_ICON].includes(
+                  entryIcon
+                ) && !entryIcon.startsWith("blob:")
+                  ? "sub"
+                  : view
+              ]}
             />
           ))}
           {renaming ? (

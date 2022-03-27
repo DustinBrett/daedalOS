@@ -33,9 +33,9 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
             id,
             `/System/Icons/${directoryName ? "folder" : "pc"}.png`
           );
-          getIconFromIni(fs, url).then((iconFile) =>
-            setProcessIcon(id, iconFile)
-          );
+          getIconFromIni(fs, url).then((iconFile) => {
+            if (iconFile) setProcessIcon(id, iconFile);
+          });
         }
 
         setCurrentUrl(url);

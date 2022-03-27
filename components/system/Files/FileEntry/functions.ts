@@ -11,7 +11,10 @@ import ini from "ini";
 import { extname, join } from "path";
 import {
   BASE_2D_CONTEXT_OPTIONS,
+  FOLDER_BACK_ICON,
+  FOLDER_FRONT_ICON,
   FOLDER_ICON,
+  ICON_CACHE,
   IMAGE_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
@@ -59,12 +62,13 @@ export const getIconFromIni = (
     fs.readFile(
       join(directory, "desktop.ini"),
       (error, contents = Buffer.from("")) => {
-        if (!error) {
+        if (error) resolve("");
+        else {
           const {
             ShellClassInfo: { IconFile = "" },
           } = ini.parse(contents.toString()) as ShellClassInfo;
 
-          if (IconFile) resolve(IconFile);
+          resolve(IconFile);
         }
       }
     );
@@ -117,6 +121,42 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
   return { comment, icon, pid, type, url };
 };
 
+export const getIconsFromCache = (
+  fs: FSModule,
+  path: string
+): Promise<string[]> =>
+  new Promise((resolveIcons) => {
+    const iconCacheDirectory = join(ICON_CACHE, path);
+
+    fs?.readdir(
+      iconCacheDirectory,
+      async (dirError, [firstIcon, ...otherIcons] = []) => {
+        if (dirError) resolveIcons([]);
+        else {
+          resolveIcons(
+            (
+              await Promise.all(
+                [firstIcon, otherIcons[otherIcons.length - 1]]
+                  .filter(Boolean)
+                  .map(
+                    (cachedIcon): Promise<string> =>
+                      new Promise((resolveIcon) => {
+                        fs?.readFile(
+                          join(iconCacheDirectory, cachedIcon),
+                          (fileError, contents = Buffer.from("")) => {
+                            resolveIcon(fileError ? "" : bufferToUrl(contents));
+                          }
+                        );
+                      })
+                  )
+              )
+            ).filter(Boolean)
+          );
+        }
+      }
+    );
+  });
+
 export const getInfoWithoutExtension = (
   fs: FSModule,
   rootFs: RootFileSystem,
@@ -126,17 +166,32 @@ export const getInfoWithoutExtension = (
   callback: (value: FileInfo) => void
 ): void => {
   if (isDirectory) {
-    const setFolderInfo = (icon: string, getIcon?: () => void): void =>
-      callback({ getIcon, icon, pid: "FileExplorer", url: path });
+    const setFolderInfo = (
+      icon: string,
+      subIcons?: string[],
+      getIcon?: () => Promise<void>
+    ): void =>
+      callback({ getIcon, icon, pid: "FileExplorer", subIcons, url: path });
     const getFolderIcon = (): string => {
       if (rootFs?.mntMap[path]) return MOUNTED_FOLDER_ICON;
       if (useNewFolderIcon) return NEW_FOLDER_ICON;
       return FOLDER_ICON;
     };
+    setFolderInfo(getFolderIcon(), [], async () => {
+      const iconFromIni = await getIconFromIni(fs, path);
 
-    setFolderInfo(getFolderIcon(), () =>
-      getIconFromIni(fs, path).then(setFolderInfo)
-    );
+      if (iconFromIni) setFolderInfo(iconFromIni);
+      else {
+        const iconsFromCache = await getIconsFromCache(fs, path);
+
+        if (iconsFromCache.length > 0) {
+          setFolderInfo(FOLDER_BACK_ICON, [
+            ...iconsFromCache,
+            FOLDER_FRONT_ICON,
+          ]);
+        }
+      }
+    });
   } else {
     callback({ icon: UNKNOWN_ICON, pid: "", url: "" });
   }
@@ -170,9 +225,12 @@ export const getInfoWithExtension = (
 
         if (pid === "FileExplorer") {
           const getIcon = (): void => {
-            getIconFromIni(fs, url).then((iniIcon) =>
-              callback({ comment, icon: iniIcon, pid, subIcons, url })
-            );
+            getIconFromIni(fs, url).then((iniIcon) => {
+              if (iniIcon) {
+                callback({ comment, icon: iniIcon, pid, subIcons, url });
+              }
+              // TODO: Else use getIconsFromCache()
+            });
           };
 
           callback({ comment, getIcon, icon, pid, subIcons, url });
