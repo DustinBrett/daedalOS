@@ -111,7 +111,7 @@ export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
 
 export const ICON_PATH = "/System/Icons";
 
-export const USER_ICON_PATH = "/Users/Public/Icons";
+export const USER_ICON_PATH = `${HOME}/Icons`;
 
 export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
