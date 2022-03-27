@@ -9,6 +9,7 @@ const IGNORE_FILES = new Set([
   "favicon.ico",
   "fs.9p.json",
   "robots.txt",
+  "search.lunr.json",
 ]);
 const IGNORE_PATHS = ["Program Files", "System", "Users/Public/Icons"];
 
