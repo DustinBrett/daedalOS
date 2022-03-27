@@ -8,6 +8,7 @@ const IGNORE_FILES = new Set([
   "desktop.ini",
   "favicon.ico",
   "fs.9p.json",
+  "preload.json",
   "robots.txt",
   "search.lunr.json",
 ]);

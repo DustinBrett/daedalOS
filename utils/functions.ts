@@ -1,6 +1,5 @@
-import { getShortcutInfo } from "components/system/Files/FileEntry/functions";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
-import { extname, join } from "path";
+import { extname } from "path";
 import type { HTMLAttributes } from "react";
 import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
@@ -207,20 +206,3 @@ export const label = (value: string): HTMLAttributes<HTMLElement> => ({
 
 export const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
-
-export const getPublicDirectoryIcons = async (
-  directory: string
-): Promise<string[]> => {
-  const { readdirSync, readFileSync } = await import("fs");
-  const baseDirectory = join("./public", directory);
-
-  return readdirSync(baseDirectory).reduce<string[]>((icons, file) => {
-    if (extname(file) === ".url") {
-      const { icon } = getShortcutInfo(readFileSync(join(baseDirectory, file)));
-
-      if (icon) icons.push(icon);
-    }
-
-    return icons;
-  }, []);
-};

@@ -1,14 +1,11 @@
 import Head from "next/head";
 import { basename, dirname, join } from "path";
+import preloadIcons from "public/.index/preload.json";
 import { ICON_PATH, PACKAGE_DATA, USER_ICON_PATH } from "utils/constants";
 
 const { alias, description } = PACKAGE_DATA;
 
-type MetadataProps = {
-  preloadIcons: string[];
-};
-
-const Metadata: FC<MetadataProps> = ({ preloadIcons }) => (
+const Metadata: FC = () => (
   <Head>
     <meta
       content="width=device-width, initial-scale=1, minimum-scale=1"
@@ -16,7 +13,7 @@ const Metadata: FC<MetadataProps> = ({ preloadIcons }) => (
     />
     <meta content={description} name="description" />
     <title>{alias}</title>
-    {preloadIcons?.map((icon) => (
+    {(preloadIcons as string[])?.map((icon) => (
       <link
         key={icon}
         as="image"
