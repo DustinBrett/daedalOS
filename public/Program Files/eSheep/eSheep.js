@@ -393,7 +393,7 @@ window.Sheep = class eSheep {
           x < rect.right - this.imageW
         ) {
           const style = window.getComputedStyle(el);
-          if (style.display != "none") {
+          if (style.display != "none" && style.opacity != "0") {
             return el;
           }
         }
