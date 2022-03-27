@@ -25,10 +25,14 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     if (url) {
       title(id, directoryName || ROOT_NAME);
 
-      if (fs && rootFs && (!icon || url !== currentUrl)) {
+      if (
+        !icon ||
+        url !== currentUrl ||
+        (isMounted && icon !== MOUNTED_FOLDER_ICON)
+      ) {
         if (isMounted) {
           setProcessIcon(id, MOUNTED_FOLDER_ICON);
-        } else {
+        } else if (fs) {
           setProcessIcon(
             id,
             `/System/Icons/${directoryName ? "folder" : "pc"}.png`
@@ -48,7 +52,6 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     icon,
     id,
     isMounted,
-    rootFs,
     setProcessIcon,
     title,
     url,
