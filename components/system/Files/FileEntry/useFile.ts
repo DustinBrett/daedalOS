@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
-import { PROCESS_DELIMITER } from "utils/constants";
+import { FOLDER_BACK_ICON, PROCESS_DELIMITER } from "utils/constants";
 
 type UseFile = (pid: string, icon?: string) => void;
 
@@ -22,7 +22,11 @@ const useFile = (url: string): UseFile => {
         if (processes[activePid].minimized) minimize(activePid);
         setForegroundId(activePid);
       } else {
-        open(pid, { url }, singleton ? processIcon : icon);
+        open(
+          pid,
+          { url },
+          singleton || icon === FOLDER_BACK_ICON ? processIcon : icon
+        );
       }
     },
     [minimize, open, processes, setForegroundId, setUrl, url]

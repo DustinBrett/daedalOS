@@ -405,9 +405,7 @@ const FileEntry: FC<FileEntryProps> = ({
               alt={name}
               src={entryIcon}
               style={
-                (filteredSubIcons?.includes(FOLDER_FRONT_ICON) ||
-                  filteredSubIcons?.includes(FOLDER_BACK_ICON)) &&
-                ![FOLDER_FRONT_ICON, FOLDER_BACK_ICON].includes(entryIcon)
+                icon === FOLDER_BACK_ICON && entryIcon !== FOLDER_FRONT_ICON
                   ? {
                       transform:
                         subIconIndex === 0
@@ -417,9 +415,8 @@ const FileEntry: FC<FileEntryProps> = ({
                   : {}
               }
               {...FileEntryIconSize[
-                ![SHORTCUT_ICON, FOLDER_FRONT_ICON, FOLDER_BACK_ICON].includes(
-                  entryIcon
-                ) && !entryIcon.startsWith("blob:")
+                ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(entryIcon) &&
+                !entryIcon.startsWith("blob:")
                   ? "sub"
                   : view
               ]}
