@@ -4,9 +4,8 @@ import type {
   AsyncZippableFile,
   Unzipped,
 } from "fflate";
+import { join } from "path";
 import { BASE_ZIP_CONFIG } from "utils/constants";
-
-const unRarLib = "/System/Unrar.js/unrar.wasm";
 
 export const createZippable = (path: string, file: Buffer): AsyncZippable =>
   path
@@ -85,19 +84,29 @@ export const isFileInZip = (
 
 export { unzipAsync as unzip };
 
-export const unrar = async (data: Buffer): Promise<Unzipped> => {
-  const wasmModule = await fetch(unRarLib);
-  const wasmBinary = await wasmModule.arrayBuffer();
-  const { createExtractorFromData } = await import("node-unrar-js");
-  const extractor = await createExtractorFromData({ data, wasmBinary });
-  const { files: rarFiles } = extractor.extract({
-    files: ({ flags }) => !flags.encrypted,
-  });
-  const extractedFiles: Record<string, Uint8Array> = {};
+type FilesObject = { [key: string]: File | FilesObject };
 
-  for (const { extraction, fileHeader } of rarFiles) {
-    extractedFiles[fileHeader.name] = extraction;
-  }
+export const unarchive = async (data: Buffer): Promise<Unzipped> => {
+  const { Archive } = await import("libarchive.js");
 
-  return extractedFiles;
+  Archive.init({ workerUrl: "/System/libarchive.js/worker-bundle.js" });
+
+  const archive = await Archive.open(new File([new Blob([data])], "archive"));
+  const extractedFiles = await archive.extractFiles();
+  const returnFiles: Unzipped = {};
+  const parseFiles = (files: FilesObject, walkedPath = ""): void =>
+    Object.entries(files).forEach(async ([name, file]) => {
+      const extractPath = join(walkedPath, name);
+
+      if (file instanceof File) {
+        returnFiles[extractPath] = new Uint8Array(await file.arrayBuffer());
+      } else {
+        returnFiles[join(extractPath, "/")] = new Uint8Array(Buffer.from(""));
+        await parseFiles(file, extractPath);
+      }
+    });
+
+  await parseFiles(extractedFiles as FilesObject);
+
+  return returnFiles;
 };

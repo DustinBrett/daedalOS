@@ -71,7 +71,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
   - Back, Forward, Recent locations, Address bar, Search
 - [Drag & Drop](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) File Support (internal & external)
   - Loading progress dialog
-- ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [RAR extract](https://www.npmjs.com/package/node-unrar-js) support
+- ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [7z/GZ/RAR/TAR extract](https://github.com/nika-begiashvili/libarchivejs) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort
 - Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images & video

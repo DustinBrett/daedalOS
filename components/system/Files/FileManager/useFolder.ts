@@ -381,13 +381,16 @@ const useFolder = (
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
       const data = await readFile(path);
-      const { unrar, unzip } = await import("utils/zipFunctions");
-      const unzippedFiles =
-        extname(path).toLowerCase() === ".rar"
-          ? await unrar(data)
-          : await unzip(data);
-      const zipFolderName = basename(path, extname(path));
-
+      const { unarchive, unzip } = await import("utils/zipFunctions");
+      const unzippedFiles = [".7z", ".gz", ".rar", ".tar"].includes(
+        extname(path).toLowerCase()
+      )
+        ? await unarchive(data)
+        : await unzip(data);
+      const zipFolderName = basename(
+        path,
+        path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
+      );
       if (await mkdir(join(directory, zipFolderName))) {
         await Promise.all(
           Object.entries(unzippedFiles).map(

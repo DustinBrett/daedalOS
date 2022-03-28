@@ -21,8 +21,9 @@ This project is greatly augmented by code from the open source community. Thank 
 ## System Libraries
 
 - [BrowserFS](https://github.com/jvilk/BrowserFS)
+- [IDB-Keyval](https://github.com/jakearchibald/idb-keyval)
 - [fflate](https://github.com/101arrowz/fflate)
-- [node-unrar.js](https://github.com/YuJianrong/node-unrar.js)
+- [libarchive.js](https://github.com/nika-begiashvili/libarchivejs)
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)

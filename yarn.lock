@@ -856,6 +856,11 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/libarchive.js@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@types/libarchive.js/-/libarchive.js-1.3.1.tgz#843aeaad7bb9dd8a9e4a11aba616dda6c97d0b84"
+  integrity sha512-ddCRDAyVftfnbNvEe77FrOSWMYoFI85xJKITQ5AnvfR330KmEHS48KOmhEncpZadxefh64TO6jk6g2oabxWupg==
+
 "@types/lunr@^2.3.4":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@types/lunr/-/lunr-2.3.4.tgz#728f445855818fb17776d10ef4678f278072eb03"
@@ -3891,6 +3896,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libarchive.js@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/libarchive.js/-/libarchive.js-1.3.0.tgz#18c42c6b4ce727a02359c90769e4e454cf3743cd"
+  integrity sha512-EkQfRXt9DhWwj6BnEA2TNpOf4jTnzSTUPGgE+iFxcdNqjktY8GitbDeHnx8qZA0/IukNyyBUR3oQKRdYkO+HFg==
+
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
@@ -4298,11 +4308,6 @@ node-releases@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.2.tgz#7139fe71e2f4f11b47d4d2986aaf8c48699e0c01"
   integrity sha512-XxYDdcQ6eKqp/YjI+tb2C5WM2LgjnZrfYg4vgQt49EK268b6gYCHsBLrK2qvJo4FmCtqmKezb0WZFK4fkrZNsg==
-
-node-unrar-js@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/node-unrar-js/-/node-unrar-js-1.0.6.tgz#5e3e5664abfdd7734e5614f6f3f20b2cb6c0598f"
-  integrity sha512-jObs9hXUmXldlQI04/oYb+97RolAx4aJO08Rz5mRE/wFdwzcftuffEPZLZao+c0nKiwXCT77ZUN+sp/5lnpA2w==
 
 normalize-package-data@^2.5.0:
   version "2.5.0"

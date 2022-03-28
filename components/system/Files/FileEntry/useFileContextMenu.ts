@@ -16,6 +16,7 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, join } from "path";
 import { useCallback } from "react";
 import {
+  EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
@@ -126,10 +127,7 @@ const useFileContextMenu = (
       if (path) {
         menuItems.unshift(MENU_SEPERATOR);
 
-        if (
-          MOUNTABLE_EXTENSIONS.has(pathExtension) &&
-          pathExtension !== ".iso"
-        ) {
+        if (EXTRACTABLE_EXTENSIONS.has(pathExtension)) {
           menuItems.unshift({
             action: () => extractFiles(path),
             label: "Extract Here",
