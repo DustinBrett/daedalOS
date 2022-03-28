@@ -54,14 +54,14 @@ export const get9pModifiedTime = (path: string): number => {
 const parse9pEntry = ([name, , , pathOrArray]: FS9PV4): BFSFS => ({
   [name]: Array.isArray(pathOrArray)
     ? // eslint-disable-next-line unicorn/no-array-callback-reference
-      pathOrArray.map(parse9pEntry).reduce(reduceObjects)
+      pathOrArray.map(parse9pEntry).reduce(reduceObjects, {})
     : // eslint-disable-next-line unicorn/no-null
       null,
 });
 
 export const fs9pToBfs = (): BFSFS =>
   // eslint-disable-next-line unicorn/no-array-callback-reference
-  fsroot.map(parse9pEntry).reduce(reduceObjects);
+  fsroot.map(parse9pEntry).reduce(reduceObjects, {});
 
 const parse9pV4ToV3 = (fs9p: FS9PV4[], path = "/"): FS9PV3[] =>
   fs9p.map(([name, mtime, size, target]) => {
