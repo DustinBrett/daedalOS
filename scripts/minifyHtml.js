@@ -28,7 +28,7 @@ const HTML_MINIFIER_CONFIG = {
   useShortDoctype: true,
 };
 
-let commit = process.env.npm_package_gitHead?.slice(0, 8);
+let commit = process.env.npm_package_gitHead?.slice(0, 7);
 
 if (!commit) {
   try {
