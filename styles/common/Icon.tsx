@@ -15,6 +15,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
     decoding: "async",
     draggable: false,
     height: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
+    loading: "lazy",
     src:
       !src ||
       src.startsWith("blob:") ||
