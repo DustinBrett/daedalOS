@@ -41,7 +41,7 @@ const useWebamp = (id: string): Webamp => {
   const [webampCI, setWebampCI] = useState<WebampCI>();
   const { onDrop } = useFileDrop({ id });
   const initWebamp = useCallback(
-    async (
+    (
       containerElement: HTMLDivElement,
       { initialSkin, initialTracks }: Options
     ) => {

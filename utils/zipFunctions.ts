@@ -94,17 +94,23 @@ export const unarchive = async (data: Buffer): Promise<Unzipped> => {
   const archive = await Archive.open(new File([new Blob([data])], "archive"));
   const extractedFiles = await archive.extractFiles();
   const returnFiles: Unzipped = {};
-  const parseFiles = (files: FilesObject, walkedPath = ""): void =>
-    Object.entries(files).forEach(async ([name, file]) => {
-      const extractPath = join(walkedPath, name);
+  const parseFiles = async (
+    files: FilesObject,
+    walkedPath = ""
+  ): Promise<void> => {
+    await Promise.all(
+      Object.entries(files).map(async ([name, file]) => {
+        const extractPath = join(walkedPath, name);
 
-      if (file instanceof File) {
-        returnFiles[extractPath] = new Uint8Array(await file.arrayBuffer());
-      } else {
-        returnFiles[join(extractPath, "/")] = new Uint8Array(Buffer.from(""));
-        await parseFiles(file, extractPath);
-      }
-    });
+        if (file instanceof File) {
+          returnFiles[extractPath] = new Uint8Array(await file.arrayBuffer());
+        } else {
+          returnFiles[join(extractPath, "/")] = new Uint8Array(Buffer.from(""));
+          await parseFiles(file, extractPath);
+        }
+      })
+    );
+  };
 
   await parseFiles(extractedFiles as FilesObject);
 

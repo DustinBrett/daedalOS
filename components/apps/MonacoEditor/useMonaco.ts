@@ -28,7 +28,7 @@ const useMonaco = (
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const [monaco, setMonaco] = useState<typeof Monaco>();
   const createModelUri = useCallback(
-    (modelUrl: string, instance = 0): Monaco.Uri | undefined => {
+    (modelUrl: string, instance: number = 0): Monaco.Uri | undefined => {
       const uriName = `${modelUrl}${URL_DELIMITER}${instance}`;
       const models = monaco?.editor.getModels();
 

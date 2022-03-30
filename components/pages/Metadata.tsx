@@ -13,7 +13,7 @@ const Metadata: FC = () => (
     />
     <meta content={description} name="description" />
     <title>{alias}</title>
-    {(preloadIcons as string[])?.map((icon) => (
+    {preloadIcons?.map((icon) => (
       <link
         key={icon}
         as="image"

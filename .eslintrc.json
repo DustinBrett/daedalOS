@@ -33,6 +33,7 @@
   ],
   "rules": {
     "@next/next/no-img-element": "off",
+    "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/consistent-indexed-object-style": "error",
     "@typescript-eslint/consistent-type-imports": [
       "error",
@@ -54,6 +55,7 @@
         "ignoreTypeValueShadow": false
       }
     ],
+    "@typescript-eslint/no-unnecessary-type-assertion": "error",
     "@typescript-eslint/no-unsafe-argument": "error",
     "@typescript-eslint/no-unsafe-assignment": "error",
     "@typescript-eslint/no-unsafe-call": "error",
@@ -67,6 +69,7 @@
     ],
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
+    "@typescript-eslint/require-await": "error",
     "@typescript-eslint/sort-type-union-intersection-members": "error",
     "dot-notation": "off",
     "import/extensions": [

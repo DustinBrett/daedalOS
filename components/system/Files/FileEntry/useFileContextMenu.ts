@@ -175,7 +175,7 @@ const useFileContextMenu = (
                   await Promise.all(
                     transcodedFiles.map(
                       async ([transcodedFileName, transcodedFileData]) => {
-                        writeFile(transcodedFileName, transcodedFileData);
+                        await writeFile(transcodedFileName, transcodedFileData);
                         updateFolder(
                           dirname(path),
                           basename(transcodedFileName)
