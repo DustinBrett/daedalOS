@@ -56,13 +56,13 @@ const CODE_REPLACE_FUNCTIONS = [
 readdirSync(OUT_PATH).forEach(async (entry) => {
   if (extname(entry) === ".html") {
     const filPath = join(OUT_PATH, entry);
-    const html = await readFileSync(filPath);
+    const html = readFileSync(filPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);
 
     CODE_REPLACE_FUNCTIONS.forEach((codeFunction) => {
       minifiedHtml = codeFunction(minifiedHtml);
     });
 
-    await writeFileSync(filPath, minifiedHtml);
+    writeFileSync(filPath, minifiedHtml);
   }
 });
