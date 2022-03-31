@@ -77,9 +77,9 @@ const useMonaco = (
 
   useEffect(() => {
     editor?.onKeyDown(async (event) => {
-      const { ctrlKey, code } = event;
+      const { ctrlKey, code, keyCode } = event;
 
-      if (ctrlKey && code === "KeyS") {
+      if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
         const [baseUrl] =
           editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
         const saveUrl = url || DEFAULT_SAVE_PATH;

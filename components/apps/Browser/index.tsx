@@ -134,8 +134,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           ref={inputRef}
           defaultValue={initialUrl}
           onFocus={() => inputRef.current?.select()}
-          onKeyDown={({ code }) => {
-            if (inputRef.current && code === "Enter") {
+          onKeyDown={({ key }) => {
+            if (inputRef.current && key === "Enter") {
               changeUrl(id, inputRef.current.value);
               window.getSelection()?.removeAllRanges();
               inputRef.current.blur();
