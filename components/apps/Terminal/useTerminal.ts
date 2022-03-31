@@ -19,7 +19,7 @@ import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { HOME, PACKAGE_DATA } from "utils/constants";
-import { haltEvent, isFirefox, loadFiles } from "utils/functions";
+import { haltEvent, isFirefox, isSafari, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -72,11 +72,11 @@ const useTerminal = (
   }, [id, localEcho, setUrl, url]);
 
   useEffect(() => {
-    loadFiles(window.WebGLRenderingContext ? [...libs, webGlAddon] : libs).then(
-      () => {
-        if (window.Terminal) setTerminal(new window.Terminal(config));
-      }
-    );
+    loadFiles(
+      window.WebGLRenderingContext && !isSafari() ? [...libs, webGlAddon] : libs
+    ).then(() => {
+      if (window.Terminal) setTerminal(new window.Terminal(config));
+    });
   }, []);
 
   useEffect(() => {
