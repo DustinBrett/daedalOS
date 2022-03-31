@@ -72,6 +72,10 @@ const Sidebar: FC = () => {
   return (
     <StyledSidebar
       className={collapsed ? "collapsed" : undefined}
+      onClick={() => {
+        clearTimer();
+        setCollapsed(false);
+      }}
       onMouseEnter={() => {
         expandTimer.current = window.setTimeout(() => setCollapsed(false), 700);
       }}
