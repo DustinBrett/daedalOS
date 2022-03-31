@@ -154,27 +154,45 @@ export const handleFileInputEvent = async (
 
     if (eventTarget.items) {
       const processHandle = async (
-        fsHandle: FileSystemHandle,
+        fsHandle: FileSystemEntry | FileSystemHandle,
         subFolder = ""
       ): Promise<void> => {
-        if (fsHandle.kind === "directory") {
-          const directoryHandle = fsHandle as FileSystemDirectoryHandle;
+        if (fsHandle instanceof FileSystemHandle) {
+          if (fsHandle.kind === "directory") {
+            const directoryHandle = fsHandle as FileSystemDirectoryHandle;
 
-          for await (const handle of directoryHandle.values()) {
-            processHandle(handle, join(subFolder, fsHandle.name));
+            for await (const handle of directoryHandle.values()) {
+              processHandle(handle, join(subFolder, fsHandle.name));
+            }
+          } else if (fsHandle.kind === "file") {
+            addFile(
+              await (fsHandle as FileSystemFileHandle).getFile(),
+              subFolder
+            );
           }
-        } else if (fsHandle.kind === "file") {
-          addFile(
-            await (fsHandle as FileSystemFileHandle).getFile(),
-            subFolder
-          );
+        } else if (fsHandle instanceof FileSystemEntry) {
+          if (fsHandle.isDirectory) {
+            (fsHandle as FileSystemDirectoryEntry)
+              .createReader()
+              .readEntries((entries) => {
+                for (const entry of entries) {
+                  processHandle(entry, join(subFolder, entry.name));
+                }
+              });
+          } else {
+            (fsHandle as FileSystemFileEntry).file((file) =>
+              addFile(file, subFolder)
+            );
+          }
         }
       };
 
       await Promise.all(
         [...eventTarget.items].map(async (item) =>
           processHandle(
-            (await item.getAsFileSystemHandle()) as FileSystemHandle
+            "getAsFileSystemHandle" in item
+              ? ((await item.getAsFileSystemHandle()) as FileSystemHandle)
+              : (item.webkitGetAsEntry() as FileSystemEntry)
           )
         )
       );
