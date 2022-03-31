@@ -26,5 +26,5 @@ const getPublicDirectoryIcons = (directory) => {
 
 writeFileSync(
   "./public/.index/preload.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
+  JSON.stringify([...getPublicDirectoryIcons(DESKTOP_PATH), SHORTCUT_ICON])
 );
