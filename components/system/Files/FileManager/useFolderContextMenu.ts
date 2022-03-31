@@ -41,7 +41,7 @@ const useFolderContextMenu = (
       label: "Map directory",
     };
     const FS_COMMANDS =
-      typeof FileSystemHandle === "function"
+      typeof FileSystemHandle === "function" && "showDirectoryPicker" in window
         ? [ADD_FILE, MAP_DIRECTORY]
         : [ADD_FILE];
 
