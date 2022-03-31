@@ -26,6 +26,7 @@ const useRuffle = (
     loadFiles(libs).then(() => {
       if (window.RufflePlayer) {
         window.RufflePlayer.config = {
+          allowScriptAccess: false,
           backgroundColor: "#000000",
           letterbox: "on",
           polyfills: false,
