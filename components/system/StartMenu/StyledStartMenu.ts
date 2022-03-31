@@ -86,7 +86,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       ${ThinScrollBars};
     }
 
-    @media (hover: none) {
+    @media (hover: none), (pointer: coarse) {
       ${ThinScrollBars};
 
       ::-webkit-scrollbar-track {
