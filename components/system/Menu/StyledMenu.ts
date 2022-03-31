@@ -15,7 +15,6 @@ const StyledMenu = styled(motion.nav)<StyledMenuProps>`
   color: rgb(255, 255, 255);
   contain: layout;
   font-size: 12px;
-  height: max-content;
   max-height: fit-content;
   max-width: fit-content;
   padding: 4px 2px;
