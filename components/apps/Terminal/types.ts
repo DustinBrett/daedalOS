@@ -19,8 +19,8 @@ export type LocalEcho = ITerminalAddon & {
     entries: string[];
   };
   print: (message: string) => void;
-  println: (message: string) => void;
   printWide: (message: string) => void;
+  println: (message: string) => void;
   read: (prompt: string) => Promise<string>;
   removeAutocompleteHandler: (callback: unknown) => void;
 };
@@ -35,16 +35,16 @@ type LocalEchoOptions = {
 
 declare global {
   interface Window {
-    Terminal?: typeof Terminal;
     FitAddon?: {
       FitAddon: new () => FitAddon;
-    };
-    WebglAddon?: {
-      WebglAddon: new () => WebglAddon;
     };
     LocalEchoController?: new (
       terminal?: Terminal,
       options?: LocalEchoOptions
     ) => LocalEcho;
+    Terminal?: typeof Terminal;
+    WebglAddon?: {
+      WebglAddon: new () => WebglAddon;
+    };
   }
 }

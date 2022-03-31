@@ -4,15 +4,19 @@
     "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
     "plugin:jest-dom/recommended",
+    "plugin:jsx-a11y/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:sonarjs/recommended",
+    "plugin:typescript-sort-keys/recommended",
     "plugin:unicorn/recommended",
+    "plugin:prettier/recommended",
     "prettier",
     "next",
     "next/core-web-vitals",
@@ -25,11 +29,14 @@
     "jest",
     "jest-dom",
     "prettier",
+    "react",
     "react-hooks",
     "simple-import-sort",
     "sonarjs",
     "sort-keys-fix",
-    "unicorn"
+    "typescript-sort-keys",
+    "unicorn",
+    "unused-imports"
   ],
   "rules": {
     "@next/next/no-img-element": "off",
@@ -46,7 +53,9 @@
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/method-signature-style": "error",
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-shadow": [
       "error",
@@ -55,6 +64,7 @@
         "ignoreTypeValueShadow": false
       }
     ],
+    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
     "@typescript-eslint/no-unsafe-argument": "error",
     "@typescript-eslint/no-unsafe-assignment": "error",
@@ -71,6 +81,7 @@
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
     "@typescript-eslint/require-await": "error",
     "@typescript-eslint/sort-type-union-intersection-members": "error",
+    "curly": "error",
     "dot-notation": "off",
     "import/extensions": [
       "error",
@@ -81,6 +92,7 @@
     "import/prefer-default-export": "off",
     "no-console": ["error", { "allow": ["info", "error"] }],
     "no-implicit-coercion": "error",
+    "no-new-wrappers": "error",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",
@@ -88,6 +100,7 @@
       "WithStatement"
     ],
     "no-shadow": ["error", { "hoist": "all" }],
+    "no-undef-init": "error",
     "no-underscore-dangle": "off",
     "no-unsafe-optional-chaining": "error",
     "react/function-component-definition": [
@@ -105,6 +118,8 @@
         "shorthandLast": true
       }
     ],
+    "react/no-unused-prop-types": "error",
+    "react/no-unused-state": "error",
     "react/require-default-props": "off",
     "react/require-optimization": "error",
     "simple-import-sort/exports": "error",
@@ -124,7 +139,17 @@
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-object-from-entries": "off",
     "unicorn/prefer-switch": "off",
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
   },
   "parserOptions": {
     "project": ["tsconfig.json"]

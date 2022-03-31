@@ -15,7 +15,7 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { fileReaders = [] } = process || {};
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
-  const [cd, { name = "" } = {}] = currentTransfer || [];
+  const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState(0);
   const processReader = useCallback(
     ([[file, directory, reader], ...remainingReaders]: FileReaders) => {

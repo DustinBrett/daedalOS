@@ -26,8 +26,8 @@ const IRC: FC = () => {
   // TODO: Handle bold/color lines
   const newLine = (
     { command, parameters, type }: Message,
-    name?: string,
-    connectedServer?: string,
+    name = "",
+    connectedServer = "",
     seenCommands: string[] = []
   ): void => {
     if (parameters) {

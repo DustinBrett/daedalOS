@@ -7,14 +7,14 @@ export type SelectionRect = Partial<Position> & Partial<Size>;
 
 type Selection = {
   isSelecting: boolean;
-  selectionRect?: SelectionRect;
-  selectionStyling: React.CSSProperties;
   selectionEvents: {
     onMouseDown: React.MouseEventHandler<HTMLElement>;
-    onMouseMove?: React.MouseEventHandler<HTMLElement>;
     onMouseLeave?: React.MouseEventHandler<HTMLElement>;
+    onMouseMove?: React.MouseEventHandler<HTMLElement>;
     onMouseUp?: () => void;
   };
+  selectionRect?: SelectionRect;
+  selectionStyling: React.CSSProperties;
 };
 
 const FPS = 60;

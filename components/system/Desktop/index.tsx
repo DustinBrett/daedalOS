@@ -1,7 +1,7 @@
 import StyledDesktop from "components/system/Desktop/StyledDesktop";
 import useWallpaper from "components/system/Desktop/Wallpapers/useWallpaper";
 import FileManager from "components/system/Files/FileManager";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 
 const Desktop: FC = ({ children }) => {

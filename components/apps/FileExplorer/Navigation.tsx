@@ -28,7 +28,7 @@ const Navigation: FC<NavigationProps> = ({ hideSearch, id }) => {
       [id]: { url = "" },
     },
   } = useProcesses();
-  const upTo = url !== "/" ? basename(dirname(url)) : undefined;
+  const upTo = url !== "/" ? basename(dirname(url)) : "";
   const { contextMenu } = useMenu();
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);

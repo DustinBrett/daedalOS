@@ -1,6 +1,7 @@
 import processDirectory from "contexts/process/directory";
 
-const { height, width } = processDirectory["BoxedWine"].defaultSize || {};
+const { height = 0, width = 0 } =
+  processDirectory["BoxedWine"].defaultSize || {};
 
 const configParams = {
   "inline-default-ondemand-root-overlay": "/wine1.7.55-v8-min-online",

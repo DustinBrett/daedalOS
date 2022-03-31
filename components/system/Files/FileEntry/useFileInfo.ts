@@ -11,8 +11,8 @@ export type FileInfo = {
   comment?: string;
   getIcon?: () => void;
   icon: string;
-  subIcons?: string[];
   pid: string;
+  subIcons?: string[];
   type?: string;
   url: string;
 };

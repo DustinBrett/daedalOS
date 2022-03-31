@@ -33,10 +33,10 @@ type FileManagerProps = {
   hideLoading?: boolean;
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
-  readOnly?: boolean;
-  showStatusBar?: boolean;
   id?: string;
   loadIconsImmediately?: boolean;
+  readOnly?: boolean;
+  showStatusBar?: boolean;
   url: string;
   useNewFolderIcon?: boolean;
   view: FileManagerViewNames;

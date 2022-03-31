@@ -60,11 +60,11 @@ export type RootFileSystem = Omit<
 };
 
 type AsyncFSModule = AsyncFS & {
-  fs?: FSModule;
   FileSystemAccess?: typeof FileSystemAccess;
   IsoFS?: typeof IsoFS;
-  rootFs?: RootFileSystem;
   ZipFS?: typeof ZipFS;
+  fs?: FSModule;
+  rootFs?: RootFileSystem;
 };
 
 const useAsyncFs = (): AsyncFSModule => {

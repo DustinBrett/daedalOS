@@ -1,17 +1,17 @@
 export type IFFmpegInstance = {
-  exit: () => void;
   FS: (
     command: string,
     fileName: string,
     fileData?: Buffer
   ) => Uint8Array | void;
+  exit: () => void;
   load: () => Promise<void>;
   run: (...commandArgs: string[]) => Promise<void>;
 };
 
 export type IFFmpegLog = {
-  type: string;
   message: string;
+  type: string;
 };
 
 type FFmpegConfig = {

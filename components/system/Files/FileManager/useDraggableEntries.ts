@@ -6,8 +6,8 @@ import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 
 type DraggableEntryProps = {
   draggable: boolean;
-  onDragStart: React.DragEventHandler;
   onDragEnd: React.DragEventHandler;
+  onDragStart: React.DragEventHandler;
 };
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;

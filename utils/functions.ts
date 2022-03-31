@@ -115,10 +115,12 @@ export const getFormattedSize = (size = 0): string => {
   if (size === 1) return "1 byte";
   if (size < bytesInKB) return `${size} bytes`;
   if (size < bytesInMB) return `${formatNumber(size / bytesInKB)} KB`;
-  if (size < bytesInGB)
+  if (size < bytesInGB) {
     return `${formatNumber(size / bytesInKB / bytesInKB)} MB`;
-  if (size < bytesInTB)
+  }
+  if (size < bytesInTB) {
     return `${formatNumber(size / bytesInKB / bytesInKB / bytesInKB)} GB`;
+  }
 
   return `${size} bytes`;
 };

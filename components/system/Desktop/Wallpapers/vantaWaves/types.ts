@@ -9,9 +9,9 @@ export type VantaWavesConfig = VantaWavesCycleColor & {
   color: number;
   forceAnimate?: boolean;
   gyroControls?: boolean;
-  shininess: number;
   mouseControls?: boolean;
   mouseEase?: boolean;
+  shininess: number;
   touchControls?: boolean;
   waveHeight: number;
   waveSpeed: number;
@@ -43,8 +43,8 @@ export type VantaWaves = {
 };
 
 export type VantaObject = {
-  current: VantaWaves;
   WAVES: (settings: VantaWavesSettings) => VantaWaves;
+  current: VantaWaves;
 };
 
 declare global {

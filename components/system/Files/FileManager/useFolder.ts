@@ -60,8 +60,8 @@ export type Files = Record<string, FileStat>;
 
 type Folder = {
   fileActions: FileActions;
-  folderActions: FolderActions;
   files: Files;
+  folderActions: FolderActions;
   isLoading: boolean;
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };

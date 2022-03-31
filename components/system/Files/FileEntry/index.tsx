@@ -52,8 +52,8 @@ type FileEntryProps = {
   fileActions: FileActions;
   fileManagerId?: string;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
-  focusedEntries: string[];
   focusFunctions: FocusEntryFunctions;
+  focusedEntries: string[];
   hideShortcutIcon?: boolean;
   isLoadingFileManager: boolean;
   loadIconImmediately?: boolean;

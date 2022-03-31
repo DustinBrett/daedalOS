@@ -40,8 +40,8 @@ export type ProcessElements = {
 
 export type Process = ProcessArguments &
   ProcessElements & {
-    closing?: boolean;
     Component: React.ComponentType<ComponentProcessProps>;
+    closing?: boolean;
     defaultSize?: Size;
     hasWindow?: boolean;
     icon: string;

@@ -12,11 +12,11 @@ type SetFocusedWindow = {
 };
 
 type UpdateWindowPositions = {
-  type: "UPDATE_WINDOW_POSITIONS";
   positions: {
     main: Position;
     playlist: Position;
   };
+  type: "UPDATE_WINDOW_POSITIONS";
 };
 
 export type WebampCI = Webamp & {

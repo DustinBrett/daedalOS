@@ -32,9 +32,9 @@ export type ContextMenuCapture = {
 };
 
 export type MenuContextState = {
+  contextMenu: (getItems: () => MenuItem[]) => ContextMenuCapture;
   menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;
-  contextMenu: (getItems: () => MenuItem[]) => ContextMenuCapture;
 };
 
 const useMenuContextState = (): MenuContextState => {

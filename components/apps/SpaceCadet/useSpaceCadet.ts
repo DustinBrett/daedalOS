@@ -4,10 +4,10 @@ import { loadFiles } from "utils/functions";
 declare global {
   interface Window {
     Module: {
-      canvas: HTMLCanvasElement;
       SDL2?: {
         audioContext: AudioContext;
       };
+      canvas: HTMLCanvasElement;
     };
   }
 }

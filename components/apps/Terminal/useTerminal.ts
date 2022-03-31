@@ -58,13 +58,9 @@ const useTerminal = (
         localEcho.handleCursorInsert(url);
       } else {
         const fileExtension = extname(url).toLowerCase() as ExtensionType;
+        const { command: extCommand = "" } = extensions[fileExtension] || {};
 
-        if (
-          extensions[fileExtension].process.includes("Terminal") &&
-          extensions[fileExtension].command
-        ) {
-          setInitialCommand(`${extensions[fileExtension].command} ${url}`);
-        }
+        if (extCommand) setInitialCommand(`${extCommand} ${url}`);
       }
 
       setUrl(id, "");

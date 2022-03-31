@@ -25,30 +25,30 @@ import { useCallback, useEffect, useState } from "react";
 type FilePasteOperations = Record<string, "copy" | "move">;
 
 export type FileSystemContextState = AsyncFS & {
-  fs?: FSModule;
-  rootFs?: RootFileSystem;
-  mapFs: (directory: string) => Promise<string>;
-  mountFs: (url: string) => Promise<void>;
-  unMountFs: (url: string) => void;
   addFile: (
     directory: string,
     callback: (name: string, buffer?: Buffer) => void
   ) => void;
-  resetStorage: () => Promise<void>;
-  updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  pasteList: FilePasteOperations;
+  copyEntries: (entries: string[]) => void;
   createPath: (
     name: string,
     directory: string,
     buffer?: Buffer
   ) => Promise<string>;
-  copyEntries: (entries: string[]) => void;
-  unMapFs: (directory: string) => void;
-  moveEntries: (entries: string[]) => void;
-  mkdirRecursive: (path: string) => Promise<void>;
   deletePath: (path: string) => Promise<void>;
+  fs?: FSModule;
+  mapFs: (directory: string) => Promise<string>;
+  mkdirRecursive: (path: string) => Promise<void>;
+  mountFs: (url: string) => Promise<void>;
+  moveEntries: (entries: string[]) => void;
+  pasteList: FilePasteOperations;
+  removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+  resetStorage: () => Promise<void>;
+  rootFs?: RootFileSystem;
+  unMapFs: (directory: string) => void;
+  unMountFs: (url: string) => void;
+  updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
 };
 
 const useFileSystemContextState = (): FileSystemContextState => {

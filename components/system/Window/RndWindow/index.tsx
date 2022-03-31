@@ -33,7 +33,13 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     maximize,
     processes: { [id]: process },
   } = useProcesses();
-  const { closing, componentWindow, maximized, minimized } = process || {};
+  const {
+    closing,
+    componentWindow,
+    maximized,
+    minimized,
+    url = "",
+  } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
   const { setWindowStates, windowStates: { [id]: windowState } = {} } =
@@ -75,7 +81,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
 
         setWindowStates((currentWindowStates) => ({
           ...currentWindowStates,
-          [pid === id ? id : `${pid}${PROCESS_DELIMITER}${process.url}`]: {
+          [pid === id ? id : `${pid}${PROCESS_DELIMITER}${url}`]: {
             maximized,
             position: currentWindow?.props.position,
             size: currentWindow?.props.size
@@ -96,6 +102,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     maximized,
     process,
     setWindowStates,
+    url,
   ]);
 
   return (
