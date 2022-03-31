@@ -36,6 +36,7 @@ type FileManagerProps = {
   readOnly?: boolean;
   showStatusBar?: boolean;
   id?: string;
+  loadIconsImmediately?: boolean;
   url: string;
   useNewFolderIcon?: boolean;
   view: FileManagerViewNames;
@@ -47,6 +48,7 @@ const FileManager: FC<FileManagerProps> = ({
   hideScrolling,
   hideShortcutIcons,
   id,
+  loadIconsImmediately,
   readOnly,
   showStatusBar,
   url,
@@ -158,6 +160,7 @@ const FileManager: FC<FileManagerProps> = ({
                 focusedEntries={focusedEntries}
                 hideShortcutIcon={hideShortcutIcons}
                 isLoadingFileManager={isLoading}
+                loadIconImmediately={loadIconsImmediately}
                 name={basename(file, SHORTCUT_EXTENSION)}
                 path={join(url, file)}
                 readOnly={readOnly}

@@ -5,17 +5,18 @@ import { cleanUpBufferUrl } from "utils/functions";
 
 export type IconProps = {
   $displaySize?: number;
+  $eager?: boolean;
   $imgRef?: React.MutableRefObject<HTMLImageElement | null>;
   $imgSize: number;
   $moving?: boolean;
 };
 
 const StyledIcon = styled.img.attrs<IconProps>(
-  ({ $imgSize = 0, $displaySize = 0, src = "" }) => ({
+  ({ $imgSize = 0, $displaySize = 0, $eager = false, src = "" }) => ({
     decoding: "async",
     draggable: false,
     height: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
-    loading: "lazy",
+    loading: $eager ? "eager" : "lazy",
     src:
       !src ||
       src.startsWith("blob:") ||

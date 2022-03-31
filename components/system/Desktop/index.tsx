@@ -11,7 +11,13 @@ const Desktop: FC = ({ children }) => {
 
   return (
     <StyledDesktop ref={desktopRef}>
-      <FileManager url={DESKTOP_PATH} view="icon" hideLoading hideScrolling />
+      <FileManager
+        url={DESKTOP_PATH}
+        view="icon"
+        hideLoading
+        hideScrolling
+        loadIconsImmediately
+      />
       {children}
     </StyledDesktop>
   );

@@ -56,6 +56,7 @@ type FileEntryProps = {
   focusFunctions: FocusEntryFunctions;
   hideShortcutIcon?: boolean;
   isLoadingFileManager: boolean;
+  loadIconImmediately?: boolean;
   name: string;
   path: string;
   readOnly?: boolean;
@@ -102,6 +103,7 @@ const FileEntry: FC<FileEntryProps> = ({
   focusFunctions,
   hideShortcutIcon,
   isLoadingFileManager,
+  loadIconImmediately,
   name,
   path,
   readOnly,
@@ -402,6 +404,7 @@ const FileEntry: FC<FileEntryProps> = ({
           {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
+            $eager={loadIconImmediately}
             $imgRef={iconRef}
             $moving={pasteList[path] === "move"}
             alt={name}
