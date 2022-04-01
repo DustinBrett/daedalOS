@@ -414,6 +414,7 @@ const FileEntry: FC<FileEntryProps> = ({
           {(filteredSubIcons || []).map((entryIcon, subIconIndex) => (
             <Icon
               key={entryIcon}
+              $eager={entryIcon === SHORTCUT_ICON}
               alt={name}
               src={entryIcon}
               style={
