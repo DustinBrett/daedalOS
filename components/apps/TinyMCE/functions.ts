@@ -12,11 +12,11 @@ export const setReadOnlyMode = (editor: Editor): void => {
       "click",
       () => {
         toolbars.removeAttribute("title");
-        editor.setMode("design");
+        editor.mode.set("design");
       },
       ONE_TIME_PASSIVE_EVENT
     );
   }
 
-  editor.setMode("readonly");
+  editor.mode.set("readonly");
 };

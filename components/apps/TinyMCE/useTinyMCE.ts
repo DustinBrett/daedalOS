@@ -21,6 +21,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
 import { loadFiles } from "utils/functions";
 
+type OptionSetter = <K, T>(name: K, value: T) => void;
+
 const useTinyMCE = (
   id: string,
   url: string,
@@ -86,7 +88,7 @@ const useTinyMCE = (
 
   useEffect(() => {
     if (editor) {
-      editor.settings["save_onsavecallback"] = async () => {
+      (editor.options.set as OptionSetter)("save_onsavecallback", async () => {
         const saveSpec: NotificationSpec = {
           closeButton: true,
           text: "Successfully saved.",
@@ -105,7 +107,7 @@ const useTinyMCE = (
         }
 
         editor.notificationManager.open(saveSpec);
-      };
+      });
     }
   }, [editor, updateFolder, updateTitle, url, writeFile]);
 
@@ -155,7 +157,12 @@ const useTinyMCE = (
     if (url && editor && readFile) loadFile();
   }, [editor, loadFile, readFile, url]);
 
-  useEffect(() => () => editor?.destroy(), [editor]);
+  useEffect(
+    () => () => {
+      window.setTimeout(() => editor?.destroy(), 0);
+    },
+    [editor]
+  );
 };
 
 export default useTinyMCE;

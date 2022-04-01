@@ -1,8 +1,8 @@
 import { DESKTOP_PATH } from "utils/constants";
 
 const plugins = `
-  code fullscreen help image link lists media paste
-  preview print save searchreplace table wordcount`;
+  code fullscreen help image link lists media
+  preview save searchreplace table wordcount`;
 
 const toolbar = `
   save undo redo | formatselect | bold italic underline | forecolor backcolor |
