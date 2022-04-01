@@ -73,7 +73,6 @@ const processGit = async (
       localEcho.println(`git version ${version()}.isomorphic-git`);
       break;
     }
-    case "help":
     default:
       help(localEcho, commands);
   }
