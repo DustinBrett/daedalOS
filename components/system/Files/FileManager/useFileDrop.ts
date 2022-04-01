@@ -13,7 +13,7 @@ type FileDrop = {
 };
 
 type FileDropProps = {
-  callback?: (path: string, buffer?: Buffer) => void;
+  callback?: (path: string, buffer?: Buffer) => Promise<void> | void;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -31,18 +31,19 @@ const useFileDrop = ({
   const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
   const updateProcessUrl = async (
     filePath: string,
-    fileData?: Buffer
+    fileData?: Buffer,
+    updateUrl = true
   ): Promise<void> => {
     if (id) {
       if (!fileData) {
-        url(id, filePath);
+        if (updateUrl) url(id, filePath);
       } else {
         const tempPath = join(DESKTOP_PATH, filePath);
 
         await mkdirRecursive(DESKTOP_PATH);
 
         if (await writeFile(tempPath, fileData, true)) {
-          url(id, tempPath);
+          if (updateUrl) url(id, tempPath);
           updateFolder(DESKTOP_PATH, filePath);
         }
       }

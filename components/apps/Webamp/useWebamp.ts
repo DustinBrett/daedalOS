@@ -4,15 +4,17 @@ import {
   closeEqualizer,
   getWebampElement,
   MAIN_WINDOW,
+  parseTrack,
   PLAYLIST_WINDOW,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
 import type { WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useState } from "react";
+import { useCallback, useRef } from "react";
 import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -38,8 +40,24 @@ const useWebamp = (id: string): Webamp => {
     processes: { [id]: process },
   } = useProcesses();
   const { componentWindow } = process || {};
-  const [webampCI, setWebampCI] = useState<WebampCI>();
-  const { onDrop } = useFileDrop({ id });
+  const webampCI = useRef<WebampCI>();
+  const { readFile } = useFileSystem();
+  const { onDrop: onDropCopy } = useFileDrop({ id });
+  const { onDrop } = useFileDrop({
+    callback: async (
+      fileName: string,
+      buffer?: Buffer,
+      updateUrl?: boolean
+    ) => {
+      if (webampCI.current) {
+        const data = buffer || (await readFile(fileName));
+        const track = await parseTrack(data, fileName);
+
+        if (!updateUrl) webampCI.current.appendTracks([track]);
+      }
+    },
+    id,
+  });
   const initWebamp = useCallback(
     (
       containerElement: HTMLDivElement,
@@ -60,7 +78,10 @@ const useWebamp = (id: string): Webamp => {
             webampElement.querySelector<HTMLDivElement>(PLAYLIST_WINDOW);
 
           [mainWindow, playlistWindow].forEach((element) => {
-            element?.addEventListener("drop", onDrop);
+            element?.addEventListener("drop", (event) => {
+              onDropCopy(event);
+              onDrop(event);
+            });
             element?.addEventListener("dragover", haltEvent);
           });
 
@@ -106,7 +127,7 @@ const useWebamp = (id: string): Webamp => {
         if (initialTracks) webamp.play();
       });
 
-      setWebampCI(webamp);
+      webampCI.current = webamp;
     },
     [
       componentWindow,
@@ -114,6 +135,7 @@ const useWebamp = (id: string): Webamp => {
       linkElement,
       onClose,
       onDrop,
+      onDropCopy,
       onMinimize,
       position,
       process,
@@ -124,7 +146,7 @@ const useWebamp = (id: string): Webamp => {
 
   return {
     initWebamp,
-    webampCI,
+    webampCI: webampCI.current,
   };
 };
 

@@ -121,7 +121,7 @@ export const iterateFileName = (name: string, iteration: number): string => {
 
 export const handleFileInputEvent = async (
   event: Event | React.DragEvent,
-  callback: (fileName: string, buffer?: Buffer) => void,
+  callback: (fileName: string, buffer?: Buffer, updateUrl?: boolean) => void,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders) => void
 ): Promise<void> => {
@@ -132,6 +132,7 @@ export const handleFileInputEvent = async (
     ((event.currentTarget as HTMLInputElement) || {});
 
   if (eventTarget.files.length > 0) {
+    const fileCount = eventTarget.files.length;
     const fileReaders: FileReaders = [];
     const addFile = (file: File, subFolder = ""): void => {
       const reader = new FileReader();
@@ -142,7 +143,8 @@ export const handleFileInputEvent = async (
           if (target?.result instanceof ArrayBuffer) {
             callback(
               join(subFolder, file.name),
-              Buffer.from(new Uint8Array(target.result))
+              Buffer.from(new Uint8Array(target.result)),
+              fileCount === 1
             );
           }
         },
@@ -203,8 +205,11 @@ export const handleFileInputEvent = async (
     openTransferDialog(fileReaders);
   } else {
     const filePaths = JSON.parse(eventTarget.getData("text")) as string[];
-
-    filePaths.forEach((path) => dirname(path) !== "." && callback(path));
+    filePaths.forEach(
+      (path) =>
+        dirname(path) !== "." &&
+        callback(path, undefined, filePaths.length === 1)
+    );
   }
 };
 
