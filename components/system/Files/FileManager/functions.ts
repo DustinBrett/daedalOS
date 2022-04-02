@@ -1,6 +1,9 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
-import type { Files } from "components/system/Files/FileManager/useFolder";
+import type {
+  CompleteAction,
+  Files,
+} from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { FileReaders } from "hooks/useDialog";
 import { basename, dirname, extname, join } from "path";
@@ -121,7 +124,11 @@ export const iterateFileName = (name: string, iteration: number): string => {
 
 export const handleFileInputEvent = async (
   event: Event | React.DragEvent,
-  callback: (fileName: string, buffer?: Buffer, updateUrl?: boolean) => void,
+  callback: (
+    fileName: string,
+    buffer?: Buffer,
+    completeAction?: CompleteAction
+  ) => void,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders) => void
 ): Promise<void> => {
@@ -144,7 +151,7 @@ export const handleFileInputEvent = async (
             callback(
               join(subFolder, file.name),
               Buffer.from(new Uint8Array(target.result)),
-              fileCount === 1
+              fileCount === 1 ? "updateUrl" : undefined
             );
           }
         },
@@ -211,7 +218,11 @@ export const handleFileInputEvent = async (
     filePaths.forEach(
       (path) =>
         dirname(path) !== "." &&
-        callback(path, undefined, filePaths.length === 1)
+        callback(
+          path,
+          undefined,
+          filePaths.length === 1 ? "updateUrl" : undefined
+        )
     );
   }
 };

@@ -10,6 +10,7 @@ import {
 } from "components/apps/Webamp/functions";
 import type { WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -47,13 +48,15 @@ const useWebamp = (id: string): Webamp => {
     callback: async (
       fileName: string,
       buffer?: Buffer,
-      updateUrl?: boolean
+      completeAction?: CompleteAction
     ) => {
       if (webampCI.current) {
         const data = buffer || (await readFile(fileName));
         const track = await parseTrack(data, fileName);
 
-        if (!updateUrl) webampCI.current.appendTracks([track]);
+        if (completeAction !== "updateUrl") {
+          webampCI.current.appendTracks([track]);
+        }
       }
     },
     id,

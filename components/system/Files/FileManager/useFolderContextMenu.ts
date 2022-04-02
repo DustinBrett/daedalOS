@@ -95,18 +95,18 @@ const useFolderContextMenu = (
         label: "New",
         menu: [
           {
-            action: () => newPath(NEW_FOLDER, undefined, true),
+            action: () => newPath(NEW_FOLDER, undefined, "rename"),
             icon: FOLDER_ICON,
             label: "Folder",
           },
           MENU_SEPERATOR,
           {
-            action: () => newPath(NEW_RTF_DOCUMENT, Buffer.from(""), true),
+            action: () => newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
             icon: richTextDocumentIcon,
             label: "Rich Text Document",
           },
           {
-            action: () => newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), true),
+            action: () => newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
             icon: textDocumentIcon,
             label: "Text Document",
           },

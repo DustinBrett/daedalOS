@@ -1,4 +1,5 @@
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
+import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDialog from "hooks/useDialog";
@@ -32,18 +33,18 @@ const useFileDrop = ({
   const updateProcessUrl = async (
     filePath: string,
     fileData?: Buffer,
-    updateUrl = true
+    completeAction?: CompleteAction
   ): Promise<void> => {
     if (id) {
       if (!fileData) {
-        if (updateUrl) url(id, filePath);
+        if (completeAction === "updateUrl") url(id, filePath);
       } else {
         const tempPath = join(DESKTOP_PATH, filePath);
 
         await mkdirRecursive(DESKTOP_PATH);
 
         if (await writeFile(tempPath, fileData, true)) {
-          if (updateUrl) url(id, tempPath);
+          if (completeAction === "updateUrl") url(id, tempPath);
           updateFolder(DESKTOP_PATH, filePath);
         }
       }

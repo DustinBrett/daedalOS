@@ -42,12 +42,14 @@ export type FileActions = {
   renameFile: (path: string, name?: string) => void;
 };
 
+export type CompleteAction = "rename" | "updateUrl";
+
 export type FolderActions = {
   addToFolder: () => void;
   newPath: (
     path: string,
     buffer?: Buffer,
-    thenRename?: boolean
+    completeAction?: CompleteAction
   ) => Promise<void>;
   pasteToFolder: () => void;
   resetFiles: () => void;
@@ -268,14 +270,14 @@ const useFolder = (
     async (
       name: string,
       buffer?: Buffer,
-      thenRename = false
+      completeAction?: CompleteAction
     ): Promise<void> => {
       const uniqueName = await createPath(name, directory, buffer);
 
       if (uniqueName && !uniqueName.includes("/")) {
         updateFolder(directory, uniqueName);
 
-        if (thenRename) setRenaming(uniqueName);
+        if (completeAction === "rename") setRenaming(uniqueName);
         else {
           blurEntry();
           focusEntry(uniqueName);
