@@ -4255,14 +4255,14 @@ music-metadata-browser@^0.6.1:
     remove "^0.1.5"
     typedarray-to-buffer "^3.1.5"
 
-music-metadata-browser@^2.5.5:
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/music-metadata-browser/-/music-metadata-browser-2.5.5.tgz#fbb8466765a74cca42ceea3123f2f5ef86890744"
-  integrity sha512-38A/q1fz7LOIDxpi2fAzPGMNZQ0YyQUfErizK/rbWRIKC7E4N2BQpqCHq38nHlb7+Iv/wEHgwVoIwbUAXtphEA==
+music-metadata-browser@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/music-metadata-browser/-/music-metadata-browser-2.5.6.tgz#56d75b601b36fe296596fe12a9b5eb1ba2b50395"
+  integrity sha512-tzv2pJh6Cr/Rnqz59KqLmzszbRy8EJtORpxYaGPk0GwTGUoOn68oqfq5QiwaJAwEbEz5WIzlEOGke2f6i0EfwQ==
   dependencies:
     buffer "^6.0.3"
-    debug "^4.3.3"
-    music-metadata "^7.12.0"
+    debug "^4.3.4"
+    music-metadata "^7.12.3"
     readable-stream "^3.6.0"
     readable-web-to-node-stream "^3.0.2"
 
@@ -4277,17 +4277,17 @@ music-metadata@^3.4.0:
     strtok3 "^2.3.0"
     token-types "^1.0.1"
 
-music-metadata@^7.12.0:
-  version "7.12.2"
-  resolved "https://registry.yarnpkg.com/music-metadata/-/music-metadata-7.12.2.tgz#13771b5d88285afd93659ed2496912c92e0558b6"
-  integrity sha512-KO1L6q30b6HfGlDQk1VAdrZqCKi4Gy7pN7eZOZ0YZQkhF/KCLHxKCjKKli9ao9kIBC/9s+uXHvjW3bDIBWuGew==
+music-metadata@^7.12.3:
+  version "7.12.3"
+  resolved "https://registry.yarnpkg.com/music-metadata/-/music-metadata-7.12.3.tgz#47d2414a959352c9d310074d39182e9be71e1419"
+  integrity sha512-6pZngaroNxGBf8KZjE8reGZJiS533eJq7dBFsyoiEAZIORQAxmVVx20ABh9W2tsLT+5mKYyDzcNi5GuHf3jitg==
   dependencies:
     "@tokenizer/token" "^0.3.0"
     content-type "^1.0.4"
-    debug "^4.3.3"
+    debug "^4.3.4"
     file-type "16.5.3"
     media-typer "^1.1.0"
-    strtok3 "^6.2.4"
+    strtok3 "^6.3.0"
     token-types "^4.2.0"
 
 nanoid@^3.1.30, nanoid@^3.3.1:
@@ -5504,7 +5504,7 @@ strtok3@^2.3.0:
     then-read-stream "^1.5.0"
     token-types "^1.0.1"
 
-strtok3@^6.2.4:
+strtok3@^6.2.4, strtok3@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/strtok3/-/strtok3-6.3.0.tgz#358b80ffe6d5d5620e19a073aa78ce947a90f9a0"
   integrity sha512-fZtbhtvI9I48xDSywd/somNqgUHl2L2cstmXCCif0itOf96jeW18MBSyrLuNicYQVkvpOxkZtkzujiTJ9LW5Jw==
