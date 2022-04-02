@@ -27,12 +27,14 @@ const processDirectory: Processes = {
   },
   Byuu: {
     Component: dynamic(() => import("components/apps/Byuu")),
+    autoSizing: true,
     background: "#000",
     defaultSize: {
       height: 448,
       width: 512,
     },
     icon: "/System/Icons/byuu.png",
+    lockAspectRatio: true,
     title: "Byuu",
   },
   DevTools: {

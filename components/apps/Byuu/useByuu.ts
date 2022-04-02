@@ -1,7 +1,11 @@
 import type Byuu from "byuu";
-import type { Emulator } from "byuu";
+import { keyMap } from "components/apps/Byuu/config";
+import useTitle from "components/system/Window/useTitle";
+import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
-import { useCallback, useEffect } from "react";
+import { basename } from "path";
+import type React from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { loadFiles } from "utils/functions";
 
 declare global {
@@ -11,59 +15,62 @@ declare global {
   }
 }
 
-const defaultController = "Controller Port 1";
-
-const keyMap: Record<string, string> = {
-  A: "A",
-  ArrowDown: "Down",
-  ArrowLeft: "Left",
-  ArrowRight: "Right",
-  ArrowUp: "Up",
-  B: "B",
-  Backspace: "Select",
-  Enter: "Start",
-  a: "A",
-  b: "B",
-};
-
-const pressKey = (isDown: boolean) => (key: string, buttons: string[]) => {
+const pressKey = (
+  { key, type }: KeyboardEvent,
+  controller: string,
+  buttons: string[]
+): void => {
   if (keyMap[key] && buttons.includes(keyMap[key])) {
-    window.byuu?.setButton(defaultController, keyMap[key], isDown ? 1 : 0);
+    window.byuu?.setButton(controller, keyMap[key], type === "keydown" ? 1 : 0);
   }
 };
 
 const useByuu = (
-  _id: string,
+  id: string,
   url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { readFile } = useFileSystem();
+  const { appendFileToTitle } = useTitle(id);
+  const { updateWindowSize } = useWindowSize(id);
+  const loadedUrl = useRef<string>("");
   const loadFile = useCallback(
     async (fileUrl: string) => {
       if (!window.byuu || !containerRef.current) return;
 
-      window.byuu.setEmulator(
-        window.byuu.getEmulatorForFilename(fileUrl) as Emulator
-      );
+      if (window.byuu.isStarted()) {
+        window.byuu.unload();
+      }
+
+      window.byuu.setEmulatorForFilename(fileUrl);
 
       const romInfo = window.byuu.load(await readFile(fileUrl));
-      const canvas = containerRef.current.querySelector("canvas");
-
-      if (!canvas) return;
+      const {
+        emulator: {
+          buttons,
+          name: emulatorName,
+          ports: [controllerName],
+        },
+      } = romInfo;
+      const canvas = window.byuu.getCanvas();
 
       canvas.tabIndex = -1;
-      canvas.addEventListener("keydown", ({ key }) =>
-        pressKey(true)(key, romInfo.emulator.buttons)
+      canvas.title = buttons.toString();
+      canvas.addEventListener("keydown", (event) =>
+        pressKey(event, controllerName, buttons)
       );
-      canvas.addEventListener("keyup", ({ key }) =>
-        pressKey(false)(key, romInfo.emulator.buttons)
+      canvas.addEventListener("keyup", (event) =>
+        pressKey(event, controllerName, buttons)
       );
 
-      window.byuu.connectPeripheral(defaultController, "Gamepad");
+      if (!window.byuu.connectPeripheral(controllerName, "Gamepad")) return;
+
       window.byuu.start();
+      appendFileToTitle(`${basename(url)} (${emulatorName})`);
+      updateWindowSize(canvas.height, canvas.width);
     },
-    [containerRef, readFile]
+    [appendFileToTitle, containerRef, readFile, updateWindowSize, url]
   );
   const loadByuu = useCallback(async () => {
     if (!containerRef.current) return;
@@ -79,12 +86,17 @@ const useByuu = (
   }, [containerRef, loadFile, setLoading, url]);
 
   useEffect(() => {
-    loadByuu();
-  }, [loadByuu]);
+    if (loadedUrl.current !== url) {
+      loadedUrl.current = url;
+      loadByuu();
+    }
+  }, [loadByuu, url]);
 
   useEffect(
     () => () => {
-      window.byuu?.terminate();
+      if (window.byuu?.isStarted()) {
+        window.byuu?.terminate();
+      }
     },
     []
   );
