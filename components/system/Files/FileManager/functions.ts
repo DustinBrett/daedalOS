@@ -172,7 +172,10 @@ export const handleFileInputEvent = async (
               subFolder
             );
           }
-        } else if (fsHandle instanceof FileSystemEntry) {
+        } else if (
+          "FileSystemEntry" in window &&
+          fsHandle instanceof FileSystemEntry
+        ) {
           if (fsHandle.isDirectory) {
             (fsHandle as FileSystemDirectoryEntry)
               .createReader()
