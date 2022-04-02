@@ -11,6 +11,11 @@ const extensions = {
     process: ["BoxedWine", "JSDOS"],
     type: "Application",
   },
+  ".gen": {
+    icon: "byuu",
+    process: ["Byuu"],
+    type: "Sega Genesis ROM File",
+  },
   ".htm": {
     process: ["Browser", "MonacoEditor"],
     type: "HTML Document",
@@ -42,6 +47,11 @@ const extensions = {
     icon: "audio",
     process: ["Webamp"],
   },
+  ".nes": {
+    icon: "byuu",
+    process: ["Byuu"],
+    type: "Nintendo ROM File",
+  },
   ".pdf": {
     icon: "pdf",
     process: ["PDF"],
@@ -52,6 +62,11 @@ const extensions = {
     icon: "python",
     process: ["Terminal", "MonacoEditor"],
     type: "Python File",
+  },
+  ".smc": {
+    icon: "byuu",
+    process: ["Byuu"],
+    type: "Super Nintendo ROM File",
   },
   ".spl": {
     process: ["Ruffle"],

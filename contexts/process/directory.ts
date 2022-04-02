@@ -25,6 +25,16 @@ const processDirectory: Processes = {
     icon: "/System/Icons/chromium.png",
     title: "Browser",
   },
+  Byuu: {
+    Component: dynamic(() => import("components/apps/Byuu")),
+    background: "#000",
+    defaultSize: {
+      height: 448,
+      width: 512,
+    },
+    icon: "/System/Icons/byuu.png",
+    title: "Byuu",
+  },
   DevTools: {
     Component: dynamic(() => import("components/apps/DevTools")),
     background: "rgb(36, 36, 36)",

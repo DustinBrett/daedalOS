@@ -1550,6 +1550,13 @@ byte-data@18.1.1, byte-data@^18.0.3:
     ieee754-buffer "^2.0.0"
     utf8-buffer "^1.0.0"
 
+byuu@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/byuu/-/byuu-0.16.0.tgz#25da9491b0d5ba8fd1c509c2324175e132684422"
+  integrity sha512-GMjHelmom4JUCxURIATdrdQNqLu8UEvLhDvzJ6d7uFK1vdi1G6DQtsrjnRQ8R2XE/NqB16Tjv1unNulwk71Y0A==
+  dependencies:
+    eventemitter3 "^4.0.0"
+
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
@@ -2524,6 +2531,11 @@ esutils@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
+
+eventemitter3@^4.0.0:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 execa@^5.0.0, execa@^5.1.1:
   version "5.1.1"
