@@ -1,11 +1,12 @@
 import type Byuu from "byuu";
-import { keyMap, prettyKey } from "components/apps/Byuu/config";
+import { keyMap, prettyKey, saveExtension } from "components/apps/Byuu/config";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
-import { basename } from "path";
+import { basename, join } from "path";
 import type React from "react";
 import { useCallback, useEffect, useRef } from "react";
+import { SAVE_PATH } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 declare global {
@@ -33,15 +34,18 @@ const useByuu = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { readFile } = useFileSystem();
+  const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
+    useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
   const loadedUrl = useRef<string>("");
+  const saveState = useRef<() => Promise<void>>();
   const loadFile = useCallback(
     async (fileUrl: string) => {
       if (!window.byuu || !containerRef.current) return;
 
       if (window.byuu.isStarted()) {
+        saveState.current?.();
         window.byuu.unload();
       }
 
@@ -55,6 +59,15 @@ const useByuu = (
           ports: [controllerName],
         },
       } = romInfo;
+      const gameSavePath = join(
+        SAVE_PATH,
+        `${basename(fileUrl)}${saveExtension}`
+      );
+
+      if (await exists(gameSavePath)) {
+        window.byuu.stateLoad(await readFile(gameSavePath));
+      }
+
       const canvas = window.byuu.getCanvas();
 
       canvas.tabIndex = -1;
@@ -72,11 +85,38 @@ const useByuu = (
 
       if (!window.byuu.connectPeripheral(controllerName, "Gamepad")) return;
 
+      const baseName = basename(url);
+
       window.byuu.start();
-      appendFileToTitle(`${basename(url)} (${emulatorName})`);
-      updateWindowSize(canvas.height, canvas.width);
+      appendFileToTitle(`${baseName} (${emulatorName})`);
+      const multipler = canvas.width > 256 ? 1 : 2;
+      updateWindowSize(canvas.height * multipler, canvas.width * multipler);
+
+      saveState.current = async () => {
+        if (!window.byuu) return;
+
+        const state = await window.byuu.stateSave();
+        const saveName = `${baseName}${saveExtension}`;
+
+        if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
+        if (
+          await writeFile(join(SAVE_PATH, saveName), Buffer.from(state), true)
+        ) {
+          updateFolder(SAVE_PATH, saveName);
+        }
+      };
     },
-    [appendFileToTitle, containerRef, readFile, updateWindowSize, url]
+    [
+      appendFileToTitle,
+      containerRef,
+      exists,
+      mkdirRecursive,
+      readFile,
+      updateFolder,
+      updateWindowSize,
+      url,
+      writeFile,
+    ]
   );
   const loadByuu = useCallback(async () => {
     if (!containerRef.current) return;
@@ -101,7 +141,11 @@ const useByuu = (
   useEffect(
     () => () => {
       if (window.byuu?.isStarted()) {
-        window.byuu?.terminate();
+        if (saveState.current) {
+          saveState.current?.().then(() => window.byuu?.terminate());
+        } else {
+          window.byuu?.terminate();
+        }
       }
     },
     []

@@ -23,3 +23,5 @@ export const prettyKey: Record<string, string> = {
   ArrowLeft: "←",
   ArrowRight: "→",
 };
+
+export const saveExtension = ".sav";

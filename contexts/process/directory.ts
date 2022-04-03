@@ -30,8 +30,8 @@ const processDirectory: Processes = {
     autoSizing: true,
     background: "#000",
     defaultSize: {
-      height: 448,
-      width: 512,
+      height: 240,
+      width: 256,
     },
     icon: "/System/Icons/byuu.png",
     lockAspectRatio: true,
