@@ -1,3 +1,5 @@
+import type { Emulator } from "byuu";
+
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 export const keyMap: Record<string, string> = {
   ArrowUp: "Up",
@@ -22,6 +24,12 @@ export const prettyKey: Record<string, string> = {
   ArrowDown: "↓",
   ArrowLeft: "←",
   ArrowRight: "→",
+};
+
+export const prettyEmulator: Record<Emulator, string> = {
+  Famicom: "NES",
+  "Super Famicom": "SNES",
+  "Mega Drive": "Sega Genesis",
 };
 
 export const saveExtension = ".sav";

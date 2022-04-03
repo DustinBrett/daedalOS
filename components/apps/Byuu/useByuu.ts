@@ -1,5 +1,10 @@
 import type Byuu from "byuu";
-import { keyMap, prettyKey, saveExtension } from "components/apps/Byuu/config";
+import {
+  keyMap,
+  prettyEmulator,
+  prettyKey,
+  saveExtension,
+} from "components/apps/Byuu/config";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
@@ -88,7 +93,7 @@ const useByuu = (
       const baseName = basename(url);
 
       window.byuu.start();
-      appendFileToTitle(`${baseName} (${emulatorName})`);
+      appendFileToTitle(`${baseName} (${prettyEmulator[emulatorName]})`);
       const multipler = canvas.width > 256 ? 1 : 2;
       updateWindowSize(canvas.height * multipler, canvas.width * multipler);
 
@@ -132,7 +137,7 @@ const useByuu = (
   }, [containerRef, loadFile, setLoading, url]);
 
   useEffect(() => {
-    if (loadedUrl.current !== url) {
+    if (loadedUrl.current !== url || !url) {
       loadedUrl.current = url;
       loadByuu();
     }
