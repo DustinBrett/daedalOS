@@ -1,9 +1,5 @@
 import styled from "styled-components";
 
-const StyledByuu = styled.div`
-  canvas {
-    object-fit: cover !important;
-  }
-`;
+const StyledByuu = styled.div``;
 
 export default StyledByuu;

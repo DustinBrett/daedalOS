@@ -1,5 +1,5 @@
 import type Byuu from "byuu";
-import { keyMap } from "components/apps/Byuu/config";
+import { keyMap, prettyKey } from "components/apps/Byuu/config";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
@@ -15,15 +15,17 @@ declare global {
   }
 }
 
-const pressKey = (
-  { key, type }: KeyboardEvent,
-  controller: string,
-  buttons: string[]
-): void => {
-  if (keyMap[key] && buttons.includes(keyMap[key])) {
-    window.byuu?.setButton(controller, keyMap[key], type === "keydown" ? 1 : 0);
-  }
-};
+const pressKey =
+  (controller: string, buttons: string[]) =>
+  ({ key, type }: KeyboardEvent) => {
+    if (keyMap[key] && buttons.includes(keyMap[key])) {
+      window.byuu?.setButton(
+        controller,
+        keyMap[key],
+        type === "keydown" ? 1 : 0
+      );
+    }
+  };
 
 const useByuu = (
   id: string,
@@ -56,13 +58,17 @@ const useByuu = (
       const canvas = window.byuu.getCanvas();
 
       canvas.tabIndex = -1;
-      canvas.title = buttons.toString();
-      canvas.addEventListener("keydown", (event) =>
-        pressKey(event, controllerName, buttons)
-      );
-      canvas.addEventListener("keyup", (event) =>
-        pressKey(event, controllerName, buttons)
-      );
+      canvas.title = Object.entries(keyMap)
+        .map(([key, button]) =>
+          buttons.includes(button)
+            ? `${button} = ${prettyKey[key] || key}`
+            : false
+        )
+        .filter(Boolean)
+        .join("\n");
+
+      canvas.addEventListener("keydown", pressKey(controllerName, buttons));
+      canvas.addEventListener("keyup", pressKey(controllerName, buttons));
 
       if (!window.byuu.connectPeripheral(controllerName, "Gamepad")) return;
 

@@ -1,17 +1,25 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 export const keyMap: Record<string, string> = {
+  ArrowUp: "Up",
   ArrowDown: "Down",
   ArrowLeft: "Left",
   ArrowRight: "Right",
-  ArrowUp: "Up",
+  m: "Mode",
+  s: "Select",
   Enter: "Start",
   a: "A",
   b: "B",
   c: "C",
-  l: "L",
-  m: "Mode",
-  r: "R",
-  s: "Select",
   x: "X",
   y: "Y",
   z: "Z",
+  l: "L",
+  r: "R",
+};
+
+export const prettyKey: Record<string, string> = {
+  ArrowUp: "↑",
+  ArrowDown: "↓",
+  ArrowLeft: "←",
+  ArrowRight: "→",
 };
