@@ -22,7 +22,8 @@ type FS9P = {
 
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
-const IDX_MODE = 33206;
+const IDX_FILE_MODE = 33206;
+const IDX_DIR_MODE = 16822;
 const IDX_UID = 0;
 const IDX_GID = 0;
 const fsroot = index.fsroot as FS9PV4[];
@@ -66,11 +67,20 @@ export const fs9pToBfs = (): BFSFS =>
 const parse9pV4ToV3 = (fs9p: FS9PV4[], path = "/"): FS9PV3[] =>
   fs9p.map(([name, mtime, size, target]) => {
     const targetPath = join(path, name);
-    const newTarget = Array.isArray(target)
+    const isDirectory = Array.isArray(target);
+    const newTarget = isDirectory
       ? parse9pV4ToV3(target, targetPath)
-      : target || targetPath;
+      : `.${(target || targetPath).replace(/\//g, "\\").replace("\\", "/")}`;
 
-    return [name, mtime, size, IDX_MODE, IDX_UID, IDX_GID, newTarget] as FS9PV3;
+    return [
+      name,
+      mtime,
+      size,
+      isDirectory ? IDX_DIR_MODE : IDX_FILE_MODE,
+      IDX_UID,
+      IDX_GID,
+      newTarget,
+    ] as FS9PV3;
   });
 
 export const fs9pV4ToV3 = (): FS9P =>
