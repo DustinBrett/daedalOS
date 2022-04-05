@@ -21,17 +21,15 @@ export const addEntryToZippable = (
 ): AsyncZippable => {
   const [[key, value]] = Object.entries(newZippable);
 
-  if (!(key in oldZippable)) {
-    return { ...oldZippable, [key]: value };
-  }
+  // eslint-disable-next-line no-param-reassign
+  oldZippable[key] = !(key in oldZippable)
+    ? value
+    : addEntryToZippable(
+        oldZippable[key] as AsyncZippable,
+        newZippable[key] as AsyncZippable
+      );
 
-  return {
-    ...oldZippable,
-    [key]: addEntryToZippable(
-      oldZippable[key] as AsyncZippable,
-      newZippable[key] as AsyncZippable
-    ),
-  };
+  return oldZippable;
 };
 
 export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
