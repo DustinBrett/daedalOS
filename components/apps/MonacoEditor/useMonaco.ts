@@ -52,7 +52,7 @@ const useMonaco = (
     return newModel as Monaco.editor.ITextModel;
   }, [createModelUri, monaco?.editor, prependFileToTitle, readFile, url]);
   const loadFile = useCallback(async () => {
-    if (monaco && editor) {
+    if (monaco && editor && url.startsWith("/")) {
       unlockGlobal("define");
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
