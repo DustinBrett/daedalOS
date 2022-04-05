@@ -68,13 +68,11 @@ const useDosCI = (
     [dosCI, dosInstance, exists, mkdirRecursive, updateFolder, writeFile]
   );
   const loadBundle = useCallback(async () => {
-    if (!url) return;
-
     const [currentUrl] = Object.keys(dosCI);
 
     if (currentUrl) closeBundle(currentUrl);
 
-    const urlBuffer = await readFile(url);
+    const urlBuffer = url ? await readFile(url) : Buffer.from("");
     const extension = extname(url).toLowerCase();
     const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =

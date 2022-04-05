@@ -70,13 +70,11 @@ const useV86 = (
     [emulator, exists, mkdirRecursive, saveStateAsync, updateFolder, writeFile]
   );
   const loadDiskImage = useCallback(async () => {
-    if (!url) return;
-
     const [currentUrl] = Object.keys(emulator);
 
     if (currentUrl) await closeDiskImage(currentUrl);
 
-    const imageContents = await readFile(url);
+    const imageContents = url ? await readFile(url) : Buffer.from("");
     const isISO = extname(url).toLowerCase() === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {
