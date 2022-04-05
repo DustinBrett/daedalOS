@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -68,7 +68,7 @@ const FileManager: FC<FileManagerProps> = ({
   );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, hideFolders, hideLoading);
-  const { mountFs, rootFs } = useFileSystem();
+  const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
@@ -89,6 +89,24 @@ const FileManager: FC<FileManagerProps> = ({
     id
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
+  const mountUrl = useCallback(async () => {
+    if (
+      MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) &&
+      !mounted &&
+      !(await stat(url)).isDirectory()
+    ) {
+      setMounted((currentlyMounted) => {
+        if (!currentlyMounted) {
+          mountFs(url)
+            .then(() => setTimeout(updateFiles, 100))
+            .catch(() => {
+              // Ignore race-condtion failures
+            });
+        }
+        return true;
+      });
+    }
+  }, [mountFs, mounted, stat, updateFiles, url]);
 
   useEffect(() => {
     if (
@@ -108,15 +126,8 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
 
   useEffect(() => {
-    if (MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) && !mounted) {
-      setMounted((currentlyMounted) => {
-        if (!currentlyMounted) {
-          mountFs(url).then(() => setTimeout(updateFiles, 100));
-        }
-        return true;
-      });
-    }
-  }, [mountFs, mounted, updateFiles, url]);
+    mountUrl();
+  }, [mountUrl]);
 
   useEffect(() => {
     if (url !== currentUrl) {

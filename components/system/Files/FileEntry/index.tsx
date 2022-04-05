@@ -267,9 +267,7 @@ const FileEntry: FC<FileEntryProps> = ({
     writeFile,
   ]);
   const createTooltip = useCallback(async (): Promise<string> => {
-    if (stats.isDirectory() && !MOUNTABLE_EXTENSIONS.has(extension)) {
-      return "";
-    }
+    if (stats.isDirectory()) return "";
 
     if (isShortcut) {
       if (comment) return comment;
