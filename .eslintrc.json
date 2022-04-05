@@ -1,7 +1,6 @@
 {
   "extends": [
     "airbnb",
-    "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -11,7 +10,6 @@
     "plugin:jest-dom/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime",
     "plugin:sonarjs/recommended",
     "plugin:typescript-sort-keys/recommended",
@@ -30,7 +28,6 @@
     "jest-dom",
     "prettier",
     "react",
-    "react-hooks",
     "simple-import-sort",
     "sonarjs",
     "sort-keys-fix",
