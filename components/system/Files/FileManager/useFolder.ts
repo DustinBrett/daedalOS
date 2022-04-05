@@ -131,11 +131,14 @@ const useFolder = (
           if (newFile) {
             setFiles((currentFiles = {}) =>
               Object.entries(currentFiles).reduce<Files>(
-                (newFiles, [fileName, fileStats]) => ({
-                  ...newFiles,
-                  [fileName === oldName ? basename(newFile) : fileName]:
-                    fileStats,
-                }),
+                (newFiles, [fileName, fileStats]) => {
+                  // eslint-disable-next-line no-param-reassign
+                  newFiles[
+                    fileName === oldName ? basename(newFile) : fileName
+                  ] = fileStats;
+
+                  return newFiles;
+                },
                 {}
               )
             );
@@ -173,15 +176,15 @@ const useFolder = (
                   ? await lstat(filePath)
                   : await stat(filePath);
                 const hideEntry = hideFolders && fileStats.isDirectory();
-                const newFiles = hideEntry
-                  ? await processedFiles
-                  : sortContents(
-                      {
-                        ...(await processedFiles),
-                        [file]: await statsWithShortcutInfo(file, fileStats),
-                      },
-                      customSortOrder || Object.keys(files || {})
-                    );
+                let newFiles = await processedFiles;
+
+                if (!hideEntry) {
+                  newFiles[file] = await statsWithShortcutInfo(file, fileStats);
+                  newFiles = sortContents(
+                    newFiles,
+                    customSortOrder || Object.keys(files || {})
+                  );
+                }
 
                 if (hideLoading) setFiles(newFiles);
 
@@ -190,7 +193,7 @@ const useFolder = (
                 return processedFiles;
               }
             },
-            Promise.resolve({})
+            Promise.resolve({} as Files)
           );
 
           if (dirContents.length > 0) {

@@ -52,10 +52,11 @@ export const sortContents = (
     const contentOrder = Object.keys(contents);
 
     return Object.fromEntries(
-      [
-        ...sortOrder.filter((entry) => contentOrder.includes(entry)),
-        ...contentOrder.filter((entry) => !sortOrder.includes(entry)),
-      ].map((entry) => [entry, contents[entry]])
+      sortOrder
+        .filter((entry) => contentOrder.includes(entry))
+        // eslint-disable-next-line unicorn/prefer-spread
+        .concat(contentOrder.filter((entry) => !sortOrder.includes(entry)))
+        .map((entry) => [entry, contents[entry]])
     );
   }
 
