@@ -30,8 +30,6 @@ const IDX_GID = 0;
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
 
-const reduceObjects = <T>(a: T, b: T): T => ({ ...a, ...b });
-
 export const get9pModifiedTime = (path: string): number => {
   let fsPath = fsroot;
   let mTime = 0;
@@ -53,17 +51,20 @@ export const get9pModifiedTime = (path: string): number => {
   return mTime;
 };
 
+const mapReduce9pArray = (
+  array: FS9PV4[],
+  mapper: (entry: FS9PV4) => BFSFS
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+): BFSFS => array.map(mapper).reduce((a, b) => Object.assign(a, b), {});
+
 // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
 const parse9pEntry = ([name, , , pathOrArray]: FS9PV4): BFSFS => ({
   [name]: Array.isArray(pathOrArray)
-    ? // eslint-disable-next-line unicorn/no-array-callback-reference
-      pathOrArray.map(parse9pEntry).reduce(reduceObjects, {})
+    ? mapReduce9pArray(pathOrArray, parse9pEntry)
     : FILE_ENTRY,
 });
 
-export const fs9pToBfs = (): BFSFS =>
-  // eslint-disable-next-line unicorn/no-array-callback-reference
-  fsroot.map(parse9pEntry).reduce(reduceObjects, {});
+export const fs9pToBfs = (): BFSFS => mapReduce9pArray(fsroot, parse9pEntry);
 
 const parse9pV4ToV3 = (fs9p: FS9PV4[], path = "/"): FS9PV3[] =>
   fs9p.map(([name, mtime, size, target]) => {

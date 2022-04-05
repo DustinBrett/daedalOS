@@ -1,6 +1,8 @@
 import type { FileSystemConfiguration } from "browserfs";
 import { fs9pToBfs } from "contexts/fileSystem/functions";
 
+const index = fs9pToBfs();
+
 const FileSystemConfig = (writeToMemory = false): FileSystemConfiguration => ({
   fs: "MountableFileSystem",
   options: {
@@ -9,7 +11,7 @@ const FileSystemConfig = (writeToMemory = false): FileSystemConfiguration => ({
       options: {
         readable: {
           fs: "HTTPRequest",
-          options: { index: fs9pToBfs() },
+          options: { index },
         },
         writable: {
           fs: writeToMemory ? "InMemory" : "IndexedDB",
