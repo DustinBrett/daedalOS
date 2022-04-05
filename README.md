@@ -153,6 +153,13 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
   - /Users/Public/Snapshots
 - Automatic window resize
 
+### [Byuu](https://github.com/Wizcorp/byuu-web) (**_.gen, .nes, .sfc, .smc, .smd_**)
+
+- NES/SNES/Sega Genesis Emulator
+- Automatic save states on close
+  - /Users/Public/Snapshots
+- Automatic window resize
+
 ### [Marked](https://marked.js.org/) (**_.md_**)
 
 - Markdown Viewer
@@ -192,6 +199,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
     - `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
     - `wax fortune` ([\#](https://wapm.io/package/fortune))
 - [Weather information](https://wttr.in/)
+- [eSheep](https://adrianotiger.github.io/web-esheep/)
 - Activate from Start Menu or **_SHIFT+F10_**
 
 ### [TinyMCE](https://www.tiny.cloud/tinymce/) (**_.whtml_**)

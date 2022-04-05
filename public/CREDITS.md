@@ -54,3 +54,4 @@ This project is greatly augmented by code from the open source community. Thank 
 - [ImageMagick](https://github.com/KnicKnic/WASM-ImageMagick)
 - [Lunr](https://github.com/olivernn/lunr.js)
 - [Web eSheep](https://github.com/Adrianotiger/web-esheep)
+- [Byuu](https://github.com/Wizcorp/byuu-web)
