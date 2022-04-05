@@ -21,11 +21,13 @@ const addJsDosConfig = async (
   const { addFileToZip, isFileInZip } = await import("utils/zipFunctions");
 
   return Object.entries(zipConfigFiles).reduce(
-    async (newBuffer, [zipPath, fsPath]) =>
-      (await newBuffer).length > 0 &&
-      (await isFileInZip(await newBuffer, zipPath))
-        ? newBuffer
-        : addFileToZip(await newBuffer, fsPath, zipPath, readFile),
+    async (newBuffer, [zipPath, fsPath]) => {
+      const currentZip = await newBuffer;
+
+      return currentZip.length > 0 && (await isFileInZip(currentZip, zipPath))
+        ? currentZip
+        : addFileToZip(currentZip, fsPath, zipPath, readFile);
+    },
     Promise.resolve(buffer)
   );
 };
