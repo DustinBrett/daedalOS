@@ -36,28 +36,23 @@ const useBoxedWine = (
   const loadedUrl = useRef<string>();
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
-    let appName: string | undefined;
-
-    if (url) {
-      let appPayload = await readFile(url);
-      const extension = extname(url).toLowerCase();
-      const isExecutable = extension === ".exe";
-      const { zipAsync } = await import("utils/zipFunctions");
-      appName = isExecutable
+    let appPayload = url ? await readFile(url) : Buffer.from("");
+    const extension = extname(url).toLowerCase();
+    const isExecutable = extension === ".exe";
+    const { zipAsync } = await import("utils/zipFunctions");
+    const appName =
+      isExecutable || !url
         ? basename(url, extension)
         : await getExeName(appPayload);
 
-      if (isExecutable) {
-        appPayload = Buffer.from(
-          await zipAsync({ [basename(url)]: appPayload })
-        );
-      }
-
-      dynamicConfig = {
-        ...(appPayload ? { "app-payload": appPayload.toString("base64") } : {}),
-        ...(appName ? { p: appName } : {}),
-      };
+    if (isExecutable) {
+      appPayload = Buffer.from(await zipAsync({ [basename(url)]: appPayload }));
     }
+
+    dynamicConfig = {
+      ...(appPayload ? { "app-payload": appPayload.toString("base64") } : {}),
+      ...(appName ? { p: appName } : {}),
+    };
 
     window.BoxedWineConfig = {
       ...window.BoxedWineConfig,
