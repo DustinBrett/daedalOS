@@ -70,7 +70,7 @@ const parse9pV4ToV3 = (fs9p: FS9PV4[], path = "/"): FS9PV3[] =>
     const isDirectory = Array.isArray(target);
     const newTarget = isDirectory
       ? parse9pV4ToV3(target, targetPath)
-      : `.${(target || targetPath).replace(/\//g, "\\").replace("\\", "/")}`;
+      : target || targetPath;
 
     return [
       name,
