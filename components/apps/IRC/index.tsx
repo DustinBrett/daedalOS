@@ -56,7 +56,7 @@ const IRC: FC = () => {
     }
   };
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const sendCommand = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
       const command = e.currentTarget.value;
 
@@ -74,30 +74,46 @@ const IRC: FC = () => {
     }
   }, [log]);
 
+  const connectToIrc = (): void =>
+    setSocket(
+      connect(
+        addressRef.current?.value ?? server,
+        portRef.current?.value ?? port,
+        nameRef.current?.value ?? alias,
+        newLine
+      )
+    );
+
   return (
     <StyledIRC>
       <nav>
-        <input ref={addressRef} defaultValue={server} id="address" />
-        <input ref={portRef} defaultValue={port} id="port" />
-        <input ref={nameRef} defaultValue={alias} id="name" />
-        <button
-          onClick={() =>
-            setSocket(
-              connect(
-                addressRef.current?.value ?? server,
-                portRef.current?.value ?? port,
-                nameRef.current?.value ?? alias,
-                newLine
-              )
-            )
-          }
-          type="button"
-        >
+        <input
+          ref={addressRef}
+          defaultValue={server}
+          enterKeyHint="next"
+          id="address"
+        />
+        <input
+          ref={portRef}
+          defaultValue={port}
+          enterKeyHint="next"
+          id="port"
+        />
+        <input
+          ref={nameRef}
+          defaultValue={alias}
+          enterKeyHint="go"
+          id="name"
+          onKeyDown={({ key }) => {
+            if (key === "Enter") connectToIrc();
+          }}
+        />
+        <button onClick={connectToIrc} type="button">
           Connect
         </button>
       </nav>
       <textarea ref={outputRef} value={log.join("\n")} readOnly />
-      <input ref={commandRef} onKeyDown={onKeyDown} />
+      <input ref={commandRef} enterKeyHint="send" onKeyDown={sendCommand} />
     </StyledIRC>
   );
 };

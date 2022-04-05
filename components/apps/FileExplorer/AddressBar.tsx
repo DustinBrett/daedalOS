@@ -46,6 +46,7 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
     <StyledAddressBar style={style}>
       <input
         ref={addressBarRef}
+        enterKeyHint="go"
         onBlur={() => setAddressBar(displayName)}
         onChange={({ target }) => setAddressBar(target.value)}
         onFocus={() => setAddressBar(url)}

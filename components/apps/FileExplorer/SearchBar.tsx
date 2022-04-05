@@ -67,6 +67,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       <Search />
       <input
         ref={searchBarRef}
+        enterKeyHint="search"
         onChange={({ target }) => setSearchTerm(target.value)}
         placeholder="Search"
         spellCheck={false}

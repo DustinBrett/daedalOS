@@ -18,7 +18,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
       <ol>
         {count !== 0 && (
           <li className="pages">
-            <input value={currentPage} /> / {count}
+            <input enterKeyHint="go" value={currentPage} /> / {count}
           </li>
         )}
         <li className="scale">
@@ -31,7 +31,11 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           >
             -
           </Button>
-          <input disabled={count === 0} value={`${Math.round(scale * 100)}%`} />
+          <input
+            disabled={count === 0}
+            enterKeyHint="done"
+            value={`${Math.round(scale * 100)}%`}
+          />
 
           <Button
             disabled={scale === 5 || count === 0}
