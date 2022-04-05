@@ -11,6 +11,21 @@ export type IconProps = {
   $moving?: boolean;
 };
 
+let WEBP_SUPPORT: boolean;
+
+const supportsWebP = (): boolean => {
+  try {
+    WEBP_SUPPORT = document
+      .createElement("canvas")
+      .toDataURL("image/webp", 0)
+      .startsWith("data:image/webp");
+  } catch {
+    WEBP_SUPPORT = false;
+  }
+
+  return WEBP_SUPPORT;
+};
+
 const StyledIcon = styled.img.attrs<IconProps>(
   ({ $imgSize = 0, $displaySize = 0, $eager = false, src = "" }) => ({
     decoding: "async",
@@ -25,7 +40,15 @@ const StyledIcon = styled.img.attrs<IconProps>(
       src.startsWith("data:") ||
       src.endsWith(".ico")
         ? src
-        : join(dirname(src), `${$imgSize}x${$imgSize}`, basename(src)),
+        : join(
+            dirname(src),
+            `${$imgSize}x${$imgSize}`,
+            basename(
+              WEBP_SUPPORT ?? supportsWebP()
+                ? src.replace(".png", ".webp")
+                : src
+            )
+          ),
     width: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
   })
 )<IconProps>`
