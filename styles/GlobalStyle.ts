@@ -25,6 +25,10 @@ const GlobalStyle = createGlobalStyle`
     color: #fff;
   }
 
+  input, textarea {
+    user-select: text;
+  }
+
   ol,
   ul {
     list-style: none;
