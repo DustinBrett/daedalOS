@@ -35,7 +35,8 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
           if (await exists(path)) {
             return (await lstat(path)).isDirectory()
               ? UNCALCULATED_SIZE
-              : currentSize + (await stat(path)).size;
+              : (currentSize === UNKNOWN_SIZE ? 0 : currentSize) +
+                  (await stat(path)).size;
           }
 
           return totalSize;
