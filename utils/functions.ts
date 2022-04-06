@@ -208,3 +208,20 @@ export const label = (value: string): HTMLAttributes<HTMLElement> => ({
 
 export const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
+
+let WEBP_SUPPORT: boolean;
+
+export const supportsWebP = (): boolean => {
+  if (typeof WEBP_SUPPORT !== "undefined") return WEBP_SUPPORT;
+
+  try {
+    WEBP_SUPPORT = document
+      .createElement("canvas")
+      .toDataURL("image/webp", 0)
+      .startsWith("data:image/webp");
+  } catch {
+    WEBP_SUPPORT = false;
+  }
+
+  return WEBP_SUPPORT;
+};

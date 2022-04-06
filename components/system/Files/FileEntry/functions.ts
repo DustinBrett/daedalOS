@@ -86,7 +86,7 @@ export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension as ExtensionType] : {};
 
-  if (extensionIcon) return `/System/Icons/${extensionIcon}.png`;
+  if (extensionIcon) return `/System/Icons/${extensionIcon}.webp`;
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
@@ -268,7 +268,7 @@ export const getInfoWithExtension = (
       }
     });
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension("/System/Icons/photo.png", () =>
+    getInfoByFileExtension("/System/Icons/photo.webp", () =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
           getInfoByFileExtension(bufferToUrl(contents));
@@ -308,7 +308,7 @@ export const getInfoWithExtension = (
     );
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
-      `/System/Icons/${extensions[".mp3"].icon as string}.png`,
+      `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
       () =>
         fs.readFile(path, (error, contents = Buffer.from("")) => {
           if (!error) {

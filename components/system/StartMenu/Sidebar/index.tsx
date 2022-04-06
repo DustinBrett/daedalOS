@@ -53,7 +53,7 @@ const Sidebar: FC = () => {
         open(
           "FileExplorer",
           { url: `${HOME}/Documents` },
-          "/System/Icons/documents.png"
+          "/System/Icons/documents.webp"
         ),
       icon: <Documents />,
       name: "Documents",

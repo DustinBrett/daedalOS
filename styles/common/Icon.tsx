@@ -1,7 +1,7 @@
 import { basename, dirname, join } from "path";
 import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { cleanUpBufferUrl } from "utils/functions";
+import { cleanUpBufferUrl, supportsWebP } from "utils/functions";
 
 export type IconProps = {
   $displaySize?: number;
@@ -9,21 +9,6 @@ export type IconProps = {
   $imgRef?: React.MutableRefObject<HTMLImageElement | null>;
   $imgSize: number;
   $moving?: boolean;
-};
-
-let WEBP_SUPPORT: boolean;
-
-const supportsWebP = (): boolean => {
-  try {
-    WEBP_SUPPORT = document
-      .createElement("canvas")
-      .toDataURL("image/webp", 0)
-      .startsWith("data:image/webp");
-  } catch {
-    WEBP_SUPPORT = false;
-  }
-
-  return WEBP_SUPPORT;
 };
 
 const StyledIcon = styled.img.attrs<IconProps>(
@@ -43,11 +28,7 @@ const StyledIcon = styled.img.attrs<IconProps>(
         : join(
             dirname(src),
             `${$imgSize}x${$imgSize}`,
-            basename(
-              WEBP_SUPPORT ?? supportsWebP()
-                ? src.replace(".png", ".webp")
-                : src
-            )
+            basename(!supportsWebP() ? src.replace(".webp", ".png") : src)
           ),
     width: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
   })

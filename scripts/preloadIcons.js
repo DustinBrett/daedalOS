@@ -6,9 +6,9 @@ const HOME = "/Users/Public";
 const DESKTOP_PATH = `${HOME}/Desktop`;
 
 const ICON_PATH = "/System/Icons";
-const SHORTCUT_ICON = `${ICON_PATH}/shortcut.png`;
+const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 
-const USE_WEBP = true;
+const USE_PNG = false;
 
 const getPublicDirectoryIcons = (directory) => {
   const baseDirectory = join("./public", directory);
@@ -28,8 +28,8 @@ const getPublicDirectoryIcons = (directory) => {
 
 let preloadIcons = [...getPublicDirectoryIcons(DESKTOP_PATH), SHORTCUT_ICON];
 
-if (USE_WEBP) {
-  preloadIcons = preloadIcons.map((icon) => icon.replace(".png", ".webp"));
+if (USE_PNG) {
+  preloadIcons = preloadIcons.map((icon) => icon.replace(".webp", ".png"));
 }
 
 writeFileSync("./public/.index/preload.json", JSON.stringify(preloadIcons));

@@ -35,7 +35,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         } else if (fs) {
           setProcessIcon(
             id,
-            `/System/Icons/${directoryName ? "folder" : "pc"}.png`
+            `/System/Icons/${directoryName ? "folder" : "pc"}.webp`
           );
           getIconFromIni(fs, url).then((iconFile) => {
             if (iconFile) setProcessIcon(id, iconFile);
