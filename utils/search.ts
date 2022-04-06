@@ -22,13 +22,19 @@ export const search = async (
     const response = await fetch(FILE_INDEX);
     const indexFile = JSON.parse(await response.text()) as Index;
 
-    baseIndex = window.lunr.Index.load(indexFile);
+    baseIndex = window.lunr?.Index.load(indexFile);
   }
   const searchIndex = index ?? baseIndex;
-  let results = searchIndex.search?.(searchTerm);
+  let results: Index.Result[] = [];
 
-  if (results?.length === 0) {
-    results = searchIndex.search?.(`${searchTerm}*`);
+  try {
+    results = searchIndex.search?.(searchTerm);
+
+    if (results?.length === 0) {
+      results = searchIndex.search?.(`${searchTerm}*`);
+    }
+  } catch {
+    // Ignore search errors
   }
 
   return results ?? [];
@@ -63,14 +69,14 @@ const buildDynamicIndex = async (
       };
     })
   );
-  const dynamicIndex = window.lunr(function buildIndex() {
+  const dynamicIndex = window.lunr?.(function buildIndex() {
     this.ref("path");
     this.field("name");
     this.field("text");
     indexedFiles.forEach((doc) => this.add(doc));
   });
 
-  return window.lunr.Index.load(dynamicIndex.toJSON());
+  return window.lunr?.Index.load(dynamicIndex.toJSON());
 };
 
 export const fullSearch = async (

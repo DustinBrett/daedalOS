@@ -225,3 +225,11 @@ export const supportsWebP = (): boolean => {
 
   return WEBP_SUPPORT;
 };
+
+export const isParsableUrl = (url: string): boolean => {
+  try {
+    return Boolean(new URL(url));
+  } catch {
+    return false;
+  }
+};
