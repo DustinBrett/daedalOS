@@ -11,6 +11,16 @@ export const bookmarks: Bookmark[] = [
     url: "https://www.google.com/webhp?igu=1",
   },
   {
+    icon: "/System/Icons/Favicons/wikipedia.webp",
+    name: "Wikipedia",
+    url: "https://www.wikipedia.org/",
+  },
+  {
+    icon: "/System/Icons/Favicons/archive.webp",
+    name: "Internet Archive",
+    url: "https://archive.org/",
+  },
+  {
     icon: "/favicon.ico",
     name: "daedalOS",
     url: "https://dustinbrett.com/",
