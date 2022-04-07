@@ -147,7 +147,10 @@ const useByuu = (
     () => () => {
       if (window.byuu?.isStarted()) {
         if (saveState.current) {
-          saveState.current?.().then(() => window.byuu?.terminate());
+          setTimeout(
+            () => saveState.current?.().then(() => window.byuu?.terminate()),
+            1000
+          );
         } else {
           window.byuu?.terminate();
         }

@@ -126,7 +126,7 @@ const useDosCI = (
     }
 
     return () => {
-      if (url && closing) closeBundle(url, closing);
+      if (url && closing) setTimeout(() => closeBundle(url, closing), 1000);
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);
 
