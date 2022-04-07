@@ -16,6 +16,14 @@ const loadWapm = async (
 
   try {
     const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
+
+    if (
+      wasmBinary.length < 1024 &&
+      new TextDecoder().decode(wasmBinary).includes("NoSuchKey")
+    ) {
+      throw new Error(`command not found ${commandArgs[0]}`);
+    }
+
     const moduleResponse = await lowerI64Imports(wasmBinary);
 
     if (moduleResponse !== undefined && moduleResponse instanceof Uint8Array) {
@@ -46,12 +54,9 @@ const loadWapm = async (
       }
     }
   } catch (error) {
-    const { code, message } = error as WASIError;
+    const { message } = error as WASIError;
 
-    if (code) localEcho?.println(message);
-    else if (message.startsWith("command not found")) {
-      localEcho?.println(`WAPM: ${message}`);
-    }
+    localEcho?.println(message);
   }
 };
 
