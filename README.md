@@ -195,9 +195,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - [Git support](https://isomorphic-git.org/) (checkout & clone)
 - [Python support](https://pyodide.org/) (**_.py_**)
 - [WebAssembly Package Manager](https://wapm.io/)
-  - Examples:
-    - `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
-    - `wax fortune` ([\#](https://wapm.io/package/fortune))
+  - Ex: `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
 - [Weather information](https://wttr.in/)
 - [eSheep](https://adrianotiger.github.io/web-esheep/)
 - Activate from Start Menu or **_SHIFT+F10_**
