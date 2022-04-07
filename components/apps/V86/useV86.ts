@@ -154,7 +154,7 @@ const useV86 = (
     }
 
     return () => {
-      if (url && closing) {
+      if (url && closing && !shutdown.current) {
         shutdown.current = true;
         if (emulator[url]) closeDiskImage(url);
       }

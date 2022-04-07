@@ -25,7 +25,7 @@ const useWindowSize = (id: string): WindowSize => {
         ...currentWindowStates,
         [id]: {
           maximized,
-          position: currentWindowStates[id]?.position,
+          position: currentWindowStates?.[id]?.position,
           size: maxSize(
             {
               height: height + pxToNum(titleBar.height),
