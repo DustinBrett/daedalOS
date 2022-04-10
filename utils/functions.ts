@@ -1,6 +1,7 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { extname } from "path";
 import type { HTMLAttributes } from "react";
+import { useEffect } from "react";
 import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -125,16 +126,18 @@ export const getFormattedSize = (size = 0): string => {
   return `${size} bytes`;
 };
 
-export const lockTitle = (): void => {
-  try {
-    Object.defineProperty(document, "title", {
-      set: () => {
-        // Ignore requests to set the title
-      },
-    });
-  } catch {
-    // Ignore errors defining document.title setter
-  }
+export const useLockTitle = (): void => {
+  useEffect(() => {
+    try {
+      Object.defineProperty(document, "title", {
+        set: () => {
+          // Ignore requests to set the title
+        },
+      });
+    } catch {
+      // Ignore errors defining document.title setter
+    }
+  }, []);
 };
 
 export const getTZOffsetISOString = (): string => {
