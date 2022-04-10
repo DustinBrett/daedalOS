@@ -135,6 +135,7 @@ const useTerminal = (
     let currentOnKey: IDisposable;
 
     if (terminal && localEcho) {
+      terminal.textarea?.setAttribute("enterkeyhint", "send");
       currentOnKey = terminal.onKey(
         ({ domEvent: { ctrlKey, code } }: OnKeyEvent) => {
           if (ctrlKey && code === "KeyV") {
