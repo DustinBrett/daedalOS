@@ -6,8 +6,8 @@ import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
-export const bufferToBlob = (buffer: Buffer): Blob =>
-  new Blob([new Uint8Array(buffer)]);
+export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
+  new Blob([buffer], type ? { type } : undefined);
 
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));

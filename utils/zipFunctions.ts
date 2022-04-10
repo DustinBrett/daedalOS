@@ -6,6 +6,7 @@ import type {
 } from "fflate";
 import { join } from "path";
 import { BASE_ZIP_CONFIG } from "utils/constants";
+import { bufferToBlob } from "utils/functions";
 
 export const createZippable = (path: string, file: Buffer): AsyncZippable =>
   path
@@ -89,7 +90,7 @@ export const unarchive = async (data: Buffer): Promise<Unzipped> => {
 
   Archive.init({ workerUrl: "/System/libarchive.js/worker-bundle.js" });
 
-  const archive = await Archive.open(new File([new Blob([data])], "archive"));
+  const archive = await Archive.open(new File([bufferToBlob(data)], "archive"));
   const extractedFiles = await archive.extractFiles();
   const returnFiles: Unzipped = {};
   const parseFiles = async (

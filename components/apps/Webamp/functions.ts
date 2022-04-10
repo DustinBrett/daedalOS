@@ -100,7 +100,7 @@ export const parseTrack = async (
   );
 
   return {
-    blob: bufferToBlob(file),
+    blob: bufferToBlob(file, "audio/mpeg"),
     duration: Math.floor(duration),
     metaData: { album, artist, title },
   };
