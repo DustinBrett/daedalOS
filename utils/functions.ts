@@ -12,6 +12,11 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
 
+export const imageToBufferUrl = (path: string, buffer: Buffer): string =>
+  extname(path) === ".svg"
+    ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
+    : bufferToUrl(buffer);
+
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
 const loadScript = (src: string, defer?: boolean): Promise<Event> =>

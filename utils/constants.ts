@@ -38,6 +38,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".pjp",
   ".pjpeg",
   ".png",
+  ".svg",
   ".tif",
   ".tiff",
   ".webp",

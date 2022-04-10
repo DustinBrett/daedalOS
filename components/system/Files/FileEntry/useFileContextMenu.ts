@@ -29,7 +29,10 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { IMAGE_ENCODE_FORMATS } from "utils/imagemagick/formats";
+import {
+  IMAGE_DECODE_FORMATS,
+  IMAGE_ENCODE_FORMATS,
+} from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 
 const useFileContextMenu = (
@@ -135,7 +138,7 @@ const useFileContextMenu = (
         }
 
         const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
-        const canDecodeImage = IMAGE_FILE_EXTENSIONS.has(pathExtension);
+        const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
         const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
 
         if (canDecodeAudio || canDecodeImage || canDecodeVideo) {

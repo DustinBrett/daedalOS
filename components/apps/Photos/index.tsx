@@ -16,7 +16,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { bufferToUrl, cleanUpBufferUrl, label } from "utils/functions";
+import { cleanUpBufferUrl, imageToBufferUrl, label } from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -43,11 +43,11 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       const [currentUrl] = Object.keys(currentSrc);
 
       if (currentUrl) {
-        cleanUpBufferUrl(currentUrl);
+        if (currentUrl.startsWith("blob:")) cleanUpBufferUrl(currentUrl);
         reset?.();
       }
 
-      return { [url]: bufferToUrl(fileContents) };
+      return { [url]: imageToBufferUrl(url, fileContents) };
     });
     appendFileToTitle(basename(url));
   }, [appendFileToTitle, readFile, reset, url]);
@@ -62,7 +62,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     if (url && !src[url] && !closing) loadPhoto();
 
     return () => {
-      if (closing) cleanUpBufferUrl(src[url]);
+      if (closing && src[url].startsWith("blob:")) cleanUpBufferUrl(src[url]);
     };
   }, [closing, loadPhoto, src, url]);
 

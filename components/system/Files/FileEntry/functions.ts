@@ -28,7 +28,7 @@ import {
   UNKNOWN_ICON,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { bufferToUrl, isYouTubeUrl } from "utils/functions";
+import { bufferToUrl, imageToBufferUrl, isYouTubeUrl } from "utils/functions";
 
 type InternetShortcut = {
   InternetShortcut: {
@@ -75,9 +75,9 @@ export const getIconFromIni = (
   });
 
 export const getDefaultFileViewer = (extension: string): string => {
-  if (monacoExtensions.has(extension)) return "MonacoEditor";
   if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";
   if (VIDEO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
+  if (monacoExtensions.has(extension)) return "MonacoEditor";
 
   return "";
 };
@@ -271,7 +271,7 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/photo.webp", () =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
-          getInfoByFileExtension(bufferToUrl(contents));
+          getInfoByFileExtension(imageToBufferUrl(path, contents));
         }
       })
     );

@@ -73,6 +73,10 @@ const types = {
     process: ["Byuu"],
     type: "Super Nintendo ROM File",
   },
+  SvgFile: {
+    process: ["Photos", "MonacoEditor"],
+    type: "Scalable Vector Graphics File",
+  },
   WinampSkin: {
     icon: "audio",
     process: ["Webamp", "FileExplorer"],
@@ -107,6 +111,7 @@ const extensions = {
   ".smc": types.SuperNintendoRom,
   ".smd": types.SegaGenesisRom,
   ".spl": types.FutureSplash,
+  ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,
   ".whtml": types.WysiwygHtmlDocument,
   ".wsz": types.WinampSkin,
