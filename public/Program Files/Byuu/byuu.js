@@ -1036,7 +1036,7 @@ var Module = function() {
     }
     function autoResumeAudioContext(ctx, elements) {
       if (!elements) {
-        elements = [document, document.getElementById("canvas")];
+        elements = [document, document.getElementById("byuuCanvas")];
       }
       ["keydown", "mousedown", "touchstart"].forEach(function(event2) {
         elements.forEach(function(element) {
@@ -7123,7 +7123,7 @@ var Module = function() {
     var specialHTMLTargets = [0, document, window];
     function findEventTarget(target) {
       target = maybeCStringToJsString(target);
-      var domElement = specialHTMLTargets[target] || document.querySelector(target);
+      var domElement = specialHTMLTargets[target] || document.querySelector(target.replace("#canvas", "#byuuCanvas"));
       return domElement;
     }
     function findCanvasEventTarget(target) {
@@ -9529,7 +9529,7 @@ Object.assign(container.style, {
 });
 const canvas = document.createElement("canvas");
 const getContext = canvas.getContext.bind(canvas);
-canvas.id = "canvas";
+canvas.id = "byuuCanvas";
 Object.assign(canvas.style, {
   height: "100%",
   width: "100%",
@@ -9578,9 +9578,9 @@ byuu.initialize = async function(parent, ctxOptions) {
   ctxOptions = ctxOptions || {};
   Object.assign(contextOptions, ctxOptions);
   parent.appendChild(container);
-  const domElementWithIDCanvas = document.getElementById("canvas");
+  const domElementWithIDCanvas = document.getElementById("byuuCanvas");
   if (domElementWithIDCanvas && !canvas.isSameNode(domElementWithIDCanvas)) {
-    throw new Error(`The DOM ID attribute "canvas" is reserved by byuu for it's own canvas`);
+    throw new Error(`The DOM ID attribute "byuuCanvas" is reserved by byuu for it's own canvas`);
   }
   if (initialized) {
     return;
