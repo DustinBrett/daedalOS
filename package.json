@@ -108,6 +108,6 @@
     "tinymce": "^6.0.1",
     "typescript": "^4.6.3",
     "webamp": "^1.5.0",
-    "xterm": "^4.18.0"
+    "xterm": "^4.19.0-beta.21"
   }
 }
