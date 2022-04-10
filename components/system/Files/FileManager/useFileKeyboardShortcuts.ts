@@ -3,6 +3,7 @@ import type {
   Files,
   FolderActions,
 } from "components/system/Files/FileManager/useFolder";
+import type { FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { dirname, join } from "path";
@@ -18,13 +19,16 @@ const useFileKeyboardShortcuts = (
   { blurEntry, focusEntry }: FocusEntryFunctions,
   { pasteToFolder }: FolderActions,
   updateFiles: (newFile?: string, oldFile?: string) => void,
-  id?: string
+  id?: string,
+  view?: FileManagerViewNames
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
   const { url: changeUrl } = useProcesses();
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
+      if (view === "list") return;
+
       const { ctrlKey, key, target, shiftKey } = event;
 
       if (key === "F12" && !shiftKey) return;

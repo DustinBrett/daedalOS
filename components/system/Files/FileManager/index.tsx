@@ -86,7 +86,8 @@ const FileManager: FC<FileManagerProps> = ({
     focusFunctions,
     folderActions,
     updateFiles,
-    id
+    id,
+    view
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
   const mountUrl = useCallback(async () => {
