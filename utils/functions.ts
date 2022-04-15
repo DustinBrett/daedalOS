@@ -15,7 +15,7 @@ export const bufferToUrl = (buffer: Buffer): string =>
 export const imageToBufferUrl = (path: string, buffer: Buffer): string =>
   extname(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
-    : bufferToUrl(buffer);
+    : `data:image/png;base64,${buffer.toString("base64")}`;
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 

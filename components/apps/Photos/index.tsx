@@ -16,7 +16,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { cleanUpBufferUrl, imageToBufferUrl, label } from "utils/functions";
+import { imageToBufferUrl, label } from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -36,14 +36,14 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     imageContainerRef.current
   );
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
-  const loadPhoto = useCallback(async () => {
+  const loadPhoto = useCallback(async (): Promise<void> => {
     const fileContents = await readFile(url);
 
     setSrc((currentSrc) => {
       const [currentUrl] = Object.keys(currentSrc);
 
       if (currentUrl) {
-        if (currentUrl.startsWith("blob:")) cleanUpBufferUrl(currentUrl);
+        if (currentUrl === url) return currentSrc;
         reset?.();
       }
 
@@ -60,10 +60,6 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
-
-    return () => {
-      if (closing && src[url]?.startsWith("blob:")) cleanUpBufferUrl(src[url]);
-    };
   }, [closing, loadPhoto, src, url]);
 
   return (
@@ -97,6 +93,8 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
         <img
           ref={imageRef}
           alt={basename(url, extname(url))}
+          decoding="async"
+          loading="eager"
           onError={() => setBrokenImage(true)}
           onLoad={() => setBrokenImage(false)}
           src={src[url]}
