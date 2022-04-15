@@ -8,8 +8,8 @@ const StyledJSDOS = styled.div`
   width: 100%;
 
   canvas {
-    image-rendering: crisp-edges;
     image-rendering: pixelated;
+    image-rendering: crisp-edges;
     position: absolute;
     top: 0 !important;
     touch-action: none;
