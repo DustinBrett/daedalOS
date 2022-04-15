@@ -7,13 +7,14 @@ import {
 import { connect } from "components/apps/IRC/functions";
 import StyledIRC from "components/apps/IRC/StyledIRC";
 import type { Message } from "components/apps/IRC/types";
+import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useEffect, useRef, useState } from "react";
 import { PACKAGE_DATA } from "utils/constants";
 
 const [{ port = 443, server }] = servers;
 const { alias } = PACKAGE_DATA;
 
-const IRC: FC = () => {
+const IRC: FC<ComponentProcessProps> = () => {
   const [log, setLog] = useState<string[]>([]);
   const [socket, setSocket] = useState<WebSocket>();
 

@@ -36,7 +36,7 @@ const usePanZoom = (
   } = useProcesses();
   const { closing, componentWindow, url = "" } = process || {};
   const { appendFileToTitle } = useTitle(id);
-  const zoomUpdate = useCallback(
+  const zoomUpdate = useCallback<EventListener>(
     (panZoomEvent) => {
       const { detail: { scale = 0, x = 0, y = 0 } = {} } =
         (panZoomEvent as PanZoomEvent) || {};
