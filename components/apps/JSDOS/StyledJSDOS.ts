@@ -9,7 +9,6 @@ const StyledJSDOS = styled.div`
 
   canvas {
     image-rendering: crisp-edges;
-    image-rendering: crisp-edges;
     image-rendering: pixelated;
     position: absolute;
     top: 0 !important;
