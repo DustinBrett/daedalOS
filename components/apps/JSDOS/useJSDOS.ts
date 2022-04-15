@@ -1,10 +1,19 @@
-import { dosOptions, libs, pathPrefix } from "components/apps/JSDOS/config";
+import {
+  CAPTURED_KEYS,
+  dosOptions,
+  libs,
+  pathPrefix,
+} from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
+
+const captureKeys = (event: KeyboardEvent): void => {
+  if (CAPTURED_KEYS.has(event.key)) event.preventDefault();
+};
 
 const useJSDOS = (
   id: string,
@@ -26,6 +35,15 @@ const useJSDOS = (
         window.emulators.pathPrefix = pathPrefix;
 
         if (containerRef.current) {
+          const baseContainer = containerRef.current.closest("section");
+
+          baseContainer?.addEventListener("keydown", captureKeys, {
+            capture: true,
+          });
+          baseContainer?.addEventListener("keyup", captureKeys, {
+            capture: true,
+          });
+
           setDosInstance(window.Dos(containerRef.current, dosOptions));
         }
       });
@@ -36,9 +54,10 @@ const useJSDOS = (
     if (dosCI && loading) {
       updateWindowSize(dosCI.height(), dosCI.width());
 
-      dosCI
-        .events()
-        .onMessage((_msgType, _eventType, command: string, message: string) => {
+      const events = dosCI.events();
+
+      events.onMessage(
+        (_msgType, _eventType, command: string, message: string) => {
           if (command === "LOG_EXEC") {
             const [dosCommand] = message
               .replace("Parsing command line: ", "")
@@ -48,9 +67,9 @@ const useJSDOS = (
               closeWithTransition(id);
             }
           }
-        });
-
-      dosCI.events().onFrameSize((width, height) => {
+        }
+      );
+      events.onFrameSize((width, height) => {
         const {
           height: instanceHeight = height,
           width: instanceWidth = width,
@@ -68,12 +87,9 @@ const useJSDOS = (
           updateWindowSize(frameHeight, frameWidth);
         }
       });
-
-      dosCI
-        .events()
-        .onExit(() =>
-          window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
-        );
+      events.onExit(() =>
+        window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
+      );
 
       setLoading(false);
     }

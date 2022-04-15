@@ -8,16 +8,26 @@ const StyledJSDOS = styled.div`
   width: 100%;
 
   canvas {
-    image-rendering: pixelated;
     image-rendering: crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
     position: absolute;
     top: 0 !important;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    user-select: none;
     width: 100%;
   }
 
   div,
   video {
     display: none;
+  }
+
+  .emulator-mouse-overlay {
+    display: block;
+    inset: 0;
+    position: absolute;
   }
 `;
 
