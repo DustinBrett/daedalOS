@@ -55,3 +55,4 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Lunr](https://github.com/olivernn/lunr.js)
 - [Web eSheep](https://github.com/Adrianotiger/web-esheep)
 - [Byuu](https://github.com/Wizcorp/byuu-web)
+- [SheetJS](https://github.com/SheetJS/sheetjs)

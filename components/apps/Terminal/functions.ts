@@ -59,6 +59,7 @@ export const commands: Record<string, string> = {
   wapm: "Run universal Wasm binaries.",
   weather: "Weather forecast service",
   whoami: "Displays user information.",
+  xlsx: "Convert a spreadsheet file to another format.",
 };
 
 export const aliases: Record<string, string[]> = {
@@ -107,6 +108,7 @@ const directoryCommands = new Set([
   "rmdir",
   "touch",
   "type",
+  "xlsx",
 ]);
 
 export const unknownCommand = (baseCommand: string): string =>

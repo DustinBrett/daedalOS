@@ -81,7 +81,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
   - Open with, Open file/folder location, Open in new window
-  - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo
+  - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets
   - Sort by, New Folder, New Text Document
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete

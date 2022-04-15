@@ -34,6 +34,8 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
+import { convertSheet } from "utils/sheetjs";
+import { SPREADSHEET_FORMATS } from "utils/sheetjs/formats";
 
 const useFileContextMenu = (
   url: string,
@@ -186,6 +188,39 @@ const useFileContextMenu = (
                       }
                     )
                   );
+                },
+                label: extension.toUpperCase(),
+              };
+            }),
+          });
+        }
+
+        const canDecodeSpreadsheet =
+          SPREADSHEET_FORMATS.includes(pathExtension);
+
+        if (canDecodeSpreadsheet) {
+          menuItems.unshift(MENU_SEPERATOR, {
+            label: "Convert to",
+            menu: SPREADSHEET_FORMATS.filter(
+              (format) => format !== pathExtension
+            ).map((format) => {
+              const extension = format.replace(".", "");
+
+              return {
+                action: () => {
+                  absoluteEntries().forEach(async (absoluteEntry) => {
+                    const newFilePath = `${dirname(absoluteEntry)}/${basename(
+                      basename(absoluteEntry),
+                      extname(basename(absoluteEntry))
+                    )}.${extension}`;
+                    const workBook = await convertSheet(
+                      await readFile(absoluteEntry),
+                      extension
+                    );
+
+                    await writeFile(newFilePath, Buffer.from(workBook));
+                    updateFolder(dirname(path), basename(newFilePath));
+                  });
                 },
                 label: extension.toUpperCase(),
               };

@@ -36,6 +36,7 @@ import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { fullSearch } from "utils/search";
+import { convertSheet } from "utils/sheetjs";
 import type { Terminal } from "xterm";
 
 const FILE_NOT_FILE = "The system cannot find the file specified.";
@@ -570,6 +571,35 @@ const useCommandInterpreter = (
             localEcho?.println(unknownCommand(baseCommand));
           }
           break;
+        case "xlsx": {
+          const [file, format = "xlsx"] = commandArgs;
+
+          if (file && format) {
+            const fullPath = getFullPath(file);
+
+            if (
+              (await exists(fullPath)) &&
+              !(await lstat(fullPath)).isDirectory()
+            ) {
+              const newFilePath = `${dirname(fullPath)}/${basename(
+                file,
+                extname(file)
+              )}.${format}`;
+              const workBook = await convertSheet(
+                await readFile(fullPath),
+                format
+              );
+
+              await writeFile(newFilePath, Buffer.from(workBook));
+              updateFile(newFilePath);
+            } else {
+              localEcho?.println(FILE_NOT_FILE);
+            }
+          } else {
+            localEcho?.println(SYNTAX_ERROR);
+          }
+          break;
+        }
         default:
           if (baseCommand) {
             const pid = Object.keys(processDirectory).find(
