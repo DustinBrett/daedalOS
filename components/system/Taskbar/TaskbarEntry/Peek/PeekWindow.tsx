@@ -53,7 +53,7 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
       {...peekTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <img alt={title} decoding="async" src={image} />
+      <img alt={title} decoding="async" loading="eager" src={image} />
       <Button onClick={onClose} {...label("Close")}>
         <CloseIcon />
       </Button>
