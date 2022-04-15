@@ -62,7 +62,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     if (url && !src[url] && !closing) loadPhoto();
 
     return () => {
-      if (closing && src[url].startsWith("blob:")) cleanUpBufferUrl(src[url]);
+      if (closing && src[url]?.startsWith("blob:")) cleanUpBufferUrl(src[url]);
     };
   }, [closing, loadPhoto, src, url]);
 
