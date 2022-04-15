@@ -33,7 +33,7 @@ export const addEntryToZippable = (
   return oldZippable;
 };
 
-export const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
+const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
   new Promise((resolve, reject) => {
     import("fflate").then(({ unzip }) =>
       unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)))

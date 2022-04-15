@@ -16,8 +16,8 @@ declare global {
 }
 
 const getExeName = async (zipData: Buffer): Promise<string | undefined> => {
-  const { unzipAsync } = await import("utils/zipFunctions");
-  const fileList = Object.entries(await unzipAsync(zipData));
+  const { unzip } = await import("utils/zipFunctions");
+  const fileList = Object.entries(await unzip(zipData));
   const [[fileName] = []] = fileList
     .filter(([name]) => name.toLowerCase().endsWith(".exe"))
     .sort(([, aFile], [, bFile]) => bFile.length - aFile.length);
