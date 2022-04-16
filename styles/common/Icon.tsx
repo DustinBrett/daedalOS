@@ -11,28 +11,34 @@ export type IconProps = {
   $moving?: boolean;
 };
 
-const StyledIcon = styled.img.attrs<IconProps>(
-  ({ $imgSize = 0, $displaySize = 0, $eager = false, src = "" }) => ({
-    decoding: "async",
-    draggable: false,
-    height: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
-    loading: $eager ? "eager" : "lazy",
-    src:
-      !src ||
-      src.startsWith("blob:") ||
-      src.startsWith("http:") ||
-      src.startsWith("https:") ||
-      src.startsWith("data:") ||
-      src.endsWith(".ico")
-        ? src
-        : join(
-            dirname(src),
-            `${$imgSize}x${$imgSize}`,
-            basename(!supportsWebP() ? src.replace(".webp", ".png") : src)
-          ),
-    width: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
+const StyledIcon = styled.img
+  .withConfig({
+    shouldForwardProp: (prop, defaultValidatorFn) =>
+      ["fetchpriority"].includes(prop) || defaultValidatorFn(prop),
   })
-)<IconProps>`
+  .attrs<IconProps>(
+    ({ $imgSize = 0, $displaySize = 0, $eager = false, src = "" }) => ({
+      decoding: "async",
+      draggable: false,
+      fetchpriority: $eager ? "high" : undefined,
+      height: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
+      loading: $eager ? "eager" : undefined,
+      src:
+        !src ||
+        src.startsWith("blob:") ||
+        src.startsWith("http:") ||
+        src.startsWith("https:") ||
+        src.startsWith("data:") ||
+        src.endsWith(".ico")
+          ? src
+          : join(
+              dirname(src),
+              `${$imgSize}x${$imgSize}`,
+              basename(!supportsWebP() ? src.replace(".webp", ".png") : src)
+            ),
+      width: $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize,
+    })
+  )<IconProps>`
   left: ${({ $displaySize = 0, $imgSize = 0 }) =>
     $displaySize > $imgSize ? `${$displaySize - $imgSize}px` : undefined};
   object-fit: contain;
@@ -45,21 +51,18 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   props
 ) => {
   const [loaded, setLoaded] = useState(false);
-  const { $eager, $imgRef, src = "" } = props;
+  const { $imgRef, src = "" } = props;
   const style = useMemo<React.CSSProperties>(
     () => ({ visibility: loaded ? "visible" : "hidden" }),
     [loaded]
   );
 
-  useEffect(() => {
-    if (!loaded && $eager) {
-      $imgRef?.current?.setAttribute("fetchpriority", "high");
-    }
-
-    return () => {
+  useEffect(
+    () => () => {
       if (loaded && src.startsWith("blob:")) cleanUpBufferUrl(src);
-    };
-  }, [$eager, $imgRef, loaded, src]);
+    },
+    [loaded, src]
+  );
 
   return (
     <StyledIcon
