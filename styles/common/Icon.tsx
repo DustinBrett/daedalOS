@@ -45,18 +45,21 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   props
 ) => {
   const [loaded, setLoaded] = useState(false);
-  const { $imgRef, src = "" } = props;
+  const { $eager, $imgRef, src = "" } = props;
   const style = useMemo<React.CSSProperties>(
     () => ({ visibility: loaded ? "visible" : "hidden" }),
     [loaded]
   );
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (!loaded && $eager) {
+      $imgRef?.current?.setAttribute("fetchpriority", "high");
+    }
+
+    return () => {
       if (loaded && src.startsWith("blob:")) cleanUpBufferUrl(src);
-    },
-    [loaded, src]
-  );
+    };
+  }, [$eager, $imgRef, loaded, src]);
 
   return (
     <StyledIcon
