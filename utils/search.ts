@@ -6,6 +6,7 @@ import type { Index } from "lunr";
 import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
+import { HIGH_PRIORITY_REQUEST } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
@@ -19,7 +20,7 @@ export const search = async (
 ): Promise<Index.Result[]> => {
   if (!window.lunr) await loadFiles([LUNR_LIB]);
   if (!index && !baseIndex.search) {
-    const response = await fetch(FILE_INDEX);
+    const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
     const indexFile = JSON.parse(await response.text()) as Index;
 
     baseIndex = window.lunr?.Index.load(indexFile);

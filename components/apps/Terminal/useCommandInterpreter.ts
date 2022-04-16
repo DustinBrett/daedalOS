@@ -31,7 +31,11 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
-import { HOME, ONE_DAY_IN_MILLISECONDS } from "utils/constants";
+import {
+  HIGH_PRIORITY_REQUEST,
+  HOME,
+  ONE_DAY_IN_MILLISECONDS,
+} from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
@@ -559,7 +563,10 @@ const useCommandInterpreter = (
         }
         case "weather":
         case "wttr": {
-          const response = await fetch("https://wttr.in/?1nAF");
+          const response = await fetch(
+            "https://wttr.in/?1nAF",
+            HIGH_PRIORITY_REQUEST
+          );
 
           localEcho?.println(await response.text());
           break;

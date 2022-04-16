@@ -26,10 +26,13 @@ const loadScript = (src: string, defer?: boolean): Promise<Event> =>
     if (loadedScripts.some((script) => script.src.endsWith(src))) {
       resolve(new Event("Already loaded."));
     } else {
-      const script = document.createElement("script");
+      const script = document.createElement(
+        "script"
+      ) as HTMLElementWithPriority<HTMLScriptElement>;
 
       script.async = false;
       if (defer) script.defer = true;
+      script.fetchpriority = "high";
       script.src = src;
       script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
       script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
@@ -45,9 +48,12 @@ const loadStyle = (href: string): Promise<Event> =>
     if (loadedStyles.some((link) => link.href.endsWith(href))) {
       resolve(new Event("Already loaded."));
     } else {
-      const link = document.createElement("link");
+      const link = document.createElement(
+        "link"
+      ) as HTMLElementWithPriority<HTMLLinkElement>;
 
       link.rel = "stylesheet";
+      link.fetchpriority = "high";
       link.href = href;
       link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
       link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);

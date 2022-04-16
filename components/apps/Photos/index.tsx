@@ -16,6 +16,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import { HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { imageToBufferUrl, label } from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
@@ -99,6 +100,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
           onLoad={() => setBrokenImage(false)}
           src={src[url]}
           style={style}
+          {...HIGH_PRIORITY_ELEMENT}
         />
         {brokenImage && (
           <div>

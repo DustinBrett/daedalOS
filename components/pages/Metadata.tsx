@@ -1,7 +1,12 @@
 import Head from "next/head";
 import { basename, dirname, join } from "path";
 import preloadIcons from "public/.index/preload.json";
-import { ICON_PATH, PACKAGE_DATA, USER_ICON_PATH } from "utils/constants";
+import {
+  HIGH_PRIORITY_ELEMENT,
+  ICON_PATH,
+  PACKAGE_DATA,
+  USER_ICON_PATH,
+} from "utils/constants";
 
 const { alias, description } = PACKAGE_DATA;
 
@@ -23,6 +28,7 @@ const Metadata: FC = () => (
             : icon
         }
         rel="preload"
+        {...HIGH_PRIORITY_ELEMENT}
       />
     ))}
   </Head>

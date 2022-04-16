@@ -7,7 +7,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { label, viewWidth } from "utils/functions";
 
 type PeekWindowProps = {
@@ -53,7 +53,13 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
       {...peekTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <img alt={title} decoding="async" loading="eager" src={image} />
+      <img
+        alt={title}
+        decoding="async"
+        loading="eager"
+        src={image}
+        {...HIGH_PRIORITY_ELEMENT}
+      />
       <Button onClick={onClose} {...label("Close")}>
         <CloseIcon />
       </Button>

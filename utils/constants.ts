@@ -151,3 +151,9 @@ export const BASE_ZIP_CONFIG: AsyncZipOptions = {
   level: 0,
   mem: 8,
 };
+
+export const HIGH_PRIORITY_REQUEST = { priority: "high" } as RequestInit;
+
+export const HIGH_PRIORITY_ELEMENT = {
+  fetchpriority: "high",
+} as React.HTMLAttributes<HTMLElement>;
