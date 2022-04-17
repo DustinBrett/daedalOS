@@ -51,6 +51,8 @@ export const MENU_SEPERATOR = { seperator: true };
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
+export const FILE_SYSTEM_ACCESS = "FileSystemAccess";
+
 export const EXTRACTABLE_EXTENSIONS = new Set([
   ".7z",
   ".gz",
@@ -125,6 +127,8 @@ export const FOLDER_ICON = `${ICON_PATH}/folder.webp`;
 export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.webp`;
 
 export const FOLDER_FRONT_ICON = `${ICON_PATH}/folder_front.webp`;
+
+export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.webp`;
 
 export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.webp`;
 
