@@ -14,7 +14,7 @@ const StyledPeekWindow = styled(motion.div)`
   position: fixed;
 
   ${StyledTaskbarEntry}:hover & {
-    background-color: ${({ theme }) => theme.colors.taskbar.hover};
+    background-color: hsla(0, 0%, 25%, 85%);
 
     &:active {
       background-color: ${({ theme }) => theme.colors.taskbar.activeForeground};
