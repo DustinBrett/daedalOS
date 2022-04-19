@@ -112,7 +112,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
       Type: type = "",
       URL: url = "",
     },
-  } = ini.parse(contents.toString()) as InternetShortcut;
+  } = (ini.parse(contents.toString()) || {}) as InternetShortcut;
 
   if (!icon && pid) {
     return { comment, icon: processDirectory[pid]?.icon, pid, type, url };
