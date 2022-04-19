@@ -1,6 +1,7 @@
 import { basename, dirname, join } from "path";
 import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { UNKNOWN_ICON } from "utils/constants";
 import { cleanUpBufferUrl, supportsWebP } from "utils/functions";
 
 export type IconProps = {
@@ -47,27 +48,40 @@ const StyledIcon = styled.img
     $displaySize > $imgSize ? `${$displaySize - $imgSize}px` : undefined};
 `;
 
-const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
-  props
-) => {
-  const [loaded, setLoaded] = useState(false);
-  const { $imgRef, src = "" } = props;
+const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = ({
+  src = "",
+  ...props
+}) => {
+  const [loadedSrc, setLoadedSrc] = useState("");
+  const [brokenImages, setBrokenImages] = useState<string[]>([]);
+  const { $imgRef } = props;
   const style = useMemo<React.CSSProperties>(
-    () => ({ visibility: loaded ? "visible" : "hidden" }),
-    [loaded]
+    () => ({ visibility: loadedSrc ? "visible" : "hidden" }),
+    [loadedSrc]
   );
 
   useEffect(
     () => () => {
-      if (loaded && src.startsWith("blob:")) cleanUpBufferUrl(src);
+      if (loadedSrc && src.startsWith("blob:")) cleanUpBufferUrl(src);
     },
-    [loaded, src]
+    [loadedSrc, src]
   );
 
   return (
     <StyledIcon
       ref={$imgRef}
-      onLoad={() => setLoaded(true)}
+      onError={() => {
+        if (src) {
+          setBrokenImages((currentBrokenImages) => [
+            ...currentBrokenImages,
+            src,
+          ]);
+        }
+      }}
+      onLoad={() => {
+        if (!brokenImages.includes(src)) setLoadedSrc(src);
+      }}
+      src={brokenImages.includes(src) ? loadedSrc || UNKNOWN_ICON : src}
       style={style}
       {...props}
     />
