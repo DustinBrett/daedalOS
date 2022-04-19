@@ -22,6 +22,9 @@ const renderFrame = async (
   const htmlToImage = await import("html-to-image");
   const dataUrl = await htmlToImage.toSvg(previewElement, {
     skipAutoScale: true,
+    style: {
+      inset: "0",
+    },
   });
 
   if (dataUrl.includes(EMPTY_PNG)) nextFrame();
