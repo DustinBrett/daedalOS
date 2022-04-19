@@ -271,7 +271,14 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/photo.webp", () =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
-          getInfoByFileExtension(imageToBufferUrl(path, contents));
+          const imageIcon = new Image();
+
+          imageIcon.addEventListener(
+            "load",
+            () => getInfoByFileExtension(imageIcon.src),
+            ONE_TIME_PASSIVE_EVENT
+          );
+          imageIcon.src = imageToBufferUrl(path, contents);
         }
       })
     );
