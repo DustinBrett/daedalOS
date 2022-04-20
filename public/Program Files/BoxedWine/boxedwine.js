@@ -1103,7 +1103,7 @@ function listenOnce(object, event, func) {
 
 function autoResumeAudioContext(ctx, elements) {
  if (!elements) {
-  elements = [ document, document.getElementById("canvas") ];
+  elements = [ document, document.getElementById("boxedWineCanvas") ];
  }
  [ "keydown", "mousedown", "touchstart" ].forEach(function(event) {
   elements.forEach(function(element) {
@@ -6305,6 +6305,7 @@ var specialHTMLTargets = [ 0, typeof document !== "undefined" ? document : 0, ty
 
 function findEventTarget(target) {
  target = maybeCStringToJsString(target);
+ if (target === "#canvas") target = "#boxedWineCanvas";
  var domElement = specialHTMLTargets[target] || (typeof document !== "undefined" ? document.querySelector(target) : undefined);
  return domElement;
 }
