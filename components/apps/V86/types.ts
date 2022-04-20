@@ -21,7 +21,9 @@ export type V86Config = V86ImageConfig &
       baseurl: string;
     };
     initial_state?: { url: string };
+    memory_size: number;
     screen_container: HTMLDivElement | null;
+    vga_memory_size: number;
   };
 
 type V86Constructor = new (v86Config: V86Config) => V86Starter;
@@ -32,3 +34,7 @@ declare global {
     V86Starter: V86Constructor;
   }
 }
+
+export type NavigatorWithMemory = Navigator & {
+  deviceMemory?: number;
+};

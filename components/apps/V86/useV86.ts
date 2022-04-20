@@ -7,7 +7,11 @@ import {
 } from "components/apps/V86/config";
 import type { V86ImageConfig } from "components/apps/V86/image";
 import { getImageType } from "components/apps/V86/image";
-import type { V86Config, V86Starter } from "components/apps/V86/types";
+import type {
+  NavigatorWithMemory,
+  V86Config,
+  V86Starter,
+} from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -85,9 +89,12 @@ const useV86 = (
         use_parts: false,
       },
     };
+    const { deviceMemory = 0.25 } = navigator as NavigatorWithMemory;
     const v86StarterConfig: V86Config = {
       boot_order: isISO ? BOOT_CD_FD_HD : BOOT_FD_CD_HD,
+      memory_size: deviceMemory * 128 * 1024 * 1024,
       screen_container: containerRef.current,
+      vga_memory_size: deviceMemory * 8 * 1024 * 1024,
       ...v86ImageConfig,
       ...config,
     };

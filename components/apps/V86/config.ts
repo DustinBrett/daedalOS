@@ -5,10 +5,8 @@ export const config = {
   autostart: true,
   bios: { url: "/Program Files/Virtual x86/bios/seabios.bin" },
   log_level: 0,
-  memory_size: 1024 * 1024 * 1024,
   network_relay_url: "wss://relay.widgetry.org/",
   vga_bios: { url: "/Program Files/Virtual x86/bios/vgabios.bin" },
-  vga_memory_size: 32 * 1024 * 1024,
   wasm_path: "/Program Files/Virtual x86/v86.wasm",
 };
 
