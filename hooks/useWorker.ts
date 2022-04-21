@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const useWorker = <T>(
   workerInit: () => Worker,
-  onMessage?: (message: { data: T }) => void
+  onMessage?: (message: MessageEvent<T>) => void
 ): React.MutableRefObject<Worker | undefined> => {
-  const [initialized, setInitialized] = useState(false);
   const worker = useRef<Worker>();
 
   useEffect(() => {
@@ -16,20 +15,13 @@ const useWorker = <T>(
       }
 
       worker.current.postMessage("init");
-
-      setInitialized(true);
     }
-  }, [onMessage, workerInit]);
 
-  useEffect(
-    () => () => {
-      if (initialized) {
-        worker.current?.terminate();
-        worker.current = undefined;
-      }
-    },
-    [initialized]
-  );
+    return () => {
+      worker.current?.terminate();
+      worker.current = undefined;
+    };
+  }, [onMessage, workerInit]);
 
   return worker;
 };
