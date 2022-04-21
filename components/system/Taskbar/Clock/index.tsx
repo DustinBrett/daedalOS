@@ -1,11 +1,16 @@
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
+import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
+import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useState } from "react";
+
+type ClockWorkerResponse = LocaleTimeDate | "source";
 
 const Clock: FC = () => {
   const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
   const { date, time, dateTime } = now;
+  const { clockSource } = useSession();
   const clockWorkerInit = useCallback(
     () =>
       new Worker(
@@ -18,11 +23,18 @@ const Clock: FC = () => {
     []
   );
   const updateTime = useCallback(
-    ({ data }: { data: LocaleTimeDate }) => setNow(data),
-    []
+    ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
+      if (data === "source") {
+        (clockWorker as Worker).postMessage(clockSource);
+      } else {
+        setNow(data);
+      }
+    },
+    [clockSource]
   );
+  const clockContextMenu = useClockContextMenu();
 
-  useWorker<LocaleTimeDate>(clockWorkerInit, updateTime);
+  useWorker<ClockWorkerResponse>(clockWorkerInit, updateTime);
 
   if (!time) return <></>;
 
@@ -32,6 +44,7 @@ const Clock: FC = () => {
       dateTime={dateTime}
       title={date}
       suppressHydrationWarning
+      {...clockContextMenu}
     >
       {time}
     </StyledClock>

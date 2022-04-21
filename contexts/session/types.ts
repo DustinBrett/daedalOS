@@ -19,7 +19,10 @@ export type SortOrder = [string[], SortBy, boolean];
 
 export type SortOrders = Record<string, SortOrder>;
 
+export type ClockSource = "local" | "ntp";
+
 export type SessionData = {
+  clockSource: ClockSource;
   sortOrders: SortOrders;
   themeName: ThemeName;
   wallpaperFit: WallpaperFit;
@@ -28,10 +31,12 @@ export type SessionData = {
 };
 
 export type SessionContextState = SessionData & {
+  clockSource: ClockSource;
   foregroundId: string;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
   sessionLoaded: boolean;
+  setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
   setSortOrder: (
     directory: string,

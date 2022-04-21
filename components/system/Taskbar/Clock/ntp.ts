@@ -1,0 +1,55 @@
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
+
+type NTPResponse = {
+  backoff: number;
+  now: number;
+  optout?: boolean;
+};
+
+const DEFAULT_BACKOFF_SECONDS = 300;
+const HOUR_IN_SECONDS = 3600;
+const NTP_SERVER = "https://use.ntpjs.org/v1/time.json";
+
+const NtpReqOptions: RequestInit = {
+  cache: "no-cache",
+  credentials: "omit",
+  keepalive: false,
+  mode: "cors",
+  priority: "low",
+  referrerPolicy: "no-referrer",
+  // eslint-disable-next-line unicorn/no-null
+  window: null,
+} as RequestInit;
+
+const getNtpResponse = async (): Promise<NTPResponse> => {
+  const ntpResponse = await fetch(NTP_SERVER, NtpReqOptions);
+  const ntpJsonResponse = (await ntpResponse.json()) as NTPResponse;
+
+  return ntpJsonResponse || {};
+};
+
+let msAheadBy: number;
+
+const requestLatestNtpTime = async (): Promise<void> => {
+  const requestStartTime = Date.now();
+  const {
+    backoff = DEFAULT_BACKOFF_SECONDS,
+    now = 0,
+    optout = false,
+  } = await getNtpResponse();
+
+  if (now) {
+    msAheadBy = requestStartTime - Math.ceil(now * MILLISECONDS_IN_SECOND);
+  }
+
+  setTimeout(
+    requestLatestNtpTime,
+    (optout ? HOUR_IN_SECONDS : backoff) * MILLISECONDS_IN_SECOND
+  );
+};
+
+export const getNtpAdjustedTime = (): Date => {
+  if (!msAheadBy) requestLatestNtpTime();
+
+  return new Date(Date.now() - (msAheadBy ?? 0));
+};
