@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 
 const useNextFocusable = (id: string): string => {
-  const { stackOrder } = useSession();
+  const { stackOrder = [] } = useSession();
   const { processes } = useProcesses();
 
   const nextFocusableId = stackOrder.find(

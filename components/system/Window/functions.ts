@@ -8,7 +8,7 @@ import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 export const cascadePosition = (
   id: string,
   processes: Processes,
-  stackOrder: string[],
+  stackOrder: string[] = [],
   offset = 0
 ): Position | undefined => {
   const [pid] = id.split(PROCESS_DELIMITER);
