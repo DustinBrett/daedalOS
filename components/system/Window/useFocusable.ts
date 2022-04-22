@@ -18,8 +18,12 @@ const useFocusable = (
   id: string,
   callbackEvents?: Partial<Events>
 ): Focusable => {
-  const { foregroundId, prependToStack, setForegroundId, stackOrder } =
-    useSession();
+  const {
+    foregroundId,
+    prependToStack,
+    setForegroundId,
+    stackOrder = [],
+  } = useSession();
   const {
     processes: { [id]: process },
   } = useProcesses();
