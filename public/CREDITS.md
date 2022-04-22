@@ -27,6 +27,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)
+- [gif.js](https://github.com/jnordberg/gif.js)
 - [Wasmer](https://github.com/wasmerio/wasmer)
 - [react-rnd](https://github.com/bokuweb/react-rnd)
 - [Framer Motion](https://github.com/framer/motion)

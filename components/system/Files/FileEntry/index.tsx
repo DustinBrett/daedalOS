@@ -199,8 +199,14 @@ const FileEntry: FC<FileEntryProps> = ({
         ) {
           const cacheIcon = async (): Promise<void> => {
             if (iconRef.current instanceof HTMLImageElement) {
-              const htmlToImage = await import("html-to-image");
-              const generatedIcon = await htmlToImage.toPng(iconRef.current);
+              let generatedIcon: string;
+
+              if (iconRef.current.src.startsWith("data:image/gif;base64,")) {
+                generatedIcon = iconRef.current.src;
+              } else {
+                const htmlToImage = await import("html-to-image");
+                generatedIcon = await htmlToImage.toPng(iconRef.current);
+              }
 
               cacheQueue.push(async () => {
                 const baseCachedPath = dirname(cachedIconPath);
@@ -209,7 +215,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 await writeFile(
                   cachedIconPath,
                   Buffer.from(
-                    generatedIcon.replace("data:image/png;base64,", ""),
+                    generatedIcon.replace(/data:(.*);base64,/, ""),
                     "base64"
                   ),
                   true

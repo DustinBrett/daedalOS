@@ -23,6 +23,10 @@ export const FS_HANDLES = "FileSystemAccessHandles";
 
 export const HOME = "/Users/Public";
 
+export const ICON_GIF_SECONDS = 2;
+
+export const ICON_GIF_FPS = 24;
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ".apng",
   ".avif",

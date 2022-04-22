@@ -15,12 +15,13 @@ import {
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
   ICON_CACHE,
+  ICON_GIF_FPS,
+  ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
-  PREVIEW_FRAME_SECOND,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
   SYSTEM_FILES,
@@ -28,7 +29,12 @@ import {
   UNKNOWN_ICON,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { bufferToUrl, imageToBufferUrl, isYouTubeUrl } from "utils/functions";
+import {
+  blobToBase64,
+  bufferToUrl,
+  imageToBufferUrl,
+  isYouTubeUrl,
+} from "utils/functions";
 
 type InternetShortcut = {
   InternetShortcut: {
@@ -285,31 +291,81 @@ export const getInfoWithExtension = (
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
     subIcons.push(processDirectory["VideoPlayer"].icon);
     getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () =>
-      fs.readFile(path, (error, contents = Buffer.from("")) => {
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error) {
           const video = document.createElement("video");
+          const canvas = document.createElement("canvas");
+          const { default: GIF } = await import("gif.js");
+          const gif = new GIF({
+            quality: 10,
+            workerScript: "Program Files/gif.js/gif.worker.js",
+            workers: 4,
+          });
+          let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
+          const getFrame = (second: number): Promise<void> =>
+            new Promise((resolve) => {
+              video.addEventListener(
+                "canplaythrough",
+                () => {
+                  const context = canvas.getContext("2d", {
+                    ...BASE_2D_CONTEXT_OPTIONS,
+                    willReadFrequently: true,
+                  });
 
-          video.currentTime = PREVIEW_FRAME_SECOND;
+                  if (!context) return;
+
+                  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  const imageData = context.getImageData(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+                  gif.addFrame(imageData, {
+                    copy: true,
+                    delay: 100,
+                  });
+                  framesRemaining -= 1;
+
+                  if (framesRemaining === 0) {
+                    gif.on("finished", async (blob) =>
+                      getInfoByFileExtension(await blobToBase64(blob))
+                    );
+                    gif.render();
+                  }
+
+                  resolve();
+                },
+                ONE_TIME_PASSIVE_EVENT
+              );
+              video.currentTime = second;
+              video.load();
+            });
+
           video.addEventListener(
             "loadeddata",
             () => {
-              const canvas = document.createElement("canvas");
-
               canvas.height = video.videoHeight;
               canvas.width = video.videoWidth;
-              canvas
-                .getContext("2d", BASE_2D_CONTEXT_OPTIONS)
-                ?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-              canvas.toBlob((blob) => {
-                if (blob instanceof Blob) {
-                  getInfoByFileExtension(URL.createObjectURL(blob));
+
+              const capturePoints = [video.duration / 4, video.duration / 2];
+              const frameStep = 4 / ICON_GIF_FPS;
+              const frameCount = framesRemaining / capturePoints.length;
+
+              capturePoints.forEach(async (capturePoint) => {
+                for (
+                  let frame = capturePoint;
+                  frame < capturePoint + frameCount * frameStep;
+                  frame += frameStep
+                ) {
+                  // eslint-disable-next-line no-await-in-loop
+                  await getFrame(frame);
                 }
               });
             },
             ONE_TIME_PASSIVE_EVENT
           );
           video.src = bufferToUrl(contents);
-          video.load();
         }
       })
     );

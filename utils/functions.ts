@@ -17,6 +17,14 @@ export const imageToBufferUrl = (path: string, buffer: Buffer): string =>
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
 
+export const blobToBase64 = (blob: Blob): Promise<string> =>
+  new Promise((resolve) => {
+    const fileReader = new FileReader();
+
+    fileReader.readAsDataURL(blob);
+    fileReader.onloadend = () => resolve(fileReader.result as string);
+  });
+
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
 const loadScript = (src: string, defer?: boolean): Promise<Event> =>
