@@ -34,6 +34,10 @@ const types = {
     process: ["Marked", "MonacoEditor"],
     type: "Markdown File",
   },
+  MediaPlaylist: {
+    process: ["VideoPlayer"],
+    type: "Media Playlist File",
+  },
   MountableDiscImage: {
     icon: "image",
     process: ["FileExplorer", "V86"],
@@ -102,6 +106,7 @@ const extensions = {
   ".img": types.DiscImage,
   ".iso": types.MountableDiscImage,
   ".jsdos": types.JsdosBundle,
+  ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,
   ".nes": types.NintendoRom,

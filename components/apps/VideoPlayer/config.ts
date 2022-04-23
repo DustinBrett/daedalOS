@@ -34,6 +34,8 @@ export const libs = [
 
 export const getVideoType = (url: string): string | undefined => {
   switch (extname(url).toLowerCase()) {
+    case ".m3u8":
+      return "application/x-mpegURL";
     case ".mkv":
     case ".mp4":
       return "video/mp4";
