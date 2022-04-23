@@ -299,7 +299,7 @@ export const getInfoWithExtension = (
           const gif = new GIF({
             quality: 10,
             workerScript: "Program Files/gif.js/gif.worker.js",
-            workers: 4,
+            workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
           });
           let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
           const getFrame = (second: number): Promise<void> =>
