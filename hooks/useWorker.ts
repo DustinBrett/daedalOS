@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 
 const useWorker = <T>(
-  workerInit: () => Worker,
+  workerInit?: () => Worker,
   onMessage?: (message: MessageEvent<T>) => void
 ): React.MutableRefObject<Worker | undefined> => {
   const worker = useRef<Worker>();
 
   useEffect(() => {
-    if (!worker.current) {
+    if (workerInit && !worker.current) {
       worker.current = workerInit();
 
       if (onMessage) {
