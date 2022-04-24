@@ -1,9 +1,10 @@
+import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
+import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
-import { useTheme } from "styled-components";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -21,11 +22,12 @@ const cssFit: Record<WallpaperFit, string> = {
   tile: "",
 };
 
+const WALLPAPERS = new Set(["VANTA"]);
+
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
 ): void => {
   const { exists, readFile } = useFileSystem();
-  const { wallpaper } = useTheme();
   const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
   const vantaWorkerInit = useCallback(
     () =>
@@ -38,7 +40,9 @@ const useWallpaper = (
       ),
     []
   );
-  const vantaWorker = useWorker<void>(vantaWorkerInit);
+  const vantaWorker = useWorker<void>(
+    wallpaperImage === "VANTA" ? vantaWorkerInit : undefined
+  );
   const resizeListener = useCallback(
     () =>
       vantaWorker.current?.postMessage(
@@ -46,25 +50,27 @@ const useWallpaper = (
       ),
     [desktopRef, vantaWorker]
   );
-  const loadThemeWallpaper = useCallback(() => {
+  const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
 
-      if (
-        typeof window.OffscreenCanvas !== "undefined" &&
-        vantaWorker.current
-      ) {
-        const offscreen = createOffscreenCanvas(desktopRef.current);
+      if (wallpaperImage === "VANTA") {
+        if (
+          typeof window.OffscreenCanvas !== "undefined" &&
+          vantaWorker.current
+        ) {
+          const offscreen = createOffscreenCanvas(desktopRef.current);
 
-        vantaWorker.current.postMessage({ canvas: offscreen }, [offscreen]);
+          vantaWorker.current.postMessage({ canvas: offscreen }, [offscreen]);
 
-        window.removeEventListener("resize", resizeListener);
-        window.addEventListener("resize", resizeListener, { passive: true });
-      } else {
-        wallpaper?.(desktopRef.current);
+          window.removeEventListener("resize", resizeListener);
+          window.addEventListener("resize", resizeListener, { passive: true });
+        } else {
+          vantaWaves(config)(desktopRef.current);
+        }
       }
     }
-  }, [desktopRef, resizeListener, vantaWorker, wallpaper]);
+  }, [desktopRef, resizeListener, vantaWorker, wallpaperImage]);
   const loadFileWallpaper = useCallback(async () => {
     if (await exists(wallpaperImage)) {
       const [, currentWallpaperUrl] =
@@ -75,7 +81,7 @@ const useWallpaper = (
       if (typeof window.OffscreenCanvas !== "undefined") {
         desktopRef.current?.querySelector("canvas")?.remove();
       } else {
-        wallpaper?.();
+        vantaWaves(config)();
       }
 
       desktopRef.current?.setAttribute(
@@ -86,27 +92,26 @@ const useWallpaper = (
       `
       );
     } else {
-      loadThemeWallpaper();
+      loadWallpaper();
     }
   }, [
     desktopRef,
     exists,
-    loadThemeWallpaper,
+    loadWallpaper,
     readFile,
-    wallpaper,
     wallpaperFit,
     wallpaperImage,
   ]);
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (wallpaperImage) {
-        loadFileWallpaper().catch(loadThemeWallpaper);
+      if (wallpaperImage && !WALLPAPERS.has(wallpaperImage)) {
+        loadFileWallpaper().catch(loadWallpaper);
       } else {
-        loadThemeWallpaper();
+        loadWallpaper();
       }
     }
-  }, [loadFileWallpaper, loadThemeWallpaper, sessionLoaded, wallpaperImage]);
+  }, [loadFileWallpaper, loadWallpaper, sessionLoaded, wallpaperImage]);
 };
 
 export default useWallpaper;

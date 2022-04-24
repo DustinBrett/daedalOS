@@ -24,7 +24,7 @@ const useSessionContextState = (): SessionContextState => {
   const [windowStates, setWindowStates] = useState<WindowStates>({});
   const [sortOrders, setSortOrders] = useState<SortOrders>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
-  const [wallpaperImage, setWallpaperImage] = useState("");
+  const [wallpaperImage, setWallpaperImage] = useState("VANTA");
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) => [
