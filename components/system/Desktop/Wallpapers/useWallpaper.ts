@@ -1,3 +1,4 @@
+import hexells from "components/system/Desktop/Wallpapers/hexells";
 import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
@@ -22,7 +23,7 @@ const cssFit: Record<WallpaperFit, string> = {
   tile: "",
 };
 
-const WALLPAPERS = new Set(["VANTA"]);
+export const WALLPAPERS = new Set(["HEXELLS", "VANTA"]);
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
@@ -53,6 +54,7 @@ const useWallpaper = (
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");
+      desktopRef.current.querySelector("canvas")?.remove();
 
       if (wallpaperImage === "VANTA") {
         if (
@@ -68,6 +70,8 @@ const useWallpaper = (
         } else {
           vantaWaves(config)(desktopRef.current);
         }
+      } else if (wallpaperImage === "HEXELLS") {
+        hexells(desktopRef.current);
       }
     }
   }, [desktopRef, resizeListener, vantaWorker, wallpaperImage]);
@@ -78,9 +82,9 @@ const useWallpaper = (
 
       if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
 
-      if (typeof window.OffscreenCanvas !== "undefined") {
-        desktopRef.current?.querySelector("canvas")?.remove();
-      } else {
+      desktopRef.current?.querySelector("canvas")?.remove();
+
+      if (wallpaperImage === "VANTA") {
         vantaWaves(config)();
       }
 

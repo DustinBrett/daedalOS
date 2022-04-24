@@ -27,7 +27,9 @@ type FilePasteOperations = Record<string, "copy" | "move">;
 export type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => void
+    callback: (name: string, buffer?: Buffer) => void,
+    accept?: string,
+    multiple?: boolean
   ) => void;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   copyEntries: (entries: string[]) => void;
@@ -168,12 +170,15 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const { openTransferDialog } = useDialog();
   const addFile = (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => void
+    callback: (name: string, buffer?: Buffer) => void,
+    accept?: string,
+    multiple = true
   ): void => {
     const fileInput = document.createElement("input");
 
     fileInput.type = "file";
-    fileInput.multiple = true;
+    fileInput.multiple = multiple;
+    if (accept) fileInput.accept = accept;
     fileInput.setAttribute("style", "display: none");
     fileInput.addEventListener(
       "change",

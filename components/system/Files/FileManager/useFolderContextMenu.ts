@@ -7,6 +7,7 @@ import type {
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
@@ -33,6 +34,7 @@ const useFolderContextMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
+  const { setWallpaper, wallpaperImage } = useSession();
   const getItems = useCallback(() => {
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
@@ -84,6 +86,23 @@ const useFolderContextMenu = (
       },
       { action: () => updateFolder(url), label: "Refresh" },
       MENU_SEPERATOR,
+      {
+        label: "Live Wallpaper",
+        menu: [
+          {
+            action: () => setWallpaper("HEXELLS"),
+            label: "Hexells",
+            toggle: wallpaperImage === "HEXELLS",
+          },
+          {
+            action: () => setWallpaper("VANTA"),
+            label: "Vanta Waves",
+            toggle: wallpaperImage === "VANTA",
+          },
+        ],
+      },
+
+      MENU_SEPERATOR,
       ...FS_COMMANDS,
       {
         action: () => pasteToFolder(),
@@ -121,9 +140,11 @@ const useFolderContextMenu = (
     pasteList,
     pasteToFolder,
     setSortBy,
+    setWallpaper,
     sortBy,
     updateFolder,
     url,
+    wallpaperImage,
   ]);
 
   return contextMenu?.(getItems);

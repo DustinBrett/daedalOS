@@ -45,7 +45,7 @@ export type SessionContextState = SessionData & {
     ascending?: boolean
   ) => void;
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
-  setWallpaper: (image: string, fit: WallpaperFit) => void;
+  setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   sortOrders: SortOrders;
   stackOrder: string[];

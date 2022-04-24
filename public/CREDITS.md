@@ -34,6 +34,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [html-to-image](https://github.com/bubkoo/html-to-image)
 - [Panzoom](https://github.com/timmywil/panzoom)
 - [Vanta.js](https://github.com/tengbao/vanta)
+- [Hexells](https://github.com/znah/hexells)
 
 ## App Libraries
 

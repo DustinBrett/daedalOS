@@ -40,8 +40,8 @@ const useSessionContextState = (): SessionContextState => {
       ),
     []
   );
-  const setWallpaper = (image: string, fit: WallpaperFit = "fill"): void => {
-    setWallpaperFit(fit);
+  const setWallpaper = (image: string, fit?: WallpaperFit): void => {
+    if (fit) setWallpaperFit(fit);
     setWallpaperImage(image);
   };
   const initSession = useCallback(async () => {
