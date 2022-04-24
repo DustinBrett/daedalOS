@@ -40,7 +40,7 @@ const useSessionContextState = (): SessionContextState => {
       ),
     []
   );
-  const setWallpaper = (image: string, fit: WallpaperFit): void => {
+  const setWallpaper = (image: string, fit: WallpaperFit = "fill"): void => {
     setWallpaperFit(fit);
     setWallpaperImage(image);
   };
@@ -49,11 +49,13 @@ const useSessionContextState = (): SessionContextState => {
       const sessionData = await readFile(SESSION_FILE);
       const session = JSON.parse(sessionData.toString() || "{}") as SessionData;
 
-      setClockSource(session.clockSource);
-      setSortOrders(session.sortOrders);
-      setThemeName(session.themeName);
-      setWallpaper(session.wallpaperImage, session.wallpaperFit);
-      setWindowStates(session.windowStates);
+      if (session.clockSource) setClockSource(session.clockSource);
+      if (session.sortOrders) setSortOrders(session.sortOrders);
+      if (session.themeName) setThemeName(session.themeName);
+      if (session.wallpaperImage) {
+        setWallpaper(session.wallpaperImage, session.wallpaperFit);
+      }
+      if (session.windowStates) setWindowStates(session.windowStates);
     }
 
     setSessionLoaded(true);
