@@ -150,7 +150,6 @@ class Demo {
     this.modelId = id;
     this.ca.paint(0, 0, -1, id);
     this.ca.disturb();
-    window.location.hash = id;
   }
 
   getViewSize() {
