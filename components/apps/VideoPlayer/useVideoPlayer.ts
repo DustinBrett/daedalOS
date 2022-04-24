@@ -77,6 +77,11 @@ const useVideoPlayer = (
         }
       });
 
+      videoElement.addEventListener("dblclick", () =>
+        videoPlayer.isFullscreen()
+          ? videoPlayer.exitFullscreen()
+          : videoPlayer.requestFullscreen()
+      );
       setPlayer(videoPlayer);
       setLoading(false);
     });
