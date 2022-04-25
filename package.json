@@ -41,6 +41,7 @@
     "@wasmer/wasm-terminal": "^0.12.0",
     "@wasmer/wasm-transformer": "^0.12.0",
     "@wasmer/wasmfs": "^0.12.0",
+    "ani-cursor": "^0.0.5",
     "fflate": "^0.7.3",
     "framer-motion": "^6.3.0",
     "gif.js": "^0.2.0",
