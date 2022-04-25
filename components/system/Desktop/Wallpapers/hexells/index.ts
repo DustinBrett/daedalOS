@@ -2,7 +2,7 @@ import { loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
-    Demo: new (canvas: HTMLCanvasElement) => void;
+    Demo: new (canvas: HTMLCanvasElement | OffscreenCanvas) => void;
   }
 }
 
@@ -21,6 +21,10 @@ const hexells = async (el?: HTMLElement | null): Promise<void> => {
   await loadFiles(libs);
 
   const canvas = document.createElement("canvas");
+
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.setAttribute("style", "transform: rotateX(180deg)");
 
   // eslint-disable-next-line no-new
   new window.Demo(canvas);
