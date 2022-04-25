@@ -33,7 +33,7 @@ class Demo {
 
     this.guesture = null;
 
-    setInterval(() => this.switchModel(1), 30 * 1000);
+    setInterval(() => this.switchModel(1), 20 * 1000);
 
     requestAnimationFrame(() => this.render());
   }
