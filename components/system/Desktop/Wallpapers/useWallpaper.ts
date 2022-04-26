@@ -48,7 +48,8 @@ const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
 ): void => {
   const { exists, readFile } = useFileSystem();
-  const { sessionLoaded, wallpaperImage, wallpaperFit } = useSession();
+  const { sessionLoaded, setWallpaper, wallpaperImage, wallpaperFit } =
+    useSession();
   const wallpaperWorker = useWorker<void>(WALLPAPER_WORKERS[wallpaperImage]);
   const resizeListener = useCallback(
     () =>
@@ -79,9 +80,17 @@ const useWallpaper = (
         vantaWaves(config)(desktopRef.current);
       } else if (wallpaperImage === "HEXELLS") {
         hexells(desktopRef.current);
+      } else {
+        setWallpaper("VANTA");
       }
     }
-  }, [desktopRef, resizeListener, wallpaperWorker, wallpaperImage]);
+  }, [
+    desktopRef,
+    resizeListener,
+    setWallpaper,
+    wallpaperImage,
+    wallpaperWorker,
+  ]);
   const loadFileWallpaper = useCallback(async () => {
     if (await exists(wallpaperImage)) {
       const [, currentWallpaperUrl] =
