@@ -16,10 +16,53 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { HIGH_PRIORITY_ELEMENT } from "utils/constants";
-import { imageToBufferUrl, label } from "utils/functions";
+import { HIGH_PRIORITY_ELEMENT, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getGifJs,
+  imageToBufferUrl,
+  label,
+} from "utils/functions";
 
 const { maxScale, minScale } = panZoomConfig;
+
+const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
+  const gif = await getGifJs();
+  const { parseAni } = await import("ani-cursor/dist/parser");
+  const { images } = parseAni(aniBuffer);
+
+  await Promise.all(
+    images.map(
+      (image) =>
+        new Promise<void>((resolve) => {
+          const imageIcon = new Image();
+          const bufferUrl = bufferToUrl(Buffer.from(image));
+
+          imageIcon.addEventListener(
+            "load",
+            () => {
+              gif.addFrame(imageIcon);
+              cleanUpBufferUrl(bufferUrl);
+              resolve();
+            },
+            ONE_TIME_PASSIVE_EVENT
+          );
+          imageIcon.src = bufferUrl;
+        })
+    )
+  );
+
+  return new Promise((resolve) => {
+    gif
+      .on("finished", (blob) =>
+        blob
+          .arrayBuffer()
+          .then((arrayBuffer) => resolve(Buffer.from(arrayBuffer)))
+      )
+      .render();
+  });
+};
 
 const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { processes: { [id]: process } = {} } = useProcesses();
@@ -38,7 +81,9 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   );
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
   const loadPhoto = useCallback(async (): Promise<void> => {
-    const fileContents = await readFile(url);
+    let fileContents = await readFile(url);
+
+    if (extname(url) === ".ani") fileContents = await aniToGif(fileContents);
 
     setSrc((currentSrc) => {
       const [currentUrl] = Object.keys(currentSrc);

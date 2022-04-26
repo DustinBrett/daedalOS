@@ -257,3 +257,13 @@ export const isParsableUrl = (url: string): boolean => {
 };
 
 export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
+
+export const getGifJs = async (): Promise<GIF> => {
+  const { default: GIFInstance } = await import("gif.js");
+
+  return new GIFInstance({
+    quality: 10,
+    workerScript: "Program Files/gif.js/gif.worker.js",
+    workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
+  });
+};

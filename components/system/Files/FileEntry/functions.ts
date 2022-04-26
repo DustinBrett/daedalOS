@@ -7,7 +7,6 @@ import type { FileStat } from "components/system/Files/FileManager/functions";
 import { get9pModifiedTime } from "contexts/fileSystem/functions";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
-import type GIF from "gif.js";
 import ini from "ini";
 import { extname, join } from "path";
 import {
@@ -33,7 +32,7 @@ import {
 import {
   blobToBase64,
   bufferToUrl,
-  cleanUpBufferUrl,
+  getGifJs,
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
@@ -205,16 +204,6 @@ export const getInfoWithoutExtension = (
   }
 };
 
-const getGifJs = async (): Promise<GIF> => {
-  const { default: GIFInstance } = await import("gif.js");
-
-  return new GIFInstance({
-    quality: 10,
-    workerScript: "Program Files/gif.js/gif.worker.js",
-    workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
-  });
-};
-
 export const getInfoWithExtension = (
   fs: FSModule,
   path: string,
@@ -285,6 +274,21 @@ export const getInfoWithExtension = (
         }
       }
     });
+  } else if (extension === ".ani") {
+    getInfoByFileExtension("/System/Icons/photo.webp", () =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        if (!error && contents.length > 0) {
+          const { parseAni } = await import("ani-cursor/dist/parser");
+          const {
+            images: [firstImage],
+          } = parseAni(contents);
+
+          getInfoByFileExtension(
+            imageToBufferUrl(path, Buffer.from(firstImage))
+          );
+        }
+      })
+    );
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
     getInfoByFileExtension("/System/Icons/photo.webp", () =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
@@ -335,10 +339,11 @@ export const getInfoWithExtension = (
                   framesRemaining -= 1;
 
                   if (framesRemaining === 0) {
-                    gif.on("finished", async (blob) =>
-                      getInfoByFileExtension(await blobToBase64(blob))
-                    );
-                    gif.render();
+                    gif
+                      .on("finished", (blob) =>
+                        blobToBase64(blob).then(getInfoByFileExtension)
+                      )
+                      .render();
                   }
 
                   resolve();
@@ -401,42 +406,6 @@ export const getInfoWithExtension = (
             );
           }
         })
-    );
-  } else if (extension === ".ani") {
-    getInfoByFileExtension("/System/Icons/photo.webp", () =>
-      fs.readFile(path, async (error, contents = Buffer.from("")) => {
-        if (!error && contents.length > 0) {
-          const gif = await getGifJs();
-          const { parseAni } = await import("ani-cursor/dist/parser");
-          const { images } = parseAni(contents);
-
-          await Promise.all(
-            images.map(
-              (image) =>
-                new Promise<void>((resolve) => {
-                  const imageIcon = new Image();
-                  const bufferUrl = bufferToUrl(Buffer.from(image));
-
-                  imageIcon.addEventListener(
-                    "load",
-                    () => {
-                      gif.addFrame(imageIcon);
-                      cleanUpBufferUrl(bufferUrl);
-                      resolve();
-                    },
-                    ONE_TIME_PASSIVE_EVENT
-                  );
-                  imageIcon.src = bufferUrl;
-                })
-            )
-          );
-
-          gif.on("finished", async (blob) =>
-            getInfoByFileExtension(await blobToBase64(blob))
-          );
-          gif.render();
-        }
-      })
     );
   } else {
     getInfoByFileExtension();
