@@ -1,3 +1,5 @@
+import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+
 type VantaWavesCycleColor = {
   colorCycleSpeed?: number;
   hue?: number;
@@ -16,11 +18,6 @@ export type VantaWavesConfig = VantaWavesCycleColor & {
   waveHeight: number;
   waveSpeed: number;
   zoom?: number;
-};
-
-export type OffscreenRenderProps = {
-  canvas: OffscreenCanvas;
-  devicePixelRatio: number;
 };
 
 type MainThreadRenderProps = {

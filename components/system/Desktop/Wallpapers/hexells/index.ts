@@ -2,7 +2,7 @@ import { loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
-    Demo: new (canvas: HTMLCanvasElement | OffscreenCanvas) => void;
+    Demo: new (canvas: HTMLCanvasElement) => void;
   }
 }
 

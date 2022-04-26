@@ -1,10 +1,10 @@
 import { libs } from "components/system/Desktop/Wallpapers/hexells";
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import { isWebGLAvailable } from "utils/functions";
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
-  var Demo: new (canvas: HTMLCanvasElement | OffscreenCanvas) => void;
+  var Demo: new (canvas: OffscreenCanvas) => void;
   var demoCanvasRect: DOMRect;
   var devicePixelRatio: number;
 }
