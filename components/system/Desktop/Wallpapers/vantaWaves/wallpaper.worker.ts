@@ -1,10 +1,10 @@
+import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import {
   config,
   disableControls,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type {
-  OffscreenRenderProps,
   VantaObject,
   VantaWaves,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
