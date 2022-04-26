@@ -40,10 +40,13 @@ const useSessionContextState = (): SessionContextState => {
       ),
     []
   );
-  const setWallpaper = (image: string, fit?: WallpaperFit): void => {
-    if (fit) setWallpaperFit(fit);
-    setWallpaperImage(image);
-  };
+  const setWallpaper = useCallback(
+    (image: string, fit?: WallpaperFit): void => {
+      if (fit) setWallpaperFit(fit);
+      setWallpaperImage(image);
+    },
+    []
+  );
   const initSession = useCallback(async () => {
     if (await exists(SESSION_FILE)) {
       const sessionData = await readFile(SESSION_FILE);
