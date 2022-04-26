@@ -29,8 +29,6 @@ export const disableControls = {
   touchControls: false,
 };
 
-export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
-
 export const libs = [
   "/System/Vanta.js/three.min.js",
   "/System/Vanta.js/vanta.waves.min.js",

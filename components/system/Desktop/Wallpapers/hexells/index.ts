@@ -6,13 +6,12 @@ declare global {
   }
 }
 
-const libs = [
-  "System/Hexells/twgl-full.min.js",
-  "System/Hexells/dat.gui.min.js",
-  "System/Hexells/pako.min.js",
-  "System/Hexells/UPNG.min.js",
-  "System/Hexells/ca.js",
-  "System/Hexells/demo.js",
+export const libs = [
+  "/System/Hexells/twgl-full.min.js",
+  "/System/Hexells/pako.min.js",
+  "/System/Hexells/UPNG.min.js",
+  "/System/Hexells/ca.js",
+  "/System/Hexells/demo.js",
 ];
 
 const hexells = async (el?: HTMLElement | null): Promise<void> => {
@@ -24,7 +23,6 @@ const hexells = async (el?: HTMLElement | null): Promise<void> => {
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-  canvas.setAttribute("style", "transform: rotateX(180deg)");
 
   // eslint-disable-next-line no-new
   new window.Demo(canvas);

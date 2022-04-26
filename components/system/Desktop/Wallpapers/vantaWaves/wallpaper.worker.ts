@@ -1,7 +1,6 @@
 import {
   config,
   disableControls,
-  isWebGLAvailable,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type {
@@ -9,6 +8,7 @@ import type {
   VantaObject,
   VantaWaves,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+import { isWebGLAvailable } from "utils/functions";
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var

@@ -255,3 +255,5 @@ export const isParsableUrl = (url: string): boolean => {
     return false;
   }
 };
+
+export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";

@@ -542,7 +542,7 @@ function createDenseInfo(gl, params, onready) {
 }
 
 class CA {
-    constructor(gl, models, gridSize, gui, onready) {
+    constructor(gl, models, gridSize, onready) {
         this.onready = onready || (()=>{});
         this.gl = gl;
         this.gridSize = gridSize || [96, 96];
@@ -558,7 +558,7 @@ class CA {
         this.arrowsCoef = 0.0;
         this.visMode = 'color';
         this.hexGrid = 1.0;
-        this.devicePixelRatio = window.devicePixelRatio || 1;
+        this.devicePixelRatio = globalThis.devicePixelRatio || 1;
 
         this.layers = [];
         this.setWeights(models);
@@ -571,16 +571,6 @@ class CA {
         this.setupBuffers();
         const visNames = Object.getOwnPropertyNames(this.buf);
         visNames.push('color');
-
-        if (gui) {
-            gui.add(this, 'rotationAngle').min(0.0).max(360.0);
-            gui.add(this, 'alignment', { cartesian: 0, polar: 1, bipolar: 2 }).listen();
-            gui.add(this, 'fuzz').min(0.0).max(128.0);
-            gui.add(this, 'perceptionCircle').min(0.0).max(1.0);
-            gui.add(this, 'visMode', visNames);
-            gui.add(this, 'hexGrid').min(0.0).max(1.0);
-            gui.add(this, 'disturb');
-        }
 
         this.clearCircle(0, 0, -1);
         this.disturb();

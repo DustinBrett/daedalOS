@@ -1,10 +1,9 @@
 import {
   disableControls,
-  isWebGLAvailable,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
-import { loadFiles } from "utils/functions";
+import { isWebGLAvailable, loadFiles } from "utils/functions";
 
 const vantaWaves =
   (config: VantaWavesConfig) =>

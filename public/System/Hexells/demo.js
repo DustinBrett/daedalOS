@@ -1,22 +1,21 @@
 class Demo {
   constructor(canvas, isScreenMode) {
     this.canvas = canvas;
-    this.gl = canvas.getContext("webgl", { alpha: false });
+    this.gl = canvas.getContext("webgl", {
+      alpha: false,
+      desynchronized: true,
+      powerPreference: "high-performance"
+    });
 
     this.brushRadius = 16;
     this.stepPerFrame = 1;
 
     this.isScreenMode = isScreenMode;
 
-    const gui = (this.gui = new dat.GUI());
-    gui.hide();
-    gui.add(this, "brushRadius", 1, 40);
-    gui.add(this, "stepPerFrame", 0, 6, 1);
-
-    fetch("System/Hexells/models.json")
+    fetch("/System/Hexells/models.json")
       .then((r) => r.json())
       .then((models) => {
-        this.ca = new CA(this.gl, models, [160, 160], gui, () =>
+        this.ca = new CA(this.gl, models, [160, 160], () =>
           this.setup(models)
         );
       });
@@ -94,8 +93,8 @@ class Demo {
 
   getViewSize() {
     return [
-      this.canvas.clientWidth || this.canvas.width,
-      this.canvas.clientHeight || this.canvas.height
+      globalThis.demoCanvasRect?.width || this.canvas.clientWidth || this.canvas.width,
+      globalThis.demoCanvasRect?.height || this.canvas.clientHeight || this.canvas.height
     ];
   }
 
@@ -104,7 +103,7 @@ class Demo {
       this.ca.step();
     }
     const { canvas } = this;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = globalThis.devicePixelRatio || 1;
     const [w, h] = this.getViewSize();
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
@@ -115,4 +114,4 @@ class Demo {
   }
 }
 
-window.Demo = Demo;
+globalThis.Demo = Demo;
