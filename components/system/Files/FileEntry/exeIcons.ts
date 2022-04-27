@@ -23,9 +23,8 @@ const createIconHeader = (iconCount: number): Uint8Array =>
 const createIconDirEntry = (
   { bitCount, colors, dataSize, height, planes, width }: IconGroupItem,
   offset: number
-): Uint8Array => {
-  console.info(offset);
-  return Uint8Array.from([
+): Uint8Array =>
+  Uint8Array.from([
     width,
     height,
     colors,
@@ -37,7 +36,6 @@ const createIconDirEntry = (
     ...new Uint8Array(Uint32Array.from([dataSize]).buffer),
     ...new Uint8Array(Uint32Array.from([offset]).buffer),
   ]);
-};
 
 const ICONDIR_LENGTH = 6;
 const ICONDIRENTRY_LENGTH = 16;
@@ -48,12 +46,12 @@ export const createIcon = (
 ): Uint8Array => {
   const iconDataOffset =
     ICONDIR_LENGTH + ICONDIRENTRY_LENGTH * iconGroupEntry.icons.length;
+  let currentIconOffset = iconDataOffset;
   const iconData = iconGroupEntry.icons.map((iconItem) =>
     resourceEntries.find(
       (entry) => entry.type === 3 && entry.id === iconItem.iconID
     )
   );
-  let currentIconOffset = iconDataOffset;
   const iconHeader = iconGroupEntry.icons.reduce(
     (accHeader, iconBitmapInfo, index) => {
       currentIconOffset += index ? iconData[index - 1]?.bin.byteLength ?? 0 : 0;
