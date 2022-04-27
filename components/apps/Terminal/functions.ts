@@ -189,3 +189,13 @@ export const printTable = (
 
   if (content.length > 0) content.forEach((entry) => localEcho?.println(entry));
 };
+
+export const getFreeSpace = async (): Promise<string> => {
+  if (!navigator?.storage?.estimate) return "";
+
+  const { quota = 0, usage = 0 } = (await navigator.storage.estimate()) || {};
+
+  if (quota === 0) return "";
+
+  return `  ${(quota - usage).toLocaleString()} bytes`;
+};

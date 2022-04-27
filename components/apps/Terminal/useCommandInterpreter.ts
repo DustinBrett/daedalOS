@@ -3,6 +3,7 @@ import {
   aliases,
   autoComplete,
   commands,
+  getFreeSpace,
   help,
   parseCommand,
   printTable,
@@ -302,9 +303,11 @@ const useCommandInterpreter = (
               true
             );
             localEcho?.println(
-              `\t\t${fileCount} File(s) ${totalSize.toLocaleString()} bytes`
+              `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
             );
-            localEcho?.println(`\t\t${directoryCount} Dir(s)`);
+            localEcho?.println(
+              `\t\t${directoryCount} Dir(s)${await getFreeSpace()}`
+            );
             if (localEcho) autoComplete(entries, localEcho);
           };
 
