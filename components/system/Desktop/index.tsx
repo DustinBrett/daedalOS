@@ -16,6 +16,7 @@ const Desktop: FC = ({ children }) => {
         view="icon"
         hideLoading
         hideScrolling
+        isDesktop
         loadIconsImmediately
       />
       {children}

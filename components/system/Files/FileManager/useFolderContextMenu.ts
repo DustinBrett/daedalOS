@@ -30,7 +30,8 @@ const useFolderContextMenu = (
     newPath,
     pasteToFolder,
     sortByOrder: [[sortBy, isAscending], setSortBy],
-  }: FolderActions
+  }: FolderActions,
+  isDesktop?: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
@@ -85,23 +86,26 @@ const useFolderContextMenu = (
         ],
       },
       { action: () => updateFolder(url), label: "Refresh" },
-      MENU_SEPERATOR,
-      {
-        label: "Live Wallpaper",
-        menu: [
-          {
-            action: () => setWallpaper("HEXELLS"),
-            label: "Hexells",
-            toggle: wallpaperImage === "HEXELLS",
-          },
-          {
-            action: () => setWallpaper("VANTA"),
-            label: "Vanta Waves",
-            toggle: wallpaperImage === "VANTA",
-          },
-        ],
-      },
-
+      ...(isDesktop
+        ? [
+            MENU_SEPERATOR,
+            {
+              label: "Live Wallpaper",
+              menu: [
+                {
+                  action: () => setWallpaper("HEXELLS"),
+                  label: "Hexells",
+                  toggle: wallpaperImage === "HEXELLS",
+                },
+                {
+                  action: () => setWallpaper("VANTA"),
+                  label: "Vanta Waves",
+                  toggle: wallpaperImage === "VANTA",
+                },
+              ],
+            },
+          ]
+        : []),
       MENU_SEPERATOR,
       ...FS_COMMANDS,
       {

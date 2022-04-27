@@ -34,6 +34,7 @@ type FileManagerProps = {
   hideScrolling?: boolean;
   hideShortcutIcons?: boolean;
   id?: string;
+  isDesktop?: boolean;
   loadIconsImmediately?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
@@ -48,6 +49,7 @@ const FileManager: FC<FileManagerProps> = ({
   hideScrolling,
   hideShortcutIcons,
   id,
+  isDesktop,
   loadIconsImmediately,
   readOnly,
   showStatusBar,
@@ -76,7 +78,7 @@ const FileManager: FC<FileManagerProps> = ({
     callback: folderActions.newPath,
     directory: url,
   });
-  const folderContextMenu = useFolderContextMenu(url, folderActions);
+  const folderContextMenu = useFolderContextMenu(url, folderActions, isDesktop);
   const loading = (!hideLoading && isLoading) || url !== currentUrl;
   const keyShortcuts = useFileKeyboardShortcuts(
     files,
