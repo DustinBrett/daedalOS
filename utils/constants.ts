@@ -107,6 +107,7 @@ export const TRANSITIONS_IN_MILLISECONDS = {
 export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
 export const VIDEO_FILE_EXTENSIONS = new Set([
+  ".m4v",
   ".mkv",
   ".mp4",
   ".ogg",
