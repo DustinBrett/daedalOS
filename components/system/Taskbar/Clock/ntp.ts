@@ -30,7 +30,7 @@ const getNtpResponse = async (): Promise<NTPResponse> => {
 
 let msAheadBy: number;
 
-const requestLatestNtpTime = async (): Promise<void> => {
+const pollNtpTime = async (): Promise<void> => {
   const requestStartTime = Date.now();
   const {
     backoff = DEFAULT_BACKOFF_SECONDS,
@@ -43,13 +43,16 @@ const requestLatestNtpTime = async (): Promise<void> => {
   }
 
   setTimeout(
-    requestLatestNtpTime,
+    pollNtpTime,
     (optout ? HOUR_IN_SECONDS : backoff) * MILLISECONDS_IN_SECOND
   );
 };
 
 export const getNtpAdjustedTime = (): Date => {
-  if (!msAheadBy) requestLatestNtpTime();
+  if (typeof msAheadBy !== "number") {
+    msAheadBy = 0;
+    pollNtpTime();
+  }
 
-  return new Date(Date.now() - (msAheadBy ?? 0));
+  return new Date(Date.now() - msAheadBy);
 };
