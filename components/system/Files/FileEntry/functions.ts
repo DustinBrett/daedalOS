@@ -1,5 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
+import { createIcon } from "components/system/Files/FileEntry/exeIcons";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -285,6 +286,25 @@ export const getInfoWithExtension = (
 
           getInfoByFileExtension(
             imageToBufferUrl(path, Buffer.from(firstImage))
+          );
+        }
+      })
+    );
+  } else if (extension === ".exe") {
+    getInfoByFileExtension("/System/Icons/executable.webp", () =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        if (!error && contents.length > 0) {
+          const PELibrary = await import("pe-library");
+          const ResEdit = await import("resedit");
+
+          const { entries } = PELibrary.NtExecutableResource.from(
+            PELibrary.NtExecutable.from(contents, { ignoreCert: true })
+          );
+          const [iconGroupEntry] =
+            ResEdit.Resource.IconGroupEntry.fromEntries(entries);
+
+          getInfoByFileExtension(
+            bufferToUrl(Buffer.from(createIcon(iconGroupEntry, entries)))
           );
         }
       })
