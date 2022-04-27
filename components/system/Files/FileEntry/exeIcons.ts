@@ -14,10 +14,8 @@ const createIconHeader = (iconCount: number): Uint8Array =>
   Uint8Array.from([
     RESERVED,
     RESERVED,
-    ICON_TYPE.ICO,
-    RESERVED,
-    iconCount,
-    RESERVED,
+    ...new Uint8Array(Uint16Array.from([ICON_TYPE.ICO]).buffer),
+    ...new Uint8Array(Uint16Array.from([iconCount]).buffer),
   ]);
 
 const createIconDirEntry = (
@@ -29,16 +27,15 @@ const createIconDirEntry = (
     height,
     colors,
     RESERVED,
-    planes,
-    RESERVED,
-    bitCount,
-    RESERVED,
+    ...new Uint8Array(Uint16Array.from([planes]).buffer),
+    ...new Uint8Array(Uint16Array.from([bitCount]).buffer),
     ...new Uint8Array(Uint32Array.from([dataSize]).buffer),
     ...new Uint8Array(Uint32Array.from([offset]).buffer),
   ]);
 
 const ICONDIR_LENGTH = 6;
 const ICONDIRENTRY_LENGTH = 16;
+const RC_ICON = 3;
 
 export const createIcon = (
   iconGroupEntry: IconGroupEntry,
@@ -47,10 +44,8 @@ export const createIcon = (
   const iconDataOffset =
     ICONDIR_LENGTH + ICONDIRENTRY_LENGTH * iconGroupEntry.icons.length;
   let currentIconOffset = iconDataOffset;
-  const iconData = iconGroupEntry.icons.map((iconItem) =>
-    resourceEntries.find(
-      (entry) => entry.type === 3 && entry.id === iconItem.iconID
-    )
+  const iconData = iconGroupEntry.icons.map(({ iconID }) =>
+    resourceEntries.find(({ id, type }) => type === RC_ICON && id === iconID)
   );
   const iconHeader = iconGroupEntry.icons.reduce(
     (accHeader, iconBitmapInfo, index) => {
