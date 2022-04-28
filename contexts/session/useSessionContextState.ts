@@ -62,7 +62,7 @@ const useSessionContextState = (): SessionContextState => {
     }
 
     setSessionLoaded(true);
-  }, [exists, readFile]);
+  }, [exists, readFile, setWallpaper]);
 
   useEffect(() => {
     if (sessionLoaded) {

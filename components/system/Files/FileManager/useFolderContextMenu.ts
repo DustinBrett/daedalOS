@@ -139,6 +139,7 @@ const useFolderContextMenu = (
   }, [
     addToFolder,
     isAscending,
+    isDesktop,
     mapFs,
     newPath,
     pasteList,
