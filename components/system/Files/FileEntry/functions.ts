@@ -297,15 +297,21 @@ export const getInfoWithExtension = (
           const PELibrary = await import("pe-library");
           const ResEdit = await import("resedit");
 
-          const { entries } = PELibrary.NtExecutableResource.from(
-            PELibrary.NtExecutable.from(contents, { ignoreCert: true })
-          );
-          const [iconGroupEntry] =
-            ResEdit.Resource.IconGroupEntry.fromEntries(entries);
+          try {
+            const { entries } = PELibrary.NtExecutableResource.from(
+              PELibrary.NtExecutable.from(contents, { ignoreCert: true })
+            );
+            const [iconGroupEntry] =
+              ResEdit.Resource.IconGroupEntry.fromEntries(entries);
 
-          getInfoByFileExtension(
-            bufferToUrl(Buffer.from(createIcon(iconGroupEntry, entries)))
-          );
+            if (iconGroupEntry) {
+              getInfoByFileExtension(
+                bufferToUrl(Buffer.from(createIcon(iconGroupEntry, entries)))
+              );
+            }
+          } catch {
+            // Couldn't parse the executable
+          }
         }
       })
     );
