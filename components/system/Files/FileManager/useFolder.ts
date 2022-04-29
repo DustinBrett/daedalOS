@@ -387,11 +387,11 @@ const useFolder = (
     async (path: string): Promise<void> => {
       const data = await readFile(path);
       const { unarchive, unzip } = await import("utils/zipFunctions");
-      const unzippedFiles = [".7z", ".gz", ".rar", ".tar"].includes(
+      const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
         extname(path).toLowerCase()
       )
-        ? await unarchive(data)
-        : await unzip(data);
+        ? await unzip(data)
+        : await unarchive(data);
       const zipFolderName = basename(
         path,
         path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)

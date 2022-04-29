@@ -58,15 +58,7 @@ export const MILLISECONDS_IN_SECOND = 1000;
 
 export const FILE_SYSTEM_ACCESS = "FileSystemAccess";
 
-export const EXTRACTABLE_EXTENSIONS = new Set([
-  ".7z",
-  ".gz",
-  ".jsdos",
-  ".rar",
-  ".tar",
-  ".wsz",
-  ".zip",
-]);
+export const EXTRACTABLE_EXTENSIONS = new Set([".7z", ".gz", ".rar", ".tar"]);
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".jsdos", ".wsz", ".zip"]);
 
