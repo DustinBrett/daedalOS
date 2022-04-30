@@ -7,6 +7,11 @@ import { useCallback, useState } from "react";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
 
+const ClockSourceMap = {
+  local: "Local",
+  ntp: "Server",
+};
+
 const Clock: FC = () => {
   const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
   const { date, time, dateTime } = now;
@@ -18,9 +23,9 @@ const Clock: FC = () => {
           "components/system/Taskbar/Clock/clock.worker",
           import.meta.url
         ),
-        { name: "Clock" }
+        { name: `Clock (${ClockSourceMap[clockSource]})` }
       ),
-    []
+    [clockSource]
   );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
