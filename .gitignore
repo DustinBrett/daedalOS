@@ -23,3 +23,5 @@ public/Users/Public/**
 !public/Users/Public/Videos
 !public/Users/Public/Videos/Make an OS with ReactJS & Next.js
 !public/Users/Public/Videos/Make an OS with ReactJS & Next.js/*.url
+test-results/
+playwright-report/

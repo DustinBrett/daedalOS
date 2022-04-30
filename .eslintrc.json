@@ -36,6 +36,10 @@
     "unused-imports"
   ],
   "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["playwright.config.ts"] }
+    ],
     "@next/next/no-img-element": "off",
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/consistent-indexed-object-style": "error",
