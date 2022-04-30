@@ -24,7 +24,7 @@ const createIconDirEntry = (
 ): Uint8Array =>
   Uint8Array.from([
     width,
-    height,
+    bitCount === 32 && height === width * 2 ? width : height,
     colors,
     RESERVED,
     ...new Uint8Array(Uint16Array.from([planes]).buffer),
