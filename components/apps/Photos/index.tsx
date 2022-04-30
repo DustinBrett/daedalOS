@@ -30,7 +30,13 @@ const { maxScale, minScale } = panZoomConfig;
 const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
   const gif = await getGifJs();
   const { parseAni } = await import("ani-cursor/dist/parser");
-  const { images } = parseAni(aniBuffer);
+  let images: Uint8Array[] = [];
+
+  try {
+    ({ images } = parseAni(aniBuffer));
+  } catch {
+    return aniBuffer;
+  }
 
   await Promise.all(
     images.map(

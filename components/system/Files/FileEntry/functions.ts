@@ -280,13 +280,19 @@ export const getInfoWithExtension = (
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
           const { parseAni } = await import("ani-cursor/dist/parser");
-          const {
-            images: [firstImage],
-          } = parseAni(contents);
+          let firstImage: Uint8Array;
 
-          getInfoByFileExtension(
-            imageToBufferUrl(path, Buffer.from(firstImage))
-          );
+          try {
+            ({
+              images: [firstImage],
+            } = parseAni(contents));
+
+            getInfoByFileExtension(
+              imageToBufferUrl(path, Buffer.from(firstImage))
+            );
+          } catch {
+            // Can't parse ani
+          }
         }
       })
     );
