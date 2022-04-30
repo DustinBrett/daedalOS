@@ -76,7 +76,7 @@ export const aliases: Record<string, string[]> = {
   rd: ["rmdir"],
   ren: ["rename"],
   sheep: ["esheep"],
-  shutdown: ["restart"],
+  shutdown: ["logout", "restart"],
   taskkill: ["kill"],
   tasklist: ["ps"],
   type: ["cat"],
