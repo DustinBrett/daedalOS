@@ -134,6 +134,13 @@ const useByuu = (
     setLoading(false);
 
     if (url) loadFile(url);
+    else {
+      try {
+        window.byuu?.terminate();
+      } catch {
+        // Ignore errors from pre-post-cleanup
+      }
+    }
   }, [containerRef, loadFile, setLoading, url]);
 
   useEffect(() => {
