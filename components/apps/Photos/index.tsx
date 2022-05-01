@@ -88,8 +88,11 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
   const loadPhoto = useCallback(async (): Promise<void> => {
     let fileContents = await readFile(url);
+    const ext = extname(url);
 
-    if (extname(url) === ".ani") fileContents = await aniToGif(fileContents);
+    if ([".ani", ".cur"].includes(ext)) {
+      fileContents = await aniToGif(fileContents);
+    }
 
     setSrc((currentSrc) => {
       const [currentUrl] = Object.keys(currentSrc);
