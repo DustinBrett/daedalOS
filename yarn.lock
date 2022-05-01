@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"7z-wasm@^1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/7z-wasm/-/7z-wasm-1.0.0-beta.5.tgz#13e5503ddda5fc9db566abbb971ec7caaa3f538c"
+  integrity sha512-D+E7iVpWhq7MYLv5sQKoJq1tkiQ1ZWSBx2x8evd1qe9UEAekOuu/xndQD4YMI6jWz8sFJ8QqWzSTVeELelv5Kg==
+  dependencies:
+    readline-sync "^1.4.10"
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -866,11 +873,6 @@
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
-
-"@types/libarchive.js@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@types/libarchive.js/-/libarchive.js-1.3.1.tgz#843aeaad7bb9dd8a9e4a11aba616dda6c97d0b84"
-  integrity sha512-ddCRDAyVftfnbNvEe77FrOSWMYoFI85xJKITQ5AnvfR330KmEHS48KOmhEncpZadxefh64TO6jk6g2oabxWupg==
 
 "@types/lunr@^2.3.4":
   version "2.3.4"
@@ -4085,11 +4087,6 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libarchive.js@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/libarchive.js/-/libarchive.js-1.3.0.tgz#18c42c6b4ce727a02359c90769e4e454cf3743cd"
-  integrity sha512-EkQfRXt9DhWwj6BnEA2TNpOf4jTnzSTUPGgE+iFxcdNqjktY8GitbDeHnx8qZA0/IukNyyBUR3oQKRdYkO+HFg==
-
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
@@ -5113,6 +5110,11 @@ readable-web-to-node-stream@^3.0.0, readable-web-to-node-stream@^3.0.2:
   integrity sha512-ePeK6cc1EcKLEhJFt/AebMCLL+GgSKhuygrZ/GLaKZYEecIgIECf4UaUuaByiGtzckwR4ain9VzUh95T1exYGw==
   dependencies:
     readable-stream "^3.6.0"
+
+readline-sync@^1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/readline-sync/-/readline-sync-1.4.10.tgz#41df7fbb4b6312d673011594145705bf56d8873b"
+  integrity sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==
 
 redent@^3.0.0:
   version "3.0.0"

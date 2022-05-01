@@ -23,7 +23,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [BrowserFS](https://github.com/jvilk/BrowserFS)
 - [IDB-Keyval](https://github.com/jakearchibald/idb-keyval)
 - [fflate](https://github.com/101arrowz/fflate)
-- [libarchive.js](https://github.com/nika-begiashvili/libarchivejs)
+- [7z-wasm](https://github.com/use-strict/7z-wasm)
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)

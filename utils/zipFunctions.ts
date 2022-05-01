@@ -1,12 +1,13 @@
+import type SevenZip from "7z-wasm";
 import type {
   AsyncZipOptions,
   AsyncZippable,
   AsyncZippableFile,
   Unzipped,
 } from "fflate";
-import { join } from "path";
+import { basename, extname, join } from "path";
 import { BASE_ZIP_CONFIG } from "utils/constants";
-import { bufferToBlob } from "utils/functions";
+import { loadFiles } from "utils/functions";
 
 export const createZippable = (path: string, file: Buffer): AsyncZippable =>
   path
@@ -83,35 +84,66 @@ export const isFileInZip = (
 
 export { unzipAsync as unzip };
 
-type FilesObject = { [key: string]: File | FilesObject };
+declare global {
+  interface Window {
+    SevenZip: typeof SevenZip;
+  }
+}
 
-export const unarchive = async (data: Buffer): Promise<Unzipped> => {
-  const { Archive } = await import("libarchive.js");
+export const unarchive = async (
+  path: string,
+  data: Buffer
+): Promise<Unzipped> => {
+  if (!window.SevenZip) {
+    await loadFiles(["System/7zip/7zz.es6.js"]);
+  }
 
-  Archive.init({ workerUrl: "/System/libarchive.js/worker-bundle.js" });
+  if (!window.SevenZip) return {};
 
-  const archive = await Archive.open(new File([bufferToBlob(data)], "archive"));
-  const extractedFiles = await archive.extractFiles();
-  const returnFiles: Unzipped = {};
-  const parseFiles = async (
-    files: FilesObject,
-    walkedPath = ""
-  ): Promise<void> => {
-    await Promise.all(
-      Object.entries(files).map(async ([name, file]) => {
-        const extractPath = join(walkedPath, name);
+  const sevenZip = await window.SevenZip();
+  const fileName = basename(path);
+  const extractFolder = join("/", basename(path, extname(path)));
 
-        if (file instanceof File) {
-          returnFiles[extractPath] = new Uint8Array(await file.arrayBuffer());
-        } else {
-          returnFiles[join(extractPath, "/")] = new Uint8Array(Buffer.from(""));
-          await parseFiles(file, extractPath);
-        }
-      })
-    );
-  };
+  sevenZip.FS.mkdir(extractFolder);
+  sevenZip.FS.chdir(extractFolder);
 
-  await parseFiles(extractedFiles as FilesObject);
+  const stream = sevenZip.FS.open(fileName, "w+");
 
-  return returnFiles;
+  sevenZip.FS.write(stream, data, 0, data.length);
+  sevenZip.FS.close(stream);
+  sevenZip.callMain(["x", fileName]);
+
+  const reduceFiles =
+    (currentPath: string) =>
+    (accFiles: Unzipped, file: string): Unzipped => {
+      const filePath = join(currentPath, file);
+      const extractPath = filePath.replace(extractFolder, "");
+      const isDir = sevenZip.FS.isDir(sevenZip.FS.stat(filePath).mode);
+
+      if (!isDir) sevenZip.FS.chmod(filePath, 0o444);
+
+      Object.assign(
+        accFiles,
+        isDir
+          ? {
+              [join(extractPath, "/")]: new Uint8Array(Buffer.from("")),
+              ...sevenZip.FS.readdir(filePath)
+                .filter((fileX) => ![".", ".."].includes(fileX))
+                // eslint-disable-next-line unicorn/no-array-callback-reference
+                .reduce(reduceFiles(filePath), {}),
+            }
+          : {
+              [extractPath]: sevenZip.FS.readFile(filePath, { flags: "r" }),
+            }
+      );
+
+      return accFiles;
+    };
+
+  return (
+    sevenZip.FS.readdir(extractFolder)
+      .filter((file) => ![".", "..", fileName].includes(file))
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      .reduce(reduceFiles(extractFolder), {})
+  );
 };

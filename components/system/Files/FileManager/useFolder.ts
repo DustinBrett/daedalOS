@@ -391,7 +391,7 @@ const useFolder = (
         extname(path).toLowerCase()
       )
         ? await unzip(data)
-        : await unarchive(data);
+        : await unarchive(path, data);
       const zipFolderName = basename(
         path,
         path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
