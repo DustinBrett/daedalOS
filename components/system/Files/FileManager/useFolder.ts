@@ -396,29 +396,30 @@ const useFolder = (
         path,
         path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
       );
-      if (await mkdir(join(directory, zipFolderName))) {
-        await Promise.all(
-          Object.entries(unzippedFiles).map(
-            async ([extractPath, fileContents]) => {
-              const localPath = join(directory, zipFolderName, extractPath);
+      const uniqueName = await createPath(zipFolderName, directory);
 
-              if (fileContents.length === 0 && extractPath.endsWith("/")) {
-                await mkdir(localPath);
-              } else {
-                if (!(await exists(dirname(localPath)))) {
-                  await mkdirRecursive(dirname(localPath));
-                }
+      await Promise.all(
+        Object.entries(unzippedFiles).map(
+          async ([extractPath, fileContents]) => {
+            const localPath = join(directory, uniqueName, extractPath);
 
-                await writeFile(localPath, Buffer.from(fileContents));
+            if (fileContents.length === 0 && extractPath.endsWith("/")) {
+              await mkdir(localPath);
+            } else {
+              if (!(await exists(dirname(localPath)))) {
+                await mkdirRecursive(dirname(localPath));
               }
-            }
-          )
-        );
 
-        updateFolder(directory, zipFolderName);
-      }
+              await writeFile(localPath, Buffer.from(fileContents));
+            }
+          }
+        )
+      );
+
+      updateFolder(directory, uniqueName);
     },
     [
+      createPath,
       directory,
       exists,
       mkdir,
