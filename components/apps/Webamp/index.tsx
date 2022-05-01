@@ -19,8 +19,10 @@ import type { Options } from "webamp";
 const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { readFile } = useFileSystem();
-  const { processes: { [id]: { url = "" } = {} } = {}, url: setUrl } =
-    useProcesses();
+  const {
+    processes: { [id]: { minimized = false, url = "" } = {} } = {},
+    url: setUrl,
+  } = useProcesses();
   const [loadedUrl, setLoadedUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
   const windowTransitions = useWindowTransitions(id, true);
@@ -60,7 +62,10 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
       }
     }
   }, [getUrlOptions, webampCI]);
-  const style = useMemo<React.CSSProperties>(() => ({ zIndex }), [zIndex]);
+  const style = useMemo<React.CSSProperties>(
+    () => ({ zIndex: minimized ? -1 : zIndex }),
+    [minimized, zIndex]
+  );
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
