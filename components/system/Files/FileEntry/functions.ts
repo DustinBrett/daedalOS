@@ -310,12 +310,11 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/executable.webp", () =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
-          const PELibrary = await import("pe-library");
           const ResEdit = await import("resedit");
 
           try {
-            const { entries } = PELibrary.NtExecutableResource.from(
-              PELibrary.NtExecutable.from(contents, { ignoreCert: true })
+            const { entries } = ResEdit.NtExecutableResource.from(
+              ResEdit.NtExecutable.from(contents, { ignoreCert: true })
             );
             const [iconGroupEntry] =
               ResEdit.Resource.IconGroupEntry.fromEntries(entries);
