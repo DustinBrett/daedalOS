@@ -19,6 +19,10 @@ const StyledDesktop = styled.main`
     width: 100%;
     z-index: -1;
   }
+
+  .react-draggable {
+    will-change: height, transform, width;
+  }
 `;
 
 export default StyledDesktop;
