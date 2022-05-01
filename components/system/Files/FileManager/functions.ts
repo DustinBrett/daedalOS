@@ -215,7 +215,10 @@ export const handleFileInputEvent = async (
 
     openTransferDialog(fileReaders);
   } else {
-    const filePaths = JSON.parse(eventTarget.getData("text")) as string[];
+    const filePaths = JSON.parse(
+      eventTarget.getData("text") || "{}"
+    ) as string[];
+
     filePaths.forEach(
       (path) =>
         dirname(path) !== "." &&

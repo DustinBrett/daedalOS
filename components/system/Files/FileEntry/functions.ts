@@ -205,6 +205,25 @@ export const getInfoWithoutExtension = (
   }
 };
 
+const getFirstAniImage = async (
+  imageBuffer: Buffer
+): Promise<Buffer | undefined> => {
+  const { parseAni } = await import("ani-cursor/dist/parser");
+  let firstImage: Uint8Array;
+
+  try {
+    ({
+      images: [firstImage],
+    } = parseAni(imageBuffer));
+
+    return Buffer.from(firstImage);
+  } catch {
+    // Can't parse ani
+  }
+
+  return undefined;
+};
+
 export const getInfoWithExtension = (
   fs: FSModule,
   path: string,
@@ -279,19 +298,10 @@ export const getInfoWithExtension = (
     getInfoByFileExtension("/System/Icons/photo.webp", () =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0) {
-          const { parseAni } = await import("ani-cursor/dist/parser");
-          let firstImage: Uint8Array;
+          const firstImage = await getFirstAniImage(contents);
 
-          try {
-            ({
-              images: [firstImage],
-            } = parseAni(contents));
-
-            getInfoByFileExtension(
-              imageToBufferUrl(path, Buffer.from(firstImage))
-            );
-          } catch {
-            // Can't parse ani
+          if (firstImage) {
+            getInfoByFileExtension(imageToBufferUrl(path, firstImage));
           }
         }
       })
@@ -330,6 +340,19 @@ export const getInfoWithExtension = (
           imageIcon.addEventListener(
             "load",
             () => getInfoByFileExtension(imageIcon.src),
+            ONE_TIME_PASSIVE_EVENT
+          );
+          imageIcon.addEventListener(
+            "error",
+            async () => {
+              if (extension === ".cur") {
+                const firstImage = await getFirstAniImage(contents);
+
+                if (firstImage) {
+                  getInfoByFileExtension(imageToBufferUrl(path, firstImage));
+                }
+              }
+            },
             ONE_TIME_PASSIVE_EVENT
           );
           imageIcon.src = imageToBufferUrl(path, contents);
