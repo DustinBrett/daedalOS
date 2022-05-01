@@ -113,24 +113,28 @@ export const unarchive = async (
   sevenZip.FS.close(stream);
   sevenZip.callMain(["x", fileName]);
 
+  const extractedFiles = sevenZip.FS.readdir(extractFolder);
   const reduceFiles =
     (currentPath: string) =>
     (accFiles: Unzipped, file: string): Unzipped => {
+      if ([".", "..", fileName].includes(file)) return accFiles;
+
       const filePath = join(currentPath, file);
-      const extractPath = filePath.replace(extractFolder, "");
       const isDir = sevenZip.FS.isDir(sevenZip.FS.stat(filePath).mode);
 
       if (!isDir) sevenZip.FS.chmod(filePath, 0o444);
+
+      const extractPath = filePath.replace(extractFolder, "");
 
       Object.assign(
         accFiles,
         isDir
           ? {
               [join(extractPath, "/")]: new Uint8Array(Buffer.from("")),
-              ...sevenZip.FS.readdir(filePath)
-                .filter((fileX) => ![".", ".."].includes(fileX))
-                // eslint-disable-next-line unicorn/no-array-callback-reference
-                .reduce(reduceFiles(filePath), {}),
+              ...sevenZip.FS.readdir(filePath).reduce(
+                reduceFiles(filePath),
+                {}
+              ),
             }
           : {
               [extractPath]: sevenZip.FS.readFile(filePath, { flags: "r" }),
@@ -140,10 +144,5 @@ export const unarchive = async (
       return accFiles;
     };
 
-  return (
-    sevenZip.FS.readdir(extractFolder)
-      .filter((file) => ![".", "..", fileName].includes(file))
-      // eslint-disable-next-line unicorn/no-array-callback-reference
-      .reduce(reduceFiles(extractFolder), {})
-  );
+  return extractedFiles.reduce(reduceFiles(extractFolder), {});
 };
