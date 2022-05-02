@@ -6,6 +6,8 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: isProduction,
 });
 
+const webpack = require("webpack");
+
 /**
  * @type {import("next").NextConfig}
  * */
@@ -26,6 +28,26 @@ const nextConfig = {
   optimizeFonts: false,
   reactStrictMode: true,
   swcMinify: !isProduction,
+  webpack: (config) => {
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+        const mod = resource.request.replace(/^node:/, "");
+
+        switch (mod) {
+          case "buffer":
+            resource.request = "buffer";
+            break;
+          case "stream":
+            resource.request = "readable-stream";
+            break;
+          default:
+            throw new Error(`Not found ${mod}`);
+        }
+      })
+    );
+
+    return config;
+  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

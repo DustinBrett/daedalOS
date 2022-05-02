@@ -335,6 +335,22 @@ const useCommandInterpreter = (
         case "quit":
           closeWithTransition(id);
           break;
+        case "file": {
+          const [commandPath] = commandArgs;
+
+          if (commandPath) {
+            const fullPath = getFullPath(commandPath);
+
+            if (await exists(fullPath)) {
+              const { fileTypeFromBuffer } = await import("file-type");
+              const { mime = "Unknown" } =
+                (await fileTypeFromBuffer(await readFile(fullPath))) || {};
+
+              localEcho?.println(`${commandPath}: ${mime}`);
+            }
+          }
+          break;
+        }
         case "find":
         case "search": {
           const results = await fullSearch(
