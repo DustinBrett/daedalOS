@@ -65,16 +65,6 @@ const processDirectory: Processes = {
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
-  IRC: {
-    Component: dynamic(() => import("components/apps/IRC")),
-    background: "#000",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
-    icon: "/System/Icons/irc.webp",
-    title: "IRC",
-  },
   JSDOS: {
     Component: dynamic(() => import("components/apps/JSDOS")),
     autoSizing: true,
