@@ -1,4 +1,5 @@
 import type Byuu from "byuu";
+import type { Emulator } from "byuu";
 import {
   keyMap,
   prettyEmulator,
@@ -59,10 +60,10 @@ const useByuu = (
       const romInfo = window.byuu.load(await readFile(fileUrl));
       const {
         emulator: {
-          buttons,
-          name: emulatorName,
-          ports: [controllerName],
-        },
+          buttons = [],
+          name: emulatorName = "",
+          ports: [controllerName] = [],
+        } = {},
       } = romInfo;
       const gameSavePath = join(
         SAVE_PATH,
@@ -93,7 +94,9 @@ const useByuu = (
       const baseName = basename(url);
 
       window.byuu.start();
-      appendFileToTitle(`${baseName} (${prettyEmulator[emulatorName]})`);
+      appendFileToTitle(
+        `${baseName} (${prettyEmulator[emulatorName as Emulator]})`
+      );
       const multipler = canvas.width > 256 ? 1 : 2;
       updateWindowSize(canvas.height * multipler, canvas.width * multipler);
 
@@ -124,11 +127,12 @@ const useByuu = (
     ]
   );
   const loadByuu = useCallback(async () => {
-    if (!containerRef.current) return;
-
     window.byuuWasmPath = "/Program Files/Byuu/byuu-web-lib.wasm";
 
     await loadFiles(["/Program Files/Byuu/byuu.js"]);
+
+    if (!containerRef.current) return;
+
     await window.byuu?.initialize(containerRef.current);
 
     setLoading(false);
