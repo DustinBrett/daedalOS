@@ -74,7 +74,8 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
       <nav>
         <Button
           onClick={() => {
-            fileReaders.forEach(([, _, reader]) => reader.abort());
+            // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+            fileReaders.forEach(([, , reader]) => reader.abort());
             closeWithTransition(id);
           }}
         >

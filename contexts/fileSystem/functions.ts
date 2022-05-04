@@ -134,7 +134,8 @@ export const removeFileSystemHandle = async (
 ): Promise<void> => {
   if (!(await supportsIndexedDB())) return;
 
-  const { [directory]: _, ...handles } = await getFileSystemHandles();
+  const { [directory]: _removedHandle, ...handles } =
+    await getFileSystemHandles();
   const { set } = await import("idb-keyval");
 
   await set(FS_HANDLES, handles);
