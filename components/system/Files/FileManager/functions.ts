@@ -167,7 +167,10 @@ export const handleFileInputEvent = async (
         fsHandle: FileSystemEntry | FileSystemHandle,
         subFolder = ""
       ): Promise<void> => {
-        if (fsHandle instanceof FileSystemHandle) {
+        if (
+          typeof FileSystemHandle !== "undefined" &&
+          fsHandle instanceof FileSystemHandle
+        ) {
           if (fsHandle.kind === "directory") {
             const directoryHandle = fsHandle as FileSystemDirectoryHandle;
 
