@@ -37,15 +37,27 @@ const ICONDIR_LENGTH = 6;
 const ICONDIRENTRY_LENGTH = 16;
 const RC_ICON = 3;
 
-export const createIcon = (
-  iconGroupEntry: IconGroupEntry,
-  resourceEntries: ResourceEntry[]
-): Uint8Array => {
+export const extractExeIcon = async (
+  exeData: Buffer
+): Promise<Buffer | undefined> => {
+  const ResEdit = await import("resedit");
+  let iconGroupEntry: IconGroupEntry;
+  let entries: ResourceEntry[];
+
+  try {
+    ({ entries } = ResEdit.NtExecutableResource.from(
+      ResEdit.NtExecutable.from(exeData, { ignoreCert: true })
+    ));
+    [iconGroupEntry] = ResEdit.Resource.IconGroupEntry.fromEntries(entries);
+  } catch {
+    return undefined;
+  }
+
   const iconDataOffset =
     ICONDIR_LENGTH + ICONDIRENTRY_LENGTH * iconGroupEntry.icons.length;
   let currentIconOffset = iconDataOffset;
   const iconData = iconGroupEntry.icons.map(({ iconID }) =>
-    resourceEntries.find(({ id, type }) => type === RC_ICON && id === iconID)
+    entries.find(({ id, type }) => type === RC_ICON && id === iconID)
   );
   const iconHeader = iconGroupEntry.icons.reduce(
     (accHeader, iconBitmapInfo, index) => {
@@ -59,9 +71,11 @@ export const createIcon = (
     createIconHeader(iconGroupEntry.icons.length)
   );
 
-  return iconData.reduce(
-    (accIcon, iconItem) =>
-      Buffer.concat([accIcon, Buffer.from((iconItem as ResourceEntry).bin)]),
-    iconHeader
+  return Buffer.from(
+    iconData.reduce(
+      (accIcon, iconItem) =>
+        Buffer.concat([accIcon, Buffer.from((iconItem as ResourceEntry).bin)]),
+      iconHeader
+    )
   );
 };
