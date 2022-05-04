@@ -98,7 +98,7 @@ const useCommandInterpreter = (
     [localEcho, readdir, updateFolder]
   );
   const commandInterpreter = useCallback(
-    async (command: string = ""): Promise<string> => {
+    async (command = ""): Promise<string> => {
       const [baseCommand = "", ...commandArgs] = parseCommand(command);
       const lcBaseCommand = baseCommand.toLowerCase();
 
