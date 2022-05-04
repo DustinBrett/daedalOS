@@ -212,15 +212,14 @@ const FileEntry: FC<FileEntryProps> = ({
                 const baseCachedPath = dirname(cachedIconPath);
 
                 await mkdirRecursive(baseCachedPath);
-                await writeFile(
-                  cachedIconPath,
-                  Buffer.from(
-                    generatedIcon.replace(/data:(.*);base64,/, ""),
-                    "base64"
-                  ),
-                  true
+
+                const cachedIcon = Buffer.from(
+                  generatedIcon.replace(/data:(.*);base64,/, ""),
+                  "base64"
                 );
 
+                await writeFile(cachedIconPath, cachedIcon, true);
+                setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIcon) }));
                 updateFolder(baseCachedPath, cachedIconPath);
 
                 cacheQueue.shift();
