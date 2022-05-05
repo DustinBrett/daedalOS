@@ -186,6 +186,8 @@ const FileEntry: FC<FileEntryProps> = ({
   const updateIcon = useCallback(async (): Promise<void> => {
     if (!isLoadingFileManager && !isIconCached.current) {
       if (icon.startsWith("blob:") || icon.startsWith("data:")) {
+        if (icon.startsWith("data:image/jpeg;base64,")) return;
+
         isIconCached.current = true;
 
         const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
