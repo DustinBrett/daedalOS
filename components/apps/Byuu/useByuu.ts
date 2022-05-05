@@ -89,7 +89,14 @@ const useByuu = (
       canvas.addEventListener("keydown", pressKey(controllerName, buttons));
       canvas.addEventListener("keyup", pressKey(controllerName, buttons));
 
-      if (!window.byuu.connectPeripheral(controllerName, "Gamepad")) return;
+      if (
+        !window.byuu.connectPeripheral(
+          controllerName,
+          emulatorName === "Mega Drive" ? "Fighting Pad" : "Gamepad"
+        )
+      ) {
+        return;
+      }
 
       const baseName = basename(url);
 
