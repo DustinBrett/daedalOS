@@ -1,5 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
+import { extractExeIcon } from "components/system/Files/FileEntry/exeIcons";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -36,8 +37,6 @@ import {
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
-
-import { extractExeIcon } from "./exeIcons";
 
 type InternetShortcut = {
   InternetShortcut: {
@@ -202,7 +201,7 @@ export const getInfoWithoutExtension = (
       }
     });
   } else {
-    callback({ icon: UNKNOWN_ICON, pid: "", url: "" });
+    callback({ icon: UNKNOWN_ICON, pid: "", url: path });
   }
 };
 
