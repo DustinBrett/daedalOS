@@ -74,7 +74,7 @@ var flag_r = {
   },
 };
 function logAndExit(msg) {
-  console.log("FATAL ERROR: " + msg);
+  window.BoxedWineConfig.consoleLog("FATAL ERROR: " + msg);
   throw new Error(msg);
 }
 function setConfiguration() {
@@ -135,14 +135,14 @@ function getEmscriptenEnvProps() {
             }
           });
       } else {
-        console.log("EMSCRIPTEN ENV props parameter must be in quoted string");
+        window.BoxedWineConfig.consoleLog("EMSCRIPTEN ENV props parameter must be in quoted string");
       }
     }
   }
   if (allProps.length > 0) {
-    console.log("setting EMSCRIPTEN ENV props:");
+    window.BoxedWineConfig.consoleLog("setting EMSCRIPTEN ENV props:");
     allProps.forEach(function (prop) {
-      console.log(prop.key + " = " + prop.value);
+      window.BoxedWineConfig.consoleLog(prop.key + " = " + prop.value);
     });
   }
   return allProps;
@@ -158,7 +158,7 @@ function getEnvProp() {
         let kv = property.substring(3, property.length - 3).split(":");
         return '"' + kv[0].trim() + "=" + kv[1].trim() + '"';
       } else {
-        console.log("ENV property must be in quoted string");
+        window.BoxedWineConfig.consoleLog("ENV property must be in quoted string");
       }
     }
   }
@@ -174,7 +174,7 @@ function getCPU() {
     cpu = "";
   }
   if (cpu.length > 0) {
-    console.log("setting CPU to: " + cpu);
+    window.BoxedWineConfig.consoleLog("setting CPU to: " + cpu);
   }
   return cpu;
 }
@@ -186,7 +186,7 @@ function getDirectDrawRenderer() {
   } else {
     renderer = DEFAULT_RENDERER;
   }
-  console.log("setting DirectDrawRenderer to: " + renderer);
+  window.BoxedWineConfig.consoleLog("setting DirectDrawRenderer to: " + renderer);
   return renderer;
 }
 function getResolution() {
@@ -212,9 +212,9 @@ function getResolution() {
     }
   }
   if (resolution == null) {
-    console.log("not setting Resolution");
+    window.BoxedWineConfig.consoleLog("not setting Resolution");
   } else {
-    console.log("setting Resolution to: " + resolution);
+    window.BoxedWineConfig.consoleLog("setting Resolution to: " + resolution);
   }
   return resolution;
 }
@@ -231,7 +231,7 @@ function getFrameSkip() {
   } else if (Number(frameskip) < 0 || Number(frameskip) > 50) {
     frameskip = DEFAULT_FRAME_SKIP;
   }
-  console.log("setting skipFrameFPS to: " + frameskip);
+  window.BoxedWineConfig.consoleLog("setting skipFrameFPS to: " + frameskip);
   return frameskip;
 }
 function getBitsPerPixel() {
@@ -247,7 +247,7 @@ function getBitsPerPixel() {
   } else {
     bpp = DEFAULT_BPP;
   }
-  console.log("setting BPP to: " + bpp);
+  window.BoxedWineConfig.consoleLog("setting BPP to: " + bpp);
   return bpp;
 }
 function getGLExtensions() {
@@ -265,12 +265,12 @@ function getGLExtensions() {
         glext = glext.split("%20").join(" ");
         glext = '"' + glext + '"';
       } else {
-        console.log("glext paramater must be in quoted string");
+        window.BoxedWineConfig.consoleLog("glext paramater must be in quoted string");
       }
     }
   }
   if (glext.length > 0) {
-    console.log("setting glext to: " + glext);
+    window.BoxedWineConfig.consoleLog("setting glext to: " + glext);
   }
   return glext;
 }
@@ -286,12 +286,12 @@ function getAutoRun() {
     auto = DEFAULT_AUTO_RUN;
   }
   if (!auto && Config.isRunningInline) {
-    console.log(
+    window.BoxedWineConfig.consoleLog(
       "parameter mismatch. Auto run can't be false if running inline. Resetting auto run to true"
     );
     auto = true;
   }
-  console.log("setting auto run to: " + auto);
+  window.BoxedWineConfig.consoleLog("setting auto run to: " + auto);
   return auto;
 }
 function getPayload(param) {
@@ -310,7 +310,7 @@ function getUseRangeRequests() {
   } else {
     ondemand = ONDEMAND_DEFAULT;
   }
-  console.log("setting ondemand to: " + ondemand);
+  window.BoxedWineConfig.consoleLog("setting ondemand to: " + ondemand);
   return ondemand;
 }
 function getSound() {
@@ -324,7 +324,7 @@ function getSound() {
   } else {
     soundEnabled = DEFAULT_SOUND_ENABLED;
   }
-  console.log("setting sound to: " + soundEnabled);
+  window.BoxedWineConfig.consoleLog("setting sound to: " + soundEnabled);
   return soundEnabled;
 }
 function getWorkingDirectory() {
@@ -334,15 +334,15 @@ function getWorkingDirectory() {
   } else {
     if (dir.startsWith("c:/")) {
       dir = "/home/username/.wine/dosdevices/c:/" + dir.substring(3);
-      console.log("setting working directory to: " + dir);
+      window.BoxedWineConfig.consoleLog("setting working directory to: " + dir);
     } else if (dir.startsWith("d:/")) {
       dir = "/home/username/.wine/dosdevices/d:/" + dir.substring(3);
-      console.log("setting working directory to: " + dir);
+      window.BoxedWineConfig.consoleLog("setting working directory to: " + dir);
     } else if (dir.startsWith("e:/")) {
       dir = "/home/username/.wine/dosdevices/e:/" + dir.substring(3);
-      console.log("setting working directory to: " + dir);
+      window.BoxedWineConfig.consoleLog("setting working directory to: " + dir);
     } else {
-      console.log("unable to set work directory");
+      window.BoxedWineConfig.consoleLog("unable to set work directory");
     }
   }
   return dir;
@@ -351,12 +351,12 @@ function getCDROMImage() {
   var filename = getParameter("iso");
   if (!allowParameterOverride() || filename === "") {
     filename = "";
-    console.log("not setting cdrom iso image");
+    window.BoxedWineConfig.consoleLog("not setting cdrom iso image");
   } else {
     if (!filename.endsWith(".iso")) {
       filename = filename + ".iso";
     }
-    console.log("setting cdrom iso image to: " + filename);
+    window.BoxedWineConfig.consoleLog("setting cdrom iso image to: " + filename);
   }
   return filename;
 }
@@ -364,12 +364,12 @@ function getAppZipFile(param) {
   var filename = getParameter(param);
   if (!allowParameterOverride() || filename === "") {
     filename = "";
-    console.log("not setting " + param + " zip file");
+    window.BoxedWineConfig.consoleLog("not setting " + param + " zip file");
   } else {
     if (!filename.endsWith(".zip")) {
       filename = filename + ".zip";
     }
-    console.log("setting " + param + " zip file to: " + filename);
+    window.BoxedWineConfig.consoleLog("setting " + param + " zip file to: " + filename);
   }
   return filename;
 }
@@ -382,7 +382,7 @@ function getRootZipFile(param) {
       filename = filename + ".zip";
     }
   }
-  console.log("setting " + param + " zip file to: " + filename);
+  window.BoxedWineConfig.consoleLog("setting " + param + " zip file to: " + filename);
   return filename;
 }
 function getZipFileList(param) {
@@ -400,7 +400,7 @@ function getZipFileList(param) {
   }
   var filenames = getParameter(param);
   if (!allowParameterOverride() || filename === "") {
-    console.log("not setting " + param + " zip file(s)");
+    window.BoxedWineConfig.consoleLog("not setting " + param + " zip file(s)");
   } else {
     if (filenames.length > 0) {
       var zipFilenames = filenames.split(";");
@@ -414,7 +414,7 @@ function getZipFileList(param) {
     }
   }
   if (zipFiles.length > 0) {
-    console.log("setting " + param + " zip file(s) to: " + zipFiles);
+    window.BoxedWineConfig.consoleLog("setting " + param + " zip file(s) to: " + zipFiles);
   }
   return zipFiles;
 }
@@ -428,7 +428,7 @@ function auth_callback(error) {
       return;
     }
     alreadyBuiltFileSystem = true;
-    console.log("authenticated!");
+    window.BoxedWineConfig.consoleLog("authenticated!");
     buildFileSystem(new BrowserFS.FileSystem.InMemory(), true);
   } else {
     console.error("unable to authenticate");
@@ -440,14 +440,14 @@ function dropboxLogin() {
   client.authenticate(auth_callback);
 }
 function initFileSystem() {
-  console.log("Use Storage mode: " + Config.storageMode);
+  window.BoxedWineConfig.consoleLog("Use Storage mode: " + Config.storageMode);
   if (Config.storageMode === STORAGE_LOCAL_STORAGE) {
     var writableStorage;
     if (BrowserFS.FileSystem.LocalStorage.isAvailable) {
       writableStorage = new BrowserFS.FileSystem.LocalStorage();
     } else {
       writableStorage = new BrowserFS.FileSystem.InMemory();
-      console.log(
+      window.BoxedWineConfig.consoleLog(
         "Switching to In Memory store as LocalStorage is not available"
       );
     }
@@ -895,7 +895,7 @@ function deleteFile(fs, pathAndFilename) {
   try {
     fs.unlinkSync(pathAndFilename);
   } catch (ef) {
-    console.log("Unable to delete:" + pathAndFilename + " error:" + ef.message);
+    window.BoxedWineConfig.consoleLog("Unable to delete:" + pathAndFilename + " error:" + ef.message);
   }
 }
 function createFolders(mainfs, folders) {
@@ -938,7 +938,7 @@ function createFileIfNecessary(fs, fullPath, prefix) {
     var filename = extractLastPartOfPath(fullPath);
     var contents = fs.readFileSync(file, null, flag_r);
     try {
-      console.log("creating: root/base" + parent + "/" + filename);
+      window.BoxedWineConfig.consoleLog("creating: root/base" + parent + "/" + filename);
       FS.createDataFile("root/base" + parent, filename, contents, true, true);
     } catch (ef) {
       if (ef.message === "File exists" || ef.message === "FS error") {
@@ -952,7 +952,7 @@ function createFileIfNecessary(fs, fullPath, prefix) {
             true
           );
         } catch (ef) {
-          console.log(
+          window.BoxedWineConfig.consoleLog(
             "file replace error:" +
               ef.message +
               " for: " +
@@ -962,7 +962,7 @@ function createFileIfNecessary(fs, fullPath, prefix) {
           );
         }
       } else {
-        console.log(
+        window.BoxedWineConfig.consoleLog(
           "file creation error:" +
             ef.message +
             " for: " +
@@ -992,7 +992,7 @@ function createFolderIfNecessary(fullPath, prefix) {
         try {
           FS.createPath("/root/base/" + parent, dir, true, true);
         } catch (cef) {
-          console.log(
+          window.BoxedWineConfig.consoleLog(
             "Directory creation error:" +
               cef.message +
               " for: " +
@@ -1002,7 +1002,7 @@ function createFolderIfNecessary(fullPath, prefix) {
           );
         }
       } else if (ef.message != "File exists") {
-        console.log(
+        window.BoxedWineConfig.consoleLog(
           "Directory creation error:" +
             ef.message +
             " for: " +
@@ -1031,7 +1031,7 @@ function startEmulator() {
   Module["removeRunDependency"]("setupBoxedWine");
 }
 var initialSetup = function () {
-  console.log("running initial setup");
+  window.BoxedWineConfig.consoleLog("running initial setup");
   setConfiguration();
   if (Config.emEnvProps.length > 0) {
     Config.emEnvProps.forEach(function (prop) {
@@ -1045,7 +1045,7 @@ var initialSetup = function () {
 function getExecutable() {
   var prog = getParameter("p");
   if (!allowParameterOverride() || prog === "") {
-    console.log("not setting program to execute");
+    window.BoxedWineConfig.consoleLog("not setting program to execute");
   } else {
     if (prog.startsWith("%22") && prog.endsWith("%22")) {
       prog = prog.substring(3, prog.length - 3);
@@ -1053,12 +1053,12 @@ function getExecutable() {
       prog = prog.substring(3, prog.length - 3);
     }
     prog = prog.split("%20").join(" ");
-    console.log("setting program to execute to: " + prog);
+    window.BoxedWineConfig.consoleLog("setting program to execute to: " + prog);
   }
   return prog;
 }
 var errorCallback = function (e) {
-  console.log(e);
+  window.BoxedWineConfig.consoleLog(e);
 };
 function getEntriesAsPromise(item, exeFiles, allFiles) {
   var dirCount = 0;
@@ -1142,7 +1142,7 @@ function setDirectDrawRenderer(val) {
     if (endOfKeyLineIndex != -1) {
       //"DirectDrawRenderer\"=\"opengl\""
       //let keyLine = data.substring(keyIndex, endOfKeyLineIndex);
-      //console.log(keyLine);
+      //window.BoxedWineConfig.consoleLog(keyLine);
       let replacementLine = '"DirectDrawRenderer"="' + val + '"';
       let newData =
         data.substring(0, keyIndex) +
@@ -1150,10 +1150,10 @@ function setDirectDrawRenderer(val) {
         data.substring(endOfKeyLineIndex, data.length);
       FS.writeFile(fileLocation, newData);
     } else {
-      console.log("Unable to set DirectDrawRenderer in user.reg");
+      window.BoxedWineConfig.consoleLog("Unable to set DirectDrawRenderer in user.reg");
     }
   } else {
-    console.log("Unable to find DirectDrawRenderer in user.reg");
+    window.BoxedWineConfig.consoleLog("Unable to find DirectDrawRenderer in user.reg");
   }
 }
 function getEmulatorParams() {
@@ -1235,7 +1235,7 @@ function getEmulatorParams() {
     params.push("explorer");
     params.push("/desktop=shell");
   }
-  console.log("Emulator params:" + params);
+  window.BoxedWineConfig.consoleLog("Emulator params:" + params);
   return params;
 }
 
@@ -1250,7 +1250,7 @@ var Module = {
   print: (function () {
     return function (text) {
       text = Array.prototype.slice.call(arguments).join(" ");
-      console.log(text);
+      window.BoxedWineConfig.consoleLog(text);
     };
   })(),
   printErr: function (text) {
@@ -1263,7 +1263,7 @@ var Module = {
         Config.recordLoadedFiles &&
         text.startsWith("FS.trackingDelegate error on read file:")
       ) {
-        console.log(text);
+        window.BoxedWineConfig.consoleLog(text);
         let filePath = text.substring(text.indexOf("/"));
         let prefix = "/root/base/";
         if (filePath.startsWith(prefix)) {
@@ -1317,7 +1317,7 @@ window.BoxedWine();
 }
 
 function saveFSImage() {
-  console.log("saving filesystem files:" + recordedFiles.length);
+  window.BoxedWineConfig.consoleLog("saving filesystem files:" + recordedFiles.length);
   let prefix = "/root/base/";
   var zip = new JSZip();
   zip.file("tmp", null, { dir: true });
@@ -1328,12 +1328,12 @@ function saveFSImage() {
         zip.file(filePath.substring(prefix.length), data);
       }
     } catch (ex) {
-      console.log("unable to read file:" + filePath + " error:" + ex);
+      window.BoxedWineConfig.consoleLog("unable to read file:" + filePath + " error:" + ex);
     }
   });
-  console.log("generating zip file");
+  window.BoxedWineConfig.consoleLog("generating zip file");
   let zipFile = zip.generate({ type: "blob", compression: "DEFLATE" });
-  console.log("finished generating zip file");
+  window.BoxedWineConfig.consoleLog("finished generating zip file");
   url = window.URL.createObjectURL(zipFile);
   ae.href = url;
   ae.download = "boxedwine-min.zip";
@@ -1453,7 +1453,7 @@ function createFolder(parent, dir) {
     FS.createPath(parent, dir, true, true);
   } catch (ef) {
     if (ef.message === "File exists" || ef.message === "FS error") {
-      console.log("Directory already exists! :" + parent + dir);
+      window.BoxedWineConfig.consoleLog("Directory already exists! :" + parent + dir);
       var replace = confirm(
         "Directory already exists: " + parent + dir + " continue?"
       );
@@ -1462,9 +1462,9 @@ function createFolder(parent, dir) {
           //yeah, like that would work! FS.rmdir(parent + dir);
           FS.rename(parent + dir, parent + dir + calcBackupFilename());
           FS.createPath(parent, dir, true, true);
-          console.log("Directory replaced: " + parent + dir);
+          window.BoxedWineConfig.consoleLog("Directory replaced: " + parent + dir);
         } catch (eef) {
-          console.log("eef=" + eef);
+          window.BoxedWineConfig.consoleLog("eef=" + eef);
           created = false;
           console.error("unable to create folder: " + parent + dir);
         }
@@ -1472,7 +1472,7 @@ function createFolder(parent, dir) {
         created = false;
       }
     } else {
-      console.log("ef=" + ef);
+      window.BoxedWineConfig.consoleLog("ef=" + ef);
     }
   }
   return created;
@@ -1483,10 +1483,10 @@ function createFile(dir, name, buf) {
   }
   try {
     FS.createDataFile(dir, name, buf, true, true);
-    //console.log("File created :" + dir + "/" + name);
+    //window.BoxedWineConfig.consoleLog("File created :" + dir + "/" + name);
   } catch (e) {
     if (e.message === "File exists" || e.message === "FS error") {
-      console.log("File already exists!: " + dir + name);
+      window.BoxedWineConfig.consoleLog("File already exists!: " + dir + name);
       var replace = confirm(
         "File already exists: " + dir + "/" + name + " replace?"
       );
@@ -1494,14 +1494,14 @@ function createFile(dir, name, buf) {
         try {
           FS.unlink(dir + "/" + name);
           FS.createDataFile(dir, name, buf, true, true);
-          console.log("File replaced: " + dir + name);
+          window.BoxedWineConfig.consoleLog("File replaced: " + dir + name);
         } catch (ee) {
-          console.log("ee=" + ee);
+          window.BoxedWineConfig.consoleLog("ee=" + ee);
           console.error("unable to create file: " + dir + name);
         }
       }
     } else {
-      console.log("e=" + e);
+      window.BoxedWineConfig.consoleLog("e=" + e);
     }
   }
 }
@@ -1645,7 +1645,7 @@ function buildTree() {
 }
 
 function readFiles(currentDir, files) {
-  console.log("adding directory: " + currentDir);
+  window.BoxedWineConfig.consoleLog("adding directory: " + currentDir);
   files.push({ dir: currentDir, filename: "" });
   var entries = FS.readdir(currentDir).filter(function (param) {
     return param !== "." && param !== "..";
@@ -1655,7 +1655,7 @@ function readFiles(currentDir, files) {
     if (fileEntry.node.isFolder) {
       readFiles(currentDir + entry + "/", files);
     } else {
-      console.log("adding file: " + currentDir + entry);
+      window.BoxedWineConfig.consoleLog("adding file: " + currentDir + entry);
       files.push({ dir: currentDir, filename: entry });
     }
   });

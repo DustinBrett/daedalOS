@@ -89,6 +89,15 @@ export const viewHeight = (): number =>
 export const viewWidth = (): number =>
   Math.min(window.innerWidth, window.screen.width);
 
+export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
+  canvas instanceof HTMLCanvasElement &&
+  Boolean(
+    canvas
+      .getContext("2d")
+      ?.getImageData(0, 0, canvas.width, canvas.height)
+      .data.some((channel) => channel !== 0)
+  );
+
 export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
   const [vh, vw] = [viewHeight(), viewWidth()];
   const setHeight = Number(size.height);

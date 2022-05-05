@@ -3,11 +3,12 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useRef } from "react";
-import { loadFiles } from "utils/functions";
+import { isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
     BoxedWineConfig: {
+      consoleLog?: (log: string) => void;
       isRunning?: boolean;
       urlParams: string;
     };
@@ -28,12 +29,13 @@ const getExeName = async (zipData: Buffer): Promise<string | undefined> => {
 const useBoxedWine = (
   id: string,
   url: string,
-  _containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
   const loadedUrl = useRef<string>();
+  const blankCanvasCheckerTimer = useRef<number | undefined>();
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
     let appPayload = url ? await readFile(url) : Buffer.from("");
@@ -54,8 +56,34 @@ const useBoxedWine = (
       ...(appName ? { p: appName } : {}),
     };
 
+    if (!blankCanvasCheckerTimer.current) {
+      containerRef.current?.prepend(document.createElement("ol"));
+      blankCanvasCheckerTimer.current = window.setInterval(() => {
+        if (isCanvasDrawn(containerRef.current?.querySelector("canvas"))) {
+          clearInterval(blankCanvasCheckerTimer.current);
+          blankCanvasCheckerTimer.current = undefined;
+          containerRef.current?.querySelector("ol")?.remove();
+        }
+      }, 500);
+    }
+
     window.BoxedWineConfig = {
       ...window.BoxedWineConfig,
+      consoleLog: (log: string) => {
+        const consoleElement = containerRef.current?.querySelector("ol");
+
+        if (consoleElement) {
+          const consoleEntry = document.createElement("li");
+
+          consoleEntry.textContent = log;
+          consoleElement.append(consoleEntry);
+          consoleElement.scrollTop = consoleElement.scrollHeight;
+          setTimeout(
+            () => consoleElement.scrollTo(0, consoleElement.scrollHeight),
+            10
+          );
+        }
+      },
       urlParams: getConfig(dynamicConfig),
     };
 
@@ -67,7 +95,7 @@ const useBoxedWine = (
         // Ignore BoxedWine errors
       }
     });
-  }, [appendFileToTitle, readFile, setLoading, url]);
+  }, [appendFileToTitle, containerRef, readFile, setLoading, url]);
 
   useEffect(() => {
     if (
