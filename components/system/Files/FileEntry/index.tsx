@@ -242,7 +242,7 @@ const FileEntry: FC<FileEntryProps> = ({
           const cachedIconData = await readFile(cachedIconPath);
 
           setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
-        } else if (!isDynamicIconLoaded.current && iconRef.current) {
+        } else if (!isDynamicIconLoaded.current && buttonRef.current) {
           isDynamicIconLoaded.current = true;
           new IntersectionObserver(
             ([{ intersectionRatio }], observer) => {
@@ -252,7 +252,7 @@ const FileEntry: FC<FileEntryProps> = ({
               }
             },
             { root: fileManagerRef.current }
-          ).observe(iconRef.current);
+          ).observe(buttonRef.current);
         }
       }
     }
