@@ -46,7 +46,10 @@ export const extractExeIcon = async (
 
   try {
     ({ entries } = ResEdit.NtExecutableResource.from(
-      ResEdit.NtExecutable.from(exeData, { ignoreCert: true })
+      ResEdit.NtExecutable.from(exeData, {
+        ignoreCert: true,
+      }),
+      true
     ));
     [iconGroupEntry] = ResEdit.Resource.IconGroupEntry.fromEntries(entries);
   } catch {

@@ -4712,10 +4712,10 @@ pdfjs-dist@^2.13.216:
   dependencies:
     web-streams-polyfill "^3.2.0"
 
-pe-library@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/pe-library/-/pe-library-0.2.1.tgz#2f656d02f4e705d8c9aa60f5297cef414b008b6c"
-  integrity sha512-7FtTgd8Cskl/LQUOY9B8e3Zr7E31S4zWBvzKGEctqUxpnuII4k6eitHySIhE07Y9Tup7Qafg+aO+uknLIvANmg==
+pe-library@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/pe-library/-/pe-library-0.3.0.tgz#7b29c024b83c701d6c5c3759664340255fec70bf"
+  integrity sha512-mMVGKfeI6VOLqMOCiLaU4KNd4cgk8YcQVvJ07YIA6iujM4uKOgmDsmIp1qsKWEHt8cMoizVGFniQUrtN6pjtJA==
 
 peek-readable@^4.1.0:
   version "4.1.0"
@@ -5125,12 +5125,12 @@ requireindex@^1.2.0, requireindex@~1.2.0:
   resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
   integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
 
-resedit@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/resedit/-/resedit-1.5.0.tgz#51dde4bb1d0c1009ab60071d92b41715b0892591"
-  integrity sha512-3q2EsjUH7EWmCv8khvOBoSqMrZdhd7y3sqkinVLGdK1gFD2fz7X3CWe0+p7lkBJWLKWCCqfT9iTlN54MwNt1lQ==
+resedit@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/resedit/-/resedit-1.6.0.tgz#a2da6e864b151f72575685b97fe437e482594b89"
+  integrity sha512-QEZe3MOyHIN3qULSLuZBEcxSqv93yjRXeDMJOYAH+ZFw89wj31slY9y6rp8Ul9A7JgT98q7/5CTvYEpG33B/5w==
   dependencies:
-    pe-library "^0.2.1"
+    pe-library "^0.3.0"
 
 reselect@^3.0.1:
   version "3.0.1"

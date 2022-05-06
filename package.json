@@ -56,7 +56,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-rnd": "^10.3.7",
-    "resedit": "^1.5.0",
+    "resedit": "^1.6.0",
     "styled-components": "^5.3.5"
   },
   "devDependencies": {
