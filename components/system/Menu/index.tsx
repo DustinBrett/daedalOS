@@ -85,6 +85,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     } = menuRef.current?.getBoundingClientRect() || {};
     const [vh, vw] = [viewHeight(), viewWidth()];
     const bottomOffset = y + height > vh ? vh - y : 0;
+    const topAdjustedBottomOffset =
+      bottomOffset + height > vh ? 0 : bottomOffset;
     const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
     const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
     const newOffset = {
@@ -92,7 +94,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         Math.round(Math.max(0, x + width - vw)) +
         (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
       y:
-        Math.round(Math.max(0, y + height - (vh - bottomOffset))) +
+        Math.round(Math.max(0, y + height - (vh - topAdjustedBottomOffset))) +
         (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
     };
     const adjustedOffsetX =
