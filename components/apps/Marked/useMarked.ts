@@ -1,7 +1,5 @@
-import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
 import { basename } from "path";
 import { useCallback, useEffect } from "react";
 import { loadFiles } from "utils/functions";
@@ -28,44 +26,20 @@ const useMarked = (
   loading: boolean
 ): void => {
   const { readFile } = useFileSystem();
-  const { onDragOver, onDrop } = useFileDrop({ id });
-  const { setForegroundId } = useSession();
-  const passEventsThroughIframe = useCallback(() => {
-    const iframe = containerRef.current?.querySelector("iframe");
-
-    if (iframe) {
-      iframe.addEventListener("load", () => {
-        if (iframe.contentWindow) {
-          iframe.contentWindow.addEventListener("dragover", onDragOver);
-          iframe.contentWindow.addEventListener("drop", onDrop);
-          iframe.contentWindow.addEventListener("focus", () => {
-            setForegroundId(id);
-            containerRef.current?.closest("section")?.focus();
-          });
-
-          [...iframe.contentWindow.document.links].forEach((link) =>
-            link.setAttribute("target", "_blank")
-          );
-        }
-      });
-    }
-  }, [containerRef, id, onDragOver, onDrop, setForegroundId]);
   const { prependFileToTitle } = useTitle(id);
   const loadFile = useCallback(async () => {
-    const iframe = containerRef.current?.querySelector("iframe");
+    const markdownFile = await readFile(url);
+    const container = containerRef.current?.querySelector(
+      "article"
+    ) as HTMLElement;
 
-    if (iframe) {
-      const markdownFile = await readFile(url);
-
-      iframe.srcdoc = `
-        <link rel="stylesheet" href="/Program Files/Marked/style.css" />
-        ${window.marked.parse(markdownFile.toString(), {
-          headerIds: false,
-        })}
-      `;
-
-      prependFileToTitle(basename(url));
+    if (container instanceof HTMLElement) {
+      container.innerHTML = window.marked.parse(markdownFile.toString(), {
+        headerIds: false,
+      });
     }
+
+    prependFileToTitle(basename(url));
   }, [containerRef, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
@@ -73,11 +47,10 @@ const useMarked = (
       loadFiles(libs).then(() => {
         if (window.marked) {
           setLoading(false);
-          passEventsThroughIframe();
         }
       });
     }
-  }, [loading, passEventsThroughIframe, setLoading]);
+  }, [loading, setLoading]);
 
   useEffect(() => {
     if (!loading && url) loadFile();
