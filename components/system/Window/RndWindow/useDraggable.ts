@@ -9,7 +9,12 @@ import { useSession } from "contexts/session";
 import { useEffect, useMemo, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import { pxToNum, viewHeight, viewWidth } from "utils/functions";
+import {
+  calcInitialPosition,
+  pxToNum,
+  viewHeight,
+  viewWidth,
+} from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -21,7 +26,8 @@ const useDraggable = (id: string, size: Size): Draggable => {
     },
   } = useTheme();
   const { processes } = useProcesses();
-  const { autoSizing, closing } = processes[id] || {};
+  const { autoSizing, closing, componentWindow, initialRelativePosition } =
+    processes[id] || {};
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
   const { position: sessionPosition, size: sessionSize } = windowState || {};
   const isOffscreen = useMemo(
@@ -44,6 +50,14 @@ const useDraggable = (id: string, size: Size): Draggable => {
       setPosition(centerPosition(sessionSize, taskbarHeight));
     }
   }, [autoSizing, closing, sessionPosition, sessionSize, taskbarHeight]);
+
+  useEffect(() => {
+    if (initialRelativePosition && componentWindow) {
+      setPosition(
+        calcInitialPosition(initialRelativePosition, componentWindow)
+      );
+    }
+  }, [componentWindow, initialRelativePosition]);
 
   return [position, setPosition];
 };

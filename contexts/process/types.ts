@@ -17,11 +17,19 @@ type PdfProcessArguments = {
   scale?: number;
 };
 
+export type RelativePosition = {
+  bottom?: number;
+  left?: number;
+  right?: number;
+  top?: number;
+};
+
 type BaseProcessArguments = {
   allowResizing?: boolean;
   autoSizing?: boolean;
   background?: string;
   hideTitlebarIcon?: boolean;
+  initialRelativePosition?: RelativePosition;
   lockAspectRatio?: boolean;
   prependTaskbarTitle?: boolean;
   url?: string;

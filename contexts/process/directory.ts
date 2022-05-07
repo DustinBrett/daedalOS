@@ -1,6 +1,6 @@
 import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
-import { FOLDER_ICON } from "utils/constants";
+import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const processDirectory: Processes = {
   BoxedWine: {
@@ -137,8 +137,12 @@ const processDirectory: Processes = {
       height: 174,
       width: 397,
     },
-    // TODO: defaultPosition: { x: 15, y: 11 },
+    // TODO: hideMaximize, hideMinimize
     icon: "/System/Icons/run.webp",
+    initialRelativePosition: {
+      bottom: TASKBAR_HEIGHT + 11,
+      left: 15,
+    },
     singleton: true,
     title: "Run",
   },

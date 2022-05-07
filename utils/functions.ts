@@ -1,4 +1,6 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import type { RelativePosition } from "contexts/process/types";
+import type { Position } from "eruda";
 import { extname } from "path";
 import type { HTMLAttributes } from "react";
 import { useEffect } from "react";
@@ -88,6 +90,16 @@ export const viewHeight = (): number =>
 
 export const viewWidth = (): number =>
   Math.min(window.innerWidth, window.screen.width);
+
+export const calcInitialPosition = (
+  relativePosition: RelativePosition,
+  container: HTMLElement
+): Position => ({
+  x: relativePosition.left || viewWidth() - (relativePosition.right || 0),
+  y:
+    relativePosition.top ||
+    viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
+});
 
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&
