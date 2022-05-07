@@ -1,9 +1,9 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import StyledButton from "components/system/Dialog/StyledButton";
 import StyledDialog from "components/system/Dialog/StyledDialog";
 import { useProcesses } from "contexts/process";
 import type { FileReaders } from "hooks/useDialog";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Button from "styles/common/Button";
 
 const MAX_TITLE_LENGTH = 37;
 
@@ -72,7 +72,7 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
         <progress max={totalTransferSize} value={progress} />
       </div>
       <nav>
-        <Button
+        <StyledButton
           onClick={() => {
             // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
             fileReaders.forEach(([, , reader]) => reader.abort());
@@ -80,7 +80,7 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
           }}
         >
           Cancel
-        </Button>
+        </StyledButton>
       </nav>
     </StyledDialog>
   );

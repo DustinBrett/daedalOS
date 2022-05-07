@@ -1,5 +1,5 @@
+import StyledButton from "components/system/Dialog/StyledButton";
 import styled from "styled-components";
-import Button from "styles/common/Button";
 
 const StyledDialog = styled.div`
   h1,
@@ -66,31 +66,10 @@ const StyledDialog = styled.div`
     position: absolute;
     width: 100%;
 
-    ${Button} {
-      background-color: rgb(225, 225, 225);
-      border: 1px solid rgb(173, 173, 173);
-      font-size: 12px;
-      height: 23px;
+    ${StyledButton} {
       padding-bottom: 1px;
       position: absolute;
       right: 23px;
-      transition: all 0.25s ease-in-out;
-      width: 73px;
-
-      &:focus {
-        border: 2px solid rgb(0, 120, 215);
-      }
-
-      &:hover {
-        background-color: rgb(229, 241, 251);
-        border: 1px solid rgb(0, 120, 215);
-      }
-
-      &:active {
-        background-color: rgb(204, 228, 247);
-        border: 1px solid rgb(0, 84, 153);
-        transition: none;
-      }
     }
   }
 `;
