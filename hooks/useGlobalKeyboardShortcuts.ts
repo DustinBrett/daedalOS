@@ -10,7 +10,7 @@ const useGlobalKeyboardShortcuts = (): void => {
 
       if (shiftKey) {
         const shiftBindings: Record<string, () => void> = {
-          Escape: () => {
+          ESCAPE: () => {
             const startButton = document.querySelector(
               "main>nav>button[title='Start']"
             ) as HTMLButtonElement;
@@ -20,11 +20,13 @@ const useGlobalKeyboardShortcuts = (): void => {
           F10: () => open("Terminal"),
           F12: () => open("DevTools"),
           F5: () => window.location.reload(),
+          R: () => open("Run"),
         };
+        const keyName = key.toUpperCase();
 
-        if (shiftBindings[key]) {
+        if (shiftBindings[keyName]) {
           haltEvent(event);
-          shiftBindings[key]();
+          shiftBindings[keyName]();
         }
       }
     },
