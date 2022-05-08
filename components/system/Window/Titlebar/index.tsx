@@ -26,6 +26,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const {
     allowResizing = true,
     closing,
+    hideMaximizeButton,
+    hideMinimizeButton,
     hideTitlebarIcon,
     icon,
     title,
@@ -52,22 +54,31 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         </figure>
       </Button>
       <nav className="cancel">
+        {!hideMinimizeButton && (
+          <Button
+            className="minimize"
+            onClick={onMinimize}
+            {...label("Minimize")}
+          >
+            <MinimizeIcon />
+          </Button>
+        )}
+        {!hideMaximizeButton && (
+          <Button
+            className="maximize"
+            disabled={!allowResizing}
+            onClick={onMaximize}
+            {...label("Maximize")}
+          >
+            {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
+          </Button>
+        )}
         <Button
-          className="minimize"
-          onClick={onMinimize}
-          {...label("Minimize")}
+          $short={hideMaximizeButton && hideMinimizeButton}
+          className="close"
+          onClick={onClose}
+          {...label("Close")}
         >
-          <MinimizeIcon />
-        </Button>
-        <Button
-          className="maximize"
-          disabled={!allowResizing}
-          onClick={onMaximize}
-          {...label("Maximize")}
-        >
-          {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
-        </Button>
-        <Button className="close" onClick={onClose} {...label("Close")}>
           <CloseIcon />
         </Button>
       </nav>

@@ -28,6 +28,8 @@ type BaseProcessArguments = {
   allowResizing?: boolean;
   autoSizing?: boolean;
   background?: string;
+  hideMaximizeButton?: boolean;
+  hideMinimizeButton?: boolean;
   hideTitlebarIcon?: boolean;
   initialRelativePosition?: RelativePosition;
   lockAspectRatio?: boolean;
