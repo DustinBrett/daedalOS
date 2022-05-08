@@ -90,7 +90,7 @@ const useVideoPlayer = (
     if (player && url) {
       try {
         player.src(await getSource());
-        appendFileToTitle(basename(url));
+        appendFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
       } catch {
         // Ignore player errors
       }
