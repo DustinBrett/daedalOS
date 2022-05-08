@@ -33,7 +33,7 @@ export const bookmarks: Bookmark[] = [
   {
     icon: "/System/Icons/Favicons/aos.webp",
     name: "AaronOS",
-    url: "https://aaronos.dev/AaronOS/",
+    url: "https://aaronos.dev/",
   },
   {
     icon: "/System/Icons/Favicons/jspaint.webp",
