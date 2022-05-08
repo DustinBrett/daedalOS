@@ -1,11 +1,58 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialog/StyledButton";
 import StyledRun from "components/system/Dialog/StyledRun";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import processDirectory from "contexts/process/directory";
+import { useSession } from "contexts/session";
+import { extname } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const OPEN_ID = "open";
 
 const Run: FC<ComponentProcessProps> = () => {
-  const { open } = useProcesses();
-  // TODO: SHIFT + R
+  const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
+  const { exists, stat } = useFileSystem();
+  const { foregroundId } = useSession();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(true);
+  const [isEmptyInput, setIsEmptyInput] = useState(true);
+  const runResource = useCallback(
+    async (resource?: string) => {
+      if (!resource) return;
+
+      if (await exists(resource)) {
+        const stats = await stat(resource);
+
+        if (stats.isDirectory()) {
+          open("FileExplorer", { url: resource }, "");
+        } else {
+          const basePid = getProcessByFileExtension(extname(resource));
+
+          if (basePid) open(basePid, { url: resource });
+        }
+      } else if (
+        Object.keys(processDirectory).some(
+          (processName) => processName.toLowerCase() === resource.toLowerCase()
+        )
+      ) {
+        open(resource);
+      } else {
+        throw new Error(`${resource} not found`);
+      }
+
+      close("Run");
+    },
+    [close, exists, open, stat]
+  );
+
+  useEffect(() => {
+    if (inputRef.current && foregroundId === "Run") {
+      inputRef.current.focus();
+    }
+  }, [foregroundId]);
+
   return (
     <StyledRun>
       <figure>
@@ -16,28 +63,42 @@ const Run: FC<ComponentProcessProps> = () => {
         </figcaption>
       </figure>
       <div>
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor="open">Open:</label>
-        {/* TODO: Enter to open */}
-        <input id="open" type="text" />
+        <label htmlFor={OPEN_ID}>Open:</label>
+        <input
+          ref={inputRef}
+          autoComplete="off"
+          enterKeyHint="go"
+          id={OPEN_ID}
+          onBlurCapture={({ relatedTarget }) => {
+            if (
+              !runProcess?.componentWindow ||
+              runProcess.componentWindow.contains(relatedTarget)
+            ) {
+              inputRef.current?.focus();
+            } else {
+              setIsInputFocused(false);
+            }
+          }}
+          onFocus={() => setIsInputFocused(true)}
+          onKeyDown={({ key }) => {
+            if (key === "Enter") runResource(inputRef.current?.value.trim());
+          }}
+          onKeyUp={({ target }) =>
+            setIsEmptyInput(!(target as HTMLInputElement)?.value)
+          }
+          spellCheck="false"
+          type="text"
+        />
       </div>
       <nav>
-        {/* TODO: Default button */}
         <StyledButton
-          onClick={() => {
-            // TODO: Use ref
-            open(
-              (document.querySelector("#open") as HTMLInputElement)?.value ?? ""
-            );
-            // TODO: Clear/close dialog
-            console.info("TODO: OK");
-          }}
+          $active={isInputFocused}
+          disabled={isEmptyInput}
+          onClick={() => runResource(inputRef.current?.value.trim())}
         >
           OK
         </StyledButton>
-        <StyledButton onClick={() => console.info("TODO: Cancel")}>
-          Cancel
-        </StyledButton>
+        <StyledButton onClick={() => close("Run")}>Cancel</StyledButton>
       </nav>
     </StyledRun>
   );

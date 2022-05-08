@@ -1,11 +1,15 @@
 import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useCallback } from "react";
+import { MENU_SEPERATOR } from "utils/constants";
 
-const useTaskbarContextMenu = (): ContextMenuCapture => {
+const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { minimize, processes } = useProcesses();
+  const { minimize, open, processes } = useProcesses();
   const getItems = useCallback(() => {
     const processArray = Object.entries(processes || {});
     const allWindowsMinimized =
@@ -17,14 +21,28 @@ const useTaskbarContextMenu = (): ContextMenuCapture => {
           (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
           minimize(pid)
       );
-
-    return [
+    const toggleLabel = allWindowsMinimized
+      ? "Show open windows"
+      : "Show the desktop";
+    const menuItems: MenuItem[] = [
       {
         action: toggleDesktop,
-        label: allWindowsMinimized ? "Show open windows" : "Show the desktop",
+        label: onStartButton ? "Desktop" : toggleLabel,
       },
     ];
-  }, [minimize, processes]);
+
+    if (onStartButton) {
+      menuItems.unshift(
+        {
+          action: () => open("Run"),
+          label: "Run",
+        },
+        MENU_SEPERATOR
+      );
+    }
+
+    return menuItems;
+  }, [minimize, onStartButton, open, processes]);
 
   return contextMenu?.(getItems);
 };
