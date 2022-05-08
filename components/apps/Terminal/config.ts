@@ -24,8 +24,6 @@ export const config: ITerminalOptions = {
   },
 };
 
-export const webGlAddon = "/Program Files/Xterm.js/xterm-addon-webgl.js";
-
 export const libs = [
   "/Program Files/Xterm.js/xterm.css",
   "/Program Files/Xterm.js/xterm.js",

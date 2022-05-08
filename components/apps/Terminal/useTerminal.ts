@@ -2,7 +2,6 @@ import {
   config,
   libs,
   PROMPT_CHARACTER,
-  webGlAddon,
 } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -19,7 +18,7 @@ import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { HOME, PACKAGE_DATA } from "utils/constants";
-import { haltEvent, isFirefox, isSafari, loadFiles } from "utils/functions";
+import { haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -68,9 +67,7 @@ const useTerminal = (
   }, [id, localEcho, setUrl, url]);
 
   useEffect(() => {
-    loadFiles(
-      window.WebGLRenderingContext && !isSafari() ? [...libs, webGlAddon] : libs
-    ).then(() => {
+    loadFiles(libs).then(() => {
       if (window.Terminal) setTerminal(new window.Terminal(config));
     });
   }, []);
@@ -91,14 +88,6 @@ const useTerminal = (
       terminal.loadAddon(newLocalEcho);
       terminal.loadAddon(newFitAddon);
       terminal.open(containerRef.current);
-
-      if (window.WebglAddon) {
-        const newWebglAddon = new window.WebglAddon.WebglAddon();
-
-        newWebglAddon.onContextLoss(newWebglAddon.dispose);
-        terminal.loadAddon(newWebglAddon);
-      }
-
       newFitAddon.fit();
 
       setFitAddon(newFitAddon);
