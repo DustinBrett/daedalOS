@@ -3,6 +3,7 @@ import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
 import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
+import type { Variant } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
   DEFAULT_SCROLLBAR_WIDTH,
@@ -13,6 +14,10 @@ import {
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
+};
+
+type StyleVariant = Variant & {
+  height?: string;
 };
 
 const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
@@ -42,6 +47,9 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       }
     }
   };
+  const startMenuTransition = useStartMenuTransition();
+  const { height } =
+    (startMenuTransition.variants?.["active"] as StyleVariant) ?? {};
 
   useEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
@@ -51,11 +59,11 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       $showScrolling={showScrolling}
       onBlurCapture={maybeCloseMenu}
       onMouseMove={revealScrolling}
-      {...useStartMenuTransition()}
+      {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
       <StyledStartMenuBackground />
-      <Sidebar />
+      <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
         view="list"

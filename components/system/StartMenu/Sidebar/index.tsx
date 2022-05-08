@@ -24,7 +24,11 @@ const SidebarGroup: FC<SidebarGroupProps> = ({ sidebarButtons }) => (
   </ol>
 );
 
-const Sidebar: FC = () => {
+type SidebarProps = {
+  height?: string;
+};
+
+const Sidebar: FC<SidebarProps> = ({ height }) => {
   const { resetStorage } = useFileSystem();
   const { open } = useProcesses();
   const [collapsed, setCollapsed] = useState(true);
@@ -83,6 +87,7 @@ const Sidebar: FC = () => {
         clearTimer();
         setCollapsed(true);
       }}
+      style={{ height }}
     >
       <SidebarGroup sidebarButtons={topButtons} />
       <SidebarGroup sidebarButtons={bottomButtons} />

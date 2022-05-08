@@ -4,12 +4,16 @@ import {
   MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum } from "utils/functions";
+import { pxToNum, viewHeight } from "utils/functions";
 
 const useStartMenuTransition = (): MotionProps => {
   const {
-    sizes: { startMenu },
+    sizes: { startMenu, taskbar },
   } = useTheme();
+  const height = Math.min(
+    pxToNum(startMenu.size),
+    viewHeight() - pxToNum(taskbar.height)
+  );
 
   return {
     animate: "active",
@@ -21,12 +25,12 @@ const useStartMenuTransition = (): MotionProps => {
     },
     variants: {
       active: {
-        height: startMenu.size,
+        height: `${height}px`,
         paddingTop: 0,
       },
       initial: {
-        height: `${pxToNum(startMenu.size) * 0.75}px`,
-        paddingTop: `${pxToNum(startMenu.size) * 0.5}px`,
+        height: `${height * 0.75}px`,
+        paddingTop: `${height * 0.5}px`,
       },
     },
   };

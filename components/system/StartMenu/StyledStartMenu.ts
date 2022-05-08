@@ -42,10 +42,12 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
   contain: strict;
   display: flex;
-  height: ${({ theme }) => theme.sizes.startMenu.size};
+  height: 100%;
   left: 0;
+  max-height: ${({ theme }) => theme.sizes.startMenu.size};
+  max-width: ${({ theme }) => theme.sizes.startMenu.size};
   position: absolute;
-  width: ${({ theme }) => theme.sizes.startMenu.size};
+  width: 100%;
   z-index: 1000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
