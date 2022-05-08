@@ -7,6 +7,7 @@ import type {
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
@@ -36,6 +37,7 @@ const useFolderContextMenu = (
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
   const { setWallpaper, wallpaperImage } = useSession();
+  const { open } = useProcesses();
   const getItems = useCallback(() => {
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
@@ -135,6 +137,11 @@ const useFolderContextMenu = (
           },
         ],
       },
+      MENU_SEPERATOR,
+      {
+        action: () => open("DevTools", { url: "dom" }),
+        label: "Inspect",
+      },
     ];
   }, [
     addToFolder,
@@ -142,6 +149,7 @@ const useFolderContextMenu = (
     isDesktop,
     mapFs,
     newPath,
+    open,
     pasteList,
     pasteToFolder,
     setSortBy,

@@ -27,9 +27,10 @@ const libs = [
 
 const useEruda = (
   _id: string,
-  _url: string,
+  url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loading: boolean
 ): void => {
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -44,6 +45,8 @@ const useEruda = (
             container,
           });
           window.eruda.add(window.erudaDom);
+          window.eruda.remove("info");
+          window.eruda.remove("snippets");
           window.eruda.show();
           setLoading(false);
         }
@@ -52,6 +55,12 @@ const useEruda = (
 
     return () => window.eruda?.destroy();
   }, [containerRef, setLoading]);
+
+  useEffect(() => {
+    if (window.eruda && url && !loading) {
+      window.eruda.show(url);
+    }
+  }, [loading, url]);
 };
 
 export default useEruda;
