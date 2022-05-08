@@ -1,6 +1,6 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useEffect } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
@@ -79,11 +79,11 @@ const useFocusable = (
     ]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isForeground) moveToFront();
   }, [isForeground, moveToFront]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (process && !closing && !minimized) {
       setForegroundId(id);
     }

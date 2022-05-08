@@ -1,6 +1,6 @@
 import { useProcesses } from "contexts/process";
 import type { MotionProps, Variant } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
@@ -44,7 +44,7 @@ const useWindowTransitions = (
   const [maximize, setMaximize] = useState<Variant>({});
   const [minimize, setMinimize] = useState<Variant>({});
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { x: windowX = 0, y: windowY = 0 } =
       componentWindow?.getBoundingClientRect() || {};
 
@@ -56,7 +56,7 @@ const useWindowTransitions = (
     });
   }, [componentWindow, maximized, taskbar?.height]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const {
       height: taskbarHeight = 0,
       width: taskbarWidth = 0,

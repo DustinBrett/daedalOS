@@ -1,7 +1,7 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
@@ -54,7 +54,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     [minimized, zIndex]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (wasMaximized && !openedMaximized && process) {
       setTimeout(() => maximize(id), TRANSITIONS_IN_MILLISECONDS.WINDOW * 1.25);
       setOpenedMaximized(true);

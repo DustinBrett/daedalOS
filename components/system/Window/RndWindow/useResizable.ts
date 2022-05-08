@@ -1,7 +1,7 @@
 import useDefaultSize from "components/system/Window/RndWindow/useDefaultSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import type { Props } from "react-rnd";
 import { maxSize } from "utils/functions";
 
@@ -21,7 +21,7 @@ const useResizable = (id: string, autoSizing = false): Resizable => {
     maxSize(stateSize, lockAspectRatio)
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (autoSizing) setSize(maxSize(stateSize, lockAspectRatio));
   }, [autoSizing, lockAspectRatio, stateSize]);
 

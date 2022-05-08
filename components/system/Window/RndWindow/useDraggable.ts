@@ -6,7 +6,7 @@ import {
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import {
@@ -45,13 +45,13 @@ const useDraggable = (id: string, size: Size): Draggable => {
       centerPosition(size, taskbarHeight)
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (autoSizing && !closing && sessionSize && !sessionPosition) {
       setPosition(centerPosition(sessionSize, taskbarHeight));
     }
   }, [autoSizing, closing, sessionPosition, sessionSize, taskbarHeight]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (initialRelativePosition && componentWindow) {
       setPosition(
         calcInitialPosition(initialRelativePosition, componentWindow)
