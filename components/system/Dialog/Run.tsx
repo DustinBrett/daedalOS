@@ -79,7 +79,7 @@ const Run: FC<ComponentProcessProps> = () => {
               setIsInputFocused(false);
             }
           }}
-          onFocus={() => setIsInputFocused(true)}
+          onFocusCapture={() => setIsInputFocused(true)}
           onKeyDown={({ key }) => {
             if (key === "Enter") runResource(inputRef.current?.value.trim());
           }}

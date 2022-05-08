@@ -47,9 +47,9 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
       <input
         ref={addressBarRef}
         enterKeyHint="go"
-        onBlur={() => setAddressBar(displayName)}
+        onBlurCapture={() => setAddressBar(displayName)}
         onChange={({ target }) => setAddressBar(target.value)}
-        onFocus={() => setAddressBar(url)}
+        onFocusCapture={() => setAddressBar(url)}
         onKeyDown={async ({ key }) => {
           if (key === "Enter" && addressBarRef.current) {
             const { value } = addressBarRef.current;

@@ -134,7 +134,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           ref={inputRef}
           defaultValue={initialUrl}
           enterKeyHint="go"
-          onFocus={() => inputRef.current?.select()}
+          onFocusCapture={() => inputRef.current?.select()}
           onKeyDown={({ key }) => {
             if (inputRef.current && key === "Enter") {
               changeUrl(id, inputRef.current.value);
