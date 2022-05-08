@@ -55,8 +55,10 @@ export const openProcess =
     const { singleton } = processDirectory[processId] || {};
 
     if (singleton) {
-      const currentPid = Object.keys(currentProcesses).find((pid) =>
-        pid.startsWith(`${processId}${PROCESS_DELIMITER}`)
+      const currentPid = Object.keys(currentProcesses).find(
+        (pid) =>
+          pid === processId ||
+          pid.startsWith(`${processId}${PROCESS_DELIMITER}`)
       );
 
       if (currentPid) {
