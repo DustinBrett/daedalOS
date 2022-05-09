@@ -19,7 +19,7 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
-import { loadFiles } from "utils/functions";
+import { haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
 
@@ -60,8 +60,7 @@ const useTinyMCE = (
             relative(link.dataset["mceHref"] || "", link.pathname) === "";
 
           if (isRelative && editor?.mode.isReadOnly()) {
-            event.stopPropagation();
-            event.preventDefault();
+            haltEvent(event);
 
             const defaultProcess = getProcessByFileExtension(
               extname(link.pathname).toLowerCase()

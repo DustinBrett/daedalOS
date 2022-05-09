@@ -1,8 +1,9 @@
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect } from "react";
-import { loadFiles } from "utils/functions";
+import { haltEvent, isYouTubeUrl, loadFiles } from "utils/functions";
 
 type MarkedOptions = {
   headerIds?: boolean;
@@ -27,6 +28,7 @@ const useMarked = (
 ): void => {
   const { readFile } = useFileSystem();
   const { prependFileToTitle } = useTitle(id);
+  const { open } = useProcesses();
   const loadFile = useCallback(async () => {
     const markdownFile = await readFile(url);
     const container = containerRef.current?.querySelector(
@@ -37,10 +39,21 @@ const useMarked = (
       container.innerHTML = window.marked.parse(markdownFile.toString(), {
         headerIds: false,
       });
+      container.querySelectorAll("a").forEach((link) =>
+        link.addEventListener("click", (event) => {
+          haltEvent(event);
+
+          if (isYouTubeUrl(link.href)) {
+            open("VideoPlayer", { url: link.href });
+          } else {
+            window.open(link.href, "_blank", "noopener, noreferrer");
+          }
+        })
+      );
     }
 
     prependFileToTitle(basename(url));
-  }, [containerRef, prependFileToTitle, readFile, url]);
+  }, [containerRef, open, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (loading) {
