@@ -27,32 +27,41 @@ const Run: FC<ComponentProcessProps> = () => {
     async (resource?: string) => {
       if (!resource) return;
 
-      if (await exists(resource)) {
-        const stats = await stat(resource);
+      const [resourcePid, ...resourceUrl] = resource.split(" ");
+      const resourcePath =
+        resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
+
+      if (await exists(resourcePath)) {
+        const stats = await stat(resourcePath);
 
         if (stats.isDirectory()) {
-          open("FileExplorer", { url: resource }, "");
+          open("FileExplorer", { url: resourcePath }, "");
+        } else if (resourcePid && resourceUrl.length > 0) {
+          open(resourcePid, { url: resourcePath });
         } else {
-          const extension = extname(resource);
+          const extension = extname(resourcePath);
 
           if (extension === SHORTCUT_EXTENSION) {
-            const { pid, url } = getShortcutInfo(await readFile(resource));
+            const { pid, url } = getShortcutInfo(await readFile(resourcePath));
 
             if (pid) open(pid, { url });
           } else {
             const basePid = getProcessByFileExtension(extension);
 
-            if (basePid) open(basePid, { url: resource });
+            if (basePid) open(basePid, { url: resourcePath });
           }
         }
       } else if (
         Object.keys(processDirectory).some(
-          (processName) => processName.toLowerCase() === resource.toLowerCase()
+          (processName) =>
+            processName.toLowerCase() === resourcePath.toLowerCase()
         )
       ) {
-        open(resource);
+        open(resourcePath);
       } else {
-        throw new Error(`${resource} not found`);
+        throw new Error(
+          `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
+        );
       }
 
       close("Run");
@@ -68,7 +77,9 @@ const Run: FC<ComponentProcessProps> = () => {
 
   useEffect(() => {
     if (runProcess?.url && inputRef.current) {
-      inputRef.current.value = runProcess.url;
+      inputRef.current.value = `${inputRef.current.value.trimEnd()} ${
+        runProcess.url.includes(" ") ? `"${runProcess.url}"` : runProcess.url
+      }`.trim();
       setIsEmptyInput(false);
     }
   }, [runProcess?.url]);
