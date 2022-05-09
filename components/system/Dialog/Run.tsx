@@ -1,19 +1,24 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialog/StyledButton";
 import StyledRun from "components/system/Dialog/StyledRun";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getProcessByFileExtension,
+  getShortcutInfo,
+} from "components/system/Files/FileEntry/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { SHORTCUT_EXTENSION } from "utils/constants";
 
 const OPEN_ID = "open";
 
 const Run: FC<ComponentProcessProps> = () => {
   const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
-  const { exists, stat } = useFileSystem();
+  const { exists, readFile, stat } = useFileSystem();
   const { foregroundId } = useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
@@ -28,9 +33,17 @@ const Run: FC<ComponentProcessProps> = () => {
         if (stats.isDirectory()) {
           open("FileExplorer", { url: resource }, "");
         } else {
-          const basePid = getProcessByFileExtension(extname(resource));
+          const extension = extname(resource);
 
-          if (basePid) open(basePid, { url: resource });
+          if (extension === SHORTCUT_EXTENSION) {
+            const { pid, url } = getShortcutInfo(await readFile(resource));
+
+            if (pid) open(pid, { url });
+          } else {
+            const basePid = getProcessByFileExtension(extension);
+
+            if (basePid) open(basePid, { url: resource });
+          }
         }
       } else if (
         Object.keys(processDirectory).some(
@@ -44,7 +57,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
       close("Run");
     },
-    [close, exists, open, stat]
+    [close, exists, open, readFile, stat]
   );
 
   useEffect(() => {
@@ -53,8 +66,15 @@ const Run: FC<ComponentProcessProps> = () => {
     }
   }, [foregroundId]);
 
+  useEffect(() => {
+    if (runProcess?.url && inputRef.current) {
+      inputRef.current.value = runProcess.url;
+      setIsEmptyInput(false);
+    }
+  }, [runProcess?.url]);
+
   return (
-    <StyledRun>
+    <StyledRun {...useFileDrop({ id: "Run" })}>
       <figure>
         <img alt="Run" src="/System/Icons/32x32/run.webp" />
         <figcaption>
