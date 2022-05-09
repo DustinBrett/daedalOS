@@ -9,6 +9,7 @@ import { useMenu } from "contexts/menu";
 import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { join } from "path";
 import { useCallback } from "react";
 import { FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
 
@@ -42,7 +43,10 @@ const useFolderContextMenu = (
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
       action: () =>
-        mapFs(url).then((mappedFolder) => updateFolder(url, mappedFolder)),
+        mapFs(url).then((mappedFolder) => {
+          updateFolder(url, mappedFolder);
+          open("FileExplorer", { url: join(url, mappedFolder) });
+        }),
       label: "Map directory",
     };
     const FS_COMMANDS =

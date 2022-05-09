@@ -16,10 +16,12 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, join } from "path";
 import { useCallback } from "react";
 import {
+  DESKTOP_PATH,
   EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
+  ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import {
@@ -62,6 +64,7 @@ const useFileContextMenu = (
   const {
     copyEntries,
     lstat,
+    mapFs,
     moveEntries,
     readFile,
     rootFs,
@@ -131,116 +134,129 @@ const useFileContextMenu = (
 
       if (path) {
         menuItems.unshift(MENU_SEPERATOR);
-
-        if (
-          EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
-          MOUNTABLE_EXTENSIONS.has(pathExtension)
-        ) {
+        if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
           menuItems.unshift({
-            action: () => extractFiles(path),
-            label: "Extract Here",
+            action: () =>
+              mapFs("/").then((mappedFolder) => {
+                updateFolder("/", mappedFolder);
+                open("FileExplorer", { url: join("/", mappedFolder) });
+              }),
+            label: "Map directory",
           });
-        }
+        } else {
+          if (
+            EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
+            MOUNTABLE_EXTENSIONS.has(pathExtension)
+          ) {
+            menuItems.unshift({
+              action: () => extractFiles(path),
+              label: "Extract Here",
+            });
+          }
 
-        const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
-        const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
-        const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
+          const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
+          const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
+          const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
 
-        if (canDecodeAudio || canDecodeImage || canDecodeVideo) {
-          const isAudioVideo = canDecodeAudio || canDecodeVideo;
-          const ENCODE_FORMATS = isAudioVideo
-            ? canDecodeAudio
-              ? AUDIO_ENCODE_FORMATS
-              : VIDEO_ENCODE_FORMATS
-            : IMAGE_ENCODE_FORMATS;
+          if (canDecodeAudio || canDecodeImage || canDecodeVideo) {
+            const isAudioVideo = canDecodeAudio || canDecodeVideo;
+            const ENCODE_FORMATS = isAudioVideo
+              ? canDecodeAudio
+                ? AUDIO_ENCODE_FORMATS
+                : VIDEO_ENCODE_FORMATS
+              : IMAGE_ENCODE_FORMATS;
 
-          menuItems.unshift(MENU_SEPERATOR, {
-            label: "Convert to",
-            menu: ENCODE_FORMATS.filter(
-              (format) => format !== pathExtension
-            ).map((format) => {
-              const extension = format.replace(".", "");
+            menuItems.unshift(MENU_SEPERATOR, {
+              label: "Convert to",
+              menu: ENCODE_FORMATS.filter(
+                (format) => format !== pathExtension
+              ).map((format) => {
+                const extension = format.replace(".", "");
 
-              return {
-                action: async () => {
-                  const transcodeFiles: (
-                    | FFmpegTranscodeFile
-                    | ImageMagickConvertFile
-                  )[] = await Promise.all(
-                    absoluteEntries().map(async (absoluteEntry) => [
-                      absoluteEntry,
-                      await readFile(absoluteEntry),
-                    ])
-                  );
-                  const transcodeFunction = isAudioVideo
-                    ? (await import("utils/ffmpeg")).transcode
-                    : (await import("utils/imagemagick")).convert;
-                  const transcodedFiles = await transcodeFunction(
-                    transcodeFiles,
-                    extension
-                  );
-
-                  await Promise.all(
-                    transcodedFiles.map(
-                      async ([transcodedFileName, transcodedFileData]) => {
-                        await writeFile(transcodedFileName, transcodedFileData);
-                        updateFolder(
-                          dirname(path),
-                          basename(transcodedFileName)
-                        );
-                      }
-                    )
-                  );
-                },
-                label: extension.toUpperCase(),
-              };
-            }),
-          });
-        }
-
-        const canDecodeSpreadsheet =
-          SPREADSHEET_FORMATS.includes(pathExtension);
-
-        if (canDecodeSpreadsheet) {
-          menuItems.unshift(MENU_SEPERATOR, {
-            label: "Convert to",
-            menu: SPREADSHEET_FORMATS.filter(
-              (format) => format !== pathExtension
-            ).map((format) => {
-              const extension = format.replace(".", "");
-
-              return {
-                action: () => {
-                  absoluteEntries().forEach(async (absoluteEntry) => {
-                    const newFilePath = `${dirname(absoluteEntry)}/${basename(
-                      basename(absoluteEntry),
-                      extname(basename(absoluteEntry))
-                    )}.${extension}`;
-                    const workBook = await convertSheet(
-                      await readFile(absoluteEntry),
+                return {
+                  action: async () => {
+                    const transcodeFiles: (
+                      | FFmpegTranscodeFile
+                      | ImageMagickConvertFile
+                    )[] = await Promise.all(
+                      absoluteEntries().map(async (absoluteEntry) => [
+                        absoluteEntry,
+                        await readFile(absoluteEntry),
+                      ])
+                    );
+                    const transcodeFunction = isAudioVideo
+                      ? (await import("utils/ffmpeg")).transcode
+                      : (await import("utils/imagemagick")).convert;
+                    const transcodedFiles = await transcodeFunction(
+                      transcodeFiles,
                       extension
                     );
 
-                    await writeFile(newFilePath, Buffer.from(workBook));
-                    updateFolder(dirname(path), basename(newFilePath));
-                  });
-                },
-                label: extension.toUpperCase(),
-              };
-            }),
-          });
-        }
-
-        menuItems.unshift(
-          {
-            action: () => archiveFiles(absoluteEntries()),
-            label: "Add to archive...",
-          },
-          {
-            action: () => downloadFiles(absoluteEntries()),
-            label: "Download",
+                    await Promise.all(
+                      transcodedFiles.map(
+                        async ([transcodedFileName, transcodedFileData]) => {
+                          await writeFile(
+                            transcodedFileName,
+                            transcodedFileData
+                          );
+                          updateFolder(
+                            dirname(path),
+                            basename(transcodedFileName)
+                          );
+                        }
+                      )
+                    );
+                  },
+                  label: extension.toUpperCase(),
+                };
+              }),
+            });
           }
-        );
+
+          const canDecodeSpreadsheet =
+            SPREADSHEET_FORMATS.includes(pathExtension);
+
+          if (canDecodeSpreadsheet) {
+            menuItems.unshift(MENU_SEPERATOR, {
+              label: "Convert to",
+              menu: SPREADSHEET_FORMATS.filter(
+                (format) => format !== pathExtension
+              ).map((format) => {
+                const extension = format.replace(".", "");
+
+                return {
+                  action: () => {
+                    absoluteEntries().forEach(async (absoluteEntry) => {
+                      const newFilePath = `${dirname(absoluteEntry)}/${basename(
+                        basename(absoluteEntry),
+                        extname(basename(absoluteEntry))
+                      )}.${extension}`;
+                      const workBook = await convertSheet(
+                        await readFile(absoluteEntry),
+                        extension
+                      );
+
+                      await writeFile(newFilePath, Buffer.from(workBook));
+                      updateFolder(dirname(path), basename(newFilePath));
+                    });
+                  },
+                  label: extension.toUpperCase(),
+                };
+              }),
+            });
+          }
+
+          menuItems.unshift(
+            {
+              action: () => archiveFiles(absoluteEntries()),
+              label: "Add to archive...",
+            },
+            {
+              action: () => downloadFiles(absoluteEntries()),
+              label: "Download",
+            }
+          );
+        }
       }
 
       if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {
@@ -357,6 +373,7 @@ const useFileContextMenu = (
     focusedEntries,
     isFocusedEntry,
     lstat,
+    mapFs,
     moveEntries,
     newShortcut,
     open,
