@@ -1,13 +1,9 @@
 import StyledControls from "components/apps/PDF/StyledControls";
+import { scales } from "components/apps/PDF/usePDF";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
 import { label } from "utils/functions";
-
-const scales = [
-  0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4,
-  5,
-];
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { argument, processes: { [id]: process } = {} } = useProcesses();
