@@ -141,11 +141,15 @@ const useFolderContextMenu = (
           },
         ],
       },
-      MENU_SEPERATOR,
-      {
-        action: () => open("DevTools", { url: "dom" }),
-        label: "Inspect",
-      },
+      ...(isDesktop
+        ? [
+            MENU_SEPERATOR,
+            {
+              action: () => open("DevTools", { url: "dom" }),
+              label: "Inspect",
+            },
+          ]
+        : []),
     ];
   }, [
     addToFolder,
