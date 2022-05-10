@@ -129,10 +129,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
   return { comment, icon, pid, type, url };
 };
 
-export const getIconsFromCache = (
-  fs: FSModule,
-  path: string
-): Promise<string[]> =>
+const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
   new Promise((resolveIcons) => {
     const iconCacheDirectory = join(ICON_CACHE, path);
 

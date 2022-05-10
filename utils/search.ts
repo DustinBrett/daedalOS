@@ -14,7 +14,7 @@ const LUNR_LIB = "/System/lunr/lunr.min.js";
 
 let baseIndex = {} as Index;
 
-export const search = async (
+const search = async (
   searchTerm: string,
   index?: Index
 ): Promise<Index.Result[]> => {

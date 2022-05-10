@@ -14,7 +14,7 @@ export type FileStat = Stats & {
   systemShortcut?: boolean;
 };
 
-export type FileStats = [string, FileStat];
+type FileStats = [string, FileStat];
 
 type SortFunction = (a: FileStats, b: FileStats) => number;
 

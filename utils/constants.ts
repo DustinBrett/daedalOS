@@ -56,8 +56,6 @@ export const MENU_SEPERATOR = { seperator: true };
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
-export const FILE_SYSTEM_ACCESS = "FileSystemAccess";
-
 export const EXTRACTABLE_EXTENSIONS = new Set([
   ".001",
   ".7z",
@@ -140,8 +138,6 @@ export const ONE_TIME_PASSIVE_EVENT = {
 } as AddEventListenerOptions;
 
 export const PREVENT_SCROLL = { preventScroll: true };
-
-export const PREVIEW_FRAME_SECOND = 3;
 
 export const PROCESS_DELIMITER = "__";
 

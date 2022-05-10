@@ -1,4 +1,4 @@
-export type ColorAttribute = {
+type ColorAttribute = {
   name: string;
   rgb: [number, number, number];
 };

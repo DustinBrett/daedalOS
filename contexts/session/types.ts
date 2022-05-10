@@ -15,7 +15,7 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
 
-export type SortOrder = [string[], SortBy, boolean];
+type SortOrder = [string[], SortBy, boolean];
 
 export type SortOrders = Record<string, SortOrder>;
 

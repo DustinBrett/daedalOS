@@ -1,12 +1,6 @@
 import processDirectory from "contexts/process/directory";
 import type { ITerminalOptions } from "xterm";
 
-export const BACKSPACE = "\b \b";
-
-export const LEFT = "\u001B[D";
-
-export const RIGHT = "\u001B[C";
-
 export const config: ITerminalOptions = {
   allowTransparency: true,
   cols: 70,

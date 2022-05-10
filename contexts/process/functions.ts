@@ -33,7 +33,7 @@ export const closeProcess =
     return remainingProcesses;
   };
 
-export const createPid = (
+const createPid = (
   processId: string,
   url: string,
   currentProcesses: Processes

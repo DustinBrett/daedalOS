@@ -269,14 +269,6 @@ export const supportsWebP = (): boolean => {
   return WEBP_SUPPORT;
 };
 
-export const isParsableUrl = (url: string): boolean => {
-  try {
-    return Boolean(new URL(url));
-  } catch {
-    return false;
-  }
-};
-
 export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
 
 export const getGifJs = async (): Promise<GIF> => {

@@ -42,7 +42,7 @@ const WALLPAPER_WORKERS: Record<string, () => Worker> = {
     ),
 };
 
-export const WALLPAPERS = new Set(["HEXELLS", "VANTA"]);
+const WALLPAPERS = new Set(["HEXELLS", "VANTA"]);
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>

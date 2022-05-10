@@ -13,7 +13,7 @@ const prettyLanguages = new Set([
   "markdown",
 ]);
 
-export const getLanguageParser = async (
+const getLanguageParser = async (
   language: string
 ): Promise<Parser | undefined> => {
   if (language === "javascript" || language === "typescript") {
