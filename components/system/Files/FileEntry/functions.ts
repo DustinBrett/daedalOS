@@ -27,7 +27,7 @@ import {
   SHORTCUT_ICON,
   SYSTEM_FILES,
   SYSTEM_PATHS,
-  UNKNOWN_ICON,
+  UNKNOWN_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
@@ -98,7 +98,7 @@ export const getIconByFileExtension = (extension: string): string => {
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
-    UNKNOWN_ICON
+    UNKNOWN_ICON_PATH
   );
 };
 
@@ -198,7 +198,7 @@ export const getInfoWithoutExtension = (
       }
     });
   } else {
-    callback({ icon: UNKNOWN_ICON, pid: "", url: path });
+    callback({ icon: UNKNOWN_ICON_PATH, pid: "", url: path });
   }
 };
 
@@ -287,7 +287,13 @@ export const getInfoWithExtension = (
             url,
           });
         } else {
-          callback({ comment, icon: icon || UNKNOWN_ICON, pid, subIcons, url });
+          callback({
+            comment,
+            icon: icon || UNKNOWN_ICON_PATH,
+            pid,
+            subIcons,
+            url,
+          });
         }
       }
     });
