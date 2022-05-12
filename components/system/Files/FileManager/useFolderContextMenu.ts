@@ -96,8 +96,13 @@ const useFolderContextMenu = (
         ? [
             MENU_SEPERATOR,
             {
-              label: "Live Wallpaper",
+              label: "Wallpaper",
               menu: [
+                {
+                  action: () => setWallpaper("APOD"),
+                  label: "APOD",
+                  toggle: wallpaperImage.startsWith("APOD"),
+                },
                 {
                   action: () => setWallpaper("HEXELLS"),
                   label: "Hexells",

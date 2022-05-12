@@ -10,6 +10,7 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   createOffscreenCanvas,
+  jsonFetch,
 } from "utils/functions";
 
 const cssFit: Record<WallpaperFit, string> = {
@@ -41,8 +42,6 @@ const WALLPAPER_WORKERS: Record<string, () => Worker> = {
       { name: "Wallpaper (Vanta Waves)" }
     ),
 };
-
-const WALLPAPERS = new Set(["HEXELLS", "VANTA"]);
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
@@ -92,22 +91,56 @@ const useWallpaper = (
     wallpaperWorker,
   ]);
   const loadFileWallpaper = useCallback(async () => {
-    if (await exists(wallpaperImage)) {
-      const [, currentWallpaperUrl] =
-        desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
+    const [, currentWallpaperUrl] =
+      desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
 
-      if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+    if (currentWallpaperUrl === wallpaperImage) return;
+    if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+    desktopRef.current?.querySelector("canvas")?.remove();
+    if (wallpaperImage === "VANTA") vantaWaves(config)();
 
-      desktopRef.current?.querySelector("canvas")?.remove();
+    let wallpaperUrl = "";
 
-      if (wallpaperImage === "VANTA") {
-        vantaWaves(config)();
+    if (wallpaperImage.startsWith("APOD")) {
+      const [, currentUrl, currentDate] = wallpaperImage.split(" ");
+      const now = new Date();
+
+      if (
+        currentDate &&
+        (currentDate === now.toISOString().slice(0, 10) ||
+          new Date(currentDate) > now)
+      ) {
+        wallpaperUrl = currentUrl;
+      } else {
+        const {
+          date = "",
+          hdurl = "",
+          url = "",
+        } = await jsonFetch(
+          "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
+        );
+
+        if (hdurl || url) wallpaperUrl = (hdurl || url) as string;
+
+        const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
+
+        if (newWallpaperImage !== wallpaperImage) {
+          setWallpaper(newWallpaperImage, wallpaperFit);
+          setTimeout(
+            loadWallpaper,
+            new Date().setUTCHours(24, 0, 0, 0) - Date.now()
+          );
+        }
       }
+    } else if (await exists(wallpaperImage)) {
+      wallpaperUrl = bufferToUrl(await readFile(wallpaperImage));
+    }
 
+    if (wallpaperUrl) {
       desktopRef.current?.setAttribute(
         "style",
         `
-        background-image: url("${bufferToUrl(await readFile(wallpaperImage))}");
+        background-image: url("${wallpaperUrl}");
         ${cssFit[wallpaperFit]}
       `
       );
@@ -119,13 +152,17 @@ const useWallpaper = (
     exists,
     loadWallpaper,
     readFile,
+    setWallpaper,
     wallpaperFit,
     wallpaperImage,
   ]);
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (wallpaperImage && !WALLPAPERS.has(wallpaperImage)) {
+      if (
+        wallpaperImage &&
+        !Object.keys(WALLPAPER_WORKERS).includes(wallpaperImage)
+      ) {
         loadFileWallpaper().catch(loadWallpaper);
       } else {
         loadWallpaper();
