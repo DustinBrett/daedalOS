@@ -117,22 +117,23 @@ const useV86 = (
     v86.add_listener("emulator-loaded", () => {
       if (shutdown.current) {
         v86.destroy();
-      } else {
-        appendFileToTitle(basename(url));
-        cleanUpBufferUrl(bufferUrl);
-
-        if (v86StarterConfig.initial_state) {
-          cleanUpBufferUrl(v86StarterConfig.initial_state.url);
-        }
-
-        if (v86StarterConfig.filesystem) {
-          cleanUpBufferUrl(v86StarterConfig.filesystem.basefs);
-        }
-
-        containerRef.current?.addEventListener("click", v86.lock_mouse);
-
-        setEmulator({ [url]: v86 });
+        return;
       }
+
+      appendFileToTitle(basename(url));
+      cleanUpBufferUrl(bufferUrl);
+
+      if (v86StarterConfig.initial_state) {
+        cleanUpBufferUrl(v86StarterConfig.initial_state.url);
+      }
+
+      if (v86StarterConfig.filesystem) {
+        cleanUpBufferUrl(v86StarterConfig.filesystem.basefs);
+      }
+
+      containerRef.current?.addEventListener("click", v86.lock_mouse);
+
+      setEmulator({ [url]: v86 });
     });
   }, [
     appendFileToTitle,

@@ -22,15 +22,16 @@ globalThis.addEventListener(
         initialized = true;
         globalThis.postMessage("source");
       }
-    } else {
-      if (data === "local" || data === "ntp") mode = data;
-
-      sendTick();
-      globalThis.setTimeout(() => {
-        sendTick();
-        globalThis.setInterval(sendTick, MILLISECONDS_IN_SECOND);
-      }, MILLISECONDS_IN_SECOND - new Date().getMilliseconds());
+      return;
     }
+
+    if (data === "local" || data === "ntp") mode = data;
+
+    sendTick();
+    globalThis.setTimeout(() => {
+      sendTick();
+      globalThis.setInterval(sendTick, MILLISECONDS_IN_SECOND);
+    }, MILLISECONDS_IN_SECOND - new Date().getMilliseconds());
   },
   { passive: true }
 );

@@ -33,43 +33,45 @@ const loadScript = (src: string, defer?: boolean): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
 
-    if (loadedScripts.some((script) => script.src.endsWith(src))) {
+    if (loadedScripts.some((loadedScript) => loadedScript.src.endsWith(src))) {
       resolve(new Event("Already loaded."));
-    } else {
-      const script = document.createElement(
-        "script"
-      ) as HTMLElementWithPriority<HTMLScriptElement>;
-
-      script.async = false;
-      if (defer) script.defer = true;
-      script.fetchpriority = "high";
-      script.src = src;
-      script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
-      script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
-
-      document.head.appendChild(script);
+      return;
     }
+
+    const script = document.createElement(
+      "script"
+    ) as HTMLElementWithPriority<HTMLScriptElement>;
+
+    script.async = false;
+    if (defer) script.defer = true;
+    script.fetchpriority = "high";
+    script.src = src;
+    script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
+    script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
+
+    document.head.appendChild(script);
   });
 
 const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedStyles = [...document.querySelectorAll("link")];
 
-    if (loadedStyles.some((link) => link.href.endsWith(href))) {
+    if (loadedStyles.some((loadedStyle) => loadedStyle.href.endsWith(href))) {
       resolve(new Event("Already loaded."));
-    } else {
-      const link = document.createElement(
-        "link"
-      ) as HTMLElementWithPriority<HTMLLinkElement>;
-
-      link.rel = "stylesheet";
-      link.fetchpriority = "high";
-      link.href = href;
-      link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
-      link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
-
-      document.head.appendChild(link);
+      return;
     }
+
+    const link = document.createElement(
+      "link"
+    ) as HTMLElementWithPriority<HTMLLinkElement>;
+
+    link.rel = "stylesheet";
+    link.fetchpriority = "high";
+    link.href = href;
+    link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
+    link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
+
+    document.head.appendChild(link);
   });
 
 export const loadFiles = async (

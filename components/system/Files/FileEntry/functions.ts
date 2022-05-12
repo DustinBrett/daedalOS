@@ -243,58 +243,59 @@ export const getInfoWithExtension = (
 
       if (error) {
         getInfoByFileExtension();
-      } else {
-        const { comment, icon, pid, url } = getShortcutInfo(contents);
-        const urlExt = extname(url).toLowerCase();
+        return;
+      }
 
-        if (pid === "FileExplorer") {
-          const getIcon = (): void => {
-            getIconFromIni(fs, url).then((iniIcon) => {
-              if (iniIcon) {
-                callback({ comment, icon: iniIcon, pid, subIcons, url });
-              }
-              // TODO: Else use getIconsFromCache()
-            });
-          };
+      const { comment, icon, pid, url } = getShortcutInfo(contents);
+      const urlExt = extname(url).toLowerCase();
 
-          callback({ comment, getIcon, icon, pid, subIcons, url });
-        } else if (
-          IMAGE_FILE_EXTENSIONS.has(urlExt) ||
-          VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-          urlExt === ".mp3"
-        ) {
-          getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-            const {
-              icon: urlIcon = icon,
-              getIcon,
-              subIcons: fileSubIcons = [],
-            } = fileInfo;
-
-            if (fileSubIcons.length > 0) {
-              subIcons.push(
-                ...fileSubIcons.filter((subIcon) => !subIcons.includes(subIcon))
-              );
+      if (pid === "FileExplorer") {
+        const getIcon = (): void => {
+          getIconFromIni(fs, url).then((iniIcon) => {
+            if (iniIcon) {
+              callback({ comment, icon: iniIcon, pid, subIcons, url });
             }
+            // TODO: Else use getIconsFromCache()
+          });
+        };
 
-            callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
-          });
-        } else if (isYouTubeUrl(url)) {
-          callback({
-            comment,
-            icon: `https://img.youtube.com/vi${new URL(url).pathname}/1.jpg`,
-            pid,
-            subIcons: [processDirectory["VideoPlayer"].icon],
-            url,
-          });
-        } else {
-          callback({
-            comment,
-            icon: icon || UNKNOWN_ICON_PATH,
-            pid,
-            subIcons,
-            url,
-          });
-        }
+        callback({ comment, getIcon, icon, pid, subIcons, url });
+      } else if (
+        IMAGE_FILE_EXTENSIONS.has(urlExt) ||
+        VIDEO_FILE_EXTENSIONS.has(urlExt) ||
+        urlExt === ".mp3"
+      ) {
+        getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
+          const {
+            icon: urlIcon = icon,
+            getIcon,
+            subIcons: fileSubIcons = [],
+          } = fileInfo;
+
+          if (fileSubIcons.length > 0) {
+            subIcons.push(
+              ...fileSubIcons.filter((subIcon) => !subIcons.includes(subIcon))
+            );
+          }
+
+          callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
+        });
+      } else if (isYouTubeUrl(url)) {
+        callback({
+          comment,
+          icon: `https://img.youtube.com/vi${new URL(url).pathname}/1.jpg`,
+          pid,
+          subIcons: [processDirectory["VideoPlayer"].icon],
+          url,
+        });
+      } else {
+        callback({
+          comment,
+          icon: icon || UNKNOWN_ICON_PATH,
+          pid,
+          subIcons,
+          url,
+        });
       }
     });
   } else if (extension === ".ani") {

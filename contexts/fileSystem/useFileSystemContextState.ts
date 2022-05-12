@@ -124,12 +124,14 @@ const useFileSystemContextState = (): FileSystemContextState => {
       return new Promise((resolve, reject) => {
         if (handle instanceof FileSystemDirectoryHandle) {
           FileSystemAccess?.Create({ handle }, (error, newFs) => {
-            if (error || !newFs) reject();
-            else {
-              rootFs?.mount?.(join(directory, handle.name), newFs);
-              resolve(handle.name);
-              addFileSystemHandle(directory, handle);
+            if (error || !newFs) {
+              reject();
+              return;
             }
+
+            rootFs?.mount?.(join(directory, handle.name), newFs);
+            resolve(handle.name);
+            addFileSystemHandle(directory, handle);
           });
         }
       });

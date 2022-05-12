@@ -297,28 +297,29 @@ const useFolder = (
         fs?.readFile(path, (_readError, contents = Buffer.from("")) =>
           newPath(basename(path), contents)
         );
-      } else {
-        const baseName = basename(path);
-        const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
-        const shortcutData = ini.encode(
-          {
-            BaseURL: process,
-            IconFile:
-              pathExtension &&
-              (process !== "FileExplorer" ||
-                MOUNTABLE_EXTENSIONS.has(pathExtension))
-                ? getIconByFileExtension(pathExtension)
-                : FOLDER_ICON,
-            URL: path,
-          },
-          {
-            section: "InternetShortcut",
-            whitespace: false,
-          }
-        );
-
-        newPath(shortcutPath, Buffer.from(shortcutData));
+        return;
       }
+
+      const baseName = basename(path);
+      const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
+      const shortcutData = ini.encode(
+        {
+          BaseURL: process,
+          IconFile:
+            pathExtension &&
+            (process !== "FileExplorer" ||
+              MOUNTABLE_EXTENSIONS.has(pathExtension))
+              ? getIconByFileExtension(pathExtension)
+              : FOLDER_ICON,
+          URL: path,
+        },
+        {
+          section: "InternetShortcut",
+          whitespace: false,
+        }
+      );
+
+      newPath(shortcutPath, Buffer.from(shortcutData));
     },
     [fs, newPath]
   );

@@ -40,51 +40,53 @@ const fs2json = (dir) => {
       readdir(walkDir, (dirError, files) => {
         if (dirError) {
           reject(dirError);
-        } else {
-          const includedFiles = files.filter(
-            (file) => !excludedPaths.includes(file)
-          );
+          return;
+        }
 
-          const recur = () => {
-            const file = includedFiles.shift();
+        const includedFiles = files.filter(
+          (file) => !excludedPaths.includes(file)
+        );
 
-            if (file) {
-              const fullPath = join(walkDir, file);
+        const recur = () => {
+          const file = includedFiles.shift();
 
-              stat(fullPath, (statError, fileStat) => {
-                if (statError) {
-                  reject(statError);
-                } else {
-                  const name = basename(fullPath);
-                  const node = makeNode(fileStat, name);
+          if (file) {
+            const fullPath = join(walkDir, file);
 
-                  if (fileStat.isSymbolicLink()) {
-                    readlink(fullPath, (linkError, path) => {
-                      if (!linkError) {
-                        node[IDX_TARGET] = path;
-                        result.push(node);
-                        recur();
-                      }
-                    });
-                  } else if (fileStat.isDirectory()) {
-                    walk(fullPath).then((rest) => {
-                      node[IDX_TARGET] = rest;
-                      result.push(node);
-                      recur();
-                    });
-                  } else {
+            stat(fullPath, (statError, fileStat) => {
+              if (statError) {
+                reject(statError);
+                return;
+              }
+
+              const name = basename(fullPath);
+              const node = makeNode(fileStat, name);
+
+              if (fileStat.isSymbolicLink()) {
+                readlink(fullPath, (linkError, path) => {
+                  if (!linkError) {
+                    node[IDX_TARGET] = path;
                     result.push(node);
                     recur();
                   }
-                }
-              });
-            } else {
-              resolve(result);
-            }
-          };
+                });
+              } else if (fileStat.isDirectory()) {
+                walk(fullPath).then((rest) => {
+                  node[IDX_TARGET] = rest;
+                  result.push(node);
+                  recur();
+                });
+              } else {
+                result.push(node);
+                recur();
+              }
+            });
+          } else {
+            resolve(result);
+          }
+        };
 
-          recur();
-        }
+        recur();
       });
     });
   };

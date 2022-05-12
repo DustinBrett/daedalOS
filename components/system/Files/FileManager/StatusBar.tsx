@@ -72,7 +72,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
         <div className="selected" {...label("Selected item count and size")}>
           {selected.length} item{selected.length !== 1 ? "s" : ""} selected
           {selectedSize !== UNKNOWN_SIZE && selectedSize !== UNCALCULATED_SIZE
-            ? `${"\u00A0\u00A0"}${getFormattedSize(selectedSize)}`
+            ? `\u00A0\u00A0${getFormattedSize(selectedSize)}`
             : ""}
         </div>
       )}
