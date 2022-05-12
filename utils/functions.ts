@@ -280,3 +280,12 @@ export const getGifJs = async (): Promise<GIF> => {
     workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
   });
 };
+
+export const jsonFetch = async (
+  url: string
+): Promise<Record<string, unknown>> => {
+  const response = await fetch(url);
+  const json = (await response.json()) as Record<string, unknown>;
+
+  return json || {};
+};
