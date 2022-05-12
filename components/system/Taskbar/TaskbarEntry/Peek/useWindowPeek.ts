@@ -5,8 +5,6 @@ import {
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
 
-const EMPTY_PNG =
-  "gACBrIABzFYvOAECBtAPECCQFTCA2eoFJ0DAAPoBAgSyAgYwW73gBAgYQD9AgEBWwABmqxecAAED6AcIEMgKGMBs9YITIGAA%2FQABAlkBA5itXnACBAygHyBAICtgALPVC06AgAH0AwQIZAUMYLZ6wQkQMIB%2B";
 const FPS = 10;
 
 const renderFrame = async (
@@ -20,27 +18,36 @@ const renderFrame = async (
       renderFrame(previewElement, animate, callback)
     );
   const htmlToImage = await import("html-to-image");
-  const dataUrl = await htmlToImage.toSvg(previewElement, {
+  const dataCanvas = await htmlToImage.toCanvas(previewElement, {
     skipAutoScale: true,
     style: {
       inset: "0",
     },
   });
 
-  if (dataUrl.includes(EMPTY_PNG)) nextFrame();
-  else {
-    const previewImage = new Image();
+  if (dataCanvas.width > 0 && dataCanvas.height > 0) {
+    if (
+      !dataCanvas
+        .getContext("2d")
+        ?.getImageData(0, 0, dataCanvas.width, dataCanvas.height)
+        .data.some(Boolean)
+    ) {
+      nextFrame();
+    } else {
+      const previewImage = new Image();
+      const dataUrl = dataCanvas.toDataURL();
 
-    previewImage.addEventListener(
-      "load",
-      () => {
-        if (!animate.current) return;
-        callback(dataUrl);
-        window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
-      },
-      ONE_TIME_PASSIVE_EVENT
-    );
-    previewImage.src = dataUrl;
+      previewImage.addEventListener(
+        "load",
+        () => {
+          if (!animate.current) return;
+          callback(dataUrl);
+          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
+      previewImage.src = dataUrl;
+    }
   }
 };
 
