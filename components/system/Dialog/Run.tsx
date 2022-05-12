@@ -19,10 +19,15 @@ const OPEN_ID = "open";
 const Run: FC<ComponentProcessProps> = () => {
   const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
   const { exists, readFile, stat } = useFileSystem();
-  const { foregroundId } = useSession();
+  const { foregroundId, runHistory, setRunHistory } = useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(true);
+  const addRunHistoryEntry = useCallback(
+    (entry: string) =>
+      setRunHistory((currentRunHistory) => [entry, ...currentRunHistory]),
+    [setRunHistory]
+  );
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;
@@ -36,8 +41,21 @@ const Run: FC<ComponentProcessProps> = () => {
 
         if (stats.isDirectory()) {
           open("FileExplorer", { url: resourcePath }, "");
+          addRunHistoryEntry(resourcePath);
         } else if (resourcePid && resourceUrl.length > 0) {
-          open(resourcePid, { url: resourcePath });
+          const pid = Object.keys(processDirectory).find(
+            (processName) =>
+              processName.toLowerCase() === resourcePid.toLowerCase()
+          );
+
+          if (pid) {
+            open(pid, { url: resourcePath });
+            addRunHistoryEntry(`${pid} ${resourcePath}`);
+          } else {
+            throw new Error(
+              `Cannot find '${resourcePid}'. Make sure you typed the name correctly, and then try again.`
+            );
+          }
         } else {
           const extension = extname(resourcePath);
 
@@ -50,6 +68,8 @@ const Run: FC<ComponentProcessProps> = () => {
 
             if (basePid) open(basePid, { url: resourcePath });
           }
+
+          addRunHistoryEntry(resourcePath);
         }
       } else if (
         Object.keys(processDirectory).some(
@@ -57,7 +77,15 @@ const Run: FC<ComponentProcessProps> = () => {
             processName.toLowerCase() === resourcePath.toLowerCase()
         )
       ) {
-        open(resourcePath);
+        const pid = Object.keys(processDirectory).find(
+          (processName) =>
+            processName.toLowerCase() === resourcePath.toLowerCase()
+        );
+
+        if (pid) {
+          open(pid);
+          addRunHistoryEntry(pid);
+        }
       } else {
         throw new Error(
           `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
@@ -66,7 +94,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
       close("Run");
     },
-    [close, exists, open, readFile, stat]
+    [addRunHistoryEntry, close, exists, open, readFile, stat]
   );
 
   useEffect(() => {
@@ -83,6 +111,8 @@ const Run: FC<ComponentProcessProps> = () => {
       setIsEmptyInput(false);
     }
   }, [runProcess?.url]);
+
+  console.info({ runHistory });
 
   return (
     <StyledRun {...useFileDrop({ id: "Run" })}>

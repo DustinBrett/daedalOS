@@ -25,6 +25,7 @@ const useSessionContextState = (): SessionContextState => {
   const [sortOrders, setSortOrders] = useState<SortOrders>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("VANTA");
+  const [runHistory, setRunHistory] = useState<string[]>([]);
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) => [
@@ -59,6 +60,7 @@ const useSessionContextState = (): SessionContextState => {
         setWallpaper(session.wallpaperImage, session.wallpaperFit);
       }
       if (session.windowStates) setWindowStates(session.windowStates);
+      if (session.runHistory) setRunHistory(session.runHistory);
     }
 
     setSessionLoaded(true);
@@ -70,6 +72,7 @@ const useSessionContextState = (): SessionContextState => {
         SESSION_FILE,
         JSON.stringify({
           clockSource,
+          runHistory,
           sortOrders,
           themeName,
           wallpaperFit,
@@ -81,6 +84,7 @@ const useSessionContextState = (): SessionContextState => {
     }
   }, [
     clockSource,
+    runHistory,
     sessionLoaded,
     sortOrders,
     themeName,
@@ -123,9 +127,11 @@ const useSessionContextState = (): SessionContextState => {
     foregroundId,
     prependToStack,
     removeFromStack,
+    runHistory,
     sessionLoaded,
     setClockSource,
     setForegroundId,
+    setRunHistory,
     setSortOrder,
     setThemeName,
     setWallpaper,

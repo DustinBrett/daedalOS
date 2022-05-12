@@ -23,6 +23,7 @@ export type ClockSource = "local" | "ntp";
 
 export type SessionData = {
   clockSource: ClockSource;
+  runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
   wallpaperFit: WallpaperFit;
@@ -35,9 +36,11 @@ export type SessionContextState = SessionData & {
   foregroundId: string;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
+  runHistory: string[];
   sessionLoaded: boolean;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
+  setRunHistory: React.Dispatch<React.SetStateAction<string[]>>;
   setSortOrder: (
     directory: string,
     order: string[] | ((currentSortOrder: string[]) => string[]),
