@@ -56,6 +56,8 @@ export const extractExeIcon = async (
     return undefined;
   }
 
+  if (!iconGroupEntry?.icons) return undefined;
+
   const iconDataOffset =
     ICONDIR_LENGTH + ICONDIRENTRY_LENGTH * iconGroupEntry.icons.length;
   let currentIconOffset = iconDataOffset;
