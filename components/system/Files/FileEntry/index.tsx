@@ -253,7 +253,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 getIcon();
               }
             },
-            { root: fileManagerRef.current }
+            { root: fileManagerRef.current, rootMargin: "5px" }
           ).observe(buttonRef.current);
         }
       }
