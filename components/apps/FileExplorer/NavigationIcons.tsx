@@ -16,8 +16,12 @@ export const Refresh: FC = () => (
   </svg>
 );
 
-export const Down: FC = () => (
-  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+export const Down: FC<{ flip?: boolean }> = ({ flip }) => (
+  <svg
+    style={flip ? { transform: "scaleY(-1)", transition: "all 0.2s" } : {}}
+    viewBox="0 0 32 32"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="m28.109 5.453 3.781 3.766L15.999 25.11.108 9.219l3.781-3.766 12.109 12.109L28.107 5.453z" />
   </svg>
 );

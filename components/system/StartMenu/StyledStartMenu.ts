@@ -59,6 +59,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    padding-right: ${THIN_SCROLLBAR_WIDTH}px;
     padding-top: 7px;
     scrollbar-width: none;
 
@@ -86,6 +87,8 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
     &:hover {
       ${ThinScrollBars};
+      padding-right: ${({ $showScrolling }) =>
+        !$showScrolling ? `${Number(THIN_SCROLLBAR_WIDTH - 3)}px` : 0};
     }
 
     @media (hover: none), (pointer: coarse) {

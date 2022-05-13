@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledFileEntry = styled.li`
   figure {
@@ -8,7 +7,6 @@ const StyledFileEntry = styled.li`
     height: 36px;
     padding-bottom: 1px;
     place-items: center;
-    width: calc(100% - ${THIN_SCROLLBAR_WIDTH}px);
 
     figcaption {
       color: #fff;
@@ -19,6 +17,14 @@ const StyledFileEntry = styled.li`
       margin-right: 8px;
     }
 
+    svg {
+      fill: rgb(210, 210, 210);
+      height: 8px;
+      margin-left: auto;
+      margin-right: 8px;
+      width: 8px;
+    }
+
     &:active {
       figcaption {
         letter-spacing: -0.15px;
@@ -27,6 +33,10 @@ const StyledFileEntry = styled.li`
 
       img {
         margin-left: 7px;
+      }
+
+      svg {
+        margin-right: 12px;
       }
     }
 

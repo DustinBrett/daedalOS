@@ -1,3 +1,4 @@
+import { Down } from "components/apps/FileExplorer/NavigationIcons";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -456,6 +457,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 : name}
             </figcaption>
           )}
+          {listView && openInFileExplorer && <Down flip={showInFileManager} />}
         </figure>
       </Button>
       {showInFileManager && (
