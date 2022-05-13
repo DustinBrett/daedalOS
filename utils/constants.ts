@@ -56,6 +56,8 @@ export const MENU_SEPERATOR = { seperator: true };
 
 export const MILLISECONDS_IN_SECOND = 1000;
 
+export const MILLISECONDS_IN_DAY = 86400000;
+
 export const EXTRACTABLE_EXTENSIONS = new Set([
   ".001",
   ".7z",
