@@ -15,7 +15,6 @@ const contentSecurityPolicy = `
   connect-src 'self' blob: https: wss:;
   default-src 'none';
   font-src 'self' data:;
-  frame-ancestors 'self';
   frame-src 'self' https:;
   img-src 'self' blob: data: https:;
   media-src 'self' blob:;
