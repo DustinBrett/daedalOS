@@ -10,19 +10,21 @@ import {
 
 const { alias, description } = PACKAGE_DATA;
 
-const contentSecurityPolicy = `
-  default-src 'none';
+let contentSecurityPolicy = `
   connect-src 'self' blob: https: wss:;
+  default-src 'none';
   font-src 'self' data:;
-  frame-src https:;
+  frame-src 'self' https:;
   img-src 'self' blob: data: https:;
-  media-src blob:;
-  object-src data:;
-  script-src 'unsafe-eval';
+  media-src 'self' blob:;
   script-src-elem 'self' blob: https://www.youtube.com;
   style-src 'self' 'unsafe-inline';
   worker-src 'self' blob:;
 `;
+
+if (process?.env?.NODE_ENV === "development") {
+  contentSecurityPolicy += "script-src 'unsafe-eval';";
+}
 
 const Metadata: FC = () => (
   <Head>
