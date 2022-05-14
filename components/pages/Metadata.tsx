@@ -11,11 +11,13 @@ import {
 const { alias, description } = PACKAGE_DATA;
 
 const contentSecurityPolicy = `
-  connect-src 'self' blob: https://api.nasa.gov https://use.ntpjs.org https://wttr.in;
+  connect-src 'self' blob: https:;
+  default-src 'none';
   font-src 'self' data:;
   frame-src https:;
   img-src 'self' blob: data: https:;
   media-src blob:;
+  script-src 'unsafe-eval';
   script-src-elem 'self' blob: https://www.youtube.com;
   style-src 'self' 'unsafe-inline';
   worker-src 'self' blob:;
