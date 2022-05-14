@@ -10,6 +10,17 @@ import {
 
 const { alias, description } = PACKAGE_DATA;
 
+const contentSecurityPolicy = `
+  connect-src 'self' blob: https://api.nasa.gov https://use.ntpjs.org https://wttr.in;
+  font-src 'self' data:;
+  frame-src https:;
+  img-src 'self' blob: data: https:;
+  media-src blob:;
+  script-src-elem 'self' blob: https://www.youtube.com;
+  style-src 'self' 'unsafe-inline';
+  worker-src 'self' blob:;
+`;
+
 const Metadata: FC = () => (
   <Head>
     <meta
@@ -17,6 +28,10 @@ const Metadata: FC = () => (
       name="viewport"
     />
     <meta content={description} name="description" />
+    <meta
+      content={contentSecurityPolicy.trim()}
+      httpEquiv="Content-Security-Policy"
+    />
     <title>{alias}</title>
     {preloadIcons?.map((icon) => (
       <link
