@@ -10,20 +10,6 @@ import {
 
 const { alias, description } = PACKAGE_DATA;
 
-const contentSecurityPolicy = `
-  base-uri 'self';
-  connect-src 'self' blob: https: wss:;
-  default-src 'none';
-  font-src 'self' data:;
-  frame-src 'self' https:;
-  img-src 'self' blob: data: https:;
-  media-src 'self' blob:;
-  script-src 'unsafe-eval' blob: https:;
-  script-src-elem 'self' blob: https://www.youtube.com;
-  style-src 'self' 'unsafe-inline';
-  worker-src 'self' blob:;
-`;
-
 const Metadata: FC = () => (
   <Head>
     <meta
@@ -31,12 +17,6 @@ const Metadata: FC = () => (
       name="viewport"
     />
     <meta content={description} name="description" />
-    {process?.env?.NODE_ENV === "production" && (
-      <meta
-        content={contentSecurityPolicy.trim()}
-        httpEquiv="Content-Security-Policy"
-      />
-    )}
     <title>{alias}</title>
     {preloadIcons?.map((icon) => (
       <link
