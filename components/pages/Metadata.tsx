@@ -11,9 +11,11 @@ import {
 const { alias, description } = PACKAGE_DATA;
 
 const contentSecurityPolicy = `
+  base-uri 'self';
   connect-src 'self' blob: https: wss:;
   default-src 'none';
   font-src 'self' data:;
+  frame-ancestors 'self';
   frame-src 'self' https:;
   img-src 'self' blob: data: https:;
   media-src 'self' blob:;
