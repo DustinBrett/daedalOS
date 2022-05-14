@@ -17,6 +17,7 @@ let contentSecurityPolicy = `
   frame-src 'self' https:;
   img-src 'self' blob: data: https:;
   media-src 'self' blob:;
+  script-src 'unsafe-eval';
   script-src-elem 'self' blob: https://www.youtube.com;
   style-src 'self' 'unsafe-inline';
   worker-src 'self' blob:;
