@@ -16,6 +16,14 @@ import { SHORTCUT_EXTENSION } from "utils/constants";
 
 const OPEN_ID = "open";
 
+const resourceAliasMap: Record<string, string> = {
+  cmd: "Terminal",
+  dos: "JSDOS",
+  explorer: "FileExplorer",
+  monaco: "MonacoEditor",
+  vlc: "VideoPlayer",
+};
+
 const Run: FC<ComponentProcessProps> = () => {
   const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
   const { exists, readFile, stat } = useFileSystem();
@@ -74,12 +82,14 @@ const Run: FC<ComponentProcessProps> = () => {
       } else if (
         Object.keys(processDirectory).some(
           (processName) =>
-            processName.toLowerCase() === resourcePath.toLowerCase()
+            processName.toLowerCase() ===
+            (resourceAliasMap[resourcePath] || resourcePath).toLowerCase()
         )
       ) {
         const pid = Object.keys(processDirectory).find(
           (processName) =>
-            processName.toLowerCase() === resourcePath.toLowerCase()
+            processName.toLowerCase() ===
+            (resourceAliasMap[resourcePath] || resourcePath).toLowerCase()
         );
 
         if (pid) {
