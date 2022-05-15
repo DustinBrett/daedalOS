@@ -30,10 +30,6 @@ const StyledRun = styled.div`
     label {
       margin-top: 3px;
       padding: 0 11px;
-
-      &::first-letter {
-        text-decoration: underline;
-      }
     }
 
     input {
