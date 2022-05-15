@@ -6,6 +6,8 @@ const GlobalStyle = createGlobalStyle`
   *::after {
     border: 0;
     box-sizing: border-box;
+    cursor: default;
+    font-variant-numeric: tabular-nums;
     margin: 0;
     outline: 0;
     padding: 0;
