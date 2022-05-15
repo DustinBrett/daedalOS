@@ -38,6 +38,7 @@ const StyledRun = styled.div`
 
     input {
       border: 1px solid rgb(122, 122, 122);
+      border-radius: 0;
       font-family: ${({ theme }) => theme.formats.systemFont};
       font-size: 12px;
       height: 23px;
