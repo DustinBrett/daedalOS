@@ -11,7 +11,11 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback } from "react";
-import { FOLDER_ICON, MENU_SEPERATOR } from "utils/constants";
+import {
+  FOLDER_ICON,
+  isFileSystemSupported,
+  MENU_SEPERATOR,
+} from "utils/constants";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -49,10 +53,9 @@ const useFolderContextMenu = (
         }),
       label: "Map directory",
     };
-    const FS_COMMANDS =
-      typeof FileSystemHandle === "function" && "showDirectoryPicker" in window
-        ? [ADD_FILE, MAP_DIRECTORY]
-        : [ADD_FILE];
+    const FS_COMMANDS = isFileSystemSupported()
+      ? [ADD_FILE, MAP_DIRECTORY]
+      : [ADD_FILE];
 
     return [
       {

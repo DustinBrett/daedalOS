@@ -234,3 +234,6 @@ export const HIGH_PRIORITY_REQUEST = { priority: "high" } as RequestInit;
 export const HIGH_PRIORITY_ELEMENT = {
   fetchpriority: "high",
 } as React.HTMLAttributes<HTMLElement>;
+
+export const isFileSystemSupported = (): boolean =>
+  typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;

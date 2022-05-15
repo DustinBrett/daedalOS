@@ -19,6 +19,7 @@ import {
   DESKTOP_PATH,
   EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
+  isFileSystemSupported,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
   ROOT_SHORTCUT,
@@ -133,17 +134,23 @@ const useFileContextMenu = (
       );
 
       if (path) {
-        menuItems.unshift(MENU_SEPERATOR);
         if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
-          menuItems.unshift({
-            action: () =>
-              mapFs("/").then((mappedFolder) => {
-                updateFolder("/", mappedFolder);
-                open("FileExplorer", { url: join("/", mappedFolder) });
-              }),
-            label: "Map directory",
-          });
+          if (isFileSystemSupported()) {
+            menuItems.unshift(
+              {
+                action: () =>
+                  mapFs("/").then((mappedFolder) => {
+                    updateFolder("/", mappedFolder);
+                    open("FileExplorer", { url: join("/", mappedFolder) });
+                  }),
+                label: "Map directory",
+              },
+              MENU_SEPERATOR
+            );
+          }
         } else {
+          menuItems.unshift(MENU_SEPERATOR);
+
           if (
             EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
             MOUNTABLE_EXTENSIONS.has(pathExtension)
