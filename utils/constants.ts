@@ -164,6 +164,8 @@ export const TRANSITIONS_IN_MILLISECONDS = {
 
 export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
+export const AUDIO_FILE_EXTENSIONS = new Set([".oga", ".wav"]);
+
 export const VIDEO_FILE_EXTENSIONS = new Set([
   ".m4v",
   ".mkv",
@@ -172,6 +174,11 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".ogm",
   ".ogv",
   ".webm",
+]);
+
+export const MEDIA_FILE_EXTENSIONS = new Set([
+  ...AUDIO_FILE_EXTENSIONS,
+  ...VIDEO_FILE_EXTENSIONS,
 ]);
 
 export const ROOT_NAME = "My PC";

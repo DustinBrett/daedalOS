@@ -11,6 +11,7 @@ import processDirectory from "contexts/process/directory";
 import ini from "ini";
 import { extname, join } from "path";
 import {
+  AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
@@ -19,6 +20,7 @@ import {
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
+  MEDIA_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
@@ -83,8 +85,8 @@ export const getIconFromIni = (
   });
 
 export const getDefaultFileViewer = (extension: string): string => {
+  if (MEDIA_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
   if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";
-  if (VIDEO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
   if (monacoExtensions.has(extension)) return "MonacoEditor";
 
   return "";
@@ -350,9 +352,10 @@ export const getInfoWithExtension = (
         }
       })
     );
-  } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
+  } else if (MEDIA_FILE_EXTENSIONS.has(extension)) {
     subIcons.push(processDirectory["VideoPlayer"].icon);
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () =>
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, () => {
+      if (AUDIO_FILE_EXTENSIONS.has(extension)) return;
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error) {
           const video = document.createElement("video");
@@ -369,7 +372,7 @@ export const getInfoWithExtension = (
                     willReadFrequently: true,
                   });
 
-                  if (!context) return;
+                  if (!context || !canvas.width || !canvas.height) return;
 
                   context.drawImage(video, 0, 0, canvas.width, canvas.height);
                   const imageData = context.getImageData(
@@ -429,8 +432,8 @@ export const getInfoWithExtension = (
           );
           video.src = bufferToUrl(contents);
         }
-      })
-    );
+      });
+    });
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
       `/System/Icons/${extensions[".mp3"].icon as string}.webp`,

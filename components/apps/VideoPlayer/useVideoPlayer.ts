@@ -1,6 +1,6 @@
 import {
   config,
-  getVideoType,
+  getMimeType,
   libs,
   YT_TYPE,
 } from "components/apps/VideoPlayer/config";
@@ -53,7 +53,7 @@ const useVideoPlayer = (
 
     const isYT = isYouTubeUrl(url);
     const src = isYT ? url : bufferToUrl(await readFile(url));
-    const type = isYT ? YT_TYPE : getVideoType(url) || "video/mp4";
+    const type = isYT ? YT_TYPE : getMimeType(url);
 
     return { src, type, url };
   }, [cleanUpSource, readFile, url]);
