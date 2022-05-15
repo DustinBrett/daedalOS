@@ -79,27 +79,23 @@ const Run: FC<ComponentProcessProps> = () => {
 
           addRunHistoryEntry(resourcePath);
         }
-      } else if (
-        Object.keys(processDirectory).some(
-          (processName) =>
-            processName.toLowerCase() ===
-            (resourceAliasMap[resourcePath] || resourcePath).toLowerCase()
-        )
-      ) {
+      } else {
         const pid = Object.keys(processDirectory).find(
           (processName) =>
             processName.toLowerCase() ===
-            (resourceAliasMap[resourcePath] || resourcePath).toLowerCase()
+            (
+              resourceAliasMap[resourcePath.toLowerCase()] || resourcePath
+            ).toLowerCase()
         );
 
         if (pid) {
           open(pid);
           addRunHistoryEntry(pid);
+        } else {
+          throw new Error(
+            `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
+          );
         }
-      } else {
-        throw new Error(
-          `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
-        );
       }
 
       close("Run");
