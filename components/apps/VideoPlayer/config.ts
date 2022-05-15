@@ -40,6 +40,7 @@ export const getMimeType = (url: string): string | undefined => {
       return "application/x-mpegURL";
     case ".m4v":
     case ".mkv":
+    case ".mov":
     case ".mp4":
       return "video/mp4";
     case ".oga":
