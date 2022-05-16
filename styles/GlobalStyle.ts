@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   input, textarea {
+    cursor: text;
     user-select: text;
   }
 
