@@ -1,5 +1,6 @@
 import { commands as gitCommands } from "components/apps/Terminal/processGit";
 import type { LocalEcho } from "components/apps/Terminal/types";
+import processDirectory from "contexts/process/directory";
 
 export const help = (
   localEcho: LocalEcho,
@@ -127,8 +128,16 @@ export const autoComplete = (
   localEcho.addAutocompleteHandler((index: number, [command]): string[] => {
     if (index === 0) return Object.keys(commands);
     if (index === 1) {
-      if (directoryCommands.has(command)) return directory;
-      if (command === "git") return Object.keys(gitCommands);
+      const lowerCommand = command.toLowerCase();
+
+      if (lowerCommand === "git") return Object.keys(gitCommands);
+      if (directoryCommands.has(lowerCommand)) return directory;
+
+      const lowerProcesses = Object.keys(processDirectory).map((pid) =>
+        pid.toLowerCase()
+      );
+
+      if (lowerProcesses.includes(lowerCommand)) return directory;
     }
 
     return [];
