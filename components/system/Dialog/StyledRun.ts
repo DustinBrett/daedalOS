@@ -38,8 +38,9 @@ const StyledRun = styled.div`
       font-family: ${({ theme }) => theme.formats.systemFont};
       font-size: 12px;
       height: 23px;
-      line-height: 23px;
+      line-height: 16px;
       margin: 0 13px 21px 8px;
+      padding-bottom: 2px;
       padding-left: 5px;
       width: 100%;
 
