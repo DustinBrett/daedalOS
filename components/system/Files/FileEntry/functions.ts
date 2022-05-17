@@ -184,11 +184,13 @@ export const getInfoWithoutExtension = (
       if (useNewFolderIcon) return NEW_FOLDER_ICON;
       return FOLDER_ICON;
     };
-    setFolderInfo(getFolderIcon(), [], async () => {
+    const folderIcon = getFolderIcon();
+
+    setFolderInfo(folderIcon, [], async () => {
       const iconFromIni = await getIconFromIni(fs, path);
 
       if (iconFromIni) setFolderInfo(iconFromIni);
-      else {
+      else if (folderIcon === FOLDER_ICON) {
         const iconsFromCache = await getIconsFromCache(fs, path);
 
         if (iconsFromCache.length > 0) {
