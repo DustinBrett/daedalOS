@@ -163,6 +163,16 @@ const Run: FC<ComponentProcessProps> = () => {
             onChange={({ target }) => {
               if (inputRef.current) {
                 inputRef.current.value = target.value;
+                setIsEmptyInput(false);
+              }
+            }}
+            onClick={({ target }) => {
+              if (
+                target instanceof HTMLSelectElement &&
+                target.selectedIndex !== -1
+              ) {
+                // eslint-disable-next-line no-param-reassign
+                target.selectedIndex = -1;
               }
             }}
           >
