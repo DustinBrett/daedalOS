@@ -31,11 +31,6 @@ const Run: FC<ComponentProcessProps> = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(true);
-  const addRunHistoryEntry = useCallback(
-    (entry: string) =>
-      setRunHistory((currentRunHistory) => [entry, ...currentRunHistory]),
-    [setRunHistory]
-  );
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;
@@ -43,13 +38,19 @@ const Run: FC<ComponentProcessProps> = () => {
       const [resourcePid, ...resourceUrl] = resource.split(" ");
       const resourcePath =
         resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
+      const addRunHistoryEntry = (): void =>
+        setRunHistory((currentRunHistory) =>
+          currentRunHistory[0] !== resource
+            ? [resource, ...currentRunHistory]
+            : currentRunHistory
+        );
 
       if (await exists(resourcePath)) {
         const stats = await stat(resourcePath);
 
         if (stats.isDirectory()) {
           open("FileExplorer", { url: resourcePath }, "");
-          addRunHistoryEntry(resourcePath);
+          addRunHistoryEntry();
         } else if (resourcePid && resourceUrl.length > 0) {
           const pid = Object.keys(processDirectory).find(
             (processName) =>
@@ -58,7 +59,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
           if (pid) {
             open(pid, { url: resourcePath });
-            addRunHistoryEntry(`${pid} ${resourcePath}`);
+            addRunHistoryEntry();
           } else {
             throw new Error(
               `Cannot find '${resourcePid}'. Make sure you typed the name correctly, and then try again.`
@@ -77,7 +78,7 @@ const Run: FC<ComponentProcessProps> = () => {
             if (basePid) open(basePid, { url: resourcePath });
           }
 
-          addRunHistoryEntry(resourcePath);
+          addRunHistoryEntry();
         }
       } else {
         const pid = Object.keys(processDirectory).find(
@@ -90,7 +91,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
         if (pid) {
           open(pid);
-          addRunHistoryEntry(pid);
+          addRunHistoryEntry();
         } else {
           throw new Error(
             `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
@@ -100,12 +101,13 @@ const Run: FC<ComponentProcessProps> = () => {
 
       close("Run");
     },
-    [addRunHistoryEntry, close, exists, open, readFile, stat]
+    [close, exists, open, readFile, setRunHistory, stat]
   );
 
   useEffect(() => {
     if (inputRef.current && foregroundId === "Run") {
       inputRef.current.focus();
+      if (inputRef.current.value) inputRef.current.select();
     }
   }, [foregroundId]);
 
@@ -118,8 +120,6 @@ const Run: FC<ComponentProcessProps> = () => {
     }
   }, [runProcess?.url]);
 
-  console.info({ runHistory });
-
   return (
     <StyledRun {...useFileDrop({ id: "Run" })}>
       <figure>
@@ -131,31 +131,49 @@ const Run: FC<ComponentProcessProps> = () => {
       </figure>
       <div>
         <label htmlFor={OPEN_ID}>Open:</label>
-        <input
-          ref={inputRef}
-          autoComplete="off"
-          enterKeyHint="go"
-          id={OPEN_ID}
-          onBlurCapture={({ relatedTarget }) => {
-            if (
-              !runProcess?.componentWindow ||
-              runProcess.componentWindow.contains(relatedTarget)
-            ) {
-              inputRef.current?.focus();
-            } else {
-              setIsInputFocused(false);
+        <div>
+          <input
+            ref={inputRef}
+            autoComplete="off"
+            defaultValue={runHistory[0]}
+            enterKeyHint="go"
+            id={OPEN_ID}
+            onBlurCapture={({ relatedTarget }) => {
+              if (
+                !runProcess?.componentWindow ||
+                runProcess.componentWindow.contains(relatedTarget)
+              ) {
+                inputRef.current?.focus();
+              } else {
+                setIsInputFocused(false);
+              }
+            }}
+            onFocusCapture={() => setIsInputFocused(true)}
+            onKeyDown={({ key }) => {
+              if (key === "Enter") runResource(inputRef.current?.value.trim());
+            }}
+            onKeyUp={({ target }) =>
+              setIsEmptyInput(!(target as HTMLInputElement)?.value)
             }
-          }}
-          onFocusCapture={() => setIsInputFocused(true)}
-          onKeyDown={({ key }) => {
-            if (key === "Enter") runResource(inputRef.current?.value.trim());
-          }}
-          onKeyUp={({ target }) =>
-            setIsEmptyInput(!(target as HTMLInputElement)?.value)
-          }
-          spellCheck="false"
-          type="text"
-        />
+            spellCheck="false"
+            type="text"
+          />
+          <select
+            disabled={runHistory.length === 0}
+            onChange={({ target }) => {
+              if (inputRef.current) {
+                inputRef.current.value = target.value;
+              }
+            }}
+          >
+            {runHistory.map((entry, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <option key={`${entry}-${index}`} value={entry}>
+                {entry}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <nav>
         <StyledButton
