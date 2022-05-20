@@ -60,7 +60,7 @@ const useFileDrop = ({
     },
     onDrop: (event) =>
       handleFileInputEvent(
-        event,
+        event as React.DragEvent,
         callback || updateProcessUrl,
         directory,
         openTransferDialog

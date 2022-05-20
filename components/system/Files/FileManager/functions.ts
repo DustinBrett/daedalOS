@@ -123,8 +123,75 @@ export const iterateFileName = (name: string, iteration: number): string => {
   return `${fileName} (${iteration})${extension}`;
 };
 
-export const handleFileInputEvent = async (
-  event: Event | React.DragEvent,
+const createFileReaders = async (
+  files: DataTransferItemList | FileList | never[],
+  directory: string,
+  callback: (
+    fileName: string,
+    buffer?: Buffer,
+    completeAction?: CompleteAction
+  ) => void
+): Promise<FileReaders> => {
+  const fileReaders: FileReaders = [];
+  const addFile = (file: File, subFolder = ""): void => {
+    const reader = new FileReader();
+
+    reader.addEventListener(
+      "load",
+      ({ target }) => {
+        if (target?.result instanceof ArrayBuffer) {
+          callback(
+            join(subFolder, file.name),
+            Buffer.from(new Uint8Array(target.result)),
+            files.length === 1 ? "updateUrl" : undefined
+          );
+        }
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
+
+    fileReaders.push([file, join(directory, subFolder), reader]);
+  };
+  const addEntry = async (
+    fileSystemEntry: FileSystemEntry,
+    subFolder = ""
+  ): Promise<void> =>
+    new Promise((resolve) => {
+      if (fileSystemEntry.isDirectory) {
+        (fileSystemEntry as FileSystemDirectoryEntry)
+          .createReader()
+          .readEntries((entries) =>
+            Promise.all(
+              entries.map((entry) =>
+                addEntry(entry, join(subFolder, fileSystemEntry.name))
+              )
+            ).then(() => resolve())
+          );
+      } else {
+        (fileSystemEntry as FileSystemFileEntry).file((file) => {
+          addFile(file, subFolder);
+          resolve();
+        });
+      }
+    });
+
+  if (files instanceof FileList) {
+    [...files].forEach((file) => addFile(file));
+  } else {
+    await Promise.all(
+      [...files].map(async (file) =>
+        addEntry(file.webkitGetAsEntry() as FileSystemEntry)
+      )
+    );
+  }
+
+  return fileReaders;
+};
+
+export type InputChangeEvent = Event & { target: HTMLInputElement };
+
+export const handleFileInputEvent = (
+  event: InputChangeEvent | React.DragEvent,
   callback: (
     fileName: string,
     buffer?: Buffer,
@@ -132,94 +199,22 @@ export const handleFileInputEvent = async (
   ) => void,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders) => void
-): Promise<void> => {
+): void => {
   haltEvent(event);
 
-  const eventTarget =
-    (event as React.DragEvent)?.dataTransfer ??
-    ((event.currentTarget as HTMLInputElement) || {});
+  const files =
+    (event as InputChangeEvent).target?.files ||
+    (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
+    [];
+  const isInternal =
+    files instanceof DataTransferItemList &&
+    (event as React.DragEvent).nativeEvent?.dataTransfer?.files.length === 0;
 
-  if (eventTarget.files.length > 0) {
-    const fileCount = eventTarget.files.length;
-    const fileReaders: FileReaders = [];
-    const addFile = (file: File, subFolder = ""): void => {
-      const reader = new FileReader();
-
-      reader.addEventListener(
-        "load",
-        ({ target }) => {
-          if (target?.result instanceof ArrayBuffer) {
-            callback(
-              join(subFolder, file.name),
-              Buffer.from(new Uint8Array(target.result)),
-              fileCount === 1 ? "updateUrl" : undefined
-            );
-          }
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-
-      fileReaders.push([file, join(directory, subFolder), reader]);
-    };
-
-    if (eventTarget.items) {
-      const processHandle = async (
-        fsHandle: FileSystemEntry | FileSystemHandle,
-        subFolder = ""
-      ): Promise<void> => {
-        if (
-          typeof FileSystemHandle !== "undefined" &&
-          fsHandle instanceof FileSystemHandle
-        ) {
-          if (fsHandle.kind === "directory") {
-            const directoryHandle = fsHandle as FileSystemDirectoryHandle;
-
-            for await (const handle of directoryHandle.values()) {
-              processHandle(handle, join(subFolder, fsHandle.name));
-            }
-          } else if (fsHandle.kind === "file") {
-            addFile(
-              await (fsHandle as FileSystemFileHandle).getFile(),
-              subFolder
-            );
-          }
-        } else if (
-          "FileSystemEntry" in window &&
-          fsHandle instanceof FileSystemEntry
-        ) {
-          if (fsHandle.isDirectory) {
-            (fsHandle as FileSystemDirectoryEntry)
-              .createReader()
-              .readEntries((entries) => {
-                for (const entry of entries) {
-                  processHandle(entry, join(subFolder, entry.name));
-                }
-              });
-          } else {
-            (fsHandle as FileSystemFileEntry).file((file) =>
-              addFile(file, subFolder)
-            );
-          }
-        }
-      };
-
-      await Promise.all(
-        [...eventTarget.items].map(async (item) =>
-          processHandle(
-            "getAsFileSystemHandle" in item
-              ? ((await item.getAsFileSystemHandle()) as FileSystemHandle)
-              : (item.webkitGetAsEntry() as FileSystemEntry)
-          )
-        )
-      );
-    } else {
-      [...eventTarget.files].forEach((file) => addFile(file));
-    }
-
-    openTransferDialog(fileReaders);
+  if (!isInternal) {
+    createFileReaders(files, directory, callback).then(openTransferDialog);
   } else {
     const filePaths = JSON.parse(
-      eventTarget.getData("text") || "{}"
+      (event as React.DragEvent).dataTransfer.getData("text") || "{}"
     ) as string[];
 
     filePaths.forEach(

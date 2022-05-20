@@ -6,6 +6,7 @@ import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
   handleFileInputEvent,
   iterateFileName,
@@ -172,25 +173,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const { openTransferDialog } = useDialog();
   const addFile = (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => void,
-    accept?: string,
-    multiple = true
+    callback: (name: string, buffer?: Buffer) => void
   ): void => {
     const fileInput = document.createElement("input");
 
     fileInput.type = "file";
-    fileInput.multiple = multiple;
-    if (accept) fileInput.accept = accept;
+    fileInput.multiple = true;
     fileInput.setAttribute("style", "display: none");
     fileInput.addEventListener(
       "change",
-      (event) =>
+      (event) => {
         handleFileInputEvent(
-          event,
+          event as InputChangeEvent,
           callback,
           directory,
           openTransferDialog
-        ).then(() => fileInput.remove()),
+        );
+        fileInput.remove();
+      },
       { once: true }
     );
     document.body.appendChild(fileInput);
@@ -293,14 +293,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
         return uniqueName;
       }
     } else {
-      try {
-        const baseDir = dirname(fullNewPath);
+      const baseDir = dirname(fullNewPath);
 
+      try {
         if (!(await exists(baseDir))) {
           await mkdir(baseDir);
           updateFolder(dirname(baseDir), basename(baseDir));
         }
+      } catch {
+        // Ignore error to make directory
+      }
 
+      try {
         if (
           buffer
             ? await writeFile(fullNewPath, buffer)
