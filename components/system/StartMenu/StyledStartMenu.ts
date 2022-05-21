@@ -9,8 +9,7 @@ type StyledStartMenuProps = {
 };
 
 const ThinScrollBars = css<StyledStartMenuProps>`
-  scrollbar-width: ${({ $showScrolling }) =>
-    $showScrolling ? "auto" : "thin"};
+  scrollbar-width: thin;
 
   ::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
@@ -89,6 +88,10 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       ${ThinScrollBars};
       padding-right: ${({ $showScrolling }) =>
         !$showScrolling ? `${Number(THIN_SCROLLBAR_WIDTH - 3)}px` : 0};
+
+      @supports (scrollbar-width: thin) {
+        padding-right: 5px;
+      }
     }
 
     @media (hover: none), (pointer: coarse) {
