@@ -144,9 +144,9 @@ export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
 };
 
 const bytesInKB = 1024;
-const bytesInMB = 1024 * 999;
-const bytesInGB = 1024 * 1024 * 999;
-const bytesInTB = 1024 * 1024 * 1024 * 999;
+const bytesInMB = 1022976; // 1024 * 999;
+const bytesInGB = 1047527424; // 1024 * 1024 * 999;
+const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
 const formatNumber = (number: number): string =>
   new Intl.NumberFormat("en-US", {
