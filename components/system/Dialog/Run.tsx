@@ -93,7 +93,8 @@ const Run: FC<ComponentProcessProps> = () => {
           open(pid);
           addRunHistoryEntry();
         } else {
-          throw new Error(
+          // eslint-disable-next-line consistent-return, no-alert
+          return alert(
             `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
           );
         }
