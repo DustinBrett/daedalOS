@@ -92,21 +92,10 @@ const useFileSystemContextState = (): FileSystemContextState => {
     []
   );
   const updateFolder = useCallback(
-    (folder: string, newFile?: string, oldFile?: string): void => {
-      const relevantPaths =
-        folder === "/"
-          ? [folder]
-          : Object.keys(fsWatchers).filter((fsPath) => fsPath === folder);
-      const parentPath = !fsWatchers[folder] ? [dirname(folder)] : [];
-
-      [...parentPath, ...relevantPaths].forEach((watchedFolder) =>
-        fsWatchers[watchedFolder]?.forEach((updateFiles) =>
-          watchedFolder === folder
-            ? updateFiles(newFile, oldFile)
-            : updateFiles()
-        )
-      );
-    },
+    (folder: string, newFile?: string, oldFile?: string): void =>
+      fsWatchers[folder]?.forEach((updateFiles) =>
+        updateFiles(newFile, oldFile)
+      ),
     [fsWatchers]
   );
   const mapFs = useCallback(
