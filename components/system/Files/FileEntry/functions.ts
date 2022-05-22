@@ -56,6 +56,10 @@ type ShellClassInfo = {
   };
 };
 
+type VideoElementWithSeek = HTMLVideoElement & {
+  seekToNextFrame: () => Promise<void>;
+};
+
 export const getModifiedTime = (path: string, stats: FileStat): number => {
   const { atimeMs, ctimeMs, mtimeMs } = stats;
 
@@ -402,7 +406,13 @@ export const getInfoWithExtension = (
                 ONE_TIME_PASSIVE_EVENT
               );
               video.currentTime = second;
-              video.load();
+              if ("seekToNextFrame" in video) {
+                (video as VideoElementWithSeek)
+                  .seekToNextFrame?.()
+                  .catch(() => video.load());
+              } else {
+                video.load();
+              }
             });
 
           video.addEventListener(
