@@ -1,4 +1,4 @@
 module.exports = require("next/jest")()({
-  moduleDirectories: [".", "node_modules"],
-  testEnvironment: "jsdom",
+  moduleDirectories: ["<rootDir>", "node_modules"],
+  testEnvironment: "jest-environment-jsdom",
 });
