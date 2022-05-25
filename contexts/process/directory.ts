@@ -49,7 +49,7 @@ const processDirectory: Processes = {
     title: "DevTools",
   },
   Dialog: {
-    Component: dynamic(() => import("components/system/Dialog")),
+    Component: dynamic(() => import("components/system/Dialogs/Transfer")),
     allowResizing: false,
     background: "#FFF",
     defaultSize: {
@@ -131,7 +131,7 @@ const processDirectory: Processes = {
     title: "Ruffle",
   },
   Run: {
-    Component: dynamic(() => import("components/system/Dialog/Run")),
+    Component: dynamic(() => import("components/system/Dialogs/Run")),
     allowResizing: false,
     defaultSize: {
       height: 174,

@@ -1,6 +1,6 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import StyledButton from "components/system/Dialog/StyledButton";
-import StyledDialog from "components/system/Dialog/StyledDialog";
+import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
+import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
 import { useProcesses } from "contexts/process";
 import type { FileReaders } from "hooks/useDialog";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -59,7 +59,7 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   }, [closeWithTransition, fileReaders, id, processReader, title]);
 
   return (
-    <StyledDialog>
+    <StyledTransfer>
       <h1>
         {`Copying '${
           name.length >= MAX_TITLE_LENGTH
@@ -82,7 +82,7 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
           Cancel
         </StyledButton>
       </nav>
-    </StyledDialog>
+    </StyledTransfer>
   );
 };
 

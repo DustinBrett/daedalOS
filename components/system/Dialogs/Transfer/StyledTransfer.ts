@@ -1,4 +1,4 @@
-import StyledButton from "components/system/Dialog/StyledButton";
+import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import styled from "styled-components";
 
 const StyledDialog = styled.div`

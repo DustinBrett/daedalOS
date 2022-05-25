@@ -1,6 +1,6 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import StyledButton from "components/system/Dialog/StyledButton";
-import StyledRun from "components/system/Dialog/StyledRun";
+import StyledRun from "components/system/Dialogs/Run/StyledRun";
+import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import {
   getProcessByFileExtension,
   getShortcutInfo,
