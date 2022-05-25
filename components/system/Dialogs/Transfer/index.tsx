@@ -24,9 +24,9 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
       setCurrentTransfer([directory, file]);
 
       reader.addEventListener("progress", ({ loaded = 0 }) => {
-        setProgress(
-          (currentProgress) => currentProgress + (loaded - fileProgress)
-        );
+        const progressLoaded = loaded - fileProgress;
+
+        setProgress((currentProgress) => currentProgress + progressLoaded);
         fileProgress = loaded;
       });
       reader.addEventListener("loadend", () => {
