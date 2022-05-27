@@ -206,9 +206,7 @@ export const handleFileInputEvent = (
     (event as InputChangeEvent).target?.files ||
     (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
     [];
-  const isInternal =
-    files instanceof DataTransferItemList &&
-    (event as React.DragEvent).nativeEvent?.dataTransfer?.files.length === 0;
+  const isInternal = (event as React.DragEvent).dataTransfer?.getData("text");
 
   if (!isInternal) {
     createFileReaders(files, directory, callback).then(openTransferDialog);

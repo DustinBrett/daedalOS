@@ -12,7 +12,7 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SHORTCUT_EXTENSION } from "utils/constants";
+import { PACKAGE_DATA, SHORTCUT_EXTENSION } from "utils/constants";
 
 const OPEN_ID = "open";
 
@@ -23,6 +23,8 @@ const resourceAliasMap: Record<string, string> = {
   monaco: "MonacoEditor",
   vlc: "VideoPlayer",
 };
+
+const MESSAGE = `Type the name of a program, folder, document, or Internet resource, and ${PACKAGE_DATA.alias} will open it for you.`;
 
 const Run: FC<ComponentProcessProps> = () => {
   const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
@@ -125,10 +127,7 @@ const Run: FC<ComponentProcessProps> = () => {
     <StyledRun {...useFileDrop({ id: "Run" })}>
       <figure>
         <img alt="Run" src="/System/Icons/32x32/run.webp" />
-        <figcaption>
-          Type the name of a program, folder, document, or Internet resource,
-          and daedalOS will open it for you.
-        </figcaption>
+        <figcaption>{MESSAGE}</figcaption>
       </figure>
       <div>
         <label htmlFor={OPEN_ID}>Open:</label>
