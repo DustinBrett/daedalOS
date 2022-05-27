@@ -206,14 +206,12 @@ export const handleFileInputEvent = (
     (event as InputChangeEvent).target?.files ||
     (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
     [];
-  const isInternal = (event as React.DragEvent).dataTransfer?.getData("text");
+  const dragText = (event as React.DragEvent).dataTransfer?.getData("text");
 
-  if (!isInternal) {
+  if (!dragText) {
     createFileReaders(files, directory, callback).then(openTransferDialog);
   } else {
-    const filePaths = JSON.parse(
-      (event as React.DragEvent).dataTransfer.getData("text") || "{}"
-    ) as string[];
+    const filePaths = JSON.parse(dragText || "{}") as string[];
 
     filePaths.forEach(
       (path) =>
