@@ -50,15 +50,6 @@ const StyledRun = styled.div`
         width: 100%;
       }
 
-      input {
-        border-right: 0;
-        margin-right: 33px;
-
-        &:focus {
-          border: 1px solid rgb(0, 120, 215);
-        }
-      }
-
       select {
         clip-path: inset(0 0 0 calc(100% - 20px));
         position: absolute;
@@ -67,6 +58,20 @@ const StyledRun = styled.div`
         &:disabled {
           border: 1px solid rgb(122, 122, 122);
           opacity: 1;
+        }
+      }
+
+      input {
+        border-right: 0;
+        margin-right: 33px;
+
+        &:focus {
+          border: 1px solid rgb(0, 120, 215);
+          border-right: 0;
+
+          + select {
+            border-color: rgb(0, 120, 215);
+          }
         }
       }
     }
