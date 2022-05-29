@@ -51,13 +51,14 @@ const Run: FC<ComponentProcessProps> = () => {
         );
       const [resourcePid, ...resourceUrl] = resource.split(" ");
       let resourcePath = resource;
+      const resourceExists = await exists(resourcePath);
 
-      if (!(await exists(resourcePath))) {
+      if (!resourceExists) {
         resourcePath =
           resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
       }
 
-      if (await exists(resourcePath)) {
+      if (resourceExists || (await exists(resourcePath))) {
         const stats = await stat(resourcePath);
 
         if (stats.isDirectory()) {
