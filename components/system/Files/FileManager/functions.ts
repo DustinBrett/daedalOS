@@ -211,17 +211,21 @@ export const handleFileInputEvent = (
   if (!dragText) {
     createFileReaders(files, directory, callback).then(openTransferDialog);
   } else {
-    const filePaths = JSON.parse(dragText || "{}") as string[];
+    try {
+      const filePaths = JSON.parse(dragText || "[]") as string[];
 
-    filePaths.forEach(
-      (path) =>
-        dirname(path) !== "." &&
-        callback(
-          path,
-          undefined,
-          filePaths.length === 1 ? "updateUrl" : undefined
-        )
-    );
+      filePaths?.forEach(
+        (path) =>
+          dirname(path) !== "." &&
+          callback(
+            path,
+            undefined,
+            filePaths.length === 1 ? "updateUrl" : undefined
+          )
+      );
+    } catch {
+      // Failed to parse text data to JSON
+    }
   }
 };
 
