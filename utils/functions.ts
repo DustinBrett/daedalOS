@@ -254,6 +254,18 @@ export const label = (value: string): HTMLAttributes<HTMLElement> => ({
 export const isYouTubeUrl = (url: string): boolean =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
 
+export const getYouTubeUrlId = (url: string): string => {
+  try {
+    const { pathname, searchParams } = new URL(url);
+
+    return searchParams.get("v") || pathname.split("/").pop() || "";
+  } catch {
+    // URL parsing failed
+  }
+
+  return "";
+};
+
 let WEBP_SUPPORT: boolean;
 
 export const supportsWebP = (): boolean => {

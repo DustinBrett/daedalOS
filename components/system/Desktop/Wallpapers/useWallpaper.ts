@@ -11,6 +11,8 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   createOffscreenCanvas,
+  getYouTubeUrlId,
+  isYouTubeUrl,
   jsonFetch,
   viewWidth,
 } from "utils/functions";
@@ -127,6 +129,12 @@ const useWallpaper = (
         if (hdurl || url) {
           wallpaperUrl = ((viewWidth() > 1024 ? hdurl : url) || url) as string;
           newWallpaperFit = "fit";
+
+          if (isYouTubeUrl(wallpaperUrl)) {
+            wallpaperUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
+              wallpaperUrl
+            )}/maxresdefault.jpg`;
+          }
 
           const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
 
