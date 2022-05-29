@@ -26,6 +26,12 @@ const resourceAliasMap: Record<string, string> = {
 
 const MESSAGE = `Type the name of a program, folder, document, or Internet resource, and ${PACKAGE_DATA.alias} will open it for you.`;
 
+const notFound = (resource: string): void =>
+  // eslint-disable-next-line no-alert
+  alert(
+    `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
+  );
+
 const Run: FC<ComponentProcessProps> = () => {
   const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
   const { exists, readFile, stat } = useFileSystem();
@@ -37,15 +43,19 @@ const Run: FC<ComponentProcessProps> = () => {
     async (resource?: string) => {
       if (!resource) return;
 
-      const [resourcePid, ...resourceUrl] = resource.split(" ");
-      const resourcePath =
-        resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
       const addRunHistoryEntry = (): void =>
         setRunHistory((currentRunHistory) =>
           currentRunHistory[0] !== resource
             ? [resource, ...currentRunHistory]
             : currentRunHistory
         );
+      const [resourcePid, ...resourceUrl] = resource.split(" ");
+      let resourcePath = resource;
+
+      if (!(await exists(resourcePath))) {
+        resourcePath =
+          resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
+      }
 
       if (await exists(resourcePath)) {
         const stats = await stat(resourcePath);
@@ -53,7 +63,11 @@ const Run: FC<ComponentProcessProps> = () => {
         if (stats.isDirectory()) {
           open("FileExplorer", { url: resourcePath }, "");
           addRunHistoryEntry();
-        } else if (resourcePid && resourceUrl.length > 0) {
+        } else if (
+          resourcePid &&
+          resourceUrl.length > 0 &&
+          resourcePath !== resource
+        ) {
           const pid = Object.keys(processDirectory).find(
             (processName) =>
               processName.toLowerCase() === resourcePid.toLowerCase()
@@ -63,9 +77,7 @@ const Run: FC<ComponentProcessProps> = () => {
             open(pid, { url: resourcePath });
             addRunHistoryEntry();
           } else {
-            throw new Error(
-              `Cannot find '${resourcePid}'. Make sure you typed the name correctly, and then try again.`
-            );
+            notFound(resourcePid);
           }
         } else {
           const extension = extname(resourcePath);
@@ -95,10 +107,7 @@ const Run: FC<ComponentProcessProps> = () => {
           open(pid);
           addRunHistoryEntry();
         } else {
-          // eslint-disable-next-line consistent-return, no-alert
-          return alert(
-            `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
-          );
+          notFound(resource);
         }
       }
 
