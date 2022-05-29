@@ -109,7 +109,7 @@ const useV86 = (
       basefs: URL.createObjectURL(
         new Blob([JSON.stringify(fs9pV4ToV3())], { type: "application/json" })
       ),
-      baseurl: "/",
+      baseurl: window.location?.origin ?? "/",
     };
 
     const v86 = new window.V86Starter(v86StarterConfig);
