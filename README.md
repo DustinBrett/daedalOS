@@ -73,7 +73,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
   - F2, F5, Backspace, Arrows, Enter
-  - SHIFT+R, SHIFT+F10, SHIFT+F12
+  - SHIFT+CTRL+R, SHIFT+F10, SHIFT+F12
 - File information tooltips
 - Allow sorting by name, date, type or extension
   - Persists states
