@@ -11,13 +11,19 @@ type MarkedOptions = {
 
 declare global {
   interface Window {
+    DOMPurify: {
+      sanitize: (text: string) => string;
+    };
     marked: {
       parse: (markdownString: string, options: MarkedOptions) => string;
     };
   }
 }
 
-const libs = ["/Program Files/Marked/marked.min.js"];
+const libs = [
+  "/Program Files/Marked/marked.min.js",
+  "/Program Files/Marked/purify.min.js",
+];
 
 const useMarked = (
   id: string,
@@ -36,9 +42,11 @@ const useMarked = (
     ) as HTMLElement;
 
     if (container instanceof HTMLElement) {
-      container.innerHTML = window.marked.parse(markdownFile.toString(), {
-        headerIds: false,
-      });
+      container.innerHTML = window.DOMPurify.sanitize(
+        window.marked.parse(markdownFile.toString(), {
+          headerIds: false,
+        })
+      );
       container.querySelectorAll("a").forEach((link) =>
         link.addEventListener("click", (event) => {
           haltEvent(event);
