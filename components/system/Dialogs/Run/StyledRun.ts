@@ -51,6 +51,7 @@ const StyledRun = styled.div`
       }
 
       select {
+        background-color: #fff;
         clip-path: inset(0 0 0 calc(100% - 20px));
         position: absolute;
         width: calc(100% - 21px);
