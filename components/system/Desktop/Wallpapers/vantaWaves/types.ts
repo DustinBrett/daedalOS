@@ -8,7 +8,7 @@ type VantaWavesCycleColor = {
 };
 
 export type VantaWavesConfig = VantaWavesCycleColor & {
-  color: number;
+  color: string;
   forceAnimate?: boolean;
   gyroControls?: boolean;
   mouseControls?: boolean;
