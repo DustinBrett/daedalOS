@@ -33,7 +33,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     display: flex;
     flex-grow: 1;
     font-size: ${({ theme }) => theme.sizes.titleBar.fontSize};
-    font-weight: normal;
+    font-weight: 400;
     min-width: 0;
 
     figure {

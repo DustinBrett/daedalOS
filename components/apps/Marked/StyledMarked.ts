@@ -93,7 +93,7 @@ const StyledMarked = styled.div`
 
       .selected {
         color: #111;
-        font-weight: bold;
+        font-weight: 700;
 
         &:hover {
           text-decoration: none;
