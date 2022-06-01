@@ -113,34 +113,47 @@ export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   );
 
 export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
+  const desiredHeight = Number(size.height);
+  const desiredWidth = Number(size.width);
   const [vh, vw] = [viewHeight(), viewWidth()];
-  const setHeight = Number(size.height);
-  const setWidth = Number(size.width);
-  const height = Math.min(setHeight, vh - TASKBAR_HEIGHT);
-  const width = Math.min(setWidth, vw);
+  const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
+  const height = Math.min(desiredHeight, vhWithoutTaskbar);
+  const width = Math.min(desiredWidth, vw);
 
   if (!lockAspectRatio) return { height, width };
 
-  const forcedHeight = setHeight !== height;
-  const forcedWidth = setWidth !== width;
+  const isDesiredHeight = desiredHeight === height;
+  const isDesiredWidth = desiredWidth === width;
 
-  if (!forcedHeight && !forcedWidth) return { height, width };
-
-  return setWidth > setHeight
-    ? {
-        height: height * (setHeight / setWidth),
-        width:
-          setWidth === vw && forcedHeight
-            ? width * (setHeight / setWidth)
-            : width,
-      }
-    : {
-        height: width * (setWidth / setHeight),
-        width:
-          setHeight === vh && forcedWidth
-            ? height * (setWidth / setHeight)
-            : height,
+  if (!isDesiredHeight && !isDesiredWidth) {
+    if (desiredHeight > desiredWidth) {
+      return {
+        height,
+        width: Math.round(width / (vhWithoutTaskbar / height)),
       };
+    }
+
+    return {
+      height: Math.round(height / (vw / width)),
+      width,
+    };
+  }
+
+  if (!isDesiredHeight) {
+    return {
+      height,
+      width: Math.round(width / (desiredHeight / height)),
+    };
+  }
+
+  if (!isDesiredWidth) {
+    return {
+      height: Math.round(height / (desiredWidth / width)),
+      width,
+    };
+  }
+
+  return { height, width };
 };
 
 const bytesInKB = 1024;
