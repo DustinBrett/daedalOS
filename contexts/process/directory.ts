@@ -201,6 +201,17 @@ const processDirectory: Processes = {
     icon: "/System/Icons/vlc.webp",
     title: "Video Player",
   },
+  Vim: {
+    Component: dynamic(() => import("components/apps/Vim")),
+    allowResizing: false,
+    background: "rgb(34, 35, 36)",
+    defaultSize: {
+      height: 448,
+      width: 595,
+    },
+    icon: "/System/Icons/vim.webp",
+    title: "Vim",
+  },
   Webamp: {
     Component: dynamic(() => import("components/apps/Webamp")),
     hasWindow: false,
