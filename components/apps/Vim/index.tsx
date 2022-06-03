@@ -22,7 +22,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     let prependPath = "";
 
     if (pathParts.length === 1) {
-      prependPath = ".";
+      prependPath = "/root";
     }
 
     window.vimjs = undefined;
