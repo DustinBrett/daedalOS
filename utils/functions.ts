@@ -29,13 +29,24 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
-const loadScript = (src: string, defer?: boolean): Promise<Event> =>
+const loadScript = (
+  src: string,
+  defer?: boolean,
+  force?: boolean
+): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
+    const currentScript = loadedScripts.find((loadedScript) =>
+      loadedScript.src.endsWith(src)
+    );
 
-    if (loadedScripts.some((loadedScript) => loadedScript.src.endsWith(src))) {
-      resolve(new Event("Already loaded."));
-      return;
+    if (currentScript) {
+      if (!force) {
+        resolve(new Event("Already loaded."));
+        return;
+      }
+
+      currentScript.remove();
     }
 
     const script = document.createElement(
@@ -76,12 +87,13 @@ const loadStyle = (href: string): Promise<Event> =>
 
 export const loadFiles = async (
   files: string[],
-  defer?: boolean
+  defer?: boolean,
+  force?: boolean
 ): Promise<void> =>
   files.reduce(async (_promise, file) => {
     await (extname(file).toLowerCase() === ".css"
       ? loadStyle(encodeURI(file))
-      : loadScript(encodeURI(file), defer));
+      : loadScript(encodeURI(file), defer, force));
   }, Promise.resolve());
 
 export const pxToNum = (value: number | string = 0): number =>
