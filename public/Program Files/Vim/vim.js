@@ -2133,16 +2133,24 @@ var MEMFS = {
             var node = stream.node;
             node.timestamp = Date.now();
             if (buffer.subarray && (!node.contents || node.contents.subarray)) {
+                const triggerFileUpdate = () => {
+                  if (stream.path === VimModule.arguments[0]) {
+                    VimModule["writeCallback"](node.contents);
+                  }
+                };
                 if (canOwn) {
                     node.contents = buffer.subarray(offset, offset + length);
                     node.usedBytes = length;
+                    triggerFileUpdate();
                     return length
                 } else if (node.usedBytes === 0 && position === 0) {
                     node.contents = new Uint8Array(buffer.subarray(offset, offset + length));
                     node.usedBytes = length;
+                    triggerFileUpdate();
                     return length
                 } else if (position + length <= node.usedBytes) {
                     node.contents.set(buffer.subarray(offset, offset + length), position);
+                    triggerFileUpdate();
                     return length
                 }
             }

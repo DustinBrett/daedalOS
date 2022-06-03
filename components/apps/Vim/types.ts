@@ -21,6 +21,7 @@ export type VimModule = {
   loadedFS: boolean;
   memoryInitializerPrefixURL: string;
   preRun: (() => void)[];
+  writeCallback: (buffer: Uint8Array) => void;
 };
 
 declare global {

@@ -13,7 +13,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { readFile } = useFileSystem();
+  const { readFile, writeFile } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const { closing = false, url = "" } = process || {};
   const loadVim = useCallback(async () => {
@@ -60,12 +60,15 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
           if (!hasVimLoaded) window.vimjs?.pre_run();
         },
       ],
+      writeCallback: (buffer) => {
+        writeFile(url, Buffer.from(buffer), true);
+      },
     };
 
     await loadFiles(["/Program Files/Vim/vim.js"], false, hasVimLoaded);
 
     appendFileToTitle(basename(url));
-  }, [appendFileToTitle, readFile, url]);
+  }, [appendFileToTitle, readFile, url, writeFile]);
 
   useEffect(() => {
     if (!closing) loadVim();
