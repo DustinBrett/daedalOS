@@ -19,16 +19,16 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const loadVim = useCallback(async () => {
     const [, ...pathParts] = url.split("/");
     const hasVimLoaded = Boolean(window.vimjs);
-    let loadUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
+    let prependPath = "";
 
     if (pathParts.length === 1) {
-      loadUrl = `/${url}`;
+      prependPath = ".";
     }
 
     window.vimjs = undefined;
     window.VimModule = {
       VIMJS_ALLOW_EXIT: true,
-      arguments: [loadUrl],
+      arguments: [`${prependPath}${url || DEFAULT_TEXT_FILE_SAVE_PATH}`],
       loadedFS: hasVimLoaded,
       memoryInitializerPrefixURL: "/Program Files/Vim/",
       preRun: [
@@ -36,7 +36,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
           const vimModule = window.VimModule as VimModule;
           let walkedPath = "";
 
-          ["/", ...pathParts].forEach(
+          [prependPath, ...pathParts].forEach(
             (pathPart, index, { [index + 1]: nextPart }) => {
               if (nextPart && index + 1 !== pathParts.length) {
                 vimModule.FS_createPath?.(walkedPath, nextPart, true, true);
