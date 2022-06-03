@@ -1,7 +1,6 @@
 import { loader } from "@monaco-editor/react";
 import {
   config,
-  DEFAULT_SAVE_PATH,
   theme,
   URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
@@ -13,7 +12,10 @@ import { useProcesses } from "contexts/process";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import {
+  DEFAULT_TEXT_FILE_SAVE_PATH,
+  MILLISECONDS_IN_SECOND,
+} from "utils/constants";
 import { lockGlobal, unlockGlobal } from "utils/globals";
 
 const useMonaco = (
@@ -82,7 +84,7 @@ const useMonaco = (
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
         const [baseUrl] =
           editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
-        const saveUrl = url || DEFAULT_SAVE_PATH;
+        const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
 
         if (url === baseUrl || !url) {
           event.preventDefault();
