@@ -5,6 +5,8 @@ type Extension = {
   type?: string;
 };
 
+const TEXT_EDITORS = ["MonacoEditor", "Vim"];
+
 const types = {
   Application: {
     icon: "executable",
@@ -21,7 +23,7 @@ const types = {
     type: "FutureSplash File",
   },
   HtmlDocument: {
-    process: ["Browser", "MonacoEditor"],
+    process: ["Browser", ...TEXT_EDITORS],
     type: "HTML Document",
   },
   JsdosBundle: {
@@ -31,7 +33,7 @@ const types = {
   },
   Markdown: {
     icon: "marked",
-    process: ["Marked", "MonacoEditor"],
+    process: ["Marked", ...TEXT_EDITORS],
     type: "Markdown File",
   },
   MediaPlaylist: {
@@ -60,7 +62,7 @@ const types = {
   PythonFile: {
     command: "py",
     icon: "python",
-    process: ["Terminal", "MonacoEditor"],
+    process: ["Terminal", ...TEXT_EDITORS],
     type: "Python File",
   },
   SegaGenesisRom: {
@@ -78,7 +80,7 @@ const types = {
     type: "Super Nintendo ROM File",
   },
   SvgFile: {
-    process: ["Photos", "MonacoEditor"],
+    process: ["Photos", ...TEXT_EDITORS],
     type: "Scalable Vector Graphics File",
   },
   WinampSkin: {
@@ -88,7 +90,7 @@ const types = {
   },
   WysiwygHtmlDocument: {
     icon: "tinymce",
-    process: ["TinyMCE", "MonacoEditor"],
+    process: ["TinyMCE", ...TEXT_EDITORS],
     type: "WYSIWYG HTML File",
   },
   ZipFile: {
