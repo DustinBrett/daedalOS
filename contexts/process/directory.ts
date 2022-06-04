@@ -204,7 +204,7 @@ const processDirectory: Processes = {
   Vim: {
     Component: dynamic(() => import("components/apps/Vim")),
     allowResizing: false,
-    background: "rgba(34, 35, 36, 0.5)",
+    background: "rgb(34, 35, 36)",
     defaultSize: {
       height: 448,
       width: 595,
