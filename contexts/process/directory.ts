@@ -210,6 +210,7 @@ const processDirectory: Processes = {
       width: 595,
     },
     icon: "/System/Icons/vim.webp",
+    singleton: true,
     title: "Vim",
   },
   Webamp: {

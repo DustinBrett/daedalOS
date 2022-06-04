@@ -305,7 +305,7 @@ const useFileContextMenu = (
     }
 
     if (!pid && openWithFiltered.length === 0) {
-      openWithFiltered.push("MonacoEditor");
+      openWithFiltered.push("MonacoEditor", "Vim");
     }
 
     if (openWithFiltered.length > 0) {

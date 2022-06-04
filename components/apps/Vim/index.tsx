@@ -1,23 +1,26 @@
 import StyledVim from "components/apps/Vim/StyledVim";
-import type { VimModule } from "components/apps/Vim/types";
+import type { QueueItem } from "components/apps/Vim/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { useCallback, useEffect } from "react";
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const {
+    closeWithTransition,
     processes: { [id]: process },
   } = useProcesses();
-  const { readFile, writeFile } = useFileSystem();
+  const { readFile, updateFolder, writeFile } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const { closing = false, url = "" } = process || {};
+  const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
   const loadVim = useCallback(async () => {
-    const [, ...pathParts] = url.split("/");
+    const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
+    const [, ...pathParts] = saveUrl.split("/");
     const hasVimLoaded = Boolean(window.vimjs);
     let prependPath = "";
 
@@ -28,31 +31,40 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     window.vimjs = undefined;
     window.VimModule = {
       VIMJS_ALLOW_EXIT: true,
-      arguments: [`${prependPath}${url || DEFAULT_TEXT_FILE_SAVE_PATH}`],
+      arguments: [`${prependPath}${saveUrl}`],
       loadedFS: hasVimLoaded,
       memoryInitializerPrefixURL: "/Program Files/Vim.js/",
       preRun: [
         () => {
-          const vimModule = window.VimModule as VimModule;
           let walkedPath = "";
 
           [prependPath, ...pathParts].forEach(
             (pathPart, index, { [index + 1]: nextPart }) => {
               if (nextPart && index + 1 !== pathParts.length) {
-                vimModule.FS_createPath?.(walkedPath, nextPart, true, true);
+                window.VimModule?.FS_createPath?.(
+                  walkedPath,
+                  nextPart,
+                  true,
+                  true
+                );
                 walkedPath += `/${nextPart}`;
               } else if (!walkedPath) {
                 walkedPath = pathPart;
               } else {
-                readFile(url).then((data) => {
-                  vimModule.FS_createDataFile?.(
+                const createDataFile = (data = Buffer.from("")): void =>
+                  window.VimModule?.FS_createDataFile?.(
                     walkedPath,
                     pathPart,
                     data,
                     true,
                     true
                   );
-                });
+
+                if (!url) {
+                  createDataFile();
+                } else {
+                  readFile(saveUrl).then((data) => createDataFile(data));
+                }
               }
             }
           );
@@ -60,15 +72,33 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
           if (!hasVimLoaded) window.vimjs?.pre_run();
         },
       ],
-      writeCallback: (buffer) => {
-        writeFile(url, Buffer.from(buffer), true);
-      },
+      print: console.info,
+      printErr: console.info,
+      quitCallback: () => closeWithTransition(id),
+      writeCallback: (data) =>
+        setUpdateQueue((currentQueue) => [
+          ...currentQueue,
+          {
+            buffer: Buffer.from(data),
+            url: saveUrl,
+          },
+        ]),
     };
 
     await loadFiles(["/Program Files/Vim.js/vim.js"], false, hasVimLoaded);
 
-    appendFileToTitle(basename(url));
-  }, [appendFileToTitle, readFile, url, writeFile]);
+    appendFileToTitle(basename(saveUrl));
+  }, [appendFileToTitle, closeWithTransition, id, readFile, url]);
+
+  useEffect(() => {
+    if (updateQueue.length > 0) {
+      [...updateQueue].forEach(({ buffer, url: saveUrl }) => {
+        writeFile(saveUrl, buffer, true);
+        updateFolder(dirname(saveUrl), basename(saveUrl));
+      });
+      setUpdateQueue([]);
+    }
+  }, [updateFolder, updateQueue, writeFile]);
 
   useEffect(() => {
     if (!closing) loadVim();

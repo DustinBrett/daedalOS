@@ -1,4 +1,9 @@
-export type VimModule = {
+export type QueueItem = {
+  buffer: Buffer;
+  url: string;
+};
+
+type VimModule = {
   FS_createDataFile?: (
     parentPath: string,
     newPath: string,
@@ -21,6 +26,9 @@ export type VimModule = {
   loadedFS: boolean;
   memoryInitializerPrefixURL: string;
   preRun: (() => void)[];
+  print: (args: unknown) => void;
+  printErr: (args: unknown) => void;
+  quitCallback: () => void;
   writeCallback: (buffer: Uint8Array) => void;
 };
 

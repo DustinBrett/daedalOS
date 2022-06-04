@@ -60,6 +60,7 @@ VimModule.expectedDataFileDownloads++;
 }))();
 var VimModule;
 if (!VimModule) VimModule = (typeof VimModule !== "undefined" ? VimModule : null) || {};
+VimModule["globalEventListeners"] = [];
 var moduleOverrides = {};
 for (var key in VimModule) {
     if (VimModule.hasOwnProperty(key)) {
@@ -1356,13 +1357,13 @@ var vimjs = {
         }
         if (!handled) vimjs.gui_web_handle_key(charCode || keyCode, modifiers, 0, 0)
     }),
-    get_color_string: (function(color, bg) {
+    get_color_string: (function(color) {
         var bgr = [];
         for (var i = 0; i < 3; ++i) {
             bgr.push(color & 255);
             color >>= 8
         }
-        return "rgba(" + bgr[2] + "," + bgr[1] + "," + bgr[0] + "," + (bg ? "0.5" : "1") + ")"
+        return "rgb(" + bgr[2] + "," + bgr[1] + "," + bgr[0] + ")"
     }),
     pre_run: (function() {
         ENV["USER"] = "root";
@@ -5420,9 +5421,13 @@ var Browser = {
             canvas.exitPointerLock = document["exitPointerLock"] || document["mozExitPointerLock"] || document["webkitExitPointerLock"] || document["msExitPointerLock"] || (function() {});
             canvas.exitPointerLock = canvas.exitPointerLock.bind(document);
             document.addEventListener("pointerlockchange", pointerLockChange, false);
+            VimModule["globalEventListeners"].push(["pointerlockchange", pointerLockChange]);
             document.addEventListener("mozpointerlockchange", pointerLockChange, false);
+            VimModule["globalEventListeners"].push(["mozpointerlockchange", pointerLockChange]);
             document.addEventListener("webkitpointerlockchange", pointerLockChange, false);
+            VimModule["globalEventListeners"].push(["webkitpointerlockchange", pointerLockChange]);
             document.addEventListener("mspointerlockchange", pointerLockChange, false);
+            VimModule["globalEventListeners"].push(["mspointerlockchange", pointerLockChange]);
             if (VimModule["elementPointerLock"]) {
                 canvas.addEventListener("click", (function(ev) {
                     if (!Browser.pointerLock && canvas.requestPointerLock) {
@@ -5501,9 +5506,13 @@ var Browser = {
         if (!Browser.fullScreenHandlersInstalled) {
             Browser.fullScreenHandlersInstalled = true;
             document.addEventListener("fullscreenchange", fullScreenChange, false);
+            VimModule["globalEventListeners"].push(["fullscreenchange", fullScreenChange]);
             document.addEventListener("mozfullscreenchange", fullScreenChange, false);
+            VimModule["globalEventListeners"].push(["mozfullscreenchange", fullScreenChange]);
             document.addEventListener("webkitfullscreenchange", fullScreenChange, false);
-            document.addEventListener("MSFullscreenChange", fullScreenChange, false)
+            VimModule["globalEventListeners"].push(["webkitfullscreenchange", fullScreenChange]);
+            document.addEventListener("MSFullscreenChange", fullScreenChange, false);
+            VimModule["globalEventListeners"].push(["MSFullscreenChange", fullScreenChange]);
         }
         var canvasContainer = document.createElement("div");
         canvas.parentNode.insertBefore(canvasContainer, canvas);
@@ -6044,6 +6053,9 @@ function _vimjs_draw_string(row, col, s, len, flags) {
         ctx.moveTo(x, y - offs[x % 8]);
         for (var xx = x + 1, xx2 = x + w; xx < xx2; ++xx) ctx.lineTo(xx, y - offs[xx % 8]);
         ctx.stroke()
+    }
+    if (s === "E444: Cannot close last window") {
+      VimModule["quitCallback"]();
     }
 }
 
@@ -7086,38 +7098,48 @@ function _vimjs_init() {
     var ignoreKeys = (function() {
         return vimjs.lastMouseDownTarget !== vimjs.canvas_node
     });
-    document.addEventListener("mousedown", (function(event) {
+    const mousedownHandler = function(event) {
         if (vimjs.canvas_node.contains(event.target)) {
             vimjs.lastMouseDownTarget = vimjs.canvas_node
         } else {
             vimjs.lastMouseDownTarget = event.target
         }
-    }), false);
-    document.addEventListener("keypress", (function(e) {
+    };
+    document.addEventListener("mousedown", mousedownHandler, false);
+    VimModule["globalEventListeners"].push(["mousedown", mousedownHandler]);
+    const keypressHandler = function(e) {
         if (ignoreKeys()) return true;
         e.preventDefault();
         vimjs.handle_key(e.charCode, e.keyCode, e)
-    }));
+    };
+    document.addEventListener("keypress", keypressHandler);
+    VimModule["globalEventListeners"].push(["keypress", keypressHandler]);
     var keys_to_intercept_upon_keydown = {};
     [KeyEvent.DOM_VK_ESCAPE, KeyEvent.DOM_VK_TAB, KeyEvent.DOM_VK_BACK_SPACE, KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN, KeyEvent.DOM_VK_LEFT, KeyEvent.DOM_VK_RIGHT, KeyEvent.DOM_VK_DELETE, KeyEvent.DOM_VK_PAGE_UP, KeyEvent.DOM_VK_PAGE_DOWN].forEach((function(k) {
         keys_to_intercept_upon_keydown[k] = 1
     }));
-    document.addEventListener("keydown", (function(e) {
-        if (ignoreKeys()) return true;
-        if (e.keyCode in keys_to_intercept_upon_keydown) {
-            e.preventDefault();
-            vimjs.handle_key(0, e.keyCode, e)
-        }
-    }));
+    const baseKeyDownHandler = function(e) {
+      if (ignoreKeys()) return true;
+      if (e.keyCode in keys_to_intercept_upon_keydown) {
+          e.preventDefault();
+          vimjs.handle_key(0, e.keyCode, e)
+      }
+    };
+    document.addEventListener("keydown", baseKeyDownHandler);
+    VimModule["globalEventListeners"].push(["keydown", baseKeyDownHandler]);
     if (!vimjs.is_firefox) {
-        document.addEventListener("keydown", (function(e) {
-            if (ignoreKeys()) return true;
-            if (e.keyCode === KeyEvent.DOM_VK_CONTROL) vimjs.ctrl_pressed = true
-        }));
-        document.addEventListener("keyup", (function(e) {
-            if (ignoreKeys()) return true;
-            if (e.keyCode === KeyEvent.DOM_VK_CONTROL) vimjs.ctrl_pressed = false
-        }))
+        const keydownHandler = function(e) {
+          if (ignoreKeys()) return true;
+          if (e.keyCode === KeyEvent.DOM_VK_CONTROL) vimjs.ctrl_pressed = true
+        };
+        document.addEventListener("keydown", keydownHandler);
+        VimModule["globalEventListeners"].push(["keydown", keydownHandler]);
+        const keyupHandler = function(e) {
+          if (ignoreKeys()) return true;
+          if (e.keyCode === KeyEvent.DOM_VK_CONTROL) vimjs.ctrl_pressed = false
+        };
+        document.addEventListener("keyup", keyupHandler);
+        VimModule["globalEventListeners"].push(["keyup", keyupHandler]);
     }
 }
 
@@ -7289,7 +7311,7 @@ function _vimjs_is_valid_color(colorp) {
 }
 
 function _vimjs_set_bg_color(color) {
-    vimjs.bg_color = vimjs.get_color_string(color, true)
+    vimjs.bg_color = vimjs.get_color_string(color)
 }
 
 function _vimjs_prepare_exit() {
@@ -18061,6 +18083,9 @@ function exit(status) {
     STACKTOP = initialStackTop;
     exitRuntime();
     if (VimModule["onExit"]) VimModule["onExit"](status);
+    VimModule["globalEventListeners"].forEach(
+      ([type, eventListener]) => document.removeEventListener(type, eventListener)
+    );
     const exitStatus = ExitStatus(status);
     if (exitStatus) console.info("ExitStatus", exitStatus);
 }

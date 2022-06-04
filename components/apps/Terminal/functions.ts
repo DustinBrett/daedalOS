@@ -111,6 +111,7 @@ const directoryCommands = new Set([
   "rmdir",
   "touch",
   "type",
+  "vim",
   "xlsx",
 ]);
 
