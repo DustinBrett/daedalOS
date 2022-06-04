@@ -30,7 +30,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${url || DEFAULT_TEXT_FILE_SAVE_PATH}`],
       loadedFS: hasVimLoaded,
-      memoryInitializerPrefixURL: "/Program Files/Vim/",
+      memoryInitializerPrefixURL: "/Program Files/Vim.js/",
       preRun: [
         () => {
           const vimModule = window.VimModule as VimModule;
@@ -65,7 +65,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       },
     };
 
-    await loadFiles(["/Program Files/Vim/vim.js"], false, hasVimLoaded);
+    await loadFiles(["/Program Files/Vim.js/vim.js"], false, hasVimLoaded);
 
     appendFileToTitle(basename(url));
   }, [appendFileToTitle, readFile, url, writeFile]);

@@ -1356,13 +1356,13 @@ var vimjs = {
         }
         if (!handled) vimjs.gui_web_handle_key(charCode || keyCode, modifiers, 0, 0)
     }),
-    get_color_string: (function(color) {
+    get_color_string: (function(color, bg) {
         var bgr = [];
         for (var i = 0; i < 3; ++i) {
             bgr.push(color & 255);
             color >>= 8
         }
-        return "rgb(" + bgr[2] + "," + bgr[1] + "," + bgr[0] + ")"
+        return "rgba(" + bgr[2] + "," + bgr[1] + "," + bgr[0] + "," + (bg ? "0.5" : "1") + ")"
     }),
     pre_run: (function() {
         ENV["USER"] = "root";
@@ -7289,7 +7289,7 @@ function _vimjs_is_valid_color(colorp) {
 }
 
 function _vimjs_set_bg_color(color) {
-    vimjs.bg_color = vimjs.get_color_string(color)
+    vimjs.bg_color = vimjs.get_color_string(color, true)
 }
 
 function _vimjs_prepare_exit() {

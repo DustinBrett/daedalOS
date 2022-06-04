@@ -6,6 +6,7 @@ const StyledVim = styled.div`
   }
 
   #vimjs-container {
+    background-color: transparent !important;
     height: 100%;
     width: 100%;
   }
