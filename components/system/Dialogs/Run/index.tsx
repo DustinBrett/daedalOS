@@ -42,7 +42,7 @@ const Run: FC<ComponentProcessProps> = () => {
   const { foregroundId, runHistory, setRunHistory } = useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
-  const [isEmptyInput, setIsEmptyInput] = useState(true);
+  const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;
