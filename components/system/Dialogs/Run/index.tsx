@@ -33,7 +33,11 @@ const notFound = (resource: string): void =>
   );
 
 const Run: FC<ComponentProcessProps> = () => {
-  const { open, close, processes: { Run: runProcess } = {} } = useProcesses();
+  const {
+    open,
+    closeWithTransition,
+    processes: { Run: runProcess } = {},
+  } = useProcesses();
   const { exists, readFile, stat } = useFileSystem();
   const { foregroundId, runHistory, setRunHistory } = useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -112,9 +116,9 @@ const Run: FC<ComponentProcessProps> = () => {
         }
       }
 
-      close("Run");
+      closeWithTransition("Run");
     },
-    [close, exists, open, readFile, setRunHistory, stat]
+    [closeWithTransition, exists, open, readFile, setRunHistory, stat]
   );
 
   useEffect(() => {
@@ -161,6 +165,7 @@ const Run: FC<ComponentProcessProps> = () => {
             onFocusCapture={() => setIsInputFocused(true)}
             onKeyDown={({ key }) => {
               if (key === "Enter") runResource(inputRef.current?.value.trim());
+              if (key === "Escape") closeWithTransition("Run");
             }}
             onKeyUp={({ target }) =>
               setIsEmptyInput(!(target as HTMLInputElement)?.value)
@@ -203,7 +208,9 @@ const Run: FC<ComponentProcessProps> = () => {
         >
           OK
         </StyledButton>
-        <StyledButton onClick={() => close("Run")}>Cancel</StyledButton>
+        <StyledButton onClick={() => closeWithTransition("Run")}>
+          Cancel
+        </StyledButton>
       </nav>
     </StyledRun>
   );
