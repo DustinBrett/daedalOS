@@ -90,7 +90,6 @@ const useMonaco = (
           event.preventDefault();
           await writeFile(saveUrl, editor.getValue(), true);
           updateFolder(dirname(saveUrl), basename(saveUrl));
-          prependFileToTitle(basename(saveUrl));
         }
       }
     });
@@ -117,8 +116,14 @@ const useMonaco = (
   }, [containerRef, editor, id, monaco, setArgument, setLoading]);
 
   useEffect(() => {
-    if (monaco && editor && url) loadFile();
-  }, [editor, loadFile, monaco, url]);
+    if (monaco && editor) {
+      if (url) {
+        loadFile();
+      }
+
+      prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
+    }
+  }, [editor, loadFile, monaco, prependFileToTitle, url]);
 };
 
 export default useMonaco;

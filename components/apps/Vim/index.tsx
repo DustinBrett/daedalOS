@@ -15,7 +15,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
   } = useProcesses();
   const { readFile, updateFolder, writeFile } = useFileSystem();
-  const { appendFileToTitle } = useTitle(id);
+  const { prependFileToTitle } = useTitle(id);
   const { url = "" } = process || {};
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
   const loading = useRef(false);
@@ -94,8 +94,8 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
         ]),
     });
 
-    appendFileToTitle(basename(saveUrl));
-  }, [appendFileToTitle, closeWithTransition, id, readFile, url]);
+    prependFileToTitle(basename(saveUrl));
+  }, [closeWithTransition, id, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (updateQueue.length > 0) {
