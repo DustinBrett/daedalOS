@@ -24,6 +24,7 @@ type VimModule = {
   };
   exit?: () => void;
   memoryInitializerPrefixURL: string;
+  postRun: (() => void)[];
   preRun: (() => void)[];
   print: (args: unknown) => void;
   printErr: (args: unknown) => void;

@@ -5,7 +5,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
@@ -16,8 +16,9 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { readFile, updateFolder, writeFile } = useFileSystem();
   const { appendFileToTitle } = useTitle(id);
-  const { closing = false, url = "" } = process || {};
+  const { url = "" } = process || {};
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
+  const loading = useRef(false);
   const loadVim = useCallback(async () => {
     const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
     const [, ...pathParts] = saveUrl.split("/");
@@ -39,6 +40,11 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
       memoryInitializerPrefixURL: "/Program Files/Vim.js/",
+      postRun: [
+        () => {
+          loading.current = false;
+        },
+      ],
       preRun: [
         () => {
           let walkedPath = "";
@@ -102,17 +108,20 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   }, [updateFolder, updateQueue, writeFile]);
 
   useEffect(() => {
-    if (!closing) loadVim();
+    if (!loading.current) {
+      loading.current = true;
+      loadVim();
+    }
 
     return () => {
       if (
-        closing &&
+        !loading &&
         window.VimWrapperModule?.VimModule?.asmLibraryArg?._vimjs_prepare_exit()
       ) {
         window.VimWrapperModule?.VimModule?.exit?.();
       }
     };
-  }, [closing, loadVim]);
+  }, [loadVim]);
 
   return (
     <StyledVim>

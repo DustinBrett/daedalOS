@@ -1378,6 +1378,7 @@ var vimjs = {
     }),
     invert_canvas: (function(x, y, w, h) {
         var ctx = vimjs.canvas_ctx;
+        if (!ctx) return;
         var img = ctx.getImageData(x, y, w, h);
         var data = img.data;
         for (var i = 0, l = data.length; i < l;) {
@@ -4866,6 +4867,7 @@ function _open(path, oflag, varargs) {
 
 function _vimjs_draw_hollow_cursor(row, col) {
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     ctx.strokeStyle = vimjs.fg_color;
     var cw = vimjs.char_width;
     var ch = vimjs.char_height;
@@ -5034,6 +5036,7 @@ function _setenv(envname, envval, overwrite) {
 
 function _vimjs_clear_block(row1, col1, row2, col2) {
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     ctx.fillStyle = vimjs.bg_color;
     var cw = vimjs.char_width;
     var ch = vimjs.char_height;
@@ -6037,6 +6040,7 @@ function _vimjs_draw_string(row, col, s, len, flags) {
     if (flags & 2) font = "bold " + font;
     s = Pointer_stringify(s, len);
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     ctx.font = font;
     ctx.textBaseline = "bottom";
     ctx.fillStyle = vimjs.fg_color;
@@ -6155,6 +6159,7 @@ function _vimjs_clear_all() {
     if (!vimjs.canvas_node) return;
     var canvas_node = vimjs.canvas_node;
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     ctx.fillStyle = vimjs.bg_color;
     ctx.fillRect(0, 0, canvas_node.width, canvas_node.height)
 }
@@ -6212,6 +6217,7 @@ function _ctime(timer) {
 
 function _vimjs_insert_lines(num_lines, row1, row2, col1, col2) {
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     var cw = vimjs.char_width;
     var ch = vimjs.char_height;
     var x = col1 * cw;
@@ -6760,6 +6766,7 @@ function _vimjs_init() {
     if (!canvas_node) return;
     canvas_node.style.display = "block";
     vimjs.canvas_ctx = canvas_node.getContext("2d");
+    if (!vimjs.canvas_ctx) return;
     var container_node = vimjs.container_node = document.getElementById("vimjs-container");
     if (!container_node) return;
     container_node.removeChild(canvas_node);
@@ -7158,6 +7165,7 @@ function _vimjs_init() {
 
 function _vimjs_delete_lines(num_lines, row1, row2, col1, col2) {
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     var cw = vimjs.char_width;
     var ch = vimjs.char_height;
     var x = col1 * cw;
@@ -7313,6 +7321,7 @@ function _putchar(c) {
 
 function _vimjs_draw_part_cursor(row, col, width, height) {
     var ctx = vimjs.canvas_ctx;
+    if (!ctx) return;
     ctx.fillStyle = vimjs.fg_color;
     var cw = vimjs.char_width;
     var ch = vimjs.char_height;
