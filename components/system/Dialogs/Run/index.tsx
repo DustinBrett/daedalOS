@@ -59,7 +59,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
       if (!resourceExists) {
         resourcePath =
-          resourceUrl.length > 0 ? resourceUrl.join("") : resourcePid;
+          resourceUrl.length > 0 ? resourceUrl.join(" ") : resourcePid;
       }
 
       if (resourceExists || (await exists(resourcePath))) {
