@@ -21,18 +21,23 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const loadVim = useCallback(async () => {
     const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
     const [, ...pathParts] = saveUrl.split("/");
-    const hasVimLoaded = Boolean(window.vimjs);
     let prependPath = "";
 
     if (pathParts.length === 1) {
       prependPath = "/root";
     }
 
-    window.vimjs = undefined;
-    window.VimModule = {
+    window.VimWrapperModule = {};
+
+    await loadFiles(
+      ["/Program Files/Vim.js/vim.js"],
+      false,
+      !!window.VimWrapperModule
+    );
+
+    window.VimWrapperModule?.init?.({
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
-      loadedFS: hasVimLoaded,
       memoryInitializerPrefixURL: "/Program Files/Vim.js/",
       preRun: [
         () => {
@@ -41,7 +46,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
           [prependPath, ...pathParts].forEach(
             (pathPart, index, { [index + 1]: nextPart }) => {
               if (nextPart && index + 1 !== pathParts.length) {
-                window.VimModule?.FS_createPath?.(
+                window.VimWrapperModule?.VimModule?.FS_createPath?.(
                   walkedPath,
                   nextPart,
                   true,
@@ -52,7 +57,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
                 walkedPath = pathPart;
               } else {
                 const createDataFile = (data = Buffer.from("")): void =>
-                  window.VimModule?.FS_createDataFile?.(
+                  window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
                     walkedPath,
                     pathPart,
                     data,
@@ -68,8 +73,6 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
               }
             }
           );
-
-          if (!hasVimLoaded) window.vimjs?.pre_run();
         },
       ],
       print: console.info,
@@ -83,9 +86,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
             url: saveUrl,
           },
         ]),
-    };
-
-    await loadFiles(["/Program Files/Vim.js/vim.js"], false, hasVimLoaded);
+    });
 
     appendFileToTitle(basename(saveUrl));
   }, [appendFileToTitle, closeWithTransition, id, readFile, url]);
@@ -104,8 +105,11 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     if (!closing) loadVim();
 
     return () => {
-      if (closing && window.VimModule?.asmLibraryArg?._vimjs_prepare_exit()) {
-        window.VimModule?.exit?.();
+      if (
+        closing &&
+        window.VimWrapperModule?.VimModule?.asmLibraryArg?._vimjs_prepare_exit()
+      ) {
+        window.VimWrapperModule?.VimModule?.exit?.();
       }
     };
   }, [closing, loadVim]);

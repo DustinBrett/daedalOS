@@ -1,4 +1,6 @@
-var VimModule;
+window.VimWrapperModule = { init: (vimModuleInit) => {
+var VimModule = vimModuleInit;
+window.VimWrapperModule.VimModule = VimModule;
 if (typeof VimModule === "undefined") VimModule = eval("(function() { try { return VimModule || {} } catch(e) { return {} } })()");
 if (!VimModule.expectedDataFileDownloads) {
     VimModule.expectedDataFileDownloads = 0;
@@ -7,7 +9,6 @@ if (!VimModule.expectedDataFileDownloads) {
 VimModule.expectedDataFileDownloads++;
 ((function() {
     function runWithFS() {
-      if (VimModule["loadedFS"]) return;
         function assert(check, msg) {
             if (!check) throw msg + (new Error).stack
         }
@@ -1098,6 +1099,16 @@ function preRun() {
         while (VimModule["preRun"].length) {
             addOnPreRun(VimModule["preRun"].shift())
         }
+        addOnPreRun(() => {
+            ENV["USER"] = "root";
+            ENV["HOME"] = "/root";
+            ENV["PWD"] = "/root";
+            ENV["_"] = "/bin/vim";
+            try {
+                VimModule["FS_createPath"]("/", "root", true, true);
+            } catch (e) {}
+            FS.currentPath = "/root";
+        });
     }
     callRuntimeCallbacks(__ATPRERUN__)
 }
@@ -1365,14 +1376,6 @@ var vimjs = {
         }
         return "rgb(" + bgr[2] + "," + bgr[1] + "," + bgr[0] + ")"
     }),
-    pre_run: (function() {
-        ENV["USER"] = "root";
-        ENV["HOME"] = "/root";
-        ENV["PWD"] = "/root";
-        ENV["_"] = "/bin/vim";
-        VimModule["FS_createPath"]("/", "root", true, true);
-        FS.currentPath = "/root";
-    }),
     invert_canvas: (function(x, y, w, h) {
         var ctx = vimjs.canvas_ctx;
         var img = ctx.getImageData(x, y, w, h);
@@ -1391,9 +1394,11 @@ var vimjs = {
 };
 
 function _vimjs_resize(width, height) {
+    if (!vimjs.container_node) return;
     var container_node = vimjs.container_node;
     container_node.style.width = width / vimjs.devicePixelRatio + container_node.offsetWidth - container_node.clientWidth + "px";
     container_node.style.height = height / vimjs.devicePixelRatio + container_node.offsetHeight - container_node.clientHeight + "px";
+    if (!vimjs.canvas_node) return;
     var canvas_node = vimjs.canvas_node;
     canvas_node.width = width;
     canvas_node.height = height
@@ -6061,6 +6066,7 @@ function _vimjs_draw_string(row, col, s, len, flags) {
 
 function _vimjs_check_font(font) {
     font = Pointer_stringify(font);
+    if (!vimjs.font_test_node) return;
     var font_test_node = vimjs.font_test_node;
     font_test_node.innerHTML = "the quick brown fox jumps over the lazy dog";
     return ["serif", "sans-serif", "monospace"].some((function(base_font) {
@@ -6146,6 +6152,7 @@ function _chdir(path) {
 }
 
 function _vimjs_clear_all() {
+    if (!vimjs.canvas_node) return;
     var canvas_node = vimjs.canvas_node;
     var ctx = vimjs.canvas_ctx;
     ctx.fillStyle = vimjs.bg_color;
@@ -6210,6 +6217,7 @@ function _vimjs_insert_lines(num_lines, row1, row2, col1, col2) {
     var x = col1 * cw;
     var w = (col2 - col1 + 1) * cw;
     var h = (row2 - row1 - num_lines + 1) * ch;
+    if (!vimjs.canvas_node) return;
     ctx.drawImage(vimjs.canvas_node, x, row1 * ch, w, h, x, (row1 + num_lines) * ch, w, h);
     _vimjs_clear_block(row1, col1, row1 + num_lines - 1, col2)
 }
@@ -6733,6 +6741,7 @@ function _vimjs_haskey(name) {
 function _vimjs_init_font(font) {
     if (typeof font !== "string") font = Pointer_stringify(font);
     if (!font) font = "12px monospace";
+    if (!vimjs.font_test_node) return;
     var font_test_node = vimjs.font_test_node;
     font_test_node.style.font = font;
     font_test_node.innerHTML = "m";
@@ -6746,10 +6755,13 @@ function _vimjs_init() {
     vimjs.gui_web_handle_key = VimModule["cwrap"]("gui_web_handle_key", null, ["number", "number", "number", "number"]);
     vimjs.input_available = VimModule["cwrap"]("input_available", "number", []);
     vimjs.font_test_node = document.getElementById("vimjs-font-test");
+    if (!vimjs.font_test_node) return;
     var canvas_node = vimjs.canvas_node = document.getElementById("vimjs-canvas");
+    if (!canvas_node) return;
     canvas_node.style.display = "block";
     vimjs.canvas_ctx = canvas_node.getContext("2d");
     var container_node = vimjs.container_node = document.getElementById("vimjs-container");
+    if (!container_node) return;
     container_node.removeChild(canvas_node);
     container_node.innerHTML = "";
     container_node.appendChild(canvas_node);
@@ -7099,6 +7111,7 @@ function _vimjs_init() {
         return vimjs.lastMouseDownTarget !== vimjs.canvas_node
     });
     const mousedownHandler = function(event) {
+        if (!vimjs.canvas_node) return;
         if (vimjs.canvas_node.contains(event.target)) {
             vimjs.lastMouseDownTarget = vimjs.canvas_node
         } else {
@@ -7151,6 +7164,7 @@ function _vimjs_delete_lines(num_lines, row1, row2, col1, col2) {
     var y = (row1 + num_lines) * ch;
     var w = (col2 - col1 + 1) * cw;
     var h = (row2 + 1) * ch - y;
+    if (!vimjs.canvas_node) return;
     ctx.drawImage(vimjs.canvas_node, x, y, w, h, x, row1 * ch, w, h);
     _vimjs_clear_block(row2 - num_lines + 1, col1, row2, col2)
 }
@@ -7165,6 +7179,7 @@ function _exit(status) {
 var _emscripten_async_resume = undefined;
 
 function _vimjs_flash(msec) {
+    if (!vimjs.canvas_node) return;
     var canvas_node = vimjs.canvas_node;
     var w = canvas_node.width;
     var h = canvas_node.height;
@@ -18121,3 +18136,4 @@ if (VimModule["noInitialRun"]) {
     shouldRunNow = false
 }
 run()
+} };
