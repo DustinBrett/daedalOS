@@ -1,5 +1,7 @@
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
-import extensions from "components/system/Files/FileEntry/extensions";
+import extensions, {
+  TEXT_EDITORS,
+} from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
@@ -263,6 +265,10 @@ const useFileContextMenu = (
               label: "Download",
             }
           );
+
+          if (!isShortcut && pid !== "FileExplorer") {
+            openWithFiltered.push(...TEXT_EDITORS);
+          }
         }
       }
 
@@ -302,10 +308,6 @@ const useFileContextMenu = (
         action: () => unMapFs(path),
         label: "Disconnect",
       });
-    }
-
-    if (!pid && openWithFiltered.length === 0) {
-      openWithFiltered.push("MonacoEditor", "Vim");
     }
 
     if (openWithFiltered.length > 0) {

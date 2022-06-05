@@ -5,7 +5,7 @@ type Extension = {
   type?: string;
 };
 
-const TEXT_EDITORS = ["MonacoEditor", "Vim"];
+export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 const types = {
   Application: {
