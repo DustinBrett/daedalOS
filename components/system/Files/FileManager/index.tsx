@@ -38,6 +38,7 @@ type FileManagerProps = {
   loadIconsImmediately?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
+  skipSorting?: boolean;
   url: string;
   useNewFolderIcon?: boolean;
   view: FileManagerViewNames;
@@ -53,6 +54,7 @@ const FileManager: FC<FileManagerProps> = ({
   loadIconsImmediately,
   readOnly,
   showStatusBar,
+  skipSorting,
   url,
   useNewFolderIcon,
   view,
@@ -69,7 +71,14 @@ const FileManager: FC<FileManagerProps> = ({
     fileManagerRef
   );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
-    useFolder(url, setRenaming, focusFunctions, hideFolders, hideLoading);
+    useFolder(
+      url,
+      setRenaming,
+      focusFunctions,
+      hideFolders,
+      hideLoading,
+      skipSorting
+    );
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =

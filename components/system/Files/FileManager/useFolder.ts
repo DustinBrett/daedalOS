@@ -75,7 +75,8 @@ const useFolder = (
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   hideFolders = false,
-  hideLoading = false
+  hideLoading = false,
+  skipSorting = false
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -121,7 +122,8 @@ const useFolder = (
     },
     [directory, readFile]
   );
-  const isSimpleSort = !sortBy || sortBy === "name" || sortBy === "type";
+  const isSimpleSort =
+    skipSorting || !sortBy || sortBy === "name" || sortBy === "type";
   const updateFiles = useCallback(
     async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
       if (oldFile) {
@@ -182,7 +184,9 @@ const useFolder = (
                   newFiles[file] = await statsWithShortcutInfo(file, fileStats);
                   newFiles = sortContents(
                     newFiles,
-                    customSortOrder || Object.keys(files || {})
+                    skipSorting
+                      ? []
+                      : customSortOrder || Object.keys(files || {})
                   );
                 }
 
@@ -224,6 +228,7 @@ const useFolder = (
       lstat,
       readdir,
       setSortOrder,
+      skipSorting,
       stat,
       statsWithShortcutInfo,
     ]
