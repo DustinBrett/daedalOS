@@ -18,6 +18,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   height: 100%;
   overflow: ${({ $scrollable }) => ($scrollable ? undefined : "hidden")};
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
+  place-content: flex-start;
   pointer-events: ${({ $selecting }) => ($selecting ? "auto" : undefined)};
   row-gap: ${({ theme }) => theme.sizes.fileManager.rowGap};
 
