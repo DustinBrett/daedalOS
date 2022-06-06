@@ -267,7 +267,14 @@ const useFileContextMenu = (
           );
 
           if (!isShortcut && pid !== "FileExplorer") {
-            openWithFiltered.push(...TEXT_EDITORS);
+            TEXT_EDITORS.forEach((textEditor) => {
+              if (
+                textEditor !== defaultProcess &&
+                !openWithFiltered.includes(textEditor)
+              ) {
+                openWithFiltered.push(textEditor);
+              }
+            });
           }
         }
       }
