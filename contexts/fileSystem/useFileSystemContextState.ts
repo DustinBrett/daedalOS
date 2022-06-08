@@ -210,12 +210,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
       if (!window.indexedDB.databases) clearFs();
       else {
         window.indexedDB.databases().then((databases) => {
-          Promise.all(
+          Promise.allSettled(
             databases
               .filter(({ name }) => name !== "browserfs")
               .map(
                 ({ name }) =>
-                  new Promise((resolveDelete) => {
+                  new Promise((resolveDelete, rejectDelete) => {
                     if (name) {
                       const deleteRequest =
                         window.indexedDB.deleteDatabase(name);
@@ -228,6 +228,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
                           )
                       );
                     }
+
+                    window.setTimeout(rejectDelete, 500);
                   })
               )
           ).then(clearFs);
