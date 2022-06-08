@@ -98,10 +98,7 @@ const useBoxedWine = (
   }, [appendFileToTitle, containerRef, readFile, setLoading, url]);
 
   useEffect(() => {
-    if (
-      (!loadedUrl.current && typeof url === "string") ||
-      (loadedUrl.current && url)
-    ) {
+    if (loadedUrl.current !== url) {
       loadedUrl.current = url;
       loadEmulator();
     }
