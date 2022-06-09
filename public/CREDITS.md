@@ -35,6 +35,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Panzoom](https://github.com/timmywil/panzoom)
 - [Vanta.js](https://github.com/tengbao/vanta)
 - [Hexells](https://github.com/znah/hexells)
+- [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 
 ## App Libraries
 
