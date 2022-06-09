@@ -107,6 +107,11 @@ const useFolderContextMenu = (
                   toggle: wallpaperImage.startsWith("APOD"),
                 },
                 {
+                  action: () => setWallpaper("COASTAL_LANDSCAPE"),
+                  label: "Coastal Landscape",
+                  toggle: wallpaperImage === "COASTAL_LANDSCAPE",
+                },
+                {
                   action: () => setWallpaper("HEXELLS"),
                   label: "Hexells",
                   toggle: wallpaperImage === "HEXELLS",

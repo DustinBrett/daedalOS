@@ -1,4 +1,5 @@
 import hexells from "components/system/Desktop/Wallpapers/hexells";
+import coastalLandscape from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
 import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
@@ -29,6 +30,14 @@ const cssFit: Record<WallpaperFit, string> = {
 };
 
 const WALLPAPER_WORKERS: Record<string, () => Worker> = {
+  COASTAL_LANDSCAPE: (): Worker =>
+    new Worker(
+      new URL(
+        "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape/wallpaper.worker",
+        import.meta.url
+      ),
+      { name: "Wallpaper (Coastal Landscape)" }
+    ),
   HEXELLS: (): Worker =>
     new Worker(
       new URL(
@@ -83,6 +92,8 @@ const useWallpaper = (
         vantaWaves(config)(desktopRef.current);
       } else if (wallpaperImage === "HEXELLS") {
         hexells(desktopRef.current);
+      } else if (wallpaperImage === "COASTAL_LANDSCAPE") {
+        coastalLandscape(desktopRef.current);
       } else {
         setWallpaper("VANTA");
       }
