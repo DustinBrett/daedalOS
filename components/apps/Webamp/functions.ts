@@ -105,3 +105,21 @@ export const parseTrack = async (
     metaData: { album, artist, title },
   };
 };
+
+export const m3uToTracks = async (
+  playlistData: string,
+  defaultPlaylistName?: string
+): Promise<Track[]> => {
+  const parser = await import("iptv-playlist-parser");
+  const { items = [] } = parser.parse(playlistData) || {};
+
+  return items.map(({ group: { title }, name, url }) => ({
+    duration: 0,
+    metaData: {
+      album: title || defaultPlaylistName || "",
+      artist: "",
+      title: name,
+    },
+    url,
+  }));
+};

@@ -13,6 +13,11 @@ const types = {
     process: ["BoxedWine", "JSDOS"],
     type: "Application",
   },
+  AudioPlaylist: {
+    icon: "audio",
+    process: ["Webamp"],
+    type: "Audio Playlist File",
+  },
   DiscImage: {
     icon: "image",
     process: ["V86"],
@@ -108,6 +113,7 @@ const extensions = {
   ".img": types.DiscImage,
   ".iso": types.MountableDiscImage,
   ".jsdos": types.JsdosBundle,
+  ".m3u": types.AudioPlaylist,
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,

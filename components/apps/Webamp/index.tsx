@@ -1,6 +1,7 @@
 import {
   cleanBufferOnSkinLoad,
   focusWindow,
+  m3uToTracks,
   parseTrack,
   unFocus,
 } from "components/apps/Webamp/functions";
@@ -37,6 +38,15 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const getUrlOptions = useCallback(async (): Promise<Options> => {
     if (url) {
       const extension = extname(url).toLowerCase();
+
+      if (extension === ".m3u") {
+        return {
+          initialTracks: await m3uToTracks(
+            (await readFile(url)).toString(),
+            basename(url, extname(url))
+          ),
+        };
+      }
 
       if (extension === ".mp3") {
         return {

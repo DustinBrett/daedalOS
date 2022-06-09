@@ -3,6 +3,7 @@ import {
   cleanBufferOnSkinLoad,
   closeEqualizer,
   getWebampElement,
+  m3uToTracks,
   MAIN_WINDOW,
   parseTrack,
   PLAYLIST_WINDOW,
@@ -19,7 +20,7 @@ import { useCallback, useRef } from "react";
 import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent } from "utils/functions";
-import type { Options } from "webamp";
+import type { Options, Track } from "webamp";
 
 type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;
@@ -66,11 +67,36 @@ const useWebamp = (id: string): Webamp => {
       containerElement: HTMLDivElement,
       { initialSkin, initialTracks }: Options
     ) => {
+      const handleUrl = async (): Promise<Track[]> => {
+        // eslint-disable-next-line no-alert
+        const externalUrl = prompt(
+          "Enter an Internet location to open here:\nFor example: https://server.com/playlist.m3u"
+        );
+
+        if (externalUrl) {
+          if (externalUrl?.endsWith(".m3u")) {
+            const m3uPlaylist = await fetch(externalUrl);
+
+            return m3uToTracks(await m3uPlaylist.text());
+          }
+
+          return [
+            {
+              duration: 0,
+              url: externalUrl,
+            },
+          ];
+        }
+
+        return [];
+      };
       const webamp = new window.Webamp({
         ...BASE_WEBAMP_OPTIONS,
+        handleAddUrlEvent: handleUrl,
+        handleLoadListEvent: handleUrl,
         initialSkin,
         initialTracks,
-      }) as WebampCI;
+      } as Options) as WebampCI;
       const setupElements = (): void => {
         const webampElement = getWebampElement();
 
