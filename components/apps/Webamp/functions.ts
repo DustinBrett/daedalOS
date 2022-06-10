@@ -1,4 +1,8 @@
-import type { WebampCI } from "components/apps/Webamp/types";
+import type {
+  ButterChurnPresets,
+  ButterChurnWebampPreset,
+  WebampCI,
+} from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
 import { parseBuffer } from "music-metadata-browser";
 import type { Position } from "react-rnd";
@@ -50,6 +54,70 @@ export const closeEqualizer = (webamp: WebampCI): void =>
     windowId: "equalizer",
   });
 
+export const enabledMilkdrop = (webamp: WebampCI): void =>
+  webamp.store.dispatch({
+    open: false,
+    type: "ENABLE_MILKDROP",
+  });
+
+export const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
+  webamp.store.dispatch({
+    butterchurn,
+    type: "GOT_BUTTERCHURN",
+  });
+
+export const loadButterchurnPresets = (
+  webamp: WebampCI,
+  presets: ButterChurnWebampPreset[]
+): void =>
+  webamp.store.dispatch({
+    presets,
+    type: "GOT_BUTTERCHURN_PRESETS",
+  });
+
+export const loadButterchurnPreset = (webamp: WebampCI): void => {
+  const { presets = [] } = webamp.store.getState()?.milkdrop || {};
+  const index = Math.floor(Math.random() * presets.length);
+  const preset = presets[index];
+
+  if (preset) {
+    webamp.store.dispatch({
+      addToHistory: true,
+      index,
+      type: "PRESET_REQUESTED",
+    });
+    webamp.store.dispatch({
+      index,
+      type: "SELECT_PRESET_AT_INDEX",
+    });
+  }
+};
+
+export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
+  const unsubscribe = webamp.store.subscribe(() => {
+    const { milkdrop, windows } = webamp.store.getState();
+
+    if (windows?.genWindows?.milkdrop?.open && !milkdrop?.butterchurn) {
+      import("butterchurn").then(({ default: butterchurn }) => {
+        loadButterchurn(webamp, butterchurn);
+        unsubscribe();
+
+        import("butterchurn-presets").then(({ default: presets }) => {
+          const resolvedPresets: ButterChurnWebampPreset[] = Object.entries(
+            (presets as ButterChurnPresets).getPresets()
+          ).map(([name, preset]) => ({
+            name,
+            preset,
+          }));
+
+          loadButterchurnPresets(webamp, resolvedPresets);
+          loadButterchurnPreset(webamp);
+        });
+      });
+    }
+  });
+};
+
 export const getWebampElement = (): HTMLDivElement | null =>
   document.querySelector<HTMLDivElement>(CONTAINER_WINDOW);
 
@@ -65,6 +133,7 @@ export const updateWebampPosition = (
   webamp.store.dispatch({
     positions: {
       main: { x, y },
+      milkdrop: { x, y: height * 2 + y },
       playlist: { x, y: height + y },
     },
     type: "UPDATE_WINDOW_POSITIONS",

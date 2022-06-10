@@ -13,3 +13,7 @@ declare module "playlist-parser" {
   export const M3U: Parser;
   export const PLS: Parser;
 }
+
+declare module "butterchurn";
+
+declare module "butterchurn-presets";

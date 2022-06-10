@@ -49,6 +49,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Monaco Editor](https://github.com/microsoft/monaco-editor)
 - [PDF.js](https://github.com/mozilla/pdf.js)
 - [Webamp](https://github.com/captbaritone/webamp)
+- [Butterchurn](https://github.com/jberg/butterchurn)
 - [Eruda](https://github.com/liriliri/eruda)
 - [Pyodide](https://github.com/pyodide/pyodide)
 - [Video.js](https://github.com/videojs/video.js)

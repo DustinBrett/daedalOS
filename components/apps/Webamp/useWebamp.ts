@@ -2,7 +2,10 @@ import {
   BASE_WEBAMP_OPTIONS,
   cleanBufferOnSkinLoad,
   closeEqualizer,
+  enabledMilkdrop,
   getWebampElement,
+  loadButterchurnPreset,
+  loadMilkdropWhenNeeded,
   MAIN_WINDOW,
   parseTrack,
   PLAYLIST_WINDOW,
@@ -151,12 +154,21 @@ const useWebamp = (id: string): Webamp => {
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
         }),
         webamp.onMinimize(() => onMinimize()),
+        webamp.onTrackDidChange(() => {
+          const { milkdrop, windows } = webamp.store.getState();
+
+          if (windows?.genWindows?.milkdrop?.open && milkdrop?.butterchurn) {
+            loadButterchurnPreset(webamp);
+          }
+        }),
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
 
       webamp.renderWhenReady(containerElement).then(() => {
         closeEqualizer(webamp);
+        enabledMilkdrop(webamp);
+        loadMilkdropWhenNeeded(webamp);
         updateWebampPosition(webamp, taskbarHeight, position);
         setupElements();
 
