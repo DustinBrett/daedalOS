@@ -93,6 +93,17 @@ export const loadButterchurnPreset = (webamp: WebampCI): void => {
   }
 };
 
+let cycleTimerId = 0;
+
+const cycleButterchurnPresets = (webamp: WebampCI): void => {
+  window.clearInterval(cycleTimerId);
+  cycleTimerId = window.setInterval(() => {
+    if (!webamp) window.clearInterval(cycleTimerId);
+
+    loadButterchurnPreset(webamp);
+  }, 15000);
+};
+
 export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
   const unsubscribe = webamp.store.subscribe(() => {
     const { milkdrop, windows } = webamp.store.getState();
@@ -101,6 +112,25 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
       import("butterchurn").then(({ default: butterchurn }) => {
         loadButterchurn(webamp, butterchurn);
         unsubscribe();
+
+        webamp.store.subscribe(() => {
+          const webampDesktop = [...document.body.children].find((node) =>
+            node.classList?.contains("webamp-desktop")
+          );
+
+          if (webampDesktop) {
+            const main = document.querySelector("main");
+
+            if (main) {
+              [...main.children].forEach((node) => {
+                if (node.classList?.contains("webamp-desktop")) {
+                  node.remove();
+                }
+              });
+              main.appendChild(webampDesktop);
+            }
+          }
+        });
 
         import("butterchurn-presets").then(({ default: presets }) => {
           const resolvedPresets: ButterChurnWebampPreset[] = Object.entries(
@@ -112,6 +142,7 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
 
           loadButterchurnPresets(webamp, resolvedPresets);
           loadButterchurnPreset(webamp);
+          cycleButterchurnPresets(webamp);
         });
       });
     }
