@@ -1,8 +1,8 @@
 import {
   cleanBufferOnSkinLoad,
   focusWindow,
-  m3uToTracks,
   parseTrack,
+  tracksFromPlaylist,
   unFocus,
 } from "components/apps/Webamp/functions";
 import StyledWebamp from "components/apps/Webamp/StyledWebamp";
@@ -14,6 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AUDIO_PLAYLIST_EXTENSIONS } from "utils/constants";
 import { bufferToUrl, loadFiles } from "utils/functions";
 import type { Options } from "webamp";
 
@@ -39,13 +40,14 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
     if (url) {
       const extension = extname(url).toLowerCase();
 
-      if (extension === ".m3u") {
-        return {
-          initialTracks: await m3uToTracks(
-            (await readFile(url)).toString(),
-            basename(url, extname(url))
-          ),
-        };
+      if (AUDIO_PLAYLIST_EXTENSIONS.has(extension)) {
+        const initialTracks = await tracksFromPlaylist(
+          (await readFile(url)).toString(),
+          extension,
+          basename(url, extname(url))
+        );
+
+        return initialTracks.length > 0 ? { initialTracks } : {};
       }
 
       if (extension === ".mp3") {

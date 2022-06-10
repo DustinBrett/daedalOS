@@ -106,6 +106,7 @@ const types = {
 };
 
 const extensions = {
+  ".asx": types.AudioPlaylist,
   ".exe": types.Application,
   ".gen": types.SegaGenesisRom,
   ".htm": types.HtmlDocument,
@@ -119,6 +120,7 @@ const extensions = {
   ".mp3": types.Music,
   ".nes": types.NintendoRom,
   ".pdf": types.PdfDocument,
+  ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
   ".sfc": types.SuperNintendoRom,
   ".smc": types.SuperNintendoRom,

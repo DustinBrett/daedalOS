@@ -106,20 +106,30 @@ export const parseTrack = async (
   };
 };
 
-export const m3uToTracks = async (
-  playlistData: string,
-  defaultPlaylistName?: string
+export const tracksFromPlaylist = async (
+  data: string,
+  extension: string,
+  defaultName?: string
 ): Promise<Track[]> => {
-  const parser = await import("iptv-playlist-parser");
-  const { items = [] } = parser.parse(playlistData) || {};
+  const { ASX, M3U, PLS } = await import("playlist-parser");
+  const parser: Record<string, typeof ASX | typeof M3U | typeof PLS> = {
+    ".asx": ASX,
+    ".m3u": M3U,
+    ".pls": PLS,
+  };
+  const tracks = parser[extension]?.parse(data) ?? [];
 
-  return items.map(({ group: { title }, name, url }) => ({
-    duration: 0,
-    metaData: {
-      album: title || defaultPlaylistName || "",
-      artist: "",
-      title: name,
-    },
-    url,
-  }));
+  return tracks.map(({ artist = "", file, length = 0, title = "" }) => {
+    const [parsedArtist, parsedTitle] = [artist.trim(), title.trim()];
+
+    return {
+      duration: length > 0 ? length : 0,
+      metaData: {
+        album: parsedTitle || defaultName,
+        artist: parsedArtist,
+        title: parsedTitle,
+      },
+      url: file,
+    };
+  });
 };

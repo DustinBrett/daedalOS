@@ -25,7 +25,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [fflate](https://github.com/101arrowz/fflate)
 - [7z-wasm](https://github.com/use-strict/7z-wasm)
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
-- [iptv-playlist-parser](https://github.com/freearhey/iptv-playlist-parser)
+- [playlist-parser](https://github.com/nickdesaulniers/javascript-playlist-parser)
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)
 - [gif.js](https://github.com/jnordberg/gif.js)

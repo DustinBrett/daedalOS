@@ -3,10 +3,10 @@ import {
   cleanBufferOnSkinLoad,
   closeEqualizer,
   getWebampElement,
-  m3uToTracks,
   MAIN_WINDOW,
   parseTrack,
   PLAYLIST_WINDOW,
+  tracksFromPlaylist,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
 import type { WebampCI } from "components/apps/Webamp/types";
@@ -16,9 +16,13 @@ import useWindowActions from "components/system/Window/Titlebar/useWindowActions
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { extname } from "path";
 import { useCallback, useRef } from "react";
 import { useTheme } from "styled-components";
-import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
+import {
+  AUDIO_PLAYLIST_EXTENSIONS,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 import { haltEvent } from "utils/functions";
 import type { Options, Track } from "webamp";
 
@@ -74,10 +78,13 @@ const useWebamp = (id: string): Webamp => {
         );
 
         if (externalUrl) {
-          if (externalUrl?.endsWith(".m3u")) {
-            const m3uPlaylist = await fetch(externalUrl);
+          const playlistExtension = extname(externalUrl).toLowerCase();
 
-            return m3uToTracks(await m3uPlaylist.text());
+          if (AUDIO_PLAYLIST_EXTENSIONS.has(playlistExtension)) {
+            return tracksFromPlaylist(
+              await (await fetch(externalUrl)).text(),
+              playlistExtension
+            );
           }
 
           return [

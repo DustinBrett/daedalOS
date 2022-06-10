@@ -166,6 +166,8 @@ export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
 export const AUDIO_FILE_EXTENSIONS = new Set([".aac", ".oga", ".wav"]);
 
+export const AUDIO_PLAYLIST_EXTENSIONS = new Set([".asx", ".m3u", ".pls"]);
+
 export const VIDEO_FILE_EXTENSIONS = new Set([
   ".m4v",
   ".mkv",
