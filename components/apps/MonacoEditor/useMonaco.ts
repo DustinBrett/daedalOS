@@ -82,14 +82,16 @@ const useMonaco = (
       const { ctrlKey, code, keyCode } = event;
 
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
-        const [baseUrl] =
-          editor.getModel()?.uri.path.split(URL_DELIMITER) || [];
-        const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
+        const { uri } = editor.getModel() || {};
+        const [baseUrl] = uri?.path.split(URL_DELIMITER) || [];
+        const saveUrl =
+          uri?.scheme === "file" ? baseUrl : url || DEFAULT_TEXT_FILE_SAVE_PATH;
 
         if (url === baseUrl || !url) {
           event.preventDefault();
           await writeFile(saveUrl, editor.getValue(), true);
           updateFolder(dirname(saveUrl), basename(saveUrl));
+          prependFileToTitle(basename(saveUrl));
         }
       }
     });
