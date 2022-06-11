@@ -101,7 +101,7 @@ const cycleButterchurnPresets = (webamp: WebampCI): void => {
     if (!webamp) window.clearInterval(cycleTimerId);
 
     loadButterchurnPreset(webamp);
-  }, 15000);
+  }, 20000);
 };
 
 export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
@@ -134,7 +134,7 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
 
         import("butterchurn-presets").then(({ default: presets }) => {
           const resolvedPresets: ButterChurnWebampPreset[] = Object.entries(
-            (presets as ButterChurnPresets).getPresets()
+            presets as ButterChurnPresets
           ).map(([name, preset]) => ({
             name,
             preset,

@@ -5,9 +5,7 @@ export type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
 };
 
-export type ButterChurnPresets = {
-  getPresets: () => Record<string, ButterChurnPreset>;
-};
+export type ButterChurnPresets = Record<string, ButterChurnPreset>;
 
 export type ButterChurnWebampPreset = {
   name: string;
