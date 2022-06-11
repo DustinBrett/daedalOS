@@ -130,6 +130,14 @@ export const EXTRACTABLE_EXTENSIONS = new Set([
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".jsdos", ".wsz", ".zip"]);
 
+export const SPREADSHEET_FORMATS = [
+  ".csv",
+  ".numbers",
+  ".ods",
+  ".xls",
+  ".xlsx",
+];
+
 export const MP3_MIME_TYPE = "audio/mpeg";
 
 export const NON_BREAKING_HYPHEN = "\u2011";

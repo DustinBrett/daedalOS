@@ -1,7 +1,3 @@
-import {
-  createM3uPlaylist,
-  tracksFromPlaylist,
-} from "components/apps/Webamp/functions";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions, {
   TEXT_EDITORS,
@@ -31,6 +27,7 @@ import {
   MOUNTABLE_EXTENSIONS,
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
+  SPREADSHEET_FORMATS,
 } from "utils/constants";
 import {
   AUDIO_DECODE_FORMATS,
@@ -44,8 +41,6 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
-import { convertSheet } from "utils/sheetjs";
-import { SPREADSHEET_FORMATS } from "utils/sheetjs/formats";
 import type { URLTrack } from "webamp";
 
 const useFileContextMenu = (
@@ -246,6 +241,7 @@ const useFileContextMenu = (
                         absoluteEntry,
                         extname(absoluteEntry)
                       )}.${extension}`;
+                      const { convertSheet } = await import("utils/sheetjs");
                       const workBook = await convertSheet(
                         await readFile(absoluteEntry),
                         extension
@@ -273,6 +269,8 @@ const useFileContextMenu = (
                     absoluteEntry,
                     extname(absoluteEntry)
                   )}.m3u`;
+                  const { createM3uPlaylist, tracksFromPlaylist } =
+                    await import("components/apps/Webamp/functions");
                   const playlist = createM3uPlaylist(
                     (await tracksFromPlaylist(
                       (await readFile(absoluteEntry)).toString(),

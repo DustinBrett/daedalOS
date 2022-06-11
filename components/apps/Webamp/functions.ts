@@ -4,7 +4,6 @@ import type {
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import { parseBuffer } from "music-metadata-browser";
 import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl } from "utils/functions";
@@ -187,6 +186,7 @@ export const parseTrack = async (
   file: Buffer,
   fileName: string
 ): Promise<Track> => {
+  const { parseBuffer } = await import("music-metadata-browser");
   const {
     common: { album = "", artist = "", title = fileName },
     format: { duration = 0 },
