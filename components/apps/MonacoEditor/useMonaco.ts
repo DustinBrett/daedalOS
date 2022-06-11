@@ -58,12 +58,13 @@ const useMonaco = (
       unlockGlobal("define");
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
-      prependFileToTitle(basename(url));
       window.setTimeout(
         () => lockGlobal("define"),
         2.5 * MILLISECONDS_IN_SECOND
       );
     }
+
+    prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
   }, [createModel, editor, monaco, prependFileToTitle, url]);
 
   useEffect(() => {
@@ -118,12 +119,8 @@ const useMonaco = (
   }, [containerRef, editor, id, monaco, setArgument, setLoading]);
 
   useEffect(() => {
-    if (monaco && editor) {
-      if (url) {
-        loadFile();
-      }
-
-      prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
+    if (monaco && editor && url) {
+      loadFile();
     }
   }, [editor, loadFile, monaco, prependFileToTitle, url]);
 };
