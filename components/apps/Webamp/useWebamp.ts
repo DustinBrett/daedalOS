@@ -2,6 +2,7 @@ import {
   BASE_WEBAMP_OPTIONS,
   cleanBufferOnSkinLoad,
   closeEqualizer,
+  createM3uPlaylist,
   enabledMilkdrop,
   getWebampElement,
   loadButterchurnPreset,
@@ -24,10 +25,11 @@ import { useCallback, useRef } from "react";
 import { useTheme } from "styled-components";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
+  DESKTOP_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
-import type { Options, Track } from "webamp";
+import type { Options, Track, URLTrack } from "webamp";
 
 type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;
@@ -50,7 +52,7 @@ const useWebamp = (id: string): Webamp => {
   } = useProcesses();
   const { componentWindow } = process || {};
   const webampCI = useRef<WebampCI>();
-  const { readFile } = useFileSystem();
+  const { createPath, readFile, updateFolder } = useFileSystem();
   const { onDrop: onDropCopy } = useFileDrop({ id });
   const { onDrop } = useFileDrop({
     callback: async (
@@ -104,6 +106,13 @@ const useWebamp = (id: string): Webamp => {
         ...BASE_WEBAMP_OPTIONS,
         handleAddUrlEvent: handleUrl,
         handleLoadListEvent: handleUrl,
+        handleSaveListEvent: (tracks: URLTrack[]) => {
+          createPath(
+            "playlist.m3u",
+            DESKTOP_PATH,
+            Buffer.from(createM3uPlaylist(tracks))
+          ).then((saveName) => updateFolder(DESKTOP_PATH, saveName));
+        },
         initialSkin,
         initialTracks,
       } as Options) as WebampCI;
@@ -179,6 +188,7 @@ const useWebamp = (id: string): Webamp => {
     },
     [
       componentWindow,
+      createPath,
       id,
       linkElement,
       onClose,
@@ -189,6 +199,7 @@ const useWebamp = (id: string): Webamp => {
       process,
       setWindowStates,
       taskbarHeight,
+      updateFolder,
     ]
   );
 

@@ -1,3 +1,7 @@
+import {
+  createM3uPlaylist,
+  tracksFromPlaylist,
+} from "components/apps/Webamp/functions";
 import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions, {
   TEXT_EDITORS,
@@ -18,6 +22,7 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, join } from "path";
 import { useCallback } from "react";
 import {
+  AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
   EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
@@ -41,6 +46,7 @@ import {
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 import { convertSheet } from "utils/sheetjs";
 import { SPREADSHEET_FORMATS } from "utils/sheetjs/formats";
+import type { URLTrack } from "webamp";
 
 const useFileContextMenu = (
   url: string,
@@ -237,8 +243,8 @@ const useFileContextMenu = (
                   action: () => {
                     absoluteEntries().forEach(async (absoluteEntry) => {
                       const newFilePath = `${dirname(absoluteEntry)}/${basename(
-                        basename(absoluteEntry),
-                        extname(basename(absoluteEntry))
+                        absoluteEntry,
+                        extname(absoluteEntry)
                       )}.${extension}`;
                       const workBook = await convertSheet(
                         await readFile(absoluteEntry),
@@ -252,6 +258,33 @@ const useFileContextMenu = (
                   label: extension.toUpperCase(),
                 };
               }),
+            });
+          }
+
+          const canEncodePlaylist =
+            pathExtension !== ".m3u" &&
+            AUDIO_PLAYLIST_EXTENSIONS.has(pathExtension);
+
+          if (canEncodePlaylist) {
+            menuItems.unshift(MENU_SEPERATOR, {
+              action: () => {
+                absoluteEntries().forEach(async (absoluteEntry) => {
+                  const newFilePath = `${dirname(absoluteEntry)}/${basename(
+                    absoluteEntry,
+                    extname(absoluteEntry)
+                  )}.m3u`;
+                  const playlist = createM3uPlaylist(
+                    (await tracksFromPlaylist(
+                      (await readFile(absoluteEntry)).toString(),
+                      extname(absoluteEntry)
+                    )) as URLTrack[]
+                  );
+
+                  await writeFile(newFilePath, Buffer.from(playlist));
+                  updateFolder(dirname(path), basename(newFilePath));
+                });
+              },
+              label: "Convert to M3U",
             });
           }
 

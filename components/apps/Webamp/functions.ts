@@ -8,7 +8,7 @@ import { parseBuffer } from "music-metadata-browser";
 import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl } from "utils/functions";
-import type { Track } from "webamp";
+import type { Track, URLTrack } from "webamp";
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
 
@@ -204,6 +204,29 @@ export const parseTrack = async (
     duration: Math.floor(duration),
     metaData: { album, artist, title },
   };
+};
+
+export const createM3uPlaylist = (tracks: URLTrack[]): string => {
+  const m3uPlaylist = tracks.map((track): string => {
+    const trackUrl = track.url ? `\n${track.url.toString()}` : "";
+    let title = track.defaultName;
+
+    if (track.metaData?.artist) {
+      if (track.metaData?.title) {
+        title = `${track.metaData.artist} - ${track.metaData.title}`;
+      } else if (title) {
+        title = `${track.metaData.artist} - ${title}`;
+      }
+    } else if (track.metaData?.title) {
+      title = track.metaData.title;
+    }
+
+    return trackUrl
+      ? `#EXTINF:${track.duration ?? -1},${title || ""}${trackUrl}`
+      : "";
+  });
+
+  return `${["#EXTM3U", ...m3uPlaylist.filter(Boolean)].join("\n")}\n`;
 };
 
 export const tracksFromPlaylist = async (
