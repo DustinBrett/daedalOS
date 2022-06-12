@@ -1626,7 +1626,7 @@ butterchurn-presets@3.0.0-beta.4, butterchurn-presets@^3.0.0-beta.4:
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-butterchurn@^3.0.0-beta.3, butterchurn@^3.0.0-beta.4:
+butterchurn@^3.0.0-beta.3:
   version "3.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/butterchurn/-/butterchurn-3.0.0-beta.4.tgz#f459d8b81decd4f28f4c90b5c0fc40611ad3d86f"
   integrity sha512-hiY1ktHYHQ8MT65nnZi7GjrgZZ6sl/ipT5rBqEfaYJd90L4SvOtB6lVxtKadtzAyJo2TQJc4gJfEca4cpZo0DA==

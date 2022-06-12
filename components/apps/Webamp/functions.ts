@@ -7,7 +7,7 @@ import type {
 import { centerPosition } from "components/system/Window/functions";
 import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE } from "utils/constants";
-import { bufferToBlob, cleanUpBufferUrl } from "utils/functions";
+import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
 import type { Track, URLTrack } from "webamp";
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
@@ -144,8 +144,10 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
     const { milkdrop, windows } = webamp.store.getState();
 
     if (windows?.genWindows?.milkdrop?.open && !milkdrop?.butterchurn) {
-      import("butterchurn").then(({ default: butterchurn }) => {
-        loadButterchurn(webamp, butterchurn);
+      loadFiles(["/Program Files/Webamp/butterchurn.min.js"]).then(() => {
+        if (!window.butterchurn?.default) return;
+
+        loadButterchurn(webamp, window.butterchurn.default);
         unsubscribe();
 
         webamp.store.subscribe(() => {

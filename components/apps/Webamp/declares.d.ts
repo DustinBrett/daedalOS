@@ -14,6 +14,4 @@ declare module "playlist-parser" {
   export const PLS: Parser;
 }
 
-declare module "butterchurn";
-
 declare module "butterchurn-presets";
