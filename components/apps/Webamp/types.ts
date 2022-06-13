@@ -87,16 +87,6 @@ export type WebampCI = Webamp & {
   };
 };
 
-export type WebampApiResponse = {
-  data: {
-    skins: {
-      nodes: {
-        download_url?: string;
-      }[];
-    };
-  };
-};
-
 declare global {
   interface Window {
     Webamp: typeof Webamp;

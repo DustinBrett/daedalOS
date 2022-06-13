@@ -1,7 +1,6 @@
 import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
-  WebampApiResponse,
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
@@ -21,41 +20,6 @@ export const BASE_WEBAMP_OPTIONS = {
     {
       name: "Nucleo NLog v2G",
       url: `${WEBAMP_SKINS_PATH}/Nucleo_NLog_v102.wsz`,
-    },
-    {
-      loading: false,
-      get name(): string {
-        if (!this.loading) {
-          this.loading = true;
-
-          fetch("https://api.webamp.org/graphql", {
-            body: JSON.stringify({
-              query: `query {
-                skins(
-                  filter: APPROVED,
-                  first: 1,
-                  offset: ${Math.floor(Math.random() * 1000)}
-                ) { nodes { download_url } } }`,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-            method: "POST",
-          }).then(async (response) => {
-            const { data } = ((await response.json()) ||
-              {}) as WebampApiResponse;
-
-            this.skinUrl = data?.skins?.nodes?.[0]?.download_url as string;
-            this.loading = false;
-          });
-        }
-
-        return "Random (Winamp Skin Museum)";
-      },
-      skinUrl: "",
-      get url(): string {
-        return this.skinUrl;
-      },
     },
     {
       name: "SpyAMP Professional Edition v5",
