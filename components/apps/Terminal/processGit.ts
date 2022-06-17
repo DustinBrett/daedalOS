@@ -4,11 +4,16 @@ import type { LocalEcho } from "components/apps/Terminal/types";
 import type { MessageCallback, ProgressCallback } from "isomorphic-git";
 import { join } from "path";
 
-const corsProxy = "https://cors.isomorphic-git.org";
+// If you need to use a proxy, this is it:
+// const corsProxy = "https://cors.isomorphic-git.org";
 
 export const commands: Record<string, string> = {
+  add: "Add file contents to the index",
   checkout: "Switch branches or restore working tree files",
   clone: "Clone a repository into a new directory",
+  commit: "Record changes to the repository",
+  status: "Show the working tree status",
+  version: "Show the version",
 };
 
 const processGit = async (
@@ -19,7 +24,8 @@ const processGit = async (
   exists: (path: string) => Promise<boolean>,
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void
 ): Promise<void> => {
-  const { checkout, clone, version } = await import("isomorphic-git");
+  const { add, checkout, clone, commit, push, statusMatrix, version } =
+    await import("isomorphic-git");
   const events: string[] = [];
   const onMessage: MessageCallback = (message) =>
     localEcho.println(`remote: ${message.trim()}`);
@@ -35,6 +41,98 @@ const processGit = async (
   };
 
   switch (command) {
+    case "push": {
+      const http = await import("isomorphic-git/http/web");
+      const [url] = args;
+
+      const dirName = url
+        ?.split("/")
+        .pop()
+        ?.replace(/\.git$/, "");
+      const dir = dirName ? join(cd, dirName) : cd;
+      localEcho.println(`status started: ${dir}`);
+
+      try {
+        await push({
+          dir,
+          fs,
+          http,
+        });
+      } catch (error) {
+        localEcho.println((error as Error).message);
+      }
+      break;
+    }
+    case "status": {
+      const [url] = args;
+
+      const dirName = url
+        ?.split("/")
+        .pop()
+        ?.replace(/\.git$/, "");
+      const dir = dirName ? join(cd, dirName) : cd;
+      localEcho.println(`status started: ${dir}`);
+
+      try {
+        const result = await statusMatrix({ dir, fs });
+        for (const entry of result) {
+          // if (entry[1] === 1 && entry[2] === 1 && entry[3] === 1) {
+          //   continue;
+          // }
+
+          if (entry[1] === 1 && entry[2] === 2 && entry[3] === 1) {
+            localEcho.println(`        modified: ${entry[0]}`);
+          }
+
+          if (entry[1] === 1 && entry[2] === 2 && entry[3] === 2) {
+            localEcho.println(`        staged: ${entry[0]}`);
+          }
+        }
+      } catch (error) {
+        localEcho.println((error as Error).message);
+      }
+      break;
+    }
+    case "add": {
+      const [filePath] = args;
+      localEcho.println(`add started: ${filePath}`);
+      try {
+        await add({
+          dir: cd,
+          filepath: filePath,
+          fs,
+        });
+      } catch (error) {
+        localEcho.println((error as Error).message);
+      }
+      break;
+    }
+    case "commit": {
+      const [url] = args;
+      const dirName = url
+        ?.split("/")
+        .pop()
+        ?.replace(/\.git$/, "");
+      const dir = dirName ? join(cd, dirName) : cd;
+
+      localEcho.println(`commit started`);
+      try {
+        // If we want to use corsProxy then add it here: corsProxy
+        const sha = await commit({
+          ...options,
+          author: {
+            email: "foo@john.com",
+            name: "Jhn",
+          },
+          dir,
+          message: "This is a commit",
+        });
+        localEcho.println(`commited -> ${sha}`);
+      } catch (error) {
+        localEcho.println((error as Error).message);
+      }
+      break;
+    }
     case "clone": {
       const http = await import("isomorphic-git/http/web");
       const [url] = args;
@@ -47,7 +145,8 @@ const processGit = async (
       try {
         if (dirName) localEcho.println(`Cloning into '${dirName}'...`);
 
-        await clone({ ...options, corsProxy, dir, http, onMessage, url });
+        // If we want to use corsProxy then add it here: corsProxy
+        await clone({ ...options, dir, http, onMessage, url });
       } catch (error) {
         localEcho.println((error as Error).message);
       }
