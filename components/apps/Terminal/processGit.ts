@@ -24,8 +24,17 @@ const processGit = async (
   exists: (path: string) => Promise<boolean>,
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void
 ): Promise<void> => {
-  const { add, checkout, clone, commit, push, statusMatrix, version } =
-    await import("isomorphic-git");
+  const {
+    add,
+    checkout,
+    clone,
+    commit,
+    currentBranch,
+    log,
+    push,
+    statusMatrix,
+    version,
+  } = await import("isomorphic-git");
   const events: string[] = [];
   const onMessage: MessageCallback = (message) =>
     localEcho.println(`remote: ${message.trim()}`);
@@ -50,7 +59,6 @@ const processGit = async (
         .pop()
         ?.replace(/\.git$/, "");
       const dir = dirName ? join(cd, dirName) : cd;
-      localEcho.println(`status started: ${dir}`);
 
       try {
         await push({
@@ -58,6 +66,7 @@ const processGit = async (
           fs,
           http,
         });
+        localEcho.println("done");
       } catch (error) {
         localEcho.println((error as Error).message);
       }
@@ -71,22 +80,64 @@ const processGit = async (
         .pop()
         ?.replace(/\.git$/, "");
       const dir = dirName ? join(cd, dirName) : cd;
-      localEcho.println(`status started: ${dir}`);
+
+      const branch =
+        (await currentBranch({
+          dir,
+          fs,
+          fullname: false,
+        })) || "<invalid>";
+
+      localEcho.println(`On branch ${branch}`);
 
       try {
-        const result = await statusMatrix({ dir, fs });
-        for (const entry of result) {
-          // if (entry[1] === 1 && entry[2] === 1 && entry[3] === 1) {
-          //   continue;
-          // }
+        const statusOfFiles = await statusMatrix({ dir, fs });
 
-          if (entry[1] === 1 && entry[2] === 2 && entry[3] === 1) {
-            localEcho.println(`        modified: ${entry[0]}`);
-          }
+        // Find all changes not staged for commit:
+        const notStaged = statusOfFiles.filter(
+          (flags) => flags[1] === 1 && flags[2] === 2 && flags[3] === 1
+        );
+        if (notStaged.length > 0) {
+          localEcho.println(``);
+          localEcho.println(`Changes not staged for commit:`);
+        }
+        notStaged.forEach((file) => {
+          localEcho.println(`        modified: ${file[0]}`);
+        });
 
-          if (entry[1] === 1 && entry[2] === 2 && entry[3] === 2) {
-            localEcho.println(`        staged: ${entry[0]}`);
-          }
+        // Changes to be committed:
+        const staged = statusOfFiles.filter(
+          (flags) => flags[1] === 1 && flags[2] === 2 && flags[3] === 2
+        );
+        const stagedAdded = statusOfFiles.filter(
+          (flags) => flags[1] === 0 && flags[2] === 2 && flags[3] === 2
+        );
+        if (stagedAdded.length > 0 || staged.length > 0) {
+          localEcho.println(``);
+          localEcho.println(`Changes to be committed:`);
+        }
+        staged.forEach((file) => {
+          localEcho.println(`        modified: ${file[0]}`);
+        });
+        stagedAdded.forEach((file) => {
+          localEcho.println(`        new file: ${file[0]}`);
+        });
+
+        // Untracked files:
+        const untracked = statusOfFiles.filter(
+          (flags) => flags[1] === 0 && flags[2] === 2 && flags[3] === 0
+        );
+        if (untracked.length > 0) {
+          localEcho.println(``);
+          localEcho.println(`Untracked files:`);
+        }
+        untracked.forEach((file) => {
+          localEcho.println(`        ${file[0]}`);
+        });
+
+        if (notStaged.length + staged.length + stagedAdded.length === 0) {
+          localEcho.println(``);
+          localEcho.println(`nothing to commit, working tree clean`);
         }
       } catch (error) {
         localEcho.println((error as Error).message);
@@ -107,28 +158,62 @@ const processGit = async (
       }
       break;
     }
-    case "commit": {
+    case "log": {
       const [url] = args;
       const dirName = url
         ?.split("/")
         .pop()
         ?.replace(/\.git$/, "");
       const dir = dirName ? join(cd, dirName) : cd;
-
-      localEcho.println(`commit started`);
       try {
         // If we want to use corsProxy then add it here: corsProxy
-        const sha = await commit({
+        const commitResults = await log({
+          depth: 5,
+          dir,
+          fs,
+        });
+        commitResults.forEach((commitResult) => {
+          localEcho.println(`commit ${commitResult.oid}`);
+          localEcho.println(
+            `Author: ${commitResult.commit.author.name} <${commitResult.commit.author.email}>`
+          );
+          localEcho.println(`Date: ${commitResult.commit.author.timestamp}`);
+          localEcho.println(``);
+          localEcho.println(`    ${commitResult.commit.message}`);
+          localEcho.println(``);
+        });
+      } catch (error) {
+        localEcho.println((error as Error).message);
+      }
+      break;
+    }
+    case "commit": {
+      const messageArgumentStart = args.indexOf("-m");
+      const commitMessage = args[messageArgumentStart + 1];
+
+      try {
+        const commitSha = await commit({
           ...options,
           author: {
-            email: "foo@john.com",
-            name: "Jhn",
+            email: "johndoe@devmatch.xyz",
+            name: "John Doe",
           },
-          dir,
-          message: "This is a commit",
+          dir: cd,
+          message: commitMessage,
         });
-        localEcho.println(`commited -> ${sha}`);
+
+        const branchName =
+          (await currentBranch({
+            dir: cd,
+            fs,
+            fullname: false,
+          })) || "";
+
+        localEcho.println(
+          `[${branchName} ${commitSha.slice(0, 7)}] ${commitMessage}`
+        );
       } catch (error) {
+        console.error(error);
         localEcho.println((error as Error).message);
       }
       break;
