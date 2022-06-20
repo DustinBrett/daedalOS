@@ -1,7 +1,7 @@
 import type { Position } from "react-rnd";
 import type Webamp from "webamp";
 
-export type ButterChurnPreset = {
+type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
 };
 

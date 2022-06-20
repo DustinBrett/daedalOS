@@ -59,13 +59,13 @@ export const enabledMilkdrop = (webamp: WebampCI): void =>
     type: "ENABLE_MILKDROP",
   });
 
-export const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
+const loadButterchurn = (webamp: WebampCI, butterchurn: unknown): void =>
   webamp.store.dispatch({
     butterchurn,
     type: "GOT_BUTTERCHURN",
   });
 
-export const loadButterchurnPresets = (
+const loadButterchurnPresets = (
   webamp: WebampCI,
   presets: ButterChurnWebampPreset[]
 ): void =>
