@@ -67,8 +67,47 @@ type AsyncFSModule = AsyncFS & {
   rootFs?: RootFileSystem;
 };
 
+type FsQueueCall = [string, unknown[]];
+
+const mockFsCallQueue: FsQueueCall[] = [];
+
+const queueFsCall =
+  (name: string) =>
+  (...args: unknown[]) =>
+    mockFsCallQueue.push([name, args]);
+
+const queuedFs = {
+  exists: queueFsCall("exists"),
+  lstat: queueFsCall("lstat"),
+  mkdir: queueFsCall("mkdir"),
+  readFile: queueFsCall("readFile"),
+  readdir: queueFsCall("readdir"),
+  rename: queueFsCall("rename"),
+  rmdir: queueFsCall("rmdir"),
+  stat: queueFsCall("stat"),
+  unlink: queueFsCall("unlink"),
+  writeFile: queueFsCall("writeFile"),
+} as Partial<FSModule>;
+
+const runQueuedFsCalls = (fs: FSModule): void => {
+  if (mockFsCallQueue.length > 0) {
+    const [name, args] = mockFsCallQueue.shift() as FsQueueCall;
+
+    if (name in fs) {
+      const fsCall = fs[name as keyof typeof queuedFs];
+
+      if (typeof fsCall === "function") {
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        (fsCall as unknown as Function)(...args);
+      }
+    }
+
+    runQueuedFsCalls(fs);
+  }
+};
+
 const useAsyncFs = (): AsyncFSModule => {
-  const [fs, setFs] = useState<FSModule>();
+  const [fs, setFs] = useState<FSModule>(queuedFs as FSModule);
   const [rootFs, setRootFs] = useState<RootFileSystem>();
   const asyncFs: AsyncFS = useMemo(
     () => ({
@@ -160,7 +199,7 @@ const useAsyncFs = (): AsyncFSModule => {
   );
 
   useEffect(() => {
-    if (!fs) {
+    if (!fs || fs === queuedFs) {
       const setupFs = (writeToIndexedDB: boolean): void =>
         configure(FileSystemConfig(!writeToIndexedDB), () => {
           const loadedFs = BFSRequire("fs");
@@ -170,6 +209,8 @@ const useAsyncFs = (): AsyncFSModule => {
         });
 
       supportsIndexedDB().then(setupFs);
+    } else {
+      runQueuedFsCalls(fs);
     }
   }, [fs]);
 
