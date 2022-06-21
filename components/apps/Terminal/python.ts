@@ -43,12 +43,8 @@ export const runPython = async (
       const result = await window.pyodide.runPythonAsync(
         getVersion ? versionCommand : captureStdOut + code
       );
-      const stdOut = await window.pyodide.runPythonAsync(
-        "sys.stdout.getvalue()"
-      );
 
       if (result) localEcho?.println(result.toString());
-      if (stdOut) localEcho?.println(stdOut.toString());
     } catch (error) {
       const { message } = error as PyError;
 
