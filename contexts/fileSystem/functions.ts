@@ -1,4 +1,4 @@
-import { get } from "idb-keyval";
+import { openDB } from "idb";
 import { join } from "path";
 import index from "public/.index/fs.9p.json";
 import { FS_HANDLES } from "utils/constants";
@@ -19,6 +19,11 @@ type FS9P = {
   size: number;
   version: 3;
 };
+
+type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
+
+const KEYVAL_STORE_NAME = "keyval";
+export const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
@@ -111,9 +116,22 @@ export const supportsIndexedDB = (): Promise<boolean> =>
     });
   });
 
-export const getFileSystemHandles = async (): Promise<
-  Record<string, FileSystemDirectoryHandle>
-> => ((await supportsIndexedDB()) && (await get(FS_HANDLES))) || {};
+const getKeyValStore = (): ReturnType<typeof openDB> =>
+  openDB(KEYVAL_DB, 1, {
+    upgrade: (db) => db.createObjectStore(KEYVAL_STORE_NAME),
+  });
+
+export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
+  if (!(await supportsIndexedDB())) return {};
+
+  const db = await getKeyValStore();
+
+  return (
+    (await (<Promise<FileSystemHandles>>(
+      db.get(KEYVAL_STORE_NAME, FS_HANDLES)
+    ))) || {}
+  );
+};
 
 export const addFileSystemHandle = async (
   directory: string,
@@ -121,12 +139,16 @@ export const addFileSystemHandle = async (
 ): Promise<void> => {
   if (!(await supportsIndexedDB())) return;
 
-  const { set } = await import("idb-keyval");
+  const db = await getKeyValStore();
 
-  await set(FS_HANDLES, {
-    ...(await getFileSystemHandles()),
-    [join(directory, handle.name)]: handle,
-  });
+  db.put(
+    KEYVAL_STORE_NAME,
+    {
+      ...(await getFileSystemHandles()),
+      [join(directory, handle.name)]: handle,
+    },
+    FS_HANDLES
+  );
 };
 
 export const removeFileSystemHandle = async (
@@ -136,9 +158,9 @@ export const removeFileSystemHandle = async (
 
   const { [directory]: _removedHandle, ...handles } =
     await getFileSystemHandles();
-  const { set } = await import("idb-keyval");
+  const db = await getKeyValStore();
 
-  await set(FS_HANDLES, handles);
+  await db.put(KEYVAL_STORE_NAME, handles, FS_HANDLES);
 };
 
 export const requestPermission = async (

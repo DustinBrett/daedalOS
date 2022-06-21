@@ -14,6 +14,7 @@ import {
 import {
   addFileSystemHandle,
   getFileSystemHandles,
+  KEYVAL_DB,
   removeFileSystemHandle,
 } from "contexts/fileSystem/functions";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
@@ -209,31 +210,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       if (!window.indexedDB.databases) clearFs();
       else {
-        window.indexedDB.databases().then((databases) => {
-          Promise.allSettled(
-            databases
-              .filter(({ name }) => name !== "browserfs")
-              .map(
-                ({ name }) =>
-                  new Promise((resolveDelete, rejectDelete) => {
-                    if (name) {
-                      const deleteRequest =
-                        window.indexedDB.deleteDatabase(name);
-
-                      ["blocked", "error", "success", "upgradeneeded"].forEach(
-                        (eventType) =>
-                          deleteRequest.addEventListener(
-                            eventType,
-                            resolveDelete
-                          )
-                      );
-                    }
-
-                    window.setTimeout(rejectDelete, 500);
-                  })
-              )
-          ).then(clearFs);
-        });
+        import("idb").then(({ deleteDB }) =>
+          deleteDB(KEYVAL_DB).then(clearFs).catch(clearFs)
+        );
       }
     });
   const mkdirRecursive = async (path: string): Promise<void> => {
