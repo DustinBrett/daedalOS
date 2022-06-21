@@ -4955,7 +4955,10 @@ function setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop, arg, noSet
  Browser.mainLoop.arg = arg;
  var thisMainLoopId = Browser.mainLoop.currentlyRunningMainloop;
  function checkIsRunning() {
-  if (thisMainLoopId < Browser.mainLoop.currentlyRunningMainloop) {
+  if (
+    !window.BoxedWineConfig.isRunning
+    || thisMainLoopId < Browser.mainLoop.currentlyRunningMainloop
+  ) {
    maybeExit();
    return false;
   }
