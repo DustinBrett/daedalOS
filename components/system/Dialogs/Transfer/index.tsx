@@ -1,8 +1,8 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
+import type { FileReaders } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { useProcesses } from "contexts/process";
-import type { FileReaders } from "hooks/useDialog";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const MAX_TITLE_LENGTH = 37;

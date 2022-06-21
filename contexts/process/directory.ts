@@ -48,17 +48,6 @@ const processDirectory: Processes = {
     singleton: true,
     title: "DevTools",
   },
-  Dialog: {
-    Component: dynamic(() => import("components/system/Dialogs/Transfer")),
-    allowResizing: false,
-    background: "#FFF",
-    defaultSize: {
-      height: 163,
-      width: 400,
-    },
-    icon: "/System/Icons/copying.webp",
-    title: "Dialog",
-  },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
     background: "#202020",
@@ -180,6 +169,17 @@ const processDirectory: Processes = {
     icon: "/System/Icons/tinymce.webp",
     singleton: true,
     title: "TinyMCE",
+  },
+  TransferDialog: {
+    Component: dynamic(() => import("components/system/Dialogs/Transfer")),
+    allowResizing: false,
+    background: "#FFF",
+    defaultSize: {
+      height: 163,
+      width: 400,
+    },
+    icon: "/System/Icons/copying.webp",
+    title: "Dialog",
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),

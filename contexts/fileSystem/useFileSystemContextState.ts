@@ -6,6 +6,7 @@ import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
   handleFileInputEvent,
@@ -20,7 +21,6 @@ import {
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
-import useDialog from "hooks/useDialog";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 
@@ -160,7 +160,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     },
     [unMountFs, updateFolder]
   );
-  const { openTransferDialog } = useDialog();
+  const { openTransferDialog } = useTransferDialog();
   const addFile = (
     directory: string,
     callback: (name: string, buffer?: Buffer) => void

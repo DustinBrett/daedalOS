@@ -11,7 +11,7 @@ const useDialog = (): Dialog => {
 
   return {
     openTransferDialog: (fileReaders: FileReaders) => {
-      open("Dialog", { fileReaders, url: "" });
+      open("TransferDialog", { fileReaders, url: "" });
     },
   };
 };

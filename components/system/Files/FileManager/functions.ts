@@ -1,11 +1,11 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import type { FileReaders } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type {
   CompleteAction,
   Files,
 } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
-import type { FileReaders } from "hooks/useDialog";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";
 import { haltEvent } from "utils/functions";

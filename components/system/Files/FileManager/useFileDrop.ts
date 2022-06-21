@@ -1,8 +1,8 @@
+import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { handleFileInputEvent } from "components/system/Files/FileManager/functions";
 import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import useDialog from "hooks/useDialog";
 import { join } from "path";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -50,7 +50,7 @@ const useFileDrop = ({
       }
     }
   };
-  const { openTransferDialog } = useDialog();
+  const { openTransferDialog } = useTransferDialog();
 
   return {
     onDragLeave,
