@@ -50,9 +50,9 @@ type SetFocusedWindow = {
 
 type UpdateWindowPositions = {
   positions: {
-    main: Position;
-    milkdrop: Position;
-    playlist: Position;
+    main?: Position;
+    milkdrop?: Position;
+    playlist?: Position;
   };
   type: "UPDATE_WINDOW_POSITIONS";
 };
@@ -77,8 +77,15 @@ export type WebampCI = Webamp & {
       };
       windows?: {
         genWindows?: {
+          main?: {
+            position?: Position;
+          };
           milkdrop?: {
             open?: boolean;
+          };
+          playlist?: {
+            open?: boolean;
+            position?: Position;
           };
         };
       };

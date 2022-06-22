@@ -112,6 +112,21 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
         if (!window.butterchurn?.default) return;
 
         loadButterchurn(webamp, window.butterchurn.default);
+
+        const { playlist, main: mainWindow } = windows.genWindows || {};
+        const { x = 0, y = 0 } =
+          (playlist?.open ? playlist?.position : mainWindow?.position) || {};
+
+        webamp.store.dispatch({
+          positions: {
+            milkdrop: {
+              x,
+              y: y + BASE_WINDOW_SIZE.height,
+            },
+          },
+          type: "UPDATE_WINDOW_POSITIONS",
+        });
+
         unsubscribe();
 
         webamp.store.subscribe(() => {
@@ -165,7 +180,7 @@ export const updateWebampPosition = (
   webamp.store.dispatch({
     positions: {
       main: { x, y },
-      milkdrop: { x, y: height * 2 + y },
+      milkdrop: { x: -width, y: -height },
       playlist: { x, y: height + y },
     },
     type: "UPDATE_WINDOW_POSITIONS",
