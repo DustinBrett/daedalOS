@@ -28,6 +28,7 @@ const StyledPeekWindow = styled(motion.div)`
     max-width: 200px;
     min-height: 80px;
     min-width: 80px;
+    object-fit: contain;
   }
 
   button {
