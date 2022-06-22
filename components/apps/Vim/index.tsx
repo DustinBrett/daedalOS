@@ -37,6 +37,8 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       !!window.VimWrapperModule
     );
 
+    const fileData = url ? await readFile(saveUrl) : Buffer.from("");
+
     window.VimWrapperModule?.init?.({
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
@@ -63,20 +65,13 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
               } else if (!walkedPath) {
                 walkedPath = pathPart;
               } else {
-                const createDataFile = (data = Buffer.from("")): void =>
-                  window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
-                    walkedPath,
-                    pathPart,
-                    data,
-                    true,
-                    true
-                  );
-
-                if (!url) {
-                  createDataFile();
-                } else {
-                  readFile(saveUrl).then((data) => createDataFile(data));
-                }
+                window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
+                  walkedPath,
+                  pathPart,
+                  fileData,
+                  true,
+                  true
+                );
               }
             }
           );
