@@ -9,7 +9,7 @@ import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { supportsIndexedDB } from "contexts/fileSystem/functions";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -71,30 +71,12 @@ type FsQueueCall = [string, unknown[]];
 
 const mockFsCallQueue: FsQueueCall[] = [];
 
-const queueFsCall =
-  (name: string) =>
-  (...args: unknown[]) =>
-    mockFsCallQueue.push([name, args]);
-
-const queuedFs = {
-  exists: queueFsCall("exists"),
-  lstat: queueFsCall("lstat"),
-  mkdir: queueFsCall("mkdir"),
-  readFile: queueFsCall("readFile"),
-  readdir: queueFsCall("readdir"),
-  rename: queueFsCall("rename"),
-  rmdir: queueFsCall("rmdir"),
-  stat: queueFsCall("stat"),
-  unlink: queueFsCall("unlink"),
-  writeFile: queueFsCall("writeFile"),
-} as Partial<FSModule>;
-
 const runQueuedFsCalls = (fs: FSModule): void => {
   if (mockFsCallQueue.length > 0) {
     const [name, args] = mockFsCallQueue.shift() as FsQueueCall;
 
     if (name in fs) {
-      const fsCall = fs[name as keyof typeof queuedFs];
+      const fsCall = fs[name as keyof FSModule];
 
       if (typeof fsCall === "function") {
         // eslint-disable-next-line @typescript-eslint/ban-types
@@ -107,7 +89,8 @@ const runQueuedFsCalls = (fs: FSModule): void => {
 };
 
 const useAsyncFs = (): AsyncFSModule => {
-  const [fs, setFs] = useState<FSModule>(queuedFs as FSModule);
+  const [fs, setFs] = useState<FSModule>();
+  const fsRef = useRef<FSModule>();
   const [rootFs, setRootFs] = useState<RootFileSystem>();
   const asyncFs: AsyncFS = useMemo(
     () => ({
@@ -199,11 +182,37 @@ const useAsyncFs = (): AsyncFSModule => {
   );
 
   useEffect(() => {
-    if (!fs || fs === queuedFs) {
+    if (!fs) {
+      const queueFsCall =
+        (name: string) =>
+        (...args: unknown[]) => {
+          if (!fsRef.current) mockFsCallQueue.push([name, args]);
+          else {
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            (fsRef.current[name as keyof FSModule] as unknown as Function)(
+              ...args
+            );
+          }
+        };
+
+      setFs({
+        exists: queueFsCall("exists"),
+        lstat: queueFsCall("lstat"),
+        mkdir: queueFsCall("mkdir"),
+        readFile: queueFsCall("readFile"),
+        readdir: queueFsCall("readdir"),
+        rename: queueFsCall("rename"),
+        rmdir: queueFsCall("rmdir"),
+        stat: queueFsCall("stat"),
+        unlink: queueFsCall("unlink"),
+        writeFile: queueFsCall("writeFile"),
+      } as Partial<FSModule> as FSModule);
+    } else if (!("getRootFS" in fs)) {
       const setupFs = (writeToIndexedDB: boolean): void =>
         configure(FileSystemConfig(!writeToIndexedDB), () => {
           const loadedFs = BFSRequire("fs");
 
+          fsRef.current = loadedFs;
           setFs(loadedFs);
           setRootFs(loadedFs.getRootFS() as RootFileSystem);
         });
