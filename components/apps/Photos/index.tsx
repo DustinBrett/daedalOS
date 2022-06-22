@@ -16,7 +16,11 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { HIGH_PRIORITY_ELEMENT, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  HIGH_PRIORITY_ELEMENT,
+  ONE_TIME_PASSIVE_EVENT,
+  TIFF_IMAGE_FORMATS,
+} from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -87,11 +91,15 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   );
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
   const loadPhoto = useCallback(async (): Promise<void> => {
-    let fileContents = await readFile(url);
-    const ext = extname(url);
+    let fileContents: Buffer | string = await readFile(url);
+    const ext = extname(url).toLowerCase();
 
     if ([".ani", ".cur"].includes(ext)) {
       fileContents = await aniToGif(fileContents);
+    } else if (TIFF_IMAGE_FORMATS.has(ext)) {
+      fileContents = (await import("utif"))
+        .bufferToURI(fileContents)
+        .replace("data:image/png;base64,", "");
     }
 
     setSrc((currentSrc) => {

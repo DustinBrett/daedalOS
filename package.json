@@ -60,7 +60,8 @@
     "react-dom": "^18.2.0",
     "react-rnd": "^10.3.7",
     "resedit": "^1.6.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "utif": "https://github.com/photopea/UTIF.js"
   },
   "devDependencies": {
     "7z-wasm": "^1.0.0-beta.5",

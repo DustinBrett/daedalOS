@@ -25,10 +25,12 @@ import {
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
+  PHOTO_ICON,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
   SYSTEM_FILES,
   SYSTEM_PATHS,
+  TIFF_IMAGE_FORMATS,
   UNKNOWN_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -310,13 +312,25 @@ export const getInfoWithExtension = (
       }
     });
   } else if (extension === ".ani") {
-    getInfoByFileExtension("/System/Icons/photo.webp", (signal) =>
+    getInfoByFileExtension(PHOTO_ICON, (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0 && !signal.aborted) {
           const firstImage = await getFirstAniImage(contents);
 
           if (firstImage && !signal.aborted) {
             getInfoByFileExtension(imageToBufferUrl(path, firstImage));
+          }
+        }
+      })
+    );
+  } else if (TIFF_IMAGE_FORMATS.has(extension)) {
+    getInfoByFileExtension(PHOTO_ICON, (signal) =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        if (!error && contents.length > 0 && !signal.aborted) {
+          const firstImage = (await import("utif")).bufferToURI(contents);
+
+          if (firstImage && !signal.aborted) {
+            getInfoByFileExtension(firstImage);
           }
         }
       })
@@ -334,7 +348,7 @@ export const getInfoWithExtension = (
       })
     );
   } else if (IMAGE_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension("/System/Icons/photo.webp", (signal) =>
+    getInfoByFileExtension(PHOTO_ICON, (signal) =>
       fs.readFile(path, (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0 && !signal.aborted) {
           const imageIcon = new Image();

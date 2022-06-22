@@ -27,7 +27,16 @@ export const ICON_GIF_SECONDS = 2;
 
 export const ICON_GIF_FPS = 24;
 
+export const TIFF_IMAGE_FORMATS = new Set([
+  ".cr2",
+  ".dng",
+  ".nef",
+  ".tif",
+  ".tiff",
+]);
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
+  ...TIFF_IMAGE_FORMATS,
   ".ani",
   ".apng",
   ".avif",
@@ -47,6 +56,8 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".webp",
   ".xbm",
 ]);
+
+export const PHOTO_ICON = "/System/Icons/photo.webp";
 
 export const INVALID_FILE_CHARACTERS = /["*/:<>?\\|]/g;
 

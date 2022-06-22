@@ -14,7 +14,10 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
 
-export const imageToBufferUrl = (path: string, buffer: Buffer): string =>
+export const imageToBufferUrl = (
+  path: string,
+  buffer: Buffer | string
+): string =>
   extname(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
