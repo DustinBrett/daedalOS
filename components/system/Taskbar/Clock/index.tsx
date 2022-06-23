@@ -3,7 +3,9 @@ import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BASE_CLOCK_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
+import { createOffscreenCanvas } from "utils/functions";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
 
@@ -38,20 +40,47 @@ const Clock: FC = () => {
     [clockSource]
   );
   const clockContextMenu = useClockContextMenu();
+  const currentWorker = useWorker<ClockWorkerResponse>(
+    clockWorkerInit,
+    updateTime
+  );
+  const offScreenClockCanvas = useRef<OffscreenCanvas>();
+  const supportsOffscreenCanvas =
+    typeof window !== "undefined" && "OffscreenCanvas" in window;
 
-  useWorker<ClockWorkerResponse>(clockWorkerInit, updateTime);
+  useEffect(() => {
+    offScreenClockCanvas.current = undefined;
+  }, [clockSource]);
 
   if (!time) return <></>;
 
   return (
     <StyledClock
+      ref={(clockContainer) => {
+        if (
+          supportsOffscreenCanvas &&
+          !offScreenClockCanvas.current &&
+          currentWorker.current &&
+          clockContainer instanceof HTMLTimeElement
+        ) {
+          [...clockContainer.children].forEach((element) => element.remove());
+
+          offScreenClockCanvas.current = createOffscreenCanvas(clockContainer);
+          offScreenClockCanvas.current.height = TASKBAR_HEIGHT;
+          offScreenClockCanvas.current.width = BASE_CLOCK_WIDTH;
+
+          currentWorker.current.postMessage(offScreenClockCanvas.current, [
+            offScreenClockCanvas.current,
+          ]);
+        }
+      }}
       aria-label="Clock"
       dateTime={dateTime}
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
     >
-      {time}
+      {!supportsOffscreenCanvas ? time : undefined}
     </StyledClock>
   );
 };
