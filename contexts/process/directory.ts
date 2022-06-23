@@ -37,6 +37,16 @@ const processDirectory: Processes = {
     lockAspectRatio: true,
     title: "Byuu",
   },
+  DXBall: {
+    Component: dynamic(() => import("components/apps/DX-Ball")),
+    background: "#000",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/dxball.webp",
+    title: "DX-Ball",
+  },
   DevTools: {
     Component: dynamic(() => import("components/apps/DevTools")),
     background: "rgb(36, 36, 36)",
