@@ -70,7 +70,7 @@ globalThis.addEventListener(
       return;
     }
 
-    if (data instanceof OffscreenCanvas) {
+    if ("OffscreenCanvas" in global && data instanceof OffscreenCanvas) {
       offscreenCanvas = data;
       return;
     }
