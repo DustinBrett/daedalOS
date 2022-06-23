@@ -29,11 +29,11 @@ const Clock: FC = () => {
   );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
-      if (data === "source") {
-        (clockWorker as Worker).postMessage(clockSource);
-      } else {
-        setNow(data);
-      }
+      const sendSource = data === "source";
+
+      if (!sendSource) setNow(data);
+
+      (clockWorker as Worker).postMessage(sendSource ? clockSource : "tock");
     },
     [clockSource]
   );

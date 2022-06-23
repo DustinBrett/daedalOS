@@ -15,7 +15,7 @@ const NtpReqOptions: RequestInit = {
   credentials: "omit",
   keepalive: false,
   mode: "cors",
-  priority: "low",
+  priority: "high",
   referrerPolicy: "no-referrer",
   // eslint-disable-next-line unicorn/no-null
   window: null,
