@@ -18,6 +18,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     icon: setProcessIcon,
     title,
     processes: { [id]: process },
+    url: setProcessUrl,
   } = useProcesses();
   const { icon = "", url = "" } = process || {};
   const { fs, rootFs } = useFileSystem();
@@ -53,6 +54,9 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
 
         setCurrentUrl(url);
       }
+    } else {
+      setProcessUrl(id, "/");
+      setProcessIcon(id, "/System/Icons/pc.webp");
     }
   }, [
     currentUrl,
@@ -63,6 +67,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     isMounted,
     rootFs?.mntMap,
     setProcessIcon,
+    setProcessUrl,
     title,
     url,
   ]);

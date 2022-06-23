@@ -268,7 +268,6 @@ export const getInfoWithExtension = (
             if (iniIcon) {
               callback({ comment, icon: iniIcon, pid, subIcons, url });
             }
-            // TODO: Else use getIconsFromCache()
           });
         };
 
