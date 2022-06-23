@@ -61,7 +61,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       {...useTaskbarTransition()}
       {...useTitlebarContextMenu(id, true)}
     >
-      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+      <AnimatePresence initial={false}>
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
       <Button ref={linkTaskbarEntry} onClick={onClick} {...label(taskbarTitle)}>

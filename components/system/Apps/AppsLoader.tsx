@@ -9,7 +9,7 @@ const RenderComponent = dynamic(
 const AppsLoader: FC = () => (
   <ProcessConsumer>
     {({ processes = {} }) => (
-      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+      <AnimatePresence initial={false}>
         {Object.entries(processes)
           .filter(([, { closing }]) => !closing)
           .map(([id, { Component, hasWindow }]) => (

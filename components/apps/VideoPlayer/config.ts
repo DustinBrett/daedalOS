@@ -1,4 +1,5 @@
 import { extname } from "path";
+import type { VideoJsPlayerOptions } from "video.js";
 
 export const YT_TYPE = "video/youtube";
 
@@ -24,7 +25,7 @@ export const config = {
     enablePrivacyEnhancedMode: true,
     ytControls: 2,
   },
-};
+} as VideoJsPlayerOptions;
 
 export const libs = [
   "/Program Files/Video.js/video-js.min.css",

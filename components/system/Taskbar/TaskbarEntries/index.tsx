@@ -11,7 +11,7 @@ const TaskbarEntries: FC = () => (
   <StyledTaskbarEntries>
     <ProcessConsumer>
       {({ processes = {} }) => (
-        <AnimatePresence initial={false} presenceAffectsLayout={false}>
+        <AnimatePresence initial={false}>
           {Object.entries(processes)
             .filter(([, { closing }]) => !closing)
             .map(([id, { icon, title }]) => (
