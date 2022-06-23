@@ -31,14 +31,13 @@ const useFileKeyboardShortcuts = (
 
       const { ctrlKey, key, target, shiftKey } = event;
 
-      if (key === "F12" && !shiftKey) return;
-
-      haltEvent(event);
+      if (shiftKey) return;
 
       if (ctrlKey) {
         const lKey = key.toLowerCase();
 
         if (lKey === "a") {
+          haltEvent(event);
           if (target instanceof HTMLOListElement) {
             const [firstEntry] = target.querySelectorAll("button");
 
@@ -46,31 +45,39 @@ const useFileKeyboardShortcuts = (
           }
           Object.keys(files).forEach((fileName) => focusEntry(fileName));
         } else if (lKey === "c") {
+          haltEvent(event);
           copyEntries(focusedEntries.map((entry) => join(url, entry)));
         } else if (lKey === "x") {
+          haltEvent(event);
           moveEntries(focusedEntries.map((entry) => join(url, entry)));
         } else if (lKey === "v") {
+          haltEvent(event);
           pasteToFolder();
         }
       } else if (key === "F2" && file) {
+        haltEvent(event);
         setRenaming(file);
-      } else if (key === "F5") {
+      } else if (key === "F5" && id) {
+        haltEvent(event);
         updateFiles();
-      } else if (key === "Delete") {
+      } else if (key === "Delete" && focusedEntries.length > 0) {
+        haltEvent(event);
         focusedEntries.forEach(async (entry) => {
           const path = join(url, entry);
 
           await deletePath(path);
           updateFiles(undefined, path);
         });
-
         blurEntry();
       } else if (key === "Backspace" && id) {
+        haltEvent(event);
         changeUrl(id, dirname(url));
       } else if (target instanceof HTMLButtonElement) {
         if (key === "Enter") {
+          haltEvent(event);
           target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
         } else if (key.startsWith("Arrow")) {
+          haltEvent(event);
           const { x, y, height, width } = target.getBoundingClientRect();
           const movedElement =
             key === "ArrowUp" || key === "ArrowDown"
