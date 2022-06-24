@@ -1,6 +1,6 @@
 export const Fullscreen: FC = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-    <path d="M30 2v10h-2v-6.578l-22.578 22.578h6.578v2h-10v-10h2v6.578l22.578-22.578h-6.578v-2h10z" />
+    <path d="M30 2v10h-2V5.422L5.422 28H12v2H2V20h2v6.578L26.578 4H20V2h10z" />
   </svg>
 );
 
