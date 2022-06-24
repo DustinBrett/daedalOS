@@ -43,8 +43,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   display: flex;
   height: 100%;
   left: 0;
-  max-height: ${({ theme }) => theme.sizes.startMenu.size};
+  max-height: ${({ theme }) => theme.sizes.startMenu.maxHeight};
   max-width: ${({ theme }) => theme.sizes.startMenu.size};
+  min-height: ${({ theme }) => theme.sizes.startMenu.size};
   position: absolute;
   width: 100%;
   z-index: 1000;

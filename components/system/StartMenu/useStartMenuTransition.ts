@@ -11,7 +11,7 @@ const useStartMenuTransition = (): MotionProps => {
     sizes: { startMenu, taskbar },
   } = useTheme();
   const height = Math.min(
-    pxToNum(startMenu.size),
+    pxToNum(startMenu.maxHeight),
     viewHeight() - pxToNum(taskbar.height)
   );
 
