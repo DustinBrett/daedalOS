@@ -29,6 +29,10 @@ const updateSortBy =
   ([sortBy, isAscending]: SortByOrder): SortByOrder =>
     [value, sortBy === value ? !isAscending : defaultIsAscending];
 
+const EASTER_EGG_CLICK_COUNT = 2;
+
+let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+
 const useFolderContextMenu = (
   url: string,
   {
@@ -41,7 +45,27 @@ const useFolderContextMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
-  const { setWallpaper, wallpaperImage } = useSession();
+  const { setWallpaper: setSessionWallpaper, wallpaperImage } = useSession();
+  const setWallpaper = useCallback(
+    (wallpaper: string) => {
+      if (wallpaper === "VANTA") {
+        triggerEasterEggCountdown -= 1;
+
+        const triggerEasterEgg = triggerEasterEggCountdown === 0;
+
+        setSessionWallpaper(`VANTA${triggerEasterEgg ? "-WIREFRAME" : ""}`);
+
+        if (triggerEasterEgg) {
+          triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+        }
+      } else {
+        triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+
+        setSessionWallpaper(wallpaper);
+      }
+    },
+    [setSessionWallpaper]
+  );
   const { open } = useProcesses();
   const getItems = useCallback(() => {
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
@@ -118,8 +142,10 @@ const useFolderContextMenu = (
                 },
                 {
                   action: () => setWallpaper("VANTA"),
-                  label: "Vanta Waves",
-                  toggle: wallpaperImage === "VANTA",
+                  label: `Vanta Waves${
+                    wallpaperImage === "VANTA-WIREFRAME" ? " (Wireframe)" : ""
+                  }`,
+                  toggle: wallpaperImage.startsWith("VANTA"),
                 },
               ],
             },

@@ -8,15 +8,27 @@ type VantaWavesCycleColor = {
 };
 
 export type VantaWavesConfig = VantaWavesCycleColor & {
+  camera: {
+    far: number;
+    fov: number;
+    near: number;
+  };
   color: string;
   forceAnimate?: boolean;
   gyroControls?: boolean;
+  hh: number;
+  material: {
+    options: {
+      wireframe: boolean;
+    };
+  };
   mouseControls?: boolean;
   mouseEase?: boolean;
   shininess: number;
   touchControls?: boolean;
   waveHeight: number;
   waveSpeed: number;
+  ww: number;
   zoom?: number;
 };
 

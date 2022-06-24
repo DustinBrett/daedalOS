@@ -10,7 +10,11 @@ const vantaWaves =
   (el?: HTMLElement | null): void => {
     const { VANTA: { current: currentEffect } = {} } = window;
 
-    currentEffect?.destroy();
+    try {
+      currentEffect?.destroy();
+    } catch {
+      // Failed to cleanup effect
+    }
 
     if (!el) return;
 

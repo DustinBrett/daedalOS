@@ -93,8 +93,15 @@ const useWallpaper = (
 
         window.removeEventListener("resize", resizeListener);
         window.addEventListener("resize", resizeListener, { passive: true });
-      } else if (wallpaperImage === "VANTA") {
-        vantaWaves(config)(desktopRef.current);
+      } else if (wallpaperImage.startsWith("VANTA")) {
+        vantaWaves({
+          ...config,
+          material: {
+            options: {
+              wireframe: wallpaperImage === "VANTA-WIREFRAME",
+            },
+          },
+        })(desktopRef.current);
       } else if (wallpaperImage === "HEXELLS") {
         hexells(desktopRef.current);
       } else if (wallpaperImage === "COASTAL_LANDSCAPE") {
@@ -127,7 +134,16 @@ const useWallpaper = (
     if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
     desktopRef.current?.setAttribute("style", "");
     desktopRef.current?.querySelector(":scope > canvas")?.remove();
-    if (wallpaperImage === "VANTA") vantaWaves(config)();
+    if (wallpaperImage.startsWith("VANTA")) {
+      vantaWaves({
+        ...config,
+        material: {
+          options: {
+            wireframe: wallpaperImage === "VANTA-WIREFRAME",
+          },
+        },
+      })();
+    }
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
