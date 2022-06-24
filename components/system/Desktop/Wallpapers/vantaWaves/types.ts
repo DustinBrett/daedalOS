@@ -38,7 +38,7 @@ type MainThreadRenderProps = {
 
 type RenderProps = MainThreadRenderProps | OffscreenRenderProps;
 
-type VantaWavesSettings = RenderProps &
+export type VantaWavesSettings = RenderProps &
   VantaWavesConfig & {
     THREE?: unknown;
   };

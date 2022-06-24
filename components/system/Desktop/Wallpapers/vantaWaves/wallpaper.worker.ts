@@ -30,7 +30,11 @@ globalThis.addEventListener(
       waveEffect?.renderer.setSize(width, height);
       waveEffect?.resize();
     } else {
-      const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
+      const {
+        canvas,
+        config: offscreenConfig,
+        devicePixelRatio,
+      } = data as OffscreenRenderProps;
       const { VANTA: { current: currentEffect = waveEffect, WAVES } = {} } =
         globalThis;
 
@@ -38,7 +42,7 @@ globalThis.addEventListener(
       if (currentEffect) currentEffect.destroy();
 
       waveEffect = WAVES({
-        ...config,
+        ...(offscreenConfig || config),
         ...disableControls,
         canvas,
         devicePixelRatio,

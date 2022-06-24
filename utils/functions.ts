@@ -253,12 +253,19 @@ export const haltEvent = (
 };
 
 export const createOffscreenCanvas = (
-  containerElement: HTMLElement
+  containerElement: HTMLElement,
+  devicePixelRatio = 1,
+  customSize: Size = {} as Size
 ): OffscreenCanvas => {
   const canvas = document.createElement("canvas");
+  const height = Number(customSize?.height) || containerElement.offsetHeight;
+  const width = Number(customSize?.width) || containerElement.offsetWidth;
 
-  canvas.height = containerElement.clientHeight;
-  canvas.width = containerElement.clientWidth;
+  canvas.style.height = `${height}px`;
+  canvas.style.width = `${width}px`;
+
+  canvas.height = Math.floor(height * devicePixelRatio);
+  canvas.width = Math.floor(width * devicePixelRatio);
 
   containerElement.appendChild(canvas);
 

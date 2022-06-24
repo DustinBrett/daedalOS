@@ -1,3 +1,4 @@
+import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
@@ -14,6 +15,13 @@ let gotTock = true;
 const getNow = (): Date =>
   !mode || mode === "local" ? new Date() : getNtpAdjustedTime();
 
+const textPosition = {
+  x: 0,
+  y: 0,
+};
+
+const TEXT_HEIGHT_OFFSET = 1;
+
 const drawClockText = (
   canvas: OffscreenCanvas,
   dateTime: LocaleTimeDate
@@ -25,18 +33,20 @@ const drawClockText = (
 
     if (!offscreenContext) return;
 
+    offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
     offscreenContext.fillStyle = "rgba(255, 255, 255, 90%)";
+    offscreenContext.font = `12px ${formats.systemFont}`;
     offscreenContext.textAlign = "center";
     offscreenContext.textBaseline = "middle";
-    offscreenContext.font = `12px ${formats.systemFont}`;
+
+    textPosition.y =
+      Math.floor(canvas.height / global.devicePixelRatio / 2) +
+      TEXT_HEIGHT_OFFSET;
+    textPosition.x = Math.floor(canvas.width / global.devicePixelRatio / 2);
   }
 
   offscreenContext.clearRect(0, 0, canvas.width, canvas.height);
-  offscreenContext.fillText(
-    dateTime.time,
-    canvas.width / 2,
-    canvas.height / 2 + 2
-  );
+  offscreenContext.fillText(dateTime.time, textPosition.x, textPosition.y);
 };
 
 const sendTick = (): void => {
@@ -61,7 +71,11 @@ let initialized = false;
 
 globalThis.addEventListener(
   "message",
-  ({ data }: { data: ClockSource | OffscreenCanvas | "init" | "tock" }) => {
+  ({
+    data,
+  }: {
+    data: ClockSource | OffscreenRenderProps | "init" | "tock";
+  }) => {
     if (!initialized) {
       if (data === "init") {
         initialized = true;
@@ -70,8 +84,14 @@ globalThis.addEventListener(
       return;
     }
 
-    if ("OffscreenCanvas" in global && data instanceof OffscreenCanvas) {
-      offscreenCanvas = data;
+    if (
+      "OffscreenCanvas" in global &&
+      (data as OffscreenRenderProps)?.canvas instanceof OffscreenCanvas
+    ) {
+      const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
+
+      offscreenCanvas = canvas;
+      global.devicePixelRatio = devicePixelRatio;
       return;
     }
 

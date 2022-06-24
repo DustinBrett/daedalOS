@@ -106,13 +106,22 @@ const Clock: FC = () => {
         ) {
           [...clockContainer.children].forEach((element) => element.remove());
 
-          offScreenClockCanvas.current = createOffscreenCanvas(clockContainer);
-          offScreenClockCanvas.current.height = TASKBAR_HEIGHT;
-          offScreenClockCanvas.current.width = BASE_CLOCK_WIDTH;
+          offScreenClockCanvas.current = createOffscreenCanvas(
+            clockContainer,
+            window.devicePixelRatio,
+            {
+              height: TASKBAR_HEIGHT,
+              width: BASE_CLOCK_WIDTH,
+            }
+          );
 
-          currentWorker.current.postMessage(offScreenClockCanvas.current, [
-            offScreenClockCanvas.current,
-          ]);
+          currentWorker.current.postMessage(
+            {
+              canvas: offScreenClockCanvas.current,
+              devicePixelRatio: window.devicePixelRatio,
+            },
+            [offScreenClockCanvas.current]
+          );
         }
       }}
       aria-label="Clock"

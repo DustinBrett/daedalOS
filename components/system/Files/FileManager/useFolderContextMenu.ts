@@ -53,7 +53,7 @@ const useFolderContextMenu = (
 
         const triggerEasterEgg = triggerEasterEggCountdown === 0;
 
-        setSessionWallpaper(`VANTA${triggerEasterEgg ? "-WIREFRAME" : ""}`);
+        setSessionWallpaper(`VANTA${triggerEasterEgg ? " WIREFRAME" : ""}`);
 
         if (triggerEasterEgg) {
           triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
@@ -143,7 +143,7 @@ const useFolderContextMenu = (
                 {
                   action: () => setWallpaper("VANTA"),
                   label: `Vanta Waves${
-                    wallpaperImage === "VANTA-WIREFRAME" ? " (Wireframe)" : ""
+                    wallpaperImage === "VANTA WIREFRAME" ? " (Wireframe)" : ""
                   }`,
                   toggle: wallpaperImage.startsWith("VANTA"),
                 },
