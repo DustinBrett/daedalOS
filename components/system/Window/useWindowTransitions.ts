@@ -41,8 +41,12 @@ const useWindowTransitions = (
   const { closing, componentWindow, maximized, minimized, taskbarEntry } =
     processes[id] || {};
   const { sizes: { taskbar } = {} } = useTheme();
-  const [maximize, setMaximize] = useState<Variant>({});
-  const [minimize, setMinimize] = useState<Variant>({});
+  const [maximize, setMaximize] = useState<Variant>(
+    Object.create(null) as Variant
+  );
+  const [minimize, setMinimize] = useState<Variant>(
+    Object.create(null) as Variant
+  );
 
   useLayoutEffect(() => {
     const { x: windowX = 0, y: windowY = 0 } =

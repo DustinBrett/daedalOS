@@ -62,7 +62,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
   );
-  const [pasteList, setPasteList] = useState<FilePasteOperations>({});
+  const [pasteList, setPasteList] = useState<FilePasteOperations>(
+    Object.create(null) as FilePasteOperations
+  );
   const updatePasteEntries = (
     entries: string[],
     operation: "copy" | "move"

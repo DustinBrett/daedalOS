@@ -21,8 +21,12 @@ const useSessionContextState = (): SessionContextState => {
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState<ThemeName>(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState<ClockSource>("local");
-  const [windowStates, setWindowStates] = useState<WindowStates>({});
-  const [sortOrders, setSortOrders] = useState<SortOrders>({});
+  const [windowStates, setWindowStates] = useState<WindowStates>(
+    Object.create(null) as WindowStates
+  );
+  const [sortOrders, setSortOrders] = useState<SortOrders>(
+    Object.create(null) as SortOrders
+  );
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("VANTA");
   const [runHistory, setRunHistory] = useState<string[]>([]);

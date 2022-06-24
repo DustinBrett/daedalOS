@@ -32,7 +32,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         !(relatedTarget instanceof HTMLElement) ||
         !menuRef.current?.contains(relatedTarget)
       ) {
-        setMenu({});
+        setMenu(Object.create(null) as MenuState);
       }
     },
     [setMenu]
