@@ -4,7 +4,11 @@ import useClockContextMenu from "components/system/Taskbar/Clock/useClockContext
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BASE_CLOCK_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
+import {
+  BASE_CLOCK_WIDTH,
+  ONE_TIME_PASSIVE_EVENT,
+  TASKBAR_HEIGHT,
+} from "utils/constants";
 import { createOffscreenCanvas } from "utils/functions";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
@@ -12,6 +16,43 @@ type ClockWorkerResponse = LocaleTimeDate | "source";
 const ClockSourceMap = {
   local: "Local",
   ntp: "Server",
+};
+
+const EASTER_EGG_CLICK_COUNT = 7;
+
+let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+
+const resetEasterEggCountdown = (): void => {
+  triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+};
+
+const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
+  target,
+}): Promise<void> => {
+  if (
+    triggerEasterEggCountdown === EASTER_EGG_CLICK_COUNT &&
+    target instanceof HTMLElement
+  ) {
+    target.setAttribute("tabIndex", "-1");
+
+    ["blur", "mouseleave"].forEach((type) => {
+      target.removeEventListener(type, resetEasterEggCountdown);
+      target.addEventListener(
+        type,
+        resetEasterEggCountdown,
+        ONE_TIME_PASSIVE_EVENT
+      );
+    });
+  }
+
+  triggerEasterEggCountdown -= 1;
+
+  if (triggerEasterEggCountdown === 0) {
+    const { default: spawnSheep } = await import("utils/eSheep");
+
+    spawnSheep();
+    triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+  }
 };
 
 const Clock: FC = () => {
@@ -76,6 +117,7 @@ const Clock: FC = () => {
       }}
       aria-label="Clock"
       dateTime={dateTime}
+      onClick={easterEggOnClick}
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}

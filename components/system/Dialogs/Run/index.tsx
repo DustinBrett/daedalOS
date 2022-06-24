@@ -13,6 +13,7 @@ import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PACKAGE_DATA, SHORTCUT_EXTENSION } from "utils/constants";
+import spawnSheep from "utils/eSheep";
 
 const OPEN_ID = "open";
 
@@ -31,6 +32,11 @@ const notFound = (resource: string): void =>
   alert(
     `Cannot find '${resource}'. Make sure you typed the name correctly, and then try again.`
   );
+
+const utilCommandMap: Record<string, () => void> = {
+  esheep: spawnSheep,
+  sheep: spawnSheep,
+};
 
 const Run: FC<ComponentProcessProps> = () => {
   const {
@@ -110,6 +116,9 @@ const Run: FC<ComponentProcessProps> = () => {
 
         if (pid) {
           open(pid);
+          addRunHistoryEntry();
+        } else if (utilCommandMap[resource.toLowerCase()]) {
+          utilCommandMap[resource.toLowerCase()]();
           addRunHistoryEntry();
         } else {
           notFound(resource);
