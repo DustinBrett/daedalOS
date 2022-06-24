@@ -3,8 +3,10 @@ import SidebarButton from "components/system/StartMenu/Sidebar/SidebarButton";
 import {
   AllApps,
   Documents,
+  Pictures,
   Power,
   SideMenu,
+  Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import { useFileSystem } from "contexts/fileSystem";
@@ -62,6 +64,28 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
       icon: <Documents />,
       name: "Documents",
       ...(collapsed && { tooltip: "Documents" }),
+    },
+    {
+      action: () =>
+        open(
+          "FileExplorer",
+          { url: `${HOME}/Pictures` },
+          "/System/Icons/pictures.webp"
+        ),
+      icon: <Pictures />,
+      name: "Pictures",
+      ...(collapsed && { tooltip: "Pictures" }),
+    },
+    {
+      action: () =>
+        open(
+          "FileExplorer",
+          { url: `${HOME}/Videos` },
+          "/System/Icons/videos.webp"
+        ),
+      icon: <Videos />,
+      name: "Videos",
+      ...(collapsed && { tooltip: "Videos" }),
     },
     {
       action: () => resetStorage().finally(() => window.location.reload()),
