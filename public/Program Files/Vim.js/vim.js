@@ -6776,6 +6776,8 @@ function _vimjs_init() {
     vimjs.devicePixelRatio = window.devicePixelRatio || 1;
     vimjs.window_width = container_node.clientWidth * vimjs.devicePixelRatio;
     vimjs.window_height = container_node.clientHeight * vimjs.devicePixelRatio;
+    canvas_node.style.height = container_node.clientHeight + "px";
+    canvas_node.style.width = container_node.clientWidth + "px";
     _vimjs_init_font("");
     vimjs.special_keys = [];
     vimjs.special_keys_namemap = {};
