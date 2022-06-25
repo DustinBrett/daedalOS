@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledSidebar = styled.nav`
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: space-between;
   margin-right: 7px;
   overflow: hidden;
