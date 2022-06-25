@@ -40,7 +40,6 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   };
   const topButtons: SidebarButtons = [
     {
-      action: () => setCollapsed((collapsedState) => !collapsedState),
       heading: true,
       icon: <SideMenu />,
       name: "START",
@@ -102,7 +101,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
       className={collapsed ? "collapsed" : undefined}
       onClick={() => {
         clearTimer();
-        setCollapsed(false);
+        setCollapsed((collapsedState) => !collapsedState);
       }}
       onMouseEnter={() => {
         expandTimer.current = window.setTimeout(() => setCollapsed(false), 700);
