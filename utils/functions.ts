@@ -103,10 +103,14 @@ export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number(value.replace("px", ""));
 
 export const viewHeight = (): number =>
-  Math.min(window.innerHeight, window.screen.height);
+  window.screen.height
+    ? Math.min(window.innerHeight, window.screen.height)
+    : window.innerHeight;
 
 export const viewWidth = (): number =>
-  Math.min(window.innerWidth, window.screen.width);
+  window.screen.width
+    ? Math.min(window.innerWidth, window.screen.width)
+    : window.innerWidth;
 
 export const calcInitialPosition = (
   relativePosition: RelativePosition,
