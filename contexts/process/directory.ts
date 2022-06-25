@@ -45,6 +45,7 @@ const processDirectory: Processes = {
       width: 640,
     },
     icon: "/System/Icons/dxball.webp",
+    lockAspectRatio: true,
     title: "DX-Ball",
   },
   DevTools: {
