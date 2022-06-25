@@ -192,8 +192,8 @@ const useWallpaper = (
             )}/maxresdefault.jpg`;
           }
 
-          if (hdurl && url && hdurl !== url && wallpaperUrl !== url) {
-            fallbackBackground = url as string;
+          if (hdurl && url && hdurl !== url) {
+            fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
           }
 
           const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
