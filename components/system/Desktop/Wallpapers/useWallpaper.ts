@@ -91,17 +91,13 @@ const useWallpaper = (
       canvasElement.style.height = `${desktopRect.height}px`;
     }
   }, [desktopRef, wallpaperWorker]);
-  const vantaConfig = useMemo(
-    () => ({
-      ...config,
-      material: {
-        options: {
-          wireframe: vantaWireframe,
-        },
-      },
-    }),
-    [vantaWireframe]
-  );
+  const vantaConfig = useMemo(() => {
+    const newConfig = { ...config };
+
+    newConfig.material.options.wireframe = vantaWireframe;
+
+    return newConfig;
+  }, [vantaWireframe]);
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       desktopRef.current.setAttribute("style", "");

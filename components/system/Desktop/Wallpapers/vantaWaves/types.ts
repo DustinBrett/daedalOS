@@ -19,6 +19,7 @@ export type VantaWavesConfig = VantaWavesCycleColor & {
   hh: number;
   material: {
     options: {
+      fog?: boolean;
       wireframe: boolean;
     };
   };

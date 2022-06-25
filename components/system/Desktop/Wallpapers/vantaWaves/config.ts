@@ -14,6 +14,7 @@ export const config: VantaWavesConfig = {
   lightness: 15,
   material: {
     options: {
+      fog: false,
       wireframe: false,
     },
   },
