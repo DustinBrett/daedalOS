@@ -1,7 +1,26 @@
 window.DXBall = {
   basePath: "/Program Files/DX-Ball",
   calcRecords: ({ name, score }) => window.DXBall.saveRecords?.(name, score),
+  intervals: [],
+  timeouts: [],
+  audioFiles: {},
+  status: "idle",
+  close: () => {
+    window.DXBall.intervals.forEach(clearInterval);
+    window.DXBall.timeouts.forEach(clearTimeout);
+
+    Object.entries(window.DXBall.audioFiles).forEach(([, track]) => track.pause());
+
+    delete window.DXBall.audioFiles;
+
+    window.DXBall.audioFiles = {};
+    window.DXBall.intervals = [];
+    window.DXBall.timeouts = [];
+
+    window.DXBall.status = "idle";
+  },
   init: (saveFunction) => {
+    window.DXBall.status = "running";
     window.DXBall.saveRecords = saveFunction;
     var mbbkgrnd_img = new Image();
     mbbkgrnd_img["src"] = window.DXBall.basePath + "/images/mbbkgrnd.png";
@@ -50,35 +69,34 @@ window.DXBall = {
           "Xploshor",
           "Xplosht1",
         ],
-        audioFile = [],
         i = 0;
       i < audioName["length"];
       i++
     ) {
-      (audioFile[audioName[i]] = document["createElement"]("audio")),
+      (window.DXBall.audioFiles[audioName[i]] = document["createElement"]("audio")),
         "3" == audioName[i][audioName[i]["length"] - 1]
           ? ((source = document["createElement"]("source")),
             source["setAttribute"]("src", window.DXBall.basePath + "/audio/sound/" + audioName[i]),
-            audioFile[audioName[i]]["appendChild"](source))
+            window.DXBall.audioFiles[audioName[i]]["appendChild"](source))
           : ((source = document["createElement"]("source")),
             source["setAttribute"](
               "src",
               window.DXBall.basePath + "/audio/sfx/wav/" + audioName[i] + ".wav"
             ),
-            audioFile[audioName[i]]["appendChild"](source),
+            window.DXBall.audioFiles[audioName[i]]["appendChild"](source),
             (source = document["createElement"]("source")),
             source["setAttribute"](
               "src",
               window.DXBall.basePath + "/audio/sfx/mp3/" + audioName[i] + ".mp3"
             ),
-            audioFile[audioName[i]]["appendChild"](source),
+            window.DXBall.audioFiles[audioName[i]]["appendChild"](source),
             (source = document["createElement"]("source")),
             source["setAttribute"](
               "src",
               window.DXBall.basePath + "/audio/sfx/aac/" + audioName[i] + ".aac"
             ),
-            audioFile[audioName[i]]["appendChild"](source)),
-        audioFile[audioName[i]]["load"]();
+            window.DXBall.audioFiles[audioName[i]]["appendChild"](source)),
+        window.DXBall.audioFiles[audioName[i]]["load"]();
     }
 
     function dx_ball(_0x56c3x8, _0x56c3x9) {
@@ -191,7 +209,7 @@ window.DXBall = {
                 _0x56c3xc < _0x56c3x8["length"];
                 _0x56c3xc++
               ) {
-                if (!this["font"][_0x56c3x9]) return;
+                if (!this["font"]?.[_0x56c3x9]?.["char"]?.[_0x56c3x8[_0x56c3xc]]) return;
                 ctx["drawImage"](
                   this["font"][_0x56c3x9]["char"][_0x56c3x8[_0x56c3xc]]["img"],
                   curX,
@@ -783,7 +801,7 @@ window.DXBall = {
         _0x56c3xf = 0,
         _0x56c3x10 = 0,
         _0x56c3x11 = 0,
-        _0x56c3x12 = audioFile[audioName[_0x56c3x11]]["cloneNode"](!0);
+        _0x56c3x12 = window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0);
 
       function _0x56c3x13(_0x56c3xc) {
         var _0x56c3x8 = null;
@@ -810,7 +828,7 @@ window.DXBall = {
 
       function _0x56c3x14(_0x56c3xc) {
         soundon &&
-          ((audio[naudio] = audioFile[_0x56c3xc]["cloneNode"](!0)),
+          ((audio[naudio] = window.DXBall.audioFiles[_0x56c3xc]["cloneNode"](!0)),
           audio[naudio]["play"](),
           naudio++,
           64 <= naudio && (naudio = 0));
@@ -994,7 +1012,7 @@ window.DXBall = {
           (this["bang"] = function (_0x56c3xc, _0x56c3x8) {
             0 != this["type"] && (this["aframe"] = 30),
               8 == this["type"] &&
-                (this["timeout"] = setTimeout(function () {
+                (this["timeout"] = window.DXBall.timeouts.push(setTimeout(function () {
                   0 == parseInt(1 * Math["random"]())
                     ? _0x56c3x14("Xploshor")
                     : _0x56c3x14("Xploshor1"),
@@ -1030,7 +1048,7 @@ window.DXBall = {
                       _0x56c3xc + 1,
                       _0x56c3x8 + 1
                     );
-                }, 80)),
+                }, 80))),
               0 != this["type"] &&
                 2 != this["type"] &&
                 ((user["score"] += 10), _0x56c3xd--),
@@ -1237,9 +1255,9 @@ window.DXBall = {
           user["startTime"] = 0,
           paused = paus = !1,
           window["soundon"] &&
-            ((audioFile["Whine"]["loop"] = "loop"),
-            (audioFile["Voltage"]["loop"] = "loop"),
-            audioFile["Whine"]["play"]()),
+            ((window.DXBall.audioFiles["Whine"]["loop"] = "loop"),
+            (window.DXBall.audioFiles["Voltage"]["loop"] = "loop"),
+            window.DXBall.audioFiles["Whine"]["play"]()),
           naudio = 0,
           nflash = 0,
           audio = new Array(),
@@ -1260,22 +1278,22 @@ window.DXBall = {
                 (this["x"] = _0x56c3xc),
                   (this["y"] = _0x56c3x8),
                   (this["is"] = !0),
-                  (this["timout"] = setTimeout(function () {
+                  (this["timout"] = window.DXBall.timeouts.push(setTimeout(function () {
                     lightning["show"]();
-                  }, 3e4)),
+                  }, 3e4))),
                   (this["volume"] = 0),
-                  audioFile["Voltage"]["play"]();
+                  window.DXBall.audioFiles["Voltage"]["play"]();
               }),
               (this["show"] = function () {
                 (bricks[this["x"]][this["y"]]["type"] = 8),
                   bricks[this["x"]][this["y"]]["bang"](this["x"], this["y"]),
                   _0x56c3x14("Thudclap"),
                   (this["drawing"] = !0),
-                  setTimeout(function () {
+                  window.DXBall.timeouts.push(setTimeout(function () {
                     (lightning["drawing"] = !1),
                       (lightning["is"] = !1),
-                      audioFile["Voltage"]["pause"]();
-                  }, 40);
+                      window.DXBall.audioFiles["Voltage"]["pause"]();
+                  }, 40));
               }),
               (this["draw"] = function () {
                 this["drawing"] &&
@@ -1350,9 +1368,9 @@ window.DXBall = {
               });
           })(),
           chcur = "_",
-          setInterval(function () {
+          window.DXBall.intervals.push(setInterval(function () {
             "_" == chcur ? (chcur = " ") : (chcur = "_");
-          }, 500),
+          }, 500)),
           highscore = new (function () {
             (this["loading"] = !1),
               (this["upLim"] = this["downLim"] = -1),
@@ -1431,6 +1449,7 @@ window.DXBall = {
               ]),
               (this["ss"] = 0),
               (this["draw"] = function () {
+                if (window.DXBall?.status !== "running") return;
                 if (1 == this["drawing"]) {
                   for (
                     ctx["globalCompositeOperation"] = "lighter",
@@ -1543,6 +1562,9 @@ window.DXBall = {
                     i < this["sinString"]["length"];
                     i++
                   ) {
+                    if (!myFonts?.["font"]?.["Chisel2.sbk"]?.["char"]?.[
+                      this["sinString"]?.[i]
+                    ]) return;
                     for (
                       j = 0;
                       j <=
@@ -1678,22 +1700,22 @@ window.DXBall = {
           (user["timeGame"] = 0),
           _0x56c3x1c(user["level"]),
           (user["startTime"] = new Date()["getTime"]()),
-          setTimeout(function () {
+          window.DXBall.timeouts.push(setTimeout(function () {
             !(function _0x56c3xc() {
               _0x56c3x10 = 0;
-              setTimeout(function () {
+              window.DXBall.timeouts.push(setTimeout(function () {
                 shadow["drawing"] ||
                 highscore["drawing"] ||
                 saver["drawing"] ||
                 saver["drawing"] ||
                 paused
-                  ? setTimeout(function () {
+                  ? window.DXBall.timeouts.push(setTimeout(function () {
                       _0x56c3xc();
-                    }, 2e3)
+                    }, 2e3))
                   : (_0x56c3xe = 60 / _0x56c3x10);
-              }, 1e3);
+              }, 1e3));
             })();
-          }, 3e3);
+          }, 3e3));
       }
 
       function _0x56c3x1c(_0x56c3xc) {
@@ -1702,7 +1724,7 @@ window.DXBall = {
             cl = !1,
             shadow["aframe"] = 20,
             clearTimeout(lightning["timout"]),
-            audioFile["Voltage"]["pause"](),
+            window.DXBall.audioFiles["Voltage"]["pause"](),
             shadow["drawing"] = !0,
             _0x56c3xd = 0,
             y = 0;
@@ -1804,7 +1826,7 @@ window.DXBall = {
             1 == saver["drawing"])
           ) {
             (saver["drawing"] = 2),
-              audioFile["Whine"]["pause"](),
+              window.DXBall.audioFiles["Whine"]["pause"](),
               (_0x56c3x11 = 0),
               window["soundon"] && _0x56c3x12["play"]();
           } else {
@@ -1834,11 +1856,6 @@ window.DXBall = {
             }
           }
         }),
-        // (window["onblur"] = function () {
-        //   0 != saver["drawing"] ||
-        //     highscore["drawing"] ||
-        //     ((shadow["aframe"] = 20), (shadow["drawing"] = !0), (paus = !0));
-        // }),
         (document["onkeydown"] = function (_0x56c3x8) {
           if (!highscore["loading"]) {
             if (
@@ -1909,14 +1926,14 @@ window.DXBall = {
               _0x56c3x1f("f");
           }
         }),
-        setInterval(function () {
+        window.DXBall.intervals.push(setInterval(function () {
           _0x56c3x12["currentTime"] >= _0x56c3x12["duration"] - 1 &&
             (6 == ++_0x56c3x11 && (_0x56c3x11 = 0),
             _0x56c3x12["pause"](),
-            (_0x56c3x12 = audioFile[audioName[_0x56c3x11]]["cloneNode"](!0))[
+            (_0x56c3x12 = window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0))[
               "play"
             ]());
-        }, 100),
+        }, 100)),
         (balls[balls["length"]] = new _0x56c3x16()),
         (paddle = new (function () {
           (this["x"] = 300),
@@ -2063,9 +2080,9 @@ window.DXBall = {
                   case 1:
                     _0x56c3x14("Peow!"),
                       (cl = !0),
-                      setTimeout(function () {
+                      window.DXBall.timeouts.push(setTimeout(function () {
                         user["level"]++, _0x56c3x1c(user["level"]);
-                      }, 200);
+                      }, 200));
                     break;
                   case 2:
                     for (
@@ -2200,18 +2217,18 @@ window.DXBall = {
           window["oRequestAnimationFrame"] ||
           window["msRequestAnimationFrame"] ||
           function (_0x56c3xc, _0x56c3x8) {
-            window["setTimeout"](_0x56c3xc, 100);
+            window.DXBall.timeouts.push(window["setTimeout"](_0x56c3xc, 100));
           });
       var _0x56c3x20 = 50,
         _0x56c3x21 = 0;
-      setInterval(function () {
+        window.DXBall.intervals.push(setInterval(function () {
         (_0x56c3x20 = parseInt(_0x56c3x21)), (_0x56c3x21 = 0);
-      }, 1e3),
+      }, 1e3)),
         (ctx["fillStyle"] = "#000"),
         ctx["fillRect"](0, 0, 640, 480),
         window["saveron"] ||
           ((saver["drawing"] = !1),
-          audioFile["Whine"]["pause"](),
+          window.DXBall.audioFiles["Whine"]["pause"](),
           window["soundon"] && ((_0x56c3x11 = 0), _0x56c3x12["play"]()),
           _0x56c3x1b()),
         (function _0x56c3x8() {
@@ -2269,9 +2286,9 @@ window.DXBall = {
             _0x56c3xd <= 0 &&
               !cl &&
               ((cl = !0),
-              setTimeout(function () {
+              window.DXBall.timeouts.push(setTimeout(function () {
                 user["level"]++, _0x56c3x1c(user["level"]);
-              }, 200)),
+              }, 200))),
             _0x56c3x21++,
             _0x56c3x10++,
             requestAnimFrame(_0x56c3x8);
