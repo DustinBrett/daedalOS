@@ -8,9 +8,11 @@
     "defaults and supports es6 and not ie 11 and >1%"
   ],
   "scripts": {
-    "build": "yarn build:fs && yarn build:search && next build",
+    "build": "yarn build:prebuild && next build",
+    "build:bundle-analyzer": "yarn build",
     "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public && node scripts/preloadIcons.js",
     "build:html": "node scripts/minifyHtml.js",
+    "build:prebuild": "yarn build:fs && yarn build:search",
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
     "deploy": "yarn build:robots && next export && yarn build:html",
@@ -21,7 +23,7 @@
     "export": "next export",
     "prepare": "husky install",
     "prettier": "prettier --write .",
-    "start": "next start",
+    "start": "next build && next start",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "test:watch": "jest --watch",

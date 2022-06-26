@@ -2,9 +2,9 @@
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: isProduction,
-});
+const bundleAnalyzer = process.env.npm_config_argv?.includes(
+  "build:bundle-analyzer"
+);
 
 const webpack = require("webpack");
 
@@ -50,4 +50,8 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = bundleAnalyzer
+  ? require("@next/bundle-analyzer")({
+      enabled: isProduction,
+    })(nextConfig)
+  : nextConfig;
