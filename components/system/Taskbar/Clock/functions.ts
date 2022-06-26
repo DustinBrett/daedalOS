@@ -1,6 +1,5 @@
 export type LocaleTimeDate = {
   date: string;
-  dateTime: string;
   time: string;
 };
 
@@ -30,7 +29,6 @@ export const formatLocaleDateTime = (now: Date): LocaleTimeDate => {
 
   return {
     date: `${date}\n${day}`,
-    dateTime: now.toISOString(),
     time,
   };
 };

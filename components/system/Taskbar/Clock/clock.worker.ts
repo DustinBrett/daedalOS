@@ -3,7 +3,9 @@ import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
 import type { ClockSource } from "contexts/session/types";
+import colors from "styles/defaultTheme/colors";
 import formats from "styles/defaultTheme/formats";
+import sizes from "styles/defaultTheme/sizes";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 let mode: ClockSource;
@@ -34,8 +36,8 @@ const drawClockText = (
     if (!offscreenContext) return;
 
     offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
-    offscreenContext.fillStyle = "rgba(255, 255, 255, 90%)";
-    offscreenContext.font = `12px ${formats.systemFont}`;
+    offscreenContext.fillStyle = colors.text;
+    offscreenContext.font = `${sizes.clock.fontSize} ${formats.systemFont}`;
     offscreenContext.textAlign = "center";
     offscreenContext.textBaseline = "middle";
 

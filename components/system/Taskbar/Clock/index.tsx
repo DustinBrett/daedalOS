@@ -57,7 +57,7 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 
 const Clock: FC = () => {
   const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
-  const { date, time, dateTime } = now;
+  const { date, time } = now;
   const { clockSource } = useSession();
   const clockWorkerInit = useCallback(
     () =>
@@ -102,7 +102,7 @@ const Clock: FC = () => {
           supportsOffscreenCanvas &&
           !offScreenClockCanvas.current &&
           currentWorker.current &&
-          clockContainer instanceof HTMLTimeElement
+          clockContainer instanceof HTMLDivElement
         ) {
           [...clockContainer.children].forEach((element) => element.remove());
 
@@ -124,8 +124,7 @@ const Clock: FC = () => {
           );
         }
       }}
-      aria-label="Clock"
-      dateTime={dateTime}
+      aria-label={!supportsOffscreenCanvas ? "Clock" : undefined}
       onClick={easterEggOnClick}
       title={date}
       suppressHydrationWarning
