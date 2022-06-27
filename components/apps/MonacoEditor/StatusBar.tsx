@@ -70,7 +70,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
           </ol>
           <ol>
             {url && isPrettyLanguage(language) && (
-              <li>
+              <li className="clickable">
                 <Button
                   className="pretty"
                   onClick={async () =>
@@ -85,7 +85,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
               </li>
             )}
             {position && (
-              <li>
+              <li className="clickable">
                 <Button
                   onClick={() => {
                     editor?.focus();

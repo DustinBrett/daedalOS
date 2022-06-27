@@ -34,6 +34,7 @@ const StyledStatusBar = styled.footer`
       button {
         color: inherit;
         font-size: inherit;
+        padding: 4px 8px;
 
         &.pretty {
           position: relative;
@@ -47,6 +48,10 @@ const StyledStatusBar = styled.footer`
 
       &:active {
         background-color: rgb(34, 34, 34);
+      }
+
+      &.clickable {
+        padding: 0;
       }
     }
   }
