@@ -226,6 +226,7 @@ const processDirectory: Processes = {
   },
   Webamp: {
     Component: dynamic(() => import("components/apps/Webamp")),
+    allowResizing: false,
     hasWindow: false,
     icon: "/System/Icons/webamp.webp",
     singleton: true,

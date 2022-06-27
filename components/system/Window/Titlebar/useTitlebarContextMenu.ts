@@ -11,15 +11,13 @@ import {
   MAXIMIZE,
   MAXIMIZE_DISABLED,
   MINIMIZE,
+  MINIMIZE_DISABLED,
   RESTORE,
   RESTORE_DISABLED,
 } from "styles/SystemIcons";
 import { MENU_SEPERATOR } from "utils/constants";
 
-const useTitlebarContextMenu = (
-  id: string,
-  hideDisabled = false
-): ContextMenuCapture => {
+const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const {
@@ -27,34 +25,35 @@ const useTitlebarContextMenu = (
   } = useProcesses();
   const getItems = useCallback(() => {
     const { allowResizing = true, maximized, minimized } = process || {};
-    const disableMaximize = maximized || !allowResizing;
+    const isMaxOrMin = maximized || minimized;
 
     return [
-      !(hideDisabled && (!disableMaximize || minimized)) && {
-        action: () => onMaximize(),
-        disabled: !disableMaximize,
-        icon: !disableMaximize ? RESTORE_DISABLED : RESTORE,
+      {
+        action: minimized ? onMinimize : onMaximize,
+        disabled: !isMaxOrMin,
+        icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
         label: "Restore",
       },
       {
-        action: () => onMinimize(),
-        icon: MINIMIZE,
-        label: minimized ? "Restore" : "Minimize",
+        action: onMinimize,
+        disabled: minimized,
+        icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
+        label: "Minimize",
       },
-      !(hideDisabled && (disableMaximize || minimized)) && {
-        action: () => onMaximize(),
-        disabled: disableMaximize,
-        icon: disableMaximize ? MAXIMIZE_DISABLED : MAXIMIZE,
+      allowResizing && {
+        action: onMaximize,
+        disabled: isMaxOrMin,
+        icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
         label: "Maximize",
       },
       MENU_SEPERATOR,
       {
-        action: () => onClose(),
+        action: onClose,
         icon: CLOSE,
         label: "Close",
       },
     ].filter(Boolean) as MenuItem[];
-  }, [hideDisabled, onClose, onMaximize, onMinimize, process]);
+  }, [onClose, onMaximize, onMinimize, process]);
 
   return contextMenu?.(getItems);
 };

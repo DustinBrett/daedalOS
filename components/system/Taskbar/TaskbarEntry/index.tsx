@@ -59,7 +59,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}
       {...useTaskbarTransition()}
-      {...useTitlebarContextMenu(id, true)}
+      {...useTitlebarContextMenu(id)}
     >
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {isPeekVisible && <PeekWindow id={id} />}
