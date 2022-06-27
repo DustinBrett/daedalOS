@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { basename, dirname, join } from "path";
-import preloadIcons from "public/.index/preload.json";
+import desktopIcons from "public/.index/desktopIcons.json";
 import {
   HIGH_PRIORITY_ELEMENT,
   ICON_PATH,
@@ -18,7 +18,7 @@ const Metadata: FC = () => (
     />
     <meta content={description} name="description" />
     <title>{alias}</title>
-    {preloadIcons?.map((icon) => (
+    {desktopIcons?.map((icon) => (
       <link
         key={icon}
         as="image"
