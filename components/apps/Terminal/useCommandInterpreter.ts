@@ -477,14 +477,14 @@ const useCommandInterpreter = (
               try {
                 const mappedFolder = await mapFs(cd.current);
 
-                if (!mappedFolder) {
-                  updateFolder(cd.current, mappedFolder);
-
+                if (mappedFolder) {
                   const fullPath = join(cd.current, mappedFolder);
                   const files = await readdir(fullPath);
 
                   cd.current = fullPath;
                   autoComplete(files, localEcho);
+
+                  updateFolder(cd.current, mappedFolder);
                 }
               } catch {
                 // Ignore failure to mount
