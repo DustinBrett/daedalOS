@@ -1,15 +1,19 @@
 import type React from "react";
 import { Component } from "react";
 
+type ErrorBoundaryProps = {
+  reloadOnError?: boolean;
+};
+
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
 export class ErrorBoundary extends Component<
-  React.PropsWithChildren<Record<never, unknown>>,
+  React.PropsWithChildren<ErrorBoundaryProps>,
   ErrorBoundaryState
 > {
-  public constructor(props: React.PropsWithChildren<Record<never, unknown>>) {
+  public constructor(props: React.PropsWithChildren<ErrorBoundaryProps>) {
     super(props);
     this.state = { hasError: false };
   }
@@ -23,21 +27,16 @@ export class ErrorBoundary extends Component<
   }
 
   public render(): React.ReactNode {
-    const { hasError } = this.state;
+    const {
+      props: { children, reloadOnError },
+      state: { hasError },
+    } = this;
 
-    if (
-      hasError &&
-      !("__REACT_DEVTOOLS_GLOBAL_HOOK__" in window) &&
-      !window.DEBUG
-    ) {
+    if (hasError && reloadOnError) {
       window.location.reload();
-
-      // eslint-disable-next-line unicorn/no-null
-      return null;
     }
 
-    const { children } = this.props;
-
-    return children;
+    // eslint-disable-next-line unicorn/no-null
+    return hasError ? null : children;
   }
 }

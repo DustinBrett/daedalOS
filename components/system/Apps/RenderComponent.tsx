@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import dynamic from "next/dynamic";
 
 const Window = dynamic(() => import("components/system/Window"));
@@ -16,13 +17,14 @@ const RenderComponent: FC<RenderComponentProps> = ({
   Component,
   hasWindow = true,
   id,
-}) =>
-  hasWindow ? (
-    <Window id={id}>
+}) => {
+  const SafeComponent = (
+    <ErrorBoundary>
       <Component id={id} />
-    </Window>
-  ) : (
-    <Component id={id} />
+    </ErrorBoundary>
   );
+
+  return hasWindow ? <Window id={id}>{SafeComponent}</Window> : SafeComponent;
+};
 
 export default RenderComponent;

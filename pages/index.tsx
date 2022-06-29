@@ -14,7 +14,7 @@ const Index = (): React.ReactElement => {
   useLockTitle();
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary reloadOnError>
       <Desktop>
         <Taskbar />
         <AppsLoader />
