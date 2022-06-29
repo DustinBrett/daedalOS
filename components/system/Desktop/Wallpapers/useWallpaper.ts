@@ -1,12 +1,17 @@
+import {
+  BASE_CANVAS_SELECTOR,
+  BRIGHT_WALLPAPERS,
+  cssFit,
+  WALLPAPER_WORKERS,
+} from "components/system/Desktop/Wallpapers/constants";
 import hexells from "components/system/Desktop/Wallpapers/hexells";
 import coastalLandscape from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
 import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
-import type { WallpaperFit } from "contexts/session/types";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
 import {
   bufferToUrl,
@@ -18,50 +23,7 @@ import {
   viewWidth,
 } from "utils/functions";
 
-const cssFit: Record<WallpaperFit, string> = {
-  center: "background-repeat: no-repeat;",
-  fill: "background-size: cover;",
-  fit: `
-    background-repeat: no-repeat;
-    background-size: contain;
-  `,
-  stretch: "background-size: 100% 100%;",
-  tile: "",
-};
-
-const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
-  COASTAL_LANDSCAPE: "80%",
-  HEXELLS: "80%",
-};
-
-const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
-  COASTAL_LANDSCAPE: (): Worker =>
-    new Worker(
-      new URL(
-        "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape/wallpaper.worker",
-        import.meta.url
-      ),
-      { name: "Wallpaper (Coastal Landscape)" }
-    ),
-  HEXELLS: (): Worker =>
-    new Worker(
-      new URL(
-        "components/system/Desktop/Wallpapers/hexells/wallpaper.worker",
-        import.meta.url
-      ),
-      { name: "Wallpaper (Hexells)" }
-    ),
-  VANTA: (info?: string): Worker =>
-    new Worker(
-      new URL(
-        "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
-        import.meta.url
-      ),
-      { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` }
-    ),
-};
-
-const BASE_CANVAS_SELECTOR = ":scope > canvas";
+const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
@@ -91,15 +53,12 @@ const useWallpaper = (
       canvasElement.style.height = `${desktopRect.height}px`;
     }
   }, [desktopRef, wallpaperWorker]);
-  const vantaConfig = useMemo(() => {
-    const newConfig = { ...config };
-
-    newConfig.material.options.wireframe = vantaWireframe;
-
-    return newConfig;
-  }, [vantaWireframe]);
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
+      const vantaConfig = { ...config };
+
+      vantaConfig.material.options.wireframe = vantaWireframe;
+
       desktopRef.current.setAttribute("style", "");
       desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
@@ -143,7 +102,7 @@ const useWallpaper = (
     desktopRef,
     resizeListener,
     setWallpaper,
-    vantaConfig,
+    vantaWireframe,
     wallpaperName,
     wallpaperWorker,
   ]);
@@ -155,9 +114,6 @@ const useWallpaper = (
     if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
     desktopRef.current?.setAttribute("style", "");
     desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
-    if (wallpaperName === "VANTA") {
-      vantaWaves(vantaConfig)();
-    }
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
@@ -236,7 +192,6 @@ const useWallpaper = (
     loadWallpaper,
     readFile,
     setWallpaper,
-    vantaConfig,
     wallpaperFit,
     wallpaperImage,
     wallpaperName,
@@ -244,11 +199,12 @@ const useWallpaper = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (
-        wallpaperName &&
-        !Object.keys(WALLPAPER_WORKERS).includes(wallpaperName)
-      ) {
-        loadFileWallpaper().catch(loadWallpaper);
+      if (wallpaperName) {
+        if (WALLPAPER_WORKER_NAMES.includes(wallpaperName)) {
+          loadWallpaper();
+        } else {
+          loadFileWallpaper().catch(loadWallpaper);
+        }
       } else {
         loadWallpaper();
       }
