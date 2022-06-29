@@ -35,6 +35,7 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
   HOME,
+  isFileSystemSupported,
   ONE_DAY_IN_MILLISECONDS,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
@@ -44,6 +45,7 @@ import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
 import type { Terminal } from "xterm";
 
+const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";
 const PATH_NOT_FOUND = "The system cannot find the path specified.";
 const SYNTAX_ERROR = "The syntax of the command is incorrect.";
@@ -59,6 +61,7 @@ const useCommandInterpreter = (
     exists,
     fs,
     lstat,
+    mapFs,
     mkdirRecursive,
     readdir,
     readFile,
@@ -468,6 +471,30 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "mount": {
+          if (localEcho) {
+            if (isFileSystemSupported()) {
+              try {
+                const mappedFolder = await mapFs(cd.current);
+
+                if (!mappedFolder) {
+                  updateFolder(cd.current, mappedFolder);
+
+                  const fullPath = join(cd.current, mappedFolder);
+                  const files = await readdir(fullPath);
+
+                  cd.current = fullPath;
+                  autoComplete(files, localEcho);
+                }
+              } catch {
+                // Ignore failure to mount
+              }
+            } else {
+              localEcho?.println(COMMAND_NOT_SUPPORTED);
+            }
+          }
+          break;
+        }
         case "move":
         case "mv":
         case "ren":
@@ -672,6 +699,7 @@ const useCommandInterpreter = (
       id,
       localEcho,
       lstat,
+      mapFs,
       mkdirRecursive,
       open,
       processes,

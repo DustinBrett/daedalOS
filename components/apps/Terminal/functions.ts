@@ -42,6 +42,7 @@ export const commands: Record<string, string> = {
   imagemagick: "Convert an image file to another format.",
   license: "Displays license.",
   md: "Creates a directory.",
+  mount: "Mounts a local file system directory.",
   move: "Moves file or directory.",
   pwd: "Prints the working directory.",
   python: "Run code through Python interpreter.",

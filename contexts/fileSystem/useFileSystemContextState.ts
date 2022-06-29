@@ -126,6 +126,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
             resolve(handle.name);
             addFileSystemHandle(directory, handle);
           });
+        } else {
+          reject();
         }
       });
     },
