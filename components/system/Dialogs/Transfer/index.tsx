@@ -49,8 +49,8 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     if (!processing.current) {
       if (fileReaders.length > 0) {
-        title(id, "Copying...");
         processing.current = true;
+        title(id, "Copying...");
         processReader(fileReaders);
       } else {
         closeWithTransition(id);

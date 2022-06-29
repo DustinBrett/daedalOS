@@ -308,21 +308,19 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     return "";
   };
-  const restoreFsHandles = useCallback(
-    async (): Promise<void> =>
+
+  useEffect(() => {
+    const restoreFsHandles = async (): Promise<void> =>
       Object.entries(await getFileSystemHandles()).forEach(
         async ([handleDirectory, handle]) => {
           if (!(await exists(handleDirectory))) {
             mapFs(dirname(handleDirectory), handle);
           }
         }
-      ),
-    [exists, mapFs]
-  );
+      );
 
-  useEffect(() => {
     restoreFsHandles();
-  }, [restoreFsHandles]);
+  }, [exists, mapFs]);
 
   useEffect(() => {
     const watchedPaths = Object.keys(fsWatchers).filter(

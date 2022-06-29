@@ -131,9 +131,9 @@ const Run: FC<ComponentProcessProps> = () => {
   );
 
   useEffect(() => {
-    if (inputRef.current && foregroundId === "Run") {
-      inputRef.current.focus();
-      if (inputRef.current.value) inputRef.current.select();
+    if (foregroundId === "Run") {
+      inputRef.current?.focus();
+      if (inputRef.current?.value) inputRef.current?.select();
     }
   }, [foregroundId]);
 

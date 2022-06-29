@@ -52,23 +52,6 @@ const useSessionContextState = (): SessionContextState => {
     },
     []
   );
-  const initSession = useCallback(async () => {
-    if (await exists(SESSION_FILE)) {
-      const sessionData = await readFile(SESSION_FILE);
-      const session = JSON.parse(sessionData.toString() || "{}") as SessionData;
-
-      if (session.clockSource) setClockSource(session.clockSource);
-      if (session.sortOrders) setSortOrders(session.sortOrders);
-      if (session.themeName) setThemeName(session.themeName);
-      if (session.wallpaperImage) {
-        setWallpaper(session.wallpaperImage, session.wallpaperFit);
-      }
-      if (session.windowStates) setWindowStates(session.windowStates);
-      if (session.runHistory) setRunHistory(session.runHistory);
-    }
-
-    setSessionLoaded(true);
-  }, [exists, readFile, setWallpaper]);
 
   useEffect(() => {
     if (sessionLoaded) {
@@ -123,8 +106,28 @@ const useSessionContextState = (): SessionContextState => {
   );
 
   useEffect(() => {
+    const initSession = async (): Promise<void> => {
+      if (await exists(SESSION_FILE)) {
+        const sessionData = await readFile(SESSION_FILE);
+        const session = JSON.parse(
+          sessionData.toString() || "{}"
+        ) as SessionData;
+
+        if (session.clockSource) setClockSource(session.clockSource);
+        if (session.sortOrders) setSortOrders(session.sortOrders);
+        if (session.themeName) setThemeName(session.themeName);
+        if (session.wallpaperImage) {
+          setWallpaper(session.wallpaperImage, session.wallpaperFit);
+        }
+        if (session.windowStates) setWindowStates(session.windowStates);
+        if (session.runHistory) setRunHistory(session.runHistory);
+      }
+
+      setSessionLoaded(true);
+    };
+
     initSession();
-  }, [initSession]);
+  }, [exists, readFile, setWallpaper]);
 
   return {
     clockSource,

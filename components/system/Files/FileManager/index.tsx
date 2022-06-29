@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -101,24 +101,6 @@ const FileManager: FC<FileManagerProps> = ({
     view
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
-  const mountUrl = useCallback(async () => {
-    if (
-      MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) &&
-      !mounted &&
-      !(await stat(url)).isDirectory()
-    ) {
-      setMounted((currentlyMounted) => {
-        if (!currentlyMounted) {
-          mountFs(url)
-            .then(() => setTimeout(updateFiles, 100))
-            .catch(() => {
-              // Ignore race-condtion failures
-            });
-        }
-        return true;
-      });
-    }
-  }, [mountFs, mounted, stat, updateFiles, url]);
   const requestingPermissions = useRef(false);
 
   useEffect(() => {
@@ -150,8 +132,27 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
 
   useEffect(() => {
+    const mountUrl = async (): Promise<void> => {
+      if (
+        MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) &&
+        !mounted &&
+        !(await stat(url)).isDirectory()
+      ) {
+        setMounted((currentlyMounted) => {
+          if (!currentlyMounted) {
+            mountFs(url)
+              .then(() => setTimeout(updateFiles, 100))
+              .catch(() => {
+                // Ignore race-condtion failures
+              });
+          }
+          return true;
+        });
+      }
+    };
+
     mountUrl();
-  }, [mountUrl]);
+  }, [mountFs, mounted, stat, updateFiles, url]);
 
   useEffect(() => {
     if (url !== currentUrl) {

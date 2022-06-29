@@ -22,8 +22,9 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   const updateShowSelected = (width: number): void =>
     setShowSelected(width > MINIMUM_STATUSBAR_WIDTH);
   const statusBarRef = useRef<HTMLDivElement | null>(null);
-  const updateSelectedSize = useCallback(
-    async (): Promise<void> =>
+
+  useEffect(() => {
+    const updateSelectedSize = async (): Promise<void> =>
       setSelectedSize(
         await selected.reduce(async (totalSize, file) => {
           const currentSize = await totalSize;
@@ -41,13 +42,10 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
 
           return totalSize;
         }, Promise.resolve(UNKNOWN_SIZE))
-      ),
-    [directory, exists, lstat, selected, stat]
-  );
+      );
 
-  useEffect(() => {
     updateSelectedSize();
-  }, [selected, updateSelectedSize]);
+  }, [directory, exists, lstat, selected, stat]);
 
   useEffect(() => {
     if (statusBarRef.current) {

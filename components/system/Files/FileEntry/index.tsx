@@ -185,97 +185,6 @@ const FileEntry: FC<FileEntryProps> = ({
   const isIconCached = useRef(false);
   const isDynamicIconLoaded = useRef(false);
   const getIconAbortController = useRef<AbortController>();
-  const updateIcon = useCallback(async (): Promise<void> => {
-    if (!isLoadingFileManager && !isIconCached.current) {
-      if (icon.startsWith("blob:") || icon.startsWith("data:")) {
-        if (icon.startsWith("data:image/jpeg;base64,")) return;
-
-        isIconCached.current = true;
-
-        const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
-
-        if (
-          urlExt !== ".ico" &&
-          !url.startsWith(ICON_PATH) &&
-          !url.startsWith(USER_ICON_PATH) &&
-          !(await exists(cachedIconPath)) &&
-          iconRef.current instanceof HTMLImageElement
-        ) {
-          const cacheIcon = async (): Promise<void> => {
-            if (iconRef.current instanceof HTMLImageElement) {
-              let generatedIcon: string;
-
-              if (iconRef.current.src.startsWith("data:image/gif;base64,")) {
-                generatedIcon = iconRef.current.src;
-              } else {
-                const htmlToImage = await import("html-to-image");
-                generatedIcon = await htmlToImage.toPng(iconRef.current);
-              }
-
-              cacheQueue.push(async () => {
-                const baseCachedPath = dirname(cachedIconPath);
-
-                await mkdirRecursive(baseCachedPath);
-
-                const cachedIcon = Buffer.from(
-                  generatedIcon.replace(/data:(.*);base64,/, ""),
-                  "base64"
-                );
-
-                await writeFile(cachedIconPath, cachedIcon, true);
-                setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIcon) }));
-                updateFolder(baseCachedPath, cachedIconPath);
-
-                cacheQueue.shift();
-                await cacheQueue[0]?.();
-              });
-
-              if (cacheQueue.length === 1) await cacheQueue[0]();
-            }
-          };
-
-          if (iconRef.current.complete) cacheIcon();
-          else iconRef.current.addEventListener("load", cacheIcon);
-        }
-      } else if (getIcon) {
-        const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
-
-        if (await exists(cachedIconPath)) {
-          isIconCached.current = true;
-
-          const cachedIconData = await readFile(cachedIconPath);
-
-          setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
-        } else if (!isDynamicIconLoaded.current && buttonRef.current) {
-          isDynamicIconLoaded.current = true;
-          new IntersectionObserver(
-            ([{ intersectionRatio }], observer) => {
-              if (intersectionRatio > 0) {
-                observer.disconnect();
-                getIconAbortController.current = new AbortController();
-                getIcon(getIconAbortController.current.signal);
-              }
-            },
-            { root: fileManagerRef.current, rootMargin: "5px" }
-          ).observe(buttonRef.current);
-        }
-      }
-    }
-  }, [
-    exists,
-    fileManagerRef,
-    getIcon,
-    icon,
-    isLoadingFileManager,
-    mkdirRecursive,
-    path,
-    readFile,
-    setInfo,
-    updateFolder,
-    url,
-    urlExt,
-    writeFile,
-  ]);
   const createTooltip = useCallback(async (): Promise<string> => {
     if (stats.isDirectory()) return "";
 
@@ -317,10 +226,114 @@ const FileEntry: FC<FileEntryProps> = ({
   const [tooltip, setTooltip] = useState("");
 
   useEffect(() => {
-    updateIcon();
-  }, [updateIcon]);
+    const updateIcon = async (): Promise<void> => {
+      if (!isLoadingFileManager && !isIconCached.current) {
+        if (icon.startsWith("blob:") || icon.startsWith("data:")) {
+          if (icon.startsWith("data:image/jpeg;base64,")) return;
 
-  useEffect(() => () => getIconAbortController?.current?.abort(), []);
+          isIconCached.current = true;
+
+          const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+
+          if (
+            urlExt !== ".ico" &&
+            !url.startsWith(ICON_PATH) &&
+            !url.startsWith(USER_ICON_PATH) &&
+            !(await exists(cachedIconPath)) &&
+            iconRef.current instanceof HTMLImageElement
+          ) {
+            const cacheIcon = async (): Promise<void> => {
+              if (iconRef.current instanceof HTMLImageElement) {
+                let generatedIcon: string;
+
+                if (iconRef.current.src.startsWith("data:image/gif;base64,")) {
+                  generatedIcon = iconRef.current.src;
+                } else {
+                  const htmlToImage = await import("html-to-image");
+                  generatedIcon = await htmlToImage.toPng(iconRef.current);
+                }
+
+                cacheQueue.push(async () => {
+                  const baseCachedPath = dirname(cachedIconPath);
+
+                  await mkdirRecursive(baseCachedPath);
+
+                  const cachedIcon = Buffer.from(
+                    generatedIcon.replace(/data:(.*);base64,/, ""),
+                    "base64"
+                  );
+
+                  await writeFile(cachedIconPath, cachedIcon, true);
+                  setInfo((info) => ({
+                    ...info,
+                    icon: bufferToUrl(cachedIcon),
+                  }));
+                  updateFolder(baseCachedPath, cachedIconPath);
+
+                  cacheQueue.shift();
+                  await cacheQueue[0]?.();
+                });
+
+                if (cacheQueue.length === 1) await cacheQueue[0]();
+              }
+            };
+
+            if (iconRef.current.complete) cacheIcon();
+            else iconRef.current.addEventListener("load", cacheIcon);
+          }
+        } else if (getIcon) {
+          const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+
+          if (await exists(cachedIconPath)) {
+            isIconCached.current = true;
+
+            const cachedIconData = await readFile(cachedIconPath);
+
+            setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
+          } else if (!isDynamicIconLoaded.current && buttonRef.current) {
+            isDynamicIconLoaded.current = true;
+            new IntersectionObserver(
+              ([{ intersectionRatio }], observer) => {
+                if (intersectionRatio > 0) {
+                  observer.disconnect();
+                  getIconAbortController.current = new AbortController();
+                  getIcon(getIconAbortController.current.signal);
+                }
+              },
+              { root: fileManagerRef.current, rootMargin: "5px" }
+            ).observe(buttonRef.current);
+          }
+        }
+      }
+    };
+
+    updateIcon();
+  }, [
+    exists,
+    fileManagerRef,
+    getIcon,
+    icon,
+    isLoadingFileManager,
+    mkdirRecursive,
+    path,
+    readFile,
+    setInfo,
+    updateFolder,
+    url,
+    urlExt,
+    writeFile,
+  ]);
+
+  useEffect(
+    () => () => {
+      try {
+        getIconAbortController?.current?.abort?.();
+      } catch {
+        // Failed to abort getIcon
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (buttonRef.current) {
