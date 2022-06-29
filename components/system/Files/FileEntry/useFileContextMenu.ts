@@ -142,10 +142,13 @@ const useFileContextMenu = (
             menuItems.unshift(
               {
                 action: () =>
-                  mapFs("/").then((mappedFolder) => {
-                    updateFolder("/", mappedFolder);
-                    open("FileExplorer", { url: join("/", mappedFolder) });
-                  }),
+                  mapFs("/")
+                    .then((mappedFolder) => {
+                      updateFolder("/", mappedFolder);
+                      open("FileExplorer", { url: join("/", mappedFolder) });
+                    })
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
+                    .catch(() => {}),
                 label: "Map directory",
               },
               MENU_SEPERATOR

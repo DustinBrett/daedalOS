@@ -316,7 +316,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
       Object.entries(await getFileSystemHandles()).forEach(
         async ([handleDirectory, handle]) => {
           if (!(await exists(handleDirectory))) {
-            mapFs(dirname(handleDirectory), handle);
+            try {
+              mapFs(dirname(handleDirectory), handle);
+            } catch {
+              // Ignore failure
+            }
           }
         }
       );

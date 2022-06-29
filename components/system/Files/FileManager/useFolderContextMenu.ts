@@ -71,10 +71,13 @@ const useFolderContextMenu = (
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
       action: () =>
-        mapFs(url).then((mappedFolder) => {
-          updateFolder(url, mappedFolder);
-          open("FileExplorer", { url: join(url, mappedFolder) });
-        }),
+        mapFs(url)
+          .then((mappedFolder) => {
+            updateFolder(url, mappedFolder);
+            open("FileExplorer", { url: join(url, mappedFolder) });
+          })
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          .catch(() => {}),
       label: "Map directory",
     };
     const FS_COMMANDS = isFileSystemSupported()
