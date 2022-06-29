@@ -12,14 +12,18 @@ const AppsLoader: FC = () => (
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {Object.entries(processes)
           .filter(([, { closing }]) => !closing)
-          .map(([id, { Component, hasWindow }]) => (
-            <RenderComponent
-              key={id}
-              Component={Component}
-              hasWindow={hasWindow}
-              id={id}
-            />
-          ))}
+          .map(
+            ([id, { Component, hasWindow }]) =>
+              id &&
+              Component && (
+                <RenderComponent
+                  key={id}
+                  Component={Component}
+                  hasWindow={hasWindow}
+                  id={id}
+                />
+              )
+          )}
       </AnimatePresence>
     )}
   </ProcessConsumer>
