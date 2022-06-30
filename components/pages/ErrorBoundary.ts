@@ -2,7 +2,7 @@ import type React from "react";
 import { Component } from "react";
 
 type ErrorBoundaryProps = {
-  reloadOnError?: boolean;
+  FallbackRender?: React.ReactNode;
 };
 
 type ErrorBoundaryState = {
@@ -28,15 +28,14 @@ export class ErrorBoundary extends Component<
 
   public render(): React.ReactNode {
     const {
-      props: { children, reloadOnError },
+      props: { children, FallbackRender },
       state: { hasError },
     } = this;
 
-    if (hasError && reloadOnError) {
+    if (hasError && !FallbackRender) {
       window.location.reload();
     }
 
-    // eslint-disable-next-line unicorn/no-null
-    return hasError ? null : children;
+    return hasError ? FallbackRender : children;
   }
 }
