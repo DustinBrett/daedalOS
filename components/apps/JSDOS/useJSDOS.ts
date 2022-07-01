@@ -9,7 +9,7 @@ import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { useEffect, useState } from "react";
-import { loadFiles } from "utils/functions";
+import { loadFiles, pxToNum } from "utils/functions";
 
 const captureKeys = (event: KeyboardEvent): void => {
   if (CAPTURED_KEYS.has(event.key)) event.preventDefault();
@@ -69,22 +69,17 @@ const useJSDOS = (
           }
         }
       );
-      events.onFrameSize((width, height) => {
-        const {
-          height: instanceHeight = height,
-          width: instanceWidth = width,
-        } = dosInstance?.layers || {};
-        const frameSizeHalved =
-          height === instanceHeight / 2 && width === instanceWidth / 2;
+      events.onFrameSize(() => {
+        const canvas = containerRef.current?.querySelector("canvas");
+        const [width, height] = [
+          pxToNum(canvas?.style.width),
+          pxToNum(canvas?.style.height),
+        ];
         const { height: currentHeight = 0, width: currentWidth = 0 } =
           containerRef.current?.getBoundingClientRect() || {};
-        const [frameHeight, frameWidth] = [
-          frameSizeHalved ? instanceHeight : height,
-          frameSizeHalved ? instanceWidth : width,
-        ];
 
-        if (frameHeight !== currentHeight || frameWidth !== currentWidth) {
-          updateWindowSize(frameHeight, frameWidth);
+        if (height !== currentHeight || width !== currentWidth) {
+          updateWindowSize(height, width);
         }
       });
       events.onExit(() =>
