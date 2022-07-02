@@ -305,23 +305,6 @@ export const getYouTubeUrlId = (url: string): string => {
   return "";
 };
 
-let WEBP_SUPPORT: boolean;
-
-export const supportsWebP = (): boolean => {
-  if (typeof WEBP_SUPPORT !== "undefined") return WEBP_SUPPORT;
-
-  try {
-    WEBP_SUPPORT = document
-      .createElement("canvas")
-      .toDataURL("image/webp", 0)
-      .startsWith("data:image/webp");
-  } catch {
-    WEBP_SUPPORT = false;
-  }
-
-  return WEBP_SUPPORT;
-};
-
 export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
 
 export const getGifJs = async (): Promise<GIF> => {
