@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     outline: 0;
     padding: 0;
+    text-rendering: optimizeLegibility;
     -webkit-touch-callout: none;
     user-select: none;
   }
