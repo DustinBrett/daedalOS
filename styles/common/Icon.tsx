@@ -73,6 +73,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     <StyledIcon
       ref={$imgRef}
       onLoad={() => setLoaded(true)}
+      src={isStaticIcon ? src : undefined}
       srcSet={!isStaticIcon ? imgSrcs(".png") : undefined}
       style={style}
       {...componentProps}
