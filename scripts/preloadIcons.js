@@ -3,11 +3,9 @@ const { extname, join } = require("path");
 const { parse } = require("ini");
 
 const HOME = "/Users/Public";
-const DESKTOP_PATH = `${HOME}/Desktop`;
 const START_MENU_PATH = `${HOME}/Start Menu`;
 
 const ICON_PATH = "/System/Icons";
-const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
 
 const getPublicDirectoryIcons = (directory) => {
@@ -25,11 +23,6 @@ const getPublicDirectoryIcons = (directory) => {
     return icons;
   }, []);
 };
-
-writeFileSync(
-  "./public/.index/desktopIcons.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
-);
 
 writeFileSync(
   "./public/.index/startMenuIcons.json",
