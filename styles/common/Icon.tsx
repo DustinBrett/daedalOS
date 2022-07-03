@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { cleanUpBufferUrl, imageSrcs } from "utils/functions";
+import { cleanUpBufferUrl, imageSrc, imageSrcs } from "utils/functions";
 
 export type IconProps = {
   $displaySize?: number;
@@ -30,6 +30,8 @@ const StyledIcon = styled.img
   top: ${({ $displaySize = 0, $imgSize = 0 }) =>
     $displaySize > $imgSize ? `${$displaySize - $imgSize}px` : undefined};
 `;
+
+const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 
 const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   props
@@ -66,13 +68,22 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       {...componentProps}
     />
   );
+  const imageFormat = window.IMAGE_FORMAT || "png";
 
-  if (isStaticIcon) return RenderedIcon;
+  if (isStaticIcon || imageFormat === "png") {
+    return RenderedIcon;
+  }
 
   return (
     <picture>
-      <source srcSet={imageSrcs(src, $imgSize, ".avif")} type="image/avif" />
-      <source srcSet={imageSrcs(src, $imgSize, ".webp")} type="image/webp" />
+      {SUPPORTED_PIXEL_RATIOS.map((ratio) => (
+        <source
+          key={`${imageFormat}-${ratio}`}
+          media={`screen and (min-resolution: ${ratio}x)`}
+          srcSet={imageSrc(src, $imgSize, ratio, `.${imageFormat}`)}
+          type={`image/${imageFormat}`}
+        />
+      ))}
       {RenderedIcon}
     </picture>
   );
