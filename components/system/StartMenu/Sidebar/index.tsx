@@ -58,7 +58,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         open(
           "FileExplorer",
           { url: `${HOME}/Documents` },
-          "/System/Icons/documents.webp"
+          "/System/Icons/documents.avif"
         ),
       icon: <Documents />,
       name: "Documents",
@@ -69,7 +69,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         open(
           "FileExplorer",
           { url: `${HOME}/Pictures` },
-          "/System/Icons/pictures.webp"
+          "/System/Icons/pictures.avif"
         ),
       icon: <Pictures />,
       name: "Pictures",
@@ -80,7 +80,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         open(
           "FileExplorer",
           { url: `${HOME}/Videos` },
-          "/System/Icons/videos.webp"
+          "/System/Icons/videos.avif"
         ),
       icon: <Videos />,
       name: "Videos",

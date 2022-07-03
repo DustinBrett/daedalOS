@@ -1,11 +1,10 @@
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { basename, dirname, join } from "path";
 import startMenuIcons from "public/.index/startMenuIcons.json";
 import { useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
-import { label } from "utils/functions";
+import { imageSrcs, label } from "utils/functions";
 
 type StartButtonProps = {
   startMenuVisible: boolean;
@@ -22,17 +21,17 @@ const StartButton: FC<StartButtonProps> = ({
       const link = document.createElement(
         "link"
       ) as HTMLElementWithPriority<HTMLLinkElement>;
+      const imgFormat = window.IMAGE_FORMAT || "png";
 
       link.as = "image";
       link.fetchpriority = "high";
       link.rel = "preload";
-      link.href = icon;
+      link.type = `image/${imgFormat}`;
 
       if (icon.startsWith(ICON_PATH) || icon.startsWith(USER_ICON_PATH)) {
-        link.href = join(dirname(icon), `48x48`, basename(icon)).replace(
-          /\\/g,
-          "/"
-        );
+        link.imageSrcset = imageSrcs(icon, 48, `.${imgFormat}`);
+      } else {
+        link.href = icon;
       }
 
       document.head.appendChild(link);

@@ -1,10 +1,14 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { RelativePosition } from "contexts/process/types";
 import type { Position } from "eruda";
-import { extname } from "path";
+import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import { useEffect } from "react";
-import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
+import {
+  AVIF_TEST_IMAGE,
+  ONE_TIME_PASSIVE_EVENT,
+  TASKBAR_HEIGHT,
+} from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
@@ -13,6 +17,73 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
+
+export type ImageFormat = "avif" | "png" | "webp";
+
+declare global {
+  interface Window {
+    IMAGE_FORMAT?: ImageFormat;
+  }
+}
+
+export const detectImageFormat = (): Promise<ImageFormat> =>
+  new Promise((resolve) => {
+    if (typeof window.IMAGE_FORMAT !== "undefined") {
+      resolve(window.IMAGE_FORMAT);
+    } else {
+      const image = new Image();
+
+      image.addEventListener(
+        "error",
+        () => {
+          try {
+            const supportsWebp = document
+              .createElement("canvas")
+              .toDataURL("image/webp", 0)
+              .startsWith("data:image/webp");
+
+            window.IMAGE_FORMAT = supportsWebp ? "webp" : "png";
+          } catch {
+            window.IMAGE_FORMAT = "png";
+          } finally {
+            resolve(window.IMAGE_FORMAT as ImageFormat);
+          }
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
+      image.addEventListener(
+        "load",
+        () => {
+          window.IMAGE_FORMAT = "avif";
+          resolve(window.IMAGE_FORMAT);
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
+
+      image.src = AVIF_TEST_IMAGE;
+    }
+  });
+
+export const imageSrc = (
+  imagePath: string,
+  size: number,
+  ratio: number,
+  extension: string
+): string =>
+  `${join(
+    dirname(imagePath),
+    `${size * ratio}x${size * ratio}`,
+    `${basename(imagePath, ".avif")}${extension}`
+  ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
+
+export const imageSrcs = (
+  imagePath: string,
+  size: number,
+  extension: string
+): string =>
+  `${imageSrc(imagePath, size, 1, extension)},
+    ${imageSrc(imagePath, size, 2, extension)},
+    ${imageSrc(imagePath, size, 3, extension)}`;
 
 export const imageToBufferUrl = (
   path: string,

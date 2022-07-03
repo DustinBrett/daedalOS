@@ -102,7 +102,7 @@ export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension as ExtensionType] : {};
 
-  if (extensionIcon) return `/System/Icons/${extensionIcon}.webp`;
+  if (extensionIcon) return `/System/Icons/${extensionIcon}.avif`;
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
@@ -335,7 +335,7 @@ export const getInfoWithExtension = (
       })
     );
   } else if (extension === ".exe") {
-    getInfoByFileExtension("/System/Icons/executable.webp", (signal) =>
+    getInfoByFileExtension("/System/Icons/executable.avif", (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0 && !signal.aborted) {
           const exeIcon = await extractExeIcon(contents);
@@ -468,7 +468,7 @@ export const getInfoWithExtension = (
     });
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
-      `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
+      `/System/Icons/${extensions[".mp3"].icon as string}.avif`,
       (signal) =>
         fs.readFile(path, (error, contents = Buffer.from("")) => {
           if (!error && !signal.aborted) {

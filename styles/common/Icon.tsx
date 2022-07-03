@@ -1,7 +1,6 @@
-import { basename, dirname, join } from "path";
 import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { cleanUpBufferUrl } from "utils/functions";
+import { cleanUpBufferUrl, imageSrcs } from "utils/functions";
 
 export type IconProps = {
   $displaySize?: number;
@@ -48,19 +47,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     src.startsWith("https:") ||
     src.startsWith("data:") ||
     src.endsWith(".ico");
-  const baseDirName = dirname(src);
-  const baseFileName = basename(src, ".webp");
-  const imgSrc = (size: number, ratio: number, extension: string): string =>
-    `${join(
-      baseDirName,
-      `${size * ratio}x${size * ratio}`,
-      `${baseFileName}${extension}`
-    )}${ratio > 1 ? ` ${ratio}x` : ""}`;
   const { $imgSize } = props;
-  const imgSrcs = (extension = ".webp"): string =>
-    `${imgSrc($imgSize, 1, extension)},
-    ${imgSrc($imgSize, 2, extension)},
-    ${imgSrc($imgSize, 3, extension)}`;
 
   useEffect(
     () => () => {
@@ -74,7 +61,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       ref={$imgRef}
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : undefined}
-      srcSet={!isStaticIcon ? imgSrcs(".png") : undefined}
+      srcSet={!isStaticIcon ? imageSrcs(src, $imgSize, ".png") : undefined}
       style={style}
       {...componentProps}
     />
@@ -84,8 +71,8 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
 
   return (
     <picture>
-      <source srcSet={imgSrcs(".avif")} type="image/avif" />
-      <source srcSet={imgSrcs(".webp")} type="image/webp" />
+      <source srcSet={imageSrcs(src, $imgSize, ".avif")} type="image/avif" />
+      <source srcSet={imageSrcs(src, $imgSize, ".webp")} type="image/webp" />
       {RenderedIcon}
     </picture>
   );
