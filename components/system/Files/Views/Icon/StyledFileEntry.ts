@@ -43,6 +43,7 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       }
 
       picture {
+        height: ${({ theme }) => theme.sizes.fileEntry.iconSize};
         width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
 
         &:not(:first-of-type) {
