@@ -42,7 +42,6 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         word-break: break-word;
       }
 
-      img,
       picture {
         width: ${({ theme }) => theme.sizes.fileEntry.iconSize};
 

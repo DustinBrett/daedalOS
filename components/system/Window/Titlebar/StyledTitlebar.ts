@@ -44,7 +44,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       position: relative;
       top: -1px;
 
-      img {
+      picture {
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
         margin-right: ${({ theme }) => theme.sizes.titleBar.iconMarginRight};
         width: ${({ theme }) => theme.sizes.titleBar.iconSize};

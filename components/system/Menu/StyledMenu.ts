@@ -59,7 +59,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         }
       }
 
-      img {
+      picture {
         margin: 0 -24px 0 8px;
       }
 

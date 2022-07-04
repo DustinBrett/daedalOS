@@ -13,7 +13,7 @@ FOR %%X in (*.ico) DO (
     C:\ImageMagick\magick.exe "%%X[4]" -background none -compress lossless -strip -quality 100 "..\32x32\%%~nX.png"
     C:\ImageMagick\magick.exe "%%X[7]" -background none -compress lossless -strip -quality 100 "..\16x16\%%~nX.png"
 
-    C:\ImageMagick\magick.exe "%%X[0]" -compress lossless -strip -quality 100 "..\max\%%~nX.png"
+    C:\ImageMagick\magick.exe "%%X[0]" -background none -compress lossless -strip -quality 100 "..\max\%%~nX.png"
 
     cwebp -q 100 -z 9 -m 6 -sharp_yuv -pass 10 -resize 144 144 -mt -lossless -v "..\max\%%~nX.png" -o "..\144x144\%%~nX.webp"
     cwebp -q 100 -z 9 -m 6 -sharp_yuv -pass 10 -resize 96 96 -mt -lossless -v "..\max\%%~nX.png" -o "..\96x96\%%~nX.webp"

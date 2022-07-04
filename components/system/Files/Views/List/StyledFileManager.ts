@@ -5,7 +5,7 @@ const StyledFileManager = styled.ol`
   margin-top: 7px;
   width: 100%;
 
-  img:not(:first-of-type) {
+  picture:not(:first-of-type) {
     position: absolute;
   }
 `;

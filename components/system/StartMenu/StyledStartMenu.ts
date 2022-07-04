@@ -69,12 +69,12 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       padding: 0;
 
       figure {
-        img {
+        picture {
           margin-left: 9px;
         }
 
         &:active {
-          img {
+          picture {
             margin-left: 13px;
           }
         }

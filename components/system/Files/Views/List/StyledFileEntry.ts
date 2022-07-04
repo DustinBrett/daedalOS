@@ -12,7 +12,7 @@ const StyledFileEntry = styled.li`
       color: #fff;
     }
 
-    img {
+    picture {
       margin-left: 3px;
       margin-right: 8px;
     }
@@ -31,7 +31,7 @@ const StyledFileEntry = styled.li`
         opacity: 0.9;
       }
 
-      img {
+      picture {
         margin-left: 7px;
       }
 
