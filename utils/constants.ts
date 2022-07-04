@@ -59,7 +59,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".xbm",
 ]);
 
-export const PHOTO_ICON = "/System/Icons/photo.avif";
+export const PHOTO_ICON = "/System/Icons/photo.webp";
 
 export const INVALID_FILE_CHARACTERS = /["*/:<>?\\|]/g;
 
@@ -215,22 +215,19 @@ export const USER_ICON_PATH = `${HOME}/Icons`;
 
 export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
-export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.avif`;
+export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 
-export const FOLDER_ICON = `${ICON_PATH}/folder.avif`;
+export const FOLDER_ICON = `${ICON_PATH}/folder.webp`;
 
-export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.avif`;
+export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.webp`;
 
-export const FOLDER_FRONT_ICON = `${ICON_PATH}/folder_front.avif`;
+export const FOLDER_FRONT_ICON = `${ICON_PATH}/folder_front.webp`;
 
-export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.avif`;
+export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.webp`;
 
-export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.avif`;
+export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.webp`;
 
-export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.avif`;
-
-export const AVIF_TEST_IMAGE =
-  "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=";
+export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
 
 export const UNKNOWN_ICON =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB0ElEQVR42u2ZVWLbQBiEp/K6DOpb+LF4ip47oCuULpAYH3uAlcbMNOZpm0lsizWz+/3CgEc9aiuFHz9/YYVIcjAAkODcYYDoTyPQHZse7m0E49tLkid/8rz4BuD7RgFIYpW+fvmMXStJEvz+/RuvXr1KG41mVhT5RiECRMUYsUuF0Nv18+fPcXp6ktbrjSzPhRBCDxxUpVKpG+Ls7DSt1eprhwjYWwAdJQD9EGftELV2iCiHCAQMAvT04sVznJ+fpdVqNcuj1hOBJj0wCvECFxcXaeWhIuEUYFADAGZCXF5dpg/3DxmA99YIZVmGRXr58lVqi1CMER8+fOh+pkUS5XIZd7d3ylEIViI5M7wCITqa1wOAtDVPKD1A45andC1ES/N6DZCuzKsIWZr3RoikMK4jZGleD2BsntDOA74tT0gIOZrXEfJmXiti24KleBi1M09SThBIU/P6mZiW5qEXMW3NUzuMGrc8NYRssSE0hFyZVxFyLVgdIcOW51oIWZqHfj9ga15+rOLb8lIRg47m9RoQ/R+eeb0GaGleR8i15XWEqL5VFIIJ87V5u70nvrm+AUF0/8nx4ZlxgOj+9KeTk+Oz8/rrYnIYBAoWeNSj9qwWS/T9vUU9j2EAAAAASUVORK5CYII=";

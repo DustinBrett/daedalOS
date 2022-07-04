@@ -68,20 +68,19 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       {...componentProps}
     />
   );
-  const imageFormat = window.IMAGE_FORMAT || "png";
 
-  if (isStaticIcon || imageFormat === "png") {
-    return RenderedIcon;
-  }
+  if (isStaticIcon) return RenderedIcon;
 
   return (
     <picture>
       {SUPPORTED_PIXEL_RATIOS.map((ratio) => (
         <source
-          key={`${imageFormat}-${ratio}`}
-          media={`screen and (min-resolution: ${ratio}x)`}
-          srcSet={imageSrc(src, $imgSize, ratio, `.${imageFormat}`)}
-          type={`image/${imageFormat}`}
+          key={ratio}
+          media={
+            ratio > 1 ? `screen and (min-resolution: ${ratio}x)` : undefined
+          }
+          srcSet={imageSrc(src, $imgSize, ratio, ".webp")}
+          type="image/webp"
         />
       ))}
       {RenderedIcon}

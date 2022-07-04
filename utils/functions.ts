@@ -4,11 +4,7 @@ import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import { useEffect } from "react";
-import {
-  AVIF_TEST_IMAGE,
-  ONE_TIME_PASSIVE_EVENT,
-  TASKBAR_HEIGHT,
-} from "utils/constants";
+import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
@@ -17,52 +13,6 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
-
-export type ImageFormat = "avif" | "png" | "webp";
-
-declare global {
-  interface Window {
-    IMAGE_FORMAT?: ImageFormat;
-  }
-}
-
-export const detectImageFormat = (): Promise<ImageFormat> =>
-  new Promise((resolve) => {
-    if (typeof window.IMAGE_FORMAT !== "undefined") {
-      resolve(window.IMAGE_FORMAT);
-    } else {
-      const image = new Image();
-
-      image.addEventListener(
-        "error",
-        () => {
-          try {
-            const supportsWebp = document
-              .createElement("canvas")
-              .toDataURL("image/webp", 0)
-              .startsWith("data:image/webp");
-
-            window.IMAGE_FORMAT = supportsWebp ? "webp" : "png";
-          } catch {
-            window.IMAGE_FORMAT = "png";
-          } finally {
-            resolve(window.IMAGE_FORMAT as ImageFormat);
-          }
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-      image.addEventListener(
-        "load",
-        () => {
-          window.IMAGE_FORMAT = "avif";
-          resolve(window.IMAGE_FORMAT);
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-
-      image.src = AVIF_TEST_IMAGE;
-    }
-  });
 
 export const imageSrc = (
   imagePath: string,
@@ -73,7 +23,7 @@ export const imageSrc = (
   `${join(
     dirname(imagePath),
     `${size * ratio}x${size * ratio}`,
-    `${basename(imagePath, ".avif")}${extension}`
+    `${basename(imagePath, ".webp")}${extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 
 export const imageSrcs = (

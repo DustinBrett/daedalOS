@@ -25,6 +25,7 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
   const { exists, updateFolder } = useFileSystem();
   const style = useMemo(
     () => ({
+      // TODO: Make responsive
       backgroundImage: `url('${icon.replace("/Icons/", "/Icons/16x16/")}')`,
     }),
     [icon]

@@ -149,7 +149,7 @@ const Run: FC<ComponentProcessProps> = () => {
   return (
     <StyledRun {...useFileDrop({ id: "Run" })}>
       <figure>
-        <img alt="Run" src="/System/Icons/32x32/run.avif" />
+        <img alt="Run" src="/System/Icons/32x32/run.webp" />
         <figcaption>{MESSAGE}</figcaption>
       </figure>
       <div>

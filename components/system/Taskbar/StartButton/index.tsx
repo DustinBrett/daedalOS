@@ -21,15 +21,14 @@ const StartButton: FC<StartButtonProps> = ({
       const link = document.createElement(
         "link"
       ) as HTMLElementWithPriority<HTMLLinkElement>;
-      const imgFormat = window.IMAGE_FORMAT || "png";
 
       link.as = "image";
       link.fetchpriority = "high";
       link.rel = "preload";
-      link.type = `image/${imgFormat}`;
+      link.type = "image/webp";
 
       if (icon.startsWith(ICON_PATH) || icon.startsWith(USER_ICON_PATH)) {
-        link.imageSrcset = imageSrcs(icon, 48, `.${imgFormat}`);
+        link.imageSrcset = imageSrcs(icon, 48, ".webp");
       } else {
         link.href = icon;
       }
