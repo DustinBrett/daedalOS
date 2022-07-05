@@ -29,13 +29,19 @@ export const imageSrc = (
 export const imageSrcs = (
   imagePath: string,
   size: number,
-  extension: string
-): string =>
-  [
+  extension: string,
+  failedUrls?: string[]
+): string => {
+  return [
     imageSrc(imagePath, size, 1, extension),
     imageSrc(imagePath, size, 2, extension),
     imageSrc(imagePath, size, 3, extension),
-  ].join(", ");
+  ]
+    .filter(
+      (url) => !failedUrls?.length || failedUrls?.includes(url.split(" ")[0])
+    )
+    .join(", ");
+};
 
 export const imageToBufferUrl = (
   path: string,

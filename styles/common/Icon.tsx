@@ -74,6 +74,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       $width: size,
     };
   }, [$displaySize, $imgSize]);
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
 
   useEffect(
     () => () => {
@@ -85,9 +86,23 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   const RenderedIcon = (
     <StyledIcon
       ref={$imgRef}
+      onError={() => {
+        const { currentSrc = "" } = $imgRef?.current || {};
+
+        if (currentSrc && !failedUrls.includes(currentSrc)) {
+          const { pathname } = new URL(currentSrc);
+
+          setFailedUrls((currentFailedUrls) => [
+            ...currentFailedUrls,
+            pathname,
+          ]);
+        }
+      }}
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : undefined}
-      srcSet={!isStaticIcon ? imageSrcs(src, $imgSize, ".png") : undefined}
+      srcSet={
+        !isStaticIcon ? imageSrcs(src, $imgSize, ".png", failedUrls) : undefined
+      }
       style={style}
       {...componentProps}
       {...dimensionProps}
@@ -97,14 +112,26 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   return (
     <picture>
       {!isStaticIcon &&
-        SUPPORTED_PIXEL_RATIOS.map((ratio) => (
-          <source
-            key={ratio}
-            media={ratio > 1 ? `screen and (resolution > ${ratio - 1}x)` : ""}
-            srcSet={imageSrc(src, $imgSize, ratio, ".webp")}
-            type="image/webp"
-          />
-        ))}
+        SUPPORTED_PIXEL_RATIOS.map((ratio) => {
+          const srcSet = imageSrc(src, $imgSize, ratio, ".webp");
+
+          if (
+            failedUrls.length > 0 &&
+            failedUrls.includes(srcSet.split(" ")[0])
+          ) {
+            return;
+          }
+
+          // eslint-disable-next-line consistent-return
+          return (
+            <source
+              key={ratio}
+              media={ratio > 1 ? `screen and (resolution > ${ratio - 1}x)` : ""}
+              srcSet={srcSet}
+              type="image/webp"
+            />
+          );
+        })}
       {RenderedIcon}
     </picture>
   );
