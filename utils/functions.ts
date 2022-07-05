@@ -29,11 +29,14 @@ export const imageSrc = (
 export const imageSrcs = (
   imagePath: string,
   size: number,
-  extension: string
+  extension: string,
+  skipFallback: boolean
 ): string =>
-  `${imageSrc(imagePath, size, 1, extension)},
-    ${imageSrc(imagePath, size, 2, extension)},
-    ${imageSrc(imagePath, size, 3, extension)}`;
+  [
+    ...(skipFallback ? [] : [imageSrc(imagePath, size, 1, extension)]),
+    imageSrc(imagePath, size, 2, extension),
+    imageSrc(imagePath, size, 3, extension),
+  ].join(", ");
 
 export const imageToBufferUrl = (
   path: string,

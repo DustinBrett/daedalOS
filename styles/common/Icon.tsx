@@ -86,8 +86,10 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     <StyledIcon
       ref={$imgRef}
       onLoad={() => setLoaded(true)}
-      src={isStaticIcon ? src : undefined}
-      srcSet={!isStaticIcon ? imageSrcs(src, $imgSize || 1, ".png") : undefined}
+      src={isStaticIcon ? src : imageSrc(src, $imgSize, 1, ".png")}
+      srcSet={
+        !isStaticIcon ? imageSrcs(src, $imgSize, ".png", true) : undefined
+      }
       style={style}
       {...componentProps}
       {...dimensionProps}
@@ -100,9 +102,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
         SUPPORTED_PIXEL_RATIOS.map((ratio) => (
           <source
             key={ratio}
-            media={
-              ratio > 1 ? `screen and (min-resolution: ${ratio}x)` : undefined
-            }
+            media={ratio > 1 ? `screen and (resolution > ${ratio - 1}x)` : ""}
             srcSet={imageSrc(src, $imgSize, ratio, ".webp")}
             type="image/webp"
           />
