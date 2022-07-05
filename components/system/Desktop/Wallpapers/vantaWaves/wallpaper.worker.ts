@@ -8,7 +8,6 @@ import type {
   VantaObject,
   VantaWaves,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
-import { isWebGLAvailable } from "utils/functions";
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -20,7 +19,7 @@ let waveEffect: VantaWaves;
 globalThis.addEventListener(
   "message",
   ({ data }: { data: DOMRect | OffscreenRenderProps | string }) => {
-    if (!isWebGLAvailable) return;
+    if (typeof WebGLRenderingContext === "undefined") return;
 
     if (data === "init") {
       globalThis.importScripts(...libs);

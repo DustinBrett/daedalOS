@@ -6,7 +6,6 @@ import {
 } from "components/system/Desktop/Wallpapers/constants";
 import hexells from "components/system/Desktop/Wallpapers/hexells";
 import coastalLandscape from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
-import vantaWaves from "components/system/Desktop/Wallpapers/vantaWaves";
 import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
@@ -80,7 +79,10 @@ const useWallpaper = (
         window.removeEventListener("resize", resizeListener);
         window.addEventListener("resize", resizeListener, { passive: true });
       } else if (wallpaperName === "VANTA") {
-        vantaWaves(vantaConfig)(desktopRef.current);
+        import("components/system/Desktop/Wallpapers/vantaWaves").then(
+          ({ default: vantaWaves }) =>
+            vantaWaves(vantaConfig)(desktopRef.current)
+        );
       } else if (wallpaperName === "HEXELLS") {
         hexells(desktopRef.current);
       } else if (wallpaperName === "COASTAL_LANDSCAPE") {

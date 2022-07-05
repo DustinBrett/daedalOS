@@ -3,7 +3,7 @@ import {
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
-import { isWebGLAvailable, loadFiles } from "utils/functions";
+import { loadFiles } from "utils/functions";
 
 const vantaWaves =
   (config: VantaWavesConfig) =>
@@ -16,12 +16,12 @@ const vantaWaves =
       // Failed to cleanup effect
     }
 
-    if (!el) return;
+    if (!el || typeof WebGLRenderingContext === "undefined") return;
 
     loadFiles(libs, true).then(() => {
       const { VANTA: { WAVES } = {} } = window;
 
-      if (isWebGLAvailable && WAVES) {
+      if (WAVES) {
         WAVES({
           el,
           ...disableControls,

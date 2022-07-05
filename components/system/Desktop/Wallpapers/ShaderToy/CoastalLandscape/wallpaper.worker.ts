@@ -1,6 +1,5 @@
 import { libs } from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
 import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
-import { isWebGLAvailable } from "utils/functions";
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
@@ -14,7 +13,7 @@ declare global {
 globalThis.addEventListener(
   "message",
   ({ data }: { data: DOMRect | OffscreenRenderProps | string }) => {
-    if (!isWebGLAvailable) return;
+    if (typeof WebGLRenderingContext === "undefined") return;
 
     if (data === "init") {
       globalThis.importScripts(...libs);

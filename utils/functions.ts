@@ -328,8 +328,6 @@ export const getYouTubeUrlId = (url: string): string => {
   return "";
 };
 
-export const isWebGLAvailable = typeof WebGLRenderingContext !== "undefined";
-
 export const getGifJs = async (): Promise<GIF> => {
   const { default: GIFInstance } = await import("gif.js");
 
