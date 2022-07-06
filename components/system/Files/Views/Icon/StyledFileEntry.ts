@@ -48,6 +48,10 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
 
         &:not(:first-of-type) {
           position: absolute;
+
+          img {
+            position: absolute;
+          }
         }
       }
     }

@@ -15,7 +15,6 @@ const StyledFileEntry = styled.li`
     picture {
       margin-left: 3px;
       margin-right: 8px;
-      margin-top: 3px;
     }
 
     svg {

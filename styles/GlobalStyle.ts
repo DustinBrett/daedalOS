@@ -33,6 +33,10 @@ const GlobalStyle = createGlobalStyle`
     user-select: text;
   }
 
+  picture > img {
+    display: block;
+  }
+
   ol,
   ul {
     list-style: none;
