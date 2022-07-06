@@ -20,7 +20,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
     url: setProcessUrl,
   } = useProcesses();
-  const { icon = "", url = "" } = process || {};
+  const { closing, icon = "", url = "" } = process || {};
   const { fs, rootFs } = useFileSystem();
   const [currentUrl, setCurrentUrl] = useState(url);
   const directoryName = basename(url);
@@ -54,9 +54,6 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
 
         setCurrentUrl(url);
       }
-    } else {
-      setProcessUrl(id, "/");
-      setProcessIcon(id, "/System/Icons/pc.webp");
     }
   }, [
     currentUrl,
@@ -71,6 +68,13 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     title,
     url,
   ]);
+
+  useEffect(() => {
+    if (process && !closing && !url) {
+      setProcessUrl(id, "/");
+      setProcessIcon(id, "/System/Icons/pc.webp");
+    }
+  }, [closing, id, process, setProcessIcon, setProcessUrl, url]);
 
   return url ? (
     <StyledFileExplorer>
