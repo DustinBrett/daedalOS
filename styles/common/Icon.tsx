@@ -126,7 +126,11 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
           return (
             <source
               key={ratio}
-              media={ratio > 1 ? `screen and (resolution > ${ratio - 1}x)` : ""}
+              media={
+                ratio > 1
+                  ? `screen and (min-resolution: ${ratio - 0.99}x)`
+                  : undefined
+              }
               srcSet={srcSet}
               type="image/webp"
             />
