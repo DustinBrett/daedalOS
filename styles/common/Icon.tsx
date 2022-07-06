@@ -114,6 +114,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       {!isStaticIcon &&
         SUPPORTED_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, $imgSize, ratio, ".webp");
+          const mediaRatio = ratio - 0.99;
 
           if (
             failedUrls.length > 0 &&
@@ -128,7 +129,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
               key={ratio}
               media={
                 ratio > 1
-                  ? `screen and (min-resolution: ${ratio - 0.99}x)`
+                  ? `(min-resolution: ${mediaRatio}x), (-webkit-min-device-pixel-ratio: ${mediaRatio})`
                   : undefined
               }
               srcSet={srcSet}
