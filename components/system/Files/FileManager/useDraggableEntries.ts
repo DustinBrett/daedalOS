@@ -80,10 +80,14 @@ const useDraggableEntries = (
         dragImageRef.current.src = await htmlToImage.toPng(
           fileManagerRef.current,
           {
-            filter: (element) =>
-              focusedElements.some((focusedElement) =>
-                focusedElement.contains(element)
-              ),
+            filter: (element) => {
+              return (
+                !(element instanceof HTMLSourceElement) &&
+                focusedElements.some((focusedElement) =>
+                  focusedElement.contains(element)
+                )
+              );
+            },
             imagePlaceholder: UNKNOWN_ICON,
             skipAutoScale: true,
           }

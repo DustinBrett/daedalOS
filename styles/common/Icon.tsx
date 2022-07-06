@@ -99,7 +99,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
         }
       }}
       onLoad={() => setLoaded(true)}
-      src={isStaticIcon ? src : undefined}
+      src={isStaticIcon ? src : imageSrc(src, $imgSize, 1, ".png")}
       srcSet={
         !isStaticIcon ? imageSrcs(src, $imgSize, ".png", failedUrls) : undefined
       }

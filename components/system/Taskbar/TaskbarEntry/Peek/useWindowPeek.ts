@@ -19,6 +19,7 @@ const renderFrame = async (
     );
   const htmlToImage = await import("html-to-image");
   const dataCanvas = await htmlToImage.toCanvas(previewElement, {
+    filter: (element) => !(element instanceof HTMLSourceElement),
     skipAutoScale: true,
     style: {
       inset: "0",
