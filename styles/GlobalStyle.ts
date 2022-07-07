@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: ${({ theme }) => theme.formats.systemFont};
     height: 100%;
     overflow: hidden;
+    text-size-adjust: none;
   }
 
   input::selection,
