@@ -42,6 +42,7 @@ const StyledControls = styled.nav`
 
       &.pages {
         letter-spacing: 1.5px;
+        line-height: 20px;
         padding-right: 10px;
 
         input {
