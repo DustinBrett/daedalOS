@@ -61,9 +61,8 @@ const StyledControls = styled.nav`
           display: flex;
           font-size: 24px;
           height: 30px;
-          padding-bottom: 6px;
           place-content: center;
-          place-items: center;
+          place-items: end;
           width: 30px;
 
           &:first-child {
