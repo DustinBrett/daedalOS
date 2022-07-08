@@ -15,7 +15,8 @@ type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 const useDraggableEntries = (
   focusedEntries: string[],
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
+  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
+  isSelecting: boolean
 ): DraggableEntry => {
   const [dropIndex, setDropIndex] = useState(-1);
   const { setSortOrder } = useSession();
@@ -105,6 +106,12 @@ const useDraggableEntries = (
       updateDragImage();
     }, MILLISECONDS_IN_SECOND / 2);
   }, [focusedEntries, updateDragImage]);
+
+  useEffect(() => {
+    if (!isSelecting && focusedEntries.length > 1) {
+      updateDragImage();
+    }
+  }, [focusedEntries.length, isSelecting, updateDragImage]);
 
   return (entryUrl: string, file: string) => ({
     draggable: true,

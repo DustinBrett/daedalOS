@@ -65,11 +65,6 @@ const FileManager: FC<FileManagerProps> = ({
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
-  const draggableEntry = useDraggableEntries(
-    focusedEntries,
-    focusFunctions,
-    fileManagerRef
-  );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(
       url,
@@ -83,6 +78,12 @@ const FileManager: FC<FileManagerProps> = ({
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef);
+  const draggableEntry = useDraggableEntries(
+    focusedEntries,
+    focusFunctions,
+    fileManagerRef,
+    isSelecting
+  );
   const fileDrop = useFileDrop({
     callback: folderActions.newPath,
     directory: url,
