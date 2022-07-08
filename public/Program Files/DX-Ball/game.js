@@ -4,16 +4,16 @@ window.DXBall = {
   intervals: [],
   timeouts: [],
   audioFiles: {},
+  audioTracks: [],
   status: "idle",
   close: () => {
     window.DXBall.intervals.forEach(clearInterval);
     window.DXBall.timeouts.forEach(clearTimeout);
 
-    Object.entries(window.DXBall.audioFiles).forEach(([, track]) => track.pause());
-
-    delete window.DXBall.audioFiles;
+    window.DXBall.audioTracks.forEach((track) => track.pause());
 
     window.DXBall.audioFiles = {};
+    window.DXBall.audioTracks = [];
     window.DXBall.intervals = [];
     window.DXBall.timeouts = [];
 
@@ -801,7 +801,7 @@ window.DXBall = {
         _0x56c3xf = 0,
         _0x56c3x10 = 0,
         _0x56c3x11 = 0,
-        _0x56c3x12 = window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0);
+        _0x56c3x12 = window.DXBall.audioTracks[window.DXBall.audioTracks.push(window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0)) - 1];
 
       function _0x56c3x13(_0x56c3xc) {
         var _0x56c3x8 = null;
@@ -828,7 +828,7 @@ window.DXBall = {
 
       function _0x56c3x14(_0x56c3xc) {
         soundon &&
-          ((audio[naudio] = window.DXBall.audioFiles[_0x56c3xc]["cloneNode"](!0)),
+          ((audio[naudio] = window.DXBall.audioTracks[window.DXBall.audioTracks.push(window.DXBall.audioFiles[audioName[_0x56c3xc]]["cloneNode"](!0)) - 1]),
           audio[naudio]["play"](),
           naudio++,
           64 <= naudio && (naudio = 0));
@@ -1930,7 +1930,7 @@ window.DXBall = {
           _0x56c3x12["currentTime"] >= _0x56c3x12["duration"] - 1 &&
             (6 == ++_0x56c3x11 && (_0x56c3x11 = 0),
             _0x56c3x12["pause"](),
-            (_0x56c3x12 = window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0))[
+            (_0x56c3x12 = window.DXBall.audioTracks[window.DXBall.audioTracks.push(window.DXBall.audioFiles[audioName[_0x56c3x11]]["cloneNode"](!0)) - 1])[
               "play"
             ]());
         }, 100)),
