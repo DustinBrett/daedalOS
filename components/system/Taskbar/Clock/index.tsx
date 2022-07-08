@@ -1,6 +1,7 @@
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
+import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -19,6 +20,11 @@ const ClockSourceMap = {
 };
 
 const EASTER_EGG_CLICK_COUNT = 7;
+
+const clockSize: Size = {
+  height: TASKBAR_HEIGHT,
+  width: BASE_CLOCK_WIDTH,
+};
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
 
@@ -72,11 +78,11 @@ const Clock: FC = () => {
   );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
-      const sendSource = data === "source";
-
-      if (!sendSource) setNow(data);
-
-      (clockWorker as Worker).postMessage(sendSource ? clockSource : "tock");
+      if (data === "source") {
+        (clockWorker as Worker).postMessage(clockSource);
+      } else {
+        setNow(data);
+      }
     },
     [clockSource]
   );
@@ -92,6 +98,27 @@ const Clock: FC = () => {
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
   }, [clockSource]);
+
+  useEffect(() => {
+    if (supportsOffscreenCanvas) {
+      const monitorPixelRatio = (): void =>
+        window
+          .matchMedia(`(resolution: ${window.devicePixelRatio}x)`)
+          .addEventListener(
+            "change",
+            () => {
+              currentWorker.current?.postMessage({
+                clockSize,
+                devicePixelRatio: window.devicePixelRatio,
+              });
+              monitorPixelRatio();
+            },
+            ONE_TIME_PASSIVE_EVENT
+          );
+
+      monitorPixelRatio();
+    }
+  }, [currentWorker, supportsOffscreenCanvas]);
 
   if (!time) return <></>;
 
@@ -109,10 +136,7 @@ const Clock: FC = () => {
           offScreenClockCanvas.current = createOffscreenCanvas(
             clockContainer,
             window.devicePixelRatio,
-            {
-              height: TASKBAR_HEIGHT,
-              width: BASE_CLOCK_WIDTH,
-            }
+            clockSize
           );
 
           currentWorker.current.postMessage(

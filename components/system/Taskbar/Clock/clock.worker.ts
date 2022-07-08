@@ -13,8 +13,6 @@ const textColor = "rgba(255, 255, 255, 90%)";
 let mode: ClockSource;
 let offscreenCanvas: OffscreenCanvas;
 let offscreenContext: OffscreenCanvasRenderingContext2D;
-let lastTock = 0;
-let gotTock = true;
 
 const getNow = (): Date =>
   !mode || mode === "local" ? new Date() : getNtpAdjustedTime();
@@ -26,60 +24,55 @@ const textPosition = {
 
 const TEXT_HEIGHT_OFFSET = 1;
 
-const drawClockText = (
-  canvas: OffscreenCanvas,
-  dateTime: LocaleTimeDate
-): void => {
+const styleClock = (): void => {
+  offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
+  offscreenContext.fillStyle = textColor;
+  offscreenContext.font = `${fontSize} ${formats.systemFont}`;
+  offscreenContext.textAlign = "center";
+  offscreenContext.textBaseline = "middle";
+
+  textPosition.y =
+    Math.floor(offscreenCanvas.height / global.devicePixelRatio / 2) +
+    TEXT_HEIGHT_OFFSET;
+  textPosition.x = Math.floor(
+    offscreenCanvas.width / global.devicePixelRatio / 2
+  );
+};
+
+const drawClockText = (dateTime: LocaleTimeDate): void => {
   if (!offscreenContext) {
-    offscreenContext = canvas.getContext(
+    offscreenContext = offscreenCanvas.getContext(
       "2d"
     ) as OffscreenCanvasRenderingContext2D;
 
     if (!offscreenContext) return;
 
-    offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
-    offscreenContext.fillStyle = textColor;
-    offscreenContext.font = `${fontSize} ${formats.systemFont}`;
-    offscreenContext.textAlign = "center";
-    offscreenContext.textBaseline = "middle";
-
-    textPosition.y =
-      Math.floor(canvas.height / global.devicePixelRatio / 2) +
-      TEXT_HEIGHT_OFFSET;
-    textPosition.x = Math.floor(canvas.width / global.devicePixelRatio / 2);
+    styleClock();
   }
 
-  offscreenContext.clearRect(0, 0, canvas.width, canvas.height);
+  offscreenContext.clearRect(
+    0,
+    0,
+    offscreenCanvas.width,
+    offscreenCanvas.height
+  );
   offscreenContext.fillText(dateTime.time, textPosition.x, textPosition.y);
 };
 
 const sendTick = (): void => {
   const now = getNow();
 
-  if (lastTock) {
-    gotTock = now.getTime() - lastTock < MILLISECONDS_IN_SECOND * 2;
-  }
-
   const dateTime = formatLocaleDateTime(now);
 
-  if (gotTock) {
-    globalThis.postMessage(dateTime);
-  }
-
-  if (offscreenCanvas) {
-    drawClockText(offscreenCanvas, dateTime);
-  }
+  globalThis.postMessage(dateTime);
+  if (offscreenCanvas) drawClockText(dateTime);
 };
 
 let initialized = false;
 
 globalThis.addEventListener(
   "message",
-  ({
-    data,
-  }: {
-    data: ClockSource | OffscreenRenderProps | "init" | "tock";
-  }) => {
+  ({ data }: { data: ClockSource | OffscreenRenderProps | "init" }) => {
     if (!initialized) {
       if (data === "init") {
         initialized = true;
@@ -90,17 +83,27 @@ globalThis.addEventListener(
 
     if (
       "OffscreenCanvas" in global &&
-      (data as OffscreenRenderProps)?.canvas instanceof OffscreenCanvas
+      (data as OffscreenRenderProps)?.devicePixelRatio
     ) {
-      const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
+      const { canvas, clockSize, devicePixelRatio } =
+        data as OffscreenRenderProps;
 
-      offscreenCanvas = canvas;
       global.devicePixelRatio = devicePixelRatio;
-      return;
-    }
 
-    if (data === "tock") {
-      lastTock = getNow().getTime();
+      if (canvas instanceof OffscreenCanvas) {
+        offscreenCanvas = canvas;
+      } else if (clockSize && devicePixelRatio) {
+        offscreenCanvas.height = Math.floor(
+          Number(clockSize.height) * devicePixelRatio
+        );
+        offscreenCanvas.width = Math.floor(
+          Number(clockSize.width) * devicePixelRatio
+        );
+        styleClock();
+      }
+
+      sendTick();
+
       return;
     }
 
