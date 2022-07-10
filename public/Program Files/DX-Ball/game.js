@@ -828,7 +828,7 @@ window.DXBall = {
 
       function _0x56c3x14(_0x56c3xc) {
         soundon &&
-          ((audio[naudio] = window.DXBall.audioTracks[window.DXBall.audioTracks.push(window.DXBall.audioFiles[audioName[_0x56c3xc]]["cloneNode"](!0)) - 1]),
+          ((audio[naudio] = window.DXBall.audioTracks[window.DXBall.audioTracks.push(window.DXBall.audioFiles[_0x56c3xc]["cloneNode"](!0)) - 1]),
           audio[naudio]["play"](),
           naudio++,
           64 <= naudio && (naudio = 0));
