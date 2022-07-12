@@ -29,6 +29,7 @@ const StyledIcon = styled.img
     loading: $eager ? "eager" : undefined,
     width: $width,
   }))<StyledIconProps>`
+  aspect-ratio: 1;
   left: ${({ $offset }) => $offset};
   max-height: ${({ $height }) => `${$height}px`};
   max-width: ${({ $width }) => `${$width}px`};
