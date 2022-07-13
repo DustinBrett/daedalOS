@@ -1,0 +1,6 @@
+version: '2'
+services:
+  daedalos:
+    image: daedalos
+    ports:
+      - '3045:3000'
