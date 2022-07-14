@@ -25,6 +25,7 @@ const StyledTinyMceEditor = styled.div`
           position: absolute;
           text-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
           width: 100%;
+          z-index: 1;
         }
 
         .tox-toolbar-overlord {
