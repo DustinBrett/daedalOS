@@ -281,7 +281,7 @@ type MetadataProvider = (url: string) => MetadataGetter;
 const removeCData = (string = ""): string =>
   string.replace(/<!\[CDATA\[|]]>/g, "");
 
-export const streamingMetadataProviders: Record<string, MetadataProvider> = {
+const streamingMetadataProviders: Record<string, MetadataProvider> = {
   "somafm.com": (url: string) => async () => {
     const { pathname } = new URL(url);
     const [channel] = pathname.replace("/", "").split("-");
