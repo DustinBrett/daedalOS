@@ -273,3 +273,41 @@ export const tracksFromPlaylist = async (
     };
   });
 };
+
+type MetadataGetter = () => Promise<Track["metaData"]>;
+
+type MetadataProvider = (url: string) => MetadataGetter;
+
+const removeCData = (string = ""): string =>
+  string.replace(/<!\[CDATA\[|]]>/g, "");
+
+export const streamingMetadataProviders: Record<string, MetadataProvider> = {
+  "somafm.com": (url: string) => async () => {
+    const { pathname } = new URL(url);
+    const [channel] = pathname.replace("/", "").split("-");
+    const xmlPlaylist = await (
+      await fetch(`https://somafm.com/songs/${channel}.xml`, {
+        credentials: "omit",
+        mode: "cors",
+        referrerPolicy: "no-referrer",
+      })
+    ).text();
+    const songNode = new DOMParser()
+      .parseFromString(xmlPlaylist, "application/xml")
+      .querySelector("song");
+    const artist = songNode?.querySelector("artist")?.innerHTML;
+    const title = songNode?.querySelector("title")?.innerHTML;
+
+    return {
+      artist: removeCData(artist),
+      title: removeCData(title),
+    };
+  },
+};
+
+export const getMetadataProvider = (url: string): MetadataGetter | void => {
+  const { host } = new URL(url);
+  const [, domain, tld] = host.split(".");
+
+  return streamingMetadataProviders[`${domain}.${tld}`]?.(url);
+};

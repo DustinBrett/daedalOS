@@ -4,6 +4,7 @@ import {
   closeEqualizer,
   createM3uPlaylist,
   enabledMilkdrop,
+  getMetadataProvider,
   getWebampElement,
   loadButterchurnPreset,
   loadMilkdropWhenNeeded,
@@ -26,6 +27,7 @@ import { useTheme } from "styled-components";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
+  MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -71,6 +73,7 @@ const useWebamp = (id: string): Webamp => {
     },
     id,
   });
+  const metadataProviderRef = useRef<number>();
   const initWebamp = useCallback(
     (
       containerElement: HTMLDivElement,
@@ -163,11 +166,38 @@ const useWebamp = (id: string): Webamp => {
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
         }),
         webamp.onMinimize(() => onMinimize()),
-        webamp.onTrackDidChange(() => {
+        webamp.onTrackDidChange((track) => {
           const { milkdrop, windows } = webamp.store.getState();
 
           if (windows?.genWindows?.milkdrop?.open && milkdrop?.butterchurn) {
             loadButterchurnPreset(webamp);
+          }
+
+          window.clearInterval(metadataProviderRef.current);
+
+          if (track?.url) {
+            const getMetadata = getMetadataProvider(track.url);
+
+            if (getMetadata) {
+              const updateTrackInfo = async (): Promise<void> => {
+                const { playlist: { currentTrack = -1 } = {}, tracks } =
+                  webamp.store.getState() || {};
+
+                if (tracks[currentTrack]) {
+                  webamp.store.dispatch({
+                    type: "SET_MEDIA_TAGS",
+                    ...tracks[currentTrack],
+                    ...(await getMetadata?.()),
+                  });
+                }
+              };
+
+              updateTrackInfo();
+              metadataProviderRef.current = window.setInterval(
+                updateTrackInfo,
+                30 * MILLISECONDS_IN_SECOND
+              );
+            }
           }
         }),
       ];

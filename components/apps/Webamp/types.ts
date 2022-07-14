@@ -1,5 +1,6 @@
 import type { Position } from "react-rnd";
 import type Webamp from "webamp";
+import type { Track } from "webamp";
 
 type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
@@ -48,6 +49,10 @@ type SetFocusedWindow = {
   window: string;
 };
 
+type UpdateTrackInfo = Track["metaData"] & {
+  type: "SET_MEDIA_TAGS";
+};
+
 type UpdateWindowPositions = {
   positions: {
     main?: Position;
@@ -68,6 +73,7 @@ export type WebampCI = Webamp & {
         | PresetRequested
         | SelectPresetAtIndex
         | SetFocusedWindow
+        | UpdateTrackInfo
         | UpdateWindowPositions
     ) => void;
     getState: () => {
@@ -75,6 +81,10 @@ export type WebampCI = Webamp & {
         butterchurn?: unknown;
         presets?: ButterChurnPreset[];
       };
+      playlist?: {
+        currentTrack: number;
+      };
+      tracks: Track["metaData"][];
       windows?: {
         genWindows?: {
           main?: {
