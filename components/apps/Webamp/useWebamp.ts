@@ -20,6 +20,7 @@ import type { CompleteAction } from "components/system/Files/FileManager/useFold
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useRef } from "react";
@@ -51,6 +52,7 @@ const useWebamp = (id: string): Webamp => {
   const {
     linkElement,
     processes: { [id]: process },
+    title,
   } = useProcesses();
   const { componentWindow } = process || {};
   const webampCI = useRef<WebampCI>();
@@ -184,11 +186,16 @@ const useWebamp = (id: string): Webamp => {
                   webamp.store.getState() || {};
 
                 if (tracks[currentTrack]) {
-                  webamp.store.dispatch({
-                    type: "SET_MEDIA_TAGS",
-                    ...tracks[currentTrack],
-                    ...(await getMetadata?.()),
-                  });
+                  const metaData = await getMetadata?.();
+
+                  if (metaData) {
+                    webamp.store.dispatch({
+                      type: "SET_MEDIA_TAGS",
+                      ...tracks[currentTrack],
+                      ...metaData,
+                    });
+                    title(id, `${metaData.artist} - ${metaData.title}`);
+                  }
                 }
               };
 
@@ -197,7 +204,18 @@ const useWebamp = (id: string): Webamp => {
                 updateTrackInfo,
                 30 * MILLISECONDS_IN_SECOND
               );
+            } else {
+              const { playlist: { currentTrack = -1 } = {}, tracks } =
+                webamp.store.getState() || {};
+
+              if (tracks[currentTrack]) {
+                const { artist, title: trackTitle } = tracks[currentTrack];
+
+                title(id, `${artist} - ${trackTitle}`);
+              }
             }
+          } else {
+            title(id, processDirectory["Webamp"].title);
           }
         }),
       ];
@@ -229,6 +247,7 @@ const useWebamp = (id: string): Webamp => {
       process,
       setWindowStates,
       taskbarHeight,
+      title,
       updateFolder,
     ]
   );
