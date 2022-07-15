@@ -1,3 +1,4 @@
+import { Add, Subtract } from "components/apps/PDF//ControlIcons";
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -47,7 +48,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             }
             {...label("Zoom out")}
           >
-            -
+            <Subtract />
           </Button>
           <input
             disabled={count === 0}
@@ -86,7 +87,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             }
             {...label("Zoom in")}
           >
-            +
+            <Add />
           </Button>
         </li>
       </ol>
