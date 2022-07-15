@@ -8,6 +8,10 @@ type Extension = {
 export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 const types = {
+  AppHtmlDocument: {
+    process: ["Browser"],
+    type: "HTML App",
+  },
   Application: {
     icon: "executable",
     process: ["BoxedWine", "JSDOS"],
@@ -106,6 +110,7 @@ const types = {
 };
 
 const extensions = {
+  ".ahtml": types.AppHtmlDocument,
   ".asx": types.AudioPlaylist,
   ".exe": types.Application,
   ".gen": types.SegaGenesisRom,

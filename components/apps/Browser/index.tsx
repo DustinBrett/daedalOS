@@ -1,6 +1,7 @@
 import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
+import WebViewer from "components/apps/Browser/WebViewer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -42,7 +43,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
       if (contentWindow?.location) {
         const isHtml =
-          extname(addressInput).toLowerCase() === ".html" &&
+          [".html", ".htm", ".ahtml"].includes(extname(addressInput).toLowerCase()) &&
           (await exists(addressInput));
 
         setLoading(true);
@@ -104,74 +105,89 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     }
   }, [currentUrl, history, position, process, setUrl]);
 
-  return (
-    <StyledBrowser>
-      <nav>
-        <div>
-          <Button
-            disabled={!canGoBack}
-            onClick={() => changeHistory(-1)}
-            {...label("Click to go back")}
-          >
-            <Arrow direction="left" />
-          </Button>
-          <Button
-            disabled={!canGoForward}
-            onClick={() => changeHistory(+1)}
-            {...label("Click to go forward")}
-          >
-            <Arrow direction="right" />
-          </Button>
-          <Button
-            disabled={loading}
-            onClick={() => setUrl(history[position])}
-            {...label("Reload this page")}
-          >
-            {loading ? <Stop /> : <Refresh />}
-          </Button>
-        </div>
-        <input
-          ref={inputRef}
-          defaultValue={initialUrl}
-          enterKeyHint="go"
-          onFocusCapture={() => inputRef.current?.select()}
-          onKeyDown={({ key }) => {
-            if (inputRef.current && key === "Enter") {
-              changeUrl(id, inputRef.current.value);
-              window.getSelection()?.removeAllRanges();
-              inputRef.current.blur();
-            }
-          }}
-          type="text"
+  if (extname(url).toLowerCase() === ".ahtml") {
+    return (
+      <WebViewer>
+        <iframe  
+          ref={iframeRef}
+          onLoad={() => setLoading(false)}
+          srcDoc={srcDoc || undefined}
+          style={style}
+          title={id}
+          {...config}
         />
-      </nav>
-      <nav>
-        {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
-          <Button
-            key={name}
-            onClick={() => {
-              if (inputRef.current) {
-                inputRef.current.value = bookmarkUrl;
+      </WebViewer>
+    );
+  } else {
+    return (
+      <StyledBrowser>
+        <nav>
+          <div>
+            <Button
+              disabled={!canGoBack}
+              onClick={() => changeHistory(-1)}
+              {...label("Click to go back")}
+            >
+              <Arrow direction="left" />
+            </Button>
+            <Button
+              disabled={!canGoForward}
+              onClick={() => changeHistory(+1)}
+              {...label("Click to go forward")}
+            >
+              <Arrow direction="right" />
+            </Button>
+            <Button
+              disabled={loading}
+              onClick={() => setUrl(history[position])}
+              {...label("Reload this page")}
+            >
+              {loading ? <Stop /> : <Refresh />}
+            </Button>
+          </div>
+          <input
+            ref={inputRef}
+            defaultValue={initialUrl}
+            enterKeyHint="go"
+            onFocusCapture={() => inputRef.current?.select()}
+            onKeyDown={({ key }) => {
+              if (inputRef.current && key === "Enter") {
+                changeUrl(id, inputRef.current.value);
+                window.getSelection()?.removeAllRanges();
+                inputRef.current.blur();
               }
-
-              changeUrl(id, bookmarkUrl);
             }}
-            {...label(`${name}\n${bookmarkUrl}`)}
-          >
-            <Icon $imgSize={16} alt={name} src={icon} />
-          </Button>
-        ))}
-      </nav>
-      <iframe
-        ref={iframeRef}
-        onLoad={() => setLoading(false)}
-        srcDoc={srcDoc || undefined}
-        style={style}
-        title={id}
-        {...config}
-      />
-    </StyledBrowser>
-  );
+            type="text"
+          />
+        </nav>
+        <nav>
+          {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
+            <Button
+              key={name}
+              onClick={() => {
+                if (inputRef.current) {
+                  inputRef.current.value = bookmarkUrl;
+                }
+  
+                changeUrl(id, bookmarkUrl);
+              }}
+              {...label(`${name}\n${bookmarkUrl}`)}
+            >
+              <Icon $imgSize={16} alt={name} src={icon} />
+            </Button>
+          ))}
+        </nav>  
+        <iframe  
+          ref={iframeRef}
+          onLoad={() => setLoading(false)}
+          srcDoc={srcDoc || undefined}
+          style={style}
+          title={id}
+          {...config}
+        />
+      </StyledBrowser>
+    );
+  }
 };
 
 export default Browser;
