@@ -29,7 +29,7 @@ if (fse.existsSync("./.publicfilter")) {
     .toString()
     .split("\n");
 
-  for (i in excludedPathsRaw) {
+  for (let i in excludedPathsRaw) {
     !excludedPathsRaw[i].startsWith("#") && excludedPathsRaw[i] != ""
       ? IGNORE_PATHS.push(excludedPathsRaw[i].trim())
       : null;
