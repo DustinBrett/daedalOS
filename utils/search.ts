@@ -97,8 +97,10 @@ export const useSearch = (searchTerm: string): Index.Result[] => {
   const { readFile, rootFs } = useFileSystem();
 
   useEffect(() => {
-    if (searchTerm.length > 0) {
-      loadFiles([LUNR_LIB]).then(() => {
+    const updateResults = async (): Promise<void> => {
+      if (searchTerm.length > 0) {
+        if (!window.lunr) await loadFiles([LUNR_LIB]);
+
         search(searchTerm).then(setResults);
         buildDynamicIndex(readFile, rootFs).then((dynamicIndex) =>
           search(searchTerm, dynamicIndex).then((searchResults) =>
@@ -109,10 +111,12 @@ export const useSearch = (searchTerm: string): Index.Result[] => {
             )
           )
         );
-      });
-    } else {
-      setResults([]);
-    }
+      } else {
+        setResults([]);
+      }
+    };
+
+    updateResults();
   }, [readFile, rootFs, searchTerm]);
 
   return results;

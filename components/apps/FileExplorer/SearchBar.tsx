@@ -32,8 +32,10 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   useEffect(() => {
     if (searchBarRef.current) {
       const getItems = (): MenuItem[] =>
-        results
-          .filter(({ ref: path }) => path.startsWith(url))
+        [
+          ...results.filter(({ ref: path }) => path.startsWith(url)),
+          ...results.filter(({ ref: path }) => !path.startsWith(url)),
+        ]
           .slice(0, MAX_ENTRIES - 1)
           .map(({ ref: path }) => ({
             action: () => {
