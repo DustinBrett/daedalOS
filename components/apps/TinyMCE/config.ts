@@ -1,7 +1,7 @@
 import { DESKTOP_PATH } from "utils/constants";
 
 const plugins = `
-  code fullscreen help image link lists media
+  code help image link lists media
   preview save searchreplace table wordcount`;
 
 const toolbar = `
