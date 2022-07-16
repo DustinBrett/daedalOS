@@ -1,8 +1,8 @@
-import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import startMenuIcons from "public/.index/startMenuIcons.json";
 import { useState } from "react";
+import { useTheme } from "styled-components";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { imageSrcs, label } from "utils/functions";
 
@@ -16,6 +16,7 @@ const StartButton: FC<StartButtonProps> = ({
   toggleStartMenu,
 }) => {
   const [preloaded, setPreloaded] = useState(false);
+  const theme = useTheme();
   const preloadIcons = (): void => {
     startMenuIcons?.forEach((icon) => {
       const link = document.createElement(
@@ -46,7 +47,7 @@ const StartButton: FC<StartButtonProps> = ({
       {...label("Start")}
       {...useTaskbarContextMenu(true)}
     >
-      <StartButtonIcon />
+      <theme.StartButtonIcon />
     </StyledStartButton>
   );
 };
