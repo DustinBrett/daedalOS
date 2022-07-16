@@ -390,9 +390,7 @@ const FileEntry: FC<FileEntryProps> = ({
         })}
         ref={buttonRef}
         aria-label={name}
-        onMouseOver={() => {
-          if (!tooltip) createTooltip().then(setTooltip);
-        }}
+        onMouseOver={() => createTooltip().then(setTooltip)}
         title={tooltip}
         {...useDoubleClick(() => {
           if (
