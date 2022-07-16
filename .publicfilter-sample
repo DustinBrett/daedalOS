@@ -1,0 +1,6 @@
+# To filter files/folders when merging ./public create
+# a file name .publicfilter and list them in there.
+
+# This is a comment
+favicon.ico
+Users/Public/Documents/desktop.ini
