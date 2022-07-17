@@ -61,6 +61,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   useEffect(() => {
     if (searchBarRef.current) {
       searchBarRef.current.value = "";
+      setSearchTerm("");
     }
   }, [url]);
 
