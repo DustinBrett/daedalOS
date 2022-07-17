@@ -42,7 +42,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
       if (contentWindow?.location) {
         const isHtml =
-          extname(addressInput).toLowerCase() === ".html" &&
+          [".htm", ".html"].includes(extname(addressInput).toLowerCase()) &&
           (await exists(addressInput));
 
         setLoading(true);
