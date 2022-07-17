@@ -17,7 +17,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
-import { basename, extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
@@ -53,7 +53,10 @@ const useV86 = (
     async (diskImageUrl: string): Promise<void> => {
       const saveName = `${basename(diskImageUrl)}${saveExtension}`;
 
-      if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
+      if (!(await exists(SAVE_PATH))) {
+        await mkdirRecursive(SAVE_PATH);
+        updateFolder(dirname(SAVE_PATH));
+      }
 
       if (
         await writeFile(
@@ -164,7 +167,11 @@ const useV86 = (
     return () => {
       if (url && closing && !shutdown.current) {
         shutdown.current = true;
-        if (emulator[url]) setTimeout(() => closeDiskImage(url), 1000);
+        if (emulator[url]) {
+          window.requestIdleCallback(() => closeDiskImage(url), {
+            timeout: 1000,
+          });
+        }
       }
     };
   }, [closeDiskImage, closing, emulator, loadDiskImage, loading, process, url]);

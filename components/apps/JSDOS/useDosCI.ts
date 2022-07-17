@@ -8,7 +8,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
@@ -53,7 +53,10 @@ const useDosCI = (
     async (bundleUrl: string, closeInstance = false) => {
       const saveName = `${basename(bundleUrl)}${saveExtension}`;
 
-      if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
+      if (!(await exists(SAVE_PATH))) {
+        await mkdirRecursive(SAVE_PATH);
+        updateFolder(dirname(SAVE_PATH));
+      }
 
       if (
         typeof dosCI[bundleUrl] !== "undefined" &&
@@ -124,7 +127,11 @@ const useDosCI = (
     }
 
     return () => {
-      if (url && closing) setTimeout(() => closeBundle(url, closing), 1000);
+      if (url && closing) {
+        window.requestIdleCallback(() => closeBundle(url, closing), {
+          timeout: 1000,
+        });
+      }
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);
 
