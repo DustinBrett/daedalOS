@@ -223,7 +223,7 @@ const FileEntry: FC<FileEntryProps> = ({
     stats,
     url,
   ]);
-  const [tooltip, setTooltip] = useState("");
+  const [tooltip, setTooltip] = useState<string>();
 
   useEffect(() => {
     const updateIcon = async (): Promise<void> => {
