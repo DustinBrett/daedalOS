@@ -29,7 +29,7 @@ const useTinyMCE = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { open } = useProcesses();
+  const { open, url: setUrl } = useProcesses();
   const [editor, setEditor] = useState<Editor>();
   const { prependFileToTitle } = useTitle(id);
   const { readFile, stat, updateFolder, writeFile } = useFileSystem();
@@ -121,6 +121,14 @@ const useTinyMCE = (
           window.tinymce
             .init({
               selector: `.${[...containerRef.current.classList].join(".")} div`,
+              setup: (editorInstance) => {
+                editorInstance.on("ExecCommand", ({ command }) => {
+                  if (command === "mceNewDocument") {
+                    setUrl(id, "");
+                    prependFileToTitle("");
+                  }
+                });
+              },
               ...config,
             })
             .then(([activeEditor]) => {
@@ -151,8 +159,10 @@ const useTinyMCE = (
     id,
     onDragOver,
     onDrop,
+    prependFileToTitle,
     setForegroundId,
     setLoading,
+    setUrl,
   ]);
 
   useEffect(() => {
