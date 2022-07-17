@@ -26,7 +26,7 @@ const StyledIcon = styled.img
     draggable: false,
     fetchpriority: $eager ? "high" : undefined,
     height: $height,
-    loading: $eager ? "eager" : undefined,
+    loading: $eager ? "eager" : "lazy",
     width: $width,
   }))<StyledIconProps>`
   aspect-ratio: 1;
