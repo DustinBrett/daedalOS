@@ -1,12 +1,12 @@
 import { useProcesses } from "contexts/process";
 import type { MotionProps, Variant } from "framer-motion";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
+  TASKBAR_HEIGHT,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum, viewHeight } from "utils/functions";
+import { viewHeight, viewWidth } from "utils/functions";
 
 const active = {
   height: "inherit",
@@ -25,13 +25,17 @@ const initial = {
 const baseMaximize = {
   opacity: 1,
   scale: 1,
-  width: "100vw",
 };
 
 const baseMinimize = {
   opacity: 0,
   scale: 0.7,
 };
+
+const getMaxDimensions = (): Partial<Variant> => ({
+  height: viewHeight() - TASKBAR_HEIGHT,
+  width: viewWidth(),
+});
 
 const useWindowTransitions = (
   id: string,
@@ -40,7 +44,6 @@ const useWindowTransitions = (
   const { processes } = useProcesses();
   const { closing, componentWindow, maximized, minimized, taskbarEntry } =
     processes[id] || {};
-  const { sizes: { taskbar } = {} } = useTheme();
   const [maximize, setMaximize] = useState<Variant>(
     Object.create(null) as Variant
   );
@@ -54,11 +57,11 @@ const useWindowTransitions = (
 
     setMaximize({
       ...baseMaximize,
-      height: viewHeight() - pxToNum(taskbar?.height),
+      ...getMaxDimensions(),
       x: -windowX,
       y: -windowY,
     });
-  }, [componentWindow, maximized, taskbar?.height]);
+  }, [componentWindow, maximized]);
 
   useLayoutEffect(() => {
     const {
@@ -87,7 +90,7 @@ const useWindowTransitions = (
       if (maximized) {
         setMaximize((currentMaximize: Variant) => ({
           ...currentMaximize,
-          height: viewHeight() - pxToNum(taskbar?.height),
+          ...getMaxDimensions(),
         }));
       }
     };
@@ -95,7 +98,7 @@ const useWindowTransitions = (
     window.addEventListener("resize", monitorViewportResize, { passive: true });
 
     return () => window.removeEventListener("resize", monitorViewportResize);
-  }, [maximized, taskbar?.height]);
+  }, [maximized]);
 
   return {
     animate:
