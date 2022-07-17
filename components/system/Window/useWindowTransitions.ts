@@ -1,6 +1,6 @@
 import { useProcesses } from "contexts/process";
 import type { MotionProps, Variant } from "framer-motion";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
@@ -81,6 +81,21 @@ const useWindowTransitions = (
       setMinimize({ ...baseMinimize, x, y });
     }
   }, [componentWindow, minimized, processes, taskbarEntry]);
+
+  useEffect(() => {
+    const monitorViewportResize = (): void => {
+      if (maximized) {
+        setMaximize((currentMaximize: Variant) => ({
+          ...currentMaximize,
+          height: viewHeight() - pxToNum(taskbar?.height),
+        }));
+      }
+    };
+
+    window.addEventListener("resize", monitorViewportResize, { passive: true });
+
+    return () => window.removeEventListener("resize", monitorViewportResize);
+  }, [maximized, taskbar?.height]);
 
   return {
     animate:
