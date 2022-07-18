@@ -87,7 +87,7 @@ const loadScript = (
 
     script.async = false;
     if (defer) script.defer = true;
-    script.fetchpriority = "high";
+    script.fetchPriority = "high";
     script.src = src;
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
@@ -109,7 +109,7 @@ const loadStyle = (href: string): Promise<Event> =>
     ) as HTMLElementWithPriority<HTMLLinkElement>;
 
     link.rel = "stylesheet";
-    link.fetchpriority = "high";
+    link.fetchPriority = "high";
     link.href = href;
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
