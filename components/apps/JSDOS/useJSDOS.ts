@@ -8,7 +8,7 @@ import useDosCI from "components/apps/JSDOS/useDosCI";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadFiles, pxToNum } from "utils/functions";
 
 const captureKeys = (event: KeyboardEvent): void => {
@@ -24,11 +24,14 @@ const useJSDOS = (
 ): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
+  const loadingInstanceRef = useRef(false);
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
   const { closeWithTransition } = useProcesses();
 
   useEffect(() => {
-    if (!dosInstance) {
+    if (!dosInstance && !loadingInstanceRef.current) {
+      loadingInstanceRef.current = true;
+
       loadFiles(libs).then(() => {
         if (!window.emulators) return;
 
