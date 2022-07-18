@@ -4,7 +4,11 @@ import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import { useEffect } from "react";
-import { ONE_TIME_PASSIVE_EVENT, TASKBAR_HEIGHT } from "utils/constants";
+import {
+  MAX_RES_ICON_OVERRIDE,
+  ONE_TIME_PASSIVE_EVENT,
+  TASKBAR_HEIGHT,
+} from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
@@ -19,12 +23,17 @@ export const imageSrc = (
   size: number,
   ratio: number,
   extension: string
-): string =>
-  `${join(
+): string => {
+  const imageName = basename(imagePath, ".webp");
+  const maxIconSize = MAX_RES_ICON_OVERRIDE[imageName];
+  const imageSize = maxIconSize === size ? maxIconSize : size * ratio;
+
+  return `${join(
     dirname(imagePath),
-    `${size * ratio}x${size * ratio}`,
-    `${basename(imagePath, ".webp")}${extension}`
+    `${imageSize}x${imageSize}`,
+    `${imageName}${extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
+};
 
 export const imageSrcs = (
   imagePath: string,
