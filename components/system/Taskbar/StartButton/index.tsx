@@ -23,7 +23,7 @@ const StartButton: FC<StartButtonProps> = ({
       ) as HTMLElementWithPriority<HTMLLinkElement>;
 
       link.as = "image";
-      link.fetchpriority = "high";
+      link.fetchPriority = "high";
       link.rel = "preload";
       link.type = "image/webp";
 

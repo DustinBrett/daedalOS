@@ -5,5 +5,5 @@
 type FC<TProps = {}> = (props: React.PropsWithChildren<TProps>) => JSX.Element;
 
 type HTMLElementWithPriority<T> = T & {
-  fetchpriority?: "auto" | "high" | "low";
+  fetchPriority?: "auto" | "high" | "low";
 };
