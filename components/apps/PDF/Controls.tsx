@@ -1,22 +1,30 @@
-import { Add, Subtract } from "components/apps/PDF//ControlIcons";
+import { Add, Download, Subtract } from "components/apps/PDF//ControlIcons";
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
 import Button from "styles/common/Button";
-import { label } from "utils/functions";
+import { bufferToUrl, label } from "utils/functions";
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
+  const { readFile } = useFileSystem();
   const { argument, processes: { [id]: process } = {} } = useProcesses();
   const {
     count = 0,
     page: currentPage = 1,
     componentWindow,
     scale = 1,
+    subTitle = "",
+    url = "",
   } = process || {};
 
   return (
     <StyledControls>
+      <div className="side-menu" id="title">
+        {subTitle}
+      </div>
       <ol>
         {count !== 0 && (
           <li className="pages">
@@ -40,9 +48,10 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             / {count}
           </li>
         )}
-        <li className="scale">
+        <li id="scale">
           <Button
             disabled={scale === 0.25 || count === 0}
+            id="subtract"
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
@@ -82,6 +91,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           />
           <Button
             disabled={scale === 5 || count === 0}
+            id="add"
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
@@ -91,6 +101,22 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           </Button>
         </li>
       </ol>
+      <div className="side-menu" id="subMenu">
+        <Button
+          id="download"
+          onClick={async () => {
+            const link = document.createElement("a");
+
+            link.href = bufferToUrl(await readFile(url));
+            link.download = basename(url);
+
+            link.click();
+          }}
+          {...label("Download")}
+        >
+          <Download />
+        </Button>
+      </div>
     </StyledControls>
   );
 };

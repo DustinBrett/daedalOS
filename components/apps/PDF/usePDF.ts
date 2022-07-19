@@ -21,6 +21,8 @@ declare global {
   }
 }
 
+type MetadataInfo = { Title?: string };
+
 const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
   const adjustedWindowWidth = windowWidth - DEFAULT_SCROLLBAR_WIDTH;
 
@@ -60,8 +62,13 @@ const usePDF = (
           containerRef.current?.clientWidth,
           pageWidth
         );
+        const { info } = await doc.getMetadata();
 
         argument(id, "scale", initialScale);
+
+        if ((info as MetadataInfo)?.Title) {
+          argument(id, "subTitle", (info as MetadataInfo).Title);
+        }
 
         viewport = page.getViewport({ scale: initialScale });
       }

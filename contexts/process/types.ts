@@ -15,6 +15,7 @@ type PdfProcessArguments = {
   count?: number;
   page?: number;
   scale?: number;
+  subTitle?: string;
 };
 
 export type RelativePosition = {
