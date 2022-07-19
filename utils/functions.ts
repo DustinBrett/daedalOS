@@ -26,8 +26,10 @@ export const imageSrc = (
   extension: string
 ): string => {
   const imageName = basename(imagePath, ".webp");
-  const maxIconSize = MAX_RES_ICON_OVERRIDE[imageName];
-  const imageSize = maxIconSize === size ? maxIconSize : size * ratio;
+  const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
+  const ratioSize = size * ratio;
+  const imageSize =
+    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize;
 
   return `${join(
     dirname(imagePath),

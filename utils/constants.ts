@@ -234,16 +234,16 @@ export const UNKNOWN_ICON =
 
 export const UNKNOWN_ICON_PATH = `${ICON_PATH}/unknown.webp`;
 
-export const MAX_RES_ICON_OVERRIDE: Record<string, number> = {
-  desktop: 32,
-  document: 32,
-  folder: 16,
-  mounted: 16,
-  music: 32,
-  pc: 16,
-  pictures: 32,
-  user: 16,
-  videos: 32,
+export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {
+  desktop: [16, 32],
+  document: [16, 32],
+  folder: [16, 16],
+  mounted: [16, 16],
+  music: [16, 32],
+  pc: [16, 16],
+  pictures: [16, 32],
+  user: [16, 16],
+  videos: [16, 32],
 };
 
 export const DEFAULT_TEXT_FILE_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
