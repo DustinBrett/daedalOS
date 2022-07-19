@@ -287,9 +287,13 @@ const streamingMetadataProviders: Record<string, MetadataProvider> = {
     const [channel] = pathname.replace("/", "").split("-");
     const xmlPlaylist = await (
       await fetch(`https://somafm.com/songs/${channel}.xml`, {
+        cache: "no-cache",
         credentials: "omit",
+        keepalive: false,
         mode: "cors",
         referrerPolicy: "no-referrer",
+        // eslint-disable-next-line unicorn/no-null
+        window: null,
       })
     ).text();
     const songNode = new DOMParser()
