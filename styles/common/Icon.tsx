@@ -19,12 +19,12 @@ type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
 const StyledIcon = styled.img
   .withConfig({
     shouldForwardProp: (prop, defaultValidatorFn) =>
-      ["fetchPriority"].includes(prop) || defaultValidatorFn(prop),
+      ["fetchpriority"].includes(prop) || defaultValidatorFn(prop),
   })
   .attrs<StyledIconProps>(({ $eager = false, $height, $width }) => ({
     decoding: "async",
     draggable: false,
-    fetchPriority: $eager ? "high" : undefined,
+    fetchpriority: $eager ? "high" : undefined,
     height: $height,
     loading: $eager ? "eager" : "lazy",
     width: $width,
