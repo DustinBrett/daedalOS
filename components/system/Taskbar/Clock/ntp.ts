@@ -10,7 +10,7 @@ const DEFAULT_BACKOFF_SECONDS = 300;
 const HOUR_IN_SECONDS = 3600;
 const NTP_SERVER = "https://use.ntpjs.org/v1/time.json";
 
-const NtpReqOptions: RequestInit = {
+const NtpReqOptions = {
   cache: "no-cache",
   credentials: "omit",
   keepalive: false,

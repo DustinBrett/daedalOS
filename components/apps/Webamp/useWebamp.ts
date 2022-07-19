@@ -28,6 +28,7 @@ import { useTheme } from "styled-components";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
+  HIGH_PRIORITY_REQUEST,
   MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
@@ -92,7 +93,7 @@ const useWebamp = (id: string): Webamp => {
 
           if (AUDIO_PLAYLIST_EXTENSIONS.has(playlistExtension)) {
             return tracksFromPlaylist(
-              await (await fetch(externalUrl)).text(),
+              await (await fetch(externalUrl, HIGH_PRIORITY_REQUEST)).text(),
               playlistExtension
             );
           }

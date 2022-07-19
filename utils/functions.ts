@@ -5,6 +5,7 @@ import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import { useEffect } from "react";
 import {
+  HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
@@ -356,7 +357,7 @@ export const getGifJs = async (): Promise<GIF> => {
 export const jsonFetch = async (
   url: string
 ): Promise<Record<string, unknown>> => {
-  const response = await fetch(url);
+  const response = await fetch(url, HIGH_PRIORITY_REQUEST);
   const json = (await response.json()) as Record<string, unknown>;
 
   return json || {};
