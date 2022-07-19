@@ -13,7 +13,6 @@ const StyledControls = styled.nav`
   .side-menu {
     display: flex;
     place-items: center;
-    width: calc(100% - 16px);
 
     &:first-child {
       color: #fff;
