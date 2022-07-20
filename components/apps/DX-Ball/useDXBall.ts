@@ -27,7 +27,7 @@ const useDXBall = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { closing } = process;
+  const { closing } = process || {};
   const records = useRef<string>();
   const libLoadingRef = useRef(true);
 
