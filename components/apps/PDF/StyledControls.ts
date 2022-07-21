@@ -12,7 +12,16 @@ const StyledControls = styled.nav`
 
   .side-menu {
     display: flex;
+    overflow: hidden;
     place-items: center;
+    white-space: nowrap;
+    width: 100%;
+
+    span {
+      margin-right: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     &:first-child {
       color: #fff;
@@ -113,6 +122,7 @@ const StyledControls = styled.nav`
         letter-spacing: 1.5px;
         line-height: 20px;
         padding-right: 10px;
+        width: max-content;
 
         input {
           margin: 0 5px;
