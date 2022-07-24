@@ -149,7 +149,7 @@ const useTerminal = (
           .then((command) => processCommand.current?.(command).then(prompt));
 
       localEcho.println(`${alias} [Version ${displayVersion()}]`);
-      localEcho.println(`By ${author}. ${displayLicense}.`);
+      localEcho.println(`By ${author.name}. ${displayLicense}.`);
 
       if (initialCommand) {
         localEcho.println(

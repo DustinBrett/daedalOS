@@ -3,6 +3,7 @@ node_modules
 out
 
 public/robots.txt
+public/sitemap.xml
 public/.index/*
 public/Users/Public/**
 

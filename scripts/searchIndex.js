@@ -11,6 +11,7 @@ const IGNORE_FILES = new Set([
   "preload.json",
   "robots.txt",
   "search.lunr.json",
+  "sitemap.xml",
 ]);
 const IGNORE_PATHS = ["Program Files", "System", "Users/Public/Icons"];
 
