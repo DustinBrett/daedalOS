@@ -69,6 +69,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         view="list"
         hideLoading
         hideShortcutIcons
+        loadIconsImmediately
         readOnly
         skipSorting
         useNewFolderIcon
