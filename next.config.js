@@ -21,7 +21,6 @@ const nextConfig = {
       pure: true,
     },
   },
-  crossOrigin: false,
   devIndicators: {
     buildActivityPosition: "top-right",
   },
