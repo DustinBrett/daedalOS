@@ -18,6 +18,33 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
 
+let canUseWebp: boolean;
+
+export const supportsWebp = (): boolean => {
+  if (typeof canUseWebp === "boolean") return canUseWebp;
+
+  try {
+    canUseWebp = document
+      .createElement("canvas")
+      .toDataURL("image/webp", 0)
+      .startsWith("data:image/webp");
+
+    return canUseWebp;
+  } catch {
+    return false;
+  }
+};
+
+let dpi: number;
+
+export const getDpi = (): number => {
+  if (typeof dpi === "number") return dpi;
+
+  dpi = Math.min(Math.ceil(window.devicePixelRatio), 3);
+
+  return dpi;
+};
+
 export const imageSrc = (
   imagePath: string,
   size: number,
