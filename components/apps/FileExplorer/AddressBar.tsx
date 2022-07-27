@@ -3,8 +3,9 @@ import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
+import Icon from "styles/common/Icon";
 import { ROOT_NAME } from "utils/constants";
 import { label } from "utils/functions";
 
@@ -23,13 +24,6 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
   const displayName = basename(url) || ROOT_NAME;
   const [addressBar, setAddressBar] = useState(displayName);
   const { exists, updateFolder } = useFileSystem();
-  const style = useMemo(
-    () => ({
-      // TODO: Make responsive
-      backgroundImage: `url('${icon.replace("/Icons/", "/Icons/16x16/")}')`,
-    }),
-    [icon]
-  );
 
   useEffect(() => {
     if (addressBarRef.current) {
@@ -44,7 +38,8 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
   }, [addressBar, displayName, url]);
 
   return (
-    <StyledAddressBar style={style}>
+    <StyledAddressBar>
+      <Icon $imgSize={16} src={icon} />
       <input
         ref={addressBarRef}
         enterKeyHint="go"
