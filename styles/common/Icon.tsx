@@ -87,8 +87,8 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
   const RenderedIcon = (
     <StyledIcon
       ref={$imgRef}
-      onError={() => {
-        const { currentSrc = "" } = $imgRef?.current || {};
+      onError={({ target }) => {
+        const { currentSrc = "" } = (target || {}) as HTMLImageElement;
 
         if (currentSrc && !failedUrls.includes(currentSrc)) {
           const { pathname } = new URL(currentSrc);

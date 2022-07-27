@@ -246,8 +246,12 @@ const FileEntry: FC<FileEntryProps> = ({
               if (iconRef.current instanceof HTMLImageElement) {
                 let generatedIcon: string;
 
-                if (iconRef.current.src.startsWith("data:image/gif;base64,")) {
-                  generatedIcon = iconRef.current.src;
+                if (
+                  iconRef.current.currentSrc.startsWith(
+                    "data:image/gif;base64,"
+                  )
+                ) {
+                  generatedIcon = iconRef.current.currentSrc;
                 } else {
                   const htmlToImage = await import("html-to-image");
                   generatedIcon = await htmlToImage.toPng(iconRef.current);
