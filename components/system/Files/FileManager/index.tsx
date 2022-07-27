@@ -163,6 +163,10 @@ const FileManager: FC<FileManagerProps> = ({
     }
   }, [currentUrl, folderActions, url]);
 
+  useEffect(() => {
+    if (!loading) fileManagerRef.current?.focus();
+  }, [loading]);
+
   return (
     <>
       {loading ? (
