@@ -3,7 +3,6 @@ import type { RelativePosition } from "contexts/process/types";
 import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
-import { useEffect } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
@@ -239,20 +238,6 @@ export const getFormattedSize = (size = 0): string => {
   }
 
   return `${size} bytes`;
-};
-
-export const useLockTitle = (): void => {
-  useEffect(() => {
-    try {
-      Object.defineProperty(document, "title", {
-        set: () => {
-          // Ignore requests to set the title
-        },
-      });
-    } catch {
-      // Ignore errors defining document.title setter
-    }
-  }, []);
 };
 
 export const getTZOffsetISOString = (): string => {

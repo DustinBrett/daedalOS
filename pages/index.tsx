@@ -5,13 +5,11 @@ import Taskbar from "components/system/Taskbar";
 import useGlobalKeyboardShortcuts from "hooks/useGlobalKeyboardShortcuts";
 import useIFrameFocuser from "hooks/useIFrameFocuser";
 import useUrlLoader from "hooks/useUrlLoader";
-import { useLockTitle } from "utils/functions";
 
 const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
   useGlobalKeyboardShortcuts();
-  useLockTitle();
 
   return (
     <ErrorBoundary>

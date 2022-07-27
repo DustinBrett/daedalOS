@@ -162,9 +162,7 @@ if (ENVIRONMENT_IS_NODE) {
    xhr.send(null);
   };
  }
- setWindowTitle = function(title) {
-  document.title = title;
- };
+ setWindowTitle = function() {};
 } else {}
 
 var out = Module["print"] || console.log.bind(console);
@@ -652,9 +650,7 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 158296: function($0) {
-  document.title = "BoxedWine " + $0 + " MIPS";
- },
+ 158296: function() {},
  158344: function() {},
  158345: function($0) {
   var str = UTF8ToString($0) + "\n\n" + "Abort/Retry/Ignore/AlwaysIgnore? [ariA] :";
