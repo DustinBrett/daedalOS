@@ -298,7 +298,7 @@ const useCommandInterpreter = (
             printTable(
               [
                 ["Date", 22],
-                ["Type/Size", 15, true],
+                ["Type/Size", 15, true, (size) => (size !== "-1" ? size : "")],
                 ["Name", terminal?.cols ? terminal.cols - 40 : 30],
               ],
               entriesWithStats,

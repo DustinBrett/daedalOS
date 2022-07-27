@@ -204,7 +204,7 @@ const FileEntry: FC<FileEntryProps> = ({
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);
-    const toolTip = `Type: ${type}\nSize: ${size}`;
+    const toolTip = `Type: ${type}${size !== "-1" ? `\nSize: ${size}` : ""}`;
     const date = new Date(modifiedTime).toISOString().slice(0, 10);
     const time = new Intl.DateTimeFormat(
       DEFAULT_LOCALE,

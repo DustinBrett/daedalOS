@@ -169,7 +169,7 @@ export const parseCommand = (commandString: string): string[] => {
 };
 
 export const printTable = (
-  headers: [string, number, boolean?][],
+  headers: [string, number, boolean?, ((value: string) => string)?][],
   data: string[][],
   localEcho?: LocalEcho,
   hideHeader?: boolean,
@@ -190,9 +190,11 @@ export const printTable = (
   const content = data.map((row) =>
     row
       .map((rowData, index) => {
-        const [, padding, alignRight] = headers[index];
-        const trunctatedText =
+        const [, padding, alignRight, modifier] = headers[index];
+        let trunctatedText =
           index === row.length - 1 ? rowData : rowData.slice(0, padding);
+
+        if (modifier) trunctatedText = modifier(trunctatedText);
 
         return alignRight
           ? trunctatedText.padStart(padding, " ")
