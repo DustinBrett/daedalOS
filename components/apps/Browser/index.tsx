@@ -11,7 +11,7 @@ import { extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
@@ -67,7 +67,9 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }
 
           const favicon = new Image();
-          const faviconUrl = `${new URL(addressUrl).origin}/favicon.ico`;
+          const faviconUrl = `${
+            new URL(addressUrl).origin
+          }${FAVICON_BASE_PATH}`;
 
           favicon.addEventListener(
             "error",

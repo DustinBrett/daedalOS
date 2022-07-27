@@ -1,3 +1,5 @@
+import { FAVICON_BASE_PATH } from "utils/constants";
+
 type Bookmark = {
   icon: string;
   name: string;
@@ -21,7 +23,7 @@ export const bookmarks: Bookmark[] = [
     url: "https://archive.org/",
   },
   {
-    icon: "/favicon.ico",
+    icon: FAVICON_BASE_PATH,
     name: "daedalOS",
     url: "https://dustinbrett.com/",
   },

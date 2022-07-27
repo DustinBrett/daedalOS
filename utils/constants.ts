@@ -217,6 +217,8 @@ export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
 export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 
+export const FAVICON_BASE_PATH = "/favicon.ico";
+
 export const FOLDER_ICON = `${ICON_PATH}/folder.webp`;
 
 export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.webp`;
