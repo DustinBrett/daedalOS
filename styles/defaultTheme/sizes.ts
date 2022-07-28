@@ -60,7 +60,7 @@ const sizes = {
     buttonWidth: "45px",
     fontSize: "12px",
     height: "30px",
-    iconMarginRight: "4px",
+    iconMarginRight: "5px",
     iconSize: "16px",
   },
   window: {
