@@ -167,7 +167,7 @@ export const loadFiles = async (
   }, Promise.resolve());
 
 export const pxToNum = (value: number | string = 0): number =>
-  typeof value === "number" ? value : Number(value.replace("px", ""));
+  typeof value === "number" ? value : Number.parseFloat(value);
 
 export const viewHeight = (): number =>
   window.screen.height
