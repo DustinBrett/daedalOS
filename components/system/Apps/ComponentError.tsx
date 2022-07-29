@@ -4,6 +4,7 @@ const StyledComponentError = styled.div`
   display: flex;
   font-size: 22px;
   height: 100%;
+  mix-blend-mode: difference;
   place-content: center;
   place-items: center;
   width: 100%;
