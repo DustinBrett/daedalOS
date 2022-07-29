@@ -7,6 +7,7 @@ import {
 } from "components/apps/FileExplorer/NavigationIcons";
 import SearchBar from "components/apps/FileExplorer/SearchBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
+import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
 import useHistory from "hooks/useHistory";
@@ -44,7 +45,7 @@ const Navigation: FC<NavigationProps> = ({ hideSearch, id }) => {
   );
 
   return (
-    <StyledNavigation>
+    <StyledNavigation {...useTitlebarContextMenu(id)}>
       <Button
         disabled={!canGoBack}
         onClick={() => moveHistory(-1)}

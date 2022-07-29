@@ -3,7 +3,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getFormattedSize, label } from "utils/functions";
+import { getFormattedSize, haltEvent, label } from "utils/functions";
 
 type StatusBarProps = {
   count: number;
@@ -62,7 +62,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   );
 
   return (
-    <StyledStatusBar ref={statusBarRef}>
+    <StyledStatusBar ref={statusBarRef} onContextMenuCapture={haltEvent}>
       <div {...label("Total item count")}>
         {count} item{count !== 1 ? "s" : ""}
       </div>

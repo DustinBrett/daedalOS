@@ -1,5 +1,6 @@
 import { Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
+import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
@@ -56,6 +57,7 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
         spellCheck={false}
         type="text"
         value={addressBar}
+        {...useAddressBarContextMenu(url)}
       />
       <Button
         id="refresh"
