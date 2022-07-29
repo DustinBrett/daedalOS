@@ -60,7 +60,7 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
       <Button
         id="refresh"
         onClick={() => updateFolder(url)}
-        {...label("Refresh")}
+        {...label(`Refresh "${displayName}" (F5)`)}
       >
         <Refresh />
       </Button>
