@@ -6,6 +6,7 @@ import type {
 import { useProcesses } from "contexts/process";
 import { useCallback } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
+import { toggleFullScreen } from "utils/functions";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();
@@ -25,6 +26,13 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
       ? "Show open windows"
       : "Show the desktop";
     const menuItems: MenuItem[] = [
+      {
+        action: toggleFullScreen,
+        label: document.fullscreenElement
+          ? "Exit full screen"
+          : "Enter full screen",
+      },
+      MENU_SEPERATOR,
       {
         action: toggleDesktop,
         label: onStartButton ? "Desktop" : toggleLabel,

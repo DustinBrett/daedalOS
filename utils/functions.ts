@@ -45,6 +45,16 @@ export const getDpi = (): number => {
   return dpi;
 };
 
+export const toggleFullScreen = async (): Promise<void> => {
+  try {
+    await (!document.fullscreenElement
+      ? document.documentElement.requestFullscreen()
+      : document.exitFullscreen());
+  } catch {
+    // Ignore failure to enter fullscreen
+  }
+};
+
 export const imageSrc = (
   imagePath: string,
   size: number,
