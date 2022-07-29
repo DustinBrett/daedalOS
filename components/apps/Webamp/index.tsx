@@ -74,10 +74,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
       }
     }
   }, [getUrlOptions, webampCI]);
-  const style = useMemo<React.CSSProperties>(
-    () => ({ zIndex: minimized ? -1 : zIndex }),
-    [minimized, zIndex]
-  );
+  const style = useMemo<React.CSSProperties>(() => ({ zIndex }), [zIndex]);
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
@@ -107,6 +104,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledWebamp
       ref={containerRef}
+      $minimized={minimized}
       style={style}
       {...focusableProps}
       {...windowTransitions}
