@@ -9,7 +9,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useEffect, useState } from "react";
 import Button from "styles/common/Button";
-import { label } from "utils/functions";
+import { haltEvent, label } from "utils/functions";
 
 const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -62,7 +62,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   }, [editor]);
 
   return (
-    <StyledStatusBar>
+    <StyledStatusBar onContextMenuCapture={haltEvent}>
       {editor && (
         <>
           <ol>

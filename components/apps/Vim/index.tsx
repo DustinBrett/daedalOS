@@ -8,7 +8,7 @@ import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { haltEvent, loadFiles } from "utils/functions";
 
 const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -122,7 +122,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledVim>
       <div id="vimjs-container" {...useFileDrop({ id })}>
-        <canvas id="vimjs-canvas" />
+        <canvas id="vimjs-canvas" onContextMenuCapture={haltEvent} />
       </div>
       <div id="vimjs-font-test" />
     </StyledVim>

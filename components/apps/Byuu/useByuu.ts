@@ -13,7 +13,7 @@ import { basename, join } from "path";
 import type React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { SAVE_PATH } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { haltEvent, loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
@@ -88,6 +88,7 @@ const useByuu = (
 
       canvas.addEventListener("keydown", pressKey(controllerName, buttons));
       canvas.addEventListener("keyup", pressKey(controllerName, buttons));
+      canvas.addEventListener("contextmenu", haltEvent);
 
       if (
         !window.byuu.connectPeripheral(
