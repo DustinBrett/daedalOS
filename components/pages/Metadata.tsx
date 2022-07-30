@@ -19,6 +19,12 @@ const Metadata: FC = () => {
   const [favIcon, setFavIcon] = useState("");
   const { foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
+  const resetFaviconAndTitle = (): void => {
+    setTitle(alias);
+    setFavIcon((currentFavicon) =>
+      currentFavicon ? FAVICON_BASE_PATH : currentFavicon
+    );
+  };
 
   useEffect(() => {
     if (process) {
@@ -29,12 +35,30 @@ const Metadata: FC = () => {
         setFavIcon(process.icon || FAVICON_BASE_PATH);
       }
     } else {
-      setTitle(alias);
-      setFavIcon((currentFavicon) =>
-        currentFavicon ? FAVICON_BASE_PATH : currentFavicon
-      );
+      resetFaviconAndTitle();
     }
   }, [process, title]);
+
+  useEffect(() => {
+    const onVisibilityChange = (): void => {
+      if (document.visibilityState === "visible") {
+        resetFaviconAndTitle();
+      }
+    };
+    const visibilityEventName =
+      "webkitHidden" in document
+        ? "webkitvisibilitychange"
+        : "visibilitychange";
+
+    document.addEventListener(visibilityEventName, onVisibilityChange, {
+      passive: true,
+    });
+
+    return document.removeEventListener(
+      visibilityEventName,
+      onVisibilityChange
+    );
+  }, []);
 
   return (
     <Head>
