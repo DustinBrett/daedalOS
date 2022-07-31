@@ -3,6 +3,8 @@ import type { VideoJsPlayerOptions } from "video.js";
 
 export const YT_TYPE = "video/youtube";
 
+export const CONTROL_BAR_HEIGHT = 30;
+
 export const config = {
   autoplay: true,
   controlBar: {

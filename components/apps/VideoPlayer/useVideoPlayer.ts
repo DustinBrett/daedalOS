@@ -1,5 +1,6 @@
 import {
   config,
+  CONTROL_BAR_HEIGHT,
   getMimeType,
   libs,
   YT_TYPE,
@@ -69,10 +70,12 @@ const useVideoPlayer = (
         const [vh, vw] = [viewHeight(), viewWidth()];
 
         if (height && width) {
-          if (height > vh || width > vw) {
-            updateWindowSize(vw * (height / width), vw);
+          const heightWithControlBar = CONTROL_BAR_HEIGHT + height;
+
+          if (heightWithControlBar > vh || width > vw) {
+            updateWindowSize(vw * (heightWithControlBar / width), vw);
           } else {
-            updateWindowSize(height, width);
+            updateWindowSize(heightWithControlBar, width);
           }
         }
       });
