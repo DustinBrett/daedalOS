@@ -21,6 +21,7 @@ const StyledControls = styled.nav`
       margin-right: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     &:first-child {

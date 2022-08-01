@@ -31,6 +31,7 @@ const StyledSearch = styled.div`
     padding-bottom: 2px;
     padding-left: 40px;
     text-overflow: ellipsis;
+    white-space: nowrap;
     width: 100%;
   }
 `;

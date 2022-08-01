@@ -46,6 +46,7 @@ const StyledDialog = styled.div`
     font-weight: 400;
     height: 40px;
     place-items: flex-start;
+    white-space: nowrap;
     width: 100%;
   }
 

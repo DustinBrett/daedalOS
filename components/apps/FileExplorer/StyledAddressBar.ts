@@ -22,6 +22,7 @@ const StyledAddressBar = styled.div`
     height: 28px;
     padding-bottom: 2px;
     text-overflow: ellipsis;
+    white-space: nowrap;
     width: calc(100% - 6px);
   }
 
