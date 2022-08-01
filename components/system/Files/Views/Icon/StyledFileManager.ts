@@ -1,7 +1,7 @@
 import type { StyledFileManagerProps } from "components/system/Files/Views";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
-import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
+import { DEFAULT_SCROLLBAR_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
   ${({ $scrollable }) =>
@@ -24,7 +24,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
 
   main > & {
     grid-auto-flow: column;
-    height: ${({ theme }) => `calc(100% - ${theme.sizes.taskbar.height})`};
+    height: calc(100% - ${TASKBAR_HEIGHT}px);
     overflow: visible;
     padding-bottom: 21px;
   }

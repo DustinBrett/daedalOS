@@ -2,7 +2,7 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes } from "contexts/process/types";
 import type { WindowState } from "contexts/session/types";
 import type { Position } from "react-rnd";
-import { PROCESS_DELIMITER } from "utils/constants";
+import { PROCESS_DELIMITER, TASKBAR_HEIGHT } from "utils/constants";
 import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 
 export const cascadePosition = (
@@ -33,15 +33,12 @@ export const cascadePosition = (
     : undefined;
 };
 
-export const centerPosition = (
-  { height, width }: Size,
-  taskbarHeight: string
-): Position => {
+export const centerPosition = ({ height, width }: Size): Position => {
   const [vh, vw] = [viewHeight(), viewWidth()];
 
   return {
     x: Math.floor(vw / 2 - pxToNum(width) / 2),
-    y: Math.floor((vh - pxToNum(taskbarHeight)) / 2 - pxToNum(height) / 2),
+    y: Math.floor((vh - TASKBAR_HEIGHT) / 2 - pxToNum(height) / 2),
   };
 };
 

@@ -2,18 +2,16 @@ import type { MotionProps } from "framer-motion";
 import { useTheme } from "styled-components";
 import {
   MILLISECONDS_IN_SECOND,
+  TASKBAR_HEIGHT,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum, viewHeight } from "utils/functions";
+import { viewHeight } from "utils/functions";
 
 const useStartMenuTransition = (): MotionProps => {
   const {
-    sizes: { startMenu, taskbar },
+    sizes: { startMenu },
   } = useTheme();
-  const height = Math.min(
-    pxToNum(startMenu.maxHeight),
-    viewHeight() - pxToNum(taskbar.height)
-  );
+  const height = Math.min(startMenu.maxHeight, viewHeight() - TASKBAR_HEIGHT);
 
   return {
     animate: "active",

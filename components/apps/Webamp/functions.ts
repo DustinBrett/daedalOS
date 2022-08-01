@@ -170,12 +170,10 @@ export const getWebampElement = (): HTMLDivElement | null =>
 
 export const updateWebampPosition = (
   webamp: WebampCI,
-  taskbarHeight: string,
   position?: Position
 ): void => {
   const { height, width } = BASE_WINDOW_SIZE;
-  const { x, y } =
-    position || centerPosition({ height: height * 2, width }, taskbarHeight);
+  const { x, y } = position || centerPosition({ height: height * 2, width });
 
   webamp.store.dispatch({
     positions: {

@@ -9,19 +9,14 @@ import { useSession } from "contexts/session";
 import { useLayoutEffect, useMemo, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import {
-  calcInitialPosition,
-  pxToNum,
-  viewHeight,
-  viewWidth,
-} from "utils/functions";
+import { TASKBAR_HEIGHT } from "utils/constants";
+import { calcInitialPosition, viewHeight, viewWidth } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
 const useDraggable = (id: string, size: Size): Draggable => {
   const {
     sizes: {
-      taskbar: { height: taskbarHeight },
       window: { cascadeOffset },
     },
   } = useTheme();
@@ -34,22 +29,22 @@ const useDraggable = (id: string, size: Size): Draggable => {
     () =>
       isWindowOutsideBounds(windowState, {
         x: viewWidth(),
-        y: viewHeight() - pxToNum(taskbarHeight),
+        y: viewHeight() - TASKBAR_HEIGHT,
       }),
-    [taskbarHeight, windowState]
+    [windowState]
   );
   const [position, setPosition] = useState<Position>(
     () =>
       (!isOffscreen && sessionPosition) ||
       cascadePosition(id, processes, stackOrder, cascadeOffset) ||
-      centerPosition(size, taskbarHeight)
+      centerPosition(size)
   );
 
   useLayoutEffect(() => {
     if (autoSizing && !closing && sessionSize && !sessionPosition) {
-      setPosition(centerPosition(sessionSize, taskbarHeight));
+      setPosition(centerPosition(sessionSize));
     }
-  }, [autoSizing, closing, sessionPosition, sessionSize, taskbarHeight]);
+  }, [autoSizing, closing, sessionPosition, sessionSize]);
 
   useLayoutEffect(() => {
     if (initialRelativePosition && componentWindow) {

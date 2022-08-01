@@ -24,7 +24,6 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useRef } from "react";
-import { useTheme } from "styled-components";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
@@ -45,11 +44,6 @@ const useWebamp = (id: string): Webamp => {
   const { setWindowStates, windowStates: { [id]: windowState } = {} } =
     useSession();
   const { position } = windowState || {};
-  const {
-    sizes: {
-      taskbar: { height: taskbarHeight },
-    },
-  } = useTheme();
   const {
     linkElement,
     processes: { [id]: process },
@@ -227,7 +221,7 @@ const useWebamp = (id: string): Webamp => {
         closeEqualizer(webamp);
         enabledMilkdrop(webamp);
         loadMilkdropWhenNeeded(webamp);
-        updateWebampPosition(webamp, taskbarHeight, position);
+        updateWebampPosition(webamp, position);
         setupElements();
 
         if (initialTracks) webamp.play();
@@ -247,7 +241,6 @@ const useWebamp = (id: string): Webamp => {
       position,
       process,
       setWindowStates,
-      taskbarHeight,
       title,
       updateFolder,
     ]

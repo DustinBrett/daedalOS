@@ -1,12 +1,13 @@
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
+import { TASKBAR_HEIGHT } from "utils/constants";
 
 const StyledPeekWindow = styled(motion.div)`
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
   border-bottom: 0;
-  bottom: ${({ theme }) => theme.sizes.taskbar.height};
+  bottom: ${TASKBAR_HEIGHT}px;
   display: flex;
   overflow: hidden;
   place-content: center;
