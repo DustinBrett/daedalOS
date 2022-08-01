@@ -31,10 +31,10 @@ const StyledIcon = styled.img
   }))<StyledIconProps>`
   aspect-ratio: 1;
   left: ${({ $offset }) => $offset};
-  max-height: ${({ $height }) => `${$height}px`};
-  max-width: ${({ $width }) => `${$width}px`};
-  min-height: ${({ $height }) => `${$height}px`};
-  min-width: ${({ $width }) => `${$width}px`};
+  max-height: ${({ $height }) => $height}px;
+  max-width: ${({ $width }) => $width}px;
+  min-height: ${({ $height }) => $height}px;
+  min-width: ${({ $width }) => $width}px;
   object-fit: contain;
   opacity: ${({ $moving }) => ($moving ? 0.5 : 1)};
   top: ${({ $offset }) => $offset};

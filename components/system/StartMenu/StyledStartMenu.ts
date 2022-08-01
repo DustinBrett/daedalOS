@@ -8,12 +8,13 @@ type StyledStartMenuProps = {
   $showScrolling: boolean;
 };
 
-const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - 3;
+const SCROLLBAR_PADDING_OFFSET = 3;
+const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - SCROLLBAR_PADDING_OFFSET;
 
 const ThinScrollBars = css<StyledStartMenuProps>`
   ::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
-      $showScrolling ? `${THIN_SCROLLBAR_WIDTH}px` : "3px"};
+      $showScrolling ? THIN_SCROLLBAR_WIDTH : SCROLLBAR_PADDING_OFFSET}px;
   }
 
   ::-webkit-scrollbar-corner,
