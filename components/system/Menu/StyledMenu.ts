@@ -48,8 +48,12 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
       }
 
       figcaption {
+        display: flex;
+        height: 16px;
+        line-height: 16px;
         margin-left: 32px;
         margin-right: 64px;
+        place-items: center;
         position: relative;
         top: -1px;
         width: max-content;
