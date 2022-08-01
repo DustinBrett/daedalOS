@@ -48,10 +48,11 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   const [openedMaximized, setOpenedMaximized] = useState(false);
   const style = useMemo<React.CSSProperties>(
     () => ({
+      ...rndProps.style,
       pointerEvents: minimized ? "none" : undefined,
       zIndex,
     }),
-    [minimized, zIndex]
+    [minimized, rndProps.style, zIndex]
   );
 
   useLayoutEffect(() => {
