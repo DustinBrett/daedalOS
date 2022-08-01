@@ -12,7 +12,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   place-content: center;
   place-items: center;
   transition-duration: 150ms;
-  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
 
   &::before {
     border-left: ${({ $active, theme }) =>
@@ -21,7 +21,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
     left: 0;
     position: absolute;
-    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
   }
 
   figure {
@@ -42,7 +42,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
 
     figcaption {
       border: 1px solid transparent;
-      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+      left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
       position: absolute;
       white-space: nowrap;
 

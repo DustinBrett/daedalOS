@@ -4,15 +4,13 @@ import {
   MILLISECONDS_IN_SECOND,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum } from "utils/functions";
 
 const usePeekTransition = (): MotionProps => {
   const {
     sizes: { taskbar },
   } = useTheme();
   const peekContainerHeight =
-    pxToNum(taskbar.entry.peekImage.height) +
-    pxToNum(taskbar.entry.peekImage.margin) * 2;
+    taskbar.entry.peekImage.height + taskbar.entry.peekImage.margin * 2;
 
   return {
     animate: "active",

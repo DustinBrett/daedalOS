@@ -14,7 +14,7 @@ import { useProcesses } from "contexts/process";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
-import { pxToNum, viewHeight } from "utils/functions";
+import { viewHeight } from "utils/functions";
 
 type SidebarGroupProps = {
   sidebarButtons: SidebarButtons;
@@ -56,11 +56,10 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   ];
   const { sizes } = useTheme();
   const vh = viewHeight();
-  const buttonAreaCount = useMemo(() => {
-    const buttonSize = pxToNum(sizes.startMenu.sideBar.width);
-
-    return Math.floor((vh - TASKBAR_HEIGHT) / buttonSize);
-  }, [sizes.startMenu.sideBar.width, vh]);
+  const buttonAreaCount = useMemo(
+    () => Math.floor((vh - TASKBAR_HEIGHT) / sizes.startMenu.sideBar.width),
+    [sizes.startMenu.sideBar.width, vh]
+  );
 
   const bottomButtons = [
     buttonAreaCount > 3

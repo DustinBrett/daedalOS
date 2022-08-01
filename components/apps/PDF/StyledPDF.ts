@@ -9,7 +9,7 @@ const StyledPDF = styled.div`
 
   && {
     height: ${({ theme }) =>
-      `calc(100% - ${theme.sizes.titleBar.height} - 40px) !important`};
+      `calc(100% - ${theme.sizes.titleBar.height}px - 40px) !important`};
   }
 
   canvas {

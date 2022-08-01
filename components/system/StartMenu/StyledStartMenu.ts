@@ -45,7 +45,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   height: 100%;
   left: 0;
   max-height: ${({ theme }) => theme.sizes.startMenu.maxHeight}px;
-  max-width: ${({ theme }) => theme.sizes.startMenu.size};
+  max-width: ${({ theme }) => theme.sizes.startMenu.size}px;
   position: absolute;
   width: 100%;
   z-index: 1000;
@@ -58,7 +58,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
 
     margin-top: 0;
-    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
     padding-right: ${THIN_SCROLLBAR_WIDTH}px;
     padding-top: 7px;
     scrollbar-width: none;

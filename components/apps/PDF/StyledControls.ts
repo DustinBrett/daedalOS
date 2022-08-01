@@ -6,7 +6,7 @@ const StyledControls = styled.nav`
   display: flex;
   height: 40px;
   position: absolute;
-  top: ${({ theme }) => theme.sizes.titleBar.height};
+  top: ${({ theme }) => theme.sizes.titleBar.height}px;
   width: 100%;
   z-index: 1;
 

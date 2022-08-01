@@ -23,8 +23,8 @@ const StyledPeekWindow = styled(motion.div)`
   }
 
   img {
-    height: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.height};
-    margin: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.margin};
+    height: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.height}px;
+    margin: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.margin}px;
     max-height: 200px;
     max-width: 200px;
     min-height: 80px;

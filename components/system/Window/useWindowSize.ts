@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback } from "react";
 import { useTheme } from "styled-components";
-import { maxSize, pxToNum } from "utils/functions";
+import { maxSize } from "utils/functions";
 
 type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
@@ -28,7 +28,7 @@ const useWindowSize = (id: string): WindowSize => {
           maximized,
           size: maxSize(
             {
-              height: height + pxToNum(titleBar.height),
+              height: height + titleBar.height,
               width,
             },
             lockAspectRatio

@@ -11,7 +11,7 @@ const StyledSidebar = styled.nav`
   position: absolute;
   top: 0;
   transition-duration: 150ms;
-  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width};
+  width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
 
   &:hover:not(&.collapsed) {
     backdrop-filter: blur(12px);
