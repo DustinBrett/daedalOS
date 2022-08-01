@@ -12,7 +12,9 @@ const useWorker = <T>(
       worker.current = workerInit(workerInfo);
 
       if (onMessage) {
-        worker.current.addEventListener("message", onMessage);
+        worker.current.addEventListener("message", onMessage, {
+          passive: true,
+        });
       }
 
       worker.current.postMessage("init");

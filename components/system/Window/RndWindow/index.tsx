@@ -9,7 +9,7 @@ import {
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { pxToNum } from "utils/functions";
+import { haltEvent, pxToNum } from "utils/functions";
 
 type RndWindowProps = {
   id: string;
@@ -20,7 +20,7 @@ const reRouteFocus =
   (focusElement?: HTMLElement) =>
   (element?: Element): void => {
     element?.setAttribute("tabindex", FOCUSABLE_ELEMENT.tabIndex.toString());
-    element?.addEventListener("contextmenu", (event) => event.preventDefault());
+    element?.addEventListener("contextmenu", haltEvent);
     element?.addEventListener("mousedown", (event) => {
       event.preventDefault();
       focusElement?.focus(PREVENT_SCROLL);

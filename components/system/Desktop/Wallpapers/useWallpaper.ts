@@ -11,7 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
-import { MILLISECONDS_IN_DAY } from "utils/constants";
+import { MILLISECONDS_IN_DAY, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -177,11 +177,14 @@ const useWallpaper = (
       if (fallbackBackground) {
         const img = document.createElement("img");
 
-        img.addEventListener("error", () =>
-          desktopRef.current?.setAttribute(
-            "style",
-            wallpaperStyle(fallbackBackground)
-          )
+        img.addEventListener(
+          "error",
+          () =>
+            desktopRef.current?.setAttribute(
+              "style",
+              wallpaperStyle(fallbackBackground)
+            ),
+          ONE_TIME_PASSIVE_EVENT
         );
         img.src = wallpaperUrl;
       }

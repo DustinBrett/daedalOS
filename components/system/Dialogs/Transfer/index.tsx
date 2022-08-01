@@ -4,6 +4,7 @@ import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
 import type { FileReaders } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { useProcesses } from "contexts/process";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const MAX_TITLE_LENGTH = 37;
 
@@ -23,19 +24,27 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
 
       setCurrentTransfer([directory, file]);
 
-      reader.addEventListener("progress", ({ loaded = 0 }) => {
-        const progressLoaded = loaded - fileProgress;
+      reader.addEventListener(
+        "progress",
+        ({ loaded = 0 }) => {
+          const progressLoaded = loaded - fileProgress;
 
-        setProgress((currentProgress) => currentProgress + progressLoaded);
-        fileProgress = loaded;
-      });
-      reader.addEventListener("loadend", () => {
-        if (remainingReaders.length > 0) {
-          processReader(remainingReaders);
-        } else {
-          closeWithTransition(id);
-        }
-      });
+          setProgress((currentProgress) => currentProgress + progressLoaded);
+          fileProgress = loaded;
+        },
+        { passive: true }
+      );
+      reader.addEventListener(
+        "loadend",
+        () => {
+          if (remainingReaders.length > 0) {
+            processReader(remainingReaders);
+          } else {
+            closeWithTransition(id);
+          }
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
       reader.readAsArrayBuffer(file);
     },
     [closeWithTransition, id]

@@ -36,6 +36,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
+  ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
@@ -283,7 +284,13 @@ const FileEntry: FC<FileEntryProps> = ({
             };
 
             if (iconRef.current.complete) cacheIcon();
-            else iconRef.current.addEventListener("load", cacheIcon);
+            else {
+              iconRef.current.addEventListener(
+                "load",
+                cacheIcon,
+                ONE_TIME_PASSIVE_EVENT
+              );
+            }
           }
         } else if (getIcon) {
           const cachedIconPath = join(ICON_CACHE, `${path}.cache`);

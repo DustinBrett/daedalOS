@@ -1,7 +1,7 @@
 import { openDB } from "idb";
 import { join } from "path";
 import index from "public/.index/fs.9p.json";
-import { FS_HANDLES } from "utils/constants";
+import { FS_HANDLES, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 type BFSFS = { [key: string]: BFSFS | null };
 type FS9PV3 = [
@@ -103,17 +103,21 @@ export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
     const db = window.indexedDB.open("");
 
-    db.addEventListener("error", () => resolve(false));
-    db.addEventListener("success", () => {
-      resolve(true);
+    db.addEventListener("error", () => resolve(false), ONE_TIME_PASSIVE_EVENT);
+    db.addEventListener(
+      "success",
+      () => {
+        resolve(true);
 
-      try {
-        db.result.close();
-        window.indexedDB.deleteDatabase("");
-      } catch {
-        // Ignore errors to close/delete the test database
-      }
-    });
+        try {
+          db.result.close();
+          window.indexedDB.deleteDatabase("");
+        } catch {
+          // Ignore errors to close/delete the test database
+        }
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
   });
 
 const getKeyValStore = (): ReturnType<typeof openDB> =>
