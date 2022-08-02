@@ -23,7 +23,9 @@ const useGlobalKeyboardShortcuts = (): void => {
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
       const { ctrlKey, key, shiftKey } = event;
-      const keyName = key.toUpperCase();
+      const keyName = key?.toUpperCase();
+
+      if (!keyName) return;
 
       if (shiftKey) {
         const shiftBindings: Record<string, () => void> = {
