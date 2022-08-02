@@ -142,7 +142,7 @@ const createFileReaders = async (
         if (target?.result instanceof ArrayBuffer) {
           callback(
             join(subFolder, file.name),
-            Buffer.from(new Uint8Array(target.result)),
+            Buffer.from(target.result),
             files.length === 1 ? "updateUrl" : undefined
           );
         }

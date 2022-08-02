@@ -61,7 +61,7 @@ const useV86 = (
       if (
         await writeFile(
           join(SAVE_PATH, saveName),
-          Buffer.from(new Uint8Array(await saveStateAsync(diskImageUrl))),
+          Buffer.from(await saveStateAsync(diskImageUrl)),
           true
         )
       ) {

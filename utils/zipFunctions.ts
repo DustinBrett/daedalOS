@@ -130,7 +130,7 @@ export const unarchive = async (
         accFiles,
         isDir
           ? {
-              [join(extractPath, "/")]: new Uint8Array(Buffer.from("")),
+              [join(extractPath, "/")]: Buffer.from(""),
               ...sevenZip.FS.readdir(filePath).reduce(
                 reduceFiles(filePath),
                 {}
