@@ -1,5 +1,5 @@
 import { useProcesses } from "contexts/process";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { haltEvent, toggleFullScreen } from "utils/functions";
 
 const requireCtrl = new Set(["R"]);
@@ -18,8 +18,23 @@ const openStartMenu = (): void =>
     ) as HTMLButtonElement
   )?.click();
 
+let metaDown = false;
+let metaComboUsed = false;
+
+const metaCombos = new Set(["R"]);
+
 const useGlobalKeyboardShortcuts = (): void => {
   const { open } = useProcesses();
+  const shiftBindings: Record<string, () => void> = useMemo(
+    () => ({
+      ESCAPE: openStartMenu,
+      F10: () => open("Terminal"),
+      F12: () => open("DevTools"),
+      F5: () => window.location.reload(),
+      R: () => open("Run"),
+    }),
+    [open]
+  );
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
       const { ctrlKey, key, shiftKey } = event;
@@ -28,14 +43,6 @@ const useGlobalKeyboardShortcuts = (): void => {
       if (!keyName) return;
 
       if (shiftKey) {
-        const shiftBindings: Record<string, () => void> = {
-          ESCAPE: openStartMenu,
-          F10: () => open("Terminal"),
-          F12: () => open("DevTools"),
-          F5: () => window.location.reload(),
-          R: () => open("Run"),
-        };
-
         if (shiftBindings[keyName] && (!requireCtrl.has(keyName) || ctrlKey)) {
           haltEvent(event);
           shiftBindings[keyName]();
@@ -43,12 +50,28 @@ const useGlobalKeyboardShortcuts = (): void => {
       } else if (keyName === "F11") {
         haltEvent(event);
         toggleFullScreen();
-      } else if (keyName === "META" && document.fullscreenElement) {
-        openStartMenu();
+      } else if (document.fullscreenElement) {
+        if (keyName === "META") metaDown = true;
+        else if (metaDown && metaCombos.has(keyName)) {
+          metaComboUsed = true;
+          haltEvent(event);
+          shiftBindings[keyName]();
+        }
       }
     },
-    [open]
+    [shiftBindings]
   );
+  const onKeyUp = useCallback((event: KeyboardEvent) => {
+    if (
+      metaDown &&
+      document.fullscreenElement &&
+      event.key?.toUpperCase() === "META"
+    ) {
+      metaDown = false;
+      if (metaComboUsed) metaComboUsed = false;
+      else openStartMenu();
+    }
+  }, []);
   const onFullScreen = useCallback(({ target }: Event) => {
     if (target === document.documentElement) {
       try {
@@ -70,15 +93,20 @@ const useGlobalKeyboardShortcuts = (): void => {
     document.addEventListener("keydown", onKeyDown, {
       capture: true,
     });
+    document.addEventListener("keyup", onKeyUp, {
+      capture: true,
+      passive: true,
+    });
     document.addEventListener("fullscreenchange", onFullScreen, {
       passive: true,
     });
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keyup", onKeyUp);
       document.removeEventListener("fullscreenchange", onFullScreen);
     };
-  }, [onFullScreen, onKeyDown]);
+  }, [onFullScreen, onKeyDown, onKeyUp]);
 };
 
 export default useGlobalKeyboardShortcuts;
