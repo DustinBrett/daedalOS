@@ -1,3 +1,4 @@
+import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
@@ -15,7 +16,7 @@ import { DEFAULT_THEME } from "utils/constants";
 const SESSION_FILE = "/session.json";
 
 const useSessionContextState = (): SessionContextState => {
-  const { exists, readFile, writeFile } = useFileSystem();
+  const { deletePath, exists, readFile, writeFile } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
@@ -108,26 +109,30 @@ const useSessionContextState = (): SessionContextState => {
   useEffect(() => {
     const initSession = async (): Promise<void> => {
       if (await exists(SESSION_FILE)) {
-        const sessionData = await readFile(SESSION_FILE);
-        const session = JSON.parse(
-          sessionData.toString() || "{}"
-        ) as SessionData;
+        try {
+          const sessionData = await readFile(SESSION_FILE);
+          const session = JSON.parse(
+            sessionData.toString() || "{}"
+          ) as SessionData;
 
-        if (session.clockSource) setClockSource(session.clockSource);
-        if (session.sortOrders) setSortOrders(session.sortOrders);
-        if (session.themeName) setThemeName(session.themeName);
-        if (session.wallpaperImage) {
-          setWallpaper(session.wallpaperImage, session.wallpaperFit);
+          if (session.clockSource) setClockSource(session.clockSource);
+          if (session.sortOrders) setSortOrders(session.sortOrders);
+          if (session.themeName) setThemeName(session.themeName);
+          if (session.wallpaperImage) {
+            setWallpaper(session.wallpaperImage, session.wallpaperFit);
+          }
+          if (session.windowStates) setWindowStates(session.windowStates);
+          if (session.runHistory) setRunHistory(session.runHistory);
+        } catch (error) {
+          if ((error as ApiError)?.code === "ENOENT") deletePath(SESSION_FILE);
         }
-        if (session.windowStates) setWindowStates(session.windowStates);
-        if (session.runHistory) setRunHistory(session.runHistory);
       }
 
       setSessionLoaded(true);
     };
 
     initSession();
-  }, [exists, readFile, setWallpaper]);
+  }, [deletePath, exists, readFile, setWallpaper]);
 
   return {
     clockSource,

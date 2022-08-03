@@ -1,7 +1,4 @@
-import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
-import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
-import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { BFSCallback } from "browserfs/dist/node/core/file_system";
@@ -15,7 +12,6 @@ import {
 import {
   addFileSystemHandle,
   getFileSystemHandles,
-  KEYVAL_DB,
   removeFileSystemHandle,
 } from "contexts/fileSystem/functions";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
@@ -48,7 +44,6 @@ export type FileSystemContextState = AsyncFS & {
   moveEntries: (entries: string[]) => void;
   pasteList: FilePasteOperations;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  resetStorage: () => Promise<void>;
   rootFs?: RootFileSystem;
   unMapFs: (directory: string) => void;
   unMountFs: (url: string) => void;
@@ -190,35 +185,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
     document.body.appendChild(fileInput);
     fileInput.click();
   };
-  const resetStorage = (): Promise<void> =>
-    new Promise((resolve, reject) => {
-      localStorage.clear();
-      sessionStorage.clear();
-
-      const clearFs = (): void => {
-        const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
-        const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
-        const readable = overlayedFileSystems?.readable as HTTPRequest;
-        const writable = overlayedFileSystems?.writable as IndexedDBFileSystem;
-
-        readable?.empty();
-
-        if (writable?.getName() === "InMemory") {
-          resolve();
-        } else {
-          writable?.empty((apiError) =>
-            apiError ? reject(apiError) : resolve()
-          );
-        }
-      };
-
-      if (!window.indexedDB.databases) clearFs();
-      else {
-        import("idb").then(({ deleteDB }) =>
-          deleteDB(KEYVAL_DB).then(clearFs).catch(clearFs)
-        );
-      }
-    });
   const mkdirRecursive = async (path: string): Promise<void> => {
     const pathParts = path.split("/").filter(Boolean);
     const recursePath = async (position = 1): Promise<void> => {
@@ -360,7 +326,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
     moveEntries,
     pasteList,
     removeFsWatcher,
-    resetStorage,
     rootFs,
     unMapFs,
     unMountFs,

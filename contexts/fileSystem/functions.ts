@@ -1,3 +1,7 @@
+import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
+import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
+import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
+import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import { openDB } from "idb";
 import { join } from "path";
 import index from "public/.index/fs.9p.json";
@@ -187,3 +191,33 @@ export const requestPermission = async (
 
   return false;
 };
+
+export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
+  new Promise((resolve, reject) => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+
+    const clearFs = (): void => {
+      const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
+      const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
+      const readable = overlayedFileSystems?.readable as HTTPRequest;
+      const writable = overlayedFileSystems?.writable as IndexedDBFileSystem;
+
+      readable?.empty();
+
+      if (writable?.getName() === "InMemory") {
+        resolve();
+      } else {
+        writable?.empty((apiError) =>
+          apiError ? reject(apiError) : resolve()
+        );
+      }
+    };
+
+    if (!window.indexedDB.databases) clearFs();
+    else {
+      import("idb").then(({ deleteDB }) =>
+        deleteDB(KEYVAL_DB).then(clearFs).catch(clearFs)
+      );
+    }
+  });

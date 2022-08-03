@@ -7,7 +7,7 @@ import type {
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
-import { supportsIndexedDB } from "contexts/fileSystem/functions";
+import { resetStorage, supportsIndexedDB } from "contexts/fileSystem/functions";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -171,10 +171,21 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       writeFile: (path, data, overwrite = false) =>
         new Promise((resolve, reject) => {
-          fs?.writeFile(path, data, { flag: overwrite ? "w" : "wx" }, (error) =>
-            error && (!overwrite || error.code !== "EEXIST")
-              ? reject(error)
-              : resolve(!error)
+          fs?.writeFile(
+            path,
+            data,
+            { flag: overwrite ? "w" : "wx" },
+            (error) => {
+              if (error && (!overwrite || error.code !== "EEXIST")) {
+                if (error.code === "ENOENT" && error.path === "/") {
+                  resetStorage(rootFs).finally(() => window.location.reload());
+                }
+
+                return reject(error);
+              }
+
+              return resolve(!error);
+            }
           );
         }),
     }),
