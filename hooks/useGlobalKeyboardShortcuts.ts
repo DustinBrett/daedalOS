@@ -1,8 +1,10 @@
 import { useProcesses } from "contexts/process";
-import { useCallback, useEffect, useMemo } from "react";
-import { haltEvent, toggleFullScreen } from "utils/functions";
-
-const requireCtrl = new Set(["R"]);
+import { useCallback, useEffect, useRef } from "react";
+import {
+  haltEvent,
+  toggleFullScreen,
+  toggleShowDesktop,
+} from "utils/functions";
 
 type NavigatorWithKeyboard = Navigator & {
   keyboard?: {
@@ -20,47 +22,63 @@ const openStartMenu = (): void =>
 
 let metaDown = false;
 let metaComboUsed = false;
+let triggeringBinding = false;
 
-const metaCombos = new Set(["R"]);
+const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
+  haltEvent(event);
+
+  if (triggeringBinding) return true;
+
+  triggeringBinding = true;
+  setTimeout(() => {
+    triggeringBinding = false;
+  }, 150);
+
+  return false;
+};
+
+const metaCombos = new Set(["D", "E", "R"]);
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { open } = useProcesses();
-  const shiftBindings: Record<string, () => void> = useMemo(
-    () => ({
-      ESCAPE: openStartMenu,
-      F10: () => open("Terminal"),
-      F12: () => open("DevTools"),
-      F5: () => window.location.reload(),
-      R: () => open("Run"),
-    }),
-    [open]
-  );
-  const onKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      const { ctrlKey, key, shiftKey } = event;
-      const keyName = key?.toUpperCase();
+  const { minimize, open, processes } = useProcesses();
+  const shiftBindingsRef = useRef<Record<string, () => void>>({
+    E: () => open("FileExplorer"),
+    ESCAPE: openStartMenu,
+    F10: () => open("Terminal"),
+    F12: () => open("DevTools"),
+    F5: () => window.location.reload(),
+    R: () => open("Run"),
+  });
+  const onKeyDown = useCallback((event: KeyboardEvent) => {
+    const { ctrlKey, key, shiftKey } = event;
+    const keyName = key?.toUpperCase();
 
-      if (!keyName) return;
+    if (!keyName) return;
 
-      if (shiftKey) {
-        if (shiftBindings[keyName] && (!requireCtrl.has(keyName) || ctrlKey)) {
-          haltEvent(event);
-          shiftBindings[keyName]();
-        }
-      } else if (keyName === "F11") {
-        haltEvent(event);
-        toggleFullScreen();
-      } else if (document.fullscreenElement) {
-        if (keyName === "META") metaDown = true;
-        else if (metaDown && metaCombos.has(keyName)) {
-          metaComboUsed = true;
-          haltEvent(event);
-          shiftBindings[keyName]();
-        }
+    if (shiftKey) {
+      if (
+        (ctrlKey || !metaCombos.has(keyName)) &&
+        shiftBindingsRef.current?.[keyName] &&
+        !haltAndDebounceBinding(event)
+      ) {
+        shiftBindingsRef.current[keyName]();
       }
-    },
-    [shiftBindings]
-  );
+    } else if (keyName === "F11") {
+      haltEvent(event);
+      toggleFullScreen();
+    } else if (document.fullscreenElement) {
+      if (keyName === "META") metaDown = true;
+      else if (
+        metaDown &&
+        metaCombos.has(keyName) &&
+        shiftBindingsRef.current?.[keyName] &&
+        !haltAndDebounceBinding(event)
+      ) {
+        metaComboUsed = true;
+        shiftBindingsRef.current[keyName]();
+      }
+    }
+  }, []);
   const onKeyUp = useCallback((event: KeyboardEvent) => {
     if (
       metaDown &&
@@ -88,6 +106,13 @@ const useGlobalKeyboardShortcuts = (): void => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    shiftBindingsRef.current = {
+      ...shiftBindingsRef.current,
+      D: () => toggleShowDesktop(processes, minimize),
+    };
+  }, [minimize, open, processes]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown, {

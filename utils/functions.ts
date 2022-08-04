@@ -1,5 +1,5 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { RelativePosition } from "contexts/process/types";
+import type { Processes, RelativePosition } from "contexts/process/types";
 import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
@@ -53,6 +53,22 @@ export const toggleFullScreen = async (): Promise<void> => {
   } catch {
     // Ignore failure to enter fullscreen
   }
+};
+
+export const toggleShowDesktop = (
+  processes: Processes,
+  minimize: (id: string) => void
+): void => {
+  const processArray = Object.entries(processes);
+  const allWindowsMinimized =
+    processArray.length > 0 &&
+    !processArray.some(([, { minimized }]) => !minimized);
+
+  processArray.forEach(
+    ([pid, { minimized }]) =>
+      (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
+      minimize(pid)
+  );
 };
 
 export const imageSrc = (

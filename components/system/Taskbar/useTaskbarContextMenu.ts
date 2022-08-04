@@ -6,22 +6,16 @@ import type {
 import { useProcesses } from "contexts/process";
 import { useCallback } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
-import { toggleFullScreen } from "utils/functions";
+import { toggleFullScreen, toggleShowDesktop } from "utils/functions";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { minimize, open, processes } = useProcesses();
+  const { minimize, open, processes = {} } = useProcesses();
   const getItems = useCallback(() => {
-    const processArray = Object.entries(processes || {});
+    const processArray = Object.entries(processes);
     const allWindowsMinimized =
       processArray.length > 0 &&
       !processArray.some(([, { minimized }]) => !minimized);
-    const toggleDesktop = (): void =>
-      processArray.forEach(
-        ([pid, { minimized }]) =>
-          (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
-          minimize(pid)
-      );
     const toggleLabel = allWindowsMinimized
       ? "Show open windows"
       : "Show the desktop";
@@ -34,7 +28,7 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
       },
       MENU_SEPERATOR,
       {
-        action: toggleDesktop,
+        action: () => toggleShowDesktop(processes, minimize),
         label: onStartButton ? "Desktop" : toggleLabel,
       },
     ];
