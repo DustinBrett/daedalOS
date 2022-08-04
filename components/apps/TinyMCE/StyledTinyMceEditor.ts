@@ -4,6 +4,7 @@ const StyledTinyMceEditor = styled.div`
   height: 100%;
 
   [role="application"] {
+    border-radius: 0;
     height: 100% !important;
 
     button:disabled {
@@ -12,6 +13,7 @@ const StyledTinyMceEditor = styled.div`
 
     &[aria-disabled="true"] {
       .tox-editor-header {
+        padding: 0;
         position: relative;
 
         &::before {
