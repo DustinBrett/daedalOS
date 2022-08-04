@@ -108,7 +108,7 @@ const useSessionContextState = (): SessionContextState => {
 
   useEffect(() => {
     const initSession = async (): Promise<void> => {
-      if (await exists(SESSION_FILE)) {
+      if (!sessionLoaded && (await exists(SESSION_FILE))) {
         try {
           const sessionData = await readFile(SESSION_FILE);
           const session = JSON.parse(
@@ -132,7 +132,7 @@ const useSessionContextState = (): SessionContextState => {
     };
 
     initSession();
-  }, [deletePath, exists, readFile, setWallpaper]);
+  }, [deletePath, exists, readFile, sessionLoaded, setWallpaper]);
 
   return {
     clockSource,
