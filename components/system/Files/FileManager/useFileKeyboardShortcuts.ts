@@ -72,26 +72,32 @@ const useFileKeyboardShortcuts = (
       } else if (key === "Backspace" && id) {
         haltEvent(event);
         changeUrl(id, dirname(url));
-      } else if (target instanceof HTMLButtonElement) {
-        if (key === "Enter") {
-          haltEvent(event);
-          target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
-        } else if (key.startsWith("Arrow")) {
-          haltEvent(event);
-          const { x, y, height, width } = target.getBoundingClientRect();
-          const movedElement =
-            key === "ArrowUp" || key === "ArrowDown"
-              ? document.elementFromPoint(
-                  x,
-                  y + (key === "ArrowUp" ? -height : height * 2)
-                )
-              : document.elementFromPoint(
-                  x + (key === "ArrowLeft" ? -width : width * 2),
-                  y
-                );
+      } else if (key.startsWith("Arrow")) {
+        haltEvent(event);
 
-          movedElement?.closest("button")?.click();
-        }
+        const targetElement =
+          target instanceof HTMLButtonElement
+            ? target
+            : target.querySelector("button");
+
+        if (!targetElement) return;
+
+        const { x, y, height, width } = targetElement.getBoundingClientRect();
+        const movedElement =
+          key === "ArrowUp" || key === "ArrowDown"
+            ? document.elementFromPoint(
+                x,
+                y + (key === "ArrowUp" ? -height : height * 2)
+              )
+            : document.elementFromPoint(
+                x + (key === "ArrowLeft" ? -width : width * 2),
+                y
+              );
+
+        movedElement?.closest("button")?.click();
+      } else if (target instanceof HTMLButtonElement && key === "Enter") {
+        haltEvent(event);
+        target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
       }
     };
 };
