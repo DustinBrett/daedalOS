@@ -2,7 +2,7 @@ import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
-const processDirectory: Processes = {
+const directory: Processes = {
   BoxedWine: {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
@@ -234,4 +234,4 @@ const processDirectory: Processes = {
   },
 };
 
-export default processDirectory;
+export default directory;

@@ -1,7 +1,7 @@
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import styled from "styled-components";
 
-const StyledDialog = styled.div`
+const StyledTransfer = styled.div`
   h1,
   div {
     align-items: baseline;
@@ -75,4 +75,4 @@ const StyledDialog = styled.div`
   }
 `;
 
-export default StyledDialog;
+export default StyledTransfer;

@@ -13,7 +13,7 @@ import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PACKAGE_DATA, SHORTCUT_EXTENSION } from "utils/constants";
-import spawnSheep from "utils/eSheep";
+import spawnSheep from "utils/spawnSheep";
 
 const OPEN_ID = "open";
 

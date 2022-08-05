@@ -518,7 +518,7 @@ const useCommandInterpreter = (
         }
         case "sheep":
         case "esheep": {
-          const { default: spawnSheep } = await import("utils/eSheep");
+          const { default: spawnSheep } = await import("utils/spawnSheep");
           spawnSheep();
           break;
         }
