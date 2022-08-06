@@ -37,6 +37,19 @@ const directory: Processes = {
     lockAspectRatio: true,
     title: "Byuu",
   },
+  Chess: {
+    Component: dynamic(() => import("components/apps/Chess")),
+    allowResizing: false,
+    background: "#ce5c00",
+    defaultSize: {
+      height: 512,
+      width: 512,
+    },
+    icon: "/System/Icons/chess.webp",
+    lockAspectRatio: true,
+    singleton: true,
+    title: "Chess",
+  },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
     background: "#000",

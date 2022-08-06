@@ -64,6 +64,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [SheetJS](https://github.com/SheetJS/sheetjs)
 - [Vim.js](https://github.com/coolwanglu/vim.js)
 - [DX-Ball](https://habr.com/en/post/147339/)
+- [Chess](https://sourceforge.net/projects/htmlchess/)
 
 ## Services
 
