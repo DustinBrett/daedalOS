@@ -234,7 +234,10 @@ const FileEntry: FC<FileEntryProps> = ({
 
           isIconCached.current = true;
 
-          const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+          const cachedIconPath = join(
+            ICON_CACHE,
+            `${path}.${stats.mtime.getTime()}.cache`
+          );
 
           if (
             urlExt !== ".ico" &&
@@ -329,6 +332,7 @@ const FileEntry: FC<FileEntryProps> = ({
     path,
     readFile,
     setInfo,
+    stats.mtime,
     updateFolder,
     url,
     urlExt,
