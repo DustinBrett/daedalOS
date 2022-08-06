@@ -11,8 +11,10 @@ import {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
+import { useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
+import { LONG_PRESS_DELAY_MS } from "utils/constants";
 import { label } from "utils/functions";
 
 type TitlebarProps = {
@@ -26,6 +28,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const {
     allowResizing = true,
     closing,
+    componentWindow,
     hideMaximizeButton,
     hideMinimizeButton,
     hideTitlebarIcon,
@@ -38,14 +41,54 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
+  const titlebarContextMenu = useTitlebarContextMenu(id);
+  const touchStartTimeRef = useRef<number>(0);
+  const touchStartPositionRef = useRef<DOMRect>();
+  const touchesRef = useRef<TouchList>();
+  const onTouchEnd = useCallback(
+    (event: React.TouchEvent<HTMLHeadingElement>) => {
+      const { x, y } = componentWindow?.getBoundingClientRect() || {};
+
+      if (
+        Date.now() - touchStartTimeRef.current >= LONG_PRESS_DELAY_MS &&
+        touchStartPositionRef.current &&
+        touchStartPositionRef.current.x === x &&
+        touchStartPositionRef.current.y === y
+      ) {
+        titlebarContextMenu.onContextMenuCapture(
+          Object.assign(event, {
+            touches: touchesRef.current,
+          })
+        );
+      }
+    },
+    [componentWindow, titlebarContextMenu]
+  );
+  const onTouchStart = useCallback(
+    ({ touches }: React.TouchEvent<HTMLHeadingElement>) => {
+      if (componentWindow) {
+        componentWindow.blur();
+        componentWindow.focus();
+        touchStartTimeRef.current = Date.now();
+        touchStartPositionRef.current = componentWindow.getBoundingClientRect();
+        touchesRef.current = touches as unknown as TouchList;
+      }
+    },
+    [componentWindow]
+  );
 
   return (
     <StyledTitlebar
       $foreground={isForeground}
       className={rndDefaults.dragHandleClassName}
-      {...useTitlebarContextMenu(id)}
+      {...titlebarContextMenu}
     >
-      <Button as="h1" {...(allowResizing && !closing ? onClickMaximize : {})}>
+      <Button
+        as="h1"
+        {...(allowResizing && !closing ? onClickMaximize : {})}
+        onTouchEndCapture={onTouchEnd}
+        onTouchStartCapture={onTouchStart}
+      >
         <figure>
           {!hideTitlebarIcon && (
             <Icon $imgSize={16} alt={title} src={icon} {...onClickClose} />

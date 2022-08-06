@@ -183,6 +183,8 @@ export const TRANSITIONS_IN_MILLISECONDS = {
   WINDOW: 250,
 };
 
+export const LONG_PRESS_DELAY_MS = 750;
+
 export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
 export const AUDIO_FILE_EXTENSIONS = new Set([".aac", ".oga", ".wav"]);
