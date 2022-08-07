@@ -61,6 +61,7 @@ const Run: FC<ComponentProcessProps> = () => {
         );
       const [resourcePid, ...resourceUrl] = resource.split(" ");
       let resourcePath = resource;
+      let closeOnExecute = true;
       const resourceExists = await exists(resourcePath);
 
       if (!resourceExists) {
@@ -89,6 +90,7 @@ const Run: FC<ComponentProcessProps> = () => {
             addRunHistoryEntry();
           } else {
             notFound(resourcePid);
+            closeOnExecute = false;
           }
         } else {
           const extension = extname(resourcePath);
@@ -122,10 +124,11 @@ const Run: FC<ComponentProcessProps> = () => {
           addRunHistoryEntry();
         } else {
           notFound(resource);
+          closeOnExecute = false;
         }
       }
 
-      closeWithTransition("Run");
+      if (closeOnExecute) closeWithTransition("Run");
     },
     [closeWithTransition, exists, open, readFile, setRunHistory, stat]
   );
