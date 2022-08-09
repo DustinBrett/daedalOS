@@ -388,8 +388,15 @@ export const getYouTubeUrlId = (url: string): string => {
   return "";
 };
 
-export const preloadLibs = (libs: string[] = []): void =>
-  libs.forEach((lib) => {
+export const preloadLibs = (libs: string[] = []): void => {
+  const scripts = [...document.scripts];
+
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  libs.map(encodeURI).forEach((lib) => {
+    if (scripts.some((script) => script.src.endsWith(lib))) {
+      return;
+    }
+
     const link = document.createElement(
       "link"
     ) as HTMLElementWithPriority<HTMLLinkElement>;
@@ -401,6 +408,7 @@ export const preloadLibs = (libs: string[] = []): void =>
 
     document.head.appendChild(link);
   });
+};
 
 export const getGifJs = async (): Promise<GIF> => {
   const { default: GIFInstance } = await import("gif.js");
