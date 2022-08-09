@@ -75,12 +75,14 @@ const useFileKeyboardShortcuts = (
       } else if (key.startsWith("Arrow")) {
         haltEvent(event);
 
-        const targetElement =
-          target instanceof HTMLButtonElement
-            ? target
-            : target.querySelector("button");
+        if (!(target instanceof HTMLElement)) return;
 
-        if (!targetElement) return;
+        let targetElement = target;
+
+        if (!(target instanceof HTMLButtonElement)) {
+          targetElement = target.querySelector("button") as HTMLButtonElement;
+          if (!targetElement) return;
+        }
 
         const { x, y, height, width } = targetElement.getBoundingClientRect();
         const movedElement =
