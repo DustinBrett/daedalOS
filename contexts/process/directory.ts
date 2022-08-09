@@ -164,7 +164,7 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/SpaceCadet")),
     background: "#000",
     defaultSize: {
-      height: 440,
+      height: 428,
       width: 600,
     },
     icon: "/System/Icons/pinball.webp",
