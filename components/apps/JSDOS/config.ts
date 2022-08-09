@@ -17,11 +17,6 @@ export const globals = [
   "worker",
 ];
 
-export const libs = [
-  "/Program Files/js-dos/emulators.js",
-  "/Program Files/js-dos/emulators-ui.js",
-];
-
 export const pathPrefix = "/Program Files/js-dos/";
 
 export const saveExtension = ".save.zip";

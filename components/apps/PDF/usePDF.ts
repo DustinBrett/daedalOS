@@ -13,8 +13,6 @@ export const scales = [
   5,
 ];
 
-const libs = ["/Program Files/PDF.js/pdf.js"];
-
 declare global {
   interface Window {
     pdfjsLib?: typeof PdfjsLib;
@@ -42,7 +40,7 @@ const usePDF = (
 ): void => {
   const { readFile } = useFileSystem();
   const { argument, processes: { [id]: process } = {} } = useProcesses();
-  const { scale } = process || {};
+  const { libs = [], scale } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const renderPage = useCallback(
     async (
@@ -122,7 +120,7 @@ const usePDF = (
         renderPages();
       }
     });
-  }, [renderPages]);
+  }, [libs, renderPages]);
 
   useEffect(() => {
     if (pages.length > 0) {

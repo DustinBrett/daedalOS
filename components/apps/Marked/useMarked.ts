@@ -20,11 +20,6 @@ declare global {
   }
 }
 
-const libs = [
-  "/Program Files/Marked/marked.min.js",
-  "/Program Files/Marked/purify.min.js",
-];
-
 const useMarked = (
   id: string,
   url: string,
@@ -34,7 +29,7 @@ const useMarked = (
 ): void => {
   const { readFile } = useFileSystem();
   const { prependFileToTitle } = useTitle(id);
-  const { open } = useProcesses();
+  const { open, processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const loadFile = useCallback(async () => {
     const markdownFile = await readFile(url);
     const container = containerRef.current?.querySelector(
@@ -71,7 +66,7 @@ const useMarked = (
         }
       });
     }
-  }, [loading, setLoading]);
+  }, [libs, loading, setLoading]);
 
   useEffect(() => {
     if (!loading && url) loadFile();

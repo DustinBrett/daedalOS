@@ -1,3 +1,4 @@
+import { useProcesses } from "contexts/process";
 import type Eruda from "eruda";
 import type { InitOptions, Tool } from "eruda";
 import { useEffect } from "react";
@@ -20,18 +21,15 @@ const config: InitOptions = {
   useShadowDom: false,
 };
 
-const libs = [
-  "/Program Files/Eruda/eruda.js",
-  "/Program Files/Eruda/eruda-dom.js",
-];
-
 const useEruda = (
-  _id: string,
+  id: string,
   url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loading: boolean
 ): void => {
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+
   useEffect(() => {
     loadFiles(libs).then(() => {
       if (window.eruda && window.erudaDom && containerRef.current) {
@@ -54,7 +52,7 @@ const useEruda = (
     });
 
     return () => window.eruda?.destroy();
-  }, [containerRef, setLoading]);
+  }, [containerRef, libs, setLoading]);
 
   useEffect(() => {
     if (window.eruda && url && !loading) {

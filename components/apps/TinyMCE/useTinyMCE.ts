@@ -1,8 +1,4 @@
-import {
-  config,
-  DEFAULT_SAVE_PATH,
-  libs,
-} from "components/apps/TinyMCE/config";
+import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
@@ -29,7 +25,11 @@ const useTinyMCE = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { open, url: setUrl } = useProcesses();
+  const {
+    open,
+    processes: { [id]: { libs = [] } = {} } = {},
+    url: setUrl,
+  } = useProcesses();
   const [editor, setEditor] = useState<Editor>();
   const { prependFileToTitle } = useTitle(id);
   const { readFile, stat, updateFolder, writeFile } = useFileSystem();
@@ -157,6 +157,7 @@ const useTinyMCE = (
     containerRef,
     editor,
     id,
+    libs,
     onDragOver,
     onDrop,
     prependFileToTitle,

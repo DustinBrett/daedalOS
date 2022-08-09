@@ -161,7 +161,9 @@ const loadScript = (
 
 const loadStyle = (href: string): Promise<Event> =>
   new Promise((resolve, reject) => {
-    const loadedStyles = [...document.querySelectorAll("link")];
+    const loadedStyles = [
+      ...document.querySelectorAll("link[rel=stylesheet]"),
+    ] as HTMLLinkElement[];
 
     if (loadedStyles.some((loadedStyle) => loadedStyle.href.endsWith(href))) {
       resolve(new Event("Already loaded."));
@@ -182,15 +184,17 @@ const loadStyle = (href: string): Promise<Event> =>
   });
 
 export const loadFiles = async (
-  files: string[],
+  files?: string[],
   defer?: boolean,
   force?: boolean
 ): Promise<void> =>
-  files.reduce(async (_promise, file) => {
-    await (extname(file).toLowerCase() === ".css"
-      ? loadStyle(encodeURI(file))
-      : loadScript(encodeURI(file), defer, force));
-  }, Promise.resolve());
+  !files || files.length === 0
+    ? Promise.resolve()
+    : files.reduce(async (_promise, file) => {
+        await (extname(file).toLowerCase() === ".css"
+          ? loadStyle(encodeURI(file))
+          : loadScript(encodeURI(file), defer, force));
+      }, Promise.resolve());
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
@@ -383,6 +387,20 @@ export const getYouTubeUrlId = (url: string): string => {
 
   return "";
 };
+
+export const preloadLibs = (libs: string[] = []): void =>
+  libs.forEach((lib) => {
+    const link = document.createElement(
+      "link"
+    ) as HTMLElementWithPriority<HTMLLinkElement>;
+
+    link.as = extname(lib).toLowerCase() === ".css" ? "style" : "script";
+    link.fetchPriority = "high";
+    link.rel = "preload";
+    link.href = lib;
+
+    document.head.appendChild(link);
+  });
 
 export const getGifJs = async (): Promise<GIF> => {
   const { default: GIFInstance } = await import("gif.js");

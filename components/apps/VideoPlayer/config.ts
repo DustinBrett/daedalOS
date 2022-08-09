@@ -29,12 +29,6 @@ export const config = {
   },
 } as VideoJsPlayerOptions;
 
-export const libs = [
-  "/Program Files/Video.js/video-js.min.css",
-  "/Program Files/Video.js/video.min.js",
-  "/Program Files/Video.js/Youtube.min.js",
-];
-
 const FALLBACK_TYPE = "video/mp4";
 
 export const getMimeType = (url: string): string | undefined => {

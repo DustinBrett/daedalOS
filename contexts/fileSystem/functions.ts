@@ -27,7 +27,7 @@ type FS9P = {
 type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
 
 const KEYVAL_STORE_NAME = "keyval";
-export const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
+const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;

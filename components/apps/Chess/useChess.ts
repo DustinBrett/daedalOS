@@ -1,11 +1,6 @@
+import { useProcesses } from "contexts/process";
 import { useEffect } from "react";
 import { loadFiles } from "utils/functions";
-
-const libs = [
-  "Program Files/Chess/chess.js",
-  "Program Files/Chess/common/xhr.js",
-  "Program Files/Chess/skins/gnomechess.css",
-];
 
 declare global {
   interface Window {
@@ -29,12 +24,14 @@ const loadChess = (): void => {
 };
 
 const useChess = (
-  _id: string,
+  id: string,
   _url: string,
   _containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loading: boolean
 ): void => {
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+
   useEffect(() => {
     if (!loading) loadChess();
     else {
@@ -48,7 +45,7 @@ const useChess = (
         waitForLoad();
       });
     }
-  }, [loading, setLoading]);
+  }, [libs, loading, setLoading]);
 };
 
 export default useChess;

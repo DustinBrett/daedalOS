@@ -1,8 +1,4 @@
-import {
-  config,
-  libs,
-  PROMPT_CHARACTER,
-} from "components/apps/Terminal/config";
+import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
   FitAddon,
@@ -40,7 +36,7 @@ const useTerminal = (
 ): void => {
   const {
     url: setUrl,
-    processes: { [id]: { closing = false } = {} },
+    processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
   const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
@@ -70,7 +66,7 @@ const useTerminal = (
     loadFiles(libs).then(() => {
       if (window.Terminal) setTerminal(new window.Terminal(config));
     });
-  }, []);
+  }, [libs]);
 
   useEffect(() => {
     if (

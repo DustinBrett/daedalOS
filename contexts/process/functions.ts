@@ -6,6 +6,7 @@ import type {
   Processes,
 } from "contexts/process/types";
 import { PREVENT_SCROLL, PROCESS_DELIMITER } from "utils/constants";
+import { preloadLibs } from "utils/functions";
 
 const setProcessSettings =
   (processId: string, settings: Partial<Process>) =>
@@ -52,7 +53,9 @@ export const openProcess =
   (processId: string, processArguments: ProcessArguments, icon?: string) =>
   (currentProcesses: Processes): Processes => {
     const { url = "" } = processArguments;
-    const { singleton } = processDirectory[processId] || {};
+    const { libs, singleton } = processDirectory[processId] || {};
+
+    if (libs) preloadLibs(libs);
 
     if (singleton) {
       const currentPid = Object.keys(currentProcesses).find(

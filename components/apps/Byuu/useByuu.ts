@@ -9,6 +9,7 @@ import {
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename, join } from "path";
 import type React from "react";
 import { useCallback, useEffect, useRef } from "react";
@@ -44,6 +45,7 @@ const useByuu = (
     useFileSystem();
   const { appendFileToTitle } = useTitle(id);
   const { updateWindowSize } = useWindowSize(id);
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const loadedUrl = useRef<string>("");
   const saveState = useRef<() => Promise<void>>();
   const loadFile = useCallback(
@@ -137,7 +139,7 @@ const useByuu = (
   const loadByuu = useCallback(async () => {
     window.byuuWasmPath = "/Program Files/Byuu/byuu-web-lib.wasm";
 
-    await loadFiles(["/Program Files/Byuu/byuu.js"]);
+    await loadFiles(libs);
 
     if (!containerRef.current) return;
 
@@ -153,7 +155,7 @@ const useByuu = (
         // Ignore errors from pre-post-cleanup
       }
     }
-  }, [containerRef, loadFile, setLoading, url]);
+  }, [containerRef, libs, loadFile, setLoading, url]);
 
   useEffect(() => {
     if (loadedUrl.current !== url || !url) {

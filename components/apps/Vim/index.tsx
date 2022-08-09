@@ -17,7 +17,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { readFile, updateFolder, writeFile } = useFileSystem();
   const { prependFileToTitle } = useTitle(id);
-  const { url = "" } = process || {};
+  const { libs = [], url = "" } = process || {};
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
   const loading = useRef(false);
   const loadVim = useCallback(async () => {
@@ -31,11 +31,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
 
     window.VimWrapperModule = {};
 
-    await loadFiles(
-      ["/Program Files/Vim.js/vim.js"],
-      false,
-      !!window.VimWrapperModule
-    );
+    await loadFiles(libs, false, !!window.VimWrapperModule);
 
     const fileData = url ? await readFile(saveUrl) : Buffer.from("");
 
@@ -91,7 +87,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     });
 
     prependFileToTitle(basename(saveUrl));
-  }, [closeWithTransition, id, prependFileToTitle, readFile, url]);
+  }, [closeWithTransition, id, libs, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (updateQueue.length > 0) {

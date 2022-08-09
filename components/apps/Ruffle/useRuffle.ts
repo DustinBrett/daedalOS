@@ -1,11 +1,10 @@
 import type { RufflePlayer } from "components/apps/Ruffle/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
-
-const libs = ["/Program Files/Ruffle/ruffle.js"];
 
 const useRuffle = (
   id: string,
@@ -13,6 +12,7 @@ const useRuffle = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
@@ -35,7 +35,7 @@ const useRuffle = (
         if (!url) containerRef.current?.classList.add("drop");
       }
     });
-  }, [containerRef, url]);
+  }, [containerRef, libs, url]);
 
   useEffect(() => {
     if (containerRef.current && player) {

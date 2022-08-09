@@ -1,6 +1,7 @@
-import { getConfig, libs } from "components/apps/BoxedWine/config";
+import { getConfig } from "components/apps/BoxedWine/config";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { isCanvasDrawn, loadFiles } from "utils/functions";
@@ -33,6 +34,7 @@ const useBoxedWine = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { appendFileToTitle } = useTitle(id);
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const { readFile } = useFileSystem();
   const loadedUrl = useRef<string>();
   const blankCanvasCheckerTimer = useRef<number | undefined>();
@@ -95,7 +97,7 @@ const useBoxedWine = (
         // Ignore BoxedWine errors
       }
     });
-  }, [appendFileToTitle, containerRef, readFile, setLoading, url]);
+  }, [appendFileToTitle, containerRef, libs, readFile, setLoading, url]);
 
   useEffect(() => {
     if (loadedUrl.current !== url) {

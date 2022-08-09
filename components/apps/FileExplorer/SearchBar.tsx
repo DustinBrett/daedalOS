@@ -9,7 +9,8 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useRef, useState } from "react";
-import { useSearch } from "utils/search";
+import { preloadLibs } from "utils/functions";
+import { SEARCH_LIBS, useSearch } from "utils/search";
 
 type SearchBarProps = {
   id: string;
@@ -72,6 +73,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         ref={searchBarRef}
         enterKeyHint="search"
         onChange={({ target }) => setSearchTerm(target.value)}
+        onFocus={() => preloadLibs(SEARCH_LIBS)}
         placeholder="Search"
         spellCheck={false}
         type="text"

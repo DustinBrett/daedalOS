@@ -2,7 +2,6 @@ import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
   config,
-  libs,
   saveExtension,
 } from "components/apps/V86/config";
 import type { V86ImageConfig } from "components/apps/V86/image";
@@ -32,7 +31,7 @@ const useV86 = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { closing } = process || {};
+  const { closing, libs = [] } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const shutdown = useRef(false);
   const [emulator, setEmulator] = useState<
@@ -156,7 +155,7 @@ const useV86 = (
         if (window.V86Starter) setLoading(false);
       });
     }
-  }, [loading, setLoading]);
+  }, [libs, loading, setLoading]);
 
   useEffect(() => {
     if (process && !closing && !loading && !(url in emulator)) {

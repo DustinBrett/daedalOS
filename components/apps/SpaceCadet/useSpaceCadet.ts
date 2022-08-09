@@ -1,3 +1,4 @@
+import { useProcesses } from "contexts/process";
 import { useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
 
@@ -13,11 +14,12 @@ declare global {
 }
 
 const useSpaceCadet = (
-  _id: string,
+  id: string,
   _url: string,
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const useSpaceCadet = (
 
   useEffect(() => {
     if (canvas) {
-      loadFiles(["/Program Files/SpaceCadet/SpaceCadetPinball.js"]).then(() =>
+      loadFiles(libs, undefined, !!window.Module.canvas).then(() =>
         setLoading(false)
       );
     }
@@ -41,7 +43,7 @@ const useSpaceCadet = (
         window.Module.SDL2?.audioContext.close();
       }
     };
-  }, [canvas, setLoading]);
+  }, [canvas, libs, setLoading]);
 };
 
 export default useSpaceCadet;

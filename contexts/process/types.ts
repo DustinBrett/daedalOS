@@ -33,6 +33,7 @@ type BaseProcessArguments = {
   hideMinimizeButton?: boolean;
   hideTitlebarIcon?: boolean;
   initialRelativePosition?: RelativePosition;
+  libs?: string[];
   lockAspectRatio?: boolean;
   prependTaskbarTitle?: boolean;
   url?: string;

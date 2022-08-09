@@ -2,7 +2,6 @@ import {
   config,
   CONTROL_BAR_HEIGHT,
   getMimeType,
-  libs,
   YT_TYPE,
 } from "components/apps/VideoPlayer/config";
 import type {
@@ -33,7 +32,7 @@ const useVideoPlayer = (
 ): void => {
   const { readFile } = useFileSystem();
   const {
-    processes: { [id]: { closing = false } = {} },
+    processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
@@ -115,7 +114,7 @@ const useVideoPlayer = (
         player?.dispose();
       }
     };
-  }, [cleanUpSource, closing, loadPlayer, loading, player]);
+  }, [cleanUpSource, closing, libs, loadPlayer, loading, player]);
 
   useEffect(() => {
     if (!loading && !closing && player && url) loadVideo();

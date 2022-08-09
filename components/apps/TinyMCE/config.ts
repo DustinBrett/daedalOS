@@ -18,6 +18,4 @@ export const config = {
   toolbar,
 };
 
-export const libs = ["/Program Files/TinyMCE/tinymce.min.js"];
-
 export const DEFAULT_SAVE_PATH = `${DESKTOP_PATH}/New Rich Text Document.whtml`;

@@ -1,7 +1,6 @@
 import {
   CAPTURED_KEYS,
   dosOptions,
-  libs,
   pathPrefix,
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
@@ -26,7 +25,8 @@ const useJSDOS = (
   const [dosInstance, setDosInstance] = useState<DosInstance>();
   const loadingInstanceRef = useRef(false);
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
-  const { closeWithTransition } = useProcesses();
+  const { closeWithTransition, processes: { [id]: { libs = [] } = {} } = {} } =
+    useProcesses();
 
   useEffect(() => {
     if (!dosInstance && !loadingInstanceRef.current) {
@@ -51,7 +51,7 @@ const useJSDOS = (
         }
       });
     }
-  }, [containerRef, dosInstance]);
+  }, [containerRef, dosInstance, libs]);
 
   useEffect(() => {
     if (dosCI && loading) {

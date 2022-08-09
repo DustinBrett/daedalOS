@@ -1,5 +1,3 @@
-import { libs as jsDosLibs } from "components/apps/JSDOS/config";
-import { libs as videoJsLibs } from "components/apps/VideoPlayer/config";
 import { getFormattedSize, loadFiles } from "utils/functions";
 import { mockOnLoadEventListener } from "utils/testFunctions";
 
@@ -25,8 +23,6 @@ describe("gets formatted size", () => {
 });
 
 const scriptsStylesCases: string[][][] = [
-  [jsDosLibs],
-  [videoJsLibs],
   [["/Example/Path/script.js", "/Example/Path/style.css"]],
 ];
 

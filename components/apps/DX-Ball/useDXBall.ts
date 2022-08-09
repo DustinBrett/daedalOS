@@ -13,8 +13,6 @@ declare global {
   }
 }
 
-const libs = ["/Program Files/DX-Ball/game.js"];
-
 const SAVE_PATH = "/Program Files/DX-Ball/dx-ball.sav";
 
 const useDXBall = (
@@ -27,7 +25,7 @@ const useDXBall = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { closing } = process || {};
+  const { closing, libs = [] } = process || {};
   const records = useRef<string>();
   const libLoadingRef = useRef(true);
 
@@ -72,7 +70,7 @@ const useDXBall = (
     return () => {
       if (!libLoadingRef.current && closing) window.DXBall.close();
     };
-  }, [closing, setLoading, updateFolder, writeFile]);
+  }, [closing, libs, setLoading, updateFolder, writeFile]);
 };
 
 export default useDXBall;

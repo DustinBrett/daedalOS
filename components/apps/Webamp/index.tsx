@@ -22,7 +22,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { readFile } = useFileSystem();
   const {
-    processes: { [id]: { minimized = false, url = "" } = {} } = {},
+    processes: { [id]: { libs = [], minimized = false, url = "" } = {} } = {},
     url: setUrl,
   } = useProcesses();
   const [loadedUrl, setLoadedUrl] = useState(url);
@@ -78,18 +78,16 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
-      loadFiles(["/Program Files/Webamp/webamp.bundle.min.js"]).then(
-        async () => {
-          if (window.Webamp) {
-            initWebamp(
-              containerRef.current as HTMLDivElement,
-              await getUrlOptions()
-            );
-          }
+      loadFiles(libs).then(async () => {
+        if (window.Webamp) {
+          initWebamp(
+            containerRef.current as HTMLDivElement,
+            await getUrlOptions()
+          );
         }
-      );
+      });
     }
-  }, [getUrlOptions, initWebamp, webampCI]);
+  }, [getUrlOptions, initWebamp, libs, webampCI]);
 
   useEffect(() => {
     if (url !== loadedUrl) {

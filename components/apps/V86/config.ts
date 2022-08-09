@@ -10,6 +10,4 @@ export const config = {
   wasm_path: "/Program Files/Virtual x86/v86.wasm",
 };
 
-export const libs = ["/Program Files/Virtual x86/libv86.js"];
-
 export const saveExtension = ".save.bin";
