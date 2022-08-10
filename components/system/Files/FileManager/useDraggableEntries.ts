@@ -2,6 +2,7 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import {
   calcGridDropPosition,
@@ -28,9 +29,13 @@ const useDraggableEntries = (
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
+  const dragPositionRef = useRef<Position>({ x: 0, y: 0 });
+  const onDragging = ({ clientX: x, clientY: y }: DragEvent): void => {
+    dragPositionRef.current = { x, y };
+  };
   const onDragEnd =
     (entryUrl: string, file: string): React.DragEventHandler =>
-    ({ clientX, clientY }) => {
+    () => {
       if (allowMoving) {
         const currentIconPositions = updateIconPositionsIfEmpty(
           entryUrl,
@@ -40,8 +45,8 @@ const useDraggableEntries = (
         );
         const gridDropPosition = calcGridDropPosition(
           fileManagerRef.current,
-          clientX,
-          clientY
+          dragPositionRef.current.x,
+          dragPositionRef.current.y
         );
 
         if (
@@ -56,6 +61,8 @@ const useDraggableEntries = (
             [join(entryUrl, file)]: gridDropPosition,
           });
         }
+
+        fileManagerRef.current?.removeEventListener("dragover", onDragging);
       } else if (dropIndex !== -1) {
         setSortOrder(entryUrl, (currentSortOrders) => {
           const sortedEntries = currentSortOrders.filter(
@@ -98,6 +105,12 @@ const useDraggableEntries = (
       }
 
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
+
+      if (allowMoving) {
+        fileManagerRef.current?.addEventListener("dragover", onDragging, {
+          passive: true,
+        });
+      }
     };
   const updateDragImage = useCallback(async () => {
     if (fileManagerRef.current) {
