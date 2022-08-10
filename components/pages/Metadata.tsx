@@ -10,7 +10,7 @@ import {
   PACKAGE_DATA,
   USER_ICON_PATH,
 } from "utils/constants";
-import { getDpi, imageSrc, imageSrcs, supportsWebp } from "utils/functions";
+import { getDpi, imageSrc, imageSrcs } from "utils/functions";
 
 const { alias, description } = PACKAGE_DATA;
 
@@ -68,15 +68,10 @@ const Metadata: FC = () => {
           href={
             favIcon === FAVICON_BASE_PATH
               ? FAVICON_BASE_PATH
-              : imageSrc(
-                  favIcon,
-                  16,
-                  getDpi(),
-                  supportsWebp() ? ".webp" : ".png"
-                ).split(" ")[0]
+              : imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0]
           }
           rel="icon"
-          type={supportsWebp() ? "image/webp" : "image/png"}
+          type="image/webp"
         />
       )}
       <meta

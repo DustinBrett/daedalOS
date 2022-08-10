@@ -4,7 +4,7 @@ import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMe
 import startMenuIcons from "public/.index/startMenuIcons.json";
 import { useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
-import { imageSrcs, label } from "utils/functions";
+import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
 
 type StartButtonProps = {
   startMenuVisible: boolean;
@@ -17,6 +17,11 @@ const StartButton: FC<StartButtonProps> = ({
 }) => {
   const [preloaded, setPreloaded] = useState(false);
   const preloadIcons = (): void => {
+    const supportsImageSrcSet = !isSafari();
+    const preloadedLinks = [
+      ...document.querySelectorAll("link[rel=preload]"),
+    ] as HTMLLinkElement[];
+
     startMenuIcons?.forEach((icon) => {
       const link = document.createElement(
         "link"
@@ -28,13 +33,29 @@ const StartButton: FC<StartButtonProps> = ({
       link.type = "image/webp";
 
       if (icon.startsWith(ICON_PATH) || icon.startsWith(USER_ICON_PATH)) {
-        link.imageSrcset = imageSrcs(icon, 48, ".webp");
+        if (supportsImageSrcSet) {
+          link.imageSrcset = imageSrcs(icon, 48, ".webp");
+        } else {
+          const [href] = imageSrc(icon, 48, getDpi(), ".webp").split(" ");
+
+          link.href = href;
+        }
       } else {
         link.href = icon;
       }
 
-      document.head.appendChild(link);
+      if (
+        !preloadedLinks.some(
+          (preloadedLink) =>
+            (link.imageSrcset &&
+              preloadedLink?.imageSrcset?.endsWith(link.imageSrcset)) ||
+            (link.href && preloadedLink?.href?.endsWith(link.href))
+        )
+      ) {
+        document.head.appendChild(link);
+      }
     });
+
     setPreloaded(true);
   };
 

@@ -18,23 +18,6 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
 export const bufferToUrl = (buffer: Buffer): string =>
   URL.createObjectURL(bufferToBlob(buffer));
 
-let canUseWebp: boolean;
-
-export const supportsWebp = (): boolean => {
-  if (typeof canUseWebp === "boolean") return canUseWebp;
-
-  try {
-    canUseWebp = document
-      .createElement("canvas")
-      .toDataURL("image/webp", 0)
-      .startsWith("data:image/webp");
-
-    return canUseWebp;
-  } catch {
-    return false;
-  }
-};
-
 let dpi: number;
 
 export const getDpi = (): number => {
@@ -390,10 +373,16 @@ export const getYouTubeUrlId = (url: string): string => {
 
 export const preloadLibs = (libs: string[] = []): void => {
   const scripts = [...document.scripts];
+  const preloadedLinks = [
+    ...document.querySelectorAll("link[rel=preload]"),
+  ] as HTMLLinkElement[];
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   libs.map(encodeURI).forEach((lib) => {
-    if (scripts.some((script) => script.src.endsWith(lib))) {
+    if (
+      scripts.some((script) => script.src.endsWith(lib)) ||
+      preloadedLinks.some((preloadedLink) => preloadedLink.href.endsWith(lib))
+    ) {
       return;
     }
 
