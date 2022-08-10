@@ -11,7 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
-import { MILLISECONDS_IN_DAY, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { HIGH_PRIORITY_REQUEST, MILLISECONDS_IN_DAY } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -145,12 +145,13 @@ const useWallpaper = (
           newWallpaperFit = "fit";
 
           if (isYouTubeUrl(wallpaperUrl)) {
-            wallpaperUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
+            const ytBaseUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
               wallpaperUrl
-            )}/maxresdefault.jpg`;
-          }
+            )}`;
 
-          if (hdurl && url && hdurl !== url) {
+            wallpaperUrl = `${ytBaseUrl}/maxresdefault.jpg`;
+            fallbackBackground = `${ytBaseUrl}/sddefault.jpg`;
+          } else if (hdurl && url && hdurl !== url) {
             fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
           }
 
@@ -172,21 +173,27 @@ const useWallpaper = (
         ${cssFit[newWallpaperFit]}
       `;
 
-      desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
+      if (!fallbackBackground) {
+        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
+      } else {
+        fetch(wallpaperUrl, {
+          ...HIGH_PRIORITY_REQUEST,
+          mode: "no-cors",
+        })
+          .then(({ ok }) => {
+            if (!ok) throw new Error("Failed to load url");
 
-      if (fallbackBackground) {
-        const img = document.createElement("img");
-
-        img.addEventListener(
-          "error",
-          () =>
+            desktopRef.current?.setAttribute(
+              "style",
+              wallpaperStyle(wallpaperUrl)
+            );
+          })
+          .catch(() =>
             desktopRef.current?.setAttribute(
               "style",
               wallpaperStyle(fallbackBackground)
-            ),
-          ONE_TIME_PASSIVE_EVENT
-        );
-        img.src = wallpaperUrl;
+            )
+          );
       }
     } else {
       loadWallpaper();
