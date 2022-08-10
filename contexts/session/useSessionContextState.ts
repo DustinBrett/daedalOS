@@ -55,9 +55,10 @@ const useSessionContextState = (): SessionContextState => {
     },
     []
   );
+  const [haltSession, setHaltSession] = useState(false);
 
   useEffect(() => {
-    if (sessionLoaded) {
+    if (sessionLoaded && !haltSession) {
       writeFile(
         SESSION_FILE,
         JSON.stringify({
@@ -75,6 +76,7 @@ const useSessionContextState = (): SessionContextState => {
     }
   }, [
     clockSource,
+    haltSession,
     iconPositions,
     runHistory,
     sessionLoaded,
@@ -149,6 +151,7 @@ const useSessionContextState = (): SessionContextState => {
     sessionLoaded,
     setClockSource,
     setForegroundId,
+    setHaltSession,
     setIconPositions,
     setRunHistory,
     setSortOrder,

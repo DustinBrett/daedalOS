@@ -12,6 +12,7 @@ import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import { useFileSystem } from "contexts/fileSystem";
 import { resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
@@ -36,6 +37,7 @@ type SidebarProps = {
 const Sidebar: FC<SidebarProps> = ({ height }) => {
   const { rootFs } = useFileSystem();
   const { open } = useProcesses();
+  const { setHaltSession } = useSession();
   const [collapsed, setCollapsed] = useState(true);
   const expandTimer = useRef<number>();
   const clearTimer = (): void => {
@@ -103,8 +105,10 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         }
       : undefined,
     {
-      action: () =>
-        resetStorage(rootFs).finally(() => window.location.reload()),
+      action: () => {
+        setHaltSession(true);
+        resetStorage(rootFs).finally(() => window.location.reload());
+      },
       icon: <Power />,
       name: "Power",
       tooltip: "Clears session data and reloads the page.",
