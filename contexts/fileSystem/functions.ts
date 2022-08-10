@@ -149,14 +149,18 @@ export const addFileSystemHandle = async (
 
   const db = await getKeyValStore();
 
-  db.put(
-    KEYVAL_STORE_NAME,
-    {
-      ...(await getFileSystemHandles()),
-      [join(directory, handle.name)]: handle,
-    },
-    FS_HANDLES
-  );
+  try {
+    db.put(
+      KEYVAL_STORE_NAME,
+      {
+        ...(await getFileSystemHandles()),
+        [join(directory, handle.name)]: handle,
+      },
+      FS_HANDLES
+    );
+  } catch {
+    // Ignore errors storing handle
+  }
 };
 
 export const removeFileSystemHandle = async (
