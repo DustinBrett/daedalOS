@@ -10,7 +10,7 @@ import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { SAVE_PATH } from "utils/constants";
+import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 
@@ -128,9 +128,10 @@ const useDosCI = (
 
     return () => {
       if (url && closing) {
-        window.requestIdleCallback(() => closeBundle(url, closing), {
-          timeout: 1000,
-        });
+        window.setTimeout(
+          () => closeBundle(url, closing),
+          TRANSITIONS_IN_MILLISECONDS.WINDOW
+        );
       }
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);

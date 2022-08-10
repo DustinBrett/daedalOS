@@ -18,7 +18,7 @@ import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SAVE_PATH } from "utils/constants";
+import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
 
 const useV86 = (
@@ -167,9 +167,10 @@ const useV86 = (
       if (url && closing && !shutdown.current) {
         shutdown.current = true;
         if (emulator[url]) {
-          window.requestIdleCallback(() => closeDiskImage(url), {
-            timeout: 1000,
-          });
+          window.setTimeout(
+            () => closeDiskImage(url),
+            TRANSITIONS_IN_MILLISECONDS.WINDOW
+          );
         }
       }
     };
