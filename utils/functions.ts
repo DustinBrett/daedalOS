@@ -1,5 +1,6 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes, RelativePosition } from "contexts/process/types";
+import type { IconPositions, SortOrders } from "contexts/session/types";
 import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
@@ -201,6 +202,75 @@ export const calcInitialPosition = (
     relativePosition.top ||
     viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
 });
+
+export const calcGridDropPosition = (
+  gridElement: HTMLElement | null,
+  dropX: number,
+  dropY: number
+): Pick<React.CSSProperties, "gridColumnStart" | "gridRowStart"> => {
+  if (!gridElement) return {};
+
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRows = gridComputedStyle
+    .getPropertyValue("grid-template-rows")
+    .split(" ");
+  const gridTemplateColumns = gridComputedStyle
+    .getPropertyValue("grid-template-columns")
+    .split(" ");
+  const gridRowHeight = pxToNum(gridTemplateRows[0]);
+  const gridColumnWidth = pxToNum(gridTemplateColumns[0]);
+  const gridColumnGap = pxToNum(
+    gridComputedStyle.getPropertyValue("grid-column-gap")
+  );
+  const gridRowGap = pxToNum(
+    gridComputedStyle.getPropertyValue("grid-row-gap")
+  );
+  const paddingTop = pxToNum(gridComputedStyle.getPropertyValue("padding-top"));
+
+  return {
+    gridColumnStart: Math.min(
+      Math.ceil(dropX / (gridColumnWidth + gridColumnGap)),
+      gridTemplateColumns.length
+    ),
+    gridRowStart: Math.min(
+      Math.ceil((dropY - paddingTop) / (gridRowHeight + gridRowGap)),
+      gridTemplateRows.length
+    ),
+  };
+};
+
+export const updateIconPositionsIfEmpty = (
+  url: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders
+): IconPositions => {
+  if (!gridElement) return iconPositions;
+
+  const [fileOrder] = sortOrders[url];
+  const newIconPositions: IconPositions = {};
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue("grid-template-rows")
+    .split(" ").length;
+
+  fileOrder.forEach((entry, index) => {
+    const entryUrl = join(url, entry);
+
+    if (!iconPositions[entryUrl]) {
+      const position = index + 1;
+      const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
+      const gridRowStart =
+        position - gridTemplateRowCount * (gridColumnStart - 1);
+
+      newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+    }
+  });
+
+  return Object.keys(newIconPositions).length > 0
+    ? newIconPositions
+    : iconPositions;
+};
 
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&

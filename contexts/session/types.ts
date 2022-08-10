@@ -21,8 +21,14 @@ export type SortOrders = Record<string, SortOrder>;
 
 export type ClockSource = "local" | "ntp";
 
+export type IconPositions = Record<
+  string,
+  Pick<React.CSSProperties, "gridColumnStart" | "gridRowStart">
+>;
+
 export type SessionData = {
   clockSource: ClockSource;
+  iconPositions: IconPositions;
   runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
@@ -34,12 +40,14 @@ export type SessionData = {
 export type SessionContextState = SessionData & {
   clockSource: ClockSource;
   foregroundId: string;
+  iconPositions: IconPositions;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
   runHistory: string[];
   sessionLoaded: boolean;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
   setRunHistory: React.Dispatch<React.SetStateAction<string[]>>;
   setSortOrder: (
     directory: string,

@@ -29,6 +29,7 @@ const StyledLoading = dynamic(
 );
 
 type FileManagerProps = {
+  allowMovingDraggableEntries?: boolean;
   hideFolders?: boolean;
   hideLoading?: boolean;
   hideScrolling?: boolean;
@@ -45,6 +46,7 @@ type FileManagerProps = {
 };
 
 const FileManager: FC<FileManagerProps> = ({
+  allowMovingDraggableEntries,
   hideFolders,
   hideLoading,
   hideScrolling,
@@ -82,7 +84,8 @@ const FileManager: FC<FileManagerProps> = ({
     focusedEntries,
     focusFunctions,
     fileManagerRef,
-    isSelecting
+    isSelecting,
+    allowMovingDraggableEntries
   );
   const fileDrop = useFileDrop({
     callback: folderActions.newPath,

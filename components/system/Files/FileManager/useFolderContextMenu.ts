@@ -9,7 +9,7 @@ import { useMenu } from "contexts/menu";
 import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { join } from "path";
+import { dirname, join } from "path";
 import { useCallback } from "react";
 import {
   FOLDER_ICON,
@@ -45,7 +45,11 @@ const useFolderContextMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
-  const { setWallpaper: setSessionWallpaper, wallpaperImage } = useSession();
+  const {
+    setWallpaper: setSessionWallpaper,
+    setIconPositions,
+    wallpaperImage,
+  } = useSession();
   const setWallpaper = useCallback(
     (wallpaper: string) => {
       if (wallpaper === "VANTA") {
@@ -67,6 +71,23 @@ const useFolderContextMenu = (
     [setSessionWallpaper]
   );
   const { open } = useProcesses();
+  const updateSorting = useCallback(
+    (value: SortBy | "", defaultIsAscending: boolean): void => {
+      setIconPositions((currentIconPositions) =>
+        Object.fromEntries(
+          Object.entries(currentIconPositions).filter(
+            ([entryPath]) => dirname(entryPath) !== url
+          )
+        )
+      );
+      setSortBy(
+        value === ""
+          ? ([currentValue]) => [currentValue, defaultIsAscending]
+          : updateSortBy(value, defaultIsAscending)
+      );
+    },
+    [setIconPositions, setSortBy, url]
+  );
   const getItems = useCallback(() => {
     const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
     const MAP_DIRECTORY = {
@@ -89,33 +110,33 @@ const useFolderContextMenu = (
         label: "Sort by",
         menu: [
           {
-            action: () => setSortBy(updateSortBy("name", true)),
+            action: () => updateSorting("name", true),
             label: "Name",
             toggle: sortBy === "name",
           },
           {
-            action: () => setSortBy(updateSortBy("size", false)),
+            action: () => updateSorting("size", false),
             label: "Size",
             toggle: sortBy === "size",
           },
           {
-            action: () => setSortBy(updateSortBy("type", true)),
+            action: () => updateSorting("type", true),
             label: "Item type",
             toggle: sortBy === "type",
           },
           {
-            action: () => setSortBy(updateSortBy("date", false)),
+            action: () => updateSorting("date", false),
             label: "Date modified",
             toggle: sortBy === "date",
           },
           MENU_SEPERATOR,
           {
-            action: () => setSortBy(([value]) => [value, true]),
+            action: () => updateSorting("", true),
             label: "Ascending",
             toggle: isAscending,
           },
           {
-            action: () => setSortBy(([value]) => [value, false]),
+            action: () => updateSorting("", false),
             label: "Descending",
             toggle: !isAscending,
           },
@@ -202,10 +223,10 @@ const useFolderContextMenu = (
     open,
     pasteList,
     pasteToFolder,
-    setSortBy,
     setWallpaper,
     sortBy,
     updateFolder,
+    updateSorting,
     url,
     wallpaperImage,
   ]);

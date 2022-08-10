@@ -14,6 +14,7 @@ const Desktop: FC = ({ children }) => {
       <FileManager
         url={DESKTOP_PATH}
         view="icon"
+        allowMovingDraggableEntries
         hideLoading
         hideScrolling
         isDesktop

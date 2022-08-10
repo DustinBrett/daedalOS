@@ -3,6 +3,7 @@ import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   ClockSource,
+  IconPositions,
   SessionContextState,
   SessionData,
   SortOrders,
@@ -28,6 +29,7 @@ const useSessionContextState = (): SessionContextState => {
   const [sortOrders, setSortOrders] = useState<SortOrders>(
     Object.create(null) as SortOrders
   );
+  const [iconPositions, setIconPositions] = useState<IconPositions>({});
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("VANTA");
   const [runHistory, setRunHistory] = useState<string[]>([]);
@@ -60,6 +62,7 @@ const useSessionContextState = (): SessionContextState => {
         SESSION_FILE,
         JSON.stringify({
           clockSource,
+          iconPositions,
           runHistory,
           sortOrders,
           themeName,
@@ -72,6 +75,7 @@ const useSessionContextState = (): SessionContextState => {
     }
   }, [
     clockSource,
+    iconPositions,
     runHistory,
     sessionLoaded,
     sortOrders,
@@ -117,6 +121,7 @@ const useSessionContextState = (): SessionContextState => {
 
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.sortOrders) setSortOrders(session.sortOrders);
+          if (session.iconPositions) setIconPositions(session.iconPositions);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);
@@ -137,12 +142,14 @@ const useSessionContextState = (): SessionContextState => {
   return {
     clockSource,
     foregroundId,
+    iconPositions,
     prependToStack,
     removeFromStack,
     runHistory,
     sessionLoaded,
     setClockSource,
     setForegroundId,
+    setIconPositions,
     setRunHistory,
     setSortOrder,
     setThemeName,

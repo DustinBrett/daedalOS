@@ -3,11 +3,16 @@ import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
+import {
+  calcGridDropPosition,
+  updateIconPositionsIfEmpty,
+} from "utils/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;
   onDragEnd: React.DragEventHandler;
   onDragStart: React.DragEventHandler;
+  style: React.CSSProperties;
 };
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
@@ -16,15 +21,42 @@ const useDraggableEntries = (
   focusedEntries: string[],
   { blurEntry, focusEntry }: FocusEntryFunctions,
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
-  isSelecting: boolean
+  isSelecting: boolean,
+  allowMoving?: boolean
 ): DraggableEntry => {
   const [dropIndex, setDropIndex] = useState(-1);
-  const { setSortOrder } = useSession();
+  const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
+    useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
   const onDragEnd =
-    (entryUrl: string): React.DragEventHandler =>
-    () => {
-      if (dropIndex !== -1) {
+    (entryUrl: string, file: string): React.DragEventHandler =>
+    ({ clientX, clientY }) => {
+      if (allowMoving) {
+        const currentIconPositions = updateIconPositionsIfEmpty(
+          entryUrl,
+          fileManagerRef.current,
+          iconPositions,
+          sortOrders
+        );
+        const gridDropPosition = calcGridDropPosition(
+          fileManagerRef.current,
+          clientX,
+          clientY
+        );
+
+        if (
+          !Object.values(currentIconPositions).some(
+            ({ gridColumnStart, gridRowStart }) =>
+              gridColumnStart === gridDropPosition.gridColumnStart &&
+              gridRowStart === gridDropPosition.gridRowStart
+          )
+        ) {
+          setIconPositions({
+            ...currentIconPositions,
+            [join(entryUrl, file)]: gridDropPosition,
+          });
+        }
+      } else if (dropIndex !== -1) {
         setSortOrder(entryUrl, (currentSortOrders) => {
           const sortedEntries = currentSortOrders.filter(
             (entry) => !focusedEntries.includes(entry)
@@ -41,7 +73,7 @@ const useDraggableEntries = (
   const onDragOver =
     (file: string): React.DragEventHandler =>
     ({ target }) => {
-      if (target instanceof HTMLLIElement) {
+      if (!allowMoving && target instanceof HTMLLIElement) {
         const { children = [] } = target.parentElement || {};
         const dragOverFocused = focusedEntries.includes(file);
 
@@ -115,9 +147,10 @@ const useDraggableEntries = (
 
   return (entryUrl: string, file: string) => ({
     draggable: true,
-    onDragEnd: onDragEnd(entryUrl),
+    onDragEnd: onDragEnd(entryUrl, file),
     onDragOver: onDragOver(file),
     onDragStart: onDragStart(entryUrl, file),
+    style: iconPositions[join(entryUrl, file)],
   });
 };
 
