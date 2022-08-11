@@ -21,10 +21,12 @@ export type SortOrders = Record<string, SortOrder>;
 
 export type ClockSource = "local" | "ntp";
 
-export type IconPositions = Record<
-  string,
-  Pick<React.CSSProperties, "gridColumnStart" | "gridRowStart">
->;
+export type IconPosition = {
+  gridColumnStart: number;
+  gridRowStart: number;
+};
+
+export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
   clockSource: ClockSource;

@@ -6,6 +6,7 @@ import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import {
   calcGridDropPosition,
+  calcGridPositionOffset,
   updateIconPositionsIfEmpty,
 } from "utils/functions";
 
@@ -18,6 +19,10 @@ type DraggableEntryProps = {
 
 type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
 
+export type DragPosition = Partial<
+  Position & { offsetX: number; offsetY: number }
+>;
+
 const useDraggableEntries = (
   focusedEntries: string[],
   { blurEntry, focusEntry }: FocusEntryFunctions,
@@ -29,12 +34,12 @@ const useDraggableEntries = (
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
-  const dragPositionRef = useRef<Position>({ x: 0, y: 0 });
+  const dragPositionRef = useRef<DragPosition>({});
   const onDragging = ({ clientX: x, clientY: y }: DragEvent): void => {
-    dragPositionRef.current = { x, y };
+    dragPositionRef.current = { ...dragPositionRef.current, x, y };
   };
   const onDragEnd =
-    (entryUrl: string, file: string): React.DragEventHandler =>
+    (entryUrl: string): React.DragEventHandler =>
     () => {
       if (allowMoving) {
         const currentIconPositions = updateIconPositionsIfEmpty(
@@ -45,8 +50,7 @@ const useDraggableEntries = (
         );
         const gridDropPosition = calcGridDropPosition(
           fileManagerRef.current,
-          dragPositionRef.current.x,
-          dragPositionRef.current.y
+          dragPositionRef.current
         );
 
         if (
@@ -56,9 +60,28 @@ const useDraggableEntries = (
               gridRowStart === gridDropPosition.gridRowStart
           )
         ) {
+          const targetUrl = join(entryUrl, focusedEntries[0]);
+          const newIconPositions = Object.fromEntries(
+            focusedEntries.map((entryFile) => {
+              const url = join(entryUrl, entryFile);
+
+              return [
+                url,
+                url === targetUrl
+                  ? gridDropPosition
+                  : calcGridPositionOffset(
+                      url,
+                      targetUrl,
+                      currentIconPositions,
+                      gridDropPosition
+                    ),
+              ];
+            })
+          );
+
           setIconPositions({
             ...currentIconPositions,
-            [join(entryUrl, file)]: gridDropPosition,
+            ...newIconPositions,
           });
         }
 
@@ -107,6 +130,13 @@ const useDraggableEntries = (
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
 
       if (allowMoving) {
+        dragPositionRef.current =
+          focusedEntries.length > 1
+            ? {
+                offsetX: event.nativeEvent.offsetX,
+                offsetY: event.nativeEvent.offsetY,
+              }
+            : {};
         fileManagerRef.current?.addEventListener("dragover", onDragging, {
           passive: true,
         });
@@ -160,7 +190,7 @@ const useDraggableEntries = (
 
   return (entryUrl: string, file: string) => ({
     draggable: true,
-    onDragEnd: onDragEnd(entryUrl, file),
+    onDragEnd: onDragEnd(entryUrl),
     onDragOver: onDragOver(file),
     onDragStart: onDragStart(entryUrl, file),
     style: iconPositions[join(entryUrl, file)],

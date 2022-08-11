@@ -1,6 +1,11 @@
+import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes, RelativePosition } from "contexts/process/types";
-import type { IconPositions, SortOrders } from "contexts/session/types";
+import type {
+  IconPosition,
+  IconPositions,
+  SortOrders,
+} from "contexts/session/types";
 import type { Position } from "eruda";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
@@ -205,10 +210,9 @@ export const calcInitialPosition = (
 
 export const calcGridDropPosition = (
   gridElement: HTMLElement | null,
-  dropX: number,
-  dropY: number
-): Pick<React.CSSProperties, "gridColumnStart" | "gridRowStart"> => {
-  if (!gridElement) return {};
+  { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
+): IconPosition => {
+  if (!gridElement) return {} as IconPosition;
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
@@ -229,11 +233,11 @@ export const calcGridDropPosition = (
 
   return {
     gridColumnStart: Math.min(
-      Math.ceil(dropX / (gridColumnWidth + gridColumnGap)),
+      Math.ceil((x + offsetX) / (gridColumnWidth + gridColumnGap)),
       gridTemplateColumns.length
     ),
     gridRowStart: Math.min(
-      Math.ceil((dropY - paddingTop) / (gridRowHeight + gridRowGap)),
+      Math.ceil((y + offsetY - paddingTop) / (gridRowHeight + gridRowGap)),
       gridTemplateRows.length
     ),
   };
@@ -271,6 +275,22 @@ export const updateIconPositionsIfEmpty = (
     ? newIconPositions
     : iconPositions;
 };
+
+export const calcGridPositionOffset = (
+  url: string,
+  targetUrl: string,
+  currentIconPositions: IconPositions,
+  gridDropPosition: IconPosition
+): IconPosition => ({
+  gridColumnStart:
+    currentIconPositions[url].gridColumnStart +
+    (gridDropPosition.gridColumnStart -
+      currentIconPositions[targetUrl].gridColumnStart),
+  gridRowStart:
+    currentIconPositions[url].gridRowStart +
+    (gridDropPosition.gridRowStart -
+      currentIconPositions[targetUrl].gridRowStart),
+});
 
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&
