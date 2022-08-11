@@ -52,7 +52,7 @@ export type RootFileSystem = Omit<
   mntMap: Record<
     string,
     {
-      data: Buffer;
+      _data: Buffer;
       getName: () => string;
     }
   >;
@@ -115,8 +115,8 @@ const useAsyncFs = (): AsyncFSModule => {
           fs?.readFile(path, (error, data = Buffer.from("")) => {
             if (!error) return resolve(data);
 
-            if (error.code === "EISDIR" && rootFs?.mntMap[path]?.data) {
-              return resolve(rootFs.mntMap[path].data);
+            if (error.code === "EISDIR" && rootFs?.mntMap[path]?._data) {
+              return resolve(rootFs.mntMap[path]._data);
             }
 
             return reject(error);
