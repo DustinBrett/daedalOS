@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import type Eruda from "eruda";
 import type { InitOptions, Tool } from "eruda";
 import { useEffect } from "react";
-import { loadFiles } from "utils/functions";
+import { loadFiles, viewWidth } from "utils/functions";
 
 declare global {
   interface Window {
@@ -21,6 +21,9 @@ const config: InitOptions = {
   useShadowDom: false,
 };
 
+const FULL_TOOLBAR_WIDTH = 438;
+const ELEMENTS_BUTTON_WIDTH = 68;
+
 const useEruda = (
   id: string,
   url: string,
@@ -28,7 +31,8 @@ const useEruda = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loading: boolean
 ): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { processes: { [id]: { closing = false, libs = [] } = {} } = {} } =
+    useProcesses();
 
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -36,6 +40,7 @@ const useEruda = (
         const container = containerRef.current.querySelector(
           "div"
         ) as HTMLElement;
+        const vw = viewWidth();
 
         if (container) {
           window.eruda.init({
@@ -45,20 +50,30 @@ const useEruda = (
           window.eruda.add(window.erudaDom);
           window.eruda.remove("info");
           window.eruda.remove("snippets");
+          if (vw < FULL_TOOLBAR_WIDTH) {
+            window.eruda.remove("elements");
+          }
+          if (vw < FULL_TOOLBAR_WIDTH - ELEMENTS_BUTTON_WIDTH) {
+            window.eruda.remove("sources");
+          }
           window.eruda.show();
           setLoading(false);
         }
       }
     });
-
-    return () => window.eruda?.destroy();
   }, [containerRef, libs, setLoading]);
 
   useEffect(() => {
     if (window.eruda && url && !loading) {
       window.eruda.show(url);
     }
-  }, [loading, url]);
+
+    return () => {
+      if (closing) {
+        window.eruda?.destroy();
+      }
+    };
+  }, [closing, loading, url]);
 };
 
 export default useEruda;
