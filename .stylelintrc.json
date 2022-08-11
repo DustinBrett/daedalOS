@@ -8,6 +8,7 @@
   ],
   "plugins": ["stylelint-order"],
   "rules": {
+    "annotation-no-unknown": null,
     "function-no-unknown": null,
     "max-nesting-depth": null,
     "property-no-unknown": null,
