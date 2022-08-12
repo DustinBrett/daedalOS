@@ -41,7 +41,7 @@ const useDraggableEntries = (
   const onDragEnd =
     (entryUrl: string): React.DragEventHandler =>
     () => {
-      if (allowMoving) {
+      if (allowMoving && focusedEntries.length > 0) {
         const currentIconPositions = updateIconPositionsIfEmpty(
           entryUrl,
           fileManagerRef.current,
