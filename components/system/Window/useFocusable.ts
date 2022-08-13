@@ -84,10 +84,10 @@ const useFocusable = (
   }, [isForeground, moveToFront]);
 
   useLayoutEffect(() => {
-    if (process && !closing && !minimized) {
+    if (componentWindow && !closing && !minimized) {
       setForegroundId(id);
     }
-  }, [closing, id, minimized, process, setForegroundId, url]);
+  }, [closing, componentWindow, id, minimized, setForegroundId, url]);
 
   return {
     onBlurCapture,
