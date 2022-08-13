@@ -3,6 +3,7 @@ import {
   centerPosition,
   isWindowOutsideBounds,
 } from "components/system/Window/functions";
+import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -39,12 +40,19 @@ const useDraggable = (id: string, size: Size): Draggable => {
       cascadePosition(id, processes, stackOrder, cascadeOffset) ||
       centerPosition(size)
   );
+  const blockAutoPositionRef = useMinMaxRef(id);
 
   useLayoutEffect(() => {
-    if (autoSizing && !closing && sessionSize && !sessionPosition) {
+    if (
+      autoSizing &&
+      !closing &&
+      sessionSize &&
+      !sessionPosition &&
+      !blockAutoPositionRef.current
+    ) {
       setPosition(centerPosition(sessionSize));
     }
-  }, [autoSizing, closing, sessionPosition, sessionSize]);
+  }, [autoSizing, blockAutoPositionRef, closing, sessionPosition, sessionSize]);
 
   useLayoutEffect(() => {
     if (initialRelativePosition && componentWindow) {
