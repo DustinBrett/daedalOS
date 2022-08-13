@@ -19,6 +19,7 @@ import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useState } from "react";
+import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -117,8 +118,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
               return;
             }
 
-            rootFs?.mount?.(join(directory, handle.name), newFs);
-            resolve(handle.name);
+            const mappedName =
+              handle.name.replace(INVALID_FILE_CHARACTERS, "").trim() ||
+              DEFAULT_MAPPED_NAME;
+
+            rootFs?.mount?.(join(directory, mappedName), newFs);
+            resolve(mappedName);
             addFileSystemHandle(directory, handle);
           });
         } else {

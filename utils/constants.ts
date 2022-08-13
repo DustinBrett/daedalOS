@@ -19,6 +19,8 @@ export const DEFAULT_WINDOW_SIZE: Size = {
   width: 405,
 };
 
+export const DEFAULT_MAPPED_NAME = "Share";
+
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
 export const FS_HANDLES = "FileSystemAccessHandles";
