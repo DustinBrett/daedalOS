@@ -6,6 +6,7 @@ import {
 import useDosCI from "components/apps/JSDOS/useDosCI";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { useEffect, useRef, useState } from "react";
 import { loadFiles, pxToNum } from "utils/functions";
@@ -24,6 +25,7 @@ const useJSDOS = (
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
   const loadingInstanceRef = useRef(false);
+  const { foregroundId } = useSession();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
   const { closeWithTransition, processes: { [id]: { libs = [] } = {} } = {} } =
     useProcesses();
@@ -100,6 +102,12 @@ const useJSDOS = (
     setLoading,
     updateWindowSize,
   ]);
+
+  useEffect(() => {
+    if (id === foregroundId && !loading) {
+      containerRef.current?.focus();
+    }
+  }, [containerRef, loading, foregroundId, id]);
 };
 
 export default useJSDOS;
