@@ -59,19 +59,18 @@ const useJSDOS = (
 
       const events = dosCI.events();
 
-      events.onMessage(
-        (_msgType, _eventType, command: string, message: string) => {
-          if (command === "LOG_EXEC") {
-            const [dosCommand] = message
-              .replace("Parsing command line: ", "")
-              .split(" ");
+      events.onMessage((_msgType: string, eventType: string) => {
+        if (eventType.startsWith("[LOG_EXEC]")) {
+          const [, message] = eventType.split("[LOG_EXEC]");
+          const [dosCommand] = message
+            .replace("Parsing command line: ", "")
+            .split(" ");
 
-            if (dosCommand.toUpperCase() === "EXIT") {
-              closeWithTransition(id);
-            }
+          if (dosCommand.toUpperCase() === "EXIT") {
+            closeWithTransition(id);
           }
         }
-      );
+      });
       events.onFrameSize(() => {
         const canvas = containerRef.current?.querySelector("canvas");
         const [width, height] = [
