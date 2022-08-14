@@ -10,6 +10,7 @@ import type { ExtensionType } from "components/system/Files/FileEntry/extensions
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
 import { useCallback, useEffect, useState } from "react";
@@ -46,6 +47,7 @@ const useTerminal = (
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, terminal, localEcho);
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
+  const { foregroundId } = useSession();
 
   useEffect(() => {
     if (url) {
@@ -172,6 +174,12 @@ const useTerminal = (
     readdir,
     terminal,
   ]);
+
+  useEffect(() => {
+    if (id === foregroundId && !loading) {
+      terminal?.textarea?.focus();
+    }
+  }, [foregroundId, id, loading, terminal]);
 
   useResizeObserver(containerRef.current, autoFit);
 };
