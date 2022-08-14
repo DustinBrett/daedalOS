@@ -161,6 +161,7 @@ const useWebamp = (id: string): Webamp => {
             subscriptions.forEach((unsubscribe) => unsubscribe());
             webamp.close();
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
+          window.clearInterval(metadataProviderRef.current);
         }),
         webamp.onMinimize(() => onMinimize()),
         webamp.onTrackDidChange((track) => {
@@ -177,10 +178,15 @@ const useWebamp = (id: string): Webamp => {
 
             if (getMetadata) {
               const updateTrackInfo = async (): Promise<void> => {
-                const { playlist: { currentTrack = -1 } = {}, tracks } =
-                  webamp.store.getState() || {};
+                const {
+                  display: { closed = false } = {},
+                  playlist: { currentTrack = -1 } = {},
+                  tracks,
+                } = webamp.store.getState() || {};
 
-                if (tracks[currentTrack]) {
+                if (closed) {
+                  window.clearInterval(metadataProviderRef.current);
+                } else if (tracks[currentTrack]) {
                   const metaData = await getMetadata?.();
 
                   if (metaData) {

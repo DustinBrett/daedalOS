@@ -77,6 +77,9 @@ export type WebampCI = Webamp & {
         | UpdateWindowPositions
     ) => void;
     getState: () => {
+      display?: {
+        closed: boolean;
+      };
       milkdrop?: {
         butterchurn?: unknown;
         presets?: ButterChurnPreset[];
