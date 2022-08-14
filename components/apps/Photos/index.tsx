@@ -79,7 +79,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { closing = false, url = "" } = process || {};
   const [src, setSrc] = useState<Record<string, string>>({});
   const [brokenImage, setBrokenImage] = useState(false);
-  const { appendFileToTitle } = useTitle(id);
+  const { prependFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -112,8 +112,8 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
       return { [url]: imageToBufferUrl(url, fileContents) };
     });
-    appendFileToTitle(basename(url));
-  }, [appendFileToTitle, readFile, reset, url]);
+    prependFileToTitle(basename(url));
+  }, [prependFileToTitle, readFile, reset, url]);
   const style = useMemo<React.CSSProperties>(
     () => ({
       display: src[url] && !brokenImage ? "block" : "none",

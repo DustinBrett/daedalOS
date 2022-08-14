@@ -35,7 +35,7 @@ const usePanZoom = (
     processes: { [id]: process },
   } = useProcesses();
   const { closing, componentWindow, url = "" } = process || {};
-  const { appendFileToTitle } = useTitle(id);
+  const { prependFileToTitle } = useTitle(id);
   const zoomUpdate = useCallback<EventListener>(
     (panZoomEvent) => {
       const { detail: { scale = 0, x = 0, y = 0 } = {} } =
@@ -50,7 +50,7 @@ const usePanZoom = (
         }
 
         if (!closing) {
-          appendFileToTitle(
+          prependFileToTitle(
             isMinScale
               ? basename(url)
               : `${basename(url)} (${Math.floor(scale * 100)}%)`
@@ -58,7 +58,7 @@ const usePanZoom = (
         }
       }
     },
-    [appendFileToTitle, closing, panZoom, url]
+    [closing, panZoom, prependFileToTitle, url]
   );
   const zoomWheel = useCallback(
     (event: WheelEvent) => zoomWithWheel?.(event, { step: 0.3 }),

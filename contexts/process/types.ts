@@ -35,7 +35,6 @@ type BaseProcessArguments = {
   initialRelativePosition?: RelativePosition;
   libs?: string[];
   lockAspectRatio?: boolean;
-  prependTaskbarTitle?: boolean;
   url?: string;
 };
 

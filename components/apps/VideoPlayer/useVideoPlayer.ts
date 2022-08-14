@@ -36,7 +36,7 @@ const useVideoPlayer = (
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
-  const { appendFileToTitle } = useTitle(id);
+  const { prependFileToTitle } = useTitle(id);
   const cleanUpSource = useCallback((): void => {
     const { src: sources = [] } = player?.getMedia() || {};
 
@@ -92,12 +92,12 @@ const useVideoPlayer = (
     if (player && url) {
       try {
         player.src(await getSource());
-        appendFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
+        prependFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
       } catch {
         // Ignore player errors
       }
     }
-  }, [appendFileToTitle, getSource, player, url]);
+  }, [getSource, player, prependFileToTitle, url]);
 
   useEffect(() => {
     if (loading && !player) {

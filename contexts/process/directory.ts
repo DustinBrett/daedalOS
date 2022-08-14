@@ -155,7 +155,6 @@ const directory: Processes = {
     },
     hideTitlebarIcon: true,
     icon: "/System/Icons/photos.webp",
-    prependTaskbarTitle: true,
     title: "Photos",
   },
   Ruffle: {
