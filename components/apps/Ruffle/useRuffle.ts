@@ -30,6 +30,7 @@ const useRuffle = (
           backgroundColor: "#000000",
           letterbox: "on",
           polyfills: false,
+          preloader: false,
         };
         setPlayer(window.RufflePlayer.newest().createPlayer());
         if (!url) containerRef.current?.classList.add("drop");

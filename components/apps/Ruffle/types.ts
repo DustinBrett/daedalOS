@@ -6,6 +6,7 @@ type BaseLoadOptions = {
 
 type Config = {
   polyfills?: boolean;
+  preloader?: boolean;
 };
 
 type DataLoadOptions = {
