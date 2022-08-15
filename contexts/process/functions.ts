@@ -13,10 +13,12 @@ const setProcessSettings =
   (currentProcesses: Processes): Processes => {
     const { ...newProcesses } = currentProcesses;
 
-    newProcesses[processId] = {
-      ...newProcesses[processId],
-      ...settings,
-    };
+    if (newProcesses[processId]) {
+      newProcesses[processId] = {
+        ...newProcesses[processId],
+        ...settings,
+      };
+    }
 
     return newProcesses;
   };
