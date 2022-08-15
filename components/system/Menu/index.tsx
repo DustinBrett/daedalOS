@@ -77,6 +77,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
+    if (!menuRef.current) return;
+
     const {
       height = 0,
       width = 0,
@@ -105,7 +107,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     setOffset(
       adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
     );
-  }, [subMenu, x, y]);
+  }, [items, subMenu, x, y]);
 
   return items ? (
     <StyledMenu
