@@ -36,6 +36,7 @@ const useDraggableEntries = (
     useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
   const dragPositionRef = useRef<DragPosition>({});
+  const draggedOnceRef = useRef(false);
   const onDragging = ({ clientX: x, clientY: y }: DragEvent): void => {
     dragPositionRef.current = { ...dragPositionRef.current, x, y };
   };
@@ -130,7 +131,13 @@ const useDraggableEntries = (
       );
 
       if (focusedEntries.length > 1 && dragImageRef.current) {
-        event.dataTransfer.setDragImage(dragImageRef.current, 0, 0);
+        event.dataTransfer.setDragImage(
+          dragImageRef.current,
+          "mozInputSource" in event.nativeEvent ? event.nativeEvent.clientX : 0,
+          draggedOnceRef.current ? event.nativeEvent.clientY : 0
+        );
+
+        if (!draggedOnceRef.current) draggedOnceRef.current = true;
       }
 
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
