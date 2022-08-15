@@ -43,10 +43,10 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   };
   const subMenuEvents = menu
     ? {
-        onBlur: onMouseLeave,
+        onBlur: onMouseLeave as unknown as React.FocusEventHandler,
         onMouseEnter,
         onMouseLeave,
-        onTouchStart: onMouseEnter,
+        onTouchStart: onMouseEnter as unknown as React.TouchEventHandler,
       }
     : {};
 
