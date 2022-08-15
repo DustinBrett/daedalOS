@@ -80,6 +80,7 @@ const StyledControls = styled.nav`
 
     &#download {
       svg {
+        margin-left: 1px;
         scale: 1.15;
         stroke-width: 1.75;
         transform: scale(1.25, 1);

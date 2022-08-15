@@ -103,6 +103,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
       </ol>
       <div className="side-menu">
         <Button
+          disabled={count === 0}
           id="download"
           onClick={async () => {
             const link = document.createElement("a");
