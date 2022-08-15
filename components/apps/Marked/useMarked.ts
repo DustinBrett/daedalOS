@@ -53,6 +53,7 @@ const useMarked = (
           }
         })
       );
+      container.scrollTop = 0;
     }
 
     prependFileToTitle(basename(url));
