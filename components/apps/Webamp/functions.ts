@@ -9,6 +9,8 @@ import { HOME, MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
 import type { Track, URLTrack } from "webamp";
 
+const BROKEN_PRESETS = new Set(["Flexi - alien fish pond"]);
+
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
 
 export const BASE_WEBAMP_OPTIONS = {
@@ -74,22 +76,28 @@ const loadButterchurnPresets = (
     type: "GOT_BUTTERCHURN_PRESETS",
   });
 
-export const loadButterchurnPreset = (webamp: WebampCI): void => {
+const getButterchurnPresetIndex = (webamp: WebampCI): number => {
   const { presets = [] } = webamp.store.getState()?.milkdrop || {};
   const index = Math.floor(Math.random() * presets.length);
   const preset = presets[index];
 
-  if (preset) {
-    webamp.store.dispatch({
-      addToHistory: true,
-      index,
-      type: "PRESET_REQUESTED",
-    });
-    webamp.store.dispatch({
-      index,
-      type: "SELECT_PRESET_AT_INDEX",
-    });
-  }
+  return preset.name && !BROKEN_PRESETS.has(preset.name)
+    ? index
+    : getButterchurnPresetIndex(webamp);
+};
+
+export const loadButterchurnPreset = (webamp: WebampCI): void => {
+  const index = getButterchurnPresetIndex(webamp);
+
+  webamp.store.dispatch({
+    addToHistory: true,
+    index,
+    type: "PRESET_REQUESTED",
+  });
+  webamp.store.dispatch({
+    index,
+    type: "SELECT_PRESET_AT_INDEX",
+  });
 };
 
 let cycleTimerId = 0;

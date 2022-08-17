@@ -4,6 +4,7 @@ import type { Track } from "webamp";
 
 type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
+  name: string;
 };
 
 export type ButterChurnPresets = Record<string, ButterChurnPreset>;
