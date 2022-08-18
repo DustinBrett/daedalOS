@@ -66,7 +66,7 @@ const useBoxedWine = (
           blankCanvasCheckerTimer.current = undefined;
           containerRef.current?.querySelector("ol")?.remove();
         }
-      }, 500);
+      }, 100);
     }
 
     window.BoxedWineConfig = {
