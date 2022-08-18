@@ -11,8 +11,10 @@ import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 type MenuItemEntryProps = MenuItem & {
+  isSubMenu: boolean;
   resetMenu: () => void;
 };
 
@@ -21,6 +23,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   checked,
   disabled,
   icon,
+  isSubMenu,
   label,
   menu,
   primary,
@@ -46,9 +49,21 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         onBlur: onMouseLeave as unknown as React.FocusEventHandler,
         onMouseEnter,
         onMouseLeave,
-        onTouchStart: onMouseEnter as unknown as React.TouchEventHandler,
       }
     : {};
+
+  useEffect(() => {
+    const menuEntryElement = entryRef.current;
+    const touchListener = (event: TouchEvent): void => {
+      if (!isSubMenu && menu && !showSubMenu) haltEvent(event);
+      setShowSubMenu(true);
+    };
+
+    menuEntryElement?.addEventListener("touchstart", touchListener);
+
+    return () =>
+      menuEntryElement?.removeEventListener("touchstart", touchListener);
+  }, [isSubMenu, menu, showSubMenu]);
 
   useEffect(() => {
     if (menu && entryRef.current) {
@@ -66,7 +81,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       ref={entryRef}
       className={disabled ? "disabled" : undefined}
       {...FOCUSABLE_ELEMENT}
-      {...subMenuEvents}
+      {...(menu && subMenuEvents)}
     >
       {seperator ? (
         <hr />
