@@ -9,6 +9,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
 import { useEffect, useRef, useState } from "react";
+import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
 const captureKeys = (event: KeyboardEvent): void => {
@@ -105,7 +106,7 @@ const useJSDOS = (
 
   useEffect(() => {
     if (id === foregroundId && !loading) {
-      containerRef.current?.focus();
+      containerRef.current?.focus(PREVENT_SCROLL);
     }
   }, [containerRef, loading, foregroundId, id]);
 };

@@ -7,6 +7,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { dirname, join } from "path";
+import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
@@ -41,7 +42,7 @@ const useFileKeyboardShortcuts = (
           if (target instanceof HTMLOListElement) {
             const [firstEntry] = target.querySelectorAll("button");
 
-            firstEntry?.focus();
+            firstEntry?.focus(PREVENT_SCROLL);
           }
           Object.keys(files).forEach((fileName) => focusEntry(fileName));
         } else if (lKey === "c") {

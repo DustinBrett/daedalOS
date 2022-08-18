@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
+  PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 
@@ -167,7 +168,7 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, folderActions, url]);
 
   useEffect(() => {
-    if (!loading) fileManagerRef.current?.focus();
+    if (!loading) fileManagerRef.current?.focus(PREVENT_SCROLL);
   }, [loading]);
 
   return (

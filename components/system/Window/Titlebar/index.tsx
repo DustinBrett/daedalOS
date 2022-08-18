@@ -14,7 +14,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import { useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { LONG_PRESS_DELAY_MS } from "utils/constants";
+import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";
 import { label } from "utils/functions";
 
 type TitlebarProps = {
@@ -68,7 +68,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     ({ touches }: React.TouchEvent<HTMLHeadingElement>) => {
       if (componentWindow) {
         componentWindow.blur();
-        componentWindow.focus();
+        componentWindow.focus(PREVENT_SCROLL);
         touchStartTimeRef.current = Date.now();
         touchStartPositionRef.current = componentWindow.getBoundingClientRect();
         touchesRef.current = touches as unknown as TouchList;

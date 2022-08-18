@@ -14,7 +14,7 @@ import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { HOME, PACKAGE_DATA } from "utils/constants";
+import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
@@ -178,7 +178,7 @@ const useTerminal = (
 
   useEffect(() => {
     if (id === foregroundId && !loading) {
-      terminal?.textarea?.focus();
+      terminal?.textarea?.focus(PREVENT_SCROLL);
     }
   }, [foregroundId, id, loading, terminal]);
 

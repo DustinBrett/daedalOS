@@ -12,7 +12,11 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PACKAGE_DATA, SHORTCUT_EXTENSION } from "utils/constants";
+import {
+  PACKAGE_DATA,
+  PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
 import spawnSheep from "utils/spawnSheep";
 
 const OPEN_ID = "open";
@@ -135,7 +139,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
   useEffect(() => {
     if (foregroundId === "Run") {
-      inputRef.current?.focus();
+      inputRef.current?.focus(PREVENT_SCROLL);
       if (inputRef.current?.value) inputRef.current?.select();
     }
   }, [foregroundId]);
@@ -169,7 +173,7 @@ const Run: FC<ComponentProcessProps> = () => {
                 !runProcess?.componentWindow ||
                 runProcess.componentWindow.contains(relatedTarget)
               ) {
-                inputRef.current?.focus();
+                inputRef.current?.focus(PREVENT_SCROLL);
               } else {
                 setIsInputFocused(false);
               }
