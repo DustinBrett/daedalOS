@@ -211,8 +211,15 @@ const useWebamp = (id: string): Webamp => {
 
               if (tracks[currentTrack]) {
                 const { artist, title: trackTitle } = tracks[currentTrack];
+                let newTitle = "";
 
-                title(id, `${artist} - ${trackTitle}`);
+                if (trackTitle && artist) {
+                  newTitle = `${artist} - ${trackTitle}`;
+                } else if (trackTitle || artist) {
+                  newTitle = trackTitle || artist;
+                }
+
+                if (newTitle) title(id, newTitle);
               }
             }
           } else {
