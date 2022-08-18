@@ -13,7 +13,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HOME, PACKAGE_DATA } from "utils/constants";
 import { haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
@@ -39,13 +39,14 @@ const useTerminal = (
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
+  const cd = useRef(url || HOME);
   const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
   const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
-  const processCommand = useCommandInterpreter(id, terminal, localEcho);
+  const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
   const { foregroundId } = useSession();
 
@@ -141,9 +142,9 @@ const useTerminal = (
 
   useEffect(() => {
     if (localEcho && terminal && !prompted) {
-      const prompt = (cd = HOME): Promise<void> =>
+      const prompt = (): Promise<void> =>
         localEcho
-          .read(`\r\n${cd}${PROMPT_CHARACTER}`)
+          .read(`\r\n${cd.current}${PROMPT_CHARACTER}`)
           .then((command) => processCommand.current?.(command).then(prompt));
 
       localEcho.println(`${alias} [Version ${displayVersion()}]`);
@@ -151,7 +152,7 @@ const useTerminal = (
 
       if (initialCommand) {
         localEcho.println(
-          `\r\n${HOME}${PROMPT_CHARACTER}${initialCommand}\r\n`
+          `\r\n${cd.current}${PROMPT_CHARACTER}${initialCommand}\r\n`
         );
         localEcho.history.entries = [initialCommand];
         processCommand.current(initialCommand).then(prompt);
@@ -163,7 +164,7 @@ const useTerminal = (
       terminal.focus();
       autoFit();
 
-      readdir(HOME).then((files) => autoComplete(files, localEcho));
+      readdir(cd.current).then((files) => autoComplete(files, localEcho));
     }
   }, [
     autoFit,

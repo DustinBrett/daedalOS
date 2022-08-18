@@ -34,7 +34,6 @@ import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
-  HOME,
   isFileSystemSupported,
   ONE_DAY_IN_MILLISECONDS,
 } from "utils/constants";
@@ -52,10 +51,10 @@ const SYNTAX_ERROR = "The syntax of the command is incorrect.";
 
 const useCommandInterpreter = (
   id: string,
+  cd: React.MutableRefObject<string>,
   terminal?: Terminal,
   localEcho?: LocalEcho
 ): React.MutableRefObject<CommandInterpreter> => {
-  const cd = useRef(HOME);
   const {
     deletePath,
     exists,
@@ -77,11 +76,14 @@ const useCommandInterpreter = (
     processes,
     title: changeTitle,
   } = useProcesses();
-  const getFullPath = (file: string): string => {
-    if (!file) return "";
+  const getFullPath = useCallback(
+    (file: string): string => {
+      if (!file) return "";
 
-    return isAbsolute(file) ? file : join(cd.current, file);
-  };
+      return isAbsolute(file) ? file : join(cd.current, file);
+    },
+    [cd]
+  );
   const colorOutput = useRef<string[]>([]);
   const updateFile = useCallback(
     (filePath: string, isDeleted = false): void => {
@@ -97,7 +99,7 @@ const useCommandInterpreter = (
         readdir(dirPath).then((files) => autoComplete(files, localEcho));
       }
     },
-    [localEcho, readdir, updateFolder]
+    [cd, localEcho, readdir, updateFolder]
   );
   const commandInterpreter = useCallback(
     async (command = ""): Promise<string> => {
@@ -139,6 +141,7 @@ const useCommandInterpreter = (
               if (!(await lstat(fullPath)).isDirectory()) {
                 localEcho?.println("The directory name is invalid.");
               } else if (cd.current !== fullPath && localEcho) {
+                // eslint-disable-next-line no-param-reassign
                 cd.current = fullPath;
                 readdir(fullPath).then((files) =>
                   autoComplete(files, localEcho)
@@ -480,6 +483,7 @@ const useCommandInterpreter = (
                   const fullPath = join(cd.current, mappedFolder);
                   const files = await readdir(fullPath);
 
+                  // eslint-disable-next-line no-param-reassign
                   cd.current = fullPath;
                   autoComplete(files, localEcho);
 
@@ -690,11 +694,13 @@ const useCommandInterpreter = (
       return cd.current;
     },
     [
+      cd,
       changeTitle,
       closeWithTransition,
       deletePath,
       exists,
       fs,
+      getFullPath,
       id,
       localEcho,
       lstat,

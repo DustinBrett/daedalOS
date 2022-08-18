@@ -178,6 +178,10 @@ const useFolderContextMenu = (
       MENU_SEPERATOR,
       ...FS_COMMANDS,
       {
+        action: () => open("Terminal", { url }),
+        label: "Open Terminal here",
+      },
+      {
         action: () => pasteToFolder(),
         disabled: Object.keys(pasteList).length === 0,
         label: "Paste",
