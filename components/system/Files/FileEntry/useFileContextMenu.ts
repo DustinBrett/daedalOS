@@ -67,6 +67,7 @@ const useFileContextMenu = (
   const openFile = useFile(url);
   const {
     copyEntries,
+    createPath,
     lstat,
     mapFs,
     moveEntries,
@@ -74,7 +75,6 @@ const useFileContextMenu = (
     rootFs,
     unMapFs,
     updateFolder,
-    writeFile,
   } = useFileSystem();
   const { contextMenu } = useMenu();
   const getItems = useCallback(() => {
@@ -208,13 +208,17 @@ const useFileContextMenu = (
                     await Promise.all(
                       transcodedFiles.map(
                         async ([transcodedFileName, transcodedFileData]) => {
-                          await writeFile(
-                            transcodedFileName,
-                            transcodedFileData
-                          );
+                          const baseTranscodedName =
+                            basename(transcodedFileName);
+                          const transcodedDirName = dirname(path);
+
                           updateFolder(
-                            dirname(path),
-                            basename(transcodedFileName)
+                            transcodedDirName,
+                            await createPath(
+                              baseTranscodedName,
+                              transcodedDirName,
+                              transcodedFileData
+                            )
                           );
                         }
                       )
@@ -249,9 +253,16 @@ const useFileContextMenu = (
                         await readFile(absoluteEntry),
                         extension
                       );
+                      const workBookDirName = dirname(path);
 
-                      await writeFile(newFilePath, Buffer.from(workBook));
-                      updateFolder(dirname(path), basename(newFilePath));
+                      updateFolder(
+                        workBookDirName,
+                        await createPath(
+                          basename(newFilePath),
+                          workBookDirName,
+                          Buffer.from(workBook)
+                        )
+                      );
                     });
                   },
                   label: extension.toUpperCase(),
@@ -280,9 +291,16 @@ const useFileContextMenu = (
                       extname(absoluteEntry)
                     )) as URLTrack[]
                   );
+                  const playlistDirName = dirname(path);
 
-                  await writeFile(newFilePath, Buffer.from(playlist));
-                  updateFolder(dirname(path), basename(newFilePath));
+                  updateFolder(
+                    playlistDirName,
+                    await createPath(
+                      basename(newFilePath),
+                      playlistDirName,
+                      Buffer.from(playlist)
+                    )
+                  );
                 });
               },
               label: "Convert to M3U",
@@ -416,6 +434,7 @@ const useFileContextMenu = (
     baseName,
     changeUrl,
     copyEntries,
+    createPath,
     deleteLocalPath,
     downloadFiles,
     extractFiles,
@@ -439,7 +458,6 @@ const useFileContextMenu = (
     unMapFs,
     updateFolder,
     url,
-    writeFile,
   ]);
 
   const { onContextMenuCapture, ...contextMenuHandlers } =
