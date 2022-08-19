@@ -1,7 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import { extractExeIcon } from "components/system/Files/FileEntry/exeIcons";
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
@@ -100,7 +99,7 @@ export const getDefaultFileViewer = (extension: string): string => {
 
 export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
-    extension in extensions ? extensions[extension as ExtensionType] : {};
+    extension in extensions ? extensions[extension] : {};
 
   if (extensionIcon) return `/System/Icons/${extensionIcon}.webp`;
 
@@ -113,7 +112,7 @@ export const getIconByFileExtension = (extension: string): string => {
 export const getProcessByFileExtension = (extension: string): string => {
   const [defaultProcess = ""] =
     extension in extensions
-      ? extensions[extension as ExtensionType].process
+      ? extensions[extension].process
       : [getDefaultFileViewer(extension)];
 
   return defaultProcess;

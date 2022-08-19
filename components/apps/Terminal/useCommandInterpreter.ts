@@ -20,7 +20,6 @@ import {
   displayLicense,
   displayVersion,
 } from "components/apps/Terminal/useTerminal";
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -672,9 +671,7 @@ const useCommandInterpreter = (
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
             } else if (await exists(baseCommand)) {
-              const fileExtension = extname(
-                baseCommand
-              ).toLowerCase() as ExtensionType;
+              const fileExtension = extname(baseCommand).toLowerCase();
               const { command: extCommand = "" } =
                 extensions[fileExtension] || {};
 

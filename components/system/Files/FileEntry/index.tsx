@@ -1,5 +1,4 @@
 import { Down } from "components/apps/FileExplorer/NavigationIcons";
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -199,7 +198,7 @@ const FileEntry: FC<FileEntryProps> = ({
     }
 
     const type =
-      extensions[extension as ExtensionType]?.type ||
+      extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
     const fullStats = stats.size < 0 ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;

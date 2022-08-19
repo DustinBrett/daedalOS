@@ -6,7 +6,6 @@ import type {
   OnKeyEvent,
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -55,7 +54,7 @@ const useTerminal = (
       if (localEcho) {
         localEcho.handleCursorInsert(url);
       } else {
-        const fileExtension = extname(url).toLowerCase() as ExtensionType;
+        const fileExtension = extname(url).toLowerCase();
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
         if (extCommand) setInitialCommand(`${extCommand} ${url}`);

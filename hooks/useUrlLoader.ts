@@ -1,4 +1,3 @@
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getDefaultFileViewer } from "components/system/Files/FileEntry/functions";
 import { useProcesses } from "contexts/process";
@@ -23,8 +22,7 @@ const useUrlLoader = (): void => {
       setInitialApp(lcAppNames[app.toLowerCase()]);
     } else if (url) {
       const extension = extname(url).toLowerCase();
-      const { process: [defaultApp] = [] } =
-        extensions[extension as ExtensionType] || {};
+      const { process: [defaultApp] = [] } = extensions[extension] || {};
 
       setInitialApp(defaultApp || getDefaultFileViewer(extension));
     }
