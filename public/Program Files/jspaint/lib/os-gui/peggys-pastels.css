@@ -1,0 +1,49 @@
+/* Source: https://www.deviantart.com/tpenguinltg/art/Peggy-s-Pastels-505540096 */
+/* License: https://creativecommons.org/licenses/by-sa/3.0/ */
+/* This is a generated file. */
+:root {
+	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC");
+	--button-active-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22rgb(64%2C%2064%2C%2064)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22rgb(222%2C%2069%2C%2096)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22rgb(244%2C%20193%2C%20202)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	--button-normal-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22rgb(250%2C%20224%2C%20228)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22rgb(64%2C%2064%2C%2064)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22rgb(247%2C%20219%2C%20215)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22rgb(222%2C%2069%2C%2096)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22rgb(244%2C%20193%2C%20202)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	--inset-deep-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22rgb(64%2C%2064%2C%2064)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22rgb(250%2C%20224%2C%20228)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22rgb(222%2C%2069%2C%2096)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22rgb(247%2C%20219%2C%20215)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22rgb(244%2C%20193%2C%20202)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	--button-default-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22rgb(64%2C%2064%2C%2064)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22rgb(250%2C%20224%2C%20228)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h96v32h-64v64h-32v-96z%22%20fill%3D%22rgb(247%2C%20219%2C%20215)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M160%2064h32v128h-128v-32h96v-96z%22%20fill%3D%22rgb(222%2C%2069%2C%2096)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M96%2096h64v64h-64v-64z%22%20fill%3D%22rgb(244%2C%20193%2C%20202)%22%2F%3E%0A%09%09%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20stroke-width%3D%2264%22%20stroke%3D%22rgb(0%2C%200%2C%200)%22%20fill%3D%22none%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 96 / 3px;
+	--button-default-active-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22rgb(64%2C%2064%2C%2064)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22rgb(222%2C%2069%2C%2096)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22rgb(244%2C%20193%2C%20202)%22%2F%3E%0A%09%09%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20stroke-width%3D%2264%22%20stroke%3D%22rgb(0%2C%200%2C%200)%22%20fill%3D%22none%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	--scrollbar-arrows-ButtonText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	--scrollbar-arrows-GrayText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonHilight: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
+	--scrollbar-size: 13px;
+	--scrollbar-button-inner-size: 9px;
+	--Scrollbar: rgb(250, 224, 228);
+	--Background: rgb(162, 219, 210);
+	--ActiveTitle: rgb(0, 191, 188);
+	--InactiveTitle: rgb(0, 187, 169);
+	--Menu: rgb(244, 193, 202);
+	--Window: rgb(244, 255, 255);
+	--WindowFrame: rgb(0, 0, 0);
+	--MenuText: rgb(0, 0, 0);
+	--WindowText: rgb(0, 0, 0);
+	--TitleText: rgb(255, 255, 255);
+	--ActiveBorder: rgb(244, 193, 202);
+	--InactiveBorder: rgb(244, 193, 202);
+	--AppWorkspace: rgb(255, 184, 182);
+	--Hilight: rgb(162, 219, 210);
+	--HilightText: rgb(0, 0, 0);
+	--ButtonFace: rgb(244, 193, 202);
+	--ButtonShadow: rgb(222, 69, 96);
+	--GrayText: rgb(222, 69, 96);
+	--ButtonText: rgb(0, 0, 0);
+	--InactiveTitleText: rgb(0, 85, 77);
+	--ButtonHilight: rgb(250, 224, 228);
+	--ButtonDkShadow: rgb(64, 64, 64);
+	--ButtonLight: rgb(247, 219, 215);
+	--InfoText: rgb(0, 0, 0);
+	--InfoWindow: rgb(204, 255, 255);
+	--ButtonAlternateFace: rgb(181, 181, 181);
+	--HotTrackingColor: rgb(0, 128, 128);
+	--GradientActiveTitle: rgb(202, 156, 185);
+	--GradientInactiveTitle: rgb(236, 145, 162);
+	--MenuHilight: rgb(162, 219, 210);
+	--MenuBar: rgb(244, 193, 202);
+}
+
+/*# sourceMappingURL=peggys-pastels.css.map */

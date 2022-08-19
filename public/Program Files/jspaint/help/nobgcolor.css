@@ -1,0 +1,290 @@
+/* Originally: Cascading Style Sheet for IE4 build 1008+ */
+
+/* for scrollbars and selection color */
+@import "../lib/os-gui/windows-98.css";
+
+body {
+	font-size: 70%;
+	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+}
+
+#background-animation {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+#foreground-contents {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	margin-left: 35px;
+	margin-top: 10px;
+	overflow: auto;
+}
+#os-logo-link {
+	text-decoration: none;
+}
+#os-logo-colorbar {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 79px;
+	pointer-events: none;
+	border: 0;
+	height: 1px;
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff3100+0,ff3100+14,f7df1e+14,f7df1e+29,63ce30+29,63ce30+43,009cff+43,009cff+43 */
+	background: #ff3100; /* Old browsers */
+	background: -moz-linear-gradient(left, #ff3100 0%, #ff3100 14%, #f7df1e 14%, #f7df1e 29%, #63ce30 29%, #63ce30 43%, #009cff 43%, #009cff 43%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left, #ff3100 0%,#ff3100 14%,#f7df1e 14%,#f7df1e 29%,#63ce30 29%,#63ce30 43%,#009cff 43%,#009cff 43%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right, #ff3100 0%,#ff3100 14%,#f7df1e 14%,#f7df1e 29%,#63ce30 29%,#63ce30 43%,#009cff 43%,#009cff 43%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3100', endColorstr='#009cff',GradientType=1 ); /* IE6-9 */
+}
+
+a:link {
+	color: #0000CC;
+}
+
+a:active {
+	color: #996699;
+}
+
+a:visited {
+	color: #996699;
+}
+
+h1 {
+	font-size: 145%;
+	margin-bottom: .5em;
+}
+
+h2 {
+	font-size: 125%;
+	margin-top: 1.5em;
+	margin-bottom: .5em;
+}
+
+h3 {
+	font-size: 110%;
+	margin-top: 1.2em;
+	margin-bottom: .5em;
+}
+
+h4 {
+	font-size: 105%;
+}
+
+h5 {
+	font-size: 100%;
+}
+
+p.proclabel {
+	font-weight: bold;
+	font-size: 100%;
+}
+
+p {
+	margin-top: .6em;
+	margin-bottom: .6em;
+}
+
+li p {
+	margin-top: 0;
+	margin-bottom: .6em;
+}
+
+ol {
+	margin-top: .5em;
+	margin-bottom: 0em;
+	margin-left: 4em;
+}
+
+ul {
+	margin-top: .6em;
+	margin-bottom: 0em;
+}
+
+ol ul {
+	list-style: disc;
+	margin-top: 2em;
+}
+
+li {
+	padding-bottom: .7em;
+	margin-left: -2em;
+}
+
+dl ul {
+	/* list item inside a def/term */
+	margin-top: 2em;
+	margin-bottom: 0em;
+}
+
+dl {
+	margin-top: -1em;
+}
+
+ol dl {
+	/* term/def list inside a numbered list */
+	margin-top: -1.5em;
+	margin-left: 0em;
+}
+
+ol dl dl {
+	/* term/def list inside a term/def list */
+	margin-top: 0em;
+	margin-left: .2em;
+}
+
+dd {
+	margin-bottom: 0em;
+	/* not currently working */
+	margin-left: 1.5em;
+}
+
+dt {
+	padding-top: 2em;
+	font-weight: bold;
+	margin-left: 1.5em;
+}
+
+pre {
+	margin-top: 0em;
+	margin-bottom: 1.5em;
+	font-family: Courier;
+	font-size: 125%;
+}
+
+table {
+	font-size: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+th.center {
+	text-align: center;
+}
+
+th {
+	text-align: left;
+	background: #dddddd;
+	margin: 3pt;
+	vertical-align: bottom;
+}
+
+tr {
+	vertical-align: top;
+}
+
+td {
+	margin: 3pt;
+	vertical-align: top;
+}
+/*	MISC. TAGS	*/
+
+hr.sms {
+	/* SMS specific rule used under procedure title */
+	color: red;
+	text-align: left;
+}
+
+hr.iis {
+	color: red;
+}
+/*IIS specific - preceding copyright*/
+/* IE 4.0 TAGS */
+/*
+a:visited {
+	color: #0000FF;
+}
+*/
+
+p.dis {
+	font-size: 6pt;
+}
+
+ul.onestep {
+	list-style: square;
+}
+
+h5 {
+}
+
+h5.active {
+	background: #000000;
+	color: #FFCC99;
+}
+/* -- subheading -- */
+
+h5.subh {
+	color: #660000;
+	margin-bottom: -1em;
+	margin-top: 1.5em;
+}
+/* -- procedure heading -- */
+
+h5.proch {
+	margin-bottom: 4pt;
+	color: #003399;
+}
+
+/* -- topic heading -- */
+h5.topich {
+	color: #FF0033;
+	margin-bottom: -1em;
+}
+
+/* -- note 'n' tip heading -- */
+h5.note {
+	margin-top: 2em;
+	margin-bottom: -1em;
+	color: #99CC99;
+}
+
+/* -- related topics heading -- */
+h5.relh {
+	margin-top: 2.25em;
+	margin-bottom: -1em;
+	color: #9933CC;
+}
+
+/* -------------- miscellany 'n' stuff -------------- */
+/* intended to applied with <div></div> tags to groups of links */
+
+.dectree {
+	margin-left: 1.33em;
+	margin-top: 1.5em;
+}
+
+div.dectree p {
+	margin-top: 1em;
+	color: orange;
+}
+
+div.dectree p:first-letter {
+	font-size: 3em;
+	color: orange;
+}
+
+a:link .dectree p {
+	color: yellow;
+}
+
+.reltopics {
+	line-height: .5em;
+	margin-top: 2em;
+}
+
+div.reltopics p {
+	margin-top: 1em;
+}

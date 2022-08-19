@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   sodipodi:docname="question-32x32-8bpp.svg"
+   inkscape:version="1.1.1 (eb90963e84, 2021-10-02)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:zoom="13.675117"
+     inkscape:cx="10.530074"
+     inkscape:cy="11.151641"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:snap-smooth-nodes="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid827"
+       spacingx="0.5"
+       spacingy="0.5"
+       empspacing="8" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Speech Bubble Prototype Shapes"
+     style="display:none">
+    <ellipse
+       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       id="path999-3"
+       cx="15"
+       cy="12.5"
+       rx="14.5"
+       ry="12" />
+    <path
+       style="display:inline;fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       d="m 13.5,23 c 1,3 3,6 5,6.5 V 23 Z"
+       id="path1034-6"
+       sodipodi:nodetypes="cccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Speech Bubble"
+     style="display:inline">
+    <path
+       id="path999-7"
+       style="display:inline;fill:#808080;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       d="m 16.939453,2.556641 a 14.5,12 0 0 0 -14.5,12 A 14.5,12 0 0 0 16,26.5 c 1.087475,2.460493 2.762637,4.637437 4.439453,5.056641 v -5.380859 a 14.5,12 0 0 0 11,-11.619141 14.5,12 0 0 0 -14.5,-12 z" />
+    <path
+       id="path999"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       d="M 15,0.5 A 14.5,12 0 0 0 0.5,12.5 14.5,12 0 0 0 14.060547,24.443359 C 15.148022,26.903852 16.823184,29.080796 18.5,29.5 V 24.119141 A 14.5,12 0 0 0 29.5,12.5 14.5,12 0 0 0 15,0.5 Z" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g6267"
+     inkscape:label="? Prototype Shape"
+     style="display:none">
+    <circle
+       style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       id="circle6263"
+       cx="15"
+       cy="18"
+       r="1.5" />
+    <path
+       style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       d="m 10.5,8.5 c 0,0 0,-3 4,-3 4,0 5,1.5 5,3 0,0.8330882 -0.902849,1.581254 -2,2.5 -0.878302,0.735484 -2,1.610784 -2,2.5 v 1 h -1 v -1 c 0,-1 2,-3 2,-5 0,-2 -1.5,-3 -2.5,-3 -1,0 -2.5,1 -2.5,2 v 1 h 1 c 1.5,0 1,2 -0.5,2 -1,0 -1.5,-1 -1.5,-2 z"
+       id="path6265"
+       sodipodi:nodetypes="cssssccsssscssc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="?"
+     style="display:inline">
+    <circle
+       style="fill:#0000ff;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       id="path1810"
+       cx="15"
+       cy="18"
+       r="1.5" />
+    <g
+       id="path3791">
+      <path
+         style="color:#000000;fill:#0000ff;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+         d="m 10.5,8.5 c 0,0 0,-3 4,-3 4,0 5,1.5 5,3 0,0.8330882 -0.902849,1.581254 -2,2.5 -0.878302,0.735484 -2,1.610784 -2,2.5 v 1 h -1 v -1 c 0,-1 2,-3 2,-5 0,-2 -1.5,-3 -2.5,-3 -1,0 -2.5,1 -2.5,2 v 1 h 1 c 1.5,0 1,2 -0.5,2 -1,0 -1.5,-1 -1.5,-2 z"
+         id="path6486" />
+      <path
+         style="color:#000000;fill:#0000ff;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+         d="m 10,8.5 c 0,1.5 1,2.5 2,2.5 1,0 2,-1 2,-2 0,-1 -1,-1.5 -2,-1 0.0037,-1.1064607 0.5,-2 2,-2 1.5,0 2,1 2,2.5 0,1.5 -2,3.5 -2,5 v 1 c 2.8e-5,0.276131 0.223869,0.499972 0.5,0.5 h 1 c 0.276131,-2.8e-5 0.499972,-0.223869 0.5,-0.5 V 14 c 0,-1 0.908975,-1.924782 1.820312,-2.617187 C 18.731649,10.690408 20,10 20,8.5 20,5.5 17.5,5 15,5 12.5,5 10,6.5 10,8.5 Z"
+         id="path6488"
+         sodipodi:nodetypes="szzczzcccccczsss" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g8"
+     style="display:none;opacity:0.435845"
+     sodipodi:insensitive="true">
+    <image
+       width="32"
+       height="32"
+       preserveAspectRatio="none"
+       style="image-rendering:optimizeSpeed"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAElBMVEUAAACAgIDAwMD///8A
+AAAAAP/UN3Y9AAAAAXRSTlMAQObYZgAAAAFiS0dEAxEMTPIAAAAHdElNRQfkDAYLLDXCTQGFAAAA
+wUlEQVQoz12R0Q3DIAxEQcoAXNoFqiQLxM1/aJgglfdfpRjjgrD48eOMzdk5CQ8guBaYieiFli8k
+sRvxmmdSqx5k8VaB3DGz6E4TbMvBd5WUFzgfFuWpFZIVQNG5WcGuYA3aY7sP/pY+wZpurI1hQAU9
+WEZABmbqY4XOkWfXkoj619p1z0AfsTHEt6kricXIq/mBYtr0dyxWp1P1NKG66tNHRkhtFXhmUQS6
+ReAS0K3KZ9CvTqYZgLtGMI3AYQRewQ+hMkC13YCC1QAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMC0x
+Mi0wNlQxNjo0NDo1My0wNTowMFKJ2CQAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjAtMTItMDZUMTY6
+NDQ6NTMtMDU6MDAj1GCYAAAAInRFWHRmaWxlbmFtZTpteXNpemVhbmRkZXB0aAAzMngzMi04YnBw
+/VEVywAAAABJRU5ErkJggg==
+"
+       id="image3418"
+       x="0"
+       y="0" />
+  </g>
+</svg>

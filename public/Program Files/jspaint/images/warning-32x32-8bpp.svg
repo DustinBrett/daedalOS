@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   sodipodi:docname="warning-32x32-8bpp.svg"
+   inkscape:version="1.1.1 (eb90963e84, 2021-10-02)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:zoom="16.386533"
+     inkscape:cx="20.68772"
+     inkscape:cy="17.422844"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid860"
+       spacingx="0.5"
+       spacingy="0.5"
+       empspacing="8" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g8"
+     style="display:none">
+    <image
+       width="32"
+       height="32"
+       preserveAspectRatio="none"
+       style="image-rendering:optimizeSpeed"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAFVBMVEUAAACAgAD//wDAwMAA
+AACAgID////uPuK0AAAAAXRSTlMAQObYZgAAAAFiS0dEBmFmuH0AAAAHdElNRQfkDAYLLDZbRFA/
+AAAApUlEQVQoz12PwRHDIAwE4ZECwriBCCrIUEDiyH9/6L+VcMIgyfdjZ27FhSCJz+CT8se9I1E9
+b6A01yDKx+kBWdAbXdJuwErQcJJEld9G0hvMu5FcQCVpAJVcYElwVMCUAGwAU4Jf4OySABSmNUf+
+/frqHAH5p3NkCO06Z4ARAGlQxpUhGaDwPiXJAkiSrdACy9o8yB1EC2rr1o01B0BoNvjqw4LwB7hq
+PlTe+r15AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIwLTEyLTA2VDE2OjQ0OjU0LTA1OjAwly7mqgAA
+ACV0RVh0ZGF0ZTptb2RpZnkAMjAyMC0xMi0wNlQxNjo0NDo1NC0wNTowMOZzXhYAAAAidEVYdGZp
+bGVuYW1lOm15c2l6ZWFuZGRlcHRoADMyeDMyLThicHD9URXLAAAAAElFTkSuQmCC
+"
+       id="image10" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Vector"
+     style="display:inline">
+    <path
+       style="fill:#808080;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stop-color:#000000"
+       d="m 20.5,5.5 c 0.5,1 9,18 9,18 1,2 2,3 2,4.5 0,2 -1.478506,3.5 -3.5,3.5 H 7 C 4.8163106,31.5 3.5,30 3.5,28 c 0,-1.5 1,-2.5 2,-4.5 0,0 8.5,-17 9,-18 0.5,-1 1,-3 2.957838,-3 C 19.415676,2.5 20,4.5 20.5,5.5 Z"
+       id="path862-3"
+       sodipodi:nodetypes="zsssssczzz" />
+    <path
+       style="fill:#ffff00;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stop-color:#000000"
+       d="m 17.5,3.5 c 0.5,1 9,18 9,18 1,2 2,3 2,4.5 0,2 -1.478506,3.5 -3.5,3.5 H 4 C 1.8163106,29.5 0.5,28 0.5,26 c 0,-1.5 1,-2.5 2,-4.5 0,0 8.5,-17 9,-18 0.5,-1 1,-3 2.957838,-3 C 16.415676,0.5 17,2.5 17.5,3.5 Z"
+       id="path862"
+       sodipodi:nodetypes="zsssssczzz" />
+    <path
+       style="fill:none;stroke:#808000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stop-color:#000000"
+       d="M 2.5054995,29.223713 C 1.2303463,28.702091 0.5,27.489756 0.5,26 c 0,-1.5 1,-2.5 2,-4.5 l 9,-18 c 0.5,-1 1,-3 2.957838,-3 0.400419,0 0.743385,0.0836577 1.039928,0.22530834"
+       id="path862-6"
+       sodipodi:nodetypes="csczsc" />
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stop-color:#000000"
+       d="m 14.5,21 c 0,0 -4.5,-12 0,-12 4.5,0 0,12 0,12 z"
+       id="path10551" />
+    <circle
+       style="fill:#000000;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stop-color:#000000"
+       id="path10575"
+       cx="14.5"
+       cy="24"
+       r="1.5" />
+  </g>
+</svg>

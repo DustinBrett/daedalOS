@@ -1,0 +1,555 @@
+@import "../../lib/os-gui/windows-98.css";
+/* @import "../../lib/os-gui/windows-default.css"; */
+/* @import "../../lib/os-gui/peggys-pastels.css"; */
+
+:root {
+	--theme-loaded: "classic.css";
+}
+
+/* .compare-reference is added to <body> when "compare-reference" is in the URL hash. */
+.compare-reference::after {
+	content: url("../../images/mspaint-win98-reference.png");
+	position: fixed;
+	top: -23px;
+	left: -4px;
+	z-index: 10000;
+	opacity: 0.5;
+	/* opacity: attr(data-reference-opacity); not supported */
+	transition: opacity 0.5s;
+}
+.compare-reference[data-reference-opacity="0"]::after { opacity: 0; }
+.compare-reference[data-reference-opacity="0.1"]::after { opacity: 0.1; }
+.compare-reference[data-reference-opacity="0.2"]::after { opacity: 0.2; }
+.compare-reference[data-reference-opacity="0.3"]::after { opacity: 0.3; }
+.compare-reference[data-reference-opacity="0.4"]::after { opacity: 0.4; }
+.compare-reference[data-reference-opacity="0.5"]::after { opacity: 0.5; }
+.compare-reference[data-reference-opacity="0.6"]::after { opacity: 0.6; }
+.compare-reference[data-reference-opacity="0.7"]::after { opacity: 0.7; }
+.compare-reference[data-reference-opacity="0.8"]::after { opacity: 0.8; }
+.compare-reference[data-reference-opacity="0.9"]::after { opacity: 0.9; }
+.compare-reference[data-reference-opacity="1"]::after { opacity: 1; }
+
+.compare-reference-tool-windows::after {
+	content: url("../../images/mspaint-win98-reference-tool-windows.png");
+}
+.compare-reference {
+	width: calc(567px - 4px - 4px);
+	height: calc(402px - 23px - 4px);
+	background: var(--Background);
+}
+
+.jspaint {
+	background: var(--ButtonFace);
+}
+body,
+.canvas-area {
+	background: var(--AppWorkspace);
+}
+.canvas-area > canvas {
+	background: var(--checker);
+	/* 16px is a common grid size, but that gives 8px grid cells, and our max zoom is 8x */
+	/*background-size: 16px;*/
+	background-size: 8px;
+}
+
+/* Show images as pixelated if at pixel-perfect scales. */
+/* WET for vendor prefixes (for Safari) */
+@media (resolution: 1x), (resolution: 2x), (min-resolution: 3x) {
+	* {
+		image-rendering: -moz-crisp-edges;
+		image-rendering: crisp-edges;
+		image-rendering: pixelated;
+	}
+}
+@media (-webkit-device-pixel-ratio: 1), (-webkit-device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3) {
+	* {
+		image-rendering: -moz-crisp-edges;
+		image-rendering: crisp-edges;
+		image-rendering: pixelated;
+	}
+}
+
+.disable-aa-for-things-at-main-canvas-scale .main-canvas,
+.disable-aa-for-things-at-main-canvas-scale .selection canvas {
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
+.thumbnail-img {
+	/* these scale down, so nearest neighbor scaling looks bad */
+	image-rendering: auto;
+}
+
+.selection:after,
+.textbox:after {
+	content: '';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	outline: 1px dashed black;
+	box-shadow: 0 0 0 1px white;
+}
+.canvas-area .handle {
+	background: var(--Hilight);
+}
+.canvas-area .useless-handle {
+	background: var(--HilightText); /* @TODO: --ButtonHilight? --Window? */
+	box-shadow: 1px 1px 0 var(--Hilight) inset;
+}
+.resize-ghost {
+	/* this isn't quite the right inversion effect, but I think it's the best I can do;
+	white makes it invisible over the classic theme's dark gray background;
+	it's supposed to be lighter over the dark gray background, but I can only make it darker */
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
+}
+
+.status-area {
+	gap: 2px;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+	color: var(--ButtonText);
+	padding-top: 2px;
+}
+.status-field {
+	height: 21px;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+}
+
+.text-toolbar-button-group button:not(:first-child) {
+	margin-left: 0;
+}
+.text-toolbar-button-group button:not(:last-child) {
+	margin-right: 0;
+}
+
+.tool-options {
+	border: 1px solid var(--ButtonHilight);
+	border-top-color: var(--ButtonShadow);
+	border-left-color: var(--ButtonShadow);
+}
+.tool {
+	margin: 0;
+	padding: 0;
+	width: 25px;
+	height: 25px;
+	border: 0;
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	background: transparent;
+	outline: 0;
+}
+.tool:before {
+	content: " ";
+	position: absolute;
+	z-index: 1;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid var(--ButtonHilight);
+	border-left: 1px solid var(--ButtonHilight);
+	border-right: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid var(--ButtonShadow);
+}
+.tool:hover:active {
+	padding: 1px;
+	background: transparent !important;
+}
+.tool:hover:active,
+.tool.selected {
+	padding-bottom: 2px;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid var(--ButtonDkShadow);
+	border-left: 1px solid var(--ButtonDkShadow);
+	border-right: 1px solid var(--ButtonHilight);
+	border-bottom: 1px solid var(--ButtonHilight);
+}
+.tool:hover:active:before,
+.tool.selected:before {
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid var(--ButtonShadow);
+	border-left: 1px solid var(--ButtonShadow);
+	border-right: 1px solid var(--ButtonFace);
+	border-bottom: 1px solid var(--ButtonFace);
+}
+.tool.selected,
+.current-colors {
+	background: var(--checker);
+}
+.tool-icon {
+	background-image: url("../../images/classic/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0;
+}
+.tool-icon.use-svg {
+	background-image: url("../../images/classic/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
+
+.tools {
+	height: 200px;
+	width: 50px;
+}
+
+
+.current-colors {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.color-selection {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border-top: 1px solid var(--ButtonHilight);
+	border-left: 1px solid var(--ButtonHilight);
+	border-right: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid var(--ButtonShadow);
+}
+.color-selection:after {
+	content: '';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	/* @TODO: ButtonAlternateFace? */
+	border: 1px solid var(--ButtonFace);
+}
+.current-colors,
+.color-button {
+	border-top: 1px solid var(--ButtonShadow);
+	border-left: 1px solid var(--ButtonShadow);
+	/* @TODO: var(--ButtonAlternateFace)? */
+	border-right: 1px solid var(--ButtonFace);
+	border-bottom: 1px solid var(--ButtonFace);
+	/*box-shadow: 1px 1px 0px var(--ButtonDkShadow) inset;*/
+}
+.swatch:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+.color-selection:before {
+	left: 1px;
+	top: 1px;
+	right: 1px;
+	bottom: 1px;
+}
+.color-button:before,
+.current-colors:before,
+.swatch.pattern:before {
+	border-left: 1px solid var(--ButtonDkShadow);
+	border-top: 1px solid var(--ButtonDkShadow);
+}
+.swatch.pattern:before {
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+}
+.current-colors:after,
+.color-button:after {
+	content: '';
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	right: -2px;
+	bottom: -2px;
+	border-right: 1px solid var(--ButtonHilight);
+	border-bottom: 1px solid var(--ButtonHilight);
+}
+
+.vertical > .component-area::before,
+.vertical > .component-area::after {
+	position: absolute;
+	left: 0;
+	right: 0;
+	border-top: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid var(--ButtonHilight);
+	z-index: 0;
+}
+.vertical > .component-area::before {
+	content: '';
+	top: -2px;
+}
+.vertical > .component-area:not(:empty)::after {
+	content: '';
+	bottom: 0;
+}
+.vertical > .top.component-area::before {
+	top: -1px; /* hm, this is a one pixel change, and the tool buttons are supposed to be tucked in by 1px... may be related? */
+}
+.canvas-area {
+	z-index: 1;
+}
+
+.component-ghost.dock {
+	/* this isn't quite the right inversion effect, but I think it's the best I can do;
+	white makes it invisible over the classic theme's dark gray background;
+	it's supposed to be lighter over the dark gray background, but I can only make it darker */
+	outline: 1px solid #ccc;
+	mix-blend-mode: difference;
+}
+.component-ghost:not(.dock) {
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
+}
+.component-ghost:not(.dock):after,
+.component-ghost:not(.dock):before,
+/* @TODO: thicker resize ghost (4px instead of 3px) */
+.resize-ghost.thick:after,
+.resize-ghost.thick:before {
+	content: '';
+	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+	outline: 1px dotted #ccc;
+}
+.component-ghost:not(.dock):after,
+.resize-ghost.thick:after {
+	outline-offset: 1px;
+}
+.component-ghost:not(.dock):before,
+.resize-ghost.thick:before {
+	outline-offset: 2px;
+}
+
+.font-box .toggle:enabled > .icon {
+	-webkit-mask-image: url("../../images/text-tools.png");
+	-webkit-mask-position: calc(-16px * var(--icon-index)) 0;
+	mask-image: url("../../images/text-tools.png");
+	mask-position: calc(-16px * var(--icon-index)) 0;
+	background-color: currentColor;
+}
+.font-box .toggle:disabled > .icon {
+	background-image: url("../../images/text-tools.png");
+	background-position: calc(-16px * var(--icon-index)) 0;
+	filter: saturate(0%) opacity(50%); /* fallback */
+	filter: url("#disabled-inset-filter-2");
+}
+
+.tool-window .window-titlebar {
+	font-size: 12px;
+	height: 15px;
+}
+.tool-window .window-title {
+	padding-left: 2px;
+}
+.tool-window .window-close-button {
+	width: 13px;
+	height: 11px;
+	background-position: 8px 0;
+}
+.tool-window .window-close-button:hover:active {
+	background-position: 9px 1px;
+}
+.tool-window .window-titlebar button {
+	margin: 2px;
+}
+.window-content {
+	font-family: Arial, sans-serif;
+	font-size: 16px;
+	color: var(--WindowText);
+}
+
+.help-window .item {
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+	padding: 0 2px;
+	position: relative; /* for ::after */
+}
+.help-window .item:hover {
+	text-decoration: underline;
+	color: #0000FF;
+	cursor: pointer;
+}
+.help-window li:before {
+	background-image: url("../../images/help-icons.png");
+}
+.help-window:not(.focused) .item.selected {
+	background-color: var(--ButtonFace);
+	color: var(--ButtonText); /* ?? */
+}
+.help-window.focused .item.selected {
+	background-color: var(--Hilight);
+	color: var(--HilightText);
+	/* @TODO: separate focus state of the item */
+	outline: 1px dotted black;
+	outline-offset: -1px;
+}
+/* @TODO: separate focus state of the item; while mouse down, the main highlight does not move with the arrow keys but this does, among other differences */
+/* .help-window.focused .item.selected::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px dotted white;
+	mix-blend-mode: difference;
+} */
+
+.history-view {
+	background: var(--Window);
+	color: var(--WindowText);
+}
+
+.magnification-option {
+	background-image: url("../../images/options-magnification.png");
+}
+.magnification-option.use-svg {
+	background-image: url("../../images/options-magnification.svg");
+}
+.transparent-mode-option {
+	background-image: url("../../images/classic/options-transparency.png");
+}
+.transparent-mode-option.use-svg {
+	background-image: url("../../images/classic/options-transparency.svg");
+}
+
+.eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
+	background: url(../../images/classic/undo.svg);
+}
+.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+	background: url(../../images/classic/eye-gaze-pause.svg);
+}
+.eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
+	background: url(../../images/classic/eye-gaze-unpause.svg);
+}
+
+input[type=text]:not(.inset-deep),
+input[type=url]:not(.inset-deep),
+input[type=number]:not(.inset-deep) {
+	border: 1px solid gray;
+}
+input[type=text],
+input[type=url],
+input[type=search],
+input[type=number],
+input[type=text].inset-deep, /* overriding background */
+input[type=url].inset-deep,
+input[type=search].inset-deep,
+input[type=number].inset-deep,
+select.inset-deep {
+	background-color: var(--Window);
+	color: var(--WindowText);
+	/* @TODO: should controls be styled by default, or need .inset-deep or similar? */
+	/* border-image: var(--inset-deep-border-image); */
+}
+
+/* @XXX: using inset-deep to mean "thematic" */
+input[type=text].inset-deep,
+input[type=url].inset-deep,
+input[type=search].inset-deep,
+input[type=number].inset-deep,
+select.inset-deep {
+	outline: none;
+}
+
+input[type=text]:disabled,
+input[type=url]:disabled,
+input[type=search]:disabled,
+input[type=number]:disabled {
+	background: var(--ButtonFace);
+	color: var(--GrayText);
+}
+
+input[type=number].no-spinner::-webkit-inner-spin-button,
+input[type=number].no-spinner::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type=number].no-spinner {
+	-moz-appearance: textfield;
+}
+
+input:disabled + label {
+	color: var(--GrayText);
+}
+
+/*
+Will need a wrapper element or ideally an accessible stylable replacement for the select element for further styling.
+Can't use option:hover, or option::after, or select::after, among other things.
+*/
+/* @XXX: using inset-deep to mean "thematic" */
+select.inset-deep {
+	/* taken from 98.css: https://jdan.github.io/98.css/ */
+	/* padding-right and background-position are in layout.css for RTL support (@TODO: RTL theme CSS too) */
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%23DFDFDF'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='gray'/%3E%3Cpath fill='silver' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23000'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-sizing: border-box;
+	height: 21px;
+	outline: none;
+}
+select.inset-deep:focus:not(:active) {
+	color: var(--HilightText);
+	background-color: var(--Hilight);
+}
+select.inset-deep option {
+	background-color: var(--Window);
+	color: var(--WindowText);
+}
+
+/* input:invalid {
+	box-shadow: 0 0 0 2px red;
+} */
+.partial-url-label {
+	opacity: 0.6;
+}
+
+/* @XXX: using .inset-deep to mean "thematic" */
+/* @TODO: show percentage on progress bar, white (HilightText) where it overlaps the Hilight */
+progress[value].inset-deep {
+	display: block;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-color: var(--ButtonFace);
+	position: relative;
+}
+progress[value].inset-deep::-webkit-progress-value { 
+	background: var(--Hilight);
+}
+progress[value].inset-deep::-moz-progress-bar { 
+	background: var(--Hilight);
+}
+
+summary {
+	padding: 0;
+}
+summary:focus {
+	outline: 1px dotted var(--ButtonText);
+}
+summary:hover > span {
+	text-decoration: underline;
+	color: #0000FF;
+}
+summary::marker {
+	color: var(--ButtonText);
+	content: "►";
+	text-decoration: none;
+}
+details[open] > summary::marker {
+	color: var(--ButtonText);
+	content: "▼";
+	text-decoration: none;
+}
+
+/* For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar. */
+/* Code in layout.css adds a spacer to the top of the page, and this styles it with the title bar gradient. */
+.jspaint::before {
+	background: linear-gradient(to left, var(--ActiveTitle), var(--GradientActiveTitle));
+}

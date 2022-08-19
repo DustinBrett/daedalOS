@@ -146,6 +146,17 @@ const directory: Processes = {
     libs: ["/Program Files/PDF.js/pdf.js"],
     title: "PDF",
   },
+  Paint: {
+    Component: dynamic(() => import("components/apps/Paint")),
+    background: "#808080",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/paint.webp",
+    libs: ["Program Files/jspaint/index.html"],
+    title: "Paint",
+  },
   Photos: {
     Component: dynamic(() => import("components/apps/Photos")),
     background: "#222",

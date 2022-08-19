@@ -1,0 +1,108 @@
+.menus,
+.menu-popup,
+.os-window,
+.os-window .window-titlebar,
+.os-window .window-title {
+	cursor: default;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+}
+
+.os-window {
+	contain: layout; /* contain: paint; seems to clip children to the padding-box, including for interaction, not just painting; it breaks being able to grab resize handles over the border */
+	/* overflow: hidden; is also not usable for the same reason */
+	/* I might be able to do either with overflow-clip-margin however (@TODO) */
+	display: flex;
+	flex-direction: column;
+	/* will-change: width height left top; */
+}
+.window-content {
+	flex: 1;
+	min-height: 0px;
+	/* Text overflowing the window frame is really ugly!
+	overflow: hidden; would make it harder to enable scrollbars (overflow: auto !important)
+	We want to allow scrollbars to be enabled easily (but not enable them),
+	and we want to clip to the border of the window, without contents overlapping the border at all. */
+    contain: layout paint;
+}
+
+.os-window .window-titlebar,
+body > .window-titlebar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	white-space: nowrap;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+.os-window .window-title-area {
+	position: relative;
+	flex: 1;
+}
+
+.os-window .window-titlebar .icon {
+	vertical-align: bottom;
+}
+
+.os-window.maximized .handle,
+.os-window.minimized-without-taskbar .handle {
+	display: none; /* prevent resizing when window is minimized */
+}
+
+/* Fix dragging things (like windows) over iframes */
+.dragging iframe {
+	pointer-events: none;
+}
+
+.menus {
+	display: flex;
+	flex: 0 0 auto;
+	flex-wrap: wrap;
+}
+.menu-popup {
+	position: absolute;
+	box-sizing: border-box;
+}
+.menu-popup-table {
+	border-collapse: collapse;
+}
+.menu-button,
+.menu-item {
+	white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    /* text-overflow: ellipsis; might imply a dialog */
+}
+.menu-hr {
+	display: block !important;
+	height: 0;
+	width: auto;
+}
+.menu-hotkey {
+	display: inline !important;
+}
+.menu-item-checkbox-area,
+.menu-item-submenu-area {
+	min-width: 16px;
+}
+.menu-item-checkbox-area,
+.menu-item-submenu-area {
+	text-align: center;
+}
+
+/* .window-content .button-group {
+	width: 85px;
+}
+.window-content .button-group > button {
+	width: 95%;
+	padding: 3px 5px;
+} */
+
+::before,
+::after {
+	pointer-events: none;
+}
+
+/*# sourceMappingURL=layout.css.map */

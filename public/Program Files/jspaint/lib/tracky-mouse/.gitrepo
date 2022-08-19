@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/1j01/tracky-mouse.git
+	branch = main
+	commit = e98eac3faf5dc3df970e6c548308ea844d57894a
+	parent = b7385e95e06810359715d3831aaba99aca1b394b
+	method = merge
+	cmdver = 0.4.3

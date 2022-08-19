@@ -1,0 +1,28 @@
+.tracky-mouse-pointer {
+	z-index: 900000;
+    pointer-events: none;
+	border-radius: 50%;
+	background-color: red;
+	width: 20px;
+	height: 20px;
+	position: fixed;
+	transform: translate(-50%, -50%);
+}
+.tracky-mouse-ui {
+	background-color: rgb(195, 173, 230);
+	color: black;
+	padding: 10px;
+	border-radius: 5px;
+	max-width: 600px;
+}
+.tracky-mouse-canvas {
+	width: 100%;
+	background-color: rgba(15, 0, 20, 0.5);
+}
+.tracky-mouse-ui label {
+	display: block;
+}
+.tracky-mouse-ui .label-text {
+	display: inline-block;
+	min-width: 150px;
+}

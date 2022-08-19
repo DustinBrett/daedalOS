@@ -61,6 +61,20 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".xbm",
 ]);
 
+export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
+  ".bmp",
+  ".gif",
+  ".ico",
+  ".jfif",
+  ".jpe",
+  ".jpeg",
+  ".jpg",
+  ".png",
+  ".tif",
+  ".tiff",
+  ".webp",
+]);
+
 export const PHOTO_ICON = "/System/Icons/photo.webp";
 
 export const INVALID_FILE_CHARACTERS = /["*/:<>?\\|]/g;
@@ -167,6 +181,8 @@ export const PREVENT_SCROLL = { preventScroll: true };
 export const PROCESS_DELIMITER = "__";
 
 export const SAVE_PATH = `${HOME}/Snapshots`;
+
+export const PICUTRES_PATH = `${HOME}/Pictures`;
 
 export const SHORTCUT_APPEND = " - Shortcut";
 

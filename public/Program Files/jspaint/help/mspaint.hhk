@@ -1,0 +1,1553 @@
+<HTML>
+<HEAD>
+<!-- Sitemap 1.0 -->
+</HEAD>
+<BODY>
+<OBJECT type="text/site properties">
+              <param name="FrameName" value="current">
+</OBJECT>
+
+<UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="adding custom colors">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="airbrush tool">
+              <param name="Name" value="To create an airbrush effect">
+              <param name="Local" value="paint_airbrush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="angles">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="arcs">
+              <param name="Name" value="To draw a curve">
+              <param name="Local" value="paint_curves.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="attributes">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="background (desktop)">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="background color">
+              <param name="Name" value="To set the default foreground and background colors">
+              <param name="Local" value="paint_set_default_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="bitmap view">
+              <param name="Name" value="To enlarge the size of the viewing area">
+              <param name="Local" value="paint_enlarge_area.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="bitmaps">
+              <param name="Name" value="To insert a bitmap into the current picture">
+              <param name="Local" value="paint_insert_file.html">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="black and white">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="blank picture">
+              <param name="Name" value="To clear an entire image">
+              <param name="Local" value="paint_clear_image.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="borders">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="boxes">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="brush">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="buttons, see tools">
+              <param name="See Also" value="tools">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="can of paint">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="canceling actions">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="centered wallpaper">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="centimeters">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="changes, undoing">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="changing colors">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              <param name="Name" value="To set the default foreground and background colors">
+              <param name="Local" value="paint_set_default_colors.html">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="circles">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="clearing">
+              <param name="Name" value="To clear an entire image">
+              <param name="Local" value="paint_clear_image.html">
+              <param name="Name" value="To erase a large area">
+              <param name="Local" value="paint_erase_large.html">
+              <param name="Name" value="To erase a small area">
+              <param name="Local" value="paint_erase_small.html">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="color box">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              <param name="Name" value="To show or hide the color box">
+              <param name="Local" value="paint_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="colors">
+<param name="Name" value="To change the color of an existing line">
+<param name="Local" value="paint_change_color.html">
+<param name="Name" value="To copy color from one area or object to another">
+<param name="Local" value="paint_not_in_color_box.html">
+<param name="Name" value="To fill an area or object with color">
+<param name="Local" value="paint_fill.html">
+<param name="Name" value="To invert all the colors in a picture">
+<param name="Local" value="paint_invert.html">
+<param name="Name" value="To set the default foreground and background colors">
+<param name="Local" value="paint_set_default_colors.html">
+<param name="Name" value="To use black and white instead of color">
+<param name="Local" value="paint_blackwhite.html">
+<param name="Name" value="To create custom colors">
+<param name="Local" value="paint_custom_colors.html">
+<param name="Name" value="To erase a large area">
+<param name="Local" value="paint_erase_large.html">
+<param name="Name" value="To erase a small area">
+<param name="Local" value="paint_erase_small.html">
+<param name="Name" value="To draw a polygon">
+<param name="Local" value="paint_polygons.html">
+<param name="Name" value="To draw a rectangle or square">
+<param name="Local" value="paint_rectangles.html">
+<param name="Name" value="To draw an ellipse or circle">
+<param name="Local" value="paint_ovals.html">
+<param name="Name" value="To draw a curve">
+<param name="Local" value="paint_curves.html">
+<param name="Name" value="To draw a free-form line">
+<param name="Local" value="paint_freeform_lines.html">
+<param name="Name" value="To draw a straight line">
+<param name="Local" value="paint_lines.html">
+<param name="Name" value="To create an airbrush effect">
+<param name="Local" value="paint_airbrush.html">
+<param name="Name" value="To paint with a brush">
+<param name="Local" value="paint_brush.html">
+<param name="Name" value="To type and format text">
+<param name="Local" value="paint_text.html">
+   <UL>
+                 <param name="Name" value="To use black and white instead of color">
+                 <param name="Local" value="paint_blackwhite.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="black and white">
+                 <param name="Name" value="To use black and white instead of color">
+                 <param name="Local" value="paint_blackwhite.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="changing">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To copy color from one area or object to another">
+                 <param name="Local" value="paint_not_in_color_box.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 <param name="Name" value="To invert all the colors in a picture">
+                 <param name="Local" value="paint_invert.html">
+                 <param name="Name" value="To set the default foreground and background colors">
+                 <param name="Local" value="paint_set_default_colors.html">
+                 <param name="Name" value="To use black and white instead of color">
+                 <param name="Local" value="paint_blackwhite.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="complementary">
+                 <param name="Name" value="To invert all the colors in a picture">
+                 <param name="Local" value="paint_invert.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="copying">
+                 <param name="Name" value="To copy color from one area or object to another">
+                 <param name="Local" value="paint_not_in_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="custom">
+                 <param name="Name" value="To create custom colors">
+                 <param name="Local" value="paint_custom_colors.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="erasing">
+                 <param name="Name" value="To erase a large area">
+                 <param name="Local" value="paint_erase_large.html">
+                 <param name="Name" value="To erase a small area">
+                 <param name="Local" value="paint_erase_small.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="filling">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To copy color from one area or object to another">
+                 <param name="Local" value="paint_not_in_color_box.html">
+                 <param name="Name" value="To draw a polygon">
+                 <param name="Local" value="paint_polygons.html">
+                 <param name="Name" value="To draw a rectangle or square">
+                 <param name="Local" value="paint_rectangles.html">
+                 <param name="Name" value="To draw an ellipse or circle">
+                 <param name="Local" value="paint_ovals.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="inverting">
+                 <param name="Name" value="To invert all the colors in a picture">
+                 <param name="Local" value="paint_invert.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="lines">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To draw a curve">
+                 <param name="Local" value="paint_curves.html">
+                 <param name="Name" value="To draw a free-form line">
+                 <param name="Local" value="paint_freeform_lines.html">
+                 <param name="Name" value="To draw a straight line">
+                 <param name="Local" value="paint_lines.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="painting">
+                 <param name="Name" value="To create an airbrush effect">
+                 <param name="Local" value="paint_airbrush.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 <param name="Name" value="To paint with a brush">
+                 <param name="Local" value="paint_brush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="shapes">
+                 <param name="Name" value="To draw a polygon">
+                 <param name="Local" value="paint_polygons.html">
+                 <param name="Name" value="To draw a rectangle or square">
+                 <param name="Local" value="paint_rectangles.html">
+                 <param name="Name" value="To draw an ellipse or circle">
+                 <param name="Local" value="paint_ovals.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="text">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="complementary colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="converting colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="copying colors">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="copying selections">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              <param name="Name" value="To save part of a picture into another bitmap file">
+              <param name="Local" value="paint_cutout_save.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="creating custom colors">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="cropping pictures">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="curves">
+              <param name="Name" value="To draw a curve">
+              <param name="Local" value="paint_curves.html">
+              <param name="Name" value="To draw a free-form line">
+              <param name="Local" value="paint_freeform_lines.html">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="custom colors">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="cutouts, see selections">
+              <param name="See Also" value="selections">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="defaults">
+              <param name="Name" value="To set the default foreground and background colors">
+              <param name="Local" value="paint_set_default_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="defining custom colors">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="desktop background">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="displaying">
+<param name="Name" value="To display grid lines">
+<param name="Local" value="paint_grid.html">
+<param name="Name" value="To zoom in or out of a picture">
+<param name="Local" value="paint_zoom.html">
+<param name="Name" value="To type and format text">
+<param name="Local" value="paint_text.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="color box">
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="grid lines">
+                 <param name="Name" value="To display grid lines">
+                 <param name="Local" value="paint_grid.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="pixels">
+                 <param name="Name" value="To display grid lines">
+                 <param name="Local" value="paint_grid.html">
+                 <param name="Name" value="To zoom in or out of a picture">
+                 <param name="Local" value="paint_zoom.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="text toolbar">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="dragging">
+<param name="Name" value="To copy and paste part of a picture">
+<param name="Local" value="paint_cutout_copy_move.html">
+<param name="Name" value="To insert a bitmap into the current picture">
+<param name="Local" value="paint_insert_file.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="color box">
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="selections">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="Draw Opaque command">
+              <param name="Name" value="To specify transparent or opaque drawing">
+              <param name="Local" value="paint_trans_opaque.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="drawing">
+<param name="Name" value="To draw a curve">
+<param name="Local" value="paint_curves.html">
+<param name="Name" value="To draw a free-form line">
+<param name="Local" value="paint_freeform_lines.html">
+<param name="Name" value="To paint with a brush">
+<param name="Local" value="paint_brush.html">
+<param name="Name" value="To change the color of an existing line">
+<param name="Local" value="paint_change_color.html">
+<param name="Name" value="To draw a straight line">
+<param name="Local" value="paint_lines.html">
+<param name="Name" value="To draw a polygon">
+<param name="Local" value="paint_polygons.html">
+<param name="Name" value="To draw a rectangle or square">
+<param name="Local" value="paint_rectangles.html">
+<param name="Name" value="To draw an ellipse or circle">
+<param name="Local" value="paint_ovals.html">
+<param name="Name" value="To fill an area or object with color">
+<param name="Local" value="paint_fill.html">
+<param name="Name" value="To specify transparent or opaque drawing">
+<param name="Local" value="paint_trans_opaque.html">
+   <UL>
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="(see also tools)">
+                 <param name="See Also" value="tools">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="curves">
+                 <param name="Name" value="To draw a curve">
+                 <param name="Local" value="paint_curves.html">
+                 <param name="Name" value="To draw a free-form line">
+                 <param name="Local" value="paint_freeform_lines.html">
+                 <param name="Name" value="To paint with a brush">
+                 <param name="Local" value="paint_brush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="lines">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To draw a free-form line">
+                 <param name="Local" value="paint_freeform_lines.html">
+                 <param name="Name" value="To draw a straight line">
+                 <param name="Local" value="paint_lines.html">
+                 <param name="Name" value="To paint with a brush">
+                 <param name="Local" value="paint_brush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="shapes">
+                 <param name="Name" value="To draw a polygon">
+                 <param name="Local" value="paint_polygons.html">
+                 <param name="Name" value="To draw a rectangle or square">
+                 <param name="Local" value="paint_rectangles.html">
+                 <param name="Name" value="To draw an ellipse or circle">
+                 <param name="Local" value="paint_ovals.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="transparent vs. opaque">
+                 <param name="Name" value="To specify transparent or opaque drawing">
+                 <param name="Local" value="paint_trans_opaque.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="dropper tool">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="ellipses">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="enlarging pictures">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              <param name="Name" value="To enlarge the size of the viewing area">
+              <param name="Local" value="paint_enlarge_area.html">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              <param name="Name" value="To zoom in or out of a picture">
+              <param name="Local" value="paint_zoom.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="enlarging text">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="erasing">
+              <param name="Name" value="To clear an entire image">
+              <param name="Local" value="paint_clear_image.html">
+              <param name="Name" value="To erase a large area">
+              <param name="Local" value="paint_erase_large.html">
+              <param name="Name" value="To erase a small area">
+              <param name="Local" value="paint_erase_small.html">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="errors, undoing">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="eye dropper tool">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="filling">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="flipping pictures">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="fonts">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="foreground color">
+              <param name="Name" value="To set the default foreground and background colors">
+              <param name="Local" value="paint_set_default_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="formatting text">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="free-form lines">
+              <param name="Name" value="To draw a free-form line">
+              <param name="Local" value="paint_freeform_lines.html">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="free-form selection">
+              <param name="Name" value="To select part of a picture">
+              <param name="Local" value="paint_cutout_select.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="getting colors">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="greyscale">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="grid lines">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="height, picture">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="hiding">
+<param name="Name" value="To enlarge the size of the viewing area">
+<param name="Local" value="paint_enlarge_area.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="color box">
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="status bar">
+                 <param name="Name" value="To enlarge the size of the viewing area">
+                 <param name="Local" value="paint_enlarge_area.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="hue">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="image attributes">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="images, see pictures">
+              <param name="See Also" value="pictures">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="inches">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="inkwell">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="inserting">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              <param name="Name" value="To insert a bitmap into the current picture">
+              <param name="Local" value="paint_insert_file.html">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="inverting colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="inverting pictures">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="landscape orientation">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="layout">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="lines">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To draw a curve">
+              <param name="Local" value="paint_curves.html">
+              <param name="Name" value="To draw a free-form line">
+              <param name="Local" value="paint_freeform_lines.html">
+              <param name="Name" value="To draw a straight line">
+              <param name="Local" value="paint_lines.html">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="luminescence">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="magnifying">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              <param name="Name" value="To zoom in or out of a picture">
+              <param name="Local" value="paint_zoom.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="mapping colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="margins">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="mistakes, undoing">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="monochrome">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="moving">
+<param name="Name" value="To copy and paste part of a picture">
+<param name="Local" value="paint_cutout_copy_move.html">
+<param name="Name" value="To insert a bitmap into the current picture">
+<param name="Local" value="paint_insert_file.html">
+<param name="Name" value="To type and format text">
+<param name="Local" value="paint_text.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="color box">
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="selections">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="text">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="multiple copies">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="opaque">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              <param name="Name" value="To specify transparent or opaque drawing">
+              <param name="Local" value="paint_trans_opaque.html">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="orientation">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="outlines">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="ovals">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="page setup">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="paint brush">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="paint can">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="painting">
+              <param name="Name" value="To change the color of an existing line">
+              <param name="Local" value="paint_change_color.html">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              <param name="Name" value="To create an airbrush effect">
+              <param name="Local" value="paint_airbrush.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="palette">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              <param name="Name" value="To show or hide the color box">
+              <param name="Local" value="paint_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="paper size">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="parts of pictures, see selections">
+              <param name="See Also" value="selections">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="pasting selections">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              <param name="Name" value="To insert a bitmap into the current picture">
+              <param name="Local" value="paint_insert_file.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="pencil tool">
+              <param name="Name" value="To draw a free-form line">
+              <param name="Local" value="paint_freeform_lines.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="picking up colors">
+              <param name="Name" value="To copy color from one area or object to another">
+              <param name="Local" value="paint_not_in_color_box.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="pictures">
+<param name="Name" value="To clear an entire image">
+<param name="Local" value="paint_clear_image.html">
+<param name="Name" value="To print a picture">
+<param name="Local" value="paint_print.html">
+<param name="Name" value="To change the size of your picture">
+<param name="Local" value="paint_change_size.html">
+<param name="Name" value="To enlarge the size of the viewing area">
+<param name="Local" value="paint_enlarge_area.html">
+<param name="Name" value="To display grid lines">
+<param name="Local" value="paint_grid.html">
+<param name="Name" value="To zoom in or out of a picture">
+<param name="Local" value="paint_zoom.html">
+   <UL>
+                 <param name="Name" value="To use a picture as the desktop background">
+                 <param name="Local" value="paint_wallpaper.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="as desktop background">
+                 <param name="Name" value="To use a picture as the desktop background">
+                 <param name="Local" value="paint_wallpaper.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="clearing">
+                 <param name="Name" value="To clear an entire image">
+                 <param name="Local" value="paint_clear_image.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="printing">
+                 <param name="Name" value="To print a picture">
+                 <param name="Local" value="paint_print.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="sizing">
+                 <param name="Name" value="To change the size of your picture">
+                 <param name="Local" value="paint_change_size.html">
+                 <param name="Name" value="To enlarge the size of the viewing area">
+                 <param name="Local" value="paint_enlarge_area.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="zooming">
+                 <param name="Name" value="To display grid lines">
+                 <param name="Local" value="paint_grid.html">
+                 <param name="Name" value="To zoom in or out of a picture">
+                 <param name="Local" value="paint_zoom.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="pixels">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              <param name="Name" value="To zoom in or out of a picture">
+              <param name="Local" value="paint_zoom.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="point size">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="polygons">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="portrait orientation">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="previewing before printing">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="printing">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="rectangles">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="removing color">
+              <param name="Name" value="To erase a large area">
+              <param name="Local" value="paint_erase_large.html">
+              <param name="Name" value="To erase a small area">
+              <param name="Local" value="paint_erase_small.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="removing grid lines">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="resizing pictures">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="reversing colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="reverting">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="rotating pictures">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="round shapes">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="saturation">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="saving colors">
+              <param name="Name" value="To create custom colors">
+              <param name="Local" value="paint_custom_colors.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="saving selections">
+              <param name="Name" value="To save part of a picture into another bitmap file">
+              <param name="Local" value="paint_cutout_save.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="selections">
+<param name="Name" value="To erase a small area">
+<param name="Local" value="paint_erase_small.html">
+<param name="Name" value="To copy and paste part of a picture">
+<param name="Local" value="paint_cutout_copy_move.html">
+<param name="Name" value="To insert a bitmap into the current picture">
+<param name="Local" value="paint_insert_file.html">
+<param name="Name" value="To save part of a picture into another bitmap file">
+<param name="Local" value="paint_cutout_save.html">
+<param name="Name" value="To flip or rotate a picture or object">
+<param name="Local" value="paint_flip_picture.html">
+<param name="Name" value="To stretch or skew an item">
+<param name="Local" value="paint_skew_picture.html">
+<param name="Name" value="To select part of a picture">
+<param name="Local" value="paint_cutout_select.html">
+   <UL>
+                 <param name="Name" value="To erase a large area">
+                 <param name="Local" value="paint_erase_large.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="clearing">
+                 <param name="Name" value="To erase a large area">
+                 <param name="Local" value="paint_erase_large.html">
+                 <param name="Name" value="To erase a small area">
+                 <param name="Local" value="paint_erase_small.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="copying">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 <param name="Name" value="To save part of a picture into another bitmap file">
+                 <param name="Local" value="paint_cutout_save.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="flipping">
+                 <param name="Name" value="To flip or rotate a picture or object">
+                 <param name="Local" value="paint_flip_picture.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="moving">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="pasting">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="rotating">
+                 <param name="Name" value="To flip or rotate a picture or object">
+                 <param name="Local" value="paint_flip_picture.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="saving">
+                 <param name="Name" value="To save part of a picture into another bitmap file">
+                 <param name="Local" value="paint_cutout_save.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="skewing">
+                 <param name="Name" value="To stretch or skew an item">
+                 <param name="Local" value="paint_skew_picture.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="stretching">
+                 <param name="Name" value="To stretch or skew an item">
+                 <param name="Local" value="paint_skew_picture.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="tools">
+                 <param name="Name" value="To select part of a picture">
+                 <param name="Local" value="paint_cutout_select.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="setting wallpaper">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="setup, page">
+              <param name="Name" value="To print a picture">
+              <param name="Local" value="paint_print.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="shapes">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              <param name="Name" value="To draw an ellipse or circle">
+              <param name="Local" value="paint_ovals.html">
+              <param name="Name" value="To fill an area or object with color">
+              <param name="Local" value="paint_fill.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="showing">
+<param name="Name" value="To display grid lines">
+<param name="Local" value="paint_grid.html">
+<param name="Name" value="To zoom in or out of a picture">
+<param name="Local" value="paint_zoom.html">
+<param name="Name" value="To type and format text">
+<param name="Local" value="paint_text.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="color box">
+                 <param name="Name" value="To show or hide the color box">
+                 <param name="Local" value="paint_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="grid lines">
+                 <param name="Name" value="To display grid lines">
+                 <param name="Local" value="paint_grid.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="pixels">
+                 <param name="Name" value="To display grid lines">
+                 <param name="Local" value="paint_grid.html">
+                 <param name="Name" value="To zoom in or out of a picture">
+                 <param name="Local" value="paint_zoom.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="text toolbar">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="shrinking pictures">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="sizing">
+<param name="Name" value="To change the size of your picture">
+<param name="Local" value="paint_change_size.html">
+<param name="Name" value="To enlarge the size of the viewing area">
+<param name="Local" value="paint_enlarge_area.html">
+   <UL>
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="fonts">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="pictures">
+                 <param name="Name" value="To change the size of your picture">
+                 <param name="Local" value="paint_change_size.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="viewing area">
+                 <param name="Name" value="To enlarge the size of the viewing area">
+                 <param name="Local" value="paint_enlarge_area.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="skewing pictures">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="spray can">
+              <param name="Name" value="To create an airbrush effect">
+              <param name="Local" value="paint_airbrush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="squares">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="starting over">
+              <param name="Name" value="To clear an entire image">
+              <param name="Local" value="paint_clear_image.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="status bar, hiding">
+              <param name="Name" value="To enlarge the size of the viewing area">
+              <param name="Local" value="paint_enlarge_area.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="straight lines">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              <param name="Name" value="To draw a rectangle or square">
+              <param name="Local" value="paint_rectangles.html">
+              <param name="Name" value="To draw a straight line">
+              <param name="Local" value="paint_lines.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="stretching pictures">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="switching to black and white">
+              <param name="Name" value="To use black and white instead of color">
+              <param name="Local" value="paint_blackwhite.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="switching to complementary colors">
+              <param name="Name" value="To invert all the colors in a picture">
+              <param name="Local" value="paint_invert.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="text">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="text toolbar">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="thickness, line">
+              <param name="Name" value="To draw a curve">
+              <param name="Local" value="paint_curves.html">
+              <param name="Name" value="To draw a free-form line">
+              <param name="Local" value="paint_freeform_lines.html">
+              <param name="Name" value="To draw a straight line">
+              <param name="Local" value="paint_lines.html">
+              <param name="Name" value="To paint with a brush">
+              <param name="Local" value="paint_brush.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="tiled wallpaper">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="tilting pictures">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="toolbar, text">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="toolbox">
+              <param name="Name" value="To show or hide the toolbox">
+              <param name="Local" value="paint_toolbox.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="tools">
+<param name="Name" value="To create an airbrush effect">
+<param name="Local" value="paint_airbrush.html">
+<param name="Name" value="To draw a curve">
+<param name="Local" value="paint_curves.html">
+<param name="Name" value="To erase a small area">
+<param name="Local" value="paint_erase_small.html">
+<param name="Name" value="To copy color from one area or object to another">
+<param name="Local" value="paint_not_in_color_box.html">
+<param name="Name" value="To change the color of an existing line">
+<param name="Local" value="paint_change_color.html">
+<param name="Name" value="To fill an area or object with color">
+<param name="Local" value="paint_fill.html">
+<param name="Name" value="To paint with a brush">
+<param name="Local" value="paint_brush.html">
+<param name="Name" value="To draw a free-form line">
+<param name="Local" value="paint_freeform_lines.html">
+<param name="Name" value="To copy and paste part of a picture">
+<param name="Local" value="paint_cutout_copy_move.html">
+<param name="Name" value="To erase a large area">
+<param name="Local" value="paint_erase_large.html">
+<param name="Name" value="To flip or rotate a picture or object">
+<param name="Local" value="paint_flip_picture.html">
+<param name="Name" value="To insert a bitmap into the current picture">
+<param name="Local" value="paint_insert_file.html">
+<param name="Name" value="To save part of a picture into another bitmap file">
+<param name="Local" value="paint_cutout_save.html">
+<param name="Name" value="To select part of a picture">
+<param name="Local" value="paint_cutout_select.html">
+<param name="Name" value="To stretch or skew an item">
+<param name="Local" value="paint_skew_picture.html">
+<param name="Name" value="To draw a polygon">
+<param name="Local" value="paint_polygons.html">
+<param name="Name" value="To draw a rectangle or square">
+<param name="Local" value="paint_rectangles.html">
+<param name="Name" value="To draw an ellipse or circle">
+<param name="Local" value="paint_ovals.html">
+<param name="Name" value="To draw a straight line">
+<param name="Local" value="paint_lines.html">
+<param name="Name" value="To type and format text">
+<param name="Local" value="paint_text.html">
+<param name="Name" value="To show or hide the toolbox">
+<param name="Local" value="paint_toolbox.html">
+   <UL>
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="A">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="airbrush">
+                 <param name="Name" value="To create an airbrush effect">
+                 <param name="Local" value="paint_airbrush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="curved line">
+                 <param name="Name" value="To draw a curve">
+                 <param name="Local" value="paint_curves.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="eraser">
+                 <param name="Name" value="To erase a small area">
+                 <param name="Local" value="paint_erase_small.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="eye dropper">
+                 <param name="Name" value="To copy color from one area or object to another">
+                 <param name="Local" value="paint_not_in_color_box.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="inkwell">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="paint brush">
+                 <param name="Name" value="To paint with a brush">
+                 <param name="Local" value="paint_brush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="paint can">
+                 <param name="Name" value="To change the color of an existing line">
+                 <param name="Local" value="paint_change_color.html">
+                 <param name="Name" value="To fill an area or object with color">
+                 <param name="Local" value="paint_fill.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="pencil">
+                 <param name="Name" value="To draw a free-form line">
+                 <param name="Local" value="paint_freeform_lines.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="selection">
+                 <param name="Name" value="To copy and paste part of a picture">
+                 <param name="Local" value="paint_cutout_copy_move.html">
+                 <param name="Name" value="To erase a large area">
+                 <param name="Local" value="paint_erase_large.html">
+                 <param name="Name" value="To flip or rotate a picture or object">
+                 <param name="Local" value="paint_flip_picture.html">
+                 <param name="Name" value="To insert a bitmap into the current picture">
+                 <param name="Local" value="paint_insert_file.html">
+                 <param name="Name" value="To save part of a picture into another bitmap file">
+                 <param name="Local" value="paint_cutout_save.html">
+                 <param name="Name" value="To select part of a picture">
+                 <param name="Local" value="paint_cutout_select.html">
+                 <param name="Name" value="To stretch or skew an item">
+                 <param name="Local" value="paint_skew_picture.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="shapes">
+                 <param name="Name" value="To draw a polygon">
+                 <param name="Local" value="paint_polygons.html">
+                 <param name="Name" value="To draw a rectangle or square">
+                 <param name="Local" value="paint_rectangles.html">
+                 <param name="Name" value="To draw an ellipse or circle">
+                 <param name="Local" value="paint_ovals.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="spray can">
+                 <param name="Name" value="To create an airbrush effect">
+                 <param name="Local" value="paint_airbrush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="straight line">
+                 <param name="Name" value="To draw a straight line">
+                 <param name="Local" value="paint_lines.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="text">
+                 <param name="Name" value="To type and format text">
+                 <param name="Local" value="paint_text.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="toolbox">
+                 <param name="Name" value="To show or hide the toolbox">
+                 <param name="Local" value="paint_toolbox.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="transparent">
+              <param name="Name" value="To copy and paste part of a picture">
+              <param name="Local" value="paint_cutout_copy_move.html">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              <param name="Name" value="To specify transparent or opaque drawing">
+              <param name="Local" value="paint_trans_opaque.html">
+              <param name="Name" value="To stretch or skew an item">
+              <param name="Local" value="paint_skew_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="triangles">
+              <param name="Name" value="To draw a polygon">
+              <param name="Local" value="paint_polygons.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="turning pictures">
+              <param name="Name" value="To flip or rotate a picture or object">
+              <param name="Local" value="paint_flip_picture.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="typestyles">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="typing text">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="undoing changes">
+              <param name="Name" value="To undo changes">
+              <param name="Local" value="paint_undo.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="units of measurement">
+              <param name="Name" value="To change the size of your picture">
+              <param name="Local" value="paint_change_size.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="view options">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              <param name="Name" value="To enlarge the size of the viewing area">
+              <param name="Local" value="paint_enlarge_area.html">
+              <param name="Name" value="To show or hide the color box">
+              <param name="Local" value="paint_color_box.html">
+              <param name="Name" value="To show or hide the toolbox">
+              <param name="Local" value="paint_toolbox.html">
+              <param name="Name" value="To type and format text">
+              <param name="Local" value="paint_text.html">
+              <param name="Name" value="To zoom in or out of a picture">
+              <param name="Local" value="paint_zoom.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="wallpaper">
+              <param name="Name" value="To use a picture as the desktop background">
+              <param name="Local" value="paint_wallpaper.html">
+              </OBJECT>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="width">
+<param name="Name" value="To draw a free-form line">
+<param name="Local" value="paint_freeform_lines.html">
+<param name="Name" value="To draw a straight line">
+<param name="Local" value="paint_lines.html">
+<param name="Name" value="To paint with a brush">
+<param name="Local" value="paint_brush.html">
+<param name="Name" value="To change the size of your picture">
+<param name="Local" value="paint_change_size.html">
+   <UL>
+                 <param name="Name" value="To draw a curve">
+                 <param name="Local" value="paint_curves.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="line">
+                 <param name="Name" value="To draw a curve">
+                 <param name="Local" value="paint_curves.html">
+                 <param name="Name" value="To draw a free-form line">
+                 <param name="Local" value="paint_freeform_lines.html">
+                 <param name="Name" value="To draw a straight line">
+                 <param name="Local" value="paint_lines.html">
+                 <param name="Name" value="To paint with a brush">
+                 <param name="Local" value="paint_brush.html">
+                 </OBJECT>
+   <LI><OBJECT type="Text/sitemap">
+                 <param name="Name" value="picture">
+                 <param name="Name" value="To change the size of your picture">
+                 <param name="Local" value="paint_change_size.html">
+                 </OBJECT>
+   </UL>
+<LI><OBJECT type="Text/sitemap">
+              <param name="Name" value="zooming">
+              <param name="Name" value="To display grid lines">
+              <param name="Local" value="paint_grid.html">
+              <param name="Name" value="To enlarge the size of the viewing area">
+              <param name="Local" value="paint_enlarge_area.html">
+              <param name="Name" value="To zoom in or out of a picture">
+              <param name="Local" value="paint_zoom.html">
+</OBJECT>
+</LI>
+</UL>
+</HEAD>
+</HTML>

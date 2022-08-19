@@ -1,4 +1,3 @@
-import type { ExtensionType } from "components/system/Files/FileEntry/extensions";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
@@ -20,6 +19,7 @@ import { useCallback } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
+  EDITABLE_IMAGE_FILE_EXTENSIONS,
   EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
   isFileSystemSupported,
@@ -80,9 +80,7 @@ const useFileContextMenu = (
   const getItems = useCallback(() => {
     const urlExtension = extname(url).toLowerCase();
     const { process: extensionProcesses = [] } =
-      urlExtension in extensions
-        ? extensions[urlExtension as ExtensionType]
-        : {};
+      urlExtension in extensions ? extensions[urlExtension] : {};
     const openWith = extensionProcesses.filter((process) => process !== pid);
     const openWithFiltered = openWith.filter((id) => id !== pid);
     const absoluteEntries = (): string[] =>
@@ -366,6 +364,15 @@ const useFileContextMenu = (
       menuItems.push(MENU_SEPERATOR, {
         action: () => unMapFs(path),
         label: "Disconnect",
+      });
+    }
+
+    if (EDITABLE_IMAGE_FILE_EXTENSIONS.has(urlExtension)) {
+      menuItems.unshift({
+        action: () => {
+          open("Paint", { url });
+        },
+        label: "Edit",
       });
     }
 

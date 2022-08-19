@@ -1,3 +1,5 @@
+import { EDITABLE_IMAGE_FILE_EXTENSIONS } from "utils/constants";
+
 type Extension = {
   command?: string;
   icon?: string;
@@ -26,6 +28,10 @@ const types = {
   FutureSplash: {
     process: ["Ruffle"],
     type: "FutureSplash File",
+  },
+  GraphicsEditor: {
+    process: ["Photos", "Paint"],
+    type: "Picture File",
   },
   HtmlDocument: {
     process: ["Browser", ...TEXT_EDITORS],
@@ -105,7 +111,7 @@ const types = {
   },
 };
 
-const extensions = {
+const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
   ".exe": types.Application,
   ".gen": types.SegaGenesisRom,
@@ -133,6 +139,10 @@ const extensions = {
   ".zip": types.ZipFile,
 };
 
+EDITABLE_IMAGE_FILE_EXTENSIONS.forEach((extension) => {
+  extensions[extension] = types.GraphicsEditor;
+});
+
 export type ExtensionType = keyof typeof extensions;
 
-export default extensions as Record<ExtensionType, Extension>;
+export default extensions;
