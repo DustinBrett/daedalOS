@@ -216,6 +216,7 @@ export const calcGridDropPosition = (
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     .getPropertyValue("grid-template-rows")
     .split(" ");
   const gridTemplateColumns = gridComputedStyle
@@ -280,17 +281,48 @@ export const calcGridPositionOffset = (
   url: string,
   targetUrl: string,
   currentIconPositions: IconPositions,
-  gridDropPosition: IconPosition
-): IconPosition => ({
-  gridColumnStart:
-    currentIconPositions[url].gridColumnStart +
-    (gridDropPosition.gridColumnStart -
-      currentIconPositions[targetUrl].gridColumnStart),
-  gridRowStart:
-    currentIconPositions[url].gridRowStart +
-    (gridDropPosition.gridRowStart -
-      currentIconPositions[targetUrl].gridRowStart),
-});
+  gridDropPosition: IconPosition,
+  [, ...draggedEntries]: string[],
+  gridElement: HTMLElement
+): IconPosition => {
+  if (currentIconPositions[url] && currentIconPositions[targetUrl]) {
+    return {
+      gridColumnStart:
+        currentIconPositions[url].gridColumnStart +
+        (gridDropPosition.gridColumnStart -
+          currentIconPositions[targetUrl].gridColumnStart),
+      gridRowStart:
+        currentIconPositions[url].gridRowStart +
+        (gridDropPosition.gridRowStart -
+          currentIconPositions[targetUrl].gridRowStart),
+    };
+  }
+
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue("grid-template-rows")
+    .split(" ").length;
+  const {
+    gridColumnStart: targetGridColumnStart,
+    gridRowStart: targetGridRowStart,
+  } = gridDropPosition;
+  const gridRowStart =
+    targetGridRowStart + draggedEntries.indexOf(basename(url)) + 1;
+
+  return gridRowStart > gridTemplateRowCount
+    ? {
+        gridColumnStart:
+          targetGridColumnStart +
+          Math.ceil(gridRowStart / gridTemplateRowCount) -
+          1,
+        gridRowStart:
+          gridRowStart % gridTemplateRowCount || gridTemplateRowCount,
+      }
+    : {
+        gridColumnStart: targetGridColumnStart,
+        gridRowStart,
+      };
+};
 
 export const updateIconPositions = (
   directory: string,
@@ -332,7 +364,9 @@ export const updateIconPositions = (
                   url,
                   targetUrl,
                   currentIconPositions,
-                  gridDropPosition
+                  gridDropPosition,
+                  draggedEntries,
+                  gridElement
                 ),
           ];
         })

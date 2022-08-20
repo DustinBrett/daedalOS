@@ -91,6 +91,7 @@ const FileManager: FC<FileManagerProps> = ({
   const fileDrop = useFileDrop({
     callback: folderActions.newPath,
     directory: url,
+    updatePositions: allowMovingDraggableEntries,
   });
   const folderContextMenu = useFolderContextMenu(url, folderActions, isDesktop);
   const loading = (!hideLoading && isLoading) || url !== currentUrl;
