@@ -9,7 +9,10 @@ import { HOME, MP3_MIME_TYPE } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
 import type { Track, URLTrack } from "webamp";
 
-const BROKEN_PRESETS = new Set(["Flexi - alien fish pond"]);
+const BROKEN_PRESETS = new Set([
+  "Flexi - alien fish pond",
+  "Geiss - Spiral Artifact",
+]);
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
 
