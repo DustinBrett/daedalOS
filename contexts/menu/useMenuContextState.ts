@@ -51,7 +51,7 @@ const useMenuContextState = (): MenuContextState => {
         let y = 0;
 
         if (event) {
-          event.preventDefault();
+          if (event.cancelable) event.preventDefault();
 
           ({ pageX: x, pageY: y } =
             "touches" in event ? event.touches.item(0) : event);

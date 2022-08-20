@@ -408,8 +408,10 @@ export const isSafari = (): boolean =>
 export const haltEvent = (
   event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
 ): void => {
-  event.preventDefault();
-  event.stopPropagation();
+  if (event.cancelable) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
 };
 
 export const createOffscreenCanvas = (
