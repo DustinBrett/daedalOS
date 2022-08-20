@@ -1,4 +1,6 @@
+import StyledPaint from "components/apps/Paint/StyledPaint";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -148,15 +150,19 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   }, [jsPaintInstance, prependFileToTitle, readFile, url]);
 
   return (
-    <iframe
-      ref={iframeRef}
-      height="100%"
-      id="jspaint-iframe"
-      onLoad={() => setLoaded(true)}
-      src={paintSrc}
-      title={id}
-      width="100%"
-    />
+    <StyledPaint>
+      {!loaded && <StyledLoading className="loading" />}
+      <iframe
+        ref={iframeRef}
+        height="100%"
+        id="jspaint-iframe"
+        onLoad={() => setLoaded(true)}
+        src={paintSrc}
+        style={{ opacity: loaded ? 1 : 0 }}
+        title={id}
+        width="100%"
+      />
+    </StyledPaint>
   );
 };
 
