@@ -55,6 +55,7 @@ const useCommandInterpreter = (
   localEcho?: LocalEcho
 ): React.MutableRefObject<CommandInterpreter> => {
   const {
+    createPath,
     deletePath,
     exists,
     fs,
@@ -67,7 +68,6 @@ const useCommandInterpreter = (
     rootFs,
     stat,
     updateFolder,
-    writeFile,
   } = useFileSystem();
   const {
     closeWithTransition,
@@ -204,13 +204,19 @@ const useCommandInterpreter = (
           if (await exists(fullSourcePath)) {
             if (destination) {
               const fullDestinationPath = getFullPath(destination);
+              const dirName = dirname(fullDestinationPath);
 
-              await writeFile(
-                fullDestinationPath,
-                await readFile(fullSourcePath)
+              updateFile(
+                join(
+                  dirName,
+                  await createPath(
+                    basename(fullDestinationPath),
+                    dirName,
+                    await readFile(fullSourcePath)
+                  )
+                )
               );
               localEcho?.println("\t1 file(s) copied.");
-              updateFile(fullDestinationPath);
             } else {
               localEcho?.println("The file cannot be copied onto itself.");
               localEcho?.println("\t0 file(s) copied.");
@@ -385,10 +391,11 @@ const useCommandInterpreter = (
               );
 
               if (newName && newData) {
-                const newPath = join(dirname(fullPath), newName);
+                const dirName = dirname(fullPath);
 
-                await writeFile(newPath, newData);
-                updateFile(newPath);
+                updateFile(
+                  join(dirName, await createPath(newName, dirName, newData))
+                );
               }
             } else {
               localEcho?.println(FILE_NOT_FILE);
@@ -574,9 +581,14 @@ const useCommandInterpreter = (
 
           if (file) {
             const fullPath = getFullPath(file);
+            const dirName = dirname(fullPath);
 
-            await writeFile(fullPath, Buffer.from(""));
-            updateFile(fullPath);
+            updateFile(
+              join(
+                dirName,
+                await createPath(basename(fullPath), dirName, Buffer.from(""))
+              )
+            );
           }
           break;
         }
@@ -637,17 +649,22 @@ const useCommandInterpreter = (
               (await exists(fullPath)) &&
               !(await lstat(fullPath)).isDirectory()
             ) {
-              const newFilePath = `${dirname(fullPath)}/${basename(
-                file,
-                extname(file)
-              )}.${format}`;
               const workBook = await convertSheet(
                 await readFile(fullPath),
                 format
               );
+              const dirName = dirname(fullPath);
 
-              await writeFile(newFilePath, Buffer.from(workBook));
-              updateFile(newFilePath);
+              updateFile(
+                join(
+                  dirName,
+                  await createPath(
+                    `${basename(file, extname(file))}.${format}`,
+                    dirName,
+                    Buffer.from(workBook)
+                  )
+                )
+              );
             } else {
               localEcho?.println(FILE_NOT_FILE);
             }
@@ -694,6 +711,7 @@ const useCommandInterpreter = (
       cd,
       changeTitle,
       closeWithTransition,
+      createPath,
       deletePath,
       exists,
       fs,
@@ -713,7 +731,6 @@ const useCommandInterpreter = (
       terminal,
       updateFile,
       updateFolder,
-      writeFile,
     ]
   );
   const commandInterpreterRef = useRef<CommandInterpreter>(commandInterpreter);
