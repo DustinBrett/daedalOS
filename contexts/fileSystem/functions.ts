@@ -198,6 +198,8 @@ export const requestPermission = async (
 
 export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
   new Promise((resolve, reject) => {
+    setTimeout(reject, 1000);
+
     window.localStorage.clear();
     window.sessionStorage.clear();
 
