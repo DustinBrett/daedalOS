@@ -126,6 +126,7 @@ export const EXTRACTABLE_EXTENSIONS = new Set([
   ".ods",
   ".odt",
   ".ova",
+  ".pages",
   ".pkg",
   ".ppt",
   ".qcow",
