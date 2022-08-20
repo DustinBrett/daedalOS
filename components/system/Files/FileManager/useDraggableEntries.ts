@@ -1,15 +1,11 @@
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useSession } from "contexts/session";
-import type { IconPosition } from "contexts/session/types";
 import { join } from "path";
+import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
-import {
-  calcGridDropPosition,
-  calcGridPositionOffset,
-  updateIconPositionsIfEmpty,
-} from "utils/functions";
+import { updateIconPositions } from "utils/functions";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -44,54 +40,15 @@ const useDraggableEntries = (
     (entryUrl: string): React.DragEventHandler =>
     () => {
       if (allowMoving && focusedEntries.length > 0) {
-        const currentIconPositions = updateIconPositionsIfEmpty(
+        updateIconPositions(
           entryUrl,
           fileManagerRef.current,
           iconPositions,
-          sortOrders
+          sortOrders,
+          dragPositionRef.current,
+          focusedEntries,
+          setIconPositions
         );
-        const gridDropPosition = calcGridDropPosition(
-          fileManagerRef.current,
-          dragPositionRef.current
-        );
-
-        if (
-          !Object.values(currentIconPositions).some(
-            ({ gridColumnStart, gridRowStart }) =>
-              gridColumnStart === gridDropPosition.gridColumnStart &&
-              gridRowStart === gridDropPosition.gridRowStart
-          )
-        ) {
-          const targetUrl = join(entryUrl, focusedEntries[0]);
-          const newIconPositions = Object.fromEntries(
-            focusedEntries
-              .map<[string, IconPosition]>((entryFile) => {
-                const url = join(entryUrl, entryFile);
-
-                return [
-                  url,
-                  url === targetUrl
-                    ? gridDropPosition
-                    : calcGridPositionOffset(
-                        url,
-                        targetUrl,
-                        currentIconPositions,
-                        gridDropPosition
-                      ),
-                ];
-              })
-              .filter(
-                ([, { gridColumnStart, gridRowStart }]) =>
-                  gridColumnStart >= 1 && gridRowStart >= 1
-              )
-          );
-
-          setIconPositions({
-            ...currentIconPositions,
-            ...newIconPositions,
-          });
-        }
-
         fileManagerRef.current?.removeEventListener("dragover", onDragging);
       } else if (dropIndex !== -1) {
         setSortOrder(entryUrl, (currentSortOrders) => {

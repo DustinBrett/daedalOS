@@ -292,6 +292,63 @@ export const calcGridPositionOffset = (
       currentIconPositions[targetUrl].gridRowStart),
 });
 
+export const updateIconPositions = (
+  directory: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders,
+  dragPosition: DragPosition,
+  draggedEntries: string[],
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>
+): void => {
+  if (!gridElement) return;
+
+  const currentIconPositions = updateIconPositionsIfEmpty(
+    directory,
+    gridElement,
+    iconPositions,
+    sortOrders
+  );
+  const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
+
+  if (
+    !Object.values(currentIconPositions).some(
+      ({ gridColumnStart, gridRowStart }) =>
+        gridColumnStart === gridDropPosition.gridColumnStart &&
+        gridRowStart === gridDropPosition.gridRowStart
+    )
+  ) {
+    const targetUrl = join(directory, draggedEntries[0]);
+    const newIconPositions = Object.fromEntries(
+      draggedEntries
+        .map<[string, IconPosition]>((entryFile) => {
+          const url = join(directory, entryFile);
+
+          return [
+            url,
+            url === targetUrl
+              ? gridDropPosition
+              : calcGridPositionOffset(
+                  url,
+                  targetUrl,
+                  currentIconPositions,
+                  gridDropPosition
+                ),
+          ];
+        })
+        .filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            gridColumnStart >= 1 && gridRowStart >= 1
+        )
+    );
+
+    setIconPositions({
+      ...currentIconPositions,
+      ...newIconPositions,
+    });
+  }
+};
+
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&
   Boolean(

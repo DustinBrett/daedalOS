@@ -190,6 +190,23 @@ const createFileReaders = async (
 
 export type InputChangeEvent = Event & { target: HTMLInputElement };
 
+type EventData = {
+  files: DataTransferItemList | FileList | never[];
+  text?: string;
+};
+
+export const getEventData = (
+  event: InputChangeEvent | never[] | React.DragEvent
+): EventData => {
+  const files =
+    (event as InputChangeEvent).target?.files ||
+    (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
+    [];
+  const text = (event as React.DragEvent).dataTransfer?.getData("text");
+
+  return { files, text };
+};
+
 export const handleFileInputEvent = (
   event: InputChangeEvent | React.DragEvent,
   callback: (
@@ -202,17 +219,13 @@ export const handleFileInputEvent = (
 ): void => {
   haltEvent(event);
 
-  const files =
-    (event as InputChangeEvent).target?.files ||
-    (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
-    [];
-  const dragText = (event as React.DragEvent).dataTransfer?.getData("text");
+  const { files, text } = getEventData(event);
 
-  if (!dragText) {
+  if (!text) {
     createFileReaders(files, directory, callback).then(openTransferDialog);
   } else {
     try {
-      const filePaths = JSON.parse(dragText || "[]") as string[];
+      const filePaths = JSON.parse(text || "[]") as string[];
 
       filePaths?.forEach(
         (path) =>
