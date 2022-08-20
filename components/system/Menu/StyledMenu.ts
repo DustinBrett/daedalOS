@@ -56,6 +56,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         place-items: center;
         position: relative;
         top: -1px;
+        white-space: nowrap;
         width: max-content;
 
         &.primary {
