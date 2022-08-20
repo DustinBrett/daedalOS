@@ -147,7 +147,7 @@ const Run: FC<ComponentProcessProps> = () => {
   useEffect(() => {
     if (runProcess?.url && inputRef.current) {
       inputRef.current.value = `${inputRef.current.value.trimEnd()} ${
-        runProcess.url.includes(" ") ? `"${runProcess.url}"` : runProcess.url
+        runProcess.url
       }`.trim();
       setIsEmptyInput(false);
     }
