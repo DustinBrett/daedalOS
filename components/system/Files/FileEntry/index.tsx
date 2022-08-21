@@ -295,7 +295,10 @@ const FileEntry: FC<FileEntryProps> = ({
             }
           }
         } else if (getIcon) {
-          const cachedIconPath = join(ICON_CACHE, `${path}.cache`);
+          const cachedIconPath = join(
+            ICON_CACHE,
+            `${path}.${stats.mtime.getTime()}.cache`
+          );
 
           if (await exists(cachedIconPath)) {
             isIconCached.current = true;
