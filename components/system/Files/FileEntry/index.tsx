@@ -40,6 +40,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
+  SMALLEST_PNG_SIZE,
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -131,6 +132,7 @@ const FileEntry: FC<FileEntryProps> = ({
     pasteList,
     readFile,
     stat,
+    unlink,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -306,7 +308,19 @@ const FileEntry: FC<FileEntryProps> = ({
 
             const cachedIconData = await readFile(cachedIconPath);
 
-            setInfo((info) => ({ ...info, icon: bufferToUrl(cachedIconData) }));
+            if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
+              setInfo((info) => ({
+                ...info,
+                icon: bufferToUrl(cachedIconData),
+              }));
+            } else {
+              try {
+                await unlink(cachedIconPath);
+                updateFolder(dirname(path));
+              } catch {
+                // Ignore issues deleting bad cached icon
+              }
+            }
           } else if (!isDynamicIconLoaded.current && buttonRef.current) {
             isDynamicIconLoaded.current = true;
             new IntersectionObserver(
@@ -336,6 +350,7 @@ const FileEntry: FC<FileEntryProps> = ({
     readFile,
     setInfo,
     stats.mtime,
+    unlink,
     updateFolder,
     url,
     urlExt,

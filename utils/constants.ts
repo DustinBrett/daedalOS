@@ -14,6 +14,8 @@ export const THIN_SCROLLBAR_WIDTH = 13;
 
 export const BASE_CLOCK_WIDTH = 66;
 
+export const SMALLEST_PNG_SIZE = 51;
+
 export const DEFAULT_WINDOW_SIZE: Size = {
   height: 300,
   width: 405,
