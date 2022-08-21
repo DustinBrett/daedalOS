@@ -13,12 +13,25 @@ const IGNORE_FILES = new Set([
   "search.lunr.json",
   "sitemap.xml",
 ]);
-const IGNORE_PATHS = ["Program Files", "System", "Users/Public/Icons"];
+const IGNORE_PATHS = [
+  ".index",
+  "Program Files",
+  "System",
+  "Users/Public/Icons",
+];
 
 const indexData = [];
 
 const createSearchIndex = (path) => {
   readdirSync(path).forEach((entry) => {
+    if (
+      IGNORE_PATHS.some((ignoredPath) =>
+        path.startsWith(join(PUBLIC_PATH, ignoredPath))
+      )
+    ) {
+      return;
+    }
+
     const fullPath = join(path, entry);
     const stats = statSync(fullPath);
 
@@ -26,16 +39,14 @@ const createSearchIndex = (path) => {
       createSearchIndex(fullPath);
     } else if (
       !IGNORE_FILES.has(entry) &&
-      !SEARCH_EXTENSIONS.ignore.includes(extname(entry)) &&
-      !IGNORE_PATHS.some((ignoredPath) =>
-        fullPath.startsWith(join(PUBLIC_PATH, ignoredPath))
-      )
+      !SEARCH_EXTENSIONS.ignore.includes(extname(entry).toLowerCase())
     ) {
       const keyPath = fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
+
       indexData.push({
         name: basename(keyPath, extname(keyPath)),
         path: keyPath,
-        text: SEARCH_EXTENSIONS.index.includes(extname(entry))
+        text: SEARCH_EXTENSIONS.index.includes(extname(entry).toLowerCase())
           ? readFileSync(fullPath, "utf8")
               .replace(/\r?\n|\r/g, " ")
               .replace(/<\/?[^>]+(>|$)/g, "")
