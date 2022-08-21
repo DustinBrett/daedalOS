@@ -1,5 +1,6 @@
 type BaseLoadOptions = {
   allowScriptAccess?: boolean;
+  autoplay?: boolean;
   backgroundColor?: string | null;
   letterbox?: "fullscreen" | "off" | "on";
 };

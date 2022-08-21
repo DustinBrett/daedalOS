@@ -27,6 +27,7 @@ const useRuffle = (
       if (window.RufflePlayer) {
         window.RufflePlayer.config = {
           allowScriptAccess: false,
+          autoplay: true,
           backgroundColor: "#000000",
           letterbox: "on",
           polyfills: false,
