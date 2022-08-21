@@ -27,6 +27,9 @@ const useDraggableEntries = (
   isSelecting: boolean,
   allowMoving?: boolean
 ): DraggableEntry => {
+  const lastfileManagerChildRef = useRef<Element | null | undefined>(
+    fileManagerRef.current?.lastElementChild
+  );
   const [dropIndex, setDropIndex] = useState(-1);
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
@@ -88,13 +91,30 @@ const useDraggableEntries = (
       );
 
       if (focusedEntries.length > 1 && dragImageRef.current) {
+        if (
+          allowMoving &&
+          !draggedOnceRef.current &&
+          lastfileManagerChildRef.current &&
+          fileManagerRef.current?.lastElementChild &&
+          fileManagerRef.current.lastElementChild !==
+            lastfileManagerChildRef.current
+        ) {
+          draggedOnceRef.current = true;
+        }
+
         event.dataTransfer.setDragImage(
           dragImageRef.current,
-          "mozInputSource" in event.nativeEvent ? event.nativeEvent.clientX : 0,
-          draggedOnceRef.current ? event.nativeEvent.clientY : 0
+          "mozInputSource" in event.nativeEvent
+            ? event.nativeEvent.clientX
+            : event.nativeEvent.offsetX,
+          draggedOnceRef.current
+            ? event.nativeEvent.clientY
+            : event.nativeEvent.offsetY
         );
 
-        if (!draggedOnceRef.current) draggedOnceRef.current = true;
+        if (allowMoving && !draggedOnceRef.current) {
+          draggedOnceRef.current = true;
+        }
       }
 
       Object.assign(event.dataTransfer, { effectAllowed: "move" });
@@ -142,6 +162,15 @@ const useDraggableEntries = (
     }
   }, [fileManagerRef]);
   const debounceTimer = useRef<number>();
+
+  useEffect(() => {
+    if (
+      fileManagerRef.current?.lastElementChild &&
+      !lastfileManagerChildRef.current
+    ) {
+      lastfileManagerChildRef.current = fileManagerRef.current.lastElementChild;
+    }
+  }, [fileManagerRef, focusedEntries]);
 
   useEffect(() => {
     if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
