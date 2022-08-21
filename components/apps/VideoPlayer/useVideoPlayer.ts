@@ -17,6 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  isSafari,
   isYouTubeUrl,
   loadFiles,
   viewHeight,
@@ -52,8 +53,10 @@ const useVideoPlayer = (
     cleanUpSource();
 
     const isYT = isYouTubeUrl(url);
-    const src = isYT ? url : bufferToUrl(await readFile(url));
     const type = isYT ? YT_TYPE : getMimeType(url);
+    const src = isYT
+      ? url
+      : bufferToUrl(await readFile(url), isSafari() ? type : undefined);
 
     return { src, type, url };
   }, [cleanUpSource, readFile, url]);

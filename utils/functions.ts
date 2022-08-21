@@ -21,8 +21,10 @@ export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
 
-export const bufferToUrl = (buffer: Buffer): string =>
-  URL.createObjectURL(bufferToBlob(buffer));
+export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
+  mimeType
+    ? `data:${mimeType};base64,${buffer.toString("base64")}`
+    : URL.createObjectURL(bufferToBlob(buffer));
 
 let dpi: number;
 
