@@ -42,6 +42,7 @@ const directory: Processes = {
     icon: "/System/Icons/byuu.webp",
     libs: ["/Program Files/Byuu/byuu.js"],
     lockAspectRatio: true,
+    singleton: true,
     title: "Byuu",
   },
   Chess: {
