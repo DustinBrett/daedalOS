@@ -8,8 +8,14 @@ import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import { resetStorage, supportsIndexedDB } from "contexts/fileSystem/functions";
+import { join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
+  SESSION_FILE,
+} from "utils/constants";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -181,10 +187,26 @@ const useAsyncFs = (): AsyncFSModule => {
                   resetStorage(rootFs).finally(() => window.location.reload());
                 }
 
-                return reject(error);
-              }
+                reject(error);
+              } else {
+                resolve(!error);
 
-              return resolve(!error);
+                try {
+                  if (path !== SESSION_FILE) {
+                    const cachedIconPath = join(
+                      ICON_CACHE,
+                      `${path}${ICON_CACHE_EXTENSION}`
+                    );
+
+                    fs?.exists(
+                      cachedIconPath,
+                      (exists) => exists && fs?.unlink(cachedIconPath)
+                    );
+                  }
+                } catch {
+                  // Ignore icon cache issues
+                }
+              }
             }
           );
         }),

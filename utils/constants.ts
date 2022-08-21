@@ -236,6 +236,10 @@ export const USER_ICON_PATH = `${HOME}/Icons`;
 
 export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
+export const ICON_CACHE_EXTENSION = ".cache";
+
+export const SESSION_FILE = "/session.json";
+
 export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 
 export const FAVICON_BASE_PATH = "/favicon.ico";

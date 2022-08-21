@@ -12,9 +12,7 @@ import type {
 } from "contexts/session/types";
 import { useCallback, useEffect, useState } from "react";
 import type { ThemeName } from "styles/themes";
-import { DEFAULT_THEME } from "utils/constants";
-
-const SESSION_FILE = "/session.json";
+import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
 
 const useSessionContextState = (): SessionContextState => {
   const { deletePath, exists, readFile, writeFile } = useFileSystem();
