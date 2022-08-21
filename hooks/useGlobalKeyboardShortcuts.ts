@@ -68,7 +68,13 @@ const useGlobalKeyboardShortcuts = (): void => {
       toggleFullScreen();
     } else if (document.fullscreenElement) {
       if (keyName === "META") metaDown = true;
-      else if (
+      else if (keyName === "ESCAPE") {
+        setTimeout(
+          // eslint-disable-next-line unicorn/consistent-destructuring
+          () => !event.defaultPrevented && document.exitFullscreen(),
+          0
+        );
+      } else if (
         metaDown &&
         metaCombos.has(keyName) &&
         shiftBindingsRef.current?.[keyName] &&
@@ -97,6 +103,7 @@ const useGlobalKeyboardShortcuts = (): void => {
           (navigator as NavigatorWithKeyboard)?.keyboard?.lock?.([
             "MetaLeft",
             "MetaRight",
+            "Escape",
           ]);
         } else {
           (navigator as NavigatorWithKeyboard)?.keyboard?.unlock?.();

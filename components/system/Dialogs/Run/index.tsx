@@ -17,6 +17,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
+import { haltEvent } from "utils/functions";
 import spawnSheep from "utils/spawnSheep";
 
 const OPEN_ID = "open";
@@ -179,9 +180,14 @@ const Run: FC<ComponentProcessProps> = () => {
               }
             }}
             onFocusCapture={() => setIsInputFocused(true)}
-            onKeyDown={({ key }) => {
+            onKeyDownCapture={(event) => {
+              const { key } = event;
+
               if (key === "Enter") runResource(inputRef.current?.value.trim());
-              if (key === "Escape") closeWithTransition("Run");
+              if (key === "Escape") {
+                haltEvent(event);
+                closeWithTransition("Run");
+              }
             }}
             onKeyUp={({ target }) =>
               setIsEmptyInput(!(target as HTMLInputElement)?.value)
