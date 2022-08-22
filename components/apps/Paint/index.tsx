@@ -117,13 +117,6 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
 
       contentWindow.addEventListener("dragover", onDragOver);
       contentWindow.addEventListener("drop", onDrop);
-
-      [
-        ...contentWindow.document.body.querySelectorAll("#about-paint a"),
-      ].forEach((anchor) => {
-        // eslint-disable-next-line no-param-reassign
-        (anchor as HTMLAnchorElement).target = "_blank";
-      });
     }
   }, [
     closeWithTransition,

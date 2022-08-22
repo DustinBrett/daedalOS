@@ -1304,19 +1304,6 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
 
-let $news_window;
-const $this_version_news = $("#news");
-let $latest_news = $this_version_news;
-
-// not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
-// (...not sure how to phrase this clearly and concisely...)
-// "Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a>"
-if (location.origin !== "https://jspaint.app") {
-	$this_version_news.prepend(
-		$("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>")
-			.css({ padding: "8px 15px" })
-	);
-}
 
 function show_about_paint() {
 	if ($about_paint_window) {
@@ -1335,11 +1322,6 @@ function show_about_paint() {
 
 	$about_paint_window.$content.append($about_paint_content.show()).css({ padding: "15px" });
 
-	$("#maybe-outdated-view-project-news").removeAttr("hidden");
-
-	$("#failed-to-check-if-outdated").attr("hidden", "hidden");
-	$("#outdated").attr("hidden", "hidden");
-
 	$about_paint_window.center();
 	$about_paint_window.center(); // @XXX - but it helps tho
 
@@ -1351,71 +1333,6 @@ function show_about_paint() {
 		.css({
 			float: "right",
 			marginBottom: "10px",
-		});
-
-	$("#refresh-to-update").on("click", (event) => {
-		event.preventDefault();
-		are_you_sure(() => {
-			exit_fullscreen_if_ios();
-			location.reload();
-		});
-	});
-
-	$("#view-project-news").on("click", () => {
-		show_news();
-	});//.focus();
-
-	$("#checking-for-updates").removeAttr("hidden");
-
-	const url =
-		// ".";
-		// "test-news-newer.html";
-		"https://jspaint.app";
-	fetch(url)
-		.then((response) => response.text())
-		.then((text) => {
-			const parser = new DOMParser();
-			const htmlDoc = parser.parseFromString(text, "text/html");
-			$latest_news = $(htmlDoc).find("#news");
-
-			const $latest_entries = $latest_news.find(".news-entry");
-			const $this_version_entries = $this_version_news.find(".news-entry");
-
-			if (!$latest_entries.length) {
-				$latest_news = $this_version_news;
-				throw new Error(`No news found at fetched site (${url})`);
-			}
-
-			function entries_contains_update($entries, id) {
-				return $entries.get().some((el_from_this_version) =>
-					id === el_from_this_version.id
-				);
-			}
-
-			// @TODO: visibly mark entries that overlap
-			const entries_newer_than_this_version =
-				$latest_entries.get().filter((el_from_latest) =>
-					!entries_contains_update($this_version_entries, el_from_latest.id)
-				);
-
-			const entries_new_in_this_version = // i.e. in development, when updating the news
-				$this_version_entries.get().filter((el_from_latest) =>
-					!entries_contains_update($latest_entries, el_from_latest.id)
-				);
-
-			if (entries_newer_than_this_version.length > 0) {
-				$("#outdated").removeAttr("hidden");
-			} else if (entries_new_in_this_version.length > 0) {
-				$latest_news = $this_version_news; // show this version's news for development
-			}
-
-			$("#checking-for-updates").attr("hidden", "hidden");
-			update_css_classes_for_conditional_messages();
-		}).catch((exception) => {
-			$("#failed-to-check-if-outdated").removeAttr("hidden");
-			$("#checking-for-updates").attr("hidden", "hidden");
-			update_css_classes_for_conditional_messages();
-			window.console && console.log("Couldn't check for updates.", exception);
 		});
 }
 
@@ -1477,37 +1394,6 @@ function update_css_classes_for_conditional_messages() {
 		$(".navigator-offline").show();
 	}
 }
-
-function show_news() {
-	if ($news_window) {
-		$news_window.close();
-	}
-	$news_window = $Window({
-		title: "Project News",
-		maximizeButton: false,
-		minimizeButton: false,
-		resizable: false,
-	});
-	$news_window.addClass("news-window squish");
-
-
-	// const $latest_entries = $latest_news.find(".news-entry");
-	// const latest_entry = $latest_entries[$latest_entries.length - 1];
-	// window.console && console.log("LATEST MEWS:", $latest_news);
-	// window.console && console.log("LATEST ENTRY:", latest_entry);
-
-	const $latest_news_style = $latest_news.find("style");
-	$this_version_news.find("style").remove();
-	$latest_news.append($latest_news_style); // in case $this_version_news is $latest_news
-
-	$news_window.$content.append($latest_news.removeAttr("hidden"));
-
-	$news_window.center();
-	$news_window.center(); // @XXX - but it helps tho
-
-	$latest_news.attr("tabIndex", "-1").focus();
-}
-
 
 // @TODO: DRY between these functions and open_from_* functions further?
 
@@ -3180,7 +3066,7 @@ function image_stretch_and_skew() {
 			} else {
 				show_error_message(localize("An unknown error has occurred."), exception);
 			}
-			// @TODO: undo and clean up undoable 
+			// @TODO: undo and clean up undoable
 			return;
 		}
 		$canvas_area.trigger("resize");
@@ -3478,7 +3364,7 @@ function read_image_file(blob, callback) {
 		} else if (detected_type_id === "tiff_be" || detected_type_id === "tiff_le") {
 			// IFDs = image file directories
 			// VSNs = ???
-			// This code is based on UTIF.bufferToURI	
+			// This code is based on UTIF.bufferToURI
 			var ifds = UTIF.decode(arrayBuffer);
 			//console.log(ifds);
 			var vsns = ifds, ma = 0, page = vsns[0];

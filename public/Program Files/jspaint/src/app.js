@@ -702,44 +702,6 @@ const $status_text = $(E("div")).addClass("status-text status-field inset-shallo
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 
-const news_seen_key = "jspaint latest news seen";
-const latest_news_datetime = $this_version_news.find("time").attr("datetime");
-const $news_indicator = $(`
-	<a class='news-indicator' href='#project-news'>
-		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<!--<span class='marquee' dir='ltr' style='--text-width: 50ch; --animation-duration: 3s;'>
-			<span>
-				<b>Open Source</b> — MIT Licensed! Free Software! Finally!
-			</span>
-		</span>-->
-		<span>
-			<b>Open Source!</b>
-		</span>
-	</a>
-`);
-$news_indicator.on("click auxclick", (event) => {
-	event.preventDefault();
-	show_news();
-	$news_indicator.remove();
-	try {
-		localStorage[news_seen_key] = latest_news_datetime;
-		// eslint-disable-next-line no-empty
-	} catch (error) { }
-});
-let news_seen;
-let local_storage_unavailable;
-try {
-	news_seen = localStorage[news_seen_key];
-} catch (error) {
-	local_storage_unavailable = true;
-}
-const news_period_if_can_dismiss = 15;
-const news_period_if_cannot_dismiss = 5;
-const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
-if (Date.now() < Date.parse(latest_news_datetime) + news_period * 24 * 60 * 60 * 1000 && news_seen !== latest_news_datetime) {
-	$status_area.append($news_indicator);
-}
-
 $status_text.default = () => {
 	$status_text.text(localize("For Help, click Help Topics on the Help Menu."));
 };
