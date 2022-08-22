@@ -210,7 +210,7 @@ export const calcInitialPosition = (
     viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
 });
 
-export const calcGridDropPosition = (
+const calcGridDropPosition = (
   gridElement: HTMLElement | null,
   { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
 ): IconPosition => {
@@ -246,7 +246,7 @@ export const calcGridDropPosition = (
   };
 };
 
-export const updateIconPositionsIfEmpty = (
+const updateIconPositionsIfEmpty = (
   url: string,
   gridElement: HTMLElement | null,
   iconPositions: IconPositions,
@@ -279,7 +279,7 @@ export const updateIconPositionsIfEmpty = (
     : iconPositions;
 };
 
-export const calcGridPositionOffset = (
+const calcGridPositionOffset = (
   url: string,
   targetUrl: string,
   currentIconPositions: IconPositions,

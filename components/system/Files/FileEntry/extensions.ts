@@ -143,6 +143,4 @@ EDITABLE_IMAGE_FILE_EXTENSIONS.forEach((extension) => {
   extensions[extension] = types.GraphicsEditor;
 });
 
-export type ExtensionType = keyof typeof extensions;
-
 export default extensions;
