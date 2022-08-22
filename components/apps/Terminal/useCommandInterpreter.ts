@@ -256,7 +256,7 @@ const useCommandInterpreter = (
         }
         case "dir":
         case "ls": {
-          const [directory] = commandArgs;
+          const [directory = ""] = commandArgs;
           const listDir = async (dirPath: string): Promise<void> => {
             let totalSize = 0;
             let fileCount = 0;
@@ -272,33 +272,41 @@ const useCommandInterpreter = (
             }
 
             const entriesWithStats = await Promise.all(
-              entries.map(async (entry) => {
-                const filePath = join(dirPath, entry);
-                const fileStats = await stat(filePath);
-                const mDate = new Date(getModifiedTime(filePath, fileStats));
-                const date = mDate.toISOString().slice(0, 10);
-                const time = new Intl.DateTimeFormat("en-US", {
-                  timeStyle: "short",
+              entries
+                .filter(
+                  (entry) =>
+                    (!directory.startsWith("*") ||
+                      entry.endsWith(directory.slice(1))) &&
+                    (!directory.endsWith("*") ||
+                      entry.startsWith(directory.slice(0, -1)))
+                )
+                .map(async (entry) => {
+                  const filePath = join(dirPath, entry);
+                  const fileStats = await stat(filePath);
+                  const mDate = new Date(getModifiedTime(filePath, fileStats));
+                  const date = mDate.toISOString().slice(0, 10);
+                  const time = new Intl.DateTimeFormat("en-US", {
+                    timeStyle: "short",
+                  })
+                    .format(mDate)
+                    .padStart(8, "0");
+                  const isDirectory = fileStats.isDirectory();
+
+                  totalSize += fileStats.size;
+                  if (isDirectory) {
+                    directoryCount += 1;
+                  } else {
+                    fileCount += 1;
+                  }
+
+                  return [
+                    `${date}  ${time}`,
+                    isDirectory
+                      ? "<DIR>        "
+                      : fileStats.size.toLocaleString(),
+                    entry,
+                  ];
                 })
-                  .format(mDate)
-                  .padStart(8, "0");
-                const isDirectory = fileStats.isDirectory();
-
-                totalSize += fileStats.size;
-                if (isDirectory) {
-                  directoryCount += 1;
-                } else {
-                  fileCount += 1;
-                }
-
-                return [
-                  `${date}  ${time}`,
-                  isDirectory
-                    ? "<DIR>        "
-                    : fileStats.size.toLocaleString(),
-                  entry,
-                ];
-              })
             );
             localEcho?.println(` Directory of ${dirPath}`);
             localEcho?.println("");
@@ -321,7 +329,11 @@ const useCommandInterpreter = (
             if (localEcho) autoComplete(entries, localEcho);
           };
 
-          if (directory) {
+          if (
+            directory &&
+            !directory.startsWith("*") &&
+            !directory.endsWith("*")
+          ) {
             const fullPath = getFullPath(directory);
 
             if (await exists(fullPath)) {
