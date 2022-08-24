@@ -1,0 +1,198 @@
+{
+  "nes": {
+    "version": "24",
+    "netplay": 1,
+    "old": { "wasm": 1, "asmjs": 1 },
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "snes": {
+    "version": "21",
+    "netplay": 1,
+    "old": { "wasm": 1, "asmjs": 1 },
+    "state": 1,
+    "asmjs": 0,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "pce": {
+    "version": "1",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "ngp": {
+    "version": "2",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "ws": {
+    "version": "1",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "vb": {
+    "version": "7",
+    "netplay": 0,
+    "old": { "wasm": 1, "asmjs": 1 },
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "atari2600": {
+    "version": "1",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "atari5200": {
+    "version": "4",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 0
+  },
+  "a7800": {
+    "version": "4",
+    "netplay": 0,
+    "state": 0,
+    "asmjs": 1,
+    "wasm": 0,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "atari7800": {
+    "version": "4",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 0,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "lynx": {
+    "version": "1",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "jaguar": {
+    "version": "1",
+    "netplay": 0,
+    "state": 0,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "gb": {
+    "version": "12",
+    "netplay": 0,
+    "state": 1,
+    "old": { "wasm": 0, "asmjs": 1 },
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "gbc": {
+    "version": "4",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 0,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "gba": {
+    "version": "10",
+    "netplay": 0,
+    "state": 1,
+    "old": { "wasm": 0, "asmjs": 1 },
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "segaGG": {
+    "version": "9",
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "segaMD": {
+    "version": "9",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "segaMS": {
+    "version": "9",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  },
+  "n64": {
+    "version": "13",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 0,
+    "old": { "wasm": 0, "asmjs": 1 },
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "nds": {
+    "version": "16",
+    "old": { "wasm": 1, "asmjs": 1 },
+    "netplay": 0,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 1,
+    "oldCores": 1
+  },
+  "sega32x": {
+    "version": "2",
+    "netplay": 1,
+    "state": 1,
+    "asmjs": 1,
+    "wasm": 1,
+    "newCores": 0,
+    "oldCores": 1
+  }
+}

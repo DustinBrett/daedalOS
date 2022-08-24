@@ -31,20 +31,6 @@ const directory: Processes = {
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
   },
-  Byuu: {
-    Component: dynamic(() => import("components/apps/Byuu")),
-    autoSizing: true,
-    background: "#000",
-    defaultSize: {
-      height: 240,
-      width: 256,
-    },
-    icon: "/System/Icons/byuu.webp",
-    libs: ["/Program Files/Byuu/byuu.js"],
-    lockAspectRatio: true,
-    singleton: true,
-    title: "Byuu",
-  },
   Chess: {
     Component: dynamic(() => import("components/apps/Chess")),
     allowResizing: false,
@@ -89,6 +75,18 @@ const directory: Processes = {
     ],
     singleton: true,
     title: "DevTools",
+  },
+  Emulator: {
+    Component: dynamic(() => import("components/apps/Emulator")),
+    background: "#000",
+    defaultSize: {
+      height: 400,
+      width: 600,
+    },
+    icon: "/System/Icons/emulator.webp",
+    lockAspectRatio: true,
+    singleton: true,
+    title: "Emulator",
   },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),

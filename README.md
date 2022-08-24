@@ -134,13 +134,6 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - Back/Forward & Reload
 - Google search via Address bar
 
-### [Byuu](https://github.com/Wizcorp/byuu-web) (**_.gen, .nes, .sfc, .smc, .smd_**)
-
-- NES/SNES/Sega Genesis Emulator
-- Automatic save states on close
-  - /Users/Public/Snapshots
-- Automatic window resize
-
 ### [DevTools](https://eruda.liriliri.io/)
 
 - Console, Elements, Network, Resources, Sources, DOM

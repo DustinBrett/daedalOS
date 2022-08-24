@@ -1,3 +1,4 @@
+import { emulatorCores } from "components/apps/Emulator/config";
 import { EDITABLE_IMAGE_FILE_EXTENSIONS } from "utils/constants";
 
 type Extension = {
@@ -24,6 +25,11 @@ const types = {
     icon: "image",
     process: ["V86"],
     type: "Disc Image File",
+  },
+  Emulator: {
+    icon: "emulator",
+    process: ["Emulator"],
+    type: "Game ROM File",
   },
   FutureSplash: {
     process: ["Ruffle"],
@@ -60,11 +66,6 @@ const types = {
     icon: "audio",
     process: ["Webamp"],
   },
-  NintendoRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Nintendo ROM File",
-  },
   PdfDocument: {
     icon: "pdf",
     process: ["PDF"],
@@ -76,19 +77,9 @@ const types = {
     process: ["Terminal", ...TEXT_EDITORS],
     type: "Python File",
   },
-  SegaGenesisRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Sega Genesis ROM File",
-  },
   ShockwaveFlash: {
     process: ["Ruffle"],
     type: "Shockwave Flash File",
-  },
-  SuperNintendoRom: {
-    icon: "rom",
-    process: ["Byuu"],
-    type: "Super Nintendo ROM File",
   },
   SvgFile: {
     process: ["Photos", ...TEXT_EDITORS],
@@ -114,7 +105,6 @@ const types = {
 const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
   ".exe": types.Application,
-  ".gen": types.SegaGenesisRom,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,
   ".img": types.DiscImage,
@@ -124,13 +114,9 @@ const extensions: Record<string, Extension> = {
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,
-  ".nes": types.NintendoRom,
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
-  ".sfc": types.SuperNintendoRom,
-  ".smc": types.SuperNintendoRom,
-  ".smd": types.SegaGenesisRom,
   ".spl": types.FutureSplash,
   ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,
@@ -139,8 +125,22 @@ const extensions: Record<string, Extension> = {
   ".zip": types.ZipFile,
 };
 
-EDITABLE_IMAGE_FILE_EXTENSIONS.forEach((extension) => {
-  extensions[extension] = types.GraphicsEditor;
-});
+const addType =
+  (type: Extension) =>
+  (extension: string): void => {
+    if (type.process) {
+      if (extensions[extension]) {
+        extensions[extension].process.push(...type.process);
+      } else {
+        extensions[extension] = type;
+      }
+    }
+  };
+
+EDITABLE_IMAGE_FILE_EXTENSIONS.forEach(addType(types.GraphicsEditor));
+
+Object.values(emulatorCores).forEach(({ ext }) =>
+  ext.forEach(addType(types.Emulator))
+);
 
 export default extensions;

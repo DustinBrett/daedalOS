@@ -9,7 +9,7 @@ import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 export type FileInfo = {
   comment?: string;
-  getIcon?: (signal: AbortSignal) => void;
+  getIcon?: true | ((signal: AbortSignal) => void);
   icon: string;
   pid: string;
   subIcons?: string[];

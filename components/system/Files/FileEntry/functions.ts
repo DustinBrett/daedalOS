@@ -239,7 +239,7 @@ export const getInfoWithExtension = (
   const subIcons: string[] = [];
   const getInfoByFileExtension = (
     icon?: string,
-    getIcon?: (signal: AbortSignal) => void
+    getIcon?: true | ((signal: AbortSignal) => void)
   ): void =>
     callback({
       getIcon,
@@ -496,6 +496,8 @@ export const getInfoWithExtension = (
           }
         })
     );
+  } else if (extension === ".sav") {
+    getInfoByFileExtension(UNKNOWN_ICON_PATH, true);
   } else {
     getInfoByFileExtension();
   }

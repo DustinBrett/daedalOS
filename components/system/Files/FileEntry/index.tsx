@@ -321,7 +321,11 @@ const FileEntry: FC<FileEntryProps> = ({
                 // Ignore issues deleting bad cached icon
               }
             }
-          } else if (!isDynamicIconLoaded.current && buttonRef.current) {
+          } else if (
+            !isDynamicIconLoaded.current &&
+            buttonRef.current &&
+            typeof getIcon === "function"
+          ) {
             isDynamicIconLoaded.current = true;
             new IntersectionObserver(
               ([{ intersectionRatio }], observer) => {
