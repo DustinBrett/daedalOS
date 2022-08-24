@@ -2,6 +2,7 @@ import { emulatorCores } from "components/apps/Emulator/config";
 import type { Emulator } from "components/apps/Emulator/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
@@ -16,32 +17,6 @@ const getCore = (extension: string): string => {
   return core;
 };
 
-const stubEmulatorDeps = (): void => {
-  window.Browser = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    mainLoop: { queue: [], runIter: () => {}, scheduler: () => {} },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setCanvasSize: () => {},
-  };
-  window.IDBFS = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    reconcile: () => {},
-  };
-  window.JSEvents = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    runDeferredCalls: () => {},
-  };
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  window.FS = {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  window.GL = { newRenderingFrameStarted: () => {} };
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  window.saveSaveFiles = () => {};
-  window.RI = {
-    contexts: [],
-  };
-};
-
 const useEmulator = (
   id: string,
   url: string,
@@ -51,6 +26,7 @@ const useEmulator = (
 ): void => {
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
+  const { processes: { [id]: { closing = false } = {} } = {} } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>();
   const initRef = useRef(false);
@@ -81,7 +57,6 @@ const useEmulator = (
     };
     window.EJS_onSaveState = ({ screenshot, state }) => {
       window.EJS_terminate?.();
-      stubEmulatorDeps();
 
       const saveState = async (): Promise<void> => {
         if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
@@ -107,6 +82,7 @@ const useEmulator = (
     window.EJS_biosUrl = "";
     window.EJS_pathtodata = "Program Files/EmulatorJs/";
     window.EJS_startOnLoaded = true;
+    window.EJS_RESET_VARS = true;
     window.EJS_Buttons = {
       cacheManage: false,
       loadState: false,
@@ -134,13 +110,16 @@ const useEmulator = (
   useEffect(() => {
     if (!url) setLoading(false);
     else loadRom();
+  }, [loadRom, setLoading, url]);
 
-    return () => {
-      if (!loading) {
+  useEffect(
+    () => () => {
+      if (!loading && closing) {
         emulatorRef.current?.elements.buttons.saveState?.click();
       }
-    };
-  }, [loadRom, loading, setLoading, url]);
+    },
+    [closing, loading]
+  );
 };
 
 export default useEmulator;

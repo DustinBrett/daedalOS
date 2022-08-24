@@ -26,6 +26,7 @@ declare global {
       screenRecord: boolean;
       screenshot: boolean;
     };
+    EJS_RESET_VARS?: boolean;
     EJS_biosUrl?: string;
     EJS_core?: string;
     EJS_emulator?: {
