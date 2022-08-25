@@ -198,7 +198,7 @@ export const requestPermission = async (
 
 export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
   new Promise((resolve, reject) => {
-    setTimeout(reject, 1000);
+    setTimeout(reject, 750);
 
     window.localStorage.clear();
     window.sessionStorage.clear();
@@ -223,7 +223,15 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
     if (!window.indexedDB.databases) clearFs();
     else {
       import("idb").then(({ deleteDB }) =>
-        deleteDB(KEYVAL_DB).then(clearFs).catch(clearFs)
+        window.indexedDB
+          .databases()
+          .then((databases) =>
+            databases
+              .filter(({ name }) => name && name !== "browserfs")
+              .forEach(({ name }) => deleteDB(name as string))
+          )
+          .then(clearFs)
+          .catch(clearFs)
       );
     }
   });
