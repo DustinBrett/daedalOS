@@ -97,7 +97,7 @@ const useFileKeyboardShortcuts = (
                 y
               );
 
-        movedElement?.closest("button")?.click();
+        (movedElement?.closest("button") || targetElement)?.click();
       } else if (target instanceof HTMLButtonElement && key === "Enter") {
         haltEvent(event);
         target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
