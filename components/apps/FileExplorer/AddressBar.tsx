@@ -40,9 +40,10 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
 
   return (
     <StyledAddressBar>
-      <Icon $imgSize={16} src={icon} />
+      <Icon $imgSize={16} alt={displayName} src={icon} />
       <input
         ref={addressBarRef}
+        aria-label="Address"
         enterKeyHint="go"
         onBlurCapture={() => setAddressBar(displayName)}
         onChange={({ target }) => setAddressBar(target.value)}

@@ -71,6 +71,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       <Search />
       <input
         ref={searchBarRef}
+        aria-label="Search box"
         enterKeyHint="search"
         onChange={({ target }) => setSearchTerm(target.value)}
         onFocus={() => preloadLibs(SEARCH_LIBS)}
