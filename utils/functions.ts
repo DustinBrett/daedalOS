@@ -501,9 +501,13 @@ export const isSafari = (): boolean =>
 export const haltEvent = (
   event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
 ): void => {
-  if (event.cancelable) {
-    event.preventDefault();
-    event.stopPropagation();
+  try {
+    if (event.cancelable) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  } catch {
+    // Ignore failured to halt event
   }
 };
 
