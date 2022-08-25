@@ -1,6 +1,7 @@
 export type Core = {
   core: string;
   ext: string[];
+  zip?: boolean;
 };
 
 export const emulatorCores: Record<string, Core> = {
@@ -18,7 +19,7 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Atari Jaguar": {
     core: "jaguar",
-    ext: [".j64"],
+    ext: [".j64", ".jag"],
   },
   "Atari Lynx": {
     core: "lynx",
@@ -26,11 +27,11 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Neo Geo Pocket": {
     core: "ngp",
-    ext: [".ngp"],
+    ext: [".ngc", ".ngp"],
   },
   "Nintendo 64": {
     core: "n64",
-    ext: [".n64"],
+    ext: [".n64", ".v64", ".z64"],
   },
   "Nintendo DS": {
     core: "nds",
@@ -62,7 +63,8 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Sega Game Gear": {
     core: "segaGG",
-    ext: [".gg"], // Only working when zipped?
+    ext: [".gg"],
+    zip: true,
   },
   "Sega Genesis / Mega Drive": {
     core: "segaMD",
@@ -70,7 +72,8 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Sega Master System": {
     core: "segaMS",
-    ext: [".sms"], // Only working when zipped?
+    ext: [".sms"],
+    zip: true,
   },
   "Super Nintendo Entertainment System": {
     core: "snes",
@@ -78,10 +81,10 @@ export const emulatorCores: Record<string, Core> = {
   },
   "Virtual Boy": {
     core: "vb",
-    ext: [".vb"],
+    ext: [".vb", ".vboy"],
   },
   WonderSwam: {
     core: "ws",
-    ext: [".wsc"],
+    ext: [".ws", ".wsc"],
   },
 };

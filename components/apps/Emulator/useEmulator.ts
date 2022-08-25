@@ -1,3 +1,4 @@
+import type { Core } from "components/apps/Emulator/config";
 import { emulatorCores } from "components/apps/Emulator/config";
 import type { Emulator } from "components/apps/Emulator/types";
 import useTitle from "components/system/Window/useTitle";
@@ -7,38 +8,62 @@ import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, loadFiles } from "utils/functions";
+import { zipAsync } from "utils/zipFunctions";
 
-const getCore = (extension: string): string => {
+const getCore = (extension: string): [string, Core] => {
   const lcExt = extension.toLowerCase();
-  const [, { core = "" } = {}] =
-    Object.entries(emulatorCores).find(([, { ext }]) => ext.includes(lcExt)) ||
-    [];
 
-  return core;
+  return (Object.entries(emulatorCores).find(([, { ext }]) =>
+    ext.includes(lcExt)
+  ) || []) as [string, Core];
 };
 
 const useEmulator = (
   id: string,
   url: string,
-  _containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   loading: boolean
 ): void => {
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
-  const { processes: { [id]: { closing = false } = {} } = {} } = useProcesses();
+  const { linkElement, processes: { [id]: { closing = false } = {} } = {} } =
+    useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>();
-  const initRef = useRef(false);
+  const loadedUrlRef = useRef<string>("");
   const loadRom = useCallback(async () => {
-    if (initRef.current || !url) return;
-    initRef.current = true;
+    if (!url) return;
+    if (loadedUrlRef.current) {
+      if (loadedUrlRef.current !== url) {
+        loadedUrlRef.current = "";
+        window.EJS_terminate?.();
+        if (containerRef.current) {
+          const div = document.createElement("div");
+
+          div.id = "emulator";
+          [...containerRef.current.children].forEach((child) => child.remove());
+          containerRef.current.appendChild(div);
+          loadRom();
+        }
+      }
+
+      return;
+    }
+
+    loadedUrlRef.current = url;
 
     const ext = extname(url);
 
     window.EJS_gameName = basename(url, ext);
-    window.EJS_gameUrl = bufferToUrl(await readFile(url));
-    window.EJS_core = getCore(ext);
+
+    const [console, { core, zip }] = getCore(ext);
+    const rom = await readFile(url);
+
+    window.EJS_gameUrl = bufferToUrl(
+      zip ? Buffer.from(await zipAsync({ [basename(url)]: rom })) : rom
+    );
+    window.EJS_core = core;
 
     const saveName = `${basename(url)}.sav`;
     const savePath = join(SAVE_PATH, saveName);
@@ -70,7 +95,7 @@ const useEmulator = (
           if (!(await exists(iconCacheRootPath))) {
             await mkdirRecursive(iconCacheRootPath);
           }
-          await writeFile(iconCachePath, Buffer.from(screenshot));
+          await writeFile(iconCachePath, Buffer.from(screenshot), true);
           updateFolder(SAVE_PATH, saveName);
         }
       };
@@ -95,8 +120,9 @@ const useEmulator = (
 
     await loadFiles(["Program Files/EmulatorJs/loader.js"], undefined, true);
 
-    prependFileToTitle(window.EJS_gameName);
+    prependFileToTitle(`${window.EJS_gameName} (${console})`);
   }, [
+    containerRef,
     exists,
     mkdirRecursive,
     prependFileToTitle,
@@ -112,14 +138,21 @@ const useEmulator = (
     else loadRom();
   }, [loadRom, setLoading, url]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (!loading) {
+      const canvas = containerRef.current?.querySelector("canvas");
+
+      if (canvas instanceof HTMLCanvasElement) {
+        linkElement(id, "peekElement", canvas);
+      }
+    }
+
+    return () => {
       if (!loading && closing) {
         emulatorRef.current?.elements.buttons.saveState?.click();
       }
-    },
-    [closing, loading]
-  );
+    };
+  }, [closing, containerRef, id, linkElement, loading]);
 };
 
 export default useEmulator;
