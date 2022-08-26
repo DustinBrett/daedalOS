@@ -57,26 +57,27 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 ### [File System](https://github.com/jvilk/BrowserFS)
 
 - File Explorer
-  - Back, Forward, Recent locations, Address bar, Search
+  - Back, Forward, Recent locations, Up one level, Address bar, Search
 - [Drag & Drop](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) File Support (internal & external)
   - Loading progress dialog
 - ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [7Z/GZ/RAR/TAR/etc. extract](https://github.com/use-strict/7z-wasm) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-- Group selection/manipulation & drag to sort
-- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images & video
+- Group selection/manipulation & drag to sort/arrange
+- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & game saves
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
-  - Open with, Open file/folder location, Open in new window
+  - Open with, Open file/folder location, Open in new window, Open Terminal here
   - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets
   - Sort by, New Folder, New Text Document
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
   - F2, F5, Backspace, Arrows, Enter
   - SHIFT+CTRL+R, SHIFT+F10, SHIFT+F12
+  - In Fullscreen: Windows Key, Windows Key + R
 - File information tooltips
-- Allow sorting by name, date, type or extension
-  - Persists states
+- Allow sorting by name, size, type or date
+  - Persists icon position/sort order
 
 ### Windows
 
@@ -88,10 +89,11 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 ### Start Menu
 
 - Expandable Sidebar
-  - Apps list, Documents shortcut, Power (clears session)
+  - Apps list, Documents/Pictures/Videos shortcuts, Power (clears session)
 - Spotlight visual effect
 - Folder support
 - Keyboard shortcut opens with **_SHIFT+ESC_**
+  - Or Windows Key when in fullscreen
 
 ### Taskbar
 
@@ -101,11 +103,12 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 ### Clock
 
 - Runs in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+  - Drawn in an [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
 - NTP server time mode ([ntp.js](http://www.ntpjs.org/))
 - Synced to system clock on load
 - Date tooltip
 
-### Wallpaper
+### Background
 
 - Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
   - [Vanta.js](https://www.vantajs.com/)
@@ -117,8 +120,8 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 
 - Query parameter loading
   - Examples:
-    - `/?url=/favicon.ico`
-    - `/?app=TinyMCE`
+    - `/?url=/CREDITS.md`
+    - `/?app=Browser`
 
 # Apps 🧪
 
@@ -139,6 +142,10 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - Console, Elements, Network, Resources, Sources, DOM
 - Activate from Start Menu or **_SHIFT+F12_**
 
+### [EmulatorJS](https://github.com/ethanaobrien/emulatorjs) (**_.32x, .a26, .a52, .a78, .gb, .gba, .gbc, .gen, .gg, .j64, .jag, .lnx, .n64, .nds, .nes, .ngc, .ngp, .pce, .sfc, .smc, .smd, .sms, .v64, .vb, .vboy, .ws, .wsc, .z64_**)
+
+- Plays console game roms
+
 ### [js-dos](https://js-dos.com/) (**_.exe, .jsdos, .zip_**)
 
 - DOS emulator
@@ -158,6 +165,10 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - Line count, cursor position, language id
 - [Prettier](https://prettier.io/) formatting
   - json, js/ts, css/sass/less, html, markdown
+
+### [Paint](https://github.com/1j01/jspaint) (**_.bmp, .gif, .ico, .jpg, .png, .tiff, .webp,_**)
+
+- Create & edit images
 
 ### [PDF](https://mozilla.github.io/pdf.js/) (**_.pdf_**)
 
@@ -203,10 +214,16 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs)
 - Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
 
+### [Vim](https://github.com/coolwanglu/vim.js)
+
+- Code/text editor
+- Supports all file types
+
 ### [Webamp](https://webamp.org/) (**_.mp3, .wsz_**)
 
 - Winamp audio player
 - [Skin support](https://skins.webamp.org/)
+- Playlist & streaming support
 
 # Mentions 📰
 
