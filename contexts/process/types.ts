@@ -5,6 +5,7 @@ import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 type DialogProcessArguments = {
   fileReaders?: FileReaders;
+  progress?: number;
 };
 
 type MonacoProcessArguments = {

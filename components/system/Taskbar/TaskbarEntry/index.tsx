@@ -30,7 +30,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     minimize,
     processes: { [id]: process },
   } = useProcesses();
-  const { minimized } = process || {};
+  const { minimized, progress } = process || {};
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement) =>
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
@@ -48,6 +48,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   return (
     <StyledTaskbarEntry
       $foreground={isForeground}
+      $progress={progress}
       onClick={hidePeek}
       onMouseEnter={showPeek}
       onMouseLeave={hidePeek}

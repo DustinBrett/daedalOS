@@ -10,6 +10,7 @@ const MAX_TITLE_LENGTH = 37;
 
 const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   const {
+    argument,
     closeWithTransition,
     processes: { [id]: process } = {},
     title,
@@ -66,6 +67,15 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
       }
     }
   }, [closeWithTransition, fileReaders, id, processReader, title]);
+
+  useEffect(() => {
+    if (processing.current) {
+      const progressPercent = Math.floor((progress / totalTransferSize) * 100);
+
+      argument(id, "progress", progressPercent);
+      title(id, `${progressPercent}% complete`);
+    }
+  }, [argument, id, progress, title, totalTransferSize]);
 
   return (
     <StyledTransfer>
