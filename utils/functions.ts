@@ -380,7 +380,19 @@ export const updateIconPositions = (
 
     setIconPositions({
       ...currentIconPositions,
-      ...newIconPositions,
+      ...Object.fromEntries(
+        Object.entries(newIconPositions).filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            !Object.values(currentIconPositions).some(
+              ({
+                gridColumnStart: currentGridColumnStart,
+                gridRowStart: currentRowColumnStart,
+              }) =>
+                gridColumnStart === currentGridColumnStart &&
+                gridRowStart === currentRowColumnStart
+            )
+        )
+      ),
     });
   }
 };
