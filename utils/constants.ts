@@ -223,11 +223,6 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
-export const MEDIA_FILE_EXTENSIONS = new Set([
-  ...AUDIO_FILE_EXTENSIONS,
-  ...VIDEO_FILE_EXTENSIONS,
-]);
-
 export const ROOT_NAME = "My PC";
 
 export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;

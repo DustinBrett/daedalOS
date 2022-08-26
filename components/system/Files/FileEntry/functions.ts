@@ -19,7 +19,6 @@ import {
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
-  MEDIA_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
@@ -90,7 +89,8 @@ export const getIconFromIni = (
   });
 
 export const getDefaultFileViewer = (extension: string): string => {
-  if (MEDIA_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
+  if (AUDIO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
+  if (VIDEO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
   if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";
   if (monacoExtensions.has(extension)) return "MonacoEditor";
 
@@ -373,10 +373,11 @@ export const getInfoWithExtension = (
         }
       })
     );
-  } else if (MEDIA_FILE_EXTENSIONS.has(extension)) {
+  } else if (AUDIO_FILE_EXTENSIONS.has(extension)) {
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon);
+  } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
     subIcons.push(processDirectory["VideoPlayer"].icon);
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, (signal) => {
-      if (AUDIO_FILE_EXTENSIONS.has(extension)) return;
+    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error) {
           const video = document.createElement("video");
@@ -463,8 +464,8 @@ export const getInfoWithExtension = (
           );
           video.src = bufferToUrl(contents);
         }
-      });
-    });
+      })
+    );
   } else if (extension === ".mp3") {
     getInfoByFileExtension(
       `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
