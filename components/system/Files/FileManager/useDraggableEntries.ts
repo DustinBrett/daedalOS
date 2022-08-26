@@ -1,6 +1,6 @@
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useSession } from "contexts/session";
-import { join } from "path";
+import { dirname, join } from "path";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
@@ -94,10 +94,11 @@ const useDraggableEntries = (
         if (
           allowMoving &&
           !draggedOnceRef.current &&
-          lastfileManagerChildRef.current &&
-          fileManagerRef.current?.lastElementChild &&
-          fileManagerRef.current.lastElementChild !==
-            lastfileManagerChildRef.current
+          ((lastfileManagerChildRef.current &&
+            fileManagerRef.current?.lastElementChild &&
+            fileManagerRef.current.lastElementChild !==
+              lastfileManagerChildRef.current) ||
+            Object.keys(iconPositions).some((key) => dirname(key) === entryUrl))
         ) {
           draggedOnceRef.current = true;
         }
