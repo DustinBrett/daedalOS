@@ -200,6 +200,11 @@ export const viewWidth = (): number =>
     ? Math.min(window.innerWidth, window.screen.width)
     : window.innerWidth;
 
+export const getWindowViewport = (): Position => ({
+  x: viewWidth(),
+  y: viewHeight() - TASKBAR_HEIGHT,
+});
+
 export const calcInitialPosition = (
   relativePosition: RelativePosition,
   container: HTMLElement

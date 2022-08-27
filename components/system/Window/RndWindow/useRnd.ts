@@ -1,9 +1,11 @@
+import { isWindowOutsideBounds } from "components/system/Window/functions";
 import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
 import type { DraggableEventHandler } from "react-draggable";
 import type { Props, RndResizeCallback } from "react-rnd";
+import { getWindowViewport } from "utils/functions";
 
 const enableIframeCapture = (enable = true): void =>
   document.querySelectorAll("iframe").forEach((iframe) => {
@@ -28,7 +30,18 @@ const useRnd = (id: string, maximized = false): Props => {
     { x: positionX, y: positionY }
   ) => {
     enableIframeCapture();
-    setPosition({ x: positionX, y: positionY });
+
+    const newPosition = { x: positionX, y: positionY };
+
+    if (
+      !isWindowOutsideBounds(
+        { position: newPosition, size },
+        getWindowViewport(),
+        true
+      )
+    ) {
+      setPosition(newPosition);
+    }
   };
   const onResizeStop: RndResizeCallback = (
     _event,

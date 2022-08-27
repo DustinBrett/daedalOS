@@ -10,8 +10,7 @@ import { useSession } from "contexts/session";
 import { useLayoutEffect, useMemo, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import { TASKBAR_HEIGHT } from "utils/constants";
-import { calcInitialPosition, viewHeight, viewWidth } from "utils/functions";
+import { calcInitialPosition, getWindowViewport } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -27,11 +26,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
   const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
   const { position: sessionPosition, size: sessionSize } = windowState || {};
   const isOffscreen = useMemo(
-    () =>
-      isWindowOutsideBounds(windowState, {
-        x: viewWidth(),
-        y: viewHeight() - TASKBAR_HEIGHT,
-      }),
+    () => isWindowOutsideBounds(windowState, getWindowViewport()),
     [windowState]
   );
   const [position, setPosition] = useState<Position>(

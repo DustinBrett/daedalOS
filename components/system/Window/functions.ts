@@ -42,13 +42,30 @@ export const centerPosition = ({ height, width }: Size): Position => {
   };
 };
 
+const WINDOW_OFFSCREEN_BUFFER_PX = {
+  BOTTOM: 15,
+  LEFT: 150,
+  RIGHT: 50,
+  TOP: 15,
+};
+
 export const isWindowOutsideBounds = (
   windowState: WindowState,
-  bounds: Position
+  bounds: Position,
+  checkOffscreen = false
 ): boolean => {
   const { position, size } = windowState || {};
   const { x = 0, y = 0 } = position || {};
   const { height = 0, width = 0 } = size || {};
+
+  if (checkOffscreen) {
+    return (
+      x + WINDOW_OFFSCREEN_BUFFER_PX.RIGHT > bounds.x ||
+      x + pxToNum(width) - WINDOW_OFFSCREEN_BUFFER_PX.LEFT < 0 ||
+      y + WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM > bounds.y ||
+      y + WINDOW_OFFSCREEN_BUFFER_PX.TOP < 0
+    );
+  }
 
   return (
     x < 0 ||
