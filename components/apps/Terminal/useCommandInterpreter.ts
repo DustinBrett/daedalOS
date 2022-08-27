@@ -642,6 +642,11 @@ const useCommandInterpreter = (
           );
 
           localEcho?.println(await response.text());
+
+          const [bgAnsi, fgAnsi] = colorOutput.current;
+
+          if (bgAnsi) localEcho?.print(bgAnsi);
+          if (fgAnsi) localEcho?.print(fgAnsi);
           break;
         }
         case "whoami":
