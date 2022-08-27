@@ -278,7 +278,7 @@ const FileEntry: FC<FileEntryProps> = ({
                     ...info,
                     icon: bufferToUrl(cachedIcon),
                   }));
-                  updateFolder(baseCachedPath, cachedIconPath);
+                  updateFolder(baseCachedPath, basename(cachedIconPath));
 
                   cacheQueue.shift();
                   await cacheQueue[0]?.();
