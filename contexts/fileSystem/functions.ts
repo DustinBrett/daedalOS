@@ -29,6 +29,16 @@ type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
 const KEYVAL_STORE_NAME = "keyval";
 const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
+const KNOWN_IDB_DBS = [
+  "/data/saves",
+  "ejs-bios",
+  "ejs-roms",
+  "ejs-romsdata",
+  "ejs-states",
+  "ejs-system",
+  "keyval-store",
+];
+
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
 const IDX_FILE_MODE = 33206;
@@ -220,9 +230,8 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       }
     };
 
-    if (!window.indexedDB.databases) clearFs();
-    else {
-      import("idb").then(({ deleteDB }) =>
+    import("idb").then(({ deleteDB }) => {
+      if (window.indexedDB.databases) {
         window.indexedDB
           .databases()
           .then((databases) =>
@@ -231,7 +240,10 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
               .forEach(({ name }) => deleteDB(name as string))
           )
           .then(clearFs)
-          .catch(clearFs)
-      );
-    }
+          .catch(clearFs);
+      } else {
+        KNOWN_IDB_DBS.forEach((name) => deleteDB(name));
+        clearFs();
+      }
+    });
   });
