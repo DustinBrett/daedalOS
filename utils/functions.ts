@@ -406,7 +406,9 @@ export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   canvas instanceof HTMLCanvasElement &&
   Boolean(
     canvas
-      .getContext("2d")
+      .getContext("2d", {
+        willReadFrequently: true,
+      })
       ?.getImageData(0, 0, canvas.width, canvas.height)
       .data.some((channel) => channel !== 0)
   );

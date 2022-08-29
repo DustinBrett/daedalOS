@@ -123,8 +123,6 @@ if (ENVIRONMENT_IS_NODE) {
 } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
  if (ENVIRONMENT_IS_WORKER) {
   scriptDirectory = self.location.href;
- } else if (typeof document !== "undefined" && document.currentScript) {
-  scriptDirectory = document.currentScript.src;
  }
  if (scriptDirectory.indexOf("blob:") !== 0) {
   scriptDirectory = scriptDirectory.substr(0, scriptDirectory.lastIndexOf("/") + 1);
