@@ -66,11 +66,14 @@ const useDXBall = (
         setLoading(false);
       });
     }
+  }, [libs, setLoading, updateFolder, writeFile]);
 
-    return () => {
+  useEffect(
+    () => () => {
       if (!libLoadingRef.current && closing) window.DXBall.close();
-    };
-  }, [closing, libs, setLoading, updateFolder, writeFile]);
+    },
+    [closing]
+  );
 };
 
 export default useDXBall;
