@@ -81,10 +81,11 @@ const useV86 = (
     if (currentUrl) await closeDiskImage(currentUrl);
 
     const imageContents = url ? await readFile(url) : Buffer.from("");
-    const isISO = extname(url).toLowerCase() === ".iso";
+    const ext = extname(url).toLowerCase();
+    const isISO = ext === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {
-      [isISO ? "cdrom" : getImageType(imageContents.length)]: {
+      [isISO ? "cdrom" : getImageType(ext, imageContents.length)]: {
         async: false,
         size: imageContents.length,
         url: bufferUrl,

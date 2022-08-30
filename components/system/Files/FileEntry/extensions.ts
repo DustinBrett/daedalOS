@@ -104,6 +104,7 @@ const types = {
 
 const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
+  ".bin": types.DiscImage,
   ".exe": types.Application,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,

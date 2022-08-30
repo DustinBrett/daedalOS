@@ -19,5 +19,8 @@ const isFloppyImage = (size: number): boolean =>
   (SUPPORTED_FLOPPY_TYPES.has(size >> 10) && (size & 0x3ff) === 0) ||
   size === 512;
 
-export const getImageType = (size: number): string =>
-  isFloppyImage(size) ? "fda" : "hda";
+export const getImageType = (ext: string, size: number): string => {
+  if (ext === ".bin") return "bzimage";
+
+  return isFloppyImage(size) ? "fda" : "hda";
+};
