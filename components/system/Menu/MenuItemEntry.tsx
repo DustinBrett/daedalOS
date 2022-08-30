@@ -55,7 +55,10 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   useEffect(() => {
     const menuEntryElement = entryRef.current;
     const touchListener = (event: TouchEvent): void => {
-      if (!isSubMenu && menu && !showSubMenu) haltEvent(event);
+      if (!isSubMenu && menu && !showSubMenu) {
+        haltEvent(event);
+        menuEntryElement?.focus();
+      }
       setShowSubMenu(true);
     };
 
