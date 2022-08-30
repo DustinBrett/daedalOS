@@ -10,7 +10,7 @@ export type V86Starter = {
   destroy: () => void;
   lock_mouse: () => void;
   remove_listener: EventListener;
-  save_state: (callback: (error: Error, newState: ArrayBuffer) => void) => void;
+  save_state: () => Promise<ArrayBuffer>;
 };
 
 export type V86Config = V86ImageConfig &

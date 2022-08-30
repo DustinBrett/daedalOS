@@ -42,9 +42,7 @@ const useV86 = (
   const saveStateAsync = useCallback(
     (diskImageUrl: string): Promise<ArrayBuffer> =>
       new Promise((resolve, reject) => {
-        emulator[diskImageUrl]?.save_state((error, state) =>
-          error ? reject(error) : resolve(state)
-        );
+        emulator[diskImageUrl]?.save_state().then(resolve).catch(reject);
       }),
     [emulator]
   );
