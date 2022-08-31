@@ -80,11 +80,14 @@ const loadButterchurnPresets = (
   });
 
 const getButterchurnPresetIndex = (webamp: WebampCI): number => {
-  const { presets = [] } = webamp.store.getState()?.milkdrop || {};
+  const { presetHistory = [], presets = [] } =
+    webamp.store.getState()?.milkdrop || {};
   const index = Math.floor(Math.random() * presets.length);
   const preset = presets[index];
 
-  return preset.name && !BROKEN_PRESETS.has(preset.name)
+  return preset.name &&
+    !BROKEN_PRESETS.has(preset.name) &&
+    !presetHistory.slice(-5).includes(index)
     ? index
     : getButterchurnPresetIndex(webamp);
 };

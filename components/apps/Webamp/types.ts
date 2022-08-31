@@ -83,6 +83,7 @@ export type WebampCI = Webamp & {
       };
       milkdrop?: {
         butterchurn?: unknown;
+        presetHistory?: number[];
         presets?: ButterChurnPreset[];
       };
       playlist?: {
