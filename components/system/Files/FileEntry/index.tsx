@@ -44,7 +44,12 @@ import {
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
-import { bufferToUrl, getFormattedSize, isYouTubeUrl } from "utils/functions";
+import {
+  bufferToUrl,
+  getFormattedSize,
+  isCanvasEmpty,
+  isYouTubeUrl,
+} from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 const RenameBox = dynamic(
@@ -250,6 +255,10 @@ const FileEntry: FC<FileEntryProps> = ({
           ) {
             const cacheIcon = async (): Promise<void> => {
               if (iconRef.current instanceof HTMLImageElement) {
+                const nextQueueItem = (): Promise<void> => {
+                  cacheQueue.shift();
+                  return cacheQueue[0]?.();
+                };
                 let generatedIcon: string;
 
                 if (
@@ -260,10 +269,21 @@ const FileEntry: FC<FileEntryProps> = ({
                   generatedIcon = iconRef.current.currentSrc;
                 } else {
                   const htmlToImage = await import("html-to-image");
-                  generatedIcon = await htmlToImage.toPng(iconRef.current);
+                  const iconCanvas = await htmlToImage.toCanvas(
+                    iconRef.current,
+                    {
+                      skipAutoScale: true,
+                    }
+                  );
+
+                  if (!isCanvasEmpty(iconCanvas)) {
+                    generatedIcon = iconCanvas.toDataURL("image/png");
+                  }
                 }
 
                 cacheQueue.push(async () => {
+                  if (!generatedIcon) return nextQueueItem();
+
                   const baseCachedPath = dirname(cachedIconPath);
 
                   await mkdirRecursive(baseCachedPath);
@@ -280,8 +300,7 @@ const FileEntry: FC<FileEntryProps> = ({
                   }));
                   updateFolder(baseCachedPath, basename(cachedIconPath));
 
-                  cacheQueue.shift();
-                  await cacheQueue[0]?.();
+                  return nextQueueItem();
                 });
 
                 if (cacheQueue.length === 1) await cacheQueue[0]();

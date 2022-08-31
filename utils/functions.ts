@@ -641,3 +641,9 @@ export const jsonFetch = async (
 
   return json || {};
 };
+
+export const isCanvasEmpty = (canvas: HTMLCanvasElement): boolean =>
+  !canvas
+    .getContext("2d")
+    ?.getImageData(0, 0, canvas.width, canvas.height)
+    .data.some(Boolean);
