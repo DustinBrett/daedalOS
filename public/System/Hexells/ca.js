@@ -14,8 +14,7 @@ limitations under the License.
 
 /*
 Usage:
-  const gui = new dat.GUI();
-  const ca = new CA(gl, models_json, [W, H], gui); // gui is optional
+  const ca = new CA(gl, models_json, [W, H]);
   ca.step();
 
   ca.paint(x, y, radius, modelIndex);
