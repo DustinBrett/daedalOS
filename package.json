@@ -63,6 +63,7 @@
     "next": "^12.2.5",
     "playlist-parser": "^0.0.12",
     "prettier": "2.7.1",
+    "print-js": "^1.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-rnd": "^10.3.7",

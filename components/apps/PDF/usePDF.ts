@@ -1,3 +1,4 @@
+import type { MetadataInfo } from "components/apps/PDF/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -12,14 +13,6 @@ export const scales = [
   0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4,
   5,
 ];
-
-declare global {
-  interface Window {
-    pdfjsLib?: typeof PdfjsLib;
-  }
-}
-
-type MetadataInfo = { Title?: string };
 
 const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
   const adjustedWindowWidth = windowWidth - DEFAULT_SCROLLBAR_WIDTH;

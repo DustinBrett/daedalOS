@@ -1,4 +1,9 @@
-import { Add, Download, Subtract } from "components/apps/PDF//ControlIcons";
+import {
+  Add,
+  Download,
+  Print,
+  Subtract,
+} from "components/apps/PDF//ControlIcons";
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -116,6 +121,21 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           {...label("Download")}
         >
           <Download />
+        </Button>
+        <Button
+          disabled={count === 0}
+          onClick={async () => {
+            const { default: printJs } = await import("print-js");
+
+            printJs({
+              base64: true,
+              printable: (await readFile(url)).toString("base64"),
+              type: "pdf",
+            });
+          }}
+          {...label("Print")}
+        >
+          <Print />
         </Button>
       </div>
     </StyledControls>
