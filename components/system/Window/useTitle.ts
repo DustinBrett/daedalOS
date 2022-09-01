@@ -1,14 +1,12 @@
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useCallback } from "react";
-import { PROCESS_DELIMITER } from "utils/constants";
+import { PROCESS_DELIMITER, SAVE_TITLE_CHAR } from "utils/constants";
 
 type Title = {
   appendFileToTitle: (url: string, unSaved?: boolean) => void;
   prependFileToTitle: (url: string, unSaved?: boolean) => void;
 };
-
-const SAVE_CHAR = "\u25CF";
 
 const useTitle = (id: string): Title => {
   const { title } = useProcesses();
@@ -17,7 +15,7 @@ const useTitle = (id: string): Title => {
   const appendFileToTitle = useCallback(
     (url: string, unSaved?: boolean) => {
       const appendedFile = url
-        ? ` - ${url}${unSaved ? ` ${SAVE_CHAR}` : ""}`
+        ? ` - ${url}${unSaved ? ` ${SAVE_TITLE_CHAR}` : ""}`
         : "";
 
       title(id, `${originalTitle}${appendedFile}`);
@@ -27,7 +25,7 @@ const useTitle = (id: string): Title => {
   const prependFileToTitle = useCallback(
     (url: string, unSaved?: boolean) => {
       const prependedFile = url
-        ? `${unSaved ? `${SAVE_CHAR} ` : ""}${url} - `
+        ? `${unSaved ? `${SAVE_TITLE_CHAR} ` : ""}${url} - `
         : "";
 
       title(id, `${prependedFile}${originalTitle}`);

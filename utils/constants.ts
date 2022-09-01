@@ -225,6 +225,8 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
+export const SAVE_TITLE_CHAR = "\u25CF";
+
 export const ROOT_NAME = "My PC";
 
 export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;

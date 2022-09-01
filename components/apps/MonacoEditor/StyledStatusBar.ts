@@ -40,6 +40,12 @@ const StyledStatusBar = styled.footer`
           position: relative;
           top: -2px;
         }
+
+        svg {
+          fill: rgb(108, 103, 106);
+          height: 16px;
+          width: 16px;
+        }
       }
 
       &:hover {
@@ -52,6 +58,12 @@ const StyledStatusBar = styled.footer`
 
       &.clickable {
         padding: 0;
+      }
+
+      &#save {
+        svg {
+          margin-top: 4px;
+        }
       }
     }
   }

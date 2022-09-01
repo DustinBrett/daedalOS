@@ -4,7 +4,10 @@ import {
   theme,
   URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
-import { detectLanguage } from "components/apps/MonacoEditor/functions";
+import {
+  detectLanguage,
+  getSaveFileInfo,
+} from "components/apps/MonacoEditor/functions";
 import type { Model } from "components/apps/MonacoEditor/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -83,14 +86,11 @@ const useMonaco = (
       const { ctrlKey, code, keyCode } = event;
 
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
-        const { uri } = editor.getModel() || {};
-        const [baseUrl] = uri?.path.split(URL_DELIMITER) || [];
-        const saveUrl =
-          uri?.scheme === "file" ? baseUrl : url || DEFAULT_TEXT_FILE_SAVE_PATH;
+        const [saveUrl, saveData] = getSaveFileInfo(url, editor);
 
-        if (url === baseUrl || !url) {
+        if (saveUrl && saveData) {
           event.preventDefault();
-          await writeFile(saveUrl, editor.getValue(), true);
+          await writeFile(saveUrl, saveData, true);
           updateFolder(dirname(saveUrl), basename(saveUrl));
           prependFileToTitle(basename(saveUrl));
         }
