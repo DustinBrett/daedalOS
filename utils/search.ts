@@ -22,9 +22,14 @@ const search = async (
   if (!window.lunr) await loadFiles(SEARCH_LIBS);
   if (!index && !baseIndex.search) {
     const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
-    const indexFile = JSON.parse(await response.text()) as Index;
 
-    baseIndex = window.lunr?.Index.load(indexFile);
+    try {
+      baseIndex = window.lunr?.Index.load(
+        JSON.parse(await response.text()) as Index
+      );
+    } catch {
+      // Failed to parse text data to JSON
+    }
   }
   const searchIndex = index ?? baseIndex;
   let results: Index.Result[] = [];

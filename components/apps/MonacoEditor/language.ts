@@ -54,7 +54,11 @@ export const prettyPrint = async (
   const lcLanguage = language.toLowerCase();
 
   if (lcLanguage === "json") {
-    return JSON.stringify(JSON.parse(code), undefined, 2);
+    try {
+      return JSON.stringify(JSON.parse(code), undefined, 2);
+    } catch {
+      return code;
+    }
   }
 
   const prettier = await import("prettier/standalone");

@@ -77,7 +77,11 @@ const useFileDrop = ({
         let fileEntries: string[] = [];
 
         if (text) {
-          fileEntries = JSON.parse(text) as string[];
+          try {
+            fileEntries = JSON.parse(text) as string[];
+          } catch {
+            // Ignore failed JSON parsing
+          }
 
           if (
             fileEntries[0].startsWith(directory) &&
