@@ -1,7 +1,7 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
@@ -61,7 +61,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     }
   }, [id, maximize, openedMaximized, process, wasMaximized]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { current: currentWindow } = rndRef;
     const rndWindowElements =
       currentWindow?.resizableElement?.current?.children || [];

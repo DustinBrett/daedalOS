@@ -8,7 +8,7 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
@@ -30,7 +30,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (searchBarRef.current) {
       const getItems = (): MenuItem[] =>
         [

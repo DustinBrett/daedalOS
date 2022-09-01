@@ -11,7 +11,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   PACKAGE_DATA,
   PREVENT_SCROLL,
@@ -138,14 +138,14 @@ const Run: FC<ComponentProcessProps> = () => {
     [closeWithTransition, exists, open, readFile, setRunHistory, stat]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (foregroundId === "Run") {
       inputRef.current?.focus(PREVENT_SCROLL);
       if (inputRef.current?.value) inputRef.current?.select();
     }
   }, [foregroundId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (runProcess?.url && inputRef.current) {
       inputRef.current.value = `${inputRef.current.value.trimEnd()} ${
         runProcess.url

@@ -3,7 +3,7 @@ import menuTransition from "components/system/Menu/menuTransition";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
@@ -39,7 +39,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   );
   const isSubMenu = Boolean(subMenu);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (items && !subMenu) {
       const focusedElement = document.activeElement;
 
@@ -77,7 +77,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     }
   }, [items, resetMenu, subMenu]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!menuRef.current) return;
 
     const {

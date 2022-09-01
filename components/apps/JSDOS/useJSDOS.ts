@@ -8,7 +8,7 @@ import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
@@ -104,7 +104,7 @@ const useJSDOS = (
     updateWindowSize,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (id === foregroundId && !loading) {
       containerRef.current?.focus(PREVENT_SCROLL);
     }

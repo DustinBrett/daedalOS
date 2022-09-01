@@ -2,7 +2,13 @@ import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar
 import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { getFormattedSize, haltEvent, label } from "utils/functions";
 
 type StatusBarProps = {
@@ -47,7 +53,7 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
     updateSelectedSize();
   }, [directory, exists, lstat, selected, stat]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (statusBarRef.current) {
       updateShowSelected(statusBarRef.current.getBoundingClientRect().width);
     }

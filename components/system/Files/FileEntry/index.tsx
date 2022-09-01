@@ -22,7 +22,14 @@ import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
 import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -391,7 +398,7 @@ const FileEntry: FC<FileEntryProps> = ({
     []
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (buttonRef.current) {
       const inFocusedEntries = focusedEntries.includes(fileName);
       const inFocusing = focusing.includes(fileName);

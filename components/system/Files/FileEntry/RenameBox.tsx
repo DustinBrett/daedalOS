@@ -1,7 +1,7 @@
 import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { extname } from "path";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -36,7 +36,7 @@ const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
     [formats.systemFont, sizes.fileEntry.fontSize]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateDimensions(inputRef.current);
     inputRef.current?.focus(PREVENT_SCROLL);
     inputRef.current?.setSelectionRange(0, name.length - extname(name).length);
