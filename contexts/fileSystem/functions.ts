@@ -154,7 +154,8 @@ export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
 
 export const addFileSystemHandle = async (
   directory: string,
-  handle: FileSystemDirectoryHandle
+  handle: FileSystemDirectoryHandle,
+  mappedName: string
 ): Promise<void> => {
   if (!(await supportsIndexedDB())) return;
 
@@ -165,7 +166,7 @@ export const addFileSystemHandle = async (
       KEYVAL_STORE_NAME,
       {
         ...(await getFileSystemHandles()),
-        [join(directory, handle.name)]: handle,
+        [join(directory, mappedName)]: handle,
       },
       FS_HANDLES
     );

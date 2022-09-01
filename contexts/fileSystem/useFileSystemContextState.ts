@@ -124,7 +124,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
             rootFs?.mount?.(join(directory, mappedName), newFs);
             resolve(mappedName);
-            addFileSystemHandle(directory, handle);
+            addFileSystemHandle(directory, handle, mappedName);
           });
         } else {
           reject();
