@@ -94,7 +94,9 @@ const useEmulator = (
 
           if (!(await exists(iconCacheRootPath))) {
             await mkdirRecursive(iconCacheRootPath);
+            updateFolder(dirname(SAVE_PATH));
           }
+
           await writeFile(iconCachePath, Buffer.from(screenshot), true);
           updateFolder(SAVE_PATH, saveName);
         }
