@@ -7,7 +7,7 @@ import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 
 const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const {
@@ -19,17 +19,18 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);
-  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const linkViewportEntry = useCallback(
+    (viewportEntry: HTMLDivElement) =>
+      process &&
+      !peekElement &&
+      viewportEntry &&
+      linkElement(id, "peekElement", viewportEntry),
+    [id, linkElement, peekElement, process]
+  );
   const style = useMemo<React.CSSProperties>(
     () => ({ background }),
     [background]
   );
-
-  useEffect(() => {
-    if (process && !peekElement && viewportRef.current) {
-      linkElement(id, "peekElement", viewportRef.current);
-    }
-  }, [id, linkElement, peekElement, process]);
 
   return (
     <RndWindow id={id} zIndex={zIndex}>
@@ -39,7 +40,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
         {...focusableProps}
         {...windowTransitions}
       >
-        <StyledPeekViewport ref={viewportRef}>
+        <StyledPeekViewport ref={linkViewportEntry}>
           <Titlebar id={id} />
           {children}
         </StyledPeekViewport>
