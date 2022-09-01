@@ -2,13 +2,7 @@ import type { FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { useSession } from "contexts/session";
 import { dirname, join } from "path";
 import type React from "react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import { updateIconPositions } from "utils/functions";
@@ -188,7 +182,7 @@ const useDraggableEntries = (
     }, MILLISECONDS_IN_SECOND / 2);
   }, [focusedEntries, updateDragImage]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isSelecting && focusedEntries.length > 1) {
       updateDragImage();
     }

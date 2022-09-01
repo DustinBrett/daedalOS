@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -168,7 +168,7 @@ const FileManager: FC<FileManagerProps> = ({
     }
   }, [currentUrl, folderActions, url]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!loading) fileManagerRef.current?.focus(PREVENT_SCROLL);
   }, [loading]);
 
