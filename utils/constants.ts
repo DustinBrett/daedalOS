@@ -6,6 +6,8 @@ export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
   desynchronized: true,
 };
 
+export const IPFS_GATEWAY_URL = "https://cloudflare-ipfs.com/ipfs/";
+
 export const DEFAULT_LOCALE = "en";
 
 export const DEFAULT_THEME = "defaultTheme";

@@ -11,6 +11,7 @@ import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
+  IPFS_GATEWAY_URL,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
@@ -491,6 +492,7 @@ export const getTZOffsetISOString = (): string => {
 };
 
 export const getUrlOrSearch = (input: string): string => {
+  const isIpfs = input.startsWith("ipfs://");
   const hasHttpSchema =
     input.startsWith("http://") || input.startsWith("https://");
   const hasTld =
@@ -500,11 +502,13 @@ export const getUrlOrSearch = (input: string): string => {
     input.endsWith(".org");
 
   try {
-    const { href } = new URL(
-      hasHttpSchema || !hasTld ? input : `https://${input}`
+    const { href, pathname } = new URL(
+      hasHttpSchema || !hasTld || isIpfs ? input : `https://${input}`
     );
 
-    return href;
+    return isIpfs
+      ? `${IPFS_GATEWAY_URL}${pathname.split("/").filter(Boolean).join("/")}`
+      : href;
   } catch {
     return `${GOOGLE_SEARCH_QUERY}${input}`;
   }

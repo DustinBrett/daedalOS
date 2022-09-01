@@ -11,7 +11,11 @@ import { extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  FAVICON_BASE_PATH,
+  IPFS_GATEWAY_URL,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
@@ -66,29 +70,33 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             prependFileToTitle(name);
           }
 
-          const favicon = new Image();
-          const faviconUrl = `${
-            new URL(addressUrl).origin
-          }${FAVICON_BASE_PATH}`;
+          if (addressUrl.startsWith(IPFS_GATEWAY_URL)) {
+            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
+          } else {
+            const favicon = new Image();
+            const faviconUrl = `${
+              new URL(addressUrl).origin
+            }${FAVICON_BASE_PATH}`;
 
-          favicon.addEventListener(
-            "error",
-            () => {
-              const { icon } =
-                bookmarks?.find(
-                  ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
-                ) || {};
+            favicon.addEventListener(
+              "error",
+              () => {
+                const { icon } =
+                  bookmarks?.find(
+                    ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
+                  ) || {};
 
-              if (icon) setIcon(id, icon);
-            },
-            ONE_TIME_PASSIVE_EVENT
-          );
-          favicon.addEventListener(
-            "load",
-            () => setIcon(id, faviconUrl),
-            ONE_TIME_PASSIVE_EVENT
-          );
-          favicon.src = faviconUrl;
+                if (icon) setIcon(id, icon);
+              },
+              ONE_TIME_PASSIVE_EVENT
+            );
+            favicon.addEventListener(
+              "load",
+              () => setIcon(id, faviconUrl),
+              ONE_TIME_PASSIVE_EVENT
+            );
+            favicon.src = faviconUrl;
+          }
         }
       }
     },
