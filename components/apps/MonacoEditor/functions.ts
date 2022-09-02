@@ -36,12 +36,12 @@ export const getSaveFileInfo = (
   url?: string,
   editor?: Monaco.editor.IStandaloneCodeEditor
 ): [] | [string, string] => {
-  if (!editor || !url) return [];
+  if (!editor) return [];
 
   const { uri } = editor.getModel() || {};
   const [baseUrl] = uri?.path.split(URL_DELIMITER) || [];
   const saveUrl =
     uri?.scheme === "file" ? baseUrl : url || DEFAULT_TEXT_FILE_SAVE_PATH;
 
-  return url === baseUrl || !url ? [saveUrl, editor.getValue()] : [];
+  return !url || url === baseUrl ? [saveUrl, editor.getValue()] : [];
 };
