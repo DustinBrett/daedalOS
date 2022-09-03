@@ -2,6 +2,7 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import {
+  getIpfsResource,
   getProcessByFileExtension,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
@@ -10,9 +11,10 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { extname } from "path";
+import { basename, extname, join } from "path";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
+  DESKTOP_PATH,
   PACKAGE_DATA,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
@@ -49,7 +51,7 @@ const Run: FC<ComponentProcessProps> = () => {
     closeWithTransition,
     processes: { Run: runProcess } = {},
   } = useProcesses();
-  const { exists, readFile, stat } = useFileSystem();
+  const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
   const { foregroundId, runHistory, setRunHistory } = useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
@@ -74,7 +76,25 @@ const Run: FC<ComponentProcessProps> = () => {
           resourceUrl.length > 0 ? resourceUrl.join(" ") : resourcePid;
       }
 
-      if (resourceExists || (await exists(resourcePath))) {
+      const isIpfs = resourcePath.startsWith("ipfs://");
+
+      if (resourceExists || isIpfs || (await exists(resourcePath))) {
+        if (isIpfs) {
+          resourcePath = join(
+            DESKTOP_PATH,
+            await createPath(
+              resourcePath
+                .replace("ipfs://", "")
+                .split("/")
+                .filter(Boolean)
+                .join("_"),
+              DESKTOP_PATH,
+              await getIpfsResource(resourcePath)
+            )
+          );
+          updateFolder(DESKTOP_PATH, basename(resourcePath));
+        }
+
         const stats = await stat(resourcePath);
 
         if (stats.isDirectory()) {
@@ -135,7 +155,16 @@ const Run: FC<ComponentProcessProps> = () => {
 
       if (closeOnExecute) closeWithTransition("Run");
     },
-    [closeWithTransition, exists, open, readFile, setRunHistory, stat]
+    [
+      closeWithTransition,
+      createPath,
+      exists,
+      open,
+      readFile,
+      setRunHistory,
+      stat,
+      updateFolder,
+    ]
   );
 
   useLayoutEffect(() => {

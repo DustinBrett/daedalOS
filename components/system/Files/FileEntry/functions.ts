@@ -19,6 +19,7 @@ import {
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
+  IPFS_GATEWAY_URL,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
@@ -583,4 +584,10 @@ export const getTextWrapData = (
     lines,
     width: Math.min(maxWidth, totalWidth),
   };
+};
+
+export const getIpfsResource = async (ipfsUrl: string): Promise<Buffer> => {
+  const response = await fetch(ipfsUrl.replace("ipfs://", IPFS_GATEWAY_URL));
+
+  return Buffer.from(await response.arrayBuffer());
 };

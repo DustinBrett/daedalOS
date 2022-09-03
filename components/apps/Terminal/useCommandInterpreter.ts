@@ -22,6 +22,7 @@ import {
 } from "components/apps/Terminal/useTerminal";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
+  getIpfsResource,
   getModifiedTime,
   getProcessByFileExtension,
 } from "components/system/Files/FileEntry/functions";
@@ -32,6 +33,7 @@ import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import {
+  DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   isFileSystemSupported,
   ONE_DAY_IN_MILLISECONDS,
@@ -76,12 +78,27 @@ const useCommandInterpreter = (
     title: changeTitle,
   } = useProcesses();
   const getFullPath = useCallback(
-    (file: string): string => {
+    async (file: string): Promise<string> => {
       if (!file) return "";
+
+      if (file.startsWith("ipfs://")) {
+        const ipfsFile = join(
+          DESKTOP_PATH,
+          await createPath(
+            file.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
+            DESKTOP_PATH,
+            await getIpfsResource(file)
+          )
+        );
+
+        updateFolder(DESKTOP_PATH, basename(ipfsFile));
+
+        return ipfsFile;
+      }
 
       return isAbsolute(file) ? file : join(cd.current, file);
     },
-    [cd]
+    [cd, createPath, updateFolder]
   );
   const colorOutput = useRef<string[]>([]);
   const updateFile = useCallback(
@@ -112,7 +129,7 @@ const useCommandInterpreter = (
           const [file] = commandArgs;
 
           if (file) {
-            const fullPath = getFullPath(file);
+            const fullPath = await getFullPath(file);
 
             if (await exists(fullPath)) {
               if ((await lstat(fullPath)).isDirectory()) {
@@ -134,7 +151,7 @@ const useCommandInterpreter = (
           const [directory] = commandArgs;
 
           if (directory && lcBaseCommand !== "pwd") {
-            const fullPath = getFullPath(directory);
+            const fullPath = await getFullPath(directory);
 
             if (await exists(fullPath)) {
               if (!(await lstat(fullPath)).isDirectory()) {
@@ -199,11 +216,11 @@ const useCommandInterpreter = (
         case "copy":
         case "cp": {
           const [source, destination] = commandArgs;
-          const fullSourcePath = getFullPath(source);
+          const fullSourcePath = await getFullPath(source);
 
           if (await exists(fullSourcePath)) {
             if (destination) {
-              const fullDestinationPath = getFullPath(destination);
+              const fullDestinationPath = await getFullPath(destination);
               const dirName = dirname(fullDestinationPath);
 
               updateFile(
@@ -245,7 +262,7 @@ const useCommandInterpreter = (
           const [commandPath] = commandArgs;
 
           if (commandPath) {
-            const fullPath = getFullPath(commandPath);
+            const fullPath = await getFullPath(commandPath);
 
             if (await exists(fullPath)) {
               await deletePath(fullPath);
@@ -334,7 +351,7 @@ const useCommandInterpreter = (
             !directory.startsWith("*") &&
             !directory.endsWith("*")
           ) {
-            const fullPath = getFullPath(directory);
+            const fullPath = await getFullPath(directory);
 
             if (await exists(fullPath)) {
               if ((await lstat(fullPath)).isDirectory()) {
@@ -361,7 +378,7 @@ const useCommandInterpreter = (
           const [commandPath] = commandArgs;
 
           if (commandPath) {
-            const fullPath = getFullPath(commandPath);
+            const fullPath = await getFullPath(commandPath);
 
             if (await exists(fullPath)) {
               const { fileTypeFromBuffer } = await import("file-type");
@@ -388,7 +405,7 @@ const useCommandInterpreter = (
           const [file, format] = commandArgs;
 
           if (file && format) {
-            const fullPath = getFullPath(file);
+            const fullPath = await getFullPath(file);
 
             if (
               (await exists(fullPath)) &&
@@ -484,7 +501,7 @@ const useCommandInterpreter = (
           const [directory] = commandArgs;
 
           if (directory) {
-            const fullPath = getFullPath(directory);
+            const fullPath = await getFullPath(directory);
 
             await mkdirRecursive(fullPath);
             updateFile(fullPath);
@@ -521,11 +538,11 @@ const useCommandInterpreter = (
         case "ren":
         case "rename": {
           const [source, destination] = commandArgs;
-          const fullSourcePath = getFullPath(source);
+          const fullSourcePath = await getFullPath(source);
 
           if (await exists(fullSourcePath)) {
             if (destination) {
-              const fullDestinationPath = getFullPath(destination);
+              const fullDestinationPath = await getFullPath(destination);
 
               await rename(fullSourcePath, fullDestinationPath);
               updateFile(fullSourcePath, true);
@@ -560,7 +577,7 @@ const useCommandInterpreter = (
         case "python": {
           if (localEcho) {
             const [file] = commandArgs;
-            const fullSourcePath = getFullPath(file);
+            const fullSourcePath = await getFullPath(file);
 
             if (await exists(fullSourcePath)) {
               const code = await readFile(fullSourcePath);
@@ -592,7 +609,7 @@ const useCommandInterpreter = (
           const [file] = commandArgs;
 
           if (file) {
-            const fullPath = getFullPath(file);
+            const fullPath = await getFullPath(file);
             const dirName = dirname(fullPath);
 
             updateFile(
@@ -660,7 +677,7 @@ const useCommandInterpreter = (
           const [file, format = "xlsx"] = commandArgs;
 
           if (file && format) {
-            const fullPath = getFullPath(file);
+            const fullPath = await getFullPath(file);
 
             if (
               (await exists(fullPath)) &&
@@ -698,7 +715,7 @@ const useCommandInterpreter = (
 
             if (pid) {
               const [file] = commandArgs;
-              const fullPath = getFullPath(file);
+              const fullPath = await getFullPath(file);
 
               open(pid, {
                 url:
