@@ -7,6 +7,11 @@ const StyledBoxedWine = styled.div`
     cursor: default !important;
   }
 
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+
   ol {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
 

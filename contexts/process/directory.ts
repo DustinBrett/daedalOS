@@ -18,6 +18,7 @@ const directory: Processes = {
       "/Program Files/BoxedWine/boxedwine-shell.js",
       "/Program Files/BoxedWine/boxedwine.js",
     ],
+    lockAspectRatio: true,
     singleton: true,
     title: "BoxedWine",
   },
