@@ -42,7 +42,7 @@ export const centerPosition = ({ height, width }: Size): Position => {
   };
 };
 
-const WINDOW_OFFSCREEN_BUFFER_PX = {
+export const WINDOW_OFFSCREEN_BUFFER_PX = {
   BOTTOM: 15,
   LEFT: 150,
   RIGHT: 50,
