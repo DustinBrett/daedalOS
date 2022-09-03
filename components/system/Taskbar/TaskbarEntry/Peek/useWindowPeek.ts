@@ -4,6 +4,7 @@ import {
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
+import { getHtmlToImage } from "utils/functions";
 
 const FPS = 10;
 
@@ -17,7 +18,8 @@ const renderFrame = async (
     window.requestAnimationFrame(() =>
       renderFrame(previewElement, animate, callback)
     );
-  const htmlToImage = await import("html-to-image");
+
+  const htmlToImage = await getHtmlToImage();
   const dataCanvas = await htmlToImage.toCanvas(previewElement, {
     filter: (element) => !(element instanceof HTMLSourceElement),
     skipAutoScale: true,
