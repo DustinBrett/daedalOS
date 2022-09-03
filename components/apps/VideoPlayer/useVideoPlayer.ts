@@ -33,6 +33,7 @@ const useVideoPlayer = (
 ): void => {
   const { readFile } = useFileSystem();
   const {
+    linkElement,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
@@ -89,8 +90,9 @@ const useVideoPlayer = (
       );
       setPlayer(videoPlayer);
       setLoading(false);
+      linkElement(id, "peekElement", videoElement);
     });
-  }, [containerRef, setLoading, updateWindowSize]);
+  }, [containerRef, id, linkElement, setLoading, updateWindowSize]);
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
