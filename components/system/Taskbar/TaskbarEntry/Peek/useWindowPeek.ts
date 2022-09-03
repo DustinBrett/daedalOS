@@ -72,7 +72,7 @@ const useWindowPeek = (id: string): string => {
           window.requestAnimationFrame(() =>
             renderFrame(previewElement, animate, setImageSrc)
           ),
-        MILLISECONDS_IN_SECOND / 2
+        document.querySelector(".peekWindow") ? 0 : MILLISECONDS_IN_SECOND / 2
       );
       animate.current = true;
     }
