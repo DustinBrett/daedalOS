@@ -86,7 +86,7 @@ const useFileKeyboardShortcuts = (
         }
 
         const { x, y, height, width } = targetElement.getBoundingClientRect();
-        const movedElement =
+        let movedElement =
           key === "ArrowUp" || key === "ArrowDown"
             ? document.elementFromPoint(
                 x,
@@ -96,6 +96,28 @@ const useFileKeyboardShortcuts = (
                 x + (key === "ArrowLeft" ? -width : width * 2),
                 y
               );
+
+        if (movedElement instanceof HTMLOListElement) {
+          const nearestLi = targetElement.closest("li");
+
+          if (nearestLi instanceof HTMLLIElement) {
+            const olChildren = [...movedElement.children];
+            const liPosition = olChildren.indexOf(nearestLi);
+
+            if (key === "ArrowUp" || key === "ArrowDown") {
+              movedElement =
+                olChildren[
+                  key === "ArrowUp"
+                    ? liPosition === 0
+                      ? olChildren.length - 1
+                      : liPosition - 1
+                    : liPosition === olChildren.length - 1
+                    ? 0
+                    : liPosition + 1
+                ].querySelector("button");
+            }
+          }
+        }
 
         (movedElement?.closest("button") || targetElement)?.click();
       } else if (target instanceof HTMLButtonElement && key === "Enter") {
