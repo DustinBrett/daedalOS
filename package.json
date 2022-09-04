@@ -43,7 +43,6 @@
     "styled-components": "^5"
   },
   "dependencies": {
-    "@ipfs/public-gateway-checker": "ipfs/public-gateway-checker",
     "@monaco-editor/react": "^4.4.5",
     "@panzoom/panzoom": "^4.5.0",
     "@wasmer/wasi": "0.12.0",

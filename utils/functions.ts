@@ -1,4 +1,3 @@
-import { IMG_HASH } from "@ipfs/public-gateway-checker/src/constants";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes, RelativePosition } from "contexts/process/types";
@@ -525,7 +524,8 @@ const isIpfsGatewayAvailable = (gatewayUrl: string): Promise<boolean> =>
 
     img.src = `${gatewayUrl.replace(
       "<CID>",
-      IMG_HASH
+      // https://github.com/ipfs/public-gateway-checker/blob/master/src/constants.ts
+      "bafybeibwzifw52ttrkqlikfzext5akxu7lz4xiwjgwzmqcpdzmp3n5vnbe"
     )}?now=${Date.now()}&filename=1x1.png#x-ipfs-companion-no-redirect`;
   });
 
