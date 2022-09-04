@@ -381,7 +381,9 @@ const useFileContextMenu = (
         label: "Open with",
         menu: openWithFiltered.map((id): MenuItem => {
           const { icon, title: label } = processDirectory[id] || {};
-          const action = (): void => openFile(id, icon);
+          const action = (): void => {
+            openFile(id, icon);
+          };
 
           return { action, icon, label };
         }),
@@ -412,7 +414,9 @@ const useFileContextMenu = (
         !MOUNTABLE_EXTENSIONS.has(urlExtension)
       ) {
         menuItems.unshift({
-          action: () => openFile(pid, pidIcon),
+          action: () => {
+            openFile(pid, pidIcon);
+          },
           label: "Open in new window",
         });
       }
