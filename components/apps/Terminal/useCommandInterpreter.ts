@@ -82,10 +82,12 @@ const useCommandInterpreter = (
       if (!file) return "";
 
       if (file.startsWith("ipfs://")) {
+        const { searchParams } = new URL(file);
         const ipfsFile = join(
           DESKTOP_PATH,
           await createPath(
-            file.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
+            searchParams.get("filename") ||
+              file.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
             DESKTOP_PATH,
             await getIpfsResource(file)
           )
