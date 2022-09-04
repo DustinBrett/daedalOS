@@ -80,14 +80,17 @@ const Run: FC<ComponentProcessProps> = () => {
 
       if (resourceExists || isIpfs || (await exists(resourcePath))) {
         if (isIpfs) {
+          const { searchParams } = new URL(resourcePath);
+
           resourcePath = join(
             DESKTOP_PATH,
             await createPath(
-              resourcePath
-                .replace("ipfs://", "")
-                .split("/")
-                .filter(Boolean)
-                .join("_"),
+              searchParams.get("filename") ||
+                resourcePath
+                  .replace("ipfs://", "")
+                  .split("/")
+                  .filter(Boolean)
+                  .join("_"),
               DESKTOP_PATH,
               await getIpfsResource(resourcePath)
             )

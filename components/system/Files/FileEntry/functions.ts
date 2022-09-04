@@ -19,7 +19,6 @@ import {
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
-  IPFS_GATEWAY_URL,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
@@ -37,6 +36,7 @@ import {
   blobToBase64,
   bufferToUrl,
   getGifJs,
+  getIpfsGatewayUrl,
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
@@ -587,7 +587,18 @@ export const getTextWrapData = (
 };
 
 export const getIpfsResource = async (ipfsUrl: string): Promise<Buffer> => {
-  const response = await fetch(ipfsUrl.replace("ipfs://", IPFS_GATEWAY_URL));
+  // eslint-disable-next-line unicorn/no-null
+  let response: Response | null = null;
 
-  return Buffer.from(await response.arrayBuffer());
+  try {
+    response = await fetch(await getIpfsGatewayUrl(ipfsUrl));
+  } catch (error) {
+    if ((error as Error).message === "Failed to fetch") {
+      response = await fetch(await getIpfsGatewayUrl(ipfsUrl, true));
+    }
+  }
+
+  return response instanceof Response
+    ? Buffer.from(await response.arrayBuffer())
+    : Buffer.from("");
 };

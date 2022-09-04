@@ -43,6 +43,7 @@
     "styled-components": "^5"
   },
   "dependencies": {
+    "@ipfs/public-gateway-checker": "ipfs/public-gateway-checker",
     "@monaco-editor/react": "^4.4.5",
     "@panzoom/panzoom": "^4.5.0",
     "@wasmer/wasi": "0.12.0",
@@ -59,6 +60,7 @@
     "idb": "^7.0.2",
     "ini": "^3.0.1",
     "isomorphic-git": "^1.21.0",
+    "multiformats": "^9.7.1",
     "music-metadata-browser": "^2.5.8",
     "next": "^12.2.5",
     "playlist-parser": "^0.0.12",

@@ -1,3 +1,4 @@
+import { IMG_HASH } from "@ipfs/public-gateway-checker/src/constants";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes, RelativePosition } from "contexts/process/types";
@@ -12,8 +13,9 @@ import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
-  IPFS_GATEWAY_URL,
+  IPFS_GATEWAY_URLS,
   MAX_RES_ICON_OVERRIDE,
+  MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
 } from "utils/constants";
@@ -502,7 +504,65 @@ export const getTZOffsetISOString = (): string => {
   ).toISOString();
 };
 
-export const getUrlOrSearch = (input: string): string => {
+let IPFS_GATEWAY_URL = "";
+
+const isIpfsGatewayAvailable = (gatewayUrl: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    const timeoutId = window.setTimeout(
+      () => resolve(false),
+      MILLISECONDS_IN_SECOND
+    );
+    const img = new Image();
+
+    img.addEventListener("load", () => {
+      window.clearTimeout(timeoutId);
+      resolve(true);
+    });
+    img.addEventListener("error", () => {
+      window.clearTimeout(timeoutId);
+      resolve(false);
+    });
+
+    img.src = `${gatewayUrl.replace(
+      "<CID>",
+      IMG_HASH
+    )}?now=${Date.now()}&filename=1x1.png#x-ipfs-companion-no-redirect`;
+  });
+
+export const getIpfsGatewayUrl = async (
+  ipfsUrl: string,
+  notCurrent?: boolean
+): Promise<string> => {
+  if (!IPFS_GATEWAY_URL || notCurrent) {
+    const urlList = notCurrent
+      ? IPFS_GATEWAY_URLS.filter((url) => url !== IPFS_GATEWAY_URL)
+      : IPFS_GATEWAY_URLS;
+
+    for (const url of urlList) {
+      // eslint-disable-next-line no-await-in-loop
+      if (await isIpfsGatewayAvailable(url)) {
+        IPFS_GATEWAY_URL = url;
+        break;
+      }
+    }
+
+    if (!IPFS_GATEWAY_URL) return "";
+  }
+
+  const { pathname, protocol, search } = new URL(ipfsUrl);
+
+  if (protocol !== "ipfs:") return "";
+
+  const [cid = "", ...path] = pathname.split("/").filter(Boolean);
+  const { CID } = await import("multiformats/cid");
+
+  return `${IPFS_GATEWAY_URL.replace(
+    "<CID>",
+    CID.parse(cid).toV1().toString()
+  )}${path.join("/")}${search}`;
+};
+
+export const getUrlOrSearch = async (input: string): Promise<string> => {
   const isIpfs = input.startsWith("ipfs://");
   const hasHttpSchema =
     input.startsWith("http://") || input.startsWith("https://");
@@ -513,13 +573,11 @@ export const getUrlOrSearch = (input: string): string => {
     input.endsWith(".org");
 
   try {
-    const { href, pathname } = new URL(
+    const { href } = new URL(
       hasHttpSchema || !hasTld || isIpfs ? input : `https://${input}`
     );
 
-    return isIpfs
-      ? `${IPFS_GATEWAY_URL}${pathname.split("/").filter(Boolean).join("/")}`
-      : href;
+    return isIpfs ? await getIpfsGatewayUrl(href) : href;
   } catch {
     return `${GOOGLE_SEARCH_QUERY}${input}`;
   }
