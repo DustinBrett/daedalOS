@@ -90,9 +90,9 @@ const useVideoPlayer = (
       );
       setPlayer(videoPlayer);
       setLoading(false);
-      linkElement(id, "peekElement", videoElement);
+      if (!isYouTubeUrl(url)) linkElement(id, "peekElement", videoElement);
     });
-  }, [containerRef, id, linkElement, setLoading, updateWindowSize]);
+  }, [containerRef, id, linkElement, setLoading, updateWindowSize, url]);
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
