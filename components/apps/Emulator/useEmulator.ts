@@ -86,7 +86,7 @@ const useEmulator = (
       const saveState = async (): Promise<void> => {
         if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
         if (await writeFile(savePath, Buffer.from(state), true)) {
-          const iconCacheRootPath = join(ICON_CACHE, dirname(savePath));
+          const iconCacheRootPath = join(ICON_CACHE, SAVE_PATH);
           const iconCachePath = join(
             ICON_CACHE,
             `${savePath}${ICON_CACHE_EXTENSION}`
