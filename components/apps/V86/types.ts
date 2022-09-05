@@ -11,6 +11,15 @@ export type V86Starter = {
   lock_mouse: () => void;
   remove_listener: EventListener;
   save_state: () => Promise<ArrayBuffer>;
+  v86: {
+    cpu: {
+      devices: {
+        vga: {
+          graphical_mode: boolean;
+        };
+      };
+    };
+  };
 };
 
 export type V86Config = V86ImageConfig &

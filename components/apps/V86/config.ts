@@ -10,4 +10,4 @@ export const config = {
   wasm_path: "/Program Files/Virtual x86/v86.wasm",
 };
 
-export const saveExtension = ".save.bin";
+export const saveExtension = ".bin.save";
