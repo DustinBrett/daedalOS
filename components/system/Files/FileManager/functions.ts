@@ -157,7 +157,7 @@ const createFileReaders = async (
     subFolder = ""
   ): Promise<void> =>
     new Promise((resolve) => {
-      if (fileSystemEntry.isDirectory) {
+      if (fileSystemEntry?.isDirectory) {
         (fileSystemEntry as FileSystemDirectoryEntry)
           .createReader()
           .readEntries((entries) =>
@@ -168,7 +168,7 @@ const createFileReaders = async (
             ).then(() => resolve())
           );
       } else {
-        (fileSystemEntry as FileSystemFileEntry).file((file) => {
+        (fileSystemEntry as FileSystemFileEntry)?.file((file) => {
           addFile(file, subFolder);
           resolve();
         });
@@ -198,11 +198,21 @@ type EventData = {
 export const getEventData = (
   event: InputChangeEvent | never[] | React.DragEvent
 ): EventData => {
-  const files =
+  let files =
     (event as InputChangeEvent).target?.files ||
     (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
     [];
-  const text = (event as React.DragEvent).dataTransfer?.getData("text");
+
+  if (files instanceof DataTransferItemList) {
+    files = [...files].filter(
+      (item) => !("kind" in item) || item.kind === "file"
+    ) as unknown as DataTransferItemList;
+  }
+
+  const text =
+    files.length > 0
+      ? ""
+      : (event as React.DragEvent).dataTransfer?.getData("text");
 
   return { files, text };
 };
