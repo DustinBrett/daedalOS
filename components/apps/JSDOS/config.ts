@@ -19,7 +19,7 @@ export const globals = [
 
 export const pathPrefix = "/Program Files/js-dos/";
 
-export const saveExtension = ".save.zip";
+export const saveExtension = ".zip.save";
 
 export const zipConfigFiles = {
   ".jsdos/dosbox.conf": "/Program Files/js-dos/dosbox.conf",
