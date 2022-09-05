@@ -2,6 +2,7 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import {
+  getIpfsFileName,
   getIpfsResource,
   getProcessByFileExtension,
   getShortcutInfo,
@@ -80,19 +81,14 @@ const Run: FC<ComponentProcessProps> = () => {
 
       if (resourceExists || isIpfs || (await exists(resourcePath))) {
         if (isIpfs) {
-          const { searchParams } = new URL(resourcePath);
+          const ipfsData = await getIpfsResource(resourcePath);
 
           resourcePath = join(
             DESKTOP_PATH,
             await createPath(
-              searchParams.get("filename") ||
-                resourcePath
-                  .replace("ipfs://", "")
-                  .split("/")
-                  .filter(Boolean)
-                  .join("_"),
+              await getIpfsFileName(resourcePath, ipfsData),
               DESKTOP_PATH,
-              await getIpfsResource(resourcePath)
+              ipfsData
             )
           );
           updateFolder(DESKTOP_PATH, basename(resourcePath));

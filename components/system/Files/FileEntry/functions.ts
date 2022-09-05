@@ -586,6 +586,23 @@ export const getTextWrapData = (
   };
 };
 
+export const getIpfsFileName = async (
+  ipfsUrl: string,
+  ipfsData: Buffer
+): Promise<string> => {
+  const { pathname, searchParams } = new URL(ipfsUrl);
+  const fileName = searchParams.get("filename");
+
+  if (fileName) return fileName;
+
+  const { fileTypeFromBuffer } = await import("file-type");
+  const { ext = "" } = (await fileTypeFromBuffer(ipfsData)) || {};
+
+  return `${pathname.split("/").filter(Boolean).join("_")}${
+    ext ? `.${ext}` : ""
+  }`;
+};
+
 export const getIpfsResource = async (ipfsUrl: string): Promise<Buffer> => {
   // eslint-disable-next-line unicorn/no-null
   let response: Response | null = null;

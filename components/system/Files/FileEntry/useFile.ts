@@ -1,4 +1,7 @@
-import { getIpfsResource } from "components/system/Files/FileEntry/functions";
+import {
+  getIpfsFileName,
+  getIpfsResource,
+} from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -27,15 +30,14 @@ const useFile = (url: string): UseFile => {
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
-        const { searchParams } = new URL(url);
+        const ipfsData = await getIpfsResource(url);
 
         runUrl = join(
           DESKTOP_PATH,
           await createPath(
-            searchParams.get("filename") ||
-              url.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
+            await getIpfsFileName(url, ipfsData),
             DESKTOP_PATH,
-            await getIpfsResource(url)
+            ipfsData
           )
         );
 

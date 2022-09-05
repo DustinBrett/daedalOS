@@ -22,6 +22,7 @@ import {
 } from "components/apps/Terminal/useTerminal";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
+  getIpfsFileName,
   getIpfsResource,
   getModifiedTime,
   getProcessByFileExtension,
@@ -82,14 +83,13 @@ const useCommandInterpreter = (
       if (!file) return "";
 
       if (file.startsWith("ipfs://")) {
-        const { searchParams } = new URL(file);
+        const ipfsData = await getIpfsResource(file);
         const ipfsFile = join(
           DESKTOP_PATH,
           await createPath(
-            searchParams.get("filename") ||
-              file.replace("ipfs://", "").split("/").filter(Boolean).join("_"),
+            await getIpfsFileName(file, ipfsData),
             DESKTOP_PATH,
-            await getIpfsResource(file)
+            ipfsData
           )
         );
 
