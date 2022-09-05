@@ -453,7 +453,9 @@ const useCommandInterpreter = (
           const [commandName] = commandArgs;
 
           if (localEcho) {
-            if (commandName) {
+            const showAliases = commandName === "-a";
+
+            if (commandName && !showAliases) {
               const helpCommand = commands[commandName]
                 ? commandName
                 : Object.entries(aliases).find(
@@ -468,7 +470,7 @@ const useCommandInterpreter = (
                 );
               }
             } else {
-              help(localEcho, commands, aliases);
+              help(localEcho, commands, showAliases ? aliases : undefined);
             }
           }
           break;
