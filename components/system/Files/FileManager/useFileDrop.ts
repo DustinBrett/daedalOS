@@ -69,6 +69,9 @@ const useFileDrop = ({
     onDrop: (event) => {
       if (updatePositions && event.target instanceof HTMLElement) {
         const { files, text } = getEventData(event as React.DragEvent);
+
+        if (files.length === 0 && text === "") return;
+
         const dragPosition = {
           x: event.clientX,
           y: event.clientY,
@@ -82,6 +85,8 @@ const useFileDrop = ({
           } catch {
             // Ignore failed JSON parsing
           }
+
+          if (fileEntries.length === 0) return;
 
           if (
             fileEntries[0].startsWith(directory) &&

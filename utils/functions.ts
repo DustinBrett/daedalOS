@@ -364,6 +364,7 @@ export const updateIconPositions = (
   const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
 
   if (
+    draggedEntries.length > 0 &&
     !Object.values(currentIconPositions).some(
       ({ gridColumnStart, gridRowStart }) =>
         gridColumnStart === gridDropPosition.gridColumnStart &&
