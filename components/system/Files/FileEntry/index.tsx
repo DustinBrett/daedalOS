@@ -324,7 +324,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else if (getIcon) {
+        } else {
           const cachedIconPath = join(
             ICON_CACHE,
             `${path}${ICON_CACHE_EXTENSION}`
