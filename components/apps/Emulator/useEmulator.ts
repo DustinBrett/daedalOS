@@ -34,6 +34,9 @@ const useEmulator = (
   const loadedUrlRef = useRef<string>("");
   const loadRom = useCallback(async () => {
     if (!url) return;
+
+    containerRef.current?.classList.remove("drop");
+
     if (loadedUrlRef.current) {
       if (loadedUrlRef.current !== url) {
         loadedUrlRef.current = "";
@@ -57,7 +60,7 @@ const useEmulator = (
 
     window.EJS_gameName = basename(url, ext);
 
-    const [console, { core, zip }] = getCore(ext);
+    const [console, { core = "", zip = false } = {}] = getCore(ext);
     const rom = await readFile(url);
 
     window.EJS_gameUrl = bufferToUrl(
@@ -136,9 +139,11 @@ const useEmulator = (
   ]);
 
   useEffect(() => {
-    if (!url) setLoading(false);
-    else loadRom();
-  }, [loadRom, setLoading, url]);
+    if (!url) {
+      setLoading(false);
+      containerRef.current?.classList.add("drop");
+    } else loadRom();
+  }, [containerRef, loadRom, setLoading, url]);
 
   useLayoutEffect(() => {
     if (!loading) {

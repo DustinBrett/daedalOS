@@ -7,7 +7,7 @@ const StyledRuffle = styled.div`
   &.drop {
     &::before {
       color: #ffad33;
-      content: "Drop an SWF/SPL file";
+      content: "Drop SWF/SPL file here";
       display: flex;
       font-size: 16px;
       font-weight: 600;
