@@ -335,10 +335,19 @@ const useCommandInterpreter = (
             );
             localEcho?.println(` Directory of ${dirPath}`);
             localEcho?.println("");
+
+            const fullSizeTerminal =
+              !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
+
             printTable(
               [
-                ["Date", 22],
-                ["Type/Size", 15, true, (size) => (size !== "-1" ? size : "")],
+                ["Date", fullSizeTerminal ? 22 : 20],
+                [
+                  "Type/Size",
+                  fullSizeTerminal ? 15 : 13,
+                  true,
+                  (size) => (size !== "-1" ? size : ""),
+                ],
                 ["Name", terminal?.cols ? terminal.cols - 40 : 30],
               ],
               entriesWithStats,
