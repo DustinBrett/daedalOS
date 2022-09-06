@@ -528,11 +528,11 @@ const useCommandInterpreter = (
                   const fullPath = join(cd.current, mappedFolder);
                   const files = await readdir(fullPath);
 
+                  updateFolder(cd.current, mappedFolder);
+
                   // eslint-disable-next-line no-param-reassign
                   cd.current = fullPath;
                   autoComplete(files, localEcho);
-
-                  updateFolder(cd.current, mappedFolder);
                 }
               } catch {
                 // Ignore failure to mount
