@@ -148,9 +148,15 @@ const useCommandInterpreter = (
           break;
         }
         case "cd":
+        case "cd/":
+        case "cd.":
+        case "cd..":
         case "chdir":
         case "pwd": {
-          const [directory] = commandArgs;
+          const [directory] =
+            lcBaseCommand.startsWith("cd") && lcBaseCommand.length > 2
+              ? [lcBaseCommand.slice(2)]
+              : commandArgs;
 
           if (directory && lcBaseCommand !== "pwd") {
             const fullPath = await getFullPath(directory);
@@ -546,7 +552,17 @@ const useCommandInterpreter = (
 
           if (await exists(fullSourcePath)) {
             if (destination) {
-              const fullDestinationPath = await getFullPath(destination);
+              let fullDestinationPath = await getFullPath(destination);
+
+              if (
+                ["move", "mv"].includes(lcBaseCommand) &&
+                (await stat(fullDestinationPath)).isDirectory()
+              ) {
+                fullDestinationPath = join(
+                  fullDestinationPath,
+                  basename(fullSourcePath)
+                );
+              }
 
               await rename(fullSourcePath, fullDestinationPath);
               updateFile(fullSourcePath, true);

@@ -34,7 +34,7 @@ export const convert = async (
 
       returnFiles.push([
         join(dirname(fileName), newName),
-        image.blob
+        image?.blob
           ? Buffer.from(await image.blob.arrayBuffer())
           : Buffer.from(""),
       ]);
