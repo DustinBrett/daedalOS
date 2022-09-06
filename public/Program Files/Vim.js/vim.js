@@ -7124,7 +7124,9 @@ function _vimjs_init() {
         if (vimjs.canvas_node.contains(event.target)) {
             vimjs.lastMouseDownTarget = vimjs.canvas_node
         } else {
-            vimjs.lastMouseDownTarget = event.target
+            vimjs.lastMouseDownTarget = VimModule["containerWindow"]?.contains(event.target)
+              ? vimjs.canvas_node
+              : event.target
         }
     };
     document.addEventListener("mousedown", mousedownHandler, false);

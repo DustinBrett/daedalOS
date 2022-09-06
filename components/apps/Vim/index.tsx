@@ -38,6 +38,9 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     window.VimWrapperModule?.init?.({
       VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
+      containerWindow: document
+        .querySelector("#vimjs-container")
+        ?.closest("section"),
       memoryInitializerPrefixURL: "/Program Files/Vim.js/",
       postRun: [
         () => {

@@ -49,6 +49,11 @@ const useJSDOS = (
           baseContainer?.addEventListener("keyup", captureKeys, {
             capture: true,
           });
+          baseContainer?.addEventListener(
+            "focus",
+            () => containerRef.current?.focus(PREVENT_SCROLL),
+            { passive: true }
+          );
 
           setDosInstance(window.Dos(containerRef.current, dosOptions));
         }

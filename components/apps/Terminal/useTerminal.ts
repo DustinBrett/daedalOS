@@ -113,6 +113,13 @@ const useTerminal = (
             );
         }
       });
+      containerRef.current
+        ?.closest("section")
+        ?.addEventListener(
+          "focus",
+          () => terminal?.textarea?.focus(PREVENT_SCROLL),
+          { passive: true }
+        );
 
       setLoading(false);
 

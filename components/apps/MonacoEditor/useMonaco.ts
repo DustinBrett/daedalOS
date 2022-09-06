@@ -105,6 +105,12 @@ const useMonaco = (
         theme,
       });
 
+      containerRef.current
+        ?.closest("section")
+        ?.addEventListener("focus", () => currentEditor.focus(), {
+          passive: true,
+        });
+
       setEditor(currentEditor);
       setArgument(id, "editor", currentEditor);
       setLoading(false);

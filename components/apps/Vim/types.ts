@@ -22,6 +22,7 @@ type VimModule = {
   asmLibraryArg?: {
     _vimjs_prepare_exit: () => void;
   };
+  containerWindow?: HTMLElement | null;
   exit?: () => void;
   memoryInitializerPrefixURL: string;
   postRun: (() => void)[];
