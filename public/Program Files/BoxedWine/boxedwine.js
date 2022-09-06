@@ -5312,20 +5312,20 @@ var Browser = {
   }
   if (!Browser.fullscreenHandlersInstalled) {
    Browser.fullscreenHandlersInstalled = true;
-   document.addEventListener("fullscreenchange", fullscreenChange, false);
-   document.addEventListener("mozfullscreenchange", fullscreenChange, false);
-   document.addEventListener("webkitfullscreenchange", fullscreenChange, false);
-   document.addEventListener("MSFullscreenChange", fullscreenChange, false);
+  //  document.addEventListener("fullscreenchange", fullscreenChange, false);
+  //  document.addEventListener("mozfullscreenchange", fullscreenChange, false);
+  //  document.addEventListener("webkitfullscreenchange", fullscreenChange, false);
+  //  document.addEventListener("MSFullscreenChange", fullscreenChange, false);
   }
   var canvasContainer = document.createElement("div");
   canvas.parentNode.insertBefore(canvasContainer, canvas);
   canvasContainer.appendChild(canvas);
-  canvasContainer.requestFullscreen = canvasContainer["requestFullscreen"] || canvasContainer["mozRequestFullScreen"] || canvasContainer["msRequestFullscreen"] || (canvasContainer["webkitRequestFullscreen"] ? function() {
-   canvasContainer["webkitRequestFullscreen"](Element["ALLOW_KEYBOARD_INPUT"]);
-  } : null) || (canvasContainer["webkitRequestFullScreen"] ? function() {
-   canvasContainer["webkitRequestFullScreen"](Element["ALLOW_KEYBOARD_INPUT"]);
-  } : null);
-  canvasContainer.requestFullscreen();
+  // canvasContainer.requestFullscreen = canvasContainer["requestFullscreen"] || canvasContainer["mozRequestFullScreen"] || canvasContainer["msRequestFullscreen"] || (canvasContainer["webkitRequestFullscreen"] ? function() {
+  //  canvasContainer["webkitRequestFullscreen"](Element["ALLOW_KEYBOARD_INPUT"]);
+  // } : null) || (canvasContainer["webkitRequestFullScreen"] ? function() {
+  //  canvasContainer["webkitRequestFullScreen"](Element["ALLOW_KEYBOARD_INPUT"]);
+  // } : null);
+  // canvasContainer.requestFullscreen();
  },
  exitFullscreen: function() {
   if (!Browser.isFullscreen) {
@@ -6374,8 +6374,8 @@ function registerRestoreOldStyle(canvas) {
  function restoreOldStyle() {
   var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
   if (!fullscreenElement) {
-   document.removeEventListener("fullscreenchange", restoreOldStyle);
-   document.removeEventListener("webkitfullscreenchange", restoreOldStyle);
+  //  document.removeEventListener("fullscreenchange", restoreOldStyle);
+  //  document.removeEventListener("webkitfullscreenchange", restoreOldStyle);
    setCanvasElementSize(canvas, oldWidth, oldHeight);
    canvas.style.width = oldCssWidth;
    canvas.style.height = oldCssHeight;
@@ -6400,8 +6400,8 @@ function registerRestoreOldStyle(canvas) {
    }
   }
  }
- document.addEventListener("fullscreenchange", restoreOldStyle);
- document.addEventListener("webkitfullscreenchange", restoreOldStyle);
+//  document.addEventListener("fullscreenchange", restoreOldStyle);
+//  document.addEventListener("webkitfullscreenchange", restoreOldStyle);
  return restoreOldStyle;
 }
 
@@ -6470,9 +6470,9 @@ function _JSEvents_requestFullscreen(target, strategy) {
   _JSEvents_resizeCanvasForFullscreen(target, strategy);
  }
  if (target.requestFullscreen) {
-  target.requestFullscreen();
+  // target.requestFullscreen();
  } else if (target.webkitRequestFullscreen) {
-  target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  // target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
  } else {
   return JSEvents.fullscreenEnabled() ? -3 : -1;
  }
@@ -8177,8 +8177,8 @@ function _emscripten_set_fullscreenchange_callback_on_thread(target, userData, u
  if (!JSEvents.fullscreenEnabled()) return -1;
  target = findEventTarget(target);
  if (!target) return -4;
- registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "fullscreenchange", targetThread);
- registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "webkitfullscreenchange", targetThread);
+//  registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "fullscreenchange", targetThread);
+//  registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "webkitfullscreenchange", targetThread);
  return 0;
 }
 
@@ -9096,7 +9096,7 @@ FS.FSNode = FSNode;
 FS.staticInit();
 
 Module["requestFullscreen"] = function Module_requestFullscreen(lockPointer, resizeCanvas) {
- Browser.requestFullscreen(lockPointer, resizeCanvas);
+ // Browser.requestFullscreen(lockPointer, resizeCanvas);
 };
 
 Module["requestAnimationFrame"] = function Module_requestAnimationFrame(func) {
