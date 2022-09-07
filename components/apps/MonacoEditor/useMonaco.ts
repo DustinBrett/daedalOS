@@ -86,10 +86,11 @@ const useMonaco = (
       const { ctrlKey, code, keyCode } = event;
 
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
+        event.preventDefault();
+
         const [saveUrl, saveData] = getSaveFileInfo(url, editor);
 
-        if (saveUrl && saveData) {
-          event.preventDefault();
+        if (saveUrl && typeof saveData === "string") {
           await writeFile(saveUrl, saveData, true);
           updateFolder(dirname(saveUrl), basename(saveUrl));
           prependFileToTitle(basename(saveUrl));
