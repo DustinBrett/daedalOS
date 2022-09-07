@@ -9,6 +9,7 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { UNKNOWN_ICON_PATH } from "utils/constants";
 import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
@@ -50,7 +51,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
             },
             icon: getIconByFileExtension(extname(path)),
             label: basename(path),
-          }));
+          }))
+          .filter(({ icon }) => icon !== UNKNOWN_ICON_PATH);
 
       contextMenu?.(getItems).onContextMenuCapture(
         undefined,
