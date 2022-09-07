@@ -57,9 +57,12 @@ const Run: FC<ComponentProcessProps> = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
+  const [running, setRunning] = useState(false);
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;
+
+      setRunning(true);
 
       const addRunHistoryEntry = (): void =>
         setRunHistory((currentRunHistory) =>
@@ -152,6 +155,8 @@ const Run: FC<ComponentProcessProps> = () => {
         }
       }
 
+      setRunning(false);
+
       if (closeOnExecute) closeWithTransition("Run");
     },
     [
@@ -195,6 +200,7 @@ const Run: FC<ComponentProcessProps> = () => {
             ref={inputRef}
             autoComplete="off"
             defaultValue={runHistory[0]}
+            disabled={running}
             enterKeyHint="go"
             id={OPEN_ID}
             onBlurCapture={({ relatedTarget }) => {
@@ -253,12 +259,15 @@ const Run: FC<ComponentProcessProps> = () => {
       <nav>
         <StyledButton
           $active={isInputFocused}
-          disabled={isEmptyInput}
+          disabled={isEmptyInput || running}
           onClick={() => runResource(inputRef.current?.value.trim())}
         >
           OK
         </StyledButton>
-        <StyledButton onClick={() => closeWithTransition("Run")}>
+        <StyledButton
+          disabled={running}
+          onClick={() => closeWithTransition("Run")}
+        >
           Cancel
         </StyledButton>
       </nav>
