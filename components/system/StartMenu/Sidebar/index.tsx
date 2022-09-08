@@ -16,7 +16,7 @@ import { useSession } from "contexts/session";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
-import { viewHeight } from "utils/functions";
+import { haltEvent, viewHeight } from "utils/functions";
 
 type SidebarGroupProps = {
   sidebarButtons: SidebarButtons;
@@ -124,6 +124,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         clearTimer();
         setCollapsed((collapsedState) => !collapsedState);
       }}
+      onContextMenu={haltEvent}
       onMouseEnter={() => {
         expandTimer.current = window.setTimeout(() => setCollapsed(false), 700);
       }}
