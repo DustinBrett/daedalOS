@@ -1,10 +1,6 @@
 import Menu, { topLeftPosition } from "components/system/Menu";
-import {
-  Checkmark,
-  ChevronRight,
-  Circle,
-} from "components/system/Menu/MenuIcons";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
+import dynamic from "next/dynamic";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
@@ -17,6 +13,18 @@ type MenuItemEntryProps = MenuItem & {
   isSubMenu: boolean;
   resetMenu: () => void;
 };
+
+const Checkmark = dynamic(() =>
+  import("components/system/Menu/MenuIcons").then((mod) => mod.Checkmark)
+);
+
+const ChevronRight = dynamic(() =>
+  import("components/system/Menu/MenuIcons").then((mod) => mod.ChevronRight)
+);
+
+const Circle = dynamic(() =>
+  import("components/system/Menu/MenuIcons").then((mod) => mod.Circle)
+);
 
 const MenuItemEntry: FC<MenuItemEntryProps> = ({
   action,

@@ -1,11 +1,3 @@
-import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useMenu } from "contexts/menu";
-import type {
-  ContextMenuCapture,
-  MenuItem,
-} from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useCallback } from "react";
 import {
   CLOSE,
   MAXIMIZE,
@@ -14,7 +6,15 @@ import {
   MINIMIZE_DISABLED,
   RESTORE,
   RESTORE_DISABLED,
-} from "styles/SystemIcons";
+} from "components/system/Window/Titlebar/Buttons";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { useMenu } from "contexts/menu";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
+import { useProcesses } from "contexts/process";
+import { useCallback } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
