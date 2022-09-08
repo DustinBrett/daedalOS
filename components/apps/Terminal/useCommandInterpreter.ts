@@ -22,8 +22,6 @@ import {
 } from "components/apps/Terminal/useTerminal";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
-  getIpfsFileName,
-  getIpfsResource,
   getModifiedTime,
   getProcessByFileExtension,
 } from "components/system/Files/FileEntry/functions";
@@ -42,6 +40,7 @@ import {
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
 import { convert } from "utils/imagemagick";
+import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
 import type { Terminal } from "xterm";

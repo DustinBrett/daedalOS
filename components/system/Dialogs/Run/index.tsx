@@ -2,8 +2,6 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import {
-  getIpfsFileName,
-  getIpfsResource,
   getProcessByFileExtension,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
@@ -21,6 +19,7 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import spawnSheep from "utils/spawnSheep";
 
 const OPEN_ID = "open";

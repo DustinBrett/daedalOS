@@ -1,7 +1,3 @@
-import {
-  getIpfsFileName,
-  getIpfsResource,
-} from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -30,6 +26,7 @@ const useFile = (url: string): UseFile => {
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
+        const { getIpfsFileName, getIpfsResource } = await import("utils/ipfs");
         const ipfsData = await getIpfsResource(url);
 
         runUrl = join(
