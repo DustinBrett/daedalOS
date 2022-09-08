@@ -207,7 +207,7 @@ export const DESKTOP_PATH = `${HOME}/Desktop`;
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
   LONG_PRESS: 500,
-  START_MENU: 450,
+  START_MENU: 400,
   WINDOW: 250,
 };
 
