@@ -1,9 +1,15 @@
 import { config } from "components/apps/Terminal/config";
 import type { LocalEcho } from "components/apps/Terminal/types";
+import type { WASI as IWASI } from "node_modules/@wasmer/wasi/dist/pkg/wasmer_wasi_js";
 
 type WASIError = Error & {
   code: number;
 };
+
+interface IWasmerWasi {
+  WASI: typeof IWASI;
+  init: () => Promise<WebAssembly.Exports>;
+}
 
 const loadWapm = async (
   commandArgs: string[],
@@ -11,10 +17,11 @@ const loadWapm = async (
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
-  const { WASI } = await import("@wasmer/wasi");
-  const { WasmFs } = await import("@wasmer/wasmfs");
+  const { init, WASI } = (await import("@wasmer/wasi")) as IWasmerWasi;
 
   try {
+    await init();
+
     const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
 
     if (
@@ -28,30 +35,20 @@ const loadWapm = async (
 
     if (moduleResponse !== undefined && moduleResponse instanceof Uint8Array) {
       const wasmModule = await WebAssembly.compile(moduleResponse);
-      const wasmFs = new WasmFs();
       const wasi = new WASI({
         args: commandArgs,
-        bindings: {
-          ...WASI.defaultBindings,
-          fs: wasmFs.fs,
-        },
         env: {
-          COLUMNS: config.cols as unknown as string,
-          LINES: config.rows as unknown as string,
+          COLUMNS: config.cols?.toString(),
+          LINES: config.rows?.toString(),
         },
       });
       const instance = await WebAssembly.instantiate(
         wasmModule,
-        wasi.getImports(wasmModule)
+        wasi.getImports(wasmModule) as WebAssembly.Imports
       );
 
       wasi.start(instance);
-
-      const output = await wasmFs.getStdOut();
-
-      if (typeof output === "string") {
-        localEcho?.print(output);
-      }
+      localEcho?.print(wasi.getStdoutString());
     }
   } catch (error) {
     const { message } = error as WASIError;

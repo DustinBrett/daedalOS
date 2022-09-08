@@ -1218,7 +1218,7 @@
   resolved "https://registry.yarnpkg.com/@wasmer/io-devices/-/io-devices-0.12.0.tgz#c9e10dba0b3eeff6aab8857d5b84a9bafde82fc8"
   integrity sha512-CiuhJPnNVZp2G1V5UHKSWMb2bIsiGn+78u9h3/3CNUNdzQ9W9ALGSXxzeieaSEUa3QL7HQC1DiE+IN2mXUv6Dw==
 
-"@wasmer/wasi@0.12.0", "@wasmer/wasi@^0.12.0":
+"@wasmer/wasi@^0.12.0":
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@wasmer/wasi/-/wasi-0.12.0.tgz#89c7c5e5ba58f7dfae4e323359346639c4ec382a"
   integrity sha512-FJhLZKAfLWm/yjQI7eCRHNbA8ezmb7LSpUYFkHruZXs2mXk2+DaQtSElEtOoNrVQ4vApTyVaAd5/b7uEu8w6wQ==
@@ -1227,6 +1227,11 @@
     buffer-es6 "^4.9.3"
     path-browserify "^1.0.0"
     randomfill "^1.0.4"
+
+"@wasmer/wasi@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@wasmer/wasi/-/wasi-1.1.2.tgz#c99faf45bfc7ff464dfd4bec661320c4073c268b"
+  integrity sha512-c1h7L2qPviV6n+ny2fYboFPFL4RbvCqYckDPfpWMUOqX+QIt83EnMnYfeWNwWbUAIku087qj3cBJzcqY+HbHxw==
 
 "@wasmer/wasm-terminal@^0.12.0":
   version "0.12.0"
