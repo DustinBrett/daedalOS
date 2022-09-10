@@ -25,6 +25,7 @@ import {
   PHOTO_ICON,
   SHORTCUT_EXTENSION,
   SHORTCUT_ICON,
+  SMALLEST_PNG_SIZE,
   SYSTEM_FILES,
   SYSTEM_PATHS,
   TIFF_IMAGE_FORMATS,
@@ -35,6 +36,7 @@ import {
   blobToBase64,
   bufferToUrl,
   getGifJs,
+  getHtmlToImage,
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
@@ -501,6 +503,33 @@ export const getInfoWithExtension = (
     );
   } else if (extension === ".sav") {
     getInfoByFileExtension(UNKNOWN_ICON_PATH, true);
+  } else if (extension === ".whtml") {
+    getInfoByFileExtension("/System/Icons/tinymce.webp", (signal) =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        if (!error && contents.length > 0 && !signal.aborted) {
+          const htmlToImage = await getHtmlToImage();
+          const containerElement = document.createElement("div");
+
+          containerElement.style.height = "600px";
+          containerElement.style.width = "600px";
+          containerElement.style.padding = "32px";
+          containerElement.style.backgroundColor = "#fff";
+          containerElement.style.zIndex = "-1";
+
+          containerElement.innerHTML = contents.toString();
+
+          document.body.appendChild(containerElement);
+          const documentImage = await htmlToImage.toPng(containerElement, {
+            skipAutoScale: true,
+          });
+          containerElement.remove();
+
+          if (documentImage.length > SMALLEST_PNG_SIZE) {
+            getInfoByFileExtension(documentImage);
+          }
+        }
+      })
+    );
   } else {
     getInfoByFileExtension();
   }
