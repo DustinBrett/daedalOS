@@ -254,6 +254,8 @@ export const USER_ICON_PATH = `${HOME}/Icons`;
 
 export const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 
+export const YT_ICON_CACHE = `${ICON_CACHE}/YouTube`;
+
 export const ICON_CACHE_EXTENSION = ".cache";
 
 export const SESSION_FILE = "/session.json";

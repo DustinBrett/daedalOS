@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { ICON_CACHE, YT_ICON_CACHE } from "utils/constants";
 import { cleanUpBufferUrl, imageSrc, imageSrcs } from "utils/functions";
 
 export type IconProps = {
@@ -63,6 +64,8 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     src.startsWith("http:") ||
     src.startsWith("https:") ||
     src.startsWith("data:") ||
+    src.startsWith(ICON_CACHE) ||
+    src.startsWith(YT_ICON_CACHE) ||
     src.endsWith(".ico");
   const dimensionProps = useMemo(() => {
     const size = $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize;

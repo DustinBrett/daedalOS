@@ -16,6 +16,7 @@ import {
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
   ICON_CACHE,
+  ICON_CACHE_EXTENSION,
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
@@ -32,6 +33,7 @@ import {
   TIFF_IMAGE_FORMATS,
   UNKNOWN_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
+  YT_ICON_CACHE,
 } from "utils/constants";
 import {
   blobToBase64,
@@ -274,29 +276,65 @@ export const getInfoWithExtension = (
 
         callback({ comment, getIcon, icon, pid, subIcons, url });
       } else if (DYNAMIC_EXTENSION.has(urlExt)) {
-        getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-          const {
-            icon: urlIcon = icon,
-            getIcon,
-            subIcons: fileSubIcons = [],
-          } = fileInfo;
+        const cachedIconPath = join(
+          ICON_CACHE,
+          `${url}${ICON_CACHE_EXTENSION}`
+        );
 
-          if (fileSubIcons.length > 0) {
-            subIcons.push(
-              ...fileSubIcons.filter((subIcon) => !subIcons.includes(subIcon))
-            );
+        fs.exists(cachedIconPath, (cachedIconExists) => {
+          if (cachedIconExists) {
+            callback({
+              comment,
+              icon: cachedIconPath,
+              pid,
+              subIcons,
+              url,
+            });
+          } else {
+            getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
+              const {
+                icon: urlIcon = icon,
+                getIcon,
+                subIcons: fileSubIcons = [],
+              } = fileInfo;
+
+              if (fileSubIcons.length > 0) {
+                subIcons.push(
+                  ...fileSubIcons.filter(
+                    (subIcon) => !subIcons.includes(subIcon)
+                  )
+                );
+              }
+
+              callback({
+                comment,
+                getIcon,
+                icon: urlIcon,
+                pid,
+                subIcons,
+                url,
+              });
+            });
           }
-
-          callback({ comment, getIcon, icon: urlIcon, pid, subIcons, url });
         });
       } else if (isYouTubeUrl(url)) {
-        callback({
-          comment,
-          icon: `https://i.ytimg.com/vi${new URL(url).pathname}/mqdefault.jpg`,
-          pid,
-          subIcons: [processDirectory["VideoPlayer"].icon],
-          url,
-        });
+        const ytId = new URL(url).pathname.replace("/", "");
+        const cachedIconPath = join(
+          YT_ICON_CACHE,
+          `${ytId}${ICON_CACHE_EXTENSION}`
+        );
+
+        fs.exists(cachedIconPath, (cachedIconExists) =>
+          callback({
+            comment,
+            icon: cachedIconExists
+              ? cachedIconPath
+              : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+            pid,
+            subIcons: [processDirectory["VideoPlayer"].icon],
+            url,
+          })
+        );
       } else {
         callback({
           comment,
