@@ -4900,6 +4900,17 @@ var ASM_CONSTS = {
   }
   }
 
+  function ___sys_chown32(path, owner, group) {try {
+
+      path = SYSCALLS.getStr(path);
+      FS.chown(path, owner, group);
+      return 0;
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
   function ___sys_fstat64(fd, buf) {try {
 
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -5424,6 +5435,10 @@ var ASM_CONSTS = {
   }
   }
 
+  function _getgrgid() { throw 'getgrgid: TODO' }
+
+  function _getpwuid() { throw 'getpwuid: TODO' }
+
   function _gettimeofday(ptr) {
       var now = Date.now();
       HEAP32[((ptr)>>2)] = (now/1000)|0; // seconds
@@ -5701,6 +5716,7 @@ var asmLibraryArg = {
   "__gmtime_r": ___gmtime_r,
   "__localtime_r": ___localtime_r,
   "__sys_chmod": ___sys_chmod,
+  "__sys_chown32": ___sys_chown32,
   "__sys_fstat64": ___sys_fstat64,
   "__sys_fstatat64": ___sys_fstatat64,
   "__sys_ftruncate64": ___sys_ftruncate64,
@@ -5734,6 +5750,8 @@ var asmLibraryArg = {
   "fd_read": _fd_read,
   "fd_seek": _fd_seek,
   "fd_write": _fd_write,
+  "getgrgid": _getgrgid,
+  "getpwuid": _getpwuid,
   "gettimeofday": _gettimeofday,
   "mktime": _mktime,
   "setTempRet0": _setTempRet0,
