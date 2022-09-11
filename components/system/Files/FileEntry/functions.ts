@@ -292,7 +292,7 @@ export const getInfoWithExtension = (
       } else if (isYouTubeUrl(url)) {
         callback({
           comment,
-          icon: `https://img.youtube.com/vi${new URL(url).pathname}/1.jpg`,
+          icon: `https://i.ytimg.com/vi${new URL(url).pathname}/mqdefault.jpg`,
           pid,
           subIcons: [processDirectory["VideoPlayer"].icon],
           url,
