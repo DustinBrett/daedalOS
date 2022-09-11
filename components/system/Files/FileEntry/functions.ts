@@ -11,6 +11,7 @@ import { extname, join } from "path";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
+  DYNAMIC_EXTENSION,
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
@@ -272,11 +273,7 @@ export const getInfoWithExtension = (
         };
 
         callback({ comment, getIcon, icon, pid, subIcons, url });
-      } else if (
-        IMAGE_FILE_EXTENSIONS.has(urlExt) ||
-        VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-        urlExt === ".mp3"
-      ) {
+      } else if (DYNAMIC_EXTENSION.has(urlExt)) {
         getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
           const {
             icon: urlIcon = icon,

@@ -230,6 +230,18 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
+export const DYNAMIC_EXTENSION = new Set([
+  ...AUDIO_FILE_EXTENSIONS,
+  ...IMAGE_FILE_EXTENSIONS,
+  ...TIFF_IMAGE_FORMATS,
+  ...VIDEO_FILE_EXTENSIONS,
+  ".ani",
+  ".exe",
+  ".mp3",
+  ".sav",
+  ".whtml",
+]);
+
 export const SAVE_TITLE_CHAR = "\u25CF";
 
 export const ROOT_NAME = "My PC";
