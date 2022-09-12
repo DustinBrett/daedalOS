@@ -324,7 +324,6 @@ export const getInfoWithExtension = (
           `${ytId}${ICON_CACHE_EXTENSION}`
         );
 
-        subIcons.push(processDirectory["VideoPlayer"].icon);
         fs.exists(cachedIconPath, (cachedIconExists) =>
           callback({
             comment,
@@ -332,7 +331,7 @@ export const getInfoWithExtension = (
               ? cachedIconPath
               : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
             pid,
-            subIcons,
+            subIcons: [processDirectory["VideoPlayer"].icon],
             url,
           })
         );
