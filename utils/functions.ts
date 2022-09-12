@@ -188,7 +188,9 @@ export const loadFiles = async (
           : loadScript(encodeURI(file), defer, force));
       }, Promise.resolve());
 
-export const getHtmlToImage = async (): Promise<typeof HtmlToImage> => {
+export const getHtmlToImage = async (): Promise<
+  typeof HtmlToImage | undefined
+> => {
   await loadFiles(["/System/html-to-image/html-to-image.js"]);
 
   const { htmlToImage } = window as unknown as Window & {

@@ -280,14 +280,14 @@ const FileEntry: FC<FileEntryProps> = ({
                   generatedIcon = iconRef.current.currentSrc;
                 } else {
                   const htmlToImage = await getHtmlToImage();
-                  const iconCanvas = await htmlToImage.toCanvas(
+                  const iconCanvas = await htmlToImage?.toCanvas(
                     iconRef.current,
                     {
                       skipAutoScale: true,
                     }
                   );
 
-                  if (!isCanvasEmpty(iconCanvas)) {
+                  if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
                     generatedIcon = iconCanvas.toDataURL("image/png");
                   }
                 }

@@ -143,22 +143,22 @@ const useDraggableEntries = (
         if (!dragImageRef.current) dragImageRef.current = new Image();
 
         const htmlToImage = await getHtmlToImage();
+        const newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
+          filter: (element) => {
+            return (
+              !(element instanceof HTMLSourceElement) &&
+              focusedElements.some((focusedElement) =>
+                focusedElement.contains(element)
+              )
+            );
+          },
+          imagePlaceholder: UNKNOWN_ICON,
+          skipAutoScale: true,
+        });
 
-        dragImageRef.current.src = await htmlToImage.toPng(
-          fileManagerRef.current,
-          {
-            filter: (element) => {
-              return (
-                !(element instanceof HTMLSourceElement) &&
-                focusedElements.some((focusedElement) =>
-                  focusedElement.contains(element)
-                )
-              );
-            },
-            imagePlaceholder: UNKNOWN_ICON,
-            skipAutoScale: true,
-          }
-        );
+        if (newDragImage) {
+          dragImageRef.current.src = newDragImage;
+        }
       }
     }
   }, [fileManagerRef]);

@@ -554,12 +554,12 @@ export const getInfoWithExtension = (
           containerElement.innerHTML = contents.toString();
 
           document.body.appendChild(containerElement);
-          const documentImage = await htmlToImage.toPng(containerElement, {
+          const documentImage = await htmlToImage?.toPng(containerElement, {
             skipAutoScale: true,
           });
           containerElement.remove();
 
-          if (documentImage.length > SMALLEST_PNG_SIZE) {
+          if (documentImage && documentImage.length > SMALLEST_PNG_SIZE) {
             getInfoByFileExtension(documentImage);
           }
         }

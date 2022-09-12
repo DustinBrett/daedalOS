@@ -196,7 +196,7 @@ const useV86 = (
         shutdown.current = true;
         if (emulator[url]) {
           const takeScreenshot = async (): Promise<Buffer | undefined> => {
-            let screenshot = "";
+            let screenshot: string | undefined;
 
             if (emulator[url]?.v86.cpu.devices.vga.graphical_mode) {
               screenshot = (
@@ -207,7 +207,7 @@ const useV86 = (
             } else if (currentContainerRef instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
-              screenshot = await htmlToImage.toPng(currentContainerRef, {
+              screenshot = await htmlToImage?.toPng(currentContainerRef, {
                 skipAutoScale: true,
               });
             }

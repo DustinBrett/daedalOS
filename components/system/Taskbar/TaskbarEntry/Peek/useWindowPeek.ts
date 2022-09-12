@@ -20,7 +20,7 @@ const renderFrame = async (
     );
 
   const htmlToImage = await getHtmlToImage();
-  const dataCanvas = await htmlToImage.toCanvas(previewElement, {
+  const dataCanvas = await htmlToImage?.toCanvas(previewElement, {
     filter: (element) => !(element instanceof HTMLSourceElement),
     skipAutoScale: true,
     style: {
@@ -28,7 +28,7 @@ const renderFrame = async (
     },
   });
 
-  if (dataCanvas.width > 0 && dataCanvas.height > 0) {
+  if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
     if (
       !dataCanvas
         .getContext("2d")
