@@ -10,16 +10,22 @@ const ICON_PATH = "/System/Icons";
 const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
 const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
 
-const getPublicDirectoryIcons = (directory) => {
+const getPublicDirectoryIcons = (directory, includeSubIcons = false) => {
   const baseDirectory = join("./public", directory);
 
   return readdirSync(baseDirectory).reduce((icons, file) => {
     if (extname(file) === ".url") {
       const {
-        InternetShortcut: { IconFile: icon = "" },
+        InternetShortcut: { BaseURL: pid = "", IconFile: icon = "" },
       } = parse(readFileSync(join(baseDirectory, file)).toString());
 
       if (icon) icons.push(icon);
+
+      if (includeSubIcons) {
+        if (pid === "VideoPlayer") {
+          icons.push("/System/Icons/16x16/vlc.webp");
+        }
+      }
     }
 
     return icons;
@@ -28,7 +34,10 @@ const getPublicDirectoryIcons = (directory) => {
 
 writeFileSync(
   "./public/.index/desktopIcons.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
+  JSON.stringify([
+    SHORTCUT_ICON,
+    ...getPublicDirectoryIcons(DESKTOP_PATH, true),
+  ])
 );
 
 writeFileSync(

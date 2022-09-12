@@ -81,7 +81,8 @@ const Metadata: FC = () => {
       <meta content={description} name="description" />
       {desktopIcons.map((icon) => {
         const isStaticIcon =
-          !icon.startsWith(ICON_PATH) && !icon.startsWith(USER_ICON_PATH);
+          (!icon.startsWith(ICON_PATH) || icon.includes("/16x16/")) &&
+          !icon.startsWith(USER_ICON_PATH);
 
         return (
           <link
