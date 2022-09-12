@@ -117,7 +117,6 @@
         "shorthandLast": true
       }
     ],
-    "react/no-unknown-property": "off",
     "react/no-unused-prop-types": "error",
     "react/no-unused-state": "error",
     "react/require-default-props": "off",
