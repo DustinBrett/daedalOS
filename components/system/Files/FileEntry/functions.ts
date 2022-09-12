@@ -265,7 +265,7 @@ export const getInfoWithExtension = (
       const { comment, icon, pid, url } = getShortcutInfo(contents);
       const urlExt = extname(url).toLowerCase();
 
-      if (pid === "FileExplorer") {
+      if (pid === "FileExplorer" && !icon) {
         const getIcon = (): void => {
           getIconFromIni(fs, url).then((iniIcon) => {
             if (iniIcon) {
