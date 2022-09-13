@@ -9,7 +9,7 @@ const VideoPlayer: FC<ComponentProcessProps> = ({ id }) =>
     useVideoPlayer,
     StyledVideoPlayer,
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video className="video-js vjs-big-play-centered" />
+    <video className="video-js vjs-big-play-centered" autoPlay />
   );
 
 export default VideoPlayer;
