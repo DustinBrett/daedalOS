@@ -7,7 +7,7 @@
 
 # Feature Overview
 
-[![Feature Overview](https://img.youtube.com/vi/geCNiJnw8iE/0.jpg)](http://www.youtube.com/watch?v=geCNiJnw8iE)
+[![Feature Overview](https://img.youtube.com/vi/CkvKPspIPLs/mqdefault.jpg)](http://www.youtube.com/watch?v=CkvKPspIPLs)
 
 # Try It 🏁
 
