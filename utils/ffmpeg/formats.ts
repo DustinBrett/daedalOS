@@ -27,14 +27,11 @@ export const VIDEO_DECODE_FORMATS = new Set([
 ]);
 
 export const VIDEO_ENCODE_FORMATS = [
-  ".aac",
   ".avi",
   ".gif",
   ".mkv",
-  ".mp3",
   ".mp4",
   ".ogg",
   ".ogv",
-  ".wav",
   ".webm",
 ];
