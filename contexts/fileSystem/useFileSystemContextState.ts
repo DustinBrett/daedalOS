@@ -192,7 +192,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
   };
   const mkdirRecursive = async (path: string): Promise<void> => {
     const pathParts = path.split("/").filter(Boolean);
-    const recursePath = async (position = 1): Promise<void> => {
+    const recursePath = async (position = 1, retry = 0): Promise<void> => {
       const makePath = join("/", pathParts.slice(0, position).join("/"));
       let created: boolean;
 
@@ -202,8 +202,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
         created = false;
       }
 
-      if (created && position !== pathParts.length) {
-        await recursePath(position + 1);
+      if (created) {
+        if (position !== pathParts.length) {
+          await recursePath(position + 1);
+        }
+      } else if (retry < 3) {
+        await recursePath(position, retry + 1);
       }
     };
 

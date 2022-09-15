@@ -404,23 +404,27 @@ const useFolder = (
       );
       const uniqueName = await createPath(zipFolderName, directory);
 
-      await Promise.all(
-        Object.entries(unzippedFiles).map(
-          async ([extractPath, fileContents]) => {
-            const localPath = join(directory, uniqueName, extractPath);
+      try {
+        await Promise.all(
+          Object.entries(unzippedFiles).map(
+            async ([extractPath, fileContents]) => {
+              const localPath = join(directory, uniqueName, extractPath);
 
-            if (fileContents.length === 0 && extractPath.endsWith("/")) {
-              await mkdir(localPath);
-            } else {
-              if (!(await exists(dirname(localPath)))) {
-                await mkdirRecursive(dirname(localPath));
+              if (fileContents.length === 0 && extractPath.endsWith("/")) {
+                await mkdir(localPath);
+              } else {
+                if (!(await exists(dirname(localPath)))) {
+                  await mkdirRecursive(dirname(localPath));
+                }
+
+                await writeFile(localPath, Buffer.from(fileContents));
               }
-
-              await writeFile(localPath, Buffer.from(fileContents));
             }
-          }
-        )
-      );
+          )
+        );
+      } catch {
+        // Ignore failure to extract
+      }
 
       updateFolder(directory, uniqueName);
     },
