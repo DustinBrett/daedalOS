@@ -35,7 +35,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
     if (inputRef.current) inputRef.current.value = history[position + step];
   };
-  const [currentUrl, setCurrentUrl] = useState("");
+  const currentUrl = useRef("");
   const setUrl = useCallback(
     async (addressInput: string): Promise<void> => {
       const { contentWindow } = iframeRef.current || {};
@@ -104,11 +104,11 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   useEffect(() => {
-    if (process && history[position] !== currentUrl) {
+    if (process && history[position] !== currentUrl.current) {
+      currentUrl.current = history[position];
       setUrl(history[position]);
-      setCurrentUrl(history[position]);
     }
-  }, [currentUrl, history, position, process, setUrl]);
+  }, [history, position, process, setUrl]);
 
   return (
     <StyledBrowser>
