@@ -283,17 +283,30 @@ const updateIconPositionsIfEmpty = (
     const entryUrl = join(url, entry);
 
     if (!iconPositions[entryUrl]) {
-      const position = index + 1;
-      const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
-      const gridRowStart =
-        position - gridTemplateRowCount * (gridColumnStart - 1);
+      const gridEntry = [...gridElement.children].find((element) =>
+        element.querySelector(`button[aria-label=${entry}]`)
+      );
 
-      newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+      if (gridEntry instanceof HTMLElement) {
+        const { x, y, height, width } = gridEntry.getBoundingClientRect();
+
+        newIconPositions[entryUrl] = calcGridDropPosition(gridElement, {
+          x: x - width,
+          y: y + height,
+        });
+      } else {
+        const position = index + 1;
+        const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
+        const gridRowStart =
+          position - gridTemplateRowCount * (gridColumnStart - 1);
+
+        newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+      }
     }
   });
 
   return Object.keys(newIconPositions).length > 0
-    ? newIconPositions
+    ? { ...newIconPositions, ...iconPositions }
     : iconPositions;
 };
 
