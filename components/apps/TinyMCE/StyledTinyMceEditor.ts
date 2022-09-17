@@ -13,6 +13,8 @@ const StyledTinyMceEditor = styled.div`
 
     &[aria-disabled="true"] {
       .tox-editor-header {
+        height: 39px;
+        overflow: hidden;
         padding: 0;
         position: relative;
 
