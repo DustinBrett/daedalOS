@@ -203,15 +203,9 @@ export const getHtmlToImage = async (): Promise<
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
 
-export const viewHeight = (): number =>
-  window.screen.height
-    ? Math.min(window.innerHeight, window.screen.height)
-    : window.innerHeight;
+export const viewHeight = (): number => window.innerHeight;
 
-export const viewWidth = (): number =>
-  window.screen.width
-    ? Math.min(window.innerWidth, window.screen.width)
-    : window.innerWidth;
+export const viewWidth = (): number => window.innerWidth;
 
 export const getWindowViewport = (): Position => ({
   x: viewWidth(),
