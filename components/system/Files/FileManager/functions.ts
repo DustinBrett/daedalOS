@@ -212,7 +212,7 @@ export const getEventData = (
   const text =
     files.length > 0
       ? ""
-      : (event as React.DragEvent).dataTransfer?.getData("text");
+      : (event as React.DragEvent).dataTransfer?.getData("application/json");
 
   return { files, text };
 };
