@@ -18,7 +18,11 @@ type DraggableEntryProps = {
   style: React.CSSProperties;
 };
 
-type DraggableEntry = (url: string, file: string) => DraggableEntryProps;
+type DraggableEntry = (
+  url: string,
+  file: string,
+  renaming: boolean
+) => DraggableEntryProps;
 
 export type DragPosition = Partial<
   Position & { offsetX: number; offsetY: number }
@@ -84,8 +88,17 @@ const useDraggableEntries = (
       }
     };
   const onDragStart =
-    (entryUrl: string, file: string): React.DragEventHandler =>
+    (
+      entryUrl: string,
+      file: string,
+      renaming: boolean
+    ): React.DragEventHandler =>
     (event) => {
+      if (renaming) {
+        haltEvent(event);
+        return;
+      }
+
       focusEntry(file);
       event.dataTransfer.setData(
         "application/json",
@@ -195,11 +208,11 @@ const useDraggableEntries = (
     }
   }, [focusedEntries.length, isSelecting, updateDragImage]);
 
-  return (entryUrl: string, file: string) => ({
+  return (entryUrl: string, file: string, renaming: boolean) => ({
     draggable: true,
     onDragEnd: onDragEnd(entryUrl),
     onDragOver: onDragOver(file),
-    onDragStart: onDragStart(entryUrl, file),
+    onDragStart: onDragStart(entryUrl, file, renaming),
     style: iconPositions[join(entryUrl, file)],
   });
 };

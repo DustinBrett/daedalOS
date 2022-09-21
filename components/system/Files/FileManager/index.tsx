@@ -194,7 +194,7 @@ const FileManager: FC<FileManagerProps> = ({
             <StyledFileEntry
               key={file}
               $visible={!isLoading}
-              {...(renaming !== file && !readOnly && draggableEntry(url, file))}
+              {...(!readOnly && draggableEntry(url, file, renaming === file))}
               {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
               {...focusableEntry(file)}
             >
