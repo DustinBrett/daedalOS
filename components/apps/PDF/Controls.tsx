@@ -11,7 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import Button from "styles/common/Button";
-import { bufferToUrl, label } from "utils/functions";
+import { bufferToUrl, isSafari, label } from "utils/functions";
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { readFile } = useFileSystem();
@@ -122,21 +122,23 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
         >
           <Download />
         </Button>
-        <Button
-          disabled={count === 0}
-          onClick={async () => {
-            const { default: printJs } = await import("print-js");
+        {!isSafari() && (
+          <Button
+            disabled={count === 0}
+            onClick={async () => {
+              const { default: printJs } = await import("print-js");
 
-            printJs({
-              base64: true,
-              printable: (await readFile(url)).toString("base64"),
-              type: "pdf",
-            });
-          }}
-          {...label("Print")}
-        >
-          <Print />
-        </Button>
+              printJs({
+                base64: true,
+                printable: (await readFile(url)).toString("base64"),
+                type: "pdf",
+              });
+            }}
+            {...label("Print")}
+          >
+            <Print />
+          </Button>
+        )}
       </div>
     </StyledControls>
   );
