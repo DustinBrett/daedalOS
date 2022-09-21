@@ -52,7 +52,24 @@ export const extractExeIcon = async (
       true
     ));
     [iconGroupEntry] = ResEdit.Resource.IconGroupEntry.fromEntries(entries);
-  } catch {
+  } catch (error) {
+    if (
+      (error as Error).message.includes(
+        "Binary with symbols is not supported now"
+      )
+    ) {
+      const { unarchive } = await import("utils/zipFunctions");
+
+      try {
+        const { "/.rsrc/ICON/1.ico": icon } =
+          (await unarchive("data.exe", exeData)) || {};
+
+        return Buffer.from(icon);
+      } catch {
+        // Ignore error extracting EXE
+      }
+    }
+
     return undefined;
   }
 
