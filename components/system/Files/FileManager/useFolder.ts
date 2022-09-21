@@ -25,6 +25,7 @@ import { basename, dirname, extname, join, relative } from "path";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
+  DESKTOP_PATH,
   FOLDER_ICON,
   INVALID_FILE_CHARACTERS,
   MOUNTABLE_EXTENSIONS,
@@ -103,6 +104,7 @@ const useFolder = (
   } = useFileSystem();
   const {
     sessionLoaded,
+    setIconPositions,
     setSortOrder,
     sortOrders: { [directory]: [sortOrder, sortBy] = [] } = {},
   } = useSession();
@@ -271,6 +273,16 @@ const useFolder = (
       if (!(await exists(renamedPath))) {
         await rename(path, renamedPath);
         updateFolder(directory, renamedPath, path);
+      }
+
+      if (dirname(path) === DESKTOP_PATH) {
+        setIconPositions((currentPositions) => {
+          const { [path]: iconPosition, ...newPositions } = currentPositions;
+
+          newPositions[renamedPath] = iconPosition;
+
+          return newPositions;
+        });
       }
     }
   };
