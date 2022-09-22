@@ -279,7 +279,9 @@ const useFolder = (
         setIconPositions((currentPositions) => {
           const { [path]: iconPosition, ...newPositions } = currentPositions;
 
-          newPositions[renamedPath] = iconPosition;
+          if (iconPosition) {
+            newPositions[renamedPath] = iconPosition;
+          }
 
           return newPositions;
         });

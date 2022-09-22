@@ -278,7 +278,7 @@ const updateIconPositionsIfEmpty = (
 
     if (!iconPositions[entryUrl]) {
       const gridEntry = [...gridElement.children].find((element) =>
-        element.querySelector(`button[aria-label=${entry}]`)
+        element.querySelector(`button[aria-label="${entry}"]`)
       );
 
       if (gridEntry instanceof HTMLElement) {
