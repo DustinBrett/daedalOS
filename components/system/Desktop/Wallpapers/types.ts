@@ -4,7 +4,7 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 export type WallpaperFunc = (
   el: HTMLElement | null,
   config?: VantaWavesConfig
-) => void;
+) => Promise<void>;
 
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
