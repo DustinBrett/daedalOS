@@ -120,7 +120,8 @@ export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 const loadScript = (
   src: string,
   defer?: boolean,
-  force?: boolean
+  force?: boolean,
+  asModule?: boolean
 ): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedScripts = [...document.scripts];
@@ -143,6 +144,7 @@ const loadScript = (
 
     script.async = false;
     if (defer) script.defer = true;
+    if (asModule) script.type = "module";
     script.fetchPriority = "high";
     script.src = src;
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
@@ -178,14 +180,15 @@ const loadStyle = (href: string): Promise<Event> =>
 export const loadFiles = async (
   files?: string[],
   defer?: boolean,
-  force?: boolean
+  force?: boolean,
+  asModule?: boolean
 ): Promise<void> =>
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
         await (extname(file).toLowerCase() === ".css"
           ? loadStyle(encodeURI(file))
-          : loadScript(encodeURI(file), defer, force));
+          : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
 
 export const getHtmlToImage = async (): Promise<
