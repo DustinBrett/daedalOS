@@ -2,7 +2,7 @@ import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vant
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 
 export type WallpaperFunc = (
-  el: HTMLElement,
+  el: HTMLElement | null,
   config?: VantaWavesConfig
 ) => void;
 
