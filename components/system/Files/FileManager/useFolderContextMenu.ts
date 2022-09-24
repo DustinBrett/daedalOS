@@ -165,6 +165,11 @@ const useFolderContextMenu = (
                   toggle: wallpaperImage === "HEXELLS",
                 },
                 {
+                  action: () => setWallpaper("MATRIX"),
+                  label: "Matrix",
+                  toggle: wallpaperImage === "MATRIX",
+                },
+                {
                   action: () => setWallpaper("VANTA"),
                   label: `Vanta Waves${
                     wallpaperImage === "VANTA WIREFRAME" ? " (Wireframe)" : ""

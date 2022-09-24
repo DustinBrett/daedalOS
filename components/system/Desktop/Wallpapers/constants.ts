@@ -15,6 +15,7 @@ export const cssFit: Record<WallpaperFit, string> = {
 export const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
   COASTAL_LANDSCAPE: "80%",
   HEXELLS: "80%",
+  MATRIX: "70%",
 };
 
 export const WALLPAPER_PATHS: Record<
@@ -24,6 +25,7 @@ export const WALLPAPER_PATHS: Record<
   COASTAL_LANDSCAPE: () =>
     import("components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape"),
   HEXELLS: () => import("components/system/Desktop/Wallpapers/hexells"),
+  MATRIX: () => import("components/system/Desktop/Wallpapers/Matrix"),
   VANTA: () => import("components/system/Desktop/Wallpapers/vantaWaves"),
 };
 
