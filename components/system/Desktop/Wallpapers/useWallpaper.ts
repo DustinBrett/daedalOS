@@ -65,6 +65,17 @@ const useWallpaper = (
       desktopRef.current.setAttribute("style", "");
       desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
+      const maybeReduceBrightness = (): void => {
+        if (BRIGHT_WALLPAPERS[wallpaperName]) {
+          desktopRef.current
+            ?.querySelector(BASE_CANVAS_SELECTOR)
+            ?.setAttribute(
+              "style",
+              `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperName]})`
+            );
+        }
+      };
+
       if (
         typeof window.OffscreenCanvas !== "undefined" &&
         wallpaperWorker.current
@@ -80,20 +91,13 @@ const useWallpaper = (
         window.addEventListener("resize", resizeListener, { passive: true });
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
-          wallpaper?.(desktopRef.current, config)
+          wallpaper?.(desktopRef.current, config)?.then(maybeReduceBrightness)
         );
       } else {
         setWallpaper("VANTA");
       }
 
-      if (BRIGHT_WALLPAPERS[wallpaperName]) {
-        desktopRef.current
-          ?.querySelector(BASE_CANVAS_SELECTOR)
-          ?.setAttribute(
-            "style",
-            `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperName]})`
-          );
-      }
+      maybeReduceBrightness();
     }
   }, [
     desktopRef,
