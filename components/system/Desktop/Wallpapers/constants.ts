@@ -1,3 +1,4 @@
+import type { WallpaperFunc } from "components/system/Desktop/Wallpapers/types";
 import type { WallpaperFit } from "contexts/session/types";
 
 export const cssFit: Record<WallpaperFit, string> = {
@@ -14,6 +15,16 @@ export const cssFit: Record<WallpaperFit, string> = {
 export const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
   COASTAL_LANDSCAPE: "80%",
   HEXELLS: "80%",
+};
+
+export const WALLPAPER_PATHS: Record<
+  string,
+  () => Promise<{ default: WallpaperFunc }>
+> = {
+  COASTAL_LANDSCAPE: () =>
+    import("components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape"),
+  HEXELLS: () => import("components/system/Desktop/Wallpapers/hexells"),
+  VANTA: () => import("components/system/Desktop/Wallpapers/vantaWaves"),
 };
 
 export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {

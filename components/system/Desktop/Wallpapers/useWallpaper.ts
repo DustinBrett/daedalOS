@@ -2,9 +2,11 @@ import {
   BASE_CANVAS_SELECTOR,
   BRIGHT_WALLPAPERS,
   cssFit,
+  WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
 } from "components/system/Desktop/Wallpapers/constants";
-import { config } from "components/system/Desktop/Wallpapers/vantaWaves/config";
+import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vantaWaves/config";
+import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
@@ -52,9 +54,13 @@ const useWallpaper = (
   }, [desktopRef, wallpaperWorker]);
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
-      const vantaConfig = { ...config };
+      // eslint-disable-next-line no-undef-init, unicorn/no-useless-undefined
+      let config: VantaWavesConfig | undefined = undefined;
 
-      vantaConfig.material.options.wireframe = vantaWireframe;
+      if (wallpaperName === "VANTA") {
+        config = { ...vantaConfig };
+        vantaConfig.material.options.wireframe = vantaWireframe;
+      }
 
       desktopRef.current.setAttribute("style", "");
       desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
@@ -66,30 +72,15 @@ const useWallpaper = (
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         wallpaperWorker.current.postMessage(
-          {
-            canvas: offscreen,
-            config: wallpaperName === "VANTA" ? vantaConfig : undefined,
-            devicePixelRatio: 1,
-          },
+          { canvas: offscreen, config, devicePixelRatio: 1 },
           [offscreen]
         );
 
         window.removeEventListener("resize", resizeListener);
         window.addEventListener("resize", resizeListener, { passive: true });
-      } else if (wallpaperName === "VANTA") {
-        import("components/system/Desktop/Wallpapers/vantaWaves").then(
-          ({ default: vantaWaves }) =>
-            vantaWaves(vantaConfig)(desktopRef.current)
-        );
-      } else if (wallpaperName === "HEXELLS") {
-        import("components/system/Desktop/Wallpapers/hexells").then(
-          ({ default: hexells }) => hexells(desktopRef.current)
-        );
-      } else if (wallpaperName === "COASTAL_LANDSCAPE") {
-        import(
-          "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape"
-        ).then(({ default: coastalLandscape }) =>
-          coastalLandscape(desktopRef.current)
+      } else if (WALLPAPER_PATHS[wallpaperName]) {
+        WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
+          wallpaper?.(desktopRef.current, config)
         );
       } else {
         setWallpaper("VANTA");

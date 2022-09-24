@@ -1,6 +1,11 @@
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 
+export type WallpaperFunc = (
+  el: HTMLElement,
+  config?: VantaWavesConfig
+) => void;
+
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
   clockSize?: Size;
