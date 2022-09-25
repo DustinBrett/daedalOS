@@ -42,6 +42,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Vanta.js](https://github.com/tengbao/vanta)
 - [Hexells](https://github.com/znah/hexells)
 - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
+- [Matrix](https://github.com/Rezmason/matrix)
 
 ## App Libraries
 
