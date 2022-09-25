@@ -165,9 +165,14 @@ const useFolderContextMenu = (
                   toggle: wallpaperImage === "HEXELLS",
                 },
                 {
-                  action: () => setWallpaper("MATRIX"),
-                  label: "Matrix",
-                  toggle: wallpaperImage === "MATRIX",
+                  action: () => setWallpaper("MATRIX 2D"),
+                  label: "Matrix (2D)",
+                  toggle: wallpaperImage === "MATRIX 2D",
+                },
+                {
+                  action: () => setWallpaper("MATRIX 3D"),
+                  label: "Matrix (3D)",
+                  toggle: wallpaperImage === "MATRIX 3D",
                 },
                 {
                   action: () => setWallpaper("VANTA"),

@@ -1,4 +1,5 @@
 import matrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
+import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { loadFiles } from "utils/functions";
 
 export const libs = ["/System/Matrix/js/regl/main.js"];
@@ -12,7 +13,10 @@ declare global {
   }
 }
 
-const Matrix = async (el?: HTMLElement | null): Promise<void> => {
+const Matrix = async (
+  el?: HTMLElement | null,
+  config: WallpaperConfig = {} as WallpaperConfig
+): Promise<void> => {
   if (!el) return;
 
   const canvas = document.createElement("canvas");
@@ -24,7 +28,7 @@ const Matrix = async (el?: HTMLElement | null): Promise<void> => {
 
   await loadFiles(libs, undefined, undefined, true);
 
-  await window.Matrix?.(canvas, matrixConfig);
+  await window.Matrix?.(canvas, { ...matrixConfig, ...config });
 };
 
 export default Matrix;

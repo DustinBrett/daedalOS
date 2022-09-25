@@ -5,8 +5,8 @@ import {
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
 } from "components/system/Desktop/Wallpapers/constants";
+import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vantaWaves/config";
-import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
@@ -61,11 +61,13 @@ const useWallpaper = (
   const loadWallpaper = useCallback(() => {
     if (desktopRef.current) {
       // eslint-disable-next-line no-undef-init, unicorn/no-useless-undefined
-      let config: VantaWavesConfig | undefined = undefined;
+      let config: WallpaperConfig | undefined = undefined;
 
       if (wallpaperName === "VANTA") {
         config = { ...vantaConfig };
         vantaConfig.material.options.wireframe = vantaWireframe;
+      } else if (wallpaperImage === "MATRIX 3D") {
+        config = { volumetric: true };
       }
 
       desktopRef.current.setAttribute("style", "");
@@ -112,6 +114,7 @@ const useWallpaper = (
     resizeListener,
     setWallpaper,
     vantaWireframe,
+    wallpaperImage,
     wallpaperName,
     wallpaperWorker,
   ]);
