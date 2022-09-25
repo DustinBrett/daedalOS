@@ -35,19 +35,22 @@ const loadJS = (src) =>
 
 delete window.Matrix;
 
+let previouslyLoaded = false;
+
 window.Matrix = async (canvas, config) => {
-  [...document.scripts]
-    .filter((script) => script.src.endsWith("/System/Matrix/lib/regl.min.js") || script.src.endsWith("/System/Matrix/lib/gl-matrix.js"))
-    .forEach((script) => script.remove());
 
 	await Promise.all([loadJS("/System/Matrix/lib/regl.min.js"), loadJS("/System/Matrix/lib/gl-matrix.js")]);
 
-	const resize = () => {
-		canvas.width = Math.ceil(canvas.clientWidth * config.resolution);
-		canvas.height = Math.ceil(canvas.clientHeight * config.resolution);
+	const resize = (resOverride) => {
+		canvas.width = Math.ceil(canvas.clientWidth * (resOverride ?? config.resolution));
+		canvas.height = Math.ceil(canvas.clientHeight * (resOverride ?? config.resolution));
 	};
 	window.onresize = resize;
-	resize();
+
+  if (previouslyLoaded) {
+    resize(0);
+    setTimeout(resize, 100);
+  }
 
 	if (config.useCamera) {
 		await setupCamera();
@@ -92,4 +95,44 @@ window.Matrix = async (canvas, config) => {
 			drawToScreen();
 		});
 	});
+
+  window.WallpaperDestroy = () => {
+    previouslyLoaded = true;
+
+    try {
+      drawToScreen.destroy();
+    } catch {
+      // Failed to destroy
+    }
+
+    try {
+      fullScreenQuad.destroy();
+    } catch {
+      // Failed to destroy
+    }
+
+    try {
+      cameraTex.destroy();
+    } catch {
+      // Failed to destroy
+    }
+
+    try {
+      screenUniforms.tex.destroy();
+    } catch {
+      // Failed to destroy
+    }
+
+    try {
+      regl.destroy();
+    } catch {
+      // Failed to destroy
+    }
+
+    try {
+      tick.cancel();
+    } catch {
+      // Failed to cancel tick
+    }
+  }
 };

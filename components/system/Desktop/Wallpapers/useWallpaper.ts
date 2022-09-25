@@ -22,6 +22,12 @@ import {
   viewWidth,
 } from "utils/functions";
 
+declare global {
+  interface Window {
+    WallpaperDestroy: () => void;
+  }
+}
+
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 
 const useWallpaper = (
@@ -75,6 +81,8 @@ const useWallpaper = (
             );
         }
       };
+
+      window.WallpaperDestroy?.();
 
       if (
         typeof window.OffscreenCanvas !== "undefined" &&

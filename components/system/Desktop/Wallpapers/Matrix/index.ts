@@ -22,7 +22,7 @@ const Matrix = async (el?: HTMLElement | null): Promise<void> => {
 
   el.appendChild(canvas);
 
-  await loadFiles(libs, undefined, true, true);
+  await loadFiles(libs, undefined, undefined, true);
 
   await window.Matrix?.(canvas, matrixConfig);
 };
