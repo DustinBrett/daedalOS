@@ -61,7 +61,7 @@ vec2 getUV(vec2 uv) {
 
 vec3 getBrightness(vec4 raindrop, vec4 effect, float quadDepth, vec2 uv) {
 
-	float base = raindrop.r + max(0., 1.0 - raindrop.a * 5.0);
+	float base = raindrop.r;
 	bool isCursor = bool(raindrop.g) && isolateCursor;
 	float glint = base;
 	float multipliedEffects = effect.r;
@@ -94,7 +94,7 @@ vec3 getBrightness(vec4 raindrop, vec4 effect, float quadDepth, vec2 uv) {
 	return vec3(
 		(isCursor ? vec2(0.0, 1.0) : vec2(1.0, 0.0)) * base,
 		glint
-	) * raindrop.b;
+	);
 }
 
 vec2 getSymbolUV(float index) {

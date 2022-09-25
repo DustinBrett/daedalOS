@@ -55,34 +55,17 @@ export default ({ regl, config, lkg }) => {
 		showDebugView,
 	};
 
-	const introDoubleBuffer = makeComputeDoubleBuffer(regl, 1, numColumns);
-	const rainPassIntro = loadText("shaders/glsl/rainPass.intro.frag.glsl");
-	const introUniforms = {
-		...commonUniforms,
-		...extractEntries(config, ["fallSpeed", "skipIntro"]),
-	};
-	const intro = regl({
-		frag: regl.prop("frag"),
-		uniforms: {
-			...introUniforms,
-			previousIntroState: introDoubleBuffer.back,
-		},
-
-		framebuffer: introDoubleBuffer.front,
-	});
-
 	const raindropDoubleBuffer = makeComputeDoubleBuffer(regl, numRows, numColumns);
-	const rainPassRaindrop = loadText("shaders/glsl/rainPass.raindrop.frag.glsl");
+	const rainPassShine = loadText("shaders/glsl/rainPass.raindrop.frag.glsl");
 	const raindropUniforms = {
 		...commonUniforms,
-		...extractEntries(config, ["brightnessDecay", "fallSpeed", "raindropLength", "loops", "skipIntro"]),
+		...extractEntries(config, ["brightnessDecay", "fallSpeed", "raindropLength", "loops"]),
 	};
 	const raindrop = regl({
 		frag: regl.prop("frag"),
 		uniforms: {
 			...raindropUniforms,
-			introState: introDoubleBuffer.front,
-			previousRaindropState: raindropDoubleBuffer.back,
+			previousShineState: raindropDoubleBuffer.back,
 		},
 
 		framebuffer: raindropDoubleBuffer.front,
@@ -234,8 +217,7 @@ export default ({ regl, config, lkg }) => {
 			glintMSDF.loaded,
 			baseTexture.loaded,
 			glintTexture.loaded,
-			rainPassIntro.loaded,
-			rainPassRaindrop.loaded,
+			rainPassShine.loaded,
 			rainPassSymbol.loaded,
 			rainPassVert.loaded,
 			rainPassFrag.loaded,
@@ -289,8 +271,7 @@ export default ({ regl, config, lkg }) => {
 			[screenSize[0], screenSize[1]] = aspectRatio > 1 ? [1, aspectRatio] : [1 / aspectRatio, 1];
 		},
 		() => {
-			intro({ frag: rainPassIntro.text() });
-			raindrop({ frag: rainPassRaindrop.text() });
+			raindrop({ frag: rainPassShine.text() });
 			symbol({ frag: rainPassSymbol.text() });
 			effect({ frag: rainPassEffect.text() });
 			regl.clear({
