@@ -15,7 +15,7 @@ export const cssFit: Record<WallpaperFit, string> = {
 export const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
   COASTAL_LANDSCAPE: "80%",
   HEXELLS: "80%",
-  MATRIX: "70%",
+  MATRIX: "65%",
 };
 
 export const WALLPAPER_PATHS: Record<
