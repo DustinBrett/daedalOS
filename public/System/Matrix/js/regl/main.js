@@ -1,6 +1,5 @@
 import { makeFullScreenQuad, makePipeline } from "./utils.js";
 
-import { cameraAspectRatio, cameraCanvas, setupCamera } from "../camera.js";
 import makeBloomPass from "./bloomPass.js";
 import makeImagePass from "./imagePass.js";
 import getLKG from "./lkgHelper.js";
@@ -41,20 +40,18 @@ window.Matrix = async (canvas, config) => {
 
 	await Promise.all([loadJS("/System/Matrix/lib/regl.min.js"), loadJS("/System/Matrix/lib/gl-matrix.js")]);
 
-	const resize = (resOverride) => {
-		canvas.width = Math.ceil(canvas.clientWidth * (resOverride ?? config.resolution));
-		canvas.height = Math.ceil(canvas.clientHeight * (resOverride ?? config.resolution));
+	const resize = (resOverride = config.resolution) => {
+    const resolution = typeof resOverride === "number" ? resOverride : config.resolution;
+
+		canvas.width = Math.ceil(canvas.clientWidth * resolution);
+		canvas.height = Math.ceil(canvas.clientHeight * resolution);
 	};
 	window.onresize = resize;
 
   if (previouslyLoaded) {
-    resize(0);
-    setTimeout(resize, 100);
+    resize(1.001);
+    setTimeout(resize, 150);
   }
-
-	if (config.useCamera) {
-		await setupCamera();
-	}
 
 	const regl = createREGL({
 		canvas,
@@ -63,13 +60,12 @@ window.Matrix = async (canvas, config) => {
 		optionalExtensions: ["EXT_color_buffer_half_float", "WEBGL_color_buffer_float", "OES_standard_derivatives"],
 	});
 
-	const cameraTex = regl.texture(cameraCanvas);
 	const lkg = await getLKG(config.useHoloplay, true);
 
 	// All this takes place in a full screen quad.
 	const fullScreenQuad = makeFullScreenQuad(regl);
 	const effectName = config.effect in effects ? config.effect : "plain";
-	const context = { regl, config, lkg, cameraTex, cameraAspectRatio };
+	const context = { regl, config, lkg };
 	const pipeline = makePipeline(context, [makeRain, makeBloomPass, effects[effectName], makeQuiltPass]);
 	const screenUniforms = { tex: pipeline[pipeline.length - 1].outputs.primary };
 	const drawToScreen = regl({ uniforms: screenUniforms });
@@ -77,9 +73,6 @@ window.Matrix = async (canvas, config) => {
 	const tick = regl.frame(({ viewportWidth, viewportHeight }) => {
 		if (config.once) {
 			tick.cancel();
-		}
-		if (config.useCamera) {
-			cameraTex(cameraCanvas);
 		}
 		if (dimensions.width !== viewportWidth || dimensions.height !== viewportHeight) {
 			dimensions.width = viewportWidth;
@@ -107,12 +100,6 @@ window.Matrix = async (canvas, config) => {
 
     try {
       fullScreenQuad.destroy();
-    } catch {
-      // Failed to destroy
-    }
-
-    try {
-      cameraTex.destroy();
     } catch {
       // Failed to destroy
     }
