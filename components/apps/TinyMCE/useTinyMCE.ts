@@ -15,7 +15,6 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
-import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
@@ -142,12 +141,12 @@ const useTinyMCE = (
                 iframe.contentWindow.addEventListener("drop", (event) => {
                   if (draggableEditor(activeEditor)) onDrop(event);
                 });
-                iframe.contentWindow.addEventListener("focus", () => {
-                  setForegroundId(id);
-                  containerRef.current
-                    ?.closest("section")
-                    ?.focus(PREVENT_SCROLL);
-                });
+                iframe.contentWindow.addEventListener("blur", () =>
+                  setForegroundId("")
+                );
+                iframe.contentWindow.addEventListener("focus", () =>
+                  setForegroundId(id)
+                );
               }
 
               setEditor(activeEditor);
