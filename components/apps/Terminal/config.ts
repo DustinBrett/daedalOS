@@ -2,6 +2,7 @@ import processDirectory from "contexts/process/directory";
 import type { ITerminalOptions } from "xterm";
 
 export const config: ITerminalOptions = {
+  allowProposedApi: true,
   allowTransparency: true,
   cols: 70,
   cursorBlink: true,

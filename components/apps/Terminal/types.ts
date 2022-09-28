@@ -33,6 +33,9 @@ type LocalEchoOptions = {
 
 declare global {
   interface Window {
+    CanvasAddon?: {
+      CanvasAddon: new () => ITerminalAddon;
+    };
     FitAddon?: {
       FitAddon: new () => FitAddon;
     };
@@ -41,5 +44,10 @@ declare global {
       options?: LocalEchoOptions
     ) => LocalEcho;
     Terminal?: typeof Terminal;
+    WebglAddon?: {
+      WebglAddon: new () => ITerminalAddon & {
+        onContextLoss: (handler: () => void) => void;
+      };
+    };
   }
 }

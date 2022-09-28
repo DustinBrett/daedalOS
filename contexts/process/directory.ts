@@ -224,7 +224,6 @@ const directory: Processes = {
       "/Program Files/Xterm.js/xterm-addon-fit.js",
       "/Program Files/Xterm.js/local-echo.js",
     ],
-    lockAspectRatio: true,
     title: "Terminal",
   },
   TinyMCE: {
