@@ -38,8 +38,8 @@ const spawnSheep = (): Promise<void> =>
       });
 
       if (!oneSheepLaunched) {
-        sheep.Start("/Program Files/eSheep/eSheep.xml");
         oneSheepLaunched = true;
+        sheep.Start("/Program Files/eSheep/eSheep.xml");
       } else {
         sheep.Start(pickRandomPet());
       }

@@ -35,6 +35,7 @@ import {
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   isFileSystemSupported,
+  MILLISECONDS_IN_SECOND,
   ONE_DAY_IN_MILLISECONDS,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
@@ -586,7 +587,25 @@ const useCommandInterpreter = (
         case "sheep":
         case "esheep": {
           const { default: spawnSheep } = await import("utils/spawnSheep");
-          spawnSheep();
+          let [count = 1, duration = 0] = commandArgs;
+
+          if (!Number.isNaN(count) && !Number.isNaN(duration)) {
+            count = Number(count);
+            duration = Number(duration);
+
+            if (count > 1) {
+              await spawnSheep();
+              count -= 1;
+            }
+
+            const maxDuration =
+              (duration || (count > 1 ? 1 : 0)) * MILLISECONDS_IN_SECOND;
+
+            Array.from({ length: count })
+              .fill(0)
+              .map(() => Math.floor(Math.random() * maxDuration))
+              .forEach((delay) => setTimeout(spawnSheep, delay));
+          }
           break;
         }
         case "ps":
