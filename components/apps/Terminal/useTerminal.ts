@@ -58,7 +58,7 @@ const useTerminal = (
   useEffect(() => {
     if (url) {
       if (localEcho) {
-        localEcho.handleCursorInsert(url);
+        localEcho.handleCursorInsert(url.includes(" ") ? `"${url}"` : url);
       } else {
         const fileExtension = extname(url).toLowerCase();
         const { command: extCommand = "" } = extensions[fileExtension] || {};
