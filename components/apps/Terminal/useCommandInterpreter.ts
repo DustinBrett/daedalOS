@@ -24,6 +24,7 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
   getProcessByFileExtension,
+  getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
@@ -37,6 +38,7 @@ import {
   isFileSystemSupported,
   MILLISECONDS_IN_SECOND,
   ONE_DAY_IN_MILLISECONDS,
+  SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getTZOffsetISOString } from "utils/functions";
@@ -776,9 +778,18 @@ const useCommandInterpreter = (
               if (extCommand) {
                 await commandInterpreter(`${extCommand} ${baseCommand}`);
               } else {
-                const basePid = getProcessByFileExtension(fileExtension);
+                let basePid = "";
+                let baseUrl = baseCommand;
 
-                if (basePid) open(basePid, { url: baseCommand });
+                if (fileExtension === SHORTCUT_EXTENSION) {
+                  ({ pid: basePid, url: baseUrl } = getShortcutInfo(
+                    await readFile(baseCommand)
+                  ));
+                } else {
+                  basePid = getProcessByFileExtension(fileExtension);
+                }
+
+                if (basePid) open(basePid, { url: baseUrl });
               }
             } else {
               localEcho?.println(unknownCommand(baseCommand));
