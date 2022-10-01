@@ -9,9 +9,16 @@ declare global {
 }
 
 const PETS: Record<string, [string, number]> = {
-  eSheep: ["/Program Files/eSheep/eSheep.xml", 75],
-  neko: ["/Program Files/eSheep/neko.xml", 5],
-  pingus: ["/Program Files/eSheep/pingus.xml", 20],
+  blue_sheep: ["/Program Files/eSheep/blue_sheep.xml", 15],
+  eSheep: ["/Program Files/eSheep/eSheep.xml", 15],
+  fox: ["/Program Files/eSheep/fox.xml", 2],
+  green_sheep: ["/Program Files/eSheep/green_sheep.xml", 15],
+  mimiko: ["/Program Files/eSheep/mimiko.xml", 1],
+  neko: ["/Program Files/eSheep/neko.xml", 2],
+  orange_sheep: ["/Program Files/eSheep/orange_sheep.xml", 15],
+  pingus: ["/Program Files/eSheep/pingus.xml", 5],
+  red_sheep: ["/Program Files/eSheep/red_sheep.xml", 15],
+  yellow_sheep: ["/Program Files/eSheep/yellow_sheep.xml", 15],
 };
 
 let oneSheepLaunched = false;
