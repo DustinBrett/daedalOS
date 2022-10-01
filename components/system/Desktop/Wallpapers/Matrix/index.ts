@@ -2,7 +2,7 @@ import matrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
 import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { loadFiles } from "utils/functions";
 
-export const libs = ["/System/Matrix/js/regl/main.js"];
+const libs = ["/System/Matrix/js/regl/main.js"];
 
 declare global {
   interface Window {
