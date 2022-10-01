@@ -9,16 +9,16 @@ declare global {
 }
 
 const PETS: Record<string, [string, number]> = {
-  blue_sheep: ["/Program Files/eSheep/blue_sheep.xml", 15],
-  eSheep: ["/Program Files/eSheep/eSheep.xml", 15],
-  fox: ["/Program Files/eSheep/fox.xml", 2],
-  green_sheep: ["/Program Files/eSheep/green_sheep.xml", 15],
-  mimiko: ["/Program Files/eSheep/mimiko.xml", 1],
-  neko: ["/Program Files/eSheep/neko.xml", 2],
-  orange_sheep: ["/Program Files/eSheep/orange_sheep.xml", 15],
-  pingus: ["/Program Files/eSheep/pingus.xml", 5],
-  red_sheep: ["/Program Files/eSheep/red_sheep.xml", 15],
-  yellow_sheep: ["/Program Files/eSheep/yellow_sheep.xml", 15],
+  blue_sheep: ["/Program Files/eSheep/blue_sheep.xml", 12],
+  eSheep: ["/Program Files/eSheep/eSheep.xml", 12],
+  fox: ["/Program Files/eSheep/fox.xml", 4],
+  green_sheep: ["/Program Files/eSheep/green_sheep.xml", 12],
+  mimiko: ["/Program Files/eSheep/mimiko.xml", 4],
+  neko: ["/Program Files/eSheep/neko.xml", 10],
+  orange_sheep: ["/Program Files/eSheep/orange_sheep.xml", 12],
+  pingus: ["/Program Files/eSheep/pingus.xml", 10],
+  red_sheep: ["/Program Files/eSheep/red_sheep.xml", 12],
+  yellow_sheep: ["/Program Files/eSheep/yellow_sheep.xml", 12],
 };
 
 let oneSheepLaunched = false;
