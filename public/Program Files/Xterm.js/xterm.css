@@ -163,7 +163,6 @@
     opacity: 0.5;
 }
 
-.xterm-underline { text-decoration: underline; }
 .xterm-underline-1 { text-decoration: underline; }
 .xterm-underline-2 { text-decoration: double underline; }
 .xterm-underline-3 { text-decoration: wavy underline; }
