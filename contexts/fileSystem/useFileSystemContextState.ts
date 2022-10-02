@@ -133,25 +133,28 @@ const useFileSystemContextState = (): FileSystemContextState => {
     },
     [FileSystemAccess, rootFs]
   );
-  const mountFs = async (url: string): Promise<void> => {
-    const fileData = await readFile(url);
+  const mountFs = useCallback(
+    async (url: string): Promise<void> => {
+      const fileData = await readFile(url);
 
-    return new Promise((resolve, reject) => {
-      const createFs: BFSCallback<IIsoFS | IZipFS> = (createError, newFs) => {
-        if (createError) reject();
-        else if (newFs) {
-          rootFs?.mount?.(url, newFs);
-          resolve();
+      return new Promise((resolve, reject) => {
+        const createFs: BFSCallback<IIsoFS | IZipFS> = (createError, newFs) => {
+          if (createError) reject();
+          else if (newFs) {
+            rootFs?.mount?.(url, newFs);
+            resolve();
+          }
+        };
+
+        if (extname(url).toLowerCase() === ".iso") {
+          IsoFS?.Create({ data: fileData }, createFs);
+        } else {
+          ZipFS?.Create({ zipData: fileData }, createFs);
         }
-      };
-
-      if (extname(url).toLowerCase() === ".iso") {
-        IsoFS?.Create({ data: fileData }, createFs);
-      } else {
-        ZipFS?.Create({ zipData: fileData }, createFs);
-      }
-    });
-  };
+      });
+    },
+    [IsoFS, ZipFS, readFile, rootFs]
+  );
   const unMountFs = useCallback(
     (url: string): void => rootFs?.umount?.(url),
     [rootFs]
@@ -165,68 +168,77 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [unMountFs, updateFolder]
   );
   const { openTransferDialog } = useTransferDialog();
-  const addFile = (
-    directory: string,
-    callback: (name: string, buffer?: Buffer) => void
-  ): void => {
-    const fileInput = document.createElement("input");
+  const addFile = useCallback(
+    (
+      directory: string,
+      callback: (name: string, buffer?: Buffer) => void
+    ): void => {
+      const fileInput = document.createElement("input");
 
-    fileInput.type = "file";
-    fileInput.multiple = true;
-    fileInput.setAttribute("style", "display: none");
-    fileInput.addEventListener(
-      "change",
-      (event) => {
-        handleFileInputEvent(
-          event as InputChangeEvent,
-          callback,
-          directory,
-          openTransferDialog
-        );
-        fileInput.remove();
-      },
-      { once: true }
-    );
-    document.body.appendChild(fileInput);
-    fileInput.click();
-  };
-  const mkdirRecursive = async (path: string): Promise<void> => {
-    const pathParts = path.split("/").filter(Boolean);
-    const recursePath = async (position = 1, retry = 0): Promise<void> => {
-      const makePath = join("/", pathParts.slice(0, position).join("/"));
-      let created: boolean;
+      fileInput.type = "file";
+      fileInput.multiple = true;
+      fileInput.setAttribute("style", "display: none");
+      fileInput.addEventListener(
+        "change",
+        (event) => {
+          handleFileInputEvent(
+            event as InputChangeEvent,
+            callback,
+            directory,
+            openTransferDialog
+          );
+          fileInput.remove();
+        },
+        { once: true }
+      );
+      document.body.appendChild(fileInput);
+      fileInput.click();
+    },
+    [openTransferDialog]
+  );
+  const mkdirRecursive = useCallback(
+    async (path: string): Promise<void> => {
+      const pathParts = path.split("/").filter(Boolean);
+      const recursePath = async (position = 1, retry = 0): Promise<void> => {
+        const makePath = join("/", pathParts.slice(0, position).join("/"));
+        let created: boolean;
 
-      try {
-        created = (await exists(makePath)) || (await mkdir(makePath));
-      } catch {
-        created = false;
-      }
-
-      if (created) {
-        if (position !== pathParts.length) {
-          await recursePath(position + 1);
+        try {
+          created = (await exists(makePath)) || (await mkdir(makePath));
+        } catch {
+          created = false;
         }
-      } else if (retry < 3) {
-        await recursePath(position, retry + 1);
-      }
-    };
 
-    await recursePath();
-  };
-  const deletePath = async (path: string): Promise<void> => {
-    try {
-      await unlink(path);
-    } catch (error) {
-      if ((error as ApiError).code === "EISDIR") {
-        const dirContents = await readdir(path);
+        if (created) {
+          if (position !== pathParts.length) {
+            await recursePath(position + 1);
+          }
+        } else if (retry < 3) {
+          await recursePath(position, retry + 1);
+        }
+      };
 
-        await Promise.all(
-          dirContents.map((entry) => deletePath(join(path, entry)))
-        );
-        await rmdir(path);
+      await recursePath();
+    },
+    [exists, mkdir]
+  );
+  const deletePath = useCallback(
+    async (path: string): Promise<void> => {
+      try {
+        await unlink(path);
+      } catch (error) {
+        if ((error as ApiError).code === "EISDIR") {
+          const dirContents = await readdir(path);
+
+          await Promise.all(
+            dirContents.map((entry) => deletePath(join(path, entry)))
+          );
+          await rmdir(path);
+        }
       }
-    }
-  };
+    },
+    [readdir, rmdir, unlink]
+  );
   const createPath = async (
     name: string,
     directory: string,

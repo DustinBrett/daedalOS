@@ -186,9 +186,7 @@ const useFolder = (
                   newFiles[file] = await statsWithShortcutInfo(file, fileStats);
                   newFiles = sortContents(
                     newFiles,
-                    skipSorting
-                      ? []
-                      : customSortOrder || Object.keys(files || {})
+                    (!skipSorting && customSortOrder) || []
                   );
                 }
 
@@ -223,7 +221,6 @@ const useFolder = (
       closeProcessesByUrl,
       directory,
       exists,
-      files,
       hideFolders,
       hideLoading,
       isSimpleSort,

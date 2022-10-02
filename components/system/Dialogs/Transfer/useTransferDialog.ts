@@ -1,4 +1,5 @@
 import { useProcesses } from "contexts/process";
+import { useMemo } from "react";
 
 export type FileReaders = [File, string, FileReader][];
 
@@ -6,14 +7,17 @@ type Dialog = {
   openTransferDialog: (fileReaders: FileReaders) => void;
 };
 
-const useDialog = (): Dialog => {
+const useTransferDialog = (): Dialog => {
   const { open } = useProcesses();
 
-  return {
-    openTransferDialog: (fileReaders: FileReaders) => {
-      open("Transfer", { fileReaders, url: "" });
-    },
-  };
+  return useMemo(
+    () => ({
+      openTransferDialog: (fileReaders: FileReaders) => {
+        open("Transfer", { fileReaders, url: "" });
+      },
+    }),
+    [open]
+  );
 };
 
-export default useDialog;
+export default useTransferDialog;
