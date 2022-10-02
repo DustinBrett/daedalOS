@@ -22,7 +22,7 @@ import { useSession } from "contexts/session";
 import type { AsyncZipOptions, AsyncZippable } from "fflate";
 import ini from "ini";
 import { basename, dirname, extname, join, relative } from "path";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
@@ -514,6 +514,7 @@ const useFolder = (
     }),
     [addFile, directory, newPath, pasteToFolder, sortByOrder]
   );
+  const updatingFiles = useRef(false);
 
   useEffect(() => {
     if (directory !== currentDirectory) {
@@ -525,7 +526,12 @@ const useFolder = (
   useEffect(() => {
     if (sessionLoaded) {
       if (!files) {
-        updateFiles(undefined, undefined, sortOrder);
+        if (!updatingFiles.current) {
+          updatingFiles.current = true;
+          updateFiles(undefined, undefined, sortOrder).then(() => {
+            updatingFiles.current = false;
+          });
+        }
       } else {
         const fileNames = Object.keys(files);
 
