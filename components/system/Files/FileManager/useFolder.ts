@@ -260,7 +260,11 @@ const useFolder = (
     [directory, readFile]
   );
   const renameFile = async (path: string, name?: string): Promise<void> => {
-    const newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
+    let newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
+
+    if (newName?.endsWith(".")) {
+      newName = newName.slice(0, -1);
+    }
 
     if (newName) {
       const renamedPath = join(
