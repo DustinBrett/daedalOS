@@ -1,5 +1,27 @@
 import type { HandleStyles } from "react-rnd";
 
+export const RESIZING_DISABLED = {
+  bottom: false,
+  bottomLeft: false,
+  bottomRight: false,
+  left: false,
+  right: false,
+  top: false,
+  topLeft: false,
+  topRight: false,
+};
+
+export const RESIZING_ENABLED = {
+  bottom: true,
+  bottomLeft: true,
+  bottomRight: true,
+  left: true,
+  right: true,
+  top: true,
+  topLeft: true,
+  topRight: true,
+};
+
 const rndDefaults = {
   cancel: ".cancel",
   dragHandleClassName: "handle",

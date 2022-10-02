@@ -1,5 +1,8 @@
 import { isWindowOutsideBounds } from "components/system/Window/functions";
-import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
+import rndDefaults, {
+  RESIZING_DISABLED,
+  RESIZING_ENABLED,
+} from "components/system/Window/RndWindow/rndDefaults";
 import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
@@ -57,7 +60,8 @@ const useRnd = (id: string, maximized = false): Props => {
 
   return {
     disableDragging: maximized,
-    enableResizing: allowResizing && !maximized,
+    enableResizing:
+      allowResizing && !maximized ? RESIZING_ENABLED : RESIZING_DISABLED,
     lockAspectRatio,
     onDragStart: () => enableIframeCapture(false),
     onDragStop,
