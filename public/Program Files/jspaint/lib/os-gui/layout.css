@@ -92,17 +92,7 @@ body > .window-titlebar {
 	text-align: center;
 }
 
-/* .window-content .button-group {
-	width: 85px;
-}
-.window-content .button-group > button {
-	width: 95%;
-	padding: 3px 5px;
-} */
-
 ::before,
 ::after {
 	pointer-events: none;
 }
-
-/*# sourceMappingURL=layout.css.map */

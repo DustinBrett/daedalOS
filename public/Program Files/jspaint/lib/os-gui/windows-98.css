@@ -254,9 +254,9 @@ body > .window-titlebar {
 	background: var(--ActiveTitle);
 	background: linear-gradient(to right, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
-	
+
 	color: rgb(255, 255, 255);
-	
+
 	color: var(--TitleText);
 }
 
@@ -451,7 +451,7 @@ body > .window-titlebar {
 	border-bottom-width: 1px;
 	border-right-width: 1px;
 	/* Unfortunately, everything else has to be balanced by 1px (very carefully) in many places. */
-	
+
 	height: 18px; /* (EFFECTIVELY NORMAL but...) +1px -1px: +1px due to transparent border, but needs to be metrically same as visual height for the menu popup positioning, so I used bottom: -1px on the pseudo element to get it so this can be -1px to 18px again */
 	line-height: 1;
 	margin-top: 1px; /* NORMAL MARGIN */
@@ -989,5 +989,3 @@ so I think I'll immitate that. */
 ::-webkit-scrollbar-button:end:decrement {
 	display: none;
 }
-
-/*# sourceMappingURL=windows-98.css.map */
