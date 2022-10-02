@@ -139,6 +139,7 @@
     "unicorn/prefer-object-from-entries": "off",
     "unicorn/prefer-switch": "off",
     "unicorn/prevent-abbreviations": "off",
+    "unicorn/switch-case-braces": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
       "error",
