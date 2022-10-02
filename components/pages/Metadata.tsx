@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
+  ICON_CACHE_EXTENSION,
   ICON_PATH,
   PACKAGE_DATA,
   USER_ICON_PATH,
@@ -80,9 +81,11 @@ const Metadata: FC = () => {
       />
       <meta content={description} name="description" />
       {desktopIcons.map((icon) => {
+        const isCacheIcon = icon.endsWith(ICON_CACHE_EXTENSION);
         const isStaticIcon =
-          (!icon.startsWith(ICON_PATH) || icon.includes("/16x16/")) &&
-          !icon.startsWith(USER_ICON_PATH);
+          isCacheIcon ||
+          ((!icon.startsWith(ICON_PATH) || icon.includes("/16x16/")) &&
+            !icon.startsWith(USER_ICON_PATH));
 
         return (
           <link
@@ -93,7 +96,7 @@ const Metadata: FC = () => {
               isStaticIcon ? undefined : imageSrcs(icon, 48, ".webp")
             }
             rel="preload"
-            type="image/webp"
+            type={isCacheIcon ? undefined : "image/webp"}
             {...HIGH_PRIORITY_ELEMENT}
           />
         );
