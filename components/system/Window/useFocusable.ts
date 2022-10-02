@@ -1,6 +1,6 @@
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useLayoutEffect } from "react";
+import { useCallback, useLayoutEffect, useMemo } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
@@ -29,32 +29,41 @@ const useFocusable = (
   } = useProcesses();
   const { closing, componentWindow, minimized, taskbarEntry, url } =
     process || {};
-  const zIndex =
-    stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1;
-  const isForeground = id === foregroundId;
-  const onBlurCapture: React.FocusEventHandler<HTMLElement> = (event) => {
-    const { relatedTarget } = event;
-    const focusedElement = relatedTarget as HTMLElement | null;
-    const focusedOnTaskbarEntry = relatedTarget === taskbarEntry;
-    const focusedOnTaskbarPeek =
-      focusedElement && taskbarEntry?.previousSibling?.contains(focusedElement);
-    const focusedOnInsideWindow =
-      focusedElement && componentWindow?.contains(focusedElement);
+  const zIndex = useMemo(
+    () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
+    [id, minimized, stackOrder]
+  );
+  const onBlurCapture: React.FocusEventHandler<HTMLElement> = useCallback(
+    (event) => {
+      const { relatedTarget } = event;
+      const focusedElement = relatedTarget as HTMLElement | null;
+      const focusedOnTaskbarEntry = relatedTarget === taskbarEntry;
+      const focusedOnTaskbarPeek =
+        focusedElement &&
+        taskbarEntry?.previousSibling?.contains(focusedElement);
+      const focusedOnInsideWindow =
+        focusedElement && componentWindow?.contains(focusedElement);
 
-    if (
-      isForeground &&
-      !focusedOnTaskbarEntry &&
-      !focusedOnTaskbarPeek &&
-      !focusedOnInsideWindow
-    ) {
-      setForegroundId("");
-      callbackEvents?.onBlurCapture?.(event);
-    }
+      setForegroundId((currentForegroundId) => {
+        if (
+          currentForegroundId === id &&
+          !focusedOnTaskbarEntry &&
+          !focusedOnInsideWindow
+        ) {
+          if (focusedOnTaskbarPeek) {
+            componentWindow?.focus(PREVENT_SCROLL);
+          } else {
+            callbackEvents?.onBlurCapture?.(event);
+          }
 
-    if (isForeground && focusedOnTaskbarPeek) {
-      componentWindow?.focus(PREVENT_SCROLL);
-    }
-  };
+          return focusedOnTaskbarPeek ? currentForegroundId : "";
+        }
+
+        return currentForegroundId;
+      });
+    },
+    [callbackEvents, componentWindow, id, setForegroundId, taskbarEntry]
+  );
   const moveToFront = useCallback(
     (event?: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => {
       const { relatedTarget } = event || {};
@@ -80,8 +89,8 @@ const useFocusable = (
   );
 
   useLayoutEffect(() => {
-    if (isForeground) moveToFront();
-  }, [isForeground, moveToFront]);
+    if (id === foregroundId) moveToFront();
+  }, [foregroundId, id, moveToFront]);
 
   useLayoutEffect(() => {
     if (componentWindow && !closing && !minimized) {
@@ -89,13 +98,16 @@ const useFocusable = (
     }
   }, [closing, componentWindow, id, minimized, setForegroundId, url]);
 
-  return {
-    onBlurCapture,
-    onClickCapture: moveToFront,
-    onFocusCapture: moveToFront,
-    zIndex,
-    ...FOCUSABLE_ELEMENT,
-  };
+  return useMemo(
+    () => ({
+      onBlurCapture,
+      onClickCapture: moveToFront,
+      onFocusCapture: moveToFront,
+      zIndex,
+      ...FOCUSABLE_ELEMENT,
+    }),
+    [moveToFront, onBlurCapture, zIndex]
+  );
 };
 
 export default useFocusable;
