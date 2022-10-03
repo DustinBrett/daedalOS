@@ -20,7 +20,7 @@ import {
   useState,
 } from "react";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent, isFirefox, isSafari, loadFiles } from "utils/functions";
+import { haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -71,12 +71,7 @@ const useTerminal = (
   }, [id, localEcho, setUrl, url]);
 
   useEffect(() => {
-    loadFiles([
-      ...libs,
-      `/Program Files/Xterm.js/xterm-addon-${
-        isSafari() ? "canvas" : "webgl"
-      }.js`,
-    ]).then(() => {
+    loadFiles(libs).then(() => {
       if (window.Terminal) setTerminal(new window.Terminal(config));
     });
   }, [libs]);
@@ -98,15 +93,6 @@ const useTerminal = (
       terminal.loadAddon(newFitAddon);
       terminal.open(containerRef.current);
       newFitAddon.fit();
-
-      if (window.CanvasAddon) {
-        terminal.loadAddon(new window.CanvasAddon.CanvasAddon());
-      } else if (window.WebglAddon) {
-        const newWebGlAddon = new window.WebglAddon.WebglAddon();
-
-        newWebGlAddon.onContextLoss(() => newWebGlAddon.dispose());
-        terminal.loadAddon(newWebGlAddon);
-      }
 
       setFitAddon(newFitAddon);
       setLocalEcho(newLocalEcho);
