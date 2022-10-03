@@ -3,7 +3,7 @@ precision mediump float;
 
 uniform sampler2D tex;
 uniform sampler2D bloomTex;
-uniform sampler2D palette;
+uniform sampler2D paletteTex;
 uniform float bloomStrength;
 uniform float ditherMagnitude;
 uniform float time;
@@ -30,7 +30,7 @@ void main() {
 
 	// Map the brightness to a position in the palette texture
 	gl_FragColor = vec4(
-		texture2D( palette, vec2(brightness.r, 0.0)).rgb
+		texture2D( paletteTex, vec2(brightness.r, 0.0)).rgb
 			+ min(cursorColor * brightness.g, vec3(1.0))
 			+ min(glintColor * brightness.b, vec3(1.0))
 			+ backgroundColor,

@@ -7,6 +7,8 @@ precision lowp float;
 uniform sampler2D raindropState, symbolState, effectState;
 uniform float numColumns, numRows;
 uniform sampler2D glyphMSDF, glintMSDF, baseTexture, glintTexture;
+uniform float msdfPxRange;
+uniform vec2 glyphMSDFSize, glintMSDFSize;
 uniform bool hasBaseTexture, hasGlintTexture;
 uniform float glyphHeightToWidth, glyphSequenceLength, glyphEdgeCrop;
 uniform float baseContrast, baseBrightness, glintContrast, glintBrightness;
@@ -61,7 +63,7 @@ vec2 getUV(vec2 uv) {
 
 vec3 getBrightness(vec4 raindrop, vec4 effect, float quadDepth, vec2 uv) {
 
-	float base = raindrop.r;
+	float base = raindrop.r + max(0., 1.0 - raindrop.a * 5.0);
 	bool isCursor = bool(raindrop.g) && isolateCursor;
 	float glint = base;
 	float multipliedEffects = effect.r;
@@ -94,7 +96,7 @@ vec3 getBrightness(vec4 raindrop, vec4 effect, float quadDepth, vec2 uv) {
 	return vec3(
 		(isCursor ? vec2(0.0, 1.0) : vec2(1.0, 0.0)) * base,
 		glint
-	);
+	) * raindrop.b;
 }
 
 vec2 getSymbolUV(float index) {
@@ -115,15 +117,23 @@ vec2 getSymbol(vec2 uv, float index) {
 	// MSDF: calculate brightness of fragment based on distance to shape
 	vec2 symbol;
 	{
-		vec3 dist = texture2D(glyphMSDF, uv).rgb;
-		float sigDist = median3(dist) - 0.5;
-		symbol.r = clamp(sigDist / fwidth(sigDist) + 0.5, 0., 1.);
+		vec2 unitRange = vec2(msdfPxRange) / (glyphMSDFSize * 1000.); // Not sure why this x1000 softening is necessary
+		vec2 screenTexSize = vec2(1.0) / fwidth(uv);
+		float screenPxRange = max(0.5 * dot(unitRange, screenTexSize), 1.0);
+
+		float signedDistance = median3(texture2D(glyphMSDF, uv).rgb);
+		float screenPxDistance = screenPxRange * (signedDistance - 0.5);
+		symbol.r = clamp(screenPxDistance + 0.5, 0.0, 1.0);
 	}
 
 	if (isolateGlint) {
-		vec3 dist = texture2D(glintMSDF, uv).rgb;
-		float sigDist = median3(dist) - 0.5;
-		symbol.g = clamp(sigDist / fwidth(sigDist) + 0.5, 0., 1.);
+		vec2 unitRange = vec2(msdfPxRange) / (glintMSDFSize * 1000.); // Not sure why this x1000 softening is necessary
+		vec2 screenTexSize = vec2(1.0) / fwidth(uv);
+		float screenPxRange = max(0.5 * dot(unitRange, screenTexSize), 1.0);
+
+		float signedDistance = median3(texture2D(glintMSDF, uv).rgb);
+		float screenPxDistance = screenPxRange * (signedDistance - 0.5);
+		symbol.g = clamp(screenPxDistance + 0.5, 0.0, 1.0);
 	}
 
 	return symbol;

@@ -34,6 +34,9 @@ void main() {
 		vDepth = quadDepth;
 	}
 	vec2 position = (aPosition * vec2(1., glyphVerticalSpacing) + aCorner * vec2(density, 1.)) * quadSize;
+	if (volumetric) {
+		position.y += rand(vec2(aPosition.x, 1.)) * quadSize.y;
+	}
 	vec4 pos = vec4((position - 0.5) * 2.0, quadDepth, 1.0);
 
 	// Convert the world space position to screen space

@@ -1,18 +1,10 @@
+import colorToRGB from "../colorToRGB.js";
 import { loadText, make1DTexture, makePassFBO, makePass } from "./utils.js";
 
 // Maps the brightness of the rendered rain and bloom to colors
 // in a 1D gradient palette texture generated from the passed-in color sequence
 
 // This shader introduces noise into the renders, to avoid banding
-
-const colorToRGB = ([hue, saturation, lightness]) => {
-	const a = saturation * Math.min(lightness, 1 - lightness);
-	const f = (n) => {
-		const k = (n + hue * 12) % 12;
-		return lightness - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
-	};
-	return [f(0), f(8), f(4)];
-};
 
 const makePalette = (regl, entries) => {
 	const PALETTE_SIZE = 2048;
@@ -23,7 +15,7 @@ const makePalette = (regl, entries) => {
 		.slice()
 		.sort((e1, e2) => e1.at - e2.at)
 		.map((entry) => ({
-			rgb: colorToRGB(entry.hsl),
+			rgb: colorToRGB(entry.color),
 			arrayIndex: Math.floor(Math.max(Math.min(1, entry.at), 0) * (PALETTE_SIZE - 1)),
 		}));
 	sortedEntries.unshift({ rgb: sortedEntries[0].rgb, arrayIndex: 0 });
@@ -52,7 +44,7 @@ const makePalette = (regl, entries) => {
 
 	return make1DTexture(
 		regl,
-		paletteColors.flat().map((i) => i * 0xff)
+		paletteColors.map((rgb) => [...rgb, 1])
 	);
 };
 
@@ -64,7 +56,7 @@ const makePalette = (regl, entries) => {
 
 export default ({ regl, config }, inputs) => {
 	const output = makePassFBO(regl, config.useHalfFloat);
-	const palette = makePalette(regl, config.paletteEntries);
+	const paletteTex = makePalette(regl, config.palette);
 	const { backgroundColor, cursorColor, glintColor, ditherMagnitude, bloomStrength } = config;
 
 	const palettePassFrag = loadText("shaders/glsl/palettePass.frag.glsl");
@@ -73,14 +65,14 @@ export default ({ regl, config }, inputs) => {
 		frag: regl.prop("frag"),
 
 		uniforms: {
-			backgroundColor,
-			cursorColor,
-			glintColor,
+			backgroundColor: colorToRGB(backgroundColor),
+			cursorColor: colorToRGB(cursorColor),
+			glintColor: colorToRGB(glintColor),
 			ditherMagnitude,
 			bloomStrength,
 			tex: inputs.primary,
 			bloomTex: inputs.bloom,
-			palette,
+			paletteTex,
 		},
 		framebuffer: output,
 	});

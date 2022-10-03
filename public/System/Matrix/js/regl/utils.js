@@ -36,6 +36,8 @@ const loadImage = (regl, url) => {
 			}
 			return texture;
 		},
+		width: () => (loaded ? texture.width : 1),
+		height: () => (loaded ? texture.height : 1),
 		loaded: (async () => {
 			if (url != null) {
 				const data = new Image();
@@ -112,15 +114,17 @@ const makeFullScreenQuad = (regl, uniforms = {}, context = {}) =>
 		depth: { enable: false },
 	});
 
-const make1DTexture = (regl, data) =>
-	regl.texture({
+const make1DTexture = (regl, rgbas) => {
+	const data = rgbas.map((rgba) => rgba.map((f) => Math.floor(f * 0xff))).flat();
+	return regl.texture({
 		data,
-		width: data.length / 3,
+		width: data.length / 4,
 		height: 1,
-		format: "rgb",
+		format: "rgba",
 		mag: "linear",
 		min: "linear",
 	});
+};
 
 const makePass = (outputs, ready, setSize, execute) => ({
 	outputs: outputs ?? {},
