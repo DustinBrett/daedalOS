@@ -121,6 +121,7 @@ const useMonaco = (
       if (editor && monaco) {
         editor.getModel()?.dispose();
         editor.dispose();
+        lockGlobal("define");
       }
     };
   }, [containerRef, editor, id, monaco, setArgument, setLoading]);
