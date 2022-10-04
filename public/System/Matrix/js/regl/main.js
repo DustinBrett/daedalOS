@@ -50,8 +50,8 @@ window.Matrix = async (canvas, config) => {
 	window.onresize = resize;
 
   if (previouslyLoaded) {
-    resize(1.001);
-    setTimeout(resize, 150);
+    resize(1.01);
+    setTimeout(resize, 250);
   }
 
 	const regl = createREGL({
