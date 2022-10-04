@@ -1,0 +1,27 @@
+{
+  "buffers": {
+    "messageLayout": "compact",
+    "scrollback_size": 1000,
+    "share_typing": true,
+    "show_emoticons": false,
+    "show_timestamps": true
+  },
+  "emojiLocation": "",
+  "language": "en-us",
+  "notification.enabled": false,
+  "restricted": false,
+  "showAwayStatusIndicators": false,
+  "showEmojiPicker": false,
+  "startupOptions": {
+    "state_key": "kiwiirc"
+  },
+  "startupScreen": "personal",
+  "theme": "Light",
+  "themes": [
+    { "name": "Dark", "url": "static/themes/dark" },
+    { "name": "Light", "url": "static/themes/default" }
+  ],
+  "useMonospace": true,
+  "warnOnExit": false,
+  "windowTitle": "IRC Client"
+}

@@ -72,6 +72,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Chess](https://sourceforge.net/projects/htmlchess/)
 - [jspaint](https://github.com/1j01/jspaint)
 - [Print.js](https://github.com/crabbly/print.js)
+- [Kiwi IRC](https://github.com/kiwiirc/kiwiirc)
 
 ## Services
 
