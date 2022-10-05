@@ -18,7 +18,7 @@ import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
@@ -297,30 +297,39 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
     return "";
   };
+  const restoredFsHandles = useRef(false);
 
   useEffect(() => {
-    const restoreFsHandles = async (): Promise<void> =>
-      Object.entries(await getFileSystemHandles()).forEach(
-        async ([handleDirectory, handle]) => {
-          if (!(await exists(handleDirectory))) {
-            try {
-              mapFs(dirname(handleDirectory), handle);
-            } catch {
-              // Ignore failure
+    const restoreFsHandles = async (): Promise<void> => {
+      if (!restoredFsHandles.current && rootFs) {
+        restoredFsHandles.current = true;
+
+        Object.entries(await getFileSystemHandles()).forEach(
+          async ([handleDirectory, handle]) => {
+            if (!(await exists(handleDirectory))) {
+              try {
+                mapFs(dirname(handleDirectory), handle);
+              } catch {
+                // Ignore failure
+              }
             }
           }
-        }
-      );
+        );
+      }
+    };
 
     restoreFsHandles();
-  }, [exists, mapFs]);
+  }, [exists, mapFs, rootFs]);
 
   useEffect(() => {
-    const watchedPaths = Object.keys(fsWatchers).filter(
-      (watchedPath) => fsWatchers[watchedPath].length > 0
-    );
     const mountedPaths = Object.keys(rootFs?.mntMap || {}).filter(
       (mountedPath) => mountedPath !== "/"
+    );
+
+    if (mountedPaths.length === 0) return;
+
+    const watchedPaths = Object.keys(fsWatchers).filter(
+      (watchedPath) => fsWatchers[watchedPath].length > 0
     );
 
     mountedPaths.forEach((mountedPath) => {
