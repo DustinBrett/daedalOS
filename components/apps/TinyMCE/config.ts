@@ -14,6 +14,7 @@ export const config = {
   draggable_modal: true,
   image_advtab: true,
   plugins,
+  promotion: false,
   suffix: ".min",
   toolbar,
 };
