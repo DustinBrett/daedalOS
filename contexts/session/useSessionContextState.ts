@@ -27,7 +27,9 @@ const useSessionContextState = (): SessionContextState => {
   const [sortOrders, setSortOrders] = useState<SortOrders>(
     Object.create(null) as SortOrders
   );
-  const [iconPositions, setIconPositions] = useState<IconPositions>({});
+  const [iconPositions, setIconPositions] = useState<IconPositions>(
+    Object.create(null) as IconPositions
+  );
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
   const [wallpaperImage, setWallpaperImage] = useState("VANTA");
   const [runHistory, setRunHistory] = useState<string[]>([]);
@@ -120,14 +122,31 @@ const useSessionContextState = (): SessionContextState => {
           ) as SessionData;
 
           if (session.clockSource) setClockSource(session.clockSource);
-          if (session.sortOrders) setSortOrders(session.sortOrders);
-          if (session.iconPositions) setIconPositions(session.iconPositions);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);
           }
-          if (session.windowStates) setWindowStates(session.windowStates);
-          if (session.runHistory) setRunHistory(session.runHistory);
+          if (
+            session.sortOrders &&
+            Object.keys(session.sortOrders).length > 0
+          ) {
+            setSortOrders(session.sortOrders);
+          }
+          if (
+            session.iconPositions &&
+            Object.keys(session.iconPositions).length > 0
+          ) {
+            setIconPositions(session.iconPositions);
+          }
+          if (
+            session.windowStates &&
+            Object.keys(session.windowStates).length > 0
+          ) {
+            setWindowStates(session.windowStates);
+          }
+          if (session.runHistory && session.runHistory.length > 0) {
+            setRunHistory(session.runHistory);
+          }
         } catch (error) {
           if ((error as ApiError)?.code === "ENOENT") deletePath(SESSION_FILE);
         }
