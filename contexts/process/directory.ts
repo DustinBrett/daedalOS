@@ -146,6 +146,16 @@ const directory: Processes = {
     icon: "/System/Icons/monaco.webp",
     title: "Monaco Editor",
   },
+  NoodJs: {
+    Component: dynamic(() => import("components/apps/NoodJs")),
+    background: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/chromium.png",
+    title: "NoodJs",
+  },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
     background: "rgb(82, 86, 89)",

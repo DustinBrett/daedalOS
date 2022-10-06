@@ -66,6 +66,11 @@ const types = {
     icon: "audio",
     process: ["Webamp"],
   },
+  NoodJs: {
+    icon: "emulator",
+    process: ["NoodJs"],
+    type: "Javascript Eval",
+  },
   PdfDocument: {
     icon: "pdf",
     process: ["PDF"],
@@ -105,6 +110,7 @@ const types = {
 const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
   ".bin": types.DiscImage,
+  ".eval": types.NoodJs,
   ".exe": types.Application,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,
