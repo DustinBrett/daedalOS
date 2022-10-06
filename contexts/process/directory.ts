@@ -62,6 +62,12 @@ const directory: Processes = {
     lockAspectRatio: true,
     title: "DX-Ball",
   },
+  AppInstaller: {
+    Component: dynamic(() => import("components/apps/AppInstaller")),
+    allowResizing: false,
+    icon: "/System/Icons/exterm.webp",
+    title: "AppInstaller",
+  },
   DevTools: {
     Component: dynamic(() => import("components/apps/DevTools")),
     background: "rgb(36, 36, 36)",
@@ -178,12 +184,6 @@ const directory: Processes = {
     hideTitlebarIcon: true,
     icon: "/System/Icons/photos.webp",
     title: "Photos",
-  },
-  AppInstaller: {
-    Component: dynamic(() => import("components/apps/AppInstaller")),
-    allowResizing: false,
-    icon: "/System/Icons/exterm.webp",
-    title: "AppInstaller",
   },
   Ruffle: {
     Component: dynamic(() => import("components/apps/Ruffle")),

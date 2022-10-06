@@ -11,6 +11,11 @@ export type Extension = {
 export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 const types = {
+  AppInstaller: {
+    icon: "executable",
+    process: ["AppInstaller"],
+    type: "App Installer",
+  },
   Application: {
     icon: "executable",
     process: ["BoxedWine", "JSDOS"],
@@ -52,11 +57,6 @@ const types = {
     icon: "marked",
     process: ["Marked", ...TEXT_EDITORS],
     type: "Markdown File",
-  },
-  AppInstaller: {
-    icon: "executable",
-    process: ["AppInstaller"],
-    type: "App Installer",
   },
   MediaPlaylist: {
     process: ["VideoPlayer"],
@@ -114,12 +114,12 @@ const extensions: Record<string, Extension> = {
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,
   ".img": types.DiscImage,
+  ".install": types.AppInstaller,
   ".iso": types.MountableDiscImage,
   ".jsdos": types.JsdosBundle,
   ".m3u": types.AudioPlaylist,
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
-  ".install": types.AppInstaller,
   ".mp3": types.Music,
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
