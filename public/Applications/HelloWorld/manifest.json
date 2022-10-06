@@ -1,0 +1,8 @@
+{
+    "directoryEntry": {
+        "title": "HellowWorld",
+        "icon": "/System/Icons/emulator.webp"
+    },
+    "source": "() => { return 'hello world' }",
+    "extensions": [".xyz"]
+}
