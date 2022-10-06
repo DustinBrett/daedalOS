@@ -14,6 +14,10 @@ export type ButterChurnWebampPreset = {
   preset: ButterChurnPreset;
 };
 
+export type SkinData = Record<string, unknown>;
+
+type EmitterEventData = SkinData;
+
 type CloseWindow = {
   type: "CLOSE_WINDOW";
   windowId: string;
@@ -45,6 +49,11 @@ type SelectPresetAtIndex = {
   type: "SELECT_PRESET_AT_INDEX";
 };
 
+type SetSkinData = {
+  data: SkinData;
+  type: "SET_SKIN_DATA";
+};
+
 type SetFocusedWindow = {
   type: "SET_FOCUSED_WINDOW";
   window: string;
@@ -64,6 +73,15 @@ type UpdateWindowPositions = {
 };
 
 export type WebampCI = Webamp & {
+  _actionEmitter: {
+    on: (
+      event: string,
+      listener: (emitterEvent: {
+        data?: EmitterEventData;
+        type: string;
+      }) => void
+    ) => () => void;
+  };
   store: {
     dispatch: (
       command:
@@ -74,6 +92,7 @@ export type WebampCI = Webamp & {
         | PresetRequested
         | SelectPresetAtIndex
         | SetFocusedWindow
+        | SetSkinData
         | UpdateTrackInfo
         | UpdateWindowPositions
     ) => void;

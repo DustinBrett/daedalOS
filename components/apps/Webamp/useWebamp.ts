@@ -11,10 +11,11 @@ import {
   MAIN_WINDOW,
   parseTrack,
   PLAYLIST_WINDOW,
+  setSkinData,
   tracksFromPlaylist,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
-import type { WebampCI } from "components/apps/Webamp/types";
+import type { SkinData, WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
@@ -22,13 +23,14 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { extname } from "path";
+import { basename, dirname, extname } from "path";
 import { useCallback, useRef } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   MILLISECONDS_IN_SECOND,
+  SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -38,6 +40,8 @@ type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;
   webampCI?: WebampCI;
 };
+
+const SKIN_DATA_PATH = `${SAVE_PATH}/webampSkinData.json`;
 
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
@@ -51,7 +55,14 @@ const useWebamp = (id: string): Webamp => {
   } = useProcesses();
   const { componentWindow } = process || {};
   const webampCI = useRef<WebampCI>();
-  const { createPath, readFile, updateFolder } = useFileSystem();
+  const {
+    createPath,
+    exists,
+    readFile,
+    mkdirRecursive,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
   const { onDrop: onDropCopy } = useFileDrop({ id });
   const { onDrop } = useFileDrop({
     callback: async (
@@ -226,9 +237,30 @@ const useWebamp = (id: string): Webamp => {
             title(id, processDirectory["Webamp"].title);
           }
         }),
+        webamp._actionEmitter.on("SET_SKIN_DATA", async ({ data }) => {
+          if (!(await exists(SAVE_PATH))) {
+            await mkdirRecursive(SAVE_PATH);
+            updateFolder(dirname(SAVE_PATH));
+          }
+
+          writeFile(SKIN_DATA_PATH, JSON.stringify(data), true);
+          updateFolder(SAVE_PATH, basename(SKIN_DATA_PATH));
+        }),
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
+      else {
+        exists(SKIN_DATA_PATH).then(async (skinExists) => {
+          if (skinExists) {
+            setSkinData(
+              webamp,
+              JSON.parse(
+                (await readFile(SKIN_DATA_PATH)).toString()
+              ) as SkinData
+            );
+          }
+        });
+      }
 
       webamp.renderWhenReady(containerElement).then(() => {
         closeEqualizer(webamp);
@@ -245,17 +277,21 @@ const useWebamp = (id: string): Webamp => {
     [
       componentWindow,
       createPath,
+      exists,
       id,
       linkElement,
+      mkdirRecursive,
       onClose,
       onDrop,
       onDropCopy,
       onMinimize,
       position,
       process,
+      readFile,
       setWindowStates,
       title,
       updateFolder,
+      writeFile,
     ]
   );
 
