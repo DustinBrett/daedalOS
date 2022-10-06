@@ -179,6 +179,12 @@ const directory: Processes = {
     icon: "/System/Icons/photos.webp",
     title: "Photos",
   },
+  AppInstaller: {
+    Component: dynamic(() => import("components/apps/AppInstaller")),
+    allowResizing: false,
+    icon: "/System/Icons/exterm.webp",
+    title: "AppInstaller",
+  },
   Ruffle: {
     Component: dynamic(() => import("components/apps/Ruffle")),
     background: "#000",
