@@ -269,16 +269,21 @@ const useFileSystemContextState = (): FileSystemContextState => {
         return uniqueName;
       }
     } else {
-      const baseDir = dirname(fullNewPath);
-
-      try {
-        if (!(await exists(baseDir))) {
-          await mkdir(baseDir);
-          updateFolder(dirname(baseDir), basename(baseDir));
+      const maybeMakePath = async (makePath: string): Promise<void> => {
+        try {
+          if (!(await exists(makePath))) {
+            await mkdir(makePath);
+            updateFolder(dirname(makePath), basename(makePath));
+          }
+        } catch (error) {
+          if ((error as ApiError).code === "ENOENT") {
+            await maybeMakePath(dirname(makePath));
+            await maybeMakePath(makePath);
+          }
         }
-      } catch {
-        // Ignore error to make directory
-      }
+      };
+
+      await maybeMakePath(dirname(fullNewPath));
 
       try {
         if (
