@@ -149,6 +149,19 @@ const useWebamp = (id: string): Webamp => {
             linkElement(id, "peekElement", mainWindow);
           }
 
+          if (!initialSkin && !process.url?.endsWith(".wsz")) {
+            exists(SKIN_DATA_PATH).then(async (skinExists) => {
+              if (skinExists) {
+                setSkinData(
+                  webamp,
+                  JSON.parse(
+                    (await readFile(SKIN_DATA_PATH)).toString()
+                  ) as SkinData
+                );
+              }
+            });
+          }
+
           containerElement.appendChild(webampElement);
         }
       };
@@ -249,18 +262,6 @@ const useWebamp = (id: string): Webamp => {
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
-      else {
-        exists(SKIN_DATA_PATH).then(async (skinExists) => {
-          if (skinExists) {
-            setSkinData(
-              webamp,
-              JSON.parse(
-                (await readFile(SKIN_DATA_PATH)).toString()
-              ) as SkinData
-            );
-          }
-        });
-      }
 
       webamp.renderWhenReady(containerElement).then(() => {
         closeEqualizer(webamp);

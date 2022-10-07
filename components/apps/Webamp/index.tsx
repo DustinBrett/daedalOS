@@ -75,11 +75,14 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
     }
   }, [getUrlOptions, webampCI]);
   const style = useMemo<React.CSSProperties>(() => ({ zIndex }), [zIndex]);
+  const loadingWebamp = useRef(false);
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
       loadFiles(libs).then(async () => {
-        if (window.Webamp) {
+        if (window.Webamp && !loadingWebamp.current) {
+          loadingWebamp.current = true;
+
           initWebamp(
             containerRef.current as HTMLDivElement,
             await getUrlOptions()
