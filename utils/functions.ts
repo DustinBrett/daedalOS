@@ -584,22 +584,34 @@ export const preloadLibs = (libs: string[] = []): void => {
     const link = document.createElement(
       "link"
     ) as HTMLElementWithPriority<HTMLLinkElement>;
-    const ext = extname(lib).toLowerCase();
 
-    if (ext.startsWith(".htm")) {
-      link.as = "document";
+    switch (extname(lib).toLowerCase()) {
+      case ".css":
+        link.as = "style";
+        break;
+      case ".htm":
+      case ".html": {
+        link.as = "document";
 
-      const linkPreRender = document.createElement(
-        "link"
-      ) as HTMLElementWithPriority<HTMLLinkElement>;
+        const linkPreRender = document.createElement(
+          "link"
+        ) as HTMLElementWithPriority<HTMLLinkElement>;
 
-      linkPreRender.fetchPriority = "high";
-      linkPreRender.rel = "prerender";
-      linkPreRender.href = lib;
+        linkPreRender.fetchPriority = "high";
+        linkPreRender.rel = "prerender";
+        linkPreRender.href = lib;
 
-      document.head.appendChild(linkPreRender);
-    } else {
-      link.as = ext === ".css" ? "style" : "script";
+        document.head.appendChild(linkPreRender);
+
+        break;
+      }
+      case ".url":
+        link.as = "fetch";
+        link.crossOrigin = "anonymous";
+        break;
+      default:
+        link.as = "script";
+        break;
     }
 
     link.fetchPriority = "high";

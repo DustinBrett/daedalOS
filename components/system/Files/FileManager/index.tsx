@@ -38,6 +38,7 @@ type FileManagerProps = {
   id?: string;
   isDesktop?: boolean;
   loadIconsImmediately?: boolean;
+  preloadShortcuts?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
   skipSorting?: boolean;
@@ -55,6 +56,7 @@ const FileManager: FC<FileManagerProps> = ({
   id,
   isDesktop,
   loadIconsImmediately,
+  preloadShortcuts,
   readOnly,
   showStatusBar,
   skipSorting,
@@ -75,7 +77,8 @@ const FileManager: FC<FileManagerProps> = ({
       focusFunctions,
       hideFolders,
       hideLoading,
-      skipSorting
+      skipSorting,
+      preloadShortcuts
     );
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];

@@ -32,7 +32,7 @@ import {
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import { bufferToUrl, cleanUpBufferUrl, preloadLibs } from "utils/functions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -77,7 +77,8 @@ const useFolder = (
   { blurEntry, focusEntry }: FocusEntryFunctions,
   hideFolders = false,
   hideLoading = false,
-  skipSorting = false
+  skipSorting = false,
+  preloadShortcuts = false
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -172,6 +173,15 @@ const useFolder = (
           const dirContents = (await readdir(directory)).filter(
             filterSystemFiles(directory)
           );
+
+          if (preloadShortcuts) {
+            preloadLibs(
+              dirContents
+                .filter((entry) => entry.endsWith(SHORTCUT_EXTENSION))
+                .map((entry) => `${directory}/${entry}`)
+            );
+          }
+
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
               try {
@@ -225,6 +235,7 @@ const useFolder = (
       hideLoading,
       isSimpleSort,
       lstat,
+      preloadShortcuts,
       readdir,
       setSortOrder,
       skipSorting,
