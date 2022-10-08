@@ -10,7 +10,7 @@ import type {
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ThemeName } from "styles/themes";
 import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
 
@@ -111,10 +111,17 @@ const useSessionContextState = (): SessionContextState => {
       }),
     []
   );
+  const initializedSession = useRef(false);
 
   useEffect(() => {
     const initSession = async (): Promise<void> => {
-      if (!sessionLoaded && (await exists(SESSION_FILE))) {
+      if (
+        !initializedSession.current &&
+        !sessionLoaded &&
+        (await exists(SESSION_FILE))
+      ) {
+        initializedSession.current = true;
+
         try {
           const sessionData = await readFile(SESSION_FILE);
           const session = JSON.parse(
