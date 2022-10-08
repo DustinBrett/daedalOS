@@ -585,24 +585,17 @@ export const preloadLibs = (libs: string[] = []): void => {
       "link"
     ) as HTMLElementWithPriority<HTMLLinkElement>;
 
+    link.fetchPriority = "high";
+    link.rel = "preload";
+    link.href = lib;
+
     switch (extname(lib).toLowerCase()) {
       case ".css":
         link.as = "style";
         break;
       case ".htm":
       case ".html": {
-        link.as = "document";
-
-        const linkPreRender = document.createElement(
-          "link"
-        ) as HTMLElementWithPriority<HTMLLinkElement>;
-
-        linkPreRender.fetchPriority = "high";
-        linkPreRender.rel = "prerender";
-        linkPreRender.href = lib;
-
-        document.head.appendChild(linkPreRender);
-
+        link.rel = "prerender";
         break;
       }
       case ".url":
@@ -613,10 +606,6 @@ export const preloadLibs = (libs: string[] = []): void => {
         link.as = "script";
         break;
     }
-
-    link.fetchPriority = "high";
-    link.rel = "preload";
-    link.href = lib;
 
     document.head.appendChild(link);
   });
