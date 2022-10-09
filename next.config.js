@@ -31,7 +31,6 @@ const nextConfig = {
     swcFileReading: true,
   },
   optimizeFonts: false,
-  output: "standalone",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   swcMinify: !isProduction,
