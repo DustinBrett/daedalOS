@@ -15,7 +15,7 @@ import type { ThemeName } from "styles/themes";
 import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
 
 const useSessionContextState = (): SessionContextState => {
-  const { deletePath, exists, readFile, writeFile } = useFileSystem();
+  const { deletePath, exists, readFile, rootFs, writeFile } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
@@ -114,56 +114,58 @@ const useSessionContextState = (): SessionContextState => {
   const initializedSession = useRef(false);
 
   useEffect(() => {
-    const initSession = async (): Promise<void> => {
-      if (
-        !initializedSession.current &&
-        !sessionLoaded &&
-        (await exists(SESSION_FILE))
-      ) {
+    if (rootFs) {
+      const initSession = async (): Promise<void> => {
+        if (initializedSession.current) return;
+
         initializedSession.current = true;
 
-        try {
-          const sessionData = await readFile(SESSION_FILE);
-          const session = JSON.parse(
-            sessionData.toString() || "{}"
-          ) as SessionData;
+        if (await exists(SESSION_FILE)) {
+          try {
+            const sessionData = await readFile(SESSION_FILE);
+            const session = JSON.parse(
+              sessionData.toString() || "{}"
+            ) as SessionData;
 
-          if (session.clockSource) setClockSource(session.clockSource);
-          if (session.themeName) setThemeName(session.themeName);
-          if (session.wallpaperImage) {
-            setWallpaper(session.wallpaperImage, session.wallpaperFit);
+            if (session.clockSource) setClockSource(session.clockSource);
+            if (session.themeName) setThemeName(session.themeName);
+            if (session.wallpaperImage) {
+              setWallpaper(session.wallpaperImage, session.wallpaperFit);
+            }
+            if (
+              session.sortOrders &&
+              Object.keys(session.sortOrders).length > 0
+            ) {
+              setSortOrders(session.sortOrders);
+            }
+            if (
+              session.iconPositions &&
+              Object.keys(session.iconPositions).length > 0
+            ) {
+              setIconPositions(session.iconPositions);
+            }
+            if (
+              session.windowStates &&
+              Object.keys(session.windowStates).length > 0
+            ) {
+              setWindowStates(session.windowStates);
+            }
+            if (session.runHistory && session.runHistory.length > 0) {
+              setRunHistory(session.runHistory);
+            }
+          } catch (error) {
+            if ((error as ApiError)?.code === "ENOENT") {
+              deletePath(SESSION_FILE);
+            }
           }
-          if (
-            session.sortOrders &&
-            Object.keys(session.sortOrders).length > 0
-          ) {
-            setSortOrders(session.sortOrders);
-          }
-          if (
-            session.iconPositions &&
-            Object.keys(session.iconPositions).length > 0
-          ) {
-            setIconPositions(session.iconPositions);
-          }
-          if (
-            session.windowStates &&
-            Object.keys(session.windowStates).length > 0
-          ) {
-            setWindowStates(session.windowStates);
-          }
-          if (session.runHistory && session.runHistory.length > 0) {
-            setRunHistory(session.runHistory);
-          }
-        } catch (error) {
-          if ((error as ApiError)?.code === "ENOENT") deletePath(SESSION_FILE);
         }
-      }
 
-      setSessionLoaded(true);
-    };
+        setSessionLoaded(true);
+      };
 
-    initSession();
-  }, [deletePath, exists, readFile, sessionLoaded, setWallpaper]);
+      initSession();
+    }
+  }, [deletePath, exists, readFile, rootFs, setWallpaper]);
 
   return {
     clockSource,
