@@ -550,6 +550,7 @@ const FileEntry: FC<FileEntryProps> = ({
           hideLoading
           hideShortcutIcons
           loadIconsImmediately
+          preloadShortcuts
           readOnly
         />
       )}
