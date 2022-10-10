@@ -22,10 +22,12 @@ const renderFrame = async (
 
   const htmlToImage = await getHtmlToImage();
   const dataCanvas = await htmlToImage?.toCanvas(previewElement, {
-    canvasHeight:
-      (PEEK_MAX_WIDTH / previewElement.clientWidth) *
-      previewElement.clientHeight,
-    canvasWidth: PEEK_MAX_WIDTH,
+    ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
+      canvasHeight:
+        (PEEK_MAX_WIDTH / previewElement.clientWidth) *
+        previewElement.clientHeight,
+      canvasWidth: PEEK_MAX_WIDTH,
+    }),
     filter: (element) => !(element instanceof HTMLSourceElement),
     skipAutoScale: true,
     style: {
