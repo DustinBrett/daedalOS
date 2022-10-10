@@ -10,12 +10,15 @@ import type {
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
+import defaultSession from "public/session.json";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ThemeName } from "styles/themes";
 import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
 
+const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
+
 const useSessionContextState = (): SessionContextState => {
-  const { deletePath, exists, readFile, rootFs, writeFile } = useFileSystem();
+  const { deletePath, readFile, rootFs, writeFile, lstat } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
@@ -120,43 +123,49 @@ const useSessionContextState = (): SessionContextState => {
 
         initializedSession.current = true;
 
-        if (await exists(SESSION_FILE)) {
-          try {
-            const sessionData = await readFile(SESSION_FILE);
-            const session = JSON.parse(
-              sessionData.toString() || "{}"
-            ) as SessionData;
+        try {
+          let session = {} as SessionData;
 
-            if (session.clockSource) setClockSource(session.clockSource);
-            if (session.themeName) setThemeName(session.themeName);
-            if (session.wallpaperImage) {
-              setWallpaper(session.wallpaperImage, session.wallpaperFit);
-            }
-            if (
-              session.sortOrders &&
-              Object.keys(session.sortOrders).length > 0
-            ) {
-              setSortOrders(session.sortOrders);
-            }
-            if (
-              session.iconPositions &&
-              Object.keys(session.iconPositions).length > 0
-            ) {
-              setIconPositions(session.iconPositions);
-            }
-            if (
-              session.windowStates &&
-              Object.keys(session.windowStates).length > 0
-            ) {
-              setWindowStates(session.windowStates);
-            }
-            if (session.runHistory && session.runHistory.length > 0) {
-              setRunHistory(session.runHistory);
-            }
-          } catch (error) {
-            if ((error as ApiError)?.code === "ENOENT") {
-              deletePath(SESSION_FILE);
-            }
+          try {
+            session =
+              (await lstat(SESSION_FILE)).blocks <= 0
+                ? DEFAULT_SESSION
+                : (JSON.parse(
+                    (await readFile(SESSION_FILE)).toString()
+                  ) as SessionData);
+          } catch {
+            session = DEFAULT_SESSION;
+          }
+
+          if (session.clockSource) setClockSource(session.clockSource);
+          if (session.themeName) setThemeName(session.themeName);
+          if (session.wallpaperImage) {
+            setWallpaper(session.wallpaperImage, session.wallpaperFit);
+          }
+          if (
+            session.sortOrders &&
+            Object.keys(session.sortOrders).length > 0
+          ) {
+            setSortOrders(session.sortOrders);
+          }
+          if (
+            session.iconPositions &&
+            Object.keys(session.iconPositions).length > 0
+          ) {
+            setIconPositions(session.iconPositions);
+          }
+          if (
+            session.windowStates &&
+            Object.keys(session.windowStates).length > 0
+          ) {
+            setWindowStates(session.windowStates);
+          }
+          if (session.runHistory && session.runHistory.length > 0) {
+            setRunHistory(session.runHistory);
+          }
+        } catch (error) {
+          if ((error as ApiError)?.code === "ENOENT") {
+            deletePath(SESSION_FILE);
           }
         }
 
@@ -165,7 +174,7 @@ const useSessionContextState = (): SessionContextState => {
 
       initSession();
     }
-  }, [deletePath, exists, readFile, rootFs, setWallpaper]);
+  }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
     clockSource,
