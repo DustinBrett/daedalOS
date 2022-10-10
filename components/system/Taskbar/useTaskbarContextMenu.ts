@@ -30,7 +30,7 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
       menuItems.unshift(
         {
           action: () => open("Terminal"),
-          label: "Command Prompt",
+          label: "Terminal",
         },
         MENU_SEPERATOR,
         {
