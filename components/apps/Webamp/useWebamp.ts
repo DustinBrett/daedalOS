@@ -57,6 +57,7 @@ const useWebamp = (id: string): Webamp => {
   const webampCI = useRef<WebampCI>();
   const {
     createPath,
+    deletePath,
     exists,
     readFile,
     mkdirRecursive,
@@ -259,6 +260,9 @@ const useWebamp = (id: string): Webamp => {
           writeFile(SKIN_DATA_PATH, JSON.stringify(data), true);
           updateFolder(SAVE_PATH, basename(SKIN_DATA_PATH));
         }),
+        webamp._actionEmitter.on("LOAD_DEFAULT_SKIN", () => {
+          deletePath(SKIN_DATA_PATH);
+        }),
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
@@ -278,6 +282,7 @@ const useWebamp = (id: string): Webamp => {
     [
       componentWindow,
       createPath,
+      deletePath,
       exists,
       id,
       linkElement,
