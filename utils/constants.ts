@@ -40,6 +40,8 @@ export const ICON_GIF_SECONDS = 2;
 
 export const ICON_GIF_FPS = 24;
 
+export const PEEK_MAX_WIDTH = 200;
+
 export const TIFF_IMAGE_FORMATS = new Set([
   ".cr2",
   ".dng",
