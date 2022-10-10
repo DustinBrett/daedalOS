@@ -4,7 +4,6 @@ node_modules
 out
 
 public/robots.txt
-public/session.json
 public/sitemap.xml
 public/.index/*
 public/Users/Public/**
