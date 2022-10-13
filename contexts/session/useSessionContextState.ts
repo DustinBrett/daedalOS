@@ -60,6 +60,31 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const [haltSession, setHaltSession] = useState(false);
+  const setSortOrder = useCallback(
+    (
+      directory: string,
+      order: string[] | ((currentSortOrder: string[]) => string[]),
+      sortBy?: SortBy,
+      ascending?: boolean
+    ): void =>
+      setSortOrders((currentSortOrder = {}) => {
+        const [currentOrder, currentSortBy, currentAscending] =
+          currentSortOrder[directory] || [];
+        const newOrder =
+          typeof order === "function" ? order(currentOrder) : order;
+
+        return {
+          ...currentSortOrder,
+          [directory]: [
+            newOrder,
+            sortBy ?? currentSortBy,
+            ascending ?? currentAscending,
+          ],
+        };
+      }),
+    []
+  );
+  const initializedSession = useRef(false);
 
   useEffect(() => {
     if (sessionLoaded && !haltSession) {
@@ -91,31 +116,6 @@ const useSessionContextState = (): SessionContextState => {
     windowStates,
     writeFile,
   ]);
-  const setSortOrder = useCallback(
-    (
-      directory: string,
-      order: string[] | ((currentSortOrder: string[]) => string[]),
-      sortBy?: SortBy,
-      ascending?: boolean
-    ): void =>
-      setSortOrders((currentSortOrder = {}) => {
-        const [currentOrder, currentSortBy, currentAscending] =
-          currentSortOrder[directory] || [];
-        const newOrder =
-          typeof order === "function" ? order(currentOrder) : order;
-
-        return {
-          ...currentSortOrder,
-          [directory]: [
-            newOrder,
-            sortBy ?? currentSortBy,
-            ascending ?? currentAscending,
-          ],
-        };
-      }),
-    []
-  );
-  const initializedSession = useRef(false);
 
   useEffect(() => {
     if (rootFs) {
