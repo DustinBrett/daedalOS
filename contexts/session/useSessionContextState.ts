@@ -38,10 +38,11 @@ const useSessionContextState = (): SessionContextState => {
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const prependToStack = useCallback(
     (id: string) =>
-      setStackOrder((currentStackOrder) => [
-        id,
-        ...currentStackOrder.filter((stackId) => stackId !== id),
-      ]),
+      setStackOrder((currentStackOrder) =>
+        currentStackOrder[0] === id
+          ? currentStackOrder
+          : [id, ...currentStackOrder.filter((stackId) => stackId !== id)]
+      ),
     []
   );
   const removeFromStack = useCallback(
