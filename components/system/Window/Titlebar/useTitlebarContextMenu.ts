@@ -14,7 +14,7 @@ import type {
   MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
@@ -23,39 +23,42 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const getItems = useCallback(() => {
-    const { allowResizing = true, maximized, minimized } = process || {};
-    const isMaxOrMin = maximized || minimized;
 
-    return [
-      {
-        action: minimized ? onMinimize : onMaximize,
-        disabled: !isMaxOrMin,
-        icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
-        label: "Restore",
-      },
-      {
-        action: onMinimize,
-        disabled: minimized,
-        icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
-        label: "Minimize",
-      },
-      allowResizing && {
-        action: onMaximize,
-        disabled: isMaxOrMin,
-        icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
-        label: "Maximize",
-      },
-      MENU_SEPERATOR,
-      {
-        action: onClose,
-        icon: CLOSE,
-        label: "Close",
-      },
-    ].filter(Boolean) as MenuItem[];
-  }, [onClose, onMaximize, onMinimize, process]);
+  return useMemo(
+    () =>
+      contextMenu?.(() => {
+        const { allowResizing = true, maximized, minimized } = process || {};
+        const isMaxOrMin = maximized || minimized;
 
-  return contextMenu?.(getItems);
+        return [
+          {
+            action: minimized ? onMinimize : onMaximize,
+            disabled: !isMaxOrMin,
+            icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
+            label: "Restore",
+          },
+          {
+            action: onMinimize,
+            disabled: minimized,
+            icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
+            label: "Minimize",
+          },
+          allowResizing && {
+            action: onMaximize,
+            disabled: isMaxOrMin,
+            icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
+            label: "Maximize",
+          },
+          MENU_SEPERATOR,
+          {
+            action: onClose,
+            icon: CLOSE,
+            label: "Close",
+          },
+        ].filter(Boolean) as MenuItem[];
+      }),
+    [contextMenu, onClose, onMaximize, onMinimize, process]
+  );
 };
 
 export default useTitlebarContextMenu;

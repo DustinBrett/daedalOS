@@ -12,7 +12,7 @@ import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
 import useHistory from "hooks/useHistory";
 import { basename, dirname } from "path";
-import { useCallback } from "react";
+import { useMemo } from "react";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { label } from "utils/functions";
@@ -33,15 +33,17 @@ const Navigation: FC<NavigationProps> = ({ hideSearch, id }) => {
   const { contextMenu } = useMenu();
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);
-  const getItems = useCallback(
+  const { onContextMenuCapture } = useMemo(
     () =>
-      history.map((historyUrl, index) => ({
-        action: () => moveHistory(index - position),
-        checked: position === index,
-        label: basename(historyUrl) || ROOT_NAME,
-        primary: position === index,
-      })),
-    [history, moveHistory, position]
+      contextMenu?.(() =>
+        history.map((historyUrl, index) => ({
+          action: () => moveHistory(index - position),
+          checked: position === index,
+          label: basename(historyUrl) || ROOT_NAME,
+          primary: position === index,
+        }))
+      ),
+    [contextMenu, history, moveHistory, position]
   );
 
   return (
@@ -70,7 +72,7 @@ const Navigation: FC<NavigationProps> = ({ hideSearch, id }) => {
       </Button>
       <Button
         disabled={history.length === 1}
-        onClick={contextMenu?.(getItems).onContextMenuCapture}
+        onClick={onContextMenuCapture}
         {...label("Recent locations")}
       >
         <Down />
