@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 export const Back: FC = () => (
   <svg viewBox="-8 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M32 14v4H7.656l7.172 7.172L12 28 0 16 12 4l2.828 2.828L7.656 14H32z" />
@@ -16,25 +18,30 @@ export const Refresh: FC = () => (
   </svg>
 );
 
-export const Down: FC<{ flip?: boolean }> = ({ flip }) => (
-  <svg
-    style={flip ? { transform: "scaleY(-1)", transition: "all 0.2s" } : {}}
-    viewBox="0 0 32 32"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="m28.109 5.453 3.781 3.766L15.999 25.11.108 9.219l3.781-3.766 12.109 12.109L28.107 5.453z" />
-  </svg>
-);
+type DownProps = { flip?: boolean };
 
-export const Up: FC = () => (
-  <svg
-    style={{ marginTop: "-1px" }}
-    viewBox="0 -7 32 32"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="m16 0 12 12-2.828 2.828L18 7.656V32h-4V7.656l-7.172 7.172L4 12 16 0z" />
-  </svg>
-);
+export const Down: FC<DownProps> = ({ flip }) => {
+  const style = useMemo(
+    () => (flip ? { transform: "scaleY(-1)", transition: "all 0.2s" } : {}),
+    [flip]
+  );
+
+  return (
+    <svg style={style} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="m28.109 5.453 3.781 3.766L15.999 25.11.108 9.219l3.781-3.766 12.109 12.109L28.107 5.453z" />
+    </svg>
+  );
+};
+
+export const Up: FC = () => {
+  const style = useMemo(() => ({ marginTop: "-1px" }), []);
+
+  return (
+    <svg style={style} viewBox="0 -7 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="m16 0 12 12-2.828 2.828L18 7.656V32h-4V7.656l-7.172 7.172L4 12 16 0z" />
+    </svg>
+  );
+};
 
 export const Search: FC = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
