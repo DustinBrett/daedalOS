@@ -4,7 +4,7 @@ import useClockContextMenu from "components/system/Taskbar/Clock/useClockContext
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
   ONE_TIME_PASSIVE_EVENT,
@@ -76,12 +76,21 @@ const Clock: FC = () => {
       ),
     [clockSource]
   );
+  const offScreenClockCanvas = useRef<OffscreenCanvas>();
+  const supportsOffscreenCanvas = useMemo(
+    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
+    []
+  );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
       if (data === "source") {
         (clockWorker as Worker).postMessage(clockSource);
       } else {
-        setNow(data);
+        setNow((currentNow) =>
+          !offScreenClockCanvas.current || currentNow.date !== data.date
+            ? data
+            : currentNow
+        );
       }
     },
     [clockSource]
@@ -91,9 +100,6 @@ const Clock: FC = () => {
     clockWorkerInit,
     updateTime
   );
-  const offScreenClockCanvas = useRef<OffscreenCanvas>();
-  const supportsOffscreenCanvas =
-    typeof window !== "undefined" && "OffscreenCanvas" in window;
 
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
