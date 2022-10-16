@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Head from "next/head";
 import desktopIcons from "public/.index/desktopIcons.json";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
@@ -20,12 +20,21 @@ const Metadata: FC = () => {
   const [favIcon, setFavIcon] = useState("");
   const { foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
-  const resetFaviconAndTitle = (): void => {
+  const resetFaviconAndTitle = useCallback((): void => {
     setTitle(alias);
     setFavIcon((currentFavicon) =>
       currentFavicon ? FAVICON_BASE_PATH : currentFavicon
     );
-  };
+  }, []);
+  const currentFavIcon = useMemo(
+    () =>
+      !favIcon ||
+      favIcon === FAVICON_BASE_PATH ||
+      favIcon.startsWith("https://")
+        ? favIcon
+        : imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0],
+    [favIcon]
+  );
 
   useEffect(() => {
     if (process) {
@@ -38,7 +47,7 @@ const Metadata: FC = () => {
     } else {
       resetFaviconAndTitle();
     }
-  }, [process, title]);
+  }, [process, resetFaviconAndTitle, title]);
 
   useEffect(() => {
     const onVisibilityChange = (): void => {
@@ -59,21 +68,13 @@ const Metadata: FC = () => {
       visibilityEventName,
       onVisibilityChange
     );
-  }, []);
+  }, [resetFaviconAndTitle]);
 
   return (
     <Head>
       <title>{title}</title>
-      {favIcon && (
-        <link
-          href={
-            favIcon === FAVICON_BASE_PATH
-              ? FAVICON_BASE_PATH
-              : imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0]
-          }
-          rel="icon"
-          type="image/webp"
-        />
+      {currentFavIcon && (
+        <link href={currentFavIcon} rel="icon" type="image/webp" />
       )}
       <meta
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
