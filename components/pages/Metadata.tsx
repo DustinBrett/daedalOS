@@ -40,14 +40,14 @@ const Metadata: FC = () => {
     if (process) {
       const documentTitle = `${process.title} - ${alias}`;
 
-      if (title !== documentTitle) {
-        setTitle(documentTitle);
+      if (title !== documentTitle) setTitle(documentTitle);
+      if (favIcon !== process.icon || !favIcon) {
         setFavIcon(process.icon || FAVICON_BASE_PATH);
       }
     } else {
       resetFaviconAndTitle();
     }
-  }, [process, resetFaviconAndTitle, title]);
+  }, [favIcon, process, resetFaviconAndTitle, title]);
 
   useEffect(() => {
     const onVisibilityChange = (): void => {
