@@ -13,7 +13,10 @@ const TaskbarEntries: FC = () => (
       {({ processes = {} }) => (
         <AnimatePresence initial={false} presenceAffectsLayout={false}>
           {Object.entries(processes)
-            .filter(([, { closing }]) => !closing)
+            .filter(
+              ([, { closing, hideTaskbarEntry }]) =>
+                !closing && !hideTaskbarEntry
+            )
             .map(([id, { icon, title }]) => (
               <TaskbarEntry key={id} icon={icon} id={id} title={title} />
             ))}

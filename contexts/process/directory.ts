@@ -3,6 +3,20 @@ import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {
+  Agent: {
+    Component: dynamic(() => import("components/apps/Agent")),
+    allowResizing: false,
+    hasWindow: false,
+    hideTaskbarEntry: true,
+    icon: "/System/Icons/unknown.webp", // TODO: Add for SysTray
+    libs: [
+      "/Program Files/Agent/clippy.css",
+      "/Program Files/Agent/jquery-3.6.1.slim.min.js",
+      "/Program Files/Agent/clippy.min.js",
+    ],
+    singleton: true,
+    title: "Agent",
+  },
   BoxedWine: {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
