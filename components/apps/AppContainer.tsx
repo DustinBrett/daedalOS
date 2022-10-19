@@ -1,7 +1,7 @@
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
 import dynamic from "next/dynamic";
-import { memo, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type {
   DefaultTheme,
   StyledComponent as StyledComponentType,
@@ -60,4 +60,4 @@ const AppContainer: FC<AppContainerProps> = ({
   );
 };
 
-export default memo(AppContainer);
+export default AppContainer;
