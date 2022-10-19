@@ -55,7 +55,7 @@ export const getIpfsGatewayUrl = async (
   if (protocol !== "ipfs:") return "";
 
   const [cid = "", ...path] = pathname.split("/").filter(Boolean);
-  const { CID } = await import("multiformats/cid");
+  const { CID } = await import("multiformats");
 
   return `${IPFS_GATEWAY_URL.replace(
     "<CID>",
