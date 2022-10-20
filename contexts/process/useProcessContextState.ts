@@ -99,10 +99,16 @@ const useProcessContextState = (): ProcessContextState => {
   );
   const closeProcessesByUrl = useCallback(
     (closeUrl: string): void =>
-      Object.entries(processes).forEach(([id, { url: processUrl }]) => {
-        if (processUrl === closeUrl) closeWithTransition(id);
+      setProcesses((currentProcesses) => {
+        Object.entries(currentProcesses).forEach(
+          ([id, { url: processUrl }]) => {
+            if (processUrl === closeUrl) closeWithTransition(id);
+          }
+        );
+
+        return currentProcesses;
       }),
-    [closeWithTransition, processes]
+    [closeWithTransition]
   );
 
   return {
