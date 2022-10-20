@@ -28,6 +28,17 @@ import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
+type IFileSystemAccess = {
+  FileSystem: {
+    FileSystemAccess: {
+      Create: (
+        opts: { handle: FileSystemDirectoryHandle },
+        cb: BFSCallback<FileSystem>
+      ) => void;
+    };
+  };
+};
+
 export type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
@@ -56,26 +67,23 @@ export type FileSystemContextState = AsyncFS & {
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
 };
 
-type IFileSystemAccess = {
-  FileSystem: {
-    FileSystemAccess: {
-      Create: (
-        opts: { handle: FileSystemDirectoryHandle },
-        cb: BFSCallback<FileSystem>
-      ) => void;
-    };
-  };
-};
-
 const {
   FileSystem: { FileSystemAccess, IsoFS, ZipFS },
 } = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const asyncFs = useAsyncFs();
-  const { rootFs } = asyncFs;
-  const { exists, mkdir, readdir, readFile, rename, rmdir, unlink, writeFile } =
-    asyncFs;
+  const {
+    exists,
+    mkdir,
+    readdir,
+    readFile,
+    rename,
+    rmdir,
+    rootFs,
+    unlink,
+    writeFile,
+  } = asyncFs;
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
     {}
   );
@@ -89,10 +97,14 @@ const useFileSystemContextState = (): FileSystemContextState => {
     setPasteList(
       Object.fromEntries(entries.map((entry) => [entry, operation]))
     );
-  const copyEntries = (entries: string[]): void =>
-    updatePasteEntries(entries, "copy");
-  const moveEntries = (entries: string[]): void =>
-    updatePasteEntries(entries, "move");
+  const copyEntries = useCallback(
+    (entries: string[]): void => updatePasteEntries(entries, "copy"),
+    []
+  );
+  const moveEntries = useCallback(
+    (entries: string[]): void => updatePasteEntries(entries, "move"),
+    []
+  );
   const addFsWatcher = useCallback(
     (folder: string, updateFiles: UpdateFiles): void =>
       setFsWatchers((currentFsWatcher) => ({
@@ -260,69 +272,72 @@ const useFileSystemContextState = (): FileSystemContextState => {
     },
     [readdir, rmdir, unlink]
   );
-  const createPath = async (
-    name: string,
-    directory: string,
-    buffer?: Buffer,
-    iteration = 0
-  ): Promise<string> => {
-    const isInternal = !buffer && isAbsolute(name);
-    const baseName = isInternal ? basename(name) : name;
-    const uniqueName = !iteration
-      ? baseName
-      : iterateFileName(baseName, iteration);
-    const fullNewPath = join(directory, uniqueName);
+  const createPath = useCallback(
+    async (
+      name: string,
+      directory: string,
+      buffer?: Buffer,
+      iteration = 0
+    ): Promise<string> => {
+      const isInternal = !buffer && isAbsolute(name);
+      const baseName = isInternal ? basename(name) : name;
+      const uniqueName = !iteration
+        ? baseName
+        : iterateFileName(baseName, iteration);
+      const fullNewPath = join(directory, uniqueName);
 
-    if (isInternal) {
-      if (
-        name !== fullNewPath &&
-        !directory.startsWith(name) &&
-        !rootFs?.mntMap[name]
-      ) {
-        if (await exists(fullNewPath)) {
-          return createPath(name, directory, buffer, iteration + 1);
-        }
-
-        if (await rename(name, fullNewPath)) {
-          updateFolder(dirname(name), "", name);
-        }
-
-        return uniqueName;
-      }
-    } else {
-      const maybeMakePath = async (makePath: string): Promise<void> => {
-        try {
-          if (!(await exists(makePath))) {
-            await mkdir(makePath);
-            updateFolder(dirname(makePath), basename(makePath));
-          }
-        } catch (error) {
-          if ((error as ApiError).code === "ENOENT") {
-            await maybeMakePath(dirname(makePath));
-            await maybeMakePath(makePath);
-          }
-        }
-      };
-
-      await maybeMakePath(dirname(fullNewPath));
-
-      try {
+      if (isInternal) {
         if (
-          buffer
-            ? await writeFile(fullNewPath, buffer)
-            : await mkdir(fullNewPath)
+          name !== fullNewPath &&
+          !directory.startsWith(name) &&
+          !rootFs?.mntMap[name]
         ) {
+          if (await exists(fullNewPath)) {
+            return createPath(name, directory, buffer, iteration + 1);
+          }
+
+          if (await rename(name, fullNewPath)) {
+            updateFolder(dirname(name), "", name);
+          }
+
           return uniqueName;
         }
-      } catch (error) {
-        if ((error as ApiError)?.code === "EEXIST") {
-          return createPath(name, directory, buffer, iteration + 1);
+      } else {
+        const maybeMakePath = async (makePath: string): Promise<void> => {
+          try {
+            if (!(await exists(makePath))) {
+              await mkdir(makePath);
+              updateFolder(dirname(makePath), basename(makePath));
+            }
+          } catch (error) {
+            if ((error as ApiError).code === "ENOENT") {
+              await maybeMakePath(dirname(makePath));
+              await maybeMakePath(makePath);
+            }
+          }
+        };
+
+        await maybeMakePath(dirname(fullNewPath));
+
+        try {
+          if (
+            buffer
+              ? await writeFile(fullNewPath, buffer)
+              : await mkdir(fullNewPath)
+          ) {
+            return uniqueName;
+          }
+        } catch (error) {
+          if ((error as ApiError)?.code === "EEXIST") {
+            return createPath(name, directory, buffer, iteration + 1);
+          }
         }
       }
-    }
 
-    return "";
-  };
+      return "";
+    },
+    [exists, mkdir, rename, rootFs?.mntMap, updateFolder, writeFile]
+  );
   const restoredFsHandles = useRef(false);
 
   useEffect(() => {
