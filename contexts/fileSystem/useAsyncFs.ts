@@ -1,9 +1,5 @@
 import type * as IBrowserFS from "browserfs";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
-import type {
-  BFSCallback,
-  FileSystem,
-} from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
@@ -34,22 +30,7 @@ export type AsyncFS = {
   ) => Promise<boolean>;
 };
 
-type IFileSystemAccess = {
-  FileSystem: {
-    FileSystemAccess: {
-      Create: (
-        opts: { handle: FileSystemDirectoryHandle },
-        cb: BFSCallback<FileSystem>
-      ) => void;
-    };
-  };
-};
-
-const {
-  BFSRequire,
-  configure,
-  FileSystem: { FileSystemAccess, IsoFS, ZipFS },
-} = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
+const { BFSRequire, configure } = BrowserFS as typeof IBrowserFS;
 
 export type RootFileSystem = Omit<
   MountableFileSystem,
@@ -66,9 +47,6 @@ export type RootFileSystem = Omit<
 };
 
 type AsyncFSModule = AsyncFS & {
-  FileSystemAccess?: typeof FileSystemAccess;
-  IsoFS?: typeof IsoFS;
-  ZipFS?: typeof ZipFS;
   fs?: FSModule;
   rootFs?: RootFileSystem;
 };
@@ -256,14 +234,14 @@ const useAsyncFs = (): AsyncFSModule => {
     }
   }, [fs]);
 
-  return {
-    ...asyncFs,
-    FileSystemAccess,
-    IsoFS,
-    ZipFS,
-    fs,
-    rootFs,
-  };
+  return useMemo(
+    () => ({
+      ...asyncFs,
+      fs,
+      rootFs,
+    }),
+    [asyncFs, fs, rootFs]
+  );
 };
 
 export default useAsyncFs;

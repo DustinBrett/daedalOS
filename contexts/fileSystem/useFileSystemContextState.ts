@@ -1,7 +1,11 @@
+import type * as IBrowserFS from "browserfs";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
-import type { BFSCallback } from "browserfs/dist/node/core/file_system";
+import type {
+  BFSCallback,
+  FileSystem,
+} from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
@@ -18,6 +22,7 @@ import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
 
@@ -51,8 +56,24 @@ export type FileSystemContextState = AsyncFS & {
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
 };
 
+type IFileSystemAccess = {
+  FileSystem: {
+    FileSystemAccess: {
+      Create: (
+        opts: { handle: FileSystemDirectoryHandle },
+        cb: BFSCallback<FileSystem>
+      ) => void;
+    };
+  };
+};
+
+const {
+  FileSystem: { FileSystemAccess, IsoFS, ZipFS },
+} = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
+
 const useFileSystemContextState = (): FileSystemContextState => {
-  const { rootFs, FileSystemAccess, IsoFS, ZipFS, ...asyncFs } = useAsyncFs();
+  const asyncFs = useAsyncFs();
+  const { rootFs } = asyncFs;
   const { exists, mkdir, readdir, readFile, rename, rmdir, unlink, writeFile } =
     asyncFs;
   const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
@@ -131,7 +152,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         }
       });
     },
-    [FileSystemAccess, rootFs]
+    [rootFs]
   );
   const mountFs = useCallback(
     async (url: string): Promise<void> => {
@@ -153,7 +174,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         }
       });
     },
-    [IsoFS, ZipFS, readFile, rootFs]
+    [readFile, rootFs]
   );
   const unMountFs = useCallback(
     (url: string): void => rootFs?.umount?.(url),
@@ -361,7 +382,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
     moveEntries,
     pasteList,
     removeFsWatcher,
-    rootFs,
     unMapFs,
     unMountFs,
     updateFolder,
