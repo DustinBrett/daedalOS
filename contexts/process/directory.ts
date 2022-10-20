@@ -3,20 +3,6 @@ import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {
-  Agent: {
-    Component: dynamic(() => import("components/apps/Agent")),
-    allowResizing: false,
-    hasWindow: false,
-    hideTaskbarEntry: true,
-    icon: "/System/Icons/unknown.webp", // TODO: Add for SysTray
-    libs: [
-      "/Program Files/Agent/clippy.css",
-      "/Program Files/Agent/jquery-3.6.1.slim.min.js",
-      "/Program Files/Agent/clippy.min.js",
-    ],
-    singleton: true,
-    title: "Agent",
-  },
   BoxedWine: {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
@@ -45,24 +31,6 @@ const directory: Processes = {
     },
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
-  },
-  Chess: {
-    Component: dynamic(() => import("components/apps/Chess")),
-    allowResizing: false,
-    background: "#ce5c00",
-    defaultSize: {
-      height: 512,
-      width: 512,
-    },
-    icon: "/System/Icons/chess.webp",
-    libs: [
-      "/Program Files/Chess/chess.js",
-      "/Program Files/Chess/common/xhr.js",
-      "/Program Files/Chess/skins/gnomechess.css",
-    ],
-    lockAspectRatio: true,
-    singleton: true,
-    title: "Chess",
   },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
