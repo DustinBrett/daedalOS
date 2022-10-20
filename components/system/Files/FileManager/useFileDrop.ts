@@ -9,6 +9,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { basename, join, relative } from "path";
+import { useCallback } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent, updateIconPositions } from "utils/functions";
 
@@ -38,26 +39,29 @@ const useFileDrop = ({
   const { url } = useProcesses();
   const { iconPositions, sortOrders, setIconPositions } = useSession();
   const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
-  const updateProcessUrl = async (
-    filePath: string,
-    fileData?: Buffer,
-    completeAction?: CompleteAction
-  ): Promise<void> => {
-    if (id) {
-      if (!fileData) {
-        if (completeAction === "updateUrl") url(id, filePath);
-      } else {
-        const tempPath = join(DESKTOP_PATH, filePath);
+  const updateProcessUrl = useCallback(
+    async (
+      filePath: string,
+      fileData?: Buffer,
+      completeAction?: CompleteAction
+    ): Promise<void> => {
+      if (id) {
+        if (!fileData) {
+          if (completeAction === "updateUrl") url(id, filePath);
+        } else {
+          const tempPath = join(DESKTOP_PATH, filePath);
 
-        await mkdirRecursive(DESKTOP_PATH);
+          await mkdirRecursive(DESKTOP_PATH);
 
-        if (await writeFile(tempPath, fileData, true)) {
-          if (completeAction === "updateUrl") url(id, tempPath);
-          updateFolder(DESKTOP_PATH, filePath);
+          if (await writeFile(tempPath, fileData, true)) {
+            if (completeAction === "updateUrl") url(id, tempPath);
+            updateFolder(DESKTOP_PATH, filePath);
+          }
         }
       }
-    }
-  };
+    },
+    [id, mkdirRecursive, updateFolder, url, writeFile]
+  );
   const { openTransferDialog } = useTransferDialog();
 
   return {
