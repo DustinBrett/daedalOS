@@ -76,8 +76,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
       letter-spacing: -0.1px;
-      margin-left: 4px;
-      margin-right: 9px;
+      margin: 0 4px;
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
