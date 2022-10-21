@@ -142,7 +142,9 @@ const useTinyMCE = (
                   if (draggableEditor(activeEditor)) onDrop(event);
                 });
                 iframe.contentWindow.addEventListener("blur", () =>
-                  setForegroundId("")
+                  setForegroundId((currentForegroundId) =>
+                    currentForegroundId === id ? "" : currentForegroundId
+                  )
                 );
                 iframe.contentWindow.addEventListener("focus", () =>
                   setForegroundId(id)
