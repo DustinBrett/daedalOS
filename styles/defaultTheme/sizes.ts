@@ -15,7 +15,7 @@ const sizes = {
     renameWidth: 75,
   },
   fileExplorer: {
-    navBarHeight: "42px",
+    navBarHeight: "43px",
     statusBarHeight: "23px",
   },
   fileManager: {
