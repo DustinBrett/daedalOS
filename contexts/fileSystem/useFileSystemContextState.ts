@@ -28,6 +28,8 @@ import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
+type FileSystemWatchers = Record<string, UpdateFiles[]>;
+
 type IFileSystemAccess = {
   FileSystem: {
     FileSystemAccess: {
@@ -84,26 +86,26 @@ const useFileSystemContextState = (): FileSystemContextState => {
     unlink,
     writeFile,
   } = asyncFs;
-  const [fsWatchers, setFsWatchers] = useState<Record<string, UpdateFiles[]>>(
-    {}
+  const [fsWatchers, setFsWatchers] = useState<FileSystemWatchers>(
+    Object.create(null) as FileSystemWatchers
   );
   const [pasteList, setPasteList] = useState<FilePasteOperations>(
     Object.create(null) as FilePasteOperations
   );
-  const updatePasteEntries = (
-    entries: string[],
-    operation: "copy" | "move"
-  ): void =>
-    setPasteList(
-      Object.fromEntries(entries.map((entry) => [entry, operation]))
-    );
+  const updatePasteEntries = useCallback(
+    (entries: string[], operation: "copy" | "move"): void =>
+      setPasteList(
+        Object.fromEntries(entries.map((entry) => [entry, operation]))
+      ),
+    []
+  );
   const copyEntries = useCallback(
     (entries: string[]): void => updatePasteEntries(entries, "copy"),
-    []
+    [updatePasteEntries]
   );
   const moveEntries = useCallback(
     (entries: string[]): void => updatePasteEntries(entries, "move"),
-    []
+    [updatePasteEntries]
   );
   const addFsWatcher = useCallback(
     (folder: string, updateFiles: UpdateFiles): void =>
@@ -341,48 +343,52 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const restoredFsHandles = useRef(false);
 
   useEffect(() => {
-    const restoreFsHandles = async (): Promise<void> => {
-      if (!restoredFsHandles.current && rootFs) {
-        restoredFsHandles.current = true;
+    if (rootFs) {
+      const restoreFsHandles = async (): Promise<void> => {
+        if (!restoredFsHandles.current) {
+          restoredFsHandles.current = true;
 
-        Object.entries(await getFileSystemHandles()).forEach(
-          async ([handleDirectory, handle]) => {
-            if (!(await exists(handleDirectory))) {
-              try {
-                mapFs(dirname(handleDirectory), handle);
-              } catch {
-                // Ignore failure
+          Object.entries(await getFileSystemHandles()).forEach(
+            async ([handleDirectory, handle]) => {
+              if (!(await exists(handleDirectory))) {
+                try {
+                  mapFs(dirname(handleDirectory), handle);
+                } catch {
+                  // Ignore failure
+                }
               }
             }
-          }
-        );
-      }
-    };
+          );
+        }
+      };
 
-    restoreFsHandles();
+      restoreFsHandles();
+    }
   }, [exists, mapFs, rootFs]);
 
   useEffect(() => {
-    const mountedPaths = Object.keys(rootFs?.mntMap || {}).filter(
-      (mountedPath) => mountedPath !== "/"
-    );
+    if (rootFs) {
+      const mountedPaths = Object.keys(rootFs.mntMap || {}).filter(
+        (mountedPath) => mountedPath !== "/"
+      );
 
-    if (mountedPaths.length === 0) return;
+      if (mountedPaths.length === 0) return;
 
-    const watchedPaths = Object.keys(fsWatchers).filter(
-      (watchedPath) => fsWatchers[watchedPath].length > 0
-    );
+      const watchedPaths = Object.keys(fsWatchers).filter(
+        (watchedPath) => fsWatchers[watchedPath].length > 0
+      );
 
-    mountedPaths.forEach((mountedPath) => {
-      if (
-        !watchedPaths.some((watchedPath) =>
-          watchedPath.startsWith(mountedPath)
-        ) &&
-        rootFs?.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
-      ) {
-        rootFs?.umount?.(mountedPath);
-      }
-    });
+      mountedPaths.forEach((mountedPath) => {
+        if (
+          !watchedPaths.some((watchedPath) =>
+            watchedPath.startsWith(mountedPath)
+          ) &&
+          rootFs.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
+        ) {
+          rootFs.umount?.(mountedPath);
+        }
+      });
+    }
   }, [fsWatchers, rootFs]);
 
   return {
