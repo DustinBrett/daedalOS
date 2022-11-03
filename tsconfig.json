@@ -13,6 +13,7 @@
     "noEmit": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
+    "plugins": [{ "name": "next" }],
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
@@ -25,5 +26,5 @@
     ]
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }
