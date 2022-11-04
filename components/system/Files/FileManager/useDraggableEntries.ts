@@ -122,16 +122,15 @@ const useDraggableEntries = (
           draggedOnceRef.current = true;
         }
 
-        event.dataTransfer.setDragImage(
-          dragImageRef.current,
-          "mozInputSource" in event.nativeEvent &&
-            fileManagerRef.current?.parentElement?.tagName === "MAIN"
+        const dragX =
+          fileManagerRef.current?.parentElement?.tagName === "MAIN"
             ? event.nativeEvent.clientX
-            : event.nativeEvent.offsetX,
-          draggedOnceRef.current
-            ? event.nativeEvent.clientY
-            : event.nativeEvent.offsetY
-        );
+            : event.nativeEvent.offsetX;
+        const dragY = draggedOnceRef.current
+          ? event.nativeEvent.clientY
+          : event.nativeEvent.offsetY;
+
+        event.dataTransfer.setDragImage(dragImageRef.current, dragX, dragY);
 
         if (allowMoving && !draggedOnceRef.current) {
           draggedOnceRef.current = true;
