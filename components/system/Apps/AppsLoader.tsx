@@ -1,6 +1,7 @@
 import { ProcessConsumer } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 const RenderComponent = dynamic(
   () => import("components/system/Apps/RenderComponent")
@@ -28,4 +29,4 @@ const AppsLoader: FC = () => (
   </ProcessConsumer>
 );
 
-export default AppsLoader;
+export default memo(AppsLoader);
