@@ -41,14 +41,14 @@ export const FileEntryIconSize: Record<
   IconProps
 > = {
   icon: {
-    $imgSize: 48,
+    imgSize: 48,
   },
   list: {
-    $displaySize: 24,
-    $imgSize: 48,
+    displaySize: 24,
+    imgSize: 48,
   },
   sub: {
-    $displaySize: 48,
-    $imgSize: 16,
+    displaySize: 48,
+    imgSize: 16,
   },
 };

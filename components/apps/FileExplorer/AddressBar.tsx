@@ -40,7 +40,7 @@ const AddressBar: FC<AddressBarProps> = ({ id }) => {
 
   return (
     <StyledAddressBar>
-      <Icon $imgSize={16} alt={displayName} src={icon} />
+      <Icon alt={displayName} imgSize={16} src={icon} />
       <input
         ref={addressBarRef}
         aria-label="Address"

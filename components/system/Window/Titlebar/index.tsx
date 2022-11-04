@@ -91,7 +91,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
       >
         <figure>
           {!hideTitlebarIcon && (
-            <Icon $imgSize={16} alt={title} src={icon} {...onClickClose} />
+            <Icon alt={title} imgSize={16} src={icon} {...onClickClose} />
           )}
           <figcaption>{title}</figcaption>
         </figure>

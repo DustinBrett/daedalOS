@@ -492,8 +492,8 @@ const FileEntry: FC<FileEntryProps> = ({
           {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
+            ref={iconRef}
             $eager={loadIconImmediately}
-            $imgRef={iconRef}
             $moving={pasteList[path] === "move"}
             alt={name}
             src={icon}

@@ -107,7 +107,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
             }
           }}
         >
-          {icon && <Icon $imgSize={16} alt={label} src={icon} />}
+          {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}
           {toggle && <Circle className="left" />}
           <figcaption className={primary ? "primary" : undefined}>

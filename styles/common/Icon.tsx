@@ -1,14 +1,13 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ICON_CACHE, YT_ICON_CACHE } from "utils/constants";
 import { cleanUpBufferUrl, imageSrc, imageSrcs } from "utils/functions";
 
 export type IconProps = {
-  $displaySize?: number;
   $eager?: boolean;
-  $imgRef?: React.MutableRefObject<HTMLImageElement | null>;
-  $imgSize: number;
   $moving?: boolean;
+  displaySize?: number;
+  imgSize: number;
 };
 
 type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
@@ -43,17 +42,12 @@ const StyledIcon = styled.img
 
 const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 
-const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
-  props
-) => {
+const Icon = forwardRef<
+  HTMLImageElement,
+  IconProps & React.ImgHTMLAttributes<HTMLImageElement>
+>(function Icon(props, ref) {
   const [loaded, setLoaded] = useState(false);
-  const {
-    $displaySize = 0,
-    $imgRef,
-    $imgSize = 0,
-    src = "",
-    ...componentProps
-  } = props;
+  const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
   const style = useMemo<React.CSSProperties>(
     () => ({ visibility: loaded ? "visible" : "hidden" }),
     [loaded]
@@ -68,16 +62,15 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     src.startsWith(YT_ICON_CACHE) ||
     src.endsWith(".ico");
   const dimensionProps = useMemo(() => {
-    const size = $displaySize > $imgSize ? $imgSize : $displaySize || $imgSize;
-    const $offset =
-      $displaySize > $imgSize ? `${$displaySize - $imgSize}px` : 0;
+    const size = displaySize > imgSize ? imgSize : displaySize || imgSize;
+    const $offset = displaySize > imgSize ? `${displaySize - imgSize}px` : 0;
 
     return {
       $height: size,
       $offset,
       $width: size,
     };
-  }, [$displaySize, $imgSize]);
+  }, [displaySize, imgSize]);
   const [failedUrls, setFailedUrls] = useState<string[]>([]);
 
   useEffect(
@@ -89,7 +82,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
 
   const RenderedIcon = (
     <StyledIcon
-      ref={$imgRef}
+      ref={ref}
       onError={({ target }) => {
         const { currentSrc = "" } = (target || {}) as HTMLImageElement;
 
@@ -103,9 +96,9 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
         }
       }}
       onLoad={() => setLoaded(true)}
-      src={isStaticIcon ? src : imageSrc(src, $imgSize, 1, ".png")}
+      src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
       srcSet={
-        !isStaticIcon ? imageSrcs(src, $imgSize, ".png", failedUrls) : undefined
+        !isStaticIcon ? imageSrcs(src, imgSize, ".png", failedUrls) : undefined
       }
       style={style}
       {...componentProps}
@@ -117,7 +110,7 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
     <picture>
       {!isStaticIcon &&
         SUPPORTED_PIXEL_RATIOS.map((ratio) => {
-          const srcSet = imageSrc(src, $imgSize, ratio, ".webp");
+          const srcSet = imageSrc(src, imgSize, ratio, ".webp");
           const mediaRatio = ratio - 0.99;
 
           if (
@@ -144,6 +137,6 @@ const Icon: FC<IconProps & React.ImgHTMLAttributes<HTMLImageElement>> = (
       {RenderedIcon}
     </picture>
   );
-};
+});
 
 export default memo(Icon);
