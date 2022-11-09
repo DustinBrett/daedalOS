@@ -1,13 +1,8 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
-import {
-  FOCUSABLE_ELEMENT,
-  PREVENT_SCROLL,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type RndWindowProps = {
@@ -29,15 +24,11 @@ const reRouteFocus =
 const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   const {
     linkElement,
-    maximize,
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, maximized, minimized } = process || {};
+  const { componentWindow, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
-  const rndProps = useRnd(id, maximized);
-  const { windowStates: { [id]: windowState } = {} } = useSession();
-  const { maximized: wasMaximized } = windowState || {};
-  const [openedMaximized, setOpenedMaximized] = useState(false);
+  const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(
     () => ({
       pointerEvents: minimized ? "none" : undefined,
@@ -45,13 +36,6 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     }),
     [minimized, zIndex]
   );
-
-  useLayoutEffect(() => {
-    if (wasMaximized && !openedMaximized && process) {
-      setTimeout(() => maximize(id), TRANSITIONS_IN_MILLISECONDS.WINDOW * 1.25);
-      setOpenedMaximized(true);
-    }
-  }, [id, maximize, openedMaximized, process, wasMaximized]);
 
   useLayoutEffect(() => {
     const { current: currentWindow } = rndRef;

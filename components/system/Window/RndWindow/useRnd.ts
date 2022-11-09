@@ -18,13 +18,14 @@ const enableIframeCapture = (enable = true): void =>
     iframe.style.pointerEvents = enable ? "initial" : "none";
   });
 
-const useRnd = (id: string, maximized = false): Props => {
+const useRnd = (id: string): Props => {
   const {
     processes: {
       [id]: {
         allowResizing = true,
         autoSizing = false,
         lockAspectRatio = false,
+        maximized = false,
       } = {},
     },
   } = useProcesses();
