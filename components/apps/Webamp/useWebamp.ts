@@ -83,6 +83,7 @@ const useWebamp = (id: string): Webamp => {
     id,
   });
   const metadataProviderRef = useRef<number>();
+  const windowPositionDebounceRef = useRef<number>();
   const initWebamp = useCallback(
     (
       containerElement: HTMLDivElement,
@@ -166,27 +167,32 @@ const useWebamp = (id: string): Webamp => {
           containerElement.appendChild(webampElement);
         }
       };
-      const subscriptions = [
-        webamp.onWillClose((cancel) => {
-          cancel();
-
+      const updatePosition = (): void => {
+        window.clearInterval(windowPositionDebounceRef.current);
+        windowPositionDebounceRef.current = window.setTimeout(() => {
           const mainWindow =
             getWebampElement()?.querySelector<HTMLDivElement>(MAIN_WINDOW);
           const { x = 0, y = 0 } = mainWindow?.getBoundingClientRect() || {};
 
-          onClose();
           setWindowStates((currentWindowStates) => ({
             ...currentWindowStates,
             [id]: {
               position: { x, y },
             },
           }));
+        }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
+      };
+      const subscriptions = [
+        webamp.onWillClose((cancel) => {
+          cancel();
+          onClose();
 
           window.setTimeout(() => {
             subscriptions.forEach((unsubscribe) => unsubscribe());
             webamp.close();
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
           window.clearInterval(metadataProviderRef.current);
+          window.clearInterval(windowPositionDebounceRef.current);
         }),
         webamp.onMinimize(() => onMinimize()),
         webamp.onTrackDidChange((track) => {
@@ -263,6 +269,7 @@ const useWebamp = (id: string): Webamp => {
         webamp._actionEmitter.on("LOAD_DEFAULT_SKIN", () => {
           deletePath(SKIN_DATA_PATH);
         }),
+        webamp._actionEmitter.on("UPDATE_WINDOW_POSITIONS", updatePosition),
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
