@@ -6,10 +6,9 @@ import { Rnd } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
-  PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { haltEvent, pxToNum } from "utils/functions";
+import { haltEvent } from "utils/functions";
 
 type RndWindowProps = {
   id: string;
@@ -33,17 +32,10 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     maximize,
     processes: { [id]: process },
   } = useProcesses();
-  const {
-    closing,
-    componentWindow,
-    maximized,
-    minimized,
-    url = "",
-  } = process || {};
+  const { componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id, maximized);
-  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
-    useSession();
+  const { windowStates: { [id]: windowState } = {} } = useSession();
   const { maximized: wasMaximized } = windowState || {};
   const [openedMaximized, setOpenedMaximized] = useState(false);
   const style = useMemo<React.CSSProperties>(
@@ -74,36 +66,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     if (process && !componentWindow && windowContainer) {
       linkElement(id, "componentWindow", windowContainer);
     }
-
-    return () => {
-      if (closing) {
-        const [pid] = id.split(PROCESS_DELIMITER);
-
-        setWindowStates((currentWindowStates) => ({
-          ...currentWindowStates,
-          [pid === id ? id : `${pid}${PROCESS_DELIMITER}${url}`]: {
-            maximized,
-            position: currentWindow?.props.position,
-            size: currentWindow?.props.size
-              ? {
-                  height: pxToNum(currentWindow?.props.size.height),
-                  width: pxToNum(currentWindow?.props.size.width),
-                }
-              : undefined,
-          },
-        }));
-      }
-    };
-  }, [
-    closing,
-    componentWindow,
-    id,
-    linkElement,
-    maximized,
-    process,
-    setWindowStates,
-    url,
-  ]);
+  }, [componentWindow, id, linkElement, process]);
 
   return (
     <Rnd ref={rndRef} style={style} {...rndProps}>
