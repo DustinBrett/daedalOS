@@ -81,8 +81,7 @@ export const getIpfsFileName = async (
 };
 
 export const getIpfsResource = async (ipfsUrl: string): Promise<Buffer> => {
-  // eslint-disable-next-line unicorn/no-null
-  let response: Response | null = null;
+  let response: Response | undefined;
   const requestOptions = {
     ...HIGH_PRIORITY_REQUEST,
     cache: "no-cache",

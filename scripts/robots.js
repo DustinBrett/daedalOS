@@ -8,10 +8,7 @@ const buildAppSitemap = (path) => {
   readdirSync(path).forEach((entry) => {
     if (statSync(join(path, entry)).isDirectory()) {
       xmlUrls.push(
-        `<url><loc>${`${author.url}/?app=${entry.replace(
-          /-/g,
-          ""
-        )}`}</loc></url>`
+        `<url><loc>${author.url}/?app=${entry.replace(/-/g, "")}</loc></url>`
       );
     }
   });

@@ -225,16 +225,17 @@ export const calcInitialPosition = (
     viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
 });
 
+const GRID_TEMPLATE_ROWS = "grid-template-rows";
+
 const calcGridDropPosition = (
   gridElement: HTMLElement | null,
   { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
 ): IconPosition => {
-  if (!gridElement) return {} as IconPosition;
+  if (!gridElement) return Object.create(null) as IconPosition;
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ");
   const gridTemplateColumns = gridComputedStyle
     .getPropertyValue("grid-template-columns")
@@ -273,7 +274,7 @@ const updateIconPositionsIfEmpty = (
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ").length;
 
   fileOrder.forEach((entry, index) => {
@@ -330,7 +331,7 @@ const calcGridPositionOffset = (
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ").length;
   const {
     gridColumnStart: targetGridColumnStart,
@@ -438,8 +439,8 @@ export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   );
 
 const bytesInKB = 1024;
-const bytesInMB = 1022976; // 1024 * 999;
-const bytesInGB = 1047527424; // 1024 * 1024 * 999;
+const bytesInMB = 1022976; // 1024 * 999
+const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
 const formatNumber = (number: number): string =>
@@ -520,7 +521,7 @@ export const haltEvent = (
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
   devicePixelRatio = 1,
-  customSize: Size = {} as Size
+  customSize: Size = Object.create(null) as Size
 ): OffscreenCanvas => {
   const canvas = document.createElement("canvas");
   const height = Number(customSize?.height) || containerElement.offsetHeight;

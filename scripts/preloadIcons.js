@@ -65,13 +65,13 @@ const getPublicDirectoryIcons = (directory) => {
         }
 
         const iconPath = url || `${directory}/${file}`;
-        const iconFileName = `${iconPath}${ICON_CACHE_EXTENSION}`;
+        const iconCacheFileName = `${iconPath}${ICON_CACHE_EXTENSION}`;
 
         if (
           extname(iconPath) &&
-          existsSync(join("./public", ICON_CACHE, `${iconFileName}`))
+          existsSync(join("./public", ICON_CACHE, `${iconCacheFileName}`))
         ) {
-          icons.push(encodeURI(`${ICON_CACHE}${iconFileName}`));
+          icons.push(encodeURI(`${ICON_CACHE}${iconCacheFileName}`));
         }
       }
     }
@@ -82,10 +82,7 @@ const getPublicDirectoryIcons = (directory) => {
 
 writeFileSync(
   "./public/.index/desktopIcons.json",
-  JSON.stringify([
-    SHORTCUT_ICON,
-    ...getPublicDirectoryIcons(DESKTOP_PATH, true),
-  ])
+  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
 );
 
 writeFileSync(

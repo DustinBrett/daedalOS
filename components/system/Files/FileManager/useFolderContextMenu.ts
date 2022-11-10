@@ -100,8 +100,9 @@ const useFolderContextMenu = (
                 updateFolder(url, mappedFolder);
                 open("FileExplorer", { url: join(url, mappedFolder) });
               })
-              // eslint-disable-next-line @typescript-eslint/no-empty-function
-              .catch(() => {}),
+              .catch(() => {
+                // Ignore failure to map
+              }),
           label: "Map directory",
         };
         const FS_COMMANDS = isFileSystemSupported()

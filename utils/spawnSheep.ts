@@ -27,8 +27,7 @@ const pickRandomPet = (): string => {
   const petNames = Object.keys(PETS).flatMap((pet) => {
     const [, probability] = PETS[pet];
 
-    // eslint-disable-next-line unicorn/new-for-builtins
-    return Array(probability).fill(pet) as string[];
+    return Array.from({ length: probability }).fill(pet) as string[];
   });
   const randomPet = Math.floor(Math.random() * petNames.length);
   const [petPath] = PETS[petNames[randomPet]];

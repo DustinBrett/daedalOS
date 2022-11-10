@@ -117,10 +117,9 @@ const Icon = forwardRef<
             failedUrls.length > 0 &&
             failedUrls.includes(srcSet.split(" ")[0])
           ) {
-            return;
+            return <></>;
           }
 
-          // eslint-disable-next-line consistent-return
           return (
             <source
               key={ratio}

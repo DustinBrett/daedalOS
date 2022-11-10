@@ -6,11 +6,10 @@ import {
 import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";
 
-const vantaWaves = async (
+const vantaWaves = (
   el: HTMLElement | null,
   config: WallpaperConfig = {} as WallpaperConfig
-  // eslint-disable-next-line @typescript-eslint/require-await
-): Promise<void> => {
+): void => {
   const { VANTA: { current: currentEffect } = {} } = window;
 
   try {

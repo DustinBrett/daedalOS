@@ -155,8 +155,9 @@ const useFileContextMenu = (
                             url: join("/", mappedFolder),
                           });
                         })
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        .catch(() => {}),
+                        .catch(() => {
+                          // Ignore failure to map
+                        }),
                     label: "Map directory",
                   },
                   MENU_SEPERATOR

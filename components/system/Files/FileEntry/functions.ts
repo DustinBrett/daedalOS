@@ -580,7 +580,10 @@ type WrapData = {
   width: number;
 };
 
-const canvasContexts: Record<string, CanvasRenderingContext2D> = {};
+const canvasContexts = Object.create(null) as Record<
+  string,
+  CanvasRenderingContext2D
+>;
 
 const measureText = (
   text: string,

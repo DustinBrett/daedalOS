@@ -23,10 +23,12 @@ const DEBOUNCE_TIME = MILLISECONDS_IN_SECOND / FPS;
 const useSelection = (
   containerRef: React.MutableRefObject<HTMLElement | null>
 ): Selection => {
-  const [position, setPosition] = useState<Position>();
-  const [size, setSize] = useState<Size>();
-  const { x, y } = position || {};
-  const { height: h, width: w } = size || {};
+  const [position, setPosition] = useState<Position>(
+    () => Object.create(null) as Position
+  );
+  const [size, setSize] = useState<Size>(() => Object.create(null) as Size);
+  const { x, y } = position;
+  const { height: h, width: w } = size;
   const debounceTimer = useRef<number>();
   const onMouseMove: React.MouseEventHandler<HTMLElement> = ({
     clientX,
@@ -56,7 +58,7 @@ const useSelection = (
       const { x: targetX = 0, y: targetY = 0 } =
         containerRef.current.getBoundingClientRect();
 
-      setSize({} as Size);
+      setSize(Object.create(null) as Size);
       setPosition({
         x: clientX - targetX,
         y: clientY - targetY + scrollTop,
@@ -66,8 +68,8 @@ const useSelection = (
   const hasSize = typeof w === "number" && typeof h === "number";
   const hasPosition = typeof x === "number" && typeof y === "number";
   const resetSelection = (): void => {
-    setSize({} as Size);
-    setPosition({} as Position);
+    setSize(Object.create(null) as Size);
+    setPosition(Object.create(null) as Position);
   };
   const isSelecting = hasSize && hasPosition;
   const selectionStyling = isSelecting

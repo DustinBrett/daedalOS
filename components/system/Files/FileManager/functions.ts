@@ -74,11 +74,11 @@ export const sortContents = (
   });
 
   const sortContent = (fileStats: FileStats[]): FileStats[] => {
-    const sortedByName = fileStats.sort(sortByName);
+    fileStats.sort(sortByName);
 
     return sortFunction && sortFunction !== sortByName
-      ? sortedByName.sort(sortFunction)
-      : sortedByName;
+      ? fileStats.sort(sortFunction)
+      : fileStats;
   };
   const sortedFolders = sortContent(folders);
   const sortedFiles = sortContent(files);

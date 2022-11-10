@@ -8,7 +8,7 @@ const contextFactory = <T,>(
   Provider: FC;
   useContext: () => T;
 } => {
-  const Context = createContext<T>({} as T);
+  const Context = createContext<T>(Object.create(null) as T);
   const ProcessProvider: FC = ({ children }) => (
     <Context.Provider value={useContextState()}>
       {children}

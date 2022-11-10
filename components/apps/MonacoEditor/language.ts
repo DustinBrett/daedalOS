@@ -38,8 +38,7 @@ const getLanguageParser = async (
   if (language === "xml") {
     return {
       parser: "xml",
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      plugins: [await import("@prettier/plugin-xml")],
+      plugins: [(await import("@prettier/plugin-xml")) as Plugin],
     };
   }
   if (language === "markdown") {

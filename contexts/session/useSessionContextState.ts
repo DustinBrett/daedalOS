@@ -125,7 +125,7 @@ const useSessionContextState = (): SessionContextState => {
         initializedSession.current = true;
 
         try {
-          let session = {} as SessionData;
+          let session: SessionData;
 
           try {
             session =

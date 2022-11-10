@@ -62,7 +62,9 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 const Clock: FC = () => {
-  const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
+  const [now, setNow] = useState<LocaleTimeDate>(
+    Object.create(null) as LocaleTimeDate
+  );
   const { date, time } = now;
   const { clockSource } = useSession();
   const clockWorkerInit = useCallback(
@@ -124,6 +126,7 @@ const Clock: FC = () => {
         );
       }
     },
+    // NOTE: Need `now` in the dependency array to ensure the clock is updated
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentWorker, now]
   );

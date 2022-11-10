@@ -84,7 +84,7 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       lstat: (path) =>
         new Promise((resolve, reject) => {
-          fs?.lstat(path, (error, stats = {} as Stats) =>
+          fs?.lstat(path, (error, stats = Object.create(null) as Stats) =>
             error ? reject(error) : resolve(stats)
           );
         }),
@@ -118,19 +118,22 @@ const useAsyncFs = (): AsyncFSModule => {
             if (!renameError) {
               resolve(true);
             } else if (renameError.code === "ENOTSUP") {
-              fs.lstat(oldPath, (_statsError, stats = {} as Stats) => {
-                if (stats.isDirectory()) {
-                  reject();
-                } else {
-                  fs.readFile(oldPath, (readError, data) =>
-                    fs.writeFile(newPath, data, (writeError) =>
-                      readError || writeError
-                        ? reject(readError || writeError)
-                        : resolve(false)
-                    )
-                  );
+              fs.lstat(
+                oldPath,
+                (_statsError, stats = Object.create(null) as Stats) => {
+                  if (stats.isDirectory()) {
+                    reject();
+                  } else {
+                    fs.readFile(oldPath, (readError, data) =>
+                      fs.writeFile(newPath, data, (writeError) =>
+                        readError || writeError
+                          ? reject(readError || writeError)
+                          : resolve(false)
+                      )
+                    );
+                  }
                 }
-              });
+              );
             } else if (renameError.code === "EISDIR") {
               rootFs?.umount(oldPath);
               asyncFs.rename(oldPath, newPath).then(resolve, reject);
@@ -145,7 +148,7 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       stat: (path) =>
         new Promise((resolve, reject) => {
-          fs?.stat(path, (error, stats = {} as Stats) =>
+          fs?.stat(path, (error, stats = Object.create(null) as Stats) =>
             error ? reject(error) : resolve(stats)
           );
         }),

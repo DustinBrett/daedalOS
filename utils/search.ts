@@ -13,7 +13,7 @@ const FILE_INDEX = "/.index/search.lunr.json";
 
 export const SEARCH_LIBS = ["/System/lunr/lunr.min.js"];
 
-let baseIndex = {} as Index;
+let baseIndex = Object.create(null) as Index;
 
 const search = async (
   searchTerm: string,
