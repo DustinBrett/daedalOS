@@ -178,8 +178,8 @@ window.Sheep = class eSheep {
         this.dragging = false;
       }
     });
-    // Add sheep element to the body
-    document.body.appendChild(this.DOMdiv);
+    // Add sheep element to the body, unless override is provided
+    (this.userOptions.spawnContainer || document.body).appendChild(this.DOMdiv);
   }
 
   /*

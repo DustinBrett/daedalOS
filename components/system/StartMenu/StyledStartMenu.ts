@@ -48,7 +48,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   max-width: ${({ theme }) => theme.sizes.startMenu.size}px;
   position: absolute;
   width: 100%;
-  z-index: 1000;
+  z-index: 100000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: hsla(0, 0%, 13%, 70%);

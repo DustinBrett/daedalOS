@@ -1,8 +1,14 @@
 import { loadFiles } from "utils/functions";
 
+type SheepOptions = {
+  allowPopup: string;
+  collisionsWith: string[];
+  spawnContainer: HTMLElement;
+};
+
 declare global {
   interface Window {
-    Sheep?: new (config: { allowPopup: string; collisionsWith: string[] }) => {
+    Sheep?: new (options: SheepOptions) => {
       Start: (animationXmlUrl: string) => void;
     };
   }
@@ -41,6 +47,7 @@ const spawnSheep = (): Promise<void> =>
       const sheep = new window.Sheep({
         allowPopup: "no",
         collisionsWith: ["nav", "section"],
+        spawnContainer: document.querySelector("main") as HTMLElement,
       });
 
       if (!oneSheepLaunched) {
