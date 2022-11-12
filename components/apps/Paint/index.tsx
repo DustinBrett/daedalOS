@@ -8,7 +8,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DESKTOP_PATH, PICUTRES_PATH } from "utils/constants";
 
 type JsPaint = {
@@ -59,6 +59,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
     [setWallpaper, writeFile]
   );
   const { onDragOver, onDrop } = useFileDrop({ id });
+  const style = useMemo(() => ({ opacity: loaded ? 1 : 0 }), [loaded]);
 
   useEffect(() => {
     prependFileToTitle("Untitled");
@@ -151,7 +152,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
         id="jspaint-iframe"
         onLoad={() => setLoaded(true)}
         src={paintSrc}
-        style={{ opacity: loaded ? 1 : 0 }}
+        style={style}
         title={id}
         width="100%"
       />

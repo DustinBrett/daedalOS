@@ -6,7 +6,7 @@ type ArrowProps = {
 
 export const Arrow: FC<ArrowProps> = ({ direction }) => {
   const style = useMemo(
-    () => ({ transform: direction === "right" ? `scaleX(-1)` : undefined }),
+    () => (direction === "right" ? { transform: "scaleX(-1)" } : undefined),
     [direction]
   );
 

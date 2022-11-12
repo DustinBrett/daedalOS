@@ -22,7 +22,8 @@ type DownProps = { flip?: boolean };
 
 export const Down: FC<DownProps> = ({ flip }) => {
   const style = useMemo(
-    () => (flip ? { transform: "scaleY(-1)", transition: "all 0.2s" } : {}),
+    () =>
+      flip ? { transform: "scaleY(-1)", transition: "all 0.2s" } : undefined,
     [flip]
   );
 
