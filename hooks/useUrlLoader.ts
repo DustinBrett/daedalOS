@@ -13,8 +13,11 @@ const useUrlLoader = (): void => {
   const [initialApp, setInitialApp] = useState<string>("");
   const loadInitialApp = useCallback(async () => {
     const url = getSearchParam("url");
+    const urlExists =
+      (initialApp === "Browser" && url.startsWith("http")) ||
+      (await exists(url));
 
-    open(initialApp, (await exists(url)) ? { url } : undefined);
+    open(initialApp, urlExists ? { url } : undefined);
   }, [exists, initialApp, open]);
 
   useEffect(() => {
