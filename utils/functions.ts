@@ -229,7 +229,7 @@ const GRID_TEMPLATE_ROWS = "grid-template-rows";
 
 const calcGridDropPosition = (
   gridElement: HTMLElement | null,
-  { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
+  { x = 0, y = 0 }: DragPosition
 ): IconPosition => {
   if (!gridElement) return Object.create(null) as IconPosition;
 
@@ -252,11 +252,11 @@ const calcGridDropPosition = (
 
   return {
     gridColumnStart: Math.min(
-      Math.ceil((x + offsetX) / (gridColumnWidth + gridColumnGap)),
+      Math.ceil(x / (gridColumnWidth + gridColumnGap)),
       gridTemplateColumns.length
     ),
     gridRowStart: Math.min(
-      Math.ceil((y + offsetY - paddingTop) / (gridRowHeight + gridRowGap)),
+      Math.ceil((y - paddingTop) / (gridRowHeight + gridRowGap)),
       gridTemplateRows.length
     ),
   };
@@ -382,7 +382,12 @@ export const updateIconPositions = (
         gridRowStart === gridDropPosition.gridRowStart
     )
   ) {
-    const targetUrl = join(directory, draggedEntries[0]);
+    const targetUrl = join(
+      directory,
+      draggedEntries.find((entry) =>
+        entry.startsWith(document.activeElement?.textContent || "")
+      ) || draggedEntries[0]
+    );
     const newIconPositions = Object.fromEntries(
       draggedEntries
         .map<[string, IconPosition]>((entryFile) => {
