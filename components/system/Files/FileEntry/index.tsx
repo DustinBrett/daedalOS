@@ -3,6 +3,7 @@ import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
@@ -21,6 +22,7 @@ import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
 import { basename, dirname, extname, join } from "path";
+import type { CSSProperties } from "react";
 import {
   useCallback,
   useEffect,
@@ -34,18 +36,16 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
-  FOLDER_BACK_ICON,
-  FOLDER_FRONT_ICON,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
+  LIST_VIEW_ANIMATION,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
-  SHORTCUT_ICON,
   SMALLEST_PNG_SIZE,
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
@@ -159,15 +159,13 @@ const FileEntry: FC<FileEntryProps> = ({
   const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
   const urlExt = extname(url).toLowerCase();
-  const isDynamicIcon =
-    IMAGE_FILE_EXTENSIONS.has(urlExt) ||
-    VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-    isYouTubeUrl(url);
-  const filteredSubIcons = (
-    hideShortcutIcon || stats.systemShortcut
-      ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
-      : subIcons
-  )?.filter((subIcon) => subIcon !== icon);
+  const isDynamicIcon = useMemo(
+    () =>
+      IMAGE_FILE_EXTENSIONS.has(urlExt) ||
+      VIDEO_FILE_EXTENSIONS.has(urlExt) ||
+      isYouTubeUrl(url),
+    [url, urlExt]
+  );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
   const extension = extname(path).toLowerCase();
@@ -243,10 +241,40 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
   ]);
   const [tooltip, setTooltip] = useState<string>();
+  const doubleClickHandler = useCallback(() => {
+    if (
+      openInFileExplorer &&
+      fileManagerId &&
+      !MOUNTABLE_EXTENSIONS.has(urlExt)
+    ) {
+      changeUrl(fileManagerId, url);
+      blurEntry();
+    } else if (openInFileExplorer && listView) {
+      setShowInFileManager((currentState) => !currentState);
+    } else {
+      openFile(pid, !isDynamicIcon ? icon : undefined);
+    }
+  }, [
+    blurEntry,
+    changeUrl,
+    fileManagerId,
+    icon,
+    isDynamicIcon,
+    listView,
+    openFile,
+    openInFileExplorer,
+    pid,
+    url,
+    urlExt,
+  ]);
+  const style = useMemo(
+    () => (renaming ? ({ pointerEvents: "all" } as CSSProperties) : undefined),
+    [renaming]
+  );
 
   useEffect(() => {
-    const updateIcon = async (): Promise<void> => {
-      if (!isLoadingFileManager && !isIconCached.current) {
+    if (!isLoadingFileManager && !isIconCached.current) {
+      const updateIcon = async (): Promise<void> => {
         if (icon.startsWith("blob:") || icon.startsWith("data:")) {
           if (icon.startsWith("data:image/jpeg;base64,")) return;
 
@@ -369,10 +397,10 @@ const FileEntry: FC<FileEntryProps> = ({
             ).observe(buttonRef.current);
           }
         }
-      }
-    };
+      };
 
-    updateIcon();
+      updateIcon();
+    }
   }, [
     exists,
     fileManagerRef,
@@ -449,30 +477,12 @@ const FileEntry: FC<FileEntryProps> = ({
   return (
     <>
       <Button
-        {...(listView && {
-          animate: { opacity: 1 },
-          as: motion.button,
-          initial: { opacity: 0 },
-          transition: { duration: 0.15 },
-        })}
         ref={buttonRef}
         aria-label={name}
         onMouseOver={() => createTooltip().then(setTooltip)}
         title={tooltip}
-        {...useDoubleClick(() => {
-          if (
-            openInFileExplorer &&
-            fileManagerId &&
-            !MOUNTABLE_EXTENSIONS.has(urlExt)
-          ) {
-            changeUrl(fileManagerId, url);
-            blurEntry();
-          } else if (openInFileExplorer && listView) {
-            setShowInFileManager((currentState) => !currentState);
-          } else {
-            openFile(pid, !isDynamicIcon ? icon : undefined);
-          }
-        }, listView)}
+        {...(listView && { ...LIST_VIEW_ANIMATION, as: motion.button })}
+        {...useDoubleClick(doubleClickHandler, listView)}
         {...(openInFileExplorer && fileDrop)}
         {...useFileContextMenu(
           url,
@@ -488,7 +498,7 @@ const FileEntry: FC<FileEntryProps> = ({
       >
         <figure
           ref={figureRef}
-          style={renaming ? { pointerEvents: "all" } : undefined}
+          style={style}
           {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
@@ -499,30 +509,13 @@ const FileEntry: FC<FileEntryProps> = ({
             src={icon}
             {...FileEntryIconSize[view]}
           />
-          {(filteredSubIcons || []).map((entryIcon, subIconIndex) => (
-            <Icon
-              key={entryIcon}
-              $eager={entryIcon === SHORTCUT_ICON}
-              alt={name}
-              src={entryIcon}
-              style={
-                icon === FOLDER_BACK_ICON && entryIcon !== FOLDER_FRONT_ICON
-                  ? {
-                      transform:
-                        subIconIndex === 0
-                          ? "matrix(0, 1.8, 1.8, 0.2, 1.2, 2) scaleX(-1) scale(0.4) translateZ(0px)"
-                          : "matrix(0, 1.8, 1.2, 0.4, -4, 4) scaleX(-1) scale(0.4) translateZ(0px)",
-                    }
-                  : {}
-              }
-              {...FileEntryIconSize[
-                ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(entryIcon) &&
-                !entryIcon.startsWith("blob:")
-                  ? "sub"
-                  : view
-              ]}
-            />
-          ))}
+          <SubIcons
+            icon={icon}
+            name={name}
+            showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
+            subIcons={subIcons}
+            view={view}
+          />
           {renaming ? (
             <RenameBox
               name={name}

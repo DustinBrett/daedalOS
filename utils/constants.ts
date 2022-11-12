@@ -42,6 +42,12 @@ export const ICON_GIF_FPS = 24;
 
 export const PEEK_MAX_WIDTH = 200;
 
+export const LIST_VIEW_ANIMATION = {
+  animate: { opacity: 1 },
+  initial: { opacity: 0 },
+  transition: { duration: 0.15 },
+};
+
 export const TIFF_IMAGE_FORMATS = new Set([
   ".cr2",
   ".dng",
