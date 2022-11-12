@@ -1,14 +1,21 @@
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getDefaultFileViewer } from "components/system/Files/FileEntry/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { extname } from "path";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSearchParam } from "utils/functions";
 
 const useUrlLoader = (): void => {
+  const { exists } = useFileSystem();
   const { open } = useProcesses();
   const [initialApp, setInitialApp] = useState<string>("");
+  const loadInitialApp = useCallback(async () => {
+    const url = getSearchParam("url");
+
+    open(initialApp, (await exists(url)) ? { url } : undefined);
+  }, [exists, initialApp, open]);
 
   useEffect(() => {
     const app = getSearchParam("app");
@@ -30,11 +37,10 @@ const useUrlLoader = (): void => {
 
   useEffect(() => {
     if (initialApp) {
-      const url = getSearchParam("url");
-
-      open(initialApp, { url });
+      setInitialApp("");
+      loadInitialApp();
     }
-  }, [initialApp, open]);
+  }, [initialApp, loadInitialApp]);
 };
 
 export default useUrlLoader;
