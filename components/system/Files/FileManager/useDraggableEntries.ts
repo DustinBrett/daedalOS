@@ -166,6 +166,7 @@ const useDraggableEntries = (
 
       if (focusedElements.length > 1) {
         if (!dragImageRef.current) dragImageRef.current = new Image();
+        else dragImageRef.current.src = "";
 
         const htmlToImage = await getHtmlToImage();
         const newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
