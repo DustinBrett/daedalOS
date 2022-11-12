@@ -13,7 +13,7 @@ export const config: ITerminalOptions = {
   letterSpacing: 0.5,
   rows: 20,
   theme: {
-    background: processDirectory["Terminal"].background,
+    background: processDirectory["Terminal"].backgroundColor,
     foreground: "rgb(204, 204, 204)",
   },
 };

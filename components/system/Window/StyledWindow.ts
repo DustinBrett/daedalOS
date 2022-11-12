@@ -2,20 +2,22 @@ import { m as motion } from "framer-motion";
 import styled from "styled-components";
 
 type StyledWindowProps = {
-  $foreground: boolean;
+  $backgroundColor?: string;
+  $isForeground: boolean;
 };
 
 const StyledWindow = styled(motion.section)<StyledWindowProps>`
-  background-color: ${({ theme }) => theme.colors.window.background};
-  box-shadow: ${({ $foreground, theme }) =>
-    $foreground
+  background-color: ${({ $backgroundColor, theme }) =>
+    $backgroundColor || theme.colors.window.background};
+  box-shadow: ${({ $isForeground, theme }) =>
+    $isForeground
       ? theme.colors.window.shadow
       : theme.colors.window.shadowInactive};
   contain: strict;
   height: 100%;
-  outline: ${({ $foreground, theme }) =>
+  outline: ${({ $isForeground, theme }) =>
     `${theme.sizes.window.outline} solid ${
-      $foreground
+      $isForeground
         ? theme.colors.window.outline
         : theme.colors.window.outlineInactive
     }`};
