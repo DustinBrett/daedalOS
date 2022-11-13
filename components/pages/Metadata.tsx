@@ -39,6 +39,11 @@ const PreloadDesktopIcons: FC = () => (
   </>
 );
 
+const visibilityEventName =
+  typeof document !== "undefined" && "webkitHidden" in document
+    ? "webkitvisibilitychange"
+    : "visibilitychange";
+
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
@@ -75,23 +80,15 @@ const Metadata: FC = () => {
 
   useEffect(() => {
     const onVisibilityChange = (): void => {
-      if (document.visibilityState === "visible") {
-        resetFaviconAndTitle();
-      }
+      if (document.visibilityState === "visible") resetFaviconAndTitle();
     };
-    const visibilityEventName =
-      "webkitHidden" in document
-        ? "webkitvisibilitychange"
-        : "visibilitychange";
 
     document.addEventListener(visibilityEventName, onVisibilityChange, {
       passive: true,
     });
 
-    return document.removeEventListener(
-      visibilityEventName,
-      onVisibilityChange
-    );
+    return () =>
+      document.removeEventListener(visibilityEventName, onVisibilityChange);
   }, [resetFaviconAndTitle]);
 
   return (
