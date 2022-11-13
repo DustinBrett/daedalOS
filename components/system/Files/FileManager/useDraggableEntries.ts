@@ -15,7 +15,7 @@ type DraggableEntryProps = {
   draggable: boolean;
   onDragEnd: React.DragEventHandler;
   onDragStart: React.DragEventHandler;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 };
 
 type DraggableEntry = (
@@ -49,6 +49,8 @@ const useDraggableEntries = (
   const onDragging = ({ clientX: x, clientY: y }: DragEvent): void => {
     dragPositionRef.current = { ...dragPositionRef.current, x, y };
   };
+  const isMainContainer =
+    fileManagerRef.current?.parentElement?.tagName === "MAIN";
   const onDragEnd =
     (entryUrl: string): React.DragEventHandler =>
     (event) => {
@@ -128,10 +130,9 @@ const useDraggableEntries = (
           draggedOnceRef.current = true;
         }
 
-        const dragX =
-          fileManagerRef.current?.parentElement?.tagName === "MAIN"
-            ? event.nativeEvent.clientX
-            : event.nativeEvent.offsetX;
+        const dragX = isMainContainer
+          ? event.nativeEvent.clientX
+          : event.nativeEvent.offsetX;
         const dragY = draggedOnceRef.current
           ? event.nativeEvent.clientY
           : event.nativeEvent.offsetY;
@@ -219,7 +220,7 @@ const useDraggableEntries = (
     onDragEnd: onDragEnd(entryUrl),
     onDragOver: onDragOver(file),
     onDragStart: onDragStart(entryUrl, file, renaming),
-    style: iconPositions[join(entryUrl, file)],
+    style: isMainContainer ? iconPositions[join(entryUrl, file)] : undefined,
   });
 };
 
