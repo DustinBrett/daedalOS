@@ -281,15 +281,27 @@ export const getInfoWithExtension = (
           `${url}${ICON_CACHE_EXTENSION}`
         );
 
-        fs.exists(cachedIconPath, (cachedIconExists) => {
-          if (cachedIconExists) {
-            callback({
-              comment,
-              icon: cachedIconPath,
-              pid,
-              subIcons,
-              url,
-            });
+        fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
+          if (!statError && cachedIconStats) {
+            if (cachedIconStats.birthtimeMs !== cachedIconStats.ctimeMs) {
+              fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
+                callback({
+                  comment,
+                  icon: bufferToUrl(cachedIconData as Buffer),
+                  pid,
+                  subIcons,
+                  url,
+                })
+              );
+            } else {
+              callback({
+                comment,
+                icon: cachedIconPath,
+                pid,
+                subIcons,
+                url,
+              });
+            }
           } else {
             getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
               const {
