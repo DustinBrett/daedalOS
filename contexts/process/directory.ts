@@ -253,7 +253,6 @@ const directory: Processes = {
     },
     icon: "/System/Icons/v86.webp",
     libs: ["/Program Files/Virtual x86/libv86.js"],
-    singleton: true,
     title: "Virtual x86",
   },
   VideoPlayer: {
