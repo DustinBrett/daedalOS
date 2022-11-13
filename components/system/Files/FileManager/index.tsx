@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, extname, join } from "path";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -111,6 +111,10 @@ const FileManager: FC<FileManagerProps> = ({
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
   const requestingPermissions = useRef(false);
+  const onKeyDown = useMemo(
+    () => (renaming === "" ? keyShortcuts() : undefined),
+    [keyShortcuts, renaming]
+  );
 
   useEffect(() => {
     if (
@@ -141,26 +145,24 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
 
   useEffect(() => {
-    const mountUrl = async (): Promise<void> => {
-      if (
-        MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase()) &&
-        !mounted &&
-        !(await stat(url)).isDirectory()
-      ) {
-        setMounted((currentlyMounted) => {
-          if (!currentlyMounted) {
-            mountFs(url)
-              .then(() => setTimeout(updateFiles, 100))
-              .catch(() => {
-                // Ignore race-condtion failures
-              });
-          }
-          return true;
-        });
-      }
-    };
+    if (!mounted && MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase())) {
+      const mountUrl = async (): Promise<void> => {
+        if (!(await stat(url)).isDirectory()) {
+          setMounted((currentlyMounted) => {
+            if (!currentlyMounted) {
+              mountFs(url)
+                .then(() => setTimeout(updateFiles, 100))
+                .catch(() => {
+                  // Ignore race-condtion failures
+                });
+            }
+            return true;
+          });
+        }
+      };
 
-    mountUrl();
+      mountUrl();
+    }
   }, [mountFs, mounted, stat, updateFiles, url]);
 
   useEffect(() => {
@@ -183,13 +185,13 @@ const FileManager: FC<FileManagerProps> = ({
         <StyledFileManager
           ref={fileManagerRef}
           $scrollable={!hideScrolling}
+          onKeyDown={onKeyDown}
           {...(!readOnly && {
             $selecting: isSelecting,
             ...fileDrop,
             ...folderContextMenu,
             ...selectionEvents,
           })}
-          {...(renaming === "" && { onKeyDown: keyShortcuts() })}
           {...FOCUSABLE_ELEMENT}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}
