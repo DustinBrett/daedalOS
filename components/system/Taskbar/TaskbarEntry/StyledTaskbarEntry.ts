@@ -75,7 +75,6 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     figcaption {
       color: ${({ theme }) => theme.colors.text};
       font-size: ${({ theme }) => theme.sizes.taskbar.entry.fontSize};
-      letter-spacing: -0.1px;
       margin: 0 4px;
       overflow-x: hidden;
       text-overflow: ellipsis;
