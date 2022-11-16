@@ -62,7 +62,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground />
+      <StyledStartMenuBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
