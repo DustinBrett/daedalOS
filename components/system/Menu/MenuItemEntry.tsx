@@ -1,7 +1,13 @@
 import Menu, { topLeftPosition } from "components/system/Menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import dynamic from "next/dynamic";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
@@ -59,6 +65,17 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         onMouseLeave,
       }
     : {};
+  const triggerAction = useCallback<React.MouseEventHandler>(
+    (event) => {
+      haltEvent(event);
+
+      if (!menu) {
+        action?.();
+        resetMenu();
+      }
+    },
+    [action, menu, resetMenu]
+  );
 
   useEffect(() => {
     const menuEntryElement = entryRef.current;
@@ -100,12 +117,8 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <Button
           as="figure"
           className={showSubMenu ? "active" : undefined}
-          onClick={() => {
-            if (!menu) {
-              action?.();
-              resetMenu();
-            }
-          }}
+          onClick={triggerAction}
+          onMouseUp={triggerAction}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}
