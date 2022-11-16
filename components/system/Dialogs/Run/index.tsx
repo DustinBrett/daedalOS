@@ -29,6 +29,7 @@ const resourceAliasMap: Record<string, string> = {
   dos: "JSDOS",
   explorer: "FileExplorer",
   monaco: "MonacoEditor",
+  mspaint: "Paint",
   vlc: "VideoPlayer",
 };
 
