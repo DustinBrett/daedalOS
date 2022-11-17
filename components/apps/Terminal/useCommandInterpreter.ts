@@ -81,7 +81,7 @@ const useCommandInterpreter = (
     title: changeTitle,
   } = useProcesses();
   const getFullPath = useCallback(
-    async (file: string): Promise<string> => {
+    async (file: string, writePath?: string): Promise<string> => {
       if (!file) return "";
 
       if (file.startsWith("ipfs://")) {
@@ -90,12 +90,12 @@ const useCommandInterpreter = (
           DESKTOP_PATH,
           await createPath(
             await getIpfsFileName(file, ipfsData),
-            DESKTOP_PATH,
+            writePath || DESKTOP_PATH,
             ipfsData
           )
         );
 
-        updateFolder(DESKTOP_PATH, basename(ipfsFile));
+        updateFolder(writePath || DESKTOP_PATH, basename(ipfsFile));
 
         return ipfsFile;
       }
@@ -496,6 +496,15 @@ const useCommandInterpreter = (
           localEcho?.history.entries.forEach((entry, index) =>
             localEcho.println(`${(index + 1).toString().padStart(4)} ${entry}`)
           );
+          break;
+        }
+        case "ipfs": {
+          const [commandName, cid] = commandArgs;
+
+          if (commandName === "get" && cid) {
+            await getFullPath(`ipfs://${cid}`, cd.current);
+          }
+
           break;
         }
         case "kill":
