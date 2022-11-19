@@ -32,6 +32,18 @@ const directory: Processes = {
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
   },
+  ClassiCube: {
+    Component: dynamic(() => import("components/apps/ClassiCube")),
+    allowResizing: false,
+    backgroundColor: "#201E20",
+    defaultSize: {
+      height: 420,
+      width: 700,
+    },
+    icon: "/System/Icons/classicube.webp",
+    libs: ["/Program Files/ClassiCube/ClassiCube.js"],
+    title: "ClassiCube",
+  },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
     backgroundColor: "#000",
