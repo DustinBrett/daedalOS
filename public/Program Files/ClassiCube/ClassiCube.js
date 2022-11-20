@@ -4611,6 +4611,7 @@ function copyTempDouble(ptr) {
       var xhr = new XMLHttpRequest();
       try {
         url = url.replace("http://classicube.s3.amazonaws.com", "/Program Files/ClassiCube");
+        url = url.replace("https://classicube.s3.amazonaws.com", "/Program Files/ClassiCube");
         xhr.open(reqMethod, url);
       } catch (e) {
         // DOMException gets thrown when invalid URL provided. Test cases:
