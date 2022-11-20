@@ -40,8 +40,6 @@
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "resolutions": {
-    "react-draggable": "4.4.5",
-    "re-resizable": "^6.9.9",
     "styled-components": "^5"
   },
   "dependencies": {
