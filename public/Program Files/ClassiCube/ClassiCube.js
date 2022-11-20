@@ -141,7 +141,7 @@ CCModule['FS_createPath']('/', 'texpacks', true, true);
         var that = this;
 
         CCModule['FS_createDataFile']?.(this.name, null, byteArray, true, true, true); // canOwn this data in the filesystem, it is a slide into the heap that will never change
-        CCModule['removeRunDependency']('fp ' + that.name);
+        CCModule['removeRunDependency']?.('fp ' + that.name);
 
         this.requests[this.name] = null;
       }
@@ -167,7 +167,7 @@ CCModule['FS_createPath']('/', 'texpacks', true, true);
           for (var i = 0; i < files.length; ++i) {
             DataRequest.prototype.requests[files[i].filename].onload();
           }
-              CCModule['removeRunDependency']('datafile_/static/default.zip');
+              CCModule['removeRunDependency']?.('datafile_/static/default.zip');
 
     };
     CCModule['addRunDependency']('datafile_/static/default.zip');
