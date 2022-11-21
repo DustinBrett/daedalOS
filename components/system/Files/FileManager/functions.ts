@@ -72,11 +72,8 @@ export const sortContents = (
   Object.entries(contents).forEach((entry) => {
     const [, stat] = entry;
 
-    if (!stat.isDirectory()) {
-      files.push(entry);
-    } else {
-      folders.push(entry);
-    }
+    if (stat.isDirectory()) folders.push(entry);
+    else files.push(entry);
   });
 
   const sortContent = (fileStats: FileStats[]): FileStats[] => {
@@ -235,11 +232,9 @@ export const handleFileInputEvent = (
 
   const { files, text } = getEventData(event);
 
-  if (!text) {
-    createFileReaders(files, directory, callback).then(openTransferDialog);
-  } else {
+  if (text) {
     try {
-      const filePaths = JSON.parse(text || "[]") as string[];
+      const filePaths = JSON.parse(text) as string[];
 
       filePaths?.forEach(
         (path) =>
@@ -253,6 +248,8 @@ export const handleFileInputEvent = (
     } catch {
       // Failed to parse text data to JSON
     }
+  } else {
+    createFileReaders(files, directory, callback).then(openTransferDialog);
   }
 };
 

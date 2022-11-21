@@ -81,16 +81,16 @@ export const openProcess =
       return currentProcesses;
     }
 
-    return !processDirectory[processId]
-      ? currentProcesses
-      : {
+    return processDirectory[processId]
+      ? {
           ...currentProcesses,
           [id]: {
             ...processDirectory[processId],
             ...(typeof icon === "string" && { icon }),
             ...processArguments,
           },
-        };
+        }
+      : currentProcesses;
   };
 
 export const maximizeProcess =

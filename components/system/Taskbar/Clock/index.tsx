@@ -161,13 +161,13 @@ const Clock: FC = () => {
   return (
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
-      aria-label={!supportsOffscreenCanvas ? "Clock" : undefined}
+      aria-label="Clock"
       onClick={easterEggOnClick}
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
     >
-      {!supportsOffscreenCanvas ? time : undefined}
+      {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>
   );
 };

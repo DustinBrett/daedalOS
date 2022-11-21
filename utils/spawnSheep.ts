@@ -50,11 +50,11 @@ const spawnSheep = (): Promise<void> =>
         spawnContainer: document.querySelector("main") as HTMLElement,
       });
 
-      if (!oneSheepLaunched) {
+      if (oneSheepLaunched) {
+        sheep.Start(pickRandomPet());
+      } else {
         oneSheepLaunched = true;
         sheep.Start("/Program Files/eSheep/eSheep.xml");
-      } else {
-        sheep.Start(pickRandomPet());
       }
     }
   });

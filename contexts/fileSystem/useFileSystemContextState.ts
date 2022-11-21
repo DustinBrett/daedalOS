@@ -283,9 +283,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
     ): Promise<string> => {
       const isInternal = !buffer && isAbsolute(name);
       const baseName = isInternal ? basename(name) : name;
-      const uniqueName = !iteration
-        ? baseName
-        : iterateFileName(baseName, iteration);
+      const uniqueName = iteration
+        ? iterateFileName(baseName, iteration)
+        : baseName;
       const fullNewPath = join(directory, uniqueName);
 
       if (isInternal) {

@@ -46,9 +46,7 @@ const useFileDrop = ({
       completeAction?: CompleteAction
     ): Promise<void> => {
       if (id) {
-        if (!fileData) {
-          if (completeAction === "updateUrl") url(id, filePath);
-        } else {
+        if (fileData) {
           const tempPath = join(DESKTOP_PATH, filePath);
 
           await mkdirRecursive(DESKTOP_PATH);
@@ -57,6 +55,8 @@ const useFileDrop = ({
             if (completeAction === "updateUrl") url(id, tempPath);
             updateFolder(DESKTOP_PATH, filePath);
           }
+        } else if (completeAction === "updateUrl") {
+          url(id, filePath);
         }
       }
     },

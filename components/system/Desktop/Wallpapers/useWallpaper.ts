@@ -85,10 +85,7 @@ const useWallpaper = (
 
       window.WallpaperDestroy?.();
 
-      if (
-        typeof window.OffscreenCanvas !== "undefined" &&
-        wallpaperWorker.current
-      ) {
+      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         wallpaperWorker.current.postMessage(
@@ -182,9 +179,7 @@ const useWallpaper = (
         ${cssFit[newWallpaperFit]}
       `;
 
-      if (!fallbackBackground) {
-        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
-      } else {
+      if (fallbackBackground) {
         fetch(wallpaperUrl, {
           ...HIGH_PRIORITY_REQUEST,
           mode: "no-cors",
@@ -203,6 +198,8 @@ const useWallpaper = (
               wallpaperStyle(fallbackBackground)
             )
           );
+      } else {
+        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
       }
     } else {
       loadWallpaper();

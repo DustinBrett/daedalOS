@@ -184,11 +184,7 @@ const useCommandInterpreter = (
         case "color": {
           const [r, g, b] = commandArgs;
 
-          if (
-            typeof r !== "undefined" &&
-            typeof g !== "undefined" &&
-            typeof b !== "undefined"
-          ) {
+          if (r !== undefined && g !== undefined && b !== undefined) {
             localEcho?.print(rgbAnsi(Number(r), Number(g), Number(b)));
           } else {
             const [[bg, fg] = []] = commandArgs;
@@ -348,7 +344,7 @@ const useCommandInterpreter = (
                   "Type/Size",
                   fullSizeTerminal ? 15 : 13,
                   true,
-                  (size) => (size !== "-1" ? size : ""),
+                  (size) => (size === "-1" ? "" : size),
                 ],
                 ["Name", terminal?.cols ? terminal.cols - 40 : 30],
               ],

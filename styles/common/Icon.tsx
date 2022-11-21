@@ -98,7 +98,7 @@ const Icon = forwardRef<
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
       srcSet={
-        !isStaticIcon ? imageSrcs(src, imgSize, ".png", failedUrls) : undefined
+        isStaticIcon ? undefined : imageSrcs(src, imgSize, ".png", failedUrls)
       }
       style={style}
       {...componentProps}

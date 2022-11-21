@@ -199,11 +199,11 @@ const useFolder = (
                   newFiles = sortContents(
                     newFiles,
                     (!skipSorting && sortOrder) || [],
-                    !isSimpleSort
-                      ? sortBy === "date"
-                        ? sortByDate(directory)
-                        : sortBySize
-                      : undefined,
+                    isSimpleSort
+                      ? undefined
+                      : sortBy === "date"
+                      ? sortByDate(directory)
+                      : sortBySize,
                     sortAscending
                   );
                 }
@@ -548,14 +548,7 @@ const useFolder = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (!files) {
-        if (!updatingFiles.current) {
-          updatingFiles.current = true;
-          updateFiles().then(() => {
-            updatingFiles.current = false;
-          });
-        }
-      } else {
+      if (files) {
         const fileNames = Object.keys(files);
 
         if (
@@ -585,6 +578,11 @@ const useFolder = (
             );
           }
         }
+      } else if (!updatingFiles.current) {
+        updatingFiles.current = true;
+        updateFiles().then(() => {
+          updatingFiles.current = false;
+        });
       }
     }
   }, [

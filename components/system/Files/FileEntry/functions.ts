@@ -283,7 +283,15 @@ export const getInfoWithExtension = (
 
         fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
           if (!statError && cachedIconStats) {
-            if (cachedIconStats.birthtimeMs !== cachedIconStats.ctimeMs) {
+            if (cachedIconStats.birthtimeMs === cachedIconStats.ctimeMs) {
+              callback({
+                comment,
+                icon: cachedIconPath,
+                pid,
+                subIcons,
+                url,
+              });
+            } else {
               fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
                 callback({
                   comment,
@@ -293,14 +301,6 @@ export const getInfoWithExtension = (
                   url,
                 })
               );
-            } else {
-              callback({
-                comment,
-                icon: cachedIconPath,
-                pid,
-                subIcons,
-                url,
-              });
             }
           } else {
             getInfoWithExtension(fs, url, urlExt, (fileInfo) => {

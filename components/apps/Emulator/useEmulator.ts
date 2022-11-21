@@ -139,10 +139,11 @@ const useEmulator = (
   ]);
 
   useEffect(() => {
-    if (!url) {
+    if (url) loadRom();
+    else {
       setLoading(false);
       containerRef.current?.classList.add("drop");
-    } else loadRom();
+    }
   }, [containerRef, loadRom, setLoading, url]);
 
   useLayoutEffect(() => {

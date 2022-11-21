@@ -39,9 +39,9 @@ export const getDpi = (): number => {
 
 export const toggleFullScreen = async (): Promise<void> => {
   try {
-    await (!document.fullscreenElement
-      ? document.documentElement.requestFullscreen()
-      : document.exitFullscreen());
+    await (document.fullscreenElement
+      ? document.exitFullscreen()
+      : document.documentElement.requestFullscreen());
   } catch {
     // Ignore failure to enter fullscreen
   }
