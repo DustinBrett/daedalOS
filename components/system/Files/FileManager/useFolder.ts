@@ -8,6 +8,8 @@ import {
 import type { FileStat } from "components/system/Files/FileManager/functions";
 import {
   findPathsRecursive,
+  sortByDate,
+  sortBySize,
   sortContents,
 } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
@@ -107,7 +109,7 @@ const useFolder = (
     sessionLoaded,
     setIconPositions,
     setSortOrder,
-    sortOrders: { [directory]: [sortOrder, sortBy] = [] } = {},
+    sortOrders: { [directory]: [sortOrder, sortBy, sortAscending] = [] } = {},
   } = useSession();
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { closeProcessesByUrl } = useProcesses();
@@ -128,7 +130,7 @@ const useFolder = (
   const isSimpleSort =
     skipSorting || !sortBy || sortBy === "name" || sortBy === "type";
   const updateFiles = useCallback(
-    async (newFile?: string, oldFile?: string, customSortOrder?: string[]) => {
+    async (newFile?: string, oldFile?: string) => {
       if (oldFile) {
         if (!(await exists(join(directory, oldFile)))) {
           const oldName = basename(oldFile);
@@ -196,7 +198,13 @@ const useFolder = (
                   newFiles[file] = await statsWithShortcutInfo(file, fileStats);
                   newFiles = sortContents(
                     newFiles,
-                    (!skipSorting && customSortOrder) || []
+                    (!skipSorting && sortOrder) || [],
+                    !isSimpleSort
+                      ? sortBy === "date"
+                        ? sortByDate(directory)
+                        : sortBySize
+                      : undefined,
+                    sortAscending
                   );
                 }
 
@@ -239,6 +247,9 @@ const useFolder = (
       readdir,
       setSortOrder,
       skipSorting,
+      sortAscending,
+      sortBy,
+      sortOrder,
       stat,
       statsWithShortcutInfo,
     ]
@@ -540,7 +551,7 @@ const useFolder = (
       if (!files) {
         if (!updatingFiles.current) {
           updatingFiles.current = true;
-          updateFiles(undefined, undefined, sortOrder).then(() => {
+          updateFiles().then(() => {
             updatingFiles.current = false;
           });
         }

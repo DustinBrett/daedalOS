@@ -18,10 +18,16 @@ type FileStats = [string, FileStat];
 
 type SortFunction = (a: FileStats, b: FileStats) => number;
 
+export const sortByDate =
+  (directory: string) =>
+  ([aPath, aStats]: FileStats, [bPath, bStats]: FileStats): number =>
+    getModifiedTime(join(directory, aPath), aStats) -
+    getModifiedTime(join(directory, bPath), bStats);
+
 const sortByName = ([a]: FileStats, [b]: FileStats): number =>
   a.localeCompare(b, "en", { sensitivity: "base" });
 
-const sortBySize = (
+export const sortBySize = (
   [, { size: aSize }]: FileStats,
   [, { size: bSize }]: FileStats
 ): number => aSize - bSize;
@@ -103,9 +109,7 @@ export const sortFiles = (
   ascending: boolean
 ): Files => {
   const sortFunctionMap: Record<string, SortFunction> = {
-    date: ([aPath, aStats]: FileStats, [bPath, bStats]: FileStats): number =>
-      getModifiedTime(join(directory, aPath), aStats) -
-      getModifiedTime(join(directory, bPath), bStats),
+    date: sortByDate(directory),
     name: sortByName,
     size: sortBySize,
     type: sortByType,
