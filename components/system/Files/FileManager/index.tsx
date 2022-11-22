@@ -41,6 +41,7 @@ type FileManagerProps = {
   preloadShortcuts?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
+  skipFsWatcher?: boolean;
   skipSorting?: boolean;
   url: string;
   useNewFolderIcon?: boolean;
@@ -59,6 +60,7 @@ const FileManager: FC<FileManagerProps> = ({
   preloadShortcuts,
   readOnly,
   showStatusBar,
+  skipFsWatcher,
   skipSorting,
   url,
   useNewFolderIcon,
@@ -71,15 +73,13 @@ const FileManager: FC<FileManagerProps> = ({
   const { focusedEntries, focusableEntry, ...focusFunctions } =
     useFocusableEntries(fileManagerRef);
   const { fileActions, files, folderActions, isLoading, updateFiles } =
-    useFolder(
-      url,
-      setRenaming,
-      focusFunctions,
+    useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
       hideLoading,
+      preloadShortcuts,
+      skipFsWatcher,
       skipSorting,
-      preloadShortcuts
-    );
+    });
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =

@@ -71,16 +71,27 @@ type Folder = {
   updateFiles: (newFile?: string, oldFile?: string) => void;
 };
 
+type FolderFlags = {
+  hideFolders?: boolean;
+  hideLoading?: boolean;
+  preloadShortcuts?: boolean;
+  skipFsWatcher?: boolean;
+  skipSorting?: boolean;
+};
+
 const NO_FILES = undefined;
 
 const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  hideFolders = false,
-  hideLoading = false,
-  skipSorting = false,
-  preloadShortcuts = false
+  {
+    hideFolders,
+    hideLoading,
+    preloadShortcuts,
+    skipFsWatcher,
+    skipSorting,
+  }: FolderFlags
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -221,7 +232,16 @@ const useFolder = (
           if (dirContents.length > 0) {
             if (!hideLoading) setFiles(sortedFiles);
 
-            setSortOrder(directory, Object.keys(sortedFiles));
+            const newSortOrder = Object.keys(sortedFiles);
+
+            if (
+              !sortOrder ||
+              sortOrder?.some((entry, index) => newSortOrder[index] !== entry)
+            ) {
+              window.requestAnimationFrame(() =>
+                setSortOrder(directory, newSortOrder)
+              );
+            }
           } else {
             setFiles(Object.create(null) as Files);
           }
@@ -603,10 +623,12 @@ const useFolder = (
   );
 
   useEffect(() => {
-    addFsWatcher?.(directory, updateFiles);
+    if (!skipFsWatcher) addFsWatcher?.(directory, updateFiles);
 
-    return () => removeFsWatcher?.(directory, updateFiles);
-  }, [addFsWatcher, directory, removeFsWatcher, updateFiles]);
+    return () => {
+      if (!skipFsWatcher) removeFsWatcher?.(directory, updateFiles);
+    };
+  }, [addFsWatcher, directory, removeFsWatcher, skipFsWatcher, updateFiles]);
 
   return {
     fileActions: {

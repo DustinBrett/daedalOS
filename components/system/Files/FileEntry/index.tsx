@@ -545,6 +545,7 @@ const FileEntry: FC<FileEntryProps> = ({
           loadIconsImmediately
           preloadShortcuts
           readOnly
+          skipFsWatcher
         />
       )}
     </>
