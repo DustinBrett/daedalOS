@@ -132,7 +132,16 @@
     "sonarjs/no-nested-template-literals": "off",
     "sort-keys-fix/sort-keys-fix": "error",
     "unicorn/filename-case": "off",
-    "unicorn/import-style": "off",
+    "unicorn/import-style": [
+      "error",
+      {
+        "styles": {
+          "path": {
+            "named": true
+          }
+        }
+      }
+    ],
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
     "unicorn/no-await-expression-member": "off",
