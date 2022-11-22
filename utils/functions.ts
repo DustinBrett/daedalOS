@@ -600,10 +600,9 @@ export const preloadLibs = (libs: string[] = []): void => {
         link.as = "style";
         break;
       case ".htm":
-      case ".html": {
+      case ".html":
         link.rel = "prerender";
         break;
-      }
       case ".url":
         link.as = "fetch";
         link.crossOrigin = "anonymous";

@@ -254,7 +254,7 @@ export const getInfoWithExtension = (
     });
 
   switch (extension) {
-    case SHORTCUT_EXTENSION: {
+    case SHORTCUT_EXTENSION:
       fs.readFile(path, (error, contents = Buffer.from("")) => {
         subIcons.push(SHORTCUT_ICON);
 
@@ -359,8 +359,7 @@ export const getInfoWithExtension = (
         }
       });
       break;
-    }
-    case ".ani": {
+    case ".ani":
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
@@ -373,8 +372,7 @@ export const getInfoWithExtension = (
         })
       );
       break;
-    }
-    case ".exe": {
+    case ".exe":
       getInfoByFileExtension("/System/Icons/executable.webp", (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
@@ -390,8 +388,7 @@ export const getInfoWithExtension = (
         })
       );
       break;
-    }
-    case ".mp3": {
+    case ".mp3":
       getInfoByFileExtension(
         `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
         (signal) =>
@@ -423,12 +420,10 @@ export const getInfoWithExtension = (
           })
       );
       break;
-    }
-    case ".sav": {
+    case ".sav":
       getInfoByFileExtension(UNKNOWN_ICON_PATH, true);
       break;
-    }
-    case ".whtml": {
+    case ".whtml":
       getInfoByFileExtension("/System/Icons/tinymce.webp", (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
@@ -456,8 +451,7 @@ export const getInfoWithExtension = (
         })
       );
       break;
-    }
-    default: {
+    default:
       if (TIFF_IMAGE_FORMATS.has(extension)) {
         getInfoByFileExtension(PHOTO_ICON, (signal) =>
           fs.readFile(path, async (error, contents = Buffer.from("")) => {
@@ -605,7 +599,6 @@ export const getInfoWithExtension = (
       } else {
         getInfoByFileExtension();
       }
-    }
   }
 };
 

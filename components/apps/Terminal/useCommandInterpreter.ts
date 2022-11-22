@@ -254,12 +254,11 @@ const useCommandInterpreter = (
           terminal?.reset();
           terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
           break;
-        case "date": {
+        case "date":
           localEcho?.println(
             `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
           );
           break;
-        }
         case "del":
         case "erase":
         case "rd":
@@ -449,7 +448,7 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "git": {
+        case "git":
           if (fs && localEcho) {
             await processGit(
               commandArgs,
@@ -461,7 +460,6 @@ const useCommandInterpreter = (
             );
           }
           break;
-        }
         case "help": {
           const [commandName] = commandArgs;
 
@@ -488,12 +486,11 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "history": {
+        case "history":
           localEcho?.history.entries.forEach((entry, index) =>
             localEcho.println(`${(index + 1).toString().padStart(4)} ${entry}`)
           );
           break;
-        }
         case "ipfs": {
           const [commandName, cid] = commandArgs;
 
@@ -534,7 +531,7 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "mount": {
+        case "mount":
           if (localEcho) {
             if (isFileSystemSupported()) {
               try {
@@ -558,7 +555,6 @@ const useCommandInterpreter = (
             }
           }
           break;
-        }
         case "move":
         case "mv":
         case "ren":
@@ -616,7 +612,7 @@ const useCommandInterpreter = (
           break;
         }
         case "ps":
-        case "tasklist": {
+        case "tasklist":
           printTable(
             [
               ["PID", 30],
@@ -626,9 +622,8 @@ const useCommandInterpreter = (
             localEcho
           );
           break;
-        }
         case "py":
-        case "python": {
+        case "python":
           if (localEcho) {
             const [file] = commandArgs;
             const fullSourcePath = await getFullPath(file);
@@ -645,7 +640,6 @@ const useCommandInterpreter = (
             }
           }
           break;
-        }
         case "logout":
         case "restart":
         case "shutdown":
@@ -675,7 +669,7 @@ const useCommandInterpreter = (
           }
           break;
         }
-        case "uptime": {
+        case "uptime":
           if (window.performance) {
             const [{ duration }] =
               window.performance.getEntriesByType("navigation");
@@ -695,16 +689,14 @@ const useCommandInterpreter = (
             localEcho?.println(unknownCommand(baseCommand));
           }
           break;
-        }
         case "ver":
         case "version":
           localEcho?.println(displayVersion());
           break;
         case "wapm":
-        case "wax": {
+        case "wax":
           if (localEcho) await loadWapm(commandArgs, localEcho);
           break;
-        }
         case "weather":
         case "wttr": {
           const response = await fetch(

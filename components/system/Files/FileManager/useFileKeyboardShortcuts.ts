@@ -39,7 +39,7 @@ const useFileKeyboardShortcuts = (
 
         // eslint-disable-next-line default-case
         switch (lKey) {
-          case "a": {
+          case "a":
             haltEvent(event);
             if (target instanceof HTMLOListElement) {
               const [firstEntry] = target.querySelectorAll("button");
@@ -48,40 +48,34 @@ const useFileKeyboardShortcuts = (
             }
             Object.keys(files).forEach((fileName) => focusEntry(fileName));
             break;
-          }
-          case "c": {
+          case "c":
             haltEvent(event);
             copyEntries(focusedEntries.map((entry) => join(url, entry)));
             break;
-          }
-          case "x": {
+          case "x":
             haltEvent(event);
             moveEntries(focusedEntries.map((entry) => join(url, entry)));
             break;
-          }
-          case "v": {
+          case "v":
             haltEvent(event);
             pasteToFolder();
             break;
-          }
         }
       } else {
         switch (key) {
-          case "F2": {
+          case "F2":
             if (file) {
               haltEvent(event);
               setRenaming(file);
             }
             break;
-          }
-          case "F5": {
+          case "F5":
             if (id) {
               haltEvent(event);
               updateFiles();
             }
             break;
-          }
-          case "Delete": {
+          case "Delete":
             if (focusedEntries.length > 0) {
               haltEvent(event);
               focusedEntries.forEach(async (entry) => {
@@ -93,15 +87,13 @@ const useFileKeyboardShortcuts = (
               blurEntry();
             }
             break;
-          }
-          case "Backspace": {
+          case "Backspace":
             if (id) {
               haltEvent(event);
               changeUrl(id, dirname(url));
             }
             break;
-          }
-          case "Enter": {
+          case "Enter":
             if (target instanceof HTMLButtonElement) {
               haltEvent(event);
               target.dispatchEvent(
@@ -109,8 +101,7 @@ const useFileKeyboardShortcuts = (
               );
             }
             break;
-          }
-          default: {
+          default:
             if (key.startsWith("Arrow")) {
               haltEvent(event);
 
@@ -162,7 +153,6 @@ const useFileKeyboardShortcuts = (
 
               (movedElement?.closest("button") || targetElement)?.click();
             }
-          }
         }
       }
     };

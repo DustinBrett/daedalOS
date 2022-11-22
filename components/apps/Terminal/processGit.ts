@@ -53,7 +53,7 @@ const processGit = async (
       }
       break;
     }
-    case "checkout": {
+    case "checkout":
       if (await exists(join(cd, ".git"))) {
         const [ref] = args;
 
@@ -68,11 +68,9 @@ const processGit = async (
         localEcho.println("fatal: not a git repository: .git");
       }
       break;
-    }
-    case "version": {
+    case "version":
       localEcho.println(`git version ${version()}.isomorphic-git`);
       break;
-    }
     default:
       help(localEcho, commands);
   }
