@@ -1,24 +1,25 @@
-import { createContext, useContext } from "react";
+import { createContext, memo, useContext } from "react";
 
 const contextFactory = <T,>(
   useContextState: () => T,
-  ContextComponent?: React.ComponentType
+  ContextComponent?: JSX.Element
 ): {
   Consumer: React.Consumer<T>;
-  Provider: FC;
+  Provider: React.MemoExoticComponent<FC>;
   useContext: () => T;
 } => {
-  const Context = createContext<T>(Object.create(null) as T);
-  const ProcessProvider: FC = ({ children }) => (
-    <Context.Provider value={useContextState()}>
-      {children}
-      {ContextComponent ? <ContextComponent /> : <></>}
-    </Context.Provider>
-  );
+  const Context = createContext(Object.create(null) as T);
 
   return {
     Consumer: Context.Consumer,
-    Provider: ProcessProvider,
+    Provider: memo<FC>(function ProcessProvider({ children }) {
+      return (
+        <Context.Provider value={useContextState()}>
+          {children}
+          {ContextComponent}
+        </Context.Provider>
+      );
+    }),
     useContext: () => useContext(Context),
   };
 };

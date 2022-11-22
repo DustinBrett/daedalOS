@@ -1,8 +1,7 @@
 import contextFactory from "contexts/contextFactory";
-import type { ProcessContextState } from "contexts/process/useProcessContextState";
 import useProcessContextState from "contexts/process/useProcessContextState";
 
-const { Consumer, Provider, useContext } = contextFactory<ProcessContextState>(
+const { Consumer, Provider, useContext } = contextFactory(
   useProcessContextState
 );
 

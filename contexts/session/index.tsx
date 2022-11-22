@@ -1,8 +1,7 @@
 import contextFactory from "contexts/contextFactory";
-import type { SessionContextState } from "contexts/session/types";
 import useSessionContextState from "contexts/session/useSessionContextState";
 
-const { Consumer, Provider, useContext } = contextFactory<SessionContextState>(
+const { Consumer, Provider, useContext } = contextFactory(
   useSessionContextState
 );
 
