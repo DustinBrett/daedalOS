@@ -41,7 +41,7 @@ type IFileSystemAccess = {
   };
 };
 
-export type FileSystemContextState = AsyncFS & {
+type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
     callback: (name: string, buffer?: Buffer) => void,
