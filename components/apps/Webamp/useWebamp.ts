@@ -254,7 +254,7 @@ const useWebamp = (id: string): Webamp => {
               }
             }
           } else {
-            title(id, processDirectory["Webamp"].title);
+            title(id, processDirectory.Webamp.title);
           }
         }),
         webamp._actionEmitter.on("SET_SKIN_DATA", async ({ data }) => {

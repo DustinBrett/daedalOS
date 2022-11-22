@@ -343,7 +343,7 @@ export const getInfoWithExtension = (
               ? cachedIconPath
               : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
             pid,
-            subIcons: [processDirectory["VideoPlayer"].icon],
+            subIcons: [processDirectory.VideoPlayer.icon],
             url,
           })
         );
@@ -425,10 +425,10 @@ export const getInfoWithExtension = (
       })
     );
   } else if (AUDIO_FILE_EXTENSIONS.has(extension)) {
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon);
+    getInfoByFileExtension(processDirectory.VideoPlayer.icon);
   } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
-    subIcons.push(processDirectory["VideoPlayer"].icon);
-    getInfoByFileExtension(processDirectory["VideoPlayer"].icon, (signal) =>
+    subIcons.push(processDirectory.VideoPlayer.icon);
+    getInfoByFileExtension(processDirectory.VideoPlayer.icon, (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error) {
           const video = document.createElement("video");

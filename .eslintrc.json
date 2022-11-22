@@ -78,7 +78,6 @@
     "@typescript-eslint/require-await": "error",
     "@typescript-eslint/sort-type-union-intersection-members": "error",
     "curly": "error",
-    "dot-notation": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

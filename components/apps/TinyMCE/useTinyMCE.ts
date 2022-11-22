@@ -56,7 +56,7 @@ const useTinyMCE = (
     if (iframe?.contentWindow) {
       [...iframe.contentWindow.document.links].forEach((link) =>
         link.addEventListener("click", (event) => {
-          const mceHref = link.dataset["mceHref"] || "";
+          const mceHref = link.dataset.mceHref || "";
           const isRelative =
             relative(
               mceHref.startsWith("/") ? mceHref : `/${mceHref}`,

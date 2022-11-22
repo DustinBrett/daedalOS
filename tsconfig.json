@@ -12,7 +12,6 @@
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
     "plugins": [{ "name": "next" }],
     "resolveJsonModule": true,
     "skipLibCheck": true,
