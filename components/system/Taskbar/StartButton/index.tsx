@@ -54,7 +54,7 @@ const StartButton: FC<StartButtonProps> = ({
             (link.href && preloadedLink?.href?.endsWith(link.href))
         )
       ) {
-        document.head.appendChild(link);
+        document.head.append(link);
       }
     });
 

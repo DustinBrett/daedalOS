@@ -150,7 +150,7 @@ const loadScript = (
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(script);
+    document.head.append(script);
   });
 
 const loadStyle = (href: string): Promise<Event> =>
@@ -174,7 +174,7 @@ const loadStyle = (href: string): Promise<Event> =>
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 
 export const loadFiles = async (
@@ -538,7 +538,7 @@ export const createOffscreenCanvas = (
   canvas.height = Math.floor(height * devicePixelRatio);
   canvas.width = Math.floor(width * devicePixelRatio);
 
-  containerElement.appendChild(canvas);
+  containerElement.append(canvas);
 
   return canvas.transferControlToOffscreen();
 };
@@ -613,7 +613,7 @@ export const preloadLibs = (libs: string[] = []): void => {
         break;
     }
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 };
 

@@ -27,7 +27,7 @@ const hexells = async (el?: HTMLElement | null): Promise<void> => {
 
   window.Hexells = new window.Demo(canvas);
 
-  el.appendChild(canvas);
+  el.append(canvas);
 };
 
 export default hexells;

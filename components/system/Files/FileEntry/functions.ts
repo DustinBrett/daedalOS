@@ -565,7 +565,7 @@ export const getInfoWithExtension = (
 
           containerElement.innerHTML = contents.toString();
 
-          document.body.appendChild(containerElement);
+          document.body.append(containerElement);
           const documentImage = await htmlToImage?.toPng(containerElement, {
             skipAutoScale: true,
           });

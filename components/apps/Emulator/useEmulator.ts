@@ -46,7 +46,7 @@ const useEmulator = (
 
           div.id = "emulator";
           [...containerRef.current.children].forEach((child) => child.remove());
-          containerRef.current.appendChild(div);
+          containerRef.current.append(div);
           loadRom();
         }
       }

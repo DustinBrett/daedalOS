@@ -140,8 +140,8 @@ const usePDF = (
             }
           );
 
-          li.appendChild(page);
-          ol.appendChild(li);
+          li.append(page);
+          ol.append(li);
 
           observer.observe(li);
         });

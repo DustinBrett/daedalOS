@@ -226,7 +226,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         },
         { once: true }
       );
-      document.body.appendChild(fileInput);
+      document.body.append(fileInput);
       fileInput.click();
     },
     [openTransferDialog]

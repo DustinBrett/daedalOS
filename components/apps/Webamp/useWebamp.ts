@@ -164,7 +164,7 @@ const useWebamp = (id: string): Webamp => {
             });
           }
 
-          containerElement.appendChild(webampElement);
+          containerElement.append(webampElement);
         }
       };
       const updatePosition = (): void => {
