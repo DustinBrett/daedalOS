@@ -26,7 +26,8 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, minimized } = process || {};
+  const { minimized } = process || {};
+  const linkedWindowRef = useRef(false);
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(
@@ -47,10 +48,11 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
 
     resizeHandles.forEach(reRouteFocus(windowContainer));
 
-    if (process && !componentWindow && windowContainer) {
+    if (!linkedWindowRef.current && process && windowContainer) {
+      linkedWindowRef.current = true;
       linkElement(id, "componentWindow", windowContainer);
     }
-  }, [componentWindow, id, linkElement, process]);
+  }, [id, linkElement, process]);
 
   return (
     <Rnd ref={rndRef} style={style} {...rndProps}>
