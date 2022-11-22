@@ -85,7 +85,14 @@
     ],
     "import/no-cycle": "off",
     "import/prefer-default-export": "off",
-    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "required": {
+          "some": ["id", "nesting"]
+        }
+      }
+    ],
     "no-console": ["error", { "allow": ["info", "error"] }],
     "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",
