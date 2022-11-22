@@ -37,92 +37,133 @@ const useFileKeyboardShortcuts = (
       if (ctrlKey) {
         const lKey = key.toLowerCase();
 
-        if (lKey === "a") {
-          haltEvent(event);
-          if (target instanceof HTMLOListElement) {
-            const [firstEntry] = target.querySelectorAll("button");
+        // eslint-disable-next-line default-case
+        switch (lKey) {
+          case "a": {
+            haltEvent(event);
+            if (target instanceof HTMLOListElement) {
+              const [firstEntry] = target.querySelectorAll("button");
 
-            firstEntry?.focus(PREVENT_SCROLL);
+              firstEntry?.focus(PREVENT_SCROLL);
+            }
+            Object.keys(files).forEach((fileName) => focusEntry(fileName));
+            break;
           }
-          Object.keys(files).forEach((fileName) => focusEntry(fileName));
-        } else if (lKey === "c") {
-          haltEvent(event);
-          copyEntries(focusedEntries.map((entry) => join(url, entry)));
-        } else if (lKey === "x") {
-          haltEvent(event);
-          moveEntries(focusedEntries.map((entry) => join(url, entry)));
-        } else if (lKey === "v") {
-          haltEvent(event);
-          pasteToFolder();
+          case "c": {
+            haltEvent(event);
+            copyEntries(focusedEntries.map((entry) => join(url, entry)));
+            break;
+          }
+          case "x": {
+            haltEvent(event);
+            moveEntries(focusedEntries.map((entry) => join(url, entry)));
+            break;
+          }
+          case "v": {
+            haltEvent(event);
+            pasteToFolder();
+            break;
+          }
         }
-      } else if (key === "F2" && file) {
-        haltEvent(event);
-        setRenaming(file);
-      } else if (key === "F5" && id) {
-        haltEvent(event);
-        updateFiles();
-      } else if (key === "Delete" && focusedEntries.length > 0) {
-        haltEvent(event);
-        focusedEntries.forEach(async (entry) => {
-          const path = join(url, entry);
+      } else {
+        switch (key) {
+          case "F2": {
+            if (file) {
+              haltEvent(event);
+              setRenaming(file);
+            }
+            break;
+          }
+          case "F5": {
+            if (id) {
+              haltEvent(event);
+              updateFiles();
+            }
+            break;
+          }
+          case "Delete": {
+            if (focusedEntries.length > 0) {
+              haltEvent(event);
+              focusedEntries.forEach(async (entry) => {
+                const path = join(url, entry);
 
-          await deletePath(path);
-          updateFiles(undefined, path);
-        });
-        blurEntry();
-      } else if (key === "Backspace" && id) {
-        haltEvent(event);
-        changeUrl(id, dirname(url));
-      } else if (key.startsWith("Arrow")) {
-        haltEvent(event);
-
-        if (!(target instanceof HTMLElement)) return;
-
-        let targetElement = target;
-
-        if (!(target instanceof HTMLButtonElement)) {
-          targetElement = target.querySelector("button") as HTMLButtonElement;
-          if (!targetElement) return;
-        }
-
-        const { x, y, height, width } = targetElement.getBoundingClientRect();
-        let movedElement =
-          key === "ArrowUp" || key === "ArrowDown"
-            ? document.elementFromPoint(
-                x,
-                y + (key === "ArrowUp" ? -height : height * 2)
-              )
-            : document.elementFromPoint(
-                x + (key === "ArrowLeft" ? -width : width * 2),
-                y
+                await deletePath(path);
+                updateFiles(undefined, path);
+              });
+              blurEntry();
+            }
+            break;
+          }
+          case "Backspace": {
+            if (id) {
+              haltEvent(event);
+              changeUrl(id, dirname(url));
+            }
+            break;
+          }
+          case "Enter": {
+            if (target instanceof HTMLButtonElement) {
+              haltEvent(event);
+              target.dispatchEvent(
+                new MouseEvent("dblclick", { bubbles: true })
               );
+            }
+            break;
+          }
+          default: {
+            if (key.startsWith("Arrow")) {
+              haltEvent(event);
 
-        if (movedElement instanceof HTMLOListElement) {
-          const nearestLi = targetElement.closest("li");
+              if (!(target instanceof HTMLElement)) return;
 
-          if (nearestLi instanceof HTMLLIElement) {
-            const olChildren = [...movedElement.children];
-            const liPosition = olChildren.indexOf(nearestLi);
+              let targetElement = target;
 
-            if (key === "ArrowUp" || key === "ArrowDown") {
-              movedElement =
-                olChildren[
-                  key === "ArrowUp"
-                    ? liPosition === 0
-                      ? olChildren.length - 1
-                      : liPosition - 1
-                    : liPosition === olChildren.length - 1
-                    ? 0
-                    : liPosition + 1
-                ].querySelector("button");
+              if (!(target instanceof HTMLButtonElement)) {
+                targetElement = target.querySelector(
+                  "button"
+                ) as HTMLButtonElement;
+                if (!targetElement) return;
+              }
+
+              const { x, y, height, width } =
+                targetElement.getBoundingClientRect();
+              let movedElement =
+                key === "ArrowUp" || key === "ArrowDown"
+                  ? document.elementFromPoint(
+                      x,
+                      y + (key === "ArrowUp" ? -height : height * 2)
+                    )
+                  : document.elementFromPoint(
+                      x + (key === "ArrowLeft" ? -width : width * 2),
+                      y
+                    );
+
+              if (movedElement instanceof HTMLOListElement) {
+                const nearestLi = targetElement.closest("li");
+
+                if (nearestLi instanceof HTMLLIElement) {
+                  const olChildren = [...movedElement.children];
+                  const liPosition = olChildren.indexOf(nearestLi);
+
+                  if (key === "ArrowUp" || key === "ArrowDown") {
+                    movedElement =
+                      olChildren[
+                        key === "ArrowUp"
+                          ? liPosition === 0
+                            ? olChildren.length - 1
+                            : liPosition - 1
+                          : liPosition === olChildren.length - 1
+                          ? 0
+                          : liPosition + 1
+                      ].querySelector("button");
+                  }
+                }
+              }
+
+              (movedElement?.closest("button") || targetElement)?.click();
             }
           }
         }
-
-        (movedElement?.closest("button") || targetElement)?.click();
-      } else if (target instanceof HTMLButtonElement && key === "Enter") {
-        haltEvent(event);
-        target.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
       }
     };
 };

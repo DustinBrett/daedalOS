@@ -147,7 +147,6 @@
     "unicorn/no-await-expression-member": "off",
     "unicorn/numeric-separators-style": "off",
     "unicorn/prefer-node-protocol": "off",
-    "unicorn/prefer-switch": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/switch-case-braces": "off",
     "unused-imports/no-unused-imports": "error",
