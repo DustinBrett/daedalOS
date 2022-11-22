@@ -1,5 +1,7 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import type { ClockSource, WallpaperFit } from "contexts/session/types";
 import type { AsyncZipOptions } from "fflate";
+import type { ThemeName } from "styles/themes";
 
 export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
   alpha: false,
@@ -15,7 +17,15 @@ export const IPFS_GATEWAY_URLS = [
 
 export const DEFAULT_LOCALE = "en";
 
-export const DEFAULT_THEME = "defaultTheme";
+export const DEFAULT_ASCENDING = true;
+
+export const DEFAULT_CLOCK_SOURCE: ClockSource = "local";
+
+export const DEFAULT_THEME: ThemeName = "defaultTheme";
+
+export const DEFAULT_WALLPAPER = "VANTA";
+
+export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
 
 export const THIN_SCROLLBAR_WIDTH = 13;
 
