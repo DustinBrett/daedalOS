@@ -156,7 +156,8 @@ const Clock: FC = () => {
     }
   }, [currentWorker, supportsOffscreenCanvas]);
 
-  if (!time) return <></>;
+  // eslint-disable-next-line unicorn/no-null
+  if (!time) return null;
 
   return (
     <StyledClock

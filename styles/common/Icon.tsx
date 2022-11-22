@@ -117,7 +117,8 @@ const Icon = forwardRef<
             failedUrls.length > 0 &&
             failedUrls.includes(srcSet.split(" ")[0])
           ) {
-            return <></>;
+            // eslint-disable-next-line unicorn/no-null
+            return null;
           }
 
           return (

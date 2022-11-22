@@ -114,7 +114,6 @@
     "react/hook-use-state": "error",
     "react-hooks/exhaustive-deps": "error",
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
-    "react/jsx-no-useless-fragment": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-sort-props": [
       "error",

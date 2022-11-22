@@ -81,9 +81,8 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
       <Navigation hideSearch={isMounted} id={id} />
       <FileManager id={id} url={url} view="icon" showStatusBar />
     </StyledFileExplorer>
-  ) : (
-    <></>
-  );
+  ) : // eslint-disable-next-line unicorn/no-null
+  null;
 };
 
 export default FileExplorer;
