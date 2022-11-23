@@ -22,12 +22,15 @@ export const RESIZING_ENABLED = {
   topRight: true,
 };
 
+export const MIN_WINDOW_HEIGHT = 30;
+export const MIN_WINDOW_WIDTH = 166;
+
 const rndDefaults = {
   cancel: ".cancel",
   dragHandleClassName: "handle",
   enableUserSelectHack: false,
-  minHeight: "30px",
-  minWidth: "166px",
+  minHeight: `${MIN_WINDOW_HEIGHT}px`,
+  minWidth: `${MIN_WINDOW_WIDTH}px`,
   resizeHandleStyles: {
     bottom: {
       bottom: "-3px",
