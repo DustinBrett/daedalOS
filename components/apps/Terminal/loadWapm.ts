@@ -1,11 +1,12 @@
 import { config } from "components/apps/Terminal/config";
 import type { LocalEcho } from "components/apps/Terminal/types";
-import WASI from "wasi-js";
-import bindings from "wasi-js/dist/bindings/browser";
+import type { WASIBindings } from "wasi-js";
 
 type WASIError = Error & {
   code: number;
 };
+
+let bindings: WASIBindings | null;
 
 const loadWapm = async (
   commandArgs: string[],
@@ -13,6 +14,7 @@ const loadWapm = async (
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
+  const { default: WASI } = await import("wasi-js");
 
   try {
     const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
@@ -30,7 +32,8 @@ const loadWapm = async (
       const wasmModule = await WebAssembly.compile(moduleResponse);
       const wasi = new WASI({
         args: commandArgs,
-        bindings,
+        bindings: (bindings ||= (await import("wasi-js/dist/bindings/browser"))
+          .default),
         env: {
           COLUMNS: config.cols?.toString(),
           LINES: config.rows?.toString(),
