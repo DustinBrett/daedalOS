@@ -45,7 +45,7 @@ const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 const Icon = forwardRef<
   HTMLImageElement,
   IconProps & React.ImgHTMLAttributes<HTMLImageElement>
->(function Icon(props, ref) {
+>((props, ref) => {
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
   const style = useMemo<React.CSSProperties>(

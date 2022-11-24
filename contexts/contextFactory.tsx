@@ -12,14 +12,12 @@ const contextFactory = <T,>(
 
   return {
     Consumer: Context.Consumer,
-    Provider: memo<FC>(function ProcessProvider({ children }) {
-      return (
-        <Context.Provider value={useContextState()}>
-          {children}
-          {ContextComponent}
-        </Context.Provider>
-      );
-    }),
+    Provider: memo<FC>(({ children }) => (
+      <Context.Provider value={useContextState()}>
+        {children}
+        {ContextComponent}
+      </Context.Provider>
+    )),
     useContext: () => useContext(Context),
   };
 };
