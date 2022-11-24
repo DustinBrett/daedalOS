@@ -46,10 +46,8 @@
     "@monaco-editor/react": "^4.4.6",
     "@panzoom/panzoom": "^4.5.1",
     "@prettier/plugin-xml": "^2.2.0",
-    "@wasmer/wasi": "1.1.2",
     "@wasmer/wasm-terminal": "^0.12.0",
     "@wasmer/wasm-transformer": "^0.12.0",
-    "@wasmer/wasmfs": "^0.12.0",
     "ani-cursor": "^0.0.5",
     "butterchurn-presets": "^3.0.0-beta.4",
     "fflate": "^0.7.4",
@@ -71,7 +69,8 @@
     "react-rnd": "^10.3.7",
     "resedit": "^1.6.0",
     "styled-components": "^5.3.6",
-    "utif": "https://github.com/photopea/UTIF.js"
+    "utif": "https://github.com/photopea/UTIF.js",
+    "wasi-js": "^1.7.2"
   },
   "devDependencies": {
     "7z-wasm": "^1.0.1",
