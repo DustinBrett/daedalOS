@@ -235,8 +235,11 @@ const useFolder = (
             const newSortOrder = Object.keys(sortedFiles);
 
             if (
-              !sortOrder ||
-              sortOrder?.some((entry, index) => newSortOrder[index] !== entry)
+              !skipSorting &&
+              (!sortOrder ||
+                sortOrder?.some(
+                  (entry, index) => newSortOrder[index] !== entry
+                ))
             ) {
               window.requestAnimationFrame(() =>
                 setSortOrder(directory, newSortOrder)

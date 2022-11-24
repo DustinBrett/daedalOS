@@ -270,7 +270,7 @@ const updateIconPositionsIfEmpty = (
 ): IconPositions => {
   if (!gridElement) return iconPositions;
 
-  const [fileOrder] = sortOrders[url];
+  const [fileOrder = []] = sortOrders[url] || [];
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
