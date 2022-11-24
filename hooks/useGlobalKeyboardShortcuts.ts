@@ -1,4 +1,5 @@
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import {
   haltEvent,
@@ -40,7 +41,9 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
 const metaCombos = new Set(["D", "E", "R"]);
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { minimize, open, processes } = useProcesses();
+  const { close, minimize, open, processes } = useProcesses();
+  const { foregroundId } = useSession();
+  const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
     ESCAPE: openStartMenu,
@@ -52,7 +55,7 @@ const useGlobalKeyboardShortcuts = (): void => {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
-      const { ctrlKey, key, shiftKey } = event;
+      const { altKey, ctrlKey, key, shiftKey } = event;
       const keyName = key?.toUpperCase();
 
       if (!keyName) return;
@@ -70,7 +73,10 @@ const useGlobalKeyboardShortcuts = (): void => {
         toggleFullScreen();
       } else if (document.fullscreenElement) {
         if (keyName === "META") metaDown = true;
-        else if (keyName === "ESCAPE") {
+        else if (altKey && altBindingsRef.current?.[keyName]) {
+          haltEvent(event);
+          altBindingsRef.current?.[keyName]?.();
+        } else if (keyName === "ESCAPE") {
           setTimeout(
             // eslint-disable-next-line unicorn/consistent-destructuring
             () => !event.defaultPrevented && document.exitFullscreen(),
@@ -133,6 +139,13 @@ const useGlobalKeyboardShortcuts = (): void => {
       document.removeEventListener("fullscreenchange", onFullScreen);
     };
   }, []);
+
+  useEffect(() => {
+    altBindingsRef.current = {
+      ...altBindingsRef.current,
+      F4: () => close(foregroundId),
+    };
+  }, [close, foregroundId]);
 
   useEffect(() => {
     shiftBindingsRef.current = {

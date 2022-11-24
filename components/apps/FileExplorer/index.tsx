@@ -6,12 +6,14 @@ import FileManager from "components/system/Files/FileManager";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   COMPRESSED_FOLDER_ICON,
   MOUNTED_FOLDER_ICON,
+  PREVENT_SCROLL,
   ROOT_NAME,
 } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -20,11 +22,18 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
     url: setProcessUrl,
   } = useProcesses();
-  const { closing, icon = "", url = "" } = process || {};
+  const { componentWindow, closing, icon = "", url = "" } = process || {};
   const { fs, rootFs } = useFileSystem();
   const [currentUrl, setCurrentUrl] = useState(url);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const directoryName = basename(url);
   const isMounted = Boolean(rootFs?.mntMap[url] && directoryName);
+  const onKeyDown = useCallback((event: KeyboardEvent): void => {
+    if (event.altKey && event.key.toUpperCase() === "D") {
+      haltEvent(event);
+      inputRef?.current?.focus(PREVENT_SCROLL);
+    }
+  }, []);
 
   useEffect(() => {
     if (url) {
@@ -76,9 +85,15 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     }
   }, [closing, id, process, setProcessIcon, setProcessUrl, url]);
 
+  useEffect(() => {
+    componentWindow?.addEventListener("keydown", onKeyDown);
+
+    return () => componentWindow?.removeEventListener("keydown", onKeyDown);
+  }, [componentWindow, onKeyDown]);
+
   return url ? (
     <StyledFileExplorer>
-      <Navigation hideSearch={isMounted} id={id} />
+      <Navigation ref={inputRef} hideSearch={isMounted} id={id} />
       <FileManager id={id} url={url} view="icon" showStatusBar />
     </StyledFileExplorer>
   ) : // eslint-disable-next-line unicorn/no-null
