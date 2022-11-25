@@ -24,7 +24,11 @@ import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DEFAULT_MAPPED_NAME, INVALID_FILE_CHARACTERS } from "utils/constants";
+import {
+  DEFAULT_MAPPED_NAME,
+  INVALID_FILE_CHARACTERS,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -86,7 +90,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     unlink,
     writeFile,
   } = asyncFs;
-  const [fsWatchers, setFsWatchers] = useState<FileSystemWatchers>(
+  const fsWatchersRef = useRef<FileSystemWatchers>(
     Object.create(null) as FileSystemWatchers
   );
   const [pasteList, setPasteList] = useState<FilePasteOperations>(
@@ -108,29 +112,71 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [updatePasteEntries]
   );
   const addFsWatcher = useCallback(
-    (folder: string, updateFiles: UpdateFiles): void =>
-      setFsWatchers((currentFsWatcher) => ({
-        ...currentFsWatcher,
-        [folder]: [...(currentFsWatcher[folder] || []), updateFiles],
-      })),
+    (folder: string, updateFiles: UpdateFiles): void => {
+      fsWatchersRef.current[folder] = [
+        ...(fsWatchersRef.current[folder] || []),
+        updateFiles,
+      ];
+    },
     []
   );
+  const unusedMountsCleanupTimerRef = useRef(0);
+  const cleanupUnusedMounts = useCallback(
+    (secondCheck?: boolean) => {
+      if (rootFs) {
+        const mountedPaths = Object.keys(rootFs.mntMap || {}).filter(
+          (mountedPath) => mountedPath !== "/"
+        );
+
+        if (mountedPaths.length === 0) return;
+
+        const watchedPaths = Object.keys(fsWatchersRef.current).filter(
+          (watchedPath) => fsWatchersRef.current[watchedPath].length > 0
+        );
+
+        mountedPaths.forEach((mountedPath) => {
+          if (
+            !watchedPaths.some((watchedPath) =>
+              watchedPath.startsWith(mountedPath)
+            ) &&
+            rootFs.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
+          ) {
+            if (secondCheck) {
+              rootFs.umount?.(mountedPath);
+            } else {
+              unusedMountsCleanupTimerRef.current = window.setTimeout(
+                () => cleanupUnusedMounts(true),
+                TRANSITIONS_IN_MILLISECONDS.WINDOW
+              );
+            }
+          }
+        });
+      }
+    },
+    [rootFs]
+  );
   const removeFsWatcher = useCallback(
-    (folder: string, updateFiles: UpdateFiles): void =>
-      setFsWatchers((currentFsWatcher) => ({
-        ...currentFsWatcher,
-        [folder]: (currentFsWatcher[folder] || []).filter(
-          (updateFilesInstance) => updateFilesInstance !== updateFiles
-        ),
-      })),
-    []
+    (folder: string, updateFiles: UpdateFiles): void => {
+      fsWatchersRef.current[folder] = (
+        fsWatchersRef.current[folder] || []
+      ).filter((updateFilesInstance) => updateFilesInstance !== updateFiles);
+
+      if (unusedMountsCleanupTimerRef.current) {
+        window.clearTimeout(unusedMountsCleanupTimerRef.current);
+      }
+      unusedMountsCleanupTimerRef.current = window.setTimeout(
+        cleanupUnusedMounts,
+        TRANSITIONS_IN_MILLISECONDS.WINDOW
+      );
+    },
+    [cleanupUnusedMounts]
   );
   const updateFolder = useCallback(
     (folder: string, newFile?: string, oldFile?: string): void =>
-      fsWatchers[folder]?.forEach((updateFiles) =>
+      fsWatchersRef.current[folder]?.forEach((updateFiles) =>
         updateFiles(newFile, oldFile)
       ),
-    [fsWatchers]
+    []
   );
   const mapFs = useCallback(
     async (
@@ -365,31 +411,6 @@ const useFileSystemContextState = (): FileSystemContextState => {
       restoreFsHandles();
     }
   }, [exists, mapFs, rootFs]);
-
-  useEffect(() => {
-    if (rootFs) {
-      const mountedPaths = Object.keys(rootFs.mntMap || {}).filter(
-        (mountedPath) => mountedPath !== "/"
-      );
-
-      if (mountedPaths.length === 0) return;
-
-      const watchedPaths = Object.keys(fsWatchers).filter(
-        (watchedPath) => fsWatchers[watchedPath].length > 0
-      );
-
-      mountedPaths.forEach((mountedPath) => {
-        if (
-          !watchedPaths.some((watchedPath) =>
-            watchedPath.startsWith(mountedPath)
-          ) &&
-          rootFs.mntMap[mountedPath]?.getName() !== "FileSystemAccess"
-        ) {
-          rootFs.umount?.(mountedPath);
-        }
-      });
-    }
-  }, [fsWatchers, rootFs]);
 
   return {
     addFile,
