@@ -546,6 +546,7 @@ const FileEntry: FC<FileEntryProps> = ({
           preloadShortcuts
           readOnly
           skipFsWatcher
+          skipSorting
         />
       )}
     </>
