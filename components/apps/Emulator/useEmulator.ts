@@ -5,7 +5,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
@@ -146,7 +146,7 @@ const useEmulator = (
     }
   }, [containerRef, loadRom, setLoading, url]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!loading) {
       const canvas = containerRef.current?.querySelector("canvas");
 

@@ -5,7 +5,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import type * as PdfjsLib from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
@@ -115,7 +115,7 @@ const usePDF = (
     });
   }, [libs, renderPages]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (pages.length > 0) {
       const ol = containerRef.current?.querySelector(
         "#pages"
