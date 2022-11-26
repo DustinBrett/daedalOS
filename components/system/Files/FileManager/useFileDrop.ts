@@ -8,7 +8,7 @@ import type { CompleteAction } from "components/system/Files/FileManager/useFold
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, join, relative } from "path";
+import { basename, extname, join, relative } from "path";
 import { useCallback } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent, updateIconPositions } from "utils/functions";
@@ -107,6 +107,23 @@ const useFileDrop = ({
             .map((file) => file.getAsFile()?.name || "")
             .filter(Boolean);
         }
+
+        fileEntries = fileEntries.map((fileEntry) => {
+          if (!iconPositions[`${directory}/${fileEntry}`]) return fileEntry;
+
+          let iteration = 0;
+          let entryIteration = "";
+
+          do {
+            iteration += 1;
+            entryIteration = `${directory}/${basename(
+              fileEntry,
+              extname(fileEntry)
+            )} (${iteration})${extname(fileEntry)}`;
+          } while (iconPositions[entryIteration]);
+
+          return basename(entryIteration);
+        });
 
         updateIconPositions(
           directory,
