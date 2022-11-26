@@ -3189,7 +3189,7 @@ function copyTempDouble(ptr) {
           // causing a new scroll, etc..
           return;
         }
-        var scrollPos = JSEvents.pageScrollPos();
+        var scrollPos = JSEvents?.pageScrollPos();
 
         var uiEvent = JSEvents.uiEvent;
         HEAP32[((uiEvent)>>2)]=e.detail;
