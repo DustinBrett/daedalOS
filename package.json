@@ -68,6 +68,7 @@
     "react-dom": "^18.2.0",
     "react-rnd": "^10.3.7",
     "resedit": "^1.6.0",
+    "rtf.js": "^3.0.9",
     "styled-components": "^5.3.6",
     "utif": "https://github.com/photopea/UTIF.js",
     "wasi-js": "^1.7.2"

@@ -118,6 +118,7 @@ const extensions: Record<string, Extension> = {
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
+  ".rtf": types.WysiwygHtmlDocument,
   ".spl": types.FutureSplash,
   ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,

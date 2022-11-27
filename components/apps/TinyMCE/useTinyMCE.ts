@@ -3,6 +3,7 @@ import {
   draggableEditor,
   setReadOnlyMode,
 } from "components/apps/TinyMCE/functions";
+import type { IRTFJS } from "components/apps/TinyMCE/types";
 import {
   getModifiedTime,
   getProcessByFileExtension,
@@ -81,7 +82,17 @@ const useTinyMCE = (
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
-      editor.setContent(fileContents.toString());
+      if (extname(url) === ".rtf") {
+        const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
+        const rtfDoc = new RTFJS.Document(fileContents);
+        const rtfHtml = await rtfDoc.render();
+
+        editor.setContent(
+          rtfHtml.map((domElement) => domElement.outerHTML).join("")
+        );
+      } else {
+        editor.setContent(fileContents.toString());
+      }
 
       linksToProcesses();
       updateTitle(url);
@@ -100,7 +111,13 @@ const useTinyMCE = (
         const saveUrl = url || DEFAULT_SAVE_PATH;
 
         try {
-          await writeFile(saveUrl, editor.getContent(), true);
+          await writeFile(
+            extname(saveUrl) === ".rtf"
+              ? saveUrl.replace(".rtf", ".whtml")
+              : saveUrl,
+            editor.getContent(),
+            true
+          );
           updateFolder(dirname(saveUrl), basename(saveUrl));
           updateTitle(saveUrl);
         } catch {
