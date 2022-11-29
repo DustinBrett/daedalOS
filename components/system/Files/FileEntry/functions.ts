@@ -189,7 +189,9 @@ export const getInfoWithoutExtension = (
     ): void =>
       callback({ getIcon, icon, pid: "FileExplorer", subIcons, url: path });
     const getFolderIcon = (): string => {
-      if (rootFs?.mntMap[path]) return MOUNTED_FOLDER_ICON;
+      if (rootFs?.mntMap[path]?.getName() === "FileSystemAccess") {
+        return MOUNTED_FOLDER_ICON;
+      }
       if (useNewFolderIcon) return NEW_FOLDER_ICON;
       return FOLDER_ICON;
     };
