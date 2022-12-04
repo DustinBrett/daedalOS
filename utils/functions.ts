@@ -382,14 +382,17 @@ export const updateIconPositions = (
         gridRowStart === gridDropPosition.gridRowStart
     )
   ) {
-    const targetUrl = join(
-      directory,
+    const targetFile =
       draggedEntries.find((entry) =>
         entry.startsWith(document.activeElement?.textContent || "")
-      ) || draggedEntries[0]
-    );
+      ) || draggedEntries[0];
+    const targetUrl = join(directory, targetFile);
+    const adjustDraggedEntries = [
+      targetFile,
+      ...draggedEntries.filter((entry) => entry !== targetFile),
+    ];
     const newIconPositions = Object.fromEntries(
-      draggedEntries
+      adjustDraggedEntries
         .map<[string, IconPosition]>((entryFile) => {
           const url = join(directory, entryFile);
 
@@ -402,7 +405,7 @@ export const updateIconPositions = (
                   targetUrl,
                   currentIconPositions,
                   gridDropPosition,
-                  draggedEntries,
+                  adjustDraggedEntries,
                   gridElement
                 ),
           ];
