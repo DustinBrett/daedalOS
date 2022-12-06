@@ -34,12 +34,12 @@ const directory: Processes = {
   },
   ClassiCube: {
     Component: dynamic(() => import("components/apps/ClassiCube")),
-    allowResizing: false,
     backgroundColor: "#201E20",
     defaultSize: {
       height: 420,
-      width: 700,
+      width: 640,
     },
+    hideMaximizeButton: true,
     icon: "/System/Icons/classicube.webp",
     libs: ["/Program Files/ClassiCube/ClassiCube.js"],
     title: "ClassiCube",

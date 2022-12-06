@@ -101295,6 +101295,9 @@ function _OnResize_2315($0,$1,$2) {
  HEAP8[1972901] = 1;
  return 1;
 }
+if (CCModule && !CCModule.OnResize) {
+  CCModule.OnResize = _OnResize_2315;
+}
 function _OnBeforeUnload($0,$1,$2) {
  $0 = $0|0;
  $1 = $1|0;

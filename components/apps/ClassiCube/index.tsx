@@ -2,6 +2,7 @@ import AppContainer from "components/apps/AppContainer";
 import StyledClassiCube from "components/apps/ClassiCube/StyledClassiCube";
 import useClassiCube from "components/apps/ClassiCube/useClassiCube";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { haltEvent } from "utils/functions";
 
 const ClassiCube: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
@@ -9,7 +10,7 @@ const ClassiCube: FC<ComponentProcessProps> = ({ id }) => (
     id={id}
     useHook={useClassiCube}
   >
-    <canvas />
+    <canvas onContextMenu={haltEvent} />
   </AppContainer>
 );
 

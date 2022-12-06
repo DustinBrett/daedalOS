@@ -1,15 +1,19 @@
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";
+import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { loadFiles, pxToNum } from "utils/functions";
 
 declare global {
   interface Window {
     CCModule: {
+      OnResize?: () => void;
       arguments: string[];
       canvas: HTMLCanvasElement;
       postRun: (() => void)[];
       print: () => void;
+      setCanvasSize?: (width: number, height: number) => void;
       setStatus: () => void;
     };
   }
@@ -22,7 +26,14 @@ const useClassiCube = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   const { processes: { [id]: process } = {} } = useProcesses();
+  const {
+    windowStates: { [id]: windowState },
+  } = useSession();
+  const { size } = windowState || {};
   const { libs } = process || {};
+  const {
+    sizes: { titleBar },
+  } = useTheme();
   const getCanvas = useCallback(
     () =>
       (containerRef.current as HTMLElement)?.querySelector(
@@ -30,6 +41,16 @@ const useClassiCube = (
       ) as HTMLCanvasElement,
     [containerRef]
   );
+
+  useEffect(() => {
+    if (size) {
+      window.CCModule.setCanvasSize?.(
+        pxToNum(size.width),
+        pxToNum(size.height) - titleBar.height
+      );
+      window.CCModule.OnResize?.();
+    }
+  }, [getCanvas, size, titleBar.height]);
 
   useEffect(() => {
     if (window.CCModule) return;
