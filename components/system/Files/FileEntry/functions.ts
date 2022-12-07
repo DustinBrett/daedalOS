@@ -44,7 +44,7 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 
-export type InternetShortcut = {
+type InternetShortcut = {
   BaseURL: string;
   Comment: string;
   IconFile: string;
