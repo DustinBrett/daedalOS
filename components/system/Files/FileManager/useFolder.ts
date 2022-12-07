@@ -1,9 +1,11 @@
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import {
+  createShortcut,
   filterSystemFiles,
   getIconByFileExtension,
   getShortcutInfo,
+  makeExternalShortcut,
 } from "components/system/Files/FileEntry/functions";
 import type { FileStat } from "components/system/Files/FileManager/functions";
 import {
@@ -22,7 +24,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import type { AsyncZipOptions, AsyncZippable } from "fflate";
-import ini from "ini";
 import { basename, dirname, extname, join, relative } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -367,22 +368,16 @@ const useFolder = (
 
       const baseName = basename(path);
       const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
-      const shortcutData = ini.encode(
-        {
-          BaseURL: process,
-          IconFile:
-            pathExtension &&
-            (process !== "FileExplorer" ||
-              MOUNTABLE_EXTENSIONS.has(pathExtension))
-              ? getIconByFileExtension(pathExtension)
-              : FOLDER_ICON,
-          URL: path,
-        },
-        {
-          section: "InternetShortcut",
-          whitespace: false,
-        }
-      );
+      const shortcutData = createShortcut({
+        BaseURL: process,
+        IconFile:
+          pathExtension &&
+          (process !== "FileExplorer" ||
+            MOUNTABLE_EXTENSIONS.has(pathExtension))
+            ? getIconByFileExtension(pathExtension)
+            : FOLDER_ICON,
+        URL: path,
+      });
 
       newPath(shortcutPath, Buffer.from(shortcutData));
     },
@@ -400,6 +395,15 @@ const useFolder = (
 
       return filePaths
         .filter(Boolean)
+        .map(
+          ([path, file]) =>
+            [
+              path,
+              extname(path) === SHORTCUT_EXTENSION
+                ? makeExternalShortcut(file)
+                : file,
+            ] as [string, Buffer]
+        )
         .reduce<AsyncZippable>(
           (accFiles, [path, file]) =>
             addEntryToZippable(accFiles, createZippable(path, file)),

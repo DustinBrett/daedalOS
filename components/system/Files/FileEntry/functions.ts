@@ -44,14 +44,12 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 
-type InternetShortcut = {
-  InternetShortcut: {
-    BaseURL: string;
-    Comment: string;
-    IconFile: string;
-    Type: string;
-    URL: string;
-  };
+export type InternetShortcut = {
+  BaseURL: string;
+  Comment: string;
+  IconFile: string;
+  Type: string;
+  URL: string;
 };
 
 type ShellClassInfo = {
@@ -131,13 +129,37 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
       Type: type = "",
       URL: url = "",
     },
-  } = (ini.parse(contents.toString()) || {}) as InternetShortcut;
+  } = (ini.parse(contents.toString()) || {}) as {
+    InternetShortcut: InternetShortcut;
+  };
 
   if (!icon && pid) {
     return { comment, icon: processDirectory[pid]?.icon, pid, type, url };
   }
 
   return { comment, icon, pid, type, url };
+};
+
+export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
+  ini
+    .encode(shortcut, {
+      section: "InternetShortcut",
+      whitespace: false,
+    })
+    .replace(/"/g, "");
+
+export const makeExternalShortcut = (contents: Buffer): Buffer => {
+  const { pid, url } = getShortcutInfo(contents);
+
+  return Buffer.from(
+    createShortcut({
+      URL: encodeURI(
+        `${window.location.origin}${pid ? `/?app=${pid}` : ""}${
+          url ? `${pid ? "&" : "/?"}url=${url}` : ""
+        }`
+      ),
+    })
+  );
 };
 
 const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
