@@ -705,13 +705,13 @@
     prop-types "^15.7.2"
 
 "@motionone/animation@^10.13.1":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.15.0.tgz#09c979c037ba7bf576068c3780befa1024823e11"
-  integrity sha512-FllQ9ogoATxEEiq7TFKuh2uPEvcw9658IYCpOTGnu53HYCrFQS61eKwsn7TqR4NEnTql2I+NGNipFqw3UZo1AA==
+  version "10.15.1"
+  resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.15.1.tgz#4a85596c31cbc5100ae8eb8b34c459fb0ccf6807"
+  integrity sha512-mZcJxLjHor+bhcPuIFErMDNyrdb2vJur8lSfMCsuCB4UyV8ILZLvK+t+pg56erv8ud9xQGK/1OGPt10agPrCyQ==
   dependencies:
-    "@motionone/easing" "^10.15.0"
-    "@motionone/types" "^10.15.0"
-    "@motionone/utils" "^10.15.0"
+    "@motionone/easing" "^10.15.1"
+    "@motionone/types" "^10.15.1"
+    "@motionone/utils" "^10.15.1"
     tslib "^2.3.1"
 
 "@motionone/dom@10.13.1":
@@ -726,34 +726,34 @@
     hey-listen "^1.0.8"
     tslib "^2.3.1"
 
-"@motionone/easing@^10.15.0":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@motionone/easing/-/easing-10.15.0.tgz#dfccd13900f2a688492127bfc0a9f59d29fead6d"
-  integrity sha512-VA1a0sa81euSeki2JgVl/t4MygeqfJn7GsMfewoGCln7gp/iZR12HbSo6RaWsHxPkUBRxSRUo+8zeuYRxv6oZQ==
+"@motionone/easing@^10.15.1":
+  version "10.15.1"
+  resolved "https://registry.yarnpkg.com/@motionone/easing/-/easing-10.15.1.tgz#95cf3adaef34da6deebb83940d8143ede3deb693"
+  integrity sha512-6hIHBSV+ZVehf9dcKZLT7p5PEKHGhDwky2k8RKkmOvUoYP3S+dXsKupyZpqx5apjd9f+php4vXk4LuS+ADsrWw==
   dependencies:
-    "@motionone/utils" "^10.15.0"
+    "@motionone/utils" "^10.15.1"
     tslib "^2.3.1"
 
 "@motionone/generators@^10.13.1":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@motionone/generators/-/generators-10.15.0.tgz#11a7992239df15509b4b06299eb0688697a208fe"
-  integrity sha512-bE4lEd/RIQ+DwlLC2IfF/FBOSPwjxV5AbwQuatMg/bWtndps66YMvX1NbvD0wzg+EIpPwi8i8YnYy7usdb8apg==
+  version "10.15.1"
+  resolved "https://registry.yarnpkg.com/@motionone/generators/-/generators-10.15.1.tgz#dc6abb11139d1bafe758a41c134d4c753a9b871c"
+  integrity sha512-67HLsvHJbw6cIbLA/o+gsm7h+6D4Sn7AUrB/GPxvujse1cGZ38F5H7DzoH7PhX+sjvtDnt2IhFYF2Zp1QTMKWQ==
   dependencies:
-    "@motionone/types" "^10.15.0"
-    "@motionone/utils" "^10.15.0"
+    "@motionone/types" "^10.15.1"
+    "@motionone/utils" "^10.15.1"
     tslib "^2.3.1"
 
-"@motionone/types@^10.13.0", "@motionone/types@^10.15.0":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@motionone/types/-/types-10.15.0.tgz#53110d0a5b063155f2697b5112bf167104a470dd"
-  integrity sha512-uNjSt2/Ud1Ld5TuZ98empFFgHNPysIcUQE3F/YuWxDQR/UO86sCqvnAHBkxUhpc2FVE6hb+3RpFmFxAUDwn11w==
+"@motionone/types@^10.13.0", "@motionone/types@^10.15.1":
+  version "10.15.1"
+  resolved "https://registry.yarnpkg.com/@motionone/types/-/types-10.15.1.tgz#89441b54285012795cbba8612cbaa0fa420db3eb"
+  integrity sha512-iIUd/EgUsRZGrvW0jqdst8st7zKTzS9EsKkP+6c6n4MPZoQHwiHuVtTQLD6Kp0bsBLhNzKIBlHXponn/SDT4hA==
 
-"@motionone/utils@^10.13.1", "@motionone/utils@^10.15.0":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@motionone/utils/-/utils-10.15.0.tgz#270735b13a95536eb017dc75a1f4f6d5dc25c17a"
-  integrity sha512-M1PCJ533xpjuEmhTVZYw+KPU6/lDZP9d2NpJDcMMUH/TYPnL3w9CYCTn+b4KKdSUJB2KO7t3xfspJsLqj35SRQ==
+"@motionone/utils@^10.13.1", "@motionone/utils@^10.15.1":
+  version "10.15.1"
+  resolved "https://registry.yarnpkg.com/@motionone/utils/-/utils-10.15.1.tgz#6b5f51bde75be88b5411e084310299050368a438"
+  integrity sha512-p0YncgU+iklvYr/Dq4NobTRdAPv9PveRDUXabPEeOjBLSO/1FNB2phNTZxOxpi1/GZwYpAoECEa0Wam+nsmhSw==
   dependencies:
-    "@motionone/types" "^10.15.0"
+    "@motionone/types" "^10.15.1"
     hey-listen "^1.0.8"
     tslib "^2.3.1"
 
@@ -6646,10 +6646,10 @@ trim-newlines@^3.0.0:
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-3.0.1.tgz#260a5d962d8b752425b32f3a7db0dcacd176c144"
   integrity sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==
 
-ts-unused-exports@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/ts-unused-exports/-/ts-unused-exports-8.0.3.tgz#b92836331b786e6d82c9cb6b54339a032a9d8a5b"
-  integrity sha512-x5oVuhCYo4j4nelcT1mmDFLs4T/aHRMGVln/Q142XPlTl3SBESlncZ4d95xVsZGEmdvpx53e5bMktrMzAdCCgw==
+ts-unused-exports@^8.0.4:
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/ts-unused-exports/-/ts-unused-exports-8.0.4.tgz#5336ec853383e268b8d1df978bdac82a3b844003"
+  integrity sha512-RI0m+I4VBI14Ov7dyVJH7Z30hVF/ZNTOHxRLMtSsA3LMigh/v9oi51TM3rCbIg+MaKvayPwqhSkrPAIEB8FnvA==
   dependencies:
     chalk "^4.0.0"
     tsconfig-paths "^3.9.0"
