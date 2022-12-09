@@ -31,7 +31,7 @@ export type ContextMenuCapture = {
   onTouchStart?: React.TouchEventHandler;
 };
 
-export type MenuContextState = {
+type MenuContextState = {
   contextMenu: (getItems: () => MenuItem[]) => ContextMenuCapture;
   menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;

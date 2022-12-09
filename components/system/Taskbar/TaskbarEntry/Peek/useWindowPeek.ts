@@ -37,13 +37,11 @@ const renderFrame = async (
 
   if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
     if (
-      !dataCanvas
+      dataCanvas
         .getContext("2d")
         ?.getImageData(0, 0, dataCanvas.width, dataCanvas.height)
         .data.some(Boolean)
     ) {
-      nextFrame();
-    } else {
       const previewImage = new Image();
       const dataUrl = dataCanvas.toDataURL();
 
@@ -57,6 +55,8 @@ const renderFrame = async (
         ONE_TIME_PASSIVE_EVENT
       );
       previewImage.src = dataUrl;
+    } else {
+      nextFrame();
     }
   }
 };

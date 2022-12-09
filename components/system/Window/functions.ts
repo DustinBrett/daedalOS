@@ -1,3 +1,7 @@
+import {
+  MIN_WINDOW_HEIGHT,
+  MIN_WINDOW_WIDTH,
+} from "components/system/Window/RndWindow/rndDefaults";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes } from "contexts/process/types";
 import type { WindowState } from "contexts/session/types";
@@ -75,13 +79,16 @@ export const isWindowOutsideBounds = (
   );
 };
 
-export const maxSize = (size: Size, lockAspectRatio: boolean): Size => {
+export const minMaxSize = (size: Size, lockAspectRatio: boolean): Size => {
   const desiredHeight = Number(size.height);
   const desiredWidth = Number(size.width);
   const [vh, vw] = [viewHeight(), viewWidth()];
   const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
-  const height = Math.min(desiredHeight, vhWithoutTaskbar);
-  const width = Math.min(desiredWidth, vw);
+  const height = Math.max(
+    MIN_WINDOW_HEIGHT,
+    Math.min(desiredHeight, vhWithoutTaskbar)
+  );
+  const width = Math.max(MIN_WINDOW_WIDTH, Math.min(desiredWidth, vw));
 
   if (!lockAspectRatio) return { height, width };
 

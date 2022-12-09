@@ -88,7 +88,11 @@ const useJSDOS = (
         const { height: currentHeight = 0, width: currentWidth = 0 } =
           canvas?.getBoundingClientRect() || {};
 
-        if (height !== currentHeight || width !== currentWidth) {
+        if (
+          height &&
+          width &&
+          (height !== currentHeight || width !== currentWidth)
+        ) {
           updateWindowSize(height, width);
         }
       });

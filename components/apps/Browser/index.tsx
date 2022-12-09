@@ -48,7 +48,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         setLoading(true);
         setSrcDoc("");
         if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
-        setIcon(id, processDirectory["Browser"].icon);
+        setIcon(id, processDirectory.Browser.icon);
 
         if (!isHtml) {
           const addressUrl = await getUrlOrSearch(addressInput);

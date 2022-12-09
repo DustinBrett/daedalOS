@@ -41,7 +41,7 @@ const useRuffle = (
 
   useEffect(() => {
     if (containerRef.current && player) {
-      containerRef.current.appendChild(player);
+      containerRef.current.append(player);
       setLoading(false);
     }
 

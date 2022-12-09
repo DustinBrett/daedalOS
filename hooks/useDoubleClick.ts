@@ -34,7 +34,7 @@ const useDoubleClick = (
           clearTimer();
         }
 
-        if (typeof timer.current === "undefined") {
+        if (timer.current === undefined) {
           event.target.removeEventListener(
             "pointermove",
             clearWhenPointerMoved
@@ -50,7 +50,7 @@ const useDoubleClick = (
         (!mouseEvent && doubleClickEvent)
       ) {
         runHandler();
-      } else if (typeof timer.current === "undefined") {
+      } else if (timer.current === undefined) {
         timer.current = window.setTimeout(
           clearTimer,
           TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK

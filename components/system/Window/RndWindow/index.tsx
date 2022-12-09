@@ -1,6 +1,6 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -26,7 +26,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, minimized } = process || {};
+  const { componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(
@@ -36,8 +36,22 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     }),
     [minimized, zIndex]
   );
+  const linkComponentWindow = useCallback(
+    (rndEntry: Rnd) => {
+      rndRef.current = rndEntry;
 
-  useLayoutEffect(() => {
+      const rndWindowElements =
+        rndEntry?.resizableElement?.current?.children || [];
+      const [windowContainer] = rndWindowElements as HTMLElement[];
+
+      if (process && !componentWindow && windowContainer) {
+        linkElement(id, "componentWindow", windowContainer);
+      }
+    },
+    [componentWindow, id, linkElement, process]
+  );
+
+  useEffect(() => {
     const { current: currentWindow } = rndRef;
     const rndWindowElements =
       currentWindow?.resizableElement?.current?.children || [];
@@ -46,14 +60,10 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     const resizeHandles = [...(resizeHandleContainer?.children || [])];
 
     resizeHandles.forEach(reRouteFocus(windowContainer));
-
-    if (process && !componentWindow && windowContainer) {
-      linkElement(id, "componentWindow", windowContainer);
-    }
-  }, [componentWindow, id, linkElement, process]);
+  }, [maximized]);
 
   return (
-    <Rnd ref={rndRef} style={style} {...rndProps}>
+    <Rnd ref={linkComponentWindow} style={style} {...rndProps}>
       {children}
     </Rnd>
   );

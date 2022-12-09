@@ -61,9 +61,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
                   true
                 );
                 walkedPath += `/${nextPart}`;
-              } else if (!walkedPath) {
-                walkedPath = pathPart;
-              } else {
+              } else if (walkedPath) {
                 window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
                   walkedPath,
                   pathPart,
@@ -71,6 +69,8 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
                   true,
                   true
                 );
+              } else {
+                walkedPath = pathPart;
               }
             }
           );

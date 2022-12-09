@@ -1,6 +1,5 @@
 import {
   BASE_CANVAS_SELECTOR,
-  BRIGHT_WALLPAPERS,
   cssFit,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS
@@ -72,23 +71,9 @@ const useWallpaper = (
       desktopRef.current.setAttribute("style", "");
       desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
-      const maybeReduceBrightness = (): void => {
-        if (BRIGHT_WALLPAPERS[wallpaperName]) {
-          desktopRef.current
-            ?.querySelector(BASE_CANVAS_SELECTOR)
-            ?.setAttribute(
-              "style",
-              `filter: brightness(${BRIGHT_WALLPAPERS[wallpaperName]})`
-            );
-        }
-      };
-
       window.WallpaperDestroy?.();
 
-      if (
-        typeof window.OffscreenCanvas !== "undefined" &&
-        wallpaperWorker.current
-      ) {
+      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
         const offscreen = createOffscreenCanvas(desktopRef.current);
 
         wallpaperWorker.current.postMessage(
@@ -100,13 +85,11 @@ const useWallpaper = (
         window.addEventListener("resize", resizeListener, { passive: true });
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
-          wallpaper?.(desktopRef.current, config)?.then(maybeReduceBrightness)
+          wallpaper?.(desktopRef.current, config)
         );
       } else {
         setWallpaper("VANTA");
       }
-
-      maybeReduceBrightness();
     }
   }, [
     desktopRef,
@@ -182,9 +165,7 @@ const useWallpaper = (
         ${cssFit[newWallpaperFit]}
       `;
 
-      if (!fallbackBackground) {
-        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
-      } else {
+      if (fallbackBackground) {
         fetch(wallpaperUrl, {
           ...HIGH_PRIORITY_REQUEST,
           mode: "no-cors",
@@ -203,6 +184,8 @@ const useWallpaper = (
               wallpaperStyle(fallbackBackground)
             )
           );
+      } else {
+        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
       }
     } else {
       loadWallpaper();

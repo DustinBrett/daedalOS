@@ -200,13 +200,12 @@ const useAsyncFs = (): AsyncFSModule => {
       const queueFsCall =
         (name: string) =>
         (...args: unknown[]) => {
-          if (!fsRef.current) mockFsCallQueue.push([name, args]);
-          else {
+          if (fsRef.current) {
             // eslint-disable-next-line @typescript-eslint/ban-types
             (fsRef.current[name as keyof FSModule] as unknown as Function)(
               ...args
             );
-          }
+          } else mockFsCallQueue.push([name, args]);
         };
 
       setFs({
@@ -221,7 +220,9 @@ const useAsyncFs = (): AsyncFSModule => {
         unlink: queueFsCall("unlink"),
         writeFile: queueFsCall("writeFile"),
       } as Partial<FSModule> as FSModule);
-    } else if (!("getRootFS" in fs)) {
+    } else if ("getRootFS" in fs) {
+      runQueuedFsCalls(fs);
+    } else {
       const setupFs = (writeToIndexedDB: boolean): void =>
         configure(FileSystemConfig(!writeToIndexedDB), () => {
           const loadedFs = BFSRequire("fs");
@@ -232,8 +233,6 @@ const useAsyncFs = (): AsyncFSModule => {
         });
 
       supportsIndexedDB().then(setupFs);
-    } else {
-      runQueuedFsCalls(fs);
     }
   }, [fs]);
 

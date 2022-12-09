@@ -66,9 +66,9 @@ const Run: FC<ComponentProcessProps> = () => {
 
       const addRunHistoryEntry = (): void =>
         setRunHistory((currentRunHistory) =>
-          currentRunHistory[0] !== resource
-            ? [resource, ...currentRunHistory]
-            : currentRunHistory
+          currentRunHistory[0] === resource
+            ? currentRunHistory
+            : [resource, ...currentRunHistory]
         );
       const [resourcePid, ...resourceUrl] = resource.split(" ");
       let resourcePath = resource;

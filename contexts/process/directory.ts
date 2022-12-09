@@ -32,6 +32,18 @@ const directory: Processes = {
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
   },
+  ClassiCube: {
+    Component: dynamic(() => import("components/apps/ClassiCube")),
+    backgroundColor: "#201E20",
+    defaultSize: {
+      height: 420,
+      width: 640,
+    },
+    hideMaximizeButton: true,
+    icon: "/System/Icons/classicube.webp",
+    libs: ["/Program Files/ClassiCube/ClassiCube.js"],
+    title: "ClassiCube",
+  },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
     backgroundColor: "#000",
@@ -240,7 +252,7 @@ const directory: Processes = {
       width: 400,
     },
     icon: "/System/Icons/copying.webp",
-    title: "Dialog",
+    title: "Copying...",
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),

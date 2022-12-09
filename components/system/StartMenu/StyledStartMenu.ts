@@ -88,7 +88,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     &:hover {
       ${ThinScrollBars};
       padding-right: ${({ $showScrolling }) =>
-        !$showScrolling ? `${HOVER_ADJUSTED_PADDING}px` : 0};
+        $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
 
       @supports (scrollbar-width: thin) {
         padding-right: 5px;

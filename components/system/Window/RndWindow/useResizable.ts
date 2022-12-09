@@ -1,4 +1,4 @@
-import { maxSize } from "components/system/Window/functions";
+import { minMaxSize } from "components/system/Window/functions";
 import useDefaultSize from "components/system/Window/RndWindow/useDefaultSize";
 import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import { useProcesses } from "contexts/process";
@@ -19,13 +19,13 @@ const useResizable = (id: string, autoSizing = false): Resizable => {
     processes: { [id]: { lockAspectRatio = false } = {} },
   } = useProcesses();
   const [size, setSize] = useState<Size>(() =>
-    maxSize(stateSize, lockAspectRatio)
+    minMaxSize(stateSize, lockAspectRatio)
   );
   const blockAutoSizeRef = useMinMaxRef(id);
 
   useLayoutEffect(() => {
     if (autoSizing && !blockAutoSizeRef.current) {
-      setSize(maxSize(stateSize, lockAspectRatio));
+      setSize(minMaxSize(stateSize, lockAspectRatio));
     }
   }, [autoSizing, blockAutoSizeRef, lockAspectRatio, stateSize]);
 

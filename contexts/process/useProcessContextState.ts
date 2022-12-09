@@ -17,7 +17,7 @@ import type {
 import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
-export type ProcessContextState = {
+type ProcessContextState = {
   argument: (
     id: string,
     name: keyof ProcessArguments,

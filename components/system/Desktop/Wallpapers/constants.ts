@@ -12,12 +12,6 @@ export const cssFit: Record<WallpaperFit, string> = {
   tile: "",
 };
 
-export const BRIGHT_WALLPAPERS: Record<string, `${number}%`> = {
-  COASTAL_LANDSCAPE: "80%",
-  HEXELLS: "80%",
-  MATRIX: "65%",
-};
-
 export const WALLPAPER_PATHS: Record<
   string,
   () => Promise<{ default: WallpaperFunc }>

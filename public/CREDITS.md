@@ -73,6 +73,8 @@ This project is greatly augmented by code from the open source community. Thank 
 - [jspaint](https://github.com/1j01/jspaint)
 - [Print.js](https://github.com/crabbly/print.js)
 - [Kiwi IRC](https://github.com/kiwiirc/kiwiirc)
+- [ClassiCube](https://github.com/UnknownShadow200/ClassiCube)
+- [rtf.js](https://github.com/tbluemel/rtf.js)
 
 ## Services
 

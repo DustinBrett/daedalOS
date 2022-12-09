@@ -8,7 +8,7 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UNKNOWN_ICON_PATH } from "utils/constants";
 import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
@@ -21,6 +21,7 @@ const MAX_ENTRIES = 10;
 
 const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const hasUsedSearch = useRef(false);
   const {
     open,
     processes: {
@@ -31,8 +32,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
 
-  useLayoutEffect(() => {
-    if (searchBarRef.current) {
+  useEffect(() => {
+    if (searchBarRef.current && hasUsedSearch.current) {
       const getItems = (): MenuItem[] =>
         [
           ...results.filter(({ ref: path }) => path.startsWith(url)),
@@ -75,7 +76,10 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         ref={searchBarRef}
         aria-label="Search box"
         enterKeyHint="search"
-        onChange={({ target }) => setSearchTerm(target.value)}
+        onChange={({ target }) => {
+          hasUsedSearch.current = true;
+          setSearchTerm(target.value);
+        }}
         onFocus={() => preloadLibs(SEARCH_LIBS)}
         placeholder="Search"
         spellCheck={false}

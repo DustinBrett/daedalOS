@@ -64,7 +64,7 @@ const useEruda = (
   }, [containerRef, libs, setLoading]);
 
   useEffect(() => {
-    if (window.eruda && url && !loading) {
+    if (window.eruda && url && !loading && !closing) {
       window.eruda.show(url);
     }
 

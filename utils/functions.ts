@@ -39,9 +39,9 @@ export const getDpi = (): number => {
 
 export const toggleFullScreen = async (): Promise<void> => {
   try {
-    await (!document.fullscreenElement
-      ? document.documentElement.requestFullscreen()
-      : document.exitFullscreen());
+    await (document.fullscreenElement
+      ? document.exitFullscreen()
+      : document.documentElement.requestFullscreen());
   } catch {
     // Ignore failure to enter fullscreen
   }
@@ -150,7 +150,7 @@ const loadScript = (
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(script);
+    document.head.append(script);
   });
 
 const loadStyle = (href: string): Promise<Event> =>
@@ -174,7 +174,7 @@ const loadStyle = (href: string): Promise<Event> =>
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 
 export const loadFiles = async (
@@ -270,7 +270,7 @@ const updateIconPositionsIfEmpty = (
 ): IconPositions => {
   if (!gridElement) return iconPositions;
 
-  const [fileOrder] = sortOrders[url];
+  const [fileOrder = []] = sortOrders[url] || [];
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
@@ -382,14 +382,17 @@ export const updateIconPositions = (
         gridRowStart === gridDropPosition.gridRowStart
     )
   ) {
-    const targetUrl = join(
-      directory,
+    const targetFile =
       draggedEntries.find((entry) =>
         entry.startsWith(document.activeElement?.textContent || "")
-      ) || draggedEntries[0]
-    );
+      ) || draggedEntries[0];
+    const targetUrl = join(directory, targetFile);
+    const adjustDraggedEntries = [
+      targetFile,
+      ...draggedEntries.filter((entry) => entry !== targetFile),
+    ];
     const newIconPositions = Object.fromEntries(
-      draggedEntries
+      adjustDraggedEntries
         .map<[string, IconPosition]>((entryFile) => {
           const url = join(directory, entryFile);
 
@@ -402,7 +405,7 @@ export const updateIconPositions = (
                   targetUrl,
                   currentIconPositions,
                   gridDropPosition,
-                  draggedEntries,
+                  adjustDraggedEntries,
                   gridElement
                 ),
           ];
@@ -538,7 +541,7 @@ export const createOffscreenCanvas = (
   canvas.height = Math.floor(height * devicePixelRatio);
   canvas.width = Math.floor(width * devicePixelRatio);
 
-  containerElement.appendChild(canvas);
+  containerElement.append(canvas);
 
   return canvas.transferControlToOffscreen();
 };
@@ -600,10 +603,9 @@ export const preloadLibs = (libs: string[] = []): void => {
         link.as = "style";
         break;
       case ".htm":
-      case ".html": {
+      case ".html":
         link.rel = "prerender";
         break;
-      }
       case ".url":
         link.as = "fetch";
         link.crossOrigin = "anonymous";
@@ -613,7 +615,7 @@ export const preloadLibs = (libs: string[] = []): void => {
         break;
     }
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 };
 

@@ -65,9 +65,8 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
         <CloseIcon />
       </Button>
     </StyledPeekWindow>
-  ) : (
-    <></>
-  );
+  ) : // eslint-disable-next-line unicorn/no-null
+  null;
 };
 
 export default PeekWindow;

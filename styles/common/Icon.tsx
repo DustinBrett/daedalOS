@@ -45,7 +45,7 @@ const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 const Icon = forwardRef<
   HTMLImageElement,
   IconProps & React.ImgHTMLAttributes<HTMLImageElement>
->(function Icon(props, ref) {
+>((props, ref) => {
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
   const style = useMemo<React.CSSProperties>(
@@ -98,7 +98,7 @@ const Icon = forwardRef<
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
       srcSet={
-        !isStaticIcon ? imageSrcs(src, imgSize, ".png", failedUrls) : undefined
+        isStaticIcon ? undefined : imageSrcs(src, imgSize, ".png", failedUrls)
       }
       style={style}
       {...componentProps}
@@ -117,7 +117,8 @@ const Icon = forwardRef<
             failedUrls.length > 0 &&
             failedUrls.includes(srcSet.split(" ")[0])
           ) {
-            return <></>;
+            // eslint-disable-next-line unicorn/no-null
+            return null;
           }
 
           return (

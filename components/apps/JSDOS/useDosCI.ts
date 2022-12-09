@@ -66,7 +66,7 @@ const useDosCI = (
       const savePath = join(SAVE_PATH, saveName);
 
       if (
-        typeof dosCI[bundleUrl] !== "undefined" &&
+        dosCI[bundleUrl] !== undefined &&
         (await writeFile(
           savePath,
           Buffer.from(await (dosCI[bundleUrl] as CommandInterface).persist()),
@@ -103,9 +103,9 @@ const useDosCI = (
     const extension = extname(url).toLowerCase();
     const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =
-      extension !== ".exe"
-        ? urlBuffer
-        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
+      extension === ".exe"
+        ? Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }))
+        : urlBuffer;
     const bundleURL = bufferToUrl(
       extension === ".jsdos"
         ? zipBuffer

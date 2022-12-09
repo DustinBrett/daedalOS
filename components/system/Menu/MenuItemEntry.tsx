@@ -12,7 +12,7 @@ import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type MenuItemEntryProps = MenuItem & {
@@ -82,7 +82,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     const touchListener = (event: TouchEvent): void => {
       if (!isSubMenu && menu && !showSubMenu) {
         haltEvent(event);
-        menuEntryElement?.focus();
+        menuEntryElement?.focus(PREVENT_SCROLL);
       }
       setShowSubMenu(true);
     };

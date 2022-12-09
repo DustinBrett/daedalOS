@@ -2,7 +2,6 @@ import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
-  ClockSource,
   IconPositions,
   SessionContextState,
   SessionData,
@@ -12,8 +11,14 @@ import type {
 } from "contexts/session/types";
 import defaultSession from "public/session.json";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ThemeName } from "styles/themes";
-import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
+import {
+  DEFAULT_ASCENDING,
+  DEFAULT_CLOCK_SOURCE,
+  DEFAULT_THEME,
+  DEFAULT_WALLPAPER,
+  DEFAULT_WALLPAPER_FIT,
+  SESSION_FILE,
+} from "utils/constants";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
@@ -22,19 +27,19 @@ const useSessionContextState = (): SessionContextState => {
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
-  const [themeName, setThemeName] = useState<ThemeName>(DEFAULT_THEME);
-  const [clockSource, setClockSource] = useState<ClockSource>("local");
-  const [windowStates, setWindowStates] = useState<WindowStates>(
+  const [themeName, setThemeName] = useState(DEFAULT_THEME);
+  const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
+  const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
   );
-  const [sortOrders, setSortOrders] = useState<SortOrders>(
+  const [sortOrders, setSortOrders] = useState(
     Object.create(null) as SortOrders
   );
-  const [iconPositions, setIconPositions] = useState<IconPositions>(
+  const [iconPositions, setIconPositions] = useState(
     Object.create(null) as IconPositions
   );
-  const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
-  const [wallpaperImage, setWallpaperImage] = useState("VANTA");
+  const [wallpaperFit, setWallpaperFit] = useState(DEFAULT_WALLPAPER_FIT);
+  const [wallpaperImage, setWallpaperImage] = useState(DEFAULT_WALLPAPER);
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const prependToStack = useCallback(
     (id: string) =>
@@ -78,7 +83,7 @@ const useSessionContextState = (): SessionContextState => {
           [directory]: [
             newOrder,
             sortBy ?? currentSortBy,
-            ascending ?? currentAscending,
+            ascending || currentAscending || DEFAULT_ASCENDING,
           ],
         };
       }),

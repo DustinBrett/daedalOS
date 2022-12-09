@@ -43,8 +43,8 @@ const useFileInfo = (
       if (
         !extension ||
         (isDirectory &&
-          (!MOUNTABLE_EXTENSIONS.has(extension) ||
-            rootFs.mntMap[path]?.getName() !== "FileSystemAccess"))
+          !MOUNTABLE_EXTENSIONS.has(extension) &&
+          rootFs.mntMap[path]?.getName() !== "FileSystemAccess")
       ) {
         getInfoWithoutExtension(
           fs,

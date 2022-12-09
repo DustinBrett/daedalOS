@@ -5,3 +5,11 @@ declare global {
     tinymce: TinyMCE;
   }
 }
+
+export interface IRTFJS {
+  RTFJS: {
+    Document: new (documentData: Buffer) => {
+      render: () => Promise<HTMLElement[]>;
+    };
+  };
+}

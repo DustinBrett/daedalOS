@@ -49,7 +49,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   };
   const startMenuTransition = useStartMenuTransition();
   const { height } =
-    (startMenuTransition.variants?.["active"] as StyleVariant) ?? {};
+    (startMenuTransition.variants?.active as StyleVariant) ?? {};
 
   useLayoutEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
@@ -72,6 +72,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         loadIconsImmediately
         preloadShortcuts
         readOnly
+        skipFsWatcher
         skipSorting
         useNewFolderIcon
       />

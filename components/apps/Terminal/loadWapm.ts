@@ -1,15 +1,12 @@
 import { config } from "components/apps/Terminal/config";
 import type { LocalEcho } from "components/apps/Terminal/types";
-import type { WASI as IWASI } from "node_modules/@wasmer/wasi/dist/pkg/wasmer_wasi_js";
+import type { WASIBindings } from "wasi-js";
 
 type WASIError = Error & {
   code: number;
 };
 
-interface IWasmerWasi {
-  WASI: typeof IWASI;
-  init: () => Promise<WebAssembly.Exports>;
-}
+let bindings: WASIBindings | null;
 
 const loadWapm = async (
   commandArgs: string[],
@@ -17,11 +14,9 @@ const loadWapm = async (
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
-  const { init, WASI } = (await import("@wasmer/wasi")) as IWasmerWasi;
+  const { default: WASI } = await import("wasi-js");
 
   try {
-    await init();
-
     const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
 
     if (
@@ -37,10 +32,14 @@ const loadWapm = async (
       const wasmModule = await WebAssembly.compile(moduleResponse);
       const wasi = new WASI({
         args: commandArgs,
+        bindings: (bindings ||= (await import("wasi-js/dist/bindings/browser"))
+          .default),
         env: {
           COLUMNS: config.cols?.toString(),
           LINES: config.rows?.toString(),
         },
+        sendStderr: (buffer: Uint8Array) => localEcho?.print(buffer.toString()),
+        sendStdout: (buffer: Uint8Array) => localEcho?.print(buffer.toString()),
       });
       const instance = await WebAssembly.instantiate(
         wasmModule,
@@ -48,7 +47,6 @@ const loadWapm = async (
       );
 
       wasi.start(instance);
-      localEcho?.print(wasi.getStdoutString());
     }
   } catch (error) {
     const { message } = error as WASIError;

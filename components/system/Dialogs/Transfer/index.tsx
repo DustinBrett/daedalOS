@@ -8,7 +8,7 @@ import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const MAX_TITLE_LENGTH = 37;
 
-const Dialog: FC<ComponentProcessProps> = ({ id }) => {
+const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   const {
     argument,
     closeWithTransition,
@@ -60,7 +60,6 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
     if (!processing.current) {
       if (fileReaders.length > 0) {
         processing.current = true;
-        title(id, "Copying...");
         processReader(fileReaders);
       } else {
         closeWithTransition(id);
@@ -105,4 +104,4 @@ const Dialog: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Dialog;
+export default Transfer;

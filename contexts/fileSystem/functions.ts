@@ -30,6 +30,7 @@ const KEYVAL_STORE_NAME = "keyval";
 const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
 const KNOWN_IDB_DBS = [
+  "/classicube",
   "/data/saves",
   "ejs-bios",
   "ejs-roms",

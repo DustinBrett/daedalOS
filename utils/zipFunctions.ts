@@ -24,12 +24,13 @@ export const addEntryToZippable = (
   const [[key, value]] = Object.entries(newZippable);
 
   // eslint-disable-next-line no-param-reassign
-  oldZippable[key] = !(key in oldZippable)
-    ? value
-    : addEntryToZippable(
-        oldZippable[key] as AsyncZippable,
-        newZippable[key] as AsyncZippable
-      );
+  oldZippable[key] =
+    key in oldZippable
+      ? addEntryToZippable(
+          oldZippable[key] as AsyncZippable,
+          newZippable[key] as AsyncZippable
+        )
+      : value;
 
   return oldZippable;
 };
