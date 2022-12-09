@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import {
   COMPRESSED_FOLDER_ICON,
   MOUNTED_FOLDER_ICON,
-  ROOT_NAME,
+  ROOT_NAME
 } from "utils/constants";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
@@ -72,7 +72,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     if (process && !closing && !url) {
       setProcessUrl(id, "/");
-      setProcessIcon(id, "/System/Icons/pc.webp");
+      setProcessIcon(id, "/System/Icons/desktop-puffer.webp");
     }
   }, [closing, id, process, setProcessIcon, setProcessUrl, url]);
 
