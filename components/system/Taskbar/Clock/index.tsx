@@ -164,6 +164,7 @@ const Clock: FC = () => {
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
       aria-label="Clock"
       onClick={easterEggOnClick}
+      role="timer"
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
