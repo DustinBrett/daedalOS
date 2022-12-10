@@ -79,15 +79,18 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
 
   useEffect(() => {
     const menuEntryElement = entryRef.current;
+    const showBaseMenu = !isSubMenu && menu && !showSubMenu;
     const touchListener = (event: TouchEvent): void => {
-      if (!isSubMenu && menu && !showSubMenu) {
+      if (showBaseMenu) {
         haltEvent(event);
         menuEntryElement?.focus(PREVENT_SCROLL);
       }
       setShowSubMenu(true);
     };
 
-    menuEntryElement?.addEventListener("touchstart", touchListener);
+    menuEntryElement?.addEventListener("touchstart", touchListener, {
+      passive: !showBaseMenu,
+    });
 
     return () =>
       menuEntryElement?.removeEventListener("touchstart", touchListener);
