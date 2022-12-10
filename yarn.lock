@@ -1073,10 +1073,10 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@^18.11.12":
-  version "18.11.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.12.tgz#89e7f8aa8c88abf432f9bd594888144d7dba10aa"
-  integrity sha512-FgD3NtTAKvyMmD44T07zz2fEf+OKwutgBCEVM8GcvMGVGaDktiLNTDvPwC/LUe3PinMW+X6CuLOF2Ui1mAlSXg==
+"@types/node@*", "@types/node@^18.11.13":
+  version "18.11.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.13.tgz#dff34f226ec1ac0432ae3b136ec5552bd3b9c0fe"
+  integrity sha512-IASpMGVcWpUsx5xBOrxMj7Bl8lqfuTY7FKAnPmu5cHkfQVWF8GulWS1jbRqA934qZL35xh5xN/+Xe/i26Bod4w==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -2485,10 +2485,10 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-eruda@^2.7.3:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/eruda/-/eruda-2.7.3.tgz#f148c352c5510796e5c7d07a4037d0564b6e6a58"
-  integrity sha512-gPLqCqaYHboroywh90zppaW/kdxjRb34CJKDFH3ZyVw8EH59c7thqbyQ3TpFeTKSNMj4QnMJPVhbEWKtmjdVlQ==
+eruda@^2.7.4:
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/eruda/-/eruda-2.7.4.tgz#2bc37e24702730fd05ce1b3d0d93404e33fb18be"
+  integrity sha512-kW019ElLj/C4U+Sl3n5C38XJUCxfjg8UmaSYw/S6JV0CS6F/XxqsRFsXCgzgVs504fANuJ6C0JkxKO01UQlBrg==
 
 es-abstract@^1.19.0, es-abstract@^1.20.4:
   version "1.20.5"
@@ -5764,10 +5764,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==
 
-resedit@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/resedit/-/resedit-1.6.0.tgz#a2da6e864b151f72575685b97fe437e482594b89"
-  integrity sha512-QEZe3MOyHIN3qULSLuZBEcxSqv93yjRXeDMJOYAH+ZFw89wj31slY9y6rp8Ul9A7JgT98q7/5CTvYEpG33B/5w==
+resedit@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/resedit/-/resedit-1.6.1.tgz#bce8e608ee3997beb584488ae621e78a18b5d274"
+  integrity sha512-aS+1B01OtDgLHBeiR8pfJWt02LBfkceA1So1ODOaD651zcXP05yCsCe6YtgS8uSD4jnCXtptSjaRM7nd/gohtQ==
   dependencies:
     pe-library "^0.3.0"
 
@@ -6654,10 +6654,10 @@ trim-newlines@^3.0.0:
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-3.0.1.tgz#260a5d962d8b752425b32f3a7db0dcacd176c144"
   integrity sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==
 
-ts-unused-exports@^8.0.4:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/ts-unused-exports/-/ts-unused-exports-8.0.4.tgz#5336ec853383e268b8d1df978bdac82a3b844003"
-  integrity sha512-RI0m+I4VBI14Ov7dyVJH7Z30hVF/ZNTOHxRLMtSsA3LMigh/v9oi51TM3rCbIg+MaKvayPwqhSkrPAIEB8FnvA==
+ts-unused-exports@^8.0.5:
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/ts-unused-exports/-/ts-unused-exports-8.0.5.tgz#43b1ac25822ec9445b5fc3e57862c0d1f23471cb"
+  integrity sha512-ewEHxTtQsYQFQCI12CnMx8D0xxn1/Uui1Wr5jbiX4me+4LlSiOGvt4mGz0hxtIC3eElVaLrKEPbeT3TPrm4JvA==
   dependencies:
     chalk "^4.0.0"
     tsconfig-paths "^3.9.0"
