@@ -2,6 +2,7 @@ import {
   HIGH_PRIORITY_REQUEST,
   IPFS_GATEWAY_URLS,
   MILLISECONDS_IN_SECOND,
+  ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
 
 let IPFS_GATEWAY_URL = "";
@@ -14,14 +15,22 @@ const isIpfsGatewayAvailable = (gatewayUrl: string): Promise<boolean> =>
     );
     const img = new Image();
 
-    img.addEventListener("load", () => {
-      window.clearTimeout(timeoutId);
-      resolve(true);
-    });
-    img.addEventListener("error", () => {
-      window.clearTimeout(timeoutId);
-      resolve(false);
-    });
+    img.addEventListener(
+      "load",
+      () => {
+        window.clearTimeout(timeoutId);
+        resolve(true);
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
+    img.addEventListener(
+      "error",
+      () => {
+        window.clearTimeout(timeoutId);
+        resolve(false);
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
 
     img.src = `${gatewayUrl.replace(
       "<CID>",
