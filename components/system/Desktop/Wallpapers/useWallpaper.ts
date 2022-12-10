@@ -142,7 +142,7 @@ const useWallpaper = (
             )}`;
 
             wallpaperUrl = `${ytBaseUrl}/maxresdefault.jpg`;
-            fallbackBackground = `${ytBaseUrl}/sddefault.jpg`;
+            fallbackBackground = `${ytBaseUrl}/hqdefault.jpg`;
           } else if (hdurl && url && hdurl !== url) {
             fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
           }
