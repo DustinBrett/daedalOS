@@ -314,7 +314,7 @@ const useCommandInterpreter = (
                     .padStart(8, "0");
                   const isDirectory = fileStats.isDirectory();
 
-                  totalSize += fileStats.size;
+                  totalSize += isDirectory ? 0 : fileStats.size;
                   if (isDirectory) {
                     directoryCount += 1;
                   } else {
