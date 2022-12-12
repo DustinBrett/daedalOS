@@ -9,6 +9,7 @@ declare global {
     ioq3?: {
       callMain: (args: string[]) => void;
       elementPointerLock: boolean;
+      exit: () => void;
       exitHandler: (error: Error | null) => void;
       setCanvasSize: (width: number, height: number) => void;
       viewport: HTMLDivElement | null;
@@ -51,6 +52,17 @@ const useQuake3 = (
       pxToNum(size?.height) - titleBar.height
     );
   }, [setLoading, size, titleBar.height]);
+
+  useEffect(
+    () => () => {
+      try {
+        window.ioq3?.exit();
+      } catch {
+        // Ignore error on exit
+      }
+    },
+    []
+  );
 };
 
 export default useQuake3;
