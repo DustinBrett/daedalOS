@@ -6,6 +6,11 @@ import { loadFiles, pxToNum } from "utils/functions";
 
 declare global {
   interface Window {
+    AL?: {
+      contexts: {
+        ctx: AudioContext;
+      }[];
+    };
     ioq3?: {
       callMain: (args: string[]) => void;
       elementPointerLock: boolean;
@@ -60,6 +65,8 @@ const useQuake3 = (
       } catch {
         // Ignore error on exit
       }
+
+      window.AL?.contexts.forEach(({ ctx }) => ctx.close());
     },
     []
   );
