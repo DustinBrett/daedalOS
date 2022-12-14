@@ -39,7 +39,6 @@ import {
   blobToBase64,
   bufferToUrl,
   getGifJs,
-  getHtmlToImage,
   imageToBufferUrl,
   isYouTubeUrl,
 } from "utils/functions";
@@ -451,7 +450,7 @@ export const getInfoWithExtension = (
       getInfoByFileExtension("/System/Icons/tinymce.webp", (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
-            const htmlToImage = await getHtmlToImage();
+            const htmlToImage = await import("html-to-image");
             const containerElement = document.createElement("div");
 
             containerElement.style.height = "600px";

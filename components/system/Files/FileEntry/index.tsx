@@ -53,7 +53,6 @@ import {
 import {
   bufferToUrl,
   getFormattedSize,
-  getHtmlToImage,
   isCanvasEmpty,
   isYouTubeUrl,
 } from "utils/functions";
@@ -307,7 +306,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 ) {
                   generatedIcon = iconRef.current.currentSrc;
                 } else {
-                  const htmlToImage = await getHtmlToImage();
+                  const htmlToImage = await import("html-to-image");
                   const iconCanvas = await htmlToImage?.toCanvas(
                     iconRef.current,
                     {
