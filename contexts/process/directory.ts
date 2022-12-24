@@ -64,10 +64,7 @@ const directory: Processes = {
       width: 545,
     },
     icon: "/System/Icons/eruda.webp",
-    libs: [
-      "/Program Files/Eruda/eruda.js",
-      "/Program Files/Eruda/eruda-dom.js",
-    ],
+    libs: ["/Program Files/Eruda/eruda.js"],
     singleton: true,
     title: "DevTools",
   },
