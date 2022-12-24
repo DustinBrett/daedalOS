@@ -8,19 +8,15 @@ import type {
 import { loadFiles } from "utils/functions";
 
 const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
-  const baseLib = `/Program Files/ffmpeg/${
-    window.crossOriginIsolated ? "SharedArrayBuffer/" : ""
-  }`;
-
   if (!window.FFmpeg) {
-    await loadFiles([`${baseLib}/ffmpeg.min.js`]);
+    await loadFiles(["/Program Files/ffmpeg/ffmpeg.min.js"]);
   }
 
   if (window.FFmpeg) {
     window.FFmpegInstance?.exit();
     window.FFmpegInstance = window.FFmpeg.createFFmpeg({
-      corePath: `${baseLib}/ffmpeg-core.js`,
-      log: false,
+      corePath: `${window.location.origin}/Program Files/ffmpeg/ffmpeg-core.js`,
+      log: true,
       logger: ({ message }: IFFmpegLog) => {
         localEcho?.println(message);
         console.info(message);
