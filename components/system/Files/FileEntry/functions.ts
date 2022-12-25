@@ -446,6 +446,20 @@ export const getInfoWithExtension = (
     case ".sav":
       getInfoByFileExtension(UNKNOWN_ICON_PATH, true);
       break;
+    case ".qoi":
+      getInfoByFileExtension(PHOTO_ICON, (signal) =>
+        fs.readFile(path, async (error, contents = Buffer.from("")) => {
+          if (!error && contents.length > 0 && !signal.aborted) {
+            const { decodeQoi } = await import("components/apps/Photos/qoi");
+            const icon = decodeQoi(contents);
+
+            if (icon && !signal.aborted) {
+              getInfoByFileExtension(imageToBufferUrl(path, icon));
+            }
+          }
+        })
+      );
+      break;
     case ".whtml":
       getInfoByFileExtension("/System/Icons/tinymce.webp", (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
