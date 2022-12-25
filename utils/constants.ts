@@ -84,6 +84,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".pjpeg",
   ".png",
   ".svg",
+  ".qoi",
   ".webp",
   ".xbm",
 ]);

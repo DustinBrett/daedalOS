@@ -43,6 +43,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Hexells](https://github.com/znah/hexells)
 - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 - [Matrix](https://github.com/Rezmason/matrix)
+- [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
 
 ## App Libraries
 

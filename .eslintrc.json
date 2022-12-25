@@ -143,6 +143,7 @@
         }
       }
     ],
+    "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
     "unicorn/no-await-expression-member": "off",
