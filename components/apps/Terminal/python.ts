@@ -15,6 +15,7 @@ declare global {
 }
 
 const config = {
+  fullStdLib: false,
   indexURL: "/Program Files/Pyodide/",
 };
 
