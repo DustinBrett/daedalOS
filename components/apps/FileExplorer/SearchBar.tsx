@@ -1,5 +1,6 @@
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
+import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
 import {
   getIconByFileExtension,
   getProcessByFileExtension,
@@ -9,7 +10,6 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useRef, useState } from "react";
-import { UNKNOWN_ICON_PATH } from "utils/constants";
 import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
@@ -42,7 +42,10 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           .slice(0, MAX_ENTRIES - 1)
           .map(({ ref: path }) => ({
             action: () => {
-              open(getProcessByFileExtension(extname(path)), { url: path });
+              open(
+                getProcessByFileExtension(extname(path)) || TEXT_EDITORS[0],
+                { url: path }
+              );
               setSearchTerm("");
 
               if (searchBarRef.current) {
@@ -52,8 +55,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
             },
             icon: getIconByFileExtension(extname(path)),
             label: basename(path),
-          }))
-          .filter(({ icon }) => icon !== UNKNOWN_ICON_PATH);
+          }));
 
       contextMenu?.(getItems).onContextMenuCapture(
         undefined,
