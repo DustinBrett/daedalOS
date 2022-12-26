@@ -16,6 +16,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -36,6 +37,7 @@ const useV86 = (
   const {
     processes: { [id]: process },
   } = useProcesses();
+  const { foregroundId } = useSession();
   const { closing, libs = [] } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const shutdown = useRef(false);
@@ -177,6 +179,14 @@ const useV86 = (
       });
     }
   }, [libs, loading, setLoading]);
+
+  useEffect(() => {
+    const isActiveInstance = foregroundId === id;
+
+    Object.values(emulator).forEach((emulatorInstance) =>
+      emulatorInstance?.keyboard_set_status(isActiveInstance)
+    );
+  }, [emulator, foregroundId, id]);
 
   useEffect(() => {
     if (process && !closing && !loading && !(url in emulator)) {
