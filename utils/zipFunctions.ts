@@ -112,7 +112,7 @@ export const unarchive = async (
 
   sevenZip.FS.write(stream, data, 0, data.length);
   sevenZip.FS.close(stream);
-  sevenZip.callMain(["x", fileName]);
+  sevenZip.callMain(["-y", "x", fileName]);
 
   const extractedFiles = sevenZip.FS.readdir(extractFolder);
   const reduceFiles =
