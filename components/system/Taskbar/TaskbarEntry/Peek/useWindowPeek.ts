@@ -5,6 +5,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PEEK_MAX_WIDTH,
 } from "utils/constants";
+import { getHtmlToImage } from "utils/functions";
 
 const FPS = 15;
 
@@ -19,7 +20,7 @@ const renderFrame = async (
       renderFrame(previewElement, animate, callback)
     );
 
-  const htmlToImage = await import("html-to-image");
+  const htmlToImage = await getHtmlToImage();
   const dataCanvas = await htmlToImage?.toCanvas(previewElement, {
     ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
       canvasHeight:

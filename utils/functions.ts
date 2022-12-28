@@ -7,6 +7,7 @@ import type {
   SortOrders,
 } from "contexts/session/types";
 import type { Position } from "eruda";
+import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
 import type { HTMLAttributes } from "react";
 import {
@@ -189,6 +190,18 @@ export const loadFiles = async (
           ? loadStyle(encodeURI(file))
           : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
+
+export const getHtmlToImage = async (): Promise<
+  typeof HtmlToImage | undefined
+> => {
+  await loadFiles(["/System/html-to-image/html-to-image.js"]);
+
+  const { htmlToImage } = window as unknown as Window & {
+    htmlToImage: typeof HtmlToImage;
+  };
+
+  return htmlToImage;
+};
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);

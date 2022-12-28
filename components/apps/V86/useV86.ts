@@ -25,7 +25,12 @@ import {
   SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl, loadFiles } from "utils/functions";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getHtmlToImage,
+  loadFiles,
+} from "utils/functions";
 
 const useV86 = (
   id: string,
@@ -210,7 +215,7 @@ const useV86 = (
                 ) as HTMLCanvasElement
               )?.toDataURL("image/png");
             } else if (currentContainerRef instanceof HTMLElement) {
-              const htmlToImage = await import("html-to-image");
+              const htmlToImage = await getHtmlToImage();
 
               screenshot = await htmlToImage?.toPng(currentContainerRef, {
                 skipAutoScale: true,

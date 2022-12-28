@@ -21,8 +21,11 @@ type KiwiIrcClient = {
 };
 
 const IRC: FC<ComponentProcessProps> = ({ id }) => {
-  const { processes: { [id]: { libs: [ircSrc = ""] = [] } = {} } = {}, title } =
-    useProcesses();
+  const {
+    linkElement,
+    processes: { [id]: { libs: [ircSrc = ""] = [] } = {} } = {},
+    title,
+  } = useProcesses();
   const [loaded, setLoaded] = useState(false);
   const [channels, setChannels] = useState<string[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -69,8 +72,10 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
           )
         )
       );
+
+      linkElement(id, "peekElement", iframeRef.current);
     }
-  }, [loaded]);
+  }, [id, linkElement, loaded]);
 
   useEffect(() => {
     title(
