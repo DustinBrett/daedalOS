@@ -63,10 +63,10 @@ const CODE_REPLACE_FUNCTIONS = [
       /<style data-styled="" data-styled-version=(.*)>/,
       '<style data-styled="">'
     ),
-  (html, newJS) =>
+  (html) =>
     html.replace(
       /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
-      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script><script>${newJS}</script>`
+      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
     ),
 ];
 
@@ -76,19 +76,8 @@ readdirSync(OUT_PATH).forEach(async (entry) => {
     const html = readFileSync(fullPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);
 
-    const manifestJsData = [
-      minifiedHtml.match(
-        /<script defer src=(\/_next\/static\/[a-zA-Z0-9-_]+\/_buildManifest.js)><\/script>/
-      )[1],
-      minifiedHtml.match(
-        /<script defer src=(\/_next\/static\/[a-zA-Z0-9-_]+\/_ssgManifest.js)><\/script>/
-      )[1],
-    ]
-      .map((url) => readFileSync(join(OUT_PATH, url)).toString())
-      .join("");
-
     CODE_REPLACE_FUNCTIONS.forEach((codeFunction) => {
-      minifiedHtml = codeFunction(minifiedHtml, manifestJsData);
+      minifiedHtml = codeFunction(minifiedHtml);
     });
 
     writeFileSync(fullPath, minifiedHtml);
