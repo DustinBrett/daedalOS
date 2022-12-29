@@ -185,6 +185,9 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 ### Photos
 
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#supported_image_formats)
+  - [JPEG XL](https://github.com/niutech/jxl.js) (**_.jxl_**)
+  - [QOI](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba) (**_.qoi_**)
+  - [TIFF](https://github.com/photopea/UTIF.js) (**_.tif, .tiff_**)
 - Fullscreen & [Zoom](https://github.com/anvaka/panzoom)
 
 ### [Ruffle](https://ruffle.rs/) (**_.swf, .spl_**)
