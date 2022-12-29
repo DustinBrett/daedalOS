@@ -4,7 +4,7 @@ import { clsx } from "utils/functions";
 type FocusedEntryProps = {
   className?: string;
   onBlurCapture: React.FocusEventHandler;
-  onClick: React.MouseEventHandler;
+  onMouseDown: React.MouseEventHandler;
 };
 
 type FocusableEntry = (file: string) => FocusedEntryProps;
@@ -61,7 +61,7 @@ const useFocusableEntries = (
       "focus-within": isFocused,
       "only-focused": isOnlyFocusedEntry,
     });
-    const onClick: React.MouseEventHandler = ({ ctrlKey }) => {
+    const onMouseDown: React.MouseEventHandler = ({ ctrlKey }) => {
       if (ctrlKey) {
         if (isFocused) {
           blurEntry(file);
@@ -74,7 +74,7 @@ const useFocusableEntries = (
       }
     };
 
-    return { className, onBlurCapture, onClick };
+    return { className, onBlurCapture, onMouseDown };
   };
 
   return { blurEntry, focusEntry, focusableEntry, focusedEntries };
