@@ -17,6 +17,7 @@ import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
     icon: setIcon,
+    linkElement,
     url: changeUrl,
     processes: { [id]: process },
   } = useProcesses();
@@ -109,6 +110,12 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
       setUrl(history[position]);
     }
   }, [history, position, process, setUrl]);
+
+  useEffect(() => {
+    if (iframeRef?.current) {
+      linkElement(id, "peekElement", iframeRef.current);
+    }
+  }, [id, linkElement]);
 
   return (
     <StyledBrowser>
