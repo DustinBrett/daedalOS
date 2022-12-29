@@ -16,7 +16,11 @@ import {
   SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  imgDataToBuffer,
+} from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 
 const addJsDosConfig = async (
@@ -153,23 +157,7 @@ const useDosCI = (
         const takeScreenshot = async (): Promise<Buffer | undefined> => {
           const imageData = await dosCI[url]?.screenshot();
 
-          if (imageData) {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-
-            canvas.width = imageData.width;
-            canvas.height = imageData.height;
-            ctx?.putImageData(imageData, 0, 0);
-
-            return Buffer.from(
-              canvas
-                ?.toDataURL("image/png")
-                .replace("data:image/png;base64,", ""),
-              "base64"
-            );
-          }
-
-          return undefined;
+          return imageData ? imgDataToBuffer(imageData) : undefined;
         };
         const scheduleSaveState = (screenshot?: Buffer): void => {
           window.setTimeout(

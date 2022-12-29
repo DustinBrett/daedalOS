@@ -115,6 +115,31 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
     fileReader.onloadend = () => resolve(fileReader.result as string);
   });
 
+type JxlDecodeResponse = { data: { imgData: ImageData } };
+
+export const decodeJxl = async (image: Buffer): Promise<ImageData> =>
+  new Promise((resolve) => {
+    const worker = new Worker("System/JXL.js/jxl_dec.js");
+
+    worker.postMessage({ image, jxlSrc: "image.jxl" });
+    worker.addEventListener("message", (message: JxlDecodeResponse) =>
+      resolve(message?.data?.imgData)
+    );
+  });
+
+export const imgDataToBuffer = (imageData: ImageData): Buffer => {
+  const canvas = document.createElement("canvas");
+
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  canvas.getContext("2d")?.putImageData(imageData, 0, 0);
+
+  return Buffer.from(
+    canvas?.toDataURL("image/png").replace("data:image/png;base64,", ""),
+    "base64"
+  );
+};
+
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
 const loadScript = (

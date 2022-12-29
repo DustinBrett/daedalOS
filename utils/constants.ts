@@ -80,6 +80,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".jpe",
   ".jpeg",
   ".jpg",
+  ".jxl",
   ".pjp",
   ".pjpeg",
   ".png",

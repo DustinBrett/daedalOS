@@ -38,9 +38,11 @@ import {
 import {
   blobToBase64,
   bufferToUrl,
+  decodeJxl,
   getGifJs,
   getHtmlToImage,
   imageToBufferUrl,
+  imgDataToBuffer,
   isYouTubeUrl,
 } from "utils/functions";
 
@@ -446,6 +448,17 @@ export const getInfoWithExtension = (
       break;
     case ".sav":
       getInfoByFileExtension(UNKNOWN_ICON_PATH, true);
+      break;
+    case ".jxl":
+      getInfoByFileExtension(PHOTO_ICON, (signal) =>
+        fs.readFile(path, async (error, contents = Buffer.from("")) => {
+          if (!error && contents.length > 0 && !signal.aborted) {
+            getInfoByFileExtension(
+              imageToBufferUrl(path, imgDataToBuffer(await decodeJxl(contents)))
+            );
+          }
+        })
+      );
       break;
     case ".qoi":
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
