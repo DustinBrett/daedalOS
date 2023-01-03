@@ -60,11 +60,6 @@ const CODE_REPLACE_FUNCTIONS = [
     ),
   (html) =>
     html.replace(
-      /<style data-styled="" data-styled-version=(.*)>/,
-      '<style data-styled="">'
-    ),
-  (html) =>
-    html.replace(
       /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
       `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
     ),
