@@ -10,7 +10,11 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
-import { HIGH_PRIORITY_REQUEST, MILLISECONDS_IN_DAY } from "utils/constants";
+import {
+  DEFAULT_LOCALE,
+  HIGH_PRIORITY_REQUEST,
+  MILLISECONDS_IN_DAY,
+} from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -115,7 +119,7 @@ const useWallpaper = (
 
     if (wallpaperName === "APOD") {
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
-      const [month, , day, , year] = new Intl.DateTimeFormat("en-US", {
+      const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         timeZone: "US/Eastern",
       })
         .formatToParts(Date.now())

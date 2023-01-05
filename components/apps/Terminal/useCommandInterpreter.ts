@@ -33,6 +33,7 @@ import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import {
+  DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   isFileSystemSupported,
@@ -293,6 +294,9 @@ const useCommandInterpreter = (
               entries = await readdir(dirPath);
             }
 
+            const timeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+              timeStyle: "short",
+            });
             const entriesWithStats = await Promise.all(
               entries
                 .filter(
@@ -307,11 +311,7 @@ const useCommandInterpreter = (
                   const fileStats = await stat(filePath);
                   const mDate = new Date(getModifiedTime(filePath, fileStats));
                   const date = mDate.toISOString().slice(0, 10);
-                  const time = new Intl.DateTimeFormat("en-US", {
-                    timeStyle: "short",
-                  })
-                    .format(mDate)
-                    .padStart(8, "0");
+                  const time = timeFormatter.format(mDate).padStart(8, "0");
                   const isDirectory = fileStats.isDirectory();
 
                   totalSize += isDirectory ? 0 : fileStats.size;

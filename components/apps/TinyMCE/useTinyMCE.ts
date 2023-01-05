@@ -16,6 +16,7 @@ import { useSession } from "contexts/session";
 import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
+import { DEFAULT_LOCALE } from "utils/constants";
 import { haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
@@ -41,7 +42,7 @@ const useTinyMCE = (
       const modifiedDate = new Date(
         getModifiedTime(currentUrl, await stat(currentUrl))
       );
-      const date = new Intl.DateTimeFormat("en-US", {
+      const date = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         dateStyle: "medium",
       }).format(modifiedDate);
 
