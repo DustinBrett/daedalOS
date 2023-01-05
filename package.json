@@ -32,7 +32,7 @@
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "test:watch": "jest --watch",
-    "unused-exports": "ts-unused-exports tsconfig.json --excludePathsFromReport=pages"
+    "unused-exports": "ts-prune -p tsconfig.json"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
@@ -52,7 +52,7 @@
     "butterchurn-presets": "^3.0.0-beta.4",
     "fflate": "^0.7.4",
     "file-type": "^18.0.0",
-    "framer-motion": "^8.1.5",
+    "framer-motion": "^8.1.9",
     "gif.js": "^0.2.0",
     "idb": "^7.1.1",
     "ini": "^3.0.1",
@@ -125,7 +125,7 @@
     "stylelint-config-styled-components": "^0.1.1",
     "terser": "^5.16.1",
     "tinymce": "^6.3.1",
-    "ts-unused-exports": "^9.0.0",
+    "ts-prune": "^0.10.3",
     "typescript": "^4.9.4",
     "webamp": "^1.5.0",
     "xlsx": "^0.18.5",
