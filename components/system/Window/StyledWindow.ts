@@ -26,8 +26,7 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
   width: 100%;
 
   header + * {
-    height: ${({ theme }) =>
-      `calc(100% - ${theme.sizes.titleBar.height}px) !important`};
+    height: ${({ theme }) => `calc(100% - ${theme.sizes.titleBar.height}px)`};
   }
 `;
 
