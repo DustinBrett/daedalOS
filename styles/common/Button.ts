@@ -14,7 +14,8 @@ const Button = styled.button.attrs({
 })<ButtonProps>`
   background-color: transparent;
   font-family: inherit;
-  width: ${({ $short }) => ($short ? "31px !important" : "100%")};
+  max-width: ${({ $short }) => ($short ? "31px" : undefined)};
+  width: 100%;
 `;
 
 export default Button;
