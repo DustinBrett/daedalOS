@@ -166,14 +166,18 @@ const useFileContextMenu = (
                     action: () => mapFileSystemDirectory("/"),
                     label: "Map directory",
                   },
-                  {
-                    action: async () =>
-                      mapFileSystemDirectory(
-                        "/OPFS",
-                        await navigator.storage.getDirectory()
-                      ),
-                    label: "Map OPFS",
-                  },
+                  ...(navigator.storage?.getDirectory
+                    ? [
+                        {
+                          action: async () =>
+                            mapFileSystemDirectory(
+                              "/OPFS",
+                              await navigator.storage.getDirectory()
+                            ),
+                          label: "Map OPFS",
+                        },
+                      ]
+                    : []),
                   MENU_SEPERATOR
                 );
               }
