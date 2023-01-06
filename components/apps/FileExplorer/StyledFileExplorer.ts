@@ -19,7 +19,7 @@ const StyledFileExplorer = styled.div`
 
   ${StyledFileEntry} {
     &::before {
-      border: 0 !important;
+      border-width: 0;
     }
   }
 `;
