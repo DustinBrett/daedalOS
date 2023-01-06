@@ -61,7 +61,10 @@ type FileSystemContextState = AsyncFS & {
   ) => Promise<string>;
   deletePath: (path: string) => Promise<void>;
   fs?: FSModule;
-  mapFs: (directory: string) => Promise<string>;
+  mapFs: (
+    directory: string,
+    existingHandle?: FileSystemDirectoryHandle
+  ) => Promise<string>;
   mkdirRecursive: (path: string) => Promise<void>;
   mountFs: (url: string) => Promise<void>;
   moveEntries: (entries: string[]) => void;
@@ -72,6 +75,8 @@ type FileSystemContextState = AsyncFS & {
   unMountFs: (url: string) => void;
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
 };
+
+const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
 
 const {
   FileSystem: { FileSystemAccess, IsoFS, ZipFS },
@@ -199,12 +204,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
               return;
             }
 
+            const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
             const mappedName =
               handle.name.replace(INVALID_FILE_CHARACTERS, "").trim() ||
-              DEFAULT_MAPPED_NAME;
+              (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
 
             rootFs?.mount?.(join(directory, mappedName), newFs);
-            resolve(mappedName);
+            resolve(systemDirectory ? directory : mappedName);
             addFileSystemHandle(directory, handle, mappedName);
           });
         } else {
@@ -398,7 +404,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
             async ([handleDirectory, handle]) => {
               if (!(await exists(handleDirectory))) {
                 try {
-                  mapFs(dirname(handleDirectory), handle);
+                  mapFs(
+                    SYSTEM_DIRECTORIES.has(handleDirectory)
+                      ? handleDirectory
+                      : dirname(handleDirectory),
+                    handle
+                  );
                 } catch {
                   // Ignore failure
                 }

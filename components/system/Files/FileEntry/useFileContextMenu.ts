@@ -145,20 +145,34 @@ const useFileContextMenu = (
           if (path) {
             if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
               if (isFileSystemSupported()) {
+                const mapFileSystemDirectory = (
+                  directory: string,
+                  existingHandle?: FileSystemDirectoryHandle
+                ): void => {
+                  mapFs(directory, existingHandle)
+                    .then((mappedFolder) => {
+                      updateFolder("/", mappedFolder);
+                      open("FileExplorer", {
+                        url: join("/", mappedFolder),
+                      });
+                    })
+                    .catch(() => {
+                      // Ignore failure to map
+                    });
+                };
+
                 menuItems.unshift(
                   {
-                    action: () =>
-                      mapFs("/")
-                        .then((mappedFolder) => {
-                          updateFolder("/", mappedFolder);
-                          open("FileExplorer", {
-                            url: join("/", mappedFolder),
-                          });
-                        })
-                        .catch(() => {
-                          // Ignore failure to map
-                        }),
+                    action: () => mapFileSystemDirectory("/"),
                     label: "Map directory",
+                  },
+                  {
+                    action: async () =>
+                      mapFileSystemDirectory(
+                        "/OPFS",
+                        await navigator.storage.getDirectory()
+                      ),
+                    label: "Map OPFS",
                   },
                   MENU_SEPERATOR
                 );
