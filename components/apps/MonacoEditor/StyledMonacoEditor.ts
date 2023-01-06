@@ -7,7 +7,7 @@ const StyledMonacoEditor = styled.div.attrs({ onBlur: relocateShadowRoot })`
 
   && {
     height: ${({ theme }) =>
-      `calc(100% - ${theme.sizes.titleBar.height}px - 31px) !important`};
+      `calc(100% - ${theme.sizes.titleBar.height}px - 31px)`};
   }
 `;
 
