@@ -248,9 +248,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const unMapFs = useCallback(
     (directory: string): void => {
-      updateFolder(dirname(directory), undefined, directory);
-      removeFileSystemHandle(directory);
       unMountFs(directory);
+      removeFileSystemHandle(directory);
+      updateFolder(dirname(directory), undefined, directory);
     },
     [unMountFs, updateFolder]
   );
