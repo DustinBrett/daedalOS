@@ -120,7 +120,7 @@ const FileManager: FC<FileManagerProps> = ({
     if (
       !requestingPermissions.current &&
       permission !== "granted" &&
-      rootFs?.mntMap[url]?.getName() === "FileSystemAccess"
+      rootFs?.mntMap[currentUrl]?.getName() === "FileSystemAccess"
     ) {
       requestingPermissions.current = true;
       requestPermission(currentUrl)
@@ -142,7 +142,7 @@ const FileManager: FC<FileManagerProps> = ({
           requestingPermissions.current = false;
         });
     }
-  }, [currentUrl, permission, rootFs?.mntMap, updateFiles, url]);
+  }, [currentUrl, permission, rootFs?.mntMap, updateFiles]);
 
   useEffect(() => {
     if (!mounted && MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase())) {
