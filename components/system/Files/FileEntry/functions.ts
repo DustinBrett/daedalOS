@@ -556,7 +556,10 @@ export const getInfoWithExtension = (
               const canvas = document.createElement("canvas");
               const gif = await getGifJs();
               let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
-              const getFrame = (second: number): Promise<void> =>
+              const getFrame = (
+                second: number,
+                firstFrame: boolean
+              ): Promise<void> =>
                 new Promise((resolve) => {
                   video.addEventListener(
                     "canplaythrough",
@@ -603,8 +606,10 @@ export const getInfoWithExtension = (
                   if ("seekToNextFrame" in video) {
                     (video as VideoElementWithSeek)
                       .seekToNextFrame?.()
-                      .catch(() => video.load());
-                  } else {
+                      .catch(() => {
+                        // Ignore error during seekToNextFrame
+                      });
+                  } else if (firstFrame) {
                     video.load();
                   }
                 });
@@ -632,10 +637,12 @@ export const getInfoWithExtension = (
                     ) {
                       if (signal.aborted) return;
 
-                      // eslint-disable-next-line no-await-in-loop
-                      await getFrame(frame);
+                      const firstFrame = index === 0;
 
-                      if (index === 0 && frame === capturePoint) {
+                      // eslint-disable-next-line no-await-in-loop
+                      await getFrame(frame, firstFrame);
+
+                      if (firstFrame && frame === capturePoint) {
                         getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
                       }
                     }
