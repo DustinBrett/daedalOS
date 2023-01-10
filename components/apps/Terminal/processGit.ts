@@ -1,81 +1,114 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { help } from "components/apps/Terminal/functions";
 import type { LocalEcho } from "components/apps/Terminal/types";
-import type { MessageCallback, ProgressCallback } from "isomorphic-git";
+import type index from "isomorphic-git";
+import type {
+  AuthCallback,
+  GitAuth,
+  MessageCallback,
+  ProgressCallback,
+} from "isomorphic-git";
+import type { ParsedArgs } from "minimist";
 import { join } from "path";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 
+const UPDATE_FOLDER_COMMANDS = new Set([
+  "checkout",
+  "clone",
+  "fetch",
+  "init",
+  "merge",
+  "pull",
+]);
+
 export const commands: Record<string, string> = {
-  checkout: "Switch branches or restore working tree files",
-  clone: "Clone a repository into a new directory",
+  add: "Add a file to the git index (aka staging area)",
+  branch: "Create a branch",
+  checkout: "Checkout a branch",
+  clone: "Clone a repository",
+  commit: "Create a new commit",
+  fetch: "Fetch commits from a remote repository",
+  init: "Initialize a new repository",
+  log: "Get commit descriptions from the git history",
+  merge: "Merge two branches",
+  pull: "Fetch and merge commits from a remote repository",
+  push: "Push a branch or tag",
+  status: "Tell whether a file has been changed",
+  tag: "Create a lightweight tag",
+  version: "Return the version number of isomorphic-git",
 };
+
+type GitOptions = Record<string, unknown>;
+type GitFunction = (options: GitOptions) => Promise<string | void>;
 
 const processGit = async (
   [command, ...args]: string[],
   cd: string,
   localEcho: LocalEcho,
   fs: FSModule,
-  exists: (path: string) => Promise<boolean>,
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void
 ): Promise<void> => {
-  const { checkout, clone, version } = await import("isomorphic-git");
-  const events: string[] = [];
-  const onMessage: MessageCallback = (message) =>
-    localEcho.println(`remote: ${message.trim()}`);
-  const onProgress: ProgressCallback = ({ phase }): void => {
-    if (events[events.length - 1] !== phase) {
-      localEcho.println(phase);
-      events.push(phase);
-    }
-  };
-  const options = {
-    fs,
-    onProgress,
-  };
+  const git = await import("isomorphic-git");
 
-  switch (command) {
-    case "clone": {
-      const http = await import("isomorphic-git/http/web");
-      const [url] = args;
-      const dirName = url
-        ?.split("/")
-        .pop()
-        ?.replace(/\.git$/, "");
-      const dir = dirName ? join(cd, dirName) : cd;
-
-      try {
-        if (dirName) localEcho.println(`Cloning into '${dirName}'...`);
-
-        await clone({ ...options, corsProxy, dir, http, onMessage, url });
-      } catch (error) {
-        localEcho.println((error as Error).message);
+  if (command in git) {
+    const http = await import("isomorphic-git/http/web");
+    const { default: minimist } = await import("minimist");
+    const { username, password, ...cliArgs } = minimist(args) as GitAuth &
+      ParsedArgs;
+    const onAuth: AuthCallback = () => ({ password, username });
+    const onMessage: MessageCallback = (message = "") =>
+      localEcho.println(`remote: ${message.trim()}`);
+    const events: string[] = [];
+    const onProgress: ProgressCallback = ({ phase }): void => {
+      if (events[events.length - 1] !== phase) {
+        localEcho.println(phase);
+        events.push(phase);
       }
-      break;
-    }
-    case "checkout":
-      if (await exists(join(cd, ".git"))) {
-        const [ref] = args;
+    };
+    const options = {
+      ...cliArgs,
+      corsProxy,
+      dir: cd,
+      fs,
+      http,
+      onAuth,
+      onMessage,
+      onProgress,
+    };
 
-        try {
-          await checkout({ ...options, dir: cd, force: true, ref });
+    if (command === "clone") {
+      const dirName =
+        (cliArgs.url as string)
+          ?.split("/")
+          .pop()
+          ?.replace(/\.git$/, "") || "";
 
-          localEcho.println(`Switched to branch '${ref}'`);
-        } catch (error) {
-          localEcho.println((error as Error).message);
-        }
-      } else {
-        localEcho.println("fatal: not a git repository: .git");
+      if (dirName) {
+        localEcho.println(`Cloning into '${dirName}'...`);
+
+        options.dir = join(cd, dirName);
       }
-      break;
-    case "version":
-      localEcho.println(`git version ${version()}.isomorphic-git`);
-      break;
-    default:
-      help(localEcho, commands);
+    }
+
+    try {
+      const result = await (
+        git[command as keyof typeof index] as GitFunction
+      )?.(options);
+
+      if (typeof result === "string") {
+        localEcho.println(result);
+      }
+    } catch (error) {
+      localEcho.println((error as Error).message);
+    }
+
+    if (UPDATE_FOLDER_COMMANDS.has(command)) {
+      updateFolder(cd);
+    }
+  } else {
+    help(localEcho, commands);
   }
-
-  updateFolder(cd);
 };
 
 export default processGit;

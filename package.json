@@ -57,6 +57,7 @@
     "idb": "^7.1.1",
     "ini": "^3.0.1",
     "isomorphic-git": "^1.21.0",
+    "minimist": "^1.2.7",
     "multiformats": "^11.0.0",
     "music-metadata-browser": "^2.5.9",
     "next": "^13.1.1",

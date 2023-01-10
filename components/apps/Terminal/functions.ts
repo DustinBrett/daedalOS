@@ -73,6 +73,7 @@ export const aliases: Record<string, string[]> = {
   dir: ["ls"],
   exit: ["quit"],
   find: ["search"],
+  git: ["isogit"],
   md: ["mkdir"],
   move: ["mv"],
   python: ["py"],

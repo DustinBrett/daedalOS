@@ -449,13 +449,13 @@ const useCommandInterpreter = (
           break;
         }
         case "git":
+        case "isogit":
           if (fs && localEcho) {
             await processGit(
               commandArgs,
               cd.current,
               localEcho,
               fs,
-              exists,
               updateFolder
             );
           }
