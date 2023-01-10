@@ -362,18 +362,26 @@ export const getInfoWithExtension = (
             YT_ICON_CACHE,
             `${ytId}${ICON_CACHE_EXTENSION}`
           );
+          const baseFileInfo = {
+            comment,
+            pid,
+            url,
+          };
 
-          fs.exists(cachedIconPath, (cachedIconExists) =>
-            callback({
-              comment,
-              icon: cachedIconExists
-                ? cachedIconPath
-                : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
-              pid,
-              subIcons: [processDirectory.VideoPlayer.icon],
-              url,
-            })
-          );
+          callback({
+            ...baseFileInfo,
+            getIcon: () =>
+              fs.exists(cachedIconPath, (cachedIconExists) =>
+                callback({
+                  ...baseFileInfo,
+                  icon: cachedIconExists
+                    ? cachedIconPath
+                    : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+                  subIcons: [processDirectory.VideoPlayer.icon],
+                })
+              ),
+            icon: processDirectory.VideoPlayer.icon,
+          });
         } else {
           callback({
             comment,
