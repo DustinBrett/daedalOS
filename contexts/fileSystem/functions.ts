@@ -226,12 +226,10 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
 
       readable?.empty();
 
-      if (writable?.getName() === "InMemory") {
+      if (writable?.getName() === "InMemory" || !writable?.empty) {
         resolve();
       } else {
-        writable?.empty((apiError) =>
-          apiError ? reject(apiError) : resolve()
-        );
+        writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
       }
     };
 
