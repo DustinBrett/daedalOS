@@ -18,6 +18,12 @@ const StyledFileExplorer = styled.div`
   }
 
   ${StyledFileEntry} {
+    &:hover {
+      &::before {
+        border-width: 0;
+      }
+    }
+
     &::before {
       border-width: 0;
     }

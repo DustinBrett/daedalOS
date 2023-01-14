@@ -79,8 +79,10 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     }
 
     &:hover {
-      background-color: ${({ theme }) =>
-        theme.colors.fileEntry.backgroundFocusedHover};
+      background-color: ${({ theme, $selecting }) =>
+        $selecting
+          ? theme.colors.fileEntry.backgroundFocused
+          : theme.colors.fileEntry.backgroundFocusedHover};
 
       &::before {
         border: ${({ theme }) =>
