@@ -45,6 +45,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Matrix](https://github.com/Rezmason/matrix)
 - [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
 - [jxl.js](https://github.com/niutech/jxl.js)
+- [fix-webm-duration](https://github.com/yusitnikov/fix-webm-duration)
 
 ## App Libraries
 

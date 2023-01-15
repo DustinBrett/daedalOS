@@ -52,6 +52,7 @@
     "butterchurn-presets": "^3.0.0-beta.4",
     "fflate": "^0.7.4",
     "file-type": "^18.1.0",
+    "fix-webm-duration": "^1.0.5",
     "framer-motion": "^8.4.3",
     "gif.js": "^0.2.0",
     "idb": "^7.1.1",

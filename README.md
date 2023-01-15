@@ -70,6 +70,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
   - Open with, Open file/folder location, Open in new window, Open Terminal here
   - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets
   - Sort by, New Folder, New Text Document
+  - Screen Capture
 - Keyboard Shortcuts
   - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
   - F2, F5, Backspace, Arrows, Enter

@@ -12,10 +12,13 @@ import { useSession } from "contexts/session";
 import { dirname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
+  DEFAULT_LOCALE,
+  DESKTOP_PATH,
   FOLDER_ICON,
   isFileSystemSupported,
   MENU_SEPERATOR,
 } from "utils/constants";
+import { bufferToBlob } from "utils/functions";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -31,7 +34,20 @@ const updateSortBy =
 
 const EASTER_EGG_CLICK_COUNT = 2;
 
+const CAPTURE_FPS = 30;
+const CAPTURE_TIME_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  day: "2-digit",
+  hour: "2-digit",
+  hour12: false,
+  minute: "2-digit",
+  month: "2-digit",
+  second: "2-digit",
+  year: "numeric",
+};
+
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+
+let currentMediaStream: MediaStream | undefined;
 
 const useFolderContextMenu = (
   url: string,
@@ -44,7 +60,13 @@ const useFolderContextMenu = (
   isDesktop?: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
+  const {
+    mapFs,
+    pasteList = {},
+    readFile,
+    writeFile,
+    updateFolder,
+  } = useFileSystem();
   const {
     setWallpaper: setSessionWallpaper,
     setIconPositions,
@@ -88,6 +110,83 @@ const useFolderContextMenu = (
     },
     [setIconPositions, setSortBy, url]
   );
+  const captureScreen = useCallback(async () => {
+    if (currentMediaStream) {
+      const { active: wasActive } = currentMediaStream;
+
+      currentMediaStream.getTracks().forEach((track) => track.stop());
+      currentMediaStream = undefined;
+
+      if (wasActive) return;
+    }
+
+    const displayMediaOptions: DisplayMediaStreamOptions &
+      MediaStreamConstraints = {
+      preferCurrentTab: true,
+      video: {
+        frameRate: CAPTURE_FPS,
+      },
+    };
+    currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
+      displayMediaOptions
+    );
+
+    const [currentVideoTrack] = currentMediaStream.getVideoTracks();
+    const { height, width } = currentVideoTrack.getSettings();
+    const mediaRecorder = new MediaRecorder(currentMediaStream, {
+      bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
+      mimeType: "video/webm",
+    });
+    const timeStamp = new Intl.DateTimeFormat(
+      DEFAULT_LOCALE,
+      CAPTURE_TIME_DATE_FORMAT
+    )
+      .format(new Date())
+      .replace(/[/:]/g, "-")
+      .replace(",", "");
+    const fileName = `Screen Capture ${timeStamp}.webm`;
+    const capturePath = join(DESKTOP_PATH, fileName);
+    const startTime = Date.now();
+    let hasCapturedData = false;
+
+    mediaRecorder.start();
+    mediaRecorder.addEventListener("dataavailable", async (event) => {
+      const { data } = event;
+
+      if (data) {
+        const bufferData = Buffer.from(await data.arrayBuffer());
+
+        await writeFile(
+          capturePath,
+          hasCapturedData
+            ? Buffer.concat([await readFile(capturePath), bufferData])
+            : bufferData,
+          hasCapturedData
+        );
+
+        if (mediaRecorder.state === "inactive") {
+          const { default: fixWebmDuration } = await import(
+            "fix-webm-duration"
+          );
+
+          fixWebmDuration(
+            bufferToBlob(await readFile(capturePath)),
+            Date.now() - startTime,
+            async (capturedFile) => {
+              await writeFile(
+                capturePath,
+                Buffer.from(await capturedFile.arrayBuffer()),
+                true
+              );
+              updateFolder(DESKTOP_PATH, fileName);
+            }
+          );
+        }
+
+        hasCapturedData = true;
+      }
+    });
+  }, [readFile, updateFolder, writeFile]);
 
   return useMemo(
     () =>
@@ -189,6 +288,18 @@ const useFolderContextMenu = (
                     },
                   ],
                 },
+                ...(isDesktop &&
+                "getDisplayMedia" in navigator.mediaDevices &&
+                window.MediaRecorder
+                  ? [
+                      {
+                        action: captureScreen,
+                        label: currentMediaStream?.active
+                          ? "Stop screen capture"
+                          : "Capture screen",
+                      },
+                    ]
+                  : []),
               ]
             : []),
           MENU_SEPERATOR,
@@ -239,6 +350,7 @@ const useFolderContextMenu = (
       }),
     [
       addToFolder,
+      captureScreen,
       contextMenu,
       isAscending,
       isDesktop,
