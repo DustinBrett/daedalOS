@@ -90,6 +90,13 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".xbm",
 ]);
 
+export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
+  ...TIFF_IMAGE_FORMATS,
+  ".jxl",
+  ".qoi",
+  ".svg",
+]);
+
 export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
   ".bmp",
   ".gif",

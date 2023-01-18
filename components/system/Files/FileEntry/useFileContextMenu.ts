@@ -28,6 +28,7 @@ import {
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
+  UNSUPPORTED_BACKGROUND_EXTENSIONS,
 } from "utils/constants";
 import {
   AUDIO_DECODE_FORMATS,
@@ -365,7 +366,10 @@ const useFileContextMenu = (
             }
           }
 
-          if (IMAGE_FILE_EXTENSIONS.has(pathExtension)) {
+          if (
+            IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
+            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension)
+          ) {
             menuItems.unshift({
               label: "Set as desktop background",
               menu: [
