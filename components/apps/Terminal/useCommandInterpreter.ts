@@ -115,12 +115,8 @@ const useCommandInterpreter = (
       } else {
         updateFolder(dirPath, basename(filePath));
       }
-
-      if (dirPath === cd.current && localEcho) {
-        readdir(dirPath).then((files) => autoComplete(files, localEcho));
-      }
     },
-    [cd, localEcho, readdir, updateFolder]
+    [updateFolder]
   );
   const commandInterpreter = useCallback(
     async (command = ""): Promise<string> => {
@@ -170,9 +166,6 @@ const useCommandInterpreter = (
               } else if (cd.current !== fullPath && localEcho) {
                 // eslint-disable-next-line no-param-reassign
                 cd.current = fullPath;
-                readdir(fullPath).then((files) =>
-                  autoComplete(files, localEcho)
-                );
               }
             } else {
               localEcho?.println(PATH_NOT_FOUND);
@@ -357,7 +350,6 @@ const useCommandInterpreter = (
             localEcho?.println(
               `\t\t${directoryCount} Dir(s)${await getFreeSpace()}`
             );
-            if (localEcho) autoComplete(entries, localEcho);
           };
 
           if (
@@ -539,13 +531,11 @@ const useCommandInterpreter = (
 
                 if (mappedFolder) {
                   const fullPath = join(cd.current, mappedFolder);
-                  const files = await readdir(fullPath);
 
                   updateFolder(cd.current, mappedFolder);
 
                   // eslint-disable-next-line no-param-reassign
                   cd.current = fullPath;
-                  autoComplete(files, localEcho);
                 }
               } catch {
                 // Ignore failure to mount
@@ -792,6 +782,10 @@ const useCommandInterpreter = (
               localEcho?.println(unknownCommand(baseCommand));
             }
           }
+      }
+
+      if (localEcho) {
+        readdir(cd.current).then((files) => autoComplete(files, localEcho));
       }
 
       return cd.current;
