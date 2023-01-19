@@ -13,7 +13,9 @@ const useTransferDialog = (): Dialog => {
   return useMemo(
     () => ({
       openTransferDialog: (fileReaders: FileReaders) => {
-        open("Transfer", { fileReaders, url: "" });
+        if (fileReaders?.length > 0) {
+          open("Transfer", { fileReaders, url: "" });
+        }
       },
     }),
     [open]
