@@ -1,3 +1,5 @@
+import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
+import { createFileReaders } from "components/system/Files/FileManager/functions";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type {
   Files,
@@ -6,8 +8,10 @@ import type {
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { dirname, join } from "path";
-import { PREVENT_SCROLL } from "utils/constants";
+import { useEffect } from "react";
+import { DESKTOP_PATH, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
@@ -18,13 +22,33 @@ const useFileKeyboardShortcuts = (
   focusedEntries: string[],
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  { pasteToFolder }: FolderActions,
+  { newPath, pasteToFolder }: FolderActions,
   updateFiles: (newFile?: string, oldFile?: string) => void,
   id?: string,
   view?: FileManagerViewNames
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
   const { url: changeUrl } = useProcesses();
+  const { openTransferDialog } = useTransferDialog();
+  const { foregroundId } = useSession();
+
+  useEffect(() => {
+    const pasteHandler = (event: ClipboardEvent): void => {
+      if (
+        event.clipboardData?.files?.length &&
+        ((!foregroundId && url === DESKTOP_PATH) || foregroundId === id)
+      ) {
+        event.stopImmediatePropagation?.();
+        createFileReaders(event.clipboardData.files, url, newPath).then(
+          openTransferDialog
+        );
+      }
+    };
+
+    document.addEventListener("paste", pasteHandler);
+
+    return () => document.removeEventListener("paste", pasteHandler);
+  }, [foregroundId, id, newPath, openTransferDialog, url]);
 
   return (file?: string): React.KeyboardEventHandler =>
     (event) => {
@@ -57,7 +81,7 @@ const useFileKeyboardShortcuts = (
             moveEntries(focusedEntries.map((entry) => join(url, entry)));
             break;
           case "v":
-            haltEvent(event);
+            event.stopPropagation();
             pasteToFolder();
             break;
         }

@@ -124,7 +124,7 @@ export const iterateFileName = (name: string, iteration: number): string => {
   return `${fileName} (${iteration})${extension}`;
 };
 
-const createFileReaders = async (
+export const createFileReaders = async (
   files: DataTransferItemList | FileList | never[],
   directory: string,
   callback: (
