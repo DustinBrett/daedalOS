@@ -366,37 +366,6 @@ const useFileContextMenu = (
             }
           }
 
-          if (
-            IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension)
-          ) {
-            menuItems.unshift({
-              label: "Set as desktop background",
-              menu: [
-                {
-                  action: () => setWallpaper(path, "fill"),
-                  label: "Fill",
-                },
-                {
-                  action: () => setWallpaper(path, "fit"),
-                  label: "Fit",
-                },
-                {
-                  action: () => setWallpaper(path, "stretch"),
-                  label: "Stretch",
-                },
-                {
-                  action: () => setWallpaper(path, "tile"),
-                  label: "Tile",
-                },
-                {
-                  action: () => setWallpaper(path, "center"),
-                  label: "Center",
-                },
-              ],
-            });
-          }
-
           menuItems.unshift(MENU_SEPERATOR);
         }
 
@@ -413,6 +382,37 @@ const useFileContextMenu = (
               open("Paint", { url });
             },
             label: "Edit",
+          });
+        }
+
+        if (
+          IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
+          !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension)
+        ) {
+          menuItems.unshift({
+            label: "Set as desktop background",
+            menu: [
+              {
+                action: () => setWallpaper(path, "fill"),
+                label: "Fill",
+              },
+              {
+                action: () => setWallpaper(path, "fit"),
+                label: "Fit",
+              },
+              {
+                action: () => setWallpaper(path, "stretch"),
+                label: "Stretch",
+              },
+              {
+                action: () => setWallpaper(path, "tile"),
+                label: "Tile",
+              },
+              {
+                action: () => setWallpaper(path, "center"),
+                label: "Center",
+              },
+            ],
           });
         }
 
