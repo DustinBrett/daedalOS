@@ -20,6 +20,7 @@ import {
 } from "contexts/fileSystem/functions";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
+import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
@@ -27,6 +28,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DEFAULT_MAPPED_NAME,
   INVALID_FILE_CHARACTERS,
+  PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 
@@ -95,6 +97,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     unlink,
     writeFile,
   } = asyncFs;
+  const { closeWithTransition } = useProcesses();
   const fsWatchersRef = useRef<FileSystemWatchers>(
     Object.create(null) as FileSystemWatchers
   );
@@ -323,8 +326,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
           await rmdir(path);
         }
       }
+
+      if (Object.keys(fsWatchersRef.current || {}).includes(path)) {
+        closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${path}`);
+      }
     },
-    [readdir, rmdir, unlink]
+    [closeWithTransition, readdir, rmdir, unlink]
   );
   const createPath = useCallback(
     async (
