@@ -289,6 +289,7 @@ const useFolderContextMenu = (
                   ],
                 },
                 ...(isDesktop &&
+                "mediaDevices" in navigator &&
                 "getDisplayMedia" in navigator.mediaDevices &&
                 window.MediaRecorder
                   ? [
