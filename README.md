@@ -22,7 +22,7 @@ cd daedalOS
 
 ### Yarn
 
-- [Node.js](https://nodejs.org/en/download/) (**v16 LTS**)
+- [Node.js](https://nodejs.org/en/download/) (**LTS**)
 - [Yarn](https://classic.yarnpkg.com/en/) (`npm install --global yarn`)
 
 ```
