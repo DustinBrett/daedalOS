@@ -1,11 +1,11 @@
 {
-  "name": "daedalos",
+  "name": "tommyOS",
   "version": "2.0.0",
   "description": "Desktop environment in the browser",
   "author": {
-    "name": "Dustin Brett",
-    "email": "dustinbrett@gmail.com",
-    "url": "https://dustinbrett.com"
+    "name": "Thomas Stephens",
+    "email": "tmsteph@gmail.com",
+    "url": "https://tmsteph.com"
   },
   "license": "MIT",
   "browserslist": [
