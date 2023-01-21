@@ -83,7 +83,7 @@ const useSessionContextState = (): SessionContextState => {
           [directory]: [
             newOrder,
             sortBy ?? currentSortBy,
-            ascending || currentAscending || DEFAULT_ASCENDING,
+            ascending ?? currentAscending ?? DEFAULT_ASCENDING,
           ],
         };
       }),
