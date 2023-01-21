@@ -28,7 +28,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledControls>
       <div className="side-menu">
-        <span>{subTitle}</span>
+        <span>{subTitle || basename(url)}</span>
       </div>
       <ol>
         {count !== 0 && (
