@@ -12,25 +12,25 @@ const SCROLLBAR_PADDING_OFFSET = 3;
 const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - SCROLLBAR_PADDING_OFFSET;
 
 const ThinScrollBars = css<StyledStartMenuProps>`
-  ::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
       $showScrolling ? THIN_SCROLLBAR_WIDTH : SCROLLBAR_PADDING_OFFSET}px;
   }
 
-  ::-webkit-scrollbar-corner,
-  ::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-corner,
+  &::-webkit-scrollbar-track {
     background-color: ${({ $showScrolling }) =>
       !$showScrolling && "transparent"};
   }
 
-  ::-webkit-scrollbar-button:single-button {
+  &::-webkit-scrollbar-button:single-button {
     background-color: ${({ $showScrolling }) =>
       !$showScrolling && "transparent"};
     border: ${({ $showScrolling }) =>
       !$showScrolling && "1px solid transparent"};
   }
 
-  ::-webkit-scrollbar-thumb:vertical {
+  &::-webkit-scrollbar-thumb:vertical {
     background-color: ${({ $showScrolling }) =>
       !$showScrolling && "rgb(167, 167, 167)"};
   }
@@ -81,7 +81,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       }
     }
 
-    ::-webkit-scrollbar {
+    &::-webkit-scrollbar {
       width: 0;
     }
 
@@ -99,7 +99,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     @media (hover: none), (pointer: coarse) {
       ${ThinScrollBars};
 
-      ::-webkit-scrollbar-track {
+      &::-webkit-scrollbar-track {
         margin: 13px 0;
       }
     }

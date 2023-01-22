@@ -5,7 +5,7 @@ const StyledClock = styled.div`
   display: flex;
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
-  max-width: ${({ theme }) => `calc(${theme.sizes.clock.width} + 10px)}`};
+  max-width: ${({ theme }) => `calc(${theme.sizes.clock.width} + 10px)`};
   min-width: ${({ theme }) => theme.sizes.clock.width};
   padding: 0 5px;
   place-content: center;
