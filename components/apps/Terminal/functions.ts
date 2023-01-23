@@ -133,7 +133,13 @@ export const autoComplete = (
   handlers.forEach(({ fn }) => localEcho.removeAutocompleteHandler(fn));
 
   localEcho.addAutocompleteHandler((index: number, [command]): string[] => {
-    if (index === 0) return Object.keys(commands);
+    if (index === 0) {
+      return [
+        ...Object.keys(commands),
+        ...Object.keys(processDirectory),
+        ...directory,
+      ];
+    }
     if (index === 1) {
       const lowerCommand = command.toLowerCase();
 
