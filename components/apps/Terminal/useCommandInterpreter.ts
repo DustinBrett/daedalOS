@@ -61,6 +61,13 @@ const SYNTAX_ERROR = "The syntax of the command is incorrect.";
 
 const { alias } = PACKAGE_DATA;
 
+type WindowPerformance = Performance & {
+  memory: {
+    jsHeapSizeLimit: number;
+    totalJSHeapSize: number;
+  };
+};
+
 type IResultWithGPU = UAParser.IResult & { gpu: UAParser.IDevice };
 
 declare global {
@@ -603,8 +610,7 @@ const useCommandInterpreter = (
             engine,
             gpu,
             os: hostOS,
-          } = (new window.UAParser(window.navigator.userAgent).getResult() ||
-            {}) as IResultWithGPU;
+          } = (new window.UAParser().getResult() || {}) as IResultWithGPU;
           const { cols, options } = terminal || {};
           const userId = `public@${window.location.hostname}`;
           const terminalFont = (options?.fontFamily || config.fontFamily)
@@ -625,27 +631,70 @@ const useCommandInterpreter = (
             userId,
             Array.from({ length: userId.length }).fill("-").join(""),
             `OS: ${alias} ${displayVersion()}`,
-            `Host: ${hostOS?.name || "Unknown"}${
-              hostOS?.version ? ` ${hostOS.version}` : ""
-            }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`,
-            `Kernel: ${browser?.name || "Unknown"}${
-              browser?.version ? ` ${browser.version}` : ""
-            }${engine?.name ? ` (${engine.name})` : ""}`,
+          ];
+
+          if (hostOS?.name) {
+            output.push(
+              `Host: ${hostOS.name}${
+                hostOS?.version ? ` ${hostOS.version}` : ""
+              }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`
+            );
+          }
+
+          if (browser?.name) {
+            output.push(
+              `Kernel: ${browser.name}${
+                browser?.version ? ` ${browser.version}` : ""
+              }${engine?.name ? ` (${engine.name})` : ""}`
+            );
+          }
+
+          output.push(
             `Uptime: ${getUptime(true)}`,
             `Packages: ${Object.keys(processDirectory).length}`,
             `Resolution: ${window.screen.width}x${window.screen.height}`,
-            `Theme: ${themeName}`,
-            `Terminal Font: ${terminalFont || "Unknown"}`,
-            `GPU: ${gpu?.vendor || "Unknown"}${
-              gpu?.model ? ` ${gpu.model}` : ""
-            }`,
-            `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
-              quota /
-              1024 /
-              1024 /
-              1024
-            ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`,
-          ];
+            `Theme: ${themeName}`
+          );
+
+          if (terminalFont) {
+            output.push(`Terminal Font: ${terminalFont}`);
+          }
+
+          if (gpu?.vendor) {
+            output.push(
+              `GPU: ${gpu.vendor}${gpu?.model ? ` ${gpu.model}` : ""}`
+            );
+          } else if (gpu?.model) {
+            output.push(`GPU: ${gpu.model}`);
+          }
+
+          if (window.performance && "memory" in window.performance) {
+            output.push(
+              `Memory: ${(
+                (window.performance as WindowPerformance).memory
+                  .totalJSHeapSize /
+                1024 /
+                1024
+              ).toFixed(0)}MB / ${(
+                (window.performance as WindowPerformance).memory
+                  .jsHeapSizeLimit /
+                1024 /
+                1024
+              ).toFixed(0)}MB`
+            );
+          }
+
+          if (usage && quota) {
+            output.push(
+              `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
+                quota /
+                1024 /
+                1024 /
+                1024
+              ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`
+            );
+          }
+
           const longestLineLength = output.reduce(
             (max, line) => Math.max(max, line.length),
             0
