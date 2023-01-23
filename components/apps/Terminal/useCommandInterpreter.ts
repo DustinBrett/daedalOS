@@ -1,11 +1,14 @@
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
+import { config, PI_ASCII } from "components/apps/Terminal/config";
 import {
   aliases,
   autoComplete,
   commands,
   getFreeSpace,
+  getUptime,
   help,
   parseCommand,
+  printColor,
   printTable,
   unknownCommand,
 } from "components/apps/Terminal/functions";
@@ -32,17 +35,19 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
+import type UAParser from "ua-parser-js";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   isFileSystemSupported,
   MILLISECONDS_IN_SECOND,
-  ONE_DAY_IN_MILLISECONDS,
+  PACKAGE_DATA,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
-import { getTZOffsetISOString } from "utils/functions";
+import { getTZOffsetISOString, loadFiles } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
@@ -53,6 +58,16 @@ const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";
 const PATH_NOT_FOUND = "The system cannot find the path specified.";
 const SYNTAX_ERROR = "The syntax of the command is incorrect.";
+
+const { alias } = PACKAGE_DATA;
+
+type IResultWithGPU = UAParser.IResult & { gpu: UAParser.IDevice };
+
+declare global {
+  interface Window {
+    UAParser: UAParser;
+  }
+}
 
 const useCommandInterpreter = (
   id: string,
@@ -81,6 +96,7 @@ const useCommandInterpreter = (
     processes,
     title: changeTitle,
   } = useProcesses();
+  const { name: themeName } = useTheme();
   const getFullPath = useCallback(
     async (file: string, writePath?: string): Promise<string> => {
       if (!file) return "";
@@ -577,6 +593,103 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "neofetch":
+        case "systeminfo": {
+          await loadFiles(["/Program Files/Xterm.js/ua-parser.js"]);
+
+          const {
+            browser,
+            cpu,
+            engine,
+            gpu,
+            os: hostOS,
+          } = (new window.UAParser(window.navigator.userAgent).getResult() ||
+            {}) as IResultWithGPU;
+          const { cols, options } = terminal || {};
+          const userId = `public@${window.location.hostname}`;
+          const terminalFont = (options?.fontFamily || config.fontFamily)
+            ?.split(", ")
+            .find((font) =>
+              document.fonts.check(
+                `${options?.fontSize || config.fontSize || 12}px ${font}`
+              )
+            );
+          const { quota = 0, usage = 0 } =
+            (await navigator.storage.estimate()) || {};
+          const labelColor = 3;
+          const labelText = (text: string): string =>
+            `${rgbAnsi(...colorAttributes[labelColor].rgb)}${text}${
+              colorOutput.current?.[0] || rgbAnsi(...colorAttributes[7].rgb)
+            }`;
+          const output = [
+            userId,
+            Array.from({ length: userId.length }).fill("-").join(""),
+            `OS: ${alias} ${displayVersion()}`,
+            `Host: ${hostOS?.name || "Unknown"}${
+              hostOS?.version ? ` ${hostOS.version}` : ""
+            }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`,
+            `Kernel: ${browser?.name || "Unknown"}${
+              browser?.version ? ` ${browser.version}` : ""
+            }${engine?.name ? ` (${engine.name})` : ""}`,
+            `Uptime: ${getUptime(true)}`,
+            `Packages: ${Object.keys(processDirectory).length}`,
+            `Resolution: ${window.screen.width}x${window.screen.height}`,
+            `Theme: ${themeName}`,
+            `Terminal Font: ${terminalFont || "Unknown"}`,
+            `GPU: ${gpu?.vendor || "Unknown"}${
+              gpu?.model ? ` ${gpu.model}` : ""
+            }`,
+            `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
+              quota /
+              1024 /
+              1024 /
+              1024
+            ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`,
+          ];
+          const longestLineLength = output.reduce(
+            (max, line) => Math.max(max, line.length),
+            0
+          );
+          const maxCols = cols || config.cols || 70;
+
+          if (localEcho) {
+            if (PI_ASCII[0].length + 1 + longestLineLength <= maxCols) {
+              output.push(
+                "\n",
+                [0, 4, 2, 6, 1, 5, 3, 7]
+                  .map((color) => printColor(color, colorOutput.current))
+                  .join(""),
+                [8, "C", "A", "E", 9, "D", "B", "F"]
+                  .map((color) => printColor(color, colorOutput.current))
+                  .join("")
+              );
+              PI_ASCII.forEach((imgLine, lineIndex) => {
+                let outputLine = output[lineIndex] || "";
+
+                if (lineIndex === 0) {
+                  const [user, system] = outputLine.split("@");
+
+                  outputLine = `${labelText(user)}@${labelText(system)}`;
+                } else {
+                  const [label, info] = outputLine.split(":");
+
+                  if (info) {
+                    outputLine = `${labelText(label)}:${info}`;
+                  }
+                }
+
+                localEcho.println(
+                  `${labelText(imgLine)} ${
+                    outputLine.padStart(outputLine.length + 1, " ") || ""
+                  }`
+                );
+              });
+            } else {
+              output.forEach((line) => localEcho.println(line));
+            }
+          }
+          break;
+        }
         case "sheep":
         case "esheep": {
           const { default: spawnSheep } = await import("utils/spawnSheep");
@@ -660,24 +773,7 @@ const useCommandInterpreter = (
           break;
         }
         case "uptime":
-          if (window.performance) {
-            const [{ duration }] =
-              window.performance.getEntriesByType("navigation");
-            const bootTime = window.performance.timeOrigin + duration;
-            const uptimeInMilliseconds = Math.ceil(Date.now() - bootTime);
-            const daysOfUptime = Math.floor(
-              uptimeInMilliseconds / ONE_DAY_IN_MILLISECONDS
-            );
-            const displayUptime = new Date(uptimeInMilliseconds)
-              .toISOString()
-              .slice(11, 19);
-
-            localEcho?.println(
-              `Uptime: ${daysOfUptime} days, ${displayUptime}`
-            );
-          } else {
-            localEcho?.println(unknownCommand(baseCommand));
-          }
+          localEcho?.println(`Uptime: ${getUptime()}`);
           break;
         case "ver":
         case "version":
@@ -812,6 +908,7 @@ const useCommandInterpreter = (
       rootFs,
       stat,
       terminal,
+      themeName,
       updateFile,
       updateFolder,
     ]

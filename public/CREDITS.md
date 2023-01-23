@@ -46,6 +46,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
 - [jxl.js](https://github.com/niutech/jxl.js)
 - [fix-webm-duration](https://github.com/yusitnikov/fix-webm-duration)
+- [UAParser.js](https://github.com/faisalman/ua-parser-js)
 
 ## App Libraries
 

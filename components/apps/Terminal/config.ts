@@ -19,3 +19,22 @@ export const config: ITerminalOptions = {
 };
 
 export const PROMPT_CHARACTER = ">";
+
+export const PI_ASCII = [
+  "    .':ldxxkkOOOOOOOOOOOOOOOOOOl",
+  "  .lOKNWMMMMMMMMMMMMMMMMMMMMMMMO",
+  " .kWWX0OOXWMN0000000NMMMN000000d",
+  ".xKo,    lNWo.     .xMMMd       ",
+  "cx,      lWN:      .kMMWc       ",
+  "..       dMK,      '0MMX:       ",
+  "        'OM0'      ;XMMK,       ",
+  "        cNMk.      cWMMO.       ",
+  "       '0MMd       oMMMx.       ",
+  "      .xWMWl      .xMMMd        ",
+  "     .xWMMX;      .OMMMd       .",
+  "    ,OWMMMO.      '0MMMO.     :o",
+  "  .cXMMMMWd       '0MMMWk;..'l0l",
+  "  :XMMMMMK,        oWMMMMWXXNNd.",
+  "  'kWMMW0;         .l0WMMMMNO:. ",
+  "   .lkko.            .cxkkx:.   ",
+];

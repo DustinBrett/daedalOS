@@ -1,6 +1,8 @@
+import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import { commands as gitCommands } from "components/apps/Terminal/processGit";
 import type { LocalEcho } from "components/apps/Terminal/types";
 import processDirectory from "contexts/process/directory";
+import { ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 
 export const help = (
   localEcho: LocalEcho,
@@ -44,6 +46,7 @@ export const commands: Record<string, string> = {
   md: "Creates a directory.",
   mount: "Mounts a local file system directory.",
   move: "Moves file or directory.",
+  neofetch: "Displays system information.",
   pwd: "Prints the working directory.",
   python: "Run code through Python interpreter.",
   rd: "Removes a directory.",
@@ -76,6 +79,7 @@ export const aliases: Record<string, string[]> = {
   git: ["isogit"],
   md: ["mkdir"],
   move: ["mv"],
+  neofetch: ["systeminfo"],
   python: ["py"],
   rd: ["rmdir"],
   ren: ["rename"],
@@ -216,3 +220,45 @@ export const getFreeSpace = async (): Promise<string> => {
 
   return `  ${(quota - usage).toLocaleString()} bytes`;
 };
+
+export const getUptime = (isShort = false): string => {
+  if (window.performance) {
+    const [{ duration }] = window.performance.getEntriesByType("navigation");
+    const bootTime = window.performance.timeOrigin + duration;
+    const uptimeInMilliseconds = Math.ceil(Date.now() - bootTime);
+    const days = Math.floor(uptimeInMilliseconds / ONE_DAY_IN_MILLISECONDS);
+    const uptime = new Date(uptimeInMilliseconds);
+    const hours = uptime.getUTCHours();
+    const minutes = uptime.getUTCMinutes();
+    const seconds = uptime.getUTCSeconds();
+
+    return `${days ? `${days} day${days === 1 ? "" : "s"}, ` : ""}${
+      hours ? `${hours} hour${hours === 1 ? "" : "s"}, ` : ""
+    }${
+      minutes
+        ? `${minutes} ${isShort ? "min" : "minute"}${
+            minutes === 1 ? "" : "s"
+          }, `
+        : ""
+    }${
+      seconds
+        ? `${seconds} ${isShort ? "sec" : "second"}${seconds === 1 ? "" : "s"}`
+        : ""
+    }`;
+  }
+
+  return "Unknown";
+};
+
+export const printColor = (
+  colorIndex: number | string,
+  colorOutput?: string[]
+): string =>
+  `${rgbAnsi(...colorAttributes[colorIndex].rgb, true)}${rgbAnsi(
+    ...colorAttributes[colorIndex].rgb
+  )}|||${
+    colorOutput?.join("") ||
+    `${rgbAnsi(...colorAttributes[0].rgb, true)}${rgbAnsi(
+      ...colorAttributes[7].rgb
+    )}`
+  }`;

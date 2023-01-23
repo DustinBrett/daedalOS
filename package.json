@@ -90,6 +90,7 @@
     "@types/offscreencanvas": "^2019.7.0",
     "@types/react": "^18.0.27",
     "@types/styled-components": "^5.1.26",
+    "@types/ua-parser-js": "^0.7.36",
     "@types/video.js": "^7.3.50",
     "@types/wicg-file-system-access": "^2020.9.5",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
