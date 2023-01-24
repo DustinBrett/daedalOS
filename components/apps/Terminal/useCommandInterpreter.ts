@@ -702,40 +702,39 @@ const useCommandInterpreter = (
           const maxCols = cols || config.cols || 70;
 
           if (localEcho) {
-            if (PI_ASCII[0].length + 1 + longestLineLength <= maxCols) {
-              output.push(
-                "\n",
-                [0, 4, 2, 6, 1, 5, 3, 7]
-                  .map((color) => printColor(color, colorOutput.current))
-                  .join(""),
-                [8, "C", "A", "E", 9, "D", "B", "F"]
-                  .map((color) => printColor(color, colorOutput.current))
-                  .join("")
-              );
-              PI_ASCII.forEach((imgLine, lineIndex) => {
-                let outputLine = output[lineIndex] || "";
+            const longestLine = PI_ASCII[0].length + longestLineLength;
+            const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
 
-                if (lineIndex === 0) {
-                  const [user, system] = outputLine.split("@");
+            output.push(
+              "\n",
+              [0, 4, 2, 6, 1, 5, 3, 7]
+                .map((color) => printColor(color, colorOutput.current))
+                .join(""),
+              [8, "C", "A", "E", 9, "D", "B", "F"]
+                .map((color) => printColor(color, colorOutput.current))
+                .join("")
+            );
+            PI_ASCII.forEach((imgLine, lineIndex) => {
+              let outputLine = output[lineIndex] || "";
 
-                  outputLine = `${labelText(user)}@${labelText(system)}`;
-                } else {
-                  const [label, info] = outputLine.split(":");
+              if (lineIndex === 0) {
+                const [user, system] = outputLine.split("@");
 
-                  if (info) {
-                    outputLine = `${labelText(label)}:${info}`;
-                  }
+                outputLine = `${labelText(user)}@${labelText(system)}`;
+              } else {
+                const [label, info] = outputLine.split(":");
+
+                if (info) {
+                  outputLine = `${labelText(label)}:${info}`;
                 }
+              }
 
-                localEcho.println(
-                  `${labelText(imgLine)} ${
-                    outputLine.padStart(outputLine.length + 1, " ") || ""
-                  }`
-                );
-              });
-            } else {
-              output.forEach((line) => localEcho.println(line));
-            }
+              localEcho.println(
+                `${labelText(imgLine)}${
+                  outputLine.padStart(outputLine.length + imgPadding, " ") || ""
+                }`
+              );
+            });
           }
           break;
         }
