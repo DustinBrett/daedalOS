@@ -621,7 +621,7 @@ const useCommandInterpreter = (
               )
             );
           const { quota = 0, usage = 0 } =
-            (await navigator.storage.estimate()) || {};
+            (await navigator.storage?.estimate?.()) || {};
           const labelColor = 3;
           const labelText = (text: string): string =>
             `${rgbAnsi(...colorAttributes[labelColor].rgb)}${text}${
@@ -684,7 +684,7 @@ const useCommandInterpreter = (
             );
           }
 
-          if (usage && quota) {
+          if (quota) {
             output.push(
               `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
                 quota /
