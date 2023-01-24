@@ -32,7 +32,7 @@
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "test:watch": "jest --watch",
-    "unused-exports": "ts-prune -p tsconfig.json"
+    "unused-exports": "ts-prune --project tsconfig.json --ignore \\pages --error"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
