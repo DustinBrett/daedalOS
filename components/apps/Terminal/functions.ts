@@ -78,7 +78,7 @@ export const aliases: Record<string, string[]> = {
   exit: ["quit"],
   find: ["search"],
   git: ["isogit"],
-  ipconfig: ["whatsmyip"],
+  ipconfig: ["ifconfig", "whatsmyip"],
   md: ["mkdir"],
   move: ["mv"],
   neofetch: ["systeminfo"],

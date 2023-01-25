@@ -515,6 +515,7 @@ const useCommandInterpreter = (
 
           break;
         }
+        case "ifconfig":
         case "ipconfig":
         case "whatsmyip": {
           const cloudFlareIpTraceText =
