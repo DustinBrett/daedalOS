@@ -1,3 +1,4 @@
+import { parseCommand } from "components/apps/Terminal/functions";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
@@ -70,7 +71,7 @@ const Run: FC<ComponentProcessProps> = () => {
             ? currentRunHistory
             : [resource, ...currentRunHistory]
         );
-      const [resourcePid, ...resourceUrl] = resource.split(" ");
+      const [resourcePid, ...resourceUrl] = parseCommand(resource);
       let resourcePath = resource;
       let closeOnExecute = true;
       const resourceExists = await exists(resourcePath);
