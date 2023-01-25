@@ -265,6 +265,8 @@ export const createM3uPlaylist = (tracks: URLTrack[]): string => {
   return `${["#EXTM3U", ...m3uPlaylist.filter(Boolean)].join("\n")}\n`;
 };
 
+const MAX_PLAYLIST_ITEMS = 1000;
+
 export const tracksFromPlaylist = async (
   data: string,
   extension: string,
@@ -276,7 +278,11 @@ export const tracksFromPlaylist = async (
     ".m3u": M3U,
     ".pls": PLS,
   };
-  const tracks = parser[extension]?.parse(data).filter(Boolean) ?? [];
+  const tracks =
+    parser[extension]
+      ?.parse(data)
+      .filter(Boolean)
+      .slice(0, MAX_PLAYLIST_ITEMS) ?? [];
 
   return tracks.map(({ artist = "", file = "", length = 0, title = "" }) => {
     const [parsedArtist, parsedTitle] = [artist.trim(), title.trim()];
