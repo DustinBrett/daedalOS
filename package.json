@@ -56,7 +56,7 @@
     "fflate": "^0.7.4",
     "file-type": "^18.2.0",
     "fix-webm-duration": "^1.0.5",
-    "framer-motion": "^8.5.2",
+    "framer-motion": "8.4.4",
     "gif.js": "^0.2.0",
     "idb": "^7.1.1",
     "ini": "^3.0.1",

@@ -3174,10 +3174,10 @@ frac@~1.1.2:
   resolved "https://registry.yarnpkg.com/frac/-/frac-1.1.2.tgz#3d74f7f6478c88a1b5020306d747dc6313c74d0b"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
-framer-motion@^8.5.2:
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-8.5.2.tgz#8f14c5bbbd429e7add5a3098de5f50e32a074d32"
-  integrity sha512-dt1WwCUIlJ24N/PCCayr0BZJcHOfU/L7kO8fgG8SxcAiGufaNg+Xl0oD14z7mRTGLrqRdA1ZlMW5Wr77aO1Xuw==
+framer-motion@8.4.4:
+  version "8.4.4"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-8.4.4.tgz#2747807782de58a0b597f7a8321bb9e8b85cfc27"
+  integrity sha512-opUisBxrVWAZLnY9nXzyBRN4fwAd6GCXMNJye//id/FEj9HWbDNtVLq4pSn7wFHfvwQ6X1Ujpc+eCqXoDZyepg==
   dependencies:
     "@motionone/dom" "^10.15.3"
     hey-listen "^1.0.8"
