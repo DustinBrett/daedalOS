@@ -135,11 +135,16 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
     InternetShortcut: InternetShortcut;
   };
 
-  if (!icon && pid) {
-    return { comment, icon: processDirectory[pid]?.icon, pid, type, url };
-  }
-
-  return { comment, icon, pid, type, url };
+  return {
+    comment,
+    icon:
+      !icon && pid && pid !== "FileExplorer"
+        ? processDirectory[pid]?.icon
+        : icon,
+    pid,
+    type,
+    url,
+  };
 };
 
 export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
@@ -294,11 +299,15 @@ export const getInfoWithExtension = (
 
         if (pid === "FileExplorer" && !icon) {
           const getIcon = (): void => {
-            getIconFromIni(fs, url).then((iniIcon) => {
-              if (iniIcon) {
-                callback({ comment, icon: iniIcon, pid, subIcons, url });
-              }
-            });
+            getIconFromIni(fs, url).then((iniIcon) =>
+              callback({
+                comment,
+                icon: iniIcon || processDirectory[pid]?.icon,
+                pid,
+                subIcons,
+                url,
+              })
+            );
           };
 
           callback({ comment, getIcon, icon, pid, subIcons, url });

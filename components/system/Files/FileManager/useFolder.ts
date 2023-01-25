@@ -3,7 +3,6 @@ import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import {
   createShortcut,
   filterSystemFiles,
-  getIconByFileExtension,
   getShortcutInfo,
   makeExternalShortcut,
 } from "components/system/Files/FileEntry/functions";
@@ -29,9 +28,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
-  FOLDER_ICON,
   INVALID_FILE_CHARACTERS,
-  MOUNTABLE_EXTENSIONS,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
@@ -368,16 +365,7 @@ const useFolder = (
 
       const baseName = basename(path);
       const shortcutPath = `${baseName}${SHORTCUT_APPEND}${SHORTCUT_EXTENSION}`;
-      const shortcutData = createShortcut({
-        BaseURL: process,
-        IconFile:
-          pathExtension &&
-          (process !== "FileExplorer" ||
-            MOUNTABLE_EXTENSIONS.has(pathExtension))
-            ? getIconByFileExtension(pathExtension)
-            : FOLDER_ICON,
-        URL: path,
-      });
+      const shortcutData = createShortcut({ BaseURL: process, URL: path });
 
       newPath(shortcutPath, Buffer.from(shortcutData));
     },
