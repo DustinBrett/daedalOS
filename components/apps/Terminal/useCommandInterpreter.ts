@@ -515,6 +515,23 @@ const useCommandInterpreter = (
 
           break;
         }
+        case "ipconfig":
+        case "whatsmyip": {
+          const cloudFlareIpTraceText =
+            (await (
+              await fetch("https://cloudflare.com/cdn-cgi/trace")
+            ).text()) || "";
+          const { ip = "" } = Object.fromEntries(
+            cloudFlareIpTraceText
+              .trim()
+              .split("\n")
+              .map((entry) => entry.split("=")) || []
+          ) as Record<string, string>;
+
+          localEcho?.println(ip || "Unknown");
+
+          break;
+        }
         case "kill":
         case "taskkill": {
           const [processName] = commandArgs;
@@ -847,11 +864,7 @@ const useCommandInterpreter = (
           break;
         }
         case "whoami":
-          if (window.navigator.userAgent) {
-            localEcho?.println(window.navigator.userAgent);
-          } else {
-            localEcho?.println(unknownCommand(baseCommand));
-          }
+          localEcho?.println(`${window.location.hostname}\\public`);
           break;
         case "xlsx": {
           const [file, format = "xlsx"] = commandArgs;
