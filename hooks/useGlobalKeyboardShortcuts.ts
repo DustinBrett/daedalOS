@@ -38,10 +38,10 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
   return false;
 };
 
-const metaCombos = new Set(["D", "E", "R"]);
+const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R"]);
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { close, minimize, open, processes } = useProcesses();
+  const { close, maximize, minimize, open, processes } = useProcesses();
   const { foregroundId } = useSession();
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
@@ -150,9 +150,27 @@ const useGlobalKeyboardShortcuts = (): void => {
   useEffect(() => {
     shiftBindingsRef.current = {
       ...shiftBindingsRef.current,
+      ARROWDOWN: () => {
+        const { maximized, minimized } = processes[foregroundId];
+
+        if (maximized) {
+          maximize(foregroundId);
+        } else if (!minimized) {
+          minimize(foregroundId);
+        }
+      },
+      ARROWUP: () => {
+        const { maximized, minimized } = processes[foregroundId];
+
+        if (minimized) {
+          minimize(foregroundId);
+        } else if (!maximized) {
+          maximize(foregroundId);
+        }
+      },
       D: () => toggleShowDesktop(processes, minimize),
     };
-  }, [minimize, open, processes]);
+  }, [foregroundId, maximize, minimize, processes]);
 };
 
 export default useGlobalKeyboardShortcuts;
