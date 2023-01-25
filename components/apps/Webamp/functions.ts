@@ -276,9 +276,9 @@ export const tracksFromPlaylist = async (
     ".m3u": M3U,
     ".pls": PLS,
   };
-  const tracks = parser[extension]?.parse(data) ?? [];
+  const tracks = parser[extension]?.parse(data).filter(Boolean) ?? [];
 
-  return tracks.map(({ artist = "", file, length = 0, title = "" }) => {
+  return tracks.map(({ artist = "", file = "", length = 0, title = "" }) => {
     const [parsedArtist, parsedTitle] = [artist.trim(), title.trim()];
 
     return {
