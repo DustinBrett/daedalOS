@@ -376,20 +376,25 @@ export const getInfoWithExtension = (
             pid,
             url,
           };
+          const isDefaultIcon = icon === processDirectory.VideoPlayer.icon;
+          const videoSubIcons = [processDirectory.VideoPlayer.icon];
 
           callback({
             ...baseFileInfo,
-            getIcon: () =>
-              fs.exists(cachedIconPath, (cachedIconExists) =>
-                callback({
-                  ...baseFileInfo,
-                  icon: cachedIconExists
-                    ? cachedIconPath
-                    : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
-                  subIcons: [processDirectory.VideoPlayer.icon],
-                })
-              ),
-            icon: processDirectory.VideoPlayer.icon,
+            getIcon: isDefaultIcon
+              ? () =>
+                  fs.exists(cachedIconPath, (cachedIconExists) =>
+                    callback({
+                      ...baseFileInfo,
+                      icon: cachedIconExists
+                        ? cachedIconPath
+                        : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+                      subIcons: videoSubIcons,
+                    })
+                  )
+              : undefined,
+            icon: icon || processDirectory.VideoPlayer.icon,
+            subIcons: icon && !isDefaultIcon ? videoSubIcons : undefined,
           });
         } else {
           callback({
