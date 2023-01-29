@@ -31,6 +31,7 @@ import {
   INVALID_FILE_CHARACTERS,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
+  SYSTEM_SHORTCUT_DIRECTORIES,
 } from "utils/constants";
 import { bufferToUrl, cleanUpBufferUrl, preloadLibs } from "utils/functions";
 
@@ -125,8 +126,8 @@ const useFolder = (
   const statsWithShortcutInfo = useCallback(
     async (fileName: string, stats: Stats): Promise<FileStat> => {
       if (
-        extname(fileName).toLowerCase() === SHORTCUT_EXTENSION &&
-        directory === DESKTOP_PATH
+        SYSTEM_SHORTCUT_DIRECTORIES.has(directory) &&
+        extname(fileName).toLowerCase() === SHORTCUT_EXTENSION
       ) {
         return Object.assign(stats, {
           systemShortcut:

@@ -231,6 +231,8 @@ export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
 export const DESKTOP_PATH = `${HOME}/Desktop`;
 
+export const SYSTEM_SHORTCUT_DIRECTORIES = new Set([DESKTOP_PATH]);
+
 export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
   LONG_PRESS: 500,
