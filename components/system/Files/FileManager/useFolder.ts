@@ -124,11 +124,14 @@ const useFolder = (
   const { closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     async (fileName: string, stats: Stats): Promise<FileStat> => {
-      if (extname(fileName).toLowerCase() === SHORTCUT_EXTENSION) {
-        const contents = await readFile(join(directory, fileName));
-
+      if (
+        extname(fileName).toLowerCase() === SHORTCUT_EXTENSION &&
+        directory === DESKTOP_PATH
+      ) {
         return Object.assign(stats, {
-          systemShortcut: getShortcutInfo(contents).type === "System",
+          systemShortcut:
+            getShortcutInfo(await readFile(join(directory, fileName))).type ===
+            "System",
         });
       }
 
