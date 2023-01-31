@@ -2,6 +2,7 @@ import {
   config,
   CONTROL_BAR_HEIGHT,
   getMimeType,
+  VideoResizeKey,
   YT_TYPE,
 } from "components/apps/VideoPlayer/config";
 import type {
@@ -82,12 +83,55 @@ const useVideoPlayer = (
           }
         }
       });
+      const toggleFullscreen = (): void => {
+        try {
+          if (videoPlayer.isFullscreen()) videoPlayer.exitFullscreen();
+          else videoPlayer.requestFullscreen();
+        } catch {
+          // Ignore fullscreen errors
+        }
+      };
 
-      videoElement.addEventListener("dblclick", () =>
-        videoPlayer.isFullscreen()
-          ? videoPlayer.exitFullscreen()
-          : videoPlayer.requestFullscreen()
-      );
+      videoElement.addEventListener("dblclick", toggleFullscreen);
+      videoElement.addEventListener("mousewheel", (event) => {
+        videoPlayer.volume(
+          videoPlayer.volume() + ((event as WheelEvent).deltaY > 0 ? -0.1 : 0.1)
+        );
+      });
+      containerRef.current
+        ?.closest("section")
+        ?.addEventListener("keydown", ({ key, altKey, ctrlKey }) => {
+          if (altKey) {
+            if (VideoResizeKey[key]) {
+              updateWindowSize(
+                videoPlayer.videoHeight() / VideoResizeKey[key],
+                videoPlayer.videoWidth() / VideoResizeKey[key]
+              );
+            } else if (key === "Enter") {
+              toggleFullscreen();
+            }
+          } else if (!ctrlKey) {
+            // eslint-disable-next-line default-case
+            switch (key) {
+              case " ":
+                if (videoPlayer.paused()) videoPlayer.play();
+                else videoPlayer.pause();
+                break;
+              case "ArrowUp":
+                videoPlayer.volume(videoPlayer.volume() + 0.1);
+                break;
+              case "ArrowDown":
+                videoPlayer.volume(videoPlayer.volume() - 0.1);
+                break;
+              case "ArrowLeft":
+                videoPlayer.currentTime(videoPlayer.currentTime() - 10);
+                break;
+              case "ArrowRight":
+                videoPlayer.currentTime(videoPlayer.currentTime() + 10);
+                break;
+            }
+          }
+        });
       setPlayer(videoPlayer);
       setLoading(false);
       if (!isYouTubeUrl(url)) linkElement(id, "peekElement", videoElement);
