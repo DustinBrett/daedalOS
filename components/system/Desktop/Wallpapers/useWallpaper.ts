@@ -1,6 +1,6 @@
 import {
   BASE_CANVAS_SELECTOR,
-  cssFit,
+  bgPositionSize,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
 } from "components/system/Desktop/Wallpapers/constants";
@@ -10,6 +10,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import { useCallback, useEffect } from "react";
+import { useTheme } from "styled-components";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
@@ -39,6 +40,7 @@ const useWallpaper = (
   const { exists, readFile } = useFileSystem();
   const { sessionLoaded, setWallpaper, wallpaperImage, wallpaperFit } =
     useSession();
+  const { colors } = useTheme();
   const [wallpaperName] = wallpaperImage.split(" ");
   const vantaWireframe = wallpaperImage === "VANTA WIREFRAME";
   const wallpaperWorker = useWorker<void>(
@@ -62,38 +64,38 @@ const useWallpaper = (
     }
   }, [desktopRef, wallpaperWorker]);
   const loadWallpaper = useCallback(() => {
-    if (desktopRef.current) {
-      let config: WallpaperConfig | undefined;
+    if (!desktopRef.current) return;
 
-      if (wallpaperName === "VANTA") {
-        config = { ...vantaConfig };
-        vantaConfig.material.options.wireframe = vantaWireframe;
-      } else if (wallpaperImage === "MATRIX 3D") {
-        config = { volumetric: true };
-      }
+    let config: WallpaperConfig | undefined;
 
-      desktopRef.current.setAttribute("style", "");
-      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    if (wallpaperName === "VANTA") {
+      config = { ...vantaConfig };
+      vantaConfig.material.options.wireframe = vantaWireframe;
+    } else if (wallpaperImage === "MATRIX 3D") {
+      config = { volumetric: true };
+    }
 
-      window.WallpaperDestroy?.();
+    document.documentElement.style.setProperty("background", "");
+    desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
-      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
-        const offscreen = createOffscreenCanvas(desktopRef.current);
+    window.WallpaperDestroy?.();
 
-        wallpaperWorker.current.postMessage(
-          { canvas: offscreen, config, devicePixelRatio: 1 },
-          [offscreen]
-        );
+    if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
+      const offscreen = createOffscreenCanvas(desktopRef.current);
 
-        window.removeEventListener("resize", resizeListener);
-        window.addEventListener("resize", resizeListener, { passive: true });
-      } else if (WALLPAPER_PATHS[wallpaperName]) {
-        WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
-          wallpaper?.(desktopRef.current, config)
-        );
-      } else {
-        setWallpaper("VANTA");
-      }
+      wallpaperWorker.current.postMessage(
+        { canvas: offscreen, config, devicePixelRatio: 1 },
+        [offscreen]
+      );
+
+      window.removeEventListener("resize", resizeListener);
+      window.addEventListener("resize", resizeListener, { passive: true });
+    } else if (WALLPAPER_PATHS[wallpaperName]) {
+      WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
+        wallpaper?.(desktopRef.current, config)
+      );
+    } else {
+      setWallpaper("VANTA");
     }
   }, [
     desktopRef,
@@ -106,11 +108,10 @@ const useWallpaper = (
   ]);
   const loadFileWallpaper = useCallback(async () => {
     const [, currentWallpaperUrl] =
-      desktopRef.current?.style.backgroundImage.match(/"(.*?)"/) || [];
+      document.documentElement.style.background.match(/"(.*?)"/) || [];
 
-    if (currentWallpaperUrl === wallpaperImage) return;
     if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
-    desktopRef.current?.setAttribute("style", "");
+
     desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
     let wallpaperUrl = "";
@@ -118,6 +119,8 @@ const useWallpaper = (
     let newWallpaperFit = wallpaperFit;
 
     if (wallpaperName === "APOD") {
+      document.documentElement.style.setProperty("background", "");
+
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
       const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         timeZone: "US/Eastern",
@@ -164,10 +167,15 @@ const useWallpaper = (
     }
 
     if (wallpaperUrl) {
-      const wallpaperStyle = (url: string): string => `
-        background-image: url(${url});
-        ${cssFit[newWallpaperFit]}
-      `;
+      const applyWallpaper = (url: string): void => {
+        const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
+        const positionSize = bgPositionSize[newWallpaperFit];
+
+        document.documentElement.style.setProperty(
+          "background",
+          `url(${url}) ${positionSize} ${repeat} fixed border-box border-box ${colors.background}`
+        );
+      };
 
       if (fallbackBackground) {
         fetch(wallpaperUrl, {
@@ -176,25 +184,16 @@ const useWallpaper = (
         })
           .then(({ ok }) => {
             if (!ok) throw new Error("Failed to load url");
-
-            desktopRef.current?.setAttribute(
-              "style",
-              wallpaperStyle(wallpaperUrl)
-            );
           })
-          .catch(() =>
-            desktopRef.current?.setAttribute(
-              "style",
-              wallpaperStyle(fallbackBackground)
-            )
-          );
+          .catch(() => applyWallpaper(fallbackBackground));
       } else {
-        desktopRef.current?.setAttribute("style", wallpaperStyle(wallpaperUrl));
+        applyWallpaper(wallpaperUrl);
       }
     } else {
       loadWallpaper();
     }
   }, [
+    colors.background,
     desktopRef,
     exists,
     loadWallpaper,

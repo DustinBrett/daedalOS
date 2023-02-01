@@ -1,15 +1,12 @@
 import type { WallpaperFunc } from "components/system/Desktop/Wallpapers/types";
 import type { WallpaperFit } from "contexts/session/types";
 
-export const cssFit: Record<WallpaperFit, string> = {
-  center: "background-repeat: no-repeat;",
-  fill: "background-size: cover;",
-  fit: `
-    background-repeat: no-repeat;
-    background-size: contain;
-  `,
-  stretch: "background-size: 100% 100%;",
-  tile: "",
+export const bgPositionSize: Record<WallpaperFit, string> = {
+  center: "center center",
+  fill: "center center / cover",
+  fit: "center center / contain",
+  stretch: "center center / 100% 100%",
+  tile: "50% 50%",
 };
 
 export const WALLPAPER_PATHS: Record<

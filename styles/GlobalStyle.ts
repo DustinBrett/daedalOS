@@ -23,6 +23,12 @@ const GlobalStyle = createGlobalStyle`
     text-size-adjust: none;
   }
 
+  html {
+    background-color: ${({ theme }) => theme.colors.background};
+    background-position: center;
+    transition: background-image 1s ease-in-out;
+  }
+
   input::selection,
   textarea::selection {
     background-color: rgb(0, 120, 215);
