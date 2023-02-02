@@ -27,7 +27,10 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
   const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState<number>(0);
-  const actionName = useMemo(() => (url ? "Extracting" : "Copying"), [url]);
+  const actionName = useMemo(
+    () => (url && !fileReaders ? "Extracting" : "Copying"),
+    [fileReaders, url]
+  );
   const processing = useRef(false);
   const completeTransfer = useCallback(() => {
     processing.current = false;
