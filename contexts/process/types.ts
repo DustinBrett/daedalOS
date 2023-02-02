@@ -1,10 +1,13 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import type { FileReaders } from "components/system/Dialogs/Transfer/useTransferDialog";
+import type {
+  FileReaders,
+  ObjectReaders,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 type DialogProcessArguments = {
-  fileReaders?: FileReaders;
+  fileReaders?: FileReaders | ObjectReaders;
   progress?: number;
 };
 

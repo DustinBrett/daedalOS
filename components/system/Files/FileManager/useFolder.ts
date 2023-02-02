@@ -1,5 +1,6 @@
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   createShortcut,
   filterSystemFiles,
@@ -445,10 +446,12 @@ const useFolder = (
     },
     [createZipFile]
   );
+  const { openTransferDialog } = useTransferDialog();
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
       const data = await readFile(path);
       const { unarchive, unzip } = await import("utils/zipFunctions");
+      openTransferDialog(undefined, path);
       const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
         extname(path).toLowerCase()
       )
@@ -459,30 +462,41 @@ const useFolder = (
         path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
       );
       const uniqueName = await createPath(zipFolderName, directory);
+      const objectReaders = Object.entries(unzippedFiles).map(
+        ([extractPath, fileContents]) => {
+          let aborted = false;
 
-      try {
-        await Promise.all(
-          Object.entries(unzippedFiles).map(
-            async ([extractPath, fileContents]) => {
-              const localPath = join(directory, uniqueName, extractPath);
+          return {
+            abort: () => {
+              aborted = true;
+            },
+            directory: join(directory, uniqueName),
+            done: () => updateFolder(directory, uniqueName),
+            name: extractPath,
+            read: async () => {
+              if (aborted) return;
 
-              if (fileContents.length === 0 && extractPath.endsWith("/")) {
-                await mkdir(localPath);
-              } else {
-                if (!(await exists(dirname(localPath)))) {
-                  await mkdirRecursive(dirname(localPath));
+              try {
+                const localPath = join(directory, uniqueName, extractPath);
+
+                if (fileContents.length === 0 && extractPath.endsWith("/")) {
+                  await mkdir(localPath);
+                } else {
+                  if (!(await exists(dirname(localPath)))) {
+                    await mkdirRecursive(dirname(localPath));
+                  }
+
+                  await writeFile(localPath, Buffer.from(fileContents));
                 }
-
-                await writeFile(localPath, Buffer.from(fileContents));
+              } catch {
+                // Ignore failure to extract
               }
-            }
-          )
-        );
-      } catch {
-        // Ignore failure to extract
-      }
+            },
+          };
+        }
+      );
 
-      updateFolder(directory, uniqueName);
+      openTransferDialog(objectReaders, path);
     },
     [
       createPath,
@@ -490,6 +504,7 @@ const useFolder = (
       exists,
       mkdir,
       mkdirRecursive,
+      openTransferDialog,
       readFile,
       updateFolder,
       writeFile,

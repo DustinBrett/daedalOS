@@ -22,6 +22,7 @@ const colors = {
   highlightBackground: "hsla(207, 100%, 72%, 20%)",
   progress: "hsla(113, 78%, 56%, 90%)",
   progressBackground: "hsla(104, 22%, 45%, 70%)",
+  progressBarRgb: "rgb(6, 176, 37)",
   startButton: "#FFF",
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",

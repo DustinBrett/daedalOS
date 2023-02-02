@@ -17,15 +17,21 @@ const StyledTransfer = styled.div`
       width: 100%;
 
       &::-webkit-progress-bar {
-        background-color: rgb(230, 230, 230);
+        background: rgb(230, 230, 230);
       }
 
       &::-webkit-progress-value {
-        background: rgb(6, 176, 37);
+        background: ${({ theme }) => theme.colors.progressBarRgb};
       }
 
       &::-moz-progress-bar {
-        background: rgb(6, 176, 37);
+        background: ${({ theme }) => theme.colors.progressBarRgb};
+      }
+
+      &:indeterminate {
+        &::-webkit-progress-bar {
+          background: ${({ theme }) => theme.colors.progressBarRgb};
+        }
       }
     }
   }

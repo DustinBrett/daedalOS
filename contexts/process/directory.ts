@@ -262,7 +262,7 @@ const directory: Processes = {
       width: 400,
     },
     icon: "/System/Icons/copying.webp",
-    title: "Copying...",
+    title: "",
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),
