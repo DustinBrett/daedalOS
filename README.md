@@ -226,6 +226,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs)
 - Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
+- Keyboard Shortcuts (Volume, Seek, Scale, Fullscreen)
 
 ### [Vim](https://github.com/coolwanglu/vim.js)
 
