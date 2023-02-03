@@ -278,6 +278,11 @@ const useFolderContextMenu = (
                       toggle: wallpaperImage === "MATRIX 3D",
                     },
                     {
+                      action: () => setWallpaper("SLIDESHOW"),
+                      label: "Picture Slideshow",
+                      toggle: wallpaperImage === "SLIDESHOW",
+                    },
+                    {
                       action: () => setWallpaper("VANTA"),
                       label: `Vanta Waves${
                         wallpaperImage === "VANTA WIREFRAME"

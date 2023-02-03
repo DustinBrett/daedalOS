@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
   html {
     background-color: ${({ theme }) => theme.colors.background};
     background-position: center;
-    transition: background-image 1s ease-in-out;
+    transition: background-image 1.25s linear;
   }
 
   input::selection,

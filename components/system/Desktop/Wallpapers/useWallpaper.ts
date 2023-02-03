@@ -9,12 +9,18 @@ import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vant
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect } from "react";
+import { extname, join } from "path";
+import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  IMAGE_FILE_EXTENSIONS,
   MILLISECONDS_IN_DAY,
+  MILLISECONDS_IN_MINUTE,
+  PICTURES_FOLDER,
+  SLIDESHOW_FILE,
+  UNSUPPORTED_BACKGROUND_EXTENSIONS,
 } from "utils/constants";
 import {
   bufferToUrl,
@@ -34,10 +40,13 @@ declare global {
 
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 
+let slideshowFiles: string[];
+
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>
 ): void => {
-  const { exists, readFile } = useFileSystem();
+  const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
+    useFileSystem();
   const { sessionLoaded, setWallpaper, wallpaperImage, wallpaperFit } =
     useSession();
   const { colors } = useTheme();
@@ -106,19 +115,79 @@ const useWallpaper = (
     wallpaperName,
     wallpaperWorker,
   ]);
+  const slideshowTimerRef = useRef<number>();
+  const getAllImages = useCallback(
+    async (baseDirectory: string): Promise<string[]> =>
+      (await readdir(baseDirectory)).reduce<Promise<string[]>>(
+        async (images, entry) => {
+          const entryPath = join(baseDirectory, entry);
+
+          return [
+            ...(await images),
+            ...((await lstat(entryPath)).isDirectory()
+              ? await getAllImages(entryPath)
+              : [
+                  IMAGE_FILE_EXTENSIONS.has(extname(entryPath)) &&
+                  !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(extname(entryPath))
+                    ? entryPath
+                    : "",
+                ]),
+          ].filter(Boolean);
+        },
+        Promise.resolve([])
+      ),
+    [readdir, lstat]
+  );
   const loadFileWallpaper = useCallback(async () => {
     const [, currentWallpaperUrl] =
       document.documentElement.style.background.match(/"(.*?)"/) || [];
 
-    if (currentWallpaperUrl) cleanUpBufferUrl(currentWallpaperUrl);
+    if (currentWallpaperUrl?.startsWith("blob:")) {
+      cleanUpBufferUrl(currentWallpaperUrl);
+    }
 
     desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
+    const isSlideshow = wallpaperName === "SLIDESHOW";
 
-    if (wallpaperName === "APOD") {
+    if (isSlideshow) {
+      const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
+
+      if (!(await exists(slideshowFilePath))) {
+        await writeFile(
+          slideshowFilePath,
+          JSON.stringify(await getAllImages(PICTURES_FOLDER))
+        );
+        updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
+      }
+
+      slideshowFiles ||= [
+        ...new Set(
+          JSON.parse(
+            (
+              await readFile(`${PICTURES_FOLDER}/${SLIDESHOW_FILE}`)
+            )?.toString() || "[]"
+          ) as string[]
+        ),
+      ];
+
+      do {
+        wallpaperUrl =
+          slideshowFiles[Math.floor(Math.random() * slideshowFiles.length)];
+
+        if (wallpaperUrl.startsWith("/")) {
+          wallpaperUrl = `${window.location.origin}${wallpaperUrl}`;
+        }
+      } while (
+        currentWallpaperUrl === wallpaperUrl &&
+        slideshowFiles.length > 1
+      );
+
+      newWallpaperFit = "fill";
+    } else if (wallpaperName === "APOD") {
       document.documentElement.style.setProperty("background", "");
 
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
@@ -173,7 +242,11 @@ const useWallpaper = (
 
         document.documentElement.style.setProperty(
           "background",
-          `url(${url}) ${positionSize} ${repeat} fixed border-box border-box ${colors.background}`
+          `url(${CSS.escape(
+            url
+          )}) ${positionSize} ${repeat} fixed border-box border-box ${
+            colors.background
+          }`
         );
       };
 
@@ -188,6 +261,13 @@ const useWallpaper = (
           .catch(() => applyWallpaper(fallbackBackground));
       } else {
         applyWallpaper(wallpaperUrl);
+
+        if (isSlideshow) {
+          slideshowTimerRef.current = window.setTimeout(
+            loadFileWallpaper,
+            MILLISECONDS_IN_MINUTE
+          );
+        }
       }
     } else {
       loadWallpaper();
@@ -196,16 +276,23 @@ const useWallpaper = (
     colors.background,
     desktopRef,
     exists,
+    getAllImages,
     loadWallpaper,
     readFile,
     setWallpaper,
+    updateFolder,
     wallpaperFit,
     wallpaperImage,
     wallpaperName,
+    writeFile,
   ]);
 
   useEffect(() => {
     if (sessionLoaded) {
+      if (slideshowTimerRef.current) {
+        window.clearTimeout(slideshowTimerRef.current);
+      }
+
       if (wallpaperName && !WALLPAPER_WORKER_NAMES.includes(wallpaperName)) {
         loadFileWallpaper().catch(loadWallpaper);
       } else {
