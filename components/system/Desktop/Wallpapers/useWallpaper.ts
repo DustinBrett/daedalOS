@@ -159,7 +159,11 @@ const useWallpaper = (
       if (!(await exists(slideshowFilePath))) {
         await writeFile(
           slideshowFilePath,
-          JSON.stringify(await getAllImages(PICTURES_FOLDER))
+          JSON.stringify(
+            (await exists(PICTURES_FOLDER))
+              ? await getAllImages(PICTURES_FOLDER)
+              : "[]"
+          )
         );
         updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
       }
