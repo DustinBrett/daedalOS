@@ -528,9 +528,22 @@ const useCommandInterpreter = (
               .split("\n")
               .map((entry) => entry.split("=")) || []
           ) as Record<string, string>;
+          const isValidIp = (possibleIp: string): boolean => {
+            const octets = possibleIp.split(".");
 
-          localEcho?.println(ip || "Unknown");
+            return (
+              octets.length === 4 &&
+              octets.map(Number).every((octet) => octet > 0 && octet < 256)
+            );
+          };
 
+          localEcho?.println("IP Configuration");
+          localEcho?.println("");
+          localEcho?.println(
+            `   IPv4 Address. . . . . . . . . . . : ${
+              isValidIp(ip) ? ip : "Unknown"
+            }`
+          );
           break;
         }
         case "kill":
