@@ -202,7 +202,14 @@ const Run: FC<ComponentProcessProps> = () => {
   }, [runProcess?.url]);
 
   return (
-    <StyledRun {...useFileDrop({ id: "Run" })}>
+    <StyledRun
+      {...useFileDrop({ id: "Run" })}
+      onContextMenu={(event) => {
+        if (!(event.target instanceof HTMLInputElement)) {
+          haltEvent(event);
+        }
+      }}
+    >
       <figure>
         <img alt="Run" src="/System/Icons/32x32/run.webp" />
         <figcaption>{MESSAGE}</figcaption>
