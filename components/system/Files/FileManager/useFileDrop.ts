@@ -20,7 +20,7 @@ type FileDrop = {
 };
 
 type FileDropProps = {
-  callback?: (path: string, buffer?: Buffer) => Promise<void> | void;
+  callback?: (path: string, buffer?: Buffer) => Promise<void>;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;

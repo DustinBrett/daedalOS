@@ -7,7 +7,7 @@ export type FileReaders = [File, string, FileReader][];
 export type ObjectReaders = {
   abort: () => void;
   directory: string;
-  done: () => void;
+  done?: () => void;
   name: string;
   read: () => Promise<void>;
 }[];

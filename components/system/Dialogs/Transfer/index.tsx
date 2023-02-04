@@ -9,6 +9,7 @@ import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 const MAX_TITLE_LENGTH = 37;
 
@@ -47,7 +48,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
       if (remainingReaders.length > 0) {
         processObjectReader(remainingReaders);
       } else {
-        reader.done();
+        reader.done?.();
         completeTransfer();
       }
     },
@@ -139,7 +140,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
           fileReaders.forEach(([, , reader]) => reader.abort());
         } else {
           fileReaders?.forEach((reader) => reader.abort());
-          fileReaders?.[0]?.done();
+          fileReaders?.[0]?.done?.();
         }
       }
     },
@@ -147,7 +148,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledTransfer>
+    <StyledTransfer onContextMenu={haltEvent}>
       <h1>
         {name
           ? `${actionName} '${

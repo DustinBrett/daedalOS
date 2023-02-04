@@ -1,5 +1,8 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import type { FileReaders } from "components/system/Dialogs/Transfer/useTransferDialog";
+import type {
+  FileReaders,
+  ObjectReaders,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type {
   CompleteAction,
@@ -224,9 +227,9 @@ export const handleFileInputEvent = (
     fileName: string,
     buffer?: Buffer,
     completeAction?: CompleteAction
-  ) => void,
+  ) => Promise<void>,
   directory: string,
-  openTransferDialog: (fileReaders: FileReaders) => void
+  openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void
 ): void => {
   haltEvent(event);
 
@@ -235,16 +238,29 @@ export const handleFileInputEvent = (
   if (text) {
     try {
       const filePaths = JSON.parse(text) as string[];
+      const isSingleFile = filePaths.length === 1;
+      const objectReaders = filePaths.map((filePath) => {
+        let aborted = false;
 
-      filePaths?.forEach(
-        (path) =>
-          dirname(path) !== "." &&
-          callback(
-            path,
-            undefined,
-            filePaths.length === 1 ? "updateUrl" : undefined
-          )
-      );
+        return {
+          abort: () => {
+            aborted = true;
+          },
+          directory,
+          name: filePath,
+          read: async () => {
+            if (aborted || dirname(filePath) === ".") return;
+
+            await callback(
+              filePath,
+              undefined,
+              isSingleFile ? "updateUrl" : undefined
+            );
+          },
+        };
+      });
+
+      openTransferDialog(objectReaders);
     } catch {
       // Failed to parse text data to JSON
     }
