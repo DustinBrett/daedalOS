@@ -50,7 +50,7 @@ type IFileSystemAccess = {
 type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => void,
+    callback: (name: string, buffer?: Buffer) => Promise<void>,
     accept?: string,
     multiple?: boolean
   ) => void;
@@ -261,7 +261,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const addFile = useCallback(
     (
       directory: string,
-      callback: (name: string, buffer?: Buffer) => void
+      callback: (name: string, buffer?: Buffer) => Promise<void>
     ): void => {
       const fileInput = document.createElement("input");
 
