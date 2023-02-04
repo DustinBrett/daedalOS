@@ -39,11 +39,15 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
 
           const path = join(directory, file);
 
-          if (await exists(path)) {
-            return (await lstat(path)).isDirectory()
-              ? UNCALCULATED_SIZE
-              : (currentSize === UNKNOWN_SIZE ? 0 : currentSize) +
-                  (await stat(path)).size;
+          try {
+            if (await exists(path)) {
+              return (await lstat(path)).isDirectory()
+                ? UNCALCULATED_SIZE
+                : (currentSize === UNKNOWN_SIZE ? 0 : currentSize) +
+                    (await stat(path)).size;
+            }
+          } catch {
+            // Ignore errors getting file sizes
           }
 
           return totalSize;
