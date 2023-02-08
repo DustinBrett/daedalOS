@@ -93,19 +93,21 @@ const useSessionContextState = (): SessionContextState => {
 
   useEffect(() => {
     if (sessionLoaded && !haltSession) {
-      writeFile(
-        SESSION_FILE,
-        JSON.stringify({
-          clockSource,
-          iconPositions,
-          runHistory,
-          sortOrders,
-          themeName,
-          wallpaperFit,
-          wallpaperImage,
-          windowStates,
-        }),
-        true
+      requestIdleCallback(() =>
+        writeFile(
+          SESSION_FILE,
+          JSON.stringify({
+            clockSource,
+            iconPositions,
+            runHistory,
+            sortOrders,
+            themeName,
+            wallpaperFit,
+            wallpaperImage,
+            windowStates,
+          }),
+          true
+        )
       );
     }
   }, [
@@ -123,10 +125,8 @@ const useSessionContextState = (): SessionContextState => {
   ]);
 
   useEffect(() => {
-    if (rootFs) {
+    if (!initializedSession.current && rootFs) {
       const initSession = async (): Promise<void> => {
-        if (initializedSession.current) return;
-
         initializedSession.current = true;
 
         try {
