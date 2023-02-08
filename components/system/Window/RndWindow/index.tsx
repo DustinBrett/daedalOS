@@ -26,7 +26,7 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { componentWindow, maximized, minimized } = process || {};
+  const { Component, componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(
@@ -44,11 +44,11 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
         rndEntry?.resizableElement?.current?.children || [];
       const [windowContainer] = rndWindowElements as HTMLElement[];
 
-      if (process && !componentWindow && windowContainer) {
+      if (Component && !componentWindow && windowContainer) {
         linkElement(id, "componentWindow", windowContainer);
       }
     },
-    [componentWindow, id, linkElement, process]
+    [Component, componentWindow, id, linkElement]
   );
 
   useEffect(() => {

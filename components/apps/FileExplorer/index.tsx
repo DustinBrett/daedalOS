@@ -79,11 +79,11 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   ]);
 
   useEffect(() => {
-    if (process && !closing && !url) {
+    if (componentWindow && !closing && !url) {
       setProcessUrl(id, "/");
       setProcessIcon(id, "/System/Icons/pc.webp");
     }
-  }, [closing, id, process, setProcessIcon, setProcessUrl, url]);
+  }, [closing, id, componentWindow, setProcessIcon, setProcessUrl, url]);
 
   useEffect(() => {
     componentWindow?.addEventListener("keydown", onKeyDown);

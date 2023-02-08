@@ -14,18 +14,18 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { backgroundColor, peekElement } = process || {};
+  const { backgroundColor, Component, peekElement } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);
   const linkViewportEntry = useCallback(
     (viewportEntry: HTMLDivElement) =>
-      process &&
+      Component &&
       !peekElement &&
       viewportEntry &&
       linkElement(id, "peekElement", viewportEntry),
-    [id, linkElement, peekElement, process]
+    [Component, id, linkElement, peekElement]
   );
 
   return (
