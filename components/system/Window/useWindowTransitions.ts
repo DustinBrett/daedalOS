@@ -87,7 +87,7 @@ const useWindowTransitions = (
     if (!(x === 0 && y === 0)) {
       setMinimize({ ...baseMinimize, x, y });
     }
-  }, [componentWindow, minimized, processes, taskbarEntry]);
+  }, [componentWindow, minimized, taskbarEntry]);
 
   useEffect(() => {
     const monitorViewportResize = (): void => {
