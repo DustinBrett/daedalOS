@@ -33,6 +33,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
+import { useProcessesRef } from "hooks/useProcessesRef";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
@@ -97,12 +98,8 @@ const useCommandInterpreter = (
     stat,
     updateFolder,
   } = useFileSystem();
-  const {
-    closeWithTransition,
-    open,
-    processes,
-    title: changeTitle,
-  } = useProcesses();
+  const { closeWithTransition, open, title: changeTitle } = useProcesses();
+  const processesRef = useProcessesRef();
   const { name: themeName } = useTheme();
   const getFullPath = useCallback(
     async (file: string, writePath?: string): Promise<string> => {
@@ -550,7 +547,7 @@ const useCommandInterpreter = (
         case "taskkill": {
           const [processName] = commandArgs;
 
-          if (processes[processName]) {
+          if (processesRef.current[processName]) {
             closeWithTransition(processName);
             localEcho?.println(
               `SUCCESS: Sent termination signal to the process "${processName}".`
@@ -800,7 +797,10 @@ const useCommandInterpreter = (
               ["PID", 30],
               ["Title", 25],
             ],
-            Object.entries(processes).map(([pid, { title }]) => [pid, title]),
+            Object.entries(processesRef.current).map(([pid, { title }]) => [
+              pid,
+              title,
+            ]),
             localEcho
           );
           break;
@@ -976,7 +976,7 @@ const useCommandInterpreter = (
       mapFs,
       mkdirRecursive,
       open,
-      processes,
+      processesRef,
       readFile,
       readdir,
       rename,

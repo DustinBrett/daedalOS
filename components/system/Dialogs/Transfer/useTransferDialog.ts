@@ -1,4 +1,5 @@
 import { useProcesses } from "contexts/process";
+import { useProcessesRef } from "hooks/useProcessesRef";
 import { useEffect, useMemo, useRef } from "react";
 import { PROCESS_DELIMITER } from "utils/constants";
 
@@ -20,18 +21,19 @@ type Dialog = {
 };
 
 const useTransferDialog = (): Dialog => {
-  const { argument, open, processes } = useProcesses();
+  const { argument, open } = useProcesses();
+  const processesRef = useProcessesRef();
   const getTransferIdCallbackRef =
     useRef<(url: string) => string | undefined>();
 
   useEffect(() => {
     getTransferIdCallbackRef.current = (url: string) =>
-      Object.keys(processes).find((id) => {
+      Object.keys(processesRef.current).find((id) => {
         const [pid, pidUrl] = id.split(PROCESS_DELIMITER);
 
         return pid === "Transfer" && url === pidUrl;
       }) || "";
-  }, [processes]);
+  }, [processesRef]);
 
   return useMemo(
     () =>
