@@ -1,5 +1,5 @@
 import { useProcesses } from "contexts/process";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type History = {
   canGoBack: boolean;
@@ -15,13 +15,16 @@ const useHistory = (url: string, id: string): History => {
   const [currentUrl, setCurrentUrl] = useState(url);
   const [history, setHistory] = useState<string[]>(() => [url]);
   const [position, setPosition] = useState<number>(0);
-  const moveHistory = (step: number): void => {
-    const newPosition = position + step;
+  const moveHistory = useCallback(
+    (step: number): void => {
+      const newPosition = position + step;
 
-    setPosition(newPosition);
-    setCurrentUrl(history[newPosition]);
-    changeUrl(id, history[newPosition]);
-  };
+      setPosition(newPosition);
+      setCurrentUrl(history[newPosition]);
+      changeUrl(id, history[newPosition]);
+    },
+    [changeUrl, history, id, position]
+  );
 
   useEffect(() => {
     if (url !== currentUrl) {
