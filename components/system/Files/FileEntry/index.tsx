@@ -411,7 +411,6 @@ const FileEntry: FC<FileEntryProps> = ({
     path,
     readFile,
     setInfo,
-    stats.mtime,
     unlink,
     updateFolder,
     url,
@@ -431,7 +430,7 @@ const FileEntry: FC<FileEntryProps> = ({
   );
 
   useLayoutEffect(() => {
-    if (buttonRef.current) {
+    if (buttonRef.current && fileManagerRef.current) {
       const inFocusedEntries = focusedEntries.includes(fileName);
       const inFocusing = focusing.includes(fileName);
       const isFocused = inFocusedEntries || inFocusing;
@@ -440,7 +439,7 @@ const FileEntry: FC<FileEntryProps> = ({
         focusing.splice(focusing.indexOf(fileName), 1);
       }
 
-      if (selectionRect && fileManagerRef.current) {
+      if (selectionRect) {
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
           fileManagerRef.current.getBoundingClientRect(),
