@@ -402,28 +402,26 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const restoredFsHandles = useRef(false);
 
   useEffect(() => {
-    if (rootFs) {
+    if (!restoredFsHandles.current && rootFs) {
       const restoreFsHandles = async (): Promise<void> => {
-        if (!restoredFsHandles.current) {
-          restoredFsHandles.current = true;
+        restoredFsHandles.current = true;
 
-          Object.entries(await getFileSystemHandles()).forEach(
-            async ([handleDirectory, handle]) => {
-              if (!(await exists(handleDirectory))) {
-                try {
-                  mapFs(
-                    SYSTEM_DIRECTORIES.has(handleDirectory)
-                      ? handleDirectory
-                      : dirname(handleDirectory),
-                    handle
-                  );
-                } catch {
-                  // Ignore failure
-                }
+        Object.entries(await getFileSystemHandles()).forEach(
+          async ([handleDirectory, handle]) => {
+            if (!(await exists(handleDirectory))) {
+              try {
+                mapFs(
+                  SYSTEM_DIRECTORIES.has(handleDirectory)
+                    ? handleDirectory
+                    : dirname(handleDirectory),
+                  handle
+                );
+              } catch {
+                // Ignore failure
               }
             }
-          );
-        }
+          }
+        );
       };
 
       restoreFsHandles();
