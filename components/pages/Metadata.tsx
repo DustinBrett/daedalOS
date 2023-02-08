@@ -49,6 +49,7 @@ const Metadata: FC = () => {
   const [favIcon, setFavIcon] = useState("");
   const { foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
+  const { icon: processIcon, title: processTitle } = process || {};
   const resetFaviconAndTitle = useCallback((): void => {
     setTitle(alias);
     setFavIcon((currentFavicon) =>
@@ -66,17 +67,17 @@ const Metadata: FC = () => {
   );
 
   useEffect(() => {
-    if (process) {
-      const documentTitle = `${process.title} - ${alias}`;
+    if (processIcon || processTitle) {
+      const documentTitle = processTitle ? `${processTitle} - ${alias}` : alias;
 
       if (title !== documentTitle) setTitle(documentTitle);
-      if (favIcon !== process.icon || !favIcon) {
-        setFavIcon(process.icon || FAVICON_BASE_PATH);
+      if (favIcon !== processIcon || !favIcon) {
+        setFavIcon(processIcon || FAVICON_BASE_PATH);
       }
     } else {
       resetFaviconAndTitle();
     }
-  }, [favIcon, process, resetFaviconAndTitle, title]);
+  }, [favIcon, processIcon, processTitle, resetFaviconAndTitle, title]);
 
   useEffect(() => {
     const onVisibilityChange = (): void => {
