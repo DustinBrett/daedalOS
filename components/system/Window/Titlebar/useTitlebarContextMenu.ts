@@ -23,11 +23,11 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const {
     processes: { [id]: process },
   } = useProcesses();
+  const { allowResizing = true, maximized, minimized } = process || {};
 
   return useMemo(
     () =>
       contextMenu?.(() => {
-        const { allowResizing = true, maximized, minimized } = process || {};
         const isMaxOrMin = maximized || minimized;
 
         return [
@@ -57,7 +57,15 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
           },
         ].filter(Boolean) as MenuItem[];
       }),
-    [contextMenu, onClose, onMaximize, onMinimize, process]
+    [
+      allowResizing,
+      contextMenu,
+      maximized,
+      minimized,
+      onClose,
+      onMaximize,
+      onMinimize,
+    ]
   );
 };
 
