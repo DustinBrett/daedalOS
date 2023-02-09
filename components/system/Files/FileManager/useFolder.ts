@@ -510,7 +510,7 @@ const useFolder = (
       writeFile,
     ]
   );
-  const pasteToFolder = useCallback(async (): Promise<void> => {
+  const pasteToFolder = useCallback((): void => {
     const pasteEntries = Object.entries(pasteList);
     const moving = pasteEntries.some(([, operation]) => operation === "move");
     const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
@@ -535,26 +535,41 @@ const useFolder = (
 
       if (!basePath) updateFolder(directory, uniquePath);
     };
+    const movedPaths: string[] = [];
+    const objectReaders = pasteEntries.map(([pasteEntry]) => {
+      let aborted = false;
 
-    const movedPaths = await Promise.all(
-      pasteEntries.map(
-        ([pasteEntry]): Promise<string | void> =>
-          moving ? createPath(pasteEntry, directory) : copyFiles(pasteEntry)
-      )
-    );
+      return {
+        abort: () => {
+          aborted = true;
+        },
+        directory,
+        done: () => {
+          if (moving) {
+            movedPaths
+              .filter(Boolean)
+              .forEach((movedPath) => updateFolder(directory, movedPath));
 
-    if (moving) {
-      movedPaths
-        .filter(Boolean)
-        .forEach((movedPath) => updateFolder(directory, movedPath as string));
+            copyEntries([]);
+          }
+        },
+        name: pasteEntry,
+        read: async () => {
+          if (aborted) return;
 
-      copyEntries([]);
-    }
+          if (moving) movedPaths.push(await createPath(pasteEntry, directory));
+          else await copyFiles(pasteEntry);
+        },
+      };
+    });
+
+    openTransferDialog(objectReaders);
   }, [
     copyEntries,
     createPath,
     directory,
     lstat,
+    openTransferDialog,
     pasteList,
     readFile,
     readdir,
