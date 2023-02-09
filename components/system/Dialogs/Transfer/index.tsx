@@ -38,19 +38,23 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
     closeWithTransition(id);
   }, [closeWithTransition, id]);
   const processObjectReader = useCallback(
-    async ([reader, ...remainingReaders]: ObjectReaders) => {
-      setCurrentTransfer([reader.directory, { name: reader.name } as File]);
+    ([reader, ...remainingReaders]: ObjectReaders) => {
+      const isComplete = remainingReaders.length === 0;
 
-      await reader.read();
+      reader.read().then(() => {
+        setProgress((currentProgress) => currentProgress + 1);
 
-      setProgress((currentProgress) => currentProgress + 1);
+        if (isComplete) {
+          reader.done?.();
+          completeTransfer();
+        } else {
+          const [{ directory, name: nextName }] = remainingReaders;
 
-      if (remainingReaders.length > 0) {
-        processObjectReader(remainingReaders);
-      } else {
-        reader.done?.();
-        completeTransfer();
-      }
+          setCurrentTransfer([directory, { name: nextName } as File]);
+        }
+      });
+
+      if (!isComplete) processObjectReader(remainingReaders);
     },
     [completeTransfer]
   );
@@ -102,6 +106,9 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
           if (isFileReaders(fileReaders)) {
             processFileReader(fileReaders);
           } else {
+            const [{ directory, name: firstName }] = fileReaders;
+
+            setCurrentTransfer([directory, { name: firstName } as File]);
             processObjectReader(fileReaders);
           }
         } else {
