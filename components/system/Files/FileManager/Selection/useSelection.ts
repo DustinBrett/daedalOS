@@ -1,4 +1,6 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import { useMenu } from "contexts/menu";
+import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
@@ -48,6 +50,7 @@ const useSelection = (
       }, DEBOUNCE_TIME);
     }
   };
+  const { menu, setMenu } = useMenu();
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
     clientX,
     clientY,
@@ -63,6 +66,8 @@ const useSelection = (
         x: clientX - targetX,
         y: clientY - targetY + scrollTop,
       });
+
+      if (menu) setMenu(Object.create(null) as MenuState);
     }
   };
   const hasSize = typeof w === "number" && typeof h === "number";
