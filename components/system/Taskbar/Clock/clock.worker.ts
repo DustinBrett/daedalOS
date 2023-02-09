@@ -92,7 +92,7 @@ globalThis.addEventListener(
 
       if (canvas instanceof OffscreenCanvas) {
         offscreenCanvas = canvas;
-      } else if (clockSize && devicePixelRatio) {
+      } else if (clockSize?.height && clockSize?.width && devicePixelRatio) {
         offscreenCanvas.height = Math.floor(
           Number(clockSize.height) * devicePixelRatio
         );
