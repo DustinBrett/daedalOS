@@ -124,7 +124,6 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
     id,
     processFileReader,
     processObjectReader,
-    title,
     url,
   ]);
 
