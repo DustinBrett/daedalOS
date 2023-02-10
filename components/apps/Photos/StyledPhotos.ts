@@ -76,11 +76,11 @@ const StyledPhotos = styled.div`
       }
 
       &:hover {
-        background-color: rgba(75, 75, 75, 0.5);
+        background-color: rgba(75, 75, 75, 50%);
       }
 
       &:active {
-        background-color: rgba(100, 100, 100, 0.5);
+        background-color: rgba(100, 100, 100, 50%);
       }
     }
   }

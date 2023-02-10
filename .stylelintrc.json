@@ -1,19 +1,13 @@
 {
-  "customSyntax": "@stylelint/postcss-css-in-js",
-  "extends": [
-    "stylelint-config-recommended",
-    "stylelint-config-sass-guidelines",
-    "stylelint-config-styled-components",
-    "stylelint-config-prettier"
-  ],
+  "customSyntax": "postcss-styled-syntax",
+  "extends": ["stylelint-config-standard"],
   "plugins": ["stylelint-order"],
   "rules": {
-    "annotation-no-unknown": null,
-    "function-no-unknown": null,
-    "max-nesting-depth": null,
-    "property-no-unknown": null,
-    "selector-max-compound-selectors": null,
-    "selector-max-id": null,
-    "selector-no-qualifying-type": null
+    "alpha-value-notation": "percentage",
+    "color-function-notation": "legacy",
+    "declaration-empty-line-before": null,
+    "hue-degree-notation": "number",
+    "rule-empty-line-before": null,
+    "value-keyword-case": null
   }
 }

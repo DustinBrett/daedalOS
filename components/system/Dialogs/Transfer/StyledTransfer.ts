@@ -41,10 +41,12 @@ const StyledTransfer = styled.div`
       }
 
       &:indeterminate {
+        /* stylelint-disable-next-line block-no-empty */
         &::-moz-progress-bar {
           ${gradientAnimation}
         }
 
+        /* stylelint-disable-next-line block-no-empty */
         &::after {
           ${gradientAnimation}
         }

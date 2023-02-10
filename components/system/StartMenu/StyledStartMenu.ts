@@ -20,19 +20,19 @@ const ThinScrollBars = css<StyledStartMenuProps>`
   &::-webkit-scrollbar-corner,
   &::-webkit-scrollbar-track {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
+      $showScrolling ? undefined : "transparent"};
   }
 
   &::-webkit-scrollbar-button:single-button {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
+      $showScrolling ? undefined : "transparent"};
     border: ${({ $showScrolling }) =>
-      !$showScrolling && "1px solid transparent"};
+      $showScrolling ? undefined : "1px solid transparent"};
   }
 
   &::-webkit-scrollbar-thumb:vertical {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "rgb(167, 167, 167)"};
+      $showScrolling ? undefined : "rgb(167, 167, 167)"};
   }
 `;
 

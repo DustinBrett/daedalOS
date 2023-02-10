@@ -18,9 +18,7 @@ const StyledStatusBar = styled.footer`
     padding: 0 3px 0 10px;
 
     &::after {
-      border-right-color: rgb(247, 247, 247);
-      border-right-style: solid;
-      border-right-width: 1px;
+      border-right: 1px solid rgb(247, 247, 247);
       content: "";
       height: 11px;
       margin-left: 11px;

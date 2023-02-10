@@ -28,7 +28,7 @@ const StyledFileEntry = styled.li`
     &:active {
       figcaption {
         letter-spacing: -0.15px;
-        opacity: 0.9;
+        opacity: 90%;
       }
 
       picture {

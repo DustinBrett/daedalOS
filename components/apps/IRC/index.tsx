@@ -1,5 +1,4 @@
 import { getNetworkConfig } from "components/apps/IRC/config";
-import StyledIRC from "components/apps/IRC/StyledIRC";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import { useProcesses } from "contexts/process";
@@ -87,7 +86,7 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
   }, [channels, id, title]);
 
   return (
-    <StyledIRC>
+    <div>
       {!loaded && <StyledLoading />}
       <iframe
         ref={iframeRef}
@@ -97,7 +96,7 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
         title={id}
         width="100%"
       />
-    </StyledIRC>
+    </div>
   );
 };
 

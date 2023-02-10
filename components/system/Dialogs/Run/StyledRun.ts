@@ -58,7 +58,7 @@ const StyledRun = styled.div`
 
         &:disabled {
           border: 1px solid rgb(122, 122, 122);
-          opacity: 1;
+          opacity: 100%;
         }
       }
 
