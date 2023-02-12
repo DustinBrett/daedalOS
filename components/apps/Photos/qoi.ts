@@ -122,7 +122,6 @@ function transcode_qoi_to_png(data) {
     return;
   }
   const width = (data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7];
-  const height = (data[8] << 24) | (data[9] << 16) | (data[10] << 8) | data[11];
   const channels = data[12];
   const colorspace = data[13];
   if (channels !== 3 && channels !== 4 && colorspace !== 1) {

@@ -29,11 +29,12 @@ const loadWapm = async (
     const moduleResponse = await lowerI64Imports(wasmBinary);
 
     if (moduleResponse !== undefined && moduleResponse instanceof Uint8Array) {
+      bindings ||= (await import("wasi-js/dist/bindings/browser")).default;
+
       const wasmModule = await WebAssembly.compile(moduleResponse);
       const wasi = new WASI({
         args: commandArgs,
-        bindings: (bindings ||= (await import("wasi-js/dist/bindings/browser"))
-          .default),
+        bindings,
         env: {
           COLUMNS: config.cols?.toString(),
           LINES: config.rows?.toString(),

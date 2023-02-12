@@ -1,5 +1,5 @@
 import type { DocumentContext, DocumentInitialProps } from "next/document";
-import Document, { Head, Html, Main, NextScript } from "next/document";
+import NextDocument, { Head, Html, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 import { DEFAULT_LOCALE } from "utils/constants";
 
@@ -15,7 +15,7 @@ const withStyledComponents = async (
         enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
       });
 
-    const { styles, ...initialProps } = await Document.getInitialProps(ctx);
+    const { styles, ...initialProps } = await NextDocument.getInitialProps(ctx);
 
     return {
       ...initialProps,
@@ -26,7 +26,7 @@ const withStyledComponents = async (
   }
 };
 
-class MyDocument extends Document {
+class Document extends NextDocument {
   public static async getInitialProps(
     ctx: DocumentContext
   ): Promise<DocumentInitialProps> {
@@ -46,4 +46,4 @@ class MyDocument extends Document {
   }
 }
 
-export default MyDocument;
+export default Document;
