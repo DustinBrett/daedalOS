@@ -176,7 +176,13 @@ const useFileKeyboardShortcuts = (
                   }
                 }
 
-                (movedElement?.closest("button") || targetElement)?.click();
+                (
+                  movedElement?.closest("button") || targetElement
+                )?.dispatchEvent(
+                  new MouseEvent("mousedown", {
+                    bubbles: true,
+                  })
+                );
               }
           }
         }

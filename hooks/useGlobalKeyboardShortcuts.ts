@@ -73,6 +73,15 @@ const useGlobalKeyboardShortcuts = (): void => {
       } else if (keyName === "F11") {
         haltEvent(event);
         toggleFullScreen();
+      } else if (
+        document.activeElement === document.body &&
+        keyName.startsWith("ARROW")
+      ) {
+        document.body.querySelector("main ol li button")?.dispatchEvent(
+          new MouseEvent("mousedown", {
+            bubbles: true,
+          })
+        );
       } else if (document.fullscreenElement) {
         if (keyName === "META") metaDown = true;
         else if (altKey && altBindingsRef.current?.[keyName]) {
