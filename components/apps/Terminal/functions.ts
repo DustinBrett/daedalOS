@@ -232,22 +232,19 @@ export const getUptime = (isShort = false): string => {
     const days = Math.floor(uptimeInMilliseconds / ONE_DAY_IN_MILLISECONDS);
     const uptime = new Date(uptimeInMilliseconds);
     const hours = uptime.getUTCHours();
-    const minutes = uptime.getUTCMinutes();
-    const seconds = uptime.getUTCSeconds();
+    const mins = uptime.getUTCMinutes();
+    const secs = uptime.getUTCSeconds();
 
-    return `${days ? `${days} day${days === 1 ? "" : "s"}, ` : ""}${
-      hours ? `${hours} hour${hours === 1 ? "" : "s"}, ` : ""
-    }${
-      minutes
-        ? `${minutes} ${isShort ? "min" : "minute"}${
-            minutes === 1 ? "" : "s"
-          }, `
-        : ""
-    }${
-      seconds
-        ? `${seconds} ${isShort ? "sec" : "second"}${seconds === 1 ? "" : "s"}`
-        : ""
-    }`;
+    return [
+      ...(days ? [`${days} day${days === 1 ? "" : "s"}`] : []),
+      ...(hours ? [`${hours} hour${hours === 1 ? "" : "s"}`] : []),
+      ...(mins
+        ? [`${mins} ${isShort ? "min" : "minute"}${mins === 1 ? "" : "s"}`]
+        : []),
+      ...(secs
+        ? [`${secs} ${isShort ? "sec" : "second"}${secs === 1 ? "" : "s"}`]
+        : []),
+    ].join(", ");
   }
 
   return "Unknown";
