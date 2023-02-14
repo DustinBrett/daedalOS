@@ -1,4 +1,4 @@
-import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
+import { bookmarks, HOME_PAGE } from "components/apps/Browser/config";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -11,7 +11,11 @@ import { extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  FAVICON_BASE_PATH,
+  IFRAME_CONFIG,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
@@ -181,7 +185,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         srcDoc={srcDoc || undefined}
         style={style}
         title={id}
-        {...config}
+        {...IFRAME_CONFIG}
       />
     </StyledBrowser>
   );

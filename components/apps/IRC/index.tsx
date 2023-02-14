@@ -4,6 +4,7 @@ import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useEffect, useRef, useState } from "react";
+import { IFRAME_CONFIG } from "utils/constants";
 
 type KiwiIrcClient = {
   on: (
@@ -40,31 +41,25 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
 
   useEffect(() => {
     if (loaded && iframeRef.current?.contentWindow) {
-      (
-        [
-          ...iframeRef.current.contentWindow.document.querySelectorAll(
-            ".kiwi-network-name-option-collapse"
-          ),
-        ] as HTMLDivElement[]
-      ).forEach(
+      const kiwiWindow = iframeRef.current.contentWindow as Window & {
+        kiwi: KiwiIrcClient;
+      };
+      const networkEntries = [
+        ...kiwiWindow.document.querySelectorAll(
+          ".kiwi-network-name-option-collapse"
+        ),
+      ] as HTMLDivElement[];
+
+      networkEntries.forEach(
         (networkEntryCollapse, index) =>
           index !== 0 && networkEntryCollapse?.click()
       );
-
-      (
-        iframeRef.current.contentWindow as Window & {
-          kiwi: KiwiIrcClient;
-        }
-      )?.kiwi.on("irc.join", ({ channel }, { name }) =>
+      kiwiWindow?.kiwi.on("irc.join", ({ channel }, { name }) =>
         setChannels((currentChannels) => [
           ...new Set([...currentChannels, `${channel}/${name}`]),
         ])
       );
-      (
-        iframeRef.current.contentWindow as Window & {
-          kiwi: KiwiIrcClient;
-        }
-      )?.kiwi.on("irc.part", ({ channel }, { name }) =>
+      kiwiWindow?.kiwi.on("irc.part", ({ channel }, { name }) =>
         setChannels((currentChannels) =>
           currentChannels.filter(
             (currentChannel) => currentChannel !== `${channel}/${name}`
@@ -95,6 +90,7 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
         src={ircSrc}
         title={id}
         width="100%"
+        {...IFRAME_CONFIG}
       />
     </div>
   );

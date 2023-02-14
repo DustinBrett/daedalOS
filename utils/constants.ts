@@ -15,6 +15,12 @@ export const IPFS_GATEWAY_URLS = [
   "https://gateway.ipfs.io/ipfs/<CID>/",
 ];
 
+export const IFRAME_CONFIG = {
+  referrerPolicy: "no-referrer" as React.HTMLAttributeReferrerPolicy,
+  sandbox:
+    "allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts",
+};
+
 export const DEFAULT_LOCALE = "en";
 
 export const DEFAULT_ASCENDING = true;
