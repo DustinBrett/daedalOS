@@ -59,9 +59,10 @@ const useRnd = (id: string): Props => {
   );
   const onResizeStop: RndResizeCallback = useCallback(
     (_event, _direction, { style: { height, width } }, _delta, newPositon) => {
+      enableIframeCapture();
+
       const newSize = { height: pxToNum(height), width: pxToNum(width) };
 
-      enableIframeCapture();
       setSize(newSize);
       setPosition(newPositon);
       setWindowStates((currentWindowStates) => ({
