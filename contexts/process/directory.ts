@@ -137,6 +137,16 @@ const directory: Processes = {
     icon: "/System/Icons/monaco.webp",
     title: "Monaco Editor",
   },
+  OpenType: {
+    Component: dynamic(() => import("components/apps/OpenType")),
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/opentype.webp",
+    title: "OpenType",
+  },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
     backgroundColor: "#525659",

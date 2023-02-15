@@ -80,6 +80,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [ClassiCube](https://github.com/UnknownShadow200/ClassiCube)
 - [rtf.js](https://github.com/tbluemel/rtf.js)
 - [Quake 3](https://github.com/lrusso/Quake3)
+- [opentype.js](https://github.com/opentypejs/opentype.js)
 
 ## Services
 

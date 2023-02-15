@@ -31,6 +31,11 @@ const types = {
     process: ["Emulator"],
     type: "Game ROM File",
   },
+  Font: {
+    icon: "font",
+    process: ["OpenType"],
+    type: "Font File",
+  },
   FutureSplash: {
     process: ["Ruffle"],
     type: "FutureSplash File",
@@ -115,6 +120,7 @@ const extensions: Record<string, Extension> = {
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,
+  ".otf": types.Font,
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
@@ -122,7 +128,9 @@ const extensions: Record<string, Extension> = {
   ".spl": types.FutureSplash,
   ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,
+  ".ttf": types.Font,
   ".whtml": types.WysiwygHtmlDocument,
+  ".woff": types.Font,
   ".wsz": types.WinampSkin,
   ".zip": types.ZipFile,
 };
