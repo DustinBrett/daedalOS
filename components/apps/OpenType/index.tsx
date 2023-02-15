@@ -20,7 +20,7 @@ const ALPHABETS = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const NUMBERS_SYMBOLS = "1234567890.:,; ' \" (!?) +-*/=";
 
 const FONT_SIZES = [12, 18, 24, 36, 48, 60, 72];
-const VISUAL_MODIFIER = 1.33;
+const VISUAL_MODIFIER = 4 / 3;
 
 const extractTextValue = (name?: LocalizedName): string =>
   name ? name.en || Object.values(name)[0] : "";
@@ -47,9 +47,9 @@ const FontCanvas: FC<FontCanvasProps> = ({
     path.draw(canvasRef.current.getContext("2d") as CanvasRenderingContext2D);
   }, [font, fontSize, text]);
 
-  return hideLabel ? (
-    canvas
-  ) : (
+  if (hideLabel) return canvas;
+
+  return (
     <figure>
       <figcaption>{fontSize}</figcaption>
       {canvas}
@@ -70,34 +70,35 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
     },
     [readFile]
   );
-  const name = useMemo(
-    (): string => extractTextValue(font?.names.fullName),
-    [font]
-  );
-  const version = useMemo(
-    (): string => extractTextValue(font?.names.version),
-    [font]
-  );
-  const type = useMemo((): string => {
-    const types = ["OpenType Layout"];
+  const { name, types, version } = useMemo(() => {
+    const supportedTypes = [];
 
-    if (font?.outlinesFormat === "truetype") types.push("TrueType Outlines");
+    if (font?.supported) supportedTypes.push("OpenType Layout");
+    if (font?.outlinesFormat === "truetype") {
+      supportedTypes.push("TrueType Outlines");
+    }
 
-    return types.join(", ");
+    return {
+      name: extractTextValue(font?.names.fullName),
+      types: supportedTypes.join(", "),
+      version: extractTextValue(font?.names.version),
+    };
   }, [font]);
 
   useEffect(() => {
     if (url) loadFont(url);
   }, [loadFont, url]);
 
-  useEffect(() => {
-    title(
-      id,
-      name
-        ? `${name} (${processDirectory.OpenType.title})`
-        : processDirectory.OpenType.title
-    );
-  }, [id, name, title]);
+  useEffect(
+    () =>
+      title(
+        id,
+        name
+          ? `${name} (${processDirectory.OpenType.title})`
+          : processDirectory.OpenType.title
+      ),
+    [id, name, title]
+  );
 
   return (
     <StyledOpenType {...useFileDrop({ id })}>
@@ -106,7 +107,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
           <ol>
             <li>Font name: {name}</li>
             <li>Version: {version}</li>
-            <li>{type}</li>
+            <li>{types}</li>
           </ol>
           <ol>
             <li>
