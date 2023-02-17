@@ -21,7 +21,11 @@ const useFile = (url: string): UseFile => {
 
   return useCallback(
     async (pid: string, icon?: string) => {
-      const { singleton, icon: processIcon } = processDirectory[pid] || {};
+      const {
+        preferProcessIcon,
+        singleton,
+        icon: processIcon,
+      } = processDirectory[pid] || {};
       const activePid = Object.keys(processesRef.current).find((id) =>
         id.startsWith(`${pid}${PROCESS_DELIMITER}`)
       );
@@ -51,7 +55,9 @@ const useFile = (url: string): UseFile => {
         open(
           pid,
           { url: runUrl },
-          singleton || icon === FOLDER_BACK_ICON ? processIcon : icon
+          singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
+            ? processIcon
+            : icon
         );
       }
     },

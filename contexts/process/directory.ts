@@ -145,6 +145,7 @@ const directory: Processes = {
       width: 640,
     },
     icon: "/System/Icons/opentype.webp",
+    preferProcessIcon: true,
     title: "OpenType",
   },
   PDF: {

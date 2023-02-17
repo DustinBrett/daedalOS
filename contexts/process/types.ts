@@ -63,6 +63,7 @@ export type Process = ProcessArguments &
     icon: string;
     maximized?: boolean;
     minimized?: boolean;
+    preferProcessIcon?: boolean;
     singleton?: boolean;
     title: string;
   };
