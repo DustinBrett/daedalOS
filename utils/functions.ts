@@ -9,7 +9,6 @@ import type {
 import type { Position } from "eruda";
 import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
-import type { HTMLAttributes } from "react";
 import {
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
@@ -580,7 +579,7 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .map(([className]) => className)
     .join(" ");
 
-export const label = (value: string): HTMLAttributes<HTMLElement> => ({
+export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
   "aria-label": value,
   title: value,
 });

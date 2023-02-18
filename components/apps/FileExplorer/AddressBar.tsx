@@ -4,7 +4,6 @@ import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBar
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
-import type { MutableRefObject } from "react";
 import { forwardRef, useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -16,7 +15,8 @@ type AddressBarProps = {
 };
 const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
   ({ id }, ref) => {
-    const addressBarRef = ref as MutableRefObject<HTMLInputElement | null>;
+    const addressBarRef =
+      ref as React.MutableRefObject<HTMLInputElement | null>;
     const {
       url: changeUrl,
       processes: {

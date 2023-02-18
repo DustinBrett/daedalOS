@@ -22,7 +22,6 @@ import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
 import { basename, dirname, extname, join } from "path";
-import type { CSSProperties } from "react";
 import {
   useCallback,
   useEffect,
@@ -268,7 +267,8 @@ const FileEntry: FC<FileEntryProps> = ({
     urlExt,
   ]);
   const style = useMemo(
-    () => (renaming ? ({ pointerEvents: "all" } as CSSProperties) : undefined),
+    () =>
+      renaming ? ({ pointerEvents: "all" } as React.CSSProperties) : undefined,
     [renaming]
   );
 

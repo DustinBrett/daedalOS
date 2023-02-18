@@ -1,4 +1,3 @@
-import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { isSafari } from "utils/functions";
