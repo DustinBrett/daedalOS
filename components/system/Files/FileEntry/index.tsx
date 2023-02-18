@@ -307,11 +307,35 @@ const FileEntry: FC<FileEntryProps> = ({
                 ) {
                   generatedIcon = iconRef.current.currentSrc;
                 } else {
+                  const { clientHeight, clientWidth } = iconRef.current;
+                  const { naturalHeight, naturalWidth } = iconRef.current;
+                  const naturalAspectRatio = naturalWidth / naturalHeight;
+                  const clientAspectRatio = clientWidth / clientHeight;
+                  let height: number | undefined;
+                  let width: number | undefined;
+
+                  if (naturalAspectRatio !== clientAspectRatio) {
+                    if (naturalWidth > naturalHeight) {
+                      height = Math.round(clientHeight / naturalAspectRatio);
+                    } else {
+                      width = Math.round(clientWidth * naturalAspectRatio);
+                    }
+                  }
+
                   const htmlToImage = await getHtmlToImage();
                   const iconCanvas = await htmlToImage?.toCanvas(
                     iconRef.current,
                     {
+                      height,
                       skipAutoScale: true,
+                      style: {
+                        objectPosition: height
+                          ? "top"
+                          : width
+                          ? "left"
+                          : undefined,
+                      },
+                      width,
                     }
                   );
 
