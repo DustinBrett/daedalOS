@@ -1,6 +1,6 @@
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Icon from "styles/common/Icon";
 import {
   FOLDER_BACK_ICON,
@@ -16,7 +16,8 @@ type IconProps = {
 
 type SubIconProps = IconProps & {
   baseIcon: string;
-  index: number;
+  isFirstImage: boolean;
+  totalSubIcons: number;
 };
 
 type SubIconsProps = IconProps & {
@@ -24,7 +25,17 @@ type SubIconsProps = IconProps & {
   subIcons?: string[];
 };
 
-const SubIcon: FC<SubIconProps> = ({ baseIcon, icon, index, name, view }) => {
+const WIDE_IMAGE_TRANSFORM = "matrix(0.5, 0.07, 0, 0.7, 2, 2)";
+const SHORT_IMAGE_TRANSFORM = "matrix(0.4, 0.14, 0, 0.7, -4, 2)";
+
+const SubIcon: FC<SubIconProps> = ({
+  baseIcon,
+  icon,
+  isFirstImage,
+  name,
+  totalSubIcons,
+  view,
+}) => {
   const iconView = useMemo(
     () =>
       FileEntryIconSize[
@@ -35,22 +46,45 @@ const SubIcon: FC<SubIconProps> = ({ baseIcon, icon, index, name, view }) => {
       ],
     [icon, view]
   );
-  const style = useMemo(
-    () =>
-      baseIcon === FOLDER_BACK_ICON && icon !== FOLDER_FRONT_ICON
-        ? {
-            transform: `${
-              index === 0
-                ? "matrix(0, 1.8, 1.8, 0.2, 1.2, 2)"
-                : "matrix(0, 1.8, 1.2, 0.4, -4, 4)"
-            } scaleX(-1) scale(0.4) translateZ(0px)`,
-          }
-        : undefined,
-    [baseIcon, icon, index]
-  );
+  const [aspectRatio, setAspectRatio] = useState(0);
+  const style = useMemo((): React.CSSProperties | undefined => {
+    if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
+
+    if (baseIcon === FOLDER_BACK_ICON) {
+      const hasMultipleSubIcons = totalSubIcons - 1 > 1;
+
+      let transform: string;
+
+      if (isFirstImage) {
+        transform = hasMultipleSubIcons
+          ? SHORT_IMAGE_TRANSFORM
+          : WIDE_IMAGE_TRANSFORM;
+      } else {
+        transform = WIDE_IMAGE_TRANSFORM;
+      }
+
+      return {
+        transform: `${transform} translateZ(0px)${
+          aspectRatio > 1.5 ? " rotate(90deg) scaleY(2)" : ""
+        }`,
+        zIndex: isFirstImage ? 2 : 1,
+      };
+    }
+
+    return undefined;
+  }, [aspectRatio, baseIcon, icon, isFirstImage, totalSubIcons]);
 
   return (
     <Icon
+      ref={(iconRef) => {
+        if (iconRef && icon.startsWith("blob:")) {
+          iconRef.addEventListener("load", () => {
+            if (iconRef.naturalWidth && iconRef.naturalHeight) {
+              setAspectRatio(iconRef.naturalWidth / iconRef.naturalHeight);
+            }
+          });
+        }
+      }}
       $eager={icon === SHORTCUT_ICON}
       alt={name}
       src={icon}
@@ -86,8 +120,9 @@ const SubIcons: FC<SubIconsProps> = ({
           key={entryIcon}
           baseIcon={icon}
           icon={entryIcon}
-          index={subIconIndex}
+          isFirstImage={subIconIndex === 0}
           name={name}
+          totalSubIcons={filteredSubIcons.length}
           view={view}
         />
       ))}
