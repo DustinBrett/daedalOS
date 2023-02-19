@@ -1,4 +1,5 @@
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
+import type { FileDrop } from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
@@ -14,6 +15,7 @@ import { getFormattedSize, haltEvent, label } from "utils/functions";
 type StatusBarProps = {
   count: number;
   directory: string;
+  fileDrop: FileDrop;
   selected: string[];
 };
 
@@ -21,7 +23,12 @@ const MINIMUM_STATUSBAR_WIDTH = 225;
 const UNKNOWN_SIZE = -1;
 const UNCALCULATED_SIZE = -2;
 
-const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
+const StatusBar: FC<StatusBarProps> = ({
+  count,
+  directory,
+  fileDrop,
+  selected,
+}) => {
   const { exists, lstat, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(UNKNOWN_SIZE);
   const [showSelected, setShowSelected] = useState(false);
@@ -72,7 +79,11 @@ const StatusBar: FC<StatusBarProps> = ({ count, directory, selected }) => {
   );
 
   return (
-    <StyledStatusBar ref={statusBarRef} onContextMenuCapture={haltEvent}>
+    <StyledStatusBar
+      ref={statusBarRef}
+      onContextMenuCapture={haltEvent}
+      {...fileDrop}
+    >
       <div {...label("Total item count")}>
         {count} item{count === 1 ? "" : "s"}
       </div>

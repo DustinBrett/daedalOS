@@ -231,6 +231,7 @@ const FileManager: FC<FileManagerProps> = ({
         <StatusBar
           count={loading ? 0 : Object.keys(files).length}
           directory={url}
+          fileDrop={fileDrop}
           selected={focusedEntries}
         />
       )}

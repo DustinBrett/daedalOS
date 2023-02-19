@@ -14,7 +14,7 @@ import { useCallback } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent, updateIconPositions } from "utils/functions";
 
-type FileDrop = {
+export type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDragOver: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDrop: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
