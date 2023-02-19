@@ -316,9 +316,9 @@ const FileEntry: FC<FileEntryProps> = ({
 
                   if (naturalAspectRatio !== clientAspectRatio) {
                     if (naturalWidth > naturalHeight) {
-                      height = Math.round(clientHeight / naturalAspectRatio);
+                      height = clientHeight / naturalAspectRatio;
                     } else {
-                      width = Math.round(clientWidth * naturalAspectRatio);
+                      width = clientWidth * naturalAspectRatio;
                     }
                   }
 
