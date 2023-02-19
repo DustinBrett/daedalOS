@@ -47,6 +47,11 @@ export type FileActions = {
 
 export type CompleteAction = "rename" | "updateUrl";
 
+export const COMPLETE_ACTION: Record<string, CompleteAction> = {
+  RENAME: "rename",
+  UPDATE_URL: "updateUrl",
+};
+
 export type FolderActions = {
   addToFolder: () => void;
   newPath: (

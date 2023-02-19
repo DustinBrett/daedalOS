@@ -5,6 +5,7 @@ import {
 } from "components/system/Files/FileManager/functions";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -52,10 +53,12 @@ const useFileDrop = ({
           await mkdirRecursive(DESKTOP_PATH);
 
           if (await writeFile(tempPath, fileData, true)) {
-            if (completeAction === "updateUrl") url(id, tempPath);
+            if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
+              url(id, tempPath);
+            }
             updateFolder(DESKTOP_PATH, filePath);
           }
-        } else if (completeAction === "updateUrl") {
+        } else if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
           url(id, filePath);
         }
       }
@@ -142,7 +145,8 @@ const useFileDrop = ({
         event as React.DragEvent,
         callback || updateProcessUrl,
         directory,
-        openTransferDialog
+        openTransferDialog,
+        Boolean(id)
       );
     },
   };

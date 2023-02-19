@@ -8,6 +8,7 @@ import type {
   CompleteAction,
   Files,
 } from "components/system/Files/FileManager/useFolder";
+import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { basename, dirname, extname, join } from "path";
 import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";
@@ -147,7 +148,7 @@ export const createFileReaders = async (
           callback(
             join(subFolder, file.name),
             Buffer.from(target.result),
-            files.length === 1 ? "updateUrl" : undefined
+            files.length === 1 ? COMPLETE_ACTION.UPDATE_URL : undefined
           );
         }
       },
@@ -229,7 +230,8 @@ export const handleFileInputEvent = (
     completeAction?: CompleteAction
   ) => Promise<void>,
   directory: string,
-  openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void
+  openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void,
+  hasUpdateId = false
 ): void => {
   haltEvent(event);
 
@@ -254,7 +256,7 @@ export const handleFileInputEvent = (
             await callback(
               filePath,
               undefined,
-              isSingleFile ? "updateUrl" : undefined
+              isSingleFile ? COMPLETE_ACTION.UPDATE_URL : undefined
             );
           },
         };
@@ -263,7 +265,10 @@ export const handleFileInputEvent = (
       if (isSingleFile) {
         const [singleFile] = objectReaders;
 
-        if (singleFile.directory === singleFile.name) return;
+        if (hasUpdateId) {
+          callback(singleFile.name, undefined, COMPLETE_ACTION.UPDATE_URL);
+        }
+        if (hasUpdateId || singleFile.directory === singleFile.name) return;
       }
 
       openTransferDialog(objectReaders);
