@@ -291,7 +291,11 @@ const useFolder = (
     const link = document.createElement("a");
 
     link.href = bufferToUrl(contents);
-    link.download = fileName || "download.zip";
+    link.download = fileName
+      ? extname(fileName)
+        ? fileName
+        : `${fileName}.zip`
+      : "download.zip";
 
     link.click();
 
@@ -428,20 +432,28 @@ const useFolder = (
     async (paths: string[]): Promise<void> => {
       const zipFiles = await createZipFile(paths);
       const zipEntries = Object.entries(zipFiles);
+      const [[path, file]] = zipEntries;
+      const singleParentEntry = zipEntries.length === 1;
 
-      if (zipEntries.length === 1 && extname(zipEntries[0][0])) {
-        const [[path, file]] = zipEntries;
+      if (singleParentEntry && extname(path)) {
         const [contents] = file as [Uint8Array, AsyncZipOptions];
 
         createLink(contents as Buffer, basename(path));
       } else {
         const { zip } = await import("fflate");
 
-        zip(zipFiles, BASE_ZIP_CONFIG, (_zipError, newZipFile) => {
-          if (newZipFile) {
-            createLink(Buffer.from(newZipFile));
+        zip(
+          singleParentEntry ? (file as AsyncZippable) : zipFiles,
+          BASE_ZIP_CONFIG,
+          (_zipError, newZipFile) => {
+            if (newZipFile) {
+              createLink(
+                Buffer.from(newZipFile),
+                singleParentEntry ? path : undefined
+              );
+            }
           }
-        });
+        );
       }
     },
     [createZipFile]
