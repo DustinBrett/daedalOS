@@ -1,6 +1,4 @@
-FROM node:lts-alpine
-
-ENV NODE_OPTIONS=--openssl-legacy-provider
+FROM node:16-alpine
 
 RUN apk add --no-cache git
 

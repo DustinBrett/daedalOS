@@ -40,7 +40,7 @@
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "engines": {
-    "node": ">=16 <=18"
+    "node": ">=16 <17"
   },
   "resolutions": {
     "styled-components": "^5"
