@@ -260,6 +260,12 @@ export const handleFileInputEvent = (
         };
       });
 
+      if (isSingleFile) {
+        const [singleFile] = objectReaders;
+
+        if (singleFile.directory === singleFile.name) return;
+      }
+
       openTransferDialog(objectReaders);
     } catch {
       // Failed to parse text data to JSON

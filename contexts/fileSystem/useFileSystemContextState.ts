@@ -350,7 +350,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
       if (isInternal) {
         if (
           name !== fullNewPath &&
-          !directory.startsWith(name) &&
+          directory !== name &&
+          !directory.startsWith(`${name}/`) &&
           !rootFs?.mntMap[name]
         ) {
           if (await exists(fullNewPath)) {

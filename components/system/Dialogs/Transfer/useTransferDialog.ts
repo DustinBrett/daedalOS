@@ -39,6 +39,8 @@ const useTransferDialog = (): Dialog => {
     () =>
       ({
         openTransferDialog: (fileReaders, url) => {
+          if (fileReaders?.length === 0) return;
+
           if (fileReaders && url) {
             const currentPid = getTransferIdCallbackRef.current?.(url);
 

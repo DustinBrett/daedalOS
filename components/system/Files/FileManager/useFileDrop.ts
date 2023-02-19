@@ -90,11 +90,13 @@ const useFileDrop = ({
             // Ignore failed JSON parsing
           }
 
-          if (fileEntries.length === 0) return;
+          const [firstEntry] = fileEntries;
+
+          if (!firstEntry) return;
 
           if (
-            fileEntries[0].startsWith(directory) &&
-            basename(fileEntries[0]) === relative(directory, fileEntries[0])
+            firstEntry.startsWith(directory) &&
+            basename(firstEntry) === relative(directory, firstEntry)
           ) {
             return;
           }
