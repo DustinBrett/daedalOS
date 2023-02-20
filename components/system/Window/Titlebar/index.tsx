@@ -15,7 +15,7 @@ import { useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";
-import { label } from "utils/functions";
+import { haltEvent, label } from "utils/functions";
 
 type TitlebarProps = {
   id: string;
@@ -81,6 +81,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     <StyledTitlebar
       $foreground={isForeground}
       className={rndDefaults.dragHandleClassName}
+      onDragOver={haltEvent}
+      onDrop={haltEvent}
       {...titlebarContextMenu}
     >
       <Button

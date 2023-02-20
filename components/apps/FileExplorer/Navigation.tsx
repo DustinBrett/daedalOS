@@ -15,7 +15,7 @@ import { basename, dirname } from "path";
 import { forwardRef, useMemo } from "react";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
-import { label } from "utils/functions";
+import { haltEvent, label } from "utils/functions";
 
 type NavigationProps = {
   hideSearch: boolean;
@@ -48,7 +48,11 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
     );
 
     return (
-      <StyledNavigation {...useTitlebarContextMenu(id)}>
+      <StyledNavigation
+        {...useTitlebarContextMenu(id)}
+        onDragOver={haltEvent}
+        onDrop={haltEvent}
+      >
         <Button
           disabled={!canGoBack}
           onClick={() => moveHistory(-1)}
