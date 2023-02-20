@@ -58,8 +58,8 @@ const useWindowTransitions = (
     setMaximize({
       ...baseMaximize,
       ...getMaxDimensions(),
-      x: -windowX,
-      y: -windowY,
+      x: 0 - windowX,
+      y: 0 - windowY,
     });
   }, [componentWindow, maximized]);
 

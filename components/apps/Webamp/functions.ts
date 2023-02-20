@@ -199,7 +199,7 @@ export const updateWebampPosition = (
   webamp.store.dispatch({
     positions: {
       main: { x, y },
-      milkdrop: { x: -width, y: -height },
+      milkdrop: { x: 0 - width, y: 0 - height },
       playlist: { x, y: height + y },
     },
     type: "UPDATE_WINDOW_POSITIONS",
