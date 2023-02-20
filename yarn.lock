@@ -1765,7 +1765,7 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-"browserfs@https://github.com/jvilk/BrowserFS.git":
+"browserfs@https://github.com/jvilk/BrowserFS.git#a96aa2d":
   version "2.0.0"
   resolved "https://github.com/jvilk/BrowserFS.git#a96aa2d417995dac7d376987839bc4e95e218e06"
   dependencies:
