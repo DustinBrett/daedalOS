@@ -9,7 +9,6 @@ import {
   loadButterchurnPreset,
   loadMilkdropWhenNeeded,
   MAIN_WINDOW,
-  parseTrack,
   PLAYLIST_WINDOW,
   setSkinData,
   tracksFromPlaylist,
@@ -17,8 +16,6 @@ import {
 } from "components/apps/Webamp/functions";
 import type { SkinData, WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
-import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -65,24 +62,7 @@ const useWebamp = (id: string): Webamp => {
     updateFolder,
     writeFile,
   } = useFileSystem();
-  const { onDrop: onDropCopy } = useFileDrop({ id });
-  const { onDrop } = useFileDrop({
-    callback: async (
-      fileName: string,
-      buffer?: Buffer,
-      completeAction?: CompleteAction
-    ) => {
-      if (webampCI.current) {
-        const data = buffer || (await readFile(fileName));
-        const track = await parseTrack(data, fileName);
-
-        if (completeAction !== COMPLETE_ACTION.UPDATE_URL) {
-          webampCI.current.appendTracks([track]);
-        }
-      }
-    },
-    id,
-  });
+  const { onDrop } = useFileDrop({ id });
   const metadataProviderRef = useRef<number>();
   const windowPositionDebounceRef = useRef<number>();
   const initWebamp = useCallback(
@@ -140,10 +120,7 @@ const useWebamp = (id: string): Webamp => {
             webampElement.querySelector<HTMLDivElement>(PLAYLIST_WINDOW);
 
           [mainWindow, playlistWindow].forEach((element) => {
-            element?.addEventListener("drop", (event) => {
-              onDropCopy(event);
-              onDrop(event);
-            });
+            element?.addEventListener("drop", onDrop);
             element?.addEventListener("dragover", haltEvent);
           });
 
@@ -297,7 +274,6 @@ const useWebamp = (id: string): Webamp => {
       mkdirRecursive,
       onClose,
       onDrop,
-      onDropCopy,
       onMinimize,
       position,
       process,

@@ -201,11 +201,12 @@ type EventData = {
 };
 
 export const getEventData = (
-  event: InputChangeEvent | never[] | React.DragEvent
+  event: DragEvent | InputChangeEvent | never[] | React.DragEvent
 ): EventData => {
   let files =
     (event as InputChangeEvent).target?.files ||
     (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
+    (event as DragEvent).dataTransfer?.items ||
     [];
 
   if (files instanceof DataTransferItemList) {
