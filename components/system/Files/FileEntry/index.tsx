@@ -46,6 +46,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SMALLEST_PNG_SIZE,
+  TRANSITIONS_IN_MILLISECONDS,
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -298,7 +299,7 @@ const FileEntry: FC<FileEntryProps> = ({
                   cacheQueue.shift();
                   return cacheQueue[0]?.();
                 };
-                let generatedIcon: string;
+                let generatedIcon = "";
 
                 if (
                   iconRef.current.currentSrc.startsWith(
@@ -341,30 +342,32 @@ const FileEntry: FC<FileEntryProps> = ({
 
                   if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
                     generatedIcon = iconCanvas.toDataURL("image/png");
+                  } else {
+                    setTimeout(cacheIcon, TRANSITIONS_IN_MILLISECONDS.WINDOW);
                   }
                 }
 
-                cacheQueue.push(async () => {
-                  if (!generatedIcon) return nextQueueItem();
+                if (generatedIcon) {
+                  cacheQueue.push(async () => {
+                    const baseCachedPath = dirname(cachedIconPath);
 
-                  const baseCachedPath = dirname(cachedIconPath);
+                    await mkdirRecursive(baseCachedPath);
 
-                  await mkdirRecursive(baseCachedPath);
+                    const cachedIcon = Buffer.from(
+                      generatedIcon.replace(/data:(.*);base64,/, ""),
+                      "base64"
+                    );
 
-                  const cachedIcon = Buffer.from(
-                    generatedIcon.replace(/data:(.*);base64,/, ""),
-                    "base64"
-                  );
+                    await writeFile(cachedIconPath, cachedIcon, true);
+                    setInfo((info) => ({
+                      ...info,
+                      icon: bufferToUrl(cachedIcon),
+                    }));
+                    updateFolder(baseCachedPath, basename(cachedIconPath));
 
-                  await writeFile(cachedIconPath, cachedIcon, true);
-                  setInfo((info) => ({
-                    ...info,
-                    icon: bufferToUrl(cachedIcon),
-                  }));
-                  updateFolder(baseCachedPath, basename(cachedIconPath));
-
-                  return nextQueueItem();
-                });
+                    return nextQueueItem();
+                  });
+                }
 
                 if (cacheQueue.length === 1) await cacheQueue[0]();
               }
