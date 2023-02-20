@@ -6,9 +6,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          node-version: 16
+      - uses: actions/checkout@v3
       - name: Install Modules
         run: yarn install
       - name: Run Build
