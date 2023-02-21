@@ -124,7 +124,7 @@
     "lunr": "^2.3.9",
     "monaco-editor": "^0.35.0",
     "pdfjs-dist": "^3.3.122",
-    "postcss-styled-syntax": "^0.3.2",
+    "postcss-styled-syntax": "^0.3.3",
     "postcss-syntax": "^0.36.2",
     "stylelint": "^15.2.0",
     "stylelint-config-standard": "^30.0.1",
