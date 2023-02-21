@@ -106,6 +106,7 @@ const FileManager: FC<FileManagerProps> = ({
     focusFunctions,
     folderActions,
     updateFiles,
+    fileManagerRef,
     id,
     view
   );

@@ -24,6 +24,7 @@ const useFileKeyboardShortcuts = (
   { blurEntry, focusEntry }: FocusEntryFunctions,
   { newPath, pasteToFolder }: FolderActions,
   updateFiles: (newFile?: string, oldFile?: string) => void,
+  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
   id?: string,
   view?: FileManagerViewNames
 ): KeyboardShortcutEntry => {
@@ -176,9 +177,17 @@ const useFileKeyboardShortcuts = (
                   }
                 }
 
-                (
-                  movedElement?.closest("button") || targetElement
-                )?.dispatchEvent(
+                const closestButton = movedElement?.closest("button");
+                let dispatchElement: HTMLElement = closestButton as HTMLElement;
+
+                if (
+                  !(closestButton instanceof HTMLButtonElement) ||
+                  !fileManagerRef?.current?.contains(closestButton)
+                ) {
+                  dispatchElement = targetElement;
+                }
+
+                dispatchElement?.dispatchEvent(
                   new MouseEvent("mousedown", {
                     bubbles: true,
                   })
@@ -192,6 +201,7 @@ const useFileKeyboardShortcuts = (
       changeUrl,
       copyEntries,
       deletePath,
+      fileManagerRef,
       files,
       focusEntry,
       focusedEntries,
