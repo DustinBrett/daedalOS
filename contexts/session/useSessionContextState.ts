@@ -93,7 +93,7 @@ const useSessionContextState = (): SessionContextState => {
 
   useEffect(() => {
     if (sessionLoaded && !haltSession) {
-      requestIdleCallback(() =>
+      const updateSessionFile = (): void => {
         writeFile(
           SESSION_FILE,
           JSON.stringify({
@@ -107,8 +107,17 @@ const useSessionContextState = (): SessionContextState => {
             windowStates,
           }),
           true
-        )
-      );
+        );
+      };
+
+      if (
+        "requestIdleCallback" in window &&
+        typeof window.requestIdleCallback === "function"
+      ) {
+        requestIdleCallback(updateSessionFile);
+      } else {
+        updateSessionFile();
+      }
     }
   }, [
     clockSource,
