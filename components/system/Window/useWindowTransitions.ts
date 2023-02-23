@@ -1,11 +1,7 @@
 import { useProcesses } from "contexts/process";
 import type { MotionProps, Variant } from "framer-motion";
 import { useEffect, useLayoutEffect, useState } from "react";
-import {
-  MILLISECONDS_IN_SECOND,
-  TASKBAR_HEIGHT,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { TASKBAR_HEIGHT, TRANSITIONS_IN_SECONDS } from "utils/constants";
 import { viewHeight, viewWidth } from "utils/functions";
 
 const active = {
@@ -112,11 +108,11 @@ const useWindowTransitions = (
     exit: "initial",
     initial: "initial",
     transition: {
-      duration: TRANSITIONS_IN_MILLISECONDS.WINDOW / MILLISECONDS_IN_SECOND,
+      duration: TRANSITIONS_IN_SECONDS.WINDOW,
     },
     variants: {
       active,
-      initial: { ...initial, ...(noInitialScaling && { scale: 1 }) },
+      initial: noInitialScaling ? { ...initial, scale: 1 } : initial,
       maximize,
       minimize,
     },

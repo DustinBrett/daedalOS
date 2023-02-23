@@ -1,10 +1,6 @@
 import type { MotionProps } from "framer-motion";
 import { useTheme } from "styled-components";
-import {
-  MILLISECONDS_IN_SECOND,
-  TASKBAR_HEIGHT,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { TASKBAR_HEIGHT, TRANSITIONS_IN_SECONDS } from "utils/constants";
 import { viewHeight } from "utils/functions";
 
 const useStartMenuTransition = (): MotionProps => {
@@ -18,7 +14,7 @@ const useStartMenuTransition = (): MotionProps => {
     exit: "initial",
     initial: "initial",
     transition: {
-      duration: TRANSITIONS_IN_MILLISECONDS.START_MENU / MILLISECONDS_IN_SECOND,
+      duration: TRANSITIONS_IN_SECONDS.START_MENU,
       ease: "circOut",
     },
     variants: {
