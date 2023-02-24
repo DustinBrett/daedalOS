@@ -18,7 +18,7 @@ import {
   isFileSystemSupported,
   MENU_SEPERATOR,
 } from "utils/constants";
-import { bufferToBlob } from "utils/functions";
+import { bufferToBlob, isSafari } from "utils/functions";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -44,6 +44,8 @@ const CAPTURE_TIME_DATE_FORMAT: Intl.DateTimeFormatOptions = {
   second: "2-digit",
   year: "numeric",
 };
+const MIME_TYPE_VIDEO_WEBM = "video/webm";
+const MIME_TYPE_VIDEO_MP4 = "video/mp4";
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
 
@@ -110,6 +112,16 @@ const useFolderContextMenu = (
     },
     [setIconPositions, setSortBy, url]
   );
+  const canCapture = useMemo(
+    () =>
+      isDesktop &&
+      typeof window !== "undefined" &&
+      typeof navigator?.mediaDevices?.getDisplayMedia === "function" &&
+      (window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_WEBM) ||
+        window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_MP4)) &&
+      !isSafari(),
+    [isDesktop]
+  );
   const captureScreen = useCallback(async () => {
     if (currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
@@ -135,7 +147,9 @@ const useFolderContextMenu = (
     const { height, width } = currentVideoTrack.getSettings();
     const mediaRecorder = new MediaRecorder(currentMediaStream, {
       bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
-      mimeType: "video/webm",
+      mimeType: MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM)
+        ? MIME_TYPE_VIDEO_WEBM
+        : MIME_TYPE_VIDEO_MP4,
     });
     const timeStamp = new Intl.DateTimeFormat(
       DEFAULT_LOCALE,
@@ -293,10 +307,7 @@ const useFolderContextMenu = (
                     },
                   ],
                 },
-                ...(isDesktop &&
-                "mediaDevices" in navigator &&
-                "getDisplayMedia" in navigator.mediaDevices &&
-                window.MediaRecorder
+                ...(canCapture
                   ? [
                       {
                         action: captureScreen,
@@ -356,6 +367,7 @@ const useFolderContextMenu = (
       }),
     [
       addToFolder,
+      canCapture,
       captureScreen,
       contextMenu,
       isAscending,
