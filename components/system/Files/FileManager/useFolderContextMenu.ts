@@ -18,7 +18,7 @@ import {
   isFileSystemSupported,
   MENU_SEPERATOR,
 } from "utils/constants";
-import { bufferToBlob, isSafari } from "utils/functions";
+import { bufferToBlob, isFirefox, isSafari } from "utils/functions";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -134,10 +134,16 @@ const useFolderContextMenu = (
 
     const displayMediaOptions: DisplayMediaStreamOptions &
       MediaStreamConstraints = {
-      preferCurrentTab: true,
       video: {
         frameRate: CAPTURE_FPS,
       },
+      ...(!isFirefox() &&
+        !isSafari() && {
+          preferCurrentTab: true,
+          selfBrowserSurface: "include",
+          surfaceSwitching: "include",
+          systemAudio: "include",
+        }),
     };
     currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
       displayMediaOptions
