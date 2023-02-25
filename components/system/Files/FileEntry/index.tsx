@@ -340,7 +340,7 @@ const FileEntry: FC<FileEntryProps> = ({
                       width,
                     });
                   } catch {
-                    // Ignore failure to captrure
+                    // Ignore failure to capture
                   }
 
                   if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
@@ -386,21 +386,25 @@ const FileEntry: FC<FileEntryProps> = ({
             }
           }
         } else {
+          if (isIconCached.current) return;
+
           const cachedIconPath = join(
             ICON_CACHE,
             `${path}${ICON_CACHE_EXTENSION}`
           );
 
           if (await exists(cachedIconPath)) {
-            isIconCached.current = true;
-
             const cachedIconData = await readFile(cachedIconPath);
 
             if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
-              setInfo((info) => ({
-                ...info,
-                icon: bufferToUrl(cachedIconData),
-              }));
+              if (!isIconCached.current) {
+                isIconCached.current = true;
+
+                setInfo((info) => ({
+                  ...info,
+                  icon: bufferToUrl(cachedIconData),
+                }));
+              }
             } else {
               try {
                 await unlink(cachedIconPath);
