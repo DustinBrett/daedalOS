@@ -103,7 +103,7 @@ const useDraggableEntries = (
       }
 
       focusEntry(file);
-      event.dataTransfer.setData(
+      event.nativeEvent.dataTransfer?.setData(
         "application/json",
         JSON.stringify(
           focusedEntries.length <= 1
@@ -136,7 +136,11 @@ const useDraggableEntries = (
           ? event.nativeEvent.clientY
           : event.nativeEvent.offsetY;
 
-        event.dataTransfer.setDragImage(dragImageRef.current, dragX, dragY);
+        event.nativeEvent.dataTransfer?.setDragImage(
+          dragImageRef.current,
+          dragX,
+          dragY
+        );
 
         if (allowMoving && !draggedOnceRef.current) {
           draggedOnceRef.current = true;
@@ -185,7 +189,7 @@ const useDraggableEntries = (
             skipAutoScale: true,
           });
         } catch {
-          // Ignore failure to captrure
+          // Ignore failure to capture
         }
 
         if (newDragImage) {

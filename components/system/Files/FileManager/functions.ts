@@ -203,22 +203,18 @@ type EventData = {
 export const getEventData = (
   event: DragEvent | InputChangeEvent | never[] | React.DragEvent
 ): EventData => {
+  const dataTransfer =
+    (event as React.DragEvent).nativeEvent?.dataTransfer ||
+    (event as DragEvent).dataTransfer;
   let files =
-    (event as InputChangeEvent).target?.files ||
-    (event as React.DragEvent).nativeEvent?.dataTransfer?.items ||
-    (event as DragEvent).dataTransfer?.items ||
-    [];
+    (event as InputChangeEvent).target?.files || dataTransfer?.items || [];
+  const text = dataTransfer?.getData("application/json");
 
   if (files instanceof DataTransferItemList) {
     files = [...files].filter(
       (item) => !("kind" in item) || item.kind === "file"
     ) as unknown as DataTransferItemList;
   }
-
-  const text =
-    files.length > 0
-      ? ""
-      : (event as React.DragEvent).dataTransfer?.getData("application/json");
 
   return { files, text };
 };
@@ -241,6 +237,9 @@ export const handleFileInputEvent = (
   if (text) {
     try {
       const filePaths = JSON.parse(text) as string[];
+
+      if (!Array.isArray(filePaths)) return;
+
       const isSingleFile = filePaths.length === 1;
       const objectReaders = filePaths.map((filePath) => {
         let aborted = false;

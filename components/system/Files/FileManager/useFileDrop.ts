@@ -97,6 +97,8 @@ const useFileDrop = ({
             // Ignore failed JSON parsing
           }
 
+          if (!Array.isArray(fileEntries)) return;
+
           const [firstEntry] = fileEntries;
 
           if (!firstEntry) return;
