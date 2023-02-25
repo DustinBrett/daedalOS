@@ -37,9 +37,9 @@ const useWindowTransitions = (
   id: string,
   noInitialScaling = false
 ): MotionProps => {
-  const { processes } = useProcesses();
+  const { processes: { [id]: process } = {} } = useProcesses();
   const { closing, componentWindow, maximized, minimized, taskbarEntry } =
-    processes[id] || {};
+    process || {};
   const [maximize, setMaximize] = useState<Variant>(
     Object.create(null) as Variant
   );
@@ -48,8 +48,10 @@ const useWindowTransitions = (
   );
 
   useLayoutEffect(() => {
+    if (!componentWindow) return;
+
     const { x: windowX = 0, y: windowY = 0 } =
-      componentWindow?.getBoundingClientRect() || {};
+      componentWindow.getBoundingClientRect();
 
     setMaximize({
       ...baseMaximize,
@@ -60,18 +62,20 @@ const useWindowTransitions = (
   }, [componentWindow, maximized]);
 
   useLayoutEffect(() => {
+    if (!taskbarEntry || !componentWindow) return;
+
     const {
       height: taskbarHeight = 0,
       width: taskbarWidth = 0,
       x: taskbarX = 0,
       y: taskbarY = 0,
-    } = taskbarEntry?.getBoundingClientRect() || {};
+    } = taskbarEntry.getBoundingClientRect();
     const {
       height: windowHeight = 0,
       width: windowWidth = 0,
       x: windowX = 0,
       y: windowY = 0,
-    } = componentWindow?.getBoundingClientRect() || {};
+    } = componentWindow.getBoundingClientRect();
 
     const x = Math.round(
       taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2
