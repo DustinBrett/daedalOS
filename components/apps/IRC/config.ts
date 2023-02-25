@@ -1,6 +1,5 @@
 const IRC_SERVERS = [
   ["Libera.Chat", "web.libera.chat/webirc/websocket/"],
-  ["ergo", "irc.ergo.chat/webirc"],
   ["ErgoTestnet", "testnet.ergo.chat/webirc"],
   ["InspIRCd Testnet", "testnet.inspircd.org", 8097],
 ];
