@@ -530,12 +530,27 @@ export const getUrlOrSearch = async (input: string): Promise<string> => {
   }
 };
 
-export const isFirefox = (): boolean =>
-  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
+let IS_FIREFOX: boolean;
 
-export const isSafari = (): boolean =>
-  typeof window !== "undefined" &&
-  /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+export const isFirefox = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_FIREFOX ?? false) return IS_FIREFOX;
+
+  IS_FIREFOX = /firefox/i.test(window.navigator.userAgent);
+
+  return IS_FIREFOX;
+};
+
+let IS_SAFARI: boolean;
+
+export const isSafari = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_SAFARI ?? false) return IS_SAFARI;
+
+  IS_SAFARI = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+
+  return IS_SAFARI;
+};
 
 export const haltEvent = (
   event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
