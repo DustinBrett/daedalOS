@@ -36,7 +36,7 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         line-height: 1.2;
         margin: 1px 0;
-        padding: 2px;
+        padding: 2px 0;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }
