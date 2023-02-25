@@ -222,7 +222,7 @@ const useV86 = (
                   skipAutoScale: true,
                 });
               } catch {
-                // Ignore failure to captrure
+                // Ignore failure to capture
               }
             }
 
