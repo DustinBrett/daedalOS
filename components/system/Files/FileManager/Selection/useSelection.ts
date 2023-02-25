@@ -70,7 +70,8 @@ const useSelection = (
       if (menu) setMenu(Object.create(null) as MenuState);
     }
   };
-  const hasSize = typeof w === "number" && typeof h === "number";
+  const hasSize =
+    typeof w === "number" && w > 0 && typeof h === "number" && h > 0;
   const hasPosition = typeof x === "number" && typeof y === "number";
   const resetSelection = (): void => {
     setSize(Object.create(null) as Size);
