@@ -44,16 +44,7 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
       const kiwiWindow = iframeRef.current.contentWindow as Window & {
         kiwi: KiwiIrcClient;
       };
-      const networkEntries = [
-        ...kiwiWindow.document.querySelectorAll(
-          ".kiwi-network-name-option-collapse"
-        ),
-      ] as HTMLDivElement[];
 
-      networkEntries.forEach(
-        (networkEntryCollapse, index) =>
-          index !== 0 && networkEntryCollapse?.click()
-      );
       kiwiWindow?.kiwi.on("irc.join", ({ channel }, { name }) =>
         setChannels((currentChannels) => [
           ...new Set([...currentChannels, `${channel}/${name}`]),
