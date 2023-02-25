@@ -324,9 +324,10 @@ const FileEntry: FC<FileEntryProps> = ({
                   }
 
                   const htmlToImage = await getHtmlToImage();
-                  const iconCanvas = await htmlToImage?.toCanvas(
-                    iconRef.current,
-                    {
+                  let iconCanvas: HTMLCanvasElement | undefined;
+
+                  try {
+                    iconCanvas = await htmlToImage?.toCanvas(iconRef.current, {
                       height,
                       skipAutoScale: true,
                       style: {
@@ -337,8 +338,10 @@ const FileEntry: FC<FileEntryProps> = ({
                           : undefined,
                       },
                       width,
-                    }
-                  );
+                    });
+                  } catch {
+                    // Ignore failure to captrure
+                  }
 
                   if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
                     generatedIcon = iconCanvas.toDataURL("image/png");

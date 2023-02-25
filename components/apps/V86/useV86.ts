@@ -217,9 +217,13 @@ const useV86 = (
             } else if (currentContainerRef instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
-              screenshot = await htmlToImage?.toPng(currentContainerRef, {
-                skipAutoScale: true,
-              });
+              try {
+                screenshot = await htmlToImage?.toPng(currentContainerRef, {
+                  skipAutoScale: true,
+                });
+              } catch {
+                // Ignore failure to captrure
+              }
             }
 
             return screenshot

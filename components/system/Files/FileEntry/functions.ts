@@ -512,9 +512,17 @@ export const getInfoWithExtension = (
             containerElement.innerHTML = contents.toString();
 
             document.body.append(containerElement);
-            const documentImage = await htmlToImage?.toPng(containerElement, {
-              skipAutoScale: true,
-            });
+
+            let documentImage: string | undefined;
+
+            try {
+              documentImage = await htmlToImage?.toPng(containerElement, {
+                skipAutoScale: true,
+              });
+            } catch {
+              // Ignore failure to captrure
+            }
+
             containerElement.remove();
 
             if (documentImage && documentImage.length > SMALLEST_PNG_SIZE) {

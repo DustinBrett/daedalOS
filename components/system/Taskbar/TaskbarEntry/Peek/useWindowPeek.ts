@@ -21,20 +21,26 @@ const renderFrame = async (
     );
 
   const htmlToImage = await getHtmlToImage();
-  const dataCanvas = await htmlToImage?.toCanvas(previewElement, {
-    ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
-      canvasHeight: Math.round(
-        (PEEK_MAX_WIDTH / previewElement.clientWidth) *
-          previewElement.clientHeight
-      ),
-      canvasWidth: PEEK_MAX_WIDTH,
-    }),
-    filter: (element) => !(element instanceof HTMLSourceElement),
-    skipAutoScale: true,
-    style: {
-      inset: "0",
-    },
-  });
+  let dataCanvas: HTMLCanvasElement | undefined;
+
+  try {
+    dataCanvas = await htmlToImage?.toCanvas(previewElement, {
+      ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
+        canvasHeight: Math.round(
+          (PEEK_MAX_WIDTH / previewElement.clientWidth) *
+            previewElement.clientHeight
+        ),
+        canvasWidth: PEEK_MAX_WIDTH,
+      }),
+      filter: (element) => !(element instanceof HTMLSourceElement),
+      skipAutoScale: true,
+      style: {
+        inset: "0",
+      },
+    });
+  } catch {
+    // Ignore failure to capture
+  }
 
   if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
     if (

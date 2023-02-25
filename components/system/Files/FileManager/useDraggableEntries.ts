@@ -169,18 +169,24 @@ const useDraggableEntries = (
         else dragImageRef.current = new Image();
 
         const htmlToImage = await getHtmlToImage();
-        const newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
-          filter: (element) => {
-            return (
-              !(element instanceof HTMLSourceElement) &&
-              focusedElements.some((focusedElement) =>
-                focusedElement.contains(element)
-              )
-            );
-          },
-          imagePlaceholder: UNKNOWN_ICON,
-          skipAutoScale: true,
-        });
+        let newDragImage: string | undefined;
+
+        try {
+          newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
+            filter: (element) => {
+              return (
+                !(element instanceof HTMLSourceElement) &&
+                focusedElements.some((focusedElement) =>
+                  focusedElement.contains(element)
+                )
+              );
+            },
+            imagePlaceholder: UNKNOWN_ICON,
+            skipAutoScale: true,
+          });
+        } catch {
+          // Ignore failure to captrure
+        }
 
         if (newDragImage) {
           dragImageRef.current.src = newDragImage;
