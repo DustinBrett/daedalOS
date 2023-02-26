@@ -15,9 +15,18 @@ const StyledVideoPlayer = styled.div`
 
     .vjs-control-bar {
       background-color: rgb(240, 240, 240);
-      display: flex !important;
-      opacity: 100% !important;
       padding: 0 1;
+
+      :not(.no-interaction) {
+        display: flex !important;
+        opacity: 100% !important;
+      }
+
+      .no-interaction {
+        display: none !important;
+        opacity: 0% !important;
+        pointer-events: none !important;
+      }
     }
 
     &.vjs-youtube,

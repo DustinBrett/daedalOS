@@ -137,16 +137,34 @@ const useVideoPlayer = (
       if (!isYouTubeUrl(url)) linkElement(id, "peekElement", videoElement);
     });
   }, [containerRef, id, linkElement, setLoading, updateWindowSize, url]);
+  const maybeHideControlbar = useCallback(
+    (type?: string): void => {
+      const controlBar =
+        containerRef.current?.querySelector(".vjs-control-bar");
+
+      if (controlBar instanceof HTMLElement) {
+        if (type === YT_TYPE) {
+          controlBar.classList.add("no-interaction");
+        } else {
+          controlBar.classList.remove("no-interaction");
+        }
+      }
+    },
+    [containerRef]
+  );
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
-        player.src(await getSource());
+        const source = await getSource();
+
+        player.src(source);
+        maybeHideControlbar(source.type);
         prependFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
       } catch {
         // Ignore player errors
       }
     }
-  }, [getSource, player, prependFileToTitle, url]);
+  }, [getSource, maybeHideControlbar, player, prependFileToTitle, url]);
 
   useEffect(() => {
     if (loading && !player) {
