@@ -70,14 +70,14 @@ const useSelection = (
       if (menu) setMenu(Object.create(null) as MenuState);
     }
   };
-  const hasSize =
-    typeof w === "number" && w > 0 && typeof h === "number" && h > 0;
+  const hasMenu = Object.keys(menu).length > 0;
+  const hasSize = typeof w === "number" && typeof h === "number";
   const hasPosition = typeof x === "number" && typeof y === "number";
   const resetSelection = (): void => {
     setSize(Object.create(null) as Size);
     setPosition(Object.create(null) as Position);
   };
-  const isSelecting = hasSize && hasPosition;
+  const isSelecting = !hasMenu && hasSize && hasPosition;
   const selectionStyling = isSelecting
     ? {
         height: `${Math.abs(Number(h))}px`,
