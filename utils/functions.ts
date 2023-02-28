@@ -36,6 +36,14 @@ export const getDpi = (): number => {
   return dpi;
 };
 
+export const sendMouseClick = (target: HTMLElement, count = 1): void => {
+  if (count === 0) return;
+
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+  sendMouseClick(target, count - 1);
+};
+
 export const toggleFullScreen = async (): Promise<void> => {
   try {
     await (document.fullscreenElement

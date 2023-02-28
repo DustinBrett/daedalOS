@@ -12,7 +12,7 @@ import { useSession } from "contexts/session";
 import { dirname, join } from "path";
 import { useCallback, useEffect } from "react";
 import { DESKTOP_PATH, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { haltEvent, sendMouseClick } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
@@ -122,9 +122,7 @@ const useFileKeyboardShortcuts = (
             case "Enter":
               if (target instanceof HTMLButtonElement) {
                 haltEvent(event);
-                target.dispatchEvent(
-                  new MouseEvent("dblclick", { bubbles: true })
-                );
+                sendMouseClick(target, 2);
               }
               break;
             default:
