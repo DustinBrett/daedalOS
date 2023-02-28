@@ -1,3 +1,5 @@
+import { stopGlobalMusicVisualization } from "components/apps/Webamp/functions";
+import { WALLPAPER_MENU } from "components/system/Desktop/Wallpapers/constants";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import type {
@@ -6,7 +8,10 @@ import type {
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { dirname, join } from "path";
@@ -227,6 +232,9 @@ const useFolderContextMenu = (
         const FS_COMMANDS = isFileSystemSupported()
           ? [ADD_FILE, MAP_DIRECTORY]
           : [ADD_FILE];
+        const isMusicVisualizationRunning =
+          document.querySelector("main .webamp-desktop canvas") instanceof
+          HTMLCanvasElement;
 
         return [
           {
@@ -271,47 +279,33 @@ const useFolderContextMenu = (
                 MENU_SEPERATOR,
                 {
                   label: "Background",
-                  menu: [
-                    {
-                      action: () => setWallpaper("APOD"),
-                      label: "APOD",
-                      toggle: wallpaperImage.startsWith("APOD"),
-                    },
-                    {
-                      action: () => setWallpaper("COASTAL_LANDSCAPE"),
-                      label: "Coastal Landscape",
-                      toggle: wallpaperImage === "COASTAL_LANDSCAPE",
-                    },
-                    {
-                      action: () => setWallpaper("HEXELLS"),
-                      label: "Hexells",
-                      toggle: wallpaperImage === "HEXELLS",
-                    },
-                    {
-                      action: () => setWallpaper("MATRIX 2D"),
-                      label: "Matrix (2D)",
-                      toggle: wallpaperImage === "MATRIX 2D",
-                    },
-                    {
-                      action: () => setWallpaper("MATRIX 3D"),
-                      label: "Matrix (3D)",
-                      toggle: wallpaperImage === "MATRIX 3D",
-                    },
-                    {
-                      action: () => setWallpaper("SLIDESHOW"),
-                      label: "Picture Slideshow",
-                      toggle: wallpaperImage === "SLIDESHOW",
-                    },
-                    {
-                      action: () => setWallpaper("VANTA"),
-                      label: `Vanta Waves${
-                        wallpaperImage === "VANTA WIREFRAME"
-                          ? " (Wireframe)"
-                          : ""
-                      }`,
-                      toggle: wallpaperImage.startsWith("VANTA"),
-                    },
-                  ],
+                  menu: WALLPAPER_MENU.reduce<MenuItem[]>(
+                    (menu, item) => [
+                      ...menu,
+                      {
+                        action: () => {
+                          if (isMusicVisualizationRunning) {
+                            stopGlobalMusicVisualization?.();
+                          }
+                          if (item.id) setWallpaper(item.id);
+                        },
+                        label: item.name || item.id,
+                        toggle: item.startsWith
+                          ? wallpaperImage.startsWith(item.id)
+                          : wallpaperImage === item.id,
+                      },
+                    ],
+                    isMusicVisualizationRunning
+                      ? [
+                          {
+                            action: stopGlobalMusicVisualization,
+                            checked: true,
+                            label: "Music Visualization",
+                          },
+                          MENU_SEPERATOR,
+                        ]
+                      : []
+                  ),
                 },
                 ...(canCapture
                   ? [

@@ -47,4 +47,42 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
     ),
 };
 
+type WallpaperMenuItem = {
+  id: string;
+  name?: string;
+  startsWith?: boolean;
+};
+
+export const WALLPAPER_MENU: WallpaperMenuItem[] = [
+  {
+    id: "APOD",
+    startsWith: true,
+  },
+  {
+    id: "COASTAL_LANDSCAPE",
+    name: "Coastal Landscape",
+  },
+  {
+    id: "HEXELLS",
+    name: "Hexells",
+  },
+  {
+    id: "MATRIX 2D",
+    name: "Matrix (2D)",
+  },
+  {
+    id: "MATRIX 3D",
+    name: "Matrix (3D)",
+  },
+  {
+    id: "SLIDESHOW",
+    name: "Picture Slideshow",
+  },
+  {
+    id: "VANTA",
+    name: "Vanta Waves",
+    startsWith: true,
+  },
+];
+
 export const BASE_CANVAS_SELECTOR = ":scope > canvas";

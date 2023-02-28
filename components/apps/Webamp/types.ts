@@ -49,6 +49,11 @@ type SelectPresetAtIndex = {
   type: "SELECT_PRESET_AT_INDEX";
 };
 
+type SetMilkdropDesktop = {
+  enabled: false;
+  type: "SET_MILKDROP_DESKTOP";
+};
+
 type SetSkinData = {
   data: SkinData;
   type: "SET_SKIN_DATA";
@@ -92,6 +97,7 @@ export type WebampCI = Webamp & {
         | PresetRequested
         | SelectPresetAtIndex
         | SetFocusedWindow
+        | SetMilkdropDesktop
         | SetSkinData
         | UpdateTrackInfo
         | UpdateWindowPositions
@@ -131,6 +137,7 @@ export type WebampCI = Webamp & {
 declare global {
   interface Window {
     Webamp: typeof Webamp;
+    WebampGlobal: WebampCI;
     butterchurn: {
       default: unknown;
     };

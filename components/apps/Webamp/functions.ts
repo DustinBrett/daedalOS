@@ -65,6 +65,12 @@ export const enabledMilkdrop = (webamp: WebampCI): void =>
     type: "ENABLE_MILKDROP",
   });
 
+export const stopGlobalMusicVisualization = (): void =>
+  window.WebampGlobal?.store.dispatch({
+    enabled: false,
+    type: "SET_MILKDROP_DESKTOP",
+  });
+
 export const setSkinData = (webamp: WebampCI, data: SkinData): void =>
   webamp.store.dispatch({
     data,

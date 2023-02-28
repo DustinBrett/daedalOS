@@ -262,6 +262,7 @@ const useWebamp = (id: string): Webamp => {
         if (initialTracks) webamp.play();
       });
 
+      window.WebampGlobal = webamp;
       webampCI.current = webamp;
     },
     [
