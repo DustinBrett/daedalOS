@@ -16,8 +16,11 @@ const GlobalStyle = createGlobalStyle`
     user-select: none;
   }
 
-  body {
+  body, html {
     font-family: ${({ theme }) => theme.formats.systemFont};
+  }
+
+  body {
     height: 100%;
     overflow: hidden;
     text-size-adjust: none;
