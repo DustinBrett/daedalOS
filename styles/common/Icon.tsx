@@ -30,14 +30,14 @@ const StyledIcon = styled.img
     width: $width,
   }))<StyledIconProps>`
   aspect-ratio: 1;
-  left: ${({ $offset }) => $offset};
+  left: ${({ $offset }) => $offset || undefined};
   max-height: ${({ $height }) => $height}px;
   max-width: ${({ $width }) => $width}px;
   min-height: ${({ $height }) => $height}px;
   min-width: ${({ $width }) => $width}px;
   object-fit: contain;
   opacity: ${({ $moving }) => ($moving ? 0.5 : 1)};
-  top: ${({ $offset }) => $offset};
+  top: ${({ $offset }) => $offset || undefined};
 `;
 
 const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
