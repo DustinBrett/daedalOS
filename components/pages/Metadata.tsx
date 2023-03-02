@@ -8,6 +8,7 @@ import {
   HIGH_PRIORITY_ELEMENT,
   ICON_CACHE_EXTENSION,
   ICON_PATH,
+  ONE_TIME_PASSIVE_EVENT,
   PACKAGE_DATA,
   USER_ICON_PATH,
 } from "utils/constants";
@@ -38,11 +39,6 @@ const PreloadDesktopIcons: FC = () => (
     })}
   </>
 );
-
-const visibilityEventName =
-  typeof document !== "undefined" && "webkitHidden" in document
-    ? "webkitvisibilitychange"
-    : "visibilitychange";
 
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
@@ -83,13 +79,31 @@ const Metadata: FC = () => {
     const onVisibilityChange = (): void => {
       if (document.visibilityState === "visible") resetFaviconAndTitle();
     };
+    const onBeforeUnload = (): void => {
+      const faviconLinkElement = document.querySelector("link[rel=icon]");
 
-    document.addEventListener(visibilityEventName, onVisibilityChange, {
+      if (faviconLinkElement instanceof HTMLLinkElement) {
+        try {
+          faviconLinkElement.href = FAVICON_BASE_PATH;
+        } catch {
+          // Ignore failure to set link href
+        }
+      }
+    };
+
+    window.addEventListener(
+      "beforeunload",
+      onBeforeUnload,
+      ONE_TIME_PASSIVE_EVENT
+    );
+    document.addEventListener("visibilitychange", onVisibilityChange, {
       passive: true,
     });
 
-    return () =>
-      document.removeEventListener(visibilityEventName, onVisibilityChange);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [resetFaviconAndTitle]);
 
   return (
