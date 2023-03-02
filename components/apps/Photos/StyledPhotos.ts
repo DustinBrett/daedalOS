@@ -3,7 +3,11 @@ import styled from "styled-components";
 const buttonSize = "48px";
 const paddingSize = "32px";
 
-const StyledPhotos = styled.div`
+type StyledPhotosProps = {
+  $showImage: boolean;
+};
+
+const StyledPhotos = styled.div<StyledPhotosProps>`
   background-color: #222;
   display: flex;
   height: 100%;
@@ -32,6 +36,7 @@ const StyledPhotos = styled.div`
     }
 
     img {
+      display: ${({ $showImage }) => ($showImage ? "block" : "none")};
       max-height: 100%;
       max-width: 100%;
     }

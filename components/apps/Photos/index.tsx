@@ -14,7 +14,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
 import { basename, extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   HIGH_PRIORITY_ELEMENT,
@@ -122,19 +122,17 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     });
     prependFileToTitle(basename(url));
   }, [prependFileToTitle, readFile, reset, url]);
-  const style = useMemo<React.CSSProperties>(
-    () => ({
-      display: src[url] && !brokenImage ? "block" : "none",
-    }),
-    [brokenImage, src, url]
-  );
 
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
   }, [closing, loadPhoto, src, url]);
 
   return (
-    <StyledPhotos ref={containerRef} {...useFileDrop({ id })}>
+    <StyledPhotos
+      ref={containerRef}
+      $showImage={Boolean(src[url] && !brokenImage)}
+      {...useFileDrop({ id })}
+    >
       <nav className="top">
         <Button
           disabled={!url || scale === maxScale || brokenImage}
@@ -169,7 +167,6 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
           onError={() => setBrokenImage(true)}
           onLoad={() => setBrokenImage(false)}
           src={src[url]}
-          style={style}
           {...HIGH_PRIORITY_ELEMENT}
         />
         {brokenImage && (

@@ -1,7 +1,12 @@
 import styled from "styled-components";
 
-const StyledPaint = styled.div`
+type StyledPaintProps = {
+  $loaded: boolean;
+};
+
+const StyledPaint = styled.div<StyledPaintProps>`
   iframe {
+    opacity: ${({ $loaded }) => ($loaded ? "100%" : "0%")};
     transition: opacity 0.25s ease-in;
   }
 

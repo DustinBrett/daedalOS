@@ -3,6 +3,7 @@ import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
+import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
@@ -267,11 +268,6 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
     urlExt,
   ]);
-  const style = useMemo(
-    () =>
-      renaming ? ({ pointerEvents: "all" } as React.CSSProperties) : undefined,
-    [renaming]
-  );
 
   useEffect(() => {
     if (!isLoadingFileManager && !isIconCached.current) {
@@ -529,9 +525,9 @@ const FileEntry: FC<FileEntryProps> = ({
           readOnly
         )}
       >
-        <figure
+        <StyledFigure
           ref={figureRef}
-          style={style}
+          $renaming={renaming}
           {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
@@ -566,7 +562,7 @@ const FileEntry: FC<FileEntryProps> = ({
             </figcaption>
           )}
           {listView && openInFileExplorer && <Down flip={showInFileManager} />}
-        </figure>
+        </StyledFigure>
       </Button>
       {showInFileManager && (
         <FileManager

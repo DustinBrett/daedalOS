@@ -48,9 +48,9 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   return image ? (
     <StyledPeekWindow
       ref={peekRef}
+      $offsetX={offsetX}
       className="peekWindow"
       onClick={onClick}
-      style={offsetX ? { transform: `translateX(${offsetX}px)` } : undefined}
       {...peekTransition}
       {...FOCUSABLE_ELEMENT}
     >

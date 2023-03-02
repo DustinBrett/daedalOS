@@ -12,6 +12,7 @@ export type IconProps = {
 
 type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
   $height: number;
+  $loaded: boolean;
   $offset: number | string;
   $width: number;
 };
@@ -38,6 +39,11 @@ const StyledIcon = styled.img
   object-fit: contain;
   opacity: ${({ $moving }) => ($moving ? 0.5 : 1)};
   top: ${({ $offset }) => $offset || undefined};
+  visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
+`;
+
+const StyledPicture = styled.picture`
+  pointer-events: none;
 `;
 
 const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
@@ -48,10 +54,6 @@ const Icon = forwardRef<
 >((props, ref) => {
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
-  const style = useMemo<React.CSSProperties>(
-    () => ({ visibility: loaded ? "visible" : "hidden" }),
-    [loaded]
-  );
   const isStaticIcon =
     !src ||
     src.startsWith("blob:") ||
@@ -83,6 +85,7 @@ const Icon = forwardRef<
   const RenderedIcon = (
     <StyledIcon
       ref={ref}
+      $loaded={loaded}
       onError={({ target }) => {
         const { currentSrc = "" } = (target || {}) as HTMLImageElement;
 
@@ -100,14 +103,13 @@ const Icon = forwardRef<
       srcSet={
         isStaticIcon ? undefined : imageSrcs(src, imgSize, ".png", failedUrls)
       }
-      style={style}
       {...componentProps}
       {...dimensionProps}
     />
   );
 
   return (
-    <picture>
+    <StyledPicture>
       {!isStaticIcon &&
         SUPPORTED_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, imgSize, ratio, ".webp");
@@ -135,7 +137,7 @@ const Icon = forwardRef<
           );
         })}
       {RenderedIcon}
-    </picture>
+    </StyledPicture>
   );
 });
 
