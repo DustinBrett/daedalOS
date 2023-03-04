@@ -22,7 +22,6 @@ import {
   EDITABLE_IMAGE_FILE_EXTENSIONS,
   EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
-  isFileSystemSupported,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
   ROOT_SHORTCUT,
@@ -37,6 +36,7 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
+import { isFirefox } from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -145,7 +145,7 @@ const useFileContextMenu = (
 
           if (path) {
             if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
-              if (isFileSystemSupported()) {
+              if (typeof FileSystemHandle === "function") {
                 const mapFileSystemDirectory = (
                   directory: string,
                   existingHandle?: FileSystemDirectoryHandle
@@ -162,24 +162,38 @@ const useFileContextMenu = (
                     });
                 };
 
+                const showMapDirectory = "showDirectoryPicker" in window;
+                const showMapOpfs =
+                  typeof navigator.storage?.getDirectory === "function" &&
+                  !isFirefox();
+
                 menuItems.unshift(
-                  {
-                    action: () => mapFileSystemDirectory("/"),
-                    label: "Map directory",
-                  },
-                  ...(navigator.storage?.getDirectory
+                  ...(showMapDirectory
                     ? [
                         {
-                          action: async () =>
-                            mapFileSystemDirectory(
-                              "/OPFS",
-                              await navigator.storage.getDirectory()
-                            ),
+                          action: () => mapFileSystemDirectory("/"),
+                          label: "Map directory",
+                        },
+                      ]
+                    : []),
+                  ...(showMapOpfs
+                    ? [
+                        {
+                          action: async () => {
+                            try {
+                              mapFileSystemDirectory(
+                                "/OPFS",
+                                await navigator.storage.getDirectory()
+                              );
+                            } catch {
+                              // Ignore failure to map directory
+                            }
+                          },
                           label: "Map OPFS",
                         },
                       ]
                     : []),
-                  MENU_SEPERATOR
+                  ...(showMapDirectory || showMapOpfs ? [MENU_SEPERATOR] : [])
                 );
               }
             } else {
