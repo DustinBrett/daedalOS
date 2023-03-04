@@ -117,19 +117,28 @@ export const fs9pV4ToV3 = (): FS9P =>
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
-    const db = window.indexedDB.open("");
+    const db = window.indexedDB.open("browserfs");
 
     db.addEventListener("error", () => resolve(false), ONE_TIME_PASSIVE_EVENT);
     db.addEventListener(
       "success",
-      () => {
+      ({ target }) => {
         resolve(true);
 
         try {
           db.result.close();
-          window.indexedDB.deleteDatabase("");
         } catch {
-          // Ignore errors to close/delete the test database
+          // Ignore errors to close database
+        }
+
+        const { objectStoreNames } = (target as IDBOpenDBRequest)?.result || {};
+
+        if (objectStoreNames?.length === 0) {
+          try {
+            window.indexedDB.deleteDatabase("browserfs");
+          } catch {
+            // Ignore errors to delete database
+          }
         }
       },
       ONE_TIME_PASSIVE_EVENT
