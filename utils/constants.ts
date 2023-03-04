@@ -369,5 +369,5 @@ export const HIGH_PRIORITY_ELEMENT = {
   fetchpriority: "high",
 } as React.HTMLAttributes<HTMLElement>;
 
-export const isFileSystemSupported = (): boolean =>
+export const isFileSystemMappingSupported = (): boolean =>
   typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;

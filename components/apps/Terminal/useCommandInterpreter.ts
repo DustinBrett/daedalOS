@@ -42,7 +42,7 @@ import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
-  isFileSystemSupported,
+  isFileSystemMappingSupported,
   MILLISECONDS_IN_SECOND,
   PACKAGE_DATA,
   SHORTCUT_EXTENSION,
@@ -576,7 +576,7 @@ const useCommandInterpreter = (
         }
         case "mount":
           if (localEcho) {
-            if (isFileSystemSupported()) {
+            if (isFileSystemMappingSupported()) {
               try {
                 const mappedFolder = await mapFs(cd.current);
 

@@ -20,7 +20,7 @@ import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   FOLDER_ICON,
-  isFileSystemSupported,
+  isFileSystemMappingSupported,
   MENU_SEPERATOR,
 } from "utils/constants";
 import { bufferToBlob, isFirefox, isSafari } from "utils/functions";
@@ -229,9 +229,10 @@ const useFolderContextMenu = (
               }),
           label: "Map directory",
         };
-        const FS_COMMANDS = isFileSystemSupported()
-          ? [ADD_FILE, MAP_DIRECTORY]
-          : [ADD_FILE];
+        const FS_COMMANDS = [
+          ADD_FILE,
+          ...(isFileSystemMappingSupported() ? [MAP_DIRECTORY] : []),
+        ];
         const isMusicVisualizationRunning =
           document.querySelector("main .webamp-desktop canvas") instanceof
           HTMLCanvasElement;
