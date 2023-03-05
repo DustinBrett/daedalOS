@@ -48,7 +48,7 @@ const useWindowTransitions = (
   );
 
   useLayoutEffect(() => {
-    if (!componentWindow) return;
+    if (!componentWindow || closing) return;
 
     const { x: windowX = 0, y: windowY = 0 } =
       componentWindow.getBoundingClientRect();
@@ -59,10 +59,10 @@ const useWindowTransitions = (
       x: 0 - windowX,
       y: 0 - windowY,
     });
-  }, [componentWindow, maximized]);
+  }, [closing, componentWindow, maximized]);
 
   useLayoutEffect(() => {
-    if (!taskbarEntry || !componentWindow) return;
+    if (!taskbarEntry || !componentWindow || closing) return;
 
     const {
       height: taskbarHeight = 0,
@@ -87,7 +87,7 @@ const useWindowTransitions = (
     if (!(x === 0 && y === 0)) {
       setMinimize({ ...baseMinimize, x, y });
     }
-  }, [componentWindow, minimized, taskbarEntry]);
+  }, [closing, componentWindow, minimized, taskbarEntry]);
 
   useEffect(() => {
     const monitorViewportResize = (): void => {
