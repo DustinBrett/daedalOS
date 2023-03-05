@@ -1,4 +1,3 @@
-import { stopGlobalMusicVisualization } from "components/apps/Webamp/functions";
 import { WALLPAPER_MENU } from "components/system/Desktop/Wallpapers/constants";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
@@ -24,6 +23,12 @@ import {
   MENU_SEPERATOR,
 } from "utils/constants";
 import { bufferToBlob, isFirefox, isSafari } from "utils/functions";
+
+const stopGlobalMusicVisualization = (): void =>
+  window.WebampGlobal?.store.dispatch({
+    enabled: false,
+    type: "SET_MILKDROP_DESKTOP",
+  });
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";

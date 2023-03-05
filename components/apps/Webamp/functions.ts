@@ -2,11 +2,12 @@ import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
   SkinData,
+  WebampApiResponse,
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
 import type { Position } from "react-rnd";
-import { HOME, MP3_MIME_TYPE } from "utils/constants";
+import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
 import type { Track, URLTrack } from "webamp";
 
@@ -16,6 +17,22 @@ const BROKEN_PRESETS = new Set([
 ]);
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
+
+const ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM =
+  typeof window !== "undefined" &&
+  ["localhost", PACKAGE_DATA.author.url.replace("https://", "")].includes(
+    window.location.hostname
+  );
+
+const createWebampSkinMuseumQuery = (offset: number): string => `
+  query {
+    skins(filter: APPROVED, first: 1, offset: ${offset}) {
+      nodes {
+        download_url
+      }
+    }
+  }
+`;
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
@@ -27,6 +44,43 @@ export const BASE_WEBAMP_OPTIONS = {
       name: "Nucleo NLog v2G",
       url: `${WEBAMP_SKINS_PATH}/Nucleo_NLog_v102.wsz`,
     },
+    ...(ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM
+      ? [
+          {
+            defaultName: "Random (Winamp Skin Museum)",
+            loading: false,
+            get name(): string {
+              if (this.loading) return this.defaultName;
+
+              this.loading = true;
+
+              fetch("https://api.webamp.org/graphql", {
+                body: JSON.stringify({
+                  query: createWebampSkinMuseumQuery(
+                    Math.floor(Math.random() * 1000)
+                  ),
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              }).then(async (response) => {
+                const { data } = ((await response.json()) ||
+                  {}) as WebampApiResponse;
+
+                this.skinUrl = data?.skins?.nodes?.[0]?.download_url as string;
+                this.loading = false;
+              });
+
+              return this.defaultName;
+            },
+            skinUrl: "",
+            get url(): string {
+              return this.skinUrl || `${WEBAMP_SKINS_PATH}/base-2.91.wsz`;
+            },
+          },
+        ]
+      : []),
     {
       name: "SpyAMP Professional Edition v5",
       url: `${WEBAMP_SKINS_PATH}/SpyAMP_Professional_Edition_v5.wsz`,
@@ -63,12 +117,6 @@ export const enabledMilkdrop = (webamp: WebampCI): void =>
   webamp.store.dispatch({
     open: false,
     type: "ENABLE_MILKDROP",
-  });
-
-export const stopGlobalMusicVisualization = (): void =>
-  window.WebampGlobal?.store.dispatch({
-    enabled: false,
-    type: "SET_MILKDROP_DESKTOP",
   });
 
 export const setSkinData = (webamp: WebampCI, data: SkinData): void =>
