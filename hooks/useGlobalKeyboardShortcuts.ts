@@ -42,7 +42,7 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
 const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R"]);
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { close, maximize, minimize, open } = useProcesses();
+  const { closeWithTransition, maximize, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
   const { foregroundId } = useSession();
   const altBindingsRef = useRef<Record<string, () => void>>({});
@@ -154,9 +154,9 @@ const useGlobalKeyboardShortcuts = (): void => {
   useEffect(() => {
     altBindingsRef.current = {
       ...altBindingsRef.current,
-      F4: () => close(foregroundId),
+      F4: () => closeWithTransition(foregroundId),
     };
-  }, [close, foregroundId]);
+  }, [closeWithTransition, foregroundId]);
 
   useEffect(() => {
     shiftBindingsRef.current = {
