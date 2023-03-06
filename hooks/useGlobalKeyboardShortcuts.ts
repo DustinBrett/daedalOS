@@ -162,8 +162,11 @@ const useGlobalKeyboardShortcuts = (): void => {
     shiftBindingsRef.current = {
       ...shiftBindingsRef.current,
       ARROWDOWN: () => {
-        const { hideMinimizeButton, maximized, minimized } =
-          processesRef.current[foregroundId];
+        const {
+          hideMinimizeButton = false,
+          maximized,
+          minimized,
+        } = processesRef.current[foregroundId];
 
         if (maximized) {
           maximize(foregroundId);
@@ -172,8 +175,12 @@ const useGlobalKeyboardShortcuts = (): void => {
         }
       },
       ARROWUP: () => {
-        const { allowResizing, hideMaximizeButton, maximized, minimized } =
-          processesRef.current[foregroundId];
+        const {
+          allowResizing = true,
+          hideMaximizeButton = false,
+          maximized,
+          minimized,
+        } = processesRef.current[foregroundId];
 
         if (minimized) {
           minimize(foregroundId);
