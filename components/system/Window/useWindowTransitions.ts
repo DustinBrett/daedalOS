@@ -11,11 +11,20 @@ const active = {
   width: "inherit",
 };
 
-const initial = {
-  height: "inherit",
+const exit = {
   opacity: 0,
   scale: 0.95,
+};
+
+const initial = {
+  ...exit,
+  height: "inherit",
   width: "inherit",
+};
+
+const fullScaleInitial = {
+  ...initial,
+  scale: 1,
 };
 
 const baseMaximize = {
@@ -109,14 +118,15 @@ const useWindowTransitions = (
       (minimized ? "minimize" : "") ||
       (!closing && maximized ? "maximize" : "") ||
       "active",
-    exit: "initial",
+    exit: "exit",
     initial: "initial",
     transition: {
       duration: TRANSITIONS_IN_SECONDS.WINDOW,
     },
     variants: {
       active,
-      initial: noInitialScaling ? { ...initial, scale: 1 } : initial,
+      exit,
+      initial: noInitialScaling ? fullScaleInitial : initial,
       maximize,
       minimize,
     },
