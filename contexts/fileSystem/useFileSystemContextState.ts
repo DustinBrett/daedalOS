@@ -194,7 +194,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
       let handle: FileSystemDirectoryHandle;
 
       try {
-        handle = existingHandle ?? (await window.showDirectoryPicker());
+        handle =
+          existingHandle ??
+          (await window.showDirectoryPicker({
+            id: "MapDirectoryPicker",
+            mode: "readwrite",
+            startIn: "desktop",
+          }));
       } catch {
         // Ignore cancelling the dialog
       }
