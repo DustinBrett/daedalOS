@@ -1,6 +1,10 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledPDF = styled.div`
+  ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
+
   display: block;
   overflow: auto;
   position: relative;
