@@ -26,6 +26,7 @@ import {
   cleanUpBufferUrl,
   decodeJxl,
   getGifJs,
+  haltEvent,
   imageToBufferUrl,
   imgDataToBuffer,
   label,
@@ -131,6 +132,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     <StyledPhotos
       ref={containerRef}
       $showImage={Boolean(src[url] && !brokenImage)}
+      onContextMenu={haltEvent}
       {...useFileDrop({ id })}
     >
       <nav className="top">
