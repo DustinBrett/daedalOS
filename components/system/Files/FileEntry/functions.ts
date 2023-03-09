@@ -1,5 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
+import { getMimeType } from "components/apps/VideoPlayer/config";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
@@ -43,6 +44,7 @@ import {
   getHtmlToImage,
   imageToBufferUrl,
   imgDataToBuffer,
+  isSafari,
   isYouTubeUrl,
 } from "utils/functions";
 
@@ -680,7 +682,11 @@ export const getInfoWithExtension = (
                 },
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
-              video.src = bufferToUrl(contents);
+
+              video.src = bufferToUrl(
+                contents,
+                isSafari() ? getMimeType(path) : undefined
+              );
             }
           })
         );
