@@ -561,7 +561,12 @@ export const isSafari = (): boolean => {
 };
 
 export const haltEvent = (
-  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+  event:
+    | Event
+    | React.DragEvent
+    | React.FocusEvent
+    | React.KeyboardEvent
+    | React.MouseEvent
 ): void => {
   try {
     if (event.cancelable) {
