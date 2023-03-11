@@ -8,6 +8,7 @@ import type {
 } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
   handleFileInputEvent,
@@ -26,11 +27,13 @@ import { basename, dirname, extname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
   INVALID_FILE_CHARACTERS,
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
+import { bufferToBlob } from "utils/functions";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -111,9 +114,37 @@ const useFileSystemContextState = (): FileSystemContextState => {
       ),
     []
   );
+  const copyToClipboard = useCallback(
+    (entry: string) => {
+      if (!CLIPBOARD_FILE_EXTENSIONS.has(extname(entry))) return;
+
+      let type = getMimeType(entry);
+
+      if (!type) return;
+
+      // Bypass "Type image/jpeg not supported on write."
+      if (type === "image/jpeg") type = "image/png";
+
+      try {
+        navigator.clipboard?.write?.([
+          new ClipboardItem({
+            [type]: readFile(entry).then((buffer) =>
+              bufferToBlob(buffer, type)
+            ),
+          }),
+        ]);
+      } catch {
+        // Ignore failure to copy image to clipboard
+      }
+    },
+    [readFile]
+  );
   const copyEntries = useCallback(
-    (entries: string[]): void => updatePasteEntries(entries, "copy"),
-    [updatePasteEntries]
+    (entries: string[]): void => {
+      if (entries.length === 1) copyToClipboard(entries[0]);
+      updatePasteEntries(entries, "copy");
+    },
+    [copyToClipboard, updatePasteEntries]
   );
   const moveEntries = useCallback(
     (entries: string[]): void => updatePasteEntries(entries, "move"),
