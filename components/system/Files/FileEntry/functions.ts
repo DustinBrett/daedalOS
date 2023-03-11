@@ -1,6 +1,5 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
-import { getMimeType } from "components/apps/VideoPlayer/config";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
@@ -33,6 +32,7 @@ import {
   SYSTEM_PATHS,
   TIFF_IMAGE_FORMATS,
   UNKNOWN_ICON_PATH,
+  VIDEO_FALLBACK_MIME_TYPE,
   VIDEO_FILE_EXTENSIONS,
   YT_ICON_CACHE,
 } from "utils/constants";
@@ -122,6 +122,35 @@ export const getProcessByFileExtension = (extension: string): string => {
       : [getDefaultFileViewer(extension)];
 
   return defaultProcess;
+};
+
+export const getMimeType = (url: string): string => {
+  switch (extname(url).toLowerCase()) {
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".m3u8":
+      return "application/x-mpegURL";
+    case ".m4v":
+    case ".mkv":
+    case ".mov":
+    case ".mp4":
+      return "video/mp4";
+    case ".oga":
+      return "audio/ogg";
+    case ".ogg":
+    case ".ogm":
+    case ".ogv":
+      return "video/ogg";
+    case ".png":
+      return "image/png";
+    case ".wav":
+      return "audio/wav";
+    case ".webm":
+      return "video/webm";
+    default:
+      return "";
+  }
 };
 
 export const getShortcutInfo = (contents: Buffer): FileInfo => {
@@ -685,7 +714,9 @@ export const getInfoWithExtension = (
 
               video.src = bufferToUrl(
                 contents,
-                isSafari() ? getMimeType(path) : undefined
+                isSafari()
+                  ? getMimeType(path) || VIDEO_FALLBACK_MIME_TYPE
+                  : undefined
               );
             }
           })

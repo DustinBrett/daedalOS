@@ -1,7 +1,6 @@
 import {
   config,
   CONTROL_BAR_HEIGHT,
-  getMimeType,
   VideoResizeKey,
   YT_TYPE,
 } from "components/apps/VideoPlayer/config";
@@ -9,12 +8,14 @@ import type {
   SourceObjectWithUrl,
   VideoPlayer,
 } from "components/apps/VideoPlayer/types";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
+import { VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -55,7 +56,7 @@ const useVideoPlayer = (
     cleanUpSource();
 
     const isYT = isYouTubeUrl(url);
-    const type = isYT ? YT_TYPE : getMimeType(url);
+    const type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
     const src = isYT
       ? url
       : bufferToUrl(await readFile(url), isSafari() ? type : undefined);

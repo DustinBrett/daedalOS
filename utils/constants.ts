@@ -76,6 +76,8 @@ export const TIFF_IMAGE_FORMATS = new Set([
   ".tiff",
 ]);
 
+export const CLIPBOARD_FILE_EXTENSIONS = new Set([".jpeg", ".jpg", ".png"]);
+
 export const IMAGE_FILE_EXTENSIONS = new Set([
   ...TIFF_IMAGE_FORMATS,
   ".ani",
@@ -217,6 +219,8 @@ export const SPREADSHEET_FORMATS = [
 ];
 
 export const MP3_MIME_TYPE = "audio/mpeg";
+
+export const VIDEO_FALLBACK_MIME_TYPE = "video/mp4";
 
 export const NON_BREAKING_HYPHEN = "\u2011";
 
