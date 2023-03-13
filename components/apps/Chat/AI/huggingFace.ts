@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import type { Inference } from "components/system/AI/inference";
+import type { Inference } from "components/apps/Chat/AI/useInference";
 import { loadFiles } from "utils/functions";
 
 type HfInference = {
@@ -19,25 +19,29 @@ type HfInference = {
 
 declare global {
   interface Window {
-    HfInference?: new () => HfInference;
+    HfInference?: new (apiKey?: string) => HfInference;
   }
 }
 
 const DEFAULT_MODELS = {
-  conversational: "microsoft/DialoGPT-large",
+  conversational: "facebook/blenderbot-400M-distill",
   translation: "t5-base",
 };
 
 export class HuggingFace implements Inference {
   private inference: HfInference | undefined;
 
-  public limitReached = false;
+  private setError: React.Dispatch<React.SetStateAction<number>>;
 
-  public async init(): Promise<void> {
-    await loadFiles(["System/AI/HuggingFace/inference.js"]);
+  public constructor(setError: React.Dispatch<React.SetStateAction<number>>) {
+    this.setError = setError;
+  }
+
+  public async init(apiKey?: string): Promise<void> {
+    await loadFiles(["Program Files/HuggingFace/inference.js"]);
 
     if (window.HfInference) {
-      this.inference = new window.HfInference();
+      this.inference = new window.HfInference(apiKey);
     }
   }
 
@@ -83,7 +87,7 @@ export class HuggingFace implements Inference {
 
   private checkError(error: Error): void {
     if (error.message.includes("Rate limit reached")) {
-      this.limitReached = true;
+      this.setError(429);
     }
   }
 }

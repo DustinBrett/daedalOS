@@ -1,61 +1,32 @@
+import { useInference } from "components/apps/Chat/AI/useInference";
+import { WELCOME_MESSAGE } from "components/apps/Chat/config";
+import { getLetterTypingSpeed } from "components/apps/Chat/functions";
 import { Send } from "components/apps/Chat/Send";
 import StyledChat from "components/apps/Chat/StyledChat";
+import StyledMessage from "components/apps/Chat/StyledMessage";
 import StyledWarning from "components/apps/Chat/StyledWarning";
-import { inference } from "components/system/AI/inference";
+import type { Message } from "components/apps/Chat/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { PREVENT_SCROLL } from "utils/constants";
 
-type Message = {
-  text: string;
-  type: "bot" | "user";
-  writing?: boolean;
-};
-
-const WELCOME_MESSAGE = {
-  text: "Hello, I'm an AI assistant. How can I help you?",
-  type: "bot",
-} as Message;
-
-const MAX_TYPING_SPEED_MS = 15;
-
-const getLetterTypingSpeed = (): number => {
-  const randomNumber = Math.random();
-  let maxSpeed = MAX_TYPING_SPEED_MS * 2;
-
-  if (randomNumber < 0.5) maxSpeed = MAX_TYPING_SPEED_MS * 3;
-  else if (randomNumber < 0.7) maxSpeed = MAX_TYPING_SPEED_MS * 4;
-  else maxSpeed = MAX_TYPING_SPEED_MS * 5;
-
-  return Math.floor(
-    randomNumber * (maxSpeed - MAX_TYPING_SPEED_MS + 1) + MAX_TYPING_SPEED_MS
-  );
-};
-
 const Chat: FC<ComponentProcessProps> = () => {
-  const AI = inference();
+  const { engine: AI, error: aiError } = useInference();
   const messagesRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const initRef = useRef(false);
-  const addMessage = useCallback((message: Message) => {
-    const { text, type } = message;
-
-    if (!text) return;
-
-    const recurseWrite = (
-      [nextLetter, ...remainingText]: string[],
-      isFirstLetter = false
-    ): void => {
+  const recurseWrite = useCallback(
+    ([nextLetter, ...remainingText]: string[], isFirstLetter = false): void => {
       const isWriting = remainingText.length > 0;
 
       setMessages((currentMessages) => {
         if (isFirstLetter) {
           return [
             ...currentMessages,
-            { text: nextLetter, type, writing: isWriting },
+            { text: nextLetter, type: "bot", writing: isWriting },
           ];
         }
 
@@ -64,7 +35,7 @@ const Chat: FC<ComponentProcessProps> = () => {
 
         newMessages[writingIndex] = {
           text: `${newMessages[writingIndex].text}${nextLetter}`,
-          type,
+          type: "bot",
           writing: isWriting,
         };
 
@@ -74,14 +45,23 @@ const Chat: FC<ComponentProcessProps> = () => {
       if (isWriting) {
         setTimeout(() => recurseWrite(remainingText), getLetterTypingSpeed());
       }
-    };
+    },
+    []
+  );
+  const addMessage = useCallback(
+    (message: Message) => {
+      const { text, type } = message;
 
-    if (type === "bot") {
-      recurseWrite([...text], true);
-    } else {
-      setMessages((currentMessages) => [...currentMessages, message]);
-    }
-  }, []);
+      if (!text) return;
+
+      if (type === "bot") {
+        recurseWrite([...text], true);
+      } else {
+        setMessages((currentMessages) => [...currentMessages, message]);
+      }
+    },
+    [recurseWrite]
+  );
   const sendMessage = useCallback(
     (userMessage: string): void => {
       const [botMessages, userMessages] = messages.reduce(
@@ -89,15 +69,16 @@ const Chat: FC<ComponentProcessProps> = () => {
           type === "bot" ? [[...bots, text], users] : [bots, [...users, text]],
         [[] as string[], [] as string[]]
       );
+      const message = userMessage.trim();
 
-      AI.chat(userMessage, userMessages, botMessages).then((generatedMessage) =>
+      AI.chat(message, userMessages, botMessages).then((generatedMessage) =>
         addMessage({
-          text: generatedMessage,
+          text: generatedMessage.trim(),
           type: "bot",
         })
       );
       addMessage({
-        text: userMessage,
+        text: message,
         type: "user",
       });
     },
@@ -139,17 +120,19 @@ const Chat: FC<ComponentProcessProps> = () => {
 
   return (
     <StyledChat $hideSend={!canSend}>
-      {AI.limitReached && (
+      {Boolean(aiError) && (
         <StyledWarning>
-          Rate limit reached. Use API token to continue.
+          {aiError === 429
+            ? "Rate limit reached. Use API token to continue."
+            : ""}
         </StyledWarning>
       )}
       <ul ref={messagesRef}>
-        {messages.map(({ text, type }, id) => (
+        {messages.map(({ text, type, writing }, id) => (
           // eslint-disable-next-line react/no-array-index-key
-          <li key={id} className={type}>
+          <StyledMessage key={id} $type={type} $writing={writing}>
             {text}
-          </li>
+          </StyledMessage>
         ))}
       </ul>
       <div>

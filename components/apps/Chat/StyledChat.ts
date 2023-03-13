@@ -1,8 +1,7 @@
+import { BOX_SHADOW } from "components/apps/Chat/config";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
-
-const SHADOW = "0 0.5px 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2)";
 
 type StyledChatProps = {
   $hideSend: boolean;
@@ -28,7 +27,7 @@ const StyledChat = styled.div<StyledChatProps>`
       background-color: rgb(64, 65, 79);
       border: 5px solid rgb(64, 65, 79);
       border-radius: 24px;
-      box-shadow: ${SHADOW};
+      box-shadow: ${BOX_SHADOW};
       color: #fff;
       font-family: ${({ theme }) => theme.formats.systemFont};
       font-size: 16px;
@@ -76,54 +75,6 @@ const StyledChat = styled.div<StyledChatProps>`
     overflow-y: scroll;
     padding-bottom: 84px;
     position: relative;
-
-    li {
-      box-shadow: ${SHADOW};
-      border-radius: 18px;
-      font-size: 16px;
-      line-height: 20px;
-      margin: 20px;
-      max-width: calc(100% - 40px);
-      overflow-wrap: break-word;
-      padding: 10px 15px;
-      width: max-content;
-
-      &.bot {
-        background: linear-gradient(
-          90deg,
-          rgb(248, 249, 253),
-          rgb(245, 248, 253)
-        );
-        color: #000;
-        margin-left: 56px;
-        margin-right: auto;
-        max-width: calc(100% - 78px);
-        position: relative;
-
-        &::before {
-          background-color: black;
-          background-image: url("/favicon.ico");
-          background-size: contain;
-          border-radius: 50%;
-          content: "";
-          height: 31px;
-          left: -40px;
-          position: absolute;
-          top: 9px;
-          width: 31px;
-        }
-      }
-
-      &.user {
-        background: linear-gradient(90deg, rgb(40, 112, 234), rgb(27, 74, 239));
-        color: #fff;
-        margin-left: auto;
-      }
-    }
-
-    .user + .user {
-      margin-top: -18px;
-    }
   }
 `;
 
