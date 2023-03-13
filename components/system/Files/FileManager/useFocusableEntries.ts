@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { PREVENT_SCROLL } from "utils/constants";
 import { clsx, haltEvent } from "utils/functions";
 
 type FocusedEntryProps = {
@@ -53,7 +54,7 @@ const useFocusableEntries = (
 
       if (isFileManagerFocus && focusingRef.current) {
         haltEvent(event);
-        (target as HTMLElement)?.focus();
+        (target as HTMLElement)?.focus(PREVENT_SCROLL);
       } else if (
         isFileManagerFocus ||
         !(relatedTarget instanceof HTMLElement) ||
