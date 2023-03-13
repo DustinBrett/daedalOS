@@ -32,6 +32,16 @@ const directory: Processes = {
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
   },
+  Chat: {
+    Component: dynamic(() => import("components/apps/Chat")),
+    backgroundColor: "rgb(68, 70, 84)",
+    defaultSize: {
+      height: 400,
+      width: 550,
+    },
+    icon: "/System/Icons/chat.webp",
+    title: "AI Chat",
+  },
   ClassiCube: {
     Component: dynamic(() => import("components/apps/ClassiCube")),
     backgroundColor: "#201E20",
