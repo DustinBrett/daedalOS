@@ -18,9 +18,9 @@ const API_URLS = {
 };
 
 const SYSTEM_MESSAGE = {
-  text: "You are a helpful assistant.",
-  type: "system",
-} as Message;
+  content: "You are a helpful assistant.",
+  role: "system",
+};
 
 export class OpenAI implements Engine {
   private setError: React.Dispatch<React.SetStateAction<number>>;
