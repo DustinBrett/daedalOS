@@ -31,7 +31,7 @@ const Engines = { HuggingFace, OpenAI } as Record<
   new (setError?: React.Dispatch<React.SetStateAction<number>>) => Engine
 >;
 
-const DEFAULT_ENGINE = "OpenAI";
+const DEFAULT_ENGINE = "HuggingFace";
 
 export const useInference = (engine?: string): Inference => {
   const [error, setError] = useState<number>(0);
