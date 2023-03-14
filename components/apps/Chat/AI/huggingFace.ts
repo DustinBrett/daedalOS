@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import type { Inference } from "components/apps/Chat/AI/useInference";
+import type { Engine } from "components/apps/Chat/AI/useInference";
+import type { Message } from "components/apps/Chat/types";
 import { loadFiles } from "utils/functions";
 
 type HfInference = {
@@ -28,10 +29,15 @@ const DEFAULT_MODELS = {
   translation: "t5-base",
 };
 
-export class HuggingFace implements Inference {
+export class HuggingFace implements Engine {
   private inference: HfInference | undefined;
 
   private setError: React.Dispatch<React.SetStateAction<number>>;
+
+  public greeting = {
+    text: "Hello, I'm an AI assistant. How can I help you?",
+    type: "assistant",
+  } as Message;
 
   public constructor(setError: React.Dispatch<React.SetStateAction<number>>) {
     this.setError = setError;

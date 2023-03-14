@@ -1,5 +1,5 @@
 export type Message = {
   text: string;
-  type: "bot" | "user";
+  type: "assistant" | "system" | "user";
   writing?: boolean;
 };

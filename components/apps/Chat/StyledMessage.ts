@@ -29,7 +29,7 @@ const StyledMessage = styled.li<StyledMessageProps>`
     `}
 
   ${({ $type }) =>
-    $type === "bot" &&
+    $type === "assistant" &&
     css`
       background: linear-gradient(
         90deg,

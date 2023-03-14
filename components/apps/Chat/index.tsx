@@ -1,5 +1,7 @@
-import { useInference } from "components/apps/Chat/AI/useInference";
-import { WELCOME_MESSAGE } from "components/apps/Chat/config";
+import {
+  EngineErrorMessage,
+  useInference,
+} from "components/apps/Chat/AI/useInference";
 import { getLetterTypingSpeed } from "components/apps/Chat/functions";
 import { Send } from "components/apps/Chat/Send";
 import StyledChat from "components/apps/Chat/StyledChat";
@@ -12,7 +14,7 @@ import Button from "styles/common/Button";
 import { PREVENT_SCROLL } from "utils/constants";
 
 const Chat: FC<ComponentProcessProps> = () => {
-  const { engine: AI, error: aiError } = useInference();
+  const { engine: AI, error: aiError, resetError } = useInference();
   const messagesRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState<string>("");
@@ -26,7 +28,7 @@ const Chat: FC<ComponentProcessProps> = () => {
         if (isFirstLetter) {
           return [
             ...currentMessages,
-            { text: nextLetter, type: "bot", writing: isWriting },
+            { text: nextLetter, type: "assistant", writing: isWriting },
           ];
         }
 
@@ -35,7 +37,7 @@ const Chat: FC<ComponentProcessProps> = () => {
 
         newMessages[writingIndex] = {
           text: `${newMessages[writingIndex].text}${nextLetter}`,
-          type: "bot",
+          type: "assistant",
           writing: isWriting,
         };
 
@@ -54,7 +56,7 @@ const Chat: FC<ComponentProcessProps> = () => {
 
       if (!text) return;
 
-      if (type === "bot") {
+      if (type === "assistant") {
         recurseWrite([...text], true);
       } else {
         setMessages((currentMessages) => [...currentMessages, message]);
@@ -66,16 +68,19 @@ const Chat: FC<ComponentProcessProps> = () => {
     (userMessage: string): void => {
       const [botMessages, userMessages] = messages.reduce(
         ([bots, users], { text, type }) =>
-          type === "bot" ? [[...bots, text], users] : [bots, [...users, text]],
+          type === "assistant"
+            ? [[...bots, text], users]
+            : [bots, [...users, text]],
         [[] as string[], [] as string[]]
       );
       const message = userMessage.trim();
 
-      AI?.chat(message, userMessages, botMessages).then((generatedMessage) =>
-        addMessage({
-          text: generatedMessage.trim(),
-          type: "bot",
-        })
+      AI?.chat(message, userMessages, botMessages, messages).then(
+        (generatedMessage) =>
+          addMessage({
+            text: generatedMessage.trim(),
+            type: "assistant",
+          })
       );
       addMessage({
         text: message,
@@ -93,7 +98,7 @@ const Chat: FC<ComponentProcessProps> = () => {
       AI?.translation(text).then((translatedText) =>
         addMessage({
           text: `TRANSLATED: ${translatedText.trim()}`,
-          type: "bot",
+          type: "assistant",
         })
       );
     },
@@ -125,11 +130,12 @@ const Chat: FC<ComponentProcessProps> = () => {
         sendMessage(inputRef.current.value);
       }
 
+      resetError();
       inputRef.current.value = "";
       setInput("");
       updateHeight();
     }
-  }, [sendMessage, translateText, updateHeight]);
+  }, [resetError, sendMessage, translateText, updateHeight]);
   const canSend = input && !messages.some(({ writing }) => writing);
 
   useEffect(() => {
@@ -143,19 +149,12 @@ const Chat: FC<ComponentProcessProps> = () => {
 
     initRef.current = true;
 
-    AI?.init().then(() => addMessage(WELCOME_MESSAGE));
+    AI?.init().then(() => addMessage(AI?.greeting));
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage]);
 
   return (
     <StyledChat $hideSend={!canSend}>
-      {Boolean(aiError) && (
-        <StyledWarning>
-          {aiError === 429
-            ? "Rate limit reached. Use API token to continue."
-            : ""}
-        </StyledWarning>
-      )}
       <ul ref={messagesRef}>
         {messages.map(({ text, type, writing }, id) => (
           // eslint-disable-next-line react/no-array-index-key
@@ -163,6 +162,9 @@ const Chat: FC<ComponentProcessProps> = () => {
             {text}
           </StyledMessage>
         ))}
+        {Boolean(aiError && EngineErrorMessage[aiError]) && (
+          <StyledWarning>{EngineErrorMessage[aiError]}</StyledWarning>
+        )}
       </ul>
       <div>
         <textarea
