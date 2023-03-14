@@ -104,7 +104,7 @@ const directory: Processes = {
       width: 704,
     },
     icon: "/System/Icons/kiwiirc.webp",
-    libs: ["Program Files/kiwiirc/index.html"],
+    libs: ["/Program Files/kiwiirc/index.html"],
     title: "IRC",
   },
   JSDOS: {
@@ -177,7 +177,7 @@ const directory: Processes = {
       width: 640,
     },
     icon: "/System/Icons/paint.webp",
-    libs: ["Program Files/jspaint/index.html"],
+    libs: ["/Program Files/jspaint/index.html"],
     title: "Paint",
   },
   Photos: {

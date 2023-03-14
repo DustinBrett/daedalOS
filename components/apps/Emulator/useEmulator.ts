@@ -123,7 +123,7 @@ const useEmulator = (
       screenshot: false,
     };
 
-    await loadFiles(["Program Files/EmulatorJs/loader.js"], undefined, true);
+    await loadFiles(["/Program Files/EmulatorJs/loader.js"], undefined, true);
 
     prependFileToTitle(`${window.EJS_gameName} (${console})`);
   }, [
