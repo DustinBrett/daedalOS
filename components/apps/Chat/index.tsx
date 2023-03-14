@@ -71,7 +71,7 @@ const Chat: FC<ComponentProcessProps> = () => {
       );
       const message = userMessage.trim();
 
-      AI.chat(message, userMessages, botMessages).then((generatedMessage) =>
+      AI?.chat(message, userMessages, botMessages).then((generatedMessage) =>
         addMessage({
           text: generatedMessage.trim(),
           type: "bot",
@@ -84,6 +84,21 @@ const Chat: FC<ComponentProcessProps> = () => {
     },
     [AI, addMessage, messages]
   );
+  const translateText = useCallback(
+    (text: string, originalCommand: string) => {
+      addMessage({
+        text: originalCommand,
+        type: "user",
+      });
+      AI?.translation(text).then((translatedText) =>
+        addMessage({
+          text: `TRANSLATED: ${translatedText.trim()}`,
+          type: "bot",
+        })
+      );
+    },
+    [AI, addMessage]
+  );
   const updateHeight = useCallback(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "0px";
@@ -95,12 +110,26 @@ const Chat: FC<ComponentProcessProps> = () => {
   }, []);
   const onSend = useCallback(() => {
     if (inputRef.current) {
-      sendMessage(inputRef.current.value);
+      if (inputRef.current.value.startsWith("/")) {
+        const [command, ...text] = inputRef.current.value.split(" ");
+
+        // eslint-disable-next-line sonarjs/no-small-switch
+        switch (command.replace("/", "")) {
+          case "translate":
+            translateText(text.join(" "), inputRef.current.value);
+            break;
+          default:
+            break;
+        }
+      } else {
+        sendMessage(inputRef.current.value);
+      }
+
       inputRef.current.value = "";
       setInput("");
       updateHeight();
     }
-  }, [sendMessage, updateHeight]);
+  }, [sendMessage, translateText, updateHeight]);
   const canSend = input && !messages.some(({ writing }) => writing);
 
   useEffect(() => {
@@ -114,7 +143,7 @@ const Chat: FC<ComponentProcessProps> = () => {
 
     initRef.current = true;
 
-    AI.init().then(() => addMessage(WELCOME_MESSAGE));
+    AI?.init().then(() => addMessage(WELCOME_MESSAGE));
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage]);
 

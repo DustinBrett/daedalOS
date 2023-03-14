@@ -1,5 +1,5 @@
 import { HuggingFace } from "components/apps/Chat/AI/huggingFace";
-import { useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 export type Inference = {
   chat: (
@@ -20,18 +20,16 @@ const DEFAULT_ENGINE = "HuggingFace";
 
 export const useInference = (
   engine?: string
-): {
-  engine: Inference;
-  error: number | undefined;
-} => {
-  const engineRef = useRef<Inference | undefined>();
+): { engine?: Inference; error: number } => {
   const [error, setError] = useState<number>(0);
 
-  if (!engineRef.current) {
-    engineRef.current =
-      (engine && engine in Engines && new Engines[engine](setError)) ||
-      new Engines[DEFAULT_ENGINE](setError);
-  }
-
-  return { engine: engineRef.current, error };
+  return {
+    engine: useMemo(
+      () =>
+        (engine && engine in Engines && new Engines[engine](setError)) ||
+        new Engines[DEFAULT_ENGINE](setError),
+      [engine]
+    ),
+    error,
+  };
 };
