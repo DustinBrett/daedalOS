@@ -2,22 +2,27 @@ import { BOX_SHADOW } from "components/apps/Chat/config";
 import styled, { css } from "styled-components";
 
 type StyledMessageProps = {
+  $image?: string;
+  $isCommand?: boolean;
   $type: string;
   $writing?: boolean;
 };
 
+const MAX_IMAGE_SIZE = 256;
+
 const StyledMessage = styled.li<StyledMessageProps>`
   box-shadow: ${BOX_SHADOW};
   border-radius: 18px;
-  cursor: text;
+  cursor: ${({ $image }) => ($image ? undefined : "text")};
   font-size: 16px;
+  height: ${({ $image }) => ($image ? `${MAX_IMAGE_SIZE}px` : undefined)};
   line-height: 20px;
   margin: 20px;
   max-width: calc(100% - 40px);
   overflow-wrap: break-word;
   padding: 10px 15px;
   user-select: text;
-  width: max-content;
+  width: ${({ $image }) => ($image ? `${MAX_IMAGE_SIZE}px` : "max-content")};
 
   ${({ $writing }) =>
     $writing &&
@@ -56,13 +61,20 @@ const StyledMessage = styled.li<StyledMessageProps>`
       }
     `}
 
-  ${({ $type }) =>
+  ${({ $isCommand, $type }) =>
     $type === "user" &&
     css`
-      background: linear-gradient(90deg, rgb(40, 112, 234), rgb(27, 74, 239));
+      background: linear-gradient(
+        90deg,
+        ${$isCommand ? "rgb(224, 40, 234)" : "rgb(40, 112, 234)"},
+        ${$isCommand ? "rgb(148, 27, 239)" : "rgb(27, 74, 239)"}
+      );
       color: #fff;
       margin-left: auto;
     `}
+
+  background: ${({ $image }) => ($image ? `url(${$image})` : undefined)};
+  background-size: cover;
 `;
 
 export default StyledMessage;

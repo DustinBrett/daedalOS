@@ -40,7 +40,7 @@ const StyledChat = styled.div<StyledChatProps>`
       width: 100%;
 
       ::placeholder {
-        color: rgb(200, 200, 200);
+        color: rgba(200, 200, 200, 75%);
       }
     }
 

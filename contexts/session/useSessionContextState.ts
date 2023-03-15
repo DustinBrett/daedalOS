@@ -12,6 +12,7 @@ import type {
 import defaultSession from "public/session.json";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  DEFAULT_AI_API,
   DEFAULT_ASCENDING,
   DEFAULT_CLOCK_SOURCE,
   DEFAULT_THEME,
@@ -26,6 +27,7 @@ const useSessionContextState = (): SessionContextState => {
   const { deletePath, readFile, rootFs, writeFile, lstat } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
+  const [aiApi, setAiApi] = useState(DEFAULT_AI_API);
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
@@ -97,6 +99,7 @@ const useSessionContextState = (): SessionContextState => {
         writeFile(
           SESSION_FILE,
           JSON.stringify({
+            aiApi,
             clockSource,
             iconPositions,
             runHistory,
@@ -120,6 +123,7 @@ const useSessionContextState = (): SessionContextState => {
       }
     }
   }, [
+    aiApi,
     clockSource,
     haltSession,
     iconPositions,
@@ -152,6 +156,7 @@ const useSessionContextState = (): SessionContextState => {
             session = DEFAULT_SESSION;
           }
 
+          if (session.aiApi) setAiApi(session.aiApi);
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
@@ -192,6 +197,7 @@ const useSessionContextState = (): SessionContextState => {
   }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
+    aiApi,
     clockSource,
     foregroundId,
     iconPositions,
