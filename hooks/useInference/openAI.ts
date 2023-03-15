@@ -9,12 +9,19 @@ type ChatResponse = {
   }[];
 };
 
+type ImageResponse = {
+  data: {
+    b64_json: string;
+  }[];
+};
+
 const DEFAULT_MODELS = {
   conversational: "gpt-3.5-turbo", // TODO: gpt4
 };
 
 const API_URLS = {
   conversational: "https://api.openai.com/v1/chat/completions",
+  textToImage: "https://api.openai.com/v1/images/generations",
 };
 
 const SYSTEM_MESSAGE = {
@@ -31,6 +38,16 @@ export class OpenAI implements Engine {
   private setError: React.Dispatch<React.SetStateAction<number>>;
 
   private apiKey = "";
+
+  private getHeaders(): RequestInit {
+    return {
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    };
+  }
 
   public greeting = DEFAULT_GREETING;
 
@@ -64,11 +81,7 @@ export class OpenAI implements Engine {
         ],
         model: DEFAULT_MODELS.conversational,
       }),
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "POST",
+      ...this.getHeaders(),
     });
 
     if (response?.ok) {
@@ -83,11 +96,27 @@ export class OpenAI implements Engine {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async draw(_text: string): Promise<Buffer | void> {
-    // TODO: Implement
+  public async draw(text: string): Promise<Buffer | void> {
+    const response = await fetch(API_URLS.textToImage, {
+      body: JSON.stringify({
+        n: 1,
+        prompt: text,
+        response_format: "b64_json",
+        size: "256x256",
+      }),
+      ...this.getHeaders(),
+    });
 
-    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
-    return Promise.resolve();
+    if (response?.ok) {
+      const data = (await response.json()) as ImageResponse;
+      const imageUrl = data?.data?.[0]?.b64_json;
+
+      return imageUrl ? Buffer.from(imageUrl, "base64") : undefined;
+    }
+
+    if (response?.status) this.setError(response?.status);
+
+    return undefined;
   }
 
   // eslint-disable-next-line class-methods-use-this
