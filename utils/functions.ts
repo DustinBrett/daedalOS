@@ -10,10 +10,12 @@ import type { Position } from "eruda";
 import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
 import {
+  DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
+  TIMESTAMP_DATE_FORMAT,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -695,3 +697,9 @@ export const isCanvasEmpty = (canvas: HTMLCanvasElement): boolean =>
     .getContext("2d")
     ?.getImageData(0, 0, canvas.width, canvas.height)
     .data.some(Boolean);
+
+export const generatePrettyTimestamp = (): string =>
+  new Intl.DateTimeFormat(DEFAULT_LOCALE, TIMESTAMP_DATE_FORMAT)
+    .format(new Date())
+    .replace(/[/:]/g, "-")
+    .replace(",", "");

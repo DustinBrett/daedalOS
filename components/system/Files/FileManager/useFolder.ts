@@ -10,6 +10,7 @@ import {
 import type { FileStat } from "components/system/Files/FileManager/functions";
 import {
   findPathsRecursive,
+  removeInvalidFilenameCharacters,
   sortByDate,
   sortBySize,
   sortContents,
@@ -29,7 +30,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
-  INVALID_FILE_CHARACTERS,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
@@ -314,7 +314,7 @@ const useFolder = (
     [directory, readFile]
   );
   const renameFile = async (path: string, name?: string): Promise<void> => {
-    let newName = name?.replace(INVALID_FILE_CHARACTERS, "").trim();
+    let newName = removeInvalidFilenameCharacters(name).trim();
 
     if (newName?.endsWith(".")) {
       newName = newName.slice(0, -1);

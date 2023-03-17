@@ -127,8 +127,6 @@ export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
 
 export const PHOTO_ICON = "/System/Icons/photo.webp";
 
-export const INVALID_FILE_CHARACTERS = /["*/:<>?\\|]/g;
-
 export const MAX_FILE_NAME_LENGTH = 223;
 
 export const MENU_SEPERATOR = { seperator: true };
@@ -332,6 +330,16 @@ export const UNKNOWN_ICON =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB0ElEQVR42u2ZVWLbQBiEp/K6DOpb+LF4ip47oCuULpAYH3uAlcbMNOZpm0lsizWz+/3CgEc9aiuFHz9/YYVIcjAAkODcYYDoTyPQHZse7m0E49tLkid/8rz4BuD7RgFIYpW+fvmMXStJEvz+/RuvXr1KG41mVhT5RiECRMUYsUuF0Nv18+fPcXp6ktbrjSzPhRBCDxxUpVKpG+Ls7DSt1eprhwjYWwAdJQD9EGftELV2iCiHCAQMAvT04sVznJ+fpdVqNcuj1hOBJj0wCvECFxcXaeWhIuEUYFADAGZCXF5dpg/3DxmA99YIZVmGRXr58lVqi1CMER8+fOh+pkUS5XIZd7d3ylEIViI5M7wCITqa1wOAtDVPKD1A45andC1ES/N6DZCuzKsIWZr3RoikMK4jZGleD2BsntDOA74tT0gIOZrXEfJmXiti24KleBi1M09SThBIU/P6mZiW5qEXMW3NUzuMGrc8NYRssSE0hFyZVxFyLVgdIcOW51oIWZqHfj9ga15+rOLb8lIRg47m9RoQ/R+eeb0GaGleR8i15XWEqL5VFIIJ87V5u70nvrm+AUF0/8nx4ZlxgOj+9KeTk+Oz8/rrYnIYBAoWeNSj9qwWS/T9vUU9j2EAAAAASUVORK5CYII=";
 
 export const UNKNOWN_ICON_PATH = `${ICON_PATH}/unknown.webp`;
+
+export const TIMESTAMP_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  day: "2-digit",
+  hour: "2-digit",
+  hour12: false,
+  minute: "2-digit",
+  month: "2-digit",
+  second: "2-digit",
+  year: "numeric",
+};
 
 export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {
   desktop: [16, 32],

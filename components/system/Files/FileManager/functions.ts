@@ -300,3 +300,6 @@ export const findPathsRecursive = async (
 
   return pathArrays.flat();
 };
+
+export const removeInvalidFilenameCharacters = (name = ""): string =>
+  name.replace(/["*/:<>?\\|]/g, "");

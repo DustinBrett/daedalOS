@@ -1,22 +1,41 @@
-import { commandEmoji, EngineErrorMessage } from "components/apps/Chat/config";
+import {
+  actionCommandsMap,
+  actionLabel,
+  AI_IMAGES_FOLDER,
+  commandEmoji,
+  EngineErrorMessage,
+} from "components/apps/Chat/config";
 import { getLetterTypingSpeed } from "components/apps/Chat/functions";
 import { Send } from "components/apps/Chat/Send";
 import StyledChat from "components/apps/Chat/StyledChat";
+import StyledInfo from "components/apps/Chat/StyledInfo";
+import StyledInputArea from "components/apps/Chat/StyledInputArea";
+import StyledLoadingEllipsis from "components/apps/Chat/StyledLoadingEllipsis";
 import StyledMessage from "components/apps/Chat/StyledMessage";
 import StyledWarning from "components/apps/Chat/StyledWarning";
 import type { Message } from "components/apps/Chat/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
+import { join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { PREVENT_SCROLL } from "utils/constants";
-import { bufferToUrl } from "utils/functions";
+import { bufferToUrl, generatePrettyTimestamp } from "utils/functions";
+
+type ActionMessage = {
+  command: string;
+  text: string;
+  timestamp: number;
+};
 
 const Chat: FC<ComponentProcessProps> = ({ id }) => {
-  const { aiApi } = useSession();
+  const { aiApi, setWallpaper } = useSession();
+  const { mkdirRecursive, writeFile } = useFileSystem();
   const { title } = useProcesses();
   const [engine, apiKey] = useMemo(() => aiApi.split(":"), [aiApi]);
   const { engine: AI, error: aiError, resetError } = useInference(engine);
@@ -69,6 +88,21 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     },
     [recurseWrite]
   );
+  const [responsingToChat, setResponsingToChat] = useState(false);
+  const waitForChat = useCallback(
+    async (promiseRequest?: Promise<string>): Promise<string> => {
+      if (!promiseRequest) return "";
+
+      setResponsingToChat(true);
+
+      const resolvedPromise = await promiseRequest;
+
+      setResponsingToChat(false);
+
+      return resolvedPromise;
+    },
+    []
+  );
   const sendMessage = useCallback(
     (userMessage: string): void => {
       const [botMessages, userMessages] = messages
@@ -97,25 +131,52 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         );
       const userText = userMessage.trim();
 
-      AI?.chat(userText, userMessages, botMessages, messages).then(
+      waitForChat(AI?.chat(userText, userMessages, botMessages, messages)).then(
         (generatedMessage) =>
+          generatedMessage &&
           addMessage({ text: generatedMessage.trim(), type: "assistant" })
       );
       addMessage({ text: userText, type: "user" });
     },
-    [AI, addMessage, messages]
+    [AI, addMessage, messages, waitForChat]
+  );
+  const [awaitingRequests, setAwaitingRequests] = useState<ActionMessage[]>([]);
+  const waitForRequest = useCallback(
+    async (
+      command: string,
+      text: string,
+      promiseRequest: Promise<Buffer | string | void>
+    ): Promise<Buffer | string | void> => {
+      const timestamp = Date.now();
+
+      setAwaitingRequests((currentRequests) => [
+        ...currentRequests,
+        { command, text, timestamp },
+      ]);
+
+      const resolvedPromise = await promiseRequest;
+
+      setAwaitingRequests((currentRequests) =>
+        currentRequests.filter(
+          ({ timestamp: requestTimestamp }) => requestTimestamp !== timestamp
+        )
+      );
+
+      return resolvedPromise;
+    },
+    []
   );
   const addCommandMessage = useCallback(
     (
       commandPromise: Promise<Buffer | string | void>,
       originalCommand: string,
-      resultLabel?: string
+      resultLabel: string
     ): void => {
       const [command, ...originalText] = originalCommand.split(" ");
       const text = originalText.join(" ");
 
       addMessage({ command, text, type: "user" });
-      commandPromise.then(
+      waitForRequest(resultLabel, text, commandPromise).then(
         (response) =>
           response &&
           addMessage({
@@ -127,7 +188,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
           })
       );
     },
-    [addMessage]
+    [addMessage, waitForRequest]
   );
   const updateHeight = useCallback(() => {
     if (inputRef.current) {
@@ -138,24 +199,61 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       )}px`;
     }
   }, []);
+  const saveImage = useCallback(
+    async (
+      text: string,
+      image: Buffer,
+      setAsWallpaper: boolean
+    ): Promise<Buffer> => {
+      try {
+        const imagePath = join(
+          AI_IMAGES_FOLDER,
+          `${removeInvalidFilenameCharacters(
+            text
+          )} (${generatePrettyTimestamp()}).jpg`
+        );
+
+        await mkdirRecursive(AI_IMAGES_FOLDER);
+        await writeFile(imagePath, Buffer.from(image), true);
+
+        if (setAsWallpaper) setWallpaper(imagePath);
+      } catch {
+        // Ignore failure to save image
+      }
+
+      return image;
+    },
+    [mkdirRecursive, setWallpaper, writeFile]
+  );
   const onSend = useCallback(() => {
     if (inputRef.current && AI) {
       if (inputRef.current.value.startsWith("/")) {
         const [command, ...text] = inputRef.current.value.split(" ");
         const commandText = text.join(" ");
 
-        switch (command.replace("/", "")) {
-          case "draw":
-            addCommandMessage(AI.draw(commandText), inputRef.current.value);
+        switch (command) {
+          case "/draw":
+          case "/wallpaper":
+            addCommandMessage(
+              AI.draw(commandText).then((image) => {
+                if (image) {
+                  saveImage(commandText, image, command === "/wallpaper");
+                }
+
+                return image;
+              }),
+              inputRef.current.value,
+              "DRAWING"
+            );
             break;
-          case "summarize":
+          case "/summarize":
             addCommandMessage(
               AI.summarization(commandText),
               inputRef.current.value,
               "SUMMARY"
             );
             break;
-          case "translate":
+          case "/translate":
             addCommandMessage(
               AI.translation(commandText),
               inputRef.current.value,
@@ -175,8 +273,13 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       setInput("");
       updateHeight();
     }
-  }, [AI, addCommandMessage, resetError, sendMessage, updateHeight]);
-  const canSend = input && !messages.some(({ writing }) => writing);
+  }, [AI, addCommandMessage, resetError, saveImage, sendMessage, updateHeight]);
+  const isWritingMessage = useMemo(
+    () => messages.some(({ writing }) => writing),
+    [messages]
+  );
+  const isResponding = responsingToChat || isWritingMessage;
+  const canSend = input && !isResponding;
 
   useEffect(() => {
     if (engine) {
@@ -200,7 +303,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   }, [AI, addMessage, apiKey]);
 
   return (
-    <StyledChat $hideSend={!canSend}>
+    <StyledChat>
       <ul ref={messagesRef}>
         {messages.map(({ command, image, text, type, writing }, messageId) => (
           <StyledMessage
@@ -219,8 +322,18 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         {Boolean(aiError && EngineErrorMessage[aiError]) && (
           <StyledWarning>{EngineErrorMessage[aiError]}</StyledWarning>
         )}
+        {awaitingRequests.map(({ command, text }) => (
+          <StyledInfo key={`${command}-${text}`}>
+            <figure>
+              {commandEmoji[actionCommandsMap[command]]}
+              <figcaption>
+                {actionLabel[command]}: <b>{text}</b>...
+              </figcaption>
+            </figure>
+          </StyledInfo>
+        ))}
       </ul>
-      <div>
+      <StyledInputArea $hideSend={!canSend}>
         <textarea
           ref={inputRef}
           onInput={updateHeight}
@@ -240,10 +353,11 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
           }}
           placeholder="Ask me anything..."
         />
+        <StyledLoadingEllipsis $showLoading={isResponding} />
         <Button onClick={onSend}>
           <Send />
         </Button>
-      </div>
+      </StyledInputArea>
     </StyledChat>
   );
 };

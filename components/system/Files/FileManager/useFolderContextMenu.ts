@@ -16,13 +16,17 @@ import { useSession } from "contexts/session";
 import { dirname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
-  DEFAULT_LOCALE,
   DESKTOP_PATH,
   FOLDER_ICON,
   isFileSystemMappingSupported,
   MENU_SEPERATOR,
 } from "utils/constants";
-import { bufferToBlob, isFirefox, isSafari } from "utils/functions";
+import {
+  bufferToBlob,
+  generatePrettyTimestamp,
+  isFirefox,
+  isSafari,
+} from "utils/functions";
 
 const stopGlobalMusicVisualization = (): void =>
   window.WebampGlobal?.store.dispatch({
@@ -43,17 +47,7 @@ const updateSortBy =
     [value, sortBy === value ? !isAscending : defaultIsAscending];
 
 const EASTER_EGG_CLICK_COUNT = 2;
-
 const CAPTURE_FPS = 30;
-const CAPTURE_TIME_DATE_FORMAT: Intl.DateTimeFormatOptions = {
-  day: "2-digit",
-  hour: "2-digit",
-  hour12: false,
-  minute: "2-digit",
-  month: "2-digit",
-  second: "2-digit",
-  year: "numeric",
-};
 const MIME_TYPE_VIDEO_WEBM = "video/webm";
 const MIME_TYPE_VIDEO_MP4 = "video/mp4";
 
@@ -167,14 +161,7 @@ const useFolderContextMenu = (
         ? MIME_TYPE_VIDEO_WEBM
         : MIME_TYPE_VIDEO_MP4,
     });
-    const timeStamp = new Intl.DateTimeFormat(
-      DEFAULT_LOCALE,
-      CAPTURE_TIME_DATE_FORMAT
-    )
-      .format(new Date())
-      .replace(/[/:]/g, "-")
-      .replace(",", "");
-    const fileName = `Screen Capture ${timeStamp}.webm`;
+    const fileName = `Screen Capture ${generatePrettyTimestamp()}.webm`;
     const capturePath = join(DESKTOP_PATH, fileName);
     const startTime = Date.now();
     let hasCapturedData = false;

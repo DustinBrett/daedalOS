@@ -16,7 +16,7 @@ type ImageResponse = {
 };
 
 const DEFAULT_MODELS = {
-  conversational: "gpt-3.5-turbo", // TODO: gpt4
+  conversational: "gpt-3.5-turbo", // TODO: gpt-4
 };
 
 const API_URLS = {
@@ -95,7 +95,6 @@ export class OpenAI implements Engine {
     return "";
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async draw(text: string): Promise<Buffer | void> {
     const response = await fetch(API_URLS.textToImage, {
       body: JSON.stringify({

@@ -1,5 +1,5 @@
 const MIN_TYPING_SPEED_MS = 1;
-const MAX_TYPING_SPEED_MS = 200;
+const MAX_TYPING_SPEED_MS = 150;
 
 export const getLetterTypingSpeed = (): number => {
   const probability = Math.random();

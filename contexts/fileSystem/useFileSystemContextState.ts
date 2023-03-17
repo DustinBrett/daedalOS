@@ -13,6 +13,7 @@ import type { InputChangeEvent } from "components/system/Files/FileManager/funct
 import {
   handleFileInputEvent,
   iterateFileName,
+  removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
 import {
   addFileSystemHandle,
@@ -29,7 +30,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
-  INVALID_FILE_CHARACTERS,
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
@@ -246,7 +246,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
             const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
             const mappedName =
-              handle.name.replace(INVALID_FILE_CHARACTERS, "").trim() ||
+              removeInvalidFilenameCharacters(handle.name).trim() ||
               (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
 
             rootFs?.mount?.(join(directory, mappedName), newFs);

@@ -60,7 +60,7 @@ const DEFAULT_GREETING = {
 const DEFAULT_MODELS = {
   conversational: "facebook/blenderbot-400M-distill",
   summarization: "philschmid/bart-large-cnn-samsum",
-  textToImage: "stabilityai/stable-diffusion-2",
+  textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
 };
 
