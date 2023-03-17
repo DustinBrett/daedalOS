@@ -13,6 +13,7 @@ export type Engine = {
   ) => Promise<string>;
   draw: (text: string) => Promise<Buffer | void>;
   greeting: Message;
+  imageToText: (name: string, type: string, image: Buffer) => Promise<string>;
   init: (apiKey?: string) => Promise<void>;
   summarization: (text: string) => Promise<string>;
   translation: (text: string) => Promise<string>;

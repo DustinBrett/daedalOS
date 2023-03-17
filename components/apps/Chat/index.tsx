@@ -15,13 +15,15 @@ import StyledMessage from "components/apps/Chat/StyledMessage";
 import StyledWarning from "components/apps/Chat/StyledWarning";
 import type { Message } from "components/apps/Chat/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
 import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
-import { join } from "path";
+import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { PREVENT_SCROLL } from "utils/constants";
@@ -35,8 +37,13 @@ type ActionMessage = {
 
 const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const { aiApi, setWallpaper } = useSession();
-  const { mkdirRecursive, writeFile } = useFileSystem();
-  const { title } = useProcesses();
+  const { readFile, mkdirRecursive, writeFile } = useFileSystem();
+  const {
+    processes: { [id]: process },
+    title,
+    url: setUrl,
+  } = useProcesses();
+  const { url } = process;
   const [engine, apiKey] = useMemo(() => aiApi.split(":"), [aiApi]);
   const { engine: AI, error: aiError, resetError } = useInference(engine);
   const messagesRef = useRef<HTMLUListElement>(null);
@@ -225,7 +232,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     },
     [mkdirRecursive, setWallpaper, writeFile]
   );
-  const onSend = useCallback(() => {
+  const onSend = useCallback(async () => {
     if (inputRef.current && AI) {
       if (inputRef.current.value.startsWith("/")) {
         const [command, ...text] = inputRef.current.value.split(" ");
@@ -244,6 +251,17 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
               }),
               inputRef.current.value,
               "DRAWING"
+            );
+            break;
+          case "/identify":
+            addCommandMessage(
+              AI.imageToText(
+                basename(commandText),
+                getMimeType(commandText),
+                await readFile(commandText)
+              ),
+              inputRef.current.value,
+              "IDENTIFYING"
             );
             break;
           case "/summarize":
@@ -273,7 +291,15 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       setInput("");
       updateHeight();
     }
-  }, [AI, addCommandMessage, resetError, saveImage, sendMessage, updateHeight]);
+  }, [
+    AI,
+    addCommandMessage,
+    readFile,
+    resetError,
+    saveImage,
+    sendMessage,
+    updateHeight,
+  ]);
   const isWritingMessage = useMemo(
     () => messages.some(({ writing }) => writing),
     [messages]
@@ -302,8 +328,21 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage, apiKey]);
 
+  useEffect(() => {
+    if (url && inputRef.current) {
+      const newInput = `${input ? "" : "/identify "}${input}${
+        input ? " " : ""
+      }${url}`;
+
+      inputRef.current.value = newInput;
+      setInput(newInput);
+      updateHeight();
+      setUrl(id, "");
+    }
+  }, [id, input, setUrl, updateHeight, url]);
+
   return (
-    <StyledChat>
+    <StyledChat {...useFileDrop({ id })}>
       <ul ref={messagesRef}>
         {messages.map(({ command, image, text, type, writing }, messageId) => (
           <StyledMessage

@@ -1,11 +1,21 @@
 /* eslint-disable camelcase */
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
-import { loadFiles } from "utils/functions";
+import { bufferToBlob, loadFiles } from "utils/functions";
 
 type HfRequestConfig = {
   wait_for_model: boolean;
 };
+
+type ImageToText = (
+  options: {
+    data: File;
+    model: string;
+  },
+  config: HfRequestConfig & {
+    binary: boolean;
+  }
+) => Promise<[{ generated_text: string }]>;
 
 type HfInference = {
   conversational: (
@@ -19,6 +29,7 @@ type HfInference = {
     },
     config: HfRequestConfig
   ) => Promise<{ generated_text: string }>;
+  request: ImageToText;
   summarization: (
     options: {
       inputs: string;
@@ -59,6 +70,7 @@ const DEFAULT_GREETING = {
 
 const DEFAULT_MODELS = {
   conversational: "facebook/blenderbot-400M-distill",
+  imageToText: "Salesforce/blip-image-captioning-large",
   summarization: "philschmid/bart-large-cnn-samsum",
   textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
@@ -135,6 +147,28 @@ export class HuggingFace implements Engine {
     } catch (error) {
       return this.checkError(error as Error);
     }
+  }
+
+  public async imageToText(
+    name: string,
+    type: string,
+    image: Buffer
+  ): Promise<string> {
+    let generated_text = "";
+
+    try {
+      [{ generated_text = "" }] = (await this.inference?.request(
+        {
+          data: new File([bufferToBlob(image, type)], name, { type }),
+          model: DEFAULT_MODELS.imageToText,
+        },
+        { ...DEFAULT_OPTIONS, binary: true }
+      )) || [{}];
+    } catch (error) {
+      this.checkError(error as Error);
+    }
+
+    return generated_text;
   }
 
   public async summarization(text: string): Promise<string> {

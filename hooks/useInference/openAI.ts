@@ -119,6 +119,18 @@ export class OpenAI implements Engine {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  public async imageToText(
+    _name: string,
+    _type: string,
+    _image: Buffer
+  ): Promise<string> {
+    // TODO: Implement
+
+    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
+    return Promise.resolve("");
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   public async summarization(_text: string): Promise<string> {
     // TODO: Implement
 

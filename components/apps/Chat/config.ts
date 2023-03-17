@@ -7,18 +7,21 @@ export const BOX_SHADOW =
 
 export const actionCommandsMap: Record<string, string> = {
   DRAWING: "/draw",
+  IDENTIFYING: "/identify",
   SUMMARY: "/summarize",
   TRANSLATION: "/translate",
 };
 
 export const actionLabel: Record<string, string> = {
   DRAWING: "Drawing",
+  IDENTIFYING: "Identifying",
   SUMMARY: "Summaring",
   TRANSLATION: "Translating",
 };
 
 export const commandEmoji: Record<string, string> = {
   "/draw": "🎨",
+  "/identify": "🔎",
   "/summarize": "📝",
   "/translate": "🌐",
   "/wallpaper": "🎨",
