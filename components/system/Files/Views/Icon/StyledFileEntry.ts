@@ -13,12 +13,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     position: relative;
 
     &::before {
-      bottom: -1px;
       content: "";
-      left: -1px;
+      inset: -1px;
       position: absolute;
-      right: -1px;
-      top: -1px;
     }
   }
 
