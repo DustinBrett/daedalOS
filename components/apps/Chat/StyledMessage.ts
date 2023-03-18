@@ -22,6 +22,7 @@ const StyledMessage = styled.li<StyledMessageProps>`
   overflow-wrap: break-word;
   padding: 10px 15px;
   user-select: text;
+  white-space: break-spaces;
   width: ${({ $image }) => ($image ? `${MAX_IMAGE_SIZE}px` : "max-content")};
 
   ${({ $writing }) =>

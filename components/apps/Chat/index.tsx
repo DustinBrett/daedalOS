@@ -43,7 +43,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     title,
     url: setUrl,
   } = useProcesses();
-  const { url } = process;
+  const { url } = process || {};
   const [engine, apiKey] = useMemo(() => aiApi.split(":"), [aiApi]);
   const { engine: AI, error: aiError, resetError } = useInference(engine);
   const messagesRef = useRef<HTMLUListElement>(null);
@@ -380,12 +380,19 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
             if (event.key === "Enter") event.preventDefault();
           }}
           onKeyUp={(event) => {
-            const { key, target } = event;
+            const { key, target, shiftKey } = event;
 
             if (!(target instanceof HTMLTextAreaElement)) return;
 
-            if (key === "Enter" && target.value) {
-              if (canSend) onSend();
+            const isEnter = key === "Enter";
+
+            if (target.value && isEnter) {
+              if (shiftKey) {
+                target.value += "\n";
+                updateHeight();
+              } else if (canSend) {
+                onSend();
+              }
             } else {
               setInput(target.value);
             }
