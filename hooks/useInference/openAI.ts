@@ -16,7 +16,7 @@ type ImageResponse = {
 };
 
 const DEFAULT_MODELS = {
-  conversational: "gpt-3.5-turbo", // TODO: gpt-4
+  conversational: "gpt-4",
 };
 
 const API_URLS = {
@@ -80,6 +80,7 @@ export class OpenAI implements Engine {
           { content: message, role: "user" },
         ],
         model: DEFAULT_MODELS.conversational,
+        n: 1,
       }),
       ...this.getHeaders(),
     });
