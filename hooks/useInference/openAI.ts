@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
 
 type ChatResponse = {
   choices: {
+    finish_reason: "content_filter" | "length" | "stop";
     message: {
       content: string;
     };
@@ -19,18 +21,23 @@ const DEFAULT_MODELS = {
   conversational: "gpt-4",
 };
 
+const MODEL_SETTINGS = {
+  temperature: 0.8,
+};
+
 const API_URLS = {
   conversational: "https://api.openai.com/v1/chat/completions",
   textToImage: "https://api.openai.com/v1/images/generations",
 };
 
 const SYSTEM_MESSAGE = {
-  content: "You are a helpful assistant.",
+  content:
+    "You are a laconic assistant. You reply with brief, to-the-point answers with no elaboration.",
   role: "system",
 };
 
 const DEFAULT_GREETING = {
-  text: "Hello, how can I help you?",
+  text: "Hello, I am an AI assistant. How can I help you today?",
   type: "assistant",
 } as Message;
 
@@ -81,14 +88,26 @@ export class OpenAI implements Engine {
         ],
         model: DEFAULT_MODELS.conversational,
         n: 1,
+        ...MODEL_SETTINGS,
       }),
       ...this.getHeaders(),
     });
 
     if (response?.ok) {
       const data = (await response.json()) as ChatResponse;
+      const [{ message: responseMessage, finish_reason }] = data?.choices || [];
 
-      return data?.choices?.[0]?.message?.content || "";
+      if (responseMessage) {
+        const { content } = responseMessage;
+
+        if (finish_reason === "stop") return content;
+        if (finish_reason === "length") {
+          return `${content}\n\n[Incomplete Response]`;
+        }
+        if (finish_reason === "content_filter") {
+          return `${content}\n\n[Content Filtered]`;
+        }
+      }
     }
 
     if (response?.status) this.setError(response?.status);
