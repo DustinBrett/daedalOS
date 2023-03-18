@@ -39,9 +39,6 @@
     "*.{ts,tsx}": "stylelint --fix",
     "*.{js,ts,tsx}": "eslint --fix"
   },
-  "engines": {
-    "node": ">=16 <17"
-  },
   "resolutions": {
     "styled-components": "^5"
   },
