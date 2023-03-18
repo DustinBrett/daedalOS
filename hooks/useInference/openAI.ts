@@ -31,8 +31,7 @@ const API_URLS = {
 };
 
 const SYSTEM_MESSAGE = {
-  content:
-    "You are a laconic assistant. You reply with brief, to-the-point answers with no elaboration.",
+  content: "You are a helpful assistant.",
   role: "system",
 };
 
