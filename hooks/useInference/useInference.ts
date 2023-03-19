@@ -11,6 +11,7 @@ export type Engine = {
     generatedMessages: string[],
     allMessages?: Message[]
   ) => Promise<string>;
+  classify: (text: string, categories: string[]) => Promise<string>;
   draw: (text: string) => Promise<Buffer | void>;
   greeting: Message;
   imageToText: (name: string, type: string, image: Buffer) => Promise<string>;

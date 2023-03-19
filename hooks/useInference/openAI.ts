@@ -112,6 +112,14 @@ export class OpenAI implements Engine {
     return "";
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  public async classify(_text: string, _categories: string[]): Promise<string> {
+    // TODO: Implement with chat
+
+    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
+    return Promise.resolve("");
+  }
+
   public async draw(text: string): Promise<Buffer | void> {
     const response = await fetch(API_URLS.textToImage, {
       body: JSON.stringify({

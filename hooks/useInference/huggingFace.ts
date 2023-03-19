@@ -28,6 +28,7 @@ const DEFAULT_MODELS = {
   summarization: "philschmid/bart-large-cnn-samsum",
   textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
+  zeroShotClassification: "facebook/bart-large-mnli",
 };
 
 const DEFAULT_OPTIONS = { wait_for_model: true } as Options;
@@ -84,6 +85,30 @@ export class HuggingFace implements Engine {
     return generated_text;
   }
 
+  public async classify(text: string, categories: string[]): Promise<string> {
+    try {
+      const [
+        {
+          labels: [topLabel],
+          scores: [topScore],
+        },
+      ] = await this.inference.zeroShotClassification(
+        {
+          inputs: [text],
+          model: DEFAULT_MODELS.zeroShotClassification,
+          parameters: { candidate_labels: categories },
+        },
+        DEFAULT_OPTIONS
+      );
+
+      return `${topLabel} (${(topScore * 100).toFixed(1)}%)`;
+    } catch (error) {
+      this.checkError(error as Error);
+    }
+
+    return "";
+  }
+
   public async draw(text: string): Promise<Buffer | void> {
     try {
       return (await this.inference.textToImage(
@@ -104,29 +129,29 @@ export class HuggingFace implements Engine {
     type: string,
     image: Buffer
   ): Promise<string> {
-    let generated_text = "";
-
     try {
-      [{ generated_text = "" }] = await (this.inference.request as ImageToText)(
+      const [{ generated_text }] = await (
+        this.inference.request as ImageToText
+      )(
         {
           data: new File([bufferToBlob(image, type)], name, { type }),
           model: DEFAULT_MODELS.imageToText,
         },
         { ...DEFAULT_OPTIONS, binary: true }
       );
+
+      return generated_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return generated_text;
+    return "";
   }
 
   public async summarization(text: string): Promise<string> {
-    let summary_text = "";
-
     try {
-      ({ summary_text = "" } =
-        (await this.inference.summarization(
+      return (
+        await this.inference.summarization(
           {
             inputs: text,
             model: DEFAULT_MODELS.summarization,
@@ -135,30 +160,30 @@ export class HuggingFace implements Engine {
             },
           },
           DEFAULT_OPTIONS
-        )) || {});
+        )
+      ).summary_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return summary_text;
+    return "";
   }
 
   public async translation(text: string): Promise<string> {
-    let translation_text = "";
-
     try {
-      ({ translation_text = "" } =
-        (await this.inference.translation(
+      return (
+        await this.inference.translation(
           {
             inputs: text,
             model: DEFAULT_MODELS.translation,
           },
           DEFAULT_OPTIONS
-        )) || {});
+        )
+      ).translation_text;
     } catch (error) {
       this.checkError(error as Error);
     }
 
-    return translation_text;
+    return "";
   }
 }
