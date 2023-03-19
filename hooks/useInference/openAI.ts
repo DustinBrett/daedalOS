@@ -21,7 +21,9 @@ const DEFAULT_MODELS = {
   conversational: "gpt-4",
 };
 
-const MODEL_SETTINGS = {
+const CHAT_MODEL_SETTINGS = {
+  model: DEFAULT_MODELS.conversational,
+  n: 1,
   temperature: 0.8,
 };
 
@@ -41,9 +43,9 @@ const DEFAULT_GREETING = {
 } as Message;
 
 export class OpenAI implements Engine {
-  private setError: React.Dispatch<React.SetStateAction<number>>;
-
   private apiKey = "";
+
+  private setError: React.Dispatch<React.SetStateAction<number>>;
 
   private getHeaders(): RequestInit {
     return {
@@ -57,15 +59,12 @@ export class OpenAI implements Engine {
 
   public greeting = DEFAULT_GREETING;
 
-  public constructor(setError: React.Dispatch<React.SetStateAction<number>>) {
-    this.setError = setError;
-  }
-
-  public async init(apiKey = ""): Promise<void> {
+  public constructor(
+    apiKey: string,
+    setError: React.Dispatch<React.SetStateAction<number>>
+  ) {
     this.apiKey = apiKey;
-
-    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
-    return Promise.resolve();
+    this.setError = setError;
   }
 
   public async chat(
@@ -85,9 +84,8 @@ export class OpenAI implements Engine {
           ...messages,
           { content: message, role: "user" },
         ],
-        model: DEFAULT_MODELS.conversational,
-        n: 1,
-        ...MODEL_SETTINGS,
+
+        ...CHAT_MODEL_SETTINGS,
       }),
       ...this.getHeaders(),
     });
@@ -143,7 +141,7 @@ export class OpenAI implements Engine {
     _type: string,
     _image: Buffer
   ): Promise<string> {
-    // TODO: Implement
+    // TODO: Implement with chat
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve("");
@@ -151,7 +149,7 @@ export class OpenAI implements Engine {
 
   // eslint-disable-next-line class-methods-use-this
   public async summarization(_text: string): Promise<string> {
-    // TODO: Implement
+    // TODO: Implement with chat
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve("");
@@ -159,7 +157,7 @@ export class OpenAI implements Engine {
 
   // eslint-disable-next-line class-methods-use-this
   public async translation(_text: string): Promise<string> {
-    // TODO: Implement
+    // TODO: Implement with chat
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve("");

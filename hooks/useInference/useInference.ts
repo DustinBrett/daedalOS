@@ -14,32 +14,35 @@ export type Engine = {
   draw: (text: string) => Promise<Buffer | void>;
   greeting: Message;
   imageToText: (name: string, type: string, image: Buffer) => Promise<string>;
-  init: (apiKey?: string) => Promise<void>;
   summarization: (text: string) => Promise<string>;
   translation: (text: string) => Promise<string>;
 };
 
+type EngineClass = new (
+  apiKey: string,
+  setError?: React.Dispatch<React.SetStateAction<number>>
+) => Engine;
+
 type Inference = {
-  engine?: Engine;
+  engine: Engine;
   error: number;
   resetError: () => void;
 };
 
-const Engines = { HuggingFace, OpenAI } as Record<
-  string,
-  new (setError?: React.Dispatch<React.SetStateAction<number>>) => Engine
->;
+const Engines = { HuggingFace, OpenAI } as Record<string, EngineClass>;
 
-export const useInference = (engine?: string): Inference => {
+export const useInference = (apiKey = "", engine = ""): Inference => {
   const [error, setError] = useState<number>(0);
   const [DEFAULT_ENGINE] = DEFAULT_AI_API.split(":");
 
   return {
     engine: useMemo(
       () =>
-        (engine && engine in Engines && new Engines[engine](setError)) ||
-        new Engines[DEFAULT_ENGINE](setError),
-      [DEFAULT_ENGINE, engine]
+        (engine &&
+          engine in Engines &&
+          new Engines[engine](apiKey, setError)) ||
+        new Engines[DEFAULT_ENGINE](apiKey, setError),
+      [DEFAULT_ENGINE, apiKey, engine]
     ),
     error,
     resetError: () => setError(0),

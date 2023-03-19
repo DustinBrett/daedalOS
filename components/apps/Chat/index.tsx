@@ -45,7 +45,11 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { url } = process || {};
   const [engine, apiKey] = useMemo(() => aiApi.split(":"), [aiApi]);
-  const { engine: AI, error: aiError, resetError } = useInference(engine);
+  const {
+    engine: AI,
+    error: aiError,
+    resetError,
+  } = useInference(apiKey, engine);
   const messagesRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState<string>("");
@@ -138,7 +142,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         );
       const userText = userMessage.trim();
 
-      waitForChat(AI?.chat(userText, userMessages, botMessages, messages)).then(
+      waitForChat(AI.chat(userText, userMessages, botMessages, messages)).then(
         (generatedMessage) =>
           generatedMessage &&
           addMessage({ text: generatedMessage.trim(), type: "assistant" })
@@ -324,7 +328,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
     initRef.current = true;
 
-    AI?.init(apiKey).then(() => addMessage(AI?.greeting));
+    addMessage(AI.greeting);
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage, apiKey]);
 
