@@ -9,7 +9,7 @@ import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vant
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { extname, join } from "path";
+import { join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import {
@@ -26,6 +26,7 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   createOffscreenCanvas,
+  getExtension,
   getYouTubeUrlId,
   isYouTubeUrl,
   jsonFetch,
@@ -127,8 +128,10 @@ const useWallpaper = (
             ...((await lstat(entryPath)).isDirectory()
               ? await getAllImages(entryPath)
               : [
-                  IMAGE_FILE_EXTENSIONS.has(extname(entryPath)) &&
-                  !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(extname(entryPath))
+                  IMAGE_FILE_EXTENSIONS.has(getExtension(entryPath)) &&
+                  !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(
+                    getExtension(entryPath)
+                  )
                     ? entryPath
                     : "",
                 ]),

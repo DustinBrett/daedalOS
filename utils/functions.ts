@@ -38,6 +38,8 @@ export const getDpi = (): number => {
   return dpi;
 };
 
+export const getExtension = (url: string): string => extname(url).toLowerCase();
+
 export const sendMouseClick = (target: HTMLElement, count = 1): void => {
   if (count === 0) return;
 
@@ -112,7 +114,7 @@ export const imageToBufferUrl = (
   path: string,
   buffer: Buffer | string
 ): string =>
-  extname(path) === ".svg"
+  getExtension(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
 
@@ -220,7 +222,7 @@ export const loadFiles = async (
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
-        await (extname(file).toLowerCase() === ".css"
+        await (getExtension(file) === ".css"
           ? loadStyle(encodeURI(file))
           : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
@@ -652,7 +654,7 @@ export const preloadLibs = (libs: string[] = []): void => {
     link.rel = "preload";
     link.href = lib;
 
-    switch (extname(lib).toLowerCase()) {
+    switch (getExtension(lib)) {
       case ".css":
         link.as = "style";
         break;

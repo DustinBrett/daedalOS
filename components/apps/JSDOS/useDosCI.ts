@@ -8,7 +8,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   ICON_CACHE,
@@ -19,6 +19,7 @@ import {
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   imgDataToBuffer,
 } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
@@ -104,7 +105,7 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =
       extension === ".exe"

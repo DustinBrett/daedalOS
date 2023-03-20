@@ -25,6 +25,7 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   decodeJxl,
+  getExtension,
   getGifJs,
   haltEvent,
   imageToBufferUrl,
@@ -95,7 +96,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
   const loadPhoto = useCallback(async (): Promise<void> => {
     let fileContents: Buffer | string = await readFile(url);
-    const ext = extname(url).toLowerCase();
+    const ext = getExtension(url);
 
     if ([".ani", ".cur"].includes(ext)) {
       fileContents = await aniToGif(fileContents);

@@ -7,14 +7,12 @@ import { useProcesses } from "contexts/process";
 import { basename, dirname, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
-import { bufferToUrl, loadFiles } from "utils/functions";
+import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
 
 const getCore = (extension: string): [string, Core] => {
-  const lcExt = extension.toLowerCase();
-
   return (Object.entries(emulatorCores).find(([, { ext }]) =>
-    ext.includes(lcExt)
+    ext.includes(extension)
   ) || []) as [string, Core];
 };
 
@@ -55,12 +53,11 @@ const useEmulator = (
     }
 
     loadedUrlRef.current = url;
+    window.EJS_gameName = basename(url, extname(url));
 
-    const ext = extname(url);
-
-    window.EJS_gameName = basename(url, ext);
-
-    const [console, { core = "", zip = false } = {}] = getCore(ext);
+    const [console, { core = "", zip = false } = {}] = getCore(
+      getExtension(url)
+    );
     const rom = await readFile(url);
 
     window.EJS_gameUrl = bufferToUrl(

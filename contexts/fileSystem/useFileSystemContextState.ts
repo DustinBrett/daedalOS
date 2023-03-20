@@ -24,7 +24,7 @@ import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
-import { basename, dirname, extname, isAbsolute, join } from "path";
+import { basename, dirname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -33,7 +33,7 @@ import {
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { bufferToBlob } from "utils/functions";
+import { bufferToBlob, getExtension } from "utils/functions";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 
@@ -116,7 +116,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const copyToClipboard = useCallback(
     (entry: string) => {
-      if (!CLIPBOARD_FILE_EXTENSIONS.has(extname(entry))) return;
+      if (!CLIPBOARD_FILE_EXTENSIONS.has(getExtension(entry))) return;
 
       let type = getMimeType(entry);
 
@@ -273,7 +273,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
           }
         };
 
-        if (extname(url).toLowerCase() === ".iso") {
+        if (getExtension(url) === ".iso") {
           IsoFS?.Create({ data: fileData }, createFs);
         } else {
           ZipFS?.Create({ zipData: fileData }, createFs);

@@ -7,7 +7,7 @@ import { get9pModifiedTime } from "contexts/fileSystem/functions";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
 import ini from "ini";
-import { extname, join } from "path";
+import { join } from "path";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
@@ -40,6 +40,7 @@ import {
   blobToBase64,
   bufferToUrl,
   decodeJxl,
+  getExtension,
   getGifJs,
   getHtmlToImage,
   imageToBufferUrl,
@@ -125,7 +126,7 @@ export const getProcessByFileExtension = (extension: string): string => {
 };
 
 export const getMimeType = (url: string): string => {
-  switch (extname(url).toLowerCase()) {
+  switch (getExtension(url)) {
     case ".jpg":
     case ".jpeg":
       return "image/jpeg";
@@ -326,7 +327,7 @@ export const getInfoWithExtension = (
         }
 
         const { comment, icon, pid, url } = getShortcutInfo(contents);
-        const urlExt = extname(url).toLowerCase();
+        const urlExt = getExtension(url);
 
         if (pid === "FileExplorer" && !icon) {
           const getIcon = (): void => {

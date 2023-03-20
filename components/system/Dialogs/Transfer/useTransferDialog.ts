@@ -2,9 +2,9 @@ import { getShortcutInfo } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { extname } from "path";
 import { useEffect, useMemo, useRef } from "react";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "utils/constants";
+import { getExtension } from "utils/functions";
 
 export type FileReaders = [File, string, FileReader][];
 
@@ -54,7 +54,7 @@ const useTransferDialog = (): Dialog => {
           if (fileReaders?.length === 1 && !Array.isArray(fileReaders[0])) {
             const [{ directory, name }] = fileReaders;
 
-            if (extname(name) === SHORTCUT_EXTENSION) {
+            if (getExtension(name) === SHORTCUT_EXTENSION) {
               const { url: shortcutUrl } = getShortcutInfo(
                 await readFile(name)
               );

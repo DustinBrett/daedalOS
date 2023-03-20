@@ -21,11 +21,15 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
-import { basename, extname, join } from "path";
+import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { IMAGE_FILE_EXTENSIONS, PREVENT_SCROLL } from "utils/constants";
-import { bufferToUrl, generatePrettyTimestamp } from "utils/functions";
+import {
+  bufferToUrl,
+  generatePrettyTimestamp,
+  getExtension,
+} from "utils/functions";
 
 type ActionMessage = {
   command: string;
@@ -346,7 +350,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     if (
       url &&
       inputRef.current &&
-      IMAGE_FILE_EXTENSIONS.has(extname(url).toLowerCase())
+      IMAGE_FILE_EXTENSIONS.has(getExtension(url))
     ) {
       const newInput = `${input ? "" : "/caption "}${input}${
         input ? " " : ""

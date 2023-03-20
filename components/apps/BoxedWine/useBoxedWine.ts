@@ -2,9 +2,9 @@ import { getConfig } from "components/apps/BoxedWine/config";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
+import { basename } from "path";
 import { useCallback, useEffect, useRef } from "react";
-import { isCanvasDrawn, loadFiles } from "utils/functions";
+import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
@@ -41,7 +41,7 @@ const useBoxedWine = (
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
     let appPayload = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const isExecutable = extension === ".exe";
     const { zipAsync } = await import("utils/zipFunctions");
     const appName =

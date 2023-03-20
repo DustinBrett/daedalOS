@@ -15,7 +15,7 @@ import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_PLAYLIST_EXTENSIONS } from "utils/constants";
-import { bufferToUrl, loadFiles } from "utils/functions";
+import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import type { Options } from "webamp";
 
 const Webamp: FC<ComponentProcessProps> = ({ id }) => {
@@ -38,7 +38,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
   const getUrlOptions = useCallback(async (): Promise<Options> => {
     if (url) {
-      const extension = extname(url).toLowerCase();
+      const extension = getExtension(url);
 
       if (AUDIO_PLAYLIST_EXTENSIONS.has(extension)) {
         const initialTracks = await tracksFromPlaylist(

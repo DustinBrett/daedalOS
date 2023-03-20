@@ -3,9 +3,8 @@ import { getDefaultFileViewer } from "components/system/Files/FileEntry/function
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { extname } from "path";
 import { useEffect, useRef } from "react";
-import { getSearchParam } from "utils/functions";
+import { getExtension, getSearchParam } from "utils/functions";
 
 const useUrlLoader = (): void => {
   const { exists, fs } = useFileSystem();
@@ -45,7 +44,7 @@ const useUrlLoader = (): void => {
 
       loadInitialApp(lcAppNames[app.toLowerCase()]);
     } else if (url) {
-      const extension = extname(url).toLowerCase();
+      const extension = getExtension(url);
       const { process: [defaultApp] = [] } = extensions[extension] || {};
 
       loadInitialApp(

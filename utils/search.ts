@@ -7,7 +7,7 @@ import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import { HIGH_PRIORITY_REQUEST } from "utils/constants";
-import { loadFiles } from "utils/functions";
+import { getExtension, loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
 
@@ -62,23 +62,19 @@ const buildDynamicIndex = async (
   const writable = overlayedFileSystems?.writable as IWritableFs;
   const filesToIndex = Object.keys(writable?._cache?.map ?? {}).filter(
     (path) => {
-      const ext = extname(path);
+      const ext = getExtension(path);
 
       return Boolean(ext) && !SEARCH_EXTENSIONS.ignore.includes(ext);
     }
   );
   const indexedFiles = await Promise.all(
-    filesToIndex.map(async (path) => {
-      const ext = extname(path);
-
-      return {
-        name: basename(path, ext),
-        path,
-        text: SEARCH_EXTENSIONS.index.includes(ext)
-          ? (await readFile(path)).toString()
-          : undefined,
-      };
-    })
+    filesToIndex.map(async (path) => ({
+      name: basename(path, extname(path)),
+      path,
+      text: SEARCH_EXTENSIONS.index.includes(getExtension(path))
+        ? (await readFile(path)).toString()
+        : undefined,
+    }))
   );
   const dynamicIndex = window.lunr?.(function buildIndex() {
     this.ref("path");

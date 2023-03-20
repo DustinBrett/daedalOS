@@ -34,7 +34,12 @@ import {
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl, preloadLibs } from "utils/functions";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getExtension,
+  preloadLibs,
+} from "utils/functions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -133,7 +138,7 @@ const useFolder = (
     async (fileName: string, stats: Stats): Promise<FileStat> => {
       if (
         SYSTEM_SHORTCUT_DIRECTORIES.has(directory) &&
-        extname(fileName).toLowerCase() === SHORTCUT_EXTENSION
+        getExtension(fileName) === SHORTCUT_EXTENSION
       ) {
         return Object.assign(stats, {
           systemShortcut:
@@ -368,7 +373,7 @@ const useFolder = (
   );
   const newShortcut = useCallback(
     (path: string, process: string): void => {
-      const pathExtension = extname(path).toLowerCase();
+      const pathExtension = getExtension(path);
 
       if (pathExtension === SHORTCUT_EXTENSION) {
         fs?.readFile(path, (_readError, contents = Buffer.from("")) =>
@@ -401,7 +406,7 @@ const useFolder = (
           ([path, file]) =>
             [
               path,
-              extname(path) === SHORTCUT_EXTENSION
+              getExtension(path) === SHORTCUT_EXTENSION
                 ? makeExternalShortcut(file)
                 : file,
             ] as [string, Buffer]
@@ -470,7 +475,7 @@ const useFolder = (
       const { unarchive, unzip } = await import("utils/zipFunctions");
       openTransferDialog(undefined, path);
       const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
-        extname(path).toLowerCase()
+        getExtension(path)
       )
         ? await unzip(data)
         : await unarchive(path, data);

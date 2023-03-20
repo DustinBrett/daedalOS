@@ -8,9 +8,9 @@ import {
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
+import { basename } from "path";
 import { useEffect, useRef, useState } from "react";
-import { preloadLibs } from "utils/functions";
+import { getExtension, preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
 type SearchBarProps = {
@@ -43,7 +43,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           .map(({ ref: path }) => ({
             action: () => {
               open(
-                getProcessByFileExtension(extname(path)) || TEXT_EDITORS[0],
+                getProcessByFileExtension(getExtension(path)) ||
+                  TEXT_EDITORS[0],
                 { url: path }
               );
               setSearchTerm("");
@@ -53,7 +54,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
                 searchBarRef.current.blur();
               }
             },
-            icon: getIconByFileExtension(extname(path)),
+            icon: getIconByFileExtension(getExtension(path)),
             label: basename(path),
           }));
 

@@ -11,7 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, extname, join } from "path";
+import { basename, join } from "path";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   DESKTOP_PATH,
@@ -19,7 +19,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import spawnSheep from "utils/spawnSheep";
 
@@ -130,7 +130,7 @@ const Run: FC<ComponentProcessProps> = () => {
             closeOnExecute = false;
           }
         } else {
-          const extension = extname(resourcePath);
+          const extension = getExtension(resourcePath);
 
           if (extension === SHORTCUT_EXTENSION) {
             const { pid, url } = getShortcutInfo(await readFile(resourcePath));

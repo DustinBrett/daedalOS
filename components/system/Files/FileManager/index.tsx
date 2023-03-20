@@ -12,7 +12,7 @@ import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
-import { basename, extname, join } from "path";
+import { basename, join } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
@@ -20,6 +20,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
+import { getExtension } from "utils/functions";
 
 const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
@@ -146,7 +147,7 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles]);
 
   useEffect(() => {
-    if (!mounted && MOUNTABLE_EXTENSIONS.has(extname(url).toLowerCase())) {
+    if (!mounted && MOUNTABLE_EXTENSIONS.has(getExtension(url))) {
       const mountUrl = async (): Promise<void> => {
         if (!(await stat(url)).isDirectory()) {
           setMounted((currentlyMounted) => {

@@ -7,7 +7,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
-import { extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -16,7 +15,12 @@ import {
   IFRAME_CONFIG,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
-import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
+import {
+  getExtension,
+  getUrlOrSearch,
+  GOOGLE_SEARCH_QUERY,
+  label,
+} from "utils/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -47,7 +51,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
       if (contentWindow?.location) {
         const isHtml =
-          [".htm", ".html"].includes(extname(addressInput).toLowerCase()) &&
+          [".htm", ".html"].includes(getExtension(addressInput)) &&
           (await exists(addressInput));
 
         setLoading(true);

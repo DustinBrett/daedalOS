@@ -17,7 +17,7 @@ import { basename, dirname, extname, relative } from "path";
 import { useCallback, useEffect, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
 import { DEFAULT_LOCALE } from "utils/constants";
-import { haltEvent, loadFiles } from "utils/functions";
+import { getExtension, haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
 
@@ -68,7 +68,7 @@ const useTinyMCE = (
             haltEvent(event);
 
             const defaultProcess = getProcessByFileExtension(
-              extname(link.pathname).toLowerCase()
+              getExtension(link.pathname)
             );
 
             if (defaultProcess) open(defaultProcess, { url: link.pathname });
@@ -83,7 +83,7 @@ const useTinyMCE = (
 
       if (fileContents.length > 0) setReadOnlyMode(editor);
 
-      if (extname(url) === ".rtf") {
+      if (getExtension(url) === ".rtf") {
         const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
         const rtfDoc = new RTFJS.Document(fileContents);
         const rtfHtml = await rtfDoc.render();
@@ -113,7 +113,7 @@ const useTinyMCE = (
 
         try {
           await writeFile(
-            extname(saveUrl) === ".rtf"
+            getExtension(saveUrl) === ".rtf"
               ? saveUrl.replace(".rtf", ".whtml")
               : saveUrl,
             editor.getContent(),

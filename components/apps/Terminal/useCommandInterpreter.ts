@@ -48,7 +48,7 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
-import { getTZOffsetISOString, loadFiles } from "utils/functions";
+import { getExtension, getTZOffsetISOString, loadFiles } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
@@ -929,7 +929,7 @@ const useCommandInterpreter = (
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
             } else if (await exists(baseCommand)) {
-              const fileExtension = extname(baseCommand).toLowerCase();
+              const fileExtension = getExtension(baseCommand);
               const { command: extCommand = "" } =
                 extensions[fileExtension] || {};
 

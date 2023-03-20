@@ -11,7 +11,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
-import { extname } from "path";
 import {
   useCallback,
   useEffect,
@@ -20,7 +19,7 @@ import {
   useState,
 } from "react";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent, isFirefox, loadFiles } from "utils/functions";
+import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -60,7 +59,7 @@ const useTerminal = (
       if (localEcho) {
         localEcho.handleCursorInsert(url.includes(" ") ? `"${url}"` : url);
       } else {
-        const fileExtension = extname(url).toLowerCase();
+        const fileExtension = getExtension(url);
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
         if (extCommand) setInitialCommand(`${extCommand} ${url}`);

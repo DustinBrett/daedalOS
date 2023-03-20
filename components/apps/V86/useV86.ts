@@ -17,7 +17,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ICON_CACHE,
@@ -28,6 +28,7 @@ import {
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   getHtmlToImage,
   loadFiles,
 } from "utils/functions";
@@ -108,7 +109,7 @@ const useV86 = (
     if (currentUrl) await closeDiskImage(currentUrl);
 
     const imageContents = url ? await readFile(url) : Buffer.from("");
-    const ext = extname(url).toLowerCase();
+    const ext = getExtension(url);
     const isISO = ext === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {

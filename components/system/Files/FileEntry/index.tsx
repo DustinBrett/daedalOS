@@ -53,6 +53,7 @@ import {
 } from "utils/constants";
 import {
   bufferToUrl,
+  getExtension,
   getFormattedSize,
   getHtmlToImage,
   isCanvasEmpty,
@@ -159,7 +160,7 @@ const FileEntry: FC<FileEntryProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
-  const urlExt = extname(url).toLowerCase();
+  const urlExt = getExtension(url);
   const isDynamicIcon = useMemo(
     () =>
       IMAGE_FILE_EXTENSIONS.has(urlExt) ||
@@ -169,7 +170,7 @@ const FileEntry: FC<FileEntryProps> = ({
   );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
-  const extension = extname(path).toLowerCase();
+  const extension = getExtension(path);
   const isShortcut = extension === SHORTCUT_EXTENSION;
   const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({

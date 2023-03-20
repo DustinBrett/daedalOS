@@ -21,7 +21,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname } from "path";
+import { basename, dirname } from "path";
 import { useCallback, useRef } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
@@ -31,7 +31,7 @@ import {
   SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 import type { Options, Track, URLTrack } from "webamp";
 
 type Webamp = {
@@ -77,7 +77,7 @@ const useWebamp = (id: string): Webamp => {
         );
 
         if (externalUrl) {
-          const playlistExtension = extname(externalUrl).toLowerCase();
+          const playlistExtension = getExtension(externalUrl);
 
           if (AUDIO_PLAYLIST_EXTENSIONS.has(playlistExtension)) {
             return tracksFromPlaylist(

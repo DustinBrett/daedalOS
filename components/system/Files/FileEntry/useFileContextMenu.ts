@@ -36,7 +36,7 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { isFirefox } from "utils/functions";
+import { getExtension, isFirefox } from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -81,7 +81,7 @@ const useFileContextMenu = (
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
       contextMenu?.(() => {
-        const urlExtension = extname(url).toLowerCase();
+        const urlExtension = getExtension(url);
         const { process: extensionProcesses = [] } =
           urlExtension in extensions ? extensions[urlExtension] : {};
         const openWith = extensionProcesses.filter(
@@ -98,7 +98,7 @@ const useFileContextMenu = (
                 ]),
               ];
         const menuItems: MenuItem[] = [];
-        const pathExtension = extname(path).toLowerCase();
+        const pathExtension = getExtension(path);
         const isShortcut = pathExtension === SHORTCUT_EXTENSION;
         const remoteMount = rootFs?.mountList.some(
           (mountPath) =>
@@ -337,7 +337,7 @@ const useFileContextMenu = (
                       const playlist = createM3uPlaylist(
                         (await tracksFromPlaylist(
                           (await readFile(absoluteEntry)).toString(),
-                          extname(absoluteEntry)
+                          getExtension(absoluteEntry)
                         )) as URLTrack[]
                       );
                       const playlistDirName = dirname(path);
