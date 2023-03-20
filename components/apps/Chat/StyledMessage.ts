@@ -29,8 +29,8 @@ const StyledMessage = styled.li<StyledMessageProps>`
     $writing &&
     css`
       &::after {
-        content: "";
         border-left: 1px solid #000;
+        content: "";
       }
     `}
 

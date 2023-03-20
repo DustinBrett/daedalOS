@@ -9,8 +9,8 @@ const StyledLoadingEllipsis = styled.span<StyledLoadingEllipsisProps>`
   opacity: ${({ $showLoading }) => ($showLoading ? "100%" : "0%")};
   position: absolute;
   right: 24px;
-  transition: opacity 0.1s ease-in-out;
   top: 18px;
+  transition: opacity 0.1s ease-in-out;
   width: 32px;
 
   &::after {

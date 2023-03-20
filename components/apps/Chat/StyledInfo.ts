@@ -5,8 +5,8 @@ const StyledInfo = styled.li`
 
   figure {
     display: flex;
-    font-weight: 400;
     font-size: 14px;
+    font-weight: 400;
     padding-left: 15px;
 
     figcaption {

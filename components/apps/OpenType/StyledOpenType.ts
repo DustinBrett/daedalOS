@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 const StyledOpenType = styled.div`
   font-size: 13px;
-  overflow-y: scroll;
   overflow-x: hidden;
+  overflow-y: scroll;
 
   ol {
     &:not(:last-child) {
