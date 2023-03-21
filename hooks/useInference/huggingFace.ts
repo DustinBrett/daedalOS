@@ -111,14 +111,16 @@ export class HuggingFace implements Engine {
 
   public async draw(text: string): Promise<Buffer | void> {
     try {
-      return (await this.inference.textToImage(
+      const image = await this.inference.textToImage(
         {
           inputs: text,
           model: DEFAULT_MODELS.textToImage,
           negative_prompt: TEXT_TO_IMAGE_NEGATIVE_PROMPT,
         },
         DEFAULT_OPTIONS
-      )) as unknown as Buffer;
+      );
+
+      return Buffer.from(await image.arrayBuffer());
     } catch (error) {
       return this.checkError(error as Error);
     }

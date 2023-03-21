@@ -217,7 +217,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       text: string,
       image: Buffer,
       setAsWallpaper: boolean
-    ): Promise<Buffer> => {
+    ): Promise<void> => {
       try {
         const imagePath = join(
           AI_IMAGES_FOLDER,
@@ -227,14 +227,12 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         );
 
         await mkdirRecursive(AI_IMAGES_FOLDER);
-        await writeFile(imagePath, Buffer.from(image), true);
+        await writeFile(imagePath, image, true);
 
         if (setAsWallpaper) setWallpaper(imagePath);
       } catch {
         // Ignore failure to save image
       }
-
-      return image;
     },
     [mkdirRecursive, setWallpaper, writeFile]
   );
