@@ -11,8 +11,9 @@ type StyledMessageProps = {
 const MAX_IMAGE_SIZE = 256;
 
 const StyledMessage = styled.li<StyledMessageProps>`
-  box-shadow: ${BOX_SHADOW};
+  background-size: cover;
   border-radius: 18px;
+  box-shadow: ${BOX_SHADOW};
   cursor: ${({ $image }) => ($image ? undefined : "text")};
   font-size: 16px;
   height: ${({ $image }) => ($image ? `${MAX_IMAGE_SIZE}px` : undefined)};
@@ -34,14 +35,12 @@ const StyledMessage = styled.li<StyledMessageProps>`
       }
     `}
 
-  ${({ $type }) =>
+  ${({ $image, $type }) =>
     $type === "assistant" &&
     css`
-      background: linear-gradient(
-        90deg,
-        rgb(248, 249, 253),
-        rgb(245, 248, 253)
-      );
+      background: ${$image
+        ? `url(${$image})`
+        : "linear-gradient(90deg, rgb(248, 249, 253), rgb(245, 248, 253))"};
       color: #000;
       margin-left: 56px;
       margin-right: auto;
@@ -73,9 +72,6 @@ const StyledMessage = styled.li<StyledMessageProps>`
       color: #fff;
       margin-left: auto;
     `}
-
-  background: ${({ $image }) => ($image ? `url(${$image})` : undefined)};
-  background-size: cover;
 `;
 
 export default StyledMessage;
