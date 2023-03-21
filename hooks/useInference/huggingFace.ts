@@ -17,18 +17,55 @@ type ImageToText = (
   }
 ) => Promise<TextGenerationReturn[]>;
 
+type TextGenerationModelSettings = {
+  assistantStartToken: string;
+  endToken: string;
+  userStartToken: string;
+};
+
 const DEFAULT_GREETING = {
   text: "Hello, I'm an AI assistant. How can I help you?",
   type: "assistant",
 } as Message;
 
-const DEFAULT_MODELS = {
+const DEFAULT_MODELS: Record<string, string> = {
+  chat: "textGeneration",
   conversational: "facebook/blenderbot-400M-distill",
   imageToText: "Salesforce/blip-image-captioning-large",
   summarization: "philschmid/bart-large-cnn-samsum",
+  textGeneration: "OpenAssistant/oasst-sft-1-pythia-12b",
   textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
   zeroShotClassification: "facebook/bart-large-mnli",
+};
+
+const TEXT_GENERATION_MODEL_SETTINGS: Record<
+  string,
+  TextGenerationModelSettings
+> = {
+  "OpenAssistant/oasst-sft-1-pythia-12b": {
+    assistantStartToken: "<|assistant|>",
+    endToken: "<|endoftext|>",
+    userStartToken: "<|prompter|>",
+  },
+};
+
+const convertToConversation = (
+  message: string,
+  allMessages: Message[]
+): string => {
+  const { assistantStartToken, endToken, userStartToken } =
+    TEXT_GENERATION_MODEL_SETTINGS[DEFAULT_MODELS.textGeneration];
+
+  return `${[...allMessages, { text: message, type: "user" }]
+    .filter(({ type }) => type !== "system")
+    .map(
+      ({ text, type }) =>
+        `${
+          type === "assistant" ? assistantStartToken : userStartToken
+        }${text}${endToken}`
+    )
+    .join("")}${assistantStartToken}`;
 };
 
 const DEFAULT_OPTIONS = { wait_for_model: true } as Options;
@@ -61,23 +98,38 @@ export class HuggingFace implements Engine {
   public async chat(
     message: string,
     userMessages: string[],
-    generatedMessages: string[]
+    generatedMessages: string[],
+    allMessages: Message[]
   ): Promise<string> {
     let generated_text = "";
+    const model = DEFAULT_MODELS[DEFAULT_MODELS.chat];
 
     try {
-      ({ generated_text = "" } =
-        (await this.inference.conversational(
+      if (DEFAULT_MODELS.chat === "conversational") {
+        ({ generated_text = "" } = await this.inference.conversational(
           {
             inputs: {
               generated_responses: generatedMessages,
               past_user_inputs: userMessages,
               text: message,
             },
-            model: DEFAULT_MODELS.conversational,
+            model,
           },
           DEFAULT_OPTIONS
-        )) || {});
+        ));
+      } else {
+        ({ generated_text = "" } = await this.inference.textGeneration(
+          {
+            inputs: convertToConversation(message, allMessages),
+            model,
+            parameters: {
+              max_new_tokens: 100,
+              return_full_text: false,
+            },
+          },
+          DEFAULT_OPTIONS
+        ));
+      }
     } catch (error) {
       this.checkError(error as Error);
     }

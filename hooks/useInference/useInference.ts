@@ -9,7 +9,7 @@ export type Engine = {
     message: string,
     userMessages: string[],
     generatedMessages: string[],
-    allMessages?: Message[]
+    allMessages: Message[]
   ) => Promise<string>;
   classify: (text: string, categories: string[]) => Promise<string>;
   draw: (text: string) => Promise<Buffer | void>;
