@@ -41,6 +41,7 @@ const StyledMessage = styled.li<StyledMessageProps>`
       background: ${$image
         ? `url(${$image})`
         : "linear-gradient(90deg, rgb(248, 249, 253), rgb(245, 248, 253))"};
+      background-size: contain;
       color: #000;
       margin-left: 56px;
       margin-right: auto;
