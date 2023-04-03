@@ -15,6 +15,7 @@ export type Engine = {
   draw: (text: string) => Promise<Buffer | void>;
   greeting: Message;
   imageToText: (name: string, type: string, image: Buffer) => Promise<string>;
+  init: () => Promise<void>;
   summarization: (text: string) => Promise<string>;
   translation: (text: string) => Promise<string>;
 };

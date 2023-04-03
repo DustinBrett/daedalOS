@@ -67,6 +67,12 @@ export class OpenAI implements Engine {
     this.setError = setError;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  public async init(): Promise<void> {
+    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
+    return Promise.resolve();
+  }
+
   public async chat(
     message: string,
     _userMessages: string[],

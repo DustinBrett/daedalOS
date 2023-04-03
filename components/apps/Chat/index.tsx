@@ -340,7 +340,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
     initRef.current = true;
 
-    addMessage(AI.greeting);
+    AI.init().then(() => addMessage(AI.greeting));
     inputRef.current?.focus(PREVENT_SCROLL);
   }, [AI, addMessage, apiKey]);
 

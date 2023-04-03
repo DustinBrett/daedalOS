@@ -1,14 +1,23 @@
 /* eslint-disable camelcase */
-import type {
-  Args,
-  ImageClassificationArgs,
-  Options,
-  TextGenerationReturn,
-} from "@huggingface/inference";
-import { HfInference } from "@huggingface/inference";
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
-import { bufferToBlob } from "utils/functions";
+import { bufferToBlob, loadFiles } from "utils/functions";
+
+interface Args {
+  model: string;
+}
+
+interface Options {
+  wait_for_model?: boolean;
+}
+
+interface TextGenerationReturn {
+  generated_text: string;
+}
+
+type ImageClassificationArgs = Args & {
+  data: ArrayBuffer | Blob;
+};
 
 type ImageToText = (
   options: Args & ImageClassificationArgs,
@@ -22,6 +31,76 @@ type TextGenerationModelSettings = {
   endToken: string;
   userStartToken: string;
 };
+
+type HfInference = {
+  conversational: (
+    args: {
+      inputs: {
+        generated_responses: string[];
+        past_user_inputs: string[];
+        text: string;
+      };
+      model: string;
+    },
+    options: Options
+  ) => Promise<TextGenerationReturn>;
+  request: ImageToText;
+  summarization: (
+    args: {
+      inputs: string;
+      model: string;
+      parameters: {
+        max_length: number;
+      };
+    },
+    options: Options
+  ) => Promise<{ summary_text: string }>;
+  textGeneration: (
+    args: {
+      inputs: string;
+      model: string;
+      parameters: {
+        max_new_tokens: number;
+        return_full_text: boolean;
+      };
+    },
+    options: Options
+  ) => Promise<TextGenerationReturn>;
+  textToImage: (
+    args: {
+      inputs: string;
+      model: string;
+      negative_prompt: string;
+    },
+    options: Options
+  ) => Promise<Blob>;
+  translation: (
+    args: {
+      inputs: string;
+      model: string;
+    },
+    options: Options
+  ) => Promise<{ translation_text: string }>;
+  zeroShotClassification: (
+    args: {
+      inputs: [string];
+      model: string;
+      parameters: { candidate_labels: string[] };
+    },
+    options: Options
+  ) => Promise<
+    {
+      labels: string[];
+      scores: number[];
+    }[]
+  >;
+};
+
+declare global {
+  interface Window {
+    HfInference?: new (apiKey?: string) => HfInference;
+  }
+}
 
 const DEFAULT_GREETING = {
   text: "Hello, I'm an AI assistant. How can I help you?",
@@ -75,7 +154,9 @@ const SUMMARY_MAX_LENGTH = 100;
 const TEXT_TO_IMAGE_NEGATIVE_PROMPT = "blurry";
 
 export class HuggingFace implements Engine {
-  private inference: HfInference;
+  private inference = {} as HfInference;
+
+  private apiKey: string;
 
   private setError: React.Dispatch<React.SetStateAction<number>>;
 
@@ -91,8 +172,16 @@ export class HuggingFace implements Engine {
     apiKey: string,
     setError: React.Dispatch<React.SetStateAction<number>>
   ) {
-    this.inference = new HfInference(apiKey);
+    this.apiKey = apiKey;
     this.setError = setError;
+  }
+
+  public async init(): Promise<void> {
+    await loadFiles(["Program Files/HuggingFace/inference.min.js"]);
+
+    if (window.HfInference) {
+      this.inference = new window.HfInference(this.apiKey);
+    }
   }
 
   public async chat(
@@ -184,9 +273,7 @@ export class HuggingFace implements Engine {
     image: Buffer
   ): Promise<string> {
     try {
-      const [{ generated_text }] = await (
-        this.inference.request as ImageToText
-      )(
+      const [{ generated_text }] = await this.inference.request(
         {
           data: new File([bufferToBlob(image, type)], name, { type }),
           model: DEFAULT_MODELS.imageToText,
