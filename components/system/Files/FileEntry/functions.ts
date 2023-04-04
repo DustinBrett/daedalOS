@@ -319,8 +319,6 @@ export const getInfoWithExtension = (
   switch (extension) {
     case SHORTCUT_EXTENSION:
       fs.readFile(path, (error, contents = Buffer.from("")) => {
-        subIcons.push(SHORTCUT_ICON);
-
         if (error) {
           getInfoByFileExtension();
           return;
@@ -328,6 +326,8 @@ export const getInfoWithExtension = (
 
         const { comment, icon, pid, url } = getShortcutInfo(contents);
         const urlExt = getExtension(url);
+
+        if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
 
         if (pid === "FileExplorer" && !icon) {
           const getIcon = (): void => {

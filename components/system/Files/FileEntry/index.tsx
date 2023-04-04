@@ -210,7 +210,9 @@ const FileEntry: FC<FileEntryProps> = ({
     if (isShortcut) {
       if (comment) return comment;
       if (url) {
-        if (url.startsWith("http:") || url.startsWith("https:")) return url;
+        if (url.startsWith("http:") || url.startsWith("https:")) {
+          return decodeURIComponent(url);
+        }
         return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
       }
       return "";

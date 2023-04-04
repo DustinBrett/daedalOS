@@ -73,8 +73,24 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, processArguments?: ProcessArguments, initialIcon?: string) =>
-      setProcesses(openProcess(id, processArguments || {}, initialIcon)),
+    (id: string, processArguments?: ProcessArguments, initialIcon?: string) => {
+      if (id === "ExternalURL") {
+        const { url: externalUrl = "" } = processArguments || {};
+
+        if (
+          externalUrl.startsWith("http:") ||
+          externalUrl.startsWith("https:")
+        ) {
+          window.open(
+            decodeURIComponent(externalUrl),
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      } else {
+        setProcesses(openProcess(id, processArguments || {}, initialIcon));
+      }
+    },
     []
   );
   const linkElement = useCallback(
