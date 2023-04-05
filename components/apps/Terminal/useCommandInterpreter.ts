@@ -929,29 +929,39 @@ const useCommandInterpreter = (
                 url:
                   file && fullPath && (await exists(fullPath)) ? fullPath : "",
               });
-            } else if (await exists(baseCommand)) {
-              const fileExtension = getExtension(baseCommand);
-              const { command: extCommand = "" } =
-                extensions[fileExtension] || {};
-
-              if (extCommand) {
-                await commandInterpreter(`${extCommand} ${baseCommand}`);
-              } else {
-                let basePid = "";
-                let baseUrl = baseCommand;
-
-                if (fileExtension === SHORTCUT_EXTENSION) {
-                  ({ pid: basePid, url: baseUrl } = getShortcutInfo(
-                    await readFile(baseCommand)
-                  ));
-                } else {
-                  basePid = getProcessByFileExtension(fileExtension);
-                }
-
-                if (basePid) open(basePid, { url: baseUrl });
-              }
             } else {
-              localEcho?.println(unknownCommand(baseCommand));
+              const baseFileExists = await exists(baseCommand);
+
+              if (
+                baseFileExists ||
+                (await exists(join(cd.current, baseCommand)))
+              ) {
+                const fileExtension = getExtension(baseCommand);
+                const { command: extCommand = "" } =
+                  extensions[fileExtension] || {};
+
+                if (extCommand) {
+                  await commandInterpreter(`${extCommand} ${baseCommand}`);
+                } else {
+                  const fullFilePath = baseFileExists
+                    ? baseCommand
+                    : join(cd.current, baseCommand);
+                  let basePid = "";
+                  let baseUrl = fullFilePath;
+
+                  if (fileExtension === SHORTCUT_EXTENSION) {
+                    ({ pid: basePid, url: baseUrl } = getShortcutInfo(
+                      await readFile(fullFilePath)
+                    ));
+                  } else {
+                    basePid = getProcessByFileExtension(fileExtension);
+                  }
+
+                  if (basePid) open(basePid, { url: baseUrl });
+                }
+              } else {
+                localEcho?.println(unknownCommand(baseCommand));
+              }
             }
           }
       }
