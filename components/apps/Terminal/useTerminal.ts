@@ -11,6 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
+import { extname } from "path";
 import {
   useCallback,
   useEffect,
@@ -43,11 +44,11 @@ const useTerminal = (
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
-  const cd = useRef(url || HOME);
   const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
+  const cd = useRef((!localEcho && url && !extname(url) ? url : "") || HOME);
   const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
