@@ -112,6 +112,7 @@ const directoryCommands = new Set([
   "mkdir",
   "move",
   "mv",
+  "python",
   "rd",
   "ren",
   "rename",

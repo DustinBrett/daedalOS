@@ -1,5 +1,5 @@
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
-import { config, PI_ASCII } from "components/apps/Terminal/config";
+import { PI_ASCII, config } from "components/apps/Terminal/config";
 import {
   aliases,
   autoComplete,
@@ -42,10 +42,10 @@ import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
-  isFileSystemMappingSupported,
   MILLISECONDS_IN_SECOND,
   PACKAGE_DATA,
   SHORTCUT_EXTENSION,
+  isFileSystemMappingSupported,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import { getExtension, getTZOffsetISOString, loadFiles } from "utils/functions";
@@ -813,12 +813,13 @@ const useCommandInterpreter = (
             if (await exists(fullSourcePath)) {
               const code = await readFile(fullSourcePath);
 
-              await runPython(code.toString(), localEcho);
+              if (code.length > 0) {
+                await runPython(code.toString(), localEcho);
+              }
             } else {
-              await runPython(
-                command.slice(command.indexOf(" ") + 1),
-                localEcho
-              );
+              const [, code = "version"] = command.split(" ");
+
+              await runPython(code, localEcho);
             }
           }
           break;
