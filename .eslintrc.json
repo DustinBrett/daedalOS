@@ -28,7 +28,6 @@
     "jest-dom",
     "prettier",
     "react",
-    "simple-import-sort",
     "sonarjs",
     "sort-keys-fix",
     "typescript-sort-keys",
@@ -83,7 +82,10 @@
       "ignorePackages",
       { "ts": "never", "tsx": "never" }
     ],
+    "import/first": "error",
+    "import/newline-after-import": "error",
     "import/no-cycle": "off",
+    "import/no-duplicates": "error",
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",
@@ -127,8 +129,6 @@
     "react/no-unused-state": "error",
     "react/require-default-props": "off",
     "react/require-optimization": "error",
-    "simple-import-sort/exports": "error",
-    "simple-import-sort/imports": "error",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/no-nested-template-literals": "off",
     "sort-keys-fix/sort-keys-fix": "error",
