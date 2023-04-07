@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 declare global {
@@ -10,12 +10,14 @@ declare global {
 const useHeightOverride = (): number => {
   const [height, setHeight] = useState<number>(0);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       typeof window !== "undefined" &&
       typeof window.initialHeight === "number" &&
       window.initialHeight > 0 &&
-      window.initialHeight !== document.documentElement.clientHeight
+      window.initialHeight !== document.documentElement.clientHeight &&
+      document.documentElement.clientHeight > window.screen.height &&
+      /android|iphone/i.test(navigator.userAgent)
     ) {
       setHeight(window.initialHeight);
 
