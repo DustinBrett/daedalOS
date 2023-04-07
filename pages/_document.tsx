@@ -40,7 +40,7 @@ class Document extends NextDocument {
         <Head />
         <body>
           <Script id="initialHeight" strategy="beforeInteractive">
-            window.initialHeight = document.documentElement.clientHeight;
+            window.initialHeight = window.innerHeight;
           </Script>
           <Main />
           <NextScript />

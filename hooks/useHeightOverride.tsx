@@ -15,8 +15,8 @@ const useHeightOverride = (): number => {
       typeof window !== "undefined" &&
       typeof window.initialHeight === "number" &&
       window.initialHeight > 0 &&
-      window.initialHeight !== document.documentElement.clientHeight &&
-      document.documentElement.clientHeight > window.screen.height &&
+      window.initialHeight !== window.innerHeight &&
+      window.innerHeight > window.screen.height &&
       /android|iphone/i.test(navigator.userAgent)
     ) {
       setHeight(window.initialHeight);
