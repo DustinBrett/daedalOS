@@ -28,6 +28,7 @@ import {
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
+  VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
   AUDIO_DECODE_FORMATS,
@@ -399,34 +400,44 @@ const useFileContextMenu = (
           });
         }
 
+        const hasBackgroundVideoExtension =
+          VIDEO_FILE_EXTENSIONS.has(pathExtension);
+
         if (
-          IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-          !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension)
+          hasBackgroundVideoExtension ||
+          (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
+            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension))
         ) {
           menuItems.unshift({
             label: "Set as desktop background",
-            menu: [
-              {
-                action: () => setWallpaper(path, "fill"),
-                label: "Fill",
-              },
-              {
-                action: () => setWallpaper(path, "fit"),
-                label: "Fit",
-              },
-              {
-                action: () => setWallpaper(path, "stretch"),
-                label: "Stretch",
-              },
-              {
-                action: () => setWallpaper(path, "tile"),
-                label: "Tile",
-              },
-              {
-                action: () => setWallpaper(path, "center"),
-                label: "Center",
-              },
-            ],
+            ...(hasBackgroundVideoExtension
+              ? {
+                  action: () => setWallpaper(path),
+                }
+              : {
+                  menu: [
+                    {
+                      action: () => setWallpaper(path, "fill"),
+                      label: "Fill",
+                    },
+                    {
+                      action: () => setWallpaper(path, "fit"),
+                      label: "Fit",
+                    },
+                    {
+                      action: () => setWallpaper(path, "stretch"),
+                      label: "Stretch",
+                    },
+                    {
+                      action: () => setWallpaper(path, "tile"),
+                      label: "Tile",
+                    },
+                    {
+                      action: () => setWallpaper(path, "center"),
+                      label: "Center",
+                    },
+                  ],
+                }),
           });
         }
 

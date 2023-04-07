@@ -1,5 +1,6 @@
 import {
   BASE_CANVAS_SELECTOR,
+  BASE_VIDEO_SELECTOR,
   bgPositionSize,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
@@ -21,6 +22,7 @@ import {
   PICTURES_FOLDER,
   SLIDESHOW_FILE,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
+  VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
   bufferToUrl,
@@ -150,6 +152,7 @@ const useWallpaper = (
     }
 
     desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
@@ -243,37 +246,61 @@ const useWallpaper = (
     }
 
     if (wallpaperUrl) {
-      const applyWallpaper = (url: string): void => {
-        const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
-        const positionSize = bgPositionSize[newWallpaperFit];
+      if (VIDEO_FILE_EXTENSIONS.has(getExtension(wallpaperImage))) {
+        const video = document.createElement("video");
 
-        document.documentElement.style.setProperty(
-          "background",
-          `url(${CSS.escape(
-            url
-          )}) ${positionSize} ${repeat} fixed border-box border-box ${
-            colors.background
-          }`
-        );
-      };
+        video.src = wallpaperUrl;
 
-      if (fallbackBackground) {
-        fetch(wallpaperUrl, {
-          ...HIGH_PRIORITY_REQUEST,
-          mode: "no-cors",
-        })
-          .then(({ ok }) => {
-            if (!ok) throw new Error("Failed to load url");
-          })
-          .catch(() => applyWallpaper(fallbackBackground));
+        video.autoplay = true;
+        video.controls = false;
+        video.disablePictureInPicture = true;
+        video.disableRemotePlayback = true;
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+
+        video.style.position = "absolute";
+        video.style.inset = "0";
+        video.style.width = "100%";
+        video.style.height = "100%";
+        video.style.objectFit = "cover";
+        video.style.objectPosition = "center center";
+        video.style.zIndex = "-1";
+
+        desktopRef.current?.appendChild(video);
       } else {
-        applyWallpaper(wallpaperUrl);
+        const applyWallpaper = (url: string): void => {
+          const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
+          const positionSize = bgPositionSize[newWallpaperFit];
 
-        if (isSlideshow) {
-          slideshowTimerRef.current = window.setTimeout(
-            loadFileWallpaper,
-            MILLISECONDS_IN_MINUTE
+          document.documentElement.style.setProperty(
+            "background",
+            `url(${CSS.escape(
+              url
+            )}) ${positionSize} ${repeat} fixed border-box border-box ${
+              colors.background
+            }`
           );
+        };
+
+        if (fallbackBackground) {
+          fetch(wallpaperUrl, {
+            ...HIGH_PRIORITY_REQUEST,
+            mode: "no-cors",
+          })
+            .then(({ ok }) => {
+              if (!ok) throw new Error("Failed to load url");
+            })
+            .catch(() => applyWallpaper(fallbackBackground));
+        } else {
+          applyWallpaper(wallpaperUrl);
+
+          if (isSlideshow) {
+            slideshowTimerRef.current = window.setTimeout(
+              loadFileWallpaper,
+              MILLISECONDS_IN_MINUTE
+            );
+          }
         }
       }
     } else {

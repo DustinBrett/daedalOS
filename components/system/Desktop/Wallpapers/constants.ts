@@ -86,3 +86,5 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
 ];
 
 export const BASE_CANVAS_SELECTOR = ":scope > canvas";
+
+export const BASE_VIDEO_SELECTOR = ":scope > video";
