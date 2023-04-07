@@ -2,13 +2,44 @@ import type { FlattenSimpleInterpolation } from "styled-components";
 import { css } from "styled-components";
 import { DOWN, LEFT, RIGHT, UP } from "styles/ArrowIcons";
 
+type ColorSchemes = "dark" | "light";
+
+type ColorScheme = {
+  active: string;
+  blendMode: string;
+  buttonHover: string;
+  thumb: string;
+  thumbHover: string;
+  track: string;
+};
+
+const colorScheme: Record<ColorSchemes, ColorScheme> = {
+  dark: {
+    active: "rgb(166, 166, 166)",
+    blendMode: "color-burn",
+    buttonHover: "rgb(55, 55, 55)",
+    thumb: "rgb(77, 77, 77)",
+    thumbHover: "rgb(122, 122, 122)",
+    track: "rgb(23, 23, 23)",
+  },
+  light: {
+    active: "rgb(96, 96, 96)",
+    blendMode: "color-dodge",
+    buttonHover: "rgb(218, 218, 218)",
+    thumb: "rgb(205, 205, 205)",
+    thumbHover: "rgb(166, 166, 166)",
+    track: "rgb(240, 240, 240)",
+  },
+};
+
 const ScrollBars = (
   size: number,
   verticalX = 0,
-  verticalY = 0
+  verticalY = 0,
+  scheme: ColorSchemes = "dark"
 ): FlattenSimpleInterpolation => css`
   overflow: auto;
-  scrollbar-color: rgb(77, 77, 77) rgb(23, 23, 23);
+  scrollbar-color: ${colorScheme[scheme].thumb} ${colorScheme[scheme].track};
   scrollbar-gutter: stable;
 
   &::-webkit-scrollbar {
@@ -18,17 +49,17 @@ const ScrollBars = (
 
   &::-webkit-scrollbar-corner,
   &::-webkit-scrollbar-track {
-    background-color: rgb(23, 23, 23);
+    background-color: ${colorScheme[scheme].track};
   }
 
   &::-webkit-scrollbar-thumb {
     background-clip: padding-box;
-    background-color: rgb(77, 77, 77);
+    background-color: ${colorScheme[scheme].thumb};
   }
 
   &::-webkit-scrollbar-thumb:vertical {
     background-clip: padding-box;
-    background-color: rgb(77, 77, 77);
+    background-color: ${colorScheme[scheme].thumb};
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;
   }
@@ -39,29 +70,29 @@ const ScrollBars = (
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(122, 122, 122);
+    background-color: ${colorScheme[scheme].thumbHover};
   }
 
   &::-webkit-scrollbar-thumb:active {
-    background-color: rgb(166, 166, 166);
+    background-color: ${colorScheme[scheme].active};
   }
 
   &::-webkit-scrollbar-button:single-button {
     background-clip: padding-box;
-    background-color: rgb(23, 23, 23);
+    background-color: ${colorScheme[scheme].track};
     background-position: center 4px;
     background-repeat: no-repeat;
     background-size: 10px;
-    border: 1px solid rgb(23, 23, 23);
+    border: 1px solid ${colorScheme[scheme].track};
     display: block;
     height: ${size ? `${size}px` : "initial"};
 
     &:hover {
-      background-color: rgb(55, 55, 55);
+      background-color: ${colorScheme[scheme].buttonHover};
     }
 
     &:active {
-      background-color: rgb(166, 166, 166);
+      background-color: ${colorScheme[scheme].active};
     }
   }
 
@@ -104,7 +135,7 @@ const ScrollBars = (
   &::-webkit-scrollbar-button:single-button:vertical:increment:active,
   &::-webkit-scrollbar-button:single-button:horizontal:decrement:active,
   &::-webkit-scrollbar-button:single-button:horizontal:increment:active {
-    background-blend-mode: color-burn;
+    background-blend-mode: ${colorScheme[scheme].blendMode};
   }
 `;
 
