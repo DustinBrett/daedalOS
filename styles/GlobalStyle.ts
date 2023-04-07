@@ -29,6 +29,7 @@ const GlobalStyle = createGlobalStyle`
   html {
     background-color: ${({ theme }) => theme.colors.background};
     background-position: center;
+    height: fill-available;
     transition: background-image 1.25s linear;
   }
 
