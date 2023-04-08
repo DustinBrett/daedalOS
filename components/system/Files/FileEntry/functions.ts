@@ -20,6 +20,7 @@ import {
   ICON_GIF_FPS,
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
+  MAX_ICON_SIZE,
   MOUNTED_FOLDER_ICON,
   MP3_MIME_TYPE,
   NEW_FOLDER_ICON,
@@ -616,6 +617,10 @@ export const getInfoWithExtension = (
             if (!error) {
               const video = document.createElement("video");
               const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d", {
+                ...BASE_2D_CONTEXT_OPTIONS,
+                willReadFrequently: true,
+              });
               const gif = await getGifJs();
               let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
               const getFrame = (
@@ -623,48 +628,8 @@ export const getInfoWithExtension = (
                 firstFrame: boolean
               ): Promise<void> =>
                 new Promise((resolve) => {
-                  video.addEventListener(
-                    "canplaythrough",
-                    () => {
-                      const context = canvas.getContext("2d", {
-                        ...BASE_2D_CONTEXT_OPTIONS,
-                        willReadFrequently: true,
-                      });
-
-                      if (!context || !canvas.width || !canvas.height) return;
-
-                      context.drawImage(
-                        video,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                      );
-                      const imageData = context.getImageData(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                      );
-                      gif.addFrame(imageData, {
-                        copy: true,
-                        delay: 100,
-                      });
-                      framesRemaining -= 1;
-
-                      if (framesRemaining === 0) {
-                        gif
-                          .on("finished", (blob) =>
-                            blobToBase64(blob).then(getInfoByFileExtension)
-                          )
-                          .render();
-                      }
-
-                      resolve();
-                    },
-                    { signal, ...ONE_TIME_PASSIVE_EVENT }
-                  );
                   video.currentTime = second;
+
                   if ("seekToNextFrame" in video) {
                     (video as VideoElementWithSeek)
                       .seekToNextFrame?.()
@@ -674,13 +639,50 @@ export const getInfoWithExtension = (
                   } else if (firstFrame) {
                     video.load();
                   }
+
+                  const processFrame = (): void => {
+                    if (!context || !canvas.width || !canvas.height) return;
+
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    gif.addFrame(
+                      context.getImageData(0, 0, canvas.width, canvas.height),
+                      { copy: true, delay: 100 }
+                    );
+                    framesRemaining -= 1;
+
+                    if (framesRemaining === 0) {
+                      gif
+                        .on("finished", (blob) =>
+                          blobToBase64(blob).then(getInfoByFileExtension)
+                        )
+                        .render();
+                    }
+
+                    resolve();
+                  };
+
+                  if ("requestVideoFrameCallback" in video) {
+                    video.requestVideoFrameCallback(processFrame);
+                  } else {
+                    (video as HTMLVideoElement).addEventListener(
+                      "canplaythrough",
+                      processFrame,
+                      { signal, ...ONE_TIME_PASSIVE_EVENT }
+                    );
+                  }
                 });
 
               video.addEventListener(
                 "loadeddata",
                 () => {
-                  canvas.height = video.videoHeight;
-                  canvas.width = video.videoWidth;
+                  canvas.height =
+                    video.videoHeight > video.videoWidth
+                      ? MAX_ICON_SIZE
+                      : (MAX_ICON_SIZE * video.videoHeight) / video.videoWidth;
+                  canvas.width =
+                    video.videoWidth > video.videoHeight
+                      ? MAX_ICON_SIZE
+                      : (MAX_ICON_SIZE * video.videoWidth) / video.videoHeight;
 
                   const capturePoints = [
                     video.duration / 4,

@@ -353,6 +353,8 @@ export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {
   videos: [16, 32],
 };
 
+export const MAX_ICON_SIZE = 144;
+
 export const DEFAULT_TEXT_FILE_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
 
 export const DEFAULT_SCROLLBAR_WIDTH = 17;
