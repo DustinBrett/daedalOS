@@ -46,7 +46,8 @@ const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 let slideshowFiles: string[];
 
 const useWallpaper = (
-  desktopRef: React.MutableRefObject<HTMLElement | null>
+  desktopRef: React.MutableRefObject<HTMLElement | null>,
+  heightOverride: number
 ): void => {
   const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
     useFileSystem();
@@ -60,21 +61,6 @@ const useWallpaper = (
     undefined,
     vantaWireframe ? "Wireframe" : ""
   );
-  const resizeListener = useCallback(() => {
-    if (!desktopRef.current) return;
-
-    const desktopRect = desktopRef.current.getBoundingClientRect();
-
-    wallpaperWorker.current?.postMessage(desktopRect);
-
-    const canvasElement =
-      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR);
-
-    if (canvasElement instanceof HTMLCanvasElement) {
-      canvasElement.style.width = `${desktopRect.width}px`;
-      canvasElement.style.height = `${desktopRect.height}px`;
-    }
-  }, [desktopRef, wallpaperWorker]);
   const loadWallpaper = useCallback(() => {
     if (!desktopRef.current) return;
 
@@ -99,9 +85,6 @@ const useWallpaper = (
         { canvas: offscreen, config, devicePixelRatio: 1 },
         [offscreen]
       );
-
-      window.removeEventListener("resize", resizeListener);
-      window.addEventListener("resize", resizeListener, { passive: true });
     } else if (WALLPAPER_PATHS[wallpaperName]) {
       WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
         wallpaper?.(desktopRef.current, config)
@@ -111,7 +94,6 @@ const useWallpaper = (
     }
   }, [
     desktopRef,
-    resizeListener,
     setWallpaper,
     vantaWireframe,
     wallpaperImage,
@@ -334,6 +316,30 @@ const useWallpaper = (
       }
     }
   }, [loadFileWallpaper, loadWallpaper, sessionLoaded, wallpaperName]);
+
+  useEffect(() => {
+    const resizeListener = (): void => {
+      if (!desktopRef.current || !WALLPAPER_PATHS[wallpaperName]) return;
+
+      const desktopRect = desktopRef.current.getBoundingClientRect();
+
+      wallpaperWorker.current?.postMessage(desktopRect);
+
+      const canvasElement =
+        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR);
+
+      if (canvasElement instanceof HTMLCanvasElement) {
+        canvasElement.style.width = `${desktopRect.width}px`;
+        canvasElement.style.height = `${
+          heightOverride || desktopRect.height
+        }px`;
+      }
+    };
+
+    window.addEventListener("resize", resizeListener, { passive: true });
+
+    return () => window.removeEventListener("resize", resizeListener);
+  }, [desktopRef, heightOverride, wallpaperName, wallpaperWorker]);
 };
 
 export default useWallpaper;

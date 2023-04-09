@@ -15,22 +15,31 @@ const useHeightOverride = (): number => {
       typeof window !== "undefined" &&
       typeof window.initialHeight === "number" &&
       window.initialHeight > 0 &&
-      window.initialHeight !== window.innerHeight &&
-      window.innerHeight === window.outerHeight &&
-      window.innerHeight > window.screen.availHeight &&
       /android/i.test(navigator.userAgent) &&
       /chrome/i.test(navigator.userAgent)
     ) {
-      setHeight(window.initialHeight);
+      requestAnimationFrame(() => {
+        if (
+          window.initialHeight !== window.innerHeight &&
+          window.innerHeight === window.outerHeight &&
+          window.innerHeight > window.screen.availHeight
+        ) {
+          setHeight(window.initialHeight || 0);
 
-      const resetHeight = (): void => setHeight(0);
+          const resetHeight = (): void => setHeight(0);
 
-      window.addEventListener("resize", resetHeight, ONE_TIME_PASSIVE_EVENT);
-      window.screen.orientation?.addEventListener(
-        "change",
-        resetHeight,
-        ONE_TIME_PASSIVE_EVENT
-      );
+          window.addEventListener(
+            "resize",
+            resetHeight,
+            ONE_TIME_PASSIVE_EVENT
+          );
+          window.screen.orientation?.addEventListener(
+            "change",
+            resetHeight,
+            ONE_TIME_PASSIVE_EVENT
+          );
+        }
+      });
     }
   }, []);
 
