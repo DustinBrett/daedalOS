@@ -545,7 +545,11 @@ const useCommandInterpreter = (
         }
         case "kill":
         case "taskkill": {
-          const [processName] = commandArgs;
+          const [processId] = commandArgs;
+          const processName =
+            Number.isNaN(processId) || processesRef.current[processId]
+              ? processId
+              : Object.keys(processesRef.current)[Number(processId)];
 
           if (processesRef.current[processName]) {
             closeWithTransition(processName);
@@ -794,13 +798,13 @@ const useCommandInterpreter = (
         case "tasklist":
           printTable(
             [
-              ["PID", 30],
-              ["Title", 25],
+              ["Image Name", 25],
+              ["PID", 8],
+              ["Title", 16],
             ],
-            Object.entries(processesRef.current).map(([pid, { title }]) => [
-              pid,
-              title,
-            ]),
+            Object.entries(processesRef.current).map(
+              ([pid, { title }], index) => [pid, index.toString(), title]
+            ),
             localEcho
           );
           break;
