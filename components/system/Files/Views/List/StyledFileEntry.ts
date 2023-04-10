@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 const StyledFileEntry = styled.li`
+  display: flex;
+  flex-direction: column;
+
   figure {
     border: 1px solid transparent;
     display: flex;
