@@ -8,6 +8,7 @@ const StyledJSDOS = styled.div`
   width: 100%;
 
   canvas {
+    /* stylelint-disable declaration-block-no-duplicate-properties */
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     position: absolute;
