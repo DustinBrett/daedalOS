@@ -17,6 +17,8 @@ export const WALLPAPER_PATHS: Record<
     import("components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape"),
   HEXELLS: () => import("components/system/Desktop/Wallpapers/hexells"),
   MATRIX: () => import("components/system/Desktop/Wallpapers/Matrix"),
+  STABLE_DIFFUSION: () =>
+    import("components/system/Desktop/Wallpapers/StableDiffusion"),
   VANTA: () => import("components/system/Desktop/Wallpapers/vantaWaves"),
 };
 
@@ -78,6 +80,14 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
     id: "SLIDESHOW",
     name: "Picture Slideshow",
   },
+  ...(typeof navigator !== "undefined" && "gpu" in navigator
+    ? [
+        {
+          id: "STABLE_DIFFUSION",
+          name: "Stable Diffusion",
+        },
+      ]
+    : []),
   {
     id: "VANTA",
     name: "Vanta Waves",

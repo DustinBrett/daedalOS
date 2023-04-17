@@ -20,6 +20,7 @@ import {
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_MINUTE,
   PICTURES_FOLDER,
+  PROMPT_FILE,
   SLIDESHOW_FILE,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
@@ -61,7 +62,8 @@ const useWallpaper = (
     undefined,
     vantaWireframe ? "Wireframe" : ""
   );
-  const loadWallpaper = useCallback(() => {
+  const wallpaperTimerRef = useRef<number>();
+  const loadWallpaper = useCallback(async () => {
     if (!desktopRef.current) return;
 
     let config: WallpaperConfig | undefined;
@@ -71,10 +73,28 @@ const useWallpaper = (
       vantaConfig.material.options.wireframe = vantaWireframe;
     } else if (wallpaperImage === "MATRIX 3D") {
       config = { volumetric: true };
+    } else if (wallpaperName === "STABLE_DIFFUSION") {
+      const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
+
+      if (await exists(promptsFilePath)) {
+        config = {
+          prompts: JSON.parse(
+            (await readFile(promptsFilePath))?.toString() || "[]"
+          ) as [string, string][],
+          update: loadWallpaper,
+          updateMins: 10,
+        };
+      }
     }
 
     document.documentElement.style.setProperty("background", "");
-    desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+
+    if (
+      wallpaperName !== "STABLE_DIFFUSION" ||
+      !window.tvmjsGlobalEnv?.initialized
+    ) {
+      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    }
 
     window.WallpaperDestroy?.();
 
@@ -94,13 +114,14 @@ const useWallpaper = (
     }
   }, [
     desktopRef,
+    exists,
+    readFile,
     setWallpaper,
     vantaWireframe,
     wallpaperImage,
     wallpaperName,
     wallpaperWorker,
   ]);
-  const slideshowTimerRef = useRef<number>();
   const getAllImages = useCallback(
     async (baseDirectory: string): Promise<string[]> =>
       (await readdir(baseDirectory)).reduce<Promise<string[]>>(
@@ -159,9 +180,7 @@ const useWallpaper = (
       slideshowFiles ||= [
         ...new Set(
           JSON.parse(
-            (
-              await readFile(`${PICTURES_FOLDER}/${SLIDESHOW_FILE}`)
-            )?.toString() || "[]"
+            (await readFile(slideshowFilePath))?.toString() || "[]"
           ) as string[]
         ),
       ];
@@ -278,7 +297,7 @@ const useWallpaper = (
           applyWallpaper(wallpaperUrl);
 
           if (isSlideshow) {
-            slideshowTimerRef.current = window.setTimeout(
+            wallpaperTimerRef.current = window.setTimeout(
               loadFileWallpaper,
               MILLISECONDS_IN_MINUTE
             );
@@ -305,8 +324,8 @@ const useWallpaper = (
 
   useEffect(() => {
     if (sessionLoaded) {
-      if (slideshowTimerRef.current) {
-        window.clearTimeout(slideshowTimerRef.current);
+      if (wallpaperTimerRef.current) {
+        window.clearTimeout(wallpaperTimerRef.current);
       }
 
       if (wallpaperName && !WALLPAPER_WORKER_NAMES.includes(wallpaperName)) {
