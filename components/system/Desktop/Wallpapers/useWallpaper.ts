@@ -87,7 +87,7 @@ const useWallpaper = (
 
         wallpaperTimerRef.current = window.setTimeout(
           () => loadWallpaper(true),
-          MILLISECONDS_IN_MINUTE * 10
+          MILLISECONDS_IN_MINUTE * 3
         );
       }
 

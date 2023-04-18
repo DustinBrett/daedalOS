@@ -122,6 +122,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - Set via image/video (Fill, Fit, Stretch, Tile, Center)
 - Picture Slideshow
 - [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
+- AI Generated Wallpapers [Stable Diffusion](https://stability.ai/stable-diffusion)
 
 ### URL
 

@@ -654,7 +654,12 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	class CanvaRenderManager {
 	    constructor(device, canvas) {
 	        this.device = device;
-	        const ctx = canvas.getContext("webgpu");
+	        const ctx = canvas.getContext("webgpu", {
+            alpha: false,
+            antialias: false,
+            desynchronized: true,
+            powerPreference: "high-performance",
+          });
 	        if (ctx == null) {
 	            throw Error("Cannot bind WebGPU context");
 	        }
@@ -2231,10 +2236,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            const reportCallback = (iter) => {
 	                // report
 	                for (let j = 0; j < this.fetchProgressCallback.length; ++j) {
-	                    let text = "Fetching param cache[" + iter + "/" + list.length + "]: ";
-	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + "MB fetched. ";
-	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% completed, ";
-	                    text += timeElapsed + " secs elapsed.";
+	                    let text = "[" + iter + "/" + list.length + "]: ";
+	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + " MB, ";
+	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% complete, ";
+	                    text += timeElapsed + " secs";
 	                    this.fetchProgressCallback[j]({
 	                        fetchedBytes: fetchedBytes,
 	                        totalBytes: totalBytes,
@@ -2710,7 +2715,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    }
 	    wrapJSFuncAsPackedCFunc(func) {
 	        const lib = this.lib;
-	        return (argValues, argCodes, nargs, ret, 
+	        return (argValues, argCodes, nargs, ret,
 	        // eslint-disable-next-line @typescript-eslint/no-unused-vars
 	        _handle) => {
 	            const jsArgs = [];
@@ -3187,7 +3192,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            const localSession = flocal();
 	            support.assert(localSession instanceof runtime.Module);
 	            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	            this.inst.registerFunc("rpc.WasmSession", 
+	            this.inst.registerFunc("rpc.WasmSession",
 	            // eslint-disable-next-line @typescript-eslint/no-unused-vars
 	            (_args) => {
 	                return localSession;
