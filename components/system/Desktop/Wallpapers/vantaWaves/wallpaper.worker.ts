@@ -7,6 +7,7 @@ import {
 import type {
   VantaObject,
   VantaWaves,
+  VantaWavesConfig,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 
 declare global {
@@ -41,7 +42,7 @@ globalThis.addEventListener(
       if (currentEffect) currentEffect.destroy();
 
       waveEffect = WAVES({
-        ...(offscreenConfig || config),
+        ...((offscreenConfig || config) as VantaWavesConfig),
         ...disableControls,
         canvas,
         devicePixelRatio,
