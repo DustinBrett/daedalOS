@@ -16,6 +16,6 @@ export type WallpaperFunc = (
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
   clockSize?: Size;
-  config?: VantaWavesConfig;
+  config?: Partial<StableDiffusionConfig> | VantaWavesConfig;
   devicePixelRatio: number;
 };

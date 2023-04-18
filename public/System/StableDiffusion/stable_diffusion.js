@@ -190,7 +190,7 @@ class StableDiffusionPipeline {
     this.maxTokenLength = 77;
 
     this.device = this.tvm.webgpu();
-    this.tvm.bindCanvas(window.tvmjsGlobalEnv.canvas);
+    this.tvm.bindCanvas(globalThis.tvmjsGlobalEnv.canvas);
     // VM functions
     this.vm = this.tvm.detachFromCurrentScope(
       this.tvm.createVirtualMachine(this.device)
@@ -493,12 +493,6 @@ class StableDiffusionInstance {
       if (stage == "unet") {
         counter += 1;
         text += " step [" + counter + "/" + numSteps + "]"
-		if (counter === numSteps && tvmjsGlobalEnv.update && !tvmjsGlobalEnv.updateTimer) {
-			tvmjsGlobalEnv.updateTimer = window.setTimeout(() => {
-				tvmjsGlobalEnv.update();
-				tvmjsGlobalEnv.updateTimer = undefined;
-			}, 1000 * 60 * (tvmjsGlobalEnv.updateMins || 10));
-		}
       }
       if (stage == "vae") {
         counter = totalNumSteps;

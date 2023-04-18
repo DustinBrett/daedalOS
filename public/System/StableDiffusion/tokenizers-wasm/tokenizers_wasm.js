@@ -114,7 +114,7 @@ function getArrayU8FromWasm0(ptr, len) {
 }
 /**
 */
-export class EncodingWasm {
+class EncodingWasm {
 
     static __wrap(ptr) {
         const obj = Object.create(EncodingWasm.prototype);
@@ -151,7 +151,7 @@ export class EncodingWasm {
 }
 /**
 */
-export class TokenizerWasm {
+class TokenizerWasm {
 
     static __wrap(ptr) {
         const obj = Object.create(TokenizerWasm.prototype);
@@ -294,7 +294,7 @@ function getImports() {
         return addHeapObject(ret);
     }, arguments) };
     imports.wbg.__wbg_window_a09ec664e14b1b81 = function() { return handleError(function () {
-        const ret = window.window;
+        const ret = globalThis.globalThis;
         return addHeapObject(ret);
     }, arguments) };
     imports.wbg.__wbg_globalThis_87cbb8506fecf3a9 = function() { return handleError(function () {
@@ -392,7 +392,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('/System/StableDiffusion/tokenizers-wasm/tokenizers_wasm_bg.wasm', import.meta.url);
+        input = '/System/StableDiffusion/tokenizers-wasm/tokenizers_wasm_bg.wasm';
     }
     const imports = getImports();
 
@@ -407,7 +407,7 @@ async function init(input) {
     return finalizeInit(instance, module);
 }
 
-window.Tokenizer = {
+globalThis.Tokenizer = {
 	init,
 	TokenizerWasm
 };

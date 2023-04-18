@@ -63,65 +63,68 @@ const useWallpaper = (
     vantaWireframe ? "Wireframe" : ""
   );
   const wallpaperTimerRef = useRef<number>();
-  const loadWallpaper = useCallback(async () => {
-    if (!desktopRef.current) return;
+  const loadWallpaper = useCallback(
+    async (keepCanvas?: boolean) => {
+      if (!desktopRef.current) return;
 
-    let config: WallpaperConfig | undefined;
+      let config: WallpaperConfig | undefined;
 
-    if (wallpaperName === "VANTA") {
-      config = { ...vantaConfig };
-      vantaConfig.material.options.wireframe = vantaWireframe;
-    } else if (wallpaperImage === "MATRIX 3D") {
-      config = { volumetric: true };
-    } else if (wallpaperName === "STABLE_DIFFUSION") {
-      const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
+      if (wallpaperName === "VANTA") {
+        config = { ...vantaConfig };
+        vantaConfig.material.options.wireframe = vantaWireframe;
+      } else if (wallpaperImage === "MATRIX 3D") {
+        config = { volumetric: true };
+      } else if (wallpaperName === "STABLE_DIFFUSION") {
+        const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
 
-      if (await exists(promptsFilePath)) {
-        config = {
-          prompts: JSON.parse(
-            (await readFile(promptsFilePath))?.toString() || "[]"
-          ) as [string, string][],
-          update: loadWallpaper,
-          updateMins: 10,
-        };
+        if (await exists(promptsFilePath)) {
+          config = {
+            prompts: JSON.parse(
+              (await readFile(promptsFilePath))?.toString() || "[]"
+            ) as [string, string][],
+          };
+        }
+
+        wallpaperTimerRef.current = window.setTimeout(
+          () => loadWallpaper(true),
+          MILLISECONDS_IN_MINUTE * 10
+        );
       }
-    }
 
-    document.documentElement.style.setProperty("background", "");
+      document.documentElement.style.setProperty("background", "");
 
-    if (
-      wallpaperName !== "STABLE_DIFFUSION" ||
-      !window.tvmjsGlobalEnv?.initialized
-    ) {
-      desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
-    }
+      if (!keepCanvas) {
+        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+      }
 
-    window.WallpaperDestroy?.();
+      window.WallpaperDestroy?.();
 
-    if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
-      const offscreen = createOffscreenCanvas(desktopRef.current);
+      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
+        const offscreen = createOffscreenCanvas(desktopRef.current);
 
-      wallpaperWorker.current.postMessage(
-        { canvas: offscreen, config, devicePixelRatio: 1 },
-        [offscreen]
-      );
-    } else if (WALLPAPER_PATHS[wallpaperName]) {
-      WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
-        wallpaper?.(desktopRef.current, config)
-      );
-    } else {
-      setWallpaper("VANTA");
-    }
-  }, [
-    desktopRef,
-    exists,
-    readFile,
-    setWallpaper,
-    vantaWireframe,
-    wallpaperImage,
-    wallpaperName,
-    wallpaperWorker,
-  ]);
+        wallpaperWorker.current.postMessage(
+          { canvas: offscreen, config, devicePixelRatio: 1 },
+          [offscreen]
+        );
+      } else if (WALLPAPER_PATHS[wallpaperName]) {
+        WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
+          wallpaper?.(desktopRef.current, config)
+        );
+      } else {
+        setWallpaper("VANTA");
+      }
+    },
+    [
+      desktopRef,
+      exists,
+      readFile,
+      setWallpaper,
+      vantaWireframe,
+      wallpaperImage,
+      wallpaperName,
+      wallpaperWorker,
+    ]
+  );
   const getAllImages = useCallback(
     async (baseDirectory: string): Promise<string[]> =>
       (await readdir(baseDirectory)).reduce<Promise<string[]>>(

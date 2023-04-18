@@ -39,6 +39,14 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
       ),
       { name: "Wallpaper (Hexells)" }
     ),
+  STABLE_DIFFUSION: (): Worker =>
+    new Worker(
+      new URL(
+        "components/system/Desktop/Wallpapers/StableDiffusion/wallpaper.worker",
+        import.meta.url
+      ),
+      { name: "Wallpaper (Stable Diffusion)" }
+    ),
   VANTA: (info?: string): Worker =>
     new Worker(
       new URL(
