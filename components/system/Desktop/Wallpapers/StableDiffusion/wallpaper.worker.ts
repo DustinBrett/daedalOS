@@ -1,6 +1,6 @@
 import {
-  initStableDiffusion,
   libs,
+  runStableDiffusion,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import type {
   ITokenizer,
@@ -27,9 +27,10 @@ globalThis.addEventListener(
     } else if (!(data instanceof DOMRect)) {
       const { canvas, config } = data as OffscreenRenderProps;
 
-      initStableDiffusion(
+      runStableDiffusion(
         config as StableDiffusionConfig,
-        canvas as unknown as HTMLCanvasElement
+        canvas as unknown as HTMLCanvasElement,
+        true
       );
     }
   },

@@ -246,6 +246,18 @@ const directory: Processes = {
     singleton: true,
     title: "Space Cadet",
   },
+  StableDiffusion: {
+    Component: dynamic(() => import("components/apps/StableDiffusion")),
+    allowResizing: false,
+    backgroundColor: "rgb(235, 251, 247)",
+    defaultSize: {
+      height: 600,
+      width: 544,
+    },
+    icon: "/System/Icons/stablediffusion.webp",
+    lockAspectRatio: true,
+    title: "Stable Diffusion",
+  },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
     backgroundColor: "rgba(12, 12, 12, 0.5)",

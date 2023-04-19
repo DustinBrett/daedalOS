@@ -9,10 +9,17 @@ export const libs = [
   "/System/StableDiffusion/stable_diffusion.js",
 ];
 
-export const initStableDiffusion = (
+export const runStableDiffusion = async (
   config: StableDiffusionConfig,
-  canvas: HTMLCanvasElement
-): void => {
+  canvas: HTMLCanvasElement,
+  skipLibs = false
+): Promise<void> => {
+  if (!skipLibs) {
+    window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
+
+    await loadFiles(libs);
+  }
+
   globalThis.tvmjsGlobalEnv.getTokenizer = async () => {
     if (!globalThis.tvmjsGlobalEnv.initialized) {
       await globalThis.Tokenizer.init();
@@ -38,10 +45,10 @@ export const initStableDiffusion = (
   globalThis.tvmjsGlobalEnv.asyncOnGenerate();
 };
 
-const StableDiffusion = async (
+const StableDiffusion = (
   el?: HTMLElement | null,
   config: WallpaperConfig = {} as WallpaperConfig
-): Promise<void> => {
+): void => {
   if (!el) return;
 
   const canvas = document.createElement("canvas");
@@ -51,11 +58,7 @@ const StableDiffusion = async (
 
   el.append(canvas);
 
-  window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
-
-  await loadFiles(libs);
-
-  initStableDiffusion(config as StableDiffusionConfig, canvas);
+  runStableDiffusion(config as StableDiffusionConfig, canvas);
 };
 
 export default StableDiffusion;

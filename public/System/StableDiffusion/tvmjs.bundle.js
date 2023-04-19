@@ -657,7 +657,6 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        const ctx = canvas.getContext("webgpu", {
             alpha: false,
             antialias: false,
-            desynchronized: true,
             powerPreference: "high-performance",
           });
 	        if (ctx == null) {
