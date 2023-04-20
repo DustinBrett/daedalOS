@@ -11,7 +11,7 @@ export const libs = [
 
 export const runStableDiffusion = async (
   config: StableDiffusionConfig,
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | OffscreenCanvas,
   skipLibs = false
 ): Promise<void> => {
   if (!skipLibs) {

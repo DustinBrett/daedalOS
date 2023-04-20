@@ -1,9 +1,11 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
+import type { StableDiffusionConfig } from "components/system/Desktop/Wallpapers/StableDiffusion/types";
 import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import { useCallback, useMemo, useRef } from "react";
+import useWorker from "hooks/useWorker";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 import { generatePrettyTimestamp } from "utils/functions";
 import StyledStableDiffusion from "./StyledStableDiffusion";
@@ -19,6 +21,20 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
   const { createPath, updateFolder } = useFileSystem();
   const { contextMenu } = useMenu();
   const generatedAnImage = useRef(false);
+  const supportsOffscreenCanvas = useMemo(
+    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
+    []
+  );
+  const sdWorker = useWorker<void>(
+    () =>
+      new Worker(
+        new URL(
+          "components/system/Desktop/Wallpapers/StableDiffusion/wallpaper.worker",
+          import.meta.url
+        ),
+        { name: "Stable Diffusion" }
+      )
+  );
   const downloadContextMenu = useMemo(
     () =>
       contextMenu?.(() => [
@@ -54,24 +70,44 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
       ]),
     [contextMenu, createPath, updateFolder]
   );
+  const transferedCanvas = useRef(false);
   const generateImage = useCallback(async () => {
     if (
       canvasRef.current &&
       inputPositiveRef.current &&
       inputNegativeRef.current
     ) {
-      await runStableDiffusion(
-        {
-          prompts: [
-            [inputPositiveRef.current.value, inputNegativeRef.current.value],
-          ],
-        },
-        canvasRef.current
-      );
+      const config: StableDiffusionConfig = {
+        prompts: [
+          [inputPositiveRef.current.value, inputNegativeRef.current.value],
+        ],
+      };
+
+      if (supportsOffscreenCanvas && sdWorker.current) {
+        if (transferedCanvas.current) {
+          sdWorker.current.postMessage({ config });
+        } else {
+          const offscreenCanvas =
+            canvasRef.current.transferControlToOffscreen();
+
+          transferedCanvas.current = true;
+          sdWorker.current.postMessage({ canvas: offscreenCanvas, config }, [
+            offscreenCanvas,
+          ]);
+        }
+      } else {
+        await runStableDiffusion(config, canvasRef.current);
+      }
 
       generatedAnImage.current = true;
     }
-  }, []);
+  }, [sdWorker, supportsOffscreenCanvas]);
+
+  useEffect(() => {
+    if (supportsOffscreenCanvas && sdWorker.current) {
+      sdWorker.current.postMessage("init");
+    }
+  }, [sdWorker, supportsOffscreenCanvas]);
 
   return (
     <StyledStableDiffusion
