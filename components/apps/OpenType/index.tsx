@@ -6,6 +6,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import type { Font, LocalizedName } from "opentype.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { haltEvent } from "utils/functions";
 
 type FontCanvasProps = {
   font?: Font;
@@ -101,7 +102,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledOpenType {...useFileDrop({ id })}>
+    <StyledOpenType {...useFileDrop({ id })} onContextMenuCapture={haltEvent}>
       {font && (
         <>
           <ol>
