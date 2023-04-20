@@ -256,6 +256,7 @@ const directory: Processes = {
     },
     icon: "/System/Icons/stablediffusion.webp",
     lockAspectRatio: true,
+    singleton: true,
     title: "Stable Diffusion",
   },
   Terminal: {

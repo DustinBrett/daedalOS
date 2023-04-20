@@ -1,11 +1,29 @@
 import styled from "styled-components";
 
-const StyledStableDiffusion = styled.div`
+type StyledStableDiffusionProps = {
+  $hasWebGPU: boolean;
+};
+
+const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
   display: flex;
   flex-direction: column;
   gap: 10px;
   place-content: center;
   place-items: center;
+
+  &::after {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 30%);
+    color: #fff;
+    content: "No WebGPU Support";
+    display: ${({ $hasWebGPU }) => ($hasWebGPU ? "none" : "flex")};
+    font-size: 26px;
+    font-weight: bold;
+    inset: 0;
+    justify-content: center;
+    position: absolute;
+    text-shadow: 2px 2px 4px #000;
+  }
 
   canvas {
     background-color: #fff;

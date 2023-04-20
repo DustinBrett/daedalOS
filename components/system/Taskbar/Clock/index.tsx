@@ -113,6 +113,7 @@ const Clock: FC = () => {
 
         offScreenClockCanvas.current = createOffscreenCanvas(
           clockContainer,
+          undefined,
           window.devicePixelRatio,
           clockSize
         );

@@ -93,14 +93,19 @@ const useWallpaper = (
 
       document.documentElement.style.setProperty("background", "");
 
-      if (!keepCanvas) {
-        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
-      }
+      const existingCanvas = desktopRef.current.querySelector(
+        BASE_CANVAS_SELECTOR
+      ) as HTMLCanvasElement;
+
+      if (!keepCanvas) existingCanvas?.remove();
 
       window.WallpaperDestroy?.();
 
       if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
-        const offscreen = createOffscreenCanvas(desktopRef.current);
+        const offscreen = createOffscreenCanvas(
+          desktopRef.current,
+          keepCanvas ? existingCanvas : undefined
+        );
 
         wallpaperWorker.current.postMessage(
           { canvas: offscreen, config, devicePixelRatio: 1 },

@@ -584,9 +584,12 @@ export const haltEvent = (
 
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
+  existingCanvas?: HTMLCanvasElement,
   devicePixelRatio = 1,
   customSize: Size = Object.create(null) as Size
 ): OffscreenCanvas => {
+  if (existingCanvas) existingCanvas.transferControlToOffscreen();
+
   const canvas = document.createElement("canvas");
   const height = Number(customSize?.height) || containerElement.offsetHeight;
   const width = Number(customSize?.width) || containerElement.offsetWidth;

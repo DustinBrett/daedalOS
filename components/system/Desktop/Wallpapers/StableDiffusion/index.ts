@@ -42,7 +42,7 @@ export const runStableDiffusion = async (
     ? prompts
     : [["A photo of an astronaut riding a horse on mars", ""]];
 
-  globalThis.tvmjsGlobalEnv.asyncOnGenerate();
+  await globalThis.tvmjsGlobalEnv.asyncOnGenerate();
 };
 
 const StableDiffusion = (
