@@ -34,7 +34,7 @@ export const runStableDiffusion = async (
     );
   };
 
-  globalThis.tvmjsGlobalEnv.canvas = canvas;
+  globalThis.tvmjsGlobalEnv.canvas = globalThis.tvmjsGlobalEnv.canvas || canvas;
 
   const { prompts } = config;
 

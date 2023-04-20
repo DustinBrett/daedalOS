@@ -87,30 +87,31 @@ const useWallpaper = (
 
         wallpaperTimerRef.current = window.setTimeout(
           () => loadWallpaper(true),
-          MILLISECONDS_IN_MINUTE * 3
+          MILLISECONDS_IN_MINUTE * 5
         );
       }
 
       document.documentElement.style.setProperty("background", "");
 
-      const existingCanvas = desktopRef.current.querySelector(
-        BASE_CANVAS_SELECTOR
-      ) as HTMLCanvasElement;
-
-      if (!keepCanvas) existingCanvas?.remove();
+      if (!keepCanvas) {
+        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+      }
 
       window.WallpaperDestroy?.();
 
       if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
-        const offscreen = createOffscreenCanvas(
-          desktopRef.current,
-          keepCanvas ? existingCanvas : undefined
-        );
+        const workerConfig = { config, devicePixelRatio: 1 };
 
-        wallpaperWorker.current.postMessage(
-          { canvas: offscreen, config, devicePixelRatio: 1 },
-          [offscreen]
-        );
+        if (keepCanvas) {
+          wallpaperWorker.current.postMessage(workerConfig);
+        } else {
+          const offscreen = createOffscreenCanvas(desktopRef.current);
+
+          wallpaperWorker.current.postMessage(
+            { canvas: offscreen, ...workerConfig },
+            [offscreen]
+          );
+        }
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
           wallpaper?.(desktopRef.current, config)
