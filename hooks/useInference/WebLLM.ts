@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
 import { loadFiles } from "utils/functions";
@@ -11,10 +10,7 @@ const libs = [
 
 const moduleLibs = ["/Program Files/WebLLM/sentencepiece.js"];
 
-export const runLLM = async (
-  message: string,
-  skipLibs = false
-): Promise<string> => {
+const runLLM = async (message: string, skipLibs = false): Promise<string> => {
   if (!skipLibs) {
     window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
 
@@ -51,7 +47,7 @@ export class WebLLM implements Engine {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/require-await
+  // eslint-disable-next-line class-methods-use-this
   public async chat(
     message: string,
     _userMessages: string[],

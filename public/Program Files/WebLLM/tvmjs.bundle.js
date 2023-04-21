@@ -2015,7 +2015,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    constructor(mod, device) {
 	        this.mod = mod;
-	        this.mod.getFunction("vm_initialization")(new Scalar(device.deviceType, "int"), new Scalar(device.deviceId, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"), 
+	        this.mod.getFunction("vm_initialization")(new Scalar(device.deviceType, "int"), new Scalar(device.deviceId, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"),
 	        // explicitly specify host device type
 	        new Scalar(DeviceStrToEnum.cpu, "int"), new Scalar(0, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"));
 	    }
@@ -2413,12 +2413,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            const reportCallback = (iter) => {
 	                // report
 	                for (let j = 0; j < this.initProgressCallback.length; ++j) {
-	                    let text = "Fetching param cache[" + iter + "/" + list.length + "]: ";
-	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + "MB fetched. ";
-	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% completed, ";
-	                    text += timeElapsed + " secs elapsed.";
-	                    text += " It can take a while when we first visit this page to populate the cache.";
-	                    text += " Later refreshes will become faster.";
+	                    let text = "[" + iter + "/" + list.length + "]: ";
+	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + " MB, ";
+	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% complete, ";
+	                    text += timeElapsed + " secs";
 	                    this.initProgressCallback[j]({
 	                        progress: fetchedBytes / totalBytes,
 	                        timeElapsed: timeElapsed,
@@ -2970,7 +2968,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    }
 	    wrapJSFuncAsPackedCFunc(func) {
 	        const lib = this.lib;
-	        return (argValues, argCodes, nargs, ret, 
+	        return (argValues, argCodes, nargs, ret,
 	        // eslint-disable-next-line @typescript-eslint/no-unused-vars
 	        _handle) => {
 	            const jsArgs = [];
@@ -3447,7 +3445,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            const localSession = flocal();
 	            support.assert(localSession instanceof runtime.Module);
 	            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	            this.inst.registerFunc("rpc.WasmSession", 
+	            this.inst.registerFunc("rpc.WasmSession",
 	            // eslint-disable-next-line @typescript-eslint/no-unused-vars
 	            (_args) => {
 	                return localSession;

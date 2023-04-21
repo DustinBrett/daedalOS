@@ -2,7 +2,6 @@ type Prompts = [string, string][];
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
-  var initalized: boolean;
   var Tokenizer: {
     TokenizerWasm: new (config: string) => (name: string) => Promise<unknown>;
     init: () => Promise<void>;
@@ -15,7 +14,6 @@ declare global {
     asyncOnReset: () => Promise<void>;
     canvas: HTMLCanvasElement;
     getTokenizer: (name: string) => Promise<unknown>;
-    initialized: boolean;
     message: string;
     prompts: Prompts;
     response: string;

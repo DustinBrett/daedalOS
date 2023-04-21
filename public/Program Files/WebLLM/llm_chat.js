@@ -422,9 +422,8 @@ class LLMChatInstance {
     }
     this.appendMessage("init", "");
     this.tvm = tvm;
-    self = this;
-    function initProgressCallback(report) {
-      self.updateLastMessage("init", report.text);
+    const initProgressCallback = (report) => {
+      this.updateLastMessage("init", report.text);
     }
     tvm.registerInitProgressCallback(initProgressCallback);
 
@@ -474,9 +473,9 @@ class LLMChatInstance {
   updateLastMessage(kind, text) {
     if (kind == "init") {
       text = "[System Initalize] " + text;
+    } else if (kind == "left") {
+      globalThis.tvmjsGlobalEnv.response = text;
     }
-    console.log(text);
-    globalThis.tvmjsGlobalEnv.response = text;
   }
 
   async respondTestMessage(repeat) {
