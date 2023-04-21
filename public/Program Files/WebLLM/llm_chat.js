@@ -416,11 +416,10 @@ class LLMChatInstance {
       }
     } catch(err) {
       this.appendMessage("error", "Find an error initializing the WebGPU device " + err.toString());
-      console.log(err.stack);
+      console.log(err);
       this.reset();
       throw Error("Find an error initializing WebGPU: " + err.toString());
     }
-    this.appendMessage("init", "");
     this.tvm = tvm;
     const initProgressCallback = (report) => {
       this.updateLastMessage("init", report.text);
@@ -472,14 +471,13 @@ class LLMChatInstance {
 
   updateLastMessage(kind, text) {
     if (kind == "init") {
-      text = "[System Initalize] " + text;
+      console.log(`[System Initalize] ${text}`);
     } else if (kind == "left") {
       globalThis.tvmjsGlobalEnv.response = text;
     }
   }
 
   async respondTestMessage(repeat) {
-    this.appendMessage("left", "");
     const testMessage = "I am a friendly bot. Please ask questions.";
     const encodedResult = await this.pipeline.tokenizer.encodeIds(testMessage);
 
@@ -512,7 +510,7 @@ class LLMChatInstance {
       await this.asyncInit();
     } catch(err) {
       this.appendMessage("error", "Init error, " + err.toString());
-      console.log(err.stack);
+      console.log(err);
       this.reset();
       this.requestInProgress = false;
       return;
@@ -532,7 +530,6 @@ class LLMChatInstance {
 
     this.appendMessage("right", prompt);
     this.appendMessage("placeholder", "Generating...");
-    this.appendMessage("left", "");
     const callbackUpdateResponse = (step, msg) => {
       if (msg.endsWith("##")) {
         msg = msg.substring(0, msg.length - 2);
@@ -547,10 +544,9 @@ class LLMChatInstance {
       console.log(this.pipeline.runtimeStatsText());
     } catch (err) {
       this.appendMessage("error", "Generate error, " + err.toString());
-      console.log(err.stack);
+      console.log(err);
       this.reset();
     }
-    this.appendMessage("placeholder", "Enter your message...");
     this.requestInProgress = false;
   }
 
