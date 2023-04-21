@@ -1,75 +1,29 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import type { StableDiffusionConfig } from "components/system/Desktop/Wallpapers/StableDiffusion/types";
-import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useMenu } from "contexts/menu";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { DESKTOP_PATH } from "utils/constants";
-import { generatePrettyTimestamp } from "utils/functions";
+import { useCallback, useMemo, useRef } from "react";
 import StyledStableDiffusion from "./StyledStableDiffusion";
 
-type CanvasRenderingContextWebGPU = {
-  getCurrentTexture: () => unknown;
-};
+const SD_WORKER = (): Worker =>
+  new Worker(
+    new URL(
+      "components/system/Desktop/Wallpapers/StableDiffusion/wallpaper.worker",
+      import.meta.url
+    ),
+    { name: "Stable Diffusion" }
+  );
 
 const StableDiffusion: FC<ComponentProcessProps> = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputPositiveRef = useRef<HTMLInputElement>(null);
   const inputNegativeRef = useRef<HTMLInputElement>(null);
-  const { createPath, updateFolder } = useFileSystem();
-  const { contextMenu } = useMenu();
   const generatedAnImage = useRef(false);
   const supportsOffscreenCanvas = useMemo(
     () => typeof window !== "undefined" && "OffscreenCanvas" in window,
     []
   );
-  const sdWorker = useWorker<void>(
-    () =>
-      new Worker(
-        new URL(
-          "components/system/Desktop/Wallpapers/StableDiffusion/wallpaper.worker",
-          import.meta.url
-        ),
-        { name: "Stable Diffusion" }
-      )
-  );
-  const downloadContextMenu = useMemo(
-    () =>
-      contextMenu?.(() => [
-        {
-          action: () => {
-            if (!canvasRef.current) return;
-
-            (
-              canvasRef.current.getContext(
-                "webgpu"
-              ) as unknown as CanvasRenderingContextWebGPU
-            )?.getCurrentTexture();
-
-            setTimeout(() => {
-              canvasRef.current?.toBlob(async (blob) => {
-                if (!blob) return;
-
-                const fileName = await createPath(
-                  `${removeInvalidFilenameCharacters(
-                    inputPositiveRef.current?.value || "Stable Diffusion"
-                  )} (${generatePrettyTimestamp()}).jpg`,
-                  DESKTOP_PATH,
-                  Buffer.from(await blob?.arrayBuffer())
-                );
-
-                updateFolder(DESKTOP_PATH, fileName);
-              });
-            }, 100);
-          },
-          disabled: !generatedAnImage.current,
-          label: "Save Image",
-        },
-      ]),
-    [contextMenu, createPath, updateFolder]
-  );
+  const sdWorker = useWorker<void>(SD_WORKER);
   const transferedCanvas = useRef(false);
   const generateImage = useCallback(async () => {
     if (
@@ -103,17 +57,8 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
     }
   }, [sdWorker, supportsOffscreenCanvas]);
 
-  useEffect(() => {
-    if (supportsOffscreenCanvas && sdWorker.current) {
-      sdWorker.current.postMessage("init");
-    }
-  }, [sdWorker, supportsOffscreenCanvas]);
-
   return (
-    <StyledStableDiffusion
-      $hasWebGPU={"gpu" in navigator}
-      {...downloadContextMenu}
-    >
+    <StyledStableDiffusion $hasWebGPU={"gpu" in navigator}>
       <canvas ref={canvasRef} height={512} width={512} />
       <nav>
         <div>
