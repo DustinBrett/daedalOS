@@ -14,6 +14,7 @@ declare global {
     asyncOnReset: () => Promise<void>;
     canvas: HTMLCanvasElement;
     getTokenizer: (name: string) => Promise<unknown>;
+    initialized: boolean;
     message: string;
     prompts: Prompts;
     response: string;
