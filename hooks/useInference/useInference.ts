@@ -30,6 +30,7 @@ type EngineClass = new (
 type Inference = {
   engine: Engine;
   error: number;
+  name: string;
   resetError: () => void;
 };
 
@@ -56,6 +57,7 @@ export const useInference = (apiKey = "", engine = ""): Inference => {
       [activeEngine, apiKey]
     ),
     error,
+    name: activeEngine,
     resetError: () => setError(0),
   };
 };
