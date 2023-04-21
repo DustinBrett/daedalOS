@@ -361,6 +361,8 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     }
   }, [id, input, setUrl, updateHeight, url]);
 
+  useEffect(() => () => AI?.destroy?.(), [AI]);
+
   return (
     <StyledChat {...useFileDrop({ id })}>
       <ul ref={messagesRef}>

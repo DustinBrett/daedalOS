@@ -1,8 +1,9 @@
 import type { Message } from "components/apps/Chat/types";
 import { HuggingFace } from "hooks/useInference/huggingFace";
 import { OpenAI } from "hooks/useInference/openAI";
+import { WebLLM } from "hooks/useInference/WebLLM";
 import { useMemo, useState } from "react";
-import { DEFAULT_AI_API } from "utils/constants";
+import { DEFAULT_AI_API, DEFAULT_NON_WEBGPU_ENGINE } from "utils/constants";
 
 export type Engine = {
   chat: (
@@ -12,6 +13,7 @@ export type Engine = {
     allMessages: Message[]
   ) => Promise<string>;
   classify: (text: string, categories: string[]) => Promise<string>;
+  destroy?: () => void;
   draw: (text: string) => Promise<Buffer | void>;
   greeting: Message;
   imageToText: (name: string, type: string, image: Buffer) => Promise<string>;
@@ -31,20 +33,27 @@ type Inference = {
   resetError: () => void;
 };
 
-const Engines = { HuggingFace, OpenAI } as Record<string, EngineClass>;
+const Engines = { HuggingFace, OpenAI, WebLLM } as Record<string, EngineClass>;
 
 export const useInference = (apiKey = "", engine = ""): Inference => {
   const [error, setError] = useState<number>(0);
   const [DEFAULT_ENGINE] = DEFAULT_AI_API.split(":");
+  const supportsWebGPU = "gpu" in navigator;
+  let activeEngine = DEFAULT_ENGINE;
+
+  if (engine && engine in Engines) {
+    activeEngine =
+      engine === "WebLLM" && !supportsWebGPU
+        ? DEFAULT_NON_WEBGPU_ENGINE
+        : engine;
+  } else if (activeEngine === "WebLLM" && !supportsWebGPU) {
+    activeEngine = DEFAULT_NON_WEBGPU_ENGINE;
+  }
 
   return {
     engine: useMemo(
-      () =>
-        (engine &&
-          engine in Engines &&
-          new Engines[engine](apiKey, setError)) ||
-        new Engines[DEFAULT_ENGINE](apiKey, setError),
-      [DEFAULT_ENGINE, apiKey, engine]
+      () => new Engines[activeEngine](apiKey, setError),
+      [activeEngine, apiKey]
     ),
     error,
     resetError: () => setError(0),
