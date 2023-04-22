@@ -582,16 +582,40 @@
 	function detectGPUDevice() {
 	    return __awaiter(this, void 0, void 0, function* () {
 	        if (typeof navigator !== "undefined" && navigator.gpu !== undefined) {
-	            const adapter = yield navigator.gpu.requestAdapter();
+	            const adapter = yield navigator.gpu.requestAdapter({ "powerPreference": "high-performance" });
 	            if (adapter == null) {
 	                throw Error("Cannot find adapter that matches the request");
+	            }
+	            const computeMB = (value) => {
+	                return Math.ceil(value / (1 << 20)) + "MB";
+	            };
+	            // more detailed error message
+	            const requiedMaxBufferSize = 1 << 30;
+	            if (requiedMaxBufferSize > adapter.limits.maxBufferSize) {
+	                throw Error(`Cannot initialize runtime because of requested maxBufferSize ` +
+	                    `exceeds limit. requested=${computeMB(requiedMaxBufferSize)}, ` +
+	                    `limit=${computeMB(adapter.limits.maxBufferSize)}. ` +
+	                    `This error may be caused by an older version of the browser (e.g. Chrome 112). ` +
+	                    `You can try to upgrade your browser to Chrome 113 or later.`);
+	            }
+	            const requiredMaxStorageBufferBindingSize = 1 << 30;
+	            if (requiredMaxStorageBufferBindingSize > adapter.limits.maxStorageBufferBindingSize) {
+	                throw Error(`Cannot initialize runtime because of requested maxStorageBufferBindingSize ` +
+	                    `exceeds limit. requested=${computeMB(requiredMaxStorageBufferBindingSize)}, ` +
+	                    `limit=${computeMB(adapter.limits.maxStorageBufferBindingSize)}. `);
+	            }
+	            const requiredMaxComputeWorkgroupStorageSize = 32 << 10;
+	            if (requiredMaxComputeWorkgroupStorageSize > adapter.limits.maxComputeWorkgroupStorageSize) {
+	                throw Error(`Cannot initialize runtime because of requested maxComputeWorkgroupStorageSize ` +
+	                    `exceeds limit. requested=${requiredMaxComputeWorkgroupStorageSize}, ` +
+	                    `limit=${adapter.limits.maxComputeWorkgroupStorageSize}. `);
 	            }
 	            const adapterInfo = yield adapter.requestAdapterInfo();
 	            const device = yield adapter.requestDevice({
 	                requiredLimits: {
-	                    maxBufferSize: 1 << 30,
-	                    maxStorageBufferBindingSize: 1 << 30,
-	                    maxComputeWorkgroupStorageSize: 32 << 10,
+	                    maxBufferSize: requiedMaxBufferSize,
+	                    maxStorageBufferBindingSize: requiredMaxStorageBufferBindingSize,
+	                    maxComputeWorkgroupStorageSize: requiredMaxComputeWorkgroupStorageSize,
 	                }
 	            });
 	            return {
@@ -808,7 +832,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        // internal data
 	        this.bufferTable = [undefined];
 	        this.bufferTableFreeId = [];
+	        this.podArgStagingBuffers = [];
 	        this.canvasRenderManager = undefined;
+	        // number of pod arg staging buffers
+	        this.maxNumPodArgsStagingBuffers = 2;
 	        // flags for debugging
 	        // stats of the runtime.
 	        // peak allocation
@@ -827,20 +854,27 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.device = device;
 	    }
 	    /**
+	     * Dispose context.
+	     */
+	    dispose() {
+	        var _a, _b, _c;
+	        (_a = this.canvasRenderManager) === null || _a === void 0 ? void 0 : _a.dispose();
+	        this.bufferTableFreeId = [];
+	        while (this.bufferTable.length != 0) {
+	            (_b = this.bufferTable.pop()) === null || _b === void 0 ? void 0 : _b.destroy();
+	        }
+	        while (this.podArgStagingBuffers.length != 0) {
+	            (_c = this.podArgStagingBuffers.pop()) === null || _c === void 0 ? void 0 : _c.destroy();
+	        }
+	        this.device.destroy();
+	    }
+	    /**
 	     * Wait for all pending GPU tasks to complete
 	     */
 	    sync() {
 	        return __awaiter(this, void 0, void 0, function* () {
 	            yield this.device.queue.onSubmittedWorkDone();
 	        });
-	    }
-	    /**
-	     * Dispose the binded canvas.
-	     */
-	    disposeCanvas() {
-	        var _a;
-	        (_a = this.canvasRenderManager) === null || _a === void 0 ? void 0 : _a.dispose();
-	        this.canvasRenderManager = undefined;
 	    }
 	    /**
 	     * Obtain the runtime information in readable format.
@@ -891,12 +925,69 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    }
 	    /**
 	     * Create a PackedFunc that runs the given shader
+	     * via createComputePipeline
 	     *
-	     * @param info The function information in json.
+	     * @param info The function information already parsed as a record.
 	     * @param code The shader data(in WGSL)
+	     * @returns The shader
 	     */
-	    createShader(info, code) {
-	        const finfo = JSON.parse(info);
+	    createShader(finfo, code) {
+	        return this.createShadeInternal(finfo, code, false);
+	    }
+	    /**
+	     * Create a PackedFunc that runs the given shader asynchrously
+	     * via createComputePipelineAsync
+	     *
+	     * @param info The function information already parsed as a record.
+	     * @param code The shader data(in WGSL)
+	     * @returns The shader
+	     */
+	    createShaderAsync(finfo, code) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            return yield this.createShadeInternal(finfo, code, true);
+	        });
+	    }
+	    /**
+	     * Get the pod arg staging buffer
+	     * \param nbytes The minimum size.
+	     * \return The allocated buffer
+	     */
+	    getPodArgsBuffer(nbytes) {
+	        let buffer = undefined;
+	        if (this.podArgStagingBuffers.length >= this.maxNumPodArgsStagingBuffers) {
+	            buffer = this.podArgStagingBuffers.shift();
+	        }
+	        // minimum of 16 bytes
+	        let allocSize = 16;
+	        if (buffer !== undefined) {
+	            allocSize = buffer.size;
+	            if (buffer.size < nbytes) {
+	                buffer.destroy();
+	                buffer = undefined;
+	            }
+	        }
+	        while (allocSize < nbytes) {
+	            allocSize *= 2;
+	        }
+	        if (buffer == undefined) {
+	            // create uniform buffer
+	            buffer = this.device.createBuffer({
+	                size: allocSize,
+	                usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+	            });
+	        }
+	        support.assert(nbytes <= buffer.size);
+	        return buffer;
+	    }
+	    /**
+	     * Internal impl of createShader for both async and sync mode.
+	     *
+	     * @param info The function information already parsed as a record.
+	     * @param code The shader data(in WGSL)
+	     * @param asyncMode Whether use async mode.
+	     * @returns The shader function or promise of shader func.
+	     */
+	    createShadeInternal(finfo, code, asyncMode) {
 	        const dispatchToDim = [];
 	        let paramWriteAccess = [];
 	        for (let i = 0; i < finfo.launch_param_tags.length; ++i) {
@@ -918,101 +1009,171 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	                throw new Error("Cannot handle thread_axis " + tag);
 	            }
 	        }
-	        support.assert(paramWriteAccess.length == finfo.arg_types.length);
 	        const layoutEntries = [];
+	        const bufferArgIndices = [];
+	        const podArgIndices = [];
 	        for (let i = 0; i < finfo.arg_types.length; ++i) {
 	            const dtype = finfo.arg_types[i];
 	            if (dtype == "handle") {
 	                layoutEntries.push({
-	                    binding: i,
+	                    binding: bufferArgIndices.length,
 	                    visibility: GPUShaderStage.COMPUTE,
 	                    buffer: {
-	                        type: paramWriteAccess[i] ? "storage" : "read-only-storage"
+	                        type: paramWriteAccess[bufferArgIndices.length] ? "storage" : "read-only-storage"
 	                    }
 	                });
+	                bufferArgIndices.push(i);
+	            }
+	            else if (dtype.startsWith("int") || dtype.startsWith("uint") || dtype.startsWith("float")) {
+	                podArgIndices.push(i);
 	            }
 	            else {
 	                throw new Error("Cannot handle argument type " + dtype + " in WebGPU shader");
 	            }
 	        }
+	        support.assert(paramWriteAccess.length == bufferArgIndices.length);
+	        // POD arguments are pass in the end
+	        layoutEntries.push({
+	            binding: bufferArgIndices.length,
+	            visibility: GPUShaderStage.COMPUTE,
+	            buffer: {
+	                type: "uniform"
+	            }
+	        });
 	        const bindGroupLayout = this.device.createBindGroupLayout({
 	            entries: layoutEntries
 	        });
 	        const pipelineLayout = this.device.createPipelineLayout({
 	            bindGroupLayouts: [bindGroupLayout]
 	        });
-	        const pipeline = this.device.createComputePipeline({
-	            layout: pipelineLayout,
-	            compute: {
-	                module: this.device.createShaderModule({
-	                    code: code,
-	                    hints: {
-	                        main: {
-	                            layout: pipelineLayout
+	        // Function to create the pipeline.
+	        const createShaderFunc = (pipeline) => {
+	            const submitShader = (...args) => {
+	                if (this.debugShaderSubmitLimit != -1 &&
+	                    this.shaderSubmitCounter >= this.debugShaderSubmitLimit) {
+	                    this.shaderSubmitCounter += 1;
+	                    return;
+	                }
+	                const commandEncoder = this.device.createCommandEncoder();
+	                const compute = commandEncoder.beginComputePass();
+	                compute.setPipeline(pipeline);
+	                const bindGroupEntries = [];
+	                const numBufferOrPodArgs = bufferArgIndices.length + podArgIndices.length;
+	                support.assert(args.length == numBufferOrPodArgs + dispatchToDim.length);
+	                const workDim = [1, 1, 1, 1, 1, 1];
+	                for (let i = 0; i < dispatchToDim.length; ++i) {
+	                    workDim[dispatchToDim[i]] = args[numBufferOrPodArgs + i];
+	                }
+	                // get around 65535 restriction of blockIdx.x
+	                if (workDim[2] != 1) {
+	                    throw Error("WebGPU: blockIdx.z is reserved for internal use");
+	                }
+	                const packDimX = workDim[0];
+	                // spread thinsg out into blockIdx.z
+	                if (workDim[0] >= (1 << 16)) {
+	                    let wl_x = workDim[0];
+	                    let wl_z = workDim[2];
+	                    while (wl_x >= (1 << 16)) {
+	                        if (wl_x % 2 == 0) {
+	                            wl_x = wl_x / 2;
 	                        }
+	                        else {
+	                            // pad up
+	                            wl_x = (wl_x + 1) / 2;
+	                        }
+	                        wl_z *= 2;
 	                    }
-	                }),
-	                entryPoint: finfo.name
+	                    workDim[0] = wl_x;
+	                    workDim[2] = wl_z;
+	                    support.assert(wl_x * wl_z >= packDimX);
+	                }
+	                for (let i = 0; i < bufferArgIndices.length; ++i) {
+	                    bindGroupEntries.push({
+	                        binding: i,
+	                        resource: {
+	                            buffer: this.gpuBufferFromPtr(args[bufferArgIndices[i]])
+	                        }
+	                    });
+	                }
+	                // push pod buffer
+	                const sizeOfI32 = 4;
+	                const podArgBuffer = this.getPodArgsBuffer((podArgIndices.length + 1) * sizeOfI32);
+	                const i32View = new Int32Array(podArgIndices.length + 1);
+	                const u32View = new Uint32Array(i32View.buffer);
+	                const f32View = new Float32Array(i32View.buffer);
+	                for (let i = 0; i < podArgIndices.length; ++i) {
+	                    const value = args[podArgIndices[i]];
+	                    const dtype = finfo.arg_types[podArgIndices[i]];
+	                    if (dtype.startsWith("int")) {
+	                        i32View[i] = value;
+	                    }
+	                    else if (dtype.startsWith("uint")) {
+	                        u32View[i] = value;
+	                    }
+	                    else if (dtype.startsWith("float")) {
+	                        f32View[i] = value;
+	                    }
+	                    else {
+	                        throw Error("Unknown pod dtype " + dtype);
+	                    }
+	                }
+	                // always pass in dim z launching grid size in
+	                u32View[podArgIndices.length] = packDimX;
+	                this.device.queue.writeBuffer(podArgBuffer, 0, i32View.buffer);
+	                bindGroupEntries.push({
+	                    binding: bufferArgIndices.length,
+	                    resource: {
+	                        buffer: podArgBuffer,
+	                        size: i32View.buffer.byteLength
+	                    }
+	                });
+	                compute.setBindGroup(0, this.device.createBindGroup({
+	                    layout: bindGroupLayout,
+	                    entries: bindGroupEntries
+	                }));
+	                compute.dispatchWorkgroups(workDim[0], workDim[1], workDim[2]);
+	                compute.end();
+	                const command = commandEncoder.finish();
+	                this.device.queue.submit([command]);
+	                if (this.debugLogFinish) {
+	                    const currCounter = this.shaderSubmitCounter;
+	                    this.device.queue.onSubmittedWorkDone().then(() => {
+	                        console.log("[" + currCounter + "][Debug] finish shader" + finfo.name);
+	                    });
+	                }
+	                this.shaderSubmitCounter += 1;
+	            };
+	            return submitShader;
+	        };
+	        const shaderModule = this.device.createShaderModule({
+	            code: code,
+	            hints: {
+	                main: {
+	                    layout: pipelineLayout
+	                }
 	            }
 	        });
-	        const submitShader = (...args) => {
-	            if (this.debugShaderSubmitLimit != -1 &&
-	                this.shaderSubmitCounter >= this.debugShaderSubmitLimit) {
-	                this.shaderSubmitCounter += 1;
-	                return;
-	            }
-	            const commandEncoder = this.device.createCommandEncoder();
-	            const compute = commandEncoder.beginComputePass();
-	            compute.setPipeline(pipeline);
-	            const bindGroupEntries = [];
-	            support.assert(args.length == layoutEntries.length + dispatchToDim.length);
-	            for (let i = 0; i < layoutEntries.length; ++i) {
-	                bindGroupEntries.push({
-	                    binding: i,
-	                    resource: {
-	                        buffer: this.gpuBufferFromPtr(args[i])
-	                    }
-	                });
-	            }
-	            compute.setBindGroup(0, this.device.createBindGroup({
-	                layout: bindGroupLayout,
-	                entries: bindGroupEntries
-	            }));
-	            const wl = [1, 1, 1, 1, 1, 1];
-	            for (let i = 0; i < dispatchToDim.length; ++i) {
-	                wl[dispatchToDim[i]] = args[layoutEntries.length + i];
-	            }
-	            // get around 65535 restriction of blockIdx.x
-	            if (wl[2] != 1) {
-	                throw Error("WebGPU: blockIdx.z is reserved for internal use");
-	            }
-	            // spread thinsg out into blockIdx.z
-	            if (wl[0] >= (1 << 16)) {
-	                let wl_x = wl[0];
-	                let wl_z = wl[2];
-	                while (wl_x >= (1 << 16)) {
-	                    if (wl_x % 2 != 0) {
-	                        throw Error("WebGPU: cannot factorize big gridDim.x=" + wl[0].toString());
-	                    }
-	                    wl_x /= 2;
-	                    wl_z *= 2;
+	        if (asyncMode) {
+	            return this.device.createComputePipelineAsync({
+	                layout: pipelineLayout,
+	                compute: {
+	                    module: shaderModule,
+	                    entryPoint: finfo.name
 	                }
-	                wl[0] = wl_x;
-	                wl[2] = wl_z;
-	            }
-	            compute.dispatchWorkgroups(wl[0], wl[1], wl[2]);
-	            compute.end();
-	            const command = commandEncoder.finish();
-	            this.device.queue.submit([command]);
-	            if (this.debugLogFinish) {
-	                const currCounter = this.shaderSubmitCounter;
-	                this.device.queue.onSubmittedWorkDone().then(() => {
-	                    console.log("[" + currCounter + "][Debug] finish shader" + finfo.name);
-	                });
-	            }
-	            this.shaderSubmitCounter += 1;
-	        };
-	        return submitShader;
+	            }).then((pipeline) => {
+	                return createShaderFunc(pipeline);
+	            });
+	        }
+	        else {
+	            const pipeline = this.device.createComputePipeline({
+	                layout: pipelineLayout,
+	                compute: {
+	                    module: shaderModule,
+	                    entryPoint: finfo.name
+	                }
+	            });
+	            return createShaderFunc(pipeline);
+	        }
 	    }
 	    /**
 	     * Get the device API according to its name
@@ -1051,6 +1212,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    }
 	    // DeviceAPI
 	    deviceAllocDataSpace(nbytes) {
+	        // allocate 0 bytes buffer as 1 bytes buffer.
+	        if (nbytes == 0) {
+	            nbytes = 1;
+	        }
 	        const buffer = this.device.createBuffer({
 	            size: nbytes,
 	            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
@@ -1233,9 +1398,11 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.validateInstance();
 	    }
 	    dispose() {
+	        var _a;
 	        while (this.recycledCallStacks.length != 0) {
 	            this.recycledCallStacks.pop().dispose();
 	        }
+	        (_a = this.webGPUContext) === null || _a === void 0 ? void 0 : _a.dispose();
 	    }
 	    sizeofPtr() {
 	        return this.memory.sizeofPtr();
@@ -1296,16 +1463,19 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.arrayGetSize = getGlobalFunc("runtime.ArraySize");
 	        this.arrayMake = getGlobalFunc("runtime.Array");
 	        this.getSysLib = getGlobalFunc("runtime.SystemLib");
-	        this.arrayCacheGet = getGlobalFunc("tvmjs.ndarray_cache.get");
-	        this.arrayCacheRemove = getGlobalFunc("tvmjs.ndarray_cache.remove");
-	        this.arrayCacheUpdate = getGlobalFunc("tvmjs.ndarray_cache.update");
-	        this.arrayCacheClear = getGlobalFunc("tvmjs.ndarray_cache.clear");
+	        this.arrayCacheGet = getGlobalFunc("vm.builtin.ndarray_cache.get");
+	        this.arrayCacheRemove = getGlobalFunc("vm.builtin.ndarray_cache.remove");
+	        this.arrayCacheUpdate = getGlobalFunc("vm.builtin.ndarray_cache.update");
+	        this.arrayCacheClear = getGlobalFunc("vm.builtin.ndarray_cache.clear");
 	        this.arrayDecodeStorage = getGlobalFunc("tvmjs.array.decode_storage");
-	        this.paramModuleFromCache = getGlobalFunc("tvmjs.param_module_from_cache");
+	        this.paramModuleFromCache = getGlobalFunc("vm.builtin.param_module_from_cache");
+	        this.makeShapeTuple = getGlobalFunc("runtime.ShapeTuple");
+	        this.ndarrayCreateView = getGlobalFunc("runtime.TVMArrayCreateView");
+	        this.sampleTopPFromLogits = getGlobalFunc("vm.builtin.sample_top_p_from_logits");
 	    }
 	    dispose() {
 	        // call array cache clear to clear all cached items
-	        this.arrayCacheClear();
+	        this.arrayCacheClear.dispose();
 	        this.arrayGetItem.dispose();
 	        this.arrayGetSize.dispose();
 	        this.arrayMake.dispose();
@@ -1315,6 +1485,9 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.arrayCacheClear.dispose();
 	        this.arrayDecodeStorage.dispose();
 	        this.paramModuleFromCache.dispose();
+	        this.makeShapeTuple.dispose();
+	        this.ndarrayCreateView.dispose();
+	        this.sampleTopPFromLogits.dispose();
 	    }
 	    beginScope() {
 	        this.autoDisposeScope.push([]);
@@ -1493,10 +1666,11 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	 * n-dimnesional array.
 	 */
 	class NDArray {
-	    constructor(handle, isView, lib) {
+	    constructor(handle, isView, lib, ctx) {
 	        this.handle = handle;
 	        this.isView = isView;
 	        this.lib = lib;
+	        this.ctx = ctx;
 	        if (this.isView) {
 	            this.dltensor = handle;
 	        }
@@ -1538,6 +1712,15 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.device = new DLDevice(deviceType, deviceId, lib);
 	        // byte_offset
 	        this.byteOffset = lib.memory.loadI64(this.dltensor + arrayOffsetByteOffset);
+	    }
+	    /**
+	     * Create a view of the array.
+	     * @param shape The shape of the view.
+	     * @returns The new sliced ndarray.
+	     */
+	    view(shape) {
+	        const shapeArray = shape.map((value) => new Scalar(value, "int"));
+	        return this.ctx.ndarrayCreateView(this, this.ctx.makeShapeTuple(...shapeArray));
 	    }
 	    /**
 	     * Get handle of ndarray, check it is not null.
@@ -1723,9 +1906,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    /**
 	     * Get a function in the module.
 	     * @param name The name of the function.
+	     * @param queryImports Whether to also query imports
 	     * @returns The result function.
 	     */
-	    getFunction(name) {
+	    getFunction(name, queryImports = true) {
 	        if (this.handle == 0) {
 	            throw Error("Module has already been disposed");
 	        }
@@ -1735,7 +1919,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        const outOffset = stack.allocPtrArray(1);
 	        const outPtr = stack.ptrFromOffset(outOffset);
 	        stack.commitToWasmMemory(outOffset);
-	        this.lib.checkCall(this.lib.exports.TVMModGetFunction(this.getHandle(), stack.ptrFromOffset(nameOffset), 1, outPtr));
+	        this.lib.checkCall(this.lib.exports.TVMModGetFunction(this.getHandle(), stack.ptrFromOffset(nameOffset), queryImports ? 1 : 0, outPtr));
 	        const handle = this.lib.memory.loadPointer(outPtr);
 	        this.lib.recycleCallStack(stack);
 	        if (handle == 0) {
@@ -1842,7 +2026,9 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    constructor(mod, device) {
 	        this.mod = mod;
-	        this.mod.getFunction("vm_initialization")(new Scalar(device.deviceType, "int"), new Scalar(device.deviceId, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"));
+	        this.mod.getFunction("vm_initialization")(new Scalar(device.deviceType, "int"), new Scalar(device.deviceId, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"),
+	        // explicitly specify host device type
+	        new Scalar(DeviceStrToEnum.cpu, "int"), new Scalar(0, "int"), new Scalar(2 /* POOLED_ALLOCATOR */, "int"));
 	    }
 	    dispose() {
 	        this.mod.dispose();
@@ -1854,6 +2040,12 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    getFunction(name) {
 	        return this.mod.getFunction(name);
+	    }
+	    /**
+	     * Get the internal module.
+	     */
+	    getInternalModule() {
+	        return this.mod;
 	    }
 	}
 	exports.VirtualMachine = VirtualMachine;
@@ -1890,7 +2082,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    constructor(wasmModule, importObject = {}, wasmInstance, env) {
 	        this.cacheMetadata = {};
-	        this.fetchProgressCallback = [];
+	        this.initProgressCallback = [];
 	        if (wasmInstance instanceof WebAssembly.Instance) {
 	            support.assert(env instanceof environment.Environment, "env must be provided when passing in instance");
 	        }
@@ -1942,9 +2134,6 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        });
 	    }
 	    dispose() {
-	        var _a;
-	        // dispose canvas resource
-	        (_a = this.lib.webGPUContext) === null || _a === void 0 ? void 0 : _a.disposeCanvas();
 	        // order matters
 	        // ctx release goes back into lib.
 	        this.ctx.dispose();
@@ -2149,8 +2338,8 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	    *
 	     * @param cb the fetch progress callback.
 	     */
-	    registerFetchProgressCallback(cb) {
-	        this.fetchProgressCallback.push(cb);
+	    registerInitProgressCallback(cb) {
+	        this.initProgressCallback.push(cb);
 	    }
 	    /**
 	     * Get parameters in the form of prefix_i
@@ -2237,23 +2426,21 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            let timeElapsed = 0;
 	            const reportCallback = (iter) => {
 	                // report
-	                for (let j = 0; j < this.fetchProgressCallback.length; ++j) {
+	                for (let j = 0; j < this.initProgressCallback.length; ++j) {
 	                    let text = "[" + iter + "/" + list.length + "]: ";
 	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + " MB, ";
 	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% complete, ";
 	                    text += timeElapsed + " secs";
-	                    this.fetchProgressCallback[j]({
-	                        fetchedBytes: fetchedBytes,
-	                        totalBytes: totalBytes,
+	                    this.initProgressCallback[j]({
+	                        progress: fetchedBytes / totalBytes,
 	                        timeElapsed: timeElapsed,
 	                        text: text
 	                    });
 	                }
 	            };
-	            for (let j = 0; j < this.fetchProgressCallback.length; ++j) {
-	                this.fetchProgressCallback[j]({
-	                    fetchedBytes: 0,
-	                    totalBytes: totalBytes,
+	            for (let j = 0; j < this.initProgressCallback.length; ++j) {
+	                this.initProgressCallback[j]({
+	                    progress: fetchedBytes / totalBytes,
 	                    timeElapsed: 0,
 	                    text: "Start to fetch params",
 	                });
@@ -2413,7 +2600,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        const outPtr = stack.ptrFromOffset(outOffset);
 	        stack.commitToWasmMemory(outOffset);
 	        this.lib.checkCall(this.exports.TVMArrayAlloc(stack.ptrFromOffset(shapeOffset), shape.length, dtype.code, dtype.bits, dtype.lanes, dev.deviceType, dev.deviceId, outPtr));
-	        const ret = this.ctx.attachToCurrentScope(new NDArray(this.memory.loadPointer(outPtr), false, this.lib));
+	        const ret = this.ctx.attachToCurrentScope(new NDArray(this.memory.loadPointer(outPtr), false, this.lib, this.ctx));
 	        this.lib.recycleCallStack(stack);
 	        return ret;
 	    }
@@ -2437,6 +2624,17 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            input[i] = low + Math.random() * scale;
 	        }
 	        return ret.copyFrom(input);
+	    }
+	    /**
+	     * Sample index via top-p sampling.
+	     *
+	     * @param logits The input logits before normalization.
+	     * @param temperature  The temperature factor, will take argmax if temperature = 0.0
+	     * @param top_p The top_p
+	     * @returns The sampled index.
+	     */
+	    sampleTopPFromLogits(logits, temperature, top_p) {
+	        return this.ctx.sampleTopPFromLogits(logits, temperature, top_p, Math.random());
 	    }
 	    /**
 	     * Bind canvas to the current WebGPU context
@@ -2485,6 +2683,15 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    makeTVMArray(inputs) {
 	        return this.ctx.arrayMake(...inputs);
+	    }
+	    /**
+	     * Create a shape tuple to pass to runtime.
+	     * @param shape The shape .
+	     * @returns The created shape tuple.
+	     */
+	    makeShapeTuple(shape) {
+	        const shapeArray = shape.map((value) => new Scalar(value, "int"));
+	        return this.ctx.makeShapeTuple(...shapeArray);
 	    }
 	    /**
 	     * Get type index from type key.
@@ -2540,6 +2747,63 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.registerFunc("__async." + name, asyncVariant, override);
 	    }
 	    /**
+	     * Asynchrously load webgpu pipelines when possible.
+	     * @param mod The input module.
+	     */
+	    asyncLoadWebGPUPiplines(mod) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            if (this.lib.webGPUContext == undefined)
+	                throw Error("WebGPU not initialied");
+	            const webgpuContext = this.lib.webGPUContext;
+	            this.beginScope();
+	            const fmap_str = mod.getFunction("webgpu.get_fmap", true)();
+	            let fmap = JSON.parse(fmap_str);
+	            fmap.length;
+	            const fGetShader = this.detachFromCurrentScope(mod.getFunction("webgpu.get_shader"));
+	            const fUpdatePrebuild = this.detachFromCurrentScope(mod.getFunction("webgpu.update_prebuild"));
+	            this.endScope();
+	            const perf = compact.getPerformance();
+	            const tstart = perf.now();
+	            let tlastReport = tstart;
+	            let finishCounter = 0;
+	            const fmapEntries = Object.entries(fmap);
+	            let allEvents = Promise.resolve();
+	            for (const [key, finfo] of fmapEntries) {
+	                const code = fGetShader(key);
+	                support.assert(key == finfo.name);
+	                const event = webgpuContext.createShaderAsync(finfo, code).then((func) => {
+	                    this.beginScope();
+	                    fUpdatePrebuild(key, func);
+	                    this.endScope();
+	                }).then(() => {
+	                    finishCounter += 1;
+	                    const tend = perf.now();
+	                    // skip report if gap is smaller than 1000
+	                    if ((tend - tlastReport) < 1000 && finishCounter != fmapEntries.length) {
+	                        return;
+	                    }
+	                    tlastReport = tend;
+	                    const timeElapsed = Math.ceil((perf.now() - tstart) / 1000);
+	                    // report
+	                    for (let j = 0; j < this.initProgressCallback.length; ++j) {
+	                        const progress = finishCounter / fmapEntries.length;
+	                        let text = "Loading GPU shader modules[" + finishCounter + "/" + fmapEntries.length + "]: ";
+	                        text += Math.floor(progress * 100).toString() + "% completed, ";
+	                        text += timeElapsed + " secs elapsed.";
+	                        this.initProgressCallback[j]({
+	                            progress: progress,
+	                            timeElapsed: timeElapsed,
+	                            text: text
+	                        });
+	                    }
+	                });
+	                allEvents = Promise.all([allEvents, event]).then(() => { });
+	            }
+	            yield allEvents;
+	            support.assert(finishCounter == fmapEntries.length);
+	        });
+	    }
+	    /**
 	     * Initialize webgpu in the runtime.
 	     * @param device The given GPU device.
 	     */
@@ -2549,7 +2813,8 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            return webGPUContext.getDeviceAPI(name);
 	        });
 	        this.registerFunc("wasm.WebGPUCreateShader", (info, code) => {
-	            return webGPUContext.createShader(info, code);
+	            const finfo = JSON.parse(info);
+	            return webGPUContext.createShader(finfo, code);
 	        });
 	        this.registerAsyncServerFunc("wasm.WebGPUWaitForTasks", () => __awaiter(this, void 0, void 0, function* () {
 	            yield webGPUContext.sync();
@@ -2799,12 +3064,12 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	                return this.memory.loadPointer(rvaluePtr);
 	            }
 	            case 13 /* TVMNDArrayHandle */: {
-	                return this.ctx.attachToCurrentScope(new NDArray(this.memory.loadPointer(rvaluePtr), false, this.lib));
+	                return this.ctx.attachToCurrentScope(new NDArray(this.memory.loadPointer(rvaluePtr), false, this.lib, this.ctx));
 	            }
 	            case 7 /* TVMDLTensorHandle */: {
 	                support.assert(callbackArg);
 	                // no need to attach as we are only looking at view
-	                return new NDArray(this.memory.loadPointer(rvaluePtr), true, this.lib);
+	                return new NDArray(this.memory.loadPointer(rvaluePtr), true, this.lib, this.ctx);
 	            }
 	            case 10 /* TVMPackedFuncHandle */: {
 	                return this.ctx.attachToCurrentScope(this.makePackedFunc(this.memory.loadPointer(rvaluePtr)));
@@ -2955,7 +3220,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	 * A websocket based RPC
 	 */
 	class RPCServer {
-	    constructor(url, key, getImports, logger = console.log, ndarrayCacheUrl = "", ndarrayCacheDevice = "cpu", fetchProgressCallback = undefined, asyncOnServerLoad = undefined) {
+	    constructor(url, key, getImports, logger = console.log, ndarrayCacheUrl = "", ndarrayCacheDevice = "cpu", initProgressCallback = undefined, asyncOnServerLoad = undefined) {
 	        this.state = RPCServerState.InitHeader;
 	        this.pendingSend = Promise.resolve();
 	        this.inst = undefined;
@@ -2972,7 +3237,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        this.logger = logger;
 	        this.ndarrayCacheUrl = ndarrayCacheUrl;
 	        this.ndarrayCacheDevice = ndarrayCacheDevice;
-	        this.fetchProgressCallback = fetchProgressCallback;
+	        this.initProgressCallback = initProgressCallback;
 	        this.asyncOnServerLoad = asyncOnServerLoad;
 	        this.checkLittleEndian();
 	        this.socket = compact.createWebSocket(url);
@@ -2999,7 +3264,7 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	        if (this.state == RPCServerState.ReceivePacketHeader) {
 	            this.log("Closing the server in clean state");
 	            this.log("Automatic reconnecting..");
-	            new RPCServer(this.url, this.key, this.getImports, this.logger, this.ndarrayCacheUrl, this.ndarrayCacheDevice, this.fetchProgressCallback, this.asyncOnServerLoad);
+	            new RPCServer(this.url, this.key, this.getImports, this.logger, this.ndarrayCacheUrl, this.ndarrayCacheDevice, this.initProgressCallback, this.asyncOnServerLoad);
 	        }
 	        else {
 	            this.log("Closing the server, final state=" + this.state);
@@ -3131,8 +3396,8 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            this.inst = inst;
 	            // begin scope to allow handling of objects
 	            this.inst.beginScope();
-	            if (this.fetchProgressCallback !== undefined) {
-	                this.inst.registerFetchProgressCallback(this.fetchProgressCallback);
+	            if (this.initProgressCallback !== undefined) {
+	                this.inst.registerInitProgressCallback(this.initProgressCallback);
 	            }
 	            if (this.ndarrayCacheUrl.length != 0) {
 	                if (this.ndarrayCacheDevice == "cpu") {

@@ -254,6 +254,14 @@ class StableDiffusionPipeline {
     }
     return this.tvm.empty([1, this.maxTokenLength], "int32", this.device).copyFrom(inputIDs);
   }
+
+  /**
+   * async preload webgpu pipelines when possible.
+   */
+  async asyncLoadWebGPUPiplines() {
+    await this.tvm.asyncLoadWebGPUPiplines(this.vm.getInternalModule());
+  }
+
   /**
    * Run generation pipeline.
    *
@@ -420,7 +428,7 @@ class StableDiffusionInstance {
       new EmccWASI(),
       this.logger
     );
-    // intialize WebGPU
+    // initialize WebGPU
     try {
       const output = await tvmjs.detectGPUDevice();
       if (output !== undefined) {
@@ -445,10 +453,10 @@ class StableDiffusionInstance {
     }
 
     this.tvm = tvm;
-    function fetchProgressCallback(report) {
+    function initProgressCallback(report) {
       console.log(report.text);
     }
-    tvm.registerFetchProgressCallback(fetchProgressCallback);
+    tvm.registerInitProgressCallback(initProgressCallback);
     await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu());
   }
 
@@ -471,6 +479,7 @@ class StableDiffusionInstance {
     this.pipeline = this.tvm.withNewScope(() => {
       return new StableDiffusionPipeline(this.tvm, tokenizer, schedulerConst, this.tvm.cacheMetadata);
     });
+    await this.pipeline.asyncLoadWebGPUPiplines();
   }
 
   /**
@@ -548,8 +557,8 @@ class StableDiffusionInstance {
     this.requestInProgress = true;
     try {
       await this.asyncInit();
-	  tvmjsGlobalEnv.prompts = tvmjsGlobalEnv.prompts || [];
-	  const index = Math.floor(Math.random() * tvmjsGlobalEnv.prompts.length);
+      tvmjsGlobalEnv.prompts = tvmjsGlobalEnv.prompts || [];
+      const index = Math.floor(Math.random() * tvmjsGlobalEnv.prompts.length);
       const [prompt = "", negPrompt = ""] = tvmjsGlobalEnv.prompts[index];
       const schedulerId = 0; // 0 = Multi-step DPM Solver (20 steps) | 1 = PNDM (50 steps)
       const vaeCycle = -1; // -1 = No | 2 = Run VAE every two UNet steps after step 10
