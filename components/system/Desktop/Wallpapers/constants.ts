@@ -60,6 +60,7 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
 type WallpaperMenuItem = {
   id: string;
   name?: string;
+  requiresWebGPU?: boolean;
   startsWith?: boolean;
 };
 
@@ -88,14 +89,11 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
     id: "SLIDESHOW",
     name: "Picture Slideshow",
   },
-  ...(typeof navigator !== "undefined" && "gpu" in navigator
-    ? [
-        {
-          id: "STABLE_DIFFUSION",
-          name: "Stable Diffusion",
-        },
-      ]
-    : []),
+  {
+    id: "STABLE_DIFFUSION",
+    name: "Stable Diffusion (Beta)",
+    requiresWebGPU: true,
+  },
   {
     id: "VANTA",
     name: "Vanta Waves",

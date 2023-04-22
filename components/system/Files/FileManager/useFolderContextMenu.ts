@@ -18,8 +18,8 @@ import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_ICON,
-  isFileSystemMappingSupported,
   MENU_SEPERATOR,
+  isFileSystemMappingSupported,
 } from "utils/constants";
 import {
   bufferToBlob,
@@ -272,7 +272,11 @@ const useFolderContextMenu = (
                 MENU_SEPERATOR,
                 {
                   label: "Background",
-                  menu: WALLPAPER_MENU.reduce<MenuItem[]>(
+                  menu: WALLPAPER_MENU.filter(
+                    ({ requiresWebGPU }) =>
+                      !requiresWebGPU ||
+                      (typeof navigator !== "undefined" && "gpu" in navigator)
+                  ).reduce<MenuItem[]>(
                     (menu, item) => [
                       ...menu,
                       {
