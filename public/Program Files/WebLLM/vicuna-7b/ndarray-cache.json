@@ -6,17 +6,17 @@
         {
             "dataPath": "params_shard_0.bin",
             "format": "raw-shard",
-            "nbytes": 65538048,
+            "nbytes": 65536000,
             "records": [
                 {
                     "name": "param_67",
                     "shape": [
-                        32001,
+                        32000,
                         512
                     ],
                     "dtype": "uint32",
                     "format": "raw",
-                    "nbytes": 65538048,
+                    "nbytes": 65536000,
                     "byteOffset": 0
                 }
             ]
@@ -24,7 +24,7 @@
         {
             "dataPath": "params_shard_1.bin",
             "format": "raw-shard",
-            "nbytes": 30032384,
+            "nbytes": 30031872,
             "records": [
                 {
                     "name": "param_0",
@@ -701,12 +701,12 @@
                 {
                     "name": "param_68",
                     "shape": [
-                        32001,
+                        32000,
                         128
                     ],
                     "dtype": "uint32",
                     "format": "raw",
-                    "nbytes": 16384512,
+                    "nbytes": 16384000,
                     "byteOffset": 3162112
                 },
                 {
@@ -718,7 +718,7 @@
                     "dtype": "uint32",
                     "format": "raw",
                     "nbytes": 8388608,
-                    "byteOffset": 19546624
+                    "byteOffset": 19546112
                 },
                 {
                     "name": "param_70",
@@ -729,7 +729,7 @@
                     "dtype": "uint32",
                     "format": "raw",
                     "nbytes": 2097152,
-                    "byteOffset": 27935232
+                    "byteOffset": 27934720
                 }
             ]
         },
@@ -6744,17 +6744,17 @@
         {
             "dataPath": "params_shard_161.bin",
             "format": "raw-shard",
-            "nbytes": 65538048,
+            "nbytes": 65536000,
             "records": [
                 {
                     "name": "param_517",
                     "shape": [
                         512,
-                        32001
+                        32000
                     ],
                     "dtype": "uint32",
                     "format": "raw",
-                    "nbytes": 65538048,
+                    "nbytes": 65536000,
                     "byteOffset": 0
                 }
             ]
@@ -6762,7 +6762,7 @@
         {
             "dataPath": "params_shard_162.bin",
             "format": "raw-shard",
-            "nbytes": 22020608,
+            "nbytes": 22020096,
             "records": [
                 {
                     "name": "param_516",
@@ -6779,11 +6779,11 @@
                     "name": "param_518",
                     "shape": [
                         128,
-                        32001
+                        32000
                     ],
                     "dtype": "uint32",
                     "format": "raw",
-                    "nbytes": 16384512,
+                    "nbytes": 16384000,
                     "byteOffset": 5636096
                 }
             ]
