@@ -337,12 +337,18 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   }, [messages]);
 
   useEffect(() => {
-    if (initRef.current) return;
+    let cleanUp: (() => void) | undefined;
 
-    initRef.current = true;
+    if (initRef.current) {
+      cleanUp = () => AI?.destroy?.();
+    } else {
+      initRef.current = true;
 
-    AI.init().then(() => addMessage(AI.greeting));
-    inputRef.current?.focus(PREVENT_SCROLL);
+      AI.init().then(() => addMessage(AI.greeting));
+      inputRef.current?.focus(PREVENT_SCROLL);
+    }
+
+    return cleanUp;
   }, [AI, addMessage, apiKey]);
 
   useEffect(() => {
@@ -361,8 +367,6 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       setUrl(id, "");
     }
   }, [id, input, setUrl, updateHeight, url]);
-
-  useEffect(() => () => AI?.destroy?.(), [AI]);
 
   return (
     <StyledChat {...useFileDrop({ id })}>
