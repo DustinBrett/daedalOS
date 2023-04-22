@@ -2203,7 +2203,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     */
 	    fetchNDArrayCache(ndarrayCacheUrl, device) {
 	        return __awaiter(this, void 0, void 0, function* () {
-	            const jsonUrl = new URL("ndarray-cache.json", ndarrayCacheUrl).href;
+              const cacheExists = yield caches.has("tvmjs");
+              const jsonUrl = cacheExists
+                ? "/System/StableDiffusion/ndarray-cache.json"
+                : new URL("ndarray-cache.json", ndarrayCacheUrl).href;
 	            var list;
 	            try {
 	                list = yield (yield fetch(jsonUrl)).json();
