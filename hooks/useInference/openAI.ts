@@ -67,7 +67,6 @@ export class OpenAI implements Engine {
     this.setError = setError;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async init(): Promise<void> {
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve();
@@ -118,7 +117,6 @@ export class OpenAI implements Engine {
     return "";
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async classify(_text: string, _categories: string[]): Promise<string> {
     // TODO: Implement with chat
 
@@ -149,7 +147,6 @@ export class OpenAI implements Engine {
     return undefined;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async imageToText(
     _name: string,
     _type: string,
@@ -161,7 +158,6 @@ export class OpenAI implements Engine {
     return Promise.resolve("");
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async summarization(_text: string): Promise<string> {
     // TODO: Implement with chat
 
@@ -169,7 +165,6 @@ export class OpenAI implements Engine {
     return Promise.resolve("");
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async translation(_text: string): Promise<string> {
     // TODO: Implement with chat
 
