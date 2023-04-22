@@ -582,7 +582,7 @@
 	function detectGPUDevice() {
 	    return __awaiter(this, void 0, void 0, function* () {
 	        if (typeof navigator !== "undefined" && navigator.gpu !== undefined) {
-	            const adapter = yield navigator.gpu.requestAdapter();
+	            const adapter = yield navigator.gpu.requestAdapter({ "powerPreference": "high-performance" });
 	            if (adapter == null) {
 	                throw Error("Cannot find adapter that matches the request");
 	            }
@@ -678,7 +678,11 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	class CanvaRenderManager {
 	    constructor(device, canvas) {
 	        this.device = device;
-	        const ctx = canvas.getContext("webgpu");
+	        const ctx = canvas.getContext("webgpu", {
+            alpha: false,
+            antialias: false,
+            powerPreference: "high-performance",
+          });
 	        if (ctx == null) {
 	            throw Error("Cannot bind WebGPU context");
 	        }
