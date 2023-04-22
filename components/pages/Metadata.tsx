@@ -2,7 +2,6 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Head from "next/head";
 import desktopIcons from "public/.index/desktopIcons.json";
-import originTrials from "public/originTrials.json";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
@@ -106,23 +105,6 @@ const Metadata: FC = () => {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, [resetFaviconAndTitle]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const [domain, tokens] = originTrials as [string, string[]];
-
-      if (window.location.hostname === domain) {
-        tokens.forEach((token) => {
-          const originTrialMetaTag = document.createElement("meta");
-
-          originTrialMetaTag.httpEquiv = "origin-trial";
-          originTrialMetaTag.content = token;
-
-          document.head.append(originTrialMetaTag);
-        });
-      }
-    }
-  }, []);
 
   return (
     <Head>
