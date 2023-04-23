@@ -91,7 +91,10 @@ const useWallpaper = (
         );
       }
 
-      document.documentElement.style.setProperty("background", "");
+      document.documentElement.style.setProperty(
+        "background",
+        document.documentElement.style.background.replace(/"(.*)"/, ``)
+      );
 
       if (!keepCanvas) {
         desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
@@ -208,7 +211,10 @@ const useWallpaper = (
 
       newWallpaperFit = "fill";
     } else if (wallpaperName === "APOD") {
-      document.documentElement.style.setProperty("background", "");
+      document.documentElement.style.setProperty(
+        "background",
+        document.documentElement.style.background.replace(/"(.*)"/, ``)
+      );
 
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
       const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
