@@ -26,19 +26,22 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
   }
 
   canvas {
+    aspect-ratio: 1 / 1;
     background-color: #fff;
     border: 2px solid rgb(52, 0, 104);
     border-radius: 10px;
     box-shadow: 0 0 4px #888;
-    height: 512px;
-    width: 512px;
+    max-height: 512px;
+    max-width: 512px;
+    width: calc(100% - 32px);
   }
 
   nav {
     display: flex;
     gap: 5px;
+    max-width: 512px;
     place-content: space-between;
-    width: 512px;
+    width: calc(100% - 32px);
 
     > div {
       display: flex;
