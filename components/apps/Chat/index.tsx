@@ -163,6 +163,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     ): Promise<Buffer | string | void> => {
       const timestamp = Date.now();
 
+      setResponsingToChat(true);
       setAwaitingRequests((currentRequests) => [
         ...currentRequests,
         { command, text, timestamp },
@@ -175,6 +176,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
           ({ timestamp: requestTimestamp }) => requestTimestamp !== timestamp
         )
       );
+      setResponsingToChat(false);
 
       return resolvedPromise;
     },

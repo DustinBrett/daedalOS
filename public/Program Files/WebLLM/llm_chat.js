@@ -100,10 +100,9 @@ class Conversation {
   }
 }
 
-function defaultConversation(maxWindowLength = 512) {
+function defaultConversation(maxWindowLength = 2048) {
   return new Conversation({
-    system: "A chat between a curious user and an artificial intelligence assistant. " +
-      "The assistant gives helpful, detailed, and polite answers to the user's questions.",
+    system: "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
     roles: ["USER", "ASSISTANT"],
     maxWindowLength: maxWindowLength,
     messages: [],
@@ -133,7 +132,7 @@ class LLMChatPipeline {
     this.encodingTotalTime = 0;
     this.encodingTotalTokens = 0;
 
-    this.conversation = defaultConversation();
+    this.conversation = defaultConversation(this.maxWindowLength);
 
     this.device = this.tvm.webgpu();
     this.vm = this.tvm.detachFromCurrentScope(
