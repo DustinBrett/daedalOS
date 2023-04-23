@@ -26,15 +26,6 @@ const StyledMessage = styled.li<StyledMessageProps>`
   white-space: break-spaces;
   width: ${({ $image }) => ($image ? `${MAX_IMAGE_SIZE}px` : "max-content")};
 
-  ${({ $writing }) =>
-    $writing &&
-    css`
-      &::after {
-        border-left: 1px solid #000;
-        content: "";
-      }
-    `}
-
   ${({ $image, $type }) =>
     $type === "assistant" &&
     css`
@@ -59,6 +50,40 @@ const StyledMessage = styled.li<StyledMessageProps>`
         position: absolute;
         top: 9px;
         width: 31px;
+      }
+
+      .cursor {
+        display: contents;
+        font-size: 14px;
+      }
+
+      > span {
+        cursor: text;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        user-select: text;
+
+        code {
+          background-color: rgb(25, 25, 25);
+          border-radius: 6px;
+          color: rgb(250, 250, 250);
+          cursor: text;
+          font-size: 12px;
+          padding: 2px 5px;
+          user-select: text;
+        }
+
+        p {
+          cursor: text;
+          user-select: text;
+        }
+
+        pre > code {
+          display: block;
+          font-size: 14px;
+          padding: 10px;
+        }
       }
     `}
 

@@ -29,6 +29,7 @@ import {
   bufferToUrl,
   generatePrettyTimestamp,
   getExtension,
+  loadFiles,
 } from "utils/functions";
 
 type ActionMessage = {
@@ -146,9 +147,20 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       const userText = userMessage.trim();
 
       waitForChat(AI.chat(userText, userMessages, botMessages, messages)).then(
-        (generatedMessage) =>
-          generatedMessage &&
-          addMessage({ text: generatedMessage.trim(), type: "assistant" })
+        async (generatedMessage) => {
+          if (generatedMessage) {
+            if (!window.marked?.parse) {
+              await loadFiles(["/Program Files/Marked/marked.min.js"]);
+            }
+
+            addMessage({
+              text: window.marked.parse(generatedMessage.trim(), {
+                headerIds: false,
+              }),
+              type: "assistant",
+            });
+          }
+        }
       );
       addMessage({ text: userText, type: "user" });
     },
@@ -373,22 +385,36 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledChat {...useFileDrop({ id })}>
       <ul ref={messagesRef}>
-        {messages.map(({ command, image, text, type, writing }, messageId) => (
-          <StyledMessage
-            // eslint-disable-next-line react/no-array-index-key
-            key={messageId}
-            $image={image}
-            $isCommand={Boolean(command)}
-            $type={type}
-            $writing={writing}
-            title={image ? text : ""}
-          >
-            {command && type !== "assistant"
-              ? `${commandMap[command].icon} `
-              : ""}
-            {image ? "" : text}
-          </StyledMessage>
-        ))}
+        {messages.map(({ command, image, text, type, writing }, messageId) => {
+          const isAssistant = type === "assistant";
+          const displayText =
+            command || !isAssistant ? (
+              text
+            ) : (
+              <span
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: `${text}${
+                    writing ? "<span class='cursor'>|</span>" : ""
+                  }`,
+                }}
+              />
+            );
+
+          return (
+            <StyledMessage
+              // eslint-disable-next-line react/no-array-index-key
+              key={messageId}
+              $image={image}
+              $isCommand={Boolean(command)}
+              $type={type}
+              title={image ? text : ""}
+            >
+              {command && !isAssistant ? `${commandMap[command].icon} ` : ""}
+              {image ? "" : displayText}
+            </StyledMessage>
+          );
+        })}
         {Boolean(aiError && EngineErrorMessage[aiError]) && (
           <StyledWarning>{EngineErrorMessage[aiError]}</StyledWarning>
         )}
