@@ -15,6 +15,7 @@ declare global {
     canvas: HTMLCanvasElement;
     getTokenizer: (name: string) => Promise<unknown>;
     initialized: boolean;
+    logger: (type: string, message: string) => void;
     message: string;
     prompts: Prompts;
     response: string;

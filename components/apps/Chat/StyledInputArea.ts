@@ -15,6 +15,23 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
   position: absolute;
   right: ${DEFAULT_SCROLLBAR_WIDTH}px;
 
+  .status {
+    background-color: rgb(52, 53, 65);
+    border-top-right-radius: 5px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: -5px;
+    max-width: 95%;
+    overflow: hidden;
+    padding: 5px 10px 0;
+    position: absolute;
+    text-overflow: ellipsis;
+    top: -16px;
+    white-space: nowrap;
+    width: fit-content;
+  }
+
   textarea {
     background-color: rgb(64, 65, 79);
     border: 5px solid rgb(64, 65, 79);

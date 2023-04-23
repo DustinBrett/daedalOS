@@ -1,6 +1,9 @@
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
 
+type Log = { message: string; type: string };
+type WorkerMessage = { data: Log | string };
+
 const DEFAULT_GREETING = {
   text: "Hello, I am an AI assistant. How can I help you today?",
   type: "assistant",
@@ -31,14 +34,22 @@ export class WebLLM implements Engine {
     message: string,
     _userMessages: string[],
     _generatedMessages: string[],
-    _allMessages?: Message[]
+    _allMessages?: Message[],
+    stausLogger?: (type: string, msg: string) => void
   ): Promise<string> {
     requestAnimationFrame(() => this.worker?.postMessage(message));
 
     return new Promise((resolve) => {
-      this.worker?.addEventListener("message", ({ data }: { data: string }) =>
-        resolve(data)
-      );
+      this.worker?.addEventListener("message", ({ data }: WorkerMessage) => {
+        const logger = stausLogger || console.info;
+
+        if (typeof data === "string") {
+          resolve(data);
+          logger("", "");
+        } else {
+          logger(data.type, data.message);
+        }
+      });
     });
   }
 

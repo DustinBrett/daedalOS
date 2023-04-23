@@ -10,7 +10,8 @@ export type Engine = {
     message: string,
     userMessages: string[],
     generatedMessages: string[],
-    allMessages: Message[]
+    allMessages: Message[],
+    stausLogger?: (type: string, msg: string) => void
   ) => Promise<string>;
   classify: (text: string, categories: string[]) => Promise<string>;
   destroy?: () => void;

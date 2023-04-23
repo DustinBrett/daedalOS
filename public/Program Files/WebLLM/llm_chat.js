@@ -117,7 +117,7 @@ class LLMChatPipeline {
       throw Error("Expect cacheMetadata");
     }
     this.tvm = tvm;
-    this.logger = console.log;
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
     this.tokenizer = tokenizer;
     this.bosTokenId = 1;
     this.eosTokenId = 2;
@@ -416,7 +416,7 @@ class LLMChatInstance {
     this.config = undefined;
     this.tvm = undefined;
     this.pipeline = undefined;
-    this.logger = console.log;
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
     this.debugTest = false;
   }
   /**
@@ -429,7 +429,7 @@ class LLMChatInstance {
     if (this.tvm !== undefined) {
       return;
     }
-    this.logger = console.log;
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
 
     const wasmSource = await (
       await fetch(wasmUrl)
@@ -458,6 +458,7 @@ class LLMChatInstance {
       }
     } catch (err) {
       this.appendMessage("error", "Find an error initializing the WebGPU device " + err.toString());
+      this.logger("[error]", err.toString());
       console.log(err);
       this.reset();
       throw Error("Find an error initializing WebGPU: " + err.toString());
@@ -508,12 +509,12 @@ class LLMChatInstance {
     if (kind == "init") {
       text = "[System Initalize] " + text;
     }
-    console.log(`[${kind}] ${text}`);
+    this.logger(`[${kind}]`, text);
   }
 
   updateLastMessage(kind, text) {
     if (kind == "init") {
-      console.log(`[System Initalize] ${text}`);
+      this.logger("[System Initalize]", text);
     } else if (kind == "left") {
       globalThis.tvmjsGlobalEnv.response = text;
     }
@@ -552,6 +553,7 @@ class LLMChatInstance {
       await this.asyncInit();
     } catch (err) {
       this.appendMessage("error", "Init error, " + err.toString());
+      this.logger("[error]", err.toString());
       console.log(err);
       this.reset();
       this.requestInProgress = false;
@@ -571,7 +573,7 @@ class LLMChatInstance {
     }
 
     this.appendMessage("right", prompt);
-    this.appendMessage("placeholder", "Generating...");
+    this.appendMessage("progress", "Generating...");
     const callbackUpdateResponse = (step, msg) => {
       if (msg.endsWith("##")) {
         msg = msg.substring(0, msg.length - 2);
@@ -583,9 +585,10 @@ class LLMChatInstance {
     try {
       const output = await this.pipeline.generate(prompt, callbackUpdateResponse);
       this.updateLastMessage("left", output);
-      console.log(this.pipeline.runtimeStatsText());
+      this.logger("[stats]", this.pipeline.runtimeStatsText());
     } catch (err) {
       this.appendMessage("error", "Generate error, " + err.toString());
+      this.logger("[error]", err.toString());
       console.log(err);
       this.reset();
     }

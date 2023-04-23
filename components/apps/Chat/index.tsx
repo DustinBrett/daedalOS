@@ -118,6 +118,10 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     },
     []
   );
+  const [status, setStatus] = useState<string>("");
+  const statusLogger = useCallback((type: string, message: string) => {
+    setStatus(type && message ? `${type} ${message}` : "");
+  }, []);
   const sendMessage = useCallback(
     (userMessage: string): void => {
       const [botMessages, userMessages] = messages
@@ -146,25 +150,25 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         );
       const userText = userMessage.trim();
 
-      waitForChat(AI.chat(userText, userMessages, botMessages, messages)).then(
-        async (generatedMessage) => {
-          if (generatedMessage) {
-            if (!window.marked?.parse) {
-              await loadFiles(["/Program Files/Marked/marked.min.js"]);
-            }
-
-            addMessage({
-              text: window.marked.parse(generatedMessage.trim(), {
-                headerIds: false,
-              }),
-              type: "assistant",
-            });
+      waitForChat(
+        AI.chat(userText, userMessages, botMessages, messages, statusLogger)
+      ).then(async (generatedMessage) => {
+        if (generatedMessage) {
+          if (!window.marked?.parse) {
+            await loadFiles(["/Program Files/Marked/marked.min.js"]);
           }
+
+          addMessage({
+            text: window.marked.parse(generatedMessage.trim(), {
+              headerIds: false,
+            }),
+            type: "assistant",
+          });
         }
-      );
+      });
       addMessage({ text: userText, type: "user" });
     },
-    [AI, addMessage, messages, waitForChat]
+    [AI, addMessage, messages, statusLogger, waitForChat]
   );
   const [awaitingRequests, setAwaitingRequests] = useState<ActionMessage[]>([]);
   const waitForRequest = useCallback(
@@ -430,6 +434,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         ))}
       </ul>
       <StyledInputArea $hideSend={!canSend}>
+        {status && <div className="status">{status}</div>}
         <textarea
           ref={inputRef}
           onInput={updateHeight}

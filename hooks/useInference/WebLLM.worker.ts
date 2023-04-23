@@ -22,6 +22,8 @@ globalThis.addEventListener(
       initalized = true;
 
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
+      globalThis.tvmjsGlobalEnv.logger = (type: string, message: string) =>
+        globalThis.postMessage({ message, type });
 
       globalThis.importScripts(...libs);
 
