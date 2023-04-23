@@ -127,6 +127,12 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 
 # Apps 🧪
 
+### AI Chat
+
+- Have conversations with artificial intelligence
+- Supports [OpenAI](https://platform.openai.com/docs/api-reference/chat) & [HuggingFace](https://huggingface.co/inference-api) API's
+- Can run locally using [WebLLM](https://mlc.ai/web-llm/)
+
 ### [BoxedWine](http://www.boxedwine.org/) (**_.exe, .zip_**)
 
 - Runs 16/32-bit Windows applications
@@ -193,6 +199,11 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 ### [Ruffle](https://ruffle.rs/) (**_.swf, .spl_**)
 
 - Flash Player emulator
+
+### [Stable Diffusion](https://stability.ai/stable-diffusion)
+
+- Creates 512x512 images using artificial intelligence
+- Runs locally using [WebSD](https://mlc.ai/web-stable-diffusion/)
 
 ### [Terminal](https://xtermjs.org/)
 

@@ -82,6 +82,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [rtf.js](https://github.com/tbluemel/rtf.js)
 - [Quake 3](https://github.com/lrusso/Quake3)
 - [opentype.js](https://github.com/opentypejs/opentype.js)
+- [WebLLM](https://github.com/mlc-ai/web-llm)
 
 ## Services
 
