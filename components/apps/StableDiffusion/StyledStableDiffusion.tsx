@@ -57,6 +57,20 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
         height: 22px;
         padding: 5px;
       }
+
+      div {
+        background-color: #fff;
+        border: 2px solid rgb(52, 0, 104);
+        border-radius: 5px;
+        height: 47px;
+        line-height: 43px;
+        max-width: 422px;
+        overflow: hidden;
+        padding: 0 5px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
 
     button {

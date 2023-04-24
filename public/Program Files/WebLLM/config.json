@@ -5,7 +5,8 @@
         "dtype": "float32"
     },
     "wasmUrl": "/Program Files/WebLLM/vicuna-7b/vicuna-7b-v1_webgpu.wasm",
-    "cacheUrl": "https://huggingface.co/mlc-ai/web-lm/resolve/main/vicuna-7b-v1/",
+    "cacheUrl": "https://huggingface.co/mlc-ai/web-lm/resolve/faa5d70/vicuna-7b-v1/",
+    "localCacheUrl": "/Program Files/WebLLM/vicuna-7b/ndarray-cache.json",
     "tokenizer": "/Program Files/WebLLM/vicuna-7b/tokenizer.model",
     "maxGenLength": 1024,
     "meanGenLength": 256,

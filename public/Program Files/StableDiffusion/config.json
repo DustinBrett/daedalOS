@@ -1,0 +1,10 @@
+{
+    "schedulerConstUrl": [
+        "/Program Files/StableDiffusion/scheduler_dpm_solver_multistep_consts.json",
+        "/Program Files/StableDiffusion/scheduler_pndm_consts.json"
+    ],
+    "wasmUrl": "/Program Files/StableDiffusion/stable_diffusion_webgpu.wasm",
+    "cacheUrl": "https://huggingface.co/mlc-ai/web-sd/resolve/ab58725/web-sd-shards-v1-5/",
+    "localCacheUrl": "/Program Files/StableDiffusion/ndarray-cache.json",
+    "tokenizer": "openai/clip-vit-large-patch14"
+}

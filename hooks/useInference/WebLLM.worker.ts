@@ -1,6 +1,6 @@
 const libs = [
-  "/Program Files/WebLLM/tvmjs_runtime.wasi.js",
-  "/Program Files/WebLLM/tvmjs.bundle.js",
+  "/System/tvm/tvmjs_runtime.wasi.js",
+  "/System/tvm/tvmjs.bundle.js",
   "/Program Files/WebLLM/llm_chat.js",
   "/Program Files/WebLLM/sentencepiece.js",
 ];

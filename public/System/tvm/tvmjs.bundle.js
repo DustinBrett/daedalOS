@@ -2390,12 +2390,9 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     * @param device The device to be fetched to.
 	     * @returns The meta data
 	     */
-	    fetchNDArrayCache(ndarrayCacheUrl, device) {
+	    fetchNDArrayCache(ndarrayCacheUrl, device, ndarrayLocalCacheUrl) {
 	        return __awaiter(this, void 0, void 0, function* () {
-              const cacheExists = yield caches.has("tvmjs");
-              const jsonUrl = cacheExists
-                ? "/System/StableDiffusion/ndarray-cache.json"
-                : new URL("ndarray-cache.json", ndarrayCacheUrl).href;
+              const jsonUrl = ndarrayLocalCacheUrl || new URL("ndarray-cache.json", ndarrayCacheUrl).href;
 	            var list;
 	            try {
 	                list = yield (yield fetch(jsonUrl)).json();

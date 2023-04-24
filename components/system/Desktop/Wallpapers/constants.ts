@@ -41,10 +41,7 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
     ),
   STABLE_DIFFUSION: (): Worker =>
     new Worker(
-      new URL(
-        "components/system/Desktop/Wallpapers/StableDiffusion/wallpaper.worker",
-        import.meta.url
-      ),
+      new URL("components/apps/StableDiffusion/sd.worker", import.meta.url),
       { name: "Wallpaper (Stable Diffusion)" }
     ),
   VANTA: (info?: string): Worker =>

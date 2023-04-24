@@ -188,6 +188,7 @@ class StableDiffusionPipeline {
     this.tvm = tvm;
     this.tokenizer = tokenizer;
     this.maxTokenLength = 77;
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
 
     this.device = this.tvm.webgpu();
     this.tvm.bindCanvas(globalThis.tvmjsGlobalEnv.canvas);
@@ -407,7 +408,7 @@ class StableDiffusionInstance {
     this.pipeline = undefined;
     this.config = undefined;
     this.generateInProgress = false;
-    this.logger = console.log;
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
   }
   /**
    * Initialize TVM
@@ -415,10 +416,11 @@ class StableDiffusionInstance {
    * @param cacheUrl URL to NDArray cache.
    * @param logger Custom logger.
    */
-  async #asyncInitTVM(wasmUrl, cacheUrl) {
+  async #asyncInitTVM(wasmUrl, cacheUrl, localCacheUrl) {
     if (this.tvm !== undefined) {
       return;
     }
+    this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
 
     const wasmSource = await (
       await fetch(wasmUrl)
@@ -438,7 +440,7 @@ class StableDiffusionInstance {
         } else {
           label += " - " + output.adapterInfo.vendor;
         }
-        console.log("Initialize GPU device: " + label);
+        this.logger("[System Initalize]", "Initialize GPU device: " + label);
         tvm.initWebGPU(output.device);
       } else {
         console.log("This browser env do not support WebGPU");
@@ -453,11 +455,11 @@ class StableDiffusionInstance {
     }
 
     this.tvm = tvm;
-    function initProgressCallback(report) {
-      console.log(report.text);
+    const initProgressCallback = (report) => {
+      this.logger("[Init]", report.text);
     }
     tvm.registerInitProgressCallback(initProgressCallback);
-    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu());
+    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu(), localCacheUrl);
   }
 
   /**
@@ -487,7 +489,7 @@ class StableDiffusionInstance {
    */
   async #asyncInitConfig() {
     if (this.config !== undefined) return;
-    this.config = await (await fetch("/System/StableDiffusion/config.json")).json();
+    this.config = await (await fetch("/Program Files/StableDiffusion/config.json")).json();
   }
 
   /**
@@ -496,9 +498,9 @@ class StableDiffusionInstance {
    */
   #getProgressCallback() {
     const tstart = performance.now();
-    function progressCallback(stage, counter, numSteps, totalNumSteps) {
+    return (stage, counter, numSteps, totalNumSteps) => {
       const timeElapsed = (performance.now() - tstart) / 1000;
-      let text = "Generating ... at stage " + stage;
+      let text = "At stage " + stage;
       if (stage == "unet") {
         counter += 1;
         text += " step [" + counter + "/" + numSteps + "]"
@@ -507,9 +509,8 @@ class StableDiffusionInstance {
         counter = totalNumSteps;
       }
       text += ", " + Math.ceil(timeElapsed) + " secs elapsed.";
-      console.log(text);
+      this.logger("[Generating]", text);
     }
-    return progressCallback;
   }
 
   /**
@@ -518,7 +519,7 @@ class StableDiffusionInstance {
   async asyncInit() {
     if (this.pipeline !== undefined) return;
     await this.#asyncInitConfig();
-    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl);
+    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl, this.config.localCacheUrl);
     await this.#asyncInitPipeline(this.config.schedulerConstUrl, this.config.tokenizer);
   }
 
@@ -562,7 +563,7 @@ class StableDiffusionInstance {
       const [prompt = "", negPrompt = ""] = tvmjsGlobalEnv.prompts[index];
       const schedulerId = 0; // 0 = Multi-step DPM Solver (20 steps) | 1 = PNDM (50 steps)
       const vaeCycle = -1; // -1 = No | 2 = Run VAE every two UNet steps after step 10
-      console.log("Prompt: " + prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
+      this.logger("prompt", prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
       await this.pipeline.generate(prompt, negPrompt, this.#getProgressCallback(), schedulerId, vaeCycle);
     } catch (err) {
       this.logger("Generate error, " + err.toString());

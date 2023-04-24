@@ -425,7 +425,7 @@ class LLMChatInstance {
     * @param cacheUrl URL to NDArray cache.
     * @param logger Custom logger.
     */
-  async #asyncInitTVM(wasmUrl, cacheUrl) {
+  async #asyncInitTVM(wasmUrl, cacheUrl, localCacheUrl) {
     if (this.tvm !== undefined) {
       return;
     }
@@ -469,7 +469,7 @@ class LLMChatInstance {
     }
     tvm.registerInitProgressCallback(initProgressCallback);
 
-    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu());
+    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu(), localCacheUrl);
   }
   /**
    * Async initialize instance.
@@ -477,7 +477,7 @@ class LLMChatInstance {
   async asyncInit() {
     if (this.pipeline !== undefined) return;
     await this.#asyncInitConfig();
-    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl);
+    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl, this.config.localCacheUrl);
     await this.#asyncInitPipeline();
   }
 

@@ -388,7 +388,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-      input = '/System/StableDiffusion/tokenizers-wasm/tokenizers_wasm_bg.wasm';
+      input = '/Program Files/StableDiffusion/tokenizers-wasm/tokenizers_wasm_bg.wasm';
     }
     const imports = getImports();
 

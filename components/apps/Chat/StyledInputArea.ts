@@ -21,13 +21,12 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
     color: #fff;
     font-size: 12px;
     line-height: 16px;
-    margin-top: -5px;
     max-width: 95%;
     overflow: hidden;
-    padding: 5px 10px 0;
+    padding: 5px 10px;
     position: absolute;
     text-overflow: ellipsis;
-    top: -16px;
+    top: -26px;
     white-space: nowrap;
     width: fit-content;
   }
