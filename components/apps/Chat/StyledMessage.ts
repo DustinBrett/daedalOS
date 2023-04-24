@@ -83,6 +83,7 @@ const StyledMessage = styled.li<StyledMessageProps>`
           display: block;
           font-size: 14px;
           padding: 10px;
+          white-space: pre-wrap;
         }
       }
     `}
