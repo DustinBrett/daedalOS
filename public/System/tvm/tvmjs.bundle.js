@@ -2390,18 +2390,30 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	     * @param device The device to be fetched to.
 	     * @returns The meta data
 	     */
-	    fetchNDArrayCache(ndarrayCacheUrl, device, ndarrayLocalCacheUrl) {
+	    fetchNDArrayCache(ndarrayCacheUrl, device) {
 	        return __awaiter(this, void 0, void 0, function* () {
-              const jsonUrl = ndarrayLocalCacheUrl || new URL("ndarray-cache.json", ndarrayCacheUrl).href;
-	            var list;
-	            try {
-	                list = yield (yield fetch(jsonUrl)).json();
-	            }
-	            catch (err) {
-	                this.env.logger("Cannot fetch " + jsonUrl);
-	            }
-	            yield this.fetchNDArrayCacheInternal(ndarrayCacheUrl, list["records"], device);
-	            this.cacheMetadata = Object.assign(Object.assign({}, this.cacheMetadata), list["metadata"]);
+              const jsonUrl = new URL("ndarray-cache.json", ndarrayCacheUrl).href;
+              const request = new Request(jsonUrl);
+              const cache = yield caches.open("tvmjs");
+              let result = yield cache.match(request);
+              if (result === undefined) {
+                  yield cache.add(request);
+                  result = yield cache.match(request);
+              }
+              if (result === undefined) {
+                  this.env.logger("Error: Cannot cache " + jsonUrl + ", reloading will be slow");
+                  try {
+                    result = yield fetch(request);
+                  } catch (err) {
+                    this.env.logger("Cannot fetch " + jsonUrl);
+                  }
+              }
+	            let list;
+              if (result instanceof Response) {
+                list = yield result.json();
+              }
+              yield this.fetchNDArrayCacheInternal(ndarrayCacheUrl, list["records"], device);
+              this.cacheMetadata = Object.assign(Object.assign({}, this.cacheMetadata), list["metadata"]);
 	        });
 	    }
 	    /**

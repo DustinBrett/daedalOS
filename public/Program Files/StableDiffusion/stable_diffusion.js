@@ -416,7 +416,7 @@ class StableDiffusionInstance {
    * @param cacheUrl URL to NDArray cache.
    * @param logger Custom logger.
    */
-  async #asyncInitTVM(wasmUrl, cacheUrl, localCacheUrl) {
+  async #asyncInitTVM(wasmUrl, cacheUrl) {
     if (this.tvm !== undefined) {
       return;
     }
@@ -459,7 +459,7 @@ class StableDiffusionInstance {
       this.logger("[Init]", report.text);
     }
     tvm.registerInitProgressCallback(initProgressCallback);
-    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu(), localCacheUrl);
+    await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu());
   }
 
   /**
@@ -519,7 +519,7 @@ class StableDiffusionInstance {
   async asyncInit() {
     if (this.pipeline !== undefined) return;
     await this.#asyncInitConfig();
-    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl, this.config.localCacheUrl);
+    await this.#asyncInitTVM(this.config.wasmUrl, this.config.cacheUrl);
     await this.#asyncInitPipeline(this.config.schedulerConstUrl, this.config.tokenizer);
   }
 
