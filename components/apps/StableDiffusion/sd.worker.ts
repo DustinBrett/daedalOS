@@ -10,8 +10,10 @@ globalThis.addEventListener(
   ({ data }: { data: DOMRect | OffscreenRenderProps | string }) => {
     if (data === "init") {
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
-      globalThis.tvmjsGlobalEnv.logger = (type: string, message: string) =>
+      globalThis.tvmjsGlobalEnv.logger = (type: string, message: string) => {
+        console.info(`${type}: ${message}`);
         globalThis.postMessage({ message, type });
+      };
 
       globalThis.importScripts(...libs);
     } else if (!(data instanceof DOMRect)) {

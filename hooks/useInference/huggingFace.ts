@@ -112,7 +112,7 @@ const DEFAULT_MODELS: Record<string, string> = {
   conversational: "facebook/blenderbot-400M-distill",
   imageToText: "Salesforce/blip-image-captioning-large",
   summarization: "philschmid/bart-large-cnn-samsum",
-  textGeneration: "OpenAssistant/oasst-sft-1-pythia-12b",
+  textGeneration: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
   textToImage: "stabilityai/stable-diffusion-2-1",
   translation: "t5-base",
   zeroShotClassification: "facebook/bart-large-mnli",
@@ -122,7 +122,7 @@ const TEXT_GENERATION_MODEL_SETTINGS: Record<
   string,
   TextGenerationModelSettings
 > = {
-  "OpenAssistant/oasst-sft-1-pythia-12b": {
+  "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5": {
     assistantStartToken: "<|assistant|>",
     endToken: "<|endoftext|>",
     userStartToken: "<|prompter|>",

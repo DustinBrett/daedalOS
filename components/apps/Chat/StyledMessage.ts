@@ -85,6 +85,19 @@ const StyledMessage = styled.li<StyledMessageProps>`
           padding: 10px;
           white-space: pre-wrap;
         }
+
+        ol,
+        ul {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          overflow: auto;
+          user-select: text;
+
+          li {
+            user-select: text;
+          }
+        }
       }
     `}
 
