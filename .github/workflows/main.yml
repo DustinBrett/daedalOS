@@ -26,5 +26,5 @@ jobs:
         run: yarn deploy
       - name: Deploy 🚀
           uses: JamesIves/github-pages-deploy-action@v4
-            with:
-              folder: out
+          with:
+            folder: out
