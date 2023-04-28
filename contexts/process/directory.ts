@@ -149,7 +149,11 @@ const directory: Processes = {
   },
   NoodJs: {
     Component: dynamic(() => import("components/apps/NoodJs")),
-    background: "#FFF",
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
     icon: "/System/Icons/chromium.png",
     title: "NoodJs",
   },
