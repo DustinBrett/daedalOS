@@ -1,6 +1,12 @@
-name: Tests
+name: Test and Deploy
 
-on: push
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   tests:
@@ -16,3 +22,9 @@ jobs:
         run: yarn run build
       - name: Run Tests
         run: yarn test
+      - name: Run pre-Deploy
+        run: yarn deploy
+      - name: Deploy 🚀
+          uses: JamesIves/github-pages-deploy-action@v4
+            with:
+              folder: out
