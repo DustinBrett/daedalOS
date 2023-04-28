@@ -24,6 +24,8 @@ jobs:
         run: yarn test
       - name: Run pre-Deploy
         run: yarn deploy
+      - name: Defeat Jekyll
+        run: touch out/.nojekyll
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
