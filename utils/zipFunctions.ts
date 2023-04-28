@@ -24,12 +24,13 @@ export const addEntryToZippable = (
   const [[key, value]] = Object.entries(newZippable);
 
   // eslint-disable-next-line no-param-reassign
-  oldZippable[key] = !(key in oldZippable)
-    ? value
-    : addEntryToZippable(
-        oldZippable[key] as AsyncZippable,
-        newZippable[key] as AsyncZippable
-      );
+  oldZippable[key] =
+    key in oldZippable
+      ? addEntryToZippable(
+          oldZippable[key] as AsyncZippable,
+          newZippable[key] as AsyncZippable
+        )
+      : value;
 
   return oldZippable;
 };
@@ -111,7 +112,7 @@ export const unarchive = async (
 
   sevenZip.FS.write(stream, data, 0, data.length);
   sevenZip.FS.close(stream);
-  sevenZip.callMain(["x", fileName]);
+  sevenZip.callMain(["-y", "x", fileName]);
 
   const extractedFiles = sevenZip.FS.readdir(extractFolder);
   const reduceFiles =
@@ -120,15 +121,17 @@ export const unarchive = async (
       if ([".", "..", fileName].includes(file)) return accFiles;
 
       const filePath = join(currentPath, file);
-      const isDir = sevenZip.FS.isDir(sevenZip.FS.stat(filePath).mode);
-
-      if (!isDir) sevenZip.FS.chmod(filePath, 0o444);
-
       const extractPath = filePath.replace(extractFolder, "");
+
+      try {
+        sevenZip.FS.chmod(filePath, 0o777);
+      } catch {
+        // Ignore failure to change permissions
+      }
 
       Object.assign(
         accFiles,
-        isDir
+        sevenZip.FS.isDir(sevenZip.FS.stat(filePath).mode)
           ? {
               [join(extractPath, "/")]: Buffer.from(""),
               ...sevenZip.FS.readdir(filePath).reduce(

@@ -1,6 +1,10 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledPDF = styled.div`
+  ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
+
   display: block;
   overflow: auto;
   position: relative;
@@ -9,7 +13,7 @@ const StyledPDF = styled.div`
 
   && {
     height: ${({ theme }) =>
-      `calc(100% - ${theme.sizes.titleBar.height}px - 40px) !important`};
+      `calc(100% - ${theme.sizes.titleBar.height}px - 40px)`};
   }
 
   canvas {

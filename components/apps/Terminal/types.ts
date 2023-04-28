@@ -8,6 +8,7 @@ export type LocalEcho = ITerminalAddon & {
   _autocompleteHandlers: { fn: unknown }[];
   _termSize: {
     cols: number;
+    rows: number;
   };
   addAutocompleteHandler: (
     callback: (index: number, tokens: string[]) => string[]

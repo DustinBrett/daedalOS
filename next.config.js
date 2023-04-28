@@ -25,18 +25,14 @@ const nextConfig = {
     buildActivityPosition: "top-right",
   },
   experimental: {
-    browsersListForSwc: true,
     legacyBrowsers: false,
-    serverComponents: false,
     swcFileReading: true,
   },
   optimizeFonts: false,
-  output: "standalone",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   swcMinify: !isProduction,
   webpack: (config) => {
-    config.externals.push("wasmer_wasi_js_bg.wasm");
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
         const mod = resource.request.replace(/^node:/, "");

@@ -6,7 +6,7 @@ const directory: Processes = {
   BoxedWine: {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 480,
       width: 640,
@@ -24,7 +24,7 @@ const directory: Processes = {
   },
   Browser: {
     Component: dynamic(() => import("components/apps/Browser")),
-    background: "#FFF",
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 480,
       width: 640,
@@ -32,27 +32,31 @@ const directory: Processes = {
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
   },
-  Chess: {
-    Component: dynamic(() => import("components/apps/Chess")),
-    allowResizing: false,
-    background: "#ce5c00",
+  Chat: {
+    Component: dynamic(() => import("components/apps/Chat")),
+    backgroundColor: "rgb(68, 70, 84)",
     defaultSize: {
-      height: 512,
-      width: 512,
+      height: 400,
+      width: 550,
     },
-    icon: "/System/Icons/chess.webp",
-    libs: [
-      "/Program Files/Chess/chess.js",
-      "/Program Files/Chess/common/xhr.js",
-      "/Program Files/Chess/skins/gnomechess.css",
-    ],
-    lockAspectRatio: true,
-    singleton: true,
-    title: "Chess",
+    icon: "/System/Icons/chat.webp",
+    title: "AI Chat",
+  },
+  ClassiCube: {
+    Component: dynamic(() => import("components/apps/ClassiCube")),
+    backgroundColor: "#201E20",
+    defaultSize: {
+      height: 420,
+      width: 640,
+    },
+    hideMaximizeButton: true,
+    icon: "/System/Icons/classicube.webp",
+    libs: ["/Program Files/ClassiCube/ClassiCube.js"],
+    title: "ClassiCube",
   },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 480,
       width: 640,
@@ -64,22 +68,19 @@ const directory: Processes = {
   },
   DevTools: {
     Component: dynamic(() => import("components/apps/DevTools")),
-    background: "rgb(36, 36, 36)",
+    backgroundColor: "#242424",
     defaultSize: {
       height: 380,
       width: 545,
     },
     icon: "/System/Icons/eruda.webp",
-    libs: [
-      "/Program Files/Eruda/eruda.js",
-      "/Program Files/Eruda/eruda-dom.js",
-    ],
+    libs: ["/Program Files/Eruda/eruda.js"],
     singleton: true,
     title: "DevTools",
   },
   Emulator: {
     Component: dynamic(() => import("components/apps/Emulator")),
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 400,
       width: 600,
@@ -91,25 +92,25 @@ const directory: Processes = {
   },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
-    background: "#202020",
+    backgroundColor: "#202020",
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
   IRC: {
     Component: dynamic(() => import("components/apps/IRC")),
-    background: "#fff",
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 512,
       width: 704,
     },
     icon: "/System/Icons/kiwiirc.webp",
-    libs: ["Program Files/kiwiirc/index.html"],
+    libs: ["/Program Files/kiwiirc/index.html"],
     title: "IRC",
   },
   JSDOS: {
     Component: dynamic(() => import("components/apps/JSDOS")),
     autoSizing: true,
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 200,
       width: 320,
@@ -124,7 +125,7 @@ const directory: Processes = {
   },
   Marked: {
     Component: dynamic(() => import("components/apps/Marked")),
-    background: "#FFF",
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 480,
       width: 560,
@@ -138,7 +139,7 @@ const directory: Processes = {
   },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
-    background: "#1E1E1E",
+    backgroundColor: "#1E1E1E",
     defaultSize: {
       height: 480,
       width: 544,
@@ -149,16 +150,23 @@ const directory: Processes = {
   NoodJs: {
     Component: dynamic(() => import("components/apps/NoodJs")),
     background: "#FFF",
+    icon: "/System/Icons/chromium.png",
+    title: "NoodJs",
+  },
+  OpenType: {
+    Component: dynamic(() => import("components/apps/OpenType")),
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 480,
       width: 640,
     },
-    icon: "/System/Icons/chromium.png",
-    title: "NoodJs",
+    icon: "/System/Icons/opentype.webp",
+    preferProcessIcon: true,
+    title: "OpenType",
   },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
-    background: "rgb(82, 86, 89)",
+    backgroundColor: "#525659",
     defaultSize: {
       height: 480,
       width: 640,
@@ -169,18 +177,18 @@ const directory: Processes = {
   },
   Paint: {
     Component: dynamic(() => import("components/apps/Paint")),
-    background: "#808080",
+    backgroundColor: "#808080",
     defaultSize: {
       height: 480,
       width: 640,
     },
     icon: "/System/Icons/paint.webp",
-    libs: ["Program Files/jspaint/index.html"],
+    libs: ["/Program Files/jspaint/index.html"],
     title: "Paint",
   },
   Photos: {
     Component: dynamic(() => import("components/apps/Photos")),
-    background: "#222",
+    backgroundColor: "#222",
     defaultSize: {
       height: 432,
       width: 576,
@@ -189,9 +197,22 @@ const directory: Processes = {
     icon: "/System/Icons/photos.webp",
     title: "Photos",
   },
+  Quake3: {
+    Component: dynamic(() => import("components/apps/Quake3")),
+    backgroundColor: "#000",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    hideMaximizeButton: true,
+    icon: "/System/Icons/quake3.webp",
+    libs: ["/Program Files/Quake3/Quake3Game.js"],
+    lockAspectRatio: true,
+    title: "Quake III Arena",
+  },
   Ruffle: {
     Component: dynamic(() => import("components/apps/Ruffle")),
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 400,
       width: 550,
@@ -220,7 +241,7 @@ const directory: Processes = {
   },
   SpaceCadet: {
     Component: dynamic(() => import("components/apps/SpaceCadet")),
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 428,
       width: 600,
@@ -231,9 +252,22 @@ const directory: Processes = {
     singleton: true,
     title: "Space Cadet",
   },
+  StableDiffusion: {
+    Component: dynamic(() => import("components/apps/StableDiffusion")),
+    allowResizing: false,
+    backgroundColor: "rgb(235, 251, 247)",
+    defaultSize: {
+      height: 600,
+      width: 544,
+    },
+    icon: "/System/Icons/stablediffusion.webp",
+    lockAspectRatio: true,
+    singleton: true,
+    title: "Stable Diffusion",
+  },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
-    background: "rgba(12, 12, 12, 0.5)",
+    backgroundColor: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
       height: 340,
       width: 553,
@@ -249,7 +283,7 @@ const directory: Processes = {
   },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
-    background: "#FFF",
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 480,
       width: 640,
@@ -262,32 +296,31 @@ const directory: Processes = {
   Transfer: {
     Component: dynamic(() => import("components/system/Dialogs/Transfer")),
     allowResizing: false,
-    background: "#FFF",
+    backgroundColor: "#FFF",
     defaultSize: {
       height: 163,
       width: 400,
     },
     icon: "/System/Icons/copying.webp",
-    title: "Dialog",
+    title: "",
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),
     allowResizing: false,
     autoSizing: true,
-    background: "#000",
+    backgroundColor: "#000",
     defaultSize: {
       height: 200,
       width: 320,
     },
     icon: "/System/Icons/v86.webp",
     libs: ["/Program Files/Virtual x86/libv86.js"],
-    singleton: true,
     title: "Virtual x86",
   },
   VideoPlayer: {
     Component: dynamic(() => import("components/apps/VideoPlayer")),
     autoSizing: true,
-    background: "#000",
+    backgroundColor: "#000",
     icon: "/System/Icons/vlc.webp",
     libs: [
       "/Program Files/Video.js/video-js.min.css",
@@ -299,7 +332,7 @@ const directory: Processes = {
   Vim: {
     Component: dynamic(() => import("components/apps/Vim")),
     allowResizing: false,
-    background: "rgb(34, 35, 36)",
+    backgroundColor: "#222324",
     defaultSize: {
       height: 448,
       width: 595,

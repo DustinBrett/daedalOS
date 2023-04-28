@@ -1,19 +1,21 @@
 import {
   config,
   CONTROL_BAR_HEIGHT,
-  getMimeType,
+  VideoResizeKey,
   YT_TYPE,
 } from "components/apps/VideoPlayer/config";
 import type {
   SourceObjectWithUrl,
   VideoPlayer,
 } from "components/apps/VideoPlayer/types";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect, useState } from "react";
+import { VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -54,7 +56,7 @@ const useVideoPlayer = (
     cleanUpSource();
 
     const isYT = isYouTubeUrl(url);
-    const type = isYT ? YT_TYPE : getMimeType(url);
+    const type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
     const src = isYT
       ? url
       : bufferToUrl(await readFile(url), isSafari() ? type : undefined);
@@ -82,27 +84,88 @@ const useVideoPlayer = (
           }
         }
       });
+      const toggleFullscreen = (): void => {
+        try {
+          if (videoPlayer.isFullscreen()) videoPlayer.exitFullscreen();
+          else videoPlayer.requestFullscreen();
+        } catch {
+          // Ignore fullscreen errors
+        }
+      };
 
-      videoElement.addEventListener("dblclick", () =>
-        videoPlayer.isFullscreen()
-          ? videoPlayer.exitFullscreen()
-          : videoPlayer.requestFullscreen()
-      );
+      videoElement.addEventListener("dblclick", toggleFullscreen);
+      videoElement.addEventListener("mousewheel", (event) => {
+        videoPlayer.volume(
+          videoPlayer.volume() + ((event as WheelEvent).deltaY > 0 ? -0.1 : 0.1)
+        );
+      });
+      containerRef.current
+        ?.closest("section")
+        ?.addEventListener("keydown", ({ key, altKey, ctrlKey }) => {
+          if (altKey) {
+            if (VideoResizeKey[key]) {
+              updateWindowSize(
+                videoPlayer.videoHeight() / VideoResizeKey[key],
+                videoPlayer.videoWidth() / VideoResizeKey[key]
+              );
+            } else if (key === "Enter") {
+              toggleFullscreen();
+            }
+          } else if (!ctrlKey) {
+            // eslint-disable-next-line default-case
+            switch (key) {
+              case " ":
+                if (videoPlayer.paused()) videoPlayer.play();
+                else videoPlayer.pause();
+                break;
+              case "ArrowUp":
+                videoPlayer.volume(videoPlayer.volume() + 0.1);
+                break;
+              case "ArrowDown":
+                videoPlayer.volume(videoPlayer.volume() - 0.1);
+                break;
+              case "ArrowLeft":
+                videoPlayer.currentTime(videoPlayer.currentTime() - 10);
+                break;
+              case "ArrowRight":
+                videoPlayer.currentTime(videoPlayer.currentTime() + 10);
+                break;
+            }
+          }
+        });
       setPlayer(videoPlayer);
       setLoading(false);
       if (!isYouTubeUrl(url)) linkElement(id, "peekElement", videoElement);
     });
   }, [containerRef, id, linkElement, setLoading, updateWindowSize, url]);
+  const maybeHideControlbar = useCallback(
+    (type?: string): void => {
+      const controlBar =
+        containerRef.current?.querySelector(".vjs-control-bar");
+
+      if (controlBar instanceof HTMLElement) {
+        if (type === YT_TYPE) {
+          controlBar.classList.add("no-interaction");
+        } else {
+          controlBar.classList.remove("no-interaction");
+        }
+      }
+    },
+    [containerRef]
+  );
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
-        player.src(await getSource());
+        const source = await getSource();
+
+        player.src(source);
+        maybeHideControlbar(source.type);
         prependFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
       } catch {
         // Ignore player errors
       }
     }
-  }, [getSource, player, prependFileToTitle, url]);
+  }, [getSource, maybeHideControlbar, player, prependFileToTitle, url]);
 
   useEffect(() => {
     if (loading && !player) {

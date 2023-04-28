@@ -1,7 +1,11 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledMarked = styled.div`
   article {
+    ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH, 0, 0, "light")};
+
     background-color: #f9f9f9;
     box-sizing: border-box;
     font-size: 16px;
@@ -116,7 +120,7 @@ const StyledMarked = styled.div`
     pre {
       background-color: #f6f8fa;
       border-radius: 3px;
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier,
         monospace;
       font-size: 85%;
       line-height: 1.45;
@@ -125,7 +129,7 @@ const StyledMarked = styled.div`
     }
 
     code:not([class]) {
-      background-color: rgba(27, 31, 35, 0.05);
+      background-color: rgba(27, 31, 35, 5%);
       border-radius: 3px;
       font-size: 85%;
       margin: 0;

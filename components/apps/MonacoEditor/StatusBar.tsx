@@ -121,7 +121,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                   onClick={() => {
                     try {
                       editor?.focus();
-                      editor?.getAction("editor.action.gotoLine").run();
+                      editor?.getAction("editor.action.gotoLine")?.run();
                     } catch {
                       // Ignore focus issues
                     }

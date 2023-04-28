@@ -1,6 +1,7 @@
 import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import ComponentError from "components/system/Apps/ComponentError";
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 const Window = dynamic(() => import("components/system/Window"));
 
@@ -28,4 +29,4 @@ const RenderComponent: FC<RenderComponentProps> = ({
   return hasWindow ? <Window id={id}>{SafeComponent}</Window> : SafeComponent;
 };
 
-export default RenderComponent;
+export default memo(RenderComponent);

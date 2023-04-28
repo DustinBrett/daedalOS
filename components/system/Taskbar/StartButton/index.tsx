@@ -54,7 +54,7 @@ const StartButton: FC<StartButtonProps> = ({
             (link.href && preloadedLink?.href?.endsWith(link.href))
         )
       ) {
-        document.head.appendChild(link);
+        document.head.append(link);
       }
     });
 
@@ -65,7 +65,7 @@ const StartButton: FC<StartButtonProps> = ({
     <StyledStartButton
       $active={startMenuVisible}
       onClick={() => toggleStartMenu()}
-      onMouseOver={!preloaded ? preloadIcons : undefined}
+      onMouseOver={preloaded ? undefined : preloadIcons}
       {...label("Start")}
       {...useTaskbarContextMenu(true)}
     >

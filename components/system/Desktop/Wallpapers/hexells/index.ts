@@ -2,7 +2,8 @@ import { loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
-    Demo: new (canvas: HTMLCanvasElement) => void;
+    Demo: new (canvas: HTMLCanvasElement) => unknown;
+    Hexells: unknown;
   }
 }
 
@@ -24,10 +25,9 @@ const hexells = async (el?: HTMLElement | null): Promise<void> => {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 
-  // eslint-disable-next-line no-new
-  new window.Demo(canvas);
+  window.Hexells = new window.Demo(canvas);
 
-  el.appendChild(canvas);
+  el.append(canvas);
 };
 
 export default hexells;

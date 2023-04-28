@@ -5,8 +5,11 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import type * as PdfjsLib from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
+import { useCallback, useEffect, useState } from "react";
+import {
+  BASE_2D_CONTEXT_OPTIONS,
+  DEFAULT_SCROLLBAR_WIDTH,
+} from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 export const scales = [
@@ -41,7 +44,10 @@ const usePDF = (
       doc: PDFDocumentProxy
     ): Promise<HTMLCanvasElement> => {
       const canvas = document.createElement("canvas");
-      const canvasContext = canvas.getContext("2d") as CanvasRenderingContext2D;
+      const canvasContext = canvas.getContext(
+        "2d",
+        BASE_2D_CONTEXT_OPTIONS
+      ) as CanvasRenderingContext2D;
       const page = await doc.getPage(pageNumber);
       let viewport: PdfjsLib.PageViewport;
 
@@ -115,7 +121,7 @@ const usePDF = (
     });
   }, [libs, renderPages]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (pages.length > 0) {
       const ol = containerRef.current?.querySelector(
         "#pages"
@@ -140,8 +146,8 @@ const usePDF = (
             }
           );
 
-          li.appendChild(page);
-          ol.appendChild(li);
+          li.append(page);
+          ol.append(li);
 
           observer.observe(li);
         });

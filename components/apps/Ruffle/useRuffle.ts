@@ -27,11 +27,12 @@ const useRuffle = (
       if (window.RufflePlayer) {
         window.RufflePlayer.config = {
           allowScriptAccess: false,
-          autoplay: true,
+          autoplay: "on",
           backgroundColor: "#000000",
           letterbox: "on",
           polyfills: false,
           preloader: false,
+          unmuteOverlay: "hidden",
         };
         setPlayer(window.RufflePlayer.newest().createPlayer());
         if (!url) containerRef.current?.classList.add("drop");
@@ -41,7 +42,7 @@ const useRuffle = (
 
   useEffect(() => {
     if (containerRef.current && player) {
-      containerRef.current.appendChild(player);
+      containerRef.current.append(player);
       setLoading(false);
     }
 

@@ -133,9 +133,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         ))}
       </ol>
     </StyledMenu>
-  ) : (
-    <></>
-  );
+  ) : // eslint-disable-next-line unicorn/no-null
+  null;
 };
 
 export default Menu;

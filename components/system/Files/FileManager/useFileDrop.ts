@@ -5,21 +5,27 @@ import {
 } from "components/system/Files/FileManager/functions";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, join, relative } from "path";
+import { basename, extname, join, relative } from "path";
+import { useCallback } from "react";
 import { DESKTOP_PATH } from "utils/constants";
 import { haltEvent, updateIconPositions } from "utils/functions";
 
-type FileDrop = {
+export type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDragOver: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
   onDrop: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
 };
 
 type FileDropProps = {
-  callback?: (path: string, buffer?: Buffer) => Promise<void> | void;
+  callback?: (
+    path: string,
+    buffer?: Buffer,
+    completeAction?: CompleteAction
+  ) => Promise<void>;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -38,26 +44,31 @@ const useFileDrop = ({
   const { url } = useProcesses();
   const { iconPositions, sortOrders, setIconPositions } = useSession();
   const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
-  const updateProcessUrl = async (
-    filePath: string,
-    fileData?: Buffer,
-    completeAction?: CompleteAction
-  ): Promise<void> => {
-    if (id) {
-      if (!fileData) {
-        if (completeAction === "updateUrl") url(id, filePath);
-      } else {
-        const tempPath = join(DESKTOP_PATH, filePath);
+  const updateProcessUrl = useCallback(
+    async (
+      filePath: string,
+      fileData?: Buffer,
+      completeAction?: CompleteAction
+    ): Promise<void> => {
+      if (id) {
+        if (fileData) {
+          const tempPath = join(DESKTOP_PATH, filePath);
 
-        await mkdirRecursive(DESKTOP_PATH);
+          await mkdirRecursive(DESKTOP_PATH);
 
-        if (await writeFile(tempPath, fileData, true)) {
-          if (completeAction === "updateUrl") url(id, tempPath);
-          updateFolder(DESKTOP_PATH, filePath);
+          if (await writeFile(tempPath, fileData, true)) {
+            if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
+              url(id, tempPath);
+            }
+            updateFolder(DESKTOP_PATH, filePath);
+          }
+        } else if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
+          url(id, filePath);
         }
       }
-    }
-  };
+    },
+    [id, mkdirRecursive, updateFolder, url, writeFile]
+  );
   const { openTransferDialog } = useTransferDialog();
 
   return {
@@ -86,11 +97,15 @@ const useFileDrop = ({
             // Ignore failed JSON parsing
           }
 
-          if (fileEntries.length === 0) return;
+          if (!Array.isArray(fileEntries)) return;
+
+          const [firstEntry] = fileEntries;
+
+          if (!firstEntry) return;
 
           if (
-            fileEntries[0].startsWith(directory) &&
-            basename(fileEntries[0]) === relative(directory, fileEntries[0])
+            firstEntry.startsWith(directory) &&
+            basename(firstEntry) === relative(directory, firstEntry)
           ) {
             return;
           }
@@ -103,6 +118,23 @@ const useFileDrop = ({
             .map((file) => file.getAsFile()?.name || "")
             .filter(Boolean);
         }
+
+        fileEntries = fileEntries.map((fileEntry) => {
+          if (!iconPositions[`${directory}/${fileEntry}`]) return fileEntry;
+
+          let iteration = 0;
+          let entryIteration = "";
+
+          do {
+            iteration += 1;
+            entryIteration = `${directory}/${basename(
+              fileEntry,
+              extname(fileEntry)
+            )} (${iteration})${extname(fileEntry)}`;
+          } while (iconPositions[entryIteration]);
+
+          return basename(entryIteration);
+        });
 
         updateIconPositions(
           directory,
@@ -119,7 +151,8 @@ const useFileDrop = ({
         event as React.DragEvent,
         callback || updateProcessUrl,
         directory,
-        openTransferDialog
+        openTransferDialog,
+        Boolean(id)
       );
     },
   };

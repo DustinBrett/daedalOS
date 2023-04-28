@@ -2,8 +2,8 @@ const colors = {
   background: "#000",
   fileEntry: {
     background: "hsla(207, 30%, 72%, 25%)",
-    backgroundFocused: "hsla(207, 60%, 72%, 30%)",
-    backgroundFocusedHover: "hsla(207, 90%, 72%, 35%)",
+    backgroundFocused: "hsla(207, 60%, 72%, 35%)",
+    backgroundFocusedHover: "hsla(207, 90%, 72%, 30%)",
     border: "hsla(207, 30%, 72%, 30%)",
     borderFocused: "hsla(207, 60%, 72%, 35%)",
     borderFocusedHover: "hsla(207, 90%, 72%, 40%)",
@@ -22,6 +22,7 @@ const colors = {
   highlightBackground: "hsla(207, 100%, 72%, 20%)",
   progress: "hsla(113, 78%, 56%, 90%)",
   progressBackground: "hsla(104, 22%, 45%, 70%)",
+  progressBarRgb: "rgb(6, 176, 37)",
   startButton: "#FFF",
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",

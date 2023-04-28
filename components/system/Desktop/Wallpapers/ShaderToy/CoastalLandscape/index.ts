@@ -24,7 +24,7 @@ const CoastalLandscape = async (el?: HTMLElement | null): Promise<void> => {
 
   window.effectInit(canvas);
 
-  el.appendChild(canvas);
+  el.append(canvas);
 };
 
 export default CoastalLandscape;

@@ -1,4 +1,3 @@
-import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
@@ -14,12 +13,10 @@ const Index = (): React.ReactElement => {
   useGlobalErrorHandler();
 
   return (
-    <ErrorBoundary>
-      <Desktop>
-        <Taskbar />
-        <AppsLoader />
-      </Desktop>
-    </ErrorBoundary>
+    <Desktop>
+      <Taskbar />
+      <AppsLoader />
+    </Desktop>
   );
 };
 

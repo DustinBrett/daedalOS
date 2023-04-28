@@ -1,12 +1,18 @@
 import Menu, { topLeftPosition } from "components/system/Menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import dynamic from "next/dynamic";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type MenuItemEntryProps = MenuItem & {
@@ -59,18 +65,32 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         onMouseLeave,
       }
     : {};
+  const triggerAction = useCallback<React.MouseEventHandler>(
+    (event) => {
+      haltEvent(event);
+
+      if (!menu) {
+        action?.();
+        resetMenu();
+      }
+    },
+    [action, menu, resetMenu]
+  );
 
   useEffect(() => {
     const menuEntryElement = entryRef.current;
+    const showBaseMenu = !isSubMenu && menu && !showSubMenu;
     const touchListener = (event: TouchEvent): void => {
-      if (!isSubMenu && menu && !showSubMenu) {
+      if (showBaseMenu) {
         haltEvent(event);
-        menuEntryElement?.focus();
+        menuEntryElement?.focus(PREVENT_SCROLL);
       }
       setShowSubMenu(true);
     };
 
-    menuEntryElement?.addEventListener("touchstart", touchListener);
+    menuEntryElement?.addEventListener("touchstart", touchListener, {
+      passive: !showBaseMenu,
+    });
 
     return () =>
       menuEntryElement?.removeEventListener("touchstart", touchListener);
@@ -82,7 +102,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
 
       setSubMenuOffset({
         x: width - sizes.contextMenu.subMenuOffset,
-        y: -height - sizes.contextMenu.subMenuOffset,
+        y: 0 - height - sizes.contextMenu.subMenuOffset,
       });
     }
   }, [menu, sizes.contextMenu.subMenuOffset]);
@@ -100,14 +120,10 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <Button
           as="figure"
           className={showSubMenu ? "active" : undefined}
-          onClick={() => {
-            if (!menu) {
-              action?.();
-              resetMenu();
-            }
-          }}
+          onClick={triggerAction}
+          onMouseUp={triggerAction}
         >
-          {icon && <Icon $imgSize={16} alt={label} src={icon} />}
+          {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}
           {toggle && <Circle className="left" />}
           <figcaption className={primary ? "primary" : undefined}>

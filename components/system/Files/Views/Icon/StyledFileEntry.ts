@@ -13,12 +13,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     position: relative;
 
     &::before {
-      bottom: -1px;
       content: "";
-      left: -1px;
+      inset: -1px;
       position: absolute;
-      right: -1px;
-      top: -1px;
     }
   }
 
@@ -34,10 +31,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       figcaption {
         color: ${({ theme }) => theme.colors.fileEntry.text};
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
-        letter-spacing: -0.1px;
         line-height: 1.2;
         margin: 1px 0;
-        padding: 2px 1px;
+        padding: 2px 0;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }
@@ -80,8 +76,10 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     }
 
     &:hover {
-      background-color: ${({ theme }) =>
-        theme.colors.fileEntry.backgroundFocusedHover};
+      background-color: ${({ theme, $selecting }) =>
+        $selecting
+          ? theme.colors.fileEntry.backgroundFocused
+          : theme.colors.fileEntry.backgroundFocusedHover};
 
       &::before {
         border: ${({ theme }) =>

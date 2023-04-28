@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
-const StyledStartMenuBackground = styled.span`
+type StyledStartMenuBackgroundProps = {
+  $height?: string;
+};
+
+const StyledStartMenuBackground = styled.span<StyledStartMenuBackgroundProps>`
   backdrop-filter: blur(12px);
-  height: 100%;
+  height: ${({ $height }) => $height};
   inset: 0;
   position: absolute;
   width: 100%;

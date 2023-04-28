@@ -1,9 +1,13 @@
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
-import { TASKBAR_HEIGHT } from "utils/constants";
+import { PEEK_MAX_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
 
-const StyledPeekWindow = styled(motion.div)`
+type StyledPeekWindowProps = {
+  $offsetX: number;
+};
+
+const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
   border-bottom: 0;
@@ -13,6 +17,8 @@ const StyledPeekWindow = styled(motion.div)`
   place-content: center;
   place-items: flex-start;
   position: fixed;
+  transform: ${({ $offsetX }) =>
+    $offsetX ? `translateX(${$offsetX}px)` : undefined};
 
   ${StyledTaskbarEntry}:hover & {
     background-color: hsla(0, 0%, 25%, 85%);
@@ -25,8 +31,8 @@ const StyledPeekWindow = styled(motion.div)`
   img {
     height: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.height}px;
     margin: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.margin}px;
-    max-height: 200px;
-    max-width: 200px;
+    max-height: ${PEEK_MAX_WIDTH}px;
+    max-width: ${PEEK_MAX_WIDTH}px;
     min-height: 80px;
     min-width: 80px;
     object-fit: contain;

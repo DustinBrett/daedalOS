@@ -1,17 +1,14 @@
-import ContainerComponent from "components/apps/AppContainer";
+import AppContainer from "components/apps/AppContainer";
 import StyledV86 from "components/apps/V86/StyledV86";
 import useV86 from "components/apps/V86/useV86";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { haltEvent } from "utils/functions";
 
-const V86Children: React.ReactNode = (
-  <>
+const V86: FC<ComponentProcessProps> = ({ id }) => (
+  <AppContainer StyledComponent={StyledV86} id={id} useHook={useV86}>
     <div onContextMenuCapture={haltEvent} />
     <canvas onContextMenuCapture={haltEvent} />
-  </>
+  </AppContainer>
 );
-
-const V86: FC<ComponentProcessProps> = ({ id }) =>
-  ContainerComponent(id, useV86, StyledV86, V86Children);
 
 export default V86;

@@ -1,4 +1,6 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import { useMenu } from "contexts/menu";
+import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useRef, useState } from "react";
 import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
@@ -23,10 +25,12 @@ const DEBOUNCE_TIME = MILLISECONDS_IN_SECOND / FPS;
 const useSelection = (
   containerRef: React.MutableRefObject<HTMLElement | null>
 ): Selection => {
-  const [position, setPosition] = useState<Position>();
-  const [size, setSize] = useState<Size>();
-  const { x, y } = position || {};
-  const { height: h, width: w } = size || {};
+  const [position, setPosition] = useState<Position>(
+    () => Object.create(null) as Position
+  );
+  const [size, setSize] = useState<Size>(() => Object.create(null) as Size);
+  const { x, y } = position;
+  const { height: h, width: w } = size;
   const debounceTimer = useRef<number>();
   const onMouseMove: React.MouseEventHandler<HTMLElement> = ({
     clientX,
@@ -46,6 +50,7 @@ const useSelection = (
       }, DEBOUNCE_TIME);
     }
   };
+  const { menu, setMenu } = useMenu();
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
     clientX,
     clientY,
@@ -56,20 +61,23 @@ const useSelection = (
       const { x: targetX = 0, y: targetY = 0 } =
         containerRef.current.getBoundingClientRect();
 
-      setSize({} as Size);
+      setSize(Object.create(null) as Size);
       setPosition({
         x: clientX - targetX,
         y: clientY - targetY + scrollTop,
       });
+
+      if (menu) setMenu(Object.create(null) as MenuState);
     }
   };
+  const hasMenu = Object.keys(menu).length > 0;
   const hasSize = typeof w === "number" && typeof h === "number";
   const hasPosition = typeof x === "number" && typeof y === "number";
   const resetSelection = (): void => {
-    setSize({} as Size);
-    setPosition({} as Position);
+    setSize(Object.create(null) as Size);
+    setPosition(Object.create(null) as Position);
   };
-  const isSelecting = hasSize && hasPosition;
+  const isSelecting = !hasMenu && hasSize && hasPosition;
   const selectionStyling = isSelecting
     ? {
         height: `${Math.abs(Number(h))}px`,

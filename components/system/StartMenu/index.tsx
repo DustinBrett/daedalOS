@@ -49,7 +49,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   };
   const startMenuTransition = useStartMenuTransition();
   const { height } =
-    (startMenuTransition.variants?.["active"] as StyleVariant) ?? {};
+    (startMenuTransition.variants?.active as StyleVariant) ?? {};
 
   useLayoutEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
 
@@ -62,7 +62,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground />
+      <StyledStartMenuBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
@@ -70,7 +70,9 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         hideLoading
         hideShortcutIcons
         loadIconsImmediately
+        preloadShortcuts
         readOnly
+        skipFsWatcher
         skipSorting
         useNewFolderIcon
       />

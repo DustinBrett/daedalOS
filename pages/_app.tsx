@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import Metadata from "components/pages/Metadata";
 import StyledApp from "components/pages/StyledApp";
 import { FileSystemProvider } from "contexts/fileSystem";
@@ -10,12 +11,14 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => (
   <ProcessProvider>
     <FileSystemProvider>
       <SessionProvider>
-        <StyledApp>
+        <ErrorBoundary>
           <Metadata />
-          <MenuProvider>
-            <Component {...pageProps} />
-          </MenuProvider>
-        </StyledApp>
+          <StyledApp>
+            <MenuProvider>
+              <Component {...pageProps} />
+            </MenuProvider>
+          </StyledApp>
+        </ErrorBoundary>
       </SessionProvider>
     </FileSystemProvider>
   </ProcessProvider>

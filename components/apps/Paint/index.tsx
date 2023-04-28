@@ -9,7 +9,12 @@ import { useSession } from "contexts/session";
 import type { WallpaperFit } from "contexts/session/types";
 import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DESKTOP_PATH, PICUTRES_PATH } from "utils/constants";
+import {
+  DESKTOP_PATH,
+  IFRAME_CONFIG,
+  ONE_TIME_PASSIVE_EVENT,
+  PICUTRES_PATH,
+} from "utils/constants";
 
 type JsPaint = {
   close: () => void;
@@ -37,7 +42,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { createPath, exists, readFile, updateFolder, writeFile } =
     useFileSystem();
-  const { setWallpaper } = useSession();
+  const { foregroundId, setForegroundId, setWallpaper } = useSession();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [jsPaintInstance, setJsPaintInstance] = useState<JsPaint>();
@@ -63,6 +68,16 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     prependFileToTitle("Untitled");
   }, [prependFileToTitle]);
+
+  useEffect(() => {
+    if (foregroundId !== id) {
+      iframeRef.current?.contentWindow?.addEventListener(
+        "click",
+        () => setForegroundId(id),
+        ONE_TIME_PASSIVE_EVENT
+      );
+    }
+  }, [foregroundId, id, setForegroundId]);
 
   useEffect(() => {
     const { contentWindow } = iframeRef.current || {};
@@ -143,7 +158,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   }, [jsPaintInstance, prependFileToTitle, readFile, url]);
 
   return (
-    <StyledPaint>
+    <StyledPaint $loaded={loaded}>
       {!loaded && <StyledLoading className="loading" />}
       <iframe
         ref={iframeRef}
@@ -151,9 +166,9 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
         id="jspaint-iframe"
         onLoad={() => setLoaded(true)}
         src={paintSrc}
-        style={{ opacity: loaded ? 1 : 0 }}
         title={id}
         width="100%"
+        {...IFRAME_CONFIG}
       />
     </StyledPaint>
   );

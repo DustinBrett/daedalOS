@@ -3,6 +3,8 @@ import {
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
+import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
@@ -34,24 +36,24 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
-  FOLDER_BACK_ICON,
-  FOLDER_FRONT_ICON,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
+  LIST_VIEW_ANIMATION,
   MOUNTABLE_EXTENSIONS,
   NON_BREAKING_HYPHEN,
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
-  SHORTCUT_ICON,
   SMALLEST_PNG_SIZE,
+  TRANSITIONS_IN_MILLISECONDS,
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
   bufferToUrl,
+  getExtension,
   getFormattedSize,
   getHtmlToImage,
   isCanvasEmpty,
@@ -102,7 +104,7 @@ const truncateName = (
   );
 
   if (lines.length > 2) {
-    const text = !name.includes(" ") ? lines[0] : lines.slice(0, 2).join("");
+    const text = name.includes(" ") ? lines.slice(0, 2).join("") : lines[0];
 
     return `${text.slice(0, -3)}...`;
   }
@@ -158,19 +160,17 @@ const FileEntry: FC<FileEntryProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
-  const urlExt = extname(url).toLowerCase();
-  const isDynamicIcon =
-    IMAGE_FILE_EXTENSIONS.has(urlExt) ||
-    VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-    isYouTubeUrl(url);
-  const filteredSubIcons = (
-    hideShortcutIcon || stats.systemShortcut
-      ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
-      : subIcons
-  )?.filter((subIcon) => subIcon !== icon);
+  const urlExt = getExtension(url);
+  const isDynamicIcon = useMemo(
+    () =>
+      IMAGE_FILE_EXTENSIONS.has(urlExt) ||
+      VIDEO_FILE_EXTENSIONS.has(urlExt) ||
+      isYouTubeUrl(url),
+    [url, urlExt]
+  );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
-  const extension = extname(path).toLowerCase();
+  const extension = getExtension(path);
   const isShortcut = extension === SHORTCUT_EXTENSION;
   const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({
@@ -210,7 +210,9 @@ const FileEntry: FC<FileEntryProps> = ({
     if (isShortcut) {
       if (comment) return comment;
       if (url) {
-        if (url.startsWith("http:") || url.startsWith("https:")) return url;
+        if (url.startsWith("http:") || url.startsWith("https:")) {
+          return decodeURIComponent(url);
+        }
         return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
       }
       return "";
@@ -223,7 +225,7 @@ const FileEntry: FC<FileEntryProps> = ({
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);
-    const toolTip = `Type: ${type}${size !== "-1" ? `\nSize: ${size}` : ""}`;
+    const toolTip = `Type: ${type}${size === "-1" ? "" : `\nSize: ${size}`}`;
     const date = new Date(modifiedTime).toISOString().slice(0, 10);
     const time = new Intl.DateTimeFormat(
       DEFAULT_LOCALE,
@@ -243,10 +245,36 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
   ]);
   const [tooltip, setTooltip] = useState<string>();
+  const doubleClickHandler = useCallback(() => {
+    if (
+      openInFileExplorer &&
+      fileManagerId &&
+      !MOUNTABLE_EXTENSIONS.has(urlExt)
+    ) {
+      changeUrl(fileManagerId, url);
+      blurEntry();
+    } else if (openInFileExplorer && listView) {
+      setShowInFileManager((currentState) => !currentState);
+    } else {
+      openFile(pid, isDynamicIcon ? undefined : icon);
+    }
+  }, [
+    blurEntry,
+    changeUrl,
+    fileManagerId,
+    icon,
+    isDynamicIcon,
+    listView,
+    openFile,
+    openInFileExplorer,
+    pid,
+    url,
+    urlExt,
+  ]);
 
   useEffect(() => {
-    const updateIcon = async (): Promise<void> => {
-      if (!isLoadingFileManager && !isIconCached.current) {
+    if (!isLoadingFileManager && !isIconCached.current) {
+      const updateIcon = async (): Promise<void> => {
         if (icon.startsWith("blob:") || icon.startsWith("data:")) {
           if (icon.startsWith("data:image/jpeg;base64,")) return;
 
@@ -270,7 +298,7 @@ const FileEntry: FC<FileEntryProps> = ({
                   cacheQueue.shift();
                   return cacheQueue[0]?.();
                 };
-                let generatedIcon: string;
+                let generatedIcon = "";
 
                 if (
                   iconRef.current.currentSrc.startsWith(
@@ -279,40 +307,69 @@ const FileEntry: FC<FileEntryProps> = ({
                 ) {
                   generatedIcon = iconRef.current.currentSrc;
                 } else {
-                  const htmlToImage = await getHtmlToImage();
-                  const iconCanvas = await htmlToImage?.toCanvas(
-                    iconRef.current,
-                    {
-                      skipAutoScale: true,
+                  const { clientHeight, clientWidth } = iconRef.current;
+                  const { naturalHeight, naturalWidth } = iconRef.current;
+                  const naturalAspectRatio = naturalWidth / naturalHeight;
+                  const clientAspectRatio = clientWidth / clientHeight;
+                  let height: number | undefined;
+                  let width: number | undefined;
+
+                  if (naturalAspectRatio !== clientAspectRatio) {
+                    if (naturalWidth > naturalHeight) {
+                      height = clientHeight / naturalAspectRatio;
+                    } else {
+                      width = clientWidth * naturalAspectRatio;
                     }
-                  );
+                  }
+
+                  const htmlToImage = await getHtmlToImage();
+                  let iconCanvas: HTMLCanvasElement | undefined;
+
+                  try {
+                    iconCanvas = await htmlToImage?.toCanvas(iconRef.current, {
+                      height,
+                      skipAutoScale: true,
+                      style: {
+                        objectPosition: height
+                          ? "top"
+                          : width
+                          ? "left"
+                          : undefined,
+                      },
+                      width,
+                    });
+                  } catch {
+                    // Ignore failure to capture
+                  }
 
                   if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
                     generatedIcon = iconCanvas.toDataURL("image/png");
+                  } else {
+                    setTimeout(cacheIcon, TRANSITIONS_IN_MILLISECONDS.WINDOW);
                   }
                 }
 
-                cacheQueue.push(async () => {
-                  if (!generatedIcon) return nextQueueItem();
+                if (generatedIcon) {
+                  cacheQueue.push(async () => {
+                    const baseCachedPath = dirname(cachedIconPath);
 
-                  const baseCachedPath = dirname(cachedIconPath);
+                    await mkdirRecursive(baseCachedPath);
 
-                  await mkdirRecursive(baseCachedPath);
+                    const cachedIcon = Buffer.from(
+                      generatedIcon.replace(/data:(.*);base64,/, ""),
+                      "base64"
+                    );
 
-                  const cachedIcon = Buffer.from(
-                    generatedIcon.replace(/data:(.*);base64,/, ""),
-                    "base64"
-                  );
+                    await writeFile(cachedIconPath, cachedIcon, true);
+                    setInfo((info) => ({
+                      ...info,
+                      icon: bufferToUrl(cachedIcon),
+                    }));
+                    updateFolder(baseCachedPath, basename(cachedIconPath));
 
-                  await writeFile(cachedIconPath, cachedIcon, true);
-                  setInfo((info) => ({
-                    ...info,
-                    icon: bufferToUrl(cachedIcon),
-                  }));
-                  updateFolder(baseCachedPath, basename(cachedIconPath));
-
-                  return nextQueueItem();
-                });
+                    return nextQueueItem();
+                  });
+                }
 
                 if (cacheQueue.length === 1) await cacheQueue[0]();
               }
@@ -328,21 +385,25 @@ const FileEntry: FC<FileEntryProps> = ({
             }
           }
         } else {
+          if (isIconCached.current) return;
+
           const cachedIconPath = join(
             ICON_CACHE,
             `${path}${ICON_CACHE_EXTENSION}`
           );
 
           if (await exists(cachedIconPath)) {
-            isIconCached.current = true;
-
             const cachedIconData = await readFile(cachedIconPath);
 
             if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
-              setInfo((info) => ({
-                ...info,
-                icon: bufferToUrl(cachedIconData),
-              }));
+              if (!isIconCached.current) {
+                isIconCached.current = true;
+
+                setInfo((info) => ({
+                  ...info,
+                  icon: bufferToUrl(cachedIconData),
+                }));
+              }
             } else {
               try {
                 await unlink(cachedIconPath);
@@ -369,10 +430,10 @@ const FileEntry: FC<FileEntryProps> = ({
             ).observe(buttonRef.current);
           }
         }
-      }
-    };
+      };
 
-    updateIcon();
+      updateIcon();
+    }
   }, [
     exists,
     fileManagerRef,
@@ -383,7 +444,6 @@ const FileEntry: FC<FileEntryProps> = ({
     path,
     readFile,
     setInfo,
-    stats.mtime,
     unlink,
     updateFolder,
     url,
@@ -403,7 +463,7 @@ const FileEntry: FC<FileEntryProps> = ({
   );
 
   useLayoutEffect(() => {
-    if (buttonRef.current) {
+    if (buttonRef.current && fileManagerRef.current) {
       const inFocusedEntries = focusedEntries.includes(fileName);
       const inFocusing = focusing.includes(fileName);
       const isFocused = inFocusedEntries || inFocusing;
@@ -412,7 +472,7 @@ const FileEntry: FC<FileEntryProps> = ({
         focusing.splice(focusing.indexOf(fileName), 1);
       }
 
-      if (selectionRect && fileManagerRef.current) {
+      if (selectionRect) {
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
           fileManagerRef.current.getBoundingClientRect(),
@@ -449,30 +509,12 @@ const FileEntry: FC<FileEntryProps> = ({
   return (
     <>
       <Button
-        {...(listView && {
-          animate: { opacity: 1 },
-          as: motion.button,
-          initial: { opacity: 0 },
-          transition: { duration: 0.15 },
-        })}
         ref={buttonRef}
         aria-label={name}
         onMouseOver={() => createTooltip().then(setTooltip)}
         title={tooltip}
-        {...useDoubleClick(() => {
-          if (
-            openInFileExplorer &&
-            fileManagerId &&
-            !MOUNTABLE_EXTENSIONS.has(urlExt)
-          ) {
-            changeUrl(fileManagerId, url);
-            blurEntry();
-          } else if (openInFileExplorer && listView) {
-            setShowInFileManager((currentState) => !currentState);
-          } else {
-            openFile(pid, !isDynamicIcon ? icon : undefined);
-          }
-        }, listView)}
+        {...(listView && { ...LIST_VIEW_ANIMATION, as: motion.button })}
+        {...useDoubleClick(doubleClickHandler, listView)}
         {...(openInFileExplorer && fileDrop)}
         {...useFileContextMenu(
           url,
@@ -486,43 +528,26 @@ const FileEntry: FC<FileEntryProps> = ({
           readOnly
         )}
       >
-        <figure
+        <StyledFigure
           ref={figureRef}
-          style={renaming ? { pointerEvents: "all" } : undefined}
+          $renaming={renaming}
           {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
+            ref={iconRef}
             $eager={loadIconImmediately}
-            $imgRef={iconRef}
             $moving={pasteList[path] === "move"}
             alt={name}
             src={icon}
             {...FileEntryIconSize[view]}
           />
-          {(filteredSubIcons || []).map((entryIcon, subIconIndex) => (
-            <Icon
-              key={entryIcon}
-              $eager={entryIcon === SHORTCUT_ICON}
-              alt={name}
-              src={entryIcon}
-              style={
-                icon === FOLDER_BACK_ICON && entryIcon !== FOLDER_FRONT_ICON
-                  ? {
-                      transform:
-                        subIconIndex === 0
-                          ? "matrix(0, 1.8, 1.8, 0.2, 1.2, 2) scaleX(-1) scale(0.4) translateZ(0px)"
-                          : "matrix(0, 1.8, 1.2, 0.4, -4, 4) scaleX(-1) scale(0.4) translateZ(0px)",
-                    }
-                  : {}
-              }
-              {...FileEntryIconSize[
-                ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(entryIcon) &&
-                !entryIcon.startsWith("blob:")
-                  ? "sub"
-                  : view
-              ]}
-            />
-          ))}
+          <SubIcons
+            icon={icon}
+            name={name}
+            showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
+            subIcons={subIcons}
+            view={view}
+          />
           {renaming ? (
             <RenameBox
               name={name}
@@ -540,7 +565,7 @@ const FileEntry: FC<FileEntryProps> = ({
             </figcaption>
           )}
           {listView && openInFileExplorer && <Down flip={showInFileManager} />}
-        </figure>
+        </StyledFigure>
       </Button>
       {showInFileManager && (
         <FileManager
@@ -550,7 +575,10 @@ const FileEntry: FC<FileEntryProps> = ({
           hideLoading
           hideShortcutIcons
           loadIconsImmediately
+          preloadShortcuts
           readOnly
+          skipFsWatcher
+          skipSorting
         />
       )}
     </>

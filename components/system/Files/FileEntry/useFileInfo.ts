@@ -3,9 +3,9 @@ import {
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { extname } from "path";
 import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
+import { getExtension } from "utils/functions";
 
 export type FileInfo = {
   comment?: string;
@@ -38,13 +38,13 @@ const useFileInfo = (
     if (!updatingInfo.current && fs && rootFs) {
       updatingInfo.current = true;
 
-      const extension = extname(path).toLowerCase();
+      const extension = getExtension(path);
 
       if (
         !extension ||
         (isDirectory &&
-          (!MOUNTABLE_EXTENSIONS.has(extension) ||
-            rootFs.mntMap[path]?.getName() !== "FileSystemAccess"))
+          !MOUNTABLE_EXTENSIONS.has(extension) &&
+          rootFs.mntMap[path]?.getName() !== "FileSystemAccess")
       ) {
         getInfoWithoutExtension(
           fs,

@@ -30,6 +30,7 @@ const KEYVAL_STORE_NAME = "keyval";
 const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
 const KNOWN_IDB_DBS = [
+  "/classicube",
   "/data/saves",
   "ejs-bios",
   "ejs-roms",
@@ -116,19 +117,28 @@ export const fs9pV4ToV3 = (): FS9P =>
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
-    const db = window.indexedDB.open("");
+    const db = window.indexedDB.open("browserfs");
 
     db.addEventListener("error", () => resolve(false), ONE_TIME_PASSIVE_EVENT);
     db.addEventListener(
       "success",
-      () => {
+      ({ target }) => {
         resolve(true);
 
         try {
           db.result.close();
-          window.indexedDB.deleteDatabase("");
         } catch {
-          // Ignore errors to close/delete the test database
+          // Ignore errors to close database
+        }
+
+        const { objectStoreNames } = (target as IDBOpenDBRequest)?.result || {};
+
+        if (objectStoreNames?.length === 0) {
+          try {
+            window.indexedDB.deleteDatabase("browserfs");
+          } catch {
+            // Ignore errors to delete database
+          }
         }
       },
       ONE_TIME_PASSIVE_EVENT
@@ -141,14 +151,16 @@ const getKeyValStore = (): ReturnType<typeof openDB> =>
   });
 
 export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
-  if (!(await supportsIndexedDB())) return {};
+  if (!(await supportsIndexedDB())) {
+    return Object.create(null) as FileSystemHandles;
+  }
 
   const db = await getKeyValStore();
 
   return (
     (await (<Promise<FileSystemHandles>>(
       db.get(KEYVAL_STORE_NAME, FS_HANDLES)
-    ))) || {}
+    ))) || (Object.create(null) as FileSystemHandles)
   );
 };
 
@@ -223,12 +235,10 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
 
       readable?.empty();
 
-      if (writable?.getName() === "InMemory") {
+      if (writable?.getName() === "InMemory" || !writable?.empty) {
         resolve();
       } else {
-        writable?.empty((apiError) =>
-          apiError ? reject(apiError) : resolve()
-        );
+        writable.empty((apiError) => (apiError ? reject(apiError) : resolve()));
       }
     };
 

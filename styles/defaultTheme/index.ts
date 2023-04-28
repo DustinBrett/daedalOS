@@ -6,6 +6,7 @@ import sizes from "styles/defaultTheme/sizes";
 const defaultTheme: DefaultTheme = {
   colors,
   formats,
+  name: "Dark",
   sizes,
 };
 

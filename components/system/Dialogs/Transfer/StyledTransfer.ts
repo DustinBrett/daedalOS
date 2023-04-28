@@ -1,5 +1,15 @@
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const gradientAnimation = css`
+  animation: gradient 5s ease-in-out alternate infinite;
+  background: ${({ theme }) =>
+    `linear-gradient(-45deg, #fff, ${theme.colors.progressBarRgb}, #fff)`};
+  background-size: 300% 300%;
+  content: "";
+  inset: 0;
+  position: absolute;
+`;
 
 const StyledTransfer = styled.div`
   h1,
@@ -14,18 +24,46 @@ const StyledTransfer = styled.div`
     progress {
       border: 1px solid rgb(188, 188, 188);
       height: 15px;
+      overflow: hidden;
+      position: relative;
       width: 100%;
 
       &::-webkit-progress-bar {
-        background-color: rgb(230, 230, 230);
+        background: rgb(230, 230, 230);
       }
 
       &::-webkit-progress-value {
-        background: rgb(6, 176, 37);
+        background: ${({ theme }) => theme.colors.progressBarRgb};
       }
 
       &::-moz-progress-bar {
-        background: rgb(6, 176, 37);
+        background: ${({ theme }) => theme.colors.progressBarRgb};
+      }
+
+      &:indeterminate {
+        /* stylelint-disable-next-line block-no-empty */
+        &::-moz-progress-bar {
+          ${gradientAnimation}
+        }
+
+        /* stylelint-disable-next-line block-no-empty */
+        &::after {
+          ${gradientAnimation}
+        }
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+
+        50% {
+          background-position: 100% 50%;
+        }
+
+        100% {
+          background-position: 0% 50%;
+        }
       }
     }
   }

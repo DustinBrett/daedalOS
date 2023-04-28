@@ -10,7 +10,8 @@ window.DXBall = {
     window.DXBall.intervals.forEach(clearInterval);
     window.DXBall.timeouts.forEach(clearTimeout);
 
-    window.DXBall.audioTracks.forEach((track) => track.pause());
+    Object.values((window.DXBall.audioFiles || {})).forEach((track) => track.pause());
+    (window.DXBall.audioTracks || []).forEach((track) => track.pause());
 
     window.DXBall.audioFiles = {};
     window.DXBall.audioTracks = [];
@@ -2234,12 +2235,12 @@ window.DXBall = {
         (function _0x56c3x8() {
           if (
             !(
-              shadow["drawing"] ||
-              highscore["drawing"] ||
-              saver["drawing"] ||
-              saver["drawing"] ||
+              shadow?.["drawing"] ||
+              highscore?.["drawing"] ||
+              saver?.["drawing"] ||
+              saver?.["drawing"] ||
               paused
-            )
+            ) && ctx?.["drawImage"]
           ) {
             for (
               ctx["drawImage"](mbbkgrnd_img, 0, 0), paddle["move"](), y = 0;
@@ -2268,7 +2269,7 @@ window.DXBall = {
             }
             lightning["draw"](), _0x56c3x15(user["score"]);
           }
-          if (!shadow["drawing"] && paused) {
+          if (!shadow?.["drawing"] && paused) {
             for (ctx["drawImage"](mbbkgrnd_img, 0, 0), y = 0; y < 20; y++) {
               for (x = 0; x < 20; x++) {
                 bricks[x][y]["move"]();
@@ -2279,10 +2280,10 @@ window.DXBall = {
           }
           (animframe += 0.1),
             animframe > 0.8 && (animframe = 0),
-            saver["drawing"] && saver["draw"](),
-            highscore["drawing"] && highscore["draw"](),
-            shadow["drawing"] && shadow["draw"](),
-            myFonts["strokeText"]("FPS: " + _0x56c3x20, "Sfont.sbk", 585, 468),
+            saver?.["drawing"] && saver?.["draw"](),
+            highscore?.["drawing"] && highscore?.["draw"](),
+            shadow?.["drawing"] && shadow?.["draw"](),
+            myFonts?.["strokeText"]("FPS: " + _0x56c3x20, "Sfont.sbk", 585, 468),
             _0x56c3xd <= 0 &&
               !cl &&
               ((cl = !0),
@@ -2291,7 +2292,7 @@ window.DXBall = {
               }, 200))),
             _0x56c3x21++,
             _0x56c3x10++,
-            requestAnimFrame(_0x56c3x8);
+            requestAnimFrame?.(_0x56c3x8);
         })();
     };
     var hex_chr = "0123456789abcdef";

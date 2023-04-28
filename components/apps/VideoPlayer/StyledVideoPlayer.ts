@@ -15,15 +15,24 @@ const StyledVideoPlayer = styled.div`
 
     .vjs-control-bar {
       background-color: rgb(240, 240, 240);
-      display: flex !important;
-      opacity: 1 !important;
       padding: 0 1;
+
+      :not(.no-interaction) {
+        display: flex !important;
+        opacity: 100% !important;
+      }
+
+      .no-interaction {
+        display: none !important;
+        opacity: 0% !important;
+        pointer-events: none !important;
+      }
     }
 
     &.vjs-youtube,
     &.vjs-fullscreen.vjs-user-inactive {
       .vjs-control-bar {
-        opacity: 0 !important;
+        opacity: 0% !important;
       }
     }
 
@@ -112,7 +121,7 @@ const StyledVideoPlayer = styled.div`
       &::before {
         color: rgb(237, 237, 237);
         text-shadow: 1px 2px 3px rgb(160, 160, 160);
-        -webkit-text-stroke: 1px rgba(164, 164, 164, 0.8);
+        -webkit-text-stroke: 1px rgba(164, 164, 164, 80%);
         top: -3px;
       }
     }
@@ -144,7 +153,7 @@ const StyledVideoPlayer = styled.div`
         color: rgb(237, 237, 237);
         font-size: 1.5em;
         text-shadow: 1px 2px 3px rgb(160, 160, 160);
-        -webkit-text-stroke: 1px rgba(164, 164, 164, 0.8);
+        -webkit-text-stroke: 1px rgba(164, 164, 164, 80%);
       }
     }
 

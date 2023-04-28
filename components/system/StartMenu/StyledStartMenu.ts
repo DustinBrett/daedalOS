@@ -12,27 +12,27 @@ const SCROLLBAR_PADDING_OFFSET = 3;
 const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - SCROLLBAR_PADDING_OFFSET;
 
 const ThinScrollBars = css<StyledStartMenuProps>`
-  ::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: ${({ $showScrolling }) =>
       $showScrolling ? THIN_SCROLLBAR_WIDTH : SCROLLBAR_PADDING_OFFSET}px;
   }
 
-  ::-webkit-scrollbar-corner,
-  ::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-corner,
+  &::-webkit-scrollbar-track {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
+      $showScrolling ? undefined : "transparent"};
   }
 
-  ::-webkit-scrollbar-button:single-button {
+  &::-webkit-scrollbar-button:single-button {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "transparent"};
+      $showScrolling ? undefined : "transparent"};
     border: ${({ $showScrolling }) =>
-      !$showScrolling && "1px solid transparent"};
+      $showScrolling ? undefined : "1px solid transparent"};
   }
 
-  ::-webkit-scrollbar-thumb:vertical {
+  &::-webkit-scrollbar-thumb:vertical {
     background-color: ${({ $showScrolling }) =>
-      !$showScrolling && "rgb(167, 167, 167)"};
+      $showScrolling ? undefined : "rgb(167, 167, 167)"};
   }
 `;
 
@@ -48,7 +48,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   max-width: ${({ theme }) => theme.sizes.startMenu.size}px;
   position: absolute;
   width: 100%;
-  z-index: 1000;
+  z-index: 10000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: hsla(0, 0%, 13%, 70%);
@@ -81,14 +81,14 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       }
     }
 
-    ::-webkit-scrollbar {
+    &::-webkit-scrollbar {
       width: 0;
     }
 
     &:hover {
       ${ThinScrollBars};
       padding-right: ${({ $showScrolling }) =>
-        !$showScrolling ? `${HOVER_ADJUSTED_PADDING}px` : 0};
+        $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
 
       @supports (scrollbar-width: thin) {
         padding-right: 5px;
@@ -99,7 +99,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     @media (hover: none), (pointer: coarse) {
       ${ThinScrollBars};
 
-      ::-webkit-scrollbar-track {
+      &::-webkit-scrollbar-track {
         margin: 13px 0;
       }
     }

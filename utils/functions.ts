@@ -9,12 +9,13 @@ import type {
 import type { Position } from "eruda";
 import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
-import type { HTMLAttributes } from "react";
 import {
+  DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
+  TIMESTAMP_DATE_FORMAT,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -37,11 +38,21 @@ export const getDpi = (): number => {
   return dpi;
 };
 
+export const getExtension = (url: string): string => extname(url).toLowerCase();
+
+export const sendMouseClick = (target: HTMLElement, count = 1): void => {
+  if (count === 0) return;
+
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+  sendMouseClick(target, count - 1);
+};
+
 export const toggleFullScreen = async (): Promise<void> => {
   try {
-    await (!document.fullscreenElement
-      ? document.documentElement.requestFullscreen()
-      : document.exitFullscreen());
+    await (document.fullscreenElement
+      ? document.exitFullscreen()
+      : document.documentElement.requestFullscreen());
   } catch {
     // Ignore failure to enter fullscreen
   }
@@ -103,7 +114,7 @@ export const imageToBufferUrl = (
   path: string,
   buffer: Buffer | string
 ): string =>
-  extname(path) === ".svg"
+  getExtension(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
 
@@ -114,6 +125,31 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
     fileReader.readAsDataURL(blob);
     fileReader.onloadend = () => resolve(fileReader.result as string);
   });
+
+type JxlDecodeResponse = { data: { imgData: ImageData } };
+
+export const decodeJxl = async (image: Buffer): Promise<ImageData> =>
+  new Promise((resolve) => {
+    const worker = new Worker("System/JXL.js/jxl_dec.js");
+
+    worker.postMessage({ image, jxlSrc: "image.jxl" });
+    worker.addEventListener("message", (message: JxlDecodeResponse) =>
+      resolve(message?.data?.imgData)
+    );
+  });
+
+export const imgDataToBuffer = (imageData: ImageData): Buffer => {
+  const canvas = document.createElement("canvas");
+
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  canvas.getContext("2d")?.putImageData(imageData, 0, 0);
+
+  return Buffer.from(
+    canvas?.toDataURL("image/png").replace("data:image/png;base64,", ""),
+    "base64"
+  );
+};
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
@@ -150,7 +186,7 @@ const loadScript = (
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(script);
+    document.head.append(script);
   });
 
 const loadStyle = (href: string): Promise<Event> =>
@@ -174,7 +210,7 @@ const loadStyle = (href: string): Promise<Event> =>
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.appendChild(link);
+    document.head.append(link);
   });
 
 export const loadFiles = async (
@@ -186,7 +222,7 @@ export const loadFiles = async (
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
-        await (extname(file).toLowerCase() === ".css"
+        await (getExtension(file) === ".css"
           ? loadStyle(encodeURI(file))
           : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
@@ -225,16 +261,17 @@ export const calcInitialPosition = (
     viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
 });
 
+const GRID_TEMPLATE_ROWS = "grid-template-rows";
+
 const calcGridDropPosition = (
   gridElement: HTMLElement | null,
-  { x = 0, y = 0, offsetX = 0, offsetY = 0 }: DragPosition
+  { x = 0, y = 0 }: DragPosition
 ): IconPosition => {
-  if (!gridElement) return {} as IconPosition;
+  if (!gridElement) return Object.create(null) as IconPosition;
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRows = gridComputedStyle
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ");
   const gridTemplateColumns = gridComputedStyle
     .getPropertyValue("grid-template-columns")
@@ -251,11 +288,11 @@ const calcGridDropPosition = (
 
   return {
     gridColumnStart: Math.min(
-      Math.ceil((x + offsetX) / (gridColumnWidth + gridColumnGap)),
+      Math.ceil(x / (gridColumnWidth + gridColumnGap)),
       gridTemplateColumns.length
     ),
     gridRowStart: Math.min(
-      Math.ceil((y + offsetY - paddingTop) / (gridRowHeight + gridRowGap)),
+      Math.ceil((y - paddingTop) / (gridRowHeight + gridRowGap)),
       gridTemplateRows.length
     ),
   };
@@ -269,11 +306,11 @@ const updateIconPositionsIfEmpty = (
 ): IconPositions => {
   if (!gridElement) return iconPositions;
 
-  const [fileOrder] = sortOrders[url];
+  const [fileOrder = []] = sortOrders[url] || [];
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ").length;
 
   fileOrder.forEach((entry, index) => {
@@ -330,7 +367,7 @@ const calcGridPositionOffset = (
 
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
-    .getPropertyValue("grid-template-rows")
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
     .split(" ").length;
   const {
     gridColumnStart: targetGridColumnStart,
@@ -381,9 +418,17 @@ export const updateIconPositions = (
         gridRowStart === gridDropPosition.gridRowStart
     )
   ) {
-    const targetUrl = join(directory, draggedEntries[0]);
+    const targetFile =
+      draggedEntries.find((entry) =>
+        entry.startsWith(document.activeElement?.textContent || "")
+      ) || draggedEntries[0];
+    const targetUrl = join(directory, targetFile);
+    const adjustDraggedEntries = [
+      targetFile,
+      ...draggedEntries.filter((entry) => entry !== targetFile),
+    ];
     const newIconPositions = Object.fromEntries(
-      draggedEntries
+      adjustDraggedEntries
         .map<[string, IconPosition]>((entryFile) => {
           const url = join(directory, entryFile);
 
@@ -396,7 +441,7 @@ export const updateIconPositions = (
                   targetUrl,
                   currentIconPositions,
                   gridDropPosition,
-                  draggedEntries,
+                  adjustDraggedEntries,
                   gridElement
                 ),
           ];
@@ -438,8 +483,8 @@ export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
   );
 
 const bytesInKB = 1024;
-const bytesInMB = 1022976; // 1024 * 999;
-const bytesInGB = 1047527424; // 1024 * 1024 * 999;
+const bytesInMB = 1022976; // 1024 * 999
+const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
 const formatNumber = (number: number): string =>
@@ -497,15 +542,35 @@ export const getUrlOrSearch = async (input: string): Promise<string> => {
   }
 };
 
-export const isFirefox = (): boolean =>
-  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
+let IS_FIREFOX: boolean;
 
-export const isSafari = (): boolean =>
-  typeof window !== "undefined" &&
-  /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+export const isFirefox = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_FIREFOX ?? false) return IS_FIREFOX;
+
+  IS_FIREFOX = /firefox/i.test(window.navigator.userAgent);
+
+  return IS_FIREFOX;
+};
+
+let IS_SAFARI: boolean;
+
+export const isSafari = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_SAFARI ?? false) return IS_SAFARI;
+
+  IS_SAFARI = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+
+  return IS_SAFARI;
+};
 
 export const haltEvent = (
-  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+  event:
+    | Event
+    | React.DragEvent
+    | React.FocusEvent
+    | React.KeyboardEvent
+    | React.MouseEvent
 ): void => {
   try {
     if (event.cancelable) {
@@ -520,7 +585,7 @@ export const haltEvent = (
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
   devicePixelRatio = 1,
-  customSize: Size = {} as Size
+  customSize: Size = Object.create(null) as Size
 ): OffscreenCanvas => {
   const canvas = document.createElement("canvas");
   const height = Number(customSize?.height) || containerElement.offsetHeight;
@@ -532,7 +597,7 @@ export const createOffscreenCanvas = (
   canvas.height = Math.floor(height * devicePixelRatio);
   canvas.width = Math.floor(width * devicePixelRatio);
 
-  containerElement.appendChild(canvas);
+  containerElement.append(canvas);
 
   return canvas.transferControlToOffscreen();
 };
@@ -546,7 +611,7 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .map(([className]) => className)
     .join(" ");
 
-export const label = (value: string): HTMLAttributes<HTMLElement> => ({
+export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
   "aria-label": value,
   title: value,
 });
@@ -584,29 +649,29 @@ export const preloadLibs = (libs: string[] = []): void => {
     const link = document.createElement(
       "link"
     ) as HTMLElementWithPriority<HTMLLinkElement>;
-    const ext = extname(lib).toLowerCase();
-
-    if (ext.startsWith(".htm")) {
-      link.as = "document";
-
-      const linkPreRender = document.createElement(
-        "link"
-      ) as HTMLElementWithPriority<HTMLLinkElement>;
-
-      linkPreRender.fetchPriority = "high";
-      linkPreRender.rel = "prerender";
-      linkPreRender.href = lib;
-
-      document.head.appendChild(linkPreRender);
-    } else {
-      link.as = ext === ".css" ? "style" : "script";
-    }
 
     link.fetchPriority = "high";
     link.rel = "preload";
     link.href = lib;
 
-    document.head.appendChild(link);
+    switch (getExtension(lib)) {
+      case ".css":
+        link.as = "style";
+        break;
+      case ".htm":
+      case ".html":
+        link.rel = "prerender";
+        break;
+      case ".url":
+        link.as = "fetch";
+        link.crossOrigin = "anonymous";
+        break;
+      default:
+        link.as = "script";
+        break;
+    }
+
+    document.head.append(link);
   });
 };
 
@@ -634,3 +699,9 @@ export const isCanvasEmpty = (canvas: HTMLCanvasElement): boolean =>
     .getContext("2d")
     ?.getImageData(0, 0, canvas.width, canvas.height)
     .data.some(Boolean);
+
+export const generatePrettyTimestamp = (): string =>
+  new Intl.DateTimeFormat(DEFAULT_LOCALE, TIMESTAMP_DATE_FORMAT)
+    .format(new Date())
+    .replace(/[/:]/g, "-")
+    .replace(",", "");

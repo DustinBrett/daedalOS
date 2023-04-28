@@ -20,7 +20,7 @@ import {
   useState,
 } from "react";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent, isFirefox, loadFiles } from "utils/functions";
+import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
 import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
@@ -44,11 +44,11 @@ const useTerminal = (
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
-  const cd = useRef(url || HOME);
   const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
+  const cd = useRef((!localEcho && url && !extname(url) ? url : "") || HOME);
   const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
@@ -60,7 +60,7 @@ const useTerminal = (
       if (localEcho) {
         localEcho.handleCursorInsert(url.includes(" ") ? `"${url}"` : url);
       } else {
-        const fileExtension = extname(url).toLowerCase();
+        const fileExtension = getExtension(url);
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
         if (extCommand) setInitialCommand(`${extCommand} ${url}`);

@@ -13,12 +13,13 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename, dirname, extname } from "path";
+import { basename, dirname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   DEFAULT_TEXT_FILE_SAVE_PATH,
   MILLISECONDS_IN_SECOND,
 } from "utils/constants";
+import { getExtension } from "utils/functions";
 import { lockGlobal, unlockGlobal } from "utils/globals";
 
 const useMonaco = (
@@ -48,7 +49,7 @@ const useMonaco = (
   const createModel = useCallback(async () => {
     const newModel = monaco?.editor.createModel(
       (await readFile(url)).toString(),
-      detectLanguage(extname(url).toLowerCase()),
+      detectLanguage(getExtension(url)),
       createModelUri(url)
     );
 

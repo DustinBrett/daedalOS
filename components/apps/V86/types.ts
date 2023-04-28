@@ -8,6 +8,7 @@ type EventListener = (event: string, callback: SizeCallback) => void;
 export type V86Starter = {
   add_listener: EventListener;
   destroy: () => void;
+  keyboard_set_status: (status: boolean) => void;
   lock_mouse: () => void;
   remove_listener: EventListener;
   save_state: () => Promise<ArrayBuffer>;

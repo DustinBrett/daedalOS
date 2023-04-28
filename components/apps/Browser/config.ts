@@ -38,21 +38,10 @@ export const bookmarks: Bookmark[] = [
     url: "https://aaronos.dev/",
   },
   {
-    icon: "/System/Icons/Favicons/minecraft.webp",
-    name: "Minecraft Classic",
-    url: "https://classic.minecraft.net/",
-  },
-  {
     icon: "/System/Icons/Favicons/diablo.webp",
     name: "Diablo",
     url: "https://d07riv.github.io/diabloweb/",
   },
 ];
-
-export const config = {
-  referrerPolicy: "no-referrer" as React.HTMLAttributeReferrerPolicy,
-  sandbox:
-    "allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts",
-};
 
 export const HOME_PAGE = "https://www.google.com/webhp?igu=1";

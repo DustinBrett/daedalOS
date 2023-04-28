@@ -2,7 +2,7 @@ const config = {
   animationSpeed: 1,
   backgroundColor: { space: "rgb", values: [0, 0, 0] },
   baseBrightness: -0.5,
-  baseContrast: 1.1,
+  baseContrast: 0.8,
   bloomSize: 0.4,
   bloomStrength: 0.7,
   brightnessDecay: 1,

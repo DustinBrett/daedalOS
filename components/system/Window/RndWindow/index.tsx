@@ -1,15 +1,9 @@
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
-import {
-  FOCUSABLE_ELEMENT,
-  PREVENT_SCROLL,
-  PROCESS_DELIMITER,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
-import { haltEvent, pxToNum } from "utils/functions";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 type RndWindowProps = {
   id: string;
@@ -30,22 +24,11 @@ const reRouteFocus =
 const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   const {
     linkElement,
-    maximize,
     processes: { [id]: process },
   } = useProcesses();
-  const {
-    closing,
-    componentWindow,
-    maximized,
-    minimized,
-    url = "",
-  } = process || {};
+  const { Component, componentWindow, maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
-  const rndProps = useRnd(id, maximized);
-  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
-    useSession();
-  const { maximized: wasMaximized } = windowState || {};
-  const [openedMaximized, setOpenedMaximized] = useState(false);
+  const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(
     () => ({
       pointerEvents: minimized ? "none" : undefined,
@@ -53,15 +36,22 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     }),
     [minimized, zIndex]
   );
+  const linkComponentWindow = useCallback(
+    (rndEntry: Rnd) => {
+      rndRef.current = rndEntry;
 
-  useLayoutEffect(() => {
-    if (wasMaximized && !openedMaximized && process) {
-      setTimeout(() => maximize(id), TRANSITIONS_IN_MILLISECONDS.WINDOW * 1.25);
-      setOpenedMaximized(true);
-    }
-  }, [id, maximize, openedMaximized, process, wasMaximized]);
+      const rndWindowElements =
+        rndEntry?.resizableElement?.current?.children || [];
+      const [windowContainer] = rndWindowElements as HTMLElement[];
 
-  useLayoutEffect(() => {
+      if (Component && !componentWindow && windowContainer) {
+        linkElement(id, "componentWindow", windowContainer);
+      }
+    },
+    [Component, componentWindow, id, linkElement]
+  );
+
+  useEffect(() => {
     const { current: currentWindow } = rndRef;
     const rndWindowElements =
       currentWindow?.resizableElement?.current?.children || [];
@@ -70,43 +60,10 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
     const resizeHandles = [...(resizeHandleContainer?.children || [])];
 
     resizeHandles.forEach(reRouteFocus(windowContainer));
-
-    if (process && !componentWindow && windowContainer) {
-      linkElement(id, "componentWindow", windowContainer);
-    }
-
-    return () => {
-      if (closing) {
-        const [pid] = id.split(PROCESS_DELIMITER);
-
-        setWindowStates((currentWindowStates) => ({
-          ...currentWindowStates,
-          [pid === id ? id : `${pid}${PROCESS_DELIMITER}${url}`]: {
-            maximized,
-            position: currentWindow?.props.position,
-            size: currentWindow?.props.size
-              ? {
-                  height: pxToNum(currentWindow?.props.size.height),
-                  width: pxToNum(currentWindow?.props.size.width),
-                }
-              : undefined,
-          },
-        }));
-      }
-    };
-  }, [
-    closing,
-    componentWindow,
-    id,
-    linkElement,
-    maximized,
-    process,
-    setWindowStates,
-    url,
-  ]);
+  }, [maximized]);
 
   return (
-    <Rnd ref={rndRef} style={style} {...rndProps}>
+    <Rnd ref={linkComponentWindow} style={style} {...rndProps}>
       {children}
     </Rnd>
   );

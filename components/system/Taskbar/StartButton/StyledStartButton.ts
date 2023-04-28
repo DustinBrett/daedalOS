@@ -26,7 +26,7 @@ const StyledStartButton = styled(Button)<StyledStartButtonProps>`
 
   &:hover {
     background-color: ${({ $active, theme }) =>
-      !$active && theme.colors.taskbar.hover};
+      $active ? undefined : theme.colors.taskbar.hover};
 
     svg {
       fill: ${({ theme }) => theme.colors.highlight};

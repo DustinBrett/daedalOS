@@ -9,35 +9,37 @@ import {
   loadButterchurnPreset,
   loadMilkdropWhenNeeded,
   MAIN_WINDOW,
-  parseTrack,
   PLAYLIST_WINDOW,
+  setSkinData,
   tracksFromPlaylist,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
-import type { WebampCI } from "components/apps/Webamp/types";
+import type { SkinData, WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { extname } from "path";
+import { basename, dirname } from "path";
 import { useCallback, useRef } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   MILLISECONDS_IN_SECOND,
+  SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 import type { Options, Track, URLTrack } from "webamp";
 
 type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;
   webampCI?: WebampCI;
 };
+
+const SKIN_DATA_PATH = `${SAVE_PATH}/webampSkinData.json`;
 
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
@@ -51,26 +53,18 @@ const useWebamp = (id: string): Webamp => {
   } = useProcesses();
   const { componentWindow } = process || {};
   const webampCI = useRef<WebampCI>();
-  const { createPath, readFile, updateFolder } = useFileSystem();
-  const { onDrop: onDropCopy } = useFileDrop({ id });
-  const { onDrop } = useFileDrop({
-    callback: async (
-      fileName: string,
-      buffer?: Buffer,
-      completeAction?: CompleteAction
-    ) => {
-      if (webampCI.current) {
-        const data = buffer || (await readFile(fileName));
-        const track = await parseTrack(data, fileName);
-
-        if (completeAction !== "updateUrl") {
-          webampCI.current.appendTracks([track]);
-        }
-      }
-    },
-    id,
-  });
+  const {
+    createPath,
+    deletePath,
+    exists,
+    readFile,
+    mkdirRecursive,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
+  const { onDrop } = useFileDrop({ id });
   const metadataProviderRef = useRef<number>();
+  const windowPositionDebounceRef = useRef<number>();
   const initWebamp = useCallback(
     (
       containerElement: HTMLDivElement,
@@ -83,7 +77,7 @@ const useWebamp = (id: string): Webamp => {
         );
 
         if (externalUrl) {
-          const playlistExtension = extname(externalUrl).toLowerCase();
+          const playlistExtension = getExtension(externalUrl);
 
           if (AUDIO_PLAYLIST_EXTENSIONS.has(playlistExtension)) {
             return tracksFromPlaylist(
@@ -126,10 +120,7 @@ const useWebamp = (id: string): Webamp => {
             webampElement.querySelector<HTMLDivElement>(PLAYLIST_WINDOW);
 
           [mainWindow, playlistWindow].forEach((element) => {
-            element?.addEventListener("drop", (event) => {
-              onDropCopy(event);
-              onDrop(event);
-            });
+            element?.addEventListener("drop", onDrop);
             element?.addEventListener("dragover", haltEvent);
           });
 
@@ -138,30 +129,48 @@ const useWebamp = (id: string): Webamp => {
             linkElement(id, "peekElement", mainWindow);
           }
 
-          containerElement.appendChild(webampElement);
+          if (!initialSkin && !process.url?.endsWith(".wsz")) {
+            exists(SKIN_DATA_PATH).then(async (skinExists) => {
+              if (skinExists) {
+                setSkinData(
+                  webamp,
+                  JSON.parse(
+                    (await readFile(SKIN_DATA_PATH)).toString()
+                  ) as SkinData
+                );
+              }
+            });
+          }
+
+          containerElement.append(webampElement);
         }
       };
-      const subscriptions = [
-        webamp.onWillClose((cancel) => {
-          cancel();
-
+      const updatePosition = (): void => {
+        window.clearInterval(windowPositionDebounceRef.current);
+        windowPositionDebounceRef.current = window.setTimeout(() => {
           const mainWindow =
             getWebampElement()?.querySelector<HTMLDivElement>(MAIN_WINDOW);
           const { x = 0, y = 0 } = mainWindow?.getBoundingClientRect() || {};
 
-          onClose();
           setWindowStates((currentWindowStates) => ({
             ...currentWindowStates,
             [id]: {
               position: { x, y },
             },
           }));
+        }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
+      };
+      const subscriptions = [
+        webamp.onWillClose((cancel) => {
+          cancel();
+          onClose();
 
           window.setTimeout(() => {
             subscriptions.forEach((unsubscribe) => unsubscribe());
             webamp.close();
           }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
           window.clearInterval(metadataProviderRef.current);
+          window.clearInterval(windowPositionDebounceRef.current);
         }),
         webamp.onMinimize(() => onMinimize()),
         webamp.onTrackDidChange((track) => {
@@ -223,9 +232,22 @@ const useWebamp = (id: string): Webamp => {
               }
             }
           } else {
-            title(id, processDirectory["Webamp"].title);
+            title(id, processDirectory.Webamp.title);
           }
         }),
+        webamp._actionEmitter.on("SET_SKIN_DATA", async ({ data }) => {
+          if (!(await exists(SAVE_PATH))) {
+            await mkdirRecursive(SAVE_PATH);
+            updateFolder(dirname(SAVE_PATH));
+          }
+
+          writeFile(SKIN_DATA_PATH, JSON.stringify(data), true);
+          updateFolder(SAVE_PATH, basename(SKIN_DATA_PATH));
+        }),
+        webamp._actionEmitter.on("LOAD_DEFAULT_SKIN", () => {
+          deletePath(SKIN_DATA_PATH);
+        }),
+        webamp._actionEmitter.on("UPDATE_WINDOW_POSITIONS", updatePosition),
       ];
 
       if (initialSkin) cleanBufferOnSkinLoad(webamp, initialSkin.url);
@@ -240,22 +262,27 @@ const useWebamp = (id: string): Webamp => {
         if (initialTracks) webamp.play();
       });
 
+      window.WebampGlobal = webamp;
       webampCI.current = webamp;
     },
     [
       componentWindow,
       createPath,
+      deletePath,
+      exists,
       id,
       linkElement,
+      mkdirRecursive,
       onClose,
       onDrop,
-      onDropCopy,
       onMinimize,
       position,
       process,
+      readFile,
       setWindowStates,
       title,
       updateFolder,
+      writeFile,
     ]
   );
 

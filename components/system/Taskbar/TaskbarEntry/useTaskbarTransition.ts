@@ -1,9 +1,6 @@
 import type { MotionProps } from "framer-motion";
 import { useTheme } from "styled-components";
-import {
-  MILLISECONDS_IN_SECOND,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { TRANSITIONS_IN_SECONDS } from "utils/constants";
 
 const useTaskbarTransition = (): MotionProps => {
   const {
@@ -15,7 +12,7 @@ const useTaskbarTransition = (): MotionProps => {
     exit: "initial",
     initial: "initial",
     transition: {
-      duration: TRANSITIONS_IN_MILLISECONDS.WINDOW / MILLISECONDS_IN_SECOND,
+      duration: TRANSITIONS_IN_SECONDS.WINDOW,
     },
     variants: {
       active: { width: taskbar.entry.maxWidth },

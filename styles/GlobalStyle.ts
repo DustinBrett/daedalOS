@@ -16,11 +16,21 @@ const GlobalStyle = createGlobalStyle`
     user-select: none;
   }
 
-  body {
+  body, html {
     font-family: ${({ theme }) => theme.formats.systemFont};
+  }
+
+  body {
     height: 100%;
     overflow: hidden;
     text-size-adjust: none;
+  }
+
+  html {
+    background-color: ${({ theme }) => theme.colors.background};
+    background-position: center;
+    height: fill-available;
+    transition: background-image 1.25s linear;
   }
 
   input::selection,

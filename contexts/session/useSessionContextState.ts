@@ -2,7 +2,6 @@ import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
-  ClockSource,
   IconPositions,
   SessionContextState,
   SessionData,
@@ -10,35 +9,47 @@ import type {
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
-import { useCallback, useEffect, useState } from "react";
-import type { ThemeName } from "styles/themes";
-import { DEFAULT_THEME, SESSION_FILE } from "utils/constants";
+import defaultSession from "public/session.json";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  DEFAULT_AI_API,
+  DEFAULT_ASCENDING,
+  DEFAULT_CLOCK_SOURCE,
+  DEFAULT_THEME,
+  DEFAULT_WALLPAPER,
+  DEFAULT_WALLPAPER_FIT,
+  SESSION_FILE,
+} from "utils/constants";
+
+const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
 const useSessionContextState = (): SessionContextState => {
-  const { deletePath, exists, readFile, writeFile } = useFileSystem();
+  const { deletePath, readFile, rootFs, writeFile, lstat } = useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
+  const [aiApi, setAiApi] = useState(DEFAULT_AI_API);
   const [stackOrder, setStackOrder] = useState<string[]>([]);
-  const [themeName, setThemeName] = useState<ThemeName>(DEFAULT_THEME);
-  const [clockSource, setClockSource] = useState<ClockSource>("local");
-  const [windowStates, setWindowStates] = useState<WindowStates>(
+  const [themeName, setThemeName] = useState(DEFAULT_THEME);
+  const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
+  const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
   );
-  const [sortOrders, setSortOrders] = useState<SortOrders>(
+  const [sortOrders, setSortOrders] = useState(
     Object.create(null) as SortOrders
   );
-  const [iconPositions, setIconPositions] = useState<IconPositions>(
+  const [iconPositions, setIconPositions] = useState(
     Object.create(null) as IconPositions
   );
-  const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fill");
-  const [wallpaperImage, setWallpaperImage] = useState("VANTA");
+  const [wallpaperFit, setWallpaperFit] = useState(DEFAULT_WALLPAPER_FIT);
+  const [wallpaperImage, setWallpaperImage] = useState(DEFAULT_WALLPAPER);
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const prependToStack = useCallback(
     (id: string) =>
-      setStackOrder((currentStackOrder) => [
-        id,
-        ...currentStackOrder.filter((stackId) => stackId !== id),
-      ]),
+      setStackOrder((currentStackOrder) =>
+        currentStackOrder[0] === id
+          ? currentStackOrder
+          : [id, ...currentStackOrder.filter((stackId) => stackId !== id)]
+      ),
     []
   );
   const removeFromStack = useCallback(
@@ -56,37 +67,6 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const [haltSession, setHaltSession] = useState(false);
-
-  useEffect(() => {
-    if (sessionLoaded && !haltSession) {
-      writeFile(
-        SESSION_FILE,
-        JSON.stringify({
-          clockSource,
-          iconPositions,
-          runHistory,
-          sortOrders,
-          themeName,
-          wallpaperFit,
-          wallpaperImage,
-          windowStates,
-        }),
-        true
-      );
-    }
-  }, [
-    clockSource,
-    haltSession,
-    iconPositions,
-    runHistory,
-    sessionLoaded,
-    sortOrders,
-    themeName,
-    wallpaperFit,
-    wallpaperImage,
-    windowStates,
-    writeFile,
-  ]);
   const setSortOrder = useCallback(
     (
       directory: string,
@@ -105,22 +85,78 @@ const useSessionContextState = (): SessionContextState => {
           [directory]: [
             newOrder,
             sortBy ?? currentSortBy,
-            ascending ?? currentAscending,
+            ascending ?? currentAscending ?? DEFAULT_ASCENDING,
           ],
         };
       }),
     []
   );
+  const initializedSession = useRef(false);
 
   useEffect(() => {
-    const initSession = async (): Promise<void> => {
-      if (!sessionLoaded && (await exists(SESSION_FILE))) {
-        try {
-          const sessionData = await readFile(SESSION_FILE);
-          const session = JSON.parse(
-            sessionData.toString() || "{}"
-          ) as SessionData;
+    if (sessionLoaded && !haltSession) {
+      const updateSessionFile = (): void => {
+        writeFile(
+          SESSION_FILE,
+          JSON.stringify({
+            aiApi,
+            clockSource,
+            iconPositions,
+            runHistory,
+            sortOrders,
+            themeName,
+            wallpaperFit,
+            wallpaperImage,
+            windowStates,
+          }),
+          true
+        );
+      };
 
+      if (
+        "requestIdleCallback" in window &&
+        typeof window.requestIdleCallback === "function"
+      ) {
+        requestIdleCallback(updateSessionFile);
+      } else {
+        updateSessionFile();
+      }
+    }
+  }, [
+    aiApi,
+    clockSource,
+    haltSession,
+    iconPositions,
+    runHistory,
+    sessionLoaded,
+    sortOrders,
+    themeName,
+    wallpaperFit,
+    wallpaperImage,
+    windowStates,
+    writeFile,
+  ]);
+
+  useEffect(() => {
+    if (!initializedSession.current && rootFs) {
+      const initSession = async (): Promise<void> => {
+        initializedSession.current = true;
+
+        try {
+          let session: SessionData;
+
+          try {
+            session =
+              (await lstat(SESSION_FILE)).blocks <= 0
+                ? DEFAULT_SESSION
+                : (JSON.parse(
+                    (await readFile(SESSION_FILE)).toString()
+                  ) as SessionData);
+          } catch {
+            session = DEFAULT_SESSION;
+          }
+
+          if (session.aiApi) setAiApi(session.aiApi);
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
@@ -148,17 +184,20 @@ const useSessionContextState = (): SessionContextState => {
             setRunHistory(session.runHistory);
           }
         } catch (error) {
-          if ((error as ApiError)?.code === "ENOENT") deletePath(SESSION_FILE);
+          if ((error as ApiError)?.code === "ENOENT") {
+            deletePath(SESSION_FILE);
+          }
         }
-      }
 
-      setSessionLoaded(true);
-    };
+        setSessionLoaded(true);
+      };
 
-    initSession();
-  }, [deletePath, exists, readFile, sessionLoaded, setWallpaper]);
+      initSession();
+    }
+  }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
+    aiApi,
     clockSource,
     foregroundId,
     iconPositions,

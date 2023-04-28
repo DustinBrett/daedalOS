@@ -18,8 +18,14 @@ const StyledFileExplorer = styled.div`
   }
 
   ${StyledFileEntry} {
+    &:hover {
+      &::before {
+        border-width: 0;
+      }
+    }
+
     &::before {
-      border: 0 !important;
+      border-width: 0;
     }
   }
 `;

@@ -16,7 +16,8 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
-import { basename, dirname, extname, join } from "path";
+import { useSession } from "contexts/session";
+import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ICON_CACHE,
@@ -27,6 +28,7 @@ import {
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   getHtmlToImage,
   loadFiles,
 } from "utils/functions";
@@ -41,6 +43,7 @@ const useV86 = (
   const {
     processes: { [id]: process },
   } = useProcesses();
+  const { foregroundId } = useSession();
   const { closing, libs = [] } = process || {};
   const { appendFileToTitle } = useTitle(id);
   const shutdown = useRef(false);
@@ -106,7 +109,7 @@ const useV86 = (
     if (currentUrl) await closeDiskImage(currentUrl);
 
     const imageContents = url ? await readFile(url) : Buffer.from("");
-    const ext = extname(url).toLowerCase();
+    const ext = getExtension(url);
     const isISO = ext === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {
@@ -184,6 +187,14 @@ const useV86 = (
   }, [libs, loading, setLoading]);
 
   useEffect(() => {
+    const isActiveInstance = foregroundId === id;
+
+    Object.values(emulator).forEach((emulatorInstance) =>
+      emulatorInstance?.keyboard_set_status(isActiveInstance)
+    );
+  }, [emulator, foregroundId, id]);
+
+  useEffect(() => {
     if (process && !closing && !loading && !(url in emulator)) {
       setEmulator({ [url]: undefined });
       loadDiskImage();
@@ -207,9 +218,13 @@ const useV86 = (
             } else if (currentContainerRef instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
-              screenshot = await htmlToImage?.toPng(currentContainerRef, {
-                skipAutoScale: true,
-              });
+              try {
+                screenshot = await htmlToImage?.toPng(currentContainerRef, {
+                  skipAutoScale: true,
+                });
+              } catch {
+                // Ignore failure to capture
+              }
             }
 
             return screenshot

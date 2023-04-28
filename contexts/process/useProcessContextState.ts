@@ -17,7 +17,7 @@ import type {
 import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
-export type ProcessContextState = {
+type ProcessContextState = {
   argument: (
     id: string,
     name: keyof ProcessArguments,
@@ -73,8 +73,24 @@ const useProcessContextState = (): ProcessContextState => {
     []
   );
   const open = useCallback(
-    (id: string, processArguments?: ProcessArguments, initialIcon?: string) =>
-      setProcesses(openProcess(id, processArguments || {}, initialIcon)),
+    (id: string, processArguments?: ProcessArguments, initialIcon?: string) => {
+      if (id === "ExternalURL") {
+        const { url: externalUrl = "" } = processArguments || {};
+
+        if (
+          externalUrl.startsWith("http:") ||
+          externalUrl.startsWith("https:")
+        ) {
+          window.open(
+            decodeURIComponent(externalUrl),
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      } else {
+        setProcesses(openProcess(id, processArguments || {}, initialIcon));
+      }
+    },
     []
   );
   const linkElement = useCallback(
@@ -99,10 +115,16 @@ const useProcessContextState = (): ProcessContextState => {
   );
   const closeProcessesByUrl = useCallback(
     (closeUrl: string): void =>
-      Object.entries(processes).forEach(([id, { url: processUrl }]) => {
-        if (processUrl === closeUrl) closeWithTransition(id);
+      setProcesses((currentProcesses) => {
+        Object.entries(currentProcesses).forEach(
+          ([id, { url: processUrl }]) => {
+            if (processUrl === closeUrl) closeWithTransition(id);
+          }
+        );
+
+        return currentProcesses;
       }),
-    [closeWithTransition, processes]
+    [closeWithTransition]
   );
 
   return {

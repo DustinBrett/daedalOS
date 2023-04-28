@@ -8,7 +8,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import type { CommandInterface } from "emulators";
 import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import {
   ICON_CACHE,
@@ -16,7 +16,12 @@ import {
   SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl } from "utils/functions";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getExtension,
+  imgDataToBuffer,
+} from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
 
 const addJsDosConfig = async (
@@ -66,7 +71,7 @@ const useDosCI = (
       const savePath = join(SAVE_PATH, saveName);
 
       if (
-        typeof dosCI[bundleUrl] !== "undefined" &&
+        dosCI[bundleUrl] !== undefined &&
         (await writeFile(
           savePath,
           Buffer.from(await (dosCI[bundleUrl] as CommandInterface).persist()),
@@ -100,12 +105,12 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const { zipAsync } = await import("utils/zipFunctions");
     const zipBuffer =
-      extension !== ".exe"
-        ? urlBuffer
-        : Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }));
+      extension === ".exe"
+        ? Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }))
+        : urlBuffer;
     const bundleURL = bufferToUrl(
       extension === ".jsdos"
         ? zipBuffer
@@ -153,23 +158,7 @@ const useDosCI = (
         const takeScreenshot = async (): Promise<Buffer | undefined> => {
           const imageData = await dosCI[url]?.screenshot();
 
-          if (imageData) {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-
-            canvas.width = imageData.width;
-            canvas.height = imageData.height;
-            ctx?.putImageData(imageData, 0, 0);
-
-            return Buffer.from(
-              canvas
-                ?.toDataURL("image/png")
-                .replace("data:image/png;base64,", ""),
-              "base64"
-            );
-          }
-
-          return undefined;
+          return imageData ? imgDataToBuffer(imageData) : undefined;
         };
         const scheduleSaveState = (screenshot?: Buffer): void => {
           window.setTimeout(

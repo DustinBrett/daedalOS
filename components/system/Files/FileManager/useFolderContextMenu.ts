@@ -1,3 +1,4 @@
+import { WALLPAPER_MENU } from "components/system/Desktop/Wallpapers/constants";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
 import type {
@@ -6,16 +7,32 @@ import type {
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import type {
+  ContextMenuCapture,
+  MenuItem,
+} from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { dirname, join } from "path";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
+  DESKTOP_PATH,
   FOLDER_ICON,
-  isFileSystemSupported,
   MENU_SEPERATOR,
+  isFileSystemMappingSupported,
 } from "utils/constants";
+import {
+  bufferToBlob,
+  generatePrettyTimestamp,
+  isFirefox,
+  isSafari,
+} from "utils/functions";
+
+const stopGlobalMusicVisualization = (): void =>
+  window.WebampGlobal?.store.dispatch({
+    enabled: false,
+    type: "SET_MILKDROP_DESKTOP",
+  });
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -30,8 +47,13 @@ const updateSortBy =
     [value, sortBy === value ? !isAscending : defaultIsAscending];
 
 const EASTER_EGG_CLICK_COUNT = 2;
+const CAPTURE_FPS = 30;
+const MIME_TYPE_VIDEO_WEBM = "video/webm";
+const MIME_TYPE_VIDEO_MP4 = "video/mp4";
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
+
+let currentMediaStream: MediaStream | undefined;
 
 const useFolderContextMenu = (
   url: string,
@@ -44,7 +66,13 @@ const useFolderContextMenu = (
   isDesktop?: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { mapFs, pasteList = {}, updateFolder } = useFileSystem();
+  const {
+    mapFs,
+    pasteList = {},
+    readFile,
+    writeFile,
+    updateFolder,
+  } = useFileSystem();
   const {
     setWallpaper: setSessionWallpaper,
     setIconPositions,
@@ -88,164 +116,272 @@ const useFolderContextMenu = (
     },
     [setIconPositions, setSortBy, url]
   );
-  const getItems = useCallback(() => {
-    const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
-    const MAP_DIRECTORY = {
-      action: () =>
-        mapFs(url)
-          .then((mappedFolder) => {
-            updateFolder(url, mappedFolder);
-            open("FileExplorer", { url: join(url, mappedFolder) });
-          })
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .catch(() => {}),
-      label: "Map directory",
+  const canCapture = useMemo(
+    () =>
+      isDesktop &&
+      typeof window !== "undefined" &&
+      typeof navigator?.mediaDevices?.getDisplayMedia === "function" &&
+      (window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_WEBM) ||
+        window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_MP4)) &&
+      !isSafari(),
+    [isDesktop]
+  );
+  const captureScreen = useCallback(async () => {
+    if (currentMediaStream) {
+      const { active: wasActive } = currentMediaStream;
+
+      currentMediaStream.getTracks().forEach((track) => track.stop());
+      currentMediaStream = undefined;
+
+      if (wasActive) return;
+    }
+
+    const displayMediaOptions: DisplayMediaStreamOptions &
+      MediaStreamConstraints = {
+      video: {
+        frameRate: CAPTURE_FPS,
+      },
+      ...(!isFirefox() &&
+        !isSafari() && {
+          preferCurrentTab: true,
+          selfBrowserSurface: "include",
+          surfaceSwitching: "include",
+          systemAudio: "include",
+        }),
     };
-    const FS_COMMANDS = isFileSystemSupported()
-      ? [ADD_FILE, MAP_DIRECTORY]
-      : [ADD_FILE];
+    currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
+      displayMediaOptions
+    );
 
-    return [
-      {
-        label: "Sort by",
-        menu: [
+    const [currentVideoTrack] = currentMediaStream.getVideoTracks();
+    const { height, width } = currentVideoTrack.getSettings();
+    const mediaRecorder = new MediaRecorder(currentMediaStream, {
+      bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
+      mimeType: MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM)
+        ? MIME_TYPE_VIDEO_WEBM
+        : MIME_TYPE_VIDEO_MP4,
+    });
+    const fileName = `Screen Capture ${generatePrettyTimestamp()}.webm`;
+    const capturePath = join(DESKTOP_PATH, fileName);
+    const startTime = Date.now();
+    let hasCapturedData = false;
+
+    mediaRecorder.start();
+    mediaRecorder.addEventListener("dataavailable", async (event) => {
+      const { data } = event;
+
+      if (data) {
+        const bufferData = Buffer.from(await data.arrayBuffer());
+
+        await writeFile(
+          capturePath,
+          hasCapturedData
+            ? Buffer.concat([await readFile(capturePath), bufferData])
+            : bufferData,
+          hasCapturedData
+        );
+
+        if (mediaRecorder.state === "inactive") {
+          const { default: fixWebmDuration } = await import(
+            "fix-webm-duration"
+          );
+
+          fixWebmDuration(
+            bufferToBlob(await readFile(capturePath)),
+            Date.now() - startTime,
+            async (capturedFile) => {
+              await writeFile(
+                capturePath,
+                Buffer.from(await capturedFile.arrayBuffer()),
+                true
+              );
+              updateFolder(DESKTOP_PATH, fileName);
+            }
+          );
+        }
+
+        hasCapturedData = true;
+      }
+    });
+  }, [readFile, updateFolder, writeFile]);
+
+  return useMemo(
+    () =>
+      contextMenu?.(() => {
+        const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
+        const MAP_DIRECTORY = {
+          action: () =>
+            mapFs(url)
+              .then((mappedFolder) => {
+                updateFolder(url, mappedFolder);
+                open("FileExplorer", { url: join(url, mappedFolder) });
+              })
+              .catch(() => {
+                // Ignore failure to map
+              }),
+          label: "Map directory",
+        };
+        const FS_COMMANDS = [
+          ADD_FILE,
+          ...(isFileSystemMappingSupported() ? [MAP_DIRECTORY] : []),
+        ];
+        const isMusicVisualizationRunning =
+          document.querySelector("main .webamp-desktop canvas") instanceof
+          HTMLCanvasElement;
+
+        return [
           {
-            action: () => updateSorting("name", true),
-            label: "Name",
-            toggle: sortBy === "name",
+            label: "Sort by",
+            menu: [
+              {
+                action: () => updateSorting("name", true),
+                label: "Name",
+                toggle: sortBy === "name",
+              },
+              {
+                action: () => updateSorting("size", false),
+                label: "Size",
+                toggle: sortBy === "size",
+              },
+              {
+                action: () => updateSorting("type", true),
+                label: "Item type",
+                toggle: sortBy === "type",
+              },
+              {
+                action: () => updateSorting("date", false),
+                label: "Date modified",
+                toggle: sortBy === "date",
+              },
+              MENU_SEPERATOR,
+              {
+                action: () => updateSorting("", true),
+                label: "Ascending",
+                toggle: isAscending,
+              },
+              {
+                action: () => updateSorting("", false),
+                label: "Descending",
+                toggle: !isAscending,
+              },
+            ],
+          },
+          { action: () => updateFolder(url), label: "Refresh" },
+          ...(isDesktop
+            ? [
+                MENU_SEPERATOR,
+                {
+                  label: "Background",
+                  menu: WALLPAPER_MENU.filter(
+                    ({ requiresWebGPU }) =>
+                      !requiresWebGPU ||
+                      (typeof navigator !== "undefined" && "gpu" in navigator)
+                  ).reduce<MenuItem[]>(
+                    (menu, item) => [
+                      ...menu,
+                      {
+                        action: () => {
+                          if (isMusicVisualizationRunning) {
+                            stopGlobalMusicVisualization?.();
+                          }
+                          if (item.id) setWallpaper(item.id);
+                        },
+                        label: item.name || item.id,
+                        toggle: item.startsWith
+                          ? wallpaperImage.startsWith(item.id)
+                          : wallpaperImage === item.id,
+                      },
+                    ],
+                    isMusicVisualizationRunning
+                      ? [
+                          {
+                            action: stopGlobalMusicVisualization,
+                            checked: true,
+                            label: "Music Visualization",
+                          },
+                          MENU_SEPERATOR,
+                        ]
+                      : []
+                  ),
+                },
+                ...(canCapture
+                  ? [
+                      {
+                        action: captureScreen,
+                        label: currentMediaStream?.active
+                          ? "Stop screen capture"
+                          : "Capture screen",
+                      },
+                    ]
+                  : []),
+              ]
+            : []),
+          MENU_SEPERATOR,
+          ...FS_COMMANDS,
+          {
+            action: () => open("Terminal", { url }),
+            label: "Open Terminal here",
           },
           {
-            action: () => updateSorting("size", false),
-            label: "Size",
-            toggle: sortBy === "size",
-          },
-          {
-            action: () => updateSorting("type", true),
-            label: "Item type",
-            toggle: sortBy === "type",
-          },
-          {
-            action: () => updateSorting("date", false),
-            label: "Date modified",
-            toggle: sortBy === "date",
+            action: () => pasteToFolder(),
+            disabled: Object.keys(pasteList).length === 0,
+            label: "Paste",
           },
           MENU_SEPERATOR,
           {
-            action: () => updateSorting("", true),
-            label: "Ascending",
-            toggle: isAscending,
+            label: "New",
+            menu: [
+              {
+                action: () => newPath(NEW_FOLDER, undefined, "rename"),
+                icon: FOLDER_ICON,
+                label: "Folder",
+              },
+              MENU_SEPERATOR,
+              {
+                action: () =>
+                  newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
+                icon: richTextDocumentIcon,
+                label: "Rich Text Document",
+              },
+              {
+                action: () =>
+                  newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
+                icon: textDocumentIcon,
+                label: "Text Document",
+              },
+            ],
           },
-          {
-            action: () => updateSorting("", false),
-            label: "Descending",
-            toggle: !isAscending,
-          },
-        ],
-      },
-      { action: () => updateFolder(url), label: "Refresh" },
-      ...(isDesktop
-        ? [
-            MENU_SEPERATOR,
-            {
-              label: "Background",
-              menu: [
+          ...(isDesktop
+            ? [
+                MENU_SEPERATOR,
                 {
-                  action: () => setWallpaper("APOD"),
-                  label: "APOD",
-                  toggle: wallpaperImage.startsWith("APOD"),
+                  action: () => open("DevTools", { url: "dom" }),
+                  label: "Inspect",
                 },
-                {
-                  action: () => setWallpaper("COASTAL_LANDSCAPE"),
-                  label: "Coastal Landscape",
-                  toggle: wallpaperImage === "COASTAL_LANDSCAPE",
-                },
-                {
-                  action: () => setWallpaper("HEXELLS"),
-                  label: "Hexells",
-                  toggle: wallpaperImage === "HEXELLS",
-                },
-                {
-                  action: () => setWallpaper("MATRIX 2D"),
-                  label: "Matrix (2D)",
-                  toggle: wallpaperImage === "MATRIX 2D",
-                },
-                {
-                  action: () => setWallpaper("MATRIX 3D"),
-                  label: "Matrix (3D)",
-                  toggle: wallpaperImage === "MATRIX 3D",
-                },
-                {
-                  action: () => setWallpaper("VANTA"),
-                  label: `Vanta Waves${
-                    wallpaperImage === "VANTA WIREFRAME" ? " (Wireframe)" : ""
-                  }`,
-                  toggle: wallpaperImage.startsWith("VANTA"),
-                },
-              ],
-            },
-          ]
-        : []),
-      MENU_SEPERATOR,
-      ...FS_COMMANDS,
-      {
-        action: () => open("Terminal", { url }),
-        label: "Open Terminal here",
-      },
-      {
-        action: () => pasteToFolder(),
-        disabled: Object.keys(pasteList).length === 0,
-        label: "Paste",
-      },
-      MENU_SEPERATOR,
-      {
-        label: "New",
-        menu: [
-          {
-            action: () => newPath(NEW_FOLDER, undefined, "rename"),
-            icon: FOLDER_ICON,
-            label: "Folder",
-          },
-          MENU_SEPERATOR,
-          {
-            action: () => newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
-            icon: richTextDocumentIcon,
-            label: "Rich Text Document",
-          },
-          {
-            action: () => newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
-            icon: textDocumentIcon,
-            label: "Text Document",
-          },
-        ],
-      },
-      ...(isDesktop
-        ? [
-            MENU_SEPERATOR,
-            {
-              action: () => open("DevTools", { url: "dom" }),
-              label: "Inspect",
-            },
-          ]
-        : []),
-    ];
-  }, [
-    addToFolder,
-    isAscending,
-    isDesktop,
-    mapFs,
-    newPath,
-    open,
-    pasteList,
-    pasteToFolder,
-    setWallpaper,
-    sortBy,
-    updateFolder,
-    updateSorting,
-    url,
-    wallpaperImage,
-  ]);
-
-  return contextMenu?.(getItems);
+              ]
+            : []),
+        ];
+      }),
+    [
+      addToFolder,
+      canCapture,
+      captureScreen,
+      contextMenu,
+      isAscending,
+      isDesktop,
+      mapFs,
+      newPath,
+      open,
+      pasteList,
+      pasteToFolder,
+      setWallpaper,
+      sortBy,
+      updateFolder,
+      updateSorting,
+      url,
+      wallpaperImage,
+    ]
+  );
 };
 
 export default useFolderContextMenu;

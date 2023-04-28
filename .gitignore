@@ -4,24 +4,27 @@ node_modules
 out
 
 public/robots.txt
-public/session.json
 public/sitemap.xml
 public/.index/*
 public/Users/Public/**
 
 !public/Users/**/desktop.ini
 !public/Users/Public/Desktop
-!public/Users/Public/Desktop/My PC.url
+!public/Users/Public/Desktop/*
 !public/Users/Public/Documents
 !public/Users/Public/Documents/Stream Notes
 !public/Users/Public/Documents/Stream Notes/*.md
 !public/Users/Public/Music
 !public/Users/Public/Pictures
+!public/Users/Public/Pictures/prompts.json
 !public/Users/Public/Start Menu
 !public/Users/Public/Start Menu/*.url
 !public/Users/Public/Start Menu/Emulators
 !public/Users/Public/Start Menu/Emulators/*.url
 !public/Users/Public/Start Menu/Games
+!public/Users/Public/Start Menu/Games/ClassiCube.url
+!public/Users/Public/Start Menu/Games/DX-Ball.url
+!public/Users/Public/Start Menu/Games/Quake III Arena.url
 !public/Users/Public/Start Menu/Games/Space Cadet.url
 !public/Users/Public/Videos
 !public/Users/Public/Videos/Make an OS with ReactJS & Next.js

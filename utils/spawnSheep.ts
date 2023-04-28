@@ -1,8 +1,14 @@
 import { loadFiles } from "utils/functions";
 
+type SheepOptions = {
+  allowPopup: string;
+  collisionsWith: string[];
+  spawnContainer: HTMLElement;
+};
+
 declare global {
   interface Window {
-    Sheep?: new (config: { allowPopup: string; collisionsWith: string[] }) => {
+    Sheep?: new (options: SheepOptions) => {
       Start: (animationXmlUrl: string) => void;
     };
   }
@@ -27,8 +33,7 @@ const pickRandomPet = (): string => {
   const petNames = Object.keys(PETS).flatMap((pet) => {
     const [, probability] = PETS[pet];
 
-    // eslint-disable-next-line unicorn/new-for-builtins
-    return Array(probability).fill(pet) as string[];
+    return Array.from({ length: probability }).fill(pet) as string[];
   });
   const randomPet = Math.floor(Math.random() * petNames.length);
   const [petPath] = PETS[petNames[randomPet]];
@@ -42,13 +47,14 @@ const spawnSheep = (): Promise<void> =>
       const sheep = new window.Sheep({
         allowPopup: "no",
         collisionsWith: ["nav", "section"],
+        spawnContainer: document.querySelector("main") as HTMLElement,
       });
 
-      if (!oneSheepLaunched) {
+      if (oneSheepLaunched) {
+        sheep.Start(pickRandomPet());
+      } else {
         oneSheepLaunched = true;
         sheep.Start("/Program Files/eSheep/eSheep.xml");
-      } else {
-        sheep.Start(pickRandomPet());
       }
     }
   });

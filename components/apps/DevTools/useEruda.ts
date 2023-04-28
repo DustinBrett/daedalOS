@@ -1,13 +1,12 @@
 import { useProcesses } from "contexts/process";
 import type Eruda from "eruda";
-import type { InitOptions, Tool } from "eruda";
+import type { InitOptions } from "eruda";
 import { useEffect } from "react";
 import { loadFiles, viewWidth } from "utils/functions";
 
 declare global {
   interface Window {
     eruda?: typeof Eruda;
-    erudaDom?: Tool;
   }
 }
 
@@ -21,8 +20,8 @@ const config: InitOptions = {
   useShadowDom: false,
 };
 
-const FULL_TOOLBAR_WIDTH = 438;
-const ELEMENTS_BUTTON_WIDTH = 68;
+const FULL_TOOLBAR_WIDTH = 395;
+const RESOURCES_BUTTON_WIDTH = 74;
 
 const useEruda = (
   id: string,
@@ -36,7 +35,7 @@ const useEruda = (
 
   useEffect(() => {
     loadFiles(libs).then(() => {
-      if (window.eruda && window.erudaDom && containerRef.current) {
+      if (window.eruda && containerRef.current) {
         const container = containerRef.current.querySelector(
           "div"
         ) as HTMLElement;
@@ -47,13 +46,12 @@ const useEruda = (
             ...config,
             container,
           });
-          window.eruda.add(window.erudaDom);
           window.eruda.remove("info");
           window.eruda.remove("snippets");
           if (vw < FULL_TOOLBAR_WIDTH) {
-            window.eruda.remove("elements");
+            window.eruda.remove("resources");
           }
-          if (vw < FULL_TOOLBAR_WIDTH - ELEMENTS_BUTTON_WIDTH) {
+          if (vw < FULL_TOOLBAR_WIDTH - RESOURCES_BUTTON_WIDTH) {
             window.eruda.remove("sources");
           }
           window.eruda.show();
@@ -64,7 +62,7 @@ const useEruda = (
   }, [containerRef, libs, setLoading]);
 
   useEffect(() => {
-    if (window.eruda && url && !loading) {
+    if (window.eruda && url && !loading && !closing) {
       window.eruda.show(url);
     }
 

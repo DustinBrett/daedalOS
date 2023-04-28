@@ -1,3 +1,4 @@
+import { parseCommand } from "components/apps/Terminal/functions";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
@@ -10,7 +11,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, extname, join } from "path";
+import { basename, join } from "path";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   DESKTOP_PATH,
@@ -18,7 +19,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import spawnSheep from "utils/spawnSheep";
 
@@ -29,6 +30,7 @@ const resourceAliasMap: Record<string, string> = {
   dos: "JSDOS",
   explorer: "FileExplorer",
   monaco: "MonacoEditor",
+  mspaint: "Paint",
   vlc: "VideoPlayer",
 };
 
@@ -65,11 +67,11 @@ const Run: FC<ComponentProcessProps> = () => {
 
       const addRunHistoryEntry = (): void =>
         setRunHistory((currentRunHistory) =>
-          currentRunHistory[0] !== resource
-            ? [resource, ...currentRunHistory]
-            : currentRunHistory
+          currentRunHistory[0] === resource
+            ? currentRunHistory
+            : [resource, ...currentRunHistory]
         );
-      const [resourcePid, ...resourceUrl] = resource.split(" ");
+      const [resourcePid, ...resourceUrl] = parseCommand(resource);
       let resourcePath = resource;
       let closeOnExecute = true;
       const resourceExists = await exists(resourcePath);
@@ -128,7 +130,7 @@ const Run: FC<ComponentProcessProps> = () => {
             closeOnExecute = false;
           }
         } else {
-          const extension = extname(resourcePath);
+          const extension = getExtension(resourcePath);
 
           if (extension === SHORTCUT_EXTENSION) {
             const { pid, url } = getShortcutInfo(await readFile(resourcePath));
@@ -200,7 +202,14 @@ const Run: FC<ComponentProcessProps> = () => {
   }, [runProcess?.url]);
 
   return (
-    <StyledRun {...useFileDrop({ id: "Run" })}>
+    <StyledRun
+      {...useFileDrop({ id: "Run" })}
+      onContextMenu={(event) => {
+        if (!(event.target instanceof HTMLInputElement)) {
+          haltEvent(event);
+        }
+      }}
+    >
       <figure>
         <img alt="Run" src="/System/Icons/32x32/run.webp" />
         <figcaption>{MESSAGE}</figcaption>

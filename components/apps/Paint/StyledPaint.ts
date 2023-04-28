@@ -1,7 +1,12 @@
 import styled from "styled-components";
 
-const StyledPaint = styled.div`
+type StyledPaintProps = {
+  $loaded: boolean;
+};
+
+const StyledPaint = styled.div<StyledPaintProps>`
   iframe {
+    opacity: ${({ $loaded }) => ($loaded ? "100%" : "0%")};
     transition: opacity 0.25s ease-in;
   }
 
@@ -10,7 +15,7 @@ const StyledPaint = styled.div`
       color: #fff;
       font-weight: 500;
       mix-blend-mode: normal;
-      text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+      text-shadow: 1px 2px 3px rgba(0, 0, 0, 50%);
     }
   }
 `;

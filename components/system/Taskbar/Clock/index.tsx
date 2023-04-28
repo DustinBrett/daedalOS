@@ -4,7 +4,7 @@ import useClockContextMenu from "components/system/Taskbar/Clock/useClockContext
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
   ONE_TIME_PASSIVE_EVENT,
@@ -62,7 +62,9 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 const Clock: FC = () => {
-  const [now, setNow] = useState<LocaleTimeDate>({} as LocaleTimeDate);
+  const [now, setNow] = useState<LocaleTimeDate>(
+    Object.create(null) as LocaleTimeDate
+  );
   const { date, time } = now;
   const { clockSource } = useSession();
   const clockWorkerInit = useCallback(
@@ -76,12 +78,21 @@ const Clock: FC = () => {
       ),
     [clockSource]
   );
+  const offScreenClockCanvas = useRef<OffscreenCanvas>();
+  const supportsOffscreenCanvas = useMemo(
+    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
+    []
+  );
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
       if (data === "source") {
         (clockWorker as Worker).postMessage(clockSource);
       } else {
-        setNow(data);
+        setNow((currentNow) =>
+          !offScreenClockCanvas.current || currentNow.date !== data.date
+            ? data
+            : currentNow
+        );
       }
     },
     [clockSource]
@@ -91,9 +102,34 @@ const Clock: FC = () => {
     clockWorkerInit,
     updateTime
   );
-  const offScreenClockCanvas = useRef<OffscreenCanvas>();
-  const supportsOffscreenCanvas =
-    typeof window !== "undefined" && "OffscreenCanvas" in window;
+  const clockCallbackRef = useCallback(
+    (clockContainer: HTMLDivElement | null) => {
+      if (
+        !offScreenClockCanvas.current &&
+        currentWorker.current &&
+        clockContainer instanceof HTMLDivElement
+      ) {
+        [...clockContainer.children].forEach((element) => element.remove());
+
+        offScreenClockCanvas.current = createOffscreenCanvas(
+          clockContainer,
+          window.devicePixelRatio,
+          clockSize
+        );
+
+        currentWorker.current.postMessage(
+          {
+            canvas: offScreenClockCanvas.current,
+            devicePixelRatio: window.devicePixelRatio,
+          },
+          [offScreenClockCanvas.current]
+        );
+      }
+    },
+    // NOTE: Need `now` in the dependency array to ensure the clock is updated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentWorker, now]
+  );
 
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
@@ -120,41 +156,20 @@ const Clock: FC = () => {
     }
   }, [currentWorker, supportsOffscreenCanvas]);
 
-  if (!time) return <></>;
+  // eslint-disable-next-line unicorn/no-null
+  if (!time) return null;
 
   return (
     <StyledClock
-      ref={(clockContainer) => {
-        if (
-          supportsOffscreenCanvas &&
-          !offScreenClockCanvas.current &&
-          currentWorker.current &&
-          clockContainer instanceof HTMLDivElement
-        ) {
-          [...clockContainer.children].forEach((element) => element.remove());
-
-          offScreenClockCanvas.current = createOffscreenCanvas(
-            clockContainer,
-            window.devicePixelRatio,
-            clockSize
-          );
-
-          currentWorker.current.postMessage(
-            {
-              canvas: offScreenClockCanvas.current,
-              devicePixelRatio: window.devicePixelRatio,
-            },
-            [offScreenClockCanvas.current]
-          );
-        }
-      }}
-      aria-label={!supportsOffscreenCanvas ? "Clock" : undefined}
+      ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+      aria-label="Clock"
       onClick={easterEggOnClick}
+      role="timer"
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
     >
-      {!supportsOffscreenCanvas ? time : undefined}
+      {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>
   );
 };
