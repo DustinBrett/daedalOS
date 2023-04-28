@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  tests:
+  test-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
         run: yarn test
       - name: Run pre-Deploy
         run: yarn deploy
-      - name: Deploy 🚀
-          uses: JamesIves/github-pages-deploy-action@v4
-          with:
-            folder: out
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out
