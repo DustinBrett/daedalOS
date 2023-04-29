@@ -38,8 +38,8 @@ const supportsWebGPU = async (): Promise<boolean> => {
   return !insufficientLimits;
 };
 
-export const useWebGPUCheck = (): boolean => {
-  const [hasWebGPU, setHasWebGPU] = useState(false);
+export const useWebGPUCheck = (): boolean | undefined => {
+  const [hasWebGPU, setHasWebGPU] = useState<boolean | undefined>();
   const checkWebGPU = useCallback(
     async () => setHasWebGPU(await supportsWebGPU()),
     []

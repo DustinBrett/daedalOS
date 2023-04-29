@@ -124,6 +124,8 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   }, []);
   const sendMessage = useCallback(
     (userMessage: string): void => {
+      if (!AI) return;
+
       const [botMessages, userMessages] = messages
         .map((message) => {
           if (message.command && message.type === "user") {
@@ -359,7 +361,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
     if (initRef.current) {
       cleanUp = () => AI?.destroy?.();
-    } else {
+    } else if (AI) {
       initRef.current = true;
 
       AI.init().then(() => addMessage(AI.greeting));

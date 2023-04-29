@@ -3,7 +3,7 @@ import { HuggingFace } from "hooks/useInference/huggingFace";
 import { OpenAI } from "hooks/useInference/openAI";
 import { WebLLM } from "hooks/useInference/WebLLM";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DEFAULT_AI_API, DEFAULT_NON_WEBGPU_ENGINE } from "utils/constants";
 
 export type Engine = {
@@ -30,7 +30,7 @@ type EngineClass = new (
 ) => Engine;
 
 type Inference = {
-  engine: Engine;
+  engine?: Engine;
   error: number;
   name: string;
   resetError: () => void;
@@ -41,19 +41,30 @@ const Engines = { HuggingFace, OpenAI, WebLLM } as Record<string, EngineClass>;
 export const useInference = (apiKey = "", engine = ""): Inference => {
   const [error, setError] = useState<number>(0);
   const hasWebGPU = useWebGPUCheck();
-  const [DEFAULT_ENGINE] = DEFAULT_AI_API.split(":");
-  let activeEngine = DEFAULT_ENGINE;
+  const [activeEngine, setActiveEngine] = useState<string>("");
 
-  if (engine && engine in Engines) {
-    activeEngine =
-      engine === "WebLLM" && !hasWebGPU ? DEFAULT_NON_WEBGPU_ENGINE : engine;
-  } else if (activeEngine === "WebLLM" && !hasWebGPU) {
-    activeEngine = DEFAULT_NON_WEBGPU_ENGINE;
-  }
+  useEffect(() => {
+    if (typeof hasWebGPU === "boolean") {
+      const [DEFAULT_ENGINE] = DEFAULT_AI_API.split(":");
+      let currentEngine = DEFAULT_ENGINE;
+
+      if (engine && engine in Engines) {
+        currentEngine =
+          engine === "WebLLM" && !hasWebGPU
+            ? DEFAULT_NON_WEBGPU_ENGINE
+            : engine;
+      } else if (currentEngine === "WebLLM" && !hasWebGPU) {
+        currentEngine = DEFAULT_NON_WEBGPU_ENGINE;
+      }
+
+      setActiveEngine(currentEngine);
+    }
+  }, [engine, hasWebGPU]);
 
   return {
     engine: useMemo(
-      () => new Engines[activeEngine](apiKey, setError),
+      () =>
+        activeEngine ? new Engines[activeEngine](apiKey, setError) : undefined,
       [activeEngine, apiKey]
     ),
     error,
