@@ -52,7 +52,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           const wrapped = `<html><body></body><script>${runtimeSrc}</script><script>${fileSrc}</script></html>`;
           setSrcDoc(wrapped);
         }
-        setIcon(id, processDirectory["Browser"].icon);
+        setIcon(id, processDirectory.Browser.icon);
       }
     },
     [exists, id, readFile, setIcon]
