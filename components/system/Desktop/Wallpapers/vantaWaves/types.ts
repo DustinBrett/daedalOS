@@ -1,7 +1,7 @@
 import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 type VantaWavesCycleColor = {
-  colorCycleSpeed?: number;
+  colorCycleSpeed?: number | boolean;
   hue?: number;
   lightness?: number;
   saturation?: number;
