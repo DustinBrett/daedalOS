@@ -38,7 +38,7 @@ import {
 
 declare global {
   interface Window {
-    WallpaperDestroy: () => void;
+    WallpaperDestroy?: () => void;
   }
 }
 
@@ -87,7 +87,7 @@ const useWallpaper = (
 
         wallpaperTimerRef.current = window.setTimeout(
           () => loadWallpaper(true),
-          MILLISECONDS_IN_MINUTE * 5
+          MILLISECONDS_IN_MINUTE * 10
         );
       }
 
@@ -98,9 +98,9 @@ const useWallpaper = (
 
       if (!keepCanvas) {
         desktopRef.current.querySelector(BASE_CANVAS_SELECTOR)?.remove();
-      }
 
-      window.WallpaperDestroy?.();
+        window.WallpaperDestroy?.();
+      }
 
       if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
         const workerConfig = { config, devicePixelRatio: 1 };
@@ -114,6 +114,32 @@ const useWallpaper = (
             { canvas: offscreen, ...workerConfig },
             [offscreen]
           );
+
+          if (wallpaperName === "STABLE_DIFFUSION") {
+            const loadingStatus = document.createElement("div");
+
+            loadingStatus.id = "loading-status";
+
+            desktopRef.current?.append(loadingStatus);
+
+            window.WallpaperDestroy = () => {
+              loadingStatus.remove();
+              window.WallpaperDestroy = undefined;
+            };
+
+            wallpaperWorker.current.addEventListener(
+              "message",
+              ({ data }: { data: { message: string; type: string } }) => {
+                if (data.type === "[error]") {
+                  setWallpaper("VANTA");
+                } else if (data.type) {
+                  loadingStatus.textContent = data.message || "";
+                }
+
+                loadingStatus.style.display = data.message ? "block" : "none";
+              }
+            );
+          }
         }
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         WALLPAPER_PATHS[wallpaperName]().then(({ default: wallpaper }) =>
@@ -168,6 +194,8 @@ const useWallpaper = (
 
     desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
     desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
+
+    window.WallpaperDestroy?.();
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
