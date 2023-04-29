@@ -13,6 +13,7 @@ import type {
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { dirname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
@@ -204,6 +205,7 @@ const useFolderContextMenu = (
       }
     });
   }, [readFile, updateFolder, writeFile]);
+  const hasWebGPU = useWebGPUCheck();
 
   return useMemo(
     () =>
@@ -273,9 +275,7 @@ const useFolderContextMenu = (
                 {
                   label: "Background",
                   menu: WALLPAPER_MENU.filter(
-                    ({ requiresWebGPU }) =>
-                      !requiresWebGPU ||
-                      (typeof navigator !== "undefined" && "gpu" in navigator)
+                    ({ requiresWebGPU }) => !requiresWebGPU || hasWebGPU
                   ).reduce<MenuItem[]>(
                     (menu, item) => [
                       ...menu,
@@ -367,6 +367,7 @@ const useFolderContextMenu = (
       canCapture,
       captureScreen,
       contextMenu,
+      hasWebGPU,
       isAscending,
       isDesktop,
       mapFs,

@@ -2,6 +2,7 @@ import type { Message } from "components/apps/Chat/types";
 import { HuggingFace } from "hooks/useInference/huggingFace";
 import { OpenAI } from "hooks/useInference/openAI";
 import { WebLLM } from "hooks/useInference/WebLLM";
+import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { useMemo, useState } from "react";
 import { DEFAULT_AI_API, DEFAULT_NON_WEBGPU_ENGINE } from "utils/constants";
 
@@ -39,16 +40,14 @@ const Engines = { HuggingFace, OpenAI, WebLLM } as Record<string, EngineClass>;
 
 export const useInference = (apiKey = "", engine = ""): Inference => {
   const [error, setError] = useState<number>(0);
+  const hasWebGPU = useWebGPUCheck();
   const [DEFAULT_ENGINE] = DEFAULT_AI_API.split(":");
-  const supportsWebGPU = "gpu" in navigator;
   let activeEngine = DEFAULT_ENGINE;
 
   if (engine && engine in Engines) {
     activeEngine =
-      engine === "WebLLM" && !supportsWebGPU
-        ? DEFAULT_NON_WEBGPU_ENGINE
-        : engine;
-  } else if (activeEngine === "WebLLM" && !supportsWebGPU) {
+      engine === "WebLLM" && !hasWebGPU ? DEFAULT_NON_WEBGPU_ENGINE : engine;
+  } else if (activeEngine === "WebLLM" && !hasWebGPU) {
     activeEngine = DEFAULT_NON_WEBGPU_ENGINE;
   }
 
