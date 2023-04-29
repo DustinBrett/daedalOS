@@ -18,6 +18,9 @@ const colors = {
       0 2px 1px rgba(0, 0, 0, 75%),
       0 2px 2px rgba(0, 0, 0, 50%)`,
   },
+  fileExplorer: {
+    backdropFilter: "none",
+  },
   highlight: "hsla(207, 100%, 72%, 90%)",
   highlightBackground: "hsla(207, 100%, 72%, 20%)",
   progress: "hsla(113, 78%, 56%, 90%)",

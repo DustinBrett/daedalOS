@@ -1,7 +1,7 @@
 import type { DefaultTheme } from "styled-components";
-import defaultTheme from "styles/defaultTheme";
+import kumavisTheme from "styles/kumavisTheme";
 
-const themes = { defaultTheme };
+const themes = { defaultTheme: kumavisTheme };
 
 export type ThemeName = keyof typeof themes;
 

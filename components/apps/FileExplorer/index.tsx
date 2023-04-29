@@ -91,10 +91,13 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     return () => componentWindow?.removeEventListener("keydown", onKeyDown);
   }, [componentWindow, onKeyDown]);
 
+  const showStatusBar = false;
+  const showNavigation = false;
+
   return url ? (
-    <StyledFileExplorer>
-      <Navigation ref={inputRef} hideSearch={isMounted} id={id} />
-      <FileManager id={id} url={url} view="icon" showStatusBar />
+    <StyledFileExplorer showStatusBar={showStatusBar} showNavigation={showNavigation}>
+      {showNavigation && <Navigation ref={inputRef} hideSearch={isMounted} id={id} />}
+      <FileManager id={id} url={url} view="icon" showStatusBar={showStatusBar} />
     </StyledFileExplorer>
   ) : // eslint-disable-next-line unicorn/no-null
   null;

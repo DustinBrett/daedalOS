@@ -92,7 +92,7 @@ const directory: Processes = {
   },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
-    backgroundColor: "#202020",
+    backgroundColor: "rgba(32, 32, 32, 0.5)",
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
