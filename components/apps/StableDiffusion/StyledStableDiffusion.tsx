@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type StyledStableDiffusionProps = {
-  $hasWebGPU: boolean;
+  $hasWebGPU?: boolean;
 };
 
 const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`

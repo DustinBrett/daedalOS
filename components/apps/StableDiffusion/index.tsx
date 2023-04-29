@@ -2,6 +2,7 @@ import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableD
 import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
+import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import useWorker from "hooks/useWorker";
 import { useCallback, useMemo, useRef, useState } from "react";
 
@@ -69,9 +70,10 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
       generatedAnImage.current = true;
     }
   }, [sdWorker, statusLogger, supportsOffscreenCanvas]);
+  const hasWebGPU = useWebGPUCheck();
 
   return (
-    <StyledStableDiffusion $hasWebGPU={"gpu" in navigator}>
+    <StyledStableDiffusion $hasWebGPU={hasWebGPU}>
       <canvas ref={canvasRef} height={512} width={512} />
       <nav>
         <div>
