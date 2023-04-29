@@ -443,13 +443,13 @@ class StableDiffusionInstance {
         this.logger("[System Initalize]", "Initialize GPU device: " + label);
         tvm.initWebGPU(output.device);
       } else {
-        console.log("This browser env do not support WebGPU");
+        this.logger("This browser env do not support WebGPU");
         this.reset();
         throw Error("This browser env do not support WebGPU");
       }
     } catch (err) {
-      console.log("Find an error initializing the WebGPU device " + err.toString());
-      console.log(err.stack);
+      this.logger("Find an error initializing the WebGPU device " + err.toString());
+      console.log(err);
       this.reset();
       throw Error("Find an error initializing WebGPU: " + err.toString());
     }
@@ -567,7 +567,7 @@ class StableDiffusionInstance {
       await this.pipeline.generate(prompt, negPrompt, this.#getProgressCallback(), schedulerId, vaeCycle);
     } catch (err) {
       this.logger("Generate error, " + err.toString());
-      console.log(err.stack);
+      console.log(err);
       this.reset();
     }
     this.requestInProgress = false;
