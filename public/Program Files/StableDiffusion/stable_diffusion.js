@@ -440,15 +440,15 @@ class StableDiffusionInstance {
         } else {
           label += " - " + output.adapterInfo.vendor;
         }
-        this.logger("[System Initalize]", "Initialize GPU device: " + label);
+        this.logger("[init]", "Initialize GPU device: " + label);
         tvm.initWebGPU(output.device);
       } else {
-        this.logger("This browser env do not support WebGPU");
+        this.logger("[error]", "This browser env do not support WebGPU");
         this.reset();
         throw Error("This browser env do not support WebGPU");
       }
     } catch (err) {
-      this.logger("Find an error initializing the WebGPU device " + err.toString());
+      this.logger("[error]", "Find an error initializing the WebGPU device " + err.toString());
       console.log(err);
       this.reset();
       throw Error("Find an error initializing WebGPU: " + err.toString());
@@ -456,7 +456,7 @@ class StableDiffusionInstance {
 
     this.tvm = tvm;
     const initProgressCallback = (report) => {
-      this.logger("[Init]", report.text);
+      this.logger("[init]", report.text);
     }
     tvm.registerInitProgressCallback(initProgressCallback);
     await tvm.fetchNDArrayCache(cacheUrl, tvm.webgpu());
@@ -509,7 +509,7 @@ class StableDiffusionInstance {
         counter = totalNumSteps;
       }
       text += ", " + Math.ceil(timeElapsed) + " secs elapsed.";
-      this.logger("[Generating]", text);
+      this.logger("[generating]", text);
     }
   }
 
@@ -552,7 +552,7 @@ class StableDiffusionInstance {
    */
   async generate() {
     if (this.requestInProgress) {
-      this.logger("Request in progress, generate request ignored");
+      console.log("Request in progress, generate request ignored");
       return;
     }
     this.requestInProgress = true;
@@ -563,10 +563,10 @@ class StableDiffusionInstance {
       const [prompt = "", negPrompt = ""] = tvmjsGlobalEnv.prompts[index];
       const schedulerId = 0; // 0 = Multi-step DPM Solver (20 steps) | 1 = PNDM (50 steps)
       const vaeCycle = -1; // -1 = No | 2 = Run VAE every two UNet steps after step 10
-      this.logger("prompt", prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
+      console.log("prompt", prompt + (negPrompt ? " (Negative: " + negPrompt + ")" : ""));
       await this.pipeline.generate(prompt, negPrompt, this.#getProgressCallback(), schedulerId, vaeCycle);
     } catch (err) {
-      this.logger("Generate error, " + err.toString());
+      this.logger("[error]", err.toString());
       console.log(err);
       this.reset();
     }

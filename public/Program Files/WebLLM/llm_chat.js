@@ -249,7 +249,6 @@ class LLMChatPipeline {
       return tokens;
     }
     // need shift window and re-encode
-    this.logger("need shift window")
     this.kvCacheLength = 0;
     this.clearCache = true;
     // abandon all tokens we collected
@@ -514,7 +513,7 @@ class LLMChatInstance {
 
   updateLastMessage(kind, text) {
     if (kind == "init") {
-      this.logger("[System Initalize]", text);
+      this.logger("[init]", text);
     } else if (kind == "left") {
       globalThis.tvmjsGlobalEnv.response = text;
     }
@@ -572,7 +571,6 @@ class LLMChatInstance {
       return;
     }
 
-    this.appendMessage("right", prompt);
     this.appendMessage("progress", "Generating...");
     const callbackUpdateResponse = (step, msg) => {
       if (msg.endsWith("##")) {
@@ -585,7 +583,6 @@ class LLMChatInstance {
     try {
       const output = await this.pipeline.generate(prompt, callbackUpdateResponse);
       this.updateLastMessage("left", output);
-      this.logger("[stats]", this.pipeline.runtimeStatsText());
     } catch (err) {
       this.appendMessage("error", "Generate error, " + err.toString());
       this.logger("[error]", err.toString());
