@@ -8,9 +8,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { label } from "utils/functions";
 
-import { config } from "./config";
+import StyledBrowser from "../Browser/StyledBrowser";
 import { Refresh, Stop } from "./NavigationIcons";
-import StyledBrowser from "./StyledBrowser";
+import { config } from "./config";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -70,7 +70,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   }, [currentUrl, history, position, process, setUrl]);
 
   return (
-    <StyledBrowser>
+    <StyledBrowser $hasSrcDoc={Boolean(srcDoc)}>
       <nav>
         <div>
           <Button
