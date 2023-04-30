@@ -579,6 +579,7 @@ class LLMChatInstance {
         msg = msg.substring(0, msg.length - 1);
       }
       this.updateLastMessage("left", msg);
+      this.appendMessage("progress", `Generating step: ${step}...`);
     };
     try {
       const output = await this.pipeline.generate(prompt, callbackUpdateResponse);
