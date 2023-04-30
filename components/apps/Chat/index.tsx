@@ -439,7 +439,24 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
         {status && <div className="status">{status}</div>}
         <textarea
           ref={inputRef}
-          onInput={updateHeight}
+          onInput={(event) => {
+            const { nativeEvent, target } = event;
+
+            if (
+              !(target instanceof HTMLTextAreaElement) ||
+              !(nativeEvent instanceof InputEvent)
+            ) {
+              return;
+            }
+
+            if (
+              ["insertFromPaste", "deleteByCut"].includes(nativeEvent.inputType)
+            ) {
+              setInput(target.value);
+            }
+
+            updateHeight();
+          }}
           onKeyDown={(event) => {
             if (event.key === "Enter") event.preventDefault();
           }}
