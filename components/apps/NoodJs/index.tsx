@@ -7,6 +7,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { label } from "utils/functions";
 
+import type { MessageEventHandler } from "hooks/usePostMessage";
+import { usePostMessage } from "hooks/usePostMessage";
 import StyledBrowser from "../Browser/StyledBrowser";
 import { Refresh, Stop } from "./NavigationIcons";
 import { config as iframeConfig } from "./iframeConfig";
@@ -30,32 +32,32 @@ const defaultRuntime = `{
   console.info = createLogger('info');
   console.debug = createLogger('debug');
   console.dir = createLogger('dir');
-}`
+}`;
 
 export const defaultRuntimeConfig = {
   libs: [] as string[],
   runtime: defaultRuntime,
-  transformInputSource: (source: string) => source,
+  transformInputSource: (source: string): string => source,
 };
 
 export type RuntimeConfig = typeof defaultRuntimeConfig;
 
 interface NoodjsProps extends ComponentProcessProps {
+  onMessage?: MessageEventHandler;
   runtimeConfig?: typeof defaultRuntimeConfig;
-  onMessage?: (message: any, returnMessage: any) => void;
 }
 
 const Browser: FC<NoodjsProps> = ({
   id,
   runtimeConfig = defaultRuntimeConfig,
-  onMessage = () => {},
+  onMessage,
 }) => {
+  usePostMessage(onMessage);
   const {
     icon: setIcon,
     processes: { [id]: process },
   } = useProcesses();
-  const { url = "" } = process || {};
-  const initialUrl = url;
+  const initialUrl = process.url || "";
   const { history, position } = useHistory(initialUrl, id);
   const { exists, readFile } = useFileSystem();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -66,19 +68,23 @@ const Browser: FC<NoodjsProps> = ({
     async (addressInput: string): Promise<void> => {
       const { contentWindow } = iframeRef.current || {};
       if (contentWindow?.location) {
-        const isValid = (await exists(addressInput));
+        const isValid = await exists(addressInput);
         setLoading(true);
         setSrcDoc("");
         if (isValid) {
           const fileSrc = (await readFile(addressInput)).toString();
           const srcToRun = runtimeConfig.transformInputSource(fileSrc);
           const runtimeSrc = runtimeConfig.runtime;
-          const libsSrc = Array.prototype.map.call(runtimeConfig.libs, (libSrc) => {
-            return `<script src="${libSrc}"></script>`
-          })
+          const libsSrc = Array.prototype.map
+            .call(runtimeConfig.libs, (libSrc: string) => {
+              return `<script src="${libSrc}"></script>`;
+            })
+            .join("\n");
           const wrapped = `
           <html>
-            <head>${libsSrc}</head>
+            <head>
+            ${libsSrc}
+            </head>
             <body></body>
             <script>${runtimeSrc}</script>
             <script>${srcToRun}</script>
@@ -88,7 +94,7 @@ const Browser: FC<NoodjsProps> = ({
         setIcon(id, processDirectory.Browser.icon);
       }
     },
-    [exists, id, readFile, setIcon]
+    [exists, id, readFile, setIcon, runtimeConfig]
   );
   const style = useMemo<React.CSSProperties>(
     () => ({ backgroundColor: srcDoc ? "#fff" : "initial" }),
@@ -101,19 +107,6 @@ const Browser: FC<NoodjsProps> = ({
       setCurrentUrl(history[position]);
     }
   }, [currentUrl, history, position, process, setUrl]);
-
-  // This hook is listening an event that came from the Iframe
-  useEffect(() => {
-    if (!iframeRef.current) return
-    const handler = (event: MessageEvent<any>) => {
-      const returnMessage = (message: any) => {
-        iframeRef.current?.contentWindow?.postMessage(message, '*')
-      }
-      onMessage(event, returnMessage)
-    }
-    globalThis.addEventListener('message', handler)
-    return () => globalThis.removeEventListener('message', handler)
-  }, [iframeRef.current])
 
   return (
     <StyledBrowser $hasSrcDoc={Boolean(srcDoc)}>

@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+
 import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
@@ -90,6 +92,16 @@ const directory: Processes = {
     singleton: true,
     title: "Emulator",
   },
+  Endo: {
+    Component: dynamic(() => import("components/apps/Endo")),
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/chromium.webp",
+    title: "Endo Sandboxed App",
+  },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
     backgroundColor: "rgba(32, 32, 32, 0.5)",
@@ -156,16 +168,6 @@ const directory: Processes = {
     },
     icon: "/System/Icons/chromium.webp",
     title: "NoodJs",
-  },
-  Endo: {
-    Component: dynamic(() => import("components/apps/Endo")),
-    backgroundColor: "#FFF",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
-    icon: "/System/Icons/chromium.webp",
-    title: "Endo Sandboxed App",
   },
   OpenType: {
     Component: dynamic(() => import("components/apps/OpenType")),

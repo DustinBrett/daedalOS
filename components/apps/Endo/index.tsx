@@ -2,107 +2,83 @@ import type { RuntimeConfig } from "components/apps/NoodJs";
 import Noodjs, { defaultRuntimeConfig } from "components/apps/NoodJs";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
-import { FC, useCallback, useEffect, useState } from "react";
-
-import { useFileSystem } from "contexts/fileSystem";
+import { useZip } from "hooks/useFile";
+import type { MessageEventHandler } from "hooks/usePostMessage";
+import type { FC } from "react";
+import { useCallback } from "react";
 import endoRuntime from "./runtime.js.raw";
-
-import { getExtension } from "utils/functions";
-import { unarchive, unzip } from "utils/zipFunctions";
 
 const { runtime: defaultRuntime } = defaultRuntimeConfig;
 
+type RpcMessage = {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  params: Record<string, any>;
+  type: string;
+};
+
+type ModuleLookupMessage = RpcMessage & {
+  params: {
+    location: string;
+  };
+  type: "lookupModule";
+};
+
 const textDecoder = new TextDecoder();
 
-const useFile = (path, shouldToString = false) => {
-  const [fileContent, setFileContent] = useState(null)
-  const { readFile } = useFileSystem();
-  useEffect(() => {
-    if (!path) return;
-    (async () => {
-      let fileContent = (await readFile(path));
-      if (shouldToString) {
-        fileContent = fileContent.toString();
-      }
-      setFileContent(fileContent)
-    })();
-  }, [path, readFile])
-  return fileContent;
-}
-
-const useZip = (path) => {
-  const zipContent = useFile(path);
-  const [unzippedFiles, setUnzippedFiles] = useState(null);
-  
-  useEffect(() => {
-    if (!zipContent) return;
-    (async () => {
-      const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
-        getExtension(path)
-      )
-        ? await unzip(zipContent)
-        : await unarchive(path, zipContent);
-      setUnzippedFiles(unzippedFiles);
-    })();
-  }, [path, zipContent]);
-
-  return unzippedFiles;
-}
-
-const useZipPath = (zipPath, innerPath, shouldToString = false) => {
-  const unzippedFiles = useZip(zipPath);
-  if (!unzippedFiles) return null;
-  let fileContent = unzippedFiles[innerPath];
-  if (shouldToString) {
-    return textDecoder.decode(fileContent);
-  }
-  return fileContent;
-}
-
-
-
 const Browser: FC<ComponentProcessProps> = (props) => {
-  const libs = [
-    "https://npmfs.com/download/ses/0.18.4/dist/ses.cjs",
-  ]
+  const libs = ["https://npmfs.com/download/ses/0.18.4/dist/ses.cjs"];
   const runtime = `
     ${defaultRuntime}
     // lockdown()
-    ${endoRuntime}
-  `
+    ${endoRuntime as string}
+  `;
 
   const { id } = props;
   const {
     processes: { [id]: process },
   } = useProcesses();
   const { url = "" } = process || {};
-  
-  const unzippedFiles = useZip(url);
-  // const compartmentMap = useZipPath(url, '/compartment-map.json', true)
-  const compartmentMapRaw = unzippedFiles && unzippedFiles['/compartment-map.json'];
-  const compartmentMap = compartmentMapRaw && textDecoder.decode(compartmentMapRaw);
 
-  const onMessage = useCallback(async (event, returnMessage) => {
-    if (unzippedFiles === null) return;
-    if (typeof event !== 'object') return;
-    if (typeof event.data !== 'object') return;
-    if (typeof event.data.msg !== 'object') return;
-    const message = event.data.msg;
-    if (message.type === 'lookupModule') {
-      const { location } = message.params
-      console.log('outside lookupModule', location)
-      const fileRaw = unzippedFiles[`/${location}`]
-      const fileContent = fileRaw && textDecoder.decode(fileRaw)
-      const module = JSON.parse(fileContent)
-      console.log('outside lookupModule', location, module)
-      returnMessage({ ...event.data, msg: { ...message, result: module }})
-    }
-  }, [unzippedFiles])
-  
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
+  const [unzippedFiles, zipError] = useZip(url);
+  if (zipError) {
+    throw zipError;
+  }
+  const compartmentMapRaw =
+    unzippedFiles && unzippedFiles["/compartment-map.json"];
+  const compartmentMap =
+    compartmentMapRaw && textDecoder.decode(compartmentMapRaw);
+
+  const onMessage = useCallback<MessageEventHandler>(
+    (event, returnMessage) => {
+      if (unzippedFiles === undefined) return;
+      if (typeof event.data !== "object") return;
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+      if (typeof event.data.msg !== "object") return;
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+      const message = event.data.msg as RpcMessage;
+      if (message.type === "lookupModule") {
+        const { location } = (message as ModuleLookupMessage).params;
+        const fileRaw = unzippedFiles[`/${location}`];
+        const fileContent = fileRaw && textDecoder.decode(fileRaw);
+        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
+        const result = JSON.parse(fileContent);
+        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
+        returnMessage({ ...event.data, msg: { ...message, result } });
+      }
+    },
+    [unzippedFiles]
+  );
+
+  /* eslint-disable-next-line unicorn/no-useless-undefined */
+  if (!url) return undefined;
+  /* eslint-disable-next-line unicorn/no-useless-undefined */
+  if (!compartmentMap) return undefined;
+
   const runtimeConfig: RuntimeConfig = {
     libs,
     runtime,
-    transformInputSource: (source: string) => {
+    transformInputSource: (_source: string) => {
       return `
         let nextId = 0;
         const send = (msg) => {
@@ -138,17 +114,13 @@ const Browser: FC<ComponentProcessProps> = (props) => {
         )
         console.log('executing...')
         execute();
-      `
+      `;
     },
-  }
-
-  if (!url) return null;
-  if (!compartmentMap) return null;
-  // if (!files) return null;
+  };
 
   return (
-    <Noodjs {...props} runtimeConfig={runtimeConfig} onMessage={onMessage} />
-  )
+    <Noodjs {...props} onMessage={onMessage} runtimeConfig={runtimeConfig} />
+  );
 };
 
 export default Browser;

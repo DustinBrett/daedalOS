@@ -42,6 +42,14 @@ const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
     );
   });
 
+export {
+  type AsyncZipOptions,
+  type AsyncZippable,
+  type AsyncZippableFile,
+  type Unzipped,
+} from "fflate";
+export { unzipAsync as unzip };
+
 export const zipAsync = (
   data: AsyncZippable,
   opts: AsyncZipOptions = BASE_ZIP_CONFIG
@@ -82,8 +90,6 @@ export const isFileInZip = (
       )
     );
   });
-
-export { unzipAsync as unzip };
 
 declare global {
   interface Window {
