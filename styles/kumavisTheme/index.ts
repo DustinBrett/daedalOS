@@ -1,14 +1,10 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+
 import type { DefaultTheme } from "styled-components";
 import defaultTheme from "styles/defaultTheme";
 
 const kumavisTheme: DefaultTheme = {
   ...defaultTheme,
-  sizes: {
-    ...defaultTheme.sizes,
-    fileExplorer: {
-      ...defaultTheme.sizes.fileExplorer,
-    },
-  },
   colors: {
     ...defaultTheme.colors,
     fileEntry: {
@@ -20,11 +16,11 @@ const kumavisTheme: DefaultTheme = {
       // backgroundFocused: "hsla(207, 60%, 72%, 35%)",
       // borderFocused: "hsla(207, 60%, 72%, 35%)",
       backgroundFocused: "rgba(32, 32, 32, 20%)",
-      borderFocused: "rgba(32, 32, 32, 20%)",
-
       // backgroundFocusedHover: "hsla(207, 90%, 72%, 30%)",
       // borderFocusedHover: "hsla(207, 90%, 72%, 40%)",
       backgroundFocusedHover: "rgba(64, 64, 64, 30%)",
+
+      borderFocused: "rgba(32, 32, 32, 20%)",
       borderFocusedHover: "rgba(64, 64, 64, 40%)",
     },
     fileExplorer: {
@@ -35,6 +31,12 @@ const kumavisTheme: DefaultTheme = {
     highlightBackground: "rgba(32, 32, 32, 20%)",
   },
   name: "kumavis",
+  sizes: {
+    ...defaultTheme.sizes,
+    fileExplorer: {
+      ...defaultTheme.sizes.fileExplorer,
+    },
+  },
 };
 
 export default kumavisTheme;

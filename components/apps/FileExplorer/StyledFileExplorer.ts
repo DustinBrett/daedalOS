@@ -1,24 +1,30 @@
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import StyledFileEntry from "components/system/Files/Views/Icon/StyledFileEntry";
 import StyledFileManager from "components/system/Files/Views/Icon/StyledFileManager";
-import styled, { DefaultTheme } from "styled-components";
+import type { DefaultTheme } from "styled-components";
+import styled from "styled-components";
 
 interface StyledFileExplorerProps {
   showNavigation: boolean;
   showStatusBar: boolean;
 }
 
-const navBarHeight = (theme: DefaultTheme) => theme.sizes.fileExplorer.navBarHeight;
-const statusBarHeight = (theme: DefaultTheme) => theme.sizes.fileExplorer.statusBarHeight;
+const navBarHeight = (theme: DefaultTheme): string =>
+  theme.sizes.fileExplorer.navBarHeight;
+const statusBarHeight = (theme: DefaultTheme): string =>
+  theme.sizes.fileExplorer.statusBarHeight;
 
 const StyledFileExplorer = styled.div<StyledFileExplorerProps>`
   ${StyledFileManager} {
     column-gap: 2px;
     height: ${({ theme, showNavigation, showStatusBar }) =>
-      `calc(100% - ${showNavigation ? navBarHeight(theme) : 0} - ${showStatusBar ? statusBarHeight(theme) : 0})`};
+      `calc(100% - ${showNavigation ? navBarHeight(theme) : 0} - ${
+        showStatusBar ? statusBarHeight(theme) : 0
+      })`};
     padding-left: 5px;
     padding-right: 5px;
-    backdrop-filter: ${({ theme }) => theme.colors.fileExplorer?.backdropFilter || "none"};
+    backdrop-filter: ${({ theme }) =>
+      theme.colors.fileExplorer?.backdropFilter || "none"};
   }
 
   ${StyledLoading} {
