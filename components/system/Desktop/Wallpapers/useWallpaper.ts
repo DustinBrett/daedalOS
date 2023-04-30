@@ -84,11 +84,6 @@ const useWallpaper = (
             ) as [string, string][],
           };
         }
-
-        wallpaperTimerRef.current = window.setTimeout(
-          () => loadWallpaper(true),
-          MILLISECONDS_IN_MINUTE * 10
-        );
       }
 
       document.documentElement.style.setProperty(
@@ -134,6 +129,11 @@ const useWallpaper = (
                   setWallpaper("VANTA");
                 } else if (data.type) {
                   loadingStatus.textContent = data.message || "";
+                } else if (!data.message) {
+                  wallpaperTimerRef.current = window.setTimeout(
+                    () => loadWallpaper(true),
+                    MILLISECONDS_IN_MINUTE * 10
+                  );
                 }
 
                 loadingStatus.style.display = data.message ? "block" : "none";
