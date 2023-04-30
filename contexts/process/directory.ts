@@ -154,8 +154,18 @@ const directory: Processes = {
       height: 480,
       width: 640,
     },
-    icon: "/System/Icons/chromium.png",
+    icon: "/System/Icons/chromium.webp",
     title: "NoodJs",
+  },
+  Endo: {
+    Component: dynamic(() => import("components/apps/Endo")),
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/chromium.webp",
+    title: "Endo Sandboxed App",
   },
   OpenType: {
     Component: dynamic(() => import("components/apps/OpenType")),

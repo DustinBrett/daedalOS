@@ -49,6 +49,10 @@ const nextConfig = {
         }
       })
     );
+    config.module.rules.push({
+      test: /\.raw$/,
+      use: 'raw-loader',
+    });
 
     return config;
   },
@@ -56,6 +60,6 @@ const nextConfig = {
 
 module.exports = bundleAnalyzer
   ? require("@next/bundle-analyzer")({
-      enabled: isProduction,
-    })(nextConfig)
+    enabled: isProduction,
+  })(nextConfig)
   : nextConfig;

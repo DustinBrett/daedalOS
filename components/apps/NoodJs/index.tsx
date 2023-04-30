@@ -3,16 +3,53 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
-import { extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { label } from "utils/functions";
 
 import StyledBrowser from "../Browser/StyledBrowser";
 import { Refresh, Stop } from "./NavigationIcons";
-import { config } from "./config";
+import { config as iframeConfig } from "./iframeConfig";
 
-const Browser: FC<ComponentProcessProps> = ({ id }) => {
+const defaultRuntime = `{
+  const terminal = document.createElement('pre');
+  document.body.appendChild(terminal);
+  const _console = { ...console };
+  const createLogger = (type) => {
+    if (!(type in console)) {
+      throw new Error(\`Invalid console type: \${type}\`);
+    }
+    return (...args) => {
+      _console[type](...args);
+      terminal.innerText += \`\${type}: \${args.join()}\n\`;
+    }
+  }
+  console.log = createLogger('log');
+  console.warn = createLogger('warn');
+  console.error = createLogger('error');
+  console.info = createLogger('info');
+  console.debug = createLogger('debug');
+  console.dir = createLogger('dir');
+}`
+
+export const defaultRuntimeConfig = {
+  libs: [] as string[],
+  runtime: defaultRuntime,
+  transformInputSource: (source: string) => source,
+};
+
+export type RuntimeConfig = typeof defaultRuntimeConfig;
+
+interface NoodjsProps extends ComponentProcessProps {
+  runtimeConfig?: typeof defaultRuntimeConfig;
+  onMessage?: (message: any, returnMessage: any) => void;
+}
+
+const Browser: FC<NoodjsProps> = ({
+  id,
+  runtimeConfig = defaultRuntimeConfig,
+  onMessage = () => {},
+}) => {
   const {
     icon: setIcon,
     processes: { [id]: process },
@@ -28,28 +65,24 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const setUrl = useCallback(
     async (addressInput: string): Promise<void> => {
       const { contentWindow } = iframeRef.current || {};
-
       if (contentWindow?.location) {
-        const isNood =
-          extname(addressInput).toLowerCase() === ".eval" &&
-          (await exists(addressInput));
-
+        const isValid = (await exists(addressInput));
         setLoading(true);
         setSrcDoc("");
-        if (isNood) {
+        if (isValid) {
           const fileSrc = (await readFile(addressInput)).toString();
-          const runtimeSrc = `{
-  const terminal = document.createElement('pre')
-  document.body.appendChild(terminal)
-  const _log = console.log
-  console.log = log
-
-  function log (message) {
-    _log(message)
-    terminal.innerText += \`\${message}\n\`
-  }
-}`;
-          const wrapped = `<html><body></body><script>${runtimeSrc}</script><script>${fileSrc}</script></html>`;
+          const srcToRun = runtimeConfig.transformInputSource(fileSrc);
+          const runtimeSrc = runtimeConfig.runtime;
+          const libsSrc = Array.prototype.map.call(runtimeConfig.libs, (libSrc) => {
+            return `<script src="${libSrc}"></script>`
+          })
+          const wrapped = `
+          <html>
+            <head>${libsSrc}</head>
+            <body></body>
+            <script>${runtimeSrc}</script>
+            <script>${srcToRun}</script>
+          </html>`;
           setSrcDoc(wrapped);
         }
         setIcon(id, processDirectory.Browser.icon);
@@ -68,6 +101,19 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
       setCurrentUrl(history[position]);
     }
   }, [currentUrl, history, position, process, setUrl]);
+
+  // This hook is listening an event that came from the Iframe
+  useEffect(() => {
+    if (!iframeRef.current) return
+    const handler = (event: MessageEvent<any>) => {
+      const returnMessage = (message: any) => {
+        iframeRef.current?.contentWindow?.postMessage(message, '*')
+      }
+      onMessage(event, returnMessage)
+    }
+    globalThis.addEventListener('message', handler)
+    return () => globalThis.removeEventListener('message', handler)
+  }, [iframeRef.current])
 
   return (
     <StyledBrowser $hasSrcDoc={Boolean(srcDoc)}>
@@ -88,7 +134,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         srcDoc={srcDoc || undefined}
         style={style}
         title={id}
-        {...config}
+        {...iframeConfig}
       />
     </StyledBrowser>
   );

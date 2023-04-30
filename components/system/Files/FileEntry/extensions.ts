@@ -76,6 +76,11 @@ const types = {
     process: ["NoodJs"],
     type: "Javascript Eval",
   },
+  Endo: {
+    icon: "emulator",
+    process: ["Endo"],
+    type: "Endo Sandboxed App",
+  },
   PdfDocument: {
     icon: "pdf",
     process: ["PDF"],
@@ -116,6 +121,7 @@ const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
   ".bin": types.DiscImage,
   ".eval": types.NoodJs,
+  ".agar": types.Endo,
   ".exe": types.Application,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,

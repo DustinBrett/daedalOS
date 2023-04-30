@@ -1,0 +1,4825 @@
+  // START BUNDLE RUNTIME ================================
+  const { loadApplication } = (function(){
+  'use strict';
+return (() => {
+  const functors = [
+// === functors[0] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/** @typedef {__import__('./types.js').AttenuationDefinition} AttenuationDefinition */
+/** @typedef {__import__('./types.js').UnifiedAttenuationDefinition} UnifiedAttenuationDefinition */
+
+const { entries, keys}=   Object;
+const { isArray}=   Array;
+const q=  JSON.stringify;
+
+const ATTENUATOR_KEY=  'attenuate';
+const ATTENUATOR_PARAMS_KEY=  'params';
+const WILDCARD_POLICY_VALUE=  'any';
+const POLICY_FIELDS_LOOKUP=  ['builtins', 'globals', 'packages'];
+
+/**
+ *
+ * @param {object} packagePolicy
+ * @param {string} field
+ * @param {string} itemName
+ * @returns {boolean | object}
+ */
+const        policyLookupHelper=  (packagePolicy, field, itemName)=>  {
+  if( !POLICY_FIELDS_LOOKUP.includes(field)) {
+    throw Error( `Invalid field ${q(field)}`);
+   }
+  if(
+    typeof packagePolicy!==  'object'||
+    packagePolicy===  null||
+    !packagePolicy[field])
+    {
+    return false;
+   }
+
+  if( packagePolicy[field]===  WILDCARD_POLICY_VALUE) {
+    return true;
+   }
+  if( packagePolicy[field][itemName]) {
+    return packagePolicy[field][itemName];
+   }
+  return false;
+ };
+
+/**
+ * Checks if the policy value is set to wildcard to allow everything
+ *
+ * @param {*} policyValue
+ * @returns {boolean}
+ */$h‍_once.policyLookupHelper(policyLookupHelper);
+const        isAllowingEverything=  (policyValue)=>
+  policyValue===  WILDCARD_POLICY_VALUE;
+
+/**
+ *
+ * @param {AttenuationDefinition} potentialDefinition
+ * @returns {boolean}
+ */$h‍_once.isAllowingEverything(isAllowingEverything);
+const        isAttenuationDefinition=  (potentialDefinition)=>{
+  return(
+     typeof potentialDefinition===  'object'&&
+      typeof potentialDefinition[ATTENUATOR_KEY]===  'string'||   // object with attenuator name
+    isArray(potentialDefinition) // params for default attenuator
+);
+ };
+
+/**
+ *
+ * @param {AttenuationDefinition} attenuationDefinition
+ * @returns {UnifiedAttenuationDefinition}
+ */$h‍_once.isAttenuationDefinition(isAttenuationDefinition);
+const        getAttenuatorFromDefinition=  (attenuationDefinition)=>{
+  if( !isAttenuationDefinition(attenuationDefinition)) {
+    throw Error(
+       `Invalid attenuation ${q(
+        attenuationDefinition)
+        }, must be an array of params for default attenuator or an object with an attenuator key`);
+
+   }
+  if( isArray(attenuationDefinition)) {
+    return {
+      displayName: '<default attenuator>',
+      specifier: null,
+      params: attenuationDefinition};
+
+   }else {
+    return {
+      displayName: attenuationDefinition[ATTENUATOR_KEY],
+      specifier: attenuationDefinition[ATTENUATOR_KEY],
+      params: attenuationDefinition[ATTENUATOR_PARAMS_KEY]};
+
+   }
+ };$h‍_once.getAttenuatorFromDefinition(getAttenuatorFromDefinition);
+
+const isRecordOf=  (item, predicate)=>  {
+  if( typeof item!==  'object'||  item===  null||  isArray(item)) {
+    return false;
+   }
+  return entries(item).every(([key, value])=>  predicate(value, key));
+ };
+const isBoolean=  (item)=>typeof item===  'boolean';
+const predicateOr=
+  (...predicates)=>
+  (item)=>
+    predicates.some((p)=>p(item));
+const isPolicyItem=  (item)=>
+  item===  undefined||
+  item===  WILDCARD_POLICY_VALUE||
+  isRecordOf(item, isBoolean);
+
+/**
+ *
+ * @param {unknown} allegedPackagePolicy
+ * @param {string} path
+ * @param {string} [url]
+ * @returns {void}
+ */
+const        assertPackagePolicy=  (allegedPackagePolicy, path, url)=>  {
+  if( allegedPackagePolicy===  undefined) {
+    return;
+   }
+  const inUrl=  url?   ` in ${q(url)}`: '';
+
+  const packagePolicy=  Object(allegedPackagePolicy);
+  assert(
+    allegedPackagePolicy===  packagePolicy&&  !isArray(allegedPackagePolicy),
+     `${path} must be an object, got ${allegedPackagePolicy}${inUrl}`);
+
+  const {
+    packages,
+    builtins,
+    globals,
+    noGlobalFreeze,
+    defaultAttenuator: _ignore, // a carve out for the default attenuator in compartment map
+    ...extra}=
+      packagePolicy;
+
+  assert(
+    keys(extra).length===  0,
+     `${path} must not have extra properties, got ${q(keys(extra))}${inUrl}`);
+
+
+  assert(
+    noGlobalFreeze===  undefined||  typeof noGlobalFreeze===  'boolean',
+     `${path}.noGlobalFreeze must be a boolean, got ${q({
+      noGlobalFreeze})
+       }${inUrl}`);
+
+
+  isPolicyItem(packages)||
+    assert.fail(
+       `${path}.packages must be a record of booleans, got ${q({
+        packages})
+         }${inUrl}`);
+
+
+  isPolicyItem(globals)||
+    isAttenuationDefinition(globals)||
+    assert.fail(
+       `${path}.globals must be a record of booleans or a single attenuation, got ${q(
+        {
+          globals})
+
+        }${inUrl}`);
+
+
+  isPolicyItem(builtins)||
+    isRecordOf(builtins, predicateOr(isBoolean, isAttenuationDefinition))||
+    assert.fail(
+       `${path}.builtins must be a record of booleans or attenuations, got ${q({
+        builtins})
+         }${inUrl}`);
+
+ };
+
+/**
+ *
+ * @param {unknown} allegedPolicy
+ * @returns {void}
+ */$h‍_once.assertPackagePolicy(assertPackagePolicy);
+const        assertPolicy=  (allegedPolicy)=>{
+  if( allegedPolicy===  undefined) {
+    return;
+   }
+  const policy=  Object(allegedPolicy);
+  assert(
+    allegedPolicy===  policy&&  !Array.isArray(policy),
+     `policy must be an object, got ${allegedPolicy}`);
+
+
+  const { resources, entry, defaultAttenuator, ...extra}=   policy;
+  assert(
+    keys(extra).length===  0,
+     `policy must not have extra properties, got ${q(keys(extra))}`);
+
+
+  assert(
+    typeof resources===  'object'&&  resources!==  null,
+     `policy.resources must be an object, got ${q(resources)}`);
+
+  assert(
+    !defaultAttenuator||  typeof defaultAttenuator===  'string',
+     `policy.defaultAttenuator must be a string, got ${q(resources)}`);
+
+
+  assertPackagePolicy(entry,  `policy.entry`);
+
+  entries(resources).forEach(([key, value])=>  {
+    assertPackagePolicy(value,  `policy.resources["${key}"]`);
+   });
+ };$h‍_once.assertPolicy(assertPolicy);
+})
+
+,// === functors[1] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let assertPackagePolicy;$h‍_imports([["./policy-format.js", [["assertPackagePolicy", [$h‍_a => (assertPackagePolicy = $h‍_a)]]]]]);   
+
+
+
+
+// TODO convert to the new `||` assert style.
+// Deferred because this file pervasively uses simple template strings rather than
+// template strings tagged with `assert.details` (aka `X`), and uses
+// this definition of `q` rather than `assert.quote`
+const q=  JSON.stringify;
+
+const moduleLanguages=  [
+  'cjs',
+  'mjs',
+  'json',
+  'text',
+  'bytes',
+  'pre-mjs-json',
+  'pre-cjs-json'];
+
+
+/** @type {(a: string, b: string) => number} */
+// eslint-disable-next-line no-nested-ternary
+const        stringCompare=  (a, b)=>   a===  b?  0:  a<  b?  -1:  1;
+
+/**
+ * @param {number} length
+ * @param {string} term
+ */$h‍_once.stringCompare(stringCompare);
+const cumulativeLength=  (length, term)=>  {
+  return length+  term.length;
+ };
+
+/**
+ * @param {Array<string> | undefined} a
+ * @param {Array<string> | undefined} b
+ */
+const        pathCompare=  (a, b)=>  {
+  // Undefined is not preferred
+  if( a===  undefined&&  b===  undefined) {
+    return 0;
+   }
+  if( a===  undefined) {
+    return 1;
+   }
+  if( b===  undefined) {
+    return -1;
+   }
+  // Prefer the shortest dependency path.
+  if( a.length!==  b.length) {
+    return a.length-  b.length;
+   }
+  // Otherwise, favor the shortest cumulative length.
+  const aSum=  a.reduce(cumulativeLength, 0);
+  const bSum=  b.reduce(cumulativeLength, 0);
+  if( aSum!==  bSum) {
+    return aSum-  bSum;
+   }
+  // Otherwise, compare terms lexically.
+  assert(a.length===  b.length); // Reminder
+  // This loop guarantees that if any pair of terms is different, including the
+  // case where one is a prefix of the other, we will return a non-zero value.
+  for( let i=  0; i<  a.length; i+=  1) {
+    const comparison=  stringCompare(a[i], b[i]);
+    if( comparison!==  0) {
+      return comparison;
+     }
+   }
+  // If all pairs of terms are the same respective lengths, we are guaranteed
+  // that they are exactly the same or one of them is lexically distinct and would
+  // have already been caught.
+  return 0;
+ };
+
+/**
+ * @template T
+ * @param {Iterable<T>} iterable
+ */$h‍_once.pathCompare(pathCompare);
+function* enumerate(iterable) {
+  let index=  0;
+  for( const value of iterable) {
+    yield [index, value];
+    index+=  1;
+   }
+ }
+
+/**
+ * @param {Record<string, unknown>} object
+ * @param {string} message
+ */
+const assertEmptyObject=  (object, message)=>  {
+  assert(Object.keys(object).length===  0, message);
+ };
+
+/**
+ * @param {unknown} tags
+ * @param {string} url
+ */
+const assertTags=  (tags, url)=>  {
+  if( tags===  undefined) return;
+  assert(
+    Array.isArray(tags),
+     `tags must be an array, got ${tags} in ${q(url)}`);
+
+  for( const [index, value]of  enumerate(tags)) {
+    assert.typeof(
+      value,
+      'string',
+       `tags[${index}] must be a string, got ${value} in ${q(url)}`);
+
+   }
+ };
+
+/**
+ * @param {Record<string, unknown>} allegedModule
+ * @param {string} path
+ * @param {string} url
+ */
+const assertCompartmentModule=  (allegedModule, path, url)=>  {
+  const { compartment, module, ...extra}=   allegedModule;
+  assertEmptyObject(
+    extra,
+     `${path} must not have extra properties, got ${q({
+      extra,
+      compartment})
+       } in ${q(url)}`);
+
+  assert.typeof(
+    compartment,
+    'string',
+     `${path}.compartment must be a string, got ${q(compartment)} in ${q(url)}`);
+
+  assert.typeof(
+    module,
+    'string',
+     `${path}.module must be a string, got ${q(module)} in ${q(url)}`);
+
+ };
+
+/**
+ * @param {Record<string, unknown>} allegedModule
+ * @param {string} path
+ * @param {string} url
+ */
+const assertFileModule=  (allegedModule, path, url)=>  {
+  const { location, parser, sha512, ...extra}=   allegedModule;
+  assertEmptyObject(
+    extra,
+     `${path} must not have extra properties, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+  assert.typeof(
+    location,
+    'string',
+     `${path}.location must be a string, got ${q(location)} in ${q(url)}`);
+
+  assert.typeof(
+    parser,
+    'string',
+     `${path}.parser must be a string, got ${q(parser)} in ${q(url)}`);
+
+  assert(
+    moduleLanguages.includes(parser),
+     `${path}.parser must be one of ${q(moduleLanguages)}, got ${parser} in ${q(
+      url)
+      }`);
+
+
+  if( sha512!==  undefined) {
+    assert.typeof(
+      sha512,
+      'string',
+       `${path}.sha512 must be a string, got ${q(sha512)} in ${q(url)}`);
+
+   }
+ };
+
+/**
+ * @param {Record<string, unknown>} allegedModule
+ * @param {string} path
+ * @param {string} url
+ */
+const assertExitModule=  (allegedModule, path, url)=>  {
+  const { exit, ...extra}=   allegedModule;
+  assertEmptyObject(
+    extra,
+     `${path} must not have extra properties, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+  assert.typeof(
+    exit,
+    'string',
+     `${path}.exit must be a string, got ${q(exit)} in ${q(url)}`);
+
+ };
+
+/**
+ * @param {unknown} allegedModule
+ * @param {string} path
+ * @param {string} url
+ */
+const assertModule=  (allegedModule, path, url)=>  {
+  const moduleDescriptor=  Object(allegedModule);
+  assert(
+    allegedModule===  moduleDescriptor&&  !Array.isArray(moduleDescriptor),
+     `${path} must be an object, got ${allegedModule} in ${q(url)}`);
+
+
+  const { compartment, module, location, parser, exit, deferredError}=
+    moduleDescriptor;
+  if( compartment!==  undefined||  module!==  undefined) {
+    assertCompartmentModule(moduleDescriptor, path, url);
+   }else if( location!==  undefined||  parser!==  undefined) {
+    assertFileModule(moduleDescriptor, path, url);
+   }else if( exit!==  undefined) {
+    assertExitModule(moduleDescriptor, path, url);
+   }else if( deferredError!==  undefined) {
+    assert.typeof(
+      deferredError,
+      'string',
+       `${path}.deferredError must be a string contaiing an error message`);
+
+   }else {
+    assert.fail(
+       `${path} is not a valid module descriptor, got ${q(allegedModule)} in ${q(
+        url)
+        }`);
+
+   }
+ };
+
+/**
+ * @param {unknown} allegedModules
+ * @param {string} path
+ * @param {string} url
+ */
+const assertModules=  (allegedModules, path, url)=>  {
+  const modules=  Object(allegedModules);
+  assert(
+    allegedModules===  modules||  !Array.isArray(modules),
+     `modules must be an object, got ${q(allegedModules)} in ${q(url)}`);
+
+  for( const [key, value]of  Object.entries(modules)) {
+    assertModule(value,  `${path}.modules[${q(key)}]`,url);
+   }
+ };
+
+/**
+ * @param {unknown} allegedParsers
+ * @param {string} path
+ * @param {string} url
+ */
+const assertParsers=  (allegedParsers, path, url)=>  {
+  if( allegedParsers===  undefined) {
+    return;
+   }
+  const parsers=  Object(allegedParsers);
+  assert(
+    allegedParsers===  parsers&&  !Array.isArray(parsers),
+     `${path}.parsers must be an object, got ${allegedParsers} in ${q(url)}`);
+
+
+  for( const [key, value]of  Object.entries(parsers)) {
+    assert.typeof(
+      key,
+      'string',
+       `all keys of ${path}.parsers must be strings, got ${key} in ${q(url)}`);
+
+    assert.typeof(
+      value,
+      'string',
+       `${path}.parsers[${q(key)}] must be a string, got ${value} in ${q(url)}`);
+
+    assert(
+      moduleLanguages.includes(value),
+       `${path}.parsers[${q(key)}] must be one of ${q(
+        moduleLanguages)
+        }, got ${value} in ${q(url)}`);
+
+   }
+ };
+
+/**
+ * @param {unknown} allegedScope
+ * @param {string} path
+ * @param {string} url
+ */
+const assertScope=  (allegedScope, path, url)=>  {
+  const scope=  Object(allegedScope);
+  assert(
+    allegedScope===  scope&&  !Array.isArray(scope),
+     `${path} must be an object, got ${allegedScope} in ${q(url)}`);
+
+
+  const { compartment, ...extra}=   scope;
+  assertEmptyObject(
+    extra,
+     `${path} must not have extra properties, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+
+  assert.typeof(
+    compartment,
+    'string',
+     `${path}.compartment must be a string, got ${q(compartment)} in ${q(url)}`);
+
+ };
+
+/**
+ * @param {unknown} allegedScopes
+ * @param {string} path
+ * @param {string} url
+ */
+const assertScopes=  (allegedScopes, path, url)=>  {
+  if( allegedScopes===  undefined) {
+    return;
+   }
+  const scopes=  Object(allegedScopes);
+  assert(
+    allegedScopes===  scopes&&  !Array.isArray(scopes),
+     `${path}.scopes must be an object, got ${q(allegedScopes)} in ${q(url)}`);
+
+
+  for( const [key, value]of  Object.entries(scopes)) {
+    assert.typeof(
+      key,
+      'string',
+       `all keys of ${path}.scopes must be strings, got ${key} in ${q(url)}`);
+
+    assertScope(value,  `${path}.scopes[${q(key)}]`,url);
+   }
+ };
+
+/**
+ * @param {unknown} allegedTypes
+ * @param {string} path
+ * @param {string} url
+ */
+const assertTypes=  (allegedTypes, path, url)=>  {
+  if( allegedTypes===  undefined) {
+    return;
+   }
+  const types=  Object(allegedTypes);
+  assert(
+    allegedTypes===  types&&  !Array.isArray(types),
+     `${path}.types must be an object, got ${allegedTypes} in ${q(url)}`);
+
+
+  for( const [key, value]of  Object.entries(types)) {
+    assert.typeof(
+      key,
+      'string',
+       `all keys of ${path}.types must be strings, got ${key} in ${q(url)}`);
+
+    assert.typeof(
+      value,
+      'string',
+       `${path}.types[${q(key)}] must be a string, got ${value} in ${q(url)}`);
+
+    assert(
+      moduleLanguages.includes(value),
+       `${path}.types[${q(key)}] must be one of ${q(
+        moduleLanguages)
+        }, got ${value} in ${q(url)}`);
+
+   }
+ };
+
+/**
+ * @param {unknown} allegedPolicy
+ * @param {string} path
+ * @param {string} [url]
+ */
+
+const assertPolicy=  (
+  allegedPolicy,
+  path,
+  url=  '<unknown-compartment-map.json>')=>
+     {
+  assertPackagePolicy(allegedPolicy,  `${path}.policy`,url);
+ };
+
+/**
+ * @param {unknown} allegedCompartment
+ * @param {string} path
+ * @param {string} url
+ */
+const assertCompartment=  (allegedCompartment, path, url)=>  {
+  const compartment=  Object(allegedCompartment);
+  assert(
+    allegedCompartment===  compartment&&  !Array.isArray(compartment),
+     `${path} must be an object, got ${allegedCompartment} in ${q(url)}`);
+
+
+  const {
+    location,
+    name,
+    label,
+    parsers,
+    types,
+    scopes,
+    modules,
+    policy,
+    ...extra}=
+      compartment;
+
+  assertEmptyObject(
+    extra,
+     `${path} must not have extra properties, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+
+  assert.typeof(
+    location,
+    'string',
+     `${path}.location in ${q(url)} must be string, got ${q(location)}`);
+
+  assert.typeof(
+    name,
+    'string',
+     `${path}.name in ${q(url)} must be string, got ${q(name)}`);
+
+  assert.typeof(
+    label,
+    'string',
+     `${path}.label in ${q(url)} must be string, got ${q(label)}`);
+
+
+  assertModules(modules, path, url);
+  assertParsers(parsers, path, url);
+  assertScopes(scopes, path, url);
+  assertTypes(types, path, url);
+  assertPolicy(policy, path, url);
+ };
+
+/**
+ * @param {unknown} allegedCompartments
+ * @param {string} url
+ */
+const assertCompartments=  (allegedCompartments, url)=>  {
+  const compartments=  Object(allegedCompartments);
+  assert(
+    allegedCompartments===  compartments||  !Array.isArray(compartments),
+     `compartments must be an object, got ${q(allegedCompartments)} in ${q(
+      url)
+      }`);
+
+  for( const [key, value]of  Object.entries(compartments)) {
+    assertCompartment(value,  `compartments[${q(key)}]`,url);
+   }
+ };
+
+/**
+ * @param {unknown} allegedEntry
+ * @param {string} url
+ */
+const assertEntry=  (allegedEntry, url)=>  {
+  const entry=  Object(allegedEntry);
+  assert(
+    allegedEntry===  entry&&  !Array.isArray(entry),
+     `"entry" must be an object in compartment map, got ${allegedEntry} in ${q(
+      url)
+      }`);
+
+  const { compartment, module, ...extra}=   entry;
+  assertEmptyObject(
+    extra,
+     `"entry" must not have extra properties in compartment map, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+  assert.typeof(
+    compartment,
+    'string',
+     `entry.compartment must be a string in compartment map, got ${compartment} in ${q(
+      url)
+      }`);
+
+  assert.typeof(
+    module,
+    'string',
+     `entry.module must be a string in compartment map, got ${module} in ${q(
+      url)
+      }`);
+
+ };
+
+/**
+ * @param {unknown} allegedCompartmentMap
+ * @param {string} [url]
+ * @returns {asserts compartmentMap is __import__('./types.js').CompartmentMapDescriptor}
+ */
+
+const        assertCompartmentMap=  (
+  allegedCompartmentMap,
+  url=  '<unknown-compartment-map.json>')=>
+     {
+  const compartmentMap=  Object(allegedCompartmentMap);
+  assert(
+    allegedCompartmentMap===  compartmentMap&&  !Array.isArray(compartmentMap),
+     `Compartment map must be an object, got ${allegedCompartmentMap} in ${q(
+      url)
+      }`);
+
+  const { tags, entry, compartments, ...extra}=   Object(compartmentMap);
+  assertEmptyObject(
+    extra,
+     `Compartment map must not have extra properties, got ${q(
+      Object.keys(extra))
+      } in ${q(url)}`);
+
+  assertTags(tags, url);
+  assertEntry(entry, url);
+  assertCompartments(compartments, url);
+ };$h‍_once.assertCompartmentMap(assertCompartmentMap);
+})
+
+,// === functors[2] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/**
+ * Parses JSON and, if necessary, throws exceptions that include the location
+ * of the offending file.
+ *
+ * @param {string} source
+ * @param {string} location
+ */
+const        parseLocatedJson=  (source, location)=>  {
+  try {
+    return JSON.parse(source);
+   }catch( error) {
+    if( error instanceof SyntaxError) {
+      throw new SyntaxError( `Cannot parse JSON from ${location}, ${error}`);
+     }
+    throw error;
+   }
+ };$h‍_once.parseLocatedJson(parseLocatedJson);
+})
+
+,// === functors[3] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/**
+ * `parseExtension` returns the file extension for the given URL, or an empty
+ * string if the path has no extension.
+ * Exported for tests.
+ *
+ * @param {string} location
+ * @returns {string}
+ */
+const        parseExtension=  (location)=>{
+  const lastSlash=  location.lastIndexOf('/');
+  if( lastSlash<  0) {
+    return '';
+   }
+  const base=  location.slice(lastSlash+  1);
+  const lastDot=  base.lastIndexOf('.');
+  if( lastDot<  0) {
+    return '';
+   }
+  return base.slice(lastDot+  1);
+ };$h‍_once.parseExtension(parseExtension);
+})
+
+,// === functors[4] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+// q, as in quote, for error messages.
+const q=  JSON.stringify;
+
+/**
+ * Advances a partial module specifier solution by following the path
+ * components in the given problem.
+ * The problem may not produce a path that escapes the solution, that is, the
+ * problem may not traverse up from an empty solution.
+ * `Solve` returns false if the problem attempts to escape.
+ * Advanding a partial solution is the core of `resolve`, `join`, and
+ * `relativize`, which have different invariants.
+ *
+ * @param {Array<string>} solution - fully resolved path components, including
+ * any from a prior path resolution initially.
+ * @param {Array<string>} problem - partially resolved path components, that
+ * is, including '.' and '..' components.
+ * @returns {boolean} whether the solver terminated early because of a
+ * nonsensical attempt to traverse above the root directory.
+ */
+const solve=  (solution, problem)=>  {
+  for( const part of problem) {
+    if( part===  '.'||  part===  '') {
+      // no-op
+     }else if( part===  '..') {
+      if( solution.length===  0) {
+        return false;
+       }
+      solution.pop();
+     }else {
+      solution.push(part);
+     }
+   }
+  return true;
+ };
+
+/**
+ * `Resolve` computes the full module specifier for a given imported module specifier
+ * relative to the referrer module specifier.
+ * In Node.js compartments, the referrer must be an internal module specifier
+ * in the context of a compartment, and all internal module specifiers begin
+ * with a "." path component.
+ * The referent may be either internal or external.
+ * In Node.js, fully resolved paths are valid module specifiers, but these
+ * paths that begin with / are disallowed as they could be used to defeat
+ * compartment containment.
+ *
+ * @param {string} spec - a path to resolve.
+ * @param {string} referrer - the fully resolved path of referrer module.
+ * @returns {string} the fully resolved path.
+ */
+const        resolve=  (spec, referrer)=>  {
+  spec=  String(spec||  '');
+  referrer=  String(referrer||  '');
+
+  if( spec.startsWith('/')) {
+    throw new Error( `Module specifier ${q(spec)} must not begin with "/"`);
+   }
+  if( !referrer.startsWith('./')) {
+    throw new Error( `Module referrer ${q(referrer)} must begin with "./"`);
+   }
+
+  const specParts=  spec.split('/');
+  const solution=  [];
+  const problem=  [];
+  if( specParts[0]===  '.'||  specParts[0]===  '..') {
+    const referrerParts=  referrer.split('/');
+    problem.push(...referrerParts);
+    problem.pop();
+    solution.push('.');
+   }
+  problem.push(...specParts);
+
+  if( !solve(solution, problem)) {
+    throw new Error(
+       `Module specifier ${q(spec)} via referrer ${q(
+        referrer)
+        } must not traverse behind an empty path`);
+
+   }
+
+  return solution.join('/');
+ };
+
+/**
+ * To construct a module map from a node_modules package, inter-package linkage
+ * requires connecting a full base module specifier like "dependency-package"
+ * to the other package's full internal module specifier like "." or
+ * "./utility", to form a local full module specifier like "dependency-package"
+ * or "dependency-package/utility".
+ * This type of join may assert that the base is absolute and the referrent is
+ * relative.
+ *
+ * @param {string} base - the fully resolved path of a module.
+ * @param {string} spec - the partially resolved path of another module.
+ * @returns {string} the fully resolved path of the specified module.
+ */$h‍_once.resolve(resolve);
+const        join=  (base, spec)=>  {
+  spec=  String(spec||  '');
+  base=  String(base||  '');
+
+  const specParts=  spec.split('/');
+  const baseParts=  base.split('/');
+
+  if( specParts.length>  1&&  specParts[0]===  '') {
+    throw new Error( `Module specifier ${q(spec)} must not start with "/"`);
+   }
+  if( baseParts[0]===  '.'||  baseParts[0]===  '..') {
+    throw new Error( `External module specifier ${q(base)} must be absolute`);
+   }
+  if( specParts[0]!==  '.') {
+    throw new Error( `Internal module specifier ${q(spec)} must be relative`);
+   }
+
+  const solution=  [];
+  if( !solve(solution, specParts)) {
+    throw new Error(
+       `Module specifier ${q(spec)} via base ${q(
+        base)
+        } must not refer to a module outside of the base`);
+
+   }
+
+  return [base, ...solution].join('/');
+ };
+
+/**
+ * Relativize turns absolute identifiers into relative identifiers.
+ * In package.json, internal module identifiers can be either relative or
+ * absolute, but compartments backed by node_modules always use relative module
+ * specifiers for internal linkage.
+ *
+ * @param {string} spec - a module specifier that of a local module, that might
+ * be erroneously framed without an initial '.' path component.
+ * @returns {string} the idempotent module specifier, ensured to begin with
+ * '.'.
+ */$h‍_once.join(join);
+const        relativize=  (spec)=>{
+  spec=  String(spec||  '');
+
+  const solution=  [];
+  if( !solve(solution, spec.split('/'))) {
+    throw Error(
+       `Module specifier ${q(spec)} must not traverse behind an empty path`);
+
+   }
+
+  return ['.', ...solution].join('/');
+ };$h‍_once.relativize(relativize);
+})
+
+,// === functors[5] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let policyLookupHelper,isAttenuationDefinition,getAttenuatorFromDefinition,isAllowingEverything;$h‍_imports([["./policy-format.js", [["policyLookupHelper", [$h‍_a => (policyLookupHelper = $h‍_a)]],["isAttenuationDefinition", [$h‍_a => (isAttenuationDefinition = $h‍_a)]],["getAttenuatorFromDefinition", [$h‍_a => (getAttenuatorFromDefinition = $h‍_a)]],["isAllowingEverything", [$h‍_a => (isAllowingEverything = $h‍_a)]]]]]);   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const { entries, values, assign, keys, freeze}=   Object;
+const q=  JSON.stringify;
+
+/**
+ * Const string to identify the internal attenuators compartment
+ */
+const        ATTENUATORS_COMPARTMENT=  '<ATTENUATORS>';
+
+/**
+ * Copies properties (optionally limited to a specific list) from one object to another.
+ *
+ * @param {object} from
+ * @param {object} to
+ * @param {Array<string | symbol>} [list]
+ * @returns {object}
+ */$h‍_once.ATTENUATORS_COMPARTMENT(ATTENUATORS_COMPARTMENT);
+const selectiveCopy=  (from, to, list)=>  {
+  if( !list) {
+    list=  keys(from);
+   }
+  for( let index=  0; index<  list.length; index+=  1) {
+    const key=  list[index];
+    // If an endowment is missing, global value is undefined.
+    // This is an expected behavior if globals are used for platform feature detection
+    to[key]=  from[key];
+   }
+  return to;
+ };
+
+const collectAttenuators=  (attenuators, policyFragment)=>  {
+  if( policyFragment.attenuate) {
+    attenuators.push(policyFragment.attenuate);
+   }
+  for( const value of values(policyFragment)) {
+    if( typeof value===  'object'&&  value!==  null) {
+      collectAttenuators(attenuators, value);
+     }
+   }
+ };
+
+const attenuatorsCache=  new WeakMap();
+/**
+ * Goes through policy and lists all attenuator specifiers used.
+ * Memoization keyed on policy object reference
+ *
+ * @param {object} policy
+ * @returns {Array<string>} attenuators
+ */
+const        detectAttenuators=  (policy)=>{
+  if( !policy) {
+    return [];
+   }
+  if( !attenuatorsCache.has(policy)) {
+    const attenuators=  [];
+    if( policy.defaultAttenuator) {
+      attenuators.push(policy.defaultAttenuator);
+     }
+    collectAttenuators(attenuators, policy);
+    attenuatorsCache.set(policy, attenuators);
+   }
+  return attenuatorsCache.get(policy);
+ };
+
+/**
+ * Generates a string identifying a package for policy lookup purposes.
+ *
+ * @param {PackageNamingKit} namingKit
+ * @returns {string}
+ */$h‍_once.detectAttenuators(detectAttenuators);
+const generateCanonicalName=  ({ isEntry=  false, name, path})=>   {
+  if( isEntry) {
+    throw Error('Entry module cannot be identified with a canonicalName');
+   }
+  if( name===  ATTENUATORS_COMPARTMENT) {
+    return ATTENUATORS_COMPARTMENT;
+   }
+  return path.join('>');
+ };
+
+/**
+ * Verifies if a module identified by namingKit can be a dependency of a package per packagePolicy.
+ * packagePolicy is required, when policy is not set, skipping needs to be handled by the caller.
+ *
+ * @param {PackageNamingKit} namingKit
+ * @param {*} packagePolicy
+ * @returns {boolean}
+ */
+const        dependencyAllowedByPolicy=  (namingKit, packagePolicy)=>  {
+  if( namingKit.isEntry) {
+    // dependency on entry compartment should never be allowed
+    return false;
+   }
+  const canonicalName=  generateCanonicalName(namingKit);
+  return !!policyLookupHelper(packagePolicy, 'packages', canonicalName);
+ };$h‍_once.dependencyAllowedByPolicy(dependencyAllowedByPolicy);
+
+const validateDependencies=  (policy, canonicalName)=>  {
+  const packages=  policy.resources[canonicalName].packages;
+  if( !packages||  isAllowingEverything(packages)) {
+    return;
+   }
+
+  const packageNames=  keys(packages);
+  const attenuators=  detectAttenuators(policy);
+  // Join attenuators with packageNames into a Set to deduplicate and check if all are listed in policy.resources
+  const allSpecifiers=  new Set([...packageNames, ...attenuators]);
+  for( const specifier of allSpecifiers) {
+    if( !(specifier in policy.resources)) {
+      throw Error(
+         `Package ${q(specifier)} is allowed for ${q(
+          canonicalName)
+          } to import but its policy is not defined. Please add a policy for ${q(
+          specifier)
+          }`);
+
+     }
+   }
+ };
+
+/**
+ * Returns the policy applicable to the canonicalName of the package
+ *
+ * @param {PackageNamingKit} namingKit - a key in the policy resources spec is derived frm these
+ * @param {object|undefined} policy - user supplied policy
+ * @returns {object|undefined} packagePolicy if policy was specified
+ */
+const        getPolicyForPackage=  (namingKit, policy)=>  {
+  if( !policy) {
+    return undefined;
+   }
+  if( namingKit.isEntry) {
+    return policy.entry;
+   }
+  const canonicalName=  generateCanonicalName(namingKit);
+  if( canonicalName===  ATTENUATORS_COMPARTMENT) {
+    return {
+      defaultAttenuator: policy.defaultAttenuator,
+      packages: detectAttenuators(policy).reduce((packages, specifier)=>  {
+        packages[specifier]=  true;
+        return packages;
+       },{})};
+
+   }
+  if( policy.resources&&  policy.resources[canonicalName]) {
+    validateDependencies(policy, canonicalName);
+    return policy.resources[canonicalName];
+   }else {
+    console.warn(
+       `No policy for '${canonicalName}', omitting from compartment map.`);
+
+    return undefined;
+   }
+ };$h‍_once.getPolicyForPackage(getPolicyForPackage);
+
+const getGlobalsList=  (packagePolicy)=>{
+  if( !packagePolicy.globals) {
+    return [];
+   }
+  // TODO: handle 'write' policy: https://github.com/endojs/endo/issues/1482
+  return entries(packagePolicy.globals).
+     filter(([_key, value])=>  value).
+     map(([key, _vvalue])=>  key);
+ };
+
+const GLOBAL_ATTENUATOR=  'attenuateGlobals';
+const MODULE_ATTENUATOR=  'attenuateModule';
+/**
+ *
+ * @param {AttenuationDefinition} attenuationDefinition
+ * @param {DeferredAttenuatorsProvider} attenuatorsProvider
+ * @param {string} attenuatorExportName
+ * @returns {Promise<Function>}
+ */
+const importAttenuatorForDefinition=  async(
+  attenuationDefinition,
+  attenuatorsProvider,
+  attenuatorExportName)=>
+     {
+  if( !attenuatorsProvider) {
+    throw Error( `attenuatorsProvider is required to import attenuators`);
+   }
+  const { specifier, params, displayName}=   getAttenuatorFromDefinition(
+    attenuationDefinition);
+
+  const attenuator=  await attenuatorsProvider.import(specifier);
+  if( !attenuator[attenuatorExportName]) {
+    throw Error(
+       `Attenuator ${q(displayName)} does not export ${q(attenuatorExportName)}`);
+
+   }
+  // TODO: uncurry bind for security?
+  const attenuate=  attenuator[attenuatorExportName].bind(attenuator, params);
+  return attenuate;
+ };
+
+/**
+ *
+ * @param {Record<string, Compartment>} compartments
+ * @param {Record<string, CompartmentDescriptor>} compartmentDescriptors
+ * @returns {DeferredAttenuatorsProvider}
+ */
+const        makeDeferredAttenuatorsProvider=  (
+  compartments,
+  compartmentDescriptors)=>
+     {
+  let importAttenuator;
+  let defaultAttenuator;
+  // Attenuators compartment is not created when there's no policy.
+  // Errors should be thrown when the provider is used.
+  if( !compartmentDescriptors[ATTENUATORS_COMPARTMENT]) {
+    importAttenuator=  async()=>   {
+      throw Error( `No attenuators specified in policy`);
+     };
+   }else {
+    defaultAttenuator=
+      compartmentDescriptors[ATTENUATORS_COMPARTMENT].policy.defaultAttenuator;
+
+    // At the time of this function being called, attenuators compartment won't
+    // exist yet, we need to defer looking it up in compartments to the time of
+    // the import function being called.
+    /**
+     *
+     * @param {string} attenuatorSpecifier
+     * @returns {Promise<Attenuator>}
+     */
+    importAttenuator=  async(attenuatorSpecifier)=> {
+      if( !attenuatorSpecifier) {
+        if( !defaultAttenuator) {
+          throw Error( `No default attenuator specified in policy`);
+         }
+        attenuatorSpecifier=  defaultAttenuator;
+       }
+      const { namespace}=   await compartments[ATTENUATORS_COMPARTMENT].import(
+        attenuatorSpecifier);
+
+      return namespace;
+     };
+   }
+
+  return {
+    import: importAttenuator};
+
+ };
+
+/**
+ *
+ * @param {object} options
+ * @param {DeferredAttenuatorsProvider} options.attenuators
+ * @param {AttenuationDefinition} options.attenuationDefinition
+ * @param {object} options.globalThis
+ * @param {object} options.globals
+ */$h‍_once.makeDeferredAttenuatorsProvider(makeDeferredAttenuatorsProvider);
+async function attenuateGlobalThis({
+  attenuators,
+  attenuationDefinition,
+  globalThis,
+  globals})
+   {
+  const attenuate=  await importAttenuatorForDefinition(
+    attenuationDefinition,
+    attenuators,
+    GLOBAL_ATTENUATOR);
+
+
+  // attenuate can either define properties on globalThis on its own,
+  // or return an object with properties to transfer onto globalThis.
+  // The latter is consistent with how module attenuators work so that
+  // one attenuator implementation can be used for both if use of
+  // defineProperty is not needed for attenuating globals.
+  const result=  await attenuate(globals, globalThis);
+  if( typeof result===  'object'&&  result!==  null) {
+    assign(globalThis, result);
+   }
+ }
+
+/**
+ * Filters available globals and returns a copy according to the policy
+ *
+ * @param {object} globalThis
+ * @param {object} globals
+ * @param {object} packagePolicy
+ * @param {DeferredAttenuatorsProvider} attenuators
+ * @param {Array<Promise>} pendingJobs
+ * @param {string} name
+ * @returns {void}
+ */
+const        attenuateGlobals=  (
+  globalThis,
+  globals,
+  packagePolicy,
+  attenuators,
+  pendingJobs,
+  name=  '<unknown>')=>
+     {
+  let freezeGlobalThisUnlessOptedOut=  ()=>  {
+    freeze(globalThis);
+   };
+  if( packagePolicy&&  packagePolicy.noGlobalFreeze) {
+    freezeGlobalThisUnlessOptedOut=  ()=>  { };
+   }
+  if( !packagePolicy||  isAllowingEverything(packagePolicy.globals)) {
+    selectiveCopy(globals, globalThis);
+    freezeGlobalThisUnlessOptedOut();
+    return;
+   }
+  if( isAttenuationDefinition(packagePolicy.globals)) {
+    const attenuationDefinition=  packagePolicy.globals;
+    const { displayName}=   getAttenuatorFromDefinition(attenuationDefinition);
+    const attenuationPromise=  Promise.resolve() // delay to next tick while linking is synchronously finalized
+.      then(()=>
+        attenuateGlobalThis({
+          attenuators,
+          attenuationDefinition,
+          globalThis,
+          globals})).
+
+
+       then(freezeGlobalThisUnlessOptedOut, (error)=>{
+        freezeGlobalThisUnlessOptedOut();
+        throw Error(
+           `Error while attenuating globals for ${q(name)} with ${q(
+            displayName)
+            }: ${q(error.message)}` // TODO: consider an option to expose stacktrace for ease of debugging
+);
+       });
+    pendingJobs.push(attenuationPromise);
+
+    return;
+   }
+  const list=  getGlobalsList(packagePolicy);
+  selectiveCopy(globals, globalThis, list);
+  freezeGlobalThisUnlessOptedOut();
+ };
+
+/**
+ * Throws if importing of the specifier is not allowed by the policy
+ *
+ * @param {string} specifier
+ * @param {object} compartmentDescriptor
+ * @param {object} [info]
+ */$h‍_once.attenuateGlobals(attenuateGlobals);
+const        enforceModulePolicy=  (specifier, compartmentDescriptor, info)=>  {
+  const { policy, modules}=   compartmentDescriptor;
+  if( !policy) {
+    return;
+   }
+
+  if( !info.exit) {
+    if( !modules[specifier]) {
+      throw Error(
+         `Importing '${specifier}' was not allowed by policy packages:${q(
+          policy.packages)
+          }`);
+
+     }
+    return;
+   }
+
+  if( !policyLookupHelper(policy, 'builtins', specifier)) {
+    throw Error(
+       `Importing '${specifier}' was not allowed by policy 'builtins':${q(
+        policy.builtins)
+        }`);
+
+   }
+ };
+
+/**
+ *
+ * @param {object} options
+ * @param {DeferredAttenuatorsProvider} options.attenuators
+ * @param {AttenuationDefinition} options.attenuationDefinition
+ * @param {ModuleExportsNamespace} options.originalModule
+ * @returns {ModuleExportsNamespace}
+ */$h‍_once.enforceModulePolicy(enforceModulePolicy);
+function attenuateModule({
+  attenuators,
+  attenuationDefinition,
+  originalModule})
+   {
+  const attenuationCompartment=  new Compartment(
+    {},
+    {},
+    {
+      resolveHook: (moduleSpecifier)=>moduleSpecifier,
+      importHook: async()=>   {
+        const attenuate=  await importAttenuatorForDefinition(
+          attenuationDefinition,
+          attenuators,
+          MODULE_ATTENUATOR);
+
+        const ns=  await attenuate(originalModule);
+        const staticModuleRecord=  freeze({
+          imports: [],
+          exports: keys(ns),
+          execute: (moduleExports)=>{
+            assign(moduleExports, ns);
+           }});
+
+        return staticModuleRecord;
+       }});
+
+
+  return attenuationCompartment.module('.');
+ }
+
+/**
+ * Throws if importing of the specifier is not allowed by the policy
+ *
+ * @param {string} specifier - exit module name
+ * @param {object} originalModule - reference to the exit module
+ * @param {object} policy - local compartment policy
+ * @param {DeferredAttenuatorsProvider} attenuators - a key-value where attenuations can be found
+ */
+const        attenuateModuleHook=  (
+  specifier,
+  originalModule,
+  policy,
+  attenuators)=>
+     {
+  const policyValue=  policyLookupHelper(policy, 'builtins', specifier);
+  if( !policy||  policyValue===  true) {
+    return originalModule;
+   }
+
+  if( !policyValue) {
+    throw Error(
+       `Attenuation failed '${specifier}' was not in policy builtins:${q(
+        policy.builtins)
+        }`);
+
+   }
+
+  return attenuateModule({
+    attenuators,
+    attenuationDefinition: policyValue,
+    originalModule});
+
+ };$h‍_once.attenuateModuleHook(attenuateModuleHook);
+
+const padDiagnosis=  (text)=> ` (${text})`;
+/**
+ * Provide dignostic information for a missing compartment error
+ *
+ * @param {object}  args
+ * @param {string}  args.moduleSpecifier
+ * @param {object}  args.compartmentDescriptor
+ * @param {string}  args.foreignModuleSpecifier
+ * @param {string}  args.foreignCompartmentName
+ * @returns {string}
+ */
+const        diagnoseMissingCompartmentError=  ({
+  moduleSpecifier,
+  compartmentDescriptor,
+  foreignModuleSpecifier,
+  foreignCompartmentName})=>
+      {
+  const { policy, name, scopes}=   compartmentDescriptor;
+
+  if( policy) {
+    if( !policy.packages) {
+      return padDiagnosis(
+         `There were no allowed packages specified in policy for ${q(name)}`);
+
+     }
+    if( name===  ATTENUATORS_COMPARTMENT) {
+      return padDiagnosis(
+         `Attenuator ${q(
+          moduleSpecifier)
+          } was imported but there is no policy resources entry defined for it.`);
+
+     }
+
+    const scopeNames=  entries(scopes).
+       filter(([_name, scope])=>  scope.compartment===  foreignCompartmentName).
+       map(([scopeName])=>  scopeName);
+    if( scopeNames.length===  1&&  scopeNames[0]===  moduleSpecifier) {
+      return padDiagnosis(
+         `Package ${q(
+          moduleSpecifier)
+          } is missing. Are you sure there is an entry in policy resources specified for it?`);
+
+     }else {
+      return padDiagnosis(
+         `Package ${q(moduleSpecifier)} resolves to ${q(
+          foreignModuleSpecifier)
+          } in ${q(
+          foreignCompartmentName)
+          } which seems disallowed by policy. There is likely an override defined that causes another package to be imported as ${q(
+          moduleSpecifier)
+          }.`);
+
+     }
+   }
+  // Omit diagnostics when parent package had no policy - it means there was no policy.
+  return '';
+ };$h‍_once.diagnoseMissingCompartmentError(diagnoseMissingCompartmentError);
+})
+
+,// === functors[6] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let resolve,parseExtension,enforceModulePolicy,attenuateModuleHook,ATTENUATORS_COMPARTMENT,diagnoseMissingCompartmentError,attenuateGlobals,makeDeferredAttenuatorsProvider;$h‍_imports([["./node-module-specifier.js", [["resolve", [$h‍_a => (resolve = $h‍_a)]]]],["./extension.js", [["parseExtension", [$h‍_a => (parseExtension = $h‍_a)]]]],["./policy.js", [["enforceModulePolicy", [$h‍_a => (enforceModulePolicy = $h‍_a)]],["attenuateModuleHook", [$h‍_a => (attenuateModuleHook = $h‍_a)]],["ATTENUATORS_COMPARTMENT", [$h‍_a => (ATTENUATORS_COMPARTMENT = $h‍_a)]],["diagnoseMissingCompartmentError", [$h‍_a => (diagnoseMissingCompartmentError = $h‍_a)]],["attenuateGlobals", [$h‍_a => (attenuateGlobals = $h‍_a)]],["makeDeferredAttenuatorsProvider", [$h‍_a => (makeDeferredAttenuatorsProvider = $h‍_a)]]]]]);   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const { entries, fromEntries}=   Object;
+const { hasOwnProperty}=   Object.prototype;
+const { apply}=   Reflect;
+const { allSettled}=   Promise;
+
+/**
+ * @template T
+ * @type {(iterable: Iterable<ERef<T>>) => Promise<Array<PromiseSettledResult<T>>>}
+ */
+const promiseAllSettled=  allSettled.bind(Promise);
+
+const inertStaticModuleRecord=  {
+  imports: [],
+  exports: [],
+  execute() {
+    throw new Error(
+       `Assertion failed: compartment graphs built for archives cannot be initialized`);
+
+   }};
+
+
+const inertModuleNamespace=  new Compartment(
+  {},
+  {},
+  {
+    resolveHook() {
+      return '';
+     },
+          async importHook(){
+      return inertStaticModuleRecord;
+     }}).
+
+  module('');
+
+const defaultCompartment=  Compartment;
+
+// q, as in quote, for strings in error messages.
+const q=  JSON.stringify;
+
+/**
+ * @param {Record<string, unknown>} object
+ * @param {string} key
+ * @returns {boolean}
+ */
+const has=  (object, key)=>  apply(hasOwnProperty, object, [key]);
+
+/**
+ * Decide if extension is clearly indicating a parser/language for a file
+ *
+ * @param {string} extension
+ * @returns {boolean}
+ */
+const extensionImpliesLanguage=  (extension)=>extension!==  'js';
+
+/**
+ * `makeExtensionParser` produces a `parser` that parses the content of a
+ * module according to the corresponding module language, given the extension
+ * of the module specifier and the configuration of the containing compartment.
+ * We do not yet support import assertions and we do not have a mechanism
+ * for validating the MIME type of the module content against the
+ * language implied by the extension or file name.
+ *
+ * @param {Record<string, string>} languageForExtension - maps a file extension
+ * to the corresponding language.
+ * @param {Record<string, string>} languageForModuleSpecifier - In a rare case,
+ * the type of a module is implied by package.json and should not be inferred
+ * from its extension.
+ * @param {Record<string, ParserImplementation>} parserForLanguage
+ * @param {ModuleTransforms} moduleTransforms
+ * @returns {ParseFn}
+ */
+const makeExtensionParser=  (
+  languageForExtension,
+  languageForModuleSpecifier,
+  parserForLanguage,
+  moduleTransforms)=>
+     {
+  return async( bytes, specifier, location, packageLocation, options)=>  {
+    let language;
+    const extension=  parseExtension(location);
+
+    if(
+      !extensionImpliesLanguage(extension)&&
+      has(languageForModuleSpecifier, specifier))
+      {
+      language=  languageForModuleSpecifier[specifier];
+     }else {
+      language=  languageForExtension[extension]||  extension;
+     }
+
+    if( has(moduleTransforms, language)) {
+      ({ bytes, parser: language}=   await moduleTransforms[language](
+        bytes,
+        specifier,
+        location,
+        packageLocation));
+
+     }
+
+    if( !has(parserForLanguage, language)) {
+      throw new Error(
+         `Cannot parse module ${specifier} at ${location}, no parser configured for the language ${language}`);
+
+     }
+    const { parse}=   parserForLanguage[language];
+    return parse(bytes, specifier, location, packageLocation, options);
+   };
+ };
+
+/**
+ * @param {Record<string, Language>} languageForExtension
+ * @param {Record<string, string>} languageForModuleSpecifier - In a rare case, the type of a module
+ * is implied by package.json and should not be inferred from its extension.
+ * @param {Record<string, ParserImplementation>} parserForLanguage
+ * @param {ModuleTransforms} moduleTransforms
+ * @returns {ParseFn}
+ */
+const        mapParsers=  (
+  languageForExtension,
+  languageForModuleSpecifier,
+  parserForLanguage,
+  moduleTransforms=  {})=>
+     {
+  const languageForExtensionEntries=  [];
+  const problems=  [];
+  for( const [extension, language]of  entries(languageForExtension)) {
+    if( has(parserForLanguage, language)) {
+      languageForExtensionEntries.push([extension, language]);
+     }else {
+      problems.push( `${q(language)} for extension ${q(extension)}`);
+     }
+   }
+  if( problems.length>  0) {
+    throw new Error( `No parser available for language: ${problems.join(', ')}`);
+   }
+  return makeExtensionParser(
+    fromEntries(languageForExtensionEntries),
+    languageForModuleSpecifier,
+    parserForLanguage,
+    moduleTransforms);
+
+ };
+
+/**
+ * For a full, absolute module specifier like "dependency",
+ * produce the module specifier in the dependency, like ".".
+ * For a deeper path like "@org/dep/aux" and a prefix like "@org/dep", produce
+ * "./aux".
+ *
+ * @param {string} moduleSpecifier
+ * @param {string} prefix
+ * @returns {string=}
+ */$h‍_once.mapParsers(mapParsers);
+const trimModuleSpecifierPrefix=  (moduleSpecifier, prefix)=>  {
+  if( moduleSpecifier===  prefix) {
+    return '.';
+   }
+  if( moduleSpecifier.startsWith( `${prefix}/`)){
+    return  `./${moduleSpecifier.slice(prefix.length+ 1) }`;
+   }
+  return undefined;
+ };
+
+/**
+ * `makeModuleMapHook` generates a `moduleMapHook` for the `Compartment`
+ * constructor, suitable for Node.js style packages where any module in the
+ * package might be imported.
+ * Since searching for all of these modules up front is either needlessly
+ * costly (on a file system) or impossible (from a web service), we
+ * let the import graph guide our search.
+ * Any module specifier with an absolute prefix should be captured by
+ * the `moduleMap` or `moduleMapHook`.
+ *
+ * @param {CompartmentDescriptor} compartmentDescriptor
+ * @param {Record<string, Compartment>} compartments
+ * @param {string} compartmentName
+ * @param {Record<string, ModuleDescriptor>} moduleDescriptors
+ * @param {Record<string, ModuleDescriptor>} scopeDescriptors
+ * @param {Record<string, string>} exitModules
+ * @param {DeferredAttenuatorsProvider} attenuators
+ * @param {boolean} archiveOnly
+ * @returns {ModuleMapHook | undefined}
+ */
+const makeModuleMapHook=  (
+  compartmentDescriptor,
+  compartments,
+  compartmentName,
+  moduleDescriptors,
+  scopeDescriptors,
+  exitModules,
+  attenuators,
+  archiveOnly)=>
+     {
+  /**
+   * @param {string} moduleSpecifier
+   * @returns {string | object | undefined}
+   */
+  const moduleMapHook=  (moduleSpecifier)=>{
+    compartmentDescriptor.retained=  true;
+
+    const moduleDescriptor=  moduleDescriptors[moduleSpecifier];
+    if( moduleDescriptor!==  undefined) {
+      // "foreignCompartmentName" refers to the compartment which
+      // may differ from the current compartment
+      const {
+        compartment: foreignCompartmentName=  compartmentName,
+        module: foreignModuleSpecifier,
+        exit}=
+          moduleDescriptor;
+      if( exit!==  undefined) {
+        enforceModulePolicy(moduleSpecifier, compartmentDescriptor, {
+          exit: true});
+
+        const module=  exitModules[exit];
+        if( module===  undefined) {
+          throw new Error(
+             `Cannot import missing external module ${q(
+              exit)
+              }, may be missing from ${compartmentName} package.json`);
+
+         }
+        if( archiveOnly) {
+          return inertModuleNamespace;
+         }else {
+          return attenuateModuleHook(
+            exit,
+            module,
+            compartmentDescriptor.policy,
+            attenuators);
+
+         }
+       }
+      if( foreignModuleSpecifier!==  undefined) {
+        if( !moduleSpecifier.startsWith('./')) {
+          // archive goes through foreignModuleSpecifier for local modules too
+          enforceModulePolicy(moduleSpecifier, compartmentDescriptor, {
+            exit: false});
+
+         }
+
+        const foreignCompartment=  compartments[foreignCompartmentName];
+        if( foreignCompartment===  undefined) {
+          throw new Error(
+             `Cannot import from missing compartment ${q(
+              foreignCompartmentName)
+              }${diagnoseMissingCompartmentError({
+              moduleSpecifier,
+              compartmentDescriptor,
+              foreignModuleSpecifier,
+              foreignCompartmentName})
+               }`);
+
+         }
+        return foreignCompartment.module(foreignModuleSpecifier);
+       }
+     }else if( has(exitModules, moduleSpecifier)) {
+      enforceModulePolicy(moduleSpecifier, compartmentDescriptor, {
+        exit: true});
+
+
+      // When linking off the filesystem as with `importLocation`,
+      // there isn't a module descriptor for every module.
+      moduleDescriptors[moduleSpecifier]=  { exit: moduleSpecifier};
+      if( archiveOnly) {
+        return inertModuleNamespace;
+       }else {
+        return attenuateModuleHook(
+          moduleSpecifier,
+          exitModules[moduleSpecifier],
+          compartmentDescriptor.policy,
+          attenuators);
+
+       }
+     }
+
+    // Search for a scope that shares a prefix with the requested module
+    // specifier.
+    // This might be better with a trie, but only a benchmark on real-world
+    // data would tell us whether the additional complexity would translate to
+    // better performance, so this is left readable and presumed slow for now.
+    for( const [scopePrefix, scopeDescriptor]of  entries(scopeDescriptors)) {
+      const foreignModuleSpecifier=  trimModuleSpecifierPrefix(
+        moduleSpecifier,
+        scopePrefix);
+
+
+      if( foreignModuleSpecifier!==  undefined) {
+        const { compartment: foreignCompartmentName}=   scopeDescriptor;
+        if( foreignCompartmentName===  undefined) {
+          throw new Error(
+             `Cannot import from scope ${scopePrefix} due to missing "compartment" property`);
+
+         }
+        const foreignCompartment=  compartments[foreignCompartmentName];
+        if( foreignCompartment===  undefined) {
+          throw new Error(
+             `Cannot import from missing compartment ${q(
+              foreignCompartmentName)
+              }${diagnoseMissingCompartmentError({
+              moduleSpecifier,
+              compartmentDescriptor,
+              foreignModuleSpecifier,
+              foreignCompartmentName})
+               }`);
+
+         }
+
+        // Despite all non-exit modules not allowed by policy being dropped
+        // while building the graph, this check is necessary because module
+        // is written back to the compartment map below.
+        enforceModulePolicy(scopePrefix, compartmentDescriptor, {
+          exit: false});
+
+        // The following line is weird.
+        // Information is flowing backward.
+        // This moduleMapHook writes back to the `modules` descriptor, from the
+        // original compartment map.
+        // So the compartment map that was used to create the compartment
+        // assembly, can then be captured in an archive, obviating the need for
+        // a moduleMapHook when we assemble compartments from the resulting
+        // archive.
+        moduleDescriptors[moduleSpecifier]=  {
+          compartment: foreignCompartmentName,
+          module: foreignModuleSpecifier};
+
+        return foreignCompartment.module(foreignModuleSpecifier);
+       }
+     }
+
+    // No entry in the module map.
+    // Compartments will fall through to their `importHook`.
+    return undefined;
+   };
+
+  return moduleMapHook;
+ };
+
+/**
+ * Assemble a DAG of compartments as declared in a compartment map starting at
+ * the named compartment and building all compartments that it depends upon,
+ * recursively threading the modules exported by one compartment into the
+ * compartment that imports them.
+ * Returns the root of the compartment DAG.
+ * Does not load or execute any modules.
+ * Uses makeImportHook with the given "location" string of each compartment in
+ * the DAG.
+ * Passes the given globals and external modules into the root compartment
+ * only.
+ *
+ * @param {CompartmentMapDescriptor} compartmentMap
+ * @param {LinkOptions} options
+ */
+const        link=  (
+  { entry, compartments: compartmentDescriptors},
+  {
+    makeImportHook,
+    parserForLanguage,
+    globals=  {},
+    transforms=  [],
+    moduleTransforms=  {},
+    __shimTransforms__=  [],
+    modules: exitModules=  {},
+    archiveOnly=  false,
+    Compartment=  defaultCompartment})=>
+
+     {
+  const { compartment: entryCompartmentName}=   entry;
+
+  /** @type {Record<string, Compartment>} */
+  const compartments=  Object.create(null);
+
+  /**
+   * @param {string} attenuatorSpecifier
+   */
+  const attenuators=  makeDeferredAttenuatorsProvider(
+    compartments,
+    compartmentDescriptors);
+
+
+  /** @type {Record<string, ResolveHook>} */
+  const resolvers=  Object.create(null);
+
+  const pendingJobs=  [];
+
+  for( const [compartmentName, compartmentDescriptor]of  entries(
+    compartmentDescriptors))
+     {
+    const {
+      location,
+      name,
+      modules=  Object.create(null),
+      parsers: languageForExtension=  Object.create(null),
+      types: languageForModuleSpecifier=  Object.create(null),
+      scopes=  Object.create(null)}=
+        compartmentDescriptor;
+
+    // Capture the default.
+    // The `moduleMapHook` writes back to the compartment map.
+    compartmentDescriptor.modules=  modules;
+
+    const parse=  mapParsers(
+      languageForExtension,
+      languageForModuleSpecifier,
+      parserForLanguage,
+      moduleTransforms);
+
+    /** @type {ShouldDeferError} */
+    const shouldDeferError=  (language)=>{
+      if( language&&  has(parserForLanguage, language)) {
+        return parserForLanguage[language].heuristicImports;
+       }else {
+        // If language is undefined or there's no parser, the error we could consider deferring is surely related to
+        // that. Nothing to throw here.
+        return false;
+       }
+     };
+
+    const importHook=  makeImportHook(
+      location,
+      name,
+      parse,
+      shouldDeferError,
+      compartments);
+
+    const moduleMapHook=  makeModuleMapHook(
+      compartmentDescriptor,
+      compartments,
+      compartmentName,
+      modules,
+      scopes,
+      exitModules,
+      attenuators,
+      archiveOnly);
+
+    const resolveHook=  resolve;
+    resolvers[compartmentName]=  resolve;
+
+    const compartment=  new Compartment(Object.create(null), undefined, {
+      resolveHook,
+      importHook,
+      moduleMapHook,
+      transforms,
+      __shimTransforms__,
+      name: location});
+
+
+    if( !archiveOnly) {
+      attenuateGlobals(
+        compartment.globalThis,
+        globals,
+        compartmentDescriptor.policy,
+        attenuators,
+        pendingJobs,
+        compartmentDescriptor.name);
+
+     }
+
+    compartments[compartmentName]=  compartment;
+   }
+
+  const compartment=  compartments[entryCompartmentName];
+  if( compartment===  undefined) {
+    throw new Error(
+       `Cannot assemble compartment graph because the root compartment named ${q(
+        entryCompartmentName)
+        } is missing from the compartment map`);
+
+   }
+  const attenuatorsCompartment=  compartments[ATTENUATORS_COMPARTMENT];
+
+  return {
+    compartment,
+    compartments,
+    resolvers,
+    attenuatorsCompartment,
+    pendingJobsPromise: promiseAllSettled(pendingJobs).then(
+      /** @param {PromiseSettledResult<unknown>[]} results */ (results)=>{
+        const errors=  results.
+           filter((result)=>result.status===  'rejected').
+           map(
+            /** @param {PromiseRejectedResult} result */ (result)=>
+              result.reason);
+
+        if( errors.length>  0) {
+          throw new Error(
+             `Globals attenuation errors: ${errors.
+               map((error)=>error.message).
+               join(', ') }`);
+
+         }
+       })};
+
+
+ };
+
+/**
+ * @param {CompartmentMapDescriptor} compartmentMap
+ * @param {LinkOptions} options
+ */$h‍_once.link(link);
+const        assemble=  (compartmentMap, options)=>
+  link(compartmentMap, options).compartment;$h‍_once.assemble(assemble);
+})
+
+,// === functors[7] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/**
+ * TypeScript cannot be relied upon to deal with the nuances of Readonly, so we
+ * borrow the pass-through type definition of harden here.
+ *
+ * @type {__import__('ses').Harden}
+ */
+const freeze=  Object.freeze;
+
+/** @type {__import__('./types.js').ParseFn} */
+const        parseBytes=  async(
+  bytes,
+  _specifier,
+  _location,
+  _packageLocation)=>
+     {
+  // Snapshot ArrayBuffer
+  const buffer=  new ArrayBuffer(bytes.length);
+  const bytesView=  new Uint8Array(buffer);
+  bytesView.set(bytes);
+
+  /** @type {Array<string>} */
+  const imports=  freeze([]);
+
+  /**
+   * @param {object} exports
+   */
+  const execute=  (exports)=>{
+    exports.default=  buffer;
+   };
+
+  return {
+    parser: 'bytes',
+    bytes,
+    record: freeze({
+      imports,
+      exports: freeze(['default']),
+      execute: freeze(execute)})};
+
+
+ };
+
+/** @type {__import__('./types.js').ParserImplementation} */$h‍_once.parseBytes(parseBytes);
+const{default:$c‍_default}={default:{
+  parse: parseBytes,
+  heuristicImports: false}};$h‍_once.default($c‍_default);
+})
+
+,// === functors[8] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let parseLocatedJson;$h‍_imports([["./json.js", [["parseLocatedJson", [$h‍_a => (parseLocatedJson = $h‍_a)]]]]]);   
+
+
+
+/**
+ * TypeScript cannot be relied upon to deal with the nuances of Readonly, so we
+ * borrow the pass-through type definition of harden here.
+ *
+ * @type {__import__('ses').Harden}
+ */
+const freeze=  Object.freeze;
+
+const textDecoder=  new TextDecoder();
+
+/** @type {__import__('./types.js').ParseFn} */
+const        parseJson=  async(
+  bytes,
+  _specifier,
+  location,
+  _packageLocation)=>
+     {
+  const source=  textDecoder.decode(bytes);
+  const imports=  freeze([]);
+
+  /**
+   * @param {object} exports
+   */
+  const execute=  (exports)=>{
+    exports.default=  parseLocatedJson(source, location);
+   };
+  return {
+    parser: 'json',
+    bytes,
+    record: freeze({
+      imports,
+      exports: freeze(['default']),
+      execute: freeze(execute)})};
+
+
+ };
+
+/** @type {__import__('./types.js').ParserImplementation} */$h‍_once.parseJson(parseJson);
+const{default:$c‍_default}={default:{
+  parse: parseJson,
+  heuristicImports: false}};$h‍_once.default($c‍_default);
+})
+
+,// === functors[9] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/** @typedef {__import__('./types.js').ReadFn} ReadFn */
+/** @typedef {__import__('./types.js').ReadPowers} ReadPowers */
+
+const { apply}=   Reflect;
+const { freeze, keys, create, hasOwnProperty, defineProperty}=   Object;
+
+/**
+ * @param {object} object
+ * @param {string} key
+ * @returns {boolean}
+ */
+const has=  (object, key)=>  apply(hasOwnProperty, object, [key]);
+
+const noTrailingSlash=  (path)=>{
+  const l=  path.length-  1;
+  return path[l]===  '\\'||  path[l]===  '/'?  path.slice(0, -1):  path;
+ };
+
+/**
+ * Generates values for __filename and __dirname from location
+ *
+ * @param {ReadPowers | ReadFn | undefined} readPowers
+ * @param {string} location
+ * @returns {{
+ *   filename:string|null,
+ *   dirname: string|null
+ * }}
+ */
+const        getModulePaths=  (readPowers, location)=>  {
+  if(
+    readPowers&&
+    typeof readPowers!==  'function'&&
+    readPowers.fileURLToPath)
+    {
+    let filename=  location;
+    let dirname;
+    try {
+      dirname=  new URL('./', filename).href;
+     }catch( _) {
+      return {
+        filename: null,
+        dirname: null};
+
+     }
+
+    filename=  readPowers.fileURLToPath(filename).toString();
+    dirname=  noTrailingSlash(readPowers.fileURLToPath(dirname).toString());
+
+    return {
+      filename,
+      dirname};
+
+   }else {
+    return {
+      filename: null,
+      dirname: null};
+
+   }
+ };
+
+/**
+ * ModuleEnvironmentRecord wrapper
+ * Creates shared export processing primitives to be used both Location and Archive usecases of cjs
+ *
+ * @param {object} in
+ * @param {object} in.moduleEnvironmentRecord
+ * @param {Compartment} in.compartment
+ * @param {Record<string, string>} in.resolvedImports
+ * @param {string} in.location
+ * @param {ReadFn|ReadPowers} in.readPowers
+ * @returns {{
+ *   module: { exports: any },
+ *   moduleExports: any,
+ *   afterExecute: Function,
+ *   require: Function,
+ * }}
+ */$h‍_once.getModulePaths(getModulePaths);
+const        wrap=  ({
+  moduleEnvironmentRecord,
+  compartment,
+  resolvedImports,
+  location,
+  readPowers})=>
+      {
+  // This initial default value makes things like exports.hasOwnProperty() work in cjs.
+  moduleEnvironmentRecord.default=  create(
+    compartment.globalThis.Object.prototype);
+
+
+  // Set all exported properties on the defult and call namedExportProp to add them on the namespace for import *.
+  // Root namespace is only accessible for imports. Requiring from cjs gets the default field of the namespace.
+  const promoteToNamedExport=  (prop, value)=>  {
+    //  __esModule needs to be present for typescript-compiled modules to work, can't be skipped
+    if( prop!==  'default') {
+      moduleEnvironmentRecord[prop]=  value;
+     }
+   };
+
+  const originalExports=  new Proxy(moduleEnvironmentRecord.default, {
+    set(_target, prop, value) {
+      promoteToNamedExport(prop, value);
+      moduleEnvironmentRecord.default[prop]=  value;
+      return true;
+     },
+    defineProperty(target, prop, descriptor) {
+      if( has(descriptor, 'value')) {
+        // This will result in non-enumerable properties being enumerable for named import purposes. We could check
+        // enumerable here, but I don't see possible benefits of such restriction.
+        promoteToNamedExport(prop, descriptor.value);
+       }
+      // All the defineProperty trickery with getters used for lazy initialization will work. The trap is here only to
+      // elevate the values with namedExportProp whenever possible. Replacing getters with wrapped ones to facilitate
+      // propagating the lazy value to the namespace is not possible because defining a property with modified
+      // descriptor.get in the trap will cause an error.
+      // Object.defineProperty is used instead of Reflect.defineProperty for better error messages.
+      defineProperty(target, prop, descriptor);
+      return true;
+     }});
+
+
+  let finalExports=  originalExports;
+
+  const module=  freeze({
+    get exports() {
+      return finalExports;
+     },
+    set exports(value) {
+      finalExports=  value;
+     }});
+
+
+  const require=  (/** @type {string} */ importSpecifier)=>  {
+    const namespace=  compartment.importNow(resolvedImports[importSpecifier]);
+    // If you read this file carefully, you'll see it's not possible for a cjs module to not have the default anymore.
+    // It's currently possible to require modules that were not created by this file though.
+    if( has(namespace, 'default')) {
+      return namespace.default;
+     }else {
+      return namespace;
+     }
+   };
+  if( typeof readPowers===  'object'&&  readPowers.requireResolve) {
+    const { requireResolve}=   readPowers;
+    require.resolve=  freeze((specifier, options)=>
+      requireResolve(location, specifier, options));
+
+   }else {
+    require.resolve=  freeze((specifier)=>{
+      const error=  Error(
+         `Cannot find module '${specifier}'\nAdd requireResolve to Endo Compartment Mapper readPowers.`);
+
+      defineProperty(error, 'code', { value: 'MODULE_NOT_FOUND'});
+      throw error;
+     });
+   }
+
+  freeze(require);
+
+  const afterExecute=  ()=>  {
+    const exportsHaveBeenOverwritten=  finalExports!==  originalExports;
+    // Promotes keys from redefined module.export to top level namespace for import *
+    // Note: We could do it less consistently but closer to how node does it if we iterated over exports detected by
+    // the lexer.
+    if( exportsHaveBeenOverwritten) {
+      moduleEnvironmentRecord.default=  finalExports;
+      keys(moduleEnvironmentRecord.default||  {}).forEach((prop)=>{
+        if( prop!==  'default')
+          moduleEnvironmentRecord[prop]=  moduleEnvironmentRecord.default[prop];
+       });
+     }
+   };
+
+  return {
+    module,
+    moduleExports: originalExports,
+    afterExecute,
+    require};
+
+ };$h‍_once.wrap(wrap);
+})
+
+,// === functors[10] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let parseLocatedJson,wrap,getModulePaths;$h‍_imports([["./json.js", [["parseLocatedJson", [$h‍_a => (parseLocatedJson = $h‍_a)]]]],["./parse-cjs-shared-export-wrapper.js", [["wrap", [$h‍_a => (wrap = $h‍_a)]],["getModulePaths", [$h‍_a => (getModulePaths = $h‍_a)]]]]]);   
+
+
+
+
+const textDecoder=  new TextDecoder();
+
+/** @type {__import__('./types.js').ParseFn} */
+const        parsePreCjs=  async(
+  bytes,
+  _specifier,
+  location,
+  _packageLocation,
+  { readPowers}=   {})=>
+     {
+  const text=  textDecoder.decode(bytes);
+  const { source, imports, exports, reexports}=   parseLocatedJson(
+    text,
+    location);
+
+
+  const { filename, dirname}=   await getModulePaths(readPowers, location);
+
+  const staticModuleRecord=  {
+    imports,
+    reexports,
+    exports,
+    /**
+     * @param {object} moduleEnvironmentRecord
+     * @param {Compartment} compartment
+     * @param {Record<string, string>} resolvedImports
+     */
+    execute(moduleEnvironmentRecord, compartment, resolvedImports) {
+      let functor;
+      /* eslint-disable-next-line no-underscore-dangle */
+      const syncModuleFunctor=  staticModuleRecord.__syncModuleFunctor__;
+      if( syncModuleFunctor!==  undefined) {
+        functor=  syncModuleFunctor;
+       }else {
+        functor=  compartment.evaluate(source);
+       }
+
+      const { require, moduleExports, module, afterExecute}=   wrap({
+        moduleEnvironmentRecord,
+        compartment,
+        resolvedImports,
+        location,
+        readPowers});
+
+
+      functor(require, moduleExports, module, filename, dirname);
+
+      afterExecute();
+     }};
+
+
+  return {
+    parser: 'pre-cjs-json',
+    bytes,
+    record: staticModuleRecord};
+
+ };
+
+/** @type {__import__('./types.js').ParserImplementation} */$h‍_once.parsePreCjs(parsePreCjs);
+const{default:$c‍_default}={default:{
+  parse: parsePreCjs,
+  heuristicImports: true}};$h‍_once.default($c‍_default);
+})
+
+,// === functors[11] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let parseLocatedJson;$h‍_imports([["./json.js", [["parseLocatedJson", [$h‍_a => (parseLocatedJson = $h‍_a)]]]]]);   
+
+
+
+const textDecoder=  new TextDecoder();
+
+/** @type {__import__('./types.js').ParseFn} */
+const        parsePreMjs=  async(
+  bytes,
+  _specifier,
+  location,
+  _packageLocation)=>
+     {
+  const text=  textDecoder.decode(bytes);
+  const record=  parseLocatedJson(text, location);
+  // eslint-disable-next-line no-underscore-dangle
+  record.__syncModuleProgram__+=   `//# sourceURL=${location}\n`;
+  return {
+    parser: 'pre-mjs-json',
+    bytes,
+    record};
+
+ };
+
+/** @type {__import__('./types.js').ParserImplementation} */$h‍_once.parsePreMjs(parsePreMjs);
+const{default:$c‍_default}={default:{
+  parse: parsePreMjs,
+  heuristicImports: false}};$h‍_once.default($c‍_default);
+})
+
+,// === functors[12] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+/**
+ * TypeScript cannot be relied upon to deal with the nuances of Readonly, so we
+ * borrow the pass-through type definition of harden here.
+ *
+ * @type {__import__('ses').Harden}
+ */
+const freeze=  Object.freeze;
+
+const textDecoder=  new TextDecoder();
+
+/** @type {__import__('./types.js').ParseFn} */
+const        parseText=  async(
+  bytes,
+  _specifier,
+  _location,
+  _packageLocation)=>
+     {
+  const text=  textDecoder.decode(bytes);
+
+  /** @type {Array<string>} */
+  const imports=  freeze([]);
+
+  /**
+   * @param {object} exports
+   */
+  const execute=  (exports)=>{
+    exports.default=  text;
+   };
+
+  return {
+    parser: 'text',
+    bytes,
+    record: freeze({
+      imports,
+      exports: freeze(['default']),
+      execute: freeze(execute)})};
+
+
+ };
+
+/** @type {__import__('./types.js').ParserImplementation} */$h‍_once.parseText(parseText);
+const{default:$c‍_default}={default:{
+  parse: parseText,
+  heuristicImports: false}};$h‍_once.default($c‍_default);
+})
+
+,// === functors[13] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+/** @typedef {__import__('./types.js').ReadFn} ReadFn */
+/** @typedef {__import__('./types.js').CanonicalFn} CanonicalFn */
+/** @typedef {__import__('./types.js').ReadPowers} ReadPowers */
+
+/** @type {CanonicalFn} */
+const canonicalShim=  async(path)=> path;
+
+/**
+ * @param {ReadFn | ReadPowers} powers
+ * @returns {ReadPowers}
+ */
+const        unpackReadPowers=  (powers)=>{
+  if( typeof powers===  'function') {
+    return {
+      read: powers,
+      canonical: canonicalShim};
+
+   }
+  return powers;
+ };$h‍_once.unpackReadPowers(unpackReadPowers);
+})
+
+,// === functors[14] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+/* eslint no-bitwise: ["off"] */
+
+const q=  JSON.stringify;
+
+/**
+ * @typedef {object} BufferReaderState
+ * @property {Uint8Array} bytes
+ * @property {DataView} data
+ * @property {number} length
+ * @property {number} index
+ * @property {number} offset
+ */
+
+/** @type {WeakMap<BufferReader, BufferReaderState>} */
+const privateFields=  new WeakMap();
+
+/** @type {(bufferReader: BufferReader) => BufferReaderState} */
+const privateFieldsGet=  privateFields.get.bind(privateFields);
+
+class        BufferReader {
+  /**
+   * @param {ArrayBuffer} buffer
+   */
+             constructor(buffer){
+    const bytes=  new Uint8Array(buffer);
+    const data=  new DataView(bytes.buffer);
+    privateFields.set(this, {
+      bytes,
+      data,
+      length: bytes.length,
+      index: 0,
+      offset: 0});
+
+   }
+
+  /**
+   * @returns {number}
+   */
+            get length(){
+    return privateFieldsGet(this).length;
+   }
+
+  /**
+   * @returns {number}
+   */
+           get index(){
+    return privateFieldsGet(this).index;
+   }
+
+  /**
+   * @param {number} index
+   */
+           set index(index){
+    this.seek(index);
+   }
+
+  /**
+   * @param {number} offset
+   */
+            set offset(offset){
+    const fields=  privateFieldsGet(this);
+    if( offset>  fields.data.byteLength) {
+      throw new Error('Cannot set offset beyond length of underlying data');
+     }
+    if( offset<  0) {
+      throw new Error('Cannot set negative offset');
+     }
+    fields.offset=  offset;
+    fields.length=  fields.data.byteLength-  fields.offset;
+   }
+
+  /**
+   * @param {number} index
+   * @returns {boolean} whether the read head can move to the given absolute
+   * index.
+   */
+         canSeek(index){
+    const fields=  privateFieldsGet(this);
+    return index>=  0&&  fields.offset+  index<=  fields.length;
+   }
+
+  /**
+   * @param {number} index the index to check.
+   * @throws {Error} an Error if the index is out of bounds.
+   */
+               assertCanSeek(index){
+    const fields=  privateFieldsGet(this);
+    if( !this.canSeek(index)) {
+      throw new Error(
+         `End of data reached (data length = ${fields.length}, asked index ${index}`);
+
+     }
+   }
+
+  /**
+   * @param {number} index
+   * @returns {number} prior index
+   */
+      seek(index){
+    const fields=  privateFieldsGet(this);
+    const restore=  fields.index;
+    this.assertCanSeek(index);
+    fields.index=  index;
+    return restore;
+   }
+
+  /**
+   * @param {number} size
+   * @returns {Uint8Array}
+   */
+      peek(size){
+    const fields=  privateFieldsGet(this);
+    // Clamp size.
+    size=  Math.max(0, Math.min(fields.length-  fields.index, size));
+    if( size===  0) {
+      // in IE10, when using subarray(idx, idx), we get the array [0x00] instead of [].
+      return new Uint8Array(0);
+     }
+    const result=  fields.bytes.subarray(
+      fields.offset+  fields.index,
+      fields.offset+  fields.index+  size);
+
+    return result;
+   }
+
+  /**
+   * @param {number} offset
+   */
+         canRead(offset){
+    const fields=  privateFieldsGet(this);
+    return this.canSeek(fields.index+  offset);
+   }
+
+  /**
+   * Check that the offset will not go too far.
+   *
+   * @param {number} offset the additional offset to check.
+   * @throws {Error} an Error if the offset is out of bounds.
+   */
+               assertCanRead(offset){
+    const fields=  privateFieldsGet(this);
+    this.assertCanSeek(fields.index+  offset);
+   }
+
+  /**
+   * Get raw data without conversion, <size> bytes.
+   *
+   * @param {number} size the number of bytes to read.
+   * @returns {Uint8Array} the raw data.
+   */
+      read(size){
+    const fields=  privateFieldsGet(this);
+    this.assertCanRead(size);
+    const result=  this.peek(size);
+    fields.index+=  size;
+    return result;
+   }
+
+  /**
+   * @returns {number}
+   */
+           readUint8(){
+    const fields=  privateFieldsGet(this);
+    this.assertCanRead(1);
+    const index=  fields.offset+  fields.index;
+    const value=  fields.data.getUint8(index);
+    fields.index+=  1;
+    return value;
+   }
+
+  /**
+   * @returns {number}
+   * @param {boolean=} littleEndian
+   */
+            readUint16(littleEndian){
+    const fields=  privateFieldsGet(this);
+    this.assertCanRead(2);
+    const index=  fields.offset+  fields.index;
+    const value=  fields.data.getUint16(index, littleEndian);
+    fields.index+=  2;
+    return value;
+   }
+
+  /**
+   * @returns {number}
+   * @param {boolean=} littleEndian
+   */
+            readUint32(littleEndian){
+    const fields=  privateFieldsGet(this);
+    this.assertCanRead(4);
+    const index=  fields.offset+  fields.index;
+    const value=  fields.data.getUint32(index, littleEndian);
+    fields.index+=  4;
+    return value;
+   }
+
+  /**
+   * @param {number} index
+   * @returns {number}
+   */
+        byteAt(index){
+    const fields=  privateFieldsGet(this);
+    return fields.bytes[fields.offset+  index];
+   }
+
+  /**
+   * @param {number} offset
+   */
+      skip(offset){
+    const fields=  privateFieldsGet(this);
+    this.seek(fields.index+  offset);
+   }
+
+  /**
+   * @param {Uint8Array} expected
+   * @returns {boolean}
+   */
+        expect(expected){
+    const fields=  privateFieldsGet(this);
+    if( !this.matchAt(fields.index, expected)) {
+      return false;
+     }
+    fields.index+=  expected.length;
+    return true;
+   }
+
+  /**
+   * @param {number} index
+   * @param {Uint8Array} expected
+   * @returns {boolean}
+   */
+         matchAt(index,expected){
+    const fields=  privateFieldsGet(this);
+    if( index+  expected.length>  fields.length||  index<  0) {
+      return false;
+     }
+    for( let i=  0; i<  expected.length; i+=  1) {
+      if( expected[i]!==  this.byteAt(index+  i)) {
+        return false;
+       }
+     }
+    return true;
+   }
+
+  /**
+   * @param {Uint8Array} expected
+   */
+        assert(expected){
+    const fields=  privateFieldsGet(this);
+    if( !this.expect(expected)) {
+      throw new Error(
+         `Expected ${q(expected)} at ${fields.index}, got ${this.peek(
+          expected.length)
+          }`);
+
+     }
+   }
+
+  /**
+   * @param {Uint8Array} expected
+   * @returns {number}
+   */
+          findLast(expected){
+    const fields=  privateFieldsGet(this);
+    let index=  fields.length-  expected.length;
+    while( index>=  0&&  !this.matchAt(index, expected)) {
+      index-=  1;
+     }
+    return index;
+   }}$h‍_once.BufferReader(BufferReader);
+})
+
+,// === functors[15] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+
+// STORE is the magic number for "not compressed".
+const        STORE=  0;$h‍_once.STORE(STORE);
+})
+
+,// === functors[16] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);Object.defineProperty(crc32, 'name', {value: "crc32"});$h‍_once.crc32(crc32);   // @ts-check
+/* eslint no-bitwise: ["off"] */
+
+/**
+ * The following functions `makeTable` and `crc32` come from `pako`, from
+ * pako/lib/zlib/crc32.js released under the MIT license, see pako
+ * https://github.com/nodeca/pako/
+ */
+
+// Use ordinary array, since untyped makes no boost here
+/**
+ * @returns {Array<number>}
+ */
+function makeTable() {
+  let c;
+  const table=  [];
+
+  for( let n=  0; n<  256; n+=  1) {
+    c=  n;
+    for( let k=  0; k<  8; k+=  1) {
+      c=  c&  1?  0xedb88320^   c>>>  1:   c>>>  1;
+     }
+    table[n]=  c;
+   }
+
+  return table;
+ }
+
+// Initialize a table of 256 signed 32 bit integers.
+const table=  makeTable();
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} length
+ * @param {number} index
+ * @param {number} crc
+ */
+function        crc32(bytes, length=  bytes.length, index=  0, crc=  0) {
+  const end=  index+  length;
+
+  crc^=  -1;
+
+  for( let i=  index; i<  end; i+=  1) {
+    crc=   crc>>>  8^   table[(crc^  bytes[i])&  0xff];
+   }
+
+  return (crc^  -1)>>>  0;
+ }
+})
+
+,// === functors[17] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+/* eslint no-bitwise: ["off"] */
+
+/**
+ * @param {string} string
+ * @returns {Uint8Array}
+ */
+function u(string) {
+  const array=  new Uint8Array(string.length);
+  for( let i=  0; i<  string.length; i+=  1) {
+    array[i]=  string.charCodeAt(i)&  0xff;
+   }
+  return array;
+ }
+
+const        LOCAL_FILE_HEADER=  u('PK\x03\x04');$h‍_once.LOCAL_FILE_HEADER(LOCAL_FILE_HEADER);
+const        CENTRAL_FILE_HEADER=  u('PK\x01\x02');$h‍_once.CENTRAL_FILE_HEADER(CENTRAL_FILE_HEADER);
+const        CENTRAL_DIRECTORY_END=  u('PK\x05\x06');$h‍_once.CENTRAL_DIRECTORY_END(CENTRAL_DIRECTORY_END);
+const        ZIP64_CENTRAL_DIRECTORY_LOCATOR=  u('PK\x06\x07');$h‍_once.ZIP64_CENTRAL_DIRECTORY_LOCATOR(ZIP64_CENTRAL_DIRECTORY_LOCATOR);
+const        ZIP64_CENTRAL_DIRECTORY_END=  u('PK\x06\x06');$h‍_once.ZIP64_CENTRAL_DIRECTORY_END(ZIP64_CENTRAL_DIRECTORY_END);
+const        DATA_DESCRIPTOR=  u('PK\x07\x08');$h‍_once.DATA_DESCRIPTOR(DATA_DESCRIPTOR);
+})
+
+,// === functors[18] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   
+})
+
+,// === functors[19] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let crc32,signature,compression;$h‍_imports([["./types.js", []],["./crc32.js", [["crc32", [$h‍_a => (crc32 = $h‍_a)]]]],["./signature.js", [["*", [$h‍_a => (signature = $h‍_a)]]]],["./compression.js", [["*", [$h‍_a => (compression = $h‍_a)]]]]]);Object.defineProperty(readZip, 'name', {value: "readZip"});$h‍_once.readZip(readZip);   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// q, as in quote, for quoting strings in errors
+const q=  JSON.stringify;
+
+const MAX_VALUE_16BITS=  65535;
+const MAX_VALUE_32BITS=  4294967295;
+
+const textDecoder=  new TextDecoder();
+
+/**
+ * @param {number} bitFlag
+ * @returns {boolean}
+ */
+function isEncrypted(bitFlag) {
+  return (bitFlag&  0x0001)===  0x0001;
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {Date}
+ * @see http://www.delorie.com/djgpp/doc/rbinter/it/65/16.html
+ * @see http://www.delorie.com/djgpp/doc/rbinter/it/66/16.html
+ */
+function readDosDateTime(reader) {
+  const dosTime=  reader.readUint32(true);
+  return new Date(
+    Date.UTC(
+      ( dosTime>>  25&   0x7f)+  1980, // year
+      ( dosTime>>  21&   0x0f)-  1, // month
+       dosTime>>  16&   0x1f, // day
+       dosTime>>  11&   0x1f, // hour
+       dosTime>>  5&   0x3f, // minute
+      (dosTime&  0x1f)<<  1  // second
+));
+
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {ArchiveHeaders}
+ */
+function readHeaders(reader) {
+  return {
+    versionNeeded: reader.readUint16(true),
+    bitFlag: reader.readUint16(true),
+    compressionMethod: reader.readUint16(true),
+    date: readDosDateTime(reader),
+    crc32: reader.readUint32(true),
+    compressedLength: reader.readUint32(true),
+    uncompressedLength: reader.readUint32(true)};
+
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {CentralFileRecord}
+ */
+function readCentralFileHeader(reader) {
+  const version=  reader.readUint8();
+  const madeBy=  reader.readUint8();
+  const headers=  readHeaders(reader);
+  const nameLength=  reader.readUint16(true);
+  const extraFieldsLength=  reader.readUint16(true);
+  const commentLength=  reader.readUint16(true);
+  const diskNumberStart=  reader.readUint16(true);
+  const internalFileAttributes=  reader.readUint16(true);
+  const externalFileAttributes=  reader.readUint32(true);
+  const fileStart=  reader.readUint32(true);
+
+  const name=  reader.read(nameLength);
+  // TODO read extra fields, particularly Zip64
+  reader.skip(extraFieldsLength);
+
+  if( headers.uncompressedLength===  MAX_VALUE_32BITS) {
+    throw new Error('Cannot read Zip64');
+   }
+  if( headers.compressedLength===  MAX_VALUE_32BITS) {
+    throw new Error('Cannot read Zip64');
+   }
+  if( fileStart===  MAX_VALUE_32BITS) {
+    throw new Error('Cannot read Zip64');
+   }
+  if( diskNumberStart===  MAX_VALUE_32BITS) {
+    throw new Error('Cannot read Zip64');
+   }
+
+  const comment=  reader.read(commentLength);
+
+  return {
+    name,
+    version,
+    madeBy,
+    ...headers,
+    diskNumberStart,
+    internalFileAttributes,
+    externalFileAttributes,
+    fileStart,
+    comment};
+
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @param {CentralDirectoryLocator} locator
+ * @returns {Array<CentralFileRecord>}
+ */
+function readCentralDirectory(reader, locator) {
+  const { centralDirectoryOffset, centralDirectoryRecords}=   locator;
+  reader.seek(centralDirectoryOffset);
+
+  const entries=  [];
+  while( reader.expect(signature.CENTRAL_FILE_HEADER)) {
+    const entry=  readCentralFileHeader(reader);
+    entries.push(entry);
+   }
+
+  if( centralDirectoryRecords!==  entries.length) {
+    // We expected some records but couldn't find ANY.
+    // This is really suspicious, as if something went wrong.
+    throw new Error(
+       `Corrupted zip or bug: expected ${centralDirectoryRecords} records in central dir, got ${entries.length}`);
+
+   }
+
+  return entries;
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {LocalFileRecord}
+ */
+function readFile(reader) {
+  reader.expect(signature.LOCAL_FILE_HEADER);
+  const headers=  readHeaders(reader);
+  const nameLength=  reader.readUint16(true);
+  const extraFieldsLength=  reader.readUint16(true);
+  const name=  reader.read(nameLength);
+  reader.skip(extraFieldsLength);
+  const content=  reader.read(headers.compressedLength);
+  return { name, ...headers, content};
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @param {Array<CentralFileRecord>} records
+ * @returns {Array<LocalFileRecord>}
+ */
+function readLocalFiles(reader, records) {
+  const files=  [];
+  for( const record of records) {
+    reader.seek(record.fileStart);
+    const file=  readFile(reader);
+    files.push(file);
+   }
+  return files;
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {CentralDirectoryLocator}
+ */
+function readBlockEndOfCentral(reader) {
+  if( !reader.expect(signature.CENTRAL_DIRECTORY_END)) {
+    throw new Error(
+      'Corrupt zip file, or zip file containing an unsupported variable-width end-of-archive comment, or an unsupported zip file with 64 bit sizes');
+
+   }
+  const diskNumber=  reader.readUint16(true);
+  const diskWithCentralDirStart=  reader.readUint16(true);
+  const centralDirectoryRecordsOnThisDisk=  reader.readUint16(true);
+  const centralDirectoryRecords=  reader.readUint16(true);
+  const centralDirectorySize=  reader.readUint32(true);
+  const centralDirectoryOffset=  reader.readUint32(true);
+  const commentLength=  reader.readUint16(true);
+  // Warning: the encoding depends of the system locale.
+  // On a Linux machine with LANG=en_US.utf8, this field is utf8 encoded.
+  // On a Windows machine, this field is encoded with the localized Windows
+  // code page.
+  const comment=  textDecoder.decode(reader.read(commentLength));
+  return {
+    diskNumber,
+    diskWithCentralDirStart,
+    centralDirectoryRecordsOnThisDisk,
+    centralDirectoryRecords,
+    centralDirectorySize,
+    centralDirectoryOffset,
+    comment};
+
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @returns {CentralDirectoryLocator}
+ */
+function readEndOfCentralDirectoryRecord(reader) {
+  // Zip files are permitted to have a variable-width comment at the end of the
+  // "end of central directory record" and may have subsequent Zip64 headers.
+  // The prescribed method of finding the beginning of the "end of central
+  // directory record" is to seek the magic number:
+  //
+  //   reader.findLast(signature.CENTRAL_DIRECTORY_END);
+  //
+  // This introduces a number of undesirable, attackable ambiguities
+  // Agoric is not comfortable supporting, so we forbid the comment
+  // and 64 bit zip support so we can seek a predictable length
+  // from the end.
+  const centralDirectoryEnd=  reader.length-  22;
+  if( centralDirectoryEnd<  0) {
+    throw new Error('Corrupted zip: not enough content');
+   }
+  reader.seek(centralDirectoryEnd);
+  const locator=  readBlockEndOfCentral(reader);
+
+  // Excerpt from the zip spec:
+  //   4)  If one of the fields in the end of central directory
+  //       record is too small to hold required data, the field
+  //       should be set to -1 (0xFFFF or 0xFFFFFFFF) and the
+  //       ZIP64 format record should be created.
+  //   5)  The end of central directory record and the
+  //       Zip64 end of central directory locator record must
+  //       reside on the same disk when splitting or spanning
+  //       an archive.
+  const zip64=
+    locator.diskNumber===  MAX_VALUE_16BITS||
+    locator.diskWithCentralDirStart===  MAX_VALUE_16BITS||
+    locator.centralDirectoryRecordsOnThisDisk===  MAX_VALUE_16BITS||
+    locator.centralDirectoryRecords===  MAX_VALUE_16BITS||
+    locator.centralDirectorySize===  MAX_VALUE_32BITS||
+    locator.centralDirectoryOffset===  MAX_VALUE_32BITS;
+
+  if( zip64) {
+    throw new Error('Cannot read Zip64');
+   }
+
+  const {
+    centralDirectoryOffset,
+    centralDirectorySize
+    // zip64EndOfCentralSize
+}=    locator;
+
+  const expectedCentralDirectoryEnd=
+    centralDirectoryOffset+  centralDirectorySize;
+  const extraBytes=  centralDirectoryEnd-  expectedCentralDirectoryEnd;
+
+  reader.offset=  extraBytes;
+
+  return locator;
+ }
+
+/**
+ * @param {CentralFileRecord} centralRecord
+ * @param {LocalFileRecord} localRecord
+ * @param {string} archiveName
+ */
+function checkRecords(centralRecord, localRecord, archiveName) {
+  const centralName=  textDecoder.decode(centralRecord.name);
+  const localName=  textDecoder.decode(localRecord.name);
+
+  // In some zip files created on Windows, the filename stored in the central
+  // dir contains "\" instead of "/".  Strangely, the file name in the local
+  // directory uses "/" as specified:
+  // http://www.info-zip.org/FAQ.html#backslashes or APPNOTE#4.4.17.1, "All
+  // slashes MUST be forward slashes '/'") but there are a lot of bad zip
+  // generators...  Search "unzip mismatching "local" filename continuing with
+  // "central" filename version".
+  //
+  // The reasoning appears to be that the central directory is for
+  // user display and may differ, though this opens the possibility
+  // for spoofing attacks.
+  // http://seclists.org/fulldisclosure/2009/Sep/394
+  //
+  // We strike a compromise: the central directory name may vary from the local
+  // name exactly and only by different slashes.
+  if( centralName.replace(/\\/g, '/')!==  localName) {
+    throw new Error(
+       `Zip integrity error: central record file name ${q(
+        centralName)
+        } must match local file name ${q(localName)} in archive ${q(
+        archiveName)
+        }`);
+
+   }
+
+  /**
+   * @param {boolean} value
+   * @param {string} message
+   */
+  function check(value, message) {
+    if( !value) {
+      throw new Error(
+         `Zip integrity error: ${message} for file ${q(
+          localName)
+          } in archive ${q(archiveName)}`);
+
+     }
+   }
+
+  check(
+    centralRecord.bitFlag===  localRecord.bitFlag,
+     `Central record bit flag ${centralRecord.bitFlag.toString(
+      16)
+      } must match local record bit flag ${localRecord.bitFlag.toString(16)}`);
+
+  check(
+    centralRecord.compressionMethod===  localRecord.compressionMethod,
+     `Central record compression method ${q(
+      centralRecord.compressionMethod)
+      } must match local compression method ${q(localRecord.compressionMethod)}`);
+
+  // TODO Date integrity check would be easier on the original bytes.
+  // Perhaps defer decoding the underlying bytes.
+  check(
+    centralRecord.crc32===  localRecord.crc32,
+     `Central record CRC-32 checksum ${centralRecord.crc32} must match local checksum ${localRecord.crc32}`);
+
+  check(
+    centralRecord.compressedLength===  localRecord.compressedLength,
+     `Central record compressed size ${centralRecord.compressedLength} must match local ${localRecord.compressedLength}`);
+
+  check(
+    centralRecord.uncompressedLength===  localRecord.uncompressedLength,
+     `Central record uncompressed size ${centralRecord.uncompressedLength} must match local ${localRecord.uncompressedLength}`);
+
+
+  const checksum=  crc32(localRecord.content);
+  check(
+    checksum===  localRecord.crc32,
+     `CRC-32 checksum mismatch, wanted ${localRecord.crc32} but actual content is ${checksum}`);
+
+ }
+
+/**
+ * @param {number} externalFileAttributes
+ */
+function modeForExternalAttributes(externalFileAttributes) {
+  return  externalFileAttributes>>  16&   0xffff;
+ }
+
+/**
+ * @param {CentralFileRecord} centralRecord
+ * @param {LocalFileRecord} localRecord
+ * @returns {CompressedFile}
+ */
+function recordToFile(centralRecord, localRecord) {
+  const mode=  modeForExternalAttributes(centralRecord.externalFileAttributes);
+  return {
+    name: centralRecord.name,
+    mode,
+    date: centralRecord.date,
+    crc32: centralRecord.crc32,
+    compressionMethod: centralRecord.compressionMethod,
+    compressedLength: centralRecord.compressedLength,
+    uncompressedLength: centralRecord.uncompressedLength,
+    content: localRecord.content,
+    comment: centralRecord.comment};
+
+ }
+
+/**
+ * @param {CompressedFile} file
+ * @returns {UncompressedFile}
+ */
+function decompressFile(file) {
+  if( file.compressionMethod!==  compression.STORE) {
+    throw new Error(
+       `Cannot find decompressor for compression method ${q(
+        file.compressionMethod)
+        } for file ${file.name}`);
+
+   }
+  return {
+    name: file.name,
+    mode: file.mode,
+    date: file.date,
+    content: file.content,
+    comment: file.comment};
+
+ }
+
+/**
+ * @param {UncompressedFile} file
+ * @returns {ArchivedFile}
+ */
+function decodeFile(file) {
+  const name=  textDecoder.decode(file.name);
+  const comment=  textDecoder.decode(file.comment);
+  return {
+    name,
+    type: 'file',
+    mode: file.mode&  0o777,
+    date: file.date,
+    content: file.content,
+    comment};
+
+ }
+
+/**
+ * @param {BufferReader} reader
+ * @param {string} name
+ */
+function        readZip(reader, name=  '<unknown>') {
+  const locator=  readEndOfCentralDirectoryRecord(reader);
+  const centralRecords=  readCentralDirectory(reader, locator);
+  const localRecords=  readLocalFiles(reader, centralRecords);
+  const files=  new Map();
+
+  for( let i=  0; i<  centralRecords.length; i+=  1) {
+    const centralRecord=  centralRecords[i];
+    const localRecord=  localRecords[i];
+
+    checkRecords(centralRecord, localRecord, name);
+
+    if( isEncrypted(centralRecord.bitFlag)) {
+      throw new Error('Encrypted zip are not supported');
+     }
+
+    const isDir=  (centralRecord.externalFileAttributes&  0x0010)!==  0;
+    if( !isDir) {
+      const compressedFile=  recordToFile(centralRecord, localRecord);
+      const decompressedFile=  decompressFile(compressedFile);
+      const decodedFile=  decodeFile(decompressedFile);
+      files.set(decodedFile.name, decodedFile);
+     }
+    // TODO handle explicit directory entries
+   }
+  return files;
+ }
+})
+
+,// === functors[20] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let BufferReader,readZipFormat;$h‍_imports([["./buffer-reader.js", [["BufferReader", [$h‍_a => (BufferReader = $h‍_a)]]]],["./format-reader.js", [["readZip", [$h‍_a => (readZipFormat = $h‍_a)]]]]]);   
+
+
+
+
+class        ZipReader {
+  /**
+   * @param {Uint8Array} data
+   * @param {object} [options]
+   * @param {string} [options.name]
+   */
+             constructor(data,options={}){
+    const { name=  '<unknown>'}=   options;
+    const reader=  new BufferReader(data);
+    this.files=  readZipFormat(reader);
+    this.name=  name;
+   }
+
+  /**
+   * @param {string} name
+   * @returns {Uint8Array}
+   */
+      read(name){
+    const file=  this.files.get(name);
+    if( file===  undefined) {
+      throw new Error( `Cannot find file ${name} in Zip file ${this.name}`);
+     }
+    return file.content;
+   }
+
+  /**
+   * @param {string} name
+   * @returns {__import__('./types.js').ArchivedStat=}
+   */
+      stat(name){
+    const file=  this.files.get(name);
+    if( file===  undefined) {
+      return undefined;
+     }
+    return {
+      type: file.type,
+      mode: file.mode,
+      date: file.date,
+      comment: file.comment};
+
+   }}
+
+
+/**
+ * @param {Uint8Array} data
+ * @param {string} location
+ * @returns {Promise<__import__('./types.js').ArchiveReader>}
+ */$h‍_once. ZipReader(ZipReader);
+const        readZip=  async( data, location)=>  {
+  const reader=  new ZipReader(data, { name: location});
+  /** @type {__import__('./types.js').ReadFn} */
+  const read=  async(path)=> reader.read(path);
+  return { read};
+ };$h‍_once.readZip(readZip);
+})
+
+,// === functors[21] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([]);   // @ts-check
+/* eslint no-bitwise: ["off"] */
+
+/**
+ * @type {WeakMap<BufferWriter, {
+ *   length: number,
+ *   index: number,
+ *   bytes: Uint8Array,
+ *   data: DataView,
+ *   capacity: number,
+ * }>}
+ */
+const privateFields=  new WeakMap();
+
+/**
+ * @param {BufferWriter} self
+ */
+const getPrivateFields=  (self)=>{
+  const fields=  privateFields.get(self);
+  if( !fields) {
+    throw new Error('BufferWriter fields are not initialized');
+   }
+  return fields;
+ };
+
+const assertNatNumber=  (n)=>{
+  if( Number.isSafeInteger(n)&&  /** @type {number} */  n>=   0) {
+    return;
+   }
+  throw TypeError( `must be a non-negative integer, got ${n}`);
+ };
+
+class        BufferWriter {
+  /**
+   * @returns {number}
+   */
+            get length(){
+    return getPrivateFields(this).length;
+   }
+
+  /**
+   * @returns {number}
+   */
+           get index(){
+    return getPrivateFields(this).index;
+   }
+
+  /**
+   * @param {number} index
+   */
+           set index(index){
+    this.seek(index);
+   }
+
+  /**
+   * @param {number=} capacity
+   */
+             constructor(capacity=16){
+    const bytes=  new Uint8Array(capacity);
+    const data=  new DataView(bytes.buffer);
+    privateFields.set(this, {
+      bytes,
+      data,
+      index: 0,
+      length: 0,
+      capacity});
+
+   }
+
+  /**
+   * @param {number} required
+   */
+               ensureCanSeek(required){
+    assertNatNumber(required);
+    const fields=  getPrivateFields(this);
+    let capacity=  fields.capacity;
+    while( capacity<  required) {
+      capacity*=  2;
+     }
+    const bytes=  new Uint8Array(capacity);
+    const data=  new DataView(bytes.buffer);
+    bytes.set(fields.bytes.subarray(0, fields.length));
+    fields.bytes=  bytes;
+    fields.data=  data;
+    fields.capacity=  capacity;
+   }
+
+  /**
+   * @param {number} index
+   */
+      seek(index){
+    const fields=  getPrivateFields(this);
+    this.ensureCanSeek(index);
+    fields.index=  index;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number} size
+   */
+                ensureCanWrite(size){
+    assertNatNumber(size);
+    const fields=  getPrivateFields(this);
+    this.ensureCanSeek(fields.index+  size);
+   }
+
+  /**
+   * @param {Uint8Array} bytes
+   */
+       write(bytes){
+    const fields=  getPrivateFields(this);
+    this.ensureCanWrite(bytes.byteLength);
+    fields.bytes.set(bytes, fields.index);
+    fields.index+=  bytes.byteLength;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number} start
+   * @param {number} end
+   */
+           writeCopy(start,end){
+    assertNatNumber(start);
+    assertNatNumber(end);
+    const fields=  getPrivateFields(this);
+    const size=  end-  start;
+    this.ensureCanWrite(size);
+    fields.bytes.copyWithin(fields.index, start, end);
+    fields.index+=  size;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number} value
+   */
+            writeUint8(value){
+    const fields=  getPrivateFields(this);
+    this.ensureCanWrite(1);
+    fields.data.setUint8(fields.index, value);
+    fields.index+=  1;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number} value
+   * @param {boolean=} littleEndian
+   */
+             writeUint16(value,littleEndian){
+    const fields=  getPrivateFields(this);
+    this.ensureCanWrite(2);
+    const index=  fields.index;
+    fields.data.setUint16(index, value, littleEndian);
+    fields.index+=  2;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number} value
+   * @param {boolean=} littleEndian
+   */
+             writeUint32(value,littleEndian){
+    const fields=  getPrivateFields(this);
+    this.ensureCanWrite(4);
+    const index=  fields.index;
+    fields.data.setUint32(index, value, littleEndian);
+    fields.index+=  4;
+    fields.length=  Math.max(fields.index, fields.length);
+   }
+
+  /**
+   * @param {number=} begin
+   * @param {number=} end
+   * @returns {Uint8Array}
+   */
+          subarray(begin,end){
+    const fields=  getPrivateFields(this);
+    return fields.bytes.subarray(0, fields.length).subarray(begin, end);
+   }
+
+  /**
+   * @param {number=} begin
+   * @param {number=} end
+   * @returns {Uint8Array}
+   */
+       slice(begin,end){
+    return this.subarray(begin, end).slice();
+   }}$h‍_once.BufferWriter(BufferWriter);
+})
+
+,// === functors[22] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let crc32,signature,compression;$h‍_imports([["./crc32.js", [["crc32", [$h‍_a => (crc32 = $h‍_a)]]]],["./signature.js", [["*", [$h‍_a => (signature = $h‍_a)]]]],["./compression.js", [["*", [$h‍_a => (compression = $h‍_a)]]]]]);Object.defineProperty(writeZipRecords, 'name', {value: "writeZipRecords"});$h‍_once.writeZipRecords(writeZipRecords);Object.defineProperty(writeZip, 'name', {value: "writeZip"});$h‍_once.writeZip(writeZip);   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const UNIX=  3;
+const UNIX_VERSION=  30;
+
+const textEncoder=  new TextEncoder();
+
+/**
+ * @param {BufferWriter} writer
+ * @param {Date?} date
+ * @see http://www.delorie.com/djgpp/doc/rbinter/it/65/16.html
+ * @see http://www.delorie.com/djgpp/doc/rbinter/it/66/16.html
+ */
+function writeDosDateTime(writer, date) {
+  const dosTime=
+    date!==  undefined&&  date!==  null?
+         ( date.getUTCFullYear()-  1980&   0x7f)<<  25|   // year
+          date.getUTCMonth()+  1<<   21|   // month
+         date.getUTCDate()<<  16|   // day
+         date.getUTCHours()<<  11|   // hour
+         date.getUTCMinutes()<<  5|   // minute
+         date.getUTCSeconds()>>  1  // second
+:       0; // Epoch origin by default.
+  writer.writeUint32(dosTime, true);
+ }
+
+/**
+ * @param {BufferWriter} writer
+ * @param {FileRecord} file
+ * @returns {LocalFileLocator}
+ */
+function writeFile(writer, file) {
+  // Header
+  const fileStart=  writer.index;
+  writer.write(signature.LOCAL_FILE_HEADER);
+  const headerStart=  writer.index;
+  // Version needed to extract
+  writer.writeUint16(10, true);
+  writer.writeUint16(file.bitFlag, true);
+  writer.writeUint16(file.compressionMethod, true);
+  writeDosDateTime(writer, file.date);
+  writer.writeUint32(file.crc32, true);
+  writer.writeUint32(file.compressedLength, true);
+  writer.writeUint32(file.uncompressedLength, true);
+  writer.writeUint16(file.name.length, true);
+  const headerEnd=  writer.length;
+
+  // TODO count of extra fields length
+  writer.writeUint16(0, true);
+  writer.write(file.name);
+  // TODO write extra fields
+  writer.write(file.content);
+
+  return {
+    fileStart,
+    headerStart,
+    headerEnd};
+
+ }
+
+/**
+ * @param {BufferWriter} writer
+ * @param {FileRecord} file
+ * @param {LocalFileLocator} locator
+ */
+function writeCentralFileHeader(writer, file, locator) {
+  writer.write(signature.CENTRAL_FILE_HEADER);
+  writer.writeUint8(file.version);
+  writer.writeUint8(file.madeBy);
+  writer.writeCopy(locator.headerStart, locator.headerEnd);
+  // TODO extra fields length
+  writer.writeUint16(0, true);
+  writer.writeUint16(file.comment.length, true);
+  writer.writeUint16(file.diskNumberStart, true);
+  writer.writeUint16(file.internalFileAttributes, true);
+  writer.writeUint32(file.externalFileAttributes, true);
+  writer.writeUint32(locator.fileStart, true);
+  writer.write(file.centralName);
+  // TODO extra fields
+  writer.write(file.comment);
+ }
+
+/**
+ * @param {BufferWriter} writer
+ * @param {number} entriesCount
+ * @param {number} centralDirectoryStart
+ * @param {number} centralDirectoryLength
+ * @param {Uint8Array} commentBytes
+ */
+function writeEndOfCentralDirectoryRecord(
+  writer,
+  entriesCount,
+  centralDirectoryStart,
+  centralDirectoryLength,
+  commentBytes)
+  {
+  writer.write(signature.CENTRAL_DIRECTORY_END);
+  writer.writeUint16(0, true);
+  writer.writeUint16(0, true);
+  writer.writeUint16(entriesCount, true);
+  writer.writeUint16(entriesCount, true);
+  writer.writeUint32(centralDirectoryLength, true);
+  writer.writeUint32(centralDirectoryStart, true);
+  writer.writeUint16(commentBytes.length, true);
+  writer.write(commentBytes);
+ }
+
+/**
+ * @param {BufferWriter} writer
+ * @param {Array<FileRecord>} records
+ * @param {string} comment
+ */
+function        writeZipRecords(writer, records, comment=  '') {
+  // Write records with local headers.
+  const locators=  [];
+  for( let i=  0; i<  records.length; i+=  1) {
+    locators.push(writeFile(writer, records[i]));
+   }
+
+  // writeCentralDirectory
+  const centralDirectoryStart=  writer.index;
+  for( let i=  0; i<  locators.length; i+=  1) {
+    writeCentralFileHeader(writer, records[i], locators[i]);
+   }
+  const centralDirectoryLength=  writer.index-  centralDirectoryStart;
+
+  const commentBytes=  textEncoder.encode(comment);
+
+  // Write central directory end.
+  writeEndOfCentralDirectoryRecord(
+    writer,
+    records.length,
+    centralDirectoryStart,
+    centralDirectoryLength,
+    commentBytes);
+
+ }
+
+/**
+ * @param {__import__('./types.js').ArchivedFile} file
+ * @returns {__import__('./types.js').UncompressedFile}
+ */
+function encodeFile(file) {
+  const name=  textEncoder.encode(file.name.replace(/\\/g, '/'));
+  const comment=  textEncoder.encode(file.comment);
+  return {
+    name,
+    mode: file.mode,
+    date: file.date,
+    content: file.content,
+    comment};
+
+ }
+
+/**
+ * @param {__import__('./types.js').UncompressedFile} file
+ * @returns {__import__('./types.js').CompressedFile}
+ */
+function compressFileWithStore(file) {
+  return {
+    name: file.name,
+    mode: file.mode,
+    date: file.date,
+    crc32: crc32(file.content),
+    compressionMethod: compression.STORE,
+    compressedLength: file.content.length,
+    uncompressedLength: file.content.length,
+    content: file.content,
+    comment: file.comment};
+
+ }
+
+/**
+ * Computes Zip external file attributes field from a UNIX mode for a file.
+ *
+ * @param {number} mode
+ * @returns {number}
+ */
+function externalFileAttributes(mode) {
+  return ( mode&  0o777|   0o100000)<<  16;
+ }
+
+// TODO Add support for directory records.
+// /**
+//  * @param {number} mode
+//  * @return {number}
+//  */
+// function externalDirectoryAttributes(mode) {
+//   // The 0x10 is the DOS directory attribute, which is set regardless of platform.
+//   return ((mode & 0o777) | 0o40000) << 16 | 0x10;
+// }
+
+/**
+ * @param {__import__('./types.js').CompressedFile} file
+ * @returns {FileRecord}
+ */
+function makeFileRecord(file) {
+  return {
+    name: file.name,
+    centralName: file.name,
+    madeBy: UNIX,
+    version: UNIX_VERSION,
+    versionNeeded: 0, // TODO this is probably too lax.
+    bitFlag: 0,
+    compressionMethod: compression.STORE,
+    date: file.date,
+    crc32: file.crc32,
+    compressedLength: file.compressedLength,
+    uncompressedLength: file.uncompressedLength,
+    diskNumberStart: 0,
+    internalFileAttributes: 0,
+    externalFileAttributes: externalFileAttributes(file.mode),
+    comment: file.comment,
+    content: file.content};
+
+ }
+
+/**
+ * @param {BufferWriter} writer
+ * @param {Array<__import__('./types.js').ArchivedFile>} files
+ * @param {string} comment
+ */
+function        writeZip(writer, files, comment=  '') {
+  const encodedFiles=  files.map(encodeFile);
+  const compressedFiles=  encodedFiles.map(compressFileWithStore);
+  // TODO collate directoryRecords from file bases.
+  const fileRecords=  compressedFiles.map(makeFileRecord);
+  writeZipRecords(writer, fileRecords, comment);
+ }
+})
+
+,// === functors[23] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let BufferWriter,writeZipFormat;$h‍_imports([["./buffer-writer.js", [["BufferWriter", [$h‍_a => (BufferWriter = $h‍_a)]]]],["./format-writer.js", [["writeZip", [$h‍_a => (writeZipFormat = $h‍_a)]]]]]);   
+
+
+
+
+class        ZipWriter {
+  /**
+   * @param {{
+   *   date: Date,
+   * }} options
+   */
+             constructor(options={date:new Date()}){
+    const { date}=   options;
+    /** type {Map<string, ZFile>} */
+    this.files=  new Map();
+    this.date=  date;
+   }
+
+  /**
+   * @param {string} name
+   * @param {Uint8Array} content
+   * @param {{
+   *   mode?: number,
+   *   date?: Date,
+   *   comment?: string,
+   * }} [options]
+   */
+       write(name,content,options={}){
+    const { mode=  0o644, date=  undefined, comment=  ''}=   options;
+    if( !content) {
+      throw new Error( `ZipWriter write requires content for ${name}`);
+     }
+    this.files.set(name, {
+      name,
+      mode,
+      date,
+      content,
+      comment});
+
+   }
+
+  /**
+   * @returns {Uint8Array}
+   */
+          snapshot(){
+    const writer=  new BufferWriter();
+    writeZipFormat(writer, Array.from(this.files.values()));
+    return writer.subarray();
+   }}
+
+
+/**
+ * @returns {__import__('./types.js').ArchiveWriter}
+ */$h‍_once. ZipWriter(ZipWriter);
+const        writeZip=  ()=>  {
+  const writer=  new ZipWriter();
+  /** @type {__import__('./types.js').WriteFn} */
+  const write=  async( path, data)=>  {
+    writer.write(path, data);
+   };
+  /** @type {__import__('./types.js').SnapshotFn} */
+  const snapshot=  async()=>   writer.snapshot();
+  return { write, snapshot};
+ };$h‍_once.writeZip(writeZip);
+})
+
+,// === functors[24] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   $h‍_imports([["./src/types.js", []],["./src/reader.js", []],["./src/writer.js", []]]);   
+})
+
+,// === functors[25] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let ZipReader,link,parserPreCjs,parserJson,parserText,parserBytes,parserPreMjs,parseLocatedJson,unpackReadPowers,join,assertCompartmentMap;$h‍_imports([["@endo/zip", [["ZipReader", [$h‍_a => (ZipReader = $h‍_a)]]]],["./link.js", [["link", [$h‍_a => (link = $h‍_a)]]]],["./parse-pre-cjs.js", [["default", [$h‍_a => (parserPreCjs = $h‍_a)]]]],["./parse-json.js", [["default", [$h‍_a => (parserJson = $h‍_a)]]]],["./parse-text.js", [["default", [$h‍_a => (parserText = $h‍_a)]]]],["./parse-bytes.js", [["default", [$h‍_a => (parserBytes = $h‍_a)]]]],["./parse-pre-mjs.js", [["default", [$h‍_a => (parserPreMjs = $h‍_a)]]]],["./json.js", [["parseLocatedJson", [$h‍_a => (parseLocatedJson = $h‍_a)]]]],["./powers.js", [["unpackReadPowers", [$h‍_a => (unpackReadPowers = $h‍_a)]]]],["./node-module-specifier.js", [["join", [$h‍_a => (join = $h‍_a)]]]],["./compartment-map.js", [["assertCompartmentMap", [$h‍_a => (assertCompartmentMap = $h‍_a)]]]]]);   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const DefaultCompartment=  Compartment;
+
+const { Fail, quote: q}=   assert;
+
+const textDecoder=  new TextDecoder();
+
+const { freeze}=   Object;
+
+/** @type {ParserForLanguage} */
+const parserForLanguage=  {
+  'pre-cjs-json': parserPreCjs,
+  'pre-mjs-json': parserPreMjs,
+  json: parserJson,
+  text: parserText,
+  bytes: parserBytes};
+
+
+/**
+ * @param {string} errorMessage - error to throw on execute
+ * @returns {StaticModuleType}
+ */
+const postponeErrorToExecute=  (errorMessage)=>{
+  // Return a place-holder that'd throw an error if executed
+  // This allows cjs parser to more eagerly find calls to require
+  // - if parser identified a require call that's a local function, execute will never be called
+  // - if actual required module is missing, the error will happen anyway - at execution time
+
+  const record=  freeze({
+    imports: [],
+    exports: [],
+    execute: ()=>  {
+      throw Error(errorMessage);
+     }});
+
+
+  return record;
+ };
+
+/**
+ * @callback ArchiveImportHookMaker
+ * @param {string} packageLocation
+ * @param {string} packageName
+ * @returns {ImportHook}
+ */
+
+/**
+ * @param {(path: string) => Promise<Uint8Array>} get
+ * @param {Record<string, CompartmentDescriptor>} compartments
+ * @param {string} archiveLocation
+ * @param {HashFn} [computeSha512]
+ * @param {ComputeSourceLocationHook} [computeSourceLocation]
+ * @returns {ArchiveImportHookMaker}
+ */
+const        makeArchiveImportHookMaker=  (
+  get,
+  compartments,
+  archiveLocation,
+  computeSha512=  undefined,
+  computeSourceLocation=  undefined)=>
+     {
+  // per-assembly:
+  /** @type {ArchiveImportHookMaker} */
+  const makeImportHook=  (packageLocation, packageName)=>  {
+    // per-compartment:
+    const { modules}=   compartments[packageLocation];
+    /** @type {ImportHook} */
+    const importHook=  async(moduleSpecifier)=> {
+      // per-module:
+      const module=  modules[moduleSpecifier];
+      if( module===  undefined) {
+        throw new Error(
+           `Cannot find module ${q(moduleSpecifier)} in package ${q(
+            packageLocation)
+            } in archive ${q(archiveLocation)}`);
+
+       }
+      if( module.deferredError!==  undefined) {
+        return postponeErrorToExecute(module.deferredError);
+       }
+      if( module.parser===  undefined) {
+        throw new Error(
+           `Cannot parse module ${q(moduleSpecifier)} in package ${q(
+            packageLocation)
+            } in archive ${q(archiveLocation)}`);
+
+       }
+      if( parserForLanguage[module.parser]===  undefined) {
+        throw new Error(
+           `Cannot parse ${q(module.parser)} module ${q(
+            moduleSpecifier)
+            } in package ${q(packageLocation)} in archive ${q(archiveLocation)}`);
+
+       }
+      const { parse}=   parserForLanguage[module.parser];
+      const moduleLocation=   `${packageLocation}/${module.location}`;
+      const moduleBytes=  await get(moduleLocation);
+
+      if( computeSha512!==  undefined&&  module.sha512!==  undefined) {
+        const sha512=  computeSha512(moduleBytes);
+        if( sha512!==  module.sha512) {
+          throw new Error(
+             `Module ${q(module.location)} of package ${q(
+              packageLocation)
+              } in archive ${q(
+              archiveLocation)
+              } failed a SHA-512 integrity check`);
+
+         }
+       }
+
+      let sourceLocation=   `file:///${moduleLocation}`;
+      if( packageName!==  undefined) {
+        const base=  packageName.split('/').slice(-1).join('/');
+        sourceLocation=   `.../${join(base,moduleSpecifier) }`;
+       }
+      if( computeSourceLocation!==  undefined) {
+        sourceLocation=
+          computeSourceLocation(packageLocation, moduleSpecifier)||
+          sourceLocation;
+       }
+
+      // eslint-disable-next-line no-await-in-loop
+      const { record}=   await parse(
+        moduleBytes,
+        moduleSpecifier,
+        sourceLocation,
+        packageLocation);
+
+      return { record, specifier: moduleSpecifier};
+     };
+    return importHook;
+   };
+  return makeImportHook;
+ };$h‍_once.makeArchiveImportHookMaker(makeArchiveImportHookMaker);
+
+const makeFeauxModuleExportsNamespace=  (Compartment)=>{
+  // @ts-ignore Unclear at time of writing why Compartment type is not
+  // constructible.
+  const compartment=  new Compartment(
+    {},
+    {},
+    {
+      resolveHook() {
+        return '.';
+       },
+      importHook() {
+        return {
+          imports: [],
+          execute() { }};
+
+       }});
+
+
+  return compartment.module('.');
+ };
+
+/**
+ * @param {Uint8Array} archiveBytes
+ * @param {string} [archiveLocation]
+ * @param {object} [options]
+ * @param {string} [options.expectedSha512]
+ * @param {HashFn} [options.computeSha512]
+ * @param {Record<string, unknown>} [options.modules]
+ * @param {Compartment} [options.Compartment]
+ * @param {ComputeSourceLocationHook} [options.computeSourceLocation]
+ * @returns {Promise<Application>}
+ */
+const        parseArchive=  async(
+  archiveBytes,
+  archiveLocation=  '<unknown>',
+  options=  {})=>
+     {
+  const {
+    computeSha512=  undefined,
+    expectedSha512=  undefined,
+    computeSourceLocation=  undefined,
+    Compartment=  DefaultCompartment,
+    modules=  undefined}=
+      options;
+
+  const archive=  new ZipReader(archiveBytes, { name: archiveLocation});
+
+  // Track all modules that get loaded, all files that are used.
+  const unseen=  new Set(archive.files.keys());
+  unseen.size>=  2||
+    Fail `Archive failed sanity check: should contain at least a compartment map file and one module file in ${q(
+      archiveLocation)
+      }`;
+
+  /**
+   * @param {string} path
+   */
+  const get=  async(path)=> {
+    unseen.delete(path);
+    return archive.read(path);
+   };
+
+  const compartmentMapBytes=  await get('compartment-map.json');
+
+  let sha512;
+  if( computeSha512!==  undefined) {
+    sha512=  computeSha512(compartmentMapBytes);
+   }
+  if( expectedSha512!==  undefined) {
+    if( sha512===  undefined) {
+      throw new Error(
+         `Cannot verify expectedSha512 without also providing computeSha512, for archive ${archiveLocation}`);
+
+     }
+    if( sha512!==  expectedSha512) {
+      throw new Error(
+         `Archive compartment map failed a SHA-512 integrity check, expected ${expectedSha512}, got ${sha512}, for archive ${archiveLocation}`);
+
+     }
+   }
+  const compartmentMapText=  textDecoder.decode(compartmentMapBytes);
+  const compartmentMap=  parseLocatedJson(
+    compartmentMapText,
+    'compartment-map.json');
+
+  assertCompartmentMap(compartmentMap, archiveLocation);
+
+  const {
+    compartments,
+    entry: { module: moduleSpecifier}}=
+      compartmentMap;
+
+  // Archive integrity checks: ensure every module is pre-loaded so its hash
+  // gets checked, and ensure that every file in the archive is used, and
+  // therefore checked.
+  if( computeSha512!==  undefined) {
+    const makeImportHook=  makeArchiveImportHookMaker(
+      get,
+      compartments,
+      archiveLocation,
+      computeSha512,
+      computeSourceLocation);
+
+    // A weakness of the current Compartment design is that the `modules` map
+    // must be given a module namespace object that passes a brand check.
+    // We don't have module instances for the preload phase, so we supply fake
+    // namespaces.
+    const { compartment, pendingJobsPromise}=   link(compartmentMap, {
+      makeImportHook,
+      parserForLanguage,
+      modules: Object.fromEntries(
+        Object.keys(modules||  {}).map((specifier)=>{
+          return [specifier, makeFeauxModuleExportsNamespace(Compartment)];
+         })),
+
+      Compartment});
+
+
+    await pendingJobsPromise;
+
+    await compartment.load(moduleSpecifier);
+    unseen.size===  0||
+      Fail `Archive contains extraneous files: ${q([...unseen])} in ${q(
+        archiveLocation)
+        }`;
+   }
+
+  /** @type {ExecuteFn} */
+  const execute=  async(options)=> {
+    const { globals, modules, transforms, __shimTransforms__, Compartment}=
+      options||  {};
+    const makeImportHook=  makeArchiveImportHookMaker(
+      get,
+      compartments,
+      archiveLocation,
+      computeSha512,
+      computeSourceLocation);
+
+    const { compartment, pendingJobsPromise}=   link(compartmentMap, {
+      makeImportHook,
+      parserForLanguage,
+      globals,
+      modules,
+      transforms,
+      __shimTransforms__,
+      Compartment});
+
+
+    await pendingJobsPromise;
+
+    // eslint-disable-next-line dot-notation
+    return compartment['import'](moduleSpecifier);
+   };
+
+  return { import: execute, sha512};
+ };
+
+/**
+ * @param {ReadFn | ReadPowers} readPowers
+ * @param {string} archiveLocation
+ * @param {LoadArchiveOptions} [options]
+ * @returns {Promise<Application>}
+ */$h‍_once.parseArchive(parseArchive);
+const        loadArchive=  async(
+  readPowers,
+  archiveLocation,
+  options=  {})=>
+     {
+  const { read, computeSha512}=   unpackReadPowers(readPowers);
+  const { expectedSha512, computeSourceLocation, modules}=   options;
+  const archiveBytes=  await read(archiveLocation);
+  return parseArchive(archiveBytes, archiveLocation, {
+    computeSha512,
+    expectedSha512,
+    computeSourceLocation,
+    modules});
+
+ };
+
+/**
+ * @param {ReadFn | ReadPowers} readPowers
+ * @param {string} archiveLocation
+ * @param {ExecuteOptions & LoadArchiveOptions} options
+ * @returns {Promise<object>}
+ */$h‍_once.loadArchive(loadArchive);
+const        importArchive=  async( readPowers, archiveLocation, options)=>  {
+  const archive=  await loadArchive(readPowers, archiveLocation, options);
+  return archive.import(options);
+ };$h‍_once.importArchive(importArchive);
+})
+
+,// === functors[26] ===
+(({   imports: $h‍_imports,   liveVar: $h‍_live,   onceVar: $h‍_once,   importMeta: $h‍____meta,  }) => {   let link,makeArchiveImportHookMaker;$h‍_imports([["./link.js", [["link", [$h‍_a => (link = $h‍_a)]]]],["./import-archive.js", [["makeArchiveImportHookMaker", [$h‍_a => (makeArchiveImportHookMaker = $h‍_a)]]]]]);Object.defineProperty(loadApplication, 'name', {value: "loadApplication"});$h‍_once.loadApplication(loadApplication);   
+
+
+
+
+
+
+
+const textEncoder=  new TextEncoder();
+
+function        loadApplication(
+  compartmentMap,
+  lookupModule,
+  archiveLocation)
+  {
+  const _lookupModule=  async(moduleLocation)=>
+    textEncoder.encode(JSON.stringify(await lookupModule(moduleLocation)));
+
+  const {
+    compartments: compartmentDescriptors,
+    entry: { module: entrySpecifier}}=
+      compartmentMap;
+
+  const archiveMakeImportHook=  makeArchiveImportHookMaker(
+    _lookupModule, // <-- this is our get function
+    compartmentDescriptors,
+    archiveLocation);
+
+
+  const { compartment: entryCompartment, compartments}=   link(compartmentMap, {
+    makeImportHook: archiveMakeImportHook,
+    globals: globalThis
+    // transforms,
+});
+
+  /** @type {ExecuteFn} */
+  const execute=  ()=>  {
+    // eslint-disable-next-line dot-notation
+    return entryCompartment['import'](entrySpecifier);
+   };
+
+  return { execute, compartments};
+ }
+})
+
+]; // functors end
+
+  const cell = (name, value = undefined) => {
+    const observers = [];
+    return Object.freeze({
+      get: Object.freeze(() => {
+        return value;
+      }),
+      set: Object.freeze((newValue) => {
+        value = newValue;
+        for (const observe of observers) {
+          observe(value);
+        }
+      }),
+      observe: Object.freeze((observe) => {
+        observers.push(observe);
+        observe(value);
+      }),
+      enumerable: true,
+    });
+  };
+
+  const cells = [
+    {
+      policyLookupHelper: cell("policyLookupHelper"),
+      isAllowingEverything: cell("isAllowingEverything"),
+      isAttenuationDefinition: cell("isAttenuationDefinition"),
+      getAttenuatorFromDefinition: cell("getAttenuatorFromDefinition"),
+      assertPackagePolicy: cell("assertPackagePolicy"),
+      assertPolicy: cell("assertPolicy"),
+    },
+    {
+      stringCompare: cell("stringCompare"),
+      pathCompare: cell("pathCompare"),
+      assertCompartmentMap: cell("assertCompartmentMap"),
+    },
+    {
+      parseLocatedJson: cell("parseLocatedJson"),
+    },
+    {
+      parseExtension: cell("parseExtension"),
+    },
+    {
+      resolve: cell("resolve"),
+      join: cell("join"),
+      relativize: cell("relativize"),
+    },
+    {
+      ATTENUATORS_COMPARTMENT: cell("ATTENUATORS_COMPARTMENT"),
+      detectAttenuators: cell("detectAttenuators"),
+      dependencyAllowedByPolicy: cell("dependencyAllowedByPolicy"),
+      getPolicyForPackage: cell("getPolicyForPackage"),
+      makeDeferredAttenuatorsProvider: cell("makeDeferredAttenuatorsProvider"),
+      attenuateGlobals: cell("attenuateGlobals"),
+      enforceModulePolicy: cell("enforceModulePolicy"),
+      attenuateModuleHook: cell("attenuateModuleHook"),
+      diagnoseMissingCompartmentError: cell("diagnoseMissingCompartmentError"),
+    },
+    {
+      mapParsers: cell("mapParsers"),
+      link: cell("link"),
+      assemble: cell("assemble"),
+    },
+    {
+      default: cell("default"),
+      parseBytes: cell("parseBytes"),
+    },
+    {
+      default: cell("default"),
+      parseJson: cell("parseJson"),
+    },
+    {
+      getModulePaths: cell("getModulePaths"),
+      wrap: cell("wrap"),
+    },
+    {
+      default: cell("default"),
+      parsePreCjs: cell("parsePreCjs"),
+    },
+    {
+      default: cell("default"),
+      parsePreMjs: cell("parsePreMjs"),
+    },
+    {
+      default: cell("default"),
+      parseText: cell("parseText"),
+    },
+    {
+      unpackReadPowers: cell("unpackReadPowers"),
+    },
+    {
+      BufferReader: cell("BufferReader"),
+    },
+    {
+      STORE: cell("STORE"),
+    },
+    {
+      crc32: cell("crc32"),
+    },
+    {
+      LOCAL_FILE_HEADER: cell("LOCAL_FILE_HEADER"),
+      CENTRAL_FILE_HEADER: cell("CENTRAL_FILE_HEADER"),
+      CENTRAL_DIRECTORY_END: cell("CENTRAL_DIRECTORY_END"),
+      ZIP64_CENTRAL_DIRECTORY_LOCATOR: cell("ZIP64_CENTRAL_DIRECTORY_LOCATOR"),
+      ZIP64_CENTRAL_DIRECTORY_END: cell("ZIP64_CENTRAL_DIRECTORY_END"),
+      DATA_DESCRIPTOR: cell("DATA_DESCRIPTOR"),
+    },
+    {
+    },
+    {
+      readZip: cell("readZip"),
+    },
+    {
+      ZipReader: cell("ZipReader"),
+      readZip: cell("readZip"),
+    },
+    {
+      BufferWriter: cell("BufferWriter"),
+    },
+    {
+      writeZipRecords: cell("writeZipRecords"),
+      writeZip: cell("writeZip"),
+    },
+    {
+      ZipWriter: cell("ZipWriter"),
+      writeZip: cell("writeZip"),
+    },
+    {
+      ZipReader: cell("ZipReader"),
+      readZip: cell("readZip"),
+      ZipWriter: cell("ZipWriter"),
+      writeZip: cell("writeZip"),
+    },
+    {
+      makeArchiveImportHookMaker: cell("makeArchiveImportHookMaker"),
+      parseArchive: cell("parseArchive"),
+      loadArchive: cell("loadArchive"),
+      importArchive: cell("importArchive"),
+    },
+    {
+      loadApplication: cell("loadApplication"),
+    },
+  ];
+
+  Object.defineProperties(cells[24], Object.getOwnPropertyDescriptors(cells[18]));
+
+  Object.defineProperties(cells[24], {"ZipReader": { value: cells[20]["ZipReader"] },"readZip": { value: cells[20]["readZip"] },"ZipWriter": { value: cells[23]["ZipWriter"] },"writeZip": { value: cells[23]["writeZip"] } });
+
+  const namespaces = cells.map(cells => Object.freeze(Object.create(null, cells)));
+
+  for (let index = 0; index < namespaces.length; index += 1) {
+    cells[index]['*'] = cell('*', namespaces[index]);
+  }
+
+function observeImports(map, importName, importIndex) {
+  for (const [name, observers] of map.get(importName)) {
+    const cell = cells[importIndex][name];
+    if (cell === undefined) {
+      throw new ReferenceError(`Cannot import name ${name}`);
+    }
+    for (const observer of observers) {
+      cell.observe(observer);
+    }
+  }
+}
+
+
+  functors[0]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      policyLookupHelper: cells[0].policyLookupHelper.set,
+      isAllowingEverything: cells[0].isAllowingEverything.set,
+      isAttenuationDefinition: cells[0].isAttenuationDefinition.set,
+      getAttenuatorFromDefinition: cells[0].getAttenuatorFromDefinition.set,
+      assertPackagePolicy: cells[0].assertPackagePolicy.set,
+      assertPolicy: cells[0].assertPolicy.set,
+    },
+    importMeta: {},
+  });
+  functors[1]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./policy-format.js", 0);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      stringCompare: cells[1].stringCompare.set,
+      pathCompare: cells[1].pathCompare.set,
+      assertCompartmentMap: cells[1].assertCompartmentMap.set,
+    },
+    importMeta: {},
+  });
+  functors[2]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      parseLocatedJson: cells[2].parseLocatedJson.set,
+    },
+    importMeta: {},
+  });
+  functors[3]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      parseExtension: cells[3].parseExtension.set,
+    },
+    importMeta: {},
+  });
+  functors[4]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      resolve: cells[4].resolve.set,
+      join: cells[4].join.set,
+      relativize: cells[4].relativize.set,
+    },
+    importMeta: {},
+  });
+  functors[5]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./policy-format.js", 0);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      ATTENUATORS_COMPARTMENT: cells[5].ATTENUATORS_COMPARTMENT.set,
+      detectAttenuators: cells[5].detectAttenuators.set,
+      dependencyAllowedByPolicy: cells[5].dependencyAllowedByPolicy.set,
+      getPolicyForPackage: cells[5].getPolicyForPackage.set,
+      makeDeferredAttenuatorsProvider: cells[5].makeDeferredAttenuatorsProvider.set,
+      attenuateGlobals: cells[5].attenuateGlobals.set,
+      enforceModulePolicy: cells[5].enforceModulePolicy.set,
+      attenuateModuleHook: cells[5].attenuateModuleHook.set,
+      diagnoseMissingCompartmentError: cells[5].diagnoseMissingCompartmentError.set,
+    },
+    importMeta: {},
+  });
+  functors[6]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./extension.js", 3);
+      observeImports(map, "./node-module-specifier.js", 4);
+      observeImports(map, "./policy.js", 5);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      mapParsers: cells[6].mapParsers.set,
+      link: cells[6].link.set,
+      assemble: cells[6].assemble.set,
+    },
+    importMeta: {},
+  });
+  functors[7]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      default: cells[7].default.set,
+      parseBytes: cells[7].parseBytes.set,
+    },
+    importMeta: {},
+  });
+  functors[8]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./json.js", 2);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      default: cells[8].default.set,
+      parseJson: cells[8].parseJson.set,
+    },
+    importMeta: {},
+  });
+  functors[9]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      getModulePaths: cells[9].getModulePaths.set,
+      wrap: cells[9].wrap.set,
+    },
+    importMeta: {},
+  });
+  functors[10]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./json.js", 2);
+      observeImports(map, "./parse-cjs-shared-export-wrapper.js", 9);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      default: cells[10].default.set,
+      parsePreCjs: cells[10].parsePreCjs.set,
+    },
+    importMeta: {},
+  });
+  functors[11]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./json.js", 2);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      default: cells[11].default.set,
+      parsePreMjs: cells[11].parsePreMjs.set,
+    },
+    importMeta: {},
+  });
+  functors[12]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      default: cells[12].default.set,
+      parseText: cells[12].parseText.set,
+    },
+    importMeta: {},
+  });
+  functors[13]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      unpackReadPowers: cells[13].unpackReadPowers.set,
+    },
+    importMeta: {},
+  });
+  functors[14]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      BufferReader: cells[14].BufferReader.set,
+    },
+    importMeta: {},
+  });
+  functors[15]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      STORE: cells[15].STORE.set,
+    },
+    importMeta: {},
+  });
+  functors[16]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      crc32: cells[16].crc32.set,
+    },
+    importMeta: {},
+  });
+  functors[17]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      LOCAL_FILE_HEADER: cells[17].LOCAL_FILE_HEADER.set,
+      CENTRAL_FILE_HEADER: cells[17].CENTRAL_FILE_HEADER.set,
+      CENTRAL_DIRECTORY_END: cells[17].CENTRAL_DIRECTORY_END.set,
+      ZIP64_CENTRAL_DIRECTORY_LOCATOR: cells[17].ZIP64_CENTRAL_DIRECTORY_LOCATOR.set,
+      ZIP64_CENTRAL_DIRECTORY_END: cells[17].ZIP64_CENTRAL_DIRECTORY_END.set,
+      DATA_DESCRIPTOR: cells[17].DATA_DESCRIPTOR.set,
+    },
+    importMeta: {},
+  });
+  functors[18]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+    },
+    importMeta: {},
+  });
+  functors[19]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./compression.js", 15);
+      observeImports(map, "./crc32.js", 16);
+      observeImports(map, "./signature.js", 17);
+      observeImports(map, "./types.js", 18);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      readZip: cells[19].readZip.set,
+    },
+    importMeta: {},
+  });
+  functors[20]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./buffer-reader.js", 14);
+      observeImports(map, "./format-reader.js", 19);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      ZipReader: cells[20].ZipReader.set,
+      readZip: cells[20].readZip.set,
+    },
+    importMeta: {},
+  });
+  functors[21]({
+    imports(entries) {
+      const map = new Map(entries);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      BufferWriter: cells[21].BufferWriter.set,
+    },
+    importMeta: {},
+  });
+  functors[22]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./compression.js", 15);
+      observeImports(map, "./crc32.js", 16);
+      observeImports(map, "./signature.js", 17);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      writeZipRecords: cells[22].writeZipRecords.set,
+      writeZip: cells[22].writeZip.set,
+    },
+    importMeta: {},
+  });
+  functors[23]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./buffer-writer.js", 21);
+      observeImports(map, "./format-writer.js", 22);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      ZipWriter: cells[23].ZipWriter.set,
+      writeZip: cells[23].writeZip.set,
+    },
+    importMeta: {},
+  });
+  functors[24]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./src/reader.js", 20);
+      observeImports(map, "./src/types.js", 18);
+      observeImports(map, "./src/writer.js", 23);
+    },
+    liveVar: {
+    },
+    onceVar: {
+    },
+    importMeta: {},
+  });
+  functors[25]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./compartment-map.js", 1);
+      observeImports(map, "./json.js", 2);
+      observeImports(map, "./link.js", 6);
+      observeImports(map, "./node-module-specifier.js", 4);
+      observeImports(map, "./parse-bytes.js", 7);
+      observeImports(map, "./parse-json.js", 8);
+      observeImports(map, "./parse-pre-cjs.js", 10);
+      observeImports(map, "./parse-pre-mjs.js", 11);
+      observeImports(map, "./parse-text.js", 12);
+      observeImports(map, "./powers.js", 13);
+      observeImports(map, "@endo/zip", 24);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      makeArchiveImportHookMaker: cells[25].makeArchiveImportHookMaker.set,
+      parseArchive: cells[25].parseArchive.set,
+      loadArchive: cells[25].loadArchive.set,
+      importArchive: cells[25].importArchive.set,
+    },
+    importMeta: {},
+  });
+  functors[26]({
+    imports(entries) {
+      const map = new Map(entries);
+      observeImports(map, "./import-archive.js", 25);
+      observeImports(map, "./link.js", 6);
+    },
+    liveVar: {
+    },
+    onceVar: {
+      loadApplication: cells[26].loadApplication.set,
+    },
+    importMeta: {},
+  });
+
+  return cells[cells.length - 1]['*'].get();
+})();
+
+  })();
+  // END BUNDLE RUNTIME ================================
+
+  globalThis.Endo = Object.freeze({
+    loadApplication,
+  })
+  

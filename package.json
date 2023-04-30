@@ -122,6 +122,7 @@
     "pdfjs-dist": "^3.5.141",
     "postcss-styled-syntax": "^0.4.0",
     "postcss-syntax": "^0.36.2",
+    "raw-loader": "^4.0.2",
     "stylelint": "^15.6.0",
     "stylelint-config-standard": "^33.0.0",
     "stylelint-order": "^6.0.3",
