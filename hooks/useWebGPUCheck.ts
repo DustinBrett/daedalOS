@@ -29,11 +29,11 @@ const supportsWebGPU = async (): Promise<boolean> => {
   /* eslint-enable no-bitwise */
 
   const insufficientLimits =
-    requiedMaxBufferSize > adapter.limits.maxBufferSize ||
+    requiedMaxBufferSize > (adapter.limits.maxBufferSize ?? 0) ||
     requiredMaxStorageBufferBindingSize >
-      adapter.limits.maxStorageBufferBindingSize ||
+      (adapter.limits.maxStorageBufferBindingSize ?? 0) ||
     requiredMaxComputeWorkgroupStorageSize >
-      adapter.limits.maxComputeWorkgroupStorageSize;
+      (adapter.limits.maxComputeWorkgroupStorageSize ?? 0);
 
   return !insufficientLimits;
 };
