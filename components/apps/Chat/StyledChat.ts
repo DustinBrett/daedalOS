@@ -23,7 +23,7 @@ const StyledChat = styled.div`
     }
   }
 
-  ul {
+  > ul {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
 
     height: 100%;
