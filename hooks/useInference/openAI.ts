@@ -76,8 +76,14 @@ export class OpenAI implements Engine {
     message: string,
     _userMessages: string[],
     _generatedMessages: string[],
-    allMessages?: Message[]
+    allMessages?: Message[],
+    _statusLogger?: (type: string, msg: string) => void,
+    systemPrompt?: string
   ): Promise<string> {
+    if (systemPrompt && SYSTEM_MESSAGE.content !== systemPrompt) {
+      SYSTEM_MESSAGE.content = systemPrompt;
+    }
+
     const messages = (allMessages || []).map(({ text, type }) => ({
       content: text,
       role: type,

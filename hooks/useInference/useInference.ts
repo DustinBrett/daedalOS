@@ -12,7 +12,8 @@ export type Engine = {
     userMessages: string[],
     generatedMessages: string[],
     allMessages: Message[],
-    stausLogger?: (type: string, msg: string) => void
+    stausLogger?: (type: string, msg: string) => void,
+    systemPrompt?: string
   ) => Promise<string>;
   classify: (text: string, categories: string[]) => Promise<string>;
   destroy?: () => void;
@@ -64,8 +65,13 @@ export const useInference = (apiKey = "", engine = ""): Inference => {
   return {
     engine: useMemo(
       () =>
-        activeEngine ? new Engines[activeEngine](apiKey, setError) : undefined,
-      [activeEngine, apiKey]
+        activeEngine
+          ? new Engines[activeEngine](
+              engine === activeEngine ? apiKey : "",
+              setError
+            )
+          : undefined,
+      [activeEngine, apiKey, engine]
     ),
     error,
     name: activeEngine,

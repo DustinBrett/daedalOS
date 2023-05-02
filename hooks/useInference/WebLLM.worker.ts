@@ -17,7 +17,7 @@ let initalized = false;
 
 globalThis.addEventListener(
   "message",
-  ({ data }: { data: string }) => {
+  ({ data }: { data: string | { prompt: string; type: "system" } }) => {
     if (!initalized && data === "init") {
       initalized = true;
 
@@ -29,6 +29,8 @@ globalThis.addEventListener(
 
       globalThis.tvmjsGlobalEnv.sentencePieceProcessor = (url: string) =>
         globalThis.sentencepiece.sentencePieceProcessor(url);
+    } else if (typeof data === "object") {
+      globalThis.tvmjsGlobalEnv.systemPrompt = data.prompt;
     } else {
       runLLM(data).then(globalThis.postMessage);
     }

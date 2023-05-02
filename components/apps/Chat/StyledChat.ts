@@ -9,6 +9,20 @@ const StyledChat = styled.div`
   height: 100%;
   width: 100%;
 
+  > button {
+    fill: rgba(200, 200, 200, 75%);
+    margin: 3px;
+    padding: 4px;
+    position: absolute;
+    right: ${DEFAULT_SCROLLBAR_WIDTH}px;
+    width: 24px;
+    z-index: 1;
+
+    &:hover {
+      fill: rgba(200, 200, 200, 100%);
+    }
+  }
+
   ul {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
 

@@ -4,7 +4,7 @@ import {
   EngineErrorMessage,
 } from "components/apps/Chat/config";
 import { getLetterTypingSpeed } from "components/apps/Chat/functions";
-import { Send } from "components/apps/Chat/Send";
+import { Send, Settings } from "components/apps/Chat/Icons";
 import StyledChat from "components/apps/Chat/StyledChat";
 import StyledInfo from "components/apps/Chat/StyledInfo";
 import StyledInputArea from "components/apps/Chat/StyledInputArea";
@@ -17,6 +17,7 @@ import { getMimeType } from "components/system/Files/FileEntry/functions";
 import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
+import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
@@ -122,6 +123,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const statusLogger = useCallback((type: string, message: string) => {
     setStatus(type && message ? `${type} ${message}` : "");
   }, []);
+  const [systemPrompt, setSystemPrompt] = useState<string>("");
   const sendMessage = useCallback(
     (userMessage: string): void => {
       if (!AI) return;
@@ -153,7 +155,14 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       const userText = userMessage.trim();
 
       waitForChat(
-        AI.chat(userText, userMessages, botMessages, messages, statusLogger)
+        AI.chat(
+          userText,
+          userMessages,
+          botMessages,
+          messages,
+          statusLogger,
+          systemPrompt
+        )
       ).then(async (generatedMessage) => {
         if (generatedMessage) {
           if (!window.marked?.parse) {
@@ -170,7 +179,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       });
       addMessage({ text: userText, type: "user" });
     },
-    [AI, addMessage, messages, statusLogger, waitForChat]
+    [AI, addMessage, messages, statusLogger, systemPrompt, waitForChat]
   );
   const [awaitingRequests, setAwaitingRequests] = useState<ActionMessage[]>([]);
   const waitForRequest = useCallback(
@@ -343,6 +352,26 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   );
   const isResponding = responsingToChat || isWritingMessage;
   const canSend = input && !isResponding;
+  const showSettings =
+    messages.length === 1 && ["OpenAI", "WebLLM"].includes(name);
+  const { contextMenu } = useMenu();
+  const { onContextMenuCapture } = useMemo(
+    () =>
+      contextMenu?.(() =>
+        showSettings
+          ? [
+              {
+                action: () => {
+                  // eslint-disable-next-line no-alert
+                  setSystemPrompt(prompt("System Prompt") || "");
+                },
+                label: "Set System Prompt",
+              },
+            ]
+          : []
+      ),
+    [contextMenu, showSettings]
+  );
 
   useEffect(() => {
     if (name) {
@@ -390,6 +419,11 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledChat {...useFileDrop({ id })}>
+      {showSettings && (
+        <Button onClick={onContextMenuCapture}>
+          <Settings />
+        </Button>
+      )}
       <ul ref={messagesRef}>
         {messages.map(({ command, image, text, type, writing }, messageId) => {
           const isAssistant = type === "assistant";

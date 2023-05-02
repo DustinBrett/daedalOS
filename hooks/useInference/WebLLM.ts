@@ -12,6 +12,8 @@ const DEFAULT_GREETING = {
 export class WebLLM implements Engine {
   private worker?: Worker = undefined;
 
+  private isChatting = false;
+
   public greeting = DEFAULT_GREETING;
 
   public destroy(): void {
@@ -35,8 +37,17 @@ export class WebLLM implements Engine {
     _userMessages: string[],
     _generatedMessages: string[],
     _allMessages?: Message[],
-    stausLogger?: (type: string, msg: string) => void
+    stausLogger?: (type: string, msg: string) => void,
+    systemPrompt?: string
   ): Promise<string> {
+    if (!this.isChatting) {
+      this.isChatting = true;
+
+      if (systemPrompt) {
+        this.worker?.postMessage({ prompt: systemPrompt, type: "system" });
+      }
+    }
+
     requestAnimationFrame(() => this.worker?.postMessage(message));
 
     return new Promise((resolve) => {

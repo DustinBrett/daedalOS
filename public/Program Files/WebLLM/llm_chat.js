@@ -102,7 +102,7 @@ class Conversation {
 
 function defaultConversation(maxWindowLength = 2048) {
   return new Conversation({
-    system: "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
+    system: globalThis.tvmjsGlobalEnv.systemPrompt || "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
     roles: ["USER", "ASSISTANT"],
     maxWindowLength: maxWindowLength,
     messages: [],

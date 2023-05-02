@@ -20,6 +20,7 @@ declare global {
     prompts: Prompts;
     response: string;
     sentencePieceProcessor: (url: string) => void;
+    systemPrompt: string;
   };
 }
 /* eslint-enable vars-on-top, no-var */
