@@ -18,7 +18,13 @@ const supportsWebGPU = async (): Promise<boolean> => {
   if (typeof navigator === "undefined") return false;
   if (!("gpu" in navigator)) return false;
 
-  const adapter = await (navigator as NavigatorWithGPU).gpu.requestAdapter();
+  let adapter: GPUAdapter | null;
+
+  try {
+    adapter = await (navigator as NavigatorWithGPU).gpu.requestAdapter();
+  } catch {
+    return false;
+  }
 
   if (!adapter) return false;
 
