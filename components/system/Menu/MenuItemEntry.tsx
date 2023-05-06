@@ -120,7 +120,6 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <Button
           as="figure"
           className={showSubMenu ? "active" : undefined}
-          onClick={triggerAction}
           onMouseUp={triggerAction}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
