@@ -4,7 +4,7 @@ import {
   EngineErrorMessage,
 } from "components/apps/Chat/config";
 import { getLetterTypingSpeed } from "components/apps/Chat/functions";
-import { Send, Settings } from "components/apps/Chat/Icons";
+import { Reset, Send, Settings } from "components/apps/Chat/Icons";
 import StyledChat from "components/apps/Chat/StyledChat";
 import StyledInfo from "components/apps/Chat/StyledInfo";
 import StyledInputArea from "components/apps/Chat/StyledInputArea";
@@ -372,6 +372,10 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
       ),
     [contextMenu, showSettings]
   );
+  const resetChat = useCallback(() => {
+    setMessages((currentMessages) => [currentMessages[0]]);
+    AI?.reset?.();
+  }, [AI]);
 
   useEffect(() => {
     if (name) {
@@ -419,10 +423,17 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledChat {...useFileDrop({ id })}>
-      {showSettings && (
+      {showSettings ? (
         <Button onClick={onContextMenuCapture}>
           <Settings />
         </Button>
+      ) : (
+        messages.length > 1 &&
+        !isResponding && (
+          <Button className="sub-margin" onClick={resetChat} title="Reset Chat">
+            <Reset />
+          </Button>
+        )
       )}
       <ul ref={messagesRef}>
         {messages.map(({ command, image, text, type, writing }, messageId) => {

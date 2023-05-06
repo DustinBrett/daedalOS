@@ -23,6 +23,10 @@ const StyledChat = styled.div`
     }
   }
 
+  .sub-margin {
+    margin: -1px;
+  }
+
   > ul {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
 

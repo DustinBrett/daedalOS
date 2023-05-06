@@ -21,6 +21,7 @@ export type Engine = {
   greeting: Message;
   imageToText: (name: string, type: string, image: Buffer) => Promise<string>;
   init: () => Promise<void>;
+  reset?: () => void;
   summarization: (text: string) => Promise<string>;
   translation: (text: string) => Promise<string>;
 };

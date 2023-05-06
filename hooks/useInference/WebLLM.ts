@@ -17,8 +17,8 @@ export class WebLLM implements Engine {
   public greeting = DEFAULT_GREETING;
 
   public destroy(): void {
-    globalThis.tvmjsGlobalEnv?.asyncOnReset();
-    this.worker?.terminate();
+    this.reset();
+    setTimeout(() => this.worker?.terminate(), 500);
   }
 
   public async init(): Promise<void> {
@@ -26,7 +26,7 @@ export class WebLLM implements Engine {
       new URL("hooks/useInference/WebLLM.worker.ts", import.meta.url),
       { name: "WebLLM" }
     );
-    this.worker.postMessage("init");
+    this.worker.postMessage({ type: "init" });
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve();
@@ -48,7 +48,9 @@ export class WebLLM implements Engine {
       }
     }
 
-    requestAnimationFrame(() => this.worker?.postMessage(message));
+    requestAnimationFrame(() =>
+      this.worker?.postMessage({ prompt: message, type: "chat" })
+    );
 
     return new Promise((resolve) => {
       this.worker?.addEventListener("message", ({ data }: WorkerMessage) => {
@@ -87,6 +89,10 @@ export class WebLLM implements Engine {
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve("");
+  }
+
+  public reset(): void {
+    this.worker?.postMessage({ type: "reset" });
   }
 
   public async summarization(_text: string): Promise<string> {

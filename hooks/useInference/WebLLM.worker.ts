@@ -17,8 +17,8 @@ let initalized = false;
 
 globalThis.addEventListener(
   "message",
-  ({ data }: { data: string | { prompt: string; type: "system" } }) => {
-    if (!initalized && data === "init") {
+  ({ data }: { data: { prompt?: string; type: string } }) => {
+    if (!initalized && data.type === "init") {
       initalized = true;
 
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
@@ -29,10 +29,18 @@ globalThis.addEventListener(
 
       globalThis.tvmjsGlobalEnv.sentencePieceProcessor = (url: string) =>
         globalThis.sentencepiece.sentencePieceProcessor(url);
-    } else if (typeof data === "object") {
-      globalThis.tvmjsGlobalEnv.systemPrompt = data.prompt;
-    } else {
-      runLLM(data).then(globalThis.postMessage);
+    } else if (data.type === "reset") {
+      globalThis.tvmjsGlobalEnv.response = "";
+      globalThis.tvmjsGlobalEnv.message = "";
+      globalThis.tvmjsGlobalEnv.systemPrompt = "";
+
+      globalThis.tvmjsGlobalEnv.asyncOnReset();
+    } else if (data.prompt) {
+      if (data.type === "system") {
+        globalThis.tvmjsGlobalEnv.systemPrompt = data.prompt;
+      } else if (data.type === "chat") {
+        runLLM(data.prompt).then(globalThis.postMessage);
+      }
     }
   },
   { passive: true }
