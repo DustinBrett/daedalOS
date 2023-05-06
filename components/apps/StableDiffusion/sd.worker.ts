@@ -11,7 +11,7 @@ globalThis.addEventListener(
     if (data === "init") {
       globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
       globalThis.tvmjsGlobalEnv.logger = (type: string, message: string) => {
-        console.info(`${type}: ${message}`);
+        if (type || message) console.info(`${type}: ${message}`);
         globalThis.postMessage({ message, type });
       };
 
