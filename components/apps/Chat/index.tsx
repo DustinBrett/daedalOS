@@ -390,18 +390,16 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   }, [messages]);
 
   useEffect(() => {
-    let cleanUp: (() => void) | undefined;
-
-    if (initRef.current) {
-      cleanUp = () => AI?.destroy?.();
-    } else if (AI) {
+    if (AI && !initRef.current) {
       initRef.current = true;
 
       AI.init().then(() => addMessage(AI.greeting));
       inputRef.current?.focus(PREVENT_SCROLL);
     }
 
-    return cleanUp;
+    return () => {
+      if (initRef.current) AI?.destroy?.();
+    };
   }, [AI, addMessage, apiKey]);
 
   useEffect(() => {

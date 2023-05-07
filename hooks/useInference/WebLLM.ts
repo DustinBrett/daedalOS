@@ -4,6 +4,12 @@ import type { Engine } from "hooks/useInference/useInference";
 type Log = { message: string; type: string };
 type WorkerMessage = { data: Log | string };
 
+declare global {
+  interface Window {
+    webLLM?: Worker;
+  }
+}
+
 const DEFAULT_GREETING = {
   text: "Hello, I am an AI assistant. How can I help you today?",
   type: "assistant",
@@ -18,14 +24,16 @@ export class WebLLM implements Engine {
 
   public destroy(): void {
     this.reset();
-    setTimeout(() => this.worker?.terminate(), 500);
   }
 
   public async init(): Promise<void> {
-    this.worker = new Worker(
-      new URL("hooks/useInference/WebLLM.worker.ts", import.meta.url),
-      { name: "WebLLM" }
-    );
+    window.webLLM =
+      window.webLLM ||
+      new Worker(
+        new URL("hooks/useInference/WebLLM.worker.ts", import.meta.url),
+        { name: "WebLLM" }
+      );
+    this.worker = window.webLLM;
     this.worker.postMessage({ type: "init" });
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
