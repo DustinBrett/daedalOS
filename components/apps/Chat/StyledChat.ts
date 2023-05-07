@@ -24,7 +24,7 @@ const StyledChat = styled.div`
   }
 
   .sub-margin {
-    margin: -1px;
+    margin: -2px;
   }
 
   > ul {
