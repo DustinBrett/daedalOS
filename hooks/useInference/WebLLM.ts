@@ -56,9 +56,7 @@ export class WebLLM implements Engine {
       }
     }
 
-    requestAnimationFrame(() =>
-      this.worker?.postMessage({ prompt: message, type: "chat" })
-    );
+    this.worker?.postMessage({ prompt: message, type: "chat" });
 
     return new Promise((resolve) => {
       this.worker?.addEventListener("message", ({ data }: WorkerMessage) => {
