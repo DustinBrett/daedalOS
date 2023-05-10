@@ -67,7 +67,7 @@ export class WebLLM implements Engine {
         if (typeof data === "string") {
           resolve(data);
           logger("", "");
-        } else {
+        } else if (typeof data === "object") {
           logger(data.type, data.message);
         }
       });
