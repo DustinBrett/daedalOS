@@ -442,7 +442,7 @@ const useFolder = (
     async (paths: string[]): Promise<void> => {
       const zipFiles = await createZipFile(paths);
       const zipEntries = Object.entries(zipFiles);
-      const [[path, file]] = zipEntries;
+      const [[path, file]] = zipEntries.length === 0 ? [["", ""]] : zipEntries;
       const singleParentEntry = zipEntries.length === 1;
 
       if (singleParentEntry && extname(path)) {
