@@ -18,6 +18,7 @@ const StyledMarked = styled.div`
 
     * {
       all: revert;
+      user-select: text;
     }
 
     a {
