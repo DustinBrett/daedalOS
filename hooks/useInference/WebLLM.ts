@@ -56,7 +56,9 @@ export class WebLLM implements Engine {
       }
     }
 
-    this.worker?.postMessage({ prompt: message, type: "chat" });
+    setTimeout(() => {
+      this.worker?.postMessage({ prompt: message, type: "chat" });
+    }, 100);
 
     return new Promise((resolve) => {
       this.worker?.addEventListener("message", ({ data }: WorkerMessage) => {
