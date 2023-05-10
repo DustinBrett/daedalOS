@@ -45,8 +45,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<DOMRect>();
   const touchesRef = useRef<TouchList>();
-  const onTouchEnd = useCallback(
-    (event: React.TouchEvent<HTMLHeadingElement>) => {
+  const onTouchEnd = useCallback<React.TouchEventHandler<HTMLButtonElement>>(
+    (event) => {
       const { x, y } = componentWindow?.getBoundingClientRect() || {};
 
       if (
@@ -64,8 +64,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     },
     [componentWindow, titlebarContextMenu]
   );
-  const onTouchStart = useCallback(
-    ({ touches }: React.TouchEvent<HTMLHeadingElement>) => {
+  const onTouchStart = useCallback<React.TouchEventHandler<HTMLButtonElement>>(
+    ({ touches }) => {
       if (componentWindow) {
         componentWindow.blur();
         componentWindow.focus(PREVENT_SCROLL);

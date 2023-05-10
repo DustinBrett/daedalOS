@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { MAX_FILE_NAME_LENGTH } from "utils/constants";
 
 const StyledRenameBox = styled.textarea.attrs({
-  autocomplete: "off",
+  autoComplete: "off",
   enterKeyHint: "done",
   maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,

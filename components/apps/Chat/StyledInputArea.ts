@@ -47,7 +47,7 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
     resize: none;
     width: 100%;
 
-    ::placeholder {
+    &::placeholder {
       color: rgba(200, 200, 200, 75%);
     }
   }

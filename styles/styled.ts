@@ -11,4 +11,5 @@ declare module "styled-components" {
     name: string;
     sizes: typeof sizes;
   }
+  export function useTheme(): DefaultTheme;
 }

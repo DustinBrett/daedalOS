@@ -1,4 +1,4 @@
-import type { FlattenSimpleInterpolation } from "styled-components";
+import type { RuleSet } from "styled-components";
 import { css } from "styled-components";
 import { DOWN, LEFT, RIGHT, UP } from "styles/ArrowIcons";
 
@@ -37,7 +37,7 @@ const ScrollBars = (
   verticalX = 0,
   verticalY = 0,
   scheme: ColorSchemes = "dark"
-): FlattenSimpleInterpolation => css`
+): RuleSet<object> => css`
   overflow: auto;
   scrollbar-color: ${colorScheme[scheme].thumb} ${colorScheme[scheme].track};
   scrollbar-gutter: stable;

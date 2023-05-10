@@ -311,7 +311,7 @@ const useWallpaper = (
         video.style.objectPosition = "center center";
         video.style.zIndex = "-1";
 
-        desktopRef.current?.appendChild(video);
+        desktopRef.current?.append(video);
       } else {
         const applyWallpaper = (url: string): void => {
           const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";

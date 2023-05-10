@@ -17,7 +17,7 @@ const StyledVideoPlayer = styled.div`
       background-color: rgb(240, 240, 240);
       padding: 0 1;
 
-      :not(.no-interaction) {
+      &:not(.no-interaction) {
         display: flex !important;
         opacity: 100% !important;
       }

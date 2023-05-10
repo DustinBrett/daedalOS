@@ -85,6 +85,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
         },
         ONE_TIME_PASSIVE_EVENT
       );
+      // eslint-disable-next-line unicorn/prefer-blob-reading-methods
       reader.readAsArrayBuffer(file);
     },
     [completeTransfer]
