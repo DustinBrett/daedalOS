@@ -124,6 +124,22 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     setStatus(type && message ? `${type} ${message}` : "");
   }, []);
   const [systemPrompt, setSystemPrompt] = useState<string>("");
+  const [ttsVoice, setTTSVoice] = useState<SpeechSynthesisVoice>();
+  const speakMessage = useCallback(
+    (text: string, voice = ttsVoice) => {
+      if (!voice) return;
+
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      utterance.voice = voice;
+      utterance.pitch = 0.9;
+      utterance.rate = 1.5;
+      utterance.volume = 0.5;
+
+      window.speechSynthesis.speak(utterance);
+    },
+    [ttsVoice]
+  );
   const sendMessage = useCallback(
     (userMessage: string): void => {
       if (!AI) return;
@@ -175,11 +191,22 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
             }),
             type: "assistant",
           });
+
+          if (ttsVoice) speakMessage(generatedMessage);
         }
       });
       addMessage({ text: userText, type: "user" });
     },
-    [AI, addMessage, messages, statusLogger, systemPrompt, waitForChat]
+    [
+      AI,
+      addMessage,
+      messages,
+      speakMessage,
+      statusLogger,
+      systemPrompt,
+      ttsVoice,
+      waitForChat,
+    ]
   );
   const [awaitingRequests, setAwaitingRequests] = useState<ActionMessage[]>([]);
   const waitForRequest = useCallback(
@@ -355,6 +382,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const showSettings =
     messages.length === 1 && ["OpenAI", "WebLLM"].includes(name);
   const { contextMenu } = useMenu();
+  const [ttsVoices, setTTSVoices] = useState<SpeechSynthesisVoice[]>([]);
   const { onContextMenuCapture } = useMemo(
     () =>
       contextMenu?.(() =>
@@ -367,14 +395,41 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
                 },
                 label: "Set System Prompt",
               },
+              ...(ttsVoices.length > 0
+                ? [
+                    {
+                      label: "Set Text-to-Speech",
+                      menu: ttsVoices.map((voice) => ({
+                        action: () => {
+                          setTTSVoice(voice);
+                          speakMessage(messages[0].text, voice);
+                        },
+                        checked: voice === ttsVoice,
+                        label: voice.name,
+                      })),
+                    },
+                  ]
+                : []),
             ]
           : []
       ),
-    [contextMenu, showSettings]
+    [contextMenu, messages, showSettings, speakMessage, ttsVoice, ttsVoices]
   );
   const resetChat = useCallback(() => {
     setMessages((currentMessages) => [currentMessages[0]]);
     AI?.reset?.();
+  }, [AI]);
+
+  useEffect(() => {
+    if (AI && "speechSynthesis" in window) {
+      const voices = window.speechSynthesis.getVoices();
+
+      if (voices.length === 0) {
+        setTimeout(() => setTTSVoices(window.speechSynthesis.getVoices()), 500);
+      } else {
+        setTTSVoices(voices);
+      }
+    }
   }, [AI]);
 
   useEffect(() => {
