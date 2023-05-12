@@ -585,6 +585,7 @@ class LLMChatInstance {
     try {
       const output = await this.pipeline.generate(prompt, callbackUpdateResponse);
       this.updateLastMessage("left", output);
+      console.info(this.pipeline.runtimeStatsText());
     } catch (err) {
       this.appendMessage("error", "Generate error, " + err.toString());
       this.logger("[error]", err.toString());
