@@ -100,15 +100,28 @@ class Conversation {
   }
 }
 
-function defaultConversation(maxWindowLength = 2048) {
-  return new Conversation({
-    system: globalThis.tvmjsGlobalEnv.systemPrompt || "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
-    roles: ["USER", "ASSISTANT"],
-    maxWindowLength: maxWindowLength,
-    messages: [],
-    offset: 0,
-    seps: [" ", "</s>"],
-  });
+function getConversation(conv_template, maxWindowLength = 512) {
+  if (conv_template == "vicuna-v1.1") {
+    return new Conversation({
+      system: globalThis.tvmjsGlobalEnv.systemPrompt || "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
+      roles: ["USER", "ASSISTANT"],
+      maxWindowLength: maxWindowLength,
+      messages: [],
+      offset: 0,
+      seps: [" ", "</s>"],
+    });
+  } else if (conv_template == "wizardlm") {
+    return new Conversation({
+      system: globalThis.tvmjsGlobalEnv.systemPrompt || "You are an AI assistant that gives helpful, detailed, and polite answers to the user's questions.",
+      roles: ["", "### Response"],
+      maxWindowLength: maxWindowLength,
+      messages: [],
+      offset: 0,
+      seps: ["\n\n", "</s>"],
+    })
+  } else {
+    throw Error("Unknown model "+ model);
+  }
 };
 
 class LLMChatPipeline {
@@ -122,7 +135,9 @@ class LLMChatPipeline {
     this.bosTokenId = 1;
     this.eosTokenId = 2;
 
-    this.maxWindowLength = config.maxWindowLength;
+    this.temperature = config.temperature;
+    this.top_p = config.top_p;
+    this.maxWindowLength = config.max_seq_len;
     this.maxGenLength = config.maxGenLength;
     this.meanGenLength = config.meanGenLength;
     this.streamInterval = 1;
@@ -132,7 +147,7 @@ class LLMChatPipeline {
     this.encodingTotalTime = 0;
     this.encodingTotalTokens = 0;
 
-    this.conversation = defaultConversation(this.maxWindowLength);
+    this.conversation = getConversation(config.conv_template, this.maxWindowLength);
 
     this.device = this.tvm.webgpu();
     this.vm = this.tvm.detachFromCurrentScope(
@@ -320,7 +335,7 @@ class LLMChatPipeline {
       );
       this.tvm.endScope();
 
-      const nextToken = await this.sampleTokenFromLogits(logits);
+      const nextToken = await this.sampleTokenFromLogits(logits, this.temperature, this.top_p);
       logits.dispose();
 
       tokens.push(nextToken);
@@ -418,7 +433,18 @@ class LLMChatInstance {
     this.pipeline = undefined;
     this.logger = globalThis.tvmjsGlobalEnv.logger || console.log;
     this.debugTest = false;
+    this.model_name = globalThis.tvmjsGlobalEnv.modelName || "vicuna-v1-7b-q4f32_0";
   }
+
+  reboot() {
+    this.config = undefined;
+    this.pipeline = undefined;
+    if (this.tvm !== undefined) {
+      this.tvm.dispose();
+      this.tvm = undefined;
+    }
+  }
+
   /**
     * Initialize TVM
     * @param wasmUrl URL to wasm source.
@@ -486,7 +512,11 @@ class LLMChatInstance {
    */
   async #asyncInitConfig() {
     if (this.config !== undefined) return;
-    this.config = await (await fetch("/Program Files/WebLLM/config.json")).json();
+    const global_config = await (await fetch("/Program Files/WebLLM/global_config.json")).json();
+    this.config = await (await fetch(global_config.url_dict[this.model_name])).json();
+    this.config.wasmUrl = global_config.model_lib_map[this.config.model_lib];
+    this.config.cacheUrl = this.config.model_url;
+    this.config.tokenizer = this.config.tokenizer_files[0];
   }
 
   /**
