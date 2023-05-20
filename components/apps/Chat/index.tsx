@@ -25,7 +25,12 @@ import { useInference } from "hooks/useInference/useInference";
 import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
-import { IMAGE_FILE_EXTENSIONS, PREVENT_SCROLL } from "utils/constants";
+import {
+  IMAGE_FILE_EXTENSIONS,
+  PREVENT_SCROLL,
+  PROCESS_DELIMITER,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 import {
   bufferToUrl,
   generatePrettyTimestamp,
@@ -40,9 +45,11 @@ type ActionMessage = {
 };
 
 const Chat: FC<ComponentProcessProps> = ({ id }) => {
-  const { aiApi, setWallpaper } = useSession();
+  const { aiApi, setAiApi, setWallpaper } = useSession();
   const { readFile, mkdirRecursive, writeFile } = useFileSystem();
   const {
+    close,
+    open,
     processes: { [id]: process },
     title,
     url: setUrl,
@@ -379,22 +386,45 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   );
   const isResponding = responsingToChat || isWritingMessage;
   const canSend = input && !isResponding;
-  const showSettings =
-    messages.length === 1 && ["OpenAI", "WebLLM"].includes(name);
   const { contextMenu } = useMenu();
   const [ttsVoices, setTTSVoices] = useState<SpeechSynthesisVoice[]>([]);
   const { onContextMenuCapture } = useMemo(
     () =>
       contextMenu?.(() =>
-        showSettings
+        messages.length === 1
           ? [
               {
-                action: () => {
-                  // eslint-disable-next-line no-alert
-                  setSystemPrompt(prompt("System Prompt") || "");
-                },
-                label: "Set System Prompt",
+                label: "Set AI Engine",
+                menu: ["HuggingFace", "OpenAI", "WebLLM"].map((engineName) => ({
+                  action: () => {
+                    setAiApi(
+                      `${engineName}:${
+                        // eslint-disable-next-line no-alert
+                        engineName === "WebLLM" ? "" : prompt("API Key") || ""
+                      }`
+                    );
+
+                    close(id);
+                    setTimeout(
+                      () => open(id.split(PROCESS_DELIMITER)[0]),
+                      TRANSITIONS_IN_MILLISECONDS.WINDOW * 1.5
+                    );
+                  },
+                  checked: name === engineName,
+                  label: engineName,
+                })),
               },
+              ...(["OpenAI", "WebLLM"].includes(name)
+                ? [
+                    {
+                      action: () => {
+                        // eslint-disable-next-line no-alert
+                        setSystemPrompt(prompt("System Prompt") || "");
+                      },
+                      label: "Set System Prompt",
+                    },
+                  ]
+                : []),
               ...(ttsVoices.length > 0
                 ? [
                     {
@@ -413,7 +443,18 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
             ]
           : []
       ),
-    [contextMenu, messages, showSettings, speakMessage, ttsVoice, ttsVoices]
+    [
+      close,
+      contextMenu,
+      id,
+      messages,
+      name,
+      open,
+      setAiApi,
+      speakMessage,
+      ttsVoice,
+      ttsVoices,
+    ]
   );
   const resetChat = useCallback(() => {
     setMessages((currentMessages) => [currentMessages[0]]);
@@ -455,7 +496,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     return () => {
       if (initRef.current) AI?.destroy?.();
     };
-  }, [AI, addMessage, apiKey]);
+  }, [AI, addMessage]);
 
   useEffect(() => {
     if (
@@ -476,7 +517,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledChat {...useFileDrop({ id })}>
-      {showSettings ? (
+      {messages.length === 1 ? (
         <Button onClick={onContextMenuCapture}>
           <Settings />
         </Button>

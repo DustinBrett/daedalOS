@@ -205,6 +205,7 @@ const useSessionContextState = (): SessionContextState => {
     removeFromStack,
     runHistory,
     sessionLoaded,
+    setAiApi,
     setClockSource,
     setForegroundId,
     setHaltSession,

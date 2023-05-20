@@ -45,6 +45,7 @@ export type SessionContextState = SessionData & {
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
   sessionLoaded: boolean;
+  setAiApi: React.Dispatch<React.SetStateAction<string>>;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
   setHaltSession: React.Dispatch<React.SetStateAction<boolean>>;
