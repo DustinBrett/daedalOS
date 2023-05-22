@@ -37,7 +37,7 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { getExtension, isFirefox } from "utils/functions";
+import { getExtension, isFirefox, isSafari } from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -166,7 +166,8 @@ const useFileContextMenu = (
                 const showMapDirectory = "showDirectoryPicker" in window;
                 const showMapOpfs =
                   typeof navigator.storage?.getDirectory === "function" &&
-                  !isFirefox();
+                  !isFirefox() &&
+                  !isSafari();
 
                 menuItems.unshift(
                   ...(showMapDirectory
