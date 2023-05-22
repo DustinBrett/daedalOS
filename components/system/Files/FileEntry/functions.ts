@@ -540,7 +540,8 @@ export const getInfoWithExtension = (
             containerElement.style.width = "600px";
             containerElement.style.padding = "32px";
             containerElement.style.backgroundColor = "#fff";
-            containerElement.style.zIndex = "-1";
+            containerElement.style.zIndex = "-1000";
+            containerElement.style.position = "absolute";
 
             containerElement.innerHTML = contents.toString();
 
