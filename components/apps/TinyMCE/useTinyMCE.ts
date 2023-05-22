@@ -97,6 +97,10 @@ const useTinyMCE = (
 
       linksToProcesses();
       updateTitle(url);
+
+      if (editor.iframeElement && editor.iframeElement.contentDocument) {
+        editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
+      }
     }
   }, [editor, linksToProcesses, readFile, updateTitle, url]);
 
