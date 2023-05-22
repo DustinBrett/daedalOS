@@ -93,7 +93,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     imageRef.current,
     imageContainerRef.current
   );
-  const { fullscreen, toggleFullscreen } = useFullscreen(containerRef);
+  const { fullscreen, toggleFullscreen } = useFullscreen(containerRef.current);
   const loadPhoto = useCallback(async (): Promise<void> => {
     let fileContents: Buffer | string = await readFile(url);
     const ext = getExtension(url);
@@ -184,7 +184,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       <nav className="bottom">
         <Button
           disabled={!url}
-          onClick={toggleFullscreen}
+          onClick={() => toggleFullscreen("show")}
           {...label("Full-screen")}
         >
           {fullscreen ? <ExitFullscreen /> : <Fullscreen />}

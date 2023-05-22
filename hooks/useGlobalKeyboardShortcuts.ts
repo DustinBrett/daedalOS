@@ -1,12 +1,9 @@
+import useFullscreen from "components/apps/Photos/useFullscreen";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { useEffect, useRef } from "react";
-import {
-  haltEvent,
-  toggleFullScreen,
-  toggleShowDesktop,
-} from "utils/functions";
+import { haltEvent, toggleShowDesktop } from "utils/functions";
 
 type NavigatorWithKeyboard = Navigator & {
   keyboard?: {
@@ -45,6 +42,7 @@ const useGlobalKeyboardShortcuts = (): void => {
   const { closeWithTransition, maximize, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
   const { foregroundId } = useSession();
+  const { fullscreen, toggleFullscreen } = useFullscreen();
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
@@ -72,7 +70,7 @@ const useGlobalKeyboardShortcuts = (): void => {
         }
       } else if (keyName === "F11") {
         haltEvent(event);
-        toggleFullScreen();
+        toggleFullscreen();
       } else if (
         document.activeElement === document.body &&
         keyName.startsWith("ARROW")
@@ -82,7 +80,7 @@ const useGlobalKeyboardShortcuts = (): void => {
             bubbles: true,
           })
         );
-      } else if (document.fullscreenElement) {
+      } else if (fullscreen) {
         if (keyName === "META") metaDown = true;
         else if (altKey && altBindingsRef.current?.[keyName]) {
           haltEvent(event);
@@ -105,11 +103,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       }
     };
     const onKeyUp = (event: KeyboardEvent): void => {
-      if (
-        metaDown &&
-        document.fullscreenElement &&
-        event.key?.toUpperCase() === "META"
-      ) {
+      if (metaDown && fullscreen && event.key?.toUpperCase() === "META") {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
         else openStartMenu();
@@ -118,7 +112,7 @@ const useGlobalKeyboardShortcuts = (): void => {
     const onFullScreen = ({ target }: Event): void => {
       if (target === document.documentElement) {
         try {
-          if (document.fullscreenElement) {
+          if (fullscreen) {
             (navigator as NavigatorWithKeyboard)?.keyboard?.lock?.([
               "MetaLeft",
               "MetaRight",
@@ -149,7 +143,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       document.removeEventListener("keyup", onKeyUp);
       document.removeEventListener("fullscreenchange", onFullScreen);
     };
-  }, []);
+  }, [fullscreen, toggleFullscreen]);
 
   useEffect(() => {
     altBindingsRef.current = {

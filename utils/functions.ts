@@ -48,16 +48,6 @@ export const sendMouseClick = (target: HTMLElement, count = 1): void => {
   sendMouseClick(target, count - 1);
 };
 
-export const toggleFullScreen = async (): Promise<void> => {
-  try {
-    await (document.fullscreenElement
-      ? document.exitFullscreen()
-      : document.documentElement.requestFullscreen());
-  } catch {
-    // Ignore failure to enter fullscreen
-  }
-};
-
 export const toggleShowDesktop = (
   processes: Processes,
   minimize: (id: string) => void
