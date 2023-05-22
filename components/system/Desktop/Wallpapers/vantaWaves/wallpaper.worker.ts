@@ -41,12 +41,16 @@ globalThis.addEventListener(
       if (!canvas || !WAVES) return;
       if (currentEffect) currentEffect.destroy();
 
-      waveEffect = WAVES({
-        ...((offscreenConfig || config) as VantaWavesConfig),
-        ...disableControls,
-        canvas,
-        devicePixelRatio,
-      });
+      try {
+        waveEffect = WAVES({
+          ...((offscreenConfig || config) as VantaWavesConfig),
+          ...disableControls,
+          canvas,
+          devicePixelRatio,
+        });
+      } catch {
+        globalThis.postMessage("[error]");
+      }
     }
   },
   { passive: true }

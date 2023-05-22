@@ -110,6 +110,12 @@ const useWallpaper = (
             [offscreen]
           );
 
+          wallpaperWorker.current.addEventListener(
+            "message",
+            ({ data }: { data: string }) => {
+              if (data === "[error]") setWallpaper("SLIDESHOW");
+            }
+          );
           if (wallpaperName === "STABLE_DIFFUSION") {
             const loadingStatus = document.createElement("div");
 
