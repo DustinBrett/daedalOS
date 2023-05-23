@@ -25,7 +25,11 @@ globalThis.addEventListener(
 
       globalThis.devicePixelRatio = devicePixelRatio;
 
-      globalThis.effectInit(canvas);
+      try {
+        globalThis.effectInit(canvas);
+      } catch {
+        globalThis.postMessage("[error]");
+      }
     }
   },
   { passive: true }
