@@ -7,6 +7,10 @@ class Demo {
       powerPreference: "high-performance"
     });
 
+    if (this.gl === null) {
+      throw new Error("OffscreenCanvas.getContext returned null");
+    }
+
     this.brushRadius = 16;
     this.stepPerFrame = 1;
 

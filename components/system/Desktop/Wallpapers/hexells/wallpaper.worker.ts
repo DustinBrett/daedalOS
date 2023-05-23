@@ -23,7 +23,15 @@ globalThis.addEventListener(
       const { canvas, devicePixelRatio } = data as OffscreenRenderProps;
 
       globalThis.devicePixelRatio = devicePixelRatio;
-      globalThis.Hexells = new globalThis.Demo(canvas);
+
+      try {
+        globalThis.Hexells = new globalThis.Demo(canvas);
+      } catch (error) {
+        globalThis.postMessage({
+          message: (error as Error)?.message,
+          type: "[error]",
+        });
+      }
     }
   },
   { passive: true }

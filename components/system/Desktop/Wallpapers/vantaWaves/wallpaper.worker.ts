@@ -48,8 +48,11 @@ globalThis.addEventListener(
           canvas,
           devicePixelRatio,
         });
-      } catch {
-        globalThis.postMessage("[error]");
+      } catch (error) {
+        globalThis.postMessage({
+          message: (error as Error)?.message,
+          type: "[error]",
+        });
       }
     }
   },

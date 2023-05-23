@@ -27,8 +27,11 @@ globalThis.addEventListener(
 
       try {
         globalThis.effectInit(canvas);
-      } catch {
-        globalThis.postMessage("[error]");
+      } catch (error) {
+        globalThis.postMessage({
+          message: (error as Error)?.message,
+          type: "[error]",
+        });
       }
     }
   },

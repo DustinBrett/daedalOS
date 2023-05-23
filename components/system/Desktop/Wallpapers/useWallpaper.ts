@@ -42,6 +42,8 @@ declare global {
   }
 }
 
+type WallpaperMessage = { message: string; type: string };
+
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 
 let slideshowFiles: string[];
@@ -63,6 +65,7 @@ const useWallpaper = (
     vantaWireframe ? "Wireframe" : ""
   );
   const wallpaperTimerRef = useRef<number>();
+  const failedOffscreenContext = useRef(false);
   const loadWallpaper = useCallback(
     async (keepCanvas?: boolean) => {
       if (!desktopRef.current) return;
@@ -97,7 +100,11 @@ const useWallpaper = (
         window.WallpaperDestroy?.();
       }
 
-      if (window.OffscreenCanvas !== undefined && wallpaperWorker.current) {
+      if (
+        !failedOffscreenContext.current &&
+        window.OffscreenCanvas !== undefined &&
+        wallpaperWorker.current
+      ) {
         const workerConfig = { config, devicePixelRatio: 1 };
 
         if (keepCanvas) {
@@ -112,8 +119,15 @@ const useWallpaper = (
 
           wallpaperWorker.current.addEventListener(
             "message",
-            ({ data }: { data: string }) => {
-              if (data === "[error]") setWallpaper("SLIDESHOW");
+            ({ data }: { data: WallpaperMessage }) => {
+              if (data.type === "[error]") {
+                if (data.message.includes("getContext")) {
+                  failedOffscreenContext.current = true;
+                  loadWallpaper();
+                } else {
+                  setWallpaper("SLIDESHOW");
+                }
+              }
             }
           );
           if (wallpaperName === "STABLE_DIFFUSION") {
@@ -130,7 +144,7 @@ const useWallpaper = (
 
             wallpaperWorker.current.addEventListener(
               "message",
-              ({ data }: { data: { message: string; type: string } }) => {
+              ({ data }: { data: WallpaperMessage }) => {
                 if (data.type === "[error]") {
                   setWallpaper("VANTA");
                 } else if (data.type) {
