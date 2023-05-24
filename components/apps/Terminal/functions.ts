@@ -1,6 +1,7 @@
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import { commands as gitCommands } from "components/apps/Terminal/processGit";
 import type { LocalEcho } from "components/apps/Terminal/types";
+import { resourceAliasMap } from "components/system/Dialogs/Run";
 import processDirectory from "contexts/process/directory";
 import { ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 
@@ -150,7 +151,12 @@ export const autoComplete = (
         pid.toLowerCase()
       );
 
-      if (lowerProcesses.includes(lowerCommand)) return directory;
+      if (
+        lowerProcesses.includes(lowerCommand) ||
+        Object.keys(resourceAliasMap).includes(lowerCommand)
+      ) {
+        return directory;
+      }
     }
 
     return [];

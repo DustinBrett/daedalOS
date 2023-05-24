@@ -23,6 +23,7 @@ import {
   displayLicense,
   displayVersion,
 } from "components/apps/Terminal/useTerminal";
+import { resourceAliasMap } from "components/system/Dialogs/Run";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -921,9 +922,10 @@ const useCommandInterpreter = (
         }
         default:
           if (baseCommand) {
-            const pid = Object.keys(processDirectory).find(
-              (process) => process.toLowerCase() === lcBaseCommand
-            );
+            const pid =
+              Object.keys(processDirectory).find(
+                (process) => process.toLowerCase() === lcBaseCommand
+              ) || resourceAliasMap[lcBaseCommand];
 
             if (pid) {
               const [file] = commandArgs;
