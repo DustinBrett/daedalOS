@@ -8,7 +8,7 @@ class Demo {
     });
 
     if (this.gl === null) {
-      throw new Error("OffscreenCanvas.getContext returned null");
+      throw new Error("canvas.getContext returned null");
     }
 
     this.brushRadius = 16;
