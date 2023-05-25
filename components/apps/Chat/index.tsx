@@ -61,7 +61,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     error: aiError,
     name,
     resetError,
-  } = useInference(apiKey, engine);
+  } = useInference(engine.startsWith("WebLLM") ? engine : apiKey, engine);
   const messagesRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState<string>("");
@@ -395,12 +395,19 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
           ? [
               {
                 label: "Set AI Engine",
-                menu: ["HuggingFace", "OpenAI", "WebLLM"].map((engineName) => ({
+                menu: [
+                  "HuggingFace",
+                  "OpenAI",
+                  "WebLLM [RedPajama 3B]",
+                  "WebLLM [Vicuna 7B]",
+                ].map((engineName) => ({
                   action: () => {
                     setAiApi(
                       `${engineName}:${
                         // eslint-disable-next-line no-alert
-                        engineName === "WebLLM" ? "" : prompt("API Key") || ""
+                        engineName.startsWith("WebLLM")
+                          ? ""
+                          : prompt("API Key") || ""
                       }`
                     );
 
@@ -414,7 +421,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
                   label: engineName,
                 })),
               },
-              ...(["OpenAI", "WebLLM"].includes(name)
+              ...(name === "OpenAI"
                 ? [
                     {
                       action: () => {

@@ -1402,6 +1402,11 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@mlc-ai/web-llm@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@mlc-ai/web-llm/-/web-llm-0.1.1.tgz#013ca109a7b064362ab265c5011534c2e85cb529"
+  integrity sha512-1SRlSaAPXxeSBRBrzymgTevw8Diy3iVfz/vmw5yKkbALPxOeMwGi3UIIJMlA29XqW8OrYocvCZ2nXdqRFkm+dQ==
+
 "@monaco-editor/loader@^1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.3.3.tgz#7f1742bd3cc21c0362a46a4056317f6e5215cfca"

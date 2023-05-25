@@ -49,6 +49,10 @@ const nextConfig = {
         }
       })
     );
+    config.resolve.fallback = {
+      module: false,
+      perf_hooks: false,
+    };
 
     return config;
   },

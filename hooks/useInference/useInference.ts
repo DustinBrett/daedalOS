@@ -38,7 +38,12 @@ type Inference = {
   resetError: () => void;
 };
 
-const Engines = { HuggingFace, OpenAI, WebLLM } as Record<string, EngineClass>;
+const Engines = {
+  HuggingFace,
+  OpenAI,
+  "WebLLM [RedPajama 3B]": WebLLM,
+  "WebLLM [Vicuna 7B]": WebLLM,
+} as Record<string, EngineClass>;
 
 export const useInference = (apiKey = "", engine = ""): Inference => {
   const [error, setError] = useState<number>(0);
@@ -52,10 +57,10 @@ export const useInference = (apiKey = "", engine = ""): Inference => {
 
       if (engine && engine in Engines) {
         currentEngine =
-          engine === "WebLLM" && !hasWebGPU
+          engine.startsWith("WebLLM") && !hasWebGPU
             ? DEFAULT_NON_WEBGPU_ENGINE
             : engine;
-      } else if (currentEngine === "WebLLM" && !hasWebGPU) {
+      } else if (currentEngine.startsWith("WebLLM") && !hasWebGPU) {
         currentEngine = DEFAULT_NON_WEBGPU_ENGINE;
       }
 

@@ -6,7 +6,7 @@ type WorkerMessage = { data: Log | string };
 
 declare global {
   interface Window {
-    webLLM?: Worker;
+    webLLM?: Record<string, Worker>;
   }
 }
 
@@ -16,6 +16,8 @@ const DEFAULT_GREETING = {
 } as Message;
 
 export class WebLLM implements Engine {
+  private model = "";
+
   private worker?: Worker = undefined;
 
   private isChatting = false;
@@ -26,15 +28,20 @@ export class WebLLM implements Engine {
     this.reset();
   }
 
+  public constructor(model: string) {
+    this.model = model;
+  }
+
   public async init(): Promise<void> {
-    window.webLLM =
-      window.webLLM ||
+    window.webLLM = window.webLLM || {};
+    window.webLLM[this.model] =
+      window.webLLM[this.model] ||
       new Worker(
         new URL("hooks/useInference/WebLLM.worker.ts", import.meta.url),
-        { name: "WebLLM" }
+        { name: this.model, type: "module" }
       );
-    this.worker = window.webLLM;
-    this.worker.postMessage({ type: "init" });
+    this.worker = window.webLLM[this.model];
+    this.worker.postMessage({ model: this.model, type: "init" });
 
     // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.resolve();
