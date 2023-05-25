@@ -543,6 +543,8 @@ export const getInfoWithExtension = (
             containerElement.style.zIndex = "-1";
             containerElement.style.overflow = "hidden";
             containerElement.style.opacity = "0";
+            containerElement.style.userSelect = "none";
+            containerElement.style.webkitUserSelect = "none";
 
             containerElement.innerHTML = contents.toString();
 
