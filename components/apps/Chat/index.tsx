@@ -404,10 +404,10 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
                   action: () => {
                     setAiApi(
                       `${engineName}:${
-                        // eslint-disable-next-line no-alert
                         engineName.startsWith("WebLLM")
                           ? ""
-                          : prompt("API Key") || ""
+                          : // eslint-disable-next-line no-alert
+                            prompt("API Key") || ""
                       }`
                     );
 
