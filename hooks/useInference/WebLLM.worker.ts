@@ -5,7 +5,7 @@ type Data = { model?: string; prompt?: string; type: string };
 
 const CACHE_WARNING =
   "It can take a while when we first visit this page to populate the cache. Later refreshes will become faster.";
-const DEFAULT_MODEL = "RedPajama 3B";
+const DEFAULT_MODEL = "[RedPajama 3B]";
 
 const configMap: Record<string, string> = {
   "[RedPajama 3B]": "RedPajama-INCITE-Chat-3B-v1-q4f32_0",
