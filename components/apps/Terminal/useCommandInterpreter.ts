@@ -865,9 +865,22 @@ const useCommandInterpreter = (
           localEcho?.println(displayVersion());
           break;
         case "wapm":
-        case "wax":
-          if (localEcho) await loadWapm(commandArgs, localEcho);
+        case "wax": {
+          if (!localEcho) break;
+
+          const [file] = commandArgs;
+          const fullSourcePath = await getFullPath(file);
+
+          await loadWapm(
+            commandArgs,
+            localEcho,
+            fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
+              ? await readFile(fullSourcePath)
+              : undefined
+          );
+
           break;
+        }
         case "weather":
         case "wttr": {
           const response = await fetch(

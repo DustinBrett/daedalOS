@@ -10,14 +10,16 @@ let bindings: WASIBindings | null;
 
 const loadWapm = async (
   commandArgs: string[],
-  localEcho: LocalEcho
+  localEcho: LocalEcho,
+  wasmFile?: Buffer
 ): Promise<void> => {
   const { fetchCommandFromWAPM } = await import("@wasmer/wasm-terminal");
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
   const { default: WASI } = await import("wasi-js");
 
   try {
-    const wasmBinary = await fetchCommandFromWAPM({ args: commandArgs });
+    const wasmBinary =
+      wasmFile || (await fetchCommandFromWAPM({ args: commandArgs }));
 
     if (
       wasmBinary.length < 1024 &&

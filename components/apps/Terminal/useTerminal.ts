@@ -63,7 +63,11 @@ const useTerminal = (
         const fileExtension = getExtension(url);
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
-        if (extCommand) setInitialCommand(`${extCommand} ${url}`);
+        if (extCommand) {
+          setInitialCommand(
+            `${extCommand} ${url.includes(" ") ? `"${url}"` : url}`
+          );
+        }
       }
 
       setUrl(id, "");
