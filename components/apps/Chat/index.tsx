@@ -22,6 +22,7 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
+import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
@@ -388,6 +389,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
   const canSend = input && !isResponding;
   const { contextMenu } = useMenu();
   const [ttsVoices, setTTSVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const hasWebGPU = useWebGPUCheck();
   const { onContextMenuCapture } = useMemo(
     () =>
       contextMenu?.(() =>
@@ -398,8 +400,8 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
                 menu: [
                   "HuggingFace",
                   "OpenAI",
-                  "WebLLM [RedPajama 3B]",
-                  "WebLLM [Vicuna 7B]",
+                  ...(hasWebGPU ? ["WebLLM [RedPajama 3B]"] : []),
+                  ...(hasWebGPU ? ["WebLLM [Vicuna 7B]"] : []),
                 ].map((engineName) => ({
                   action: () => {
                     setAiApi(
@@ -453,6 +455,7 @@ const Chat: FC<ComponentProcessProps> = ({ id }) => {
     [
       close,
       contextMenu,
+      hasWebGPU,
       id,
       messages,
       name,
