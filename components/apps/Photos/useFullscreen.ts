@@ -26,11 +26,8 @@ const useFullscreen = (element?: HTMLElement | null): Fullscreen => {
     const exitFullscreenEvent = (): void => {
       if (
         !fullscreenDocument.fullscreenElement &&
-        !fullscreenDocument.fullscreenEnabled &&
         !fullscreenDocument.mozFullScreenElement &&
-        !fullscreenDocument.mozFullScreenEnabled &&
-        !fullscreenDocument.webkitFullscreenElement &&
-        !fullscreenDocument.webkitFullscreenEnabled
+        !fullscreenDocument.webkitFullscreenElement
       ) {
         document.removeEventListener("fullscreenchange", exitFullscreenEvent);
         setFullscreen(false);
