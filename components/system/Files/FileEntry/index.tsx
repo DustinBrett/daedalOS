@@ -419,13 +419,14 @@ const FileEntry: FC<FileEntryProps> = ({
           ) {
             isDynamicIconLoaded.current = true;
             new IntersectionObserver(
-              ([{ intersectionRatio }], observer) => {
-                if (intersectionRatio > 0) {
-                  observer.disconnect();
-                  getIconAbortController.current = new AbortController();
-                  getIcon(getIconAbortController.current.signal);
-                }
-              },
+              (entries, observer) =>
+                entries.forEach(({ isIntersecting }) => {
+                  if (isIntersecting) {
+                    observer.disconnect();
+                    getIconAbortController.current = new AbortController();
+                    getIcon(getIconAbortController.current.signal);
+                  }
+                }),
               { root: fileManagerRef.current, rootMargin: "5px" }
             ).observe(buttonRef.current);
           }

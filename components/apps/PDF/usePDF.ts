@@ -133,17 +133,11 @@ const usePDF = (
         pages.forEach((page, pageNumber) => {
           const li = document.createElement("li");
           const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  argument(id, "page", pageNumber + 1);
-                }
-              });
-            },
-            {
-              root: containerRef.current,
-              threshold: 0.4,
-            }
+            (entries) =>
+              entries.forEach(({ isIntersecting }) => {
+                if (isIntersecting) argument(id, "page", pageNumber + 1);
+              }),
+            { root: containerRef.current, threshold: 0.4 }
           );
 
           li.append(page);
