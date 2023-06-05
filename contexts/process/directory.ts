@@ -263,8 +263,8 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Terminal")),
     backgroundColor: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
-      height: 340,
-      width: 553,
+      height: 365,
+      width: 593,
     },
     icon: "/System/Icons/xterm.webp",
     libs: [

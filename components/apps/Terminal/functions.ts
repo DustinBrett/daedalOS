@@ -269,4 +269,4 @@ export const printColor = (
     `${rgbAnsi(...colorAttributes[0].rgb, true)}${rgbAnsi(
       ...colorAttributes[7].rgb
     )}`
-  }`;
+  }\u001B[0m`;
