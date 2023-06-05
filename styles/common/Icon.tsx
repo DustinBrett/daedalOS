@@ -83,8 +83,8 @@ const Icon = forwardRef<
     <StyledIcon
       ref={ref}
       $loaded={loaded}
-      onError={({ target }) => {
-        const { currentSrc = "" } = (target || {}) as HTMLImageElement;
+      onError={({ target }: { target: HTMLImageElement }) => {
+        const { currentSrc = "" } = target || {};
 
         if (currentSrc && !failedUrls.includes(currentSrc)) {
           const { pathname } = new URL(currentSrc);
