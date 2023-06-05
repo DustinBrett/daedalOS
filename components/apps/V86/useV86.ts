@@ -33,6 +33,10 @@ import {
   loadFiles,
 } from "utils/functions";
 
+if (typeof window !== "undefined") {
+  window.DEBUG = false;
+}
+
 const useV86 = (
   id: string,
   url: string,
