@@ -25,7 +25,8 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
   top: 0;
   z-index: 2;
 
-  h1 {
+  > button {
+    align-items: center;
     color: ${({ $foreground, theme }) =>
       $foreground
         ? theme.colors.titleBar.text

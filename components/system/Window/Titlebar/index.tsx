@@ -86,7 +86,6 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
       {...titlebarContextMenu}
     >
       <Button
-        as="h1"
         {...(allowResizing && !closing ? onClickMaximize : {})}
         onTouchEndCapture={onTouchEnd}
         onTouchStartCapture={onTouchStart}
