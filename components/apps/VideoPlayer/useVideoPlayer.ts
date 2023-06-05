@@ -94,11 +94,16 @@ const useVideoPlayer = (
       };
 
       videoElement.addEventListener("dblclick", toggleFullscreen);
-      videoElement.addEventListener("mousewheel", (event) => {
-        videoPlayer.volume(
-          videoPlayer.volume() + ((event as WheelEvent).deltaY > 0 ? -0.1 : 0.1)
-        );
-      });
+      videoElement.addEventListener(
+        "mousewheel",
+        (event) => {
+          videoPlayer.volume(
+            videoPlayer.volume() +
+              ((event as WheelEvent).deltaY > 0 ? -0.1 : 0.1)
+          );
+        },
+        { passive: true }
+      );
       containerRef.current
         ?.closest("section")
         ?.addEventListener("keydown", ({ key, altKey, ctrlKey }) => {
