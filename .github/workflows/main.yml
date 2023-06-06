@@ -9,11 +9,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - name: Set openssl legacy flag
-        run: |
-          echo "NODE_OPTIONS=" >> "$GITHUB_ENV"
-          echo "NODE_OPTIONS=--openssl-legacy-provider" >> "$GITHUB_ENV"
+          node-version: 16
       - name: Install Modules
         run: yarn install
       - name: Run Build
