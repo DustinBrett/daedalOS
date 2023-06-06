@@ -2,11 +2,12 @@ name: Tests
 
 on: push
 
+env:
+  NODE_OPTIONS: --openssl-legacy-provider
+
 jobs:
   tests:
     runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: --openssl-legacy-provider
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
