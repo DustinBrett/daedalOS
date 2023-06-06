@@ -12,7 +12,7 @@ jobs:
           node-version: 18
       - name: Set openssl legacy flag
         run: |
-          echo "unset NODE_OPTIONS" >> "$GITHUB_ENV"
+          echo "NODE_OPTIONS=" >> "$GITHUB_ENV"
           echo "NODE_OPTIONS=--openssl-legacy-provider" >> "$GITHUB_ENV"
       - name: Install Modules
         run: yarn install
