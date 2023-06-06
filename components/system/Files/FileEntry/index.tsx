@@ -76,6 +76,7 @@ type FileEntryProps = {
   focusFunctions: FocusEntryFunctions;
   focusedEntries: string[];
   hideShortcutIcon?: boolean;
+  isHeading?: boolean;
   isLoadingFileManager: boolean;
   loadIconImmediately?: boolean;
   name: string;
@@ -123,6 +124,7 @@ const FileEntry: FC<FileEntryProps> = ({
   focusedEntries,
   focusFunctions,
   hideShortcutIcon,
+  isHeading,
   isLoadingFileManager,
   loadIconImmediately,
   name,
@@ -559,7 +561,10 @@ const FileEntry: FC<FileEntryProps> = ({
               }}
             />
           ) : (
-            <figcaption>
+            <figcaption
+              aria-level={isHeading ? 1 : undefined}
+              role={isHeading ? "heading" : undefined}
+            >
               {!isOnlyFocusedEntry || name.length === truncatedName.length
                 ? truncatedName
                 : name}

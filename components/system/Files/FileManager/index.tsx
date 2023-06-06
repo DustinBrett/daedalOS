@@ -213,6 +213,7 @@ const FileManager: FC<FileManagerProps> = ({
                 focusFunctions={focusFunctions}
                 focusedEntries={focusedEntries}
                 hideShortcutIcon={hideShortcutIcons}
+                isHeading={isDesktop && files[file].systemShortcut}
                 isLoadingFileManager={isLoading}
                 loadIconImmediately={loadIconsImmediately}
                 name={basename(file, SHORTCUT_EXTENSION)}
