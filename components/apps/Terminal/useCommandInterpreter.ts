@@ -960,7 +960,11 @@ const useCommandInterpreter = (
                   extensions[fileExtension] || {};
 
                 if (extCommand) {
-                  await commandInterpreter(`${extCommand} ${baseCommand}`);
+                  await commandInterpreter(
+                    `${extCommand} ${baseCommand}${
+                      commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
+                    }`
+                  );
                 } else {
                   const fullFilePath = baseFileExists
                     ? baseCommand
