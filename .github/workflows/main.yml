@@ -10,6 +10,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
       - name: Install Modules
         run: yarn install
       - name: Run Build
