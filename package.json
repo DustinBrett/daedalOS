@@ -11,6 +11,9 @@
   "browserslist": [
     "defaults and supports es6 and not ie 11 and >1%"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "yarn build:prebuild && next build",
     "build:bundle-analyzer": "yarn build",
