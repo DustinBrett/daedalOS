@@ -5,7 +5,7 @@ import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import type * as PdfjsLib from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BASE_2D_CONTEXT_OPTIONS,
   DEFAULT_SCROLLBAR_WIDTH,
@@ -80,25 +80,43 @@ const usePDF = (
     [argument, containerRef, id, scale]
   );
   const { prependFileToTitle } = useTitle(id);
+  const renderingRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const renderPages = useCallback(async (): Promise<void> => {
-    if (window.pdfjsLib && url && containerRef.current) {
+    if (
+      window.pdfjsLib &&
+      url &&
+      containerRef.current &&
+      !renderingRef.current
+    ) {
+      renderingRef.current = true;
+
+      // eslint-disable-next-line no-param-reassign
+      containerRef.current.scrollTop = 0;
+      setPages([]);
       setLoading(true);
 
       const doc = await window.pdfjsLib.getDocument(await readFile(url))
         .promise;
 
       argument(id, "count", doc.numPages);
-      setPages(
-        await Promise.all(
-          Array.from({ length: doc.numPages }).map((_, i) =>
-            renderPage(i + 1, doc)
-          )
-        )
-      );
       prependFileToTitle(basename(url));
-    }
 
-    setLoading(false);
+      abortControllerRef.current = new AbortController();
+
+      for (let i = 0; i < doc.numPages; i += 1) {
+        if (abortControllerRef.current.signal.aborted) break;
+
+        // eslint-disable-next-line no-await-in-loop
+        const page = await renderPage(i + 1, doc);
+
+        if (i === 0) setLoading(false);
+
+        setPages((currentPages) => [...currentPages, page]);
+      }
+
+      renderingRef.current = false;
+    }
   }, [
     argument,
     containerRef,
@@ -148,6 +166,8 @@ const usePDF = (
       }
     }
   }, [argument, containerRef, id, pages]);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 };
 
 export default usePDF;
