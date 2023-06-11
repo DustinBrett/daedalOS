@@ -39,10 +39,6 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
 
-const StyledPicture = styled.picture`
-  pointer-events: none;
-`;
-
 const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 
 const Icon = forwardRef<
@@ -106,7 +102,7 @@ const Icon = forwardRef<
   );
 
   return (
-    <StyledPicture>
+    <picture>
       {!isStaticIcon &&
         SUPPORTED_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, imgSize, ratio, ".webp");
@@ -134,7 +130,7 @@ const Icon = forwardRef<
           );
         })}
       {RenderedIcon}
-    </StyledPicture>
+    </picture>
   );
 });
 
