@@ -12,7 +12,11 @@ import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import {
+  FOCUSABLE_ELEMENT,
+  PREVENT_SCROLL,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type MenuItemEntryProps = MenuItem & {
@@ -49,13 +53,35 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   const [subMenuOffset, setSubMenuOffset] = useState<Position>(topLeftPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const { sizes } = useTheme();
-  const onMouseEnter: React.MouseEventHandler = () => setShowSubMenu(true);
-  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget }) => {
+  const showSubMenuTimerRef = useRef<number>(0);
+  const [mouseOver, setMouseOver] = useState(false);
+  const setDelayedShowSubMenu = useCallback((show: boolean) => {
+    if (showSubMenuTimerRef.current) {
+      window.clearTimeout(showSubMenuTimerRef.current);
+      showSubMenuTimerRef.current = 0;
+    }
+
+    showSubMenuTimerRef.current = window.setTimeout(
+      () => setShowSubMenu(show),
+      TRANSITIONS_IN_MILLISECONDS.MOUSE_IN_OUT
+    );
+  }, []);
+  const onMouseEnter: React.MouseEventHandler = () => {
+    setMouseOver(true);
+    setDelayedShowSubMenu(true);
+  };
+  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget, type }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||
       !entryRef.current?.contains(relatedTarget)
     ) {
-      setShowSubMenu(false);
+      setMouseOver(false);
+
+      if (type === "mouseleave") {
+        setDelayedShowSubMenu(false);
+      } else {
+        setShowSubMenu(false);
+      }
     }
   };
   const subMenuEvents = menu
@@ -119,7 +145,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       ) : (
         <Button
           as="figure"
-          className={showSubMenu ? "active" : undefined}
+          className={showSubMenu && mouseOver ? "active" : undefined}
           onMouseUp={triggerAction}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
