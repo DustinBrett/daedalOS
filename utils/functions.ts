@@ -461,16 +461,32 @@ export const updateIconPositions = (
   }
 };
 
-export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
-  canvas instanceof HTMLCanvasElement &&
-  Boolean(
+export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
+  if (!(canvas instanceof HTMLCanvasElement)) return false;
+
+  const { data: pixels = [] } =
     canvas
-      .getContext("2d", {
-        willReadFrequently: true,
-      })
-      ?.getImageData(0, 0, canvas.width, canvas.height)
-      .data.some((channel) => channel !== 0)
-  );
+      .getContext("2d", { willReadFrequently: true })
+      ?.getImageData(0, 0, canvas.width, canvas.height) || {};
+
+  if (pixels.length === 0) return false;
+
+  const bwPixels: Record<number, number> = { 0: 0, 255: 0 };
+
+  for (const pixel of pixels) {
+    if (pixel !== 0 && pixel !== 255) return true;
+
+    bwPixels[pixel] += 1;
+  }
+
+  const isBlankCanvas =
+    bwPixels[0] === pixels.length ||
+    bwPixels[255] === pixels.length ||
+    (bwPixels[255] + bwPixels[0] === pixels.length &&
+      bwPixels[0] / 3 === bwPixels[255]);
+
+  return !isBlankCanvas;
+};
 
 const bytesInKB = 1024;
 const bytesInMB = 1022976; // 1024 * 999
@@ -683,12 +699,6 @@ export const jsonFetch = async (
 
   return json || {};
 };
-
-export const isCanvasEmpty = (canvas: HTMLCanvasElement): boolean =>
-  !canvas
-    .getContext("2d")
-    ?.getImageData(0, 0, canvas.width, canvas.height)
-    .data.some(Boolean);
 
 export const generatePrettyTimestamp = (): string =>
   new Intl.DateTimeFormat(DEFAULT_LOCALE, TIMESTAMP_DATE_FORMAT)

@@ -56,7 +56,7 @@ import {
   getExtension,
   getFormattedSize,
   getHtmlToImage,
-  isCanvasEmpty,
+  isCanvasDrawn,
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
@@ -344,7 +344,7 @@ const FileEntry: FC<FileEntryProps> = ({
                     // Ignore failure to capture
                   }
 
-                  if (iconCanvas && !isCanvasEmpty(iconCanvas)) {
+                  if (iconCanvas && isCanvasDrawn(iconCanvas)) {
                     generatedIcon = iconCanvas.toDataURL("image/png");
                   } else {
                     setTimeout(cacheIcon, TRANSITIONS_IN_MILLISECONDS.WINDOW);

@@ -5,7 +5,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PEEK_MAX_WIDTH,
 } from "utils/constants";
-import { getHtmlToImage } from "utils/functions";
+import { getHtmlToImage, isCanvasDrawn } from "utils/functions";
 
 const FPS = 15;
 
@@ -43,12 +43,7 @@ const renderFrame = async (
   }
 
   if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
-    if (
-      dataCanvas
-        .getContext("2d")
-        ?.getImageData(0, 0, dataCanvas.width, dataCanvas.height)
-        .data.some(Boolean)
-    ) {
+    if (isCanvasDrawn(dataCanvas)) {
       const previewImage = new Image();
       const dataUrl = dataCanvas.toDataURL();
 
