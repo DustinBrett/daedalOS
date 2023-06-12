@@ -12,7 +12,8 @@ const useRuffle = (
   containerRef: React.MutableRefObject<HTMLDivElement | null>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { linkElement, processes: { [id]: { libs = [] } = {} } = {} } =
+    useProcesses();
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
@@ -43,11 +44,12 @@ const useRuffle = (
   useEffect(() => {
     if (containerRef.current && player) {
       containerRef.current.append(player);
+      linkElement(id, "peekElement", player);
       setLoading(false);
     }
 
     return () => player?.remove();
-  }, [containerRef, player, setLoading]);
+  }, [containerRef, id, linkElement, player, setLoading]);
 
   useEffect(() => {
     if (containerRef.current && player && url) loadFlash();
