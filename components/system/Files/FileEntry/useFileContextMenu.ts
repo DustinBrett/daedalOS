@@ -445,14 +445,21 @@ const useFileContextMenu = (
         if (openWithFiltered.length > 0) {
           menuItems.unshift({
             label: "Open with",
-            menu: openWithFiltered.map((id): MenuItem => {
-              const { icon, title: label } = processDirectory[id] || {};
-              const action = (): void => {
-                openFile(id, icon);
-              };
+            menu: [
+              ...openWithFiltered.map((id): MenuItem => {
+                const { icon, title: label } = processDirectory[id] || {};
+                const action = (): void => {
+                  openFile(id, icon);
+                };
 
-              return { action, icon, label };
-            }),
+                return { action, icon, label };
+              }),
+              MENU_SEPERATOR,
+              {
+                action: () => open("OpenWith", { url }),
+                label: "Choose another app",
+              },
+            ],
           });
         }
 

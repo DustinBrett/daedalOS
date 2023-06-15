@@ -158,6 +158,19 @@ const directory: Processes = {
     preferProcessIcon: true,
     title: "OpenType",
   },
+  OpenWith: {
+    Component: dynamic(() => import("components/system/Dialogs/OpenWith")),
+    allowResizing: false,
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 492,
+      width: 392,
+    },
+    hideTaskbarEntry: true,
+    hideTitlebar: true,
+    icon: "/System/Icons/unknown.webp",
+    title: "Open With",
+  },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
     backgroundColor: "#525659",

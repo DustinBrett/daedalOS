@@ -14,7 +14,8 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { backgroundColor, Component, peekElement } = process || {};
+  const { backgroundColor, Component, hideTitlebar, peekElement } =
+    process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
@@ -37,7 +38,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
         {...windowTransitions}
       >
         <StyledPeekViewport ref={linkViewportEntry}>
-          <Titlebar id={id} />
+          {!hideTitlebar && <Titlebar id={id} />}
           {children}
         </StyledPeekViewport>
       </StyledWindow>

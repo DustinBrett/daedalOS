@@ -36,6 +36,7 @@ type BaseProcessArguments = {
   hideMaximizeButton?: boolean;
   hideMinimizeButton?: boolean;
   hideTaskbarEntry?: boolean;
+  hideTitlebar?: boolean;
   hideTitlebarIcon?: boolean;
   initialRelativePosition?: RelativePosition;
   libs?: string[];
