@@ -460,6 +460,7 @@ const useFileContextMenu = (
                 label: "Choose another app",
               },
             ],
+            primary: !pid,
           });
         }
 
