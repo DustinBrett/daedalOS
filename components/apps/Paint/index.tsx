@@ -19,6 +19,9 @@ import {
 type JsPaint = {
   close: () => void;
   file_new: () => void;
+  onunhandledrejection: (
+    error: Error & { reason: { message: string } }
+  ) => void;
   open_from_file: (file: File, fileHandle: string) => void;
   storage_quota_exceeded: () => void;
   systemHooks: {
@@ -151,6 +154,19 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     if (jsPaintInstance && url) {
       readFile(url).then((buffer) => {
+        // eslint-disable-next-line prefer-destructuring
+        const onunhandledrejection = jsPaintInstance.onunhandledrejection;
+
+        jsPaintInstance.onunhandledrejection = (error) => {
+          onunhandledrejection?.(error);
+
+          if (
+            error?.reason?.message ===
+            "either options.data or options.file or options.filePath must be passed"
+          ) {
+            prependFileToTitle("Untitled");
+          }
+        };
         jsPaintInstance.open_from_file(new File([buffer], url), url);
         prependFileToTitle(basename(url));
       });
