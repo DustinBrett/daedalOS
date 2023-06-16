@@ -62,12 +62,19 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
   const { processes: { [id]: { url = "" } = {} } = {}, title } = useProcesses();
   const { readFile } = useFileSystem();
   const [font, setFont] = useState<Font>();
+  const [showDrop, setShowDrop] = useState(true);
   const loadFont = useCallback(
     async (fontUrl: string) => {
+      setShowDrop(false);
+
       const { default: openType } = await import("opentype.js");
       const { buffer } = await readFile(fontUrl);
 
-      setFont(openType.parse(buffer));
+      try {
+        setFont(openType.parse(buffer));
+      } catch {
+        setShowDrop(true);
+      }
     },
     [readFile]
   );
@@ -102,7 +109,11 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledOpenType {...useFileDrop({ id })} onContextMenuCapture={haltEvent}>
+    <StyledOpenType
+      $drop={showDrop}
+      {...useFileDrop({ id })}
+      onContextMenuCapture={haltEvent}
+    >
       {font && (
         <>
           <ol>

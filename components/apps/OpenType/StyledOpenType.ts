@@ -1,9 +1,31 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const StyledOpenType = styled.div`
+type StyledOpenTypeProps = {
+  $drop?: boolean;
+};
+
+const StyledOpenType = styled.div<StyledOpenTypeProps>`
   font-size: 13px;
   overflow-x: hidden;
   overflow-y: scroll;
+
+  ${({ $drop }) =>
+    $drop &&
+    css`
+      &::before {
+        content: "Drop OTF/TTF/WOFF file here";
+        display: flex;
+        font-size: 16px;
+        font-weight: 600;
+        height: 100%;
+        left: 0;
+        place-content: center;
+        place-items: center;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    `}
 
   ol {
     &:not(:last-child) {
