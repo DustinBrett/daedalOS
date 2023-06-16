@@ -25,6 +25,7 @@ const EXCLUDED_PROCESSES = new Set([
   "Run",
   "SpaceCadet",
   "StableDiffusion",
+  "Terminal",
   "Transfer",
   "Webamp",
 ]);
