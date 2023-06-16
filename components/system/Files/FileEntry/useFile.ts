@@ -53,7 +53,7 @@ const useFile = (url: string): UseFile => {
         setForegroundId(activePid);
       } else {
         open(
-          pid,
+          pid || "OpenWith",
           { url: runUrl },
           singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
             ? processIcon
