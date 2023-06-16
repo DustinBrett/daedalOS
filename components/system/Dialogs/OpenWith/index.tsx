@@ -26,6 +26,7 @@ const EXCLUDED_PROCESSES = new Set([
   "SpaceCadet",
   "StableDiffusion",
   "Transfer",
+  "Webamp",
 ]);
 
 type OpenWithEntryProps = {
