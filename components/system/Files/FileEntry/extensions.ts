@@ -69,7 +69,7 @@ const types = {
   },
   Music: {
     icon: "audio",
-    process: ["Webamp"],
+    process: ["Webamp", "VideoPlayer"],
   },
   PdfDocument: {
     icon: "pdf",
