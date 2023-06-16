@@ -107,15 +107,24 @@ const useDosCI = (
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
     const extension = getExtension(url);
     const { zipAsync } = await import("utils/zipFunctions");
+    const zippedPayload = async (buffer: Buffer): Promise<Buffer> =>
+      Buffer.from(await zipAsync({ [basename(url)]: buffer }));
+    const zipBufferToUrl = async (buffer: Buffer): Promise<string> =>
+      bufferToUrl(await addJsDosConfig(buffer, readFile));
     const zipBuffer =
-      extension === ".exe"
-        ? Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }))
-        : urlBuffer;
-    const bundleURL = bufferToUrl(
-      extension === ".jsdos"
-        ? zipBuffer
-        : await addJsDosConfig(zipBuffer, readFile)
-    );
+      extension === ".exe" ? await zippedPayload(urlBuffer) : urlBuffer;
+    let bundleURL: string;
+
+    if (extension === ".jsdos") {
+      bundleURL = bufferToUrl(zipBuffer);
+    } else {
+      try {
+        bundleURL = await zipBufferToUrl(zipBuffer);
+      } catch {
+        bundleURL = await zipBufferToUrl(await zippedPayload(urlBuffer));
+      }
+    }
+
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
     const stateUrl = (await exists(savePath))
       ? bufferToUrl(await readFile(savePath))
