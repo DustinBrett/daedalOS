@@ -17,6 +17,7 @@ const EXCLUDED_PROCESSES = new Set([
   "ClassiCube",
   "DXBall",
   "DevTools",
+  "Emulator",
   "FileExplorer",
   "IRC",
   "OpenWith",
