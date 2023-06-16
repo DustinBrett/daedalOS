@@ -19,7 +19,12 @@ const useRuffle = (
   const { readFile } = useFileSystem();
   const loadFlash = useCallback(async () => {
     containerRef.current?.classList.remove("drop");
-    await player?.load({ data: await readFile(url) });
+    try {
+      await player?.load({ data: await readFile(url) });
+    } catch {
+      // Ruffle handles error reporting
+    }
+
     appendFileToTitle(basename(url, extname(url)));
   }, [appendFileToTitle, containerRef, player, readFile, url]);
 
