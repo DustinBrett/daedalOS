@@ -288,7 +288,7 @@ const calcGridDropPosition = (
   };
 };
 
-const updateIconPositionsIfEmpty = (
+export const updateIconPositionsIfEmpty = (
   url: string,
   gridElement: HTMLElement | null,
   iconPositions: IconPositions,

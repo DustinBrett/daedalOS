@@ -9,7 +9,9 @@ import type {
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
+import { dirname } from "path";
 import defaultSession from "public/session.json";
+import type { SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DEFAULT_AI_API,
@@ -18,13 +20,16 @@ import {
   DEFAULT_THEME,
   DEFAULT_WALLPAPER,
   DEFAULT_WALLPAPER_FIT,
+  DESKTOP_PATH,
   SESSION_FILE,
 } from "utils/constants";
+import { updateIconPositionsIfEmpty } from "utils/functions";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
 const useSessionContextState = (): SessionContextState => {
-  const { deletePath, readFile, rootFs, writeFile, lstat } = useFileSystem();
+  const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
+    useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [aiApi, setAiApi] = useState(DEFAULT_AI_API);
@@ -195,6 +200,51 @@ const useSessionContextState = (): SessionContextState => {
       initSession();
     }
   }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
+  const setAndUpdateIconPositions = useCallback(
+    async (positions: SetStateAction<IconPositions>): Promise<void> => {
+      if (typeof positions === "function") {
+        return setIconPositions(positions);
+      }
+
+      const [firstIcon] = Object.keys(positions) || [];
+      const isDesktop = firstIcon && DESKTOP_PATH === dirname(firstIcon);
+
+      if (isDesktop) {
+        const desktopGrid = document.querySelector("main > ol");
+
+        if (desktopGrid instanceof HTMLOListElement) {
+          try {
+            const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
+              sortOrders || {};
+            const newDesktopSortOrder = {
+              [DESKTOP_PATH]: [
+                [
+                  ...new Set([
+                    ...desktopFileOrder,
+                    ...(await readdir(DESKTOP_PATH)),
+                  ]),
+                ],
+              ],
+            };
+
+            return setIconPositions(
+              updateIconPositionsIfEmpty(
+                DESKTOP_PATH,
+                desktopGrid,
+                positions,
+                newDesktopSortOrder as SortOrders
+              )
+            );
+          } catch {
+            // Ignore failure to update icon positions with directory
+          }
+        }
+      }
+
+      return setIconPositions(positions);
+    },
+    [readdir, sortOrders]
+  );
 
   return {
     aiApi,
@@ -209,7 +259,7 @@ const useSessionContextState = (): SessionContextState => {
     setClockSource,
     setForegroundId,
     setHaltSession,
-    setIconPositions,
+    setIconPositions: setAndUpdateIconPositions,
     setRunHistory,
     setSortOrder,
     setThemeName,
