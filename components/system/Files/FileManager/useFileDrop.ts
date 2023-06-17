@@ -11,7 +11,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { basename, extname, join, relative } from "path";
 import { useCallback } from "react";
-import { DESKTOP_PATH } from "utils/constants";
+import { DESKTOP_PATH, MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { haltEvent, updateIconPositions } from "utils/functions";
 
 export type FileDrop = {
@@ -78,6 +78,8 @@ const useFileDrop = ({
       haltEvent(event);
     },
     onDrop: (event) => {
+      if (MOUNTABLE_EXTENSIONS.has(extname(directory))) return;
+
       if (updatePositions && event.target instanceof HTMLElement) {
         const { files, text } = getEventData(event as React.DragEvent);
 
