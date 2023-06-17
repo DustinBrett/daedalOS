@@ -14,12 +14,13 @@ import type {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { dirname, join } from "path";
+import { dirname, extname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_ICON,
   MENU_SEPERATOR,
+  MOUNTABLE_EXTENSIONS,
   isFileSystemMappingSupported,
 } from "utils/constants";
 import {
@@ -230,6 +231,7 @@ const useFolderContextMenu = (
         const isMusicVisualizationRunning =
           document.querySelector("main .webamp-desktop canvas") instanceof
           HTMLCanvasElement;
+        const isReadOnly = MOUNTABLE_EXTENSIONS.has(extname(url));
 
         return [
           {
@@ -316,41 +318,45 @@ const useFolderContextMenu = (
                   : []),
               ]
             : []),
-          MENU_SEPERATOR,
-          ...FS_COMMANDS,
-          {
-            action: () => open("Terminal", { url }),
-            label: "Open Terminal here",
-          },
-          {
-            action: () => pasteToFolder(),
-            disabled: Object.keys(pasteList).length === 0,
-            label: "Paste",
-          },
-          MENU_SEPERATOR,
-          {
-            label: "New",
-            menu: [
-              {
-                action: () => newPath(NEW_FOLDER, undefined, "rename"),
-                icon: FOLDER_ICON,
-                label: "Folder",
-              },
-              MENU_SEPERATOR,
-              {
-                action: () =>
-                  newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
-                icon: richTextDocumentIcon,
-                label: "Rich Text Document",
-              },
-              {
-                action: () =>
-                  newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
-                icon: textDocumentIcon,
-                label: "Text Document",
-              },
-            ],
-          },
+          ...(isReadOnly
+            ? []
+            : [
+                MENU_SEPERATOR,
+                ...FS_COMMANDS,
+                {
+                  action: () => open("Terminal", { url }),
+                  label: "Open Terminal here",
+                },
+                {
+                  action: () => pasteToFolder(),
+                  disabled: Object.keys(pasteList).length === 0,
+                  label: "Paste",
+                },
+                MENU_SEPERATOR,
+                {
+                  label: "New",
+                  menu: [
+                    {
+                      action: () => newPath(NEW_FOLDER, undefined, "rename"),
+                      icon: FOLDER_ICON,
+                      label: "Folder",
+                    },
+                    MENU_SEPERATOR,
+                    {
+                      action: () =>
+                        newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
+                      icon: richTextDocumentIcon,
+                      label: "Rich Text Document",
+                    },
+                    {
+                      action: () =>
+                        newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
+                      icon: textDocumentIcon,
+                      label: "Text Document",
+                    },
+                  ],
+                },
+              ]),
           ...(isDesktop
             ? [
                 MENU_SEPERATOR,
