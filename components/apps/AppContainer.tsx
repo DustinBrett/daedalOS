@@ -2,7 +2,7 @@ import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
 import dynamic from "next/dynamic";
 import { useMemo, useRef, useState } from "react";
-import type { IStyledComponent } from "styled-components";
+import type { styled } from "styled-components";
 
 const StyledLoading = dynamic(
   () => import("components/system/Files/FileManager/StyledLoading")
@@ -17,13 +17,7 @@ type ContainerHook = (
 ) => void;
 
 type AppContainerProps = {
-  StyledComponent: IStyledComponent<
-    "web",
-    "div",
-    React.ClassAttributes<HTMLDivElement> &
-      React.HTMLAttributes<HTMLDivElement> &
-      object
-  >;
+  StyledComponent: ReturnType<typeof styled.div>;
   id: string;
   useHook: ContainerHook;
 };

@@ -98,7 +98,7 @@ const useTinyMCE = (
       linksToProcesses();
       updateTitle(url);
 
-      if (editor.iframeElement && editor.iframeElement.contentDocument) {
+      if (editor.iframeElement?.contentDocument) {
         editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
       }
     }
