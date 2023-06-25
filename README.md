@@ -2,52 +2,7 @@
 
 ## _Desktop environment in the browser_
 
-# Feature Overview
-
 [![Feature Overview](https://img.youtube.com/vi/CkvKPspIPLs/mqdefault.jpg)](http://www.youtube.com/watch?v=CkvKPspIPLs)
-
-# Try It 🏁
-
-### Clone repo
-
-- [Git](https://git-scm.com/downloads)
-
-```
-git clone https://github.com/DustinBrett/daedalOS.git
-cd daedalOS
-```
-
-### Yarn
-
-- [Node.js](https://nodejs.org/en/download/) (**v16**)
-- [Yarn](https://classic.yarnpkg.com/en/) (`npm install --global yarn`)
-
-```
-yarn
-```
-
-##### Development
-
-```
-yarn build:fs
-yarn dev
-```
-
-##### Production
-
-```
-yarn build
-yarn start
-```
-
-### Docker
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-
-```
-docker build -t daedalos .
-docker run -dp 3000:3000 --rm --name daedalos daedalos
-```
 
 # System 🧠
 
@@ -60,7 +15,7 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backend/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backend/IsoFS.ts) read support, [7Z/GZ/RAR/TAR/etc. extract](https://github.com/use-strict/7z-wasm) support
 - Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort/arrange
-- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & game saves
+- Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & emulator states
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
@@ -248,3 +203,31 @@ docker run -dp 3000:3000 --rm --name daedalos daedalos
 - [Skin support](https://skins.webamp.org/)
 - Playlist & streaming support
 - Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
+
+# Try It 🚀
+
+##### Requirements
+
+- [Node.js](https://nodejs.org/en/download/)
+- [Yarn](https://yarnpkg.com/en/)
+
+##### Development
+
+```
+yarn build:fs
+yarn dev
+```
+
+##### Production
+
+```
+yarn build
+yarn start
+```
+
+#### Docker
+
+```
+docker build -t daedalos .
+docker run -dp 3000:3000 --rm --name daedalos daedalos
+```
