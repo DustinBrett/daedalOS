@@ -14,11 +14,12 @@ import type {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { dirname, extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_ICON,
+  INDEX_FILE,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
   isFileSystemMappingSupported,
@@ -69,6 +70,7 @@ const useFolderContextMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const {
+    exists,
     mapFs,
     pasteList = {},
     readFile,
@@ -361,6 +363,21 @@ const useFolderContextMenu = (
             ? [
                 MENU_SEPERATOR,
                 {
+                  action: async () => {
+                    if (!(await exists(INDEX_FILE))) {
+                      const response = await fetch(document.location.href);
+                      const buffer = Buffer.from(await response.arrayBuffer());
+
+                      await writeFile(INDEX_FILE, buffer);
+
+                      updateFolder(dirname(INDEX_FILE), basename(INDEX_FILE));
+                    }
+
+                    open("MonacoEditor", { url: INDEX_FILE });
+                  },
+                  label: "View page source",
+                },
+                {
                   action: () => open("DevTools", { url: "dom" }),
                   label: "Inspect",
                 },
@@ -373,6 +390,7 @@ const useFolderContextMenu = (
       canCapture,
       captureScreen,
       contextMenu,
+      exists,
       hasWebGPU,
       isAscending,
       isDesktop,
@@ -387,6 +405,7 @@ const useFolderContextMenu = (
       updateSorting,
       url,
       wallpaperImage,
+      writeFile,
     ]
   );
 };

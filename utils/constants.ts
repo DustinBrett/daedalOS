@@ -58,6 +58,8 @@ export const HOME = "/Users/Public";
 
 export const PICTURES_FOLDER = `${HOME}/Pictures`;
 
+export const INDEX_FILE = "/index.html";
+
 export const PROMPT_FILE = "prompts.json";
 
 export const SLIDESHOW_FILE = "slideshow.json";
