@@ -60,7 +60,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       </nav>
       <table>
         <tbody>
-          <tr>
+          <tr className="short-bottom">
             <th scope="row">
               <Icon imgSize={32} src={icon} />
             </th>
@@ -79,6 +79,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           </tr>
           <tr>
             <th scope="row">
+              {/* TODO: Shortcut (.url) */}
               {stats?.isDirectory() ? "Type:" : "Type of file:"}
             </th>
             <td>
@@ -92,6 +93,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           {!stats?.isDirectory() && (
             <tr>
               <th scope="row">
+                {/* TODO: Pick an app */}
                 {defaultProcess ? "Opens with:" : "Description:"}
               </th>
               <td>

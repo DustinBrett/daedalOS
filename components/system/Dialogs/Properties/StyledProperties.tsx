@@ -1,13 +1,15 @@
 import styled from "styled-components";
 
 const StyledProperties = styled.div`
-  padding: 0 7px;
+  padding: 0 8px 0 6px;
 
   table {
     background-color: #fff;
     border: 1px solid rgb(217, 217, 217);
-    height: calc(100% - 37px - 28px);
+    height: calc(100% - 36px - 28px);
     padding-top: 14px;
+    position: relative;
+    top: -1px;
     width: 100%;
 
     tbody {
@@ -18,15 +20,23 @@ const StyledProperties = styled.div`
 
       tr {
         display: flex;
-        padding: 0 14px;
+        padding: 0 12px;
         place-content: center;
         place-items: center;
+
+        &.short-bottom {
+          margin-bottom: -4px;
+        }
       }
 
       th {
         font-weight: 400;
         text-align: left;
-        width: 75px;
+        width: 74px;
+
+        img {
+          margin-top: -2px;
+        }
       }
 
       td {
@@ -43,37 +53,25 @@ const StyledProperties = styled.div`
           border: 1px solid rgb(122, 122, 122);
           font-size: 11px;
           height: 23px;
-          margin-top: -4px;
+          margin-top: -2px;
           padding: 3px;
           width: 100%;
         }
 
         img {
-          margin-right: 5px;
+          margin-right: 7px;
         }
       }
     }
   }
 
   nav {
-    &.buttons {
-      display: flex;
-      gap: 8px;
-      height: 37px;
-      place-content: end;
-      place-items: center;
-
-      button {
-        height: 21px;
-      }
-    }
-
     &.tabs {
       display: flex;
       height: 28px;
       padding-top: 7px;
       position: relative;
-      top: 1px;
+      z-index: 1;
 
       button {
         background-color: #fff;
@@ -82,9 +80,22 @@ const StyledProperties = styled.div`
         display: flex;
         font-size: 11.5px;
         height: 21px;
-        padding: 1px 8px;
+        padding: 1px 6px;
         place-content: center;
         width: auto;
+      }
+    }
+
+    &.buttons {
+      display: flex;
+      gap: 8px;
+      height: 35px;
+      margin-right: -1px;
+      place-content: end;
+      place-items: center;
+
+      button {
+        height: 21px;
       }
     }
   }
