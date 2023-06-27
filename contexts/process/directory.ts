@@ -204,6 +204,19 @@ const directory: Processes = {
     icon: "/System/Icons/photos.webp",
     title: "Photos",
   },
+  Properties: {
+    Component: dynamic(() => import("components/system/Dialogs/Properties")),
+    allowResizing: false,
+    backgroundColor: "rgb(240, 240, 240)",
+    defaultSize: {
+      height: 420,
+      width: 361,
+    },
+    hideMaximizeButton: true,
+    hideMinimizeButton: true,
+    icon: "",
+    title: "Properties",
+  },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
     backgroundColor: "#000",

@@ -141,7 +141,9 @@ const useFileContextMenu = (
                 absoluteEntries().forEach((entry) => deleteLocalPath(entry)),
               label: "Delete",
             },
-            { action: () => setRenaming(baseName), label: "Rename" }
+            { action: () => setRenaming(baseName), label: "Rename" },
+            MENU_SEPERATOR,
+            { action: () => open("Properties", { url }), label: "Properties" }
           );
 
           if (path) {

@@ -5,7 +5,11 @@ import { PROCESS_DELIMITER, SAVE_TITLE_CHAR } from "utils/constants";
 
 type Title = {
   appendFileToTitle: (url: string, unSaved?: boolean) => void;
-  prependFileToTitle: (url: string, unSaved?: boolean) => void;
+  prependFileToTitle: (
+    url: string,
+    unSaved?: boolean,
+    withoutDash?: boolean
+  ) => void;
 };
 
 const useTitle = (id: string): Title => {
@@ -23,9 +27,11 @@ const useTitle = (id: string): Title => {
     [id, originalTitle, title]
   );
   const prependFileToTitle = useCallback(
-    (url: string, unSaved?: boolean) => {
+    (url: string, unSaved?: boolean, withoutDash?: boolean) => {
       const prependedFile = url
-        ? `${unSaved ? `${SAVE_TITLE_CHAR} ` : ""}${url} - `
+        ? `${unSaved ? `${SAVE_TITLE_CHAR} ` : ""}${url}${
+            withoutDash ? " " : " - "
+          }`
         : "";
 
       title(id, `${prependedFile}${originalTitle}`);
