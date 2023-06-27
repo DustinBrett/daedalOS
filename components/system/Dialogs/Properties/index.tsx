@@ -7,8 +7,8 @@ import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, dirname, extname } from "path";
-import { useEffect, useMemo, useState } from "react";
+import { basename, dirname, extname, join } from "path";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { getFormattedSize } from "utils/functions";
 import StyledButton from "../Transfer/StyledButton";
@@ -31,7 +31,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
     closeWithTransition,
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
-  const { stat } = useFileSystem();
+  const { rename, stat, updateFolder } = useFileSystem();
   const { url } = process || {};
   const [stats, setStats] = useState<Stats>();
   // TODO: Handle HTTP url's
@@ -39,6 +39,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const extension = useMemo(() => extname(url || ""), [url]);
   const { process: [defaultProcess] = [], type } = extensions[extension] || {};
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (url && !stats) {
@@ -55,8 +56,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledProperties>
       <nav className="tabs">
-        {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-        <StyledButton onClick={() => {}}>General</StyledButton>
+        <StyledButton>General</StyledButton>
       </nav>
       <table>
         <tbody>
@@ -65,8 +65,8 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
               <Icon imgSize={32} src={icon} />
             </th>
             <td>
-              {/* TODO: Rename */}
               <input
+                ref={inputRef}
                 autoComplete="off"
                 defaultValue={basename(url || "")}
                 spellCheck="false"
@@ -143,8 +143,25 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
         </tbody>
       </table>
       <nav className="buttons">
-        {/* TODO: Rename */}
-        <StyledButton onClick={() => closeWithTransition(id)}>OK</StyledButton>
+        <StyledButton
+          onClick={() => {
+            // TODO: Handle renaming shortcuts
+            if (
+              inputRef.current &&
+              url &&
+              inputRef.current.value !== basename(url)
+            ) {
+              const directory = dirname(url);
+
+              rename(url, join(directory, inputRef.current.value));
+              updateFolder(directory);
+            }
+
+            closeWithTransition(id);
+          }}
+        >
+          OK
+        </StyledButton>
         <StyledButton onClick={() => closeWithTransition(id)}>
           Cancel
         </StyledButton>
