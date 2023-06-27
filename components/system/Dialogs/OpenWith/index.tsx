@@ -1,4 +1,6 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
+import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
@@ -8,8 +10,6 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { getExtension } from "utils/functions";
-import StyledOpenWith from "./StyledOpenWith";
-import StyledOpenWithList from "./StyledOpenWithList";
 
 const EXCLUDED_PROCESSES = new Set([
   "Browser",
