@@ -24,8 +24,10 @@ const StyledProperties = styled.div`
         place-content: center;
         place-items: center;
 
-        &.short-bottom {
+        &.header {
           margin-bottom: -4px;
+          margin-top: -2px;
+          padding: 0 10px 0 12px;
         }
       }
 
@@ -33,10 +35,6 @@ const StyledProperties = styled.div`
         font-weight: 400;
         text-align: left;
         width: 74px;
-
-        img {
-          margin-top: -2px;
-        }
       }
 
       td {
@@ -53,7 +51,6 @@ const StyledProperties = styled.div`
           border: 1px solid rgb(122, 122, 122);
           font-size: 11px;
           height: 23px;
-          margin-top: -2px;
           padding: 3px;
           width: 100%;
         }
@@ -78,9 +75,9 @@ const StyledProperties = styled.div`
         border: 1px solid rgb(217, 217, 217);
         border-bottom-width: 0;
         display: flex;
-        font-size: 11.5px;
+        font-size: 11px;
         height: 21px;
-        padding: 1px 6px;
+        padding: 1px 7px;
         place-content: center;
         width: auto;
       }

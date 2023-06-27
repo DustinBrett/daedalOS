@@ -60,7 +60,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       </nav>
       <table>
         <tbody>
-          <tr className="short-bottom">
+          <tr className="header">
             <th scope="row">
               <Icon imgSize={32} src={icon} />
             </th>
