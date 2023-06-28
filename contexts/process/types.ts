@@ -8,7 +8,9 @@ import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 type DialogProcessArguments = {
   fileReaders?: FileReaders | ObjectReaders;
+  isShortcut?: boolean;
   progress?: number;
+  shortcutPath?: string;
 };
 
 type MonacoProcessArguments = {

@@ -143,7 +143,11 @@ const useFileContextMenu = (
             },
             { action: () => setRenaming(baseName), label: "Rename" },
             MENU_SEPERATOR,
-            { action: () => open("Properties", { url }), label: "Properties" }
+            {
+              action: () =>
+                open("Properties", { isShortcut, shortcutPath: path, url }),
+              label: "Properties",
+            }
           );
 
           if (path) {

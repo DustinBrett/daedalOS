@@ -32,7 +32,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const { rename, stat, updateFolder } = useFileSystem();
-  const { url } = process || {};
+  const { isShortcut, url } = process || {};
   const [stats, setStats] = useState<Stats>();
   // TODO: Handle HTTP url's
   const [{ icon }] = useFileInfo(url || "", stats?.isDirectory() || false);
@@ -62,13 +62,17 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
         <tbody>
           <tr className="header">
             <th scope="row">
+              {/* TODO: Shortcut icon via 2nd useFileInfo */}
               <Icon imgSize={32} src={icon} />
             </th>
             <td>
               <input
                 ref={inputRef}
                 autoComplete="off"
-                defaultValue={basename(url || "")}
+                defaultValue={basename(
+                  url || "",
+                  isShortcut ? extname(url || "") : ""
+                )}
                 spellCheck="false"
                 type="text"
               />
@@ -79,11 +83,12 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           </tr>
           <tr>
             <th scope="row">
-              {/* TODO: Shortcut (.url) */}
               {stats?.isDirectory() ? "Type:" : "Type of file:"}
             </th>
             <td>
-              {stats?.isDirectory()
+              {isShortcut
+                ? `Shortcut (${extension})`
+                : stats?.isDirectory()
                 ? "File folder"
                 : extType
                 ? `${extType} (${extension})`
@@ -116,6 +121,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           <tr>
             <th scope="row">Size</th>
             {/* TODO: Folder recursive calc */}
+            {/* TODO: Shortcut get stats from stats of shortcutPath */}
             <td>
               {stats?.size
                 ? `${getFormattedSize(
