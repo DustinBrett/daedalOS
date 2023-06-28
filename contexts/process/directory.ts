@@ -209,7 +209,7 @@ const directory: Processes = {
     allowResizing: false,
     backgroundColor: "rgb(240, 240, 240)",
     defaultSize: {
-      height: 420,
+      height: 412,
       width: 361,
     },
     hideMaximizeButton: true,

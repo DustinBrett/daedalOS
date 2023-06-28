@@ -38,7 +38,9 @@ const StyledProperties = styled.div`
       }
 
       td {
+        cursor: text;
         display: flex;
+        user-select: text;
         width: calc(100% - 70px);
 
         &.spacer {
