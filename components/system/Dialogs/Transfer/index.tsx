@@ -1,5 +1,5 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
+import StyledButton from "components/system/Dialogs/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
 import type {
   FileReaders,

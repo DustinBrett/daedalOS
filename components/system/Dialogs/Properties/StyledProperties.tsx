@@ -93,6 +93,7 @@ const StyledProperties = styled.div`
 
       button {
         height: 21px;
+        line-height: 19px;
       }
     }
   }

@@ -1,7 +1,7 @@
 import { parseCommand } from "components/apps/Terminal/functions";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
-import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
+import StyledButton from "components/system/Dialogs/StyledButton";
 import {
   getProcessByFileExtension,
   getShortcutInfo,
@@ -280,7 +280,7 @@ const Run: FC<ComponentProcessProps> = () => {
       </div>
       <nav>
         <StyledButton
-          $active={isInputFocused}
+          className={isInputFocused ? "focus" : ""}
           disabled={isEmptyInput || running}
           onClick={() => runResource(inputRef.current?.value.trim())}
         >

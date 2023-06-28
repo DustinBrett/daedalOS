@@ -1,4 +1,4 @@
-import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
+import StyledButton from "components/system/Dialogs/StyledButton";
 import styled, { css } from "styled-components";
 
 const gradientAnimation = css`

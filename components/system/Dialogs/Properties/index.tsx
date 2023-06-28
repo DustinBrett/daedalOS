@@ -1,6 +1,7 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
+import StyledButton from "components/system/Dialogs/StyledButton";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
@@ -11,7 +12,6 @@ import { basename, dirname, extname, join } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { getFormattedSize } from "utils/functions";
-import StyledButton from "../Transfer/StyledButton";
 
 // TODO
 // - One window per url
