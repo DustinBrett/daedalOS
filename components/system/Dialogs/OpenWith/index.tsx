@@ -21,6 +21,7 @@ const EXCLUDED_PROCESSES = new Set([
   "FileExplorer",
   "IRC",
   "OpenWith",
+  "Properties",
   "Quake3",
   "Run",
   "SpaceCadet",
