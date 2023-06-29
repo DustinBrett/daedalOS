@@ -13,9 +13,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { getFormattedSize } from "utils/functions";
 
-// TODO
-// - One window per url
-
 const dateTimeString = (date?: Date): string =>
   date
     ?.toLocaleString(undefined, {
@@ -34,7 +31,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const { rename, stat, updateFolder } = useFileSystem();
   const { isShortcut, url } = process || {};
   const [stats, setStats] = useState<Stats>();
-  // TODO: Handle HTTP url's
   const [{ icon }] = useFileInfo(url || "", stats?.isDirectory() || false);
   const extension = useMemo(() => extname(url || ""), [url]);
   const { process: [defaultProcess] = [], type } = extensions[extension] || {};
@@ -62,7 +58,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
         <tbody>
           <tr className="header">
             <th scope="row">
-              {/* TODO: Shortcut icon via 2nd useFileInfo */}
               <Icon imgSize={32} src={icon} />
             </th>
             <td>
@@ -98,7 +93,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           {!stats?.isDirectory() && (
             <tr>
               <th scope="row">
-                {/* TODO: Pick an app */}
                 {defaultProcess ? "Opens with:" : "Description:"}
               </th>
               <td>
@@ -120,8 +114,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           </tr>
           <tr>
             <th scope="row">Size</th>
-            {/* TODO: Folder recursive calc */}
-            {/* TODO: Shortcut get stats from stats of shortcutPath */}
             <td>
               {stats?.size
                 ? `${getFormattedSize(
@@ -130,7 +122,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
                 : "0 bytes"}
             </td>
           </tr>
-          {/* TODO: Folder "Contains (# files, # folders)" */}
           <tr>
             <td className="spacer" colSpan={2} />
           </tr>
@@ -151,7 +142,6 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       <nav className="buttons">
         <StyledButton
           onClick={() => {
-            // TODO: Handle renaming shortcuts
             if (
               inputRef.current &&
               url &&
