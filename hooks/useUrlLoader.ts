@@ -1,5 +1,4 @@
-import extensions from "components/system/Files/FileEntry/extensions";
-import { getDefaultFileViewer } from "components/system/Files/FileEntry/functions";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
@@ -45,12 +44,9 @@ const useUrlLoader = (): void => {
       loadInitialApp(lcAppNames[app.toLowerCase()]);
     } else if (url) {
       const extension = getExtension(url);
-      const { process: [defaultApp] = [] } = extensions[extension] || {};
 
       loadInitialApp(
-        extension
-          ? defaultApp || getDefaultFileViewer(extension)
-          : "FileExplorer"
+        extension ? getProcessByFileExtension(extension) : "FileExplorer"
       );
     }
   }, [exists, fs, open]);

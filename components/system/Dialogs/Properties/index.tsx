@@ -3,7 +3,10 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getIconByFileExtension,
+  getProcessByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -33,7 +36,8 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const [stats, setStats] = useState<Stats>();
   const [{ icon }] = useFileInfo(url || "", stats?.isDirectory() || false);
   const extension = useMemo(() => extname(url || ""), [url]);
-  const { process: [defaultProcess] = [], type } = extensions[extension] || {};
+  const { type } = extensions[extension] || {};
+  const defaultProcess = getProcessByFileExtension(extension);
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
   const inputRef = useRef<HTMLInputElement>(null);
 
