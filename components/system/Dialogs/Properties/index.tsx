@@ -14,7 +14,7 @@ import { useProcesses } from "contexts/process";
 import { basename, dirname, extname, join } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
-import { getFormattedSize } from "utils/functions";
+import { getExtension, getFormattedSize } from "utils/functions";
 
 const dateTimeString = (date?: Date): string =>
   date
@@ -35,7 +35,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const { isShortcut, url } = process || {};
   const [stats, setStats] = useState<Stats>();
   const [{ icon }] = useFileInfo(url || "", stats?.isDirectory() || false);
-  const extension = useMemo(() => extname(url || ""), [url]);
+  const extension = useMemo(() => getExtension(url || ""), [url]);
   const { type } = extensions[extension] || {};
   const defaultProcess = getProcessByFileExtension(extension);
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;

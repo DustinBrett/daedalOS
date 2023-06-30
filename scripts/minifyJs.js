@@ -18,7 +18,7 @@ const minifyJsFiles = (path) =>
 
       if (stats.isDirectory()) {
         minifyJsFiles(fullPath);
-      } else if (extname(entry) === ".js") {
+      } else if (extname(entry).toLowerCase() === ".js") {
         const js = readFileSync(fullPath);
         const { code: minifiedJs, error } = await minify(
           js.toString(),

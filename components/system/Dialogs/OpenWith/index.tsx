@@ -1,7 +1,7 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
-import extensions from "components/system/Files/FileEntry/extensions";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
@@ -63,8 +63,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   const { foregroundId, setForegroundId } = useSession();
   const { url } = process || {};
   const urlExtension = url ? getExtension(url) : "";
-  const { process: [primaryExtensionProcesses] = [] } =
-    urlExtension in extensions ? extensions[urlExtension] : {};
+  const primaryExtensionProcesses = getProcessByFileExtension(urlExtension);
   const { title: primaryTitle, icon: primaryIcon } =
     (primaryExtensionProcesses && directory[primaryExtensionProcesses]) || {};
   const [selectedPid, setSelectedPid] = useState(primaryExtensionProcesses);

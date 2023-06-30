@@ -14,7 +14,7 @@ import type {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, join } from "path";
 import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
@@ -27,6 +27,7 @@ import {
 import {
   bufferToBlob,
   generatePrettyTimestamp,
+  getExtension,
   isFirefox,
   isSafari,
 } from "utils/functions";
@@ -233,7 +234,7 @@ const useFolderContextMenu = (
         const isMusicVisualizationRunning =
           document.querySelector("main .webamp-desktop canvas") instanceof
           HTMLCanvasElement;
-        const isReadOnly = MOUNTABLE_EXTENSIONS.has(extname(url));
+        const isReadOnly = MOUNTABLE_EXTENSIONS.has(getExtension(url));
 
         return [
           {

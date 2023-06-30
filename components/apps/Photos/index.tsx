@@ -144,7 +144,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
             const nextUrl = directory[nextIndex];
 
-            if (IMAGE_FILE_EXTENSIONS.has(extname(nextUrl).toLowerCase())) {
+            if (IMAGE_FILE_EXTENSIONS.has(getExtension(nextUrl))) {
               setUrl(id, join(dirname(url), nextUrl));
             } else {
               nextPhoto(nextIndex, next);

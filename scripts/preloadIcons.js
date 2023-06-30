@@ -37,7 +37,7 @@ const getPublicDirectoryIcons = (directory) => {
   const baseDirectory = join("./public", directory);
 
   return readdirSync(baseDirectory).reduce((icons, file) => {
-    if (extname(file) === ".url") {
+    if (extname(file).toLowerCase() === ".url") {
       const {
         InternetShortcut: {
           BaseURL: pid = "",
