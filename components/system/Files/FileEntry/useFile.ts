@@ -26,9 +26,11 @@ const useFile = (url: string): UseFile => {
         singleton,
         icon: processIcon,
       } = processDirectory[pid] || {};
-      const activePid = Object.keys(processesRef.current).find((id) =>
-        id.startsWith(`${pid}${PROCESS_DELIMITER}`)
-      );
+      const activePid = singleton
+        ? Object.keys(processesRef.current).find((id) =>
+            id.startsWith(`${pid}${PROCESS_DELIMITER}`)
+          )
+        : "";
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
@@ -47,7 +49,7 @@ const useFile = (url: string): UseFile => {
         updateFolder(DESKTOP_PATH, basename(runUrl));
       }
 
-      if (singleton && activePid) {
+      if (activePid) {
         setUrl(activePid, runUrl);
         if (processesRef.current[activePid].minimized) minimize(activePid);
         setForegroundId(activePid);
