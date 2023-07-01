@@ -7,7 +7,7 @@ import directory from "contexts/process/directory";
 import { basename, dirname, extname, join } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
-import { SHORTCUT_ICON } from "utils/constants";
+import { DEFAULT_LOCALE, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
 
 type TabProps = {
@@ -20,7 +20,7 @@ type TabProps = {
 
 const dateTimeString = (date?: Date): string =>
   date
-    ?.toLocaleString(undefined, {
+    ?.toLocaleString(DEFAULT_LOCALE, {
       dateStyle: "long",
       timeStyle: "medium",
     })
