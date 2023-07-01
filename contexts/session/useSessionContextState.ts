@@ -97,6 +97,51 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const initializedSession = useRef(false);
+  const setAndUpdateIconPositions = useCallback(
+    async (positions: SetStateAction<IconPositions>): Promise<void> => {
+      if (typeof positions === "function") {
+        return setIconPositions(positions);
+      }
+
+      const [firstIcon] = Object.keys(positions) || [];
+      const isDesktop = firstIcon && DESKTOP_PATH === dirname(firstIcon);
+
+      if (isDesktop) {
+        const desktopGrid = document.querySelector("main > ol");
+
+        if (desktopGrid instanceof HTMLOListElement) {
+          try {
+            const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
+              sortOrders || {};
+            const newDesktopSortOrder = {
+              [DESKTOP_PATH]: [
+                [
+                  ...new Set([
+                    ...desktopFileOrder,
+                    ...(await readdir(DESKTOP_PATH)),
+                  ]),
+                ],
+              ],
+            };
+
+            return setIconPositions(
+              updateIconPositionsIfEmpty(
+                DESKTOP_PATH,
+                desktopGrid,
+                positions,
+                newDesktopSortOrder as SortOrders
+              )
+            );
+          } catch {
+            // Ignore failure to update icon positions with directory
+          }
+        }
+      }
+
+      return setIconPositions(positions);
+    },
+    [readdir, sortOrders]
+  );
 
   useEffect(() => {
     if (sessionLoaded && !haltSession) {
@@ -200,51 +245,6 @@ const useSessionContextState = (): SessionContextState => {
       initSession();
     }
   }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
-  const setAndUpdateIconPositions = useCallback(
-    async (positions: SetStateAction<IconPositions>): Promise<void> => {
-      if (typeof positions === "function") {
-        return setIconPositions(positions);
-      }
-
-      const [firstIcon] = Object.keys(positions) || [];
-      const isDesktop = firstIcon && DESKTOP_PATH === dirname(firstIcon);
-
-      if (isDesktop) {
-        const desktopGrid = document.querySelector("main > ol");
-
-        if (desktopGrid instanceof HTMLOListElement) {
-          try {
-            const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
-              sortOrders || {};
-            const newDesktopSortOrder = {
-              [DESKTOP_PATH]: [
-                [
-                  ...new Set([
-                    ...desktopFileOrder,
-                    ...(await readdir(DESKTOP_PATH)),
-                  ]),
-                ],
-              ],
-            };
-
-            return setIconPositions(
-              updateIconPositionsIfEmpty(
-                DESKTOP_PATH,
-                desktopGrid,
-                positions,
-                newDesktopSortOrder as SortOrders
-              )
-            );
-          } catch {
-            // Ignore failure to update icon positions with directory
-          }
-        }
-      }
-
-      return setIconPositions(positions);
-    },
-    [readdir, sortOrders]
-  );
 
   return {
     aiApi,
