@@ -35,6 +35,11 @@ const StyledProperties = styled.div`
         font-weight: 400;
         text-align: left;
         width: 74px;
+
+        picture:nth-child(2) {
+          position: absolute;
+          top: -2px;
+        }
       }
 
       td {

@@ -159,7 +159,10 @@ const useFileContextMenu = (
 
                   setForegroundId(activePid);
                 } else {
-                  open("Properties", { isShortcut, shortcutPath: path, url });
+                  open("Properties", {
+                    shortcutPath: isShortcut ? path : undefined,
+                    url: isShortcut ? path : url,
+                  });
                 }
               },
               label: "Properties",

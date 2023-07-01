@@ -1,171 +1,74 @@
-import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import GeneralTab from "components/system/Dialogs/Properties/GeneralTab";
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
+import useStats from "components/system/Dialogs/Properties/useStats";
 import StyledButton from "components/system/Dialogs/StyledButton";
-import extensions from "components/system/Files/FileEntry/extensions";
-import {
-  getIconByFileExtension,
-  getProcessByFileExtension,
-} from "components/system/Files/FileEntry/functions";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, dirname, extname, join } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Icon from "styles/common/Icon";
-import { getExtension, getFormattedSize } from "utils/functions";
-
-const dateTimeString = (date?: Date): string =>
-  date
-    ?.toLocaleString(undefined, {
-      dateStyle: "long",
-      timeStyle: "medium",
-    })
-    .replace(" at ", ", ") || "";
+import { basename, extname } from "path";
+import { useEffect, useRef } from "react";
 
 const Properties: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    icon: setIcon,
-    processes: { [id]: process } = {},
-    closeWithTransition,
-  } = useProcesses();
+  const { icon: setIcon, processes: { [id]: process } = {} } = useProcesses();
+  const { shortcutPath, url } = process || {};
+  const generalUrl = shortcutPath || url || "";
+  const stats = useStats(generalUrl);
+  const [{ getIcon, icon, pid }] = useFileInfo(
+    generalUrl,
+    stats?.isDirectory()
+  );
   const { prependFileToTitle } = useTitle(id);
-  const { rename, stat, updateFolder } = useFileSystem();
-  const { isShortcut, url } = process || {};
-  const [stats, setStats] = useState<Stats>();
-  const [{ icon }] = useFileInfo(url || "", stats?.isDirectory() || false);
-  const extension = useMemo(() => getExtension(url || ""), [url]);
-  const { type } = extensions[extension] || {};
-  const defaultProcess = getProcessByFileExtension(extension);
-  const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (url && !stats) {
-      stat(url).then(setStats);
-    }
-  }, [stat, stats, url]);
+  const getIconAbortController = useRef<AbortController>();
 
   useEffect(() => {
     setIcon(id, icon);
 
-    if (url) prependFileToTitle(basename(url), false, true);
-  }, [icon, id, prependFileToTitle, setIcon, url]);
+    if (typeof getIcon === "function") {
+      getIconAbortController.current = new AbortController();
+      getIcon(getIconAbortController.current.signal);
+    }
+
+    if (generalUrl) {
+      prependFileToTitle(
+        basename(generalUrl, shortcutPath ? extname(generalUrl) : undefined),
+        false,
+        true
+      );
+    }
+  }, [
+    generalUrl,
+    getIcon,
+    icon,
+    id,
+    prependFileToTitle,
+    setIcon,
+    shortcutPath,
+  ]);
+
+  useEffect(
+    () => () => {
+      try {
+        getIconAbortController?.current?.abort?.();
+      } catch {
+        // Failed to abort getIcon
+      }
+    },
+    []
+  );
 
   return (
     <StyledProperties>
       <nav className="tabs">
         <StyledButton>General</StyledButton>
       </nav>
-      <table>
-        <tbody>
-          <tr className="header">
-            <th scope="row">
-              <Icon imgSize={32} src={icon} />
-            </th>
-            <td>
-              <input
-                ref={inputRef}
-                autoComplete="off"
-                defaultValue={basename(
-                  url || "",
-                  isShortcut ? extname(url || "") : ""
-                )}
-                spellCheck="false"
-                type="text"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="spacer" colSpan={2} />
-          </tr>
-          <tr>
-            <th scope="row">
-              {stats?.isDirectory() ? "Type:" : "Type of file:"}
-            </th>
-            <td>
-              {isShortcut
-                ? `Shortcut (${extension})`
-                : stats?.isDirectory()
-                ? "File folder"
-                : extType
-                ? `${extType} (${extension})`
-                : "File"}
-            </td>
-          </tr>
-          {!stats?.isDirectory() && (
-            <tr>
-              <th scope="row">
-                {defaultProcess ? "Opens with:" : "Description:"}
-              </th>
-              <td>
-                {defaultProcess && (
-                  <Icon imgSize={16} src={getIconByFileExtension(extension)} />
-                )}
-                {defaultProcess || basename(url || "")}
-              </td>
-            </tr>
-          )}
-          {!stats?.isDirectory() && (
-            <tr>
-              <td className="spacer" colSpan={2} />
-            </tr>
-          )}
-          <tr>
-            <th scope="row">Location:</th>
-            <td>{dirname(url || "")}</td>
-          </tr>
-          <tr>
-            <th scope="row">Size</th>
-            <td>
-              {stats?.size
-                ? `${getFormattedSize(
-                    stats?.size
-                  )} (${stats?.size.toLocaleString()} bytes)`
-                : "0 bytes"}
-            </td>
-          </tr>
-          <tr>
-            <td className="spacer" colSpan={2} />
-          </tr>
-          <tr>
-            <th scope="row">Created:</th>
-            <td>{dateTimeString(stats?.birthtime)}</td>
-          </tr>
-          <tr>
-            <th scope="row">Modified:</th>
-            <td>{dateTimeString(stats?.mtime)}</td>
-          </tr>
-          <tr>
-            <th scope="row">Accessed:</th>
-            <td>{dateTimeString(stats?.atime)}</td>
-          </tr>
-        </tbody>
-      </table>
-      <nav className="buttons">
-        <StyledButton
-          onClick={() => {
-            if (
-              inputRef.current &&
-              url &&
-              inputRef.current.value !== basename(url)
-            ) {
-              const directory = dirname(url);
-
-              rename(url, join(directory, inputRef.current.value));
-              updateFolder(directory);
-            }
-
-            closeWithTransition(id);
-          }}
-        >
-          OK
-        </StyledButton>
-        <StyledButton onClick={() => closeWithTransition(id)}>
-          Cancel
-        </StyledButton>
-      </nav>
+      <GeneralTab
+        icon={icon}
+        id={id}
+        isShortcut={Boolean(process?.shortcutPath)}
+        pid={pid}
+        url={generalUrl}
+      />
     </StyledProperties>
   );
 };

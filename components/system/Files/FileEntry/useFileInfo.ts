@@ -19,7 +19,7 @@ export type FileInfo = {
 
 const useFileInfo = (
   path: string,
-  isDirectory: boolean,
+  isDirectory = false,
   useNewFolderIcon = false
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>(() => ({
