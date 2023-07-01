@@ -5,7 +5,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { basename, dirname, extname, join } from "path";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
@@ -32,8 +32,46 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const { type } = extensions[extension] || {};
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
   const inputRef = useRef<HTMLInputElement>(null);
-  const { rename, updateFolder } = useFileSystem();
+  const { readdir, rename, stat, updateFolder } = useFileSystem();
   const stats = useStats(url);
+  const [fileCount, setFileCount] = useState(0);
+  const [folderCount, setFolderCount] = useState(0);
+  const [folderSize, setFolderSize] = useState(0);
+  const entrySize = folderSize || stats?.size;
+  const checkedFileCounts = useRef(false);
+
+  useEffect(() => {
+    if (!checkedFileCounts.current && !isShortcut && stats?.isDirectory()) {
+      checkedFileCounts.current = true;
+
+      const countContents = async (contentUrl: string): Promise<void> => {
+        const entries = await readdir(contentUrl);
+        let currentFileCount = 0;
+        let currentFolderCount = 0;
+        let currentFolderSize = 0;
+
+        for (const entry of entries) {
+          // eslint-disable-next-line no-await-in-loop
+          const entryStats = await stat(join(contentUrl, entry));
+
+          if (entryStats.isDirectory()) {
+            currentFolderCount += 1;
+            // eslint-disable-next-line no-await-in-loop
+            await countContents(join(contentUrl, entry));
+          } else {
+            currentFileCount += 1;
+            currentFolderSize += entryStats.size;
+          }
+        }
+
+        setFolderSize((size) => size + currentFolderSize);
+        setFileCount((count) => count + currentFileCount);
+        setFolderCount((count) => count + currentFolderCount);
+      };
+
+      countContents(url);
+    }
+  }, [isShortcut, readdir, stat, stats, url]);
 
   return (
     <>
@@ -95,13 +133,19 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           <tr>
             <th scope="row">Size</th>
             <td>
-              {stats?.size
+              {entrySize
                 ? `${getFormattedSize(
-                    stats?.size
-                  )} (${stats?.size.toLocaleString()} bytes)`
+                    entrySize
+                  )} (${entrySize.toLocaleString()} bytes)`
                 : "0 bytes"}
             </td>
           </tr>
+          {stats?.isDirectory() && (
+            <tr>
+              <th scope="row">Contains</th>
+              <td>{`${fileCount} Files, ${folderCount} Folders`}</td>
+            </tr>
+          )}
           <tr>
             <td className="spacer" colSpan={2} />
           </tr>
