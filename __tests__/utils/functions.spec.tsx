@@ -14,6 +14,7 @@ describe("gets formatted size", () => {
     [1048081, "0.99 MB"],
     [9968640, "9.50 MB"],
     [16777216, "16.0 MB"],
+    [45266957, "43.1 MB"],
   ];
 
   test.each(formattedSizeCases)("given %p render %p", (size, result) =>

@@ -493,11 +493,21 @@ const bytesInMB = 1022976; // 1024 * 999
 const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
-const formatNumber = (number: number): string =>
-  new Intl.NumberFormat("en-US", {
-    maximumSignificantDigits: number < 1 ? 2 : 3,
+const formatNumber = (number: number): string => {
+  const formattedNumber = new Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: number < 1 ? 2 : 4,
     minimumSignificantDigits: number < 1 ? 2 : 3,
   }).format(Number(number.toFixed(4).slice(0, -2)));
+
+  const [integer, decimal] = formattedNumber.split(".");
+
+  if (integer.length === 3) return integer;
+  if (integer.length === 2 && decimal.length === 2) {
+    return `${integer}.${decimal[0]}`;
+  }
+
+  return formattedNumber;
+};
 
 export const getFormattedSize = (size = 0): string => {
   if (size === 1) return "1 byte";
