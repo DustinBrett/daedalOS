@@ -238,7 +238,12 @@ export const handleFileInputEvent = (
     try {
       const filePaths = JSON.parse(text) as string[];
 
-      if (!Array.isArray(filePaths)) return;
+      if (
+        !Array.isArray(filePaths) ||
+        filePaths.every((filePath) => dirname(filePath) === directory)
+      ) {
+        return;
+      }
 
       const isSingleFile = filePaths.length === 1;
       const objectReaders = filePaths.map((filePath) => {
