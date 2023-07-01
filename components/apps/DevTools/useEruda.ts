@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import type Eruda from "eruda";
 import type { InitOptions } from "eruda";
@@ -23,13 +24,13 @@ const config: InitOptions = {
 const FULL_TOOLBAR_WIDTH = 395;
 const RESOURCES_BUTTON_WIDTH = 74;
 
-const useEruda = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useEruda = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { processes: { [id]: { closing = false, libs = [] } = {} } = {} } =
     useProcesses();
 

@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { DX_BALL_GLOBALS, SAVE_PATH } from "components/apps/DX-Ball/constants";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -16,12 +17,7 @@ declare global {
   }
 }
 
-const useDXBall = (
-  id: string,
-  _url: string,
-  _containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
   const { readFile, writeFile, updateFolder } = useFileSystem();
   const {
     processes: { [id]: process },

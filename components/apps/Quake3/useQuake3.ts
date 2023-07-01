@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useEffect } from "react";
@@ -22,12 +23,11 @@ declare global {
   }
 }
 
-const useQuake3 = (
-  id: string,
-  _url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useQuake3 = ({
+  containerRef,
+  id,
+  setLoading,
+}: ContainerHookProps): void => {
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const {
     windowStates: { [id]: windowState },

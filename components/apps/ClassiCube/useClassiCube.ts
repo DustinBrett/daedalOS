@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";
@@ -19,12 +20,11 @@ declare global {
   }
 }
 
-const useClassiCube = (
-  id: string,
-  _url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useClassiCube = ({
+  containerRef,
+  id,
+  setLoading,
+}: ContainerHookProps): void => {
   const { processes: { [id]: process } = {} } = useProcesses();
   const {
     windowStates: { [id]: windowState },

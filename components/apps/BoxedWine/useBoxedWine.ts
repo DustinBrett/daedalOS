@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { getConfig } from "components/apps/BoxedWine/config";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -27,12 +28,12 @@ const getExeName = (files: Unzipped): string | undefined => {
   return fileName;
 };
 
-const useBoxedWine = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useBoxedWine = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { appendFileToTitle } = useTitle(id);
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const { readFile } = useFileSystem();

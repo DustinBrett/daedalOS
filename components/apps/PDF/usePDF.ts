@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import type { MetadataInfo } from "components/apps/PDF/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -28,12 +29,12 @@ const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
   return minScaleIndex > 0 ? scales[minScaleIndex - 1] : 1;
 };
 
-const usePDF = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const usePDF = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
   const { argument, processes: { [id]: process } = {} } = useProcesses();
   const { libs = [], scale } = process || {};

@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
@@ -21,12 +22,12 @@ import { getExtension, haltEvent, loadFiles } from "utils/functions";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
 
-const useTinyMCE = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useTinyMCE = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     open,
     processes: { [id]: { libs = [] } = {} } = {},

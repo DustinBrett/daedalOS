@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   config,
   CONTROL_BAR_HEIGHT,
@@ -26,13 +27,13 @@ import {
   viewWidth,
 } from "utils/functions";
 
-const useVideoPlayer = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useVideoPlayer = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
   const {
     linkElement,

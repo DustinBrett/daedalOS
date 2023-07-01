@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import type { RufflePlayer } from "components/apps/Ruffle/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -6,12 +7,12 @@ import { basename, extname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
 
-const useRuffle = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useRuffle = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { linkElement, processes: { [id]: { libs = [] } = {} } = {} } =
     useProcesses();
   const [player, setPlayer] = useState<RufflePlayer>();

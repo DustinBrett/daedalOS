@@ -1,8 +1,9 @@
 import { loader } from "@monaco-editor/react";
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
+  URL_DELIMITER,
   config,
   theme,
-  URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
 import {
   detectLanguage,
@@ -23,12 +24,12 @@ import {
 import { getExtension } from "utils/functions";
 import { lockGlobal, unlockGlobal } from "utils/globals";
 
-const useMonaco = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useMonaco = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { readFile, updateFolder, writeFile } = useFileSystem();
   const { argument: setArgument } = useProcesses();
   const { prependFileToTitle } = useTitle(id);

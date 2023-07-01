@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   CAPTURED_KEYS,
   dosOptions,
@@ -16,13 +17,13 @@ const captureKeys = (event: KeyboardEvent): void => {
   if (CAPTURED_KEYS.has(event.key)) event.preventDefault();
 };
 
-const useJSDOS = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useJSDOS = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
   const loadingInstanceRef = useRef(false);

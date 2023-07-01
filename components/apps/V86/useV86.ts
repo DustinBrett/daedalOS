@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
@@ -37,13 +38,13 @@ if (typeof window !== "undefined") {
   window.DEBUG = false;
 }
 
-const useV86 = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useV86 = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     processes: { [id]: process },
   } = useProcesses();

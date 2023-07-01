@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -33,13 +34,13 @@ export const displayVersion = (): string => {
   return `${version}${buildId ? `-${buildId}` : ""}`;
 };
 
-const useTerminal = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useTerminal = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },

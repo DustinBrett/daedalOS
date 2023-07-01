@@ -1,3 +1,4 @@
+import type { ContainerHookProps } from "components/apps/AppContainer";
 import type { Core } from "components/apps/Emulator/config";
 import { emulatorCores } from "components/apps/Emulator/config";
 import type { Emulator } from "components/apps/Emulator/types";
@@ -16,13 +17,13 @@ const getCore = (extension: string): [string, Core] => {
   ) || []) as [string, Core];
 };
 
-const useEmulator = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useEmulator = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
   const { linkElement, processes: { [id]: { closing = false } = {} } = {} } =
