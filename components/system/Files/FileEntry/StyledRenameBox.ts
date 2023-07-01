@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { MAX_FILE_NAME_LENGTH } from "utils/constants";
 
-const StyledRenameBox = styled.textarea.attrs({
+const StyledRenameBox = styled.textarea.attrs(() => ({
   autoComplete: "off",
   enterKeyHint: "done",
   maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,
   spellCheck: false,
-})`
+}))`
   border: 1px solid rgb(100, 100, 100);
   font-family: inherit;
   font-size: 11.5px;

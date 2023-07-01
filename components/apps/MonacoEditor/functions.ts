@@ -19,9 +19,7 @@ export const detectLanguage = (ext: string): string => {
   return id;
 };
 
-export const relocateShadowRoot: React.FocusEventHandler = ({
-  relatedTarget,
-}): void => {
+export const relocateShadowRoot = ({ relatedTarget }: FocusEvent): void => {
   if (relatedTarget instanceof HTMLElement) {
     let targetElement: HTMLElement | undefined;
 

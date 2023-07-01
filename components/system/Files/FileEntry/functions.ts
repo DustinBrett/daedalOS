@@ -96,7 +96,7 @@ export const getIconFromIni = (
     );
   });
 
-export const getDefaultFileViewer = (extension: string): string => {
+const getDefaultFileViewer = (extension: string): string => {
   if (AUDIO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
   if (VIDEO_FILE_EXTENSIONS.has(extension)) return "VideoPlayer";
   if (IMAGE_FILE_EXTENSIONS.has(extension)) return "Photos";

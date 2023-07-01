@@ -7,6 +7,7 @@ import {
 import {
   detectLanguage,
   getSaveFileInfo,
+  relocateShadowRoot,
 } from "components/apps/MonacoEditor/functions";
 import type { Model } from "components/apps/MonacoEditor/types";
 import useTitle from "components/system/Window/useTitle";
@@ -112,6 +113,11 @@ const useMonaco = (
         ?.addEventListener("focus", () => currentEditor.focus(), {
           passive: true,
         });
+
+      containerRef.current?.addEventListener("blur", relocateShadowRoot, {
+        capture: true,
+        passive: true,
+      });
 
       setEditor(currentEditor);
       setArgument(id, "editor", currentEditor);

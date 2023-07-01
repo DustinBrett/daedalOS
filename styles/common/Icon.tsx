@@ -79,8 +79,8 @@ const Icon = forwardRef<
     <StyledIcon
       ref={ref}
       $loaded={loaded}
-      onError={({ target }: { target: HTMLImageElement }) => {
-        const { currentSrc = "" } = target || {};
+      onError={({ target }: React.SyntheticEvent<HTMLImageElement>) => {
+        const { currentSrc = "" } = (target as HTMLImageElement) || {};
 
         if (currentSrc && !failedUrls.includes(currentSrc)) {
           const { pathname } = new URL(currentSrc);

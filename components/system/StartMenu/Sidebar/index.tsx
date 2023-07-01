@@ -122,7 +122,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
     <StyledSidebar
       ref={sidebarRef}
       className={collapsed ? "collapsed" : undefined}
-      onClick={({ target }) => {
+      onClick={({ target }: React.MouseEvent<HTMLElement>) => {
         clearTimer();
 
         if (target === sidebarRef.current) {

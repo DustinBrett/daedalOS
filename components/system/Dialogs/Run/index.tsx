@@ -205,7 +205,7 @@ const Run: FC<ComponentProcessProps> = () => {
   return (
     <StyledRun
       {...useFileDrop({ id: "Run" })}
-      onContextMenu={(event) => {
+      onContextMenu={(event: React.MouseEvent<HTMLInputElement>) => {
         if (!(event.target instanceof HTMLInputElement)) {
           haltEvent(event);
         }
