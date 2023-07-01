@@ -46,10 +46,14 @@ import {
   MILLISECONDS_IN_SECOND,
   PACKAGE_DATA,
   SHORTCUT_EXTENSION,
-  isFileSystemMappingSupported,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
-import { getExtension, getTZOffsetISOString, loadFiles } from "utils/functions";
+import {
+  getExtension,
+  getTZOffsetISOString,
+  isFileSystemMappingSupported,
+  loadFiles,
+} from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";

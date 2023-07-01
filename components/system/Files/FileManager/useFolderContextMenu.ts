@@ -22,12 +22,12 @@ import {
   INDEX_FILE,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
-  isFileSystemMappingSupported,
 } from "utils/constants";
 import {
   bufferToBlob,
   generatePrettyTimestamp,
   getExtension,
+  isFileSystemMappingSupported,
   isFirefox,
   isSafari,
 } from "utils/functions";

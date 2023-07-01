@@ -715,3 +715,6 @@ export const generatePrettyTimestamp = (): string =>
     .format(new Date())
     .replace(/[/:]/g, "-")
     .replace(",", "");
+
+export const isFileSystemMappingSupported = (): boolean =>
+  typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;
