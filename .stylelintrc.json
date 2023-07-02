@@ -5,10 +5,12 @@
   "rules": {
     "alpha-value-notation": "percentage",
     "color-function-notation": "legacy",
-    "declaration-empty-line-before": null,
     "hue-degree-notation": "number",
-    "order/properties-alphabetical-order": true,
-    "rule-empty-line-before": null,
-    "value-keyword-case": null
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreKeywords": ["currentColor", "optimizeLegibility"]
+      }
+    ]
   }
 }

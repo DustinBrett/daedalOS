@@ -25,9 +25,11 @@ const StyledLoadingEllipsis = styled.span<StyledLoadingEllipsisProps>`
     0% {
       content: ".";
     }
+
     50% {
       content: "..";
     }
+
     100% {
       content: "...";
     }

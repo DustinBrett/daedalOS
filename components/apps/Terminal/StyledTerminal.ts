@@ -13,7 +13,6 @@ const StyledTerminal = styled.div`
 
   .xterm-viewport {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
-
     width: 100% !important;
   }
 `;

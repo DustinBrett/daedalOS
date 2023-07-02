@@ -89,7 +89,7 @@ const StyledVideoPlayer = styled.div`
     .vjs-current-time-display,
     .vjs-duration-display {
       color: #000;
-      font-family: Sans-Serif;
+      font-family: sans-serif;
       font-size: 11px;
     }
 
