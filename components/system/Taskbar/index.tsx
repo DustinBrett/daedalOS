@@ -4,7 +4,7 @@ import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
@@ -29,4 +29,4 @@ const Taskbar: FC = () => {
   );
 };
 
-export default Taskbar;
+export default memo(Taskbar);

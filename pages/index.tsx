@@ -5,6 +5,7 @@ import useGlobalErrorHandler from "hooks/useGlobalErrorHandler";
 import useGlobalKeyboardShortcuts from "hooks/useGlobalKeyboardShortcuts";
 import useIFrameFocuser from "hooks/useIFrameFocuser";
 import useUrlLoader from "hooks/useUrlLoader";
+import { memo } from "react";
 
 const Index = (): React.ReactElement => {
   useIFrameFocuser();
@@ -20,4 +21,4 @@ const Index = (): React.ReactElement => {
   );
 };
 
-export default Index;
+export default memo(Index);

@@ -1,6 +1,6 @@
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import Icon from "styles/common/Icon";
 import {
   FOLDER_BACK_ICON,
@@ -78,6 +78,8 @@ const SubIcon: FC<SubIconProps> = ({
   );
 };
 
+const MemoizedSubIcon = memo(SubIcon);
+
 const SubIcons: FC<SubIconsProps> = ({
   icon,
   name,
@@ -100,7 +102,7 @@ const SubIcons: FC<SubIconsProps> = ({
   return (
     <>
       {filteredSubIcons.map((entryIcon, subIconIndex) => (
-        <SubIcon
+        <MemoizedSubIcon
           key={entryIcon}
           baseIcon={icon}
           icon={entryIcon}
@@ -114,4 +116,4 @@ const SubIcons: FC<SubIconsProps> = ({
   );
 };
 
-export default SubIcons;
+export default memo(SubIcons);

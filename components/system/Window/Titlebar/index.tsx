@@ -11,7 +11,7 @@ import {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
-import { useCallback, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";
@@ -130,4 +130,4 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   );
 };
 
-export default Titlebar;
+export default memo(Titlebar);

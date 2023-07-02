@@ -5,7 +5,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { basename, dirname, extname, join } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
@@ -189,4 +189,4 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   );
 };
 
-export default GeneralTab;
+export default memo(GeneralTab);

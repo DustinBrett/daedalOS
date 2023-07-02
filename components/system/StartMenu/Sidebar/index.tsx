@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
 import { haltEvent, viewHeight } from "utils/functions";
@@ -145,4 +145,4 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

@@ -9,7 +9,7 @@ import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { getExtension, preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
@@ -92,4 +92,4 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);

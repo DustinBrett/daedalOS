@@ -5,7 +5,7 @@ import useWindowActions from "components/system/Window/Titlebar/useWindowActions
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useLayoutEffect, useRef, useState } from "react";
+import { memo, useLayoutEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { label, viewWidth } from "utils/functions";
@@ -69,4 +69,4 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   null;
 };
 
-export default PeekWindow;
+export default memo(PeekWindow);

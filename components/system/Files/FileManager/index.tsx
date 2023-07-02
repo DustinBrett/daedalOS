@@ -13,7 +13,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
 import dynamic from "next/dynamic";
 import { basename, join } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -242,4 +242,4 @@ const FileManager: FC<FileManagerProps> = ({
   );
 };
 
-export default FileManager;
+export default memo(FileManager);

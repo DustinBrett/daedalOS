@@ -2,7 +2,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Head from "next/head";
 import desktopIcons from "public/.index/desktopIcons.json";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
@@ -39,6 +39,8 @@ const PreloadDesktopIcons: FC = () => (
     })}
   </>
 );
+
+const MemoizedPreloadDesktopIcons = memo(PreloadDesktopIcons);
 
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
@@ -117,9 +119,9 @@ const Metadata: FC = () => {
         name="viewport"
       />
       <meta content={description} name="description" />
-      <PreloadDesktopIcons />
+      <MemoizedPreloadDesktopIcons />
     </Head>
   );
 };
 
-export default Metadata;
+export default memo(Metadata);

@@ -4,7 +4,7 @@ import useClockContextMenu from "components/system/Taskbar/Clock/useClockContext
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
   ONE_TIME_PASSIVE_EVENT,
@@ -174,4 +174,4 @@ const Clock: FC = () => {
   );
 };
 
-export default Clock;
+export default memo(Clock);

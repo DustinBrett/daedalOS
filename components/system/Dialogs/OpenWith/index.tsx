@@ -5,7 +5,7 @@ import { getProcessByFileExtension } from "components/system/Files/FileEntry/fun
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
@@ -152,4 +152,4 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default OpenWith;
+export default memo(OpenWith);

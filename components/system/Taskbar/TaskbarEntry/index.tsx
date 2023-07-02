@@ -6,7 +6,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { label } from "utils/functions";
@@ -68,4 +68,4 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   );
 };
 
-export default TaskbarEntry;
+export default memo(TaskbarEntry);
