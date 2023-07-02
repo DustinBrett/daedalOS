@@ -125,7 +125,12 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
       onClick={({ target }: React.MouseEvent<HTMLElement>) => {
         clearTimer();
 
-        if (target === sidebarRef.current) {
+        if (
+          target instanceof HTMLElement &&
+          (target === sidebarRef.current ||
+            (sidebarRef.current?.contains(target) &&
+              target.textContent === "START"))
+        ) {
           setCollapsed((collapsedState) => !collapsedState);
         }
       }}
