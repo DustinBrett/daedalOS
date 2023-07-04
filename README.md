@@ -1,4 +1,4 @@
-## 🌌 **daedalOS** 🌌
+## 🌌 **A fork of daedalOS, created by [Dustin Brett](https://github.com/DustinBrett)** 🌌
 
 ## _Desktop environment in the browser_
 
