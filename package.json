@@ -12,7 +12,7 @@
     "defaults and supports es6 and not ie 11 and >1%"
   ],
   "scripts": {
-    "build": "yarn build:prebuild && next build",
+    "build": "cross-env NODE_OPTIONS='--openssl-legacy-provider' yarn build:prebuild && next build",
     "build:bundle-analyzer": "yarn build",
     "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public && node scripts/preloadIcons.js",
     "build:html": "node scripts/minifyHtml.js",
@@ -92,6 +92,7 @@
     "@types/wicg-file-system-access": "^2020.9.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
+    "cross-env": "^7.0.3",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
     "eruda": "^3.0.0",
