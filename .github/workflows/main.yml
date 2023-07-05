@@ -11,8 +11,8 @@ jobs:
         with:
           node-version: 18
       - name: Install Modules
-        run: yarn install
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn install
       - name: Run Build
-        run: yarn run build
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn run build
       - name: Run Tests
-        run: yarn test
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn test
