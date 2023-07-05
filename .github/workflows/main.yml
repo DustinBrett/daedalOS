@@ -2,9 +2,6 @@ name: Tests
 
 on: push
 
-env:
-  NODE_OPTIONS: --openssl-legacy-provider
-
 jobs:
   tests:
     runs-on: ubuntu-latest
