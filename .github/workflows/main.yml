@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         with:
           node-version: 18
       - name: Install Modules
