@@ -24,8 +24,8 @@ export const bookmarks: Bookmark[] = [
   },
   {
     icon: FAVICON_BASE_PATH,
-    name: "daedalOS",
-    url: "https://dustinbrett.com/",
+    name: "icefishOS",
+    url: "https://icefi.sh/",
   },
   {
     icon: "/System/Icons/Favicons/win96.webp",

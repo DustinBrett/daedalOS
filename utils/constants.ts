@@ -369,13 +369,13 @@ export const DEFAULT_SCROLLBAR_WIDTH = 17;
 export const TASKBAR_HEIGHT = 30;
 
 export const PACKAGE_DATA = {
-  alias: "daedalOS",
+  alias: "icefishOS",
   author: {
-    email: "dustinbrett@gmail.com",
-    name: "Dustin Brett",
-    url: "https://dustinbrett.com",
+    email: "aptrinh@protonmail.com",
+    name: "Phan Trinh",
+    url: "https://icefi.sh",
   },
-  description: "Desktop environment in the browser",
+  description: "A fishy desktop environment in the browser",
   license: "MIT",
   version: "2.0.0",
 };

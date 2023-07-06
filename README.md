@@ -1,4 +1,4 @@
-## 🌌 **A fork of daedalOS, created by [Dustin Brett](https://github.com/DustinBrett)** 🌌
+## 🐟 **This is icefishOS - a fork of [daedalOS](https://github.com/DustinBrett/daedalOS)** 🐟
 
 ## _Desktop environment in the browser_
 
@@ -228,6 +228,6 @@ yarn start
 #### Docker
 
 ```
-docker build -t daedalos .
-docker run -dp 3000:3000 --rm --name daedalos daedalos
+docker build -t icefishOS .
+docker run -dp 3000:3000 --rm --name icefishOS icefishOS
 ```

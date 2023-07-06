@@ -4,7 +4,7 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 
 RUN apk add --no-cache git
 
-WORKDIR daedalOS
+WORKDIR icefishOS
 COPY . .
 
 RUN yarn
