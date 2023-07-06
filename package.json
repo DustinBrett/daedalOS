@@ -1,11 +1,11 @@
 {
-  "name": "daedalos",
+  "name": "icefishos",
   "version": "2.0.0",
-  "description": "Desktop environment in the browser",
+  "description": "A fishy environment in the browser, with some tweaks to its original by Dustin Brett",
   "author": {
-    "name": "Dustin Brett",
-    "email": "dustinbrett@gmail.com",
-    "url": "https://dustinbrett.com"
+    "name": "Phan Trinh",
+    "email": "aptrinh@protonmail.com",
+    "url": "https://icefi.sh"
   },
   "license": "MIT",
   "browserslist": [
@@ -21,8 +21,8 @@
     "build:robots": "node scripts/robots.js",
     "build:search": "node scripts/searchIndex.js",
     "deploy": "yarn build:robots && node_modules/next/dist/bin/next export && yarn build:html && yarn build:js",
-    "docker:build": "docker build -t daedalos .",
-    "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
+    "docker:build": "docker build -t icefishOS .",
+    "docker:run": "docker run -dp 3000:3000 --rm --name icefishOS icefishOS",
     "dev": "node_modules/next/dist/bin/next dev",
     "eslint": "eslint --report-unused-disable-directives .",
     "export": "node_modules/next/dist/bin/next export",
