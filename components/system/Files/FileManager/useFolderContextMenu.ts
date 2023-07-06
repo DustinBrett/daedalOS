@@ -13,6 +13,7 @@ import type {
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { useProcessesRef } from "hooks/useProcessesRef";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { basename, dirname, join } from "path";
 import { useCallback, useMemo } from "react";
@@ -22,6 +23,7 @@ import {
   INDEX_FILE,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
+  PROCESS_DELIMITER,
 } from "utils/constants";
 import {
   bufferToBlob,
@@ -79,6 +81,7 @@ const useFolderContextMenu = (
     updateFolder,
   } = useFileSystem();
   const {
+    setForegroundId,
     setWallpaper: setSessionWallpaper,
     setIconPositions,
     wallpaperImage,
@@ -103,7 +106,7 @@ const useFolderContextMenu = (
     },
     [setSessionWallpaper]
   );
-  const { open } = useProcesses();
+  const { minimize, open } = useProcesses();
   const updateSorting = useCallback(
     (value: SortBy | "", defaultIsAscending: boolean): void => {
       setIconPositions((currentIconPositions) =>
@@ -210,6 +213,7 @@ const useFolderContextMenu = (
     });
   }, [readFile, updateFolder, writeFile]);
   const hasWebGPU = useWebGPUCheck();
+  const processesRef = useProcessesRef();
 
   return useMemo(
     () =>
@@ -330,6 +334,7 @@ const useFolderContextMenu = (
                   action: () => open("Terminal", { url }),
                   label: "Open Terminal here",
                 },
+                MENU_SEPERATOR,
                 {
                   action: () => pasteToFolder(),
                   disabled: Object.keys(pasteList).length === 0,
@@ -359,6 +364,31 @@ const useFolderContextMenu = (
                     },
                   ],
                 },
+                ...(isDesktop
+                  ? []
+                  : [
+                      MENU_SEPERATOR,
+                      {
+                        action: () => {
+                          const activePid = Object.keys(
+                            processesRef.current
+                          ).find(
+                            (p) => p === `Properties${PROCESS_DELIMITER}${url}`
+                          );
+
+                          if (activePid) {
+                            if (processesRef.current[activePid].minimized) {
+                              minimize(activePid);
+                            }
+
+                            setForegroundId(activePid);
+                          } else {
+                            open("Properties", { url });
+                          }
+                        },
+                        label: "Properties",
+                      },
+                    ]),
               ]),
           ...(isDesktop
             ? [
@@ -396,10 +426,13 @@ const useFolderContextMenu = (
       isAscending,
       isDesktop,
       mapFs,
+      minimize,
       newPath,
       open,
       pasteList,
       pasteToFolder,
+      processesRef,
+      setForegroundId,
       setWallpaper,
       sortBy,
       updateFolder,
