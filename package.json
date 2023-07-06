@@ -75,8 +75,8 @@
     "wasi-js": "^1.7.3"
   },
   "engines" : { 
-    "npm" : ">=9.5.1",
-    "node" : ">=18.16.1"
+    "npm" : ">=8.19.x",
+    "node" : ">=18.x"
   },
   "devDependencies": {
     "7z-wasm": "^1.0.2",
