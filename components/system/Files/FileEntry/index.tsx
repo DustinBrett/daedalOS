@@ -1,3 +1,4 @@
+import { Down } from "components/apps/FileExplorer/NavigationIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -60,10 +61,6 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-
-const Down = dynamic(() =>
-  import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
-);
 
 const RenameBox = dynamic(
   () => import("components/system/Files/FileEntry/RenameBox")
