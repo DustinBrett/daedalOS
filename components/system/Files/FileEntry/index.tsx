@@ -157,7 +157,6 @@ const FileEntry: FC<FileEntryProps> = ({
   const { formats, sizes } = useTheme();
   const listView = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
   const isDynamicIcon = useMemo(
@@ -529,9 +528,11 @@ const FileEntry: FC<FileEntryProps> = ({
         )}
       >
         <StyledFigure
-          ref={figureRef}
+          ref={useCallback(
+            (figureRef: HTMLElement) => listView && spotlightEffect(figureRef),
+            [listView]
+          )}
           $renaming={renaming}
-          {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
             ref={iconRef}

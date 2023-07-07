@@ -1,5 +1,5 @@
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
-import { useRef } from "react";
+import { useCallback } from "react";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 type SidebarButton = {
@@ -20,24 +20,22 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
   icon,
   name,
   tooltip,
-}) => {
-  const buttonRef = useRef<HTMLLIElement | null>(null);
-
-  return (
-    <StyledSidebarButton
-      ref={buttonRef}
-      $active={active}
-      aria-label={name}
-      onClick={action}
-      title={tooltip}
-      {...spotlightEffect(buttonRef.current, true)}
-    >
-      <figure>
-        {icon}
-        <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
-      </figure>
-    </StyledSidebarButton>
-  );
-};
+}) => (
+  <StyledSidebarButton
+    ref={useCallback(
+      (buttonRef: HTMLLIElement) => spotlightEffect(buttonRef, true),
+      []
+    )}
+    $active={active}
+    aria-label={name}
+    onClick={action}
+    title={tooltip}
+  >
+    <figure>
+      {icon}
+      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
+    </figure>
+  </StyledSidebarButton>
+);
 
 export default SidebarButtonComponent;
