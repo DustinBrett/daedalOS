@@ -6,7 +6,7 @@ import {
   WALLPAPER_WORKERS,
 } from "components/system/Desktop/Wallpapers/constants";
 import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
-import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vantaWaves/config";
+import { config as vantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
@@ -73,8 +73,8 @@ const useWallpaper = (
       let config: WallpaperConfig | undefined;
 
       if (wallpaperName === "VANTA") {
-        config = { ...vantaConfig };
-        vantaConfig.material.options.wireframe = vantaWireframe;
+        config = { ...vantaNetConfig };
+        vantaNetConfig.material.options.wireframe = vantaWireframe;
       } else if (wallpaperImage === "MATRIX 3D") {
         config = { volumetric: true };
       } else if (wallpaperName === "STABLE_DIFFUSION") {

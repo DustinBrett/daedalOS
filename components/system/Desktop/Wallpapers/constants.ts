@@ -19,7 +19,7 @@ export const WALLPAPER_PATHS: Record<
   MATRIX: () => import("components/system/Desktop/Wallpapers/Matrix"),
   STABLE_DIFFUSION: () =>
     import("components/system/Desktop/Wallpapers/StableDiffusion"),
-  VANTA: () => import("components/system/Desktop/Wallpapers/vantaWaves"),
+  VANTA: () => import("components/system/Desktop/Wallpapers/vantaNet"),
 };
 
 export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
@@ -44,14 +44,22 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
       new URL("components/apps/StableDiffusion/sd.worker", import.meta.url),
       { name: "Wallpaper (Stable Diffusion)" }
     ),
-  VANTA: (info?: string): Worker =>
-    new Worker(
-      new URL(
-        "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
-        import.meta.url
-      ),
-      { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` }
-    ),
+  // VANTA: (info?: string): Worker =>
+  //   new Worker(
+  //     new URL(
+  //       "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
+  //       import.meta.url
+  //     ),
+  //     { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` }
+  //   ),
+  // VANTA: (info?: string): Worker =>
+  //   new Worker(
+  //     new URL(
+  //       "components/system/Desktop/Wallpapers/vantaNet/wallpaper.worker",
+  //       import.meta.url
+  //     ),
+  //     { name: `Wallpaper (Vanta Net)${info ? ` [${info}]` : ""}` }
+  //   ),
 };
 
 type WallpaperMenuItem = {
@@ -91,10 +99,13 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
     name: "Stable Diffusion (Beta)",
     requiresWebGPU: true,
   },
+  // {
+  //   id: "VANTA",
+  //   name: "Vanta Waves",
+  // },
   {
     id: "VANTA",
-    name: "Vanta Waves",
-    startsWith: true,
+    name: "Vanta Net",
   },
 ];
 

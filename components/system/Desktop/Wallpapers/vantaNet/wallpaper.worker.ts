@@ -3,19 +3,19 @@ import {
   config,
   disableControls,
   libs,
-} from "components/system/Desktop/Wallpapers/vantaWaves/config";
+} from "components/system/Desktop/Wallpapers/vantaNet/config";
 import type {
-  VantaObject,
-  VantaWaves,
-  VantaWavesConfig,
-} from "components/system/Desktop/Wallpapers/vantaWaves/types";
+  VantaNet,
+  VantaNetConfig,
+  VantaNetObject,
+} from "components/system/Desktop/Wallpapers/vantaNet/types";
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
-  var VANTA: VantaObject;
+  var VANTA: VantaNetObject;
 }
 
-let waveEffect: VantaWaves;
+let netEffect: VantaNet;
 
 globalThis.addEventListener(
   "message",
@@ -27,23 +27,23 @@ globalThis.addEventListener(
     } else if (data instanceof DOMRect) {
       const { width, height } = data;
 
-      waveEffect?.renderer.setSize(width, height);
-      waveEffect?.resize();
+      netEffect?.renderer.setSize(width, height);
+      netEffect?.resize();
     } else {
       const {
         canvas,
         config: offscreenConfig,
         devicePixelRatio,
       } = data as OffscreenRenderProps;
-      const { VANTA: { current: currentEffect = waveEffect, WAVES } = {} } =
+      const { VANTA: { current: currentEffect = netEffect, NET } = {} } =
         globalThis;
 
-      if (!canvas || !WAVES) return;
+      if (!canvas || !NET) return;
       if (currentEffect) currentEffect.destroy();
 
       try {
-        waveEffect = WAVES({
-          ...((offscreenConfig || config) as VantaWavesConfig),
+        netEffect = NET({
+          ...((offscreenConfig || config) as VantaNetConfig),
           ...disableControls,
           canvas,
           devicePixelRatio,

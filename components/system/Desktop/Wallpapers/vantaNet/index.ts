@@ -2,11 +2,11 @@ import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types
 import {
   disableControls,
   libs,
-} from "components/system/Desktop/Wallpapers/vantaWaves/config";
-import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+} from "components/system/Desktop/Wallpapers/vantaNet/config";
+import type { VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
 import { loadFiles } from "utils/functions";
 
-const vantaWaves = (
+const vantaNet = (
   el: HTMLElement | null,
   config: WallpaperConfig = {} as WallpaperConfig
 ): void => {
@@ -21,16 +21,16 @@ const vantaWaves = (
   if (!el || typeof WebGLRenderingContext === "undefined") return;
 
   loadFiles(libs, true).then(() => {
-    const { VANTA: { WAVES } = {} } = window;
+    const { VANTA: { NET } = {} } = window;
 
-    if (WAVES) {
-      WAVES({
+    if (NET) {
+      NET({
         el,
         ...disableControls,
-        ...(config as VantaWavesConfig),
+        ...(config as VantaNetConfig),
       });
     }
   });
 };
 
-export default vantaWaves;
+export default vantaNet;
