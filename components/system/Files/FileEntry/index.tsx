@@ -1,3 +1,4 @@
+import { Down } from "components/apps/FileExplorer/NavigationIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -60,10 +61,6 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-
-const Down = dynamic(() =>
-  import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
-);
 
 const RenameBox = dynamic(
   () => import("components/system/Files/FileEntry/RenameBox")
@@ -160,7 +157,6 @@ const FileEntry: FC<FileEntryProps> = ({
   const { formats, sizes } = useTheme();
   const listView = view === "list";
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const figureRef = useRef<HTMLElement | null>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
   const isDynamicIcon = useMemo(
@@ -532,9 +528,11 @@ const FileEntry: FC<FileEntryProps> = ({
         )}
       >
         <StyledFigure
-          ref={figureRef}
+          ref={useCallback(
+            (figureRef: HTMLElement) => listView && spotlightEffect(figureRef),
+            [listView]
+          )}
           $renaming={renaming}
-          {...(listView && spotlightEffect(figureRef.current))}
         >
           <Icon
             ref={iconRef}

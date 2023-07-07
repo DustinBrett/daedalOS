@@ -143,7 +143,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           {stats?.isDirectory() && (
             <tr>
               <th scope="row">Contains</th>
-              <td>{`${fileCount} Files, ${folderCount} Folders`}</td>
+              <td>{`${fileCount.toLocaleString()} Files, ${folderCount.toLocaleString()} Folders`}</td>
             </tr>
           )}
           <tr>
