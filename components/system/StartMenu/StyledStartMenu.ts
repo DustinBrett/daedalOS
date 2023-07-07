@@ -32,7 +32,7 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 
   &::-webkit-scrollbar-thumb:vertical {
     background-color: ${({ $showScrolling }) =>
-      $showScrolling ? undefined : "rgb(167, 167, 167)"};
+      $showScrolling ? undefined : "rgb(251, 241, 199)"};
   }
 `;
 
