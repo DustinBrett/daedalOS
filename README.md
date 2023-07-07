@@ -4,6 +4,14 @@
 
 [![Feature Overview](https://img.youtube.com/vi/CkvKPspIPLs/mqdefault.jpg)](http://www.youtube.com/watch?v=CkvKPspIPLs)
 
+# TODO 🏁
+
+- [x] Change wallpaper to Vanta.js Net
+- [ ] Use gruvbox icons
+- [ ] Use gruvbox color schemes
+- [x] Put relevant files up for portfolio purposes
+- [ ] Write a few blog posts
+
 # System 🧠
 
 ### [File System](https://github.com/jvilk/BrowserFS)
@@ -64,7 +72,7 @@
 ### Background
 
 - Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
-  - [Waves](https://www.vantajs.com/?effect=waves)
+  - [Net](https://www.vantajs.com/?effect=net)
   - [Hexells](https://znah.net/hexells/)
   - [Matrix](https://rezmason.github.io/matrix/)
   - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
