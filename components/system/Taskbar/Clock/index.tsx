@@ -7,6 +7,7 @@ import useWorker from "hooks/useWorker";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
+  FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
 } from "utils/constants";
@@ -39,16 +40,12 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
     triggerEasterEggCountdown === EASTER_EGG_CLICK_COUNT &&
     target instanceof HTMLElement
   ) {
-    target.setAttribute("tabIndex", "-1");
-
-    ["blur", "mouseleave"].forEach((type) => {
-      target.removeEventListener(type, resetEasterEggCountdown);
-      target.addEventListener(
-        type,
-        resetEasterEggCountdown,
-        ONE_TIME_PASSIVE_EVENT
-      );
-    });
+    target.removeEventListener("mouseleave", resetEasterEggCountdown);
+    target.addEventListener(
+      "mouseleave",
+      resetEasterEggCountdown,
+      ONE_TIME_PASSIVE_EVENT
+    );
   }
 
   triggerEasterEggCountdown -= 1;
@@ -57,11 +54,16 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
     const { default: spawnSheep } = await import("utils/spawnSheep");
 
     spawnSheep();
+
     triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
   }
 };
 
-const Clock: FC = () => {
+type ClockProps = {
+  toggleCalendar: () => void;
+};
+
+const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
   const [now, setNow] = useState<LocaleTimeDate>(
     Object.create(null) as LocaleTimeDate
   );
@@ -97,7 +99,7 @@ const Clock: FC = () => {
     },
     [clockSource]
   );
-  const clockContextMenu = useClockContextMenu();
+  const clockContextMenu = useClockContextMenu(toggleCalendar);
   const currentWorker = useWorker<ClockWorkerResponse>(
     clockWorkerInit,
     updateTime
@@ -129,6 +131,13 @@ const Clock: FC = () => {
     // NOTE: Need `now` in the dependency array to ensure the clock is updated
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentWorker, now]
+  );
+  const onClockClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      easterEggOnClick(event);
+      toggleCalendar();
+    },
+    [toggleCalendar]
   );
 
   useEffect(() => {
@@ -163,11 +172,12 @@ const Clock: FC = () => {
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
       aria-label="Clock"
-      onClick={easterEggOnClick}
+      onClick={onClockClick}
       role="timer"
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
+      {...FOCUSABLE_ELEMENT}
     >
       {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>
