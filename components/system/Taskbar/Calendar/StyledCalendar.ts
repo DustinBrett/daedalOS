@@ -7,21 +7,21 @@ const StyledCalendar = styled.section`
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
   border-bottom: 0;
   border-right: 0;
-  position: absolute;
   bottom: ${TASKBAR_HEIGHT}px;
+  position: absolute;
   right: 0;
 
   table {
     padding: 4px 10px 19px;
 
     td {
+      color: #fff;
       display: inline-table;
-      text-align: center;
-      width: 46px;
       height: 40px;
       line-height: 32px;
       margin: 0 1px;
-      color: #fff;
+      text-align: center;
+      width: 46px;
 
       &.prev,
       &.next {
@@ -101,8 +101,8 @@ const StyledCalendar = styled.section`
       }
 
       &::before {
-        inset: 2px;
         border: 2px solid #000;
+        inset: 2px;
       }
 
       &:hover {
