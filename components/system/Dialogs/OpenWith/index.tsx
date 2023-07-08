@@ -9,7 +9,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { getExtension } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 
 const EXCLUDED_PROCESSES = new Set([
   "Browser",
@@ -109,7 +109,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   }, [closeOnBlur, closeWithTransition, foregroundId, id, setForegroundId]);
 
   return (
-    <StyledOpenWith>
+    <StyledOpenWith onContextMenu={haltEvent}>
       <h2>How do you want to open this file?</h2>
       <div>
         {primaryTitle && primaryIcon && (

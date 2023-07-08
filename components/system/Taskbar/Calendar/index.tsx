@@ -5,6 +5,7 @@ import { createCalendar } from "components/system/Taskbar/Calendar/functions";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import { haltEvent } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -61,7 +62,11 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
 
   return (
     calendar && (
-      <StyledCalendar ref={calendarRef} {...FOCUSABLE_ELEMENT}>
+      <StyledCalendar
+        ref={calendarRef}
+        onContextMenu={haltEvent}
+        {...FOCUSABLE_ELEMENT}
+      >
         <table>
           <thead>
             <tr>
