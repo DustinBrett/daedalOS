@@ -35,6 +35,7 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   min-width: ${({ $width }) => $width}px;
   object-fit: contain;
   opacity: ${({ $moving }) => ($moving ? "50%" : "100%")};
+  pointer-events: none;
   top: ${({ $offset }) => $offset || undefined};
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
