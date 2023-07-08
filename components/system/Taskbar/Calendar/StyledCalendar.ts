@@ -13,6 +13,7 @@ const StyledCalendar = styled.section`
 
   table {
     padding: 4px 10px 19px;
+    white-space: nowrap;
 
     td {
       color: #fff;
