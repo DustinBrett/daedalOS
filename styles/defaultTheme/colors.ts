@@ -1,11 +1,11 @@
 const colors = {
   background: "#282828",
   fileEntry: {
-    background: "hsla(207, 30%, 72%, 25%)",
-    backgroundFocused: "hsla(207, 60%, 72%, 35%)",
+    background: "hsla(183, 33%, 40%, 25%)",
+    backgroundFocused: "hsla(157, 16%, 58%, 35%)",
     backgroundFocusedHover: "hsla(207, 90%, 72%, 30%)",
-    border: "hsla(207, 30%, 72%, 30%)",
-    borderFocused: "hsla(207, 60%, 72%, 35%)",
+    border: "hsla(183, 33%, 40%, 30%)",
+    borderFocused: "hsla(157, 16%, 58%, 35%)",
     borderFocusedHover: "hsla(207, 90%, 72%, 40%)",
     text: "#fbf1c7",
     textShadow: `
@@ -25,14 +25,14 @@ const colors = {
   progressBarRgb: "rgb(184, 187, 38)",
   startButton: "#fbf1c7",
   taskbar: {
-    active: "hsla(0, 0%, 20%, 70%)",
-    activeForeground: "hsla(0, 0%, 40%, 70%)",
-    background: "hsla(0, 0%, 10%, 70%)",
-    foreground: "hsla(0, 0%, 35%, 70%)",
-    foregroundHover: "hsla(0, 0%, 45%, 70%)",
-    foregroundProgress: "hsla(122, 21%, 51%, 30%)",
-    hover: "hsla(0, 0%, 25%, 70%)",
-    peekBorder: "hsla(0, 0%, 50%, 50%)",
+    active: "hsla(0, 0%, 16%, 70%)",
+    activeForeground: "hsla(28, 11%, 44%, 70%)",
+    background: "hsla(195, 6%, 12%, 70%)",
+    foreground: "hsla(27, 10%, 36%, 70%)",
+    foregroundHover: "hsla(30, 12%, 51%, 70%)",
+    foregroundProgress: "hsla(104, 35%, 62%, 30%)",
+    hover: "hsla(20, 5%, 22%, 70%)",
+    peekBorder: "hsla(35, 17%, 59%, 50%)",
   },
   text: "rgba(251, 241, 199, 90%)",
   titleBar: {
