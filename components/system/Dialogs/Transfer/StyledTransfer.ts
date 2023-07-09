@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 const gradientAnimation = css`
   animation: gradient 5s ease-in-out alternate infinite;
   background: ${({ theme }) =>
-    `linear-gradient(-45deg, #fff, ${theme.colors.progressBarRgb}, #fff)`};
+    `linear-gradient(-45deg, #fbf1c7, ${theme.colors.progressBarRgb}, #fbf1c7)`};
   background-size: 300% 300%;
   content: "";
   inset: 0;
@@ -22,14 +22,14 @@ const StyledTransfer = styled.div`
     padding: 0 22px;
 
     progress {
-      border: 1px solid rgb(188, 188, 188);
+      border: 1px solid rgb(168, 153, 132);
       height: 15px;
       overflow: hidden;
       position: relative;
       width: 100%;
 
       &::-webkit-progress-bar {
-        background: rgb(230, 230, 230);
+        background: rgb(235, 219, 178);
       }
 
       &::-webkit-progress-value {
@@ -75,9 +75,9 @@ const StyledTransfer = styled.div`
   h1 {
     background: linear-gradient(
       to right,
-      rgb(220, 229, 244),
-      rgb(155, 192, 227),
-      rgb(0, 43, 85)
+      rgb(235, 219, 178),
+      rgb(131, 165, 152),
+      rgb(7, 102, 120)
     );
     display: flex;
     font-size: 15px;
@@ -94,8 +94,8 @@ const StyledTransfer = styled.div`
   }
 
   nav {
-    background-color: rgb(240, 240, 240);
-    border-top: 1px solid rgb(223, 223, 223);
+    background-color: rgb(235, 219, 178);
+    border-top: 1px solid rgb(213, 196, 161);
     bottom: 0;
     box-sizing: content-box;
     display: flex;
