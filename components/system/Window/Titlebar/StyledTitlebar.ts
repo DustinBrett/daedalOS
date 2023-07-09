@@ -99,19 +99,19 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
           transition: background-color 0.25s ease;
         }
       }
-
+      /* For when you click on a titlebar button */
       &:active {
-        background-color: rgb(51, 51, 51);
+        background-color: rgb(102, 92, 84);
 
         &.close {
-          background-color: rgb(139, 10, 20);
+          background-color: rgb(204, 36, 29);
         }
       }
 
       &:disabled {
         svg {
           fill: ${({ $foreground }) =>
-            $foreground ? "rgb(50, 50, 50)" : "rgb(60, 60, 60)"};
+            $foreground ? "rgb(40, 40, 40)" : "rgb(60, 56, 54)"};
         }
 
         &:hover {
