@@ -14,7 +14,7 @@ const StyledDesktop = styled.main<StyledDesktopProps>`
   width: 100vw;
 
   #loading-status {
-    background-color: #fff;
+    background-color: #fbf1c7;
     border-radius: 10px;
     display: none;
     font-weight: 600;
