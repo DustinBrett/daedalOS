@@ -31,9 +31,9 @@ const StyledMessage = styled.li<StyledMessageProps>`
     css`
       background: ${$image
         ? `url(${$image})`
-        : "linear-gradient(90deg, rgb(248, 249, 253), rgb(245, 248, 253))"};
+        : "linear-gradient(90deg, rgb(251, 241, 199), rgb(235, 219, 178))"};
       background-size: contain;
-      color: #000;
+      color: #282828;
       margin-left: 56px;
       margin-right: auto;
       max-width: calc(100% - 78px);
@@ -65,9 +65,9 @@ const StyledMessage = styled.li<StyledMessageProps>`
         user-select: text;
 
         code {
-          background-color: rgb(25, 25, 25);
+          background-color: rgb(50, 48, 47);
           border-radius: 6px;
-          color: rgb(250, 250, 250);
+          color: rgb(251, 241, 199);
           cursor: text;
           font-size: 12px;
           padding: 2px 5px;
@@ -106,10 +106,10 @@ const StyledMessage = styled.li<StyledMessageProps>`
     css`
       background: linear-gradient(
         90deg,
-        ${$isCommand ? "rgb(224, 40, 234)" : "rgb(40, 112, 234)"},
-        ${$isCommand ? "rgb(148, 27, 239)" : "rgb(27, 74, 239)"}
+        ${$isCommand ? "rgb(211, 134, 155)" : "rgb(131, 165, 152)"},
+        ${$isCommand ? "rgb(177, 98, 134)" : "rgb(69, 133, 136)"}
       );
-      color: #fff;
+      color: #fbf1c7;
       margin-left: auto;
     `}
 `;

@@ -10,7 +10,7 @@ const StyledInfo = styled.li`
     padding-left: 15px;
 
     figcaption {
-      color: rgba(236, 236, 241);
+      color: rgba(235, 219, 178);
       padding-left: 5px;
 
       b {

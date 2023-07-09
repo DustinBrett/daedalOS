@@ -15,7 +15,7 @@ const StyledLoadingEllipsis = styled.span<StyledLoadingEllipsisProps>`
 
   &::after {
     animation: ellipsis steps(4, end) 900ms infinite;
-    color: rgb(142, 142, 160);
+    color: rgb(168, 153, 132);
     content: "";
     font-size: 25px;
     letter-spacing: 0.5px;

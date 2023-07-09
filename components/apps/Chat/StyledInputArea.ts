@@ -8,7 +8,7 @@ type StyledInputAreaProps = {
 
 const StyledInputArea = styled.div<StyledInputAreaProps>`
   align-items: flex-end;
-  background-color: rgb(52, 53, 65);
+  background-color: rgb(60, 56, 54);
   bottom: 0;
   display: flex;
   left: 0;
@@ -16,9 +16,9 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
   right: ${DEFAULT_SCROLLBAR_WIDTH}px;
 
   .status {
-    background-color: rgb(52, 53, 65);
+    background-color: rgb(60, 56, 54);
     border-top-right-radius: 5px;
-    color: #fff;
+    color: #fbf1c7;
     font-size: 12px;
     line-height: 16px;
     max-width: 95%;
@@ -32,11 +32,11 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
   }
 
   textarea {
-    background-color: rgb(64, 65, 79);
-    border: 5px solid rgb(64, 65, 79);
+    background-color: rgb(80, 73, 69);
+    border: 5px solid rgb(80, 73, 69);
     border-radius: 24px;
     box-shadow: ${BOX_SHADOW};
-    color: #fff;
+    color: #fbf1c7;
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 16px;
     height: 40px;
@@ -48,7 +48,7 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
     width: 100%;
 
     &::placeholder {
-      color: rgba(200, 200, 200, 75%);
+      color: rgba(168, 153, 132, 75%);
     }
   }
 
@@ -63,12 +63,12 @@ const StyledInputArea = styled.div<StyledInputAreaProps>`
     width: min-content;
 
     &:hover {
-      background-color: rgb(52, 53, 65);
+      background-color: rgb(60, 56, 54);
       border-radius: 50%;
     }
 
     svg {
-      color: rgb(0, 132, 255);
+      color: rgb(69, 133, 136);
       margin: 8px 8px 3px 6px;
       pointer-events: none;
       width: 20px;
