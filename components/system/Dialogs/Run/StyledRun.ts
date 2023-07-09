@@ -2,8 +2,8 @@ import StyledButton from "components/system/Dialogs/StyledButton";
 import styled from "styled-components";
 
 const StyledRun = styled.div`
-  background-color: #fff;
-  border: 1px solid rgb(240, 240, 240);
+  background-color: #fbf1c7;
+  border: 1px solid rgb(235, 219, 178);
   font-size: 12px;
 
   figure {
@@ -38,7 +38,7 @@ const StyledRun = styled.div`
 
       input,
       select {
-        border: 1px solid rgb(122, 122, 122);
+        border: 1px solid rgb(124, 111, 100);
         border-radius: 0;
         font-family: ${({ theme }) => theme.formats.systemFont};
         font-size: 12px;
@@ -51,13 +51,13 @@ const StyledRun = styled.div`
       }
 
       select {
-        background-color: #fff;
+        background-color: #fbf1c7;
         clip-path: inset(0 0 0 calc(100% - 20px));
         position: absolute;
         width: calc(100% - 21px);
 
         &:disabled {
-          border: 1px solid rgb(122, 122, 122);
+          border: 1px solid rgb(124, 111, 100);
           opacity: 100%;
         }
       }
@@ -67,11 +67,11 @@ const StyledRun = styled.div`
         margin-right: 33px;
 
         &:focus {
-          border: 1px solid rgb(0, 120, 215);
+          border: 1px solid rgb(69, 133, 136);
           border-right: 0;
 
           + select {
-            border-color: rgb(0, 120, 215);
+            border-color: rgb(69, 133, 136);
           }
         }
       }
@@ -79,7 +79,7 @@ const StyledRun = styled.div`
   }
 
   nav {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(235, 219, 178);
     display: flex;
     flex-direction: row;
     height: 100%;
