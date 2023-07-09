@@ -28,7 +28,7 @@
   - Cut, Copy, Create shortcut, Delete, Rename
   - [Add file(s)](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications), [Map directory](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API)
   - Open with options/dialog, Open file/folder location, Open in new window, Open Terminal here
-  - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets
+  - Download, Add to archive, Extract here, Set as wallpaper, Convert audio/video/photo/spreadsheets, Properties
   - Sort by, New Folder, New Text Document
   - Screen Capture
 - Keyboard Shortcuts
@@ -68,6 +68,7 @@
 - NTP server time mode ([ntp.js](http://www.ntpjs.org/))
 - Synced to system clock on load
 - Date tooltip
+- Calendar popup
 
 ### Background
 

@@ -8,6 +8,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useProcesses } from "contexts/process";
 import { basename, extname } from "path";
 import { useEffect, useRef } from "react";
+import { haltEvent } from "utils/functions";
 
 const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const { icon: setIcon, processes: { [id]: process } = {} } = useProcesses();
@@ -58,7 +59,13 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledProperties>
+    <StyledProperties
+      onContextMenu={(event: React.MouseEvent<HTMLInputElement>) => {
+        if (!(event.target instanceof HTMLInputElement)) {
+          haltEvent(event);
+        }
+      }}
+    >
       <nav className="tabs">
         <StyledButton>General</StyledButton>
       </nav>
