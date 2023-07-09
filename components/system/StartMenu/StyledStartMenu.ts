@@ -51,7 +51,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   z-index: 10000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: hsla(0, 0%, 13%, 70%);
+    background-color: hsla(0, 0%, 16%, 70%);
   }
 
   ${StyledFileManager} {
