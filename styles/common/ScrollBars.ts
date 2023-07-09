@@ -15,20 +15,20 @@ type ColorScheme = {
 
 const colorScheme: Record<ColorSchemes, ColorScheme> = {
   dark: {
-    active: "rgb(166, 166, 166)",
+    active: "rgb(146,131,116)",
     blendMode: "color-burn",
-    buttonHover: "rgb(55, 55, 55)",
-    thumb: "rgb(77, 77, 77)",
-    thumbHover: "rgb(122, 122, 122)",
-    track: "rgb(23, 23, 23)",
+    buttonHover: "rgb(50,48,47)",
+    thumb: "rgb(60,56,54)",
+    thumbHover: "rgb(124,111,100)",
+    track: "rgb(40,40,40)",
   },
   light: {
-    active: "rgb(96, 96, 96)",
+    active: "rgb(102,92,84)",
     blendMode: "color-dodge",
-    buttonHover: "rgb(218, 218, 218)",
-    thumb: "rgb(205, 205, 205)",
-    thumbHover: "rgb(166, 166, 166)",
-    track: "rgb(240, 240, 240)",
+    buttonHover: "rgb(235,219,178)",
+    thumb: "rgb(213,196,161)",
+    thumbHover: "rgb(189,174,147)",
+    track: "rgb(251,241,199)",
   },
 };
 

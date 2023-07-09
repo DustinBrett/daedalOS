@@ -35,8 +35,8 @@ const GlobalStyle = createGlobalStyle`
 
   input::selection,
   textarea::selection {
-    background-color: rgb(0, 120, 215);
-    color: #fff;
+    background-color: rgb(69, 133, 136);
+    color: #fbf1c7;
   }
 
   input, textarea {
