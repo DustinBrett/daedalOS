@@ -12,7 +12,7 @@ const StyledFileEntry = styled.li`
     place-items: center;
 
     figcaption {
-      color: #fff;
+      color: #fbf1c7;
     }
 
     picture {
@@ -21,7 +21,7 @@ const StyledFileEntry = styled.li`
     }
 
     svg {
-      fill: rgb(210, 210, 210);
+      fill: rgb(213, 196, 161);
       height: 8px;
       margin-left: auto;
       margin-right: 8px;

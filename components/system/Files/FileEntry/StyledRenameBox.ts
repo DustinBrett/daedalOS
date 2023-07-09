@@ -8,7 +8,7 @@ const StyledRenameBox = styled.textarea.attrs(() => ({
   rows: 1,
   spellCheck: false,
 }))`
-  border: 1px solid rgb(100, 100, 100);
+  border: 1px solid rgb(102, 92, 84);
   font-family: inherit;
   font-size: 11.5px;
   margin-bottom: 2px;

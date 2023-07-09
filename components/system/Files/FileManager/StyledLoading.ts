@@ -6,7 +6,7 @@ const StyledLoading = styled.div`
   width: 100%;
 
   &::before {
-    color: #fff;
+    color: #fbf1c7;
     content: "Working on it...";
     display: flex;
     font-size: 12px;
