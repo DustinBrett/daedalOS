@@ -7,7 +7,7 @@ const StyledOpenWithList = styled.ul`
   width: 100%;
 
   &::before {
-    border-top: 1px solid rgb(192, 192, 194);
+    border-top: 1px solid rgb(189, 174, 147);
     content: "";
     height: 1px;
     left: 17px;
@@ -26,7 +26,7 @@ const StyledOpenWithList = styled.ul`
     }
 
     &:hover {
-      background-color: rgb(222, 222, 222);
+      background-color: rgb(235, 219, 178);
     }
 
     figure {
@@ -39,7 +39,7 @@ const StyledOpenWithList = styled.ul`
       }
 
       picture {
-        background-color: rgb(0, 120, 215);
+        background-color: rgb(69, 133, 136);
         display: flex;
         height: 40px;
         place-content: center;
@@ -49,10 +49,10 @@ const StyledOpenWithList = styled.ul`
     }
 
     &.selected {
-      background-color: rgb(12, 131, 218);
+      background-color: rgb(131, 165, 152);
 
       figcaption {
-        color: #fff;
+        color: #fbf1c7;
       }
     }
 

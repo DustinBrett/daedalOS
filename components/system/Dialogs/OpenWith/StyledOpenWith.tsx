@@ -26,12 +26,12 @@ const StyledOpenWith = styled.div`
   }
 
   nav {
-    background-color: #fff;
+    background-color: #fbf1c7;
     height: 80px;
     width: 100%;
 
     button {
-      background-color: rgb(204, 204, 204);
+      background-color: rgb(213, 196, 161);
       font-size: 15px;
       font-weight: 600;
       height: 32px;
@@ -41,12 +41,12 @@ const StyledOpenWith = styled.div`
       width: 200px;
 
       &:hover {
-        background-color: rgb(216, 216, 216);
+        background-color: rgb(213, 196, 161);
       }
 
       &:active {
-        background-color: #000;
-        color: #fff;
+        background-color: #282828;
+        color: #fbf1c7;
       }
     }
   }
