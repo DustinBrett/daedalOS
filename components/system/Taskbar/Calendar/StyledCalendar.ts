@@ -16,7 +16,7 @@ const StyledCalendar = styled.section`
     white-space: nowrap;
 
     td {
-      color: #fff;
+      color: #fbf1c7;
       display: inline-table;
       height: 40px;
       line-height: 32px;
@@ -26,7 +26,7 @@ const StyledCalendar = styled.section`
 
       &.prev,
       &.next {
-        color: rgb(125, 125, 125);
+        color: rgb(124, 111, 100);
       }
     }
 
@@ -44,14 +44,14 @@ const StyledCalendar = styled.section`
           place-content: space-between;
 
           header {
-            color: rgb(223, 223, 223);
+            color: rgb(235, 219, 178);
 
             &:hover {
-              color: #fff;
+              color: #fbf1c7;
             }
 
             &:active {
-              color: rgb(165, 156, 156);
+              color: rgb(168, 153, 132);
             }
           }
         }
@@ -69,14 +69,14 @@ const StyledCalendar = styled.section`
         padding-top: 2px;
 
         button {
-          fill: rgb(223, 223, 223);
+          fill: rgb(235, 219, 178);
 
           &:hover {
-            fill: #fff;
+            fill: #fbf1c7;
           }
 
           &:active {
-            fill: rgb(165, 156, 156);
+            fill: rgb(168, 153, 132);
           }
 
           svg {
@@ -87,8 +87,8 @@ const StyledCalendar = styled.section`
     }
 
     tbody.curr td.today {
-      background-color: rgb(0, 120, 215);
-      color: #fff;
+      background-color: rgb(69, 133, 136);
+      color: #fbf1c7;
       position: relative;
 
       &::after,
@@ -102,19 +102,19 @@ const StyledCalendar = styled.section`
       }
 
       &::before {
-        border: 2px solid #000;
+        border: 2px solid #282828;
         inset: 2px;
       }
 
       &:hover {
         &::after {
-          border: 2px solid rgb(102, 174, 231);
+          border: 2px solid rgb(131, 165, 152);
         }
       }
 
       &:active {
         &::after {
-          border: 2px solid rgb(153, 201, 239);
+          border: 2px solid rgb(142, 192, 124);
         }
       }
     }
