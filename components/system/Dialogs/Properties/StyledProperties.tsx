@@ -4,8 +4,8 @@ const StyledProperties = styled.div`
   padding: 0 8px 0 6px;
 
   table {
-    background-color: #fff;
-    border: 1px solid rgb(217, 217, 217);
+    background-color: rgb(249, 245, 215);
+    border: 1px solid rgb(235, 219, 178);
     height: calc(100% - 36px - 28px);
     padding-top: 14px;
     position: relative;
@@ -49,13 +49,13 @@ const StyledProperties = styled.div`
         width: calc(100% - 70px);
 
         &.spacer {
-          border-bottom: 1px solid rgb(160, 160, 160);
+          border-bottom: 1px solid rgb(242, 229, 188);
           display: block;
           width: 100%;
         }
 
         input {
-          border: 1px solid rgb(122, 122, 122);
+          border: 1px solid rgb(124, 111, 100);
           font-size: 11px;
           height: 23px;
           padding: 3px;
@@ -78,8 +78,8 @@ const StyledProperties = styled.div`
       z-index: 1;
 
       button {
-        background-color: #fff;
-        border: 1px solid rgb(217, 217, 217);
+        background-color: #fbf1c7;
+        border: 1px solid rgb(235, 219, 178);
         border-bottom-width: 0;
         display: flex;
         font-size: 11px;
