@@ -14,11 +14,11 @@ export const config: ITerminalOptions = {
   rows: 20,
   theme: {
     background: processDirectory.Terminal.backgroundColor,
-    foreground: "rgb(204, 204, 204)",
+    foreground: "rgb(251, 241, 199)",
   },
 };
 
-export const PROMPT_CHARACTER = ">";
+export const PROMPT_CHARACTER = "~";
 
 export const PI_ASCII = [
   "     ':lodxkkkOOOOOOOOOOOOkkkkkl",

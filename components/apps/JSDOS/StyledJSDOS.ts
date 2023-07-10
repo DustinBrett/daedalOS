@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledJSDOS = styled.div`
   align-items: center;
-  background-color: #000;
+  background-color: #282828;
   display: flex;
   height: 100%;
   width: 100%;

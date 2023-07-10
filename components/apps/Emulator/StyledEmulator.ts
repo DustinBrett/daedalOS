@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledEmulator = styled.div`
   &.drop {
     &::before {
-      color: #f1f1f1;
+      color: #f9f5d7;
       content: "Drop rom file here";
       display: flex;
       font-size: 16px;

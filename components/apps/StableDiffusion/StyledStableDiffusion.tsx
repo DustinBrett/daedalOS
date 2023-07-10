@@ -13,8 +13,8 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
 
   &::after {
     align-items: center;
-    background-color: rgba(0, 0, 0, 30%);
-    color: #fff;
+    background-color: rgba(29, 32, 33, 30%);
+    color: #fbf1c7;
     content: "No WebGPU Support";
     display: ${({ $hasWebGPU }) => ($hasWebGPU ? "none" : "flex")};
     font-size: 26px;
@@ -22,15 +22,15 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
     inset: 0;
     justify-content: center;
     position: absolute;
-    text-shadow: 2px 2px 4px #000;
+    text-shadow: 2px 2px 4px #282828;
   }
 
   canvas {
     aspect-ratio: 1 / 1;
-    background-color: #fff;
-    border: 2px solid rgb(52, 0, 104);
+    background-color: #fbf1c7;
+    border: 2px solid rgb(177, 98, 134);
     border-radius: 10px;
-    box-shadow: 0 0 4px #888;
+    box-shadow: 0 0 4px #7c6f64;
     max-height: 512px;
     max-width: 512px;
     width: calc(100% - 32px);
@@ -51,7 +51,7 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
       width: 512px;
 
       input {
-        border: 2px solid rgb(52, 0, 104);
+        border: 2px solid rgb(177, 98, 134);
         border-radius: 5px;
         font-size: 12px;
         height: 22px;
@@ -59,7 +59,7 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
       }
 
       div {
-        background-color: #fff;
+        background-color: #fbf1c7;
         border: 2px solid rgb(52, 0, 104);
         border-radius: 5px;
         height: 47px;
@@ -74,17 +74,17 @@ const StyledStableDiffusion = styled.div<StyledStableDiffusionProps>`
     }
 
     button {
-      background-color: rgb(52, 0, 104);
-      border: 2px solid rgb(52, 0, 104);
+      background-color: rgb(211, 134, 155);
+      border: 2px solid rgb(177, 98, 134);
       border-radius: 5px;
-      color: #fff;
+      color: #fbf1c7;
       font-size: 14px;
       font-weight: bold;
       padding: 5px 10px;
 
       &:active {
-        background-color: #fff;
-        color: rgb(52, 0, 104);
+        background-color: #fbf1c7;
+        color: rgb(177, 98, 134);
       }
     }
   }

@@ -5,7 +5,7 @@ import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 const StyledMarked = styled.div`
   article {
     ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH, 0, 0, "light")};
-    background-color: #f9f9f9;
+    background-color: #fbf1c7;
     box-sizing: border-box;
     font-size: 16px;
     height: 100%;
@@ -21,7 +21,7 @@ const StyledMarked = styled.div`
     }
 
     a {
-      color: #0366d6;
+      color: #458588;
       text-decoration: none;
 
       &:hover {
@@ -35,7 +35,7 @@ const StyledMarked = styled.div`
 
     h1,
     h2 {
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #ebdbb2;
       margin: 10px 0;
     }
 
@@ -68,8 +68,8 @@ const StyledMarked = styled.div`
     }
 
     nav {
-      background: #fff;
-      border: 1px solid #ddd;
+      background: #fbf1c7;
+      border: 1px solid #bdae93;
       border-radius: 3px;
       margin-right: 10px;
 
@@ -96,7 +96,7 @@ const StyledMarked = styled.div`
       }
 
       .selected {
-        color: #111;
+        color: #32302f;
         font-weight: 700;
 
         &:hover {
@@ -106,19 +106,19 @@ const StyledMarked = styled.div`
     }
 
     table {
-      border: 1px solid #ddd;
+      border: 1px solid #bdae93;
       border-collapse: collapse;
       border-spacing: 0;
 
       td,
       th {
-        border: 1px solid #ddd;
+        border: 1px solid #bdae93;
         padding: 5px;
       }
     }
 
     pre {
-      background-color: #f6f8fa;
+      background-color: #ebdbb2;
       border-radius: 3px;
       font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier,
         monospace;
@@ -129,7 +129,7 @@ const StyledMarked = styled.div`
     }
 
     code:not([class]) {
-      background-color: rgba(27, 31, 35, 5%);
+      background-color: rgba(29, 32, 33, 5%);
       border-radius: 3px;
       font-size: 85%;
       margin: 0;

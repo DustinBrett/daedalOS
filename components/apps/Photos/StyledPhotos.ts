@@ -8,7 +8,7 @@ type StyledPhotosProps = {
 };
 
 const StyledPhotos = styled.div<StyledPhotosProps>`
-  background-color: #222;
+  background-color: #282828;
   display: flex;
   height: 100%;
   padding-bottom: ${paddingSize};
@@ -16,7 +16,7 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
   position: relative;
 
   svg {
-    fill: #fff;
+    fill: #fbf1c7;
   }
 
   figure {
@@ -29,7 +29,7 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
     width: 100%;
 
     div {
-      color: rgb(167, 167, 167);
+      color: rgb(168, 153, 132);
       font-size: 13px;
       padding: 0 38px;
       text-align: center;
@@ -76,16 +76,16 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
         pointer-events: none;
 
         svg {
-          fill: rgb(125, 125, 125);
+          fill: rgb(124, 111, 100);
         }
       }
 
       &:hover {
-        background-color: rgba(75, 75, 75, 50%);
+        background-color: rgba(780, 73, 69, 50%);
       }
 
       &:active {
-        background-color: rgba(100, 100, 100, 50%);
+        background-color: rgba(102, 92, 84, 50%);
       }
     }
   }

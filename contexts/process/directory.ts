@@ -6,7 +6,7 @@ const directory: Processes = {
   BoxedWine: {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
-    backgroundColor: "#000",
+    backgroundColor: "#1d2021",
     defaultSize: {
       height: 480,
       width: 640,
@@ -24,7 +24,7 @@ const directory: Processes = {
   },
   Browser: {
     Component: dynamic(() => import("components/apps/Browser")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 480,
       width: 640,
@@ -34,7 +34,7 @@ const directory: Processes = {
   },
   Chat: {
     Component: dynamic(() => import("components/apps/Chat")),
-    backgroundColor: "rgb(68, 70, 84)",
+    backgroundColor: "rgb(60, 56, 54)",
     defaultSize: {
       height: 400,
       width: 550,
@@ -44,7 +44,7 @@ const directory: Processes = {
   },
   ClassiCube: {
     Component: dynamic(() => import("components/apps/ClassiCube")),
-    backgroundColor: "#201E20",
+    backgroundColor: "#1D2021",
     defaultSize: {
       height: 420,
       width: 640,
@@ -56,7 +56,7 @@ const directory: Processes = {
   },
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 480,
       width: 640,
@@ -80,7 +80,7 @@ const directory: Processes = {
   },
   Emulator: {
     Component: dynamic(() => import("components/apps/Emulator")),
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 400,
       width: 600,
@@ -92,13 +92,13 @@ const directory: Processes = {
   },
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
-    backgroundColor: "#202020",
+    backgroundColor: "#282828",
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
   IRC: {
     Component: dynamic(() => import("components/apps/IRC")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 512,
       width: 704,
@@ -110,7 +110,7 @@ const directory: Processes = {
   JSDOS: {
     Component: dynamic(() => import("components/apps/JSDOS")),
     autoSizing: true,
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 200,
       width: 320,
@@ -125,7 +125,7 @@ const directory: Processes = {
   },
   Marked: {
     Component: dynamic(() => import("components/apps/Marked")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 480,
       width: 560,
@@ -139,7 +139,7 @@ const directory: Processes = {
   },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 480,
       width: 544,
@@ -149,7 +149,7 @@ const directory: Processes = {
   },
   OpenType: {
     Component: dynamic(() => import("components/apps/OpenType")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 480,
       width: 640,
@@ -161,7 +161,7 @@ const directory: Processes = {
   OpenWith: {
     Component: dynamic(() => import("components/system/Dialogs/OpenWith")),
     allowResizing: false,
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 492,
       width: 392,
@@ -173,7 +173,7 @@ const directory: Processes = {
   },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
-    backgroundColor: "#525659",
+    backgroundColor: "#a89984",
     defaultSize: {
       height: 480,
       width: 640,
@@ -184,7 +184,7 @@ const directory: Processes = {
   },
   Paint: {
     Component: dynamic(() => import("components/apps/Paint")),
-    backgroundColor: "#808080",
+    backgroundColor: "#7c6f64",
     defaultSize: {
       height: 480,
       width: 640,
@@ -195,7 +195,7 @@ const directory: Processes = {
   },
   Photos: {
     Component: dynamic(() => import("components/apps/Photos")),
-    backgroundColor: "#222",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 432,
       width: 576,
@@ -207,7 +207,7 @@ const directory: Processes = {
   Properties: {
     Component: dynamic(() => import("components/system/Dialogs/Properties")),
     allowResizing: false,
-    backgroundColor: "rgb(240, 240, 240)",
+    backgroundColor: "rgb(251, 241, 199)",
     defaultSize: {
       height: 412,
       width: 361,
@@ -219,7 +219,7 @@ const directory: Processes = {
   },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 480,
       width: 640,
@@ -232,7 +232,7 @@ const directory: Processes = {
   },
   Ruffle: {
     Component: dynamic(() => import("components/apps/Ruffle")),
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 400,
       width: 550,
@@ -261,7 +261,7 @@ const directory: Processes = {
   },
   SpaceCadet: {
     Component: dynamic(() => import("components/apps/SpaceCadet")),
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 428,
       width: 600,
@@ -275,7 +275,7 @@ const directory: Processes = {
   StableDiffusion: {
     Component: dynamic(() => import("components/apps/StableDiffusion")),
     allowResizing: false,
-    backgroundColor: "rgb(235, 251, 247)",
+    backgroundColor: "rgb(251, 241, 199)",
     defaultSize: {
       height: 600,
       width: 544,
@@ -287,7 +287,7 @@ const directory: Processes = {
   },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
-    backgroundColor: "rgba(12, 12, 12, 0.5)",
+    backgroundColor: "rgba(29, 32, 33, 0.5)",
     defaultSize: {
       height: 369,
       width: 615,
@@ -303,7 +303,7 @@ const directory: Processes = {
   },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 480,
       width: 640,
@@ -316,7 +316,7 @@ const directory: Processes = {
   Transfer: {
     Component: dynamic(() => import("components/system/Dialogs/Transfer")),
     allowResizing: false,
-    backgroundColor: "#FFF",
+    backgroundColor: "#fbf1c7",
     defaultSize: {
       height: 163,
       width: 400,
@@ -328,7 +328,7 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/V86")),
     allowResizing: false,
     autoSizing: true,
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 200,
       width: 320,
@@ -340,7 +340,7 @@ const directory: Processes = {
   VideoPlayer: {
     Component: dynamic(() => import("components/apps/VideoPlayer")),
     autoSizing: true,
-    backgroundColor: "#000",
+    backgroundColor: "#282828",
     icon: "/System/Icons/vlc.webp",
     libs: [
       "/Program Files/Video.js/video-js.min.css",
@@ -352,7 +352,7 @@ const directory: Processes = {
   Vim: {
     Component: dynamic(() => import("components/apps/Vim")),
     allowResizing: false,
-    backgroundColor: "#222324",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 448,
       width: 595,

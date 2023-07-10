@@ -25,7 +25,7 @@ const StyledControls = styled.nav`
     }
 
     &:first-child {
-      color: #fff;
+      color: #fbf1c7;
       font-size: 14px;
       margin-left: 16px;
       place-content: flex-start;
@@ -59,13 +59,13 @@ const StyledControls = styled.nav`
     }
 
     &:hover {
-      background-color: rgb(66, 70, 73);
+      background-color: rgb(60, 56, 54);
     }
 
     svg {
-      fill: #fff;
+      fill: #fbf1c7;
       height: 12px;
-      stroke: #fff;
+      stroke: #fbf1c7;
       width: 12px;
     }
 
@@ -73,8 +73,8 @@ const StyledControls = styled.nav`
       background-color: initial;
 
       svg {
-        fill: rgb(110, 112, 114);
-        stroke: rgb(110, 112, 114);
+        fill: rgb(102, 92, 84);
+        stroke: rgb(102, 92, 84);
       }
     }
 
@@ -97,24 +97,24 @@ const StyledControls = styled.nav`
     width: 100%;
 
     li {
-      color: #fff;
+      color: #fbf1c7;
       display: flex;
       flex-direction: row;
       font-size: 14px;
 
       input {
-        background-color: rgb(25, 27, 28);
-        color: #fff;
+        background-color: rgb(29, 32, 33);
+        color: #fbf1c7;
         height: 20px;
         text-align: center;
 
         &:disabled {
-          color: rgb(110, 112, 114);
+          color: rgb(102, 92, 84);
         }
       }
 
       &:not(:last-child)::after {
-        background-color: rgb(112, 115, 117);
+        background-color: rgb(124, 111, 100);
         content: "";
         margin-left: 20px;
         width: 1px;

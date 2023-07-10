@@ -29,7 +29,7 @@ const StyledOpenType = styled.div<StyledOpenTypeProps>`
 
   ol {
     &:not(:last-child) {
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid #282828;
     }
 
     padding: 2px 0;
