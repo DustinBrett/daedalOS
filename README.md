@@ -1,4 +1,4 @@
-## 🐟 **This is icefishOS - a fork of [daedalOS](https://github.com/DustinBrett/daedalOS)** 🐟
+## 🐟 **This is icefishOS - a gruvbox-focused fork of [daedalOS](https://github.com/DustinBrett/daedalOS)** 🐟
 
 ## _Desktop environment in the browser_
 

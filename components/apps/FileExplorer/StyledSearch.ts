@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledSearch = styled.div`
-  border: 1px solid rgb(83, 83, 83);
+  border: 1px solid rgb(80, 73, 69);
   display: flex;
   height: 30px;
   margin: 6px 12px 6px 0;
@@ -11,19 +11,19 @@ const StyledSearch = styled.div`
   width: 100%;
 
   svg {
-    fill: rgb(113, 113, 113);
+    fill: rgb(102, 92, 84);
     height: 12px;
     left: 14px;
     pointer-events: none;
     position: absolute;
-    stroke: rgb(113, 113, 113);
+    stroke: rgb(102, 92, 84);
     stroke-width: 1;
     top: 8px;
   }
 
   input {
-    background-color: rgb(25, 25, 25);
-    color: #fff;
+    background-color: rgb(29, 32, 33);
+    color: #fbf1c7;
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 12px;
     font-weight: 400;
