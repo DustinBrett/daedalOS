@@ -15,7 +15,7 @@ type FS9PV3 = [
   number,
   number,
   number,
-  FS9PV3[] | string
+  FS9PV3[] | string,
 ];
 type FS9PV4 = [string, number, number, FS9PV4[] | string | undefined];
 type FS9P = {

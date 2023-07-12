@@ -97,8 +97,8 @@ const useJSDOS = ({
           updateWindowSize(height, width);
         }
       });
-      events.onExit(() =>
-        window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
+      events.onExit(
+        () => window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
       );
 
       setLoading(false);

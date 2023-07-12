@@ -20,19 +20,19 @@ const getLanguageParser = async (
   if (language === "javascript" || language === "typescript") {
     return {
       parser: "babel",
-      plugins: [await import("prettier/parser-babel")],
+      plugins: [await import("prettier/plugins/babel")],
     };
   }
   if (["css", "sass", "less"].includes(language)) {
     return {
       parser: language,
-      plugins: [await import("prettier/parser-postcss")],
+      plugins: [await import("prettier/plugins/postcss")],
     };
   }
   if (language === "html") {
     return {
       parser: "html",
-      plugins: [await import("prettier/parser-html")],
+      plugins: [await import("prettier/plugins/html")],
     };
   }
   if (language === "xml") {
@@ -44,7 +44,7 @@ const getLanguageParser = async (
   if (language === "markdown") {
     return {
       parser: "markdown",
-      plugins: [await import("prettier/parser-markdown")],
+      plugins: [await import("prettier/plugins/markdown")],
     };
   }
 
