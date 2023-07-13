@@ -194,8 +194,9 @@ const useV86 = ({
   useEffect(() => {
     const isActiveInstance = foregroundId === id;
 
-    Object.values(emulator).forEach((emulatorInstance) =>
-      emulatorInstance?.keyboard_set_status(isActiveInstance)
+    Object.values(emulator).forEach(
+      (emulatorInstance) =>
+        emulatorInstance?.keyboard_set_status(isActiveInstance)
     );
   }, [emulator, foregroundId, id]);
 

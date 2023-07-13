@@ -49,8 +49,10 @@ const textDocumentIcon = getIconByFileExtension(".txt");
 
 const updateSortBy =
   (value: SortBy, defaultIsAscending: boolean) =>
-  ([sortBy, isAscending]: SortByOrder): SortByOrder =>
-    [value, sortBy === value ? !isAscending : defaultIsAscending];
+  ([sortBy, isAscending]: SortByOrder): SortByOrder => [
+    value,
+    sortBy === value ? !isAscending : defaultIsAscending,
+  ];
 
 const EASTER_EGG_CLICK_COUNT = 2;
 const CAPTURE_FPS = 30;

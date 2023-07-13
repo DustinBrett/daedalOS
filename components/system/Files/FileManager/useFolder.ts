@@ -543,9 +543,9 @@ const useFolder = (
         uniquePath = await createPath(newBasePath, directory);
 
         await Promise.all(
-          (
-            await readdir(entry)
-          ).map((dirEntry) => copyFiles(join(entry, dirEntry), uniquePath))
+          (await readdir(entry)).map((dirEntry) =>
+            copyFiles(join(entry, dirEntry), uniquePath)
+          )
         );
       } else {
         uniquePath = await createPath(
