@@ -29,7 +29,7 @@
     "export": "next export",
     "prepare": "husky install",
     "prettier": "prettier --write .",
-    "start": "next build && next start",
+    "start": "next start",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "test:watch": "jest --watch",

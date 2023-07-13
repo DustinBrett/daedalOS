@@ -17,7 +17,9 @@ jobs:
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn
       - name: Run Jest Unit Tests
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn test
-      - name: Run Build & Start
+      - name: Build App
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn build
+      - name: Run App
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn start
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
