@@ -18,7 +18,9 @@ const StyledSidebar = styled.nav`
     backdrop-filter: blur(12px);
     background-color: hsla(195, 6.5%, 12.2%, 95%);
     box-shadow: 8px 0 5px -5px hsla(195, 6.5%, 12.2%, 50%);
-    transition: all 300ms ease, backdrop-filter 1ms;
+    transition:
+      all 300ms ease,
+      backdrop-filter 1ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};
 
