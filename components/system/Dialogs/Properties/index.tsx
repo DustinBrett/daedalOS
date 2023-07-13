@@ -60,7 +60,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledProperties
-      onContextMenu={(event: React.MouseEvent<HTMLInputElement>) => {
+      onContextMenu={(event) => {
         if (!(event.target instanceof HTMLInputElement)) {
           haltEvent(event);
         }
