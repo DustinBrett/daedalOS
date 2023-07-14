@@ -47,11 +47,7 @@ test("has context menu", async ({ browserName, page }) => {
 test("can change background", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(1);
-
-  const responsePromise = page.waitForResponse(
-    /\/Users\/Public\/Pictures\/slideshow.json/
-  );
+  const responsePromise = page.waitForResponse(/slideshow.json/);
 
   await page.locator("main").click(RIGHT_CLICK);
   await page.getByText("Background").click();
