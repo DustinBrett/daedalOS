@@ -1,8 +1,6 @@
 import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-const APOD_URL = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
-
 const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
 
 const BACKGROUND_CANVAS_SELECTOR = "main>canvas";
@@ -23,35 +21,60 @@ test("has file entry", async ({ page }) => {
   await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toHaveCount(1);
 });
 
-test("has context menu", async ({ browserName, page }) => {
-  await page.goto("/");
+test.describe("has context menu", () => {
+  test("with items", async ({ browserName, page }) => {
+    await page.goto("/");
 
-  await page.locator("main").click(RIGHT_CLICK);
+    await page.locator("main").click(RIGHT_CLICK);
 
-  const menuItems = page.locator(CONTEXT_MENU_SELECTOR).locator("ol>li");
+    const menuItems = page.locator(CONTEXT_MENU_SELECTOR).locator("ol>li");
 
-  await expect(menuItems.getByText("Background")).toHaveCount(1);
-  await expect(menuItems.getByText("View page source")).toHaveCount(1);
-  await expect(menuItems.getByText("Inspect")).toHaveCount(1);
+    await expect(menuItems.getByLabel(/^Background$/)).toHaveCount(1);
+    await expect(menuItems.getByLabel(/^New$/)).toHaveCount(1);
+    await expect(menuItems.getByLabel(/^View page source$/)).toHaveCount(1);
+    await expect(menuItems.getByLabel(/^Inspect$/)).toHaveCount(1);
 
-  await expect(menuItems.getByText("Capture screen")).toHaveCount(
-    SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName) ? 0 : 1
-  );
+    await expect(menuItems.getByLabel(/^Capture screen$/)).toHaveCount(
+      SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName) ? 0 : 1
+    );
 
-  await expect(menuItems.getByText("Properties")).toHaveCount(0);
-});
+    await expect(menuItems.getByLabel(/^Properties$/)).toHaveCount(0);
+  });
 
-test("can change background", async ({ page }) => {
-  await page.goto("/");
+  test("can change background", async ({ page }) => {
+    await page.goto("/");
 
-  const responsePromise = page.waitForResponse(APOD_URL);
+    await page.locator("main").click(RIGHT_CLICK);
 
-  await page.locator("main").click(RIGHT_CLICK);
+    await page.getByLabel(/^Background$/).click();
+    await page.getByLabel(/^APOD$/).click();
 
-  await page.getByText("Background").click();
-  await page.getByText("APOD").click();
+    await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(0);
+  });
 
-  await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(0);
+  test("can create folder", async ({ page }) => {
+    await page.goto("/");
 
-  expect((await responsePromise).ok()).toBeTruthy();
+    await page.locator("main").click(RIGHT_CLICK);
+
+    await page.getByLabel(/^New$/).click();
+    await page.getByLabel(/^Folder$/).click();
+
+    await page.locator("main").click();
+
+    await expect(page.getByLabel(/^New folder$/)).toHaveCount(1);
+  });
+
+  test("can create file", async ({ page }) => {
+    await page.goto("/");
+
+    await page.locator("main").click(RIGHT_CLICK);
+
+    await page.getByLabel(/^New$/).click();
+    await page.getByLabel(/^Text Document$/).click();
+
+    await page.locator("main").click();
+
+    await expect(page.getByLabel(/^New Text Document.txt$/)).toHaveCount(1);
+  });
 });

@@ -136,6 +136,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <hr />
       ) : (
         <Button
+          aria-label={label}
           as="figure"
           className={showSubMenu && mouseOver ? "active" : undefined}
           onMouseUp={triggerAction}
