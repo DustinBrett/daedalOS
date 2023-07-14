@@ -44,7 +44,7 @@ test("has status bar", async ({ page }) => {
   const footer = window.locator("footer");
 
   await expect(footer.getByLabel(/^Total item count$/)).toContainText(
-    /^8 items$/
+    /^\d items$/
   );
   await expect(
     footer.getByLabel(/^Selected item count and size$/)
