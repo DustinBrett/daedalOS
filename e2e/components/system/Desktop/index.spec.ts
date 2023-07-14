@@ -1,6 +1,8 @@
 import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+const APOD_URL = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
+
 const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
 
 const CANVAS_SELECTOR = "main>canvas";
@@ -47,11 +49,11 @@ test("has context menu", async ({ browserName, page }) => {
 test("can change background", async ({ page }) => {
   await page.goto("/");
 
-  const responsePromise = page.waitForResponse(/slideshow.json/);
+  const responsePromise = page.waitForResponse(APOD_URL);
 
   await page.locator("main").click(RIGHT_CLICK);
   await page.getByText("Background").click();
-  await page.getByText("Picture Slideshow").click();
+  await page.getByText("APOD").click();
 
   await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(0);
 
