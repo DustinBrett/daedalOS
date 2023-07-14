@@ -31,14 +31,11 @@ test.describe("has clock", () => {
     await page.goto("/");
 
     const clock = page.getByLabel("Clock");
+    const noCanvasSupport =
+      offscreenCanvasInWorkerNotSupportedBrowsers.includes(browserName);
 
-    // eslint-disable-next-line playwright/no-conditional-in-test
-    if (offscreenCanvasInWorkerNotSupportedBrowsers.includes(browserName)) {
-      await expect(clock).toContainText(clockTextRegEx);
-    } else {
-      await expect(clock).toBeEmpty();
-      await expect(clock.locator("canvas")).toHaveCount(1);
-    }
+    await expect(clock).toContainText(noCanvasSupport ? clockTextRegEx : "");
+    await expect(clock.locator("canvas")).toHaveCount(noCanvasSupport ? 0 : 1);
   });
 
   test("via text", async ({ page }) => {

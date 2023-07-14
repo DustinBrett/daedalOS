@@ -44,5 +44,5 @@ test("can change background", async ({ page }) => {
   await page.getByText("Picture Slideshow").click();
 
   await expect(page.locator("main>canvas")).toHaveCount(0);
-  await expect(page.locator("html")).toHaveAttribute("style", /background/);
+  await expect(page.locator("html")).toHaveCSS("background", /url\(.*?\)/);
 });
