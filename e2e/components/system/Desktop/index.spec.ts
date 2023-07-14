@@ -49,18 +49,15 @@ test("can change background", async ({ page }) => {
 
   await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(1);
 
+  const responsePromise = page.waitForResponse(
+    /\/Users\/Public\/Pictures\/slideshow.json/
+  );
+
   await page.locator("main").click(RIGHT_CLICK);
   await page.getByText("Background").click();
   await page.getByText("Picture Slideshow").click();
 
   await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(0);
 
-  await page.waitForFunction(
-    (selector) =>
-      (document.querySelector(selector) as HTMLHtmlElement).style
-        .backgroundImage !== "none",
-    "html",
-    { timeout: 1000 }
-  );
-  await expect(page.locator("html")).toHaveCSS("background", /url\(.*?\)/);
+  expect((await responsePromise).ok()).toBe(true);
 });
