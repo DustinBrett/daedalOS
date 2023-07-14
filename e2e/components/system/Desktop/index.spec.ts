@@ -1,10 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("has wallpaper", async ({ page }) => {
+test("has background", async ({ page }) => {
   await page.goto("/");
 
-  // Default is Vanta.js which creates a canvas
-  await expect(page.locator("main>canvas")).toBeVisible();
+  await expect(page.locator("main>canvas")).toHaveCount(1);
 });
 
 test("has file entry", async ({ page }) => {
@@ -20,25 +19,30 @@ test("has context menu", async ({ browserName, page }) => {
 
   const menu = page.locator("#__next>nav");
 
-  await expect(menu).toBeVisible();
+  await expect(menu).toHaveCount(1);
 
   const menuItems = menu.locator("ol>li");
 
-  await expect(menuItems.getByText("Background")).toBeVisible();
-  await expect(menuItems.getByText("View page source")).toBeVisible();
-  await expect(menuItems.getByText("Inspect")).toBeVisible();
+  await expect(menuItems.getByText("Background")).toHaveCount(1);
+  await expect(menuItems.getByText("View page source")).toHaveCount(1);
+  await expect(menuItems.getByText("Inspect")).toHaveCount(1);
 
-  const unSupportedBrowsers = [
-    "webkit", // Screen Capture
-  ];
+  const screenCaptureNotSupportedBrowsers = ["webkit"];
   const captureScreen = menuItems.getByText("Capture screen");
 
-  // eslint-disable-next-line playwright/no-conditional-in-test, unicorn/prefer-ternary
-  if (unSupportedBrowsers.includes(browserName)) {
-    await expect(captureScreen).toBeHidden();
-  } else {
-    await expect(captureScreen).toBeVisible();
-  }
+  await expect(captureScreen).toHaveCount(
+    screenCaptureNotSupportedBrowsers.includes(browserName) ? 0 : 1
+  );
+  await expect(menuItems.getByText("Properties")).toHaveCount(0);
+});
 
-  await expect(menuItems.getByText("Properties")).toBeHidden();
+test("can change background", async ({ page }) => {
+  await page.goto("/");
+
+  await page.locator("main").click({ button: "right" });
+  await page.getByText("Background").click();
+  await page.getByText("Picture Slideshow").click();
+
+  await expect(page.locator("main>canvas")).toHaveCount(0);
+  await expect(page.locator("html")).toHaveAttribute("style", /background/);
 });

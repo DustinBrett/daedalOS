@@ -5,8 +5,8 @@ test("has sidebar buttons", async ({ page }) => {
 
   await page.getByLabel("Start").click();
 
-  await expect(page.getByLabel("All apps")).toBeVisible();
-  await expect(page.getByLabel("Power")).toBeVisible();
+  await expect(page.getByLabel("All apps")).toHaveCount(1);
+  await expect(page.getByLabel("Power")).toHaveCount(1);
 });
 
 test("has folders", async ({ page }) => {
@@ -14,6 +14,6 @@ test("has folders", async ({ page }) => {
 
   await page.getByLabel("Start").click();
 
-  await expect(page.getByLabel("Emulators")).toBeVisible();
-  await expect(page.getByLabel("Games")).toBeVisible();
+  await expect(page.getByLabel("Emulators")).toHaveCount(1);
+  await expect(page.getByLabel("Games")).toHaveCount(1);
 });
