@@ -1,23 +1,32 @@
+import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+
+const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
+
+const CANVAS_SELECTOR = "main>canvas";
+const FIRST_FILE_ENTRY_SELECTOR = "main>ol>li:first-child";
+const CONTEXT_MENU_SELECTOR = "#__next>nav";
+
+const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
 test("has background", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator("main>canvas")).toHaveCount(1);
+  await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(1);
 });
 
 test("has file entry", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator("main>ol>li:first-child")).toHaveCount(1);
+  await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toHaveCount(1);
 });
 
 test("has context menu", async ({ browserName, page }) => {
   await page.goto("/");
 
-  await page.locator("main").click({ button: "right" });
+  await page.locator("main").click(RIGHT_CLICK);
 
-  const menu = page.locator("#__next>nav");
+  const menu = page.locator(CONTEXT_MENU_SELECTOR);
 
   await expect(menu).toHaveCount(1);
 
@@ -27,11 +36,10 @@ test("has context menu", async ({ browserName, page }) => {
   await expect(menuItems.getByText("View page source")).toHaveCount(1);
   await expect(menuItems.getByText("Inspect")).toHaveCount(1);
 
-  const screenCaptureNotSupportedBrowsers = ["webkit"];
   const captureScreen = menuItems.getByText("Capture screen");
 
   await expect(captureScreen).toHaveCount(
-    screenCaptureNotSupportedBrowsers.includes(browserName) ? 0 : 1
+    SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName) ? 0 : 1
   );
   await expect(menuItems.getByText("Properties")).toHaveCount(0);
 });
@@ -39,10 +47,20 @@ test("has context menu", async ({ browserName, page }) => {
 test("can change background", async ({ page }) => {
   await page.goto("/");
 
-  await page.locator("main").click({ button: "right" });
+  await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(1);
+
+  await page.locator("main").click(RIGHT_CLICK);
   await page.getByText("Background").click();
   await page.getByText("Picture Slideshow").click();
 
-  await expect(page.locator("main>canvas")).toHaveCount(0);
+  await expect(page.locator(CANVAS_SELECTOR)).toHaveCount(0);
+
+  await page.waitForFunction(
+    (selector) =>
+      (document.querySelector(selector) as HTMLHtmlElement).style
+        .backgroundImage !== "none",
+    "html",
+    { timeout: 1000 }
+  );
   await expect(page.locator("html")).toHaveCSS("background", /url\(.*?\)/);
 });

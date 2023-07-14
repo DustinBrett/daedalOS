@@ -1,5 +1,15 @@
 import { expect, test } from "@playwright/test";
 
+const TASKBAR_ENTRIES_SELECTOR = "main>nav>ol>li";
+
+const TEST_APP = "FileExplorer";
+const TEST_APP_TITLE = "My PC";
+const TEST_APP_ICON = /\/pc\.(webp|png)$/;
+
+const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
+
+const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+
 test("has start button", async ({ page }) => {
   await page.goto("/");
 
@@ -7,34 +17,27 @@ test("has start button", async ({ page }) => {
 });
 
 test("has taskbar entry", async ({ page }) => {
-  await page.goto("/?app=FileExplorer");
+  await page.goto(`/?app=${TEST_APP}`);
 
-  const entries = page.locator("main>nav>ol>li");
+  const entries = page.locator(TASKBAR_ENTRIES_SELECTOR);
 
   await expect(entries).toHaveCount(1);
 
-  const entry = entries.getByLabel("My PC");
+  const entry = entries.getByLabel(TEST_APP_TITLE);
 
   await expect(entry).toHaveCount(1);
-  await expect(entry.locator("img")).toHaveAttribute(
-    "src",
-    /\/pc\.(webp|png)$/
-  );
+  await expect(entry.locator("img")).toHaveAttribute("src", TEST_APP_ICON);
 });
 
 test.describe("has clock", () => {
-  const clockTextRegEx = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
-
   test("via canvas", async ({ browserName, page }) => {
-    const offscreenCanvasInWorkerNotSupportedBrowsers = ["webkit"];
-
     await page.goto("/");
 
-    const clock = page.getByLabel("Clock");
     const noCanvasSupport =
-      offscreenCanvasInWorkerNotSupportedBrowsers.includes(browserName);
+      OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName);
+    const clock = page.getByLabel("Clock");
 
-    await expect(clock).toContainText(noCanvasSupport ? clockTextRegEx : "");
+    await expect(clock).toContainText(noCanvasSupport ? CLOCK_REGEX : "");
     await expect(clock.locator("canvas")).toHaveCount(noCanvasSupport ? 0 : 1);
   });
 
@@ -45,7 +48,7 @@ test.describe("has clock", () => {
 
     await page.goto("/");
 
-    await expect(page.getByLabel("Clock")).toContainText(clockTextRegEx);
+    await expect(page.getByLabel("Clock")).toContainText(CLOCK_REGEX);
   });
 });
 
