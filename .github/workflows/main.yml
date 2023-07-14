@@ -19,8 +19,6 @@ jobs:
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn test
       - name: Build App
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn build
-      - name: Run App
-        run: NODE_OPTIONS='--openssl-legacy-provider' yarn start
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright E2E Tests

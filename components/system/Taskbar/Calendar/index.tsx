@@ -64,6 +64,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     calendar && (
       <StyledCalendar
         ref={calendarRef}
+        aria-label="Calendar"
         onContextMenu={haltEvent}
         {...FOCUSABLE_ELEMENT}
       >
