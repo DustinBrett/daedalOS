@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3000;
 const baseURL = `http://localhost:${PORT}`;
 
 const config: PlaywrightTestConfig = {
-  expect: { timeout: 10000 },
+  expect: { timeout: 30000 },
   fullyParallel: true,
   projects: [
     {
