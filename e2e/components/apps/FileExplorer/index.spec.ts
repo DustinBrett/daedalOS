@@ -69,15 +69,15 @@ test.describe("file explorer", () => {
   });
 
   test("has status bar", async ({ page }) => {
-    const window = page.locator(WINDOW_SELECTOR);
+    const windowElement = page.locator(WINDOW_SELECTOR);
 
-    await window.getByLabel(TEST_FILE).click();
+    await windowElement.getByLabel(TEST_FILE).click();
 
-    await expect(window.getByLabel(/^Total item count$/)).toContainText(
+    await expect(windowElement.getByLabel(/^Total item count$/)).toContainText(
       /^\d items$/
     );
     await expect(
-      window.getByLabel(/^Selected item count and size$/)
+      windowElement.getByLabel(/^Selected item count and size$/)
     ).toContainText(/^1 item selected|\d{3} bytes$/);
   });
 
