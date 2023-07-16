@@ -8,73 +8,83 @@ const FIRST_FILE_ENTRY_SELECTOR = "main>ol>li:first-child";
 const CONTEXT_MENU_SELECTOR = "#__next>nav";
 
 const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set(["webkit", "firefox"]);
 
-test("has background", async ({ page }) => {
-  await page.goto("/");
+const MENU_ITEMS = [
+  [/^Sort by$/, true],
+  [/^Refresh$/, true],
+  [/^Background$/, true],
+  [/^Add file\(s\)$/, true],
+  [/^Open Terminal here$/, true],
+  [/^Paste$/, true],
+  [/^New$/, true],
+  [/^View page source$/, true],
+  [/^Inspect$/, true],
+  [/^Properties$/, false],
+];
 
-  await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(1);
-});
+test.describe("desktop", () => {
+  test.beforeEach(async ({ page }) => page.goto("/"));
 
-test("has file entry", async ({ page }) => {
-  await page.goto("/");
-
-  await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toHaveCount(1);
-});
-
-test.describe("has context menu", () => {
-  test("with items", async ({ browserName, page }) => {
-    await page.goto("/");
-
-    await page.locator("main").click(RIGHT_CLICK);
-
-    const menuItems = page.locator(CONTEXT_MENU_SELECTOR).locator("ol>li");
-
-    await expect(menuItems.getByLabel(/^Background$/)).toHaveCount(1);
-    await expect(menuItems.getByLabel(/^New$/)).toHaveCount(1);
-    await expect(menuItems.getByLabel(/^View page source$/)).toHaveCount(1);
-    await expect(menuItems.getByLabel(/^Inspect$/)).toHaveCount(1);
-
-    await expect(menuItems.getByLabel(/^Capture screen$/)).toHaveCount(
-      SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName) ? 0 : 1
-    );
-
-    await expect(menuItems.getByLabel(/^Properties$/)).toHaveCount(0);
+  test("has background", async ({ page }) => {
+    await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(1);
   });
 
-  test("can change background", async ({ page }) => {
-    await page.goto("/");
-
-    await page.locator("main").click(RIGHT_CLICK);
-
-    await page.getByLabel(/^Background$/).click();
-    await page.getByLabel(/^APOD$/).click();
-
-    await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(0);
+  test("has file entry", async ({ page }) => {
+    await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toHaveCount(1);
   });
 
-  test("can create folder", async ({ page }) => {
-    await page.goto("/");
+  test.describe("has context menu", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.locator("main").click(RIGHT_CLICK);
+    });
 
-    await page.locator("main").click(RIGHT_CLICK);
+    test("with items", async ({ browserName, page }) => {
+      const ALL_MENU_ITEMS = [
+        ...MENU_ITEMS,
+        [
+          /^Capture screen$/,
+          !SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName),
+        ],
+        [
+          /^Map directory$/,
+          !DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS.has(browserName),
+        ],
+      ];
 
-    await page.getByLabel(/^New$/).click();
-    await page.getByLabel(/^Folder$/).click();
+      const menuItems = page.locator(CONTEXT_MENU_SELECTOR);
 
-    await page.locator("main").click();
+      for (const [label, shown] of ALL_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await expect(menuItems.getByLabel(label as RegExp)).toHaveCount(
+          shown ? 1 : 0
+        );
+      }
+    });
 
-    await expect(page.getByLabel(/^New folder$/)).toHaveCount(1);
-  });
+    test("can change background", async ({ page }) => {
+      await page.getByLabel(/^Background$/).click();
+      await page.getByLabel(/^APOD$/).click();
 
-  test("can create file", async ({ page }) => {
-    await page.goto("/");
+      await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(0);
+    });
 
-    await page.locator("main").click(RIGHT_CLICK);
+    test("can create folder", async ({ page }) => {
+      await page.getByLabel(/^New$/).click();
+      await page.getByLabel(/^Folder$/).click();
 
-    await page.getByLabel(/^New$/).click();
-    await page.getByLabel(/^Text Document$/).click();
+      await page.locator("main").click();
 
-    await page.locator("main").click();
+      await expect(page.getByLabel(/^New folder$/)).toHaveCount(1);
+    });
 
-    await expect(page.getByLabel(/^New Text Document.txt$/)).toHaveCount(1);
+    test("can create file", async ({ page }) => {
+      await page.getByLabel(/^New$/).click();
+      await page.getByLabel(/^Text Document$/).click();
+
+      await page.locator("main").click();
+
+      await expect(page.getByLabel(/^New Text Document.txt$/)).toHaveCount(1);
+    });
   });
 });

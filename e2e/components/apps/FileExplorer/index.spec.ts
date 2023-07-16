@@ -1,52 +1,92 @@
+import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
-const CONTEXT_MENU_SELECTOR = "#__next>nav";
-const FILE_EXPLORER_URL = "/?app=FileExplorer";
+const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
 
+const CONTEXT_MENU_SELECTOR = "#__next>nav";
+const WINDOW_SELECTOR = "main>.react-draggable>section";
+
+const APP_TITLE = "daedalOS";
+const BASE_TITLE = "My PC";
 const TEST_SEARCH = "CREDITS";
 const TEST_SEARCH_RESULT = /^CREDITS.md$/;
+const MENU_ITEMS = [
+  /^Open$/,
+  /^Open with$/,
+  /^Add to archive...$/,
+  /^Download$/,
+  /^Cut$/,
+  /^Copy$/,
+  /^Create shortcut$/,
+  /^Delete$/,
+  /^Rename$/,
+  /^Properties$/,
+];
+const TEST_FILE = /^session.json$/;
 
-test("has session file", async ({ page }) => {
-  await page.goto(FILE_EXPLORER_URL);
+test.describe("file explorer", () => {
+  test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 
-  const window = page.locator("section");
+  test("has address bar", async ({ page }) => {
+    const addressBar = page.locator(WINDOW_SELECTOR).getByLabel(/^Address$/);
 
-  await expect(window.getByLabel(/^session.json$/)).toHaveCount(1);
-});
+    await expect(addressBar).toHaveValue(BASE_TITLE);
 
-test("has address bar", async ({ page }) => {
-  await page.goto(FILE_EXPLORER_URL);
+    await addressBar.click();
 
-  const addressBar = page.locator("section").getByLabel(/^Address$/);
+    await expect(addressBar).toHaveValue(/^\/$/);
 
-  await expect(addressBar).toHaveValue(/^My PC$/);
-});
+    await addressBar.click(RIGHT_CLICK);
 
-test("has search box", async ({ page }) => {
-  await page.goto(FILE_EXPLORER_URL);
+    await expect(
+      page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^Copy address$/)
+    ).toHaveCount(1);
+  });
 
-  const searchBox = page.locator("section").getByLabel(/^Search box$/);
+  test("has search box", async ({ page }) => {
+    await page
+      .locator(WINDOW_SELECTOR)
+      .getByLabel(/^Search box$/)
+      .fill(TEST_SEARCH);
 
-  await searchBox.fill(TEST_SEARCH);
+    await expect(
+      page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
+    ).toHaveCount(1);
+  });
 
-  await expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
-  ).toHaveCount(1);
-});
+  test("has file", async ({ page }) => {
+    const file = page.locator(WINDOW_SELECTOR).getByLabel(TEST_FILE);
 
-test("has status bar", async ({ page }) => {
-  await page.goto(FILE_EXPLORER_URL);
+    await expect(file).toHaveCount(1);
 
-  const window = page.locator("section");
+    await file.click(RIGHT_CLICK);
 
-  await window.getByLabel(/^session.json$/).click();
+    const menu = page.locator(CONTEXT_MENU_SELECTOR);
 
-  const footer = window.locator("footer");
+    for (const label of MENU_ITEMS) {
+      // eslint-disable-next-line no-await-in-loop
+      await expect(menu.getByLabel(label)).toHaveCount(1);
+    }
+  });
 
-  await expect(footer.getByLabel(/^Total item count$/)).toContainText(
-    /^\d items$/
-  );
-  await expect(
-    footer.getByLabel(/^Selected item count and size$/)
-  ).toContainText(/^1 item selected|\d{3} bytes$/);
+  test("has status bar", async ({ page }) => {
+    const window = page.locator(WINDOW_SELECTOR);
+
+    await window.getByLabel(TEST_FILE).click();
+
+    await expect(window.getByLabel(/^Total item count$/)).toContainText(
+      /^\d items$/
+    );
+    await expect(
+      window.getByLabel(/^Selected item count and size$/)
+    ).toContainText(/^1 item selected|\d{3} bytes$/);
+  });
+
+  test("changes title", async ({ page }) => {
+    await expect(page).toHaveTitle(APP_TITLE);
+
+    await page.locator(WINDOW_SELECTOR).click();
+
+    await expect(page).toHaveTitle(`${BASE_TITLE} - ${APP_TITLE}`);
+  });
 });
