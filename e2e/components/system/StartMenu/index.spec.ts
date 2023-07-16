@@ -8,12 +8,12 @@ test.describe("start menu", () => {
   });
 
   test("has sidebar buttons", async ({ page }) => {
-    await expect(page.getByLabel(/^All apps$/)).toHaveCount(1);
-    await expect(page.getByLabel(/^Power$/)).toHaveCount(1);
+    await expect(page.getByLabel(/^All apps$/)).toBeVisible();
+    await expect(page.getByLabel(/^Power$/)).toBeVisible();
   });
 
   test("has folders", async ({ page }) => {
-    await expect(page.getByLabel(/^Emulators$/)).toHaveCount(1);
-    await expect(page.getByLabel(/^Games$/)).toHaveCount(1);
+    await expect(page.getByLabel(/^Emulators$/)).toBeVisible();
+    await expect(page.getByLabel(/^Games$/)).toBeVisible();
   });
 });

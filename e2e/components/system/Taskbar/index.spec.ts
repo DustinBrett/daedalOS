@@ -15,7 +15,7 @@ test.describe("taskbar", () => {
     test.beforeEach(async ({ page }) => page.goto("/"));
 
     test("has start button", async ({ page }) => {
-      await expect(page.getByLabel(/^Start$/)).toHaveCount(1);
+      await expect(page.getByLabel(/^Start$/)).toBeVisible();
     });
 
     test.describe("has clock", () => {
@@ -25,9 +25,9 @@ test.describe("taskbar", () => {
         const clock = page.getByLabel(/^Clock$/);
 
         await expect(clock).toContainText(noCanvasSupport ? CLOCK_REGEX : "");
-        await expect(clock.locator("canvas")).toHaveCount(
-          noCanvasSupport ? 0 : 1
-        );
+        await expect(clock.locator("canvas"))[
+          noCanvasSupport ? "toBeHidden" : "toBeVisible"
+        ]();
       });
 
       test("via text", async ({ page }) => {
@@ -45,7 +45,7 @@ test.describe("taskbar", () => {
     test("has calendar", async ({ page }) => {
       await page.getByLabel(/^Clock$/).click();
 
-      await expect(page.getByLabel(/^Calendar$/)).toHaveCount(1);
+      await expect(page.getByLabel(/^Calendar$/)).toBeVisible();
     });
   });
 
@@ -55,11 +55,11 @@ test.describe("taskbar", () => {
     test("has entry", async ({ page }) => {
       const entries = page.locator(TASKBAR_ENTRIES_SELECTOR);
 
-      await expect(entries).toHaveCount(1);
+      await expect(entries).toBeVisible();
 
       const entry = entries.getByLabel(TEST_APP_TITLE);
 
-      await expect(entry).toHaveCount(1);
+      await expect(entry).toBeVisible();
       await expect(entry.locator("img")).toHaveAttribute("src", TEST_APP_ICON);
     });
   });

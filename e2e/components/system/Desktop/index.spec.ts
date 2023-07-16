@@ -27,11 +27,11 @@ test.describe("desktop", () => {
   test.beforeEach(async ({ page }) => page.goto("/"));
 
   test("has background", async ({ page }) => {
-    await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(1);
+    await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible();
   });
 
   test("has file entry", async ({ page }) => {
-    await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toHaveCount(1);
+    await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toBeVisible();
   });
 
   test.describe("has context menu", () => {
@@ -51,14 +51,13 @@ test.describe("desktop", () => {
           !DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS.has(browserName),
         ],
       ];
-
       const menuItems = page.locator(CONTEXT_MENU_SELECTOR);
 
       for (const [label, shown] of ALL_MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
-        await expect(menuItems.getByLabel(label as RegExp)).toHaveCount(
-          shown ? 1 : 0
-        );
+        await expect(menuItems.getByLabel(label as RegExp))[
+          shown ? "toBeVisible" : "toBeHidden"
+        ]();
       }
     });
 
@@ -66,7 +65,7 @@ test.describe("desktop", () => {
       await page.getByLabel(/^Background$/).click();
       await page.getByLabel(/^APOD$/).click();
 
-      await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toHaveCount(0);
+      await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
     });
 
     test("can create folder", async ({ page }) => {
@@ -75,7 +74,7 @@ test.describe("desktop", () => {
 
       await page.locator("main").click();
 
-      await expect(page.getByLabel(/^New folder$/)).toHaveCount(1);
+      await expect(page.getByLabel(/^New folder$/)).toBeVisible();
     });
 
     test("can create file", async ({ page }) => {
@@ -84,7 +83,7 @@ test.describe("desktop", () => {
 
       await page.locator("main").click();
 
-      await expect(page.getByLabel(/^New Text Document.txt$/)).toHaveCount(1);
+      await expect(page.getByLabel(/^New Text Document.txt$/)).toBeVisible();
     });
   });
 });

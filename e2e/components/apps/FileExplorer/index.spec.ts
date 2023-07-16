@@ -40,7 +40,7 @@ test.describe("file explorer", () => {
 
     await expect(
       page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^Copy address$/)
-    ).toHaveCount(1);
+    ).toBeVisible();
   });
 
   test("has search box", async ({ page }) => {
@@ -51,21 +51,20 @@ test.describe("file explorer", () => {
 
     await expect(
       page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
-    ).toHaveCount(1);
+    ).toBeVisible();
   });
 
   test("has file", async ({ page }) => {
-    const file = page.locator(WINDOW_SELECTOR).getByLabel(TEST_FILE);
-
-    await expect(file).toHaveCount(1);
-
-    await file.click(RIGHT_CLICK);
+    await page
+      .locator(WINDOW_SELECTOR)
+      .getByLabel(TEST_FILE)
+      .click(RIGHT_CLICK);
 
     const menu = page.locator(CONTEXT_MENU_SELECTOR);
 
     for (const label of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
-      await expect(menu.getByLabel(label)).toHaveCount(1);
+      await expect(menu.getByLabel(label)).toBeVisible();
     }
   });
 
