@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
-
-const TASKBAR_ENTRIES_SELECTOR = "main>nav>ol>li";
-
-const TEST_APP = "FileExplorer";
-const TEST_APP_TITLE = /^My PC$/;
-const TEST_APP_ICON = /\/pc\.(webp|png)$/;
-
-const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
-
-const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+import {
+  CLOCK_REGEX,
+  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
+  TASKBAR_ENTRIES_SELECTOR,
+  TEST_APP,
+  TEST_APP_ICON,
+  TEST_APP_TITLE,
+} from "e2e/constants";
 
 test.describe("taskbar", () => {
   test.describe("elements", () => {

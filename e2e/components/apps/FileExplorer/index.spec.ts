@@ -1,28 +1,15 @@
-import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-
-const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
-
-const CONTEXT_MENU_SELECTOR = "#__next>nav";
-const WINDOW_SELECTOR = "main>.react-draggable>section";
-
-const APP_TITLE = "daedalOS";
-const BASE_TITLE = "My PC";
-const TEST_SEARCH = "CREDITS";
-const TEST_SEARCH_RESULT = /^CREDITS.md$/;
-const MENU_ITEMS = [
-  /^Open$/,
-  /^Open with$/,
-  /^Add to archive...$/,
-  /^Download$/,
-  /^Cut$/,
-  /^Copy$/,
-  /^Create shortcut$/,
-  /^Delete$/,
-  /^Rename$/,
-  /^Properties$/,
-];
-const TEST_FILE = /^session.json$/;
+import {
+  BASE_APP_TITLE,
+  CONTEXT_MENU_SELECTOR,
+  FILE_MENU_ITEMS,
+  RIGHT_CLICK,
+  TEST_APP_TITLE,
+  TEST_ROOT_FILE,
+  TEST_SEARCH,
+  TEST_SEARCH_RESULT,
+  WINDOW_SELECTOR,
+} from "e2e/constants";
 
 test.describe("file explorer", () => {
   test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
@@ -30,11 +17,11 @@ test.describe("file explorer", () => {
   test("has address bar", async ({ page }) => {
     const addressBar = page.locator(WINDOW_SELECTOR).getByLabel(/^Address$/);
 
-    await expect(addressBar).toHaveValue(BASE_TITLE);
+    await expect(addressBar).toHaveValue(TEST_APP_TITLE);
 
     await addressBar.click();
 
-    await expect(addressBar).toHaveValue(/^\/$/);
+    await expect(addressBar).toHaveValue("/");
 
     await addressBar.click(RIGHT_CLICK);
 
@@ -57,12 +44,12 @@ test.describe("file explorer", () => {
   test("has file", async ({ page }) => {
     await page
       .locator(WINDOW_SELECTOR)
-      .getByLabel(TEST_FILE)
+      .getByLabel(TEST_ROOT_FILE)
       .click(RIGHT_CLICK);
 
     const menu = page.locator(CONTEXT_MENU_SELECTOR);
 
-    for (const label of MENU_ITEMS) {
+    for (const label of FILE_MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
       await expect(menu.getByLabel(label)).toBeVisible();
     }
@@ -71,7 +58,7 @@ test.describe("file explorer", () => {
   test("has status bar", async ({ page }) => {
     const windowElement = page.locator(WINDOW_SELECTOR);
 
-    await windowElement.getByLabel(TEST_FILE).click();
+    await windowElement.getByLabel(TEST_ROOT_FILE).click();
 
     await expect(windowElement.getByLabel(/^Total item count$/)).toContainText(
       /^\d items$/
@@ -82,10 +69,10 @@ test.describe("file explorer", () => {
   });
 
   test("changes title", async ({ page }) => {
-    await expect(page).toHaveTitle(APP_TITLE);
+    await expect(page).toHaveTitle(BASE_APP_TITLE);
 
     await page.locator(WINDOW_SELECTOR).click();
 
-    await expect(page).toHaveTitle(`${BASE_TITLE} - ${APP_TITLE}`);
+    await expect(page).toHaveTitle(`${TEST_APP_TITLE} - ${BASE_APP_TITLE}`);
   });
 });

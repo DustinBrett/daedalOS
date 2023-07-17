@@ -1,27 +1,13 @@
-import type { Locator } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-
-const RIGHT_CLICK = { button: "right" } as Parameters<Locator["click"]>[0];
-
-const BACKGROUND_CANVAS_SELECTOR = "main>canvas";
-const FIRST_FILE_ENTRY_SELECTOR = "main>ol>li:first-child";
-const CONTEXT_MENU_SELECTOR = "#__next>nav";
-
-const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
-const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set(["webkit", "firefox"]);
-
-const MENU_ITEMS = [
-  [/^Sort by$/, true],
-  [/^Refresh$/, true],
-  [/^Background$/, true],
-  [/^Add file\(s\)$/, true],
-  [/^Open Terminal here$/, true],
-  [/^Paste$/, true],
-  [/^New$/, true],
-  [/^View page source$/, true],
-  [/^Inspect$/, true],
-  [/^Properties$/, false],
-];
+import {
+  BACKGROUND_CANVAS_SELECTOR,
+  CONTEXT_MENU_SELECTOR,
+  DESKTOP_MENU_ITEMS,
+  DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS,
+  FIRST_FILE_ENTRY_SELECTOR,
+  RIGHT_CLICK,
+  SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS,
+} from "e2e/constants";
 
 test.describe("desktop", () => {
   test.beforeEach(async ({ page }) => page.goto("/"));
@@ -40,8 +26,8 @@ test.describe("desktop", () => {
     });
 
     test("with items", async ({ browserName, page }) => {
-      const ALL_MENU_ITEMS = [
-        ...MENU_ITEMS,
+      const MENU_ITEMS = [
+        ...DESKTOP_MENU_ITEMS,
         [
           /^Capture screen$/,
           !SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName),
@@ -53,7 +39,7 @@ test.describe("desktop", () => {
       ];
       const menuItems = page.locator(CONTEXT_MENU_SELECTOR);
 
-      for (const [label, shown] of ALL_MENU_ITEMS) {
+      for (const [label, shown] of MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
         await expect(menuItems.getByLabel(label as RegExp))[
           shown ? "toBeVisible" : "toBeHidden"
