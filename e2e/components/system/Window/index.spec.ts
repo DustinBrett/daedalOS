@@ -67,7 +67,7 @@ test.describe("window", () => {
       expect(page.locator(WINDOW_SELECTOR)).toBeVisible()
     );
 
-    test("on button", async ({ page }) => {
+    test("on click button", async ({ page }) => {
       await page
         .locator(WINDOW_TITLEBAR_SELECTOR)
         .getByLabel(/^Close$/)
@@ -76,9 +76,10 @@ test.describe("window", () => {
       await expect(page.locator(WINDOW_SELECTOR)).toBeHidden();
     });
 
-    // eslint-disable-next-line playwright/no-skipped-test
-    test.skip("on double click", async ({ page }) => {
-      await page.locator(`${WINDOW_TITLEBAR_SELECTOR}>button`).dblclick();
+    test("on double click icon", async ({ page }) => {
+      await page
+        .locator(`${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`)
+        .dblclick();
 
       await expect(page.locator(WINDOW_SELECTOR)).toBeHidden();
     });
