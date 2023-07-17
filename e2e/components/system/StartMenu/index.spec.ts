@@ -15,5 +15,11 @@ test.describe("start menu", () => {
   test("has folders", async ({ page }) => {
     await expect(page.getByLabel(/^Emulators$/)).toBeVisible();
     await expect(page.getByLabel(/^Games$/)).toBeVisible();
+
+    // TODO: w/read-only context menu
   });
+
+  // TODO: has files, w/read-only context menu
+  // TODO: has sidebar
+  // TODO: can close (start button, blur)
 });

@@ -77,6 +77,7 @@
   },
   "devDependencies": {
     "7z-wasm": "^1.0.2",
+    "@axe-core/playwright": "^4.7.3",
     "@next/bundle-analyzer": "^13.4.8",
     "@next/eslint-plugin-next": "^13.4.8",
     "@playwright/test": "^1.36.0",

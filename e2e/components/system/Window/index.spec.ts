@@ -36,7 +36,7 @@ test.describe("window", () => {
   });
 
   test.describe("has maximize", () => {
-    test("on button", async ({ page }) => {
+    test("on click button", async ({ page }) => {
       await page
         .locator(WINDOW_TITLEBAR_SELECTOR)
         .getByLabel(/^Maximize$/)
@@ -50,7 +50,7 @@ test.describe("window", () => {
       ).toBeTruthy();
     });
 
-    test("on double click", async ({ page }) => {
+    test("on double click titlebar", async ({ page }) => {
       await page.locator(WINDOW_TITLEBAR_SELECTOR).dblclick();
 
       expect(
@@ -97,7 +97,7 @@ test.describe("window", () => {
     const titlebarElement = page.locator(WINDOW_TITLEBAR_SELECTOR);
     const initialBoundingBox = await titlebarElement.boundingBox();
 
-    await titlebarElement.dragTo(page.locator("main"), {
+    await titlebarElement.dragTo(page.getByRole("main"), {
       targetPosition: {
         x: (initialBoundingBox?.width || 0) / 2,
         y: (initialBoundingBox?.height || 0) / 2,
@@ -109,9 +109,13 @@ test.describe("window", () => {
     expect(initialBoundingBox?.x).not.toEqual(finalBoundingBox?.x);
     expect(initialBoundingBox?.y).not.toEqual(finalBoundingBox?.y);
 
-    const mainBoundingBox = await page.locator("main").boundingBox();
+    const mainBoundingBox = await page.getByRole("main").boundingBox();
 
     expect(finalBoundingBox?.y).toEqual(mainBoundingBox?.y);
     expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
   });
+
+  // TODO: has context menu
+  // TODO: has resize
+  // TODO: has keyboard shortcuts (Ctrl+Shift+Arrows & Ctrl+Alt+F4)
 });

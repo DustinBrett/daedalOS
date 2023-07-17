@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import {
+  DESKTOP_FILE_ENTRY_SELECTOR,
   FILE_DRAG_NOT_WORKING_BROWSERS,
-  FILE_ENTRIES_SELECTOR,
   TEST_APP_CONTAINER_APP,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
@@ -20,7 +20,7 @@ test.describe("app container", () => {
       TEST_APP_CONTAINER_APP
     );
 
-    const firstFile = page.locator(FILE_ENTRIES_SELECTOR).first();
+    const firstFile = page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first();
 
     await expect(firstFile).toBeVisible();
 

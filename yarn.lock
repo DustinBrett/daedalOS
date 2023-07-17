@@ -27,6 +27,13 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.17.14.tgz#43bfe793c787180c5eb0a57ada8318fb62171b4e"
   integrity sha512-+PVTOfla/0XMLRTQLJFPg4u40XcdTfon6GGea70hBGi8Pd7ZymIXyVUR+vK8wt5Jb4MVKTKPIz43Myyebw5mZA==
 
+"@axe-core/playwright@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@axe-core/playwright/-/playwright-4.7.3.tgz#aa9b9e563c2c2c5024ff777da6c4f2e5f93dd8f4"
+  integrity sha512-v2PRgAyGvop7bamrTpNJtc5b1R7giAPnMzZXrS/VDZBCY5+uwVYtCNgDvBsqp5P1QMZxUMoBN+CERJUTMjFN0A==
+  dependencies:
+    axe-core "^4.7.0"
+
 "@babel/cli@^7.21.0":
   version "7.22.6"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.22.6.tgz#63f5be2a0abd587ccfbdc93424fa85f43142cc53"
@@ -2392,7 +2399,7 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-axe-core@^4.6.2:
+axe-core@^4.6.2, axe-core@^4.7.0:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.2.tgz#040a7342b20765cb18bb50b628394c21bccc17a0"
   integrity sha512-zIURGIS1E1Q4pcrMjp+nnEh+16G56eG/MUllJH8yEvw7asDo7Ac9uhC9KIH5jzpITueEZolfYglnCGIuSBz39g==
