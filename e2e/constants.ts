@@ -5,7 +5,7 @@ export const RIGHT_CLICK = { button: "right" } as Parameters<
 >[0];
 
 export const BACKGROUND_CANVAS_SELECTOR = "main>canvas";
-export const FIRST_FILE_ENTRY_SELECTOR = "main>ol>li:first-child";
+export const FILE_ENTRIES_SELECTOR = "main>ol>li";
 export const WINDOW_SELECTOR = "main>.react-draggable>section";
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>div>header`;
 export const TASKBAR_SELECTOR = "main>nav";
@@ -18,6 +18,8 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 ]);
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+
+export const FILE_DRAG_NOT_WORKING_BROWSERS = new Set(["webkit"]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
@@ -44,6 +46,7 @@ export const DESKTOP_MENU_ITEMS = [
   [/^Properties$/, false],
 ];
 
+export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP = "FileExplorer";
 export const TEST_APP_TITLE = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;

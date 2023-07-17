@@ -4,7 +4,7 @@ import {
   CONTEXT_MENU_SELECTOR,
   DESKTOP_MENU_ITEMS,
   DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS,
-  FIRST_FILE_ENTRY_SELECTOR,
+  FILE_ENTRIES_SELECTOR,
   RIGHT_CLICK,
   SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS,
 } from "e2e/constants";
@@ -17,7 +17,7 @@ test.describe("desktop", () => {
   });
 
   test("has file entry", async ({ page }) => {
-    await expect(page.locator(FIRST_FILE_ENTRY_SELECTOR)).toBeVisible();
+    await expect(page.locator(FILE_ENTRIES_SELECTOR).first()).toBeVisible();
   });
 
   test.describe("has context menu", () => {
