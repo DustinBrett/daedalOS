@@ -60,6 +60,8 @@ test.describe("desktop", () => {
     });
 
     test("can change background", async ({ page }) => {
+      await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible();
+
       await page.getByLabel(/^Background$/).click();
       await page.getByLabel(/^APOD$/).click();
 
@@ -75,6 +77,10 @@ test.describe("desktop", () => {
           ["background-image", /^url\(.*?\)$/] as [string, RegExp]
         )
       ).toBeTruthy();
+
+      await page.reload();
+
+      await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
     });
 
     test("can create folder", async ({ page }) => {
@@ -123,7 +129,16 @@ test.describe("desktop", () => {
       ).toBeVisible();
     });
 
-    // TODO: Ctrl+Shift: D, E, ESCAPE, F10, F12, F5
-    // TODO: F11, Arrows
+    test("ctrl + shift + e (open file explorer)", async ({ page }) => {
+      await page.getByRole("main").press("Control+Shift+KeyE");
+
+      await expect(
+        page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^File Explorer$/)
+      ).toBeVisible();
+    });
+
+    // TODO: Ctrl+Shift+D
+    // TODO: Ctrl: ESCAPE, F10, F12
+    // TODO: F11 (Fullscreen), Arrows
   });
 });
