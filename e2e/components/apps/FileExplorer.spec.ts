@@ -83,6 +83,10 @@ test.describe("has file", () => {
       await page.getByLabel(/^Delete$/).click();
 
       await expect(rootFile).toBeHidden();
+
+      await page.reload();
+
+      await expect(rootFile).toBeHidden();
     });
 
     // TODO: can cut/copy->paste (to Desktop)
