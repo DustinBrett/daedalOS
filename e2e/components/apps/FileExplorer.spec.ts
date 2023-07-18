@@ -5,9 +5,11 @@ import {
   DESKTOP_FILE_ENTRY_SELECTOR,
   FILE_MENU_ITEMS,
   RIGHT_CLICK,
+  SELECTION_SELECTOR,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_ROOT_FILE,
+  TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
   TEST_SEARCH_RESULT,
   WINDOW_SELECTOR,
@@ -60,12 +62,65 @@ test.describe("file explorer", () => {
       }
     });
 
-    // TODO: with tooltip
-    // TODO: with selection effect (single/multi)
-    // TODO: has drag (to Desktop)
-    // TODO: has drop (from Desktop)
-    // TODO: has cut/copy->paste (to Desktop)
-    // TODO: has download
+    test("with tooltip", async ({ page }) => {
+      const testFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
+
+      await testFile.click();
+
+      expect(await testFile.getAttribute("title")).toMatch(
+        TEST_ROOT_FILE_TOOLTIP
+      );
+    });
+
+    test.describe("with selection", () => {
+      test("effect", async ({ page }) => {
+        const viewport = page.viewportSize();
+        // eslint-disable-next-line playwright/no-conditional-in-test
+        const x = (viewport?.width || 0) / 2;
+        // eslint-disable-next-line playwright/no-conditional-in-test
+        const y = (viewport?.height || 0) / 2;
+        const SELECTION_OFFSET = 25;
+
+        await page.mouse.move(x, y);
+        await page.mouse.down({
+          button: "left",
+        });
+        await page.mouse.move(x + SELECTION_OFFSET, y + SELECTION_OFFSET);
+
+        const selection = page.locator(SELECTION_SELECTOR);
+
+        await expect(selection).toBeVisible();
+
+        const boundingBox = await selection.boundingBox();
+
+        expect(boundingBox?.width).toEqual(SELECTION_OFFSET);
+        expect(boundingBox?.height).toEqual(SELECTION_OFFSET);
+        expect(boundingBox?.x).toEqual(x);
+        expect(boundingBox?.y).toEqual(y);
+      });
+
+      // TODO: file entry (single/multi)
+    });
+
+    test("can download", async ({ page }) => {
+      await page
+        .locator(WINDOW_SELECTOR)
+        .getByLabel(TEST_ROOT_FILE)
+        .click(RIGHT_CLICK);
+
+      const downloadPromise = page.waitForEvent("download");
+
+      await page.getByLabel(/^Download$/).click();
+
+      const download = await downloadPromise;
+
+      expect(await download.path()).toBeTruthy();
+      expect(download.suggestedFilename()).toMatch(TEST_ROOT_FILE);
+    });
+
+    // TODO: can drag (to Desktop)
+    // TODO: can drop (from Desktop)
+    // TODO: can cut/copy->paste (to Desktop)
     // TODO: can set backgound (image/video)
   });
 

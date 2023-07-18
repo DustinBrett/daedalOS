@@ -18,6 +18,7 @@ export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>div>header`;
 export const TASKBAR_SELECTOR = `${DESKTOP_ELEMENT}>nav`;
 export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_SELECTOR}>${ENTRY_SELECTOR}`;
 export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER}>nav`;
+export const SELECTION_SELECTOR = `${DESKTOP_ELEMENT}>ol>span`;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = ["meta-viewport"];
 
@@ -70,6 +71,8 @@ export const TEST_APP = "FileExplorer";
 export const TEST_APP_TITLE = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 export const TEST_ROOT_FILE = /^session.json$/;
+export const TEST_ROOT_FILE_TOOLTIP =
+  /^Type: JSON File\nSize: \d{3} bytes\nDate modified: \b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
 export const TEST_SEARCH = "CREDITS";
 export const TEST_SEARCH_RESULT = /^CREDITS.md$/;
 
