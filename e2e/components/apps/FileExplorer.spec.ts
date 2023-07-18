@@ -47,18 +47,47 @@ test("has search box", async ({ page }) => {
 });
 
 test.describe("has file", () => {
-  test("with context menu", async ({ page }) => {
-    await page
-      .locator(WINDOW_SELECTOR)
-      .getByLabel(TEST_ROOT_FILE)
-      .click(RIGHT_CLICK);
+  test.describe("has context menu", () => {
+    test.beforeEach(async ({ page }) =>
+      page
+        .locator(WINDOW_SELECTOR)
+        .getByLabel(TEST_ROOT_FILE)
+        .click(RIGHT_CLICK)
+    );
 
-    const menu = page.locator(CONTEXT_MENU_SELECTOR);
+    test("with items", async ({ page }) => {
+      const menu = page.locator(CONTEXT_MENU_SELECTOR);
 
-    for (const label of FILE_MENU_ITEMS) {
-      // eslint-disable-next-line no-await-in-loop
-      await expect(menu.getByLabel(label)).toBeVisible();
-    }
+      for (const label of FILE_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await expect(menu.getByLabel(label)).toBeVisible();
+      }
+    });
+
+    test("can download", async ({ page }) => {
+      const downloadPromise = page.waitForEvent("download");
+
+      await page.getByLabel(/^Download$/).click();
+
+      const download = await downloadPromise;
+
+      expect(await download.path()).toBeTruthy();
+      expect(download.suggestedFilename()).toMatch(TEST_ROOT_FILE);
+    });
+
+    test("can delete", async ({ page }) => {
+      const rootFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
+
+      await expect(rootFile).toBeVisible();
+
+      await page.getByLabel(/^Delete$/).click();
+
+      await expect(rootFile).toBeHidden();
+    });
+
+    // TODO: can cut/copy->paste (to Desktop)
+    // TODO: can set backgound (image/video)
+    // TODO: can create shortcut (expect prepended name & icon)
   });
 
   test("with tooltip", async ({ page }) => {
@@ -101,28 +130,8 @@ test.describe("has file", () => {
     // TODO: file entry (single/multi)
   });
 
-  test("can download", async ({ page }) => {
-    await page
-      .locator(WINDOW_SELECTOR)
-      .getByLabel(TEST_ROOT_FILE)
-      .click(RIGHT_CLICK);
-
-    const downloadPromise = page.waitForEvent("download");
-
-    await page.getByLabel(/^Download$/).click();
-
-    const download = await downloadPromise;
-
-    expect(await download.path()).toBeTruthy();
-    expect(download.suggestedFilename()).toMatch(TEST_ROOT_FILE);
-  });
-
   // TODO: can drag (to Desktop)
   // TODO: can drop (from Desktop)
-  // TODO: can cut/copy->paste (to Desktop)
-  // TODO: can set backgound (image/video)
-  // TODO: can create shortcut (expect prepended name & icon)
-  // TODO: can delete
 });
 
 test("has status bar", async ({ page }) => {
