@@ -16,6 +16,7 @@ test.describe("taskbar", () => {
       await expect(page.getByLabel(/^Start$/)).toBeVisible();
 
       // TODO: has context menu
+      // TODO: has sheep
     });
 
     test.describe("has clock", () => {
