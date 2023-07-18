@@ -1,5 +1,5 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import { getConfig } from "components/apps/BoxedWine/config";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";

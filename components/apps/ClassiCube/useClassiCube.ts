@@ -1,4 +1,4 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useCallback, useEffect } from "react";

@@ -7,6 +7,8 @@ import {
   DESKTOP_FILE_ENTRY_SELECTOR,
   DESKTOP_MENU_ITEMS,
   EXACT,
+  NEW_FILE_LABEL,
+  NEW_FOLDER_LABEL,
   RIGHT_CLICK,
   TASKBAR_ENTRY_SELECTOR,
 } from "e2e/constants";
@@ -63,25 +65,46 @@ test.describe("desktop", () => {
 
       await expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
 
-      // TODO: Expect html background change
+      expect(
+        await page.waitForFunction(
+          ([selectorProperty, selectorValue]) =>
+            window
+              .getComputedStyle(document.documentElement)
+              .getPropertyValue(selectorProperty)
+              .match(selectorValue),
+          ["background-image", /^url\(.*?\)$/] as [string, RegExp]
+        )
+      ).toBeTruthy();
     });
 
     test("can create folder", async ({ page }) => {
+      await expect(page.getByLabel(NEW_FOLDER_LABEL)).toBeHidden();
+
       await page.getByLabel(/^New$/).click();
       await page.getByLabel(/^Folder$/).click();
 
       await page.getByRole("main").click();
 
-      await expect(page.getByLabel(/^New folder$/)).toBeVisible();
+      await expect(page.getByLabel(NEW_FOLDER_LABEL)).toBeVisible();
+
+      await page.reload();
+
+      await expect(page.getByLabel(NEW_FOLDER_LABEL)).toBeVisible();
     });
 
     test("can create file", async ({ page }) => {
+      await expect(page.getByLabel(NEW_FILE_LABEL)).toBeHidden();
+
       await page.getByLabel(/^New$/).click();
       await page.getByLabel(/^Text Document$/).click();
 
       await page.getByRole("main").click();
 
-      await expect(page.getByLabel(/^New Text Document.txt$/)).toBeVisible();
+      await expect(page.getByLabel(NEW_FILE_LABEL)).toBeVisible();
+
+      await page.reload();
+
+      await expect(page.getByLabel(NEW_FILE_LABEL)).toBeVisible();
     });
 
     // TODO: can create shortcut (expect prepended name & icon)

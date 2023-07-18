@@ -1,4 +1,4 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import type Eruda from "eruda";
 import type { InitOptions } from "eruda";

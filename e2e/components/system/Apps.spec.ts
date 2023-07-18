@@ -30,4 +30,8 @@ test.describe("app container", () => {
       `${(await firstFile.textContent()) || ""}.url - ${TEST_APP_CONTAINER_APP}`
     );
   });
+
+  // TODO: has loading
 });
+
+// TODO: iframe app -> loads url (Browser, IRC, Paint)

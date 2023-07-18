@@ -1,4 +1,3 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   config,
   CONTROL_BAR_HEIGHT,
@@ -9,6 +8,7 @@ import type {
   SourceObjectWithUrl,
   VideoPlayer,
 } from "components/apps/VideoPlayer/types";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
