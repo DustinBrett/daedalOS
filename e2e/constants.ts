@@ -78,6 +78,7 @@ export const TEST_SEARCH_RESULT = /^CREDITS.md$/;
 
 export const NEW_FOLDER_LABEL = /^New folder$/;
 export const NEW_FILE_LABEL = /^New Text Document.txt$/;
+export const NEW_FILE_LABEL_TEXT = "New Text Document.txt";
 
 export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
