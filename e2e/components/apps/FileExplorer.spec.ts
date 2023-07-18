@@ -121,6 +121,8 @@ test.describe("has file", () => {
   // TODO: can drop (from Desktop)
   // TODO: can cut/copy->paste (to Desktop)
   // TODO: can set backgound (image/video)
+  // TODO: can create shortcut (expect prepended name & icon)
+  // TODO: can delete
 });
 
 test("has status bar", async ({ page }) => {

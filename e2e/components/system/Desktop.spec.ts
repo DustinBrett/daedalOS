@@ -127,11 +127,31 @@ test.describe("has context menu", () => {
     await expect(page.getByLabel(NEW_FILE_LABEL)).toBeVisible();
   });
 
-  // TODO: can create shortcut (expect prepended name & icon)
-  // TODO: can upload file
-  // TODO: can open terminal
-  // TODO: can view page source
-  // TODO: can inspect page
+  test("can inspect", async ({ page }) => {
+    await page.getByLabel(/^Inspect$/).click();
+
+    await expect(
+      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^DevTools$/)
+    ).toBeVisible();
+  });
+
+  test("can view page source", async ({ page }) => {
+    await page.getByLabel(/^View page source$/).click();
+
+    await expect(
+      page
+        .locator(TASKBAR_ENTRY_SELECTOR)
+        .getByLabel(/^index.html - Monaco Editor$/)
+    ).toBeVisible();
+  });
+
+  test("can open terminal", async ({ page }) => {
+    await page.getByLabel(/^Open Terminal here$/).click();
+
+    await expect(
+      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^Terminal$/)
+    ).toBeVisible();
+  });
 });
 
 test.describe("has keyboard shortcuts", () => {

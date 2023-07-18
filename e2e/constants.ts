@@ -19,6 +19,7 @@ export const TASKBAR_SELECTOR = `${DESKTOP_ELEMENT}>nav`;
 export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_SELECTOR}>${ENTRY_SELECTOR}`;
 export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER}>nav`;
 export const SELECTION_SELECTOR = `${DESKTOP_ELEMENT}>ol>span`;
+export const SHEEP_SELECTOR = `${DESKTOP_ELEMENT}>div>img[src^=data]`;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = ["meta-viewport"];
 
