@@ -237,14 +237,6 @@ export const handleFileInputEvent = (
   if (text) {
     try {
       const filePaths = JSON.parse(text) as string[];
-
-      if (
-        !Array.isArray(filePaths) ||
-        filePaths.every((filePath) => dirname(filePath) === directory)
-      ) {
-        return;
-      }
-
       const isSingleFile = filePaths.length === 1;
       const objectReaders = filePaths.map((filePath) => {
         let aborted = false;
@@ -274,6 +266,13 @@ export const handleFileInputEvent = (
           callback(singleFile.name, undefined, COMPLETE_ACTION.UPDATE_URL);
         }
         if (hasUpdateId || singleFile.directory === singleFile.name) return;
+      }
+
+      if (
+        !Array.isArray(filePaths) ||
+        filePaths.every((filePath) => dirname(filePath) === directory)
+      ) {
+        return;
       }
 
       openTransferDialog(objectReaders);

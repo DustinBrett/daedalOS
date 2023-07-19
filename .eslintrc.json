@@ -7,8 +7,8 @@
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
-    "plugin:jest-dom/recommended",
     "plugin:jsx-a11y/recommended",
+    "plugin:playwright/recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:sonarjs/recommended",
@@ -25,7 +25,6 @@
     "@typescript-eslint",
     "import",
     "jest",
-    "jest-dom",
     "prettier",
     "react",
     "sonarjs",
@@ -87,6 +86,10 @@
     "import/newline-after-import": "error",
     "import/no-cycle": "off",
     "import/no-duplicates": "error",
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["**/*.config.ts", "**/*.spec.ts", "**/*.spec.tsx"] }
+    ],
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",

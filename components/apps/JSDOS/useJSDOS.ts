@@ -1,10 +1,10 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   CAPTURED_KEYS,
   dosOptions,
   pathPrefix,
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";

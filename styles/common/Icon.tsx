@@ -80,7 +80,7 @@ const Icon = forwardRef<
     <StyledIcon
       ref={ref}
       $loaded={loaded}
-      onError={({ target }: React.SyntheticEvent<HTMLImageElement>) => {
+      onError={({ target }) => {
         const { currentSrc = "" } = (target as HTMLImageElement) || {};
 
         if (currentSrc && !failedUrls.includes(currentSrc)) {

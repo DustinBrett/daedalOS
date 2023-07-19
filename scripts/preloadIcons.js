@@ -47,8 +47,7 @@ const getPublicDirectoryIcons = (directory) => {
       } = parse(readFileSync(join(baseDirectory, file)).toString());
 
       if (icon) icons.push(encodeURI(icon));
-
-      if (isDesktop) {
+      else if (isDesktop) {
         if (pid === "VideoPlayer") {
           if (!icons.includes(VLC_SUBICON)) icons.push(encodeURI(VLC_SUBICON));
           if (isYouTubeUrl(url)) {
@@ -60,6 +59,8 @@ const getPublicDirectoryIcons = (directory) => {
               existsSync(join("./public", YT_ICON_CACHE, `${iconFileName}`))
             ) {
               icons.push(encodeURI(`${YT_ICON_CACHE}${iconFileName}`));
+
+              return icons;
             }
           }
         }

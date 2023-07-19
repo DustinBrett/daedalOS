@@ -3,6 +3,10 @@
 node_modules
 out
 
+test-results
+playwright-report
+playwright/.cache
+
 public/robots.txt
 public/sitemap.xml
 public/.index/*

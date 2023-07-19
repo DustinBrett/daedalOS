@@ -1,4 +1,4 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";

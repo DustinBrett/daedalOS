@@ -1,4 +1,3 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
@@ -13,6 +12,7 @@ import type {
   V86Starter,
 } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
