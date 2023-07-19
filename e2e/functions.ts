@@ -8,7 +8,9 @@ import {
   FILE_EXPLORER_FILE_ENTRY_SELECTOR,
   SHEEP_SELECTOR,
   START_BUTTON_LABEL,
+  START_MENU_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
+  TASKBAR_SELECTOR,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
 } from "e2e/constants";
@@ -81,16 +83,20 @@ export const taskbarEntryIsVisible = async ({
 }: TestProps): Promise<void> =>
   expect(page.locator(TASKBAR_ENTRY_SELECTOR)).toBeVisible();
 
-export const isMaximized = ([
-  windowSelector,
-  taskbarSelector,
-]: string[]): boolean =>
-  window.innerWidth ===
-    (document.querySelector(windowSelector) as HTMLElement)?.clientWidth &&
-  window.innerHeight -
-    ((document.querySelector(taskbarSelector) as HTMLElement)?.clientHeight ||
-      0) ===
-    (document.querySelector(windowSelector) as HTMLElement)?.clientHeight;
+export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    await page.waitForFunction(
+      ([windowSelector, taskbarSelector]: string[]) =>
+        window.innerWidth ===
+          (document.querySelector(windowSelector) as HTMLElement)
+            ?.clientWidth &&
+        window.innerHeight -
+          ((document.querySelector(taskbarSelector) as HTMLElement)
+            ?.clientHeight || 0) ===
+          (document.querySelector(windowSelector) as HTMLElement)?.clientHeight,
+      [WINDOW_SELECTOR, TASKBAR_SELECTOR]
+    )
+  ).toBeTruthy();
 
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
@@ -100,8 +106,20 @@ export const startButtonIsVisible = async ({
 }: TestProps): Promise<void> =>
   expect(page.getByLabel(START_BUTTON_LABEL)).toBeVisible();
 
+export const startMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.getByLabel(START_MENU_SELECTOR)).toBeHidden();
+
+export const startMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.getByLabel(START_MENU_SELECTOR)).toBeVisible();
+
 export const windowIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toBeHidden();
+
+export const windowIsOpaque = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "1");
+
+export const windowIsTransparent = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "0");
 
 export const windowIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect.poll(() => page.locator(WINDOW_SELECTOR).isVisible()).toBeTruthy();

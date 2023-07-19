@@ -133,6 +133,8 @@ test.describe("has context menu", () => {
     });
 
     test("can add file", async ({ page }) => {
+      await desktopEntryIsHidden(NEW_FILE_LABEL, { page });
+
       const uploadPromise = page.waitForEvent("filechooser");
 
       await page.getByLabel(/^Add file\(s\)$/).click();
@@ -161,6 +163,7 @@ test.describe("has context menu", () => {
     await page.reload();
 
     await canvasBackgroundIsHidden({ page });
+    await backgroundIsUrl({ page });
   });
 
   test("can inspect", async ({ page }) => {

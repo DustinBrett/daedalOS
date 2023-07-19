@@ -1,14 +1,15 @@
 import { expect, test } from "@playwright/test";
 import {
   DESKTOP_ELEMENT,
-  TASKBAR_SELECTOR,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
 } from "e2e/constants";
 import {
-  isMaximized,
   waitForAnimation,
   windowIsHidden,
+  windowIsMaximized,
+  windowIsOpaque,
+  windowIsTransparent,
   windowTitlebarEqualsText,
   windowTitlebarIsVisible,
 } from "e2e/functions";
@@ -24,16 +25,14 @@ test("has title", async ({ page }) =>
   windowTitlebarEqualsText("My PC", { page }));
 
 test("has minimize", async ({ page }) => {
-  const windowElement = page.locator(WINDOW_SELECTOR);
-
-  await expect(windowElement).toHaveCSS("opacity", "1");
+  await windowIsOpaque({ page });
 
   await page
     .locator(WINDOW_TITLEBAR_SELECTOR)
     .getByLabel(/^Minimize$/)
     .click();
 
-  await expect(windowElement).toHaveCSS("opacity", "0");
+  await windowIsTransparent({ page });
 });
 
 test.describe("has maximize", () => {
@@ -43,23 +42,13 @@ test.describe("has maximize", () => {
       .getByLabel(/^Maximize$/)
       .click();
 
-    expect(
-      await page.waitForFunction(isMaximized, [
-        WINDOW_SELECTOR,
-        TASKBAR_SELECTOR,
-      ])
-    ).toBeTruthy();
+    await windowIsMaximized({ page });
   });
 
   test("on double click titlebar", async ({ page }) => {
     await page.locator(WINDOW_TITLEBAR_SELECTOR).dblclick();
 
-    expect(
-      await page.waitForFunction(isMaximized, [
-        WINDOW_SELECTOR,
-        TASKBAR_SELECTOR,
-      ])
-    ).toBeTruthy();
+    await windowIsMaximized({ page });
   });
 });
 

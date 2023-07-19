@@ -2,13 +2,12 @@ import type { Locator } from "@playwright/test";
 
 type MenuItems = Record<string, boolean | ((browserName: string) => boolean)>;
 
-export const RIGHT_CLICK = { button: "right" } as Parameters<
-  Locator["click"]
->[0];
+type LocatorClickProps = Parameters<Locator["click"]>[0];
+type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
+
+export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
 export const EXACT = { exact: true };
-export const VISIBLE = { state: "visible" } as Parameters<
-  Locator["waitFor"]
->[0];
+export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 export const FORCE = { force: true };
 
 const NEXT_JS_CONTAINER = "#__next";

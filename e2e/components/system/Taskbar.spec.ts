@@ -50,15 +50,16 @@ test.describe("elements", () => {
 
       await page.reload();
 
-      await expect(page.getByLabel(/^Clock$/)).toContainText(CLOCK_REGEX);
+      const clock = page.getByLabel(/^Clock$/);
+
+      await expect(clock).toContainText(CLOCK_REGEX);
+      await expect(clock.locator("canvas")).toBeHidden();
     });
 
     test("with sheep", async ({ page }) => {
-      test.setTimeout(10000);
-
       const clock = page.getByLabel(/^Clock$/);
 
-      clock.click({ clickCount: 7 });
+      await clock.click({ clickCount: 7 });
 
       await sheepIsVisible({ page });
     });

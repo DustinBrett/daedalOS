@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { DESKTOP_ELEMENT, START_MENU_SELECTOR } from "e2e/constants";
-import { clickStartButton, loadApp } from "e2e/functions";
+import { DESKTOP_ELEMENT } from "e2e/constants";
+import {
+  clickStartButton,
+  loadApp,
+  startMenuIsHidden,
+  startMenuIsVisible,
+} from "e2e/functions";
 
 test.beforeEach(async ({ page }) => {
   await loadApp({ page });
@@ -26,19 +31,19 @@ test("has folders", async ({ page }) => {
 
 test.describe("can close", () => {
   test("via click", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
+    await startMenuIsVisible({ page });
 
     await clickStartButton({ page });
 
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+    await startMenuIsHidden({ page });
   });
 
   test("via blur", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
+    await startMenuIsVisible({ page });
 
-    page.getByRole(DESKTOP_ELEMENT).click();
+    await page.getByRole(DESKTOP_ELEMENT).click();
 
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+    await startMenuIsHidden({ page });
   });
 });
 
