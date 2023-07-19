@@ -1,10 +1,10 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
 } from "components/apps/TinyMCE/functions";
 import type { IRTFJS } from "components/apps/TinyMCE/types";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import {
   getModifiedTime,
   getProcessByFileExtension,

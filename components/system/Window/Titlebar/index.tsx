@@ -112,7 +112,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
             className="maximize"
             disabled={!allowResizing}
             onClick={onMaximize}
-            {...label("Maximize")}
+            {...label(maximized ? "Restore Down" : "Maximize")}
           >
             {maximized ? <MaximizedIcon /> : <MaximizeIcon />}
           </Button>

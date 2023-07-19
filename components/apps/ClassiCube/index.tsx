@@ -1,6 +1,6 @@
-import AppContainer from "components/apps/AppContainer";
 import StyledClassiCube from "components/apps/ClassiCube/StyledClassiCube";
 import useClassiCube from "components/apps/ClassiCube/useClassiCube";
+import AppContainer from "components/system/Apps/AppContainer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { haltEvent } from "utils/functions";
 

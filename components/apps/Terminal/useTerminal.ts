@@ -1,4 +1,3 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -7,6 +6,7 @@ import type {
   OnKeyEvent,
 } from "components/apps/Terminal/types";
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";

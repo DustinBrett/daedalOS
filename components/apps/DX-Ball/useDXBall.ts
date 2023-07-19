@@ -1,5 +1,5 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import { DX_BALL_GLOBALS, SAVE_PATH } from "components/apps/DX-Ball/constants";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";

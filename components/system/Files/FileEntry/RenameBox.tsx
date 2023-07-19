@@ -49,10 +49,10 @@ const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
       onBlurCapture={saveRename}
       onClick={haltEvent}
       onDragStart={haltEvent}
-      onKeyDown={({ key }: React.KeyboardEvent) => {
+      onKeyDown={({ key }) => {
         if (key === "Enter") saveRename();
       }}
-      onKeyUp={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      onKeyUp={(event) => {
         updateDimensions(event.target);
         haltEvent(event);
       }}

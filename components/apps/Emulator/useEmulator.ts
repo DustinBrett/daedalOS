@@ -1,7 +1,7 @@
-import type { ContainerHookProps } from "components/apps/AppContainer";
 import type { Core } from "components/apps/Emulator/config";
 import { emulatorCores } from "components/apps/Emulator/config";
 import type { Emulator } from "components/apps/Emulator/types";
+import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";

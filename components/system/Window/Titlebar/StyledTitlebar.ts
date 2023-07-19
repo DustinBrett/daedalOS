@@ -42,6 +42,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       display: flex;
       margin-left: 8px;
       min-width: inherit;
+      pointer-events: none;
       position: relative;
       top: -1px;
 
@@ -49,6 +50,11 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
         margin-right: ${({ theme }) => theme.sizes.titleBar.iconMarginRight};
         width: ${({ theme }) => theme.sizes.titleBar.iconSize};
+      }
+
+      img,
+      picture {
+        pointer-events: all;
       }
 
       figcaption {
