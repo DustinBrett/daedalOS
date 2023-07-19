@@ -1,23 +1,45 @@
 import { expect, test } from "@playwright/test";
 import {
+  BASE_APP_FAVICON,
   BASE_APP_TITLE,
   CONTEXT_MENU_SELECTOR,
-  DESKTOP_FILE_ENTRY_SELECTOR,
+  FAVICON_SELECTOR,
   FILE_MENU_ITEMS,
   RIGHT_CLICK,
-  SELECTION_SELECTOR,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_ROOT_FILE,
+  TEST_ROOT_FILE_TEXT,
   TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
   TEST_SEARCH_RESULT,
   WINDOW_SELECTOR,
 } from "e2e/constants";
+import {
+  clickFirstDesktopFileEntry,
+  contextMenuIsVisible,
+  desktopFileEntriesAreVisible,
+  desktopIsVisible,
+  fileExplorerFileEntriesAreVisible,
+  fileExplorerFileIsHidden,
+  fileExplorerFileIsVisible,
+  focusOnWindow,
+  windowIsVisible,
+} from "e2e/functions";
 
-test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
+test.beforeEach(async ({ page }) => {
+  await page.goto("/?app=FileExplorer");
+
+  await desktopIsVisible({ page });
+  await desktopFileEntriesAreVisible({ page });
+  await windowIsVisible({ page });
+  await fileExplorerFileEntriesAreVisible({ page });
+  await fileExplorerFileIsVisible(TEST_ROOT_FILE, { page });
+});
 
 test("has address bar", async ({ page }) => {
+  await focusOnWindow({ page });
+
   const addressBar = page.locator(WINDOW_SELECTOR).getByLabel(/^Address$/);
 
   await expect(addressBar).toHaveValue(TEST_APP_TITLE);
@@ -27,6 +49,8 @@ test("has address bar", async ({ page }) => {
   await expect(addressBar).toHaveValue("/");
 
   await addressBar.click(RIGHT_CLICK);
+
+  await contextMenuIsVisible({ page });
 
   await expect(
     page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^Copy address$/)
@@ -38,22 +62,76 @@ test("has search box", async ({ page }) => {
     .locator(WINDOW_SELECTOR)
     .getByLabel(/^Search box$/)
     .type(TEST_SEARCH, {
-      delay: 25,
+      delay: 50,
     });
+
+  await contextMenuIsVisible({ page });
 
   await expect(
     page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
   ).toBeVisible();
 });
 
+test("has status bar", async ({ page }) => {
+  const windowElement = page.locator(WINDOW_SELECTOR);
+
+  await windowElement.getByLabel(TEST_ROOT_FILE).click();
+
+  await expect(windowElement.getByLabel(/^Total item count$/)).toContainText(
+    /^\d items$/
+  );
+  await expect(
+    windowElement.getByLabel(/^Selected item count and size$/)
+  ).toContainText(/^1 item selected|\d{3} bytes$/);
+});
+
+test("changes title", async ({ page }) => {
+  const titleWithApp = `${TEST_APP_TITLE} - ${BASE_APP_TITLE}`;
+  const isUsingAppTitle = async (): Promise<void> =>
+    expect(page).toHaveTitle(titleWithApp);
+
+  await isUsingAppTitle();
+  await desktopFileEntriesAreVisible({ page });
+  await clickFirstDesktopFileEntry({ page });
+
+  await expect.poll(() => page.title()).toEqual(BASE_APP_TITLE);
+
+  await focusOnWindow({ page });
+
+  await isUsingAppTitle();
+});
+
+test("changes icon", async ({ page }) => {
+  const favIcon = page.locator(FAVICON_SELECTOR);
+  const isUsingAppIcon = async (): Promise<void> =>
+    expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute(
+      "href",
+      TEST_APP_ICON
+    );
+
+  await isUsingAppIcon();
+  await desktopFileEntriesAreVisible({ page });
+  await clickFirstDesktopFileEntry({ page });
+
+  await expect
+    .poll(() => favIcon.getAttribute("href"))
+    .toMatch(BASE_APP_FAVICON);
+
+  await focusOnWindow({ page });
+
+  await isUsingAppIcon();
+});
+
 test.describe("has file", () => {
   test.describe("has context menu", () => {
-    test.beforeEach(async ({ page }) =>
+    test.beforeEach(async ({ page }) => {
       page
         .locator(WINDOW_SELECTOR)
         .getByLabel(TEST_ROOT_FILE)
-        .click(RIGHT_CLICK)
-    );
+        .click(RIGHT_CLICK);
+
+      await contextMenuIsVisible({ page });
+    });
 
     test("with items", async ({ page }) => {
       const menu = page.locator(CONTEXT_MENU_SELECTOR);
@@ -76,17 +154,15 @@ test.describe("has file", () => {
     });
 
     test("can delete", async ({ page }) => {
-      const rootFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
-
-      await expect(rootFile).toBeVisible();
-
       await page.getByLabel(/^Delete$/).click();
 
-      await expect(rootFile).toBeHidden();
+      await fileExplorerFileIsHidden(TEST_ROOT_FILE, { page });
 
       await page.reload();
 
-      await expect(rootFile).toBeHidden();
+      await windowIsVisible({ page });
+
+      await fileExplorerFileIsHidden(TEST_ROOT_FILE, { page });
     });
 
     // TODO: can cut/copy->paste (to Desktop)
@@ -94,86 +170,24 @@ test.describe("has file", () => {
     // TODO: can create shortcut (expect prepended name & icon)
   });
 
-  test("with tooltip", async ({ page }) => {
+  test("with tooltip", async ({ page, request }) => {
     const testFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
 
+    // Q: Why both?
+    await testFile.hover();
     await testFile.click();
 
-    expect(await testFile.getAttribute("title")).toMatch(
-      TEST_ROOT_FILE_TOOLTIP
-    );
-  });
+    const statsRequest = await request.head(TEST_ROOT_FILE_TEXT);
 
-  test.describe("with selection", () => {
-    test("effect", async ({ page }) => {
-      const viewport = page.viewportSize();
-      // eslint-disable-next-line playwright/no-conditional-in-test
-      const x = (viewport?.width || 0) / 2;
-      // eslint-disable-next-line playwright/no-conditional-in-test
-      const y = (viewport?.height || 0) / 2;
-      const SELECTION_OFFSET = 25;
+    await expect(statsRequest).toBeOK();
 
-      await page.mouse.move(x, y);
-      await page.mouse.down({
-        button: "left",
-      });
-      await page.mouse.move(x + SELECTION_OFFSET, y + SELECTION_OFFSET);
-
-      const selection = page.locator(SELECTION_SELECTOR);
-
-      await expect(selection).toBeVisible();
-
-      const boundingBox = await selection.boundingBox();
-
-      expect(boundingBox?.width).toEqual(SELECTION_OFFSET);
-      expect(boundingBox?.height).toEqual(SELECTION_OFFSET);
-      expect(boundingBox?.x).toEqual(x);
-      expect(boundingBox?.y).toEqual(y);
-    });
-
-    // TODO: file entry (single/multi)
+    await expect
+      .poll(() => testFile.getAttribute("title"))
+      .toMatch(TEST_ROOT_FILE_TOOLTIP);
   });
 
   // TODO: can drag (to Desktop)
   // TODO: can drop (from Desktop)
-});
-
-test("has status bar", async ({ page }) => {
-  const windowElement = page.locator(WINDOW_SELECTOR);
-
-  await windowElement.getByLabel(TEST_ROOT_FILE).click();
-
-  await expect(windowElement.getByLabel(/^Total item count$/)).toContainText(
-    /^\d items$/
-  );
-  await expect(
-    windowElement.getByLabel(/^Selected item count and size$/)
-  ).toContainText(/^1 item selected|\d{3} bytes$/);
-});
-
-test("changes title", async ({ page }) => {
-  await expect(page).toHaveTitle(BASE_APP_TITLE);
-
-  await page.locator(WINDOW_SELECTOR).click();
-
-  await expect(page).toHaveTitle(`${TEST_APP_TITLE} - ${BASE_APP_TITLE}`);
-});
-
-test("changes icon", async ({ page }) => {
-  const favIcon = page.locator("link[rel=icon]");
-
-  await expect(favIcon).toBeHidden();
-
-  await page.locator(WINDOW_SELECTOR).click();
-
-  await expect(page.locator("link[rel=icon]")).toHaveAttribute(
-    "href",
-    TEST_APP_ICON
-  );
-
-  await page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first().click();
-
-  await expect(favIcon).toHaveAttribute("href", /^\/favicon.ico$/);
 });
 
 // TODO: has context menu (FOLDER_MENU_ITEMS)

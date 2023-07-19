@@ -5,7 +5,6 @@ const PORT = process.env.PORT || 3000;
 const baseURL = `http://localhost:${PORT}`;
 
 const config: PlaywrightTestConfig = {
-  expect: { timeout: 30000 },
   fullyParallel: true,
   projects: [
     {
@@ -24,7 +23,6 @@ const config: PlaywrightTestConfig = {
     },
   ],
   reporter: process.env.CI ? "dot" : [["html", { open: "always" }]],
-  retries: 3,
   testDir: "e2e",
   use: {
     baseURL,

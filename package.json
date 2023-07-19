@@ -25,6 +25,7 @@
     "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
     "dev": "next dev",
     "e2e": "playwright test",
+    "e2e:debug": "playwright test --debug",
     "eslint": "eslint --report-unused-disable-directives .",
     "export": "next export",
     "prepare": "husky install",
@@ -32,7 +33,6 @@
     "start": "next start",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
-    "test:watch": "jest --watch",
     "unused-exports": "ts-prune --project tsconfig.json --ignore \"\\pages|\\e2e\" --error"
   },
   "lint-staged": {

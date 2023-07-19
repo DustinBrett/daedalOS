@@ -2,27 +2,32 @@ import { expect, test } from "@playwright/test";
 import {
   CLOCK_REGEX,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
-  SHEEP_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
   TEST_APP,
   TEST_APP_ICON,
   TEST_APP_TITLE,
 } from "e2e/constants";
+import {
+  clickStartButton,
+  disableOffscreenCanvas,
+  loadApp,
+  sheepIsVisible,
+  startButtonIsVisible,
+  taskbarEntryIsVisible,
+} from "e2e/functions";
 
 test.describe("elements", () => {
-  test.beforeEach(async ({ page }) => page.goto("/"));
+  test.beforeEach(loadApp);
 
   test.describe("has start button", () => {
-    test("is visible", async ({ page }) => {
-      await expect(page.getByLabel(/^Start$/)).toBeVisible();
-    });
+    test("is visible", startButtonIsVisible);
 
     test("with sheep", async ({ page }) => {
-      page.keyboard.down("Control");
-      page.keyboard.down("Shift");
-      page.getByLabel(/^Start$/).click();
+      await page.keyboard.down("Control");
+      await page.keyboard.down("Shift");
 
-      await expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
+      await clickStartButton({ page });
+      await sheepIsVisible({ page });
     });
 
     // TODO: has context menu
@@ -41,9 +46,7 @@ test.describe("elements", () => {
     });
 
     test("via text", async ({ page }) => {
-      await page.addInitScript(() => {
-        delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
-      });
+      await page.addInitScript(disableOffscreenCanvas);
 
       await page.reload();
 
@@ -51,11 +54,13 @@ test.describe("elements", () => {
     });
 
     test("with sheep", async ({ page }) => {
+      test.setTimeout(10000);
+
       const clock = page.getByLabel(/^Clock$/);
 
       clock.click({ clickCount: 7 });
 
-      await expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
+      await sheepIsVisible({ page });
     });
 
     // TODO: has context menu
@@ -72,9 +77,7 @@ test.describe("entries", () => {
   test.beforeEach(async ({ page }) => page.goto(`/?app=${TEST_APP}`));
 
   test.describe("has entry", () => {
-    test.beforeEach(async ({ page }) =>
-      expect(page.locator(TASKBAR_ENTRY_SELECTOR)).toBeVisible()
-    );
+    test.beforeEach(taskbarEntryIsVisible);
 
     test("with title", async ({ page }) =>
       expect(

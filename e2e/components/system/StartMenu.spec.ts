@@ -1,10 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { START_MENU_SELECTOR } from "e2e/constants";
+import { DESKTOP_ELEMENT, START_MENU_SELECTOR } from "e2e/constants";
+import { clickStartButton, loadApp } from "e2e/functions";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+  await loadApp({ page });
 
-  await page.getByLabel(/^Start$/).click();
+  await clickStartButton({ page });
 });
 
 test.describe("has sidebar", () => {
@@ -27,7 +28,7 @@ test.describe("can close", () => {
   test("via click", async ({ page }) => {
     await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
 
-    await page.getByLabel(/^Start$/).click();
+    await clickStartButton({ page });
 
     await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
   });
@@ -35,7 +36,7 @@ test.describe("can close", () => {
   test("via blur", async ({ page }) => {
     await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
 
-    page.locator("main").click();
+    page.getByRole(DESKTOP_ELEMENT).click();
 
     await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
   });

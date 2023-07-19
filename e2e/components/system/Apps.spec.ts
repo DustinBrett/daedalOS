@@ -1,11 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
   DESKTOP_FILE_ENTRY_SELECTOR,
   FILE_DRAG_NOT_WORKING_BROWSERS,
+  FORCE,
   TEST_APP_CONTAINER_APP,
   WINDOW_SELECTOR,
-  WINDOW_TITLEBAR_SELECTOR,
 } from "e2e/constants";
+import {
+  desktopFileEntriesAreVisible,
+  windowIsVisible,
+  windowTitlebarEqualsText,
+  windowTitlebarIsVisible,
+} from "e2e/functions";
 
 test.describe("app container", () => {
   test("has drop", async ({ browserName, page }) => {
@@ -16,18 +22,23 @@ test.describe("app container", () => {
 
     await page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
 
-    await expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toContainText(
-      TEST_APP_CONTAINER_APP
-    );
+    await windowIsVisible({ page });
+
+    await windowTitlebarIsVisible({ page });
+
+    await windowTitlebarEqualsText(TEST_APP_CONTAINER_APP, { page });
+
+    await desktopFileEntriesAreVisible({ page });
 
     const firstFile = page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first();
 
-    await expect(firstFile).toBeVisible();
+    await firstFile.dragTo(page.locator(WINDOW_SELECTOR), FORCE);
 
-    await firstFile.dragTo(page.locator(WINDOW_SELECTOR));
-
-    await expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toContainText(
-      `${(await firstFile.textContent()) || ""}.url - ${TEST_APP_CONTAINER_APP}`
+    await windowTitlebarEqualsText(
+      `${
+        (await firstFile.textContent()) || ""
+      }.url - ${TEST_APP_CONTAINER_APP}`,
+      { page }
     );
   });
 
