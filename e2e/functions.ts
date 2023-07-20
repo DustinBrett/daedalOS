@@ -41,6 +41,19 @@ export const clickDesktop = async ({ page }: TestProps): Promise<void> =>
 export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
 
+export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
+  page.locator(WINDOW_SELECTOR).focus();
+
+// locator->getByLabel->action
+export const clickClock = async (
+  { page }: TestProps,
+  clickCount = 1
+): Promise<void> =>
+  page
+    .locator(TASKBAR_SELECTOR)
+    .getByLabel(/^Clock$/)
+    .click({ clickCount });
+
 export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
   page
     .locator(WINDOW_TITLEBAR_SELECTOR)
@@ -59,19 +72,6 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .getByLabel(/^Minimize$/)
     .click();
 
-export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
-  page.locator(WINDOW_SELECTOR).focus();
-
-// locator->getByLabel->action
-export const clickClock = async (
-  { page }: TestProps,
-  clickCount = 1
-): Promise<void> =>
-  page
-    .locator(TASKBAR_SELECTOR)
-    .getByLabel(/^Clock$/)
-    .click({ clickCount });
-
 // Q: Is this even needed?
 export const windowAnimationIsFinished = async ({
   page,
@@ -82,7 +82,7 @@ export const windowAnimationIsFinished = async ({
       Promise.all(element.getAnimations().map(({ finished }) => finished))
     );
 
-// expect->waitForFunction (Could these be a poll/eval?)
+// expect->waitForFunction (Q: Could these be a poll/eval?)
 export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
   expect(
     await page.waitForFunction(() =>
@@ -176,6 +176,19 @@ export const clockTextIsVisible = async ({ page }: TestProps): Promise<void> =>
       .getByText(CLOCK_REGEX)
   ).toBeVisible();
 
+// expect->locator->getBy->getAttr
+export const taskbarEntryHasTooltip = async (
+  label: RegExp,
+  title: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    await page
+      .locator(TASKBAR_ENTRIES_SELECTOR)
+      .getByLabel(label)
+      .getAttribute("title")
+  ).toMatch(title);
+
 // expect->locator->getBy->locator
 export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(
@@ -204,20 +217,7 @@ export const taskbarEntryHasIcon = async (
     page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
-// expect->locator->getBy->getAttribute
-export const taskbarEntryHasTooltip = async (
-  label: RegExp,
-  title: RegExp,
-  { page }: TestProps
-): Promise<void> =>
-  expect(
-    await page
-      .locator(TASKBAR_ENTRIES_SELECTOR)
-      .getByLabel(label)
-      .getAttribute("title")
-  ).toMatch(title);
-
-// expect->locator->first
+// expect->poll_count->locator_first
 export const desktopFileEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> => {
