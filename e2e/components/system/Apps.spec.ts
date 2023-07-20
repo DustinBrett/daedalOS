@@ -19,6 +19,7 @@ test.describe("app container", () => {
     page.goto(`/?app=${TEST_APP_CONTAINER_APP}`)
   );
 
+  // TODO: Make windowIsStable
   test.beforeEach(windowIsVisible);
 
   test("has drop", async ({ browserName, page }) => {
@@ -41,6 +42,7 @@ test.describe("app container", () => {
   });
 
   // TODO: has loading
+  // TODO: has error
 });
 
 // TODO: iframe app -> loads url (Browser, IRC, Paint)

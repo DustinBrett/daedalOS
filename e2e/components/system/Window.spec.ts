@@ -20,6 +20,7 @@ import {
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 
 test.beforeEach(windowIsVisible);
+// TODO: Check if window animation is indeed happening, and wait for it
 test.beforeEach(windowTitlebarIsVisible);
 
 test("has title", async ({ page }) =>

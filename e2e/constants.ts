@@ -31,6 +31,10 @@ export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
+export const CALENDAR_LABEL = /^Calendar$/;
+export const CLOCK_LABEL = /^Clock$/;
+export const START_BUTTON_LABEL = /^Start$/;
+
 export const ACCESSIBILITY_EXCEPTION_IDS = [
   "aria-allowed-role",
   "image-redundant-alt",
@@ -80,19 +84,23 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
-// TODO: Can this all be regex? Check for ^...$
+// TODO: Can this all be regex, why any text? Check for ^...$
+// TODO: Use TEXT/LABEL naming
 // TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
+
 export const TEST_APP = "FileExplorer";
 export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
+
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
 export const TEST_ROOT_FILE_TOOLTIP =
   /^Type: Markdown File\nSize: \d\.\d\d KB\nDate modified: \b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
+
 export const TEST_SEARCH = "CREDITS";
 export const TEST_SEARCH_RESULT = /^CREDITS.md$/;
 
@@ -104,5 +112,3 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
-
-export const START_BUTTON_LABEL = /^Start$/;

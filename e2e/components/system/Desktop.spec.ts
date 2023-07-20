@@ -9,7 +9,6 @@ import {
   NEW_FILE_LABEL,
   NEW_FILE_LABEL_TEXT,
   NEW_FOLDER_LABEL,
-  RIGHT_CLICK,
   SELECTION_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
 } from "e2e/constants";
@@ -17,6 +16,7 @@ import {
   backgroundIsUrl,
   canvasBackgroundIsHidden,
   canvasBackgroundIsVisible,
+  clickDesktop,
   contextMenuIsVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
@@ -77,9 +77,7 @@ test.describe("has selection", () => {
 });
 
 test.describe("has context menu", () => {
-  test.beforeEach(async ({ page }) =>
-    page.locator(DESKTOP_SELECTOR).click(RIGHT_CLICK)
-  );
+  test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
   test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
