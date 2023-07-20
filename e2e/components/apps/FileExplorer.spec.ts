@@ -25,7 +25,6 @@ import {
   fileExplorerEntryIsVisible,
   fileExplorerFileEntriesAreVisible,
   focusOnWindow,
-  windowAnimationIsFinished,
   windowIsVisible,
 } from "e2e/functions";
 
@@ -35,7 +34,6 @@ test.beforeEach(async ({ page }) => {
   await desktopIsVisible({ page });
   await desktopFileEntriesAreVisible({ page });
   await windowIsVisible({ page });
-  await windowAnimationIsFinished({ page });
   await fileExplorerFileEntriesAreVisible({ page });
   await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
 });

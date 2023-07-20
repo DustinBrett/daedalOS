@@ -72,16 +72,6 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .getByLabel(/^Minimize$/)
     .click();
 
-// Q: Is this even needed?
-export const windowAnimationIsFinished = async ({
-  page,
-}: TestProps): Promise<Animation[]> =>
-  page
-    .locator(WINDOW_SELECTOR)
-    .evaluate((element) =>
-      Promise.all(element.getAnimations().map(({ finished }) => finished))
-    );
-
 // expect->waitForFunction (Q: Could these be a poll/eval?)
 export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
   expect(

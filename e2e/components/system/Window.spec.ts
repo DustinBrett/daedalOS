@@ -8,7 +8,6 @@ import {
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
-  windowAnimationIsFinished,
   windowIsHidden,
   windowIsMaximized,
   windowIsOpaque,
@@ -21,7 +20,6 @@ import {
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 
 test.beforeEach(windowIsVisible);
-test.beforeEach(windowAnimationIsFinished);
 test.beforeEach(windowTitlebarIsVisible);
 
 test("has title", async ({ page }) =>
