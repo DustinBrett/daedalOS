@@ -223,7 +223,7 @@ export const desktopFileEntriesAreVisible = async ({
 }: TestProps): Promise<void> => {
   const desktopEntries = page.locator(DESKTOP_ENTRIES_SELECTOR);
 
-  expect(await desktopEntries.count()).toBeGreaterThan(0);
+  await expect.poll(async () => desktopEntries.count()).toBeGreaterThan(0);
   await expect(desktopEntries.first()).toBeVisible();
 };
 
@@ -232,7 +232,7 @@ export const fileExplorerFileEntriesAreVisible = async ({
 }: TestProps): Promise<void> => {
   const fileExplorerEntries = page.locator(FILE_EXPLORER_ENTRIES_SELECTOR);
 
-  expect(await fileExplorerEntries.count()).toBeGreaterThan(0);
+  await expect.poll(async () => fileExplorerEntries.count()).toBeGreaterThan(0);
   await expect(fileExplorerEntries.first()).toBeVisible();
 };
 
@@ -241,7 +241,7 @@ export const taskbarEntriesAreVisible = async ({
 }: TestProps): Promise<void> => {
   const taskbarEntries = page.locator(TASKBAR_ENTRIES_SELECTOR);
 
-  expect(await taskbarEntries.count()).toBeGreaterThan(0);
+  await expect.poll(async () => taskbarEntries.count()).toBeGreaterThan(0);
   await expect(taskbarEntries.first()).toBeVisible();
 };
 
