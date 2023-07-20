@@ -30,8 +30,6 @@ export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
-export const START_BUTTON_LABEL = /^Start$/;
-
 export const ACCESSIBILITY_EXCEPTION_IDS = [
   "aria-allowed-role",
   "image-redundant-alt",
@@ -102,3 +100,5 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
+
+export const START_BUTTON_LABEL = /^Start$/;
