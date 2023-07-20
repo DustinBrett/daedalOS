@@ -220,18 +220,30 @@ export const taskbarEntryHasTooltip = async (
 // expect->locator->first
 export const desktopFileEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(DESKTOP_ENTRIES_SELECTOR).first()).toBeVisible();
+}: TestProps): Promise<void> => {
+  const desktopEntries = page.locator(DESKTOP_ENTRIES_SELECTOR);
+
+  expect(await desktopEntries.count()).toBeGreaterThan(0);
+  await expect(desktopEntries.first()).toBeVisible();
+};
 
 export const fileExplorerFileEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).first()).toBeVisible();
+}: TestProps): Promise<void> => {
+  const fileExplorerEntries = page.locator(FILE_EXPLORER_ENTRIES_SELECTOR);
+
+  expect(await fileExplorerEntries.count()).toBeGreaterThan(0);
+  await expect(fileExplorerEntries.first()).toBeVisible();
+};
 
 export const taskbarEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(TASKBAR_ENTRIES_SELECTOR).first()).toBeVisible();
+}: TestProps): Promise<void> => {
+  const taskbarEntries = page.locator(TASKBAR_ENTRIES_SELECTOR);
+
+  expect(await taskbarEntries.count()).toBeGreaterThan(0);
+  await expect(taskbarEntries.first()).toBeVisible();
+};
 
 // expect->locator
 export const canvasBackgroundIsHidden = async ({

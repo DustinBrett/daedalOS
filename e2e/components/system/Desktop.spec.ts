@@ -26,11 +26,8 @@ import {
   taskbarEntriesAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(async ({ page }) => {
-  await loadApp({ page });
-
-  await desktopIsVisible({ page });
-});
+test.beforeEach(loadApp);
+test.beforeEach(desktopIsVisible);
 
 test("pass accessibility scan", async ({ page }) =>
   expect(
@@ -51,6 +48,7 @@ test.describe("has selection", () => {
   test("with effect", async ({ page }) => {
     const { width = 0, height = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
+
     const x = width / 2;
     const y = height / 2;
     const SELECTION_OFFSET = 25;
@@ -79,24 +77,23 @@ test.describe("has selection", () => {
 });
 
 test.describe("has context menu", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.locator(DESKTOP_SELECTOR).click(RIGHT_CLICK);
-
-    await contextMenuIsVisible({ page });
-  });
+  test.beforeEach(async ({ page }) =>
+    page.locator(DESKTOP_SELECTOR).click(RIGHT_CLICK)
+  );
+  test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
+    const items = page.locator(CONTEXT_MENU_SELECTOR);
     const MENU_ITEMS = Object.entries(DESKTOP_MENU_ITEMS).map(
       ([label, shown]) => [
         label,
         typeof shown === "boolean" ? shown : shown(browserName),
       ]
     );
-    const menuItems = page.locator(CONTEXT_MENU_SELECTOR);
 
     for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
-      await expect(menuItems.getByLabel(label as string, EXACT))[
+      await expect(items.getByLabel(label as string, EXACT))[
         shown ? "toBeVisible" : "toBeHidden"
       ]();
     }
