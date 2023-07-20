@@ -10,22 +10,26 @@ export const EXACT = { exact: true };
 export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 export const FORCE = { force: true };
 
-const NEXT_JS_CONTAINER = "#__next";
-const ENTRY_SELECTOR = "ol>li";
+const APP_CONTAINER_SELECTOR = "div";
+const VIEWPORT_SELECTOR = "div";
+const WINDOW_DRAG_SELECTOR = ".react-draggable";
+const NEXT_JS_CONTAINER_SELECTOR = "body>#__next";
 
-export const DESKTOP_ELEMENT = "main";
-export const FAVICON_SELECTOR = "link[rel=icon]";
-export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_ELEMENT}>canvas`;
-export const DESKTOP_FILE_ENTRY_SELECTOR = `${DESKTOP_ELEMENT}>${ENTRY_SELECTOR}`;
-export const WINDOW_SELECTOR = `${DESKTOP_ELEMENT}>.react-draggable>section`;
-export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>div>header`;
-export const FILE_EXPLORER_FILE_ENTRY_SELECTOR = `${WINDOW_SELECTOR}>div>div>${ENTRY_SELECTOR}`;
-export const TASKBAR_SELECTOR = `${DESKTOP_ELEMENT}>nav:not([style])`;
-export const START_MENU_SELECTOR = `${DESKTOP_ELEMENT}>nav[style]`;
-export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_SELECTOR}>${ENTRY_SELECTOR}`;
-export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER}>nav`;
-export const SELECTION_SELECTOR = `${DESKTOP_ELEMENT}>ol>span`;
-export const SHEEP_SELECTOR = `${DESKTOP_ELEMENT}>div>img[src^=data]`;
+export const FAVICON_SELECTOR = "head>link[rel=icon]";
+export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>nav`;
+export const DESKTOP_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>main`;
+export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_SELECTOR}>canvas`;
+export const DESKTOP_ENTRIES_SELECTOR = `${DESKTOP_SELECTOR}>ol>li`;
+export const SELECTION_SELECTOR = `${DESKTOP_SELECTOR}>ol>span`;
+export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
+export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol>li`;
+export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
+export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
+export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
+export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
+export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
+export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
+
 export const START_BUTTON_LABEL = /^Start$/;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = [
@@ -77,6 +81,7 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
+// TODO: Can this all be regex? Check for ^...$
 // TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP = "FileExplorer";
