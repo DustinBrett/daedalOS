@@ -8,6 +8,7 @@ import {
   RIGHT_CLICK,
   TEST_APP_ICON,
   TEST_APP_TITLE,
+  TEST_APP_TITLE_TEXT,
   TEST_ROOT_FILE,
   TEST_ROOT_FILE_TEXT,
   TEST_ROOT_FILE_TOOLTIP,
@@ -16,15 +17,15 @@ import {
   WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
-  clickFirstDesktopFileEntry,
+  clickFirstDesktopEntry,
   contextMenuIsVisible,
   desktopFileEntriesAreVisible,
   desktopIsVisible,
+  fileExplorerEntryIsHidden,
+  fileExplorerEntryIsVisible,
   fileExplorerFileEntriesAreVisible,
-  fileExplorerFileIsHidden,
-  fileExplorerFileIsVisible,
   focusOnWindow,
-  waitForAnimation,
+  windowAnimationIsFinished,
   windowIsVisible,
 } from "e2e/functions";
 
@@ -34,9 +35,9 @@ test.beforeEach(async ({ page }) => {
   await desktopIsVisible({ page });
   await desktopFileEntriesAreVisible({ page });
   await windowIsVisible({ page });
-  await waitForAnimation(WINDOW_SELECTOR, { page });
+  await windowAnimationIsFinished({ page });
   await fileExplorerFileEntriesAreVisible({ page });
-  await fileExplorerFileIsVisible(TEST_ROOT_FILE, { page });
+  await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
 });
 
 test("has address bar", async ({ page }) => {
@@ -88,13 +89,13 @@ test("has status bar", async ({ page }) => {
 });
 
 test("changes title", async ({ page }) => {
-  const titleWithApp = `${TEST_APP_TITLE} - ${BASE_APP_TITLE}`;
+  const titleWithApp = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
   const isUsingAppTitle = async (): Promise<void> =>
     expect(page).toHaveTitle(titleWithApp);
 
   await isUsingAppTitle();
   await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopFileEntry({ page });
+  await clickFirstDesktopEntry({ page });
 
   await expect.poll(() => page.title()).toEqual(BASE_APP_TITLE);
 
@@ -113,7 +114,7 @@ test("changes icon", async ({ page }) => {
 
   await isUsingAppIcon();
   await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopFileEntry({ page });
+  await clickFirstDesktopEntry({ page });
 
   await expect
     .poll(() => favIcon.getAttribute("href"))
@@ -158,13 +159,13 @@ test.describe("has file", () => {
     test("can delete", async ({ page }) => {
       await page.getByLabel(/^Delete$/).click();
 
-      await fileExplorerFileIsHidden(TEST_ROOT_FILE, { page });
+      await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
 
       await page.reload();
 
       await windowIsVisible({ page });
 
-      await fileExplorerFileIsHidden(TEST_ROOT_FILE, { page });
+      await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
     // TODO: can cut/copy->paste (to Desktop)

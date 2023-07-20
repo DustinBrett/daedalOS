@@ -1,48 +1,45 @@
 import { expect, test } from "@playwright/test";
-import { DESKTOP_ELEMENT } from "e2e/constants";
+import { START_MENU_SELECTOR } from "e2e/constants";
 import {
+  clickDesktop,
   clickStartButton,
   loadApp,
   startMenuIsHidden,
   startMenuIsVisible,
 } from "e2e/functions";
 
-test.beforeEach(async ({ page }) => {
-  await loadApp({ page });
-
-  await clickStartButton({ page });
-});
+test.beforeEach(loadApp);
+test.beforeEach(clickStartButton);
+test.beforeEach(startMenuIsVisible);
 
 test.describe("has sidebar", () => {
   test("with buttons", async ({ page }) => {
-    await expect(page.getByLabel(/^All apps$/)).toBeVisible();
-    await expect(page.getByLabel(/^Power$/)).toBeVisible();
+    const startMenu = page.locator(START_MENU_SELECTOR);
+
+    await expect(startMenu.getByLabel(/^All apps$/)).toBeVisible();
+    await expect(startMenu.getByLabel(/^Power$/)).toBeVisible();
   });
 
   // TODO: can expand
 });
 
 test("has folders", async ({ page }) => {
-  await expect(page.getByLabel(/^Emulators$/)).toBeVisible();
-  await expect(page.getByLabel(/^Games$/)).toBeVisible();
+  const startMenu = page.locator(START_MENU_SELECTOR);
+
+  await expect(startMenu.getByLabel(/^Emulators$/)).toBeVisible();
+  await expect(startMenu.getByLabel(/^Games$/)).toBeVisible();
 
   // TODO: w/read-only context menu
 });
 
 test.describe("can close", () => {
-  test("via click", async ({ page }) => {
-    await startMenuIsVisible({ page });
-
+  test("via button", async ({ page }) => {
     await clickStartButton({ page });
-
     await startMenuIsHidden({ page });
   });
 
   test("via blur", async ({ page }) => {
-    await startMenuIsVisible({ page });
-
-    await page.getByRole(DESKTOP_ELEMENT).click();
-
+    await clickDesktop({ page });
     await startMenuIsHidden({ page });
   });
 });

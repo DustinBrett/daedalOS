@@ -1,43 +1,41 @@
 import { test } from "@playwright/test";
 import {
-  DESKTOP_FILE_ENTRY_SELECTOR,
-  FILE_DRAG_NOT_WORKING_BROWSERS,
-  FORCE,
+  DESKTOP_ENTRIES_SELECTOR,
+  FILE_DRAG_TESTING_FAILS_BROWSERS,
   TEST_APP_CONTAINER_APP,
+  TEST_APP_CONTAINER_APP_TITLE,
   WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
   desktopFileEntriesAreVisible,
+  desktopIsVisible,
   windowIsVisible,
-  windowTitlebarEqualsText,
   windowTitlebarIsVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.describe("app container", () => {
+  test.beforeEach(async ({ page }) =>
+    page.goto(`/?app=${TEST_APP_CONTAINER_APP}`)
+  );
+
+  test.beforeEach(windowIsVisible);
+
   test("has drop", async ({ browserName, page }) => {
-    // eslint-disable-next-line playwright/no-conditional-in-test
-    if (FILE_DRAG_NOT_WORKING_BROWSERS.has(browserName)) {
-      return;
-    }
-
-    await page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
-
-    await windowIsVisible({ page });
+    if (FILE_DRAG_TESTING_FAILS_BROWSERS.has(browserName)) return;
 
     await windowTitlebarIsVisible({ page });
+    await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 
-    await windowTitlebarEqualsText(TEST_APP_CONTAINER_APP, { page });
-
+    await desktopIsVisible({ page });
     await desktopFileEntriesAreVisible({ page });
 
-    const firstFile = page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first();
+    const file = page.locator(DESKTOP_ENTRIES_SELECTOR).first();
 
-    await firstFile.dragTo(page.locator(WINDOW_SELECTOR), FORCE);
+    await file.dragTo(page.locator(WINDOW_SELECTOR));
 
-    await windowTitlebarEqualsText(
-      `${
-        (await firstFile.textContent()) || ""
-      }.url - ${TEST_APP_CONTAINER_APP}`,
+    await windowTitlebarTextIsVisible(
+      TEST_APP_CONTAINER_APP_TITLE(await file.textContent()),
       { page }
     );
   });

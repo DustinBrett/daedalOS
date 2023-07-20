@@ -27,6 +27,7 @@ export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
+export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
@@ -44,7 +45,7 @@ export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
 // TODO: Fix this, doesn't fail in BrowserStack
-export const FILE_DRAG_NOT_WORKING_BROWSERS = new Set(["webkit"]);
+export const FILE_DRAG_TESTING_FAILS_BROWSERS = new Set(["webkit"]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
@@ -82,8 +83,11 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
 // TODO: Can this all be regex? Check for ^...$
 // TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
+export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
+  `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
 export const TEST_APP = "FileExplorer";
-export const TEST_APP_TITLE = "My PC";
+export const TEST_APP_TITLE = /^My PC$/;
+export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";

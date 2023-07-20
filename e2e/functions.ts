@@ -2,6 +2,7 @@ import type { Page, Response } from "@playwright/test";
 import { expect } from "@playwright/test";
 import {
   BACKGROUND_CANVAS_SELECTOR,
+  CLOCK_REGEX,
   CONTEXT_MENU_SELECTOR,
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
@@ -34,11 +35,42 @@ export const clickFirstDesktopEntry = async ({
   page.locator(DESKTOP_ENTRIES_SELECTOR).first().click();
 
 // locator->action
+export const clickDesktop = async ({ page }: TestProps): Promise<void> =>
+  page.locator(DESKTOP_SELECTOR).click();
+
 export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
 
+export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
+  page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Close$/)
+    .click();
+
+export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
+  page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Maximize$/)
+    .click();
+
+export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
+  page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .getByLabel(/^Minimize$/)
+    .click();
+
 export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
   page.locator(WINDOW_SELECTOR).focus();
+
+// locator->getByLabel->action
+export const clickClock = async (
+  { page }: TestProps,
+  clickCount = 1
+): Promise<void> =>
+  page
+    .locator(TASKBAR_SELECTOR)
+    .getByLabel(/^Clock$/)
+    .click({ clickCount });
 
 // Q: Is this even needed?
 export const windowAnimationIsFinished = async ({
@@ -77,6 +109,12 @@ export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
   ).toBeTruthy();
 
 // expect->locator->getBy
+export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(DESKTOP_SELECTOR).getByLabel(/^Calendar$/)).toBeVisible();
+
+export const clockIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR).getByLabel(/^Clock$/)).toBeVisible();
+
 export const desktopEntryIsHidden = async (
   label: RegExp,
   { page }: TestProps
@@ -107,11 +145,77 @@ export const fileExplorerEntryIsVisible = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toBeVisible();
 
+export const taskbarEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeVisible();
+
 export const windowTitlebarTextIsVisible = async (
   text: string,
   { page }: TestProps
 ): Promise<void> =>
   expect(page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text)).toBeVisible();
+
+// expect->locator->getBy->getBy
+export const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(/^Clock$/)
+      .getByText(CLOCK_REGEX)
+  ).toBeHidden();
+
+export const clockTextIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(/^Clock$/)
+      .getByText(CLOCK_REGEX)
+  ).toBeVisible();
+
+// expect->locator->getBy->locator
+export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(/^Clock$/)
+      .locator("canvas")
+  ).toBeHidden();
+
+export const clockCanvasIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(TASKBAR_SELECTOR)
+      .getByLabel(/^Clock$/)
+      .locator("canvas")
+  ).toBeVisible();
+
+export const taskbarEntryHasIcon = async (
+  label: RegExp,
+  src: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
+  ).toHaveAttribute("src", src);
+
+// expect->locator->getBy->getAttribute
+export const taskbarEntryHasTooltip = async (
+  label: RegExp,
+  title: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    await page
+      .locator(TASKBAR_ENTRIES_SELECTOR)
+      .getByLabel(label)
+      .getAttribute("title")
+  ).toMatch(title);
 
 // expect->locator->first
 export const desktopFileEntriesAreVisible = async ({
@@ -123,6 +227,11 @@ export const fileExplorerFileEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> =>
   expect(page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).first()).toBeVisible();
+
+export const taskbarEntriesAreVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_ENTRIES_SELECTOR).first()).toBeVisible();
 
 // expect->locator
 export const canvasBackgroundIsHidden = async ({
@@ -157,10 +266,8 @@ export const startMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
 export const startMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
 
-export const taskbarEntryIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(TASKBAR_ENTRIES_SELECTOR)).toBeVisible();
+export const taskbarIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR)).toBeVisible();
 
 export const windowIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toBeHidden();

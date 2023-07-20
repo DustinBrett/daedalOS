@@ -1,26 +1,36 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
-  CLOCK_REGEX,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
-  TASKBAR_ENTRY_SELECTOR,
   TEST_APP,
   TEST_APP_ICON,
   TEST_APP_TITLE,
 } from "e2e/constants";
 import {
+  calendarIsVisible,
+  clickClock,
   clickStartButton,
+  clockCanvasIsHidden,
+  clockCanvasIsVisible,
+  clockIsVisible,
+  clockTextIsHidden,
+  clockTextIsVisible,
   disableOffscreenCanvas,
   loadApp,
   sheepIsVisible,
   startButtonIsVisible,
+  taskbarEntriesAreVisible,
+  taskbarEntryHasIcon,
+  taskbarEntryHasTooltip,
   taskbarEntryIsVisible,
+  taskbarIsVisible,
 } from "e2e/functions";
 
 test.describe("elements", () => {
   test.beforeEach(loadApp);
+  test.beforeEach(taskbarIsVisible);
 
   test.describe("has start button", () => {
-    test("is visible", startButtonIsVisible);
+    test.beforeEach(startButtonIsVisible);
 
     test("with sheep", async ({ page }) => {
       await page.keyboard.down("Control");
@@ -34,72 +44,54 @@ test.describe("elements", () => {
   });
 
   test.describe("has clock", () => {
-    test("via canvas", async ({ browserName, page }) => {
-      const noCanvasSupport =
-        OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName);
-      const clock = page.getByLabel(/^Clock$/);
+    test.beforeEach(clockIsVisible);
 
-      await expect(clock).toContainText(noCanvasSupport ? CLOCK_REGEX : "");
-      await expect(clock.locator("canvas"))[
-        noCanvasSupport ? "toBeHidden" : "toBeVisible"
-      ]();
+    test("via canvas", async ({ browserName, page }) => {
+      if (OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+        await clockTextIsVisible({ page });
+        await clockCanvasIsHidden({ page });
+      } else {
+        await clockTextIsHidden({ page });
+        await clockCanvasIsVisible({ page });
+      }
     });
 
     test("via text", async ({ page }) => {
       await page.addInitScript(disableOffscreenCanvas);
-
       await page.reload();
 
-      const clock = page.getByLabel(/^Clock$/);
-
-      await expect(clock).toContainText(CLOCK_REGEX);
-      await expect(clock.locator("canvas")).toBeHidden();
+      await clockTextIsVisible({ page });
+      await clockCanvasIsHidden({ page });
     });
 
     test("with sheep", async ({ page }) => {
-      const clock = page.getByLabel(/^Clock$/);
-
-      await clock.click({ clickCount: 7 });
-
+      await clickClock({ page }, 7);
       await sheepIsVisible({ page });
     });
 
+    test("has calendar", async ({ page }) => {
+      await clickClock({ page });
+      await calendarIsVisible({ page });
+    });
     // TODO: has context menu
-  });
-
-  test("has calendar", async ({ page }) => {
-    await page.getByLabel(/^Clock$/).click();
-
-    await expect(page.getByLabel(/^Calendar$/)).toBeVisible();
   });
 });
 
 test.describe("entries", () => {
   test.beforeEach(async ({ page }) => page.goto(`/?app=${TEST_APP}`));
+  test.beforeEach(taskbarIsVisible);
 
   test.describe("has entry", () => {
-    test.beforeEach(taskbarEntryIsVisible);
-
-    test("with title", async ({ page }) =>
-      expect(
-        page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(TEST_APP_TITLE)
-      ).toBeVisible());
+    test.beforeEach(taskbarEntriesAreVisible);
+    test.beforeEach(async ({ page }) =>
+      taskbarEntryIsVisible(TEST_APP_TITLE, { page })
+    );
 
     test("with icon", async ({ page }) =>
-      expect(
-        page
-          .locator(TASKBAR_ENTRY_SELECTOR)
-          .getByLabel(TEST_APP_TITLE)
-          .locator("img")
-      ).toHaveAttribute("src", TEST_APP_ICON));
+      taskbarEntryHasIcon(TEST_APP_TITLE, TEST_APP_ICON, { page }));
 
     test("with tooltip", async ({ page }) =>
-      expect(
-        await page
-          .locator(TASKBAR_ENTRY_SELECTOR)
-          .getByLabel(TEST_APP_TITLE)
-          .getAttribute("title")
-      ).toMatch(TEST_APP_TITLE));
+      taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
     // TODO: has context menu
     // TODO: can minimize & restore

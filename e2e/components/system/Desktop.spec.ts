@@ -3,15 +3,15 @@ import { expect, test } from "@playwright/test";
 import {
   ACCESSIBILITY_EXCEPTION_IDS,
   CONTEXT_MENU_SELECTOR,
-  DESKTOP_ELEMENT,
   DESKTOP_MENU_ITEMS,
+  DESKTOP_SELECTOR,
   EXACT,
   NEW_FILE_LABEL,
   NEW_FILE_LABEL_TEXT,
   NEW_FOLDER_LABEL,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
-  TASKBAR_ENTRY_SELECTOR,
+  TASKBAR_ENTRIES_SELECTOR,
 } from "e2e/constants";
 import {
   backgroundIsUrl,
@@ -23,7 +23,7 @@ import {
   desktopFileEntriesAreVisible,
   desktopIsVisible,
   loadApp,
-  taskbarEntryIsVisible,
+  taskbarEntriesAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(async ({ page }) => {
@@ -50,8 +50,7 @@ test("has file entry", desktopFileEntriesAreVisible);
 test.describe("has selection", () => {
   test("with effect", async ({ page }) => {
     const { width = 0, height = 0 } =
-      // eslint-disable-next-line playwright/no-conditional-in-test
-      (await page.getByRole(DESKTOP_ELEMENT).boundingBox()) || {};
+      (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
     const x = width / 2;
     const y = height / 2;
     const SELECTION_OFFSET = 25;
@@ -81,7 +80,7 @@ test.describe("has selection", () => {
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => {
-    await page.getByRole(DESKTOP_ELEMENT).click(RIGHT_CLICK);
+    await page.locator(DESKTOP_SELECTOR).click(RIGHT_CLICK);
 
     await contextMenuIsVisible({ page });
   });
@@ -169,21 +168,21 @@ test.describe("has context menu", () => {
   test("can inspect", async ({ page }) => {
     await page.getByLabel(/^Inspect$/).click();
 
-    await taskbarEntryIsVisible({ page });
+    await taskbarEntriesAreVisible({ page });
 
     await expect(
-      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^DevTools$/)
+      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^DevTools$/)
     ).toBeVisible();
   });
 
   test("can view page source", async ({ page }) => {
     await page.getByLabel(/^View page source$/).click();
 
-    await taskbarEntryIsVisible({ page });
+    await taskbarEntriesAreVisible({ page });
 
     await expect(
       page
-        .locator(TASKBAR_ENTRY_SELECTOR)
+        .locator(TASKBAR_ENTRIES_SELECTOR)
         .getByLabel(/^index.html - Monaco Editor$/)
     ).toBeVisible();
   });
@@ -191,32 +190,32 @@ test.describe("has context menu", () => {
   test("can open terminal", async ({ page }) => {
     await page.getByLabel(/^Open Terminal here$/).click();
 
-    await taskbarEntryIsVisible({ page });
+    await taskbarEntriesAreVisible({ page });
 
     await expect(
-      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^Terminal$/)
+      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^Terminal$/)
     ).toBeVisible();
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
   test("ctrl + shift + r (open run dialog)", async ({ page }) => {
-    await page.getByRole(DESKTOP_ELEMENT).press("Control+Shift+KeyR");
+    await page.locator(DESKTOP_SELECTOR).press("Control+Shift+KeyR");
 
-    await taskbarEntryIsVisible({ page });
+    await taskbarEntriesAreVisible({ page });
 
     await expect(
-      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^Run$/)
+      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^Run$/)
     ).toBeVisible();
   });
 
   test("ctrl + shift + e (open file explorer)", async ({ page }) => {
-    await page.getByRole(DESKTOP_ELEMENT).press("Control+Shift+KeyE");
+    await page.locator(DESKTOP_SELECTOR).press("Control+Shift+KeyE");
 
-    await taskbarEntryIsVisible({ page });
+    await taskbarEntriesAreVisible({ page });
 
     await expect(
-      page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(/^File Explorer$/)
+      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(/^File Explorer$/)
     ).toBeVisible();
   });
 
