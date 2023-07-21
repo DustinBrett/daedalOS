@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
     video: process.env.CI ? "off" : "retain-on-failure",
   },
   webServer: {
-    command: "yarn dev",
+    command: process.env.CI ? "yarn start" : "yarn dev",
     url: baseURL,
   },
   workers: process.env.CI ? 1 : undefined,
