@@ -1,11 +1,12 @@
-import { expect, test } from "@playwright/test";
-import { START_MENU_SELECTOR } from "e2e/constants";
+import { test } from "@playwright/test";
 import {
   clickDesktop,
   clickStartButton,
   loadApp,
+  startMenuEntryIsVisible,
   startMenuIsHidden,
   startMenuIsVisible,
+  startMenuSidebarEntryIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(loadApp);
@@ -14,20 +15,16 @@ test.beforeEach(startMenuIsVisible);
 
 test.describe("has sidebar", () => {
   test("with buttons", async ({ page }) => {
-    const startMenu = page.locator(START_MENU_SELECTOR);
-
-    await expect(startMenu.getByLabel(/^All apps$/)).toBeVisible();
-    await expect(startMenu.getByLabel(/^Power$/)).toBeVisible();
+    await startMenuSidebarEntryIsVisible(/^All apps$/, { page });
+    await startMenuSidebarEntryIsVisible(/^Power$/, { page });
   });
 
   // TODO: can expand
 });
 
 test("has folders", async ({ page }) => {
-  const startMenu = page.locator(START_MENU_SELECTOR);
-
-  await expect(startMenu.getByLabel(/^Emulators$/)).toBeVisible();
-  await expect(startMenu.getByLabel(/^Games$/)).toBeVisible();
+  await startMenuEntryIsVisible(/^Emulators$/, { page });
+  await startMenuEntryIsVisible(/^Games$/, { page });
 
   // TODO: w/read-only context menu
 });

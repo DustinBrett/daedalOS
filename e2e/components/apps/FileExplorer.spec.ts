@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
-  CONTEXT_MENU_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   TEST_APP_ICON,
@@ -15,9 +14,11 @@ import {
   TEST_SEARCH_RESULT,
 } from "e2e/constants";
 import {
+  clickContextMenuEntry,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
   clickFirstDesktopEntry,
+  contextMenuEntryIsVisible,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
   fileExplorerAddressBarHasValue,
@@ -41,9 +42,7 @@ test("has address bar", async ({ page }) => {
 
   await clickFileExplorerAddressBar({ page }, true);
   await contextMenuIsVisible({ page });
-  await expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^Copy address$/)
-  ).toBeVisible();
+  await contextMenuEntryIsVisible(/^Copy address$/, { page });
 
   // TODO: Test clipboard on clicking copy
   // TODO: Test title after clicking copy changes back to My PC
@@ -52,9 +51,7 @@ test("has address bar", async ({ page }) => {
 test("has search box", async ({ page }) => {
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
   await contextMenuIsVisible({ page });
-  await expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(TEST_SEARCH_RESULT)
-  ).toBeVisible();
+  await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
 test.describe("has file(s)", () => {
@@ -70,21 +67,16 @@ test.describe("has file(s)", () => {
     });
 
     test("with items", async ({ page }) => {
-      const menu = page.locator(CONTEXT_MENU_SELECTOR);
-
       for (const label of FILE_MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
-        await expect(menu.getByLabel(label)).toBeVisible();
+        await contextMenuEntryIsVisible(label, { page });
       }
     });
 
     test("can download", async ({ page }) => {
       const downloadPromise = page.waitForEvent("download");
 
-      await page
-        .locator(CONTEXT_MENU_SELECTOR)
-        .getByLabel(/^Download$/)
-        .click();
+      await clickContextMenuEntry(/^Download$/, { page });
 
       const download = await downloadPromise;
 
@@ -93,11 +85,7 @@ test.describe("has file(s)", () => {
     });
 
     test("can delete", async ({ page }) => {
-      await page
-        .locator(CONTEXT_MENU_SELECTOR)
-        .getByLabel(/^Delete$/)
-        .click();
-
+      await clickContextMenuEntry(/^Delete$/, { page });
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
 
       await page.reload();

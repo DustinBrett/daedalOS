@@ -71,8 +71,6 @@ test("has drag", async ({ page }) => {
   expect(initialBoundingBox?.x).not.toEqual(finalBoundingBox?.x);
   expect(initialBoundingBox?.y).not.toEqual(finalBoundingBox?.y);
 
-  // TODO: Calc moved math
-
   const mainBoundingBox = await page.locator(DESKTOP_SELECTOR).boundingBox();
 
   expect(finalBoundingBox?.y).toEqual(mainBoundingBox?.y);

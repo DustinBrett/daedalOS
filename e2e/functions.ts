@@ -8,6 +8,7 @@ import {
   CONTEXT_MENU_SELECTOR,
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
+  EXACT,
   FAVICON_SELECTOR,
   FILE_EXPLORER_ADDRESS_BAR_LABEL,
   FILE_EXPLORER_ENTRIES_SELECTOR,
@@ -18,6 +19,7 @@ import {
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
+  START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
   TASKBAR_SELECTOR,
   TEST_APP,
@@ -99,6 +101,11 @@ export const dragWindowToDesktop = async ({
 export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
   page.locator(WINDOW_SELECTOR).focus();
 
+export const pressDesktopKeys = async (
+  keys: string,
+  { page }: TestProps
+): Promise<void> => page.locator(DESKTOP_SELECTOR).press(keys);
+
 // locator->getByLabel->action
 export const clickClock = async (
   { page }: TestProps,
@@ -111,6 +118,12 @@ export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
     .locator(WINDOW_TITLEBAR_SELECTOR)
     .getByLabel(/^Close$/)
     .click();
+
+export const clickContextMenuEntry = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label).click();
 
 export const clickFileExplorerAddressBar = async (
   { page }: TestProps,
@@ -251,6 +264,22 @@ export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
 export const clockIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL)).toBeVisible();
 
+export const contextMenuEntryIsHidden = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label, EXACT)
+  ).toBeHidden();
+
+export const contextMenuEntryIsVisible = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label, EXACT)
+  ).toBeVisible();
+
 export const desktopEntryIsHidden = async (
   label: RegExp,
   { page }: TestProps
@@ -300,6 +329,20 @@ export const taskbarEntryIsVisible = async (
     page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
   ).toBeVisible();
 
+export const startMenuEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(page.locator(START_MENU_SELECTOR).getByLabel(label)).toBeVisible();
+
+export const startMenuSidebarEntryIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(START_MENU_SIDEBAR_SELECTOR).getByLabel(label)
+  ).toBeVisible();
+
 export const taskbarEntryHasTooltip = async (
   label: RegExp,
   title: RegExp,
@@ -313,7 +356,9 @@ export const windowTitlebarTextIsVisible = async (
   text: string,
   { page }: TestProps
 ): Promise<void> =>
-  expect(page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text)).toBeVisible();
+  expect(
+    page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text, EXACT)
+  ).toBeVisible();
 
 // expect->locator->getBy->getBy
 export const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>

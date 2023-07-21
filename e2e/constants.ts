@@ -1,6 +1,8 @@
 import type { Locator } from "@playwright/test";
 
-type MenuItems = Record<string, boolean | ((browserName: string) => boolean)>;
+export type IsShown = boolean | ((browserName: string) => boolean);
+
+type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
@@ -25,6 +27,7 @@ export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
 export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol>li`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
+export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
 export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
