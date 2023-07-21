@@ -24,9 +24,6 @@ import {
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
-
-// TODO: Check if window animation is indeed happening, and wait for it
-// Q: Click titlebar to make sure it's focused and also for auto wait? Do in FE also.
 test.beforeEach(windowsAreVisible);
 test.beforeEach(windowTitlebarIsVisible);
 

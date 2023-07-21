@@ -7,11 +7,9 @@ import {
 } from "e2e/constants";
 import {
   desktopEntriesAreVisible,
-  desktopIsVisible,
   disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
-  windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
@@ -25,12 +23,9 @@ test.describe("app container", () => {
   test("has drop", async ({ browserName, page }) => {
     if (FILE_DRAG_TESTING_FAILS_BROWSERS.has(browserName)) return;
 
-    await windowTitlebarIsVisible({ page });
     await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 
-    await desktopIsVisible({ page });
     await desktopEntriesAreVisible({ page });
-
     await dragFirstDesktopEntryToWindow({ page });
 
     await windowTitlebarTextIsVisible(

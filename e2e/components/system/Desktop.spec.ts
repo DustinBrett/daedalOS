@@ -21,6 +21,7 @@ import {
   disableWallpaper,
   loadApp,
   pressDesktopKeys,
+  selectionIsVisible,
   taskbarEntryIsOpen,
 } from "e2e/functions";
 
@@ -42,16 +43,12 @@ test.describe("has selection", () => {
     const SELECTION_OFFSET = 25;
 
     await page.mouse.move(x, y);
-    await page.mouse.down({
-      button: "left",
-    });
+    await page.mouse.down({ button: "left" });
     await page.mouse.move(x + SELECTION_OFFSET, y + SELECTION_OFFSET);
 
-    const selection = page.locator(SELECTION_SELECTOR);
+    await selectionIsVisible({ page });
 
-    await expect(selection).toBeVisible();
-
-    const boundingBox = await selection.boundingBox();
+    const boundingBox = await page.locator(SELECTION_SELECTOR).boundingBox();
 
     expect(boundingBox?.width).toEqual(SELECTION_OFFSET);
     expect(boundingBox?.height).toEqual(SELECTION_OFFSET);
@@ -67,13 +64,12 @@ test.describe("has context menu", () => {
   test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
-    const MENU_ITEMS = Object.entries(DESKTOP_MENU_ITEMS).map(
-      ([label, shown]) =>
-        [label, typeof shown === "boolean" ? shown : shown(browserName)] as [
-          string,
-          IsShown,
-        ]
-    );
+    const MENU_ITEMS: [string, IsShown][] = Object.entries(
+      DESKTOP_MENU_ITEMS
+    ).map(([label, shown]) => [
+      label,
+      typeof shown === "boolean" ? shown : shown(browserName),
+    ]);
 
     for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop

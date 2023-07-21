@@ -16,11 +16,10 @@ test.beforeEach(desktopIsVisible);
 test("has background", canvasBackgroundIsVisible);
 
 test("can change background", async ({ page }) => {
-  await clickDesktop({ page }, true);
-  await contextMenuIsVisible({ page });
-
   await canvasBackgroundIsVisible({ page });
 
+  await clickDesktop({ page }, true);
+  await contextMenuIsVisible({ page });
   await clickContextMenuEntry(/^Background$/, { page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 

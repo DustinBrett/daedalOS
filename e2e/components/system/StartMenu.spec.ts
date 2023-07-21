@@ -31,6 +31,8 @@ test("has folders", async ({ page }) => {
   // TODO: w/read-only context menu
 });
 
+// TODO: has files, w/read-only context menu
+
 test.describe("can close", () => {
   test("via button", async ({ page }) => {
     await clickStartButton({ page });
@@ -42,5 +44,3 @@ test.describe("can close", () => {
     await startMenuIsHidden({ page });
   });
 });
-
-// TODO: has files, w/read-only context menu

@@ -6,7 +6,6 @@ import {
   clickStartButton,
   clockCanvasIsHidden,
   clockCanvasOrTextIsVisible,
-  clockIsVisible,
   clockTextIsVisible,
   disableOffscreenCanvas,
   disableWallpaper,
@@ -42,8 +41,6 @@ test.describe("elements", () => {
   });
 
   test.describe("has clock", () => {
-    test.beforeEach(clockIsVisible);
-
     test("via canvas", clockCanvasOrTextIsVisible);
 
     test("via text", async ({ page }) => {
@@ -63,6 +60,7 @@ test.describe("elements", () => {
       await clickClock({ page });
       await calendarIsVisible({ page });
     });
+
     // TODO: has context menu
   });
 });

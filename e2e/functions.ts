@@ -16,6 +16,7 @@ import {
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
+  SELECTION_SELECTOR,
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
@@ -246,6 +247,9 @@ export const contextMenuIsVisible = async ({
 export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
 
+export const selectionIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(SELECTION_SELECTOR)).toBeVisible();
+
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
 
@@ -282,9 +286,6 @@ export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(
     page.locator(DESKTOP_SELECTOR).getByLabel(CALENDAR_LABEL)
   ).toBeVisible();
-
-export const clockIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL)).toBeVisible();
 
 export const contextMenuEntryIsHidden = async (
   label: RegExp | string,
@@ -333,15 +334,6 @@ export const fileExplorerEntryIsHidden = async (
   expect(
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toBeHidden();
-
-export const fileExplorerSearchBoxIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(
-    page
-      .locator(FILE_EXPLORER_NAV_SELECTOR)
-      .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-  ).toBeVisible();
 
 export const fileExplorerEntryHasTooltip = async (
   label: RegExp,
