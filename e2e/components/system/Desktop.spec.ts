@@ -18,9 +18,9 @@ import {
   canvasBackgroundIsVisible,
   clickDesktop,
   contextMenuIsVisible,
+  desktopEntriesAreVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
-  desktopFileEntriesAreVisible,
   desktopIsVisible,
   loadApp,
   taskbarEntriesAreVisible,
@@ -40,7 +40,7 @@ test("pass accessibility scan", async ({ page }) =>
 
 test("has background", canvasBackgroundIsVisible);
 
-test("has file entry", desktopFileEntriesAreVisible);
+test("has file entry", desktopEntriesAreVisible);
 
 // TODO: has grid (move file on grid)
 
@@ -98,7 +98,7 @@ test.describe("has context menu", () => {
   });
 
   test.describe("with file functions", () => {
-    test.beforeEach(desktopFileEntriesAreVisible);
+    test.beforeEach(desktopEntriesAreVisible);
 
     test("can create folder", async ({ page }) => {
       await desktopEntryIsHidden(NEW_FOLDER_LABEL, { page });
@@ -113,7 +113,7 @@ test.describe("has context menu", () => {
 
       await page.reload();
 
-      await desktopFileEntriesAreVisible({ page });
+      await desktopEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
     });
 
@@ -130,7 +130,7 @@ test.describe("has context menu", () => {
 
       await page.reload();
 
-      await desktopFileEntriesAreVisible({ page });
+      await desktopEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
     });
 

@@ -19,7 +19,7 @@ import {
   clickFileExplorerEntry,
   clickFirstDesktopEntry,
   contextMenuIsVisible,
-  desktopFileEntriesAreVisible,
+  desktopEntriesAreVisible,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasTooltip,
@@ -28,11 +28,11 @@ import {
   pageHasIcon,
   pageHasTitle,
   typeInFileExplorerSearchBox,
-  windowIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
-test.beforeEach(windowIsVisible);
+test.beforeEach(windowsAreVisible);
 
 test("has address bar", async ({ page }) => {
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
@@ -102,7 +102,7 @@ test.describe("has file(s)", () => {
 
       await page.reload();
 
-      await windowIsVisible({ page });
+      await windowsAreVisible({ page });
       await fileExplorerEntriesAreVisible({ page });
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
@@ -137,7 +137,7 @@ test("changes title", async ({ page }) => {
 
   await pageHasTitle(focusedAppPageTitle, { page });
 
-  await desktopFileEntriesAreVisible({ page });
+  await desktopEntriesAreVisible({ page });
   await clickFirstDesktopEntry({ page });
   await pageHasTitle(BASE_APP_TITLE, { page });
 
@@ -148,7 +148,7 @@ test("changes title", async ({ page }) => {
 test("changes icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 
-  await desktopFileEntriesAreVisible({ page });
+  await desktopEntriesAreVisible({ page });
   await clickFirstDesktopEntry({ page });
   await pageHasIcon(BASE_APP_FAVICON, { page });
 

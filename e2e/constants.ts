@@ -116,3 +116,8 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
+
+export const POLLING_OPTIONS = {
+  intervals: [1000, 2000, 5000, 10000],
+  timeout: 30000,
+};

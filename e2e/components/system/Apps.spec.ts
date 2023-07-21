@@ -6,20 +6,18 @@ import {
   TEST_APP_CONTAINER_APP_TITLE,
 } from "e2e/constants";
 import {
-  desktopFileEntriesAreVisible,
+  desktopEntriesAreVisible,
   desktopIsVisible,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
-  windowIsVisible,
   windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.describe("app container", () => {
   test.beforeEach(loadContainerTestApp);
-
-  // TODO: Make windowIsStable
-  test.beforeEach(windowIsVisible);
+  test.beforeEach(windowsAreVisible);
 
   test("has drop", async ({ browserName, page }) => {
     if (FILE_DRAG_TESTING_FAILS_BROWSERS.has(browserName)) return;
@@ -28,7 +26,7 @@ test.describe("app container", () => {
     await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 
     await desktopIsVisible({ page });
-    await desktopFileEntriesAreVisible({ page });
+    await desktopEntriesAreVisible({ page });
 
     await dragFirstDesktopEntryToWindow({ page });
 

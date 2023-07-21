@@ -13,6 +13,7 @@ import {
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
+  POLLING_OPTIONS,
   RIGHT_CLICK,
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
@@ -230,9 +231,6 @@ export const taskbarIsVisible = async ({ page }: TestProps): Promise<void> =>
 export const windowIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toBeHidden();
 
-export const windowIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.locator(WINDOW_SELECTOR)).toBeVisible();
-
 export const windowIsTransparent = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "0");
 
@@ -356,30 +354,29 @@ export const taskbarEntryHasIcon = async (
     page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
-// expect->poll_count->locator_first
-export const desktopFileEntriesAreVisible = async ({
+// expect->poll_count->poll_locator_first
+export const desktopEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> => {
-  const desktopEntries = page.locator(DESKTOP_ENTRIES_SELECTOR);
-
-  await expect.poll(async () => desktopEntries.count()).toBeGreaterThan(0);
-  await expect(desktopEntries.first()).toBeVisible();
-};
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(DESKTOP_ENTRIES_SELECTOR).first()).toBeVisible()
+  ).toPass(POLLING_OPTIONS);
 
 export const fileExplorerEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> => {
-  const fileExplorerEntries = page.locator(FILE_EXPLORER_ENTRIES_SELECTOR);
-
-  await expect.poll(async () => fileExplorerEntries.count()).toBeGreaterThan(0);
-  await expect(fileExplorerEntries.first()).toBeVisible();
-};
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).first()).toBeVisible()
+  ).toPass(POLLING_OPTIONS);
 
 export const taskbarEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> => {
-  const taskbarEntries = page.locator(TASKBAR_ENTRIES_SELECTOR);
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(TASKBAR_ENTRIES_SELECTOR).first()).toBeVisible()
+  ).toPass(POLLING_OPTIONS);
 
-  await expect.poll(async () => taskbarEntries.count()).toBeGreaterThan(0);
-  await expect(taskbarEntries.first()).toBeVisible();
-};
+export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(WINDOW_SELECTOR).first()).toBeVisible()
+  ).toPass(POLLING_OPTIONS);

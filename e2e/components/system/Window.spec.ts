@@ -16,15 +16,15 @@ import {
   windowIsMaximized,
   windowIsOpaque,
   windowIsTransparent,
-  windowIsVisible,
   windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
+  windowsAreVisible,
 } from "e2e/functions";
 
 test.beforeEach(loadTestApp);
 
-test.beforeEach(windowIsVisible);
 // TODO: Check if window animation is indeed happening, and wait for it
+test.beforeEach(windowsAreVisible);
 test.beforeEach(windowTitlebarIsVisible);
 
 test("has title", async ({ page }) =>
