@@ -21,6 +21,7 @@ import {
   contextMenuEntryIsVisible,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
+  disableWallpaper,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasTooltip,
@@ -33,12 +34,14 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 test.beforeEach(windowsAreVisible);
+test.beforeEach(fileExplorerEntriesAreVisible);
 
 test("has address bar", async ({ page }) => {
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
-  await clickFileExplorerAddressBar({ page });
+  await clickFileExplorerAddressBar({ page }, false, 2);
   await fileExplorerAddressBarHasValue("/", { page });
 
   await clickFileExplorerAddressBar({ page }, true);
@@ -57,7 +60,6 @@ test("has search box", async ({ page }) => {
 });
 
 test.describe("has file(s)", () => {
-  test.beforeEach(fileExplorerEntriesAreVisible);
   test.beforeEach(async ({ page }) =>
     clickFileExplorerEntry(TEST_ROOT_FILE, { page })
   );

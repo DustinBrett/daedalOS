@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import {
   clickDesktop,
   clickStartButton,
+  disableWallpaper,
   loadApp,
   startMenuEntryIsVisible,
   startMenuIsHidden,
@@ -9,6 +10,7 @@ import {
   startMenuSidebarEntryIsVisible,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(clickStartButton);
 test.beforeEach(startMenuIsVisible);

@@ -9,7 +9,6 @@ type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
 
 export const EXACT = { exact: true };
 export const FORCE = { force: true };
-export const POLLING_OPTIONS = { timeout: 20000 };
 export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
 export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 

@@ -14,7 +14,7 @@ import {
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
-  POLLING_OPTIONS,
+  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
@@ -33,9 +33,19 @@ type TestProps = {
   page: Page;
 };
 
-export const disableOffscreenCanvas = (): void => {
-  delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
+type TestPropsWithBrowser = TestProps & {
+  browserName: string;
 };
+
+export const disableOffscreenCanvas = ({ page }: TestProps): Promise<void> =>
+  page.addInitScript(() => {
+    delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
+  });
+
+export const disableWallpaper = ({ page }: TestProps): Promise<void> =>
+  page.addInitScript(() => {
+    window.DEBUG_DISABLE_WALLPAPER = true;
+  });
 
 // action
 export const loadApp = async ({ page }: TestProps): Promise<Response | null> =>
@@ -127,12 +137,16 @@ export const clickContextMenuEntry = async (
 
 export const clickFileExplorerAddressBar = async (
   { page }: TestProps,
-  right = false
+  right = false,
+  clickCount = 1
 ): Promise<void> =>
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
-    .click(right ? RIGHT_CLICK : undefined);
+    .click({
+      button: right ? "right" : undefined,
+      clickCount,
+    });
 
 export const clickFileExplorerEntry = async (
   label: RegExp,
@@ -189,25 +203,29 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
           .match(/^url\(.*?\)$/)
       )
     ).toBeTruthy()
-  ).toPass(POLLING_OPTIONS);
+  ).toPass();
 
 export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
   expect(async () =>
     expect(
       await page.evaluate(
-        ([windowSelector, taskbarSelector]) =>
-          window.innerWidth ===
-            (document.querySelector(windowSelector) as HTMLElement)
-              ?.clientWidth &&
-          window.innerHeight -
-            ((document.querySelector(taskbarSelector) as HTMLElement)
-              ?.clientHeight || 0) ===
-            (document.querySelector(windowSelector) as HTMLElement)
-              ?.clientHeight,
+        ([windowSelector, taskbarSelector]) => {
+          const {
+            clientWidth: windowWidth = 0,
+            clientHeight: windowHeight = 0,
+          } = document.querySelector(windowSelector) || {};
+          const { clientHeight: taskbarHeight = 0 } =
+            document.querySelector(taskbarSelector) || {};
+
+          return (
+            windowWidth === window.innerWidth &&
+            windowHeight === window.innerHeight - taskbarHeight
+          );
+        },
         [WINDOW_SELECTOR, TASKBAR_SELECTOR]
       )
     ).toBeTruthy()
-  ).toPass(POLLING_OPTIONS);
+  ).toPass();
 
 // expect->locator
 export const canvasBackgroundIsHidden = async ({
@@ -407,7 +425,7 @@ export const taskbarEntryHasIcon = async (
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
   expect(async () =>
     expect(page.locator(selector).first()).toBeVisible()
-  ).toPass(POLLING_OPTIONS);
+  ).toPass();
 
 export const desktopEntriesAreVisible = async ({
   page,
@@ -426,3 +444,25 @@ export const taskbarEntriesAreVisible = async ({
 
 export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
   entriesAreVisible(WINDOW_SELECTOR, page);
+
+// meta function
+export const clockCanvasOrTextIsVisible = async ({
+  browserName,
+  page,
+}: TestPropsWithBrowser): Promise<void> => {
+  if (OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+    await clockTextIsVisible({ page });
+    await clockCanvasIsHidden({ page });
+  } else {
+    await clockTextIsHidden({ page });
+    await clockCanvasIsVisible({ page });
+  }
+};
+
+export const taskbarEntryIsOpen = async (
+  label: RegExp,
+  page: Page
+): Promise<void> => {
+  await taskbarEntriesAreVisible({ page });
+  await taskbarEntryIsVisible(label, { page });
+};

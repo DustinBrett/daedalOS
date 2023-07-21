@@ -26,6 +26,8 @@ const config: PlaywrightTestConfig = {
   testDir: "e2e",
   use: {
     baseURL,
+    trace: process.env.CI ? "off" : "retain-on-failure",
+    video: process.env.CI ? "off" : "retain-on-failure",
   },
   webServer: {
     command: "yarn dev",

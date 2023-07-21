@@ -38,6 +38,7 @@ import {
 
 declare global {
   interface Window {
+    DEBUG_DISABLE_WALLPAPER?: boolean;
     WallpaperDestroy?: () => void;
   }
 }
@@ -388,7 +389,7 @@ const useWallpaper = (
   ]);
 
   useEffect(() => {
-    if (sessionLoaded) {
+    if (sessionLoaded && !window.DEBUG_DISABLE_WALLPAPER) {
       if (wallpaperTimerRef.current) {
         window.clearTimeout(wallpaperTimerRef.current);
       }

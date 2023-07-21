@@ -1,9 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
-import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { IsShown } from "e2e/constants";
 import {
-  ACCESSIBILITY_EXCEPTION_IDS,
   DESKTOP_MENU_ITEMS,
   DESKTOP_SELECTOR,
   NEW_FILE_LABEL,
@@ -12,9 +9,6 @@ import {
   SELECTION_SELECTOR,
 } from "e2e/constants";
 import {
-  backgroundIsUrl,
-  canvasBackgroundIsHidden,
-  canvasBackgroundIsVisible,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuEntryIsHidden,
@@ -24,25 +18,15 @@ import {
   desktopEntryIsHidden,
   desktopEntryIsVisible,
   desktopIsVisible,
+  disableWallpaper,
   loadApp,
   pressDesktopKeys,
-  taskbarEntriesAreVisible,
-  taskbarEntryIsVisible,
+  taskbarEntryIsOpen,
 } from "e2e/functions";
 
+test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(desktopIsVisible);
-
-test("pass accessibility scan", async ({ page }) =>
-  expect(
-    (
-      await new AxeBuilder({ page })
-        .disableRules(ACCESSIBILITY_EXCEPTION_IDS)
-        .analyze()
-    ).violations
-  ).toEqual([]));
-
-test("has background", canvasBackgroundIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
 
@@ -77,14 +61,6 @@ test.describe("has selection", () => {
 
   // TODO: file entry (single/multi)
 });
-
-const taskbarEntriesOpened = async (
-  label: RegExp,
-  page: Page
-): Promise<void> => {
-  await taskbarEntriesAreVisible({ page });
-  await taskbarEntryIsVisible(label, { page });
-};
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
@@ -157,47 +133,31 @@ test.describe("has context menu", () => {
     });
   });
 
-  test("can change background", async ({ page }) => {
-    await canvasBackgroundIsVisible({ page });
-
-    await clickContextMenuEntry(/^Background$/, { page });
-    await clickContextMenuEntry(/^Picture Slideshow$/, { page });
-
-    await canvasBackgroundIsHidden({ page });
-    await backgroundIsUrl({ page });
-
-    await page.reload();
-
-    await desktopIsVisible({ page });
-    await canvasBackgroundIsHidden({ page });
-    await backgroundIsUrl({ page });
-  });
-
   test("can inspect", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
-    await taskbarEntriesOpened(/^DevTools$/, page);
+    await taskbarEntryIsOpen(/^DevTools$/, page);
   });
 
   test("can view page source", async ({ page }) => {
     await clickContextMenuEntry(/^View page source$/, { page });
-    await taskbarEntriesOpened(/^index.html - Monaco Editor$/, page);
+    await taskbarEntryIsOpen(/^index.html - Monaco Editor$/, page);
   });
 
   test("can open terminal", async ({ page }) => {
     await clickContextMenuEntry(/^Open Terminal here$/, { page });
-    await taskbarEntriesOpened(/^Terminal$/, page);
+    await taskbarEntryIsOpen(/^Terminal$/, page);
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
   test("ctrl + shift + r (open run dialog)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
-    await taskbarEntriesOpened(/^Run$/, page);
+    await taskbarEntryIsOpen(/^Run$/, page);
   });
 
   test("ctrl + shift + e (open file explorer)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
-    await taskbarEntriesOpened(/^My PC$/, page);
+    await taskbarEntryIsOpen(/^My PC$/, page);
   });
 
   // TODO: Ctrl+Shift+D

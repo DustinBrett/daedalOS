@@ -8,12 +8,15 @@ import {
 import {
   desktopEntriesAreVisible,
   desktopIsVisible,
+  disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
   windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
+
+test.beforeEach(disableWallpaper);
 
 test.describe("app container", () => {
   test.beforeEach(loadContainerTestApp);
