@@ -88,13 +88,13 @@ test.describe("has file(s)", () => {
 
     test("can delete", async ({ page }) => {
       await clickContextMenuEntry(/^Delete$/, { page });
+
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
 
       await page.reload();
 
       await windowsAreVisible({ page });
       await fileExplorerEntriesAreVisible({ page });
-
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 

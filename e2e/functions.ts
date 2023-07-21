@@ -89,8 +89,8 @@ export const dragWindowToDesktop = async ({
 
   await windowTitlebarElement.dragTo(page.locator(DESKTOP_SELECTOR), {
     targetPosition: {
-      x: (initialBoundingBox?.width || 0) / 2,
-      y: (initialBoundingBox?.height || 0) / 2,
+      x: Math.floor((initialBoundingBox?.width || 0) / 2),
+      y: Math.floor((initialBoundingBox?.height || 0) / 2),
     },
   });
 };
