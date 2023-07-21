@@ -1,4 +1,4 @@
-import type { Page, Response } from "@playwright/test";
+import type { Locator, Page, Response } from "@playwright/test";
 import { expect } from "@playwright/test";
 import {
   BACKGROUND_CANVAS_SELECTOR,
@@ -353,7 +353,7 @@ export const taskbarEntryHasTooltip = async (
   ).toHaveAttribute("title", title);
 
 export const windowTitlebarTextIsVisible = async (
-  text: string,
+  text: RegExp | string,
   { page }: TestProps
 ): Promise<void> =>
   expect(
@@ -361,34 +361,25 @@ export const windowTitlebarTextIsVisible = async (
   ).toBeVisible();
 
 // expect->locator->getBy->getBy
+const clockTextLocator = (page: Page): Locator =>
+  page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).getByText(CLOCK_REGEX);
+
 export const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    page
-      .locator(TASKBAR_SELECTOR)
-      .getByLabel(CLOCK_LABEL)
-      .getByText(CLOCK_REGEX)
-  ).toBeHidden();
+  expect(clockTextLocator(page)).toBeHidden();
 
 export const clockTextIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    page
-      .locator(TASKBAR_SELECTOR)
-      .getByLabel(CLOCK_LABEL)
-      .getByText(CLOCK_REGEX)
-  ).toBeVisible();
+  expect(clockTextLocator(page)).toBeVisible();
 
 // expect->locator->getBy->locator
+const clockCanvasLocator = (page: Page): Locator =>
+  page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).locator("canvas");
+
 export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).locator("canvas")
-  ).toBeHidden();
+  expect(clockCanvasLocator(page)).toBeHidden();
 
 export const clockCanvasIsVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  expect(
-    page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).locator("canvas")
-  ).toBeVisible();
+}: TestProps): Promise<void> => expect(clockCanvasLocator(page)).toBeVisible();
 
 export const taskbarEntryHasIcon = async (
   label: RegExp,
@@ -400,28 +391,25 @@ export const taskbarEntryHasIcon = async (
   ).toHaveAttribute("src", src);
 
 // expect->poll_count->poll_locator_first
+const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(selector).first()).toBeVisible()
+  ).toPass(POLLING_OPTIONS);
+
 export const desktopEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(DESKTOP_ENTRIES_SELECTOR).first()).toBeVisible()
-  ).toPass(POLLING_OPTIONS);
+  entriesAreVisible(DESKTOP_ENTRIES_SELECTOR, page);
 
 export const fileExplorerEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).first()).toBeVisible()
-  ).toPass(POLLING_OPTIONS);
+  entriesAreVisible(FILE_EXPLORER_ENTRIES_SELECTOR, page);
 
 export const taskbarEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(TASKBAR_ENTRIES_SELECTOR).first()).toBeVisible()
-  ).toPass(POLLING_OPTIONS);
+  entriesAreVisible(TASKBAR_ENTRIES_SELECTOR, page);
 
 export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(WINDOW_SELECTOR).first()).toBeVisible()
-  ).toPass(POLLING_OPTIONS);
+  entriesAreVisible(WINDOW_SELECTOR, page);
