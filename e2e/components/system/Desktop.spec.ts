@@ -1,4 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
+import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { IsShown } from "e2e/constants";
 import {
@@ -76,6 +77,14 @@ test.describe("has selection", () => {
 
   // TODO: file entry (single/multi)
 });
+
+const taskbarEntriesOpened = async (
+  label: RegExp,
+  page: Page
+): Promise<void> => {
+  await taskbarEntriesAreVisible({ page });
+  await taskbarEntryIsVisible(label, { page });
+};
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
@@ -166,34 +175,29 @@ test.describe("has context menu", () => {
 
   test("can inspect", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
-    await taskbarEntriesAreVisible({ page });
-    await taskbarEntryIsVisible(/^DevTools$/, { page });
+    await taskbarEntriesOpened(/^DevTools$/, page);
   });
 
   test("can view page source", async ({ page }) => {
     await clickContextMenuEntry(/^View page source$/, { page });
-    await taskbarEntriesAreVisible({ page });
-    await taskbarEntryIsVisible(/^index.html - Monaco Editor$/, { page });
+    await taskbarEntriesOpened(/^index.html - Monaco Editor$/, page);
   });
 
   test("can open terminal", async ({ page }) => {
     await clickContextMenuEntry(/^Open Terminal here$/, { page });
-    await taskbarEntriesAreVisible({ page });
-    await taskbarEntryIsVisible(/^Terminal$/, { page });
+    await taskbarEntriesOpened(/^Terminal$/, page);
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
   test("ctrl + shift + r (open run dialog)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
-    await taskbarEntriesAreVisible({ page });
-    await taskbarEntryIsVisible(/^Run$/, { page });
+    await taskbarEntriesOpened(/^Run$/, page);
   });
 
   test("ctrl + shift + e (open file explorer)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
-    await taskbarEntriesAreVisible({ page });
-    await taskbarEntryIsVisible(/^File Explorer$/, { page });
+    await taskbarEntriesOpened(/^My PC$/, page);
   });
 
   // TODO: Ctrl+Shift+D
