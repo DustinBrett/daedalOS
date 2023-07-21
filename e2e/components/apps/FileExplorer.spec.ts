@@ -23,9 +23,9 @@ import {
   contextMenuIsVisible,
   desktopFileEntriesAreVisible,
   fileExplorerAddressBarHasValue,
+  fileExplorerEntriesAreVisible,
   fileExplorerEntryIsHidden,
   fileExplorerEntryIsVisible,
-  fileExplorerFileEntriesAreVisible,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
@@ -60,7 +60,7 @@ test("has search box", async ({ page }) => {
 });
 
 test("has status bar", async ({ page }) => {
-  await fileExplorerFileEntriesAreVisible({ page });
+  await fileExplorerEntriesAreVisible({ page });
   await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
   await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
 

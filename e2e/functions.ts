@@ -361,7 +361,7 @@ export const desktopFileEntriesAreVisible = async ({
   await expect(desktopEntries.first()).toBeVisible();
 };
 
-export const fileExplorerFileEntriesAreVisible = async ({
+export const fileExplorerEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> => {
   const fileExplorerEntries = page.locator(FILE_EXPLORER_ENTRIES_SELECTOR);
