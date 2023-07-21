@@ -161,7 +161,7 @@ export const typeInFileExplorerSearchBox = async (
   { page }: TestProps
 ): Promise<void> =>
   page
-    .locator(WINDOW_SELECTOR)
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
     .type(text, { delay: 50 });
 
@@ -178,32 +178,36 @@ export const pageHasIcon = async (
 ): Promise<void> =>
   expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute("href", icon);
 
-// expect->waitForFunction (Q: Could these be a poll/eval?)
+// expect->evaluate
 export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    await page.waitForFunction(() =>
-      window
-        .getComputedStyle(document.documentElement)
-        .getPropertyValue("background-image")
-        .match(/^url\(.*?\)$/)
-    )
-  ).toBeTruthy();
+  expect(async () =>
+    expect(
+      await page.evaluate(() =>
+        window
+          .getComputedStyle(document.documentElement)
+          .getPropertyValue("background-image")
+          .match(/^url\(.*?\)$/)
+      )
+    ).toBeTruthy()
+  ).toPass(POLLING_OPTIONS);
 
-// TODO: Fails on CI?
 export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
-  expect(
-    await page.waitForFunction(
-      ([windowSelector, taskbarSelector]: string[]) =>
-        window.innerWidth ===
-          (document.querySelector(windowSelector) as HTMLElement)
-            ?.clientWidth &&
-        window.innerHeight -
-          ((document.querySelector(taskbarSelector) as HTMLElement)
-            ?.clientHeight || 0) ===
-          (document.querySelector(windowSelector) as HTMLElement)?.clientHeight,
-      [WINDOW_SELECTOR, TASKBAR_SELECTOR]
-    )
-  ).toBeTruthy();
+  expect(async () =>
+    expect(
+      await page.evaluate(
+        ([windowSelector, taskbarSelector]) =>
+          window.innerWidth ===
+            (document.querySelector(windowSelector) as HTMLElement)
+              ?.clientWidth &&
+          window.innerHeight -
+            ((document.querySelector(taskbarSelector) as HTMLElement)
+              ?.clientHeight || 0) ===
+            (document.querySelector(windowSelector) as HTMLElement)
+              ?.clientHeight,
+        [WINDOW_SELECTOR, TASKBAR_SELECTOR]
+      )
+    ).toBeTruthy()
+  ).toPass(POLLING_OPTIONS);
 
 // expect->locator
 export const canvasBackgroundIsHidden = async ({
@@ -311,6 +315,15 @@ export const fileExplorerEntryIsHidden = async (
   expect(
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toBeHidden();
+
+export const fileExplorerSearchBoxIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(
+    page
+      .locator(FILE_EXPLORER_NAV_SELECTOR)
+      .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
+  ).toBeVisible();
 
 export const fileExplorerEntryHasTooltip = async (
   label: RegExp,

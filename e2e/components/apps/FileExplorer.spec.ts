@@ -25,6 +25,7 @@ import {
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
+  fileExplorerSearchBoxIsVisible,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
@@ -49,6 +50,7 @@ test("has address bar", async ({ page }) => {
 });
 
 test("has search box", async ({ page }) => {
+  await fileExplorerSearchBoxIsVisible({ page });
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
   await contextMenuIsVisible({ page });
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
