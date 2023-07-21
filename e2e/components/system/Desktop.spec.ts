@@ -113,6 +113,7 @@ test.describe("has context menu", () => {
 
       await page.reload();
 
+      await desktopFileEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
     });
 
@@ -129,6 +130,7 @@ test.describe("has context menu", () => {
 
       await page.reload();
 
+      await desktopFileEntriesAreVisible({ page });
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
     });
 
