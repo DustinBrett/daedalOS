@@ -17,6 +17,7 @@ import {
   clickContextMenuEntry,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
+  clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
   contextMenuEntryIsVisible,
   contextMenuIsVisible,
@@ -52,7 +53,9 @@ test("has address bar", async ({ page }) => {
 });
 
 test("has search box", async ({ page }) => {
+  await clickFileExplorerSearchBox({ page });
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
+
   await contextMenuIsVisible({ page });
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });

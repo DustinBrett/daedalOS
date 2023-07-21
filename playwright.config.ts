@@ -22,7 +22,7 @@ const config: PlaywrightTestConfig = {
       use: { ...devices["Desktop Safari"] },
     },
   ],
-  reporter: process.env.CI ? "dot" : [["html", { open: "always" }]],
+  reporter: "html",
   testDir: "e2e",
   use: {
     baseURL,

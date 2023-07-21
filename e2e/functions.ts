@@ -149,6 +149,14 @@ export const clickFileExplorerAddressBar = async (
       clickCount,
     });
 
+export const clickFileExplorerSearchBox = async ({
+  page,
+}: TestProps): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
+    .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
+    .click();
+
 export const clickFileExplorerEntry = async (
   label: RegExp,
   { page }: TestProps,
