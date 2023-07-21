@@ -50,20 +50,6 @@ export const loadContainerTestApp = async ({
 }: TestProps): Promise<Response | null> =>
   page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
 
-// locator->first->action
-export const clickFirstDesktopEntry = async ({
-  page,
-}: TestProps): Promise<void> =>
-  page.locator(DESKTOP_ENTRIES_SELECTOR).first().click();
-
-export const dragFirstDesktopEntryToWindow = async ({
-  page,
-}: TestProps): Promise<void> =>
-  page
-    .locator(DESKTOP_ENTRIES_SELECTOR)
-    .first()
-    .dragTo(page.locator(WINDOW_SELECTOR));
-
 // locator->action
 export const clickDesktop = async (
   { page }: TestProps,
@@ -105,6 +91,20 @@ export const pressDesktopKeys = async (
   keys: string,
   { page }: TestProps
 ): Promise<void> => page.locator(DESKTOP_SELECTOR).press(keys);
+
+// locator->first->action
+export const clickFirstDesktopEntry = async ({
+  page,
+}: TestProps): Promise<void> =>
+  page.locator(DESKTOP_ENTRIES_SELECTOR).first().click();
+
+export const dragFirstDesktopEntryToWindow = async ({
+  page,
+}: TestProps): Promise<void> =>
+  page
+    .locator(DESKTOP_ENTRIES_SELECTOR)
+    .first()
+    .dragTo(page.locator(WINDOW_SELECTOR));
 
 // locator->getByLabel->action
 export const clickClock = async (

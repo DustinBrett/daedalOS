@@ -7,10 +7,14 @@ type MenuItems = Record<string, IsShown>;
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
 
-export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
 export const EXACT = { exact: true };
-export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 export const FORCE = { force: true };
+export const POLLING_OPTIONS = {
+  intervals: [250, 750, 1000, 2000],
+  timeout: 10000,
+};
+export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
+export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 
 const APP_CONTAINER_SELECTOR = "div";
 const VIEWPORT_SELECTOR = "div";
@@ -91,8 +95,6 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
-// TODO: Can this all be regex, why any text? Check for ^...$
-// TODO: Use TEXT/LABEL naming
 // TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
@@ -119,8 +121,3 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
-
-export const POLLING_OPTIONS = {
-  intervals: [1000, 2000, 5000, 10000],
-  timeout: 30000,
-};
