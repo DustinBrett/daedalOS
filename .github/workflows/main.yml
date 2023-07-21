@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 18
       - name: Install Dependencies
-        run: yarn --openssl-legacy-provider
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn
       - name: Run Jest Unit Tests
         run: yarn test
       - name: Build App
