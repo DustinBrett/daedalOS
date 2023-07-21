@@ -5,7 +5,6 @@ import {
   CONTEXT_MENU_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
-  RIGHT_CLICK,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -14,7 +13,6 @@ import {
   TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
   TEST_SEARCH_RESULT,
-  WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
   clickFileExplorerAddressBar,
@@ -24,8 +22,8 @@ import {
   desktopFileEntriesAreVisible,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
+  fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
-  fileExplorerEntryIsVisible,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
@@ -59,51 +57,15 @@ test("has search box", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("has status bar", async ({ page }) => {
-  await fileExplorerEntriesAreVisible({ page });
-  await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
-  await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+test.describe("has file(s)", () => {
+  test.beforeEach(fileExplorerEntriesAreVisible);
+  test.beforeEach(async ({ page }) =>
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page })
+  );
 
-  const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
-  const entryInfo = statusBar.getByLabel(/^Total item count$/);
-  const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
-
-  await expect(entryInfo).toContainText(/^\d items$/);
-  await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
-});
-
-test("changes title", async ({ page }) => {
-  const focusedAppPageTitle = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
-
-  await pageHasTitle(focusedAppPageTitle, { page });
-
-  await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopEntry({ page });
-  await pageHasTitle(BASE_APP_TITLE, { page });
-
-  await focusOnWindow({ page });
-  await pageHasTitle(focusedAppPageTitle, { page });
-});
-
-test("changes icon", async ({ page }) => {
-  await pageHasIcon(TEST_APP_ICON, { page });
-
-  await desktopFileEntriesAreVisible({ page });
-  await clickFirstDesktopEntry({ page });
-  await pageHasIcon(BASE_APP_FAVICON, { page });
-
-  await focusOnWindow({ page });
-  await pageHasIcon(TEST_APP_ICON, { page });
-});
-
-test.describe("has file", () => {
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
-      page
-        .locator(WINDOW_SELECTOR)
-        .getByLabel(TEST_ROOT_FILE)
-        .click(RIGHT_CLICK);
-
+      await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, true);
       await contextMenuIsVisible({ page });
     });
 
@@ -141,7 +103,7 @@ test.describe("has file", () => {
       await page.reload();
 
       await windowIsVisible({ page });
-
+      await fileExplorerEntriesAreVisible({ page });
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
@@ -150,24 +112,48 @@ test.describe("has file", () => {
     // TODO: can create shortcut (expect prepended name & icon)
   });
 
+  test("has status bar", async ({ page }) => {
+    const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
+    const entryInfo = statusBar.getByLabel(/^Total item count$/);
+    const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
+
+    await expect(entryInfo).toContainText(/^\d items$/);
+    await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
+  });
+
   test("with tooltip", async ({ page, request }) => {
-    const testFile = page.locator(WINDOW_SELECTOR).getByLabel(TEST_ROOT_FILE);
-
-    // Q: Why both?
-    await testFile.hover();
-    await testFile.click();
-
-    const statsRequest = await request.head(TEST_ROOT_FILE_TEXT);
-
-    await expect(statsRequest).toBeOK();
-
-    await expect
-      .poll(() => testFile.getAttribute("title"))
-      .toMatch(TEST_ROOT_FILE_TOOLTIP);
+    await expect(await request.head(TEST_ROOT_FILE_TEXT)).toBeOK();
+    await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
+      page,
+    });
   });
 
   // TODO: can drag (to Desktop)
   // TODO: can drop (from Desktop)
+});
+
+test("changes title", async ({ page }) => {
+  const focusedAppPageTitle = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
+
+  await pageHasTitle(focusedAppPageTitle, { page });
+
+  await desktopFileEntriesAreVisible({ page });
+  await clickFirstDesktopEntry({ page });
+  await pageHasTitle(BASE_APP_TITLE, { page });
+
+  await focusOnWindow({ page });
+  await pageHasTitle(focusedAppPageTitle, { page });
+});
+
+test("changes icon", async ({ page }) => {
+  await pageHasIcon(TEST_APP_ICON, { page });
+
+  await desktopFileEntriesAreVisible({ page });
+  await clickFirstDesktopEntry({ page });
+  await pageHasIcon(BASE_APP_FAVICON, { page });
+
+  await focusOnWindow({ page });
+  await pageHasIcon(TEST_APP_ICON, { page });
 });
 
 // TODO: has context menu (FOLDER_MENU_ITEMS)

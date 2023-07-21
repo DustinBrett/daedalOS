@@ -122,9 +122,13 @@ export const clickFileExplorerAddressBar = async (
 
 export const clickFileExplorerEntry = async (
   label: RegExp,
-  { page }: TestProps
+  { page }: TestProps,
+  right = false
 ): Promise<void> =>
-  page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label).click();
+  page
+    .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+    .getByLabel(label)
+    .click(right ? RIGHT_CLICK : undefined);
 
 export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
   page
@@ -281,13 +285,14 @@ export const fileExplorerEntryIsHidden = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toBeHidden();
 
-export const fileExplorerEntryIsVisible = async (
+export const fileExplorerEntryHasTooltip = async (
   label: RegExp,
+  title: RegExp,
   { page }: TestProps
 ): Promise<void> =>
   expect(
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
-  ).toBeVisible();
+  ).toHaveAttribute("title", title);
 
 export const taskbarEntryIsVisible = async (
   label: RegExp,
