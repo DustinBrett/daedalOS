@@ -4,20 +4,19 @@ import {
   FILE_DRAG_TESTING_FAILS_BROWSERS,
   TEST_APP_CONTAINER_APP,
   TEST_APP_CONTAINER_APP_TITLE,
-  WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
   desktopFileEntriesAreVisible,
   desktopIsVisible,
+  dragFirstDesktopEntryToWindow,
+  loadContainerTestApp,
   windowIsVisible,
   windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.describe("app container", () => {
-  test.beforeEach(async ({ page }) =>
-    page.goto(`/?app=${TEST_APP_CONTAINER_APP}`)
-  );
+  test.beforeEach(loadContainerTestApp);
 
   // TODO: Make windowIsStable
   test.beforeEach(windowIsVisible);
@@ -31,12 +30,12 @@ test.describe("app container", () => {
     await desktopIsVisible({ page });
     await desktopFileEntriesAreVisible({ page });
 
-    const file = page.locator(DESKTOP_ENTRIES_SELECTOR).first();
-
-    await file.dragTo(page.locator(WINDOW_SELECTOR));
+    await dragFirstDesktopEntryToWindow({ page });
 
     await windowTitlebarTextIsVisible(
-      TEST_APP_CONTAINER_APP_TITLE(await file.textContent()),
+      TEST_APP_CONTAINER_APP_TITLE(
+        await page.locator(DESKTOP_ENTRIES_SELECTOR).first().textContent()
+      ),
       { page }
     );
   });

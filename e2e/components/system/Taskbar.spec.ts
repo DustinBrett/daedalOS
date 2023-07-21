@@ -1,7 +1,6 @@
 import { test } from "@playwright/test";
 import {
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
-  TEST_APP,
   TEST_APP_ICON,
   TEST_APP_TITLE,
 } from "e2e/constants";
@@ -16,6 +15,7 @@ import {
   clockTextIsVisible,
   disableOffscreenCanvas,
   loadApp,
+  loadTestApp,
   sheepIsVisible,
   startButtonIsVisible,
   taskbarEntriesAreVisible,
@@ -78,7 +78,7 @@ test.describe("elements", () => {
 });
 
 test.describe("entries", () => {
-  test.beforeEach(async ({ page }) => page.goto(`/?app=${TEST_APP}`));
+  test.beforeEach(loadTestApp);
   test.beforeEach(taskbarIsVisible);
 
   test.describe("has entry", () => {

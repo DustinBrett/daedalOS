@@ -103,8 +103,11 @@ test.describe("has context menu", () => {
     test("can create folder", async ({ page }) => {
       await desktopEntryIsHidden(NEW_FOLDER_LABEL, { page });
 
-      await page.getByLabel(/^New$/).click();
-      await page.getByLabel(/^Folder$/).click();
+      await page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^New$/).click();
+      await page
+        .locator(CONTEXT_MENU_SELECTOR)
+        .getByLabel(/^Folder$/)
+        .click();
 
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
 
@@ -116,8 +119,11 @@ test.describe("has context menu", () => {
     test("can create file", async ({ page }) => {
       await desktopEntryIsHidden(NEW_FILE_LABEL, { page });
 
-      await page.getByLabel(/^New$/).click();
-      await page.getByLabel(/^Text Document$/).click();
+      await page.locator(CONTEXT_MENU_SELECTOR).getByLabel(/^New$/).click();
+      await page
+        .locator(CONTEXT_MENU_SELECTOR)
+        .getByLabel(/^Text Document$/)
+        .click();
 
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
 
@@ -131,7 +137,10 @@ test.describe("has context menu", () => {
 
       const uploadPromise = page.waitForEvent("filechooser");
 
-      await page.getByLabel(/^Add file\(s\)$/).click();
+      await page
+        .locator(CONTEXT_MENU_SELECTOR)
+        .getByLabel(/^Add file\(s\)$/)
+        .click();
 
       await (
         await uploadPromise
@@ -148,8 +157,14 @@ test.describe("has context menu", () => {
   test("can change background", async ({ page }) => {
     await canvasBackgroundIsVisible({ page });
 
-    await page.getByLabel(/^Background$/).click();
-    await page.getByLabel(/^Picture Slideshow$/).click();
+    await page
+      .locator(CONTEXT_MENU_SELECTOR)
+      .getByLabel(/^Background$/)
+      .click();
+    await page
+      .locator(CONTEXT_MENU_SELECTOR)
+      .getByLabel(/^Picture Slideshow$/)
+      .click();
 
     await canvasBackgroundIsHidden({ page });
     await backgroundIsUrl({ page });
@@ -161,7 +176,10 @@ test.describe("has context menu", () => {
   });
 
   test("can inspect", async ({ page }) => {
-    await page.getByLabel(/^Inspect$/).click();
+    await page
+      .locator(CONTEXT_MENU_SELECTOR)
+      .getByLabel(/^Inspect$/)
+      .click();
 
     await taskbarEntriesAreVisible({ page });
 
@@ -171,7 +189,10 @@ test.describe("has context menu", () => {
   });
 
   test("can view page source", async ({ page }) => {
-    await page.getByLabel(/^View page source$/).click();
+    await page
+      .locator(CONTEXT_MENU_SELECTOR)
+      .getByLabel(/^View page source$/)
+      .click();
 
     await taskbarEntriesAreVisible({ page });
 
@@ -183,7 +204,10 @@ test.describe("has context menu", () => {
   });
 
   test("can open terminal", async ({ page }) => {
-    await page.getByLabel(/^Open Terminal here$/).click();
+    await page
+      .locator(CONTEXT_MENU_SELECTOR)
+      .getByLabel(/^Open Terminal here$/)
+      .click();
 
     await taskbarEntriesAreVisible({ page });
 

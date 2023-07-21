@@ -1,13 +1,17 @@
 import { expect, test } from "@playwright/test";
 import {
   DESKTOP_SELECTOR,
-  WINDOW_TITLEBAR_ICON_SELECTOR,
+  TEST_APP_TITLE_TEXT,
   WINDOW_TITLEBAR_SELECTOR,
 } from "e2e/constants";
 import {
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
+  doubleClickWindowTitlebar,
+  doubleClickWindowTitlebarIcon,
+  dragWindowToDesktop,
+  loadTestApp,
   windowIsHidden,
   windowIsMaximized,
   windowIsOpaque,
@@ -17,14 +21,14 @@ import {
   windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
-test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
+test.beforeEach(loadTestApp);
 
 test.beforeEach(windowIsVisible);
 // TODO: Check if window animation is indeed happening, and wait for it
 test.beforeEach(windowTitlebarIsVisible);
 
 test("has title", async ({ page }) =>
-  windowTitlebarTextIsVisible("My PC", { page }));
+  windowTitlebarTextIsVisible(TEST_APP_TITLE_TEXT, { page }));
 
 test("has minimize", async ({ page }) => {
   await windowIsOpaque({ page });
@@ -39,7 +43,7 @@ test.describe("has maximize", () => {
   });
 
   test("on double click titlebar", async ({ page }) => {
-    await page.locator(WINDOW_TITLEBAR_SELECTOR).dblclick();
+    await doubleClickWindowTitlebar({ page });
     await windowIsMaximized({ page });
   });
 });
@@ -51,26 +55,23 @@ test.describe("has close", () => {
   });
 
   test("on double click icon", async ({ page }) => {
-    await page.locator(WINDOW_TITLEBAR_ICON_SELECTOR).dblclick();
+    await doubleClickWindowTitlebarIcon({ page });
     await windowIsHidden({ page });
   });
 });
 
 test("has drag", async ({ page }) => {
-  const titlebarElement = page.locator(WINDOW_TITLEBAR_SELECTOR);
-  const initialBoundingBox = await titlebarElement.boundingBox();
+  const windowTitlebarElement = page.locator(WINDOW_TITLEBAR_SELECTOR);
+  const initialBoundingBox = await windowTitlebarElement.boundingBox();
 
-  await titlebarElement.dragTo(page.locator(DESKTOP_SELECTOR), {
-    targetPosition: {
-      x: (initialBoundingBox?.width || 0) / 2,
-      y: (initialBoundingBox?.height || 0) / 2,
-    },
-  });
+  await dragWindowToDesktop({ page });
 
-  const finalBoundingBox = await titlebarElement.boundingBox();
+  const finalBoundingBox = await windowTitlebarElement.boundingBox();
 
   expect(initialBoundingBox?.x).not.toEqual(finalBoundingBox?.x);
   expect(initialBoundingBox?.y).not.toEqual(finalBoundingBox?.y);
+
+  // TODO: Calc moved math
 
   const mainBoundingBox = await page.locator(DESKTOP_SELECTOR).boundingBox();
 
