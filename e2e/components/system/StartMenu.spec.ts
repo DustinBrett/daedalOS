@@ -1,44 +1,46 @@
-import { expect, test } from "@playwright/test";
-import { START_MENU_SELECTOR } from "e2e/constants";
+import { test } from "@playwright/test";
+import {
+  clickDesktop,
+  clickStartButton,
+  disableWallpaper,
+  loadApp,
+  startMenuEntryIsVisible,
+  startMenuIsHidden,
+  startMenuIsVisible,
+  startMenuSidebarEntryIsVisible,
+} from "e2e/functions";
 
-test.beforeEach(async ({ page }) => {
-  await page.goto("/");
-
-  await page.getByLabel(/^Start$/).click();
-});
+test.beforeEach(disableWallpaper);
+test.beforeEach(loadApp);
+test.beforeEach(clickStartButton);
+test.beforeEach(startMenuIsVisible);
 
 test.describe("has sidebar", () => {
   test("with buttons", async ({ page }) => {
-    await expect(page.getByLabel(/^All apps$/)).toBeVisible();
-    await expect(page.getByLabel(/^Power$/)).toBeVisible();
+    await startMenuSidebarEntryIsVisible(/^All apps$/, { page });
+    await startMenuSidebarEntryIsVisible(/^Power$/, { page });
   });
 
   // TODO: can expand
 });
 
 test("has folders", async ({ page }) => {
-  await expect(page.getByLabel(/^Emulators$/)).toBeVisible();
-  await expect(page.getByLabel(/^Games$/)).toBeVisible();
+  await startMenuEntryIsVisible(/^Emulators$/, { page });
+  await startMenuEntryIsVisible(/^Games$/, { page });
 
   // TODO: w/read-only context menu
 });
 
+// TODO: has files, w/read-only context menu
+
 test.describe("can close", () => {
-  test("via click", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
-
-    await page.getByLabel(/^Start$/).click();
-
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+  test("via button", async ({ page }) => {
+    await clickStartButton({ page });
+    await startMenuIsHidden({ page });
   });
 
   test("via blur", async ({ page }) => {
-    await expect(page.locator(START_MENU_SELECTOR)).toBeVisible();
-
-    page.locator("main").click();
-
-    await expect(page.locator(START_MENU_SELECTOR)).toBeHidden();
+    await clickDesktop({ page });
+    await startMenuIsHidden({ page });
   });
 });
-
-// TODO: has files, w/read-only context menu

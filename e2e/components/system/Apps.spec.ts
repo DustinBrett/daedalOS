@@ -1,37 +1,43 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
-  DESKTOP_FILE_ENTRY_SELECTOR,
-  FILE_DRAG_NOT_WORKING_BROWSERS,
+  DESKTOP_ENTRIES_SELECTOR,
+  FILE_DRAG_NOT_SUPPORTED_BROWSERS,
   TEST_APP_CONTAINER_APP,
-  WINDOW_SELECTOR,
-  WINDOW_TITLEBAR_SELECTOR,
+  TEST_APP_CONTAINER_APP_TITLE,
 } from "e2e/constants";
+import {
+  desktopEntriesAreVisible,
+  disableWallpaper,
+  dragFirstDesktopEntryToWindow,
+  loadContainerTestApp,
+  windowTitlebarTextIsVisible,
+  windowsAreVisible,
+} from "e2e/functions";
+
+test.beforeEach(disableWallpaper);
 
 test.describe("app container", () => {
+  test.beforeEach(loadContainerTestApp);
+  test.beforeEach(windowsAreVisible);
+
   test("has drop", async ({ browserName, page }) => {
-    // eslint-disable-next-line playwright/no-conditional-in-test
-    if (FILE_DRAG_NOT_WORKING_BROWSERS.has(browserName)) {
-      return;
-    }
+    if (FILE_DRAG_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
 
-    await page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
+    await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 
-    await expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toContainText(
-      TEST_APP_CONTAINER_APP
-    );
+    await desktopEntriesAreVisible({ page });
+    await dragFirstDesktopEntryToWindow({ page });
 
-    const firstFile = page.locator(DESKTOP_FILE_ENTRY_SELECTOR).first();
-
-    await expect(firstFile).toBeVisible();
-
-    await firstFile.dragTo(page.locator(WINDOW_SELECTOR));
-
-    await expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toContainText(
-      `${(await firstFile.textContent()) || ""}.url - ${TEST_APP_CONTAINER_APP}`
+    await windowTitlebarTextIsVisible(
+      TEST_APP_CONTAINER_APP_TITLE(
+        await page.locator(DESKTOP_ENTRIES_SELECTOR).first().textContent()
+      ),
+      { page }
     );
   });
 
   // TODO: has loading
+  // TODO: has error
 });
 
 // TODO: iframe app -> loads url (Browser, IRC, Paint)

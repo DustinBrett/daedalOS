@@ -210,8 +210,8 @@ export const getEventData = (
     (event as InputChangeEvent).target?.files || dataTransfer?.items || [];
   const text = dataTransfer?.getData("application/json");
 
-  if (files instanceof DataTransferItemList) {
-    files = [...files].filter(
+  if (Array.isArray(files)) {
+    files = [...(files as unknown as DataTransferItemList)].filter(
       (item) => !("kind" in item) || item.kind === "file"
     ) as unknown as DataTransferItemList;
   }
