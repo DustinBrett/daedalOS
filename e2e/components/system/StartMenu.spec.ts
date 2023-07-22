@@ -1,4 +1,5 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { START_MENU_SIDEBAR_SELECTOR } from "e2e/constants";
 import {
   clickDesktop,
   clickStartButton,
@@ -21,7 +22,19 @@ test.describe("has sidebar", () => {
     await startMenuSidebarEntryIsVisible(/^Power$/, { page });
   });
 
-  // TODO: can expand
+  test("can expand", async ({ page }) => {
+    const { width = 0 } =
+      (await page.locator(START_MENU_SIDEBAR_SELECTOR).boundingBox()) || {};
+
+    await page.locator(START_MENU_SIDEBAR_SELECTOR).click();
+
+    await expect(async () =>
+      expect(
+        (await page.locator(START_MENU_SIDEBAR_SELECTOR).boundingBox())
+          ?.width || 0
+      ).toBeGreaterThan(width)
+    ).toPass();
+  });
 });
 
 test("has folders", async ({ page }) => {
