@@ -176,8 +176,8 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, folderActions, url]);
 
   useEffect(() => {
-    if (!loading) fileManagerRef.current?.focus(PREVENT_SCROLL);
-  }, [loading]);
+    if (!loading && !isDesktop) fileManagerRef.current?.focus(PREVENT_SCROLL);
+  }, [isDesktop, loading]);
 
   return (
     <>

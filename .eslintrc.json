@@ -88,7 +88,7 @@
     "import/no-duplicates": "error",
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": ["**/*.config.ts", "**/*.spec.ts", "**/*.spec.tsx"] }
+      { "devDependencies": ["*.config.ts", "e2e/**", "__tests__/**"] }
     ],
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": [
@@ -113,6 +113,8 @@
     "no-undef-init": "error",
     "no-underscore-dangle": "off",
     "no-unsafe-optional-chaining": "error",
+    "playwright/expect-expect": "off",
+    "playwright/no-conditional-in-test": "off",
     "react/function-component-definition": [
       "error",
       { "namedComponents": "arrow-function" }
