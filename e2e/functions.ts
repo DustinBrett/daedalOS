@@ -16,12 +16,10 @@ import {
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
-  NORMAL_TIMEOUT,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
-  SLOW_TIMEOUT,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
@@ -385,14 +383,11 @@ export const fileExplorerEntryHasTooltip = async (
 
 export const taskbarEntryIsVisible = async (
   label: RegExp,
-  { page }: TestProps,
-  slow = false
+  { page }: TestProps
 ): Promise<void> =>
-  expect
-    .configure({ timeout: slow ? SLOW_TIMEOUT : NORMAL_TIMEOUT })(
-      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
-    )
-    .toBeVisible();
+  expect(
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+  ).toBeVisible();
 
 export const startMenuEntryIsVisible = async (
   label: RegExp,
@@ -459,11 +454,9 @@ export const taskbarEntryHasIcon = async (
 export const canvasBackgroundIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect
-    .configure({ timeout: process.env.CI ? SLOW_TIMEOUT : NORMAL_TIMEOUT })(
-      async () => expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
-    )
-    .toPass();
+  expect(async () =>
+    expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
+  ).toPass();
 
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
@@ -505,9 +498,8 @@ export const clockCanvasOrTextIsVisible = async ({
 
 export const taskbarEntryIsOpen = async (
   label: RegExp,
-  page: Page,
-  slow = false
+  page: Page
 ): Promise<void> => {
   await taskbarEntriesAreVisible({ page });
-  await taskbarEntryIsVisible(label, { page }, slow);
+  await taskbarEntryIsVisible(label, { page });
 };

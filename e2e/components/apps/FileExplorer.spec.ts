@@ -1,4 +1,3 @@
-import type { Response } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
@@ -66,13 +65,6 @@ test("has search box", async ({ page }) => {
 });
 
 test.describe("has file(s)", () => {
-  let responsePromise: Promise<Response>;
-
-  test.beforeEach(async ({ page }) => {
-    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
-    responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
-  });
-
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
       await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, true);
@@ -116,6 +108,8 @@ test.describe("has file(s)", () => {
   });
 
   test("has status bar", async ({ page }) => {
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+
     const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
     const entryInfo = statusBar.getByLabel(/^Total item count$/);
     const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
@@ -125,7 +119,11 @@ test.describe("has file(s)", () => {
   });
 
   test("with tooltip", async ({ page }) => {
-    expect(await responsePromise).toBeTruthy();
+    const responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
+
+    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+
+    expect((await responsePromise).ok()).toBeTruthy();
     await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
       page,
     });
