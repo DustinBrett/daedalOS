@@ -210,7 +210,7 @@ export const typeInFileExplorerSearchBox = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-    .type(text, { delay: 50 });
+    .type(text, { delay: 100 });
 
 // expect->toHave
 export const pageHasTitle = async (
