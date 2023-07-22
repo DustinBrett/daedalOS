@@ -1,3 +1,4 @@
+import type { Response } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
@@ -65,9 +66,12 @@ test("has search box", async ({ page }) => {
 });
 
 test.describe("has file(s)", () => {
-  test.beforeEach(async ({ page }) =>
-    clickFileExplorerEntry(TEST_ROOT_FILE, { page })
-  );
+  let responsePromise: Promise<Response>;
+
+  test.beforeEach(async ({ page }) => {
+    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+    responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
+  });
 
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
@@ -120,8 +124,8 @@ test.describe("has file(s)", () => {
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
   });
 
-  test("with tooltip", async ({ page, request }) => {
-    await expect(await request.head(TEST_ROOT_FILE_TEXT)).toBeOK();
+  test("with tooltip", async ({ page }) => {
+    expect(await responsePromise).toBeTruthy();
     await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
       page,
     });
