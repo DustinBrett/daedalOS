@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import type { IsShown } from "e2e/constants";
 import {
   DESKTOP_MENU_ITEMS,
   DESKTOP_SELECTOR,
@@ -19,6 +18,7 @@ import {
   desktopEntryIsVisible,
   desktopIsVisible,
   disableWallpaper,
+  filterMenuItems,
   loadApp,
   pressDesktopKeys,
   selectionIsVisible,
@@ -64,14 +64,10 @@ test.describe("has context menu", () => {
   test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
-    const MENU_ITEMS: [string, IsShown][] = Object.entries(
-      DESKTOP_MENU_ITEMS
-    ).map(([label, shown]) => [
-      label,
-      typeof shown === "boolean" ? shown : shown(browserName),
-    ]);
-
-    for (const [label, shown] of MENU_ITEMS) {
+    for (const [label, shown] of filterMenuItems(
+      DESKTOP_MENU_ITEMS,
+      browserName
+    )) {
       // eslint-disable-next-line no-await-in-loop
       await (shown
         ? contextMenuEntryIsVisible(label, { page })

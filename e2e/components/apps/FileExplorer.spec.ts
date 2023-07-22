@@ -4,6 +4,7 @@ import {
   BASE_APP_TITLE,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
+  FOLDER_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -15,10 +16,12 @@ import {
 } from "e2e/constants";
 import {
   clickContextMenuEntry,
+  clickFileExplorer,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
   clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
+  contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
   contextMenuIsVisible,
   disableWallpaper,
@@ -26,6 +29,7 @@ import {
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
+  filterMenuItems,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
@@ -104,6 +108,7 @@ test.describe("has file(s)", () => {
     // TODO: can cut/copy->paste (to Desktop)
     // TODO: can set backgound (image/video)
     // TODO: can create shortcut (expect prepended name & icon)
+    // TODO: can open Properties
   });
 
   test("has status bar", async ({ page }) => {
@@ -148,6 +153,24 @@ test("changes icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 });
 
-// TODO: has context menu (FOLDER_MENU_ITEMS)
+test.describe("has context menu", () => {
+  test.beforeEach(async ({ page }) => {
+    await clickFileExplorer({ page }, true);
+    await contextMenuIsVisible({ page });
+  });
+
+  test("with items", async ({ browserName, page }) => {
+    for (const [label, shown] of filterMenuItems(
+      FOLDER_MENU_ITEMS,
+      browserName
+    )) {
+      // eslint-disable-next-line no-await-in-loop
+      await (shown
+        ? contextMenuEntryIsVisible(label, { page })
+        : contextMenuEntryIsHidden(label, { page }));
+    }
+  });
+});
+
 // TODO: has back, forward, recent & up
 // TODO: has keyboard shortcuts (Paste, Ctrl: C, X, V)

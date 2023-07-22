@@ -1,5 +1,6 @@
 import type { Locator, Page, Response } from "@playwright/test";
 import { expect } from "@playwright/test";
+import type { IsShown, MenuItems } from "e2e/constants";
 import {
   BACKGROUND_CANVAS_SELECTOR,
   CALENDAR_LABEL,
@@ -14,6 +15,7 @@ import {
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
+  FILE_EXPLORER_SELECTOR,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
@@ -37,6 +39,15 @@ type TestProps = {
 type TestPropsWithBrowser = TestProps & {
   browserName: string;
 };
+
+export const filterMenuItems = (
+  menuItems: MenuItems,
+  browserName: string
+): [string, IsShown][] =>
+  Object.entries(menuItems).map(([label, shown]) => [
+    label,
+    typeof shown === "boolean" ? shown : shown(browserName),
+  ]);
 
 export const disableOffscreenCanvas = ({ page }: TestProps): Promise<void> =>
   page.addInitScript(() => {
@@ -84,15 +95,17 @@ export const doubleClickWindowTitlebarIcon = async ({
 export const dragWindowToDesktop = async ({
   page,
 }: TestProps): Promise<void> => {
-  const windowTitlebarElement = page.locator(WINDOW_TITLEBAR_SELECTOR);
-  const initialBoundingBox = await windowTitlebarElement.boundingBox();
+  const { width = 0, height = 0 } =
+    (await page.locator(WINDOW_TITLEBAR_SELECTOR).boundingBox()) || {};
 
-  await windowTitlebarElement.dragTo(page.locator(DESKTOP_SELECTOR), {
-    targetPosition: {
-      x: Math.floor((initialBoundingBox?.width || 0) / 2),
-      y: Math.floor((initialBoundingBox?.height || 0) / 2),
-    },
-  });
+  expect(width).toBeGreaterThan(0);
+  expect(height).toBeGreaterThan(0);
+
+  await page
+    .locator(WINDOW_TITLEBAR_SELECTOR)
+    .dragTo(page.locator(DESKTOP_SELECTOR), {
+      targetPosition: { x: width / 2, y: height / 2 },
+    });
 };
 
 export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
@@ -102,6 +115,11 @@ export const pressDesktopKeys = async (
   keys: string,
   { page }: TestProps
 ): Promise<void> => page.locator(DESKTOP_SELECTOR).press(keys);
+
+export const pressWindowKeys = async (
+  keys: string,
+  { page }: TestProps
+): Promise<void> => page.locator(WINDOW_SELECTOR).press(keys);
 
 // locator->first->action
 export const clickFirstDesktopEntry = async ({
@@ -157,6 +175,12 @@ export const clickFileExplorerSearchBox = async ({
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
     .click();
 
+export const clickFileExplorer = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(FILE_EXPLORER_SELECTOR).click(right ? RIGHT_CLICK : undefined);
+
 export const clickFileExplorerEntry = async (
   label: RegExp,
   { page }: TestProps,
@@ -202,6 +226,16 @@ export const pageHasIcon = async (
   expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute("href", icon);
 
 // expect->evaluate
+export const windowAnimationIsFinished = async ({
+  page,
+}: TestProps): Promise<Animation[]> =>
+  page
+    .locator(WINDOW_SELECTOR)
+    .evaluate((element) =>
+      Promise.all(element.getAnimations().map(({ finished }) => finished))
+    );
+
+// expect->evaluate->toPass
 export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
   expect(async () =>
     expect(
@@ -241,11 +275,6 @@ export const canvasBackgroundIsHidden = async ({
   page,
 }: TestProps): Promise<void> =>
   expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
-
-export const canvasBackgroundIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible();
 
 export const contextMenuIsVisible = async ({
   page,
@@ -421,7 +450,15 @@ export const taskbarEntryHasIcon = async (
     page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
-// expect->poll_count->poll_locator_first
+// expect->locator->toPass
+export const canvasBackgroundIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
+  ).toPass();
+
+// expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
   expect(async () =>
     expect(page.locator(selector).first()).toBeVisible()

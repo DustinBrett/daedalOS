@@ -23,6 +23,3 @@ test("pass accessibility scan", async ({ page }) =>
         .analyze()
     ).violations
   ).toEqual([]));
-
-// TODO: Screenshot
-// TODO: Snapshot

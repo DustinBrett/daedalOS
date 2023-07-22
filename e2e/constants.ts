@@ -2,7 +2,7 @@ import type { Locator } from "@playwright/test";
 
 export type IsShown = boolean | ((browserName: string) => boolean);
 
-type MenuItems = Record<string, IsShown>;
+export type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
@@ -33,7 +33,8 @@ export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}
 export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
 export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>nav`;
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
-export const FILE_EXPLORER_ENTRIES_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol>li`;
+export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
+export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
@@ -55,8 +56,9 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
-// TODO: Fix this, doesn't fail in BrowserStack
-export const FILE_DRAG_TESTING_FAILS_BROWSERS = new Set(["webkit"]);
+export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
+]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,

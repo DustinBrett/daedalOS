@@ -80,6 +80,8 @@ const useGlobalKeyboardShortcuts = (): void => {
             bubbles: true,
           })
         );
+      } else if (ctrlKey && altKey && altBindingsRef.current?.[keyName]) {
+        altBindingsRef.current?.[keyName]?.();
       } else if (fullscreen) {
         if (keyName === "META") metaDown = true;
         else if (altKey && altBindingsRef.current?.[keyName]) {
