@@ -132,7 +132,11 @@ test.describe("has context menu", () => {
 
   test("can view page source", async ({ page }) => {
     await clickContextMenuEntry(/^View page source$/, { page });
-    await taskbarEntryIsOpen(/^index.html - Monaco Editor$/, page);
+    await taskbarEntryIsOpen(
+      /^index.html - Monaco Editor$/,
+      page,
+      Boolean(process.env.CI)
+    );
   });
 
   test("can open terminal", async ({ page }) => {
