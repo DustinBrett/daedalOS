@@ -16,6 +16,7 @@ import {
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
+  ICON_SELECTOR,
   OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
@@ -361,16 +362,36 @@ export const fileExplorerAddressBarHasValue = async (
   expect(
     page
       .locator(FILE_EXPLORER_NAV_SELECTOR)
-      .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
+      .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL, EXACT)
   ).toHaveValue(value);
 
 export const fileExplorerEntryIsHidden = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
+    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label, EXACT)
   ).toBeHidden();
+
+export const fileExplorerEntryIsVisible = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label, EXACT)
+  ).toBeVisible();
+
+export const fileExplorerEntryHasShortcutIcon = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page
+      .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+      .getByLabel(label, EXACT)
+      .locator(ICON_SELECTOR)
+      .locator("img[src*=shortcut]")
+  ).toBeVisible();
 
 export const fileExplorerEntryHasTooltip = async (
   label: RegExp,
@@ -382,11 +403,11 @@ export const fileExplorerEntryHasTooltip = async (
   ).toHaveAttribute("title", title);
 
 export const taskbarEntryIsVisible = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label, EXACT)
   ).toBeVisible();
 
 export const startMenuEntryIsVisible = async (
@@ -497,7 +518,7 @@ export const clockCanvasOrTextIsVisible = async ({
 };
 
 export const taskbarEntryIsOpen = async (
-  label: RegExp,
+  label: RegExp | string,
   page: Page
 ): Promise<void> => {
   await taskbarEntriesAreVisible({ page });

@@ -33,3 +33,5 @@ test("can change background", async ({ page }) => {
   await canvasBackgroundIsHidden({ page });
   await backgroundIsUrl({ page });
 });
+
+// TODO: can set backgound (image/video)

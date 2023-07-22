@@ -27,12 +27,15 @@ import {
   disableWallpaper,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
+  fileExplorerEntryHasShortcutIcon,
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
+  fileExplorerEntryIsVisible,
   filterMenuItems,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
+  taskbarEntryIsOpen,
   typeInFileExplorerSearchBox,
   windowsAreVisible,
 } from "e2e/functions";
@@ -101,10 +104,29 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
+    test("can create shortcut", async ({ page }) => {
+      const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
+
+      await fileExplorerEntryIsHidden(shortcutFile, { page });
+
+      await clickContextMenuEntry(/^Create shortcut$/, { page });
+
+      await fileExplorerEntryIsVisible(shortcutFile, { page });
+      await fileExplorerEntryHasShortcutIcon(shortcutFile, { page });
+
+      await page.reload();
+
+      await windowsAreVisible({ page });
+      await fileExplorerEntriesAreVisible({ page });
+      await fileExplorerEntryIsVisible(shortcutFile, { page });
+    });
+
+    test("has properties", async ({ page }) => {
+      await clickContextMenuEntry(/^Properties$/, { page });
+      await taskbarEntryIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
+    });
+
     // TODO: can cut/copy->paste (to Desktop)
-    // TODO: can set backgound (image/video)
-    // TODO: can create shortcut (expect prepended name & icon)
-    // TODO: can open Properties
   });
 
   test("has status bar", async ({ page }) => {
