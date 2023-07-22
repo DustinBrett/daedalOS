@@ -388,9 +388,11 @@ export const taskbarEntryIsVisible = async (
   { page }: TestProps,
   slow = false
 ): Promise<void> =>
-  expect(page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)).toBeVisible({
-    timeout: slow ? SLOW_TIMEOUT : NORMAL_TIMEOUT,
-  });
+  expect
+    .configure({ timeout: slow ? SLOW_TIMEOUT : NORMAL_TIMEOUT })(
+      page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+    )
+    .toBeVisible();
 
 export const startMenuEntryIsVisible = async (
   label: RegExp,
@@ -457,11 +459,11 @@ export const taskbarEntryHasIcon = async (
 export const canvasBackgroundIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
-  ).toPass({
-    timeout: process.env.CI ? SLOW_TIMEOUT : NORMAL_TIMEOUT,
-  });
+  expect
+    .configure({ timeout: process.env.CI ? SLOW_TIMEOUT : NORMAL_TIMEOUT })(
+      async () => expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
+    )
+    .toPass();
 
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
