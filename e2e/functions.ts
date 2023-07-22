@@ -347,13 +347,19 @@ export const desktopEntryIsHidden = async (
 ): Promise<void> =>
   expect(page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label)).toBeHidden();
 
+const entryIsVisible = async (
+  selector: string,
+  label: RegExp | string,
+  page: Page
+): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(selector).getByLabel(label, EXACT)).toBeVisible()
+  ).toPass();
+
 export const desktopEntryIsVisible = async (
   label: RegExp,
   { page }: TestProps
-): Promise<void> =>
-  expect(
-    page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label)
-  ).toBeVisible();
+): Promise<void> => entryIsVisible(DESKTOP_ENTRIES_SELECTOR, label, page);
 
 export const fileExplorerAddressBarHasValue = async (
   value: RegExp | string,
@@ -376,10 +382,7 @@ export const fileExplorerEntryIsHidden = async (
 export const fileExplorerEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> =>
-  expect(
-    page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label, EXACT)
-  ).toBeVisible();
+): Promise<void> => entryIsVisible(FILE_EXPLORER_ENTRIES_SELECTOR, label, page);
 
 export const fileExplorerEntryHasTooltip = async (
   label: RegExp,
@@ -393,16 +396,12 @@ export const fileExplorerEntryHasTooltip = async (
 export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> =>
-  expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label, EXACT)
-  ).toBeVisible();
+): Promise<void> => entryIsVisible(TASKBAR_ENTRIES_SELECTOR, label, page);
 
 export const startMenuEntryIsVisible = async (
   label: RegExp,
   { page }: TestProps
-): Promise<void> =>
-  expect(page.locator(START_MENU_SELECTOR).getByLabel(label)).toBeVisible();
+): Promise<void> => entryIsVisible(START_MENU_SELECTOR, label, page);
 
 export const startMenuSidebarEntryIsVisible = async (
   label: RegExp,
