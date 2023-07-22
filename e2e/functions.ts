@@ -381,18 +381,6 @@ export const fileExplorerEntryIsVisible = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label, EXACT)
   ).toBeVisible();
 
-export const fileExplorerEntryHasShortcutIcon = async (
-  label: RegExp | string,
-  { page }: TestProps
-): Promise<void> =>
-  expect(
-    page
-      .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
-      .getByLabel(label, EXACT)
-      .locator(ICON_SELECTOR)
-      .locator("img[src*=shortcut]")
-  ).toBeVisible();
-
 export const fileExplorerEntryHasTooltip = async (
   label: RegExp,
   title: RegExp,
@@ -470,6 +458,19 @@ export const taskbarEntryHasIcon = async (
   expect(
     page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
+
+// expect->locator->getBy->locator->locator
+export const fileExplorerEntryHasShortcutIcon = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page
+      .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+      .getByLabel(label, EXACT)
+      .locator(ICON_SELECTOR)
+      .locator("img[src*=shortcut]")
+  ).toBeVisible();
 
 // expect->locator->toPass
 export const canvasBackgroundIsVisible = async ({
