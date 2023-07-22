@@ -16,6 +16,8 @@ test.beforeEach(desktopIsVisible);
 test("has background", canvasBackgroundIsVisible);
 
 test("can change background", async ({ page }) => {
+  if (process.env.CI) test.slow();
+
   await canvasBackgroundIsVisible({ page });
 
   await clickDesktop({ page }, true);

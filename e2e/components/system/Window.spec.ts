@@ -67,7 +67,7 @@ test.describe("has close", () => {
     await windowIsHidden({ page });
   });
 
-  // TODO: has close on alt + f4
+  // TODO: has close on alt + f4 in fullscreen
 });
 
 test("has drag", async ({ page }) => {
