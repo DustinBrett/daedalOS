@@ -456,7 +456,9 @@ export const canvasBackgroundIsVisible = async ({
 }: TestProps): Promise<void> =>
   expect(async () =>
     expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
-  ).toPass();
+  ).toPass({
+    timeout: process.env.CI ? 10000 : 5000,
+  });
 
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
