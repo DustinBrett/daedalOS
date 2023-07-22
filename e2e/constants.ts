@@ -93,7 +93,6 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
-// TODO: Randomize test data
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
