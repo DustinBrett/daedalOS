@@ -17,15 +17,10 @@ test.beforeEach(desktopEntriesAreVisible);
 
 test("has background", backgroundCanvasMaybeIsVisible);
 
-test("can change background", async ({
-  headless,
-  browserName,
-  context,
-  page,
-}) => {
+test("can change background", async ({ headless, browserName, page }) => {
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
-  await context.route("/Users/Public/Pictures/slideshow.json", (route) =>
+  await page.route("**/slideshow.json", (route) =>
     route.fulfill({
       body: JSON.stringify([UNKNOWN_ICON]),
     })
