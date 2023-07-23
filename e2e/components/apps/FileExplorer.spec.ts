@@ -23,6 +23,7 @@ import {
   clickFirstDesktopEntry,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
+  contextMenuIsHidden,
   contextMenuIsVisible,
   disableWallpaper,
   fileExplorerAddressBarHasValue,
@@ -52,11 +53,12 @@ test("has address bar", async ({ page }) => {
 
   await clickFileExplorerAddressBar({ page }, true);
   await contextMenuIsVisible({ page });
-  await contextMenuEntryIsVisible(/^Copy address$/, { page });
+  await clickContextMenuEntry(/^Copy address$/, { page });
 
   // TODO: Test clipboard on clicking copy
-  // TODO: Test context menu is gone
-  // TODO: Test title after clicking copy changes back to My PC
+
+  await contextMenuIsHidden({ page });
+  await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
 });
 
 test("has search box", async ({ page }) => {

@@ -280,6 +280,9 @@ export const canvasBackgroundIsHidden = async ({
 }: TestProps): Promise<void> =>
   expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeHidden();
 
+export const contextMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(CONTEXT_MENU_SELECTOR)).toBeHidden();
+
 export const contextMenuIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
