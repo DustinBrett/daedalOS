@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { SLIDESHOW_RESPONSE } from "e2e/constants";
 import {
   backgroundCanvasMaybeIsVisible,
   backgroundIsUrl,
@@ -10,7 +11,6 @@ import {
   desktopIsVisible,
   loadApp,
 } from "e2e/functions";
-import { UNKNOWN_ICON } from "utils/constants";
 
 test.beforeEach(loadApp);
 test.beforeEach(desktopEntriesAreVisible);
@@ -21,9 +21,7 @@ test("can change background", async ({ headless, browserName, page }) => {
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
   await page.route("**/slideshow.json", (route) =>
-    route.fulfill({
-      body: JSON.stringify([UNKNOWN_ICON]),
-    })
+    route.fulfill(SLIDESHOW_RESPONSE[route.request().method()])
   );
 
   await clickDesktop({ page }, true);
