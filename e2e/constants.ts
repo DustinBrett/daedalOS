@@ -56,6 +56,7 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 ]);
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["firefox"]);
 
 export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/280

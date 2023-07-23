@@ -26,7 +26,6 @@ const config: PlaywrightTestConfig = {
   testDir: "e2e",
   use: {
     baseURL,
-    headless: !process.env.CI,
     trace: "retain-on-failure",
     video: "retain-on-failure",
   },
