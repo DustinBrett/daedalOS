@@ -21,6 +21,7 @@ import {
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
+  SLIDESHOW_RESPONSE,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
@@ -75,6 +76,13 @@ export const loadContainerTestApp = async ({
   page,
 }: TestProps): Promise<Response | null> =>
   page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
+
+export const mockPictureSlideshowRequest = async ({
+  page,
+}: TestProps): Promise<void> =>
+  page.route("**/slideshow.json", (route) =>
+    route.fulfill(SLIDESHOW_RESPONSE[route.request().method()])
+  );
 
 // locator->action
 export const clickDesktop = async (
