@@ -28,12 +28,15 @@ import {
   TASKBAR_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
+  WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
 } from "e2e/constants";
 
 type TestProps = {
+  browserName?: string;
+  headless?: boolean;
   page: Page;
 };
 
@@ -471,14 +474,6 @@ export const fileExplorerEntryHasShortcutIcon = async (
       .locator("img[src*=shortcut]")
   ).toBeVisible();
 
-// expect->locator->toPass
-export const canvasBackgroundIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
-  ).toPass();
-
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
   expect(async () =>
@@ -504,7 +499,23 @@ export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
   entriesAreVisible(WINDOW_SELECTOR, page);
 
 // meta function
-export const clockCanvasOrTextIsVisible = async ({
+export const backgroundCanvasMaybeIsVisible = async ({
+  browserName,
+  headless,
+  page,
+}: TestProps): Promise<void> => {
+  if (
+    !headless ||
+    !browserName ||
+    !WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)
+  ) {
+    await expect(async () =>
+      expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
+    ).toPass();
+  }
+};
+
+export const clockCanvasMaybeIsVisible = async ({
   browserName,
   page,
 }: TestPropsWithBrowser): Promise<void> => {

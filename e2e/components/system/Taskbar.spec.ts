@@ -5,7 +5,7 @@ import {
   clickClock,
   clickStartButton,
   clockCanvasIsHidden,
-  clockCanvasOrTextIsVisible,
+  clockCanvasMaybeIsVisible,
   clockTextIsVisible,
   disableOffscreenCanvas,
   disableWallpaper,
@@ -41,7 +41,7 @@ test.describe("elements", () => {
   });
 
   test.describe("has clock", () => {
-    test("via canvas", clockCanvasOrTextIsVisible);
+    test("via canvas", clockCanvasMaybeIsVisible);
 
     test("via text", async ({ page }) => {
       await disableOffscreenCanvas({ page });

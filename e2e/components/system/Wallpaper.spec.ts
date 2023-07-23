@@ -1,12 +1,9 @@
 import { test } from "@playwright/test";
+import { BASE_APP_FAVICON_TEXT } from "e2e/constants";
 import {
-  BASE_APP_FAVICON_TEXT,
-  WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
-} from "e2e/constants";
-import {
+  backgroundCanvasMaybeIsVisible,
   backgroundIsUrl,
   canvasBackgroundIsHidden,
-  canvasBackgroundIsVisible,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuIsVisible,
@@ -18,7 +15,7 @@ import {
 test.beforeEach(loadApp);
 test.beforeEach(desktopEntriesAreVisible);
 
-test("has background", canvasBackgroundIsVisible);
+test("has background", backgroundCanvasMaybeIsVisible);
 
 test("can change background", async ({
   headless,
@@ -26,11 +23,7 @@ test("can change background", async ({
   context,
   page,
 }) => {
-  if (headless && WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
-    return;
-  }
-
-  await canvasBackgroundIsVisible({ page });
+  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
   await context.route("/Users/Public/Pictures/slideshow.json", (route) =>
     route.fulfill({ body: JSON.stringify([BASE_APP_FAVICON_TEXT]) })
