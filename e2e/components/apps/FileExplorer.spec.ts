@@ -121,6 +121,8 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
 
+      // TODO: copy dialog shows
+
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     });
@@ -139,7 +141,7 @@ test.describe("has file(s)", () => {
 
     // TODO: can rename
     // TODO: can add to archive
-    // TODO: Open & Open with
+    // TODO: open & open with (double click, context, enter)
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -232,4 +234,4 @@ test.describe("has context menu", () => {
 });
 
 // TODO: has back, forward, recent & up
-// TODO: has keyboard shortcuts (Paste, Ctrl: C, X, V)
+// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V)
