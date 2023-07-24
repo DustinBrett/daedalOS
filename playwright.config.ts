@@ -22,7 +22,7 @@ const config: PlaywrightTestConfig = {
       use: { ...devices["Desktop Safari"] },
     },
   ],
-  reporter: "html",
+  reporter: [["list"], ["html"]],
   retries: process.env.CI ? 2 : 1,
   testDir: "e2e",
   use: {
