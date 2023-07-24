@@ -112,7 +112,7 @@ test.describe("has file(s)", () => {
     });
 
     test("can copy", async ({ page }) => {
-      await clickContextMenuEntry(/^Cut$/, { page });
+      await clickContextMenuEntry(/^Copy$/, { page });
 
       const { width = 0 } =
         (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
