@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
+  DESKTOP_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
@@ -16,6 +17,7 @@ import {
 } from "e2e/constants";
 import {
   clickContextMenuEntry,
+  clickDesktop,
   clickFileExplorer,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
@@ -25,6 +27,7 @@ import {
   contextMenuEntryIsVisible,
   contextMenuIsHidden,
   contextMenuIsVisible,
+  desktopEntryIsVisible,
   disableWallpaper,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
@@ -94,6 +97,34 @@ test.describe("has file(s)", () => {
       expect(download.suggestedFilename()).toMatch(TEST_ROOT_FILE);
     });
 
+    test("can cut", async ({ page }) => {
+      await clickContextMenuEntry(/^Cut$/, { page });
+
+      const { width = 0 } =
+        (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
+
+      await clickDesktop({ page }, true, width - 25, 25);
+      await contextMenuIsVisible({ page });
+      await clickContextMenuEntry(/^Paste$/, { page });
+
+      await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
+      await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
+    });
+
+    test("can copy", async ({ page }) => {
+      await clickContextMenuEntry(/^Cut$/, { page });
+
+      const { width = 0 } =
+        (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
+
+      await clickDesktop({ page }, true, width - 25, 25);
+      await contextMenuIsVisible({ page });
+      await clickContextMenuEntry(/^Paste$/, { page });
+
+      await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
+      await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
+    });
+
     test("can delete", async ({ page }) => {
       await clickContextMenuEntry(/^Delete$/, { page });
 
@@ -127,8 +158,6 @@ test.describe("has file(s)", () => {
       await clickContextMenuEntry(/^Properties$/, { page });
       await taskbarEntryIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
     });
-
-    // TODO: can cut/copy->paste (to Desktop)
   });
 
   test("has status bar", async ({ page }) => {

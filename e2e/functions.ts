@@ -95,9 +95,15 @@ export const mockPictureSlideshowRequest = async ({
 // locator->action
 export const clickDesktop = async (
   { page }: TestProps,
-  right = false
+  right = false,
+  x = 0,
+  y = 0,
+  offset = 0
 ): Promise<void> =>
-  page.locator(DESKTOP_SELECTOR).click(right ? RIGHT_CLICK : undefined);
+  page.locator(DESKTOP_SELECTOR).click({
+    button: right ? "right" : undefined,
+    ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
+  });
 
 export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
