@@ -342,11 +342,6 @@ export const windowIsTransparent = async ({ page }: TestProps): Promise<void> =>
 export const windowIsOpaque = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(WINDOW_SELECTOR)).toHaveCSS("opacity", "1");
 
-export const windowTitlebarIsVisible = async ({
-  page,
-}: TestProps): Promise<void> =>
-  expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toBeVisible();
-
 // expect->locator->getBy
 export const calendarIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(
@@ -562,10 +557,13 @@ export const loadAppWithCanvas = async ({
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 };
 
-export const taskbarEntryIsOpen = async (
+export const appIsOpen = async (
   label: RegExp | string,
   page: Page
 ): Promise<void> => {
   await taskbarEntriesAreVisible({ page });
   await taskbarEntryIsVisible(label, { page });
+
+  await windowsAreVisible({ page });
+  await windowTitlebarTextIsVisible(label, { page });
 };

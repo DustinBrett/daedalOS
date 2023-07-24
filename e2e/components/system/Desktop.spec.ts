@@ -8,6 +8,7 @@ import {
   SELECTION_SELECTOR,
 } from "e2e/constants";
 import {
+  appIsOpen,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuEntryIsHidden,
@@ -22,7 +23,6 @@ import {
   loadApp,
   pressDesktopKeys,
   selectionIsVisible,
-  taskbarEntryIsOpen,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
@@ -127,29 +127,29 @@ test.describe("has context menu", () => {
 
   test("can inspect", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
-    await taskbarEntryIsOpen(/^DevTools$/, page);
+    await appIsOpen(/^DevTools$/, page);
   });
 
   test("can view page source", async ({ page }) => {
     await clickContextMenuEntry(/^View page source$/, { page });
-    await taskbarEntryIsOpen(/^index.html - Monaco Editor$/, page);
+    await appIsOpen(/^index.html - Monaco Editor$/, page);
   });
 
   test("can open terminal", async ({ page }) => {
     await clickContextMenuEntry(/^Open Terminal here$/, { page });
-    await taskbarEntryIsOpen(/^Terminal$/, page);
+    await appIsOpen(/^Terminal$/, page);
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
   test("ctrl + shift + r (open run dialog)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
-    await taskbarEntryIsOpen(/^Run$/, page);
+    await appIsOpen(/^Run$/, page);
   });
 
   test("ctrl + shift + e (open file explorer)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
-    await taskbarEntryIsOpen(/^My PC$/, page);
+    await appIsOpen(/^My PC$/, page);
   });
 
   // TODO: Ctrl+Shift+D

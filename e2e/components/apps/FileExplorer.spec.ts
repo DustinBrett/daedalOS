@@ -16,6 +16,7 @@ import {
   TEST_SEARCH_RESULT,
 } from "e2e/constants";
 import {
+  appIsOpen,
   clickContextMenuEntry,
   clickDesktop,
   clickFileExplorer,
@@ -39,7 +40,6 @@ import {
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
-  taskbarEntryIsOpen,
   typeInFileExplorerSearchBox,
   windowsAreVisible,
 } from "e2e/functions";
@@ -137,6 +137,10 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
+    // TODO: can rename
+    // TODO: can add to archive
+    // TODO: Open & Open with
+
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
 
@@ -156,7 +160,7 @@ test.describe("has file(s)", () => {
 
     test("has properties", async ({ page }) => {
       await clickContextMenuEntry(/^Properties$/, { page });
-      await taskbarEntryIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
+      await appIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
     });
   });
 

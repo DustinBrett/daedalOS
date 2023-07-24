@@ -19,7 +19,6 @@ import {
   windowIsMaximized,
   windowIsOpaque,
   windowIsTransparent,
-  windowTitlebarIsVisible,
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
@@ -27,7 +26,6 @@ import {
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
-test.beforeEach(windowTitlebarIsVisible);
 test.beforeEach(windowAnimationIsFinished);
 
 test("has title", async ({ page }) =>
