@@ -34,8 +34,8 @@ test("can change background", async ({ headless, browserName, page }) => {
   await page.reload();
 
   await desktopIsVisible({ page });
-  await canvasBackgroundIsHidden({ page });
   await backgroundIsUrl({ page });
+  await canvasBackgroundIsHidden({ page });
 });
 
 test.describe("can set backgound", () => {
@@ -53,8 +53,8 @@ test.describe("can set backgound", () => {
     await clickContextMenuEntry(/^Set as desktop background$/, { page });
     await clickContextMenuEntry(/^Fill$/, { page });
 
-    await canvasBackgroundIsHidden({ page });
     await backgroundIsUrl({ page });
+    await canvasBackgroundIsHidden({ page });
   });
 
   // TODO: from video
