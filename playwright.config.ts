@@ -23,6 +23,7 @@ const config: PlaywrightTestConfig = {
     },
   ],
   reporter: "html",
+  retries: process.env.CI ? 2 : 1,
   testDir: "e2e",
   use: {
     baseURL,
