@@ -116,5 +116,5 @@ export const NEW_FILE_LABEL_TEXT = "New Text Document.txt";
 
 export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
-export const BASE_APP_TITLE = "daedalOS";
+export const BASE_APP_TITLE = "icefishOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
