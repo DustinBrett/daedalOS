@@ -6,6 +6,7 @@ import {
   CALENDAR_LABEL,
   CLOCK_LABEL,
   CLOCK_REGEX,
+  CONTEXT_MENU_ENTRIES_SELECTOR,
   CONTEXT_MENU_SELECTOR,
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
@@ -108,6 +109,16 @@ export const clickDesktop = async (
 export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
 
+export const clickStartMenuEntry = async (
+  label: RegExp,
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page
+    .locator(START_MENU_SELECTOR)
+    .getByLabel(label)
+    .click(right ? RIGHT_CLICK : undefined);
+
 export const doubleClickWindowTitlebar = async ({
   page,
 }: TestProps): Promise<void> =>
@@ -178,7 +189,7 @@ export const clickContextMenuEntry = async (
   label: RegExp,
   { page }: TestProps
 ): Promise<void> =>
-  page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label).click();
+  page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label).click();
 
 export const clickFileExplorerAddressBar = async (
   { page }: TestProps,
@@ -245,6 +256,16 @@ export const pageHasTitle = async (
 ): Promise<void> => expect(page).toHaveTitle(title);
 
 // expect->locator->toHave
+export const contextMenuHasCount = async (
+  count: number,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page
+      .locator(CONTEXT_MENU_ENTRIES_SELECTOR)
+      .filter({ hasNot: page.locator("hr") })
+  ).toHaveCount(count);
+
 export const pageHasIcon = async (
   icon: RegExp,
   { page }: TestProps
@@ -353,7 +374,7 @@ export const contextMenuEntryIsHidden = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label, EXACT)
+    page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label, EXACT)
   ).toBeHidden();
 
 export const contextMenuEntryIsVisible = async (
@@ -361,7 +382,7 @@ export const contextMenuEntryIsVisible = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(CONTEXT_MENU_SELECTOR).getByLabel(label, EXACT)
+    page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label, EXACT)
   ).toBeVisible();
 
 export const desktopEntryIsHidden = async (

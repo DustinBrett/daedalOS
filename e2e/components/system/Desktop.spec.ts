@@ -13,6 +13,7 @@ import {
   clickDesktop,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
+  contextMenuHasCount,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
   desktopEntryIsHidden,
@@ -64,10 +65,12 @@ test.describe("has context menu", () => {
   test.beforeEach(contextMenuIsVisible);
 
   test("with items", async ({ browserName, page }) => {
-    for (const [label, shown] of filterMenuItems(
-      DESKTOP_MENU_ITEMS,
-      browserName
-    )) {
+    const MENU_ITEMS = filterMenuItems(DESKTOP_MENU_ITEMS, browserName);
+    const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
+
+    await contextMenuHasCount(shownCount, { page });
+
+    for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
       await (shown
         ? contextMenuEntryIsVisible(label, { page })

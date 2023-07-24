@@ -26,6 +26,7 @@ import {
   clickFirstDesktopEntry,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
+  contextMenuHasCount,
   contextMenuIsHidden,
   contextMenuIsVisible,
   desktopEntryIsVisible,
@@ -80,6 +81,8 @@ test.describe("has file(s)", () => {
     });
 
     test("with items", async ({ page }) => {
+      await contextMenuHasCount(FILE_MENU_ITEMS.length, { page });
+
       for (const label of FILE_MENU_ITEMS) {
         // eslint-disable-next-line no-await-in-loop
         await contextMenuEntryIsVisible(label, { page });
@@ -221,10 +224,12 @@ test.describe("has context menu", () => {
   });
 
   test("with items", async ({ browserName, page }) => {
-    for (const [label, shown] of filterMenuItems(
-      FOLDER_MENU_ITEMS,
-      browserName
-    )) {
+    const MENU_ITEMS = filterMenuItems(FOLDER_MENU_ITEMS, browserName);
+    const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
+
+    await contextMenuHasCount(shownCount, { page });
+
+    for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
       await (shown
         ? contextMenuEntryIsVisible(label, { page })

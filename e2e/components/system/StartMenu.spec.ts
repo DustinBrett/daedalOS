@@ -3,6 +3,10 @@ import { START_MENU_SIDEBAR_SELECTOR } from "e2e/constants";
 import {
   clickDesktop,
   clickStartButton,
+  clickStartMenuEntry,
+  contextMenuEntryIsVisible,
+  contextMenuHasCount,
+  contextMenuIsVisible,
   disableWallpaper,
   loadApp,
   startMenuEntryIsVisible,
@@ -37,11 +41,18 @@ test.describe("has sidebar", () => {
   });
 });
 
-test("has folders", async ({ page }) => {
-  await startMenuEntryIsVisible(/^Emulators$/, { page });
-  await startMenuEntryIsVisible(/^Games$/, { page });
+test.describe("has folders", () => {
+  test("with items", async ({ page }) => {
+    await startMenuEntryIsVisible(/^Emulators$/, { page });
+    await startMenuEntryIsVisible(/^Games$/, { page });
+  });
 
-  // TODO: w/read-only context menu
+  test("has context menu (read only)", async ({ page }) => {
+    await clickStartMenuEntry(/^Emulators$/, { page }, true);
+    await contextMenuIsVisible({ page });
+    await contextMenuEntryIsVisible(/^Open$/, { page });
+    await contextMenuHasCount(1, { page });
+  });
 });
 
 // TODO: has files, w/read-only context menu
