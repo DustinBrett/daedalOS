@@ -5,27 +5,28 @@ import {
   canvasBackgroundIsHidden,
   clickContextMenuEntry,
   clickDesktop,
+  clickFileExplorerEntry,
   contextMenuIsVisible,
-  desktopEntriesAreVisible,
   desktopIsVisible,
-  loadApp,
+  fileExplorerEntriesAreVisible,
+  loadAppWithCanvas,
   mockPictureSlideshowRequest,
+  windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(loadApp);
-test.beforeEach(desktopEntriesAreVisible);
-
-test("has background", backgroundCanvasMaybeIsVisible);
+test("has background", loadAppWithCanvas);
 
 test("can change background", async ({ headless, browserName, page }) => {
-  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
+  await loadAppWithCanvas({ browserName, headless, page });
 
-  await mockPictureSlideshowRequest({ page });
+  const pictureSlideshowResponse = await mockPictureSlideshowRequest({ page });
 
   await clickDesktop({ page }, true);
   await contextMenuIsVisible({ page });
   await clickContextMenuEntry(/^Background$/, { page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
+
+  await pictureSlideshowResponse();
 
   await canvasBackgroundIsHidden({ page });
   await backgroundIsUrl({ page });
@@ -37,4 +38,24 @@ test("can change background", async ({ headless, browserName, page }) => {
   await backgroundIsUrl({ page });
 });
 
-// TODO: can set backgound (image/video)
+test.describe("can set backgound", () => {
+  test.beforeEach(async ({ page }) => page.goto("/?url=/System/Icons/48x48"));
+  test.beforeEach(windowsAreVisible);
+  test.beforeEach(fileExplorerEntriesAreVisible);
+  test.beforeEach(backgroundCanvasMaybeIsVisible);
+
+  test("from image", async ({ headless, browserName, page }) => {
+    await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
+
+    await clickFileExplorerEntry("unknown.png", { page }, true);
+    await contextMenuIsVisible({ page });
+
+    await clickContextMenuEntry(/^Set as desktop background$/, { page });
+    await clickContextMenuEntry(/^Fill$/, { page });
+
+    await canvasBackgroundIsHidden({ page });
+    await backgroundIsUrl({ page });
+  });
+
+  // TODO: from video
+});

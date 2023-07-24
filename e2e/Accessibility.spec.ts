@@ -2,6 +2,8 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { ACCESSIBILITY_EXCEPTION_IDS } from "e2e/constants";
 import {
+  backgroundCanvasMaybeIsVisible,
+  clockCanvasMaybeIsVisible,
   desktopEntriesAreVisible,
   loadApp,
   startButtonIsVisible,
@@ -12,6 +14,8 @@ test.beforeEach(loadApp);
 test.beforeEach(desktopEntriesAreVisible);
 test.beforeEach(taskbarIsVisible);
 test.beforeEach(startButtonIsVisible);
+test.beforeEach(clockCanvasMaybeIsVisible);
+test.beforeEach(backgroundCanvasMaybeIsVisible);
 
 test("pass accessibility scan", async ({ page }) =>
   expect(

@@ -1,4 +1,4 @@
-import type { Locator, Route } from "@playwright/test";
+import type { Locator } from "@playwright/test";
 
 export type IsShown = boolean | ((browserName: string) => boolean);
 
@@ -6,7 +6,6 @@ export type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
-type RouteOptions = Parameters<Route["fulfill"]>[0];
 
 export const EXACT = { exact: true };
 export const FORCE = { force: true };
@@ -124,7 +123,4 @@ export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
 export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
 
-export const SLIDESHOW_RESPONSE: Record<string, RouteOptions> = {
-  GET: { body: JSON.stringify([BASE_APP_FAVICON_TEXT]) },
-  HEAD: { contentType: "application/json", status: 200 },
-};
+export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.png";
