@@ -1,9 +1,8 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 
-const PORT = process.env.PORT || 3000;
+const { CI, PORT = 3000 } = process.env;
 const baseURL = `http://localhost:${PORT}`;
-
 const config: PlaywrightTestConfig = {
   fullyParallel: true,
   projects: [
@@ -22,8 +21,8 @@ const config: PlaywrightTestConfig = {
       use: { ...devices["Desktop Safari"] },
     },
   ],
-  reporter: [["list"], ["html"]],
-  retries: process.env.CI ? 2 : 1,
+  reporter: [["list"], ["html", { open: CI ? "never" : "always" }]],
+  retries: CI ? 2 : 1,
   testDir: "e2e",
   use: {
     baseURL,
@@ -31,10 +30,10 @@ const config: PlaywrightTestConfig = {
     video: "retain-on-failure",
   },
   webServer: {
-    command: process.env.CI ? "yarn start" : "yarn dev",
+    command: CI ? "yarn start" : "yarn dev",
     url: baseURL,
   },
-  workers: process.env.CI ? 1 : undefined,
+  workers: CI ? 1 : undefined,
 };
 
 // ts-prune-ignore-next
