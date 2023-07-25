@@ -22,7 +22,7 @@ import {
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
-test.beforeEach(clickStartButton);
+test.beforeEach(async ({ page }) => clickStartButton({ page }));
 test.beforeEach(startMenuIsVisible);
 
 test.describe("has sidebar", () => {
