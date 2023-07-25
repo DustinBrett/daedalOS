@@ -29,7 +29,7 @@ test.describe("elements", () => {
   test.describe("has start button", () => {
     test.beforeEach(startButtonIsVisible);
 
-    test("with sheep", async ({ page }) => {
+    test("can spawn sheep", async ({ page }) => {
       await page.keyboard.down("Control");
       await page.keyboard.down("Shift");
 
@@ -51,7 +51,7 @@ test.describe("elements", () => {
       await clockCanvasIsHidden({ page });
     });
 
-    test("with sheep", async ({ page }) => {
+    test("can spawn sheep", async ({ page }) => {
       await clickClock({ page }, 7);
       await sheepIsVisible({ page });
     });
@@ -75,10 +75,10 @@ test.describe("entries", () => {
       taskbarEntryIsVisible(TEST_APP_TITLE, { page })
     );
 
-    test("with icon", async ({ page }) =>
+    test("has icon", async ({ page }) =>
       taskbarEntryHasIcon(TEST_APP_TITLE, TEST_APP_ICON, { page }));
 
-    test("with tooltip", async ({ page }) =>
+    test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
     // TODO: has context menu

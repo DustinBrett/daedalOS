@@ -17,7 +17,7 @@ test.beforeEach(startButtonIsVisible);
 test.beforeEach(clockCanvasMaybeIsVisible);
 test.beforeEach(backgroundCanvasMaybeIsVisible);
 
-test("pass accessibility scan", async ({ page }) =>
+test("can pass accessibility scan", async ({ page }) =>
   expect(
     (
       await new AxeBuilder({ page })

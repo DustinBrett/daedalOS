@@ -69,12 +69,12 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         view="list"
         hideLoading
         hideShortcutIcons
+        isStartMenu
         loadIconsImmediately
         preloadShortcuts
         readOnly
         skipFsWatcher
         skipSorting
-        useNewFolderIcon
       />
     </StyledStartMenu>
   );

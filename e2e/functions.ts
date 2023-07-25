@@ -110,13 +110,13 @@ export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
   page.locator(START_BUTTON_SELECTOR).click();
 
 export const clickStartMenuEntry = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps,
   right = false
 ): Promise<void> =>
   page
     .locator(START_MENU_SELECTOR)
-    .getByLabel(label)
+    .getByLabel(label, EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
 export const doubleClickWindowTitlebar = async ({
@@ -443,7 +443,7 @@ export const taskbarEntryIsVisible = async (
 ): Promise<void> => entryIsVisible(TASKBAR_ENTRIES_SELECTOR, label, page);
 
 export const startMenuEntryIsVisible = async (
-  label: RegExp,
+  label: RegExp | string,
   { page }: TestProps
 ): Promise<void> => entryIsVisible(START_MENU_SELECTOR, label, page);
 

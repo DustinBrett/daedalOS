@@ -35,7 +35,7 @@ test("has file entry", desktopEntriesAreVisible);
 // TODO: has grid (move file on grid)
 
 test.describe("has selection", () => {
-  test("with effect", async ({ page }) => {
+  test("has effect", async ({ page }) => {
     const { width = 0, height = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
 
@@ -64,7 +64,7 @@ test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
   test.beforeEach(contextMenuIsVisible);
 
-  test("with items", async ({ browserName, page }) => {
+  test("has items", async ({ browserName, page }) => {
     const MENU_ITEMS = filterMenuItems(DESKTOP_MENU_ITEMS, browserName);
     const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
 
@@ -78,7 +78,7 @@ test.describe("has context menu", () => {
     }
   });
 
-  test.describe("with file functions", () => {
+  test.describe("has file functions", () => {
     test.beforeEach(desktopEntriesAreVisible);
 
     test("can create folder", async ({ page }) => {
@@ -128,7 +128,7 @@ test.describe("has context menu", () => {
     });
   });
 
-  test("can inspect", async ({ page }) => {
+  test("can inspect page", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
     await appIsOpen(/^DevTools$/, page);
   });
@@ -145,12 +145,12 @@ test.describe("has context menu", () => {
 });
 
 test.describe("has keyboard shortcuts", () => {
-  test("ctrl + shift + r (open run dialog)", async ({ page }) => {
+  test("can open run dialog (ctrl + shift + r)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
     await appIsOpen(/^Run$/, page);
   });
 
-  test("ctrl + shift + e (open file explorer)", async ({ page }) => {
+  test("can open file explorer (ctrl + shift + e)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
     await appIsOpen(/^My PC$/, page);
   });

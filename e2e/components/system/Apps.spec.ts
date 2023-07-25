@@ -20,7 +20,7 @@ test.describe("app container", () => {
   test.beforeEach(loadContainerTestApp);
   test.beforeEach(windowsAreVisible);
 
-  test("has drop", async ({ browserName, page }) => {
+  test("can drop", async ({ browserName, page }) => {
     if (FILE_DRAG_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
 
     await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });

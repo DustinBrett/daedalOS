@@ -63,9 +63,11 @@ test("has address bar", async ({ page }) => {
 
   await contextMenuIsHidden({ page });
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
+
+  // TODO: Test changing address
 });
 
-test("has search box", async ({ page }) => {
+test("can search", async ({ page }) => {
   await clickFileExplorerSearchBox({ page });
   await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
 
@@ -80,7 +82,7 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
     });
 
-    test("with items", async ({ page }) => {
+    test("has items", async ({ page }) => {
       await contextMenuHasCount(FILE_MENU_ITEMS.length, { page });
 
       for (const label of FILE_MENU_ITEMS) {
@@ -178,9 +180,11 @@ test.describe("has file(s)", () => {
 
     await expect(entryInfo).toContainText(/^\d items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
+
+    // TODO: multi select
   });
 
-  test("with tooltip", async ({ page }) => {
+  test("has tooltip", async ({ page }) => {
     const responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
 
     clickFileExplorerEntry(TEST_ROOT_FILE, { page });
@@ -195,7 +199,7 @@ test.describe("has file(s)", () => {
   // TODO: can drop (from Desktop)
 });
 
-test("changes title", async ({ page }) => {
+test("can change page title", async ({ page }) => {
   const focusedAppPageTitle = `${TEST_APP_TITLE_TEXT} - ${BASE_APP_TITLE}`;
 
   await pageHasTitle(focusedAppPageTitle, { page });
@@ -207,7 +211,7 @@ test("changes title", async ({ page }) => {
   await pageHasTitle(focusedAppPageTitle, { page });
 });
 
-test("changes icon", async ({ page }) => {
+test("can change page icon", async ({ page }) => {
   await pageHasIcon(TEST_APP_ICON, { page });
 
   await clickFirstDesktopEntry({ page });
@@ -223,7 +227,7 @@ test.describe("has context menu", () => {
     await contextMenuIsVisible({ page });
   });
 
-  test("with items", async ({ browserName, page }) => {
+  test("has items", async ({ browserName, page }) => {
     const MENU_ITEMS = filterMenuItems(FOLDER_MENU_ITEMS, browserName);
     const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
 
@@ -240,3 +244,4 @@ test.describe("has context menu", () => {
 
 // TODO: has back, forward, recent & up
 // TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V)
+// TODO: has properties

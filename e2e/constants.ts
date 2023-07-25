@@ -97,6 +97,35 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
+export const START_MENU_APPS = [
+  /^AI Chat$/,
+  /^Browser$/,
+  /^DevTools$/,
+  /^IRC$/,
+  /^Marked$/,
+  /^Monaco Editor$/,
+  /^Paint$/,
+  /^PDF$/,
+  /^Photo Viewer$/,
+  /^Stable Diffusion$/,
+  /^Terminal$/,
+  /^TinyMCE$/,
+  /^Video Player$/,
+  /^Vim$/,
+  /^Webamp$/,
+];
+
+export const START_MENU_FOLDERS = {
+  Emulators: [
+    /^BoxedWine$/,
+    /^EmulatorJS$/,
+    /^js-dos$/,
+    /^Ruffle$/,
+    /^Virtual x86$/,
+  ],
+  Games: [/^ClassiCube$/, /^DX-Ball$/, /^Quake III Arena$/, /^Space Cadet$/],
+};
+
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;

@@ -240,7 +240,7 @@ export const getInfoWithoutExtension = (
   rootFs: RootFileSystem,
   path: string,
   isDirectory: boolean,
-  useNewFolderIcon: boolean,
+  hasNewFolderIcon: boolean,
   callback: (value: FileInfo) => void
 ): void => {
   if (isDirectory) {
@@ -254,7 +254,7 @@ export const getInfoWithoutExtension = (
       if (rootFs?.mntMap[path]?.getName() === "FileSystemAccess") {
         return MOUNTED_FOLDER_ICON;
       }
-      if (useNewFolderIcon) return NEW_FOLDER_ICON;
+      if (hasNewFolderIcon) return NEW_FOLDER_ICON;
       return FOLDER_ICON;
     };
     const folderIcon = getFolderIcon();

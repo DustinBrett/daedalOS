@@ -31,36 +31,36 @@ test.beforeEach(windowAnimationIsFinished);
 test("has title", async ({ page }) =>
   windowTitlebarTextIsVisible(TEST_APP_TITLE_TEXT, { page }));
 
-test("has minimize", async ({ page }) => {
+test("can minimize", async ({ page }) => {
   await windowIsOpaque({ page });
   await clickMinimizeWindow({ page });
   await windowIsTransparent({ page });
 });
 
-test.describe("has maximize", () => {
-  test("on click button", async ({ page }) => {
+test.describe("can maximize", () => {
+  test("via click button", async ({ page }) => {
     await clickMaximizeWindow({ page });
     await windowIsMaximized({ page });
   });
 
-  test("on double click titlebar", async ({ page }) => {
+  test("via double click titlebar", async ({ page }) => {
     await doubleClickWindowTitlebar({ page });
     await windowIsMaximized({ page });
   });
 });
 
-test.describe("has close", () => {
-  test("on click button", async ({ page }) => {
+test.describe("can close", () => {
+  test("via click button", async ({ page }) => {
     await clickCloseWindow({ page });
     await windowIsHidden({ page });
   });
 
-  test("on double click icon", async ({ page }) => {
+  test("via double click icon", async ({ page }) => {
     await doubleClickWindowTitlebarIcon({ page });
     await windowIsHidden({ page });
   });
 
-  test("on ctrl + alt + f4", async ({ page }) => {
+  test("via ctrl + alt + f4", async ({ page }) => {
     await pressDesktopKeys("Control+Alt+F4", { page });
     await windowIsHidden({ page });
   });
@@ -68,7 +68,7 @@ test.describe("has close", () => {
   // TODO: has close on alt + f4 in fullscreen
 });
 
-test("has drag", async ({ page }) => {
+test("can drag", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
   const initialBoundingBox = await windowElement.boundingBox();
 
@@ -85,7 +85,9 @@ test("has drag", async ({ page }) => {
   expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
 });
 
-test("has resize", async ({ page }) => {
+// TODO: move on viewport shrink
+
+test("can resize", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
   const {
     x = 0,
@@ -108,3 +110,5 @@ test("has resize", async ({ page }) => {
 
 // TODO: has context menu
 // TODO: has keyboard shortcuts (Ctrl+Shift+Arrows)
+// TODO: focus/blur
+// TODO: foreground/background

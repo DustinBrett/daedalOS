@@ -44,7 +44,7 @@ test.describe("can set backgound", () => {
   test.beforeEach(fileExplorerEntriesAreVisible);
   test.beforeEach(backgroundCanvasMaybeIsVisible);
 
-  test("from image", async ({ headless, browserName, page }) => {
+  test("via image", async ({ headless, browserName, page }) => {
     await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
     await clickFileExplorerEntry("unknown.png", { page }, true);
