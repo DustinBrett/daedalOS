@@ -115,3 +115,5 @@ test.describe("can close", () => {
     await startMenuIsHidden({ page });
   });
 });
+
+// TODO: Shift+Escape

@@ -155,7 +155,16 @@ test.describe("has keyboard shortcuts", () => {
     await appIsOpen(/^My PC$/, page);
   });
 
-  // TODO: Ctrl+Shift+D
-  // TODO: Ctrl: ESCAPE, F10, F12
+  test("can open terminal (shift + f10)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F10", { page });
+    await appIsOpen(/^Terminal$/, page);
+  });
+
+  test("can inspect page (shift + f12)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F12", { page });
+    await appIsOpen(/^DevTools$/, page);
+  });
+
+  // TODO: Control+Shift+D
   // TODO: F11 (Fullscreen), Arrows
 });
