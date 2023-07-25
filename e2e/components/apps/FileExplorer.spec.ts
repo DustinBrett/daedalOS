@@ -243,5 +243,5 @@ test.describe("has context menu", () => {
 });
 
 // TODO: has back, forward, recent & up
-// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V)
+// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V, Backspace)
 // TODO: has properties
