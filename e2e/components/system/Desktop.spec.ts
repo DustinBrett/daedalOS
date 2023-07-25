@@ -33,6 +33,7 @@ test.beforeEach(desktopIsVisible);
 test("has file entry", desktopEntriesAreVisible);
 
 // TODO: has grid (move file on grid)
+// TODO: arrow keys
 
 test.describe("has selection", () => {
   test("has effect", async ({ page }) => {
@@ -166,5 +167,5 @@ test.describe("has keyboard shortcuts", () => {
   });
 
   // TODO: Control+Shift+D
-  // TODO: F11 (Fullscreen), Arrows
+  // TODO: F11 (Fullscreen)
 });

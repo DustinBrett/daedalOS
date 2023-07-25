@@ -97,6 +97,13 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
+export const START_BUTTON_MENU_ITEMS = [
+  /^Terminal$/,
+  /^File Explorer$/,
+  /^Run$/,
+  /^Desktop$/,
+];
+
 export const START_MENU_APPS = [
   /^AI Chat$/,
   /^Browser$/,

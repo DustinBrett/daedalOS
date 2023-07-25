@@ -39,5 +39,3 @@ test.describe("app container", () => {
   // TODO: has loading
   // TODO: has error
 });
-
-// TODO: iframe app -> loads url (Browser, IRC, Paint)

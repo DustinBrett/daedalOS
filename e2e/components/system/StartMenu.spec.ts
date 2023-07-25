@@ -102,8 +102,6 @@ test.describe("has files", () => {
   });
 });
 
-// TODO: has files, w/read-only context menu
-
 test.describe("can close", () => {
   test("via button", async ({ page }) => {
     await clickStartButton({ page });

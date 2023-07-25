@@ -1,5 +1,9 @@
 import { test } from "@playwright/test";
-import { TEST_APP_ICON, TEST_APP_TITLE } from "e2e/constants";
+import {
+  START_BUTTON_MENU_ITEMS,
+  TEST_APP_ICON,
+  TEST_APP_TITLE,
+} from "e2e/constants";
 import {
   calendarIsVisible,
   clickClock,
@@ -7,6 +11,9 @@ import {
   clockCanvasIsHidden,
   clockCanvasMaybeIsVisible,
   clockTextIsVisible,
+  contextMenuEntryIsVisible,
+  contextMenuHasCount,
+  contextMenuIsVisible,
   disableOffscreenCanvas,
   disableWallpaper,
   loadApp,
@@ -37,7 +44,16 @@ test.describe("elements", () => {
       await sheepIsVisible({ page });
     });
 
-    // TODO: has context menu
+    test("has context menu", async ({ page }) => {
+      await clickStartButton({ page }, true);
+      await contextMenuIsVisible({ page });
+      await contextMenuHasCount(START_BUTTON_MENU_ITEMS.length, { page });
+
+      for (const label of START_BUTTON_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await contextMenuEntryIsVisible(label, { page });
+      }
+    });
   });
 
   test.describe("has clock", () => {

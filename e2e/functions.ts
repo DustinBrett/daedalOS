@@ -106,8 +106,11 @@ export const clickDesktop = async (
     ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
   });
 
-export const clickStartButton = async ({ page }: TestProps): Promise<void> =>
-  page.locator(START_BUTTON_SELECTOR).click();
+export const clickStartButton = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(START_BUTTON_SELECTOR).click(right ? RIGHT_CLICK : undefined);
 
 export const clickStartMenuEntry = async (
   label: RegExp | string,
