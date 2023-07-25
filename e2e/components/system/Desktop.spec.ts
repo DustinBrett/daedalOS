@@ -32,8 +32,8 @@ test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
 
-// TODO: has grid (move file on grid)
-// TODO: arrow keys
+// P0: has grid (move file on grid)
+// P0: arrow keys
 
 test.describe("has selection", () => {
   test("has effect", async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe("has selection", () => {
     expect(boundingBox?.y).toEqual(y);
   });
 
-  // TODO: file entry (single/multi)
+  // P0: file entry (single/multi)
 });
 
 test.describe("has context menu", () => {
@@ -166,6 +166,6 @@ test.describe("has keyboard shortcuts", () => {
     await appIsOpen(/^DevTools$/, page);
   });
 
-  // TODO: Control+Shift+D
-  // TODO: F11 (Fullscreen)
+  // P1: Control+Shift+D
+  // P2: F11 (Fullscreen)
 });

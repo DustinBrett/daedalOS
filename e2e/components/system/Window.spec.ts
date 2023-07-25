@@ -65,7 +65,7 @@ test.describe("can close", () => {
     await windowIsHidden({ page });
   });
 
-  // TODO: has close on alt + f4 in fullscreen
+  // P2: has close on alt + f4 in fullscreen
 });
 
 test("can drag", async ({ page }) => {
@@ -85,7 +85,7 @@ test("can drag", async ({ page }) => {
   expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
 });
 
-// TODO: move on viewport shrink
+// P0: move on viewport shrink
 
 test("can resize", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
@@ -108,7 +108,7 @@ test("can resize", async ({ page }) => {
   expect(finalHeight).toEqual(initialHeight - RESIZE_OFFSET);
 });
 
-// TODO: has context menu
-// TODO: has keyboard shortcuts (Ctrl+Shift+Arrows)
-// TODO: focus/blur
-// TODO: foreground/background
+// P0: has context menu
+// P0: has keyboard shortcuts (Ctrl+Shift+Arrows)
+// P0: focus/blur
+// P0: foreground/background

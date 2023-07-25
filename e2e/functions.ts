@@ -178,9 +178,13 @@ export const dragFirstDesktopEntryToWindow = async ({
 // locator->getByLabel->action
 export const clickClock = async (
   { page }: TestProps,
-  clickCount = 1
+  clickCount = 1,
+  right = false
 ): Promise<void> =>
-  page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).click({ clickCount });
+  page
+    .locator(TASKBAR_SELECTOR)
+    .getByLabel(CLOCK_LABEL)
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
   page
@@ -202,10 +206,7 @@ export const clickFileExplorerAddressBar = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
-    .click({
-      button: right ? "right" : undefined,
-      clickCount,
-    });
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickFileExplorerSearchBox = async ({
   page,

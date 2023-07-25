@@ -36,6 +36,6 @@ test.describe("app container", () => {
     );
   });
 
-  // TODO: has loading
-  // TODO: has error
+  // P0: has loading
+  // P1: has error
 });

@@ -59,12 +59,12 @@ test("has address bar", async ({ page }) => {
   await contextMenuIsVisible({ page });
   await clickContextMenuEntry(/^Copy address$/, { page });
 
-  // TODO: Test clipboard on clicking copy
+  // P2: Test clipboard on clicking copy
 
   await contextMenuIsHidden({ page });
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
 
-  // TODO: Test changing address
+  // P0: Test changing address
 });
 
 test("can search", async ({ page }) => {
@@ -126,7 +126,7 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
 
-      // TODO: copy dialog shows
+      // P0: copy dialog shows
 
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
@@ -144,9 +144,9 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
-    // TODO: can rename
-    // TODO: can add to archive
-    // TODO: open & open with (double click, context, enter)
+    // P0: can rename
+    // P1: can add to archive
+    // P0: open & open with (double click, context, enter)
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -181,7 +181,7 @@ test.describe("has file(s)", () => {
     await expect(entryInfo).toContainText(/^\d items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
 
-    // TODO: multi select
+    // P0: multi select
   });
 
   test("has tooltip", async ({ page }) => {
@@ -195,8 +195,8 @@ test.describe("has file(s)", () => {
     });
   });
 
-  // TODO: can drag (to Desktop)
-  // TODO: can drop (from Desktop)
+  // P0: can drag (to Desktop)
+  // P0: can drop (from Desktop)
 });
 
 test("can change page title", async ({ page }) => {
@@ -242,6 +242,6 @@ test.describe("has context menu", () => {
   });
 });
 
-// TODO: has back, forward, recent & up
-// TODO: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V, Backspace)
-// TODO: has properties
+// P0: has back, forward, recent & up
+// P0: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V, Backspace)
+// P0: has properties

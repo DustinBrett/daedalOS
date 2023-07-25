@@ -1,5 +1,6 @@
 import { test } from "@playwright/test";
 import {
+  CLOCK_MENU_ITEMS,
   START_BUTTON_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
@@ -77,7 +78,16 @@ test.describe("elements", () => {
       await calendarIsVisible({ page });
     });
 
-    // TODO: has context menu
+    test("has context menu", async ({ page }) => {
+      await clickClock({ page }, 1, true);
+      await contextMenuIsVisible({ page });
+      await contextMenuHasCount(CLOCK_MENU_ITEMS.length, { page });
+
+      for (const label of CLOCK_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await contextMenuEntryIsVisible(label, { page });
+      }
+    });
   });
 });
 
@@ -97,10 +107,10 @@ test.describe("entries", () => {
     test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
-    // TODO: has context menu
-    // TODO: can minimize & restore
-    // TODO: has peek
+    // P0: has context menu
+    // P0: can minimize & restore
+    // P0: has peek
   });
 
-  // TODO: has context menu
+  // P0: has context menu
 });

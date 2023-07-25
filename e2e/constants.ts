@@ -97,6 +97,8 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
+export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
+
 export const START_BUTTON_MENU_ITEMS = [
   /^Terminal$/,
   /^File Explorer$/,
