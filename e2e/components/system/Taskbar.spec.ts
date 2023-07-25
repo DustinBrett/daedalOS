@@ -1,12 +1,20 @@
 import { test } from "@playwright/test";
-import { TEST_APP_ICON, TEST_APP_TITLE } from "e2e/constants";
+import {
+  CLOCK_MENU_ITEMS,
+  START_BUTTON_MENU_ITEMS,
+  TEST_APP_ICON,
+  TEST_APP_TITLE,
+} from "e2e/constants";
 import {
   calendarIsVisible,
   clickClock,
   clickStartButton,
   clockCanvasIsHidden,
-  clockCanvasOrTextIsVisible,
+  clockCanvasMaybeIsVisible,
   clockTextIsVisible,
+  contextMenuEntryIsVisible,
+  contextMenuHasCount,
+  contextMenuIsVisible,
   disableOffscreenCanvas,
   disableWallpaper,
   loadApp,
@@ -29,7 +37,7 @@ test.describe("elements", () => {
   test.describe("has start button", () => {
     test.beforeEach(startButtonIsVisible);
 
-    test("with sheep", async ({ page }) => {
+    test("can spawn sheep", async ({ page }) => {
       await page.keyboard.down("Control");
       await page.keyboard.down("Shift");
 
@@ -37,11 +45,20 @@ test.describe("elements", () => {
       await sheepIsVisible({ page });
     });
 
-    // TODO: has context menu
+    test("has context menu", async ({ page }) => {
+      await clickStartButton({ page }, true);
+      await contextMenuIsVisible({ page });
+      await contextMenuHasCount(START_BUTTON_MENU_ITEMS.length, { page });
+
+      for (const label of START_BUTTON_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await contextMenuEntryIsVisible(label, { page });
+      }
+    });
   });
 
   test.describe("has clock", () => {
-    test("via canvas", clockCanvasOrTextIsVisible);
+    test("via canvas", clockCanvasMaybeIsVisible);
 
     test("via text", async ({ page }) => {
       await disableOffscreenCanvas({ page });
@@ -51,7 +68,7 @@ test.describe("elements", () => {
       await clockCanvasIsHidden({ page });
     });
 
-    test("with sheep", async ({ page }) => {
+    test("can spawn sheep", async ({ page }) => {
       await clickClock({ page }, 7);
       await sheepIsVisible({ page });
     });
@@ -61,7 +78,16 @@ test.describe("elements", () => {
       await calendarIsVisible({ page });
     });
 
-    // TODO: has context menu
+    test("has context menu", async ({ page }) => {
+      await clickClock({ page }, 1, true);
+      await contextMenuIsVisible({ page });
+      await contextMenuHasCount(CLOCK_MENU_ITEMS.length, { page });
+
+      for (const label of CLOCK_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await contextMenuEntryIsVisible(label, { page });
+      }
+    });
   });
 });
 
@@ -75,16 +101,16 @@ test.describe("entries", () => {
       taskbarEntryIsVisible(TEST_APP_TITLE, { page })
     );
 
-    test("with icon", async ({ page }) =>
+    test("has icon", async ({ page }) =>
       taskbarEntryHasIcon(TEST_APP_TITLE, TEST_APP_ICON, { page }));
 
-    test("with tooltip", async ({ page }) =>
+    test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
-    // TODO: has context menu
-    // TODO: can minimize & restore
-    // TODO: has peek
+    // P0: has context menu
+    // P0: can minimize & restore
+    // P0: has peek
   });
 
-  // TODO: has context menu
+  // P0: has context menu
 });

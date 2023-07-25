@@ -20,7 +20,7 @@ export type FileInfo = {
 const useFileInfo = (
   path: string,
   isDirectory = false,
-  useNewFolderIcon = false
+  hasNewFolderIcon = false
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>(() => ({
     icon: "",
@@ -51,14 +51,14 @@ const useFileInfo = (
           rootFs,
           path,
           isDirectory,
-          useNewFolderIcon,
+          hasNewFolderIcon,
           updateInfo
         );
       } else {
         getInfoWithExtension(fs, path, extension, updateInfo);
       }
     }
-  }, [fs, isDirectory, path, rootFs, useNewFolderIcon]);
+  }, [fs, hasNewFolderIcon, isDirectory, path, rootFs]);
 
   return [info, setInfo];
 };

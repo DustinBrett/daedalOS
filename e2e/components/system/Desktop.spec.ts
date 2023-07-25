@@ -8,10 +8,12 @@ import {
   SELECTION_SELECTOR,
 } from "e2e/constants";
 import {
+  appIsOpen,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
+  contextMenuHasCount,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
   desktopEntryIsHidden,
@@ -22,7 +24,6 @@ import {
   loadApp,
   pressDesktopKeys,
   selectionIsVisible,
-  taskbarEntryIsOpen,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
@@ -31,10 +32,11 @@ test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
 
-// TODO: has grid (move file on grid)
+// P0: has grid (move file on grid)
+// P0: arrow keys
 
 test.describe("has selection", () => {
-  test("with effect", async ({ page }) => {
+  test("has effect", async ({ page }) => {
     const { width = 0, height = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
 
@@ -56,18 +58,20 @@ test.describe("has selection", () => {
     expect(boundingBox?.y).toEqual(y);
   });
 
-  // TODO: file entry (single/multi)
+  // P0: file entry (single/multi)
 });
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => clickDesktop({ page }, true));
   test.beforeEach(contextMenuIsVisible);
 
-  test("with items", async ({ browserName, page }) => {
-    for (const [label, shown] of filterMenuItems(
-      DESKTOP_MENU_ITEMS,
-      browserName
-    )) {
+  test("has items", async ({ browserName, page }) => {
+    const MENU_ITEMS = filterMenuItems(DESKTOP_MENU_ITEMS, browserName);
+    const shownCount = MENU_ITEMS.filter(([, shown]) => shown).length;
+
+    await contextMenuHasCount(shownCount, { page });
+
+    for (const [label, shown] of MENU_ITEMS) {
       // eslint-disable-next-line no-await-in-loop
       await (shown
         ? contextMenuEntryIsVisible(label, { page })
@@ -75,7 +79,7 @@ test.describe("has context menu", () => {
     }
   });
 
-  test.describe("with file functions", () => {
+  test.describe("has file functions", () => {
     test.beforeEach(desktopEntriesAreVisible);
 
     test("can create folder", async ({ page }) => {
@@ -125,38 +129,43 @@ test.describe("has context menu", () => {
     });
   });
 
-  test("can inspect", async ({ page }) => {
+  test("can inspect page", async ({ page }) => {
     await clickContextMenuEntry(/^Inspect$/, { page });
-    await taskbarEntryIsOpen(/^DevTools$/, page);
+    await appIsOpen(/^DevTools$/, page);
   });
 
   test("can view page source", async ({ page }) => {
     await clickContextMenuEntry(/^View page source$/, { page });
-    await taskbarEntryIsOpen(
-      /^index.html - Monaco Editor$/,
-      page,
-      Boolean(process.env.CI)
-    );
+    await appIsOpen(/^index.html - Monaco Editor$/, page);
   });
 
   test("can open terminal", async ({ page }) => {
     await clickContextMenuEntry(/^Open Terminal here$/, { page });
-    await taskbarEntryIsOpen(/^Terminal$/, page);
+    await appIsOpen(/^Terminal$/, page);
   });
 });
 
 test.describe("has keyboard shortcuts", () => {
-  test("ctrl + shift + r (open run dialog)", async ({ page }) => {
+  test("can open run dialog (ctrl + shift + r)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
-    await taskbarEntryIsOpen(/^Run$/, page);
+    await appIsOpen(/^Run$/, page);
   });
 
-  test("ctrl + shift + e (open file explorer)", async ({ page }) => {
+  test("can open file explorer (ctrl + shift + e)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyE", { page });
-    await taskbarEntryIsOpen(/^My PC$/, page);
+    await appIsOpen(/^My PC$/, page);
   });
 
-  // TODO: Ctrl+Shift+D
-  // TODO: Ctrl: ESCAPE, F10, F12
-  // TODO: F11 (Fullscreen), Arrows
+  test("can open terminal (shift + f10)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F10", { page });
+    await appIsOpen(/^Terminal$/, page);
+  });
+
+  test("can inspect page (shift + f12)", async ({ page }) => {
+    await pressDesktopKeys("Shift+F12", { page });
+    await appIsOpen(/^DevTools$/, page);
+  });
+
+  // P1: Control+Shift+D
+  // P2: F11 (Fullscreen)
 });

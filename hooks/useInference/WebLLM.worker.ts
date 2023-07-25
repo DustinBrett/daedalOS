@@ -51,6 +51,10 @@ let startedChat = false;
 let chatModule: ChatModule;
 let chatModel: string;
 
+globalThis.document = {
+  URL: globalThis.location.origin,
+} as Document;
+
 globalThis.addEventListener(
   "message",
   async ({ data }: { data: Data }) => {

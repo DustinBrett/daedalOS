@@ -38,6 +38,7 @@ type FileManagerProps = {
   hideShortcutIcons?: boolean;
   id?: string;
   isDesktop?: boolean;
+  isStartMenu?: boolean;
   loadIconsImmediately?: boolean;
   preloadShortcuts?: boolean;
   readOnly?: boolean;
@@ -45,7 +46,6 @@ type FileManagerProps = {
   skipFsWatcher?: boolean;
   skipSorting?: boolean;
   url: string;
-  useNewFolderIcon?: boolean;
   view: FileManagerViewNames;
 };
 
@@ -57,6 +57,7 @@ const FileManager: FC<FileManagerProps> = ({
   hideShortcutIcons,
   id,
   isDesktop,
+  isStartMenu,
   loadIconsImmediately,
   preloadShortcuts,
   readOnly,
@@ -64,7 +65,6 @@ const FileManager: FC<FileManagerProps> = ({
   skipFsWatcher,
   skipSorting,
   url,
-  useNewFolderIcon,
   view,
 }) => {
   const [currentUrl, setCurrentUrl] = useState(url);
@@ -176,8 +176,10 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, folderActions, url]);
 
   useEffect(() => {
-    if (!loading && !isDesktop) fileManagerRef.current?.focus(PREVENT_SCROLL);
-  }, [isDesktop, loading]);
+    if (!loading && !isDesktop && !isStartMenu) {
+      fileManagerRef.current?.focus(PREVENT_SCROLL);
+    }
+  }, [isDesktop, isStartMenu, loading]);
 
   return (
     <>
@@ -212,6 +214,7 @@ const FileManager: FC<FileManagerProps> = ({
                 fileManagerRef={fileManagerRef}
                 focusFunctions={focusFunctions}
                 focusedEntries={focusedEntries}
+                hasNewFolderIcon={isStartMenu}
                 hideShortcutIcon={hideShortcutIcons}
                 isHeading={isDesktop && files[file].systemShortcut}
                 isLoadingFileManager={isLoading}
@@ -223,7 +226,6 @@ const FileManager: FC<FileManagerProps> = ({
                 selectionRect={selectionRect}
                 setRenaming={setRenaming}
                 stats={files[file]}
-                useNewFolderIcon={useNewFolderIcon}
                 view={view}
               />
             </StyledFileEntry>
