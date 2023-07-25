@@ -1032,7 +1032,7 @@
         <opacity>1</opacity>
         <interval>100</interval>
       </end>
-      <sequence repeatfrom="0" repeat="23+(Convert(screenW/2,System.Int32)%30)/7">
+      <sequence repeatfrom="0" repeat="23+((screenW/2)%30)/7">
         <frame>2</frame>
         <frame>3</frame>
         <next probability="75" only="none">30</next>
@@ -1134,7 +1134,7 @@
         <opacity>1</opacity>
         <interval>100</interval>
       </end>
-      <sequence repeatfrom="0" repeat="23+(Convert(screenW/2,System.Int32)%30)/7">
+      <sequence repeatfrom="0" repeat="23+((screenW/2)%30)/7">
         <frame>156</frame>
         <frame>157</frame>
         <next probability="100" only="none">33</next>
