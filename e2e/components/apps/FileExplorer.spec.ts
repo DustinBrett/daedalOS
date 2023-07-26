@@ -41,6 +41,8 @@ import {
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
+  pressFileExplorerAddressBarKeys,
+  typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
   windowsAreVisible,
 } from "e2e/functions";
@@ -59,10 +61,15 @@ test("has address bar", async ({ page }) => {
   await contextMenuIsVisible({ page });
   await clickContextMenuEntry(/^Copy address$/, { page });
 
-  // P2: Test clipboard on clicking copy
-
   await contextMenuIsHidden({ page });
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
+
+  await clickFileExplorerAddressBar({ page });
+  await typeInFileExplorerAddressBar("/System", { page });
+  await pressFileExplorerAddressBarKeys("Enter", { page });
+
+  await fileExplorerAddressBarHasValue("System", { page });
+  await fileExplorerEntryIsVisible("Icons", { page });
 
   // P0: Test changing address
 });

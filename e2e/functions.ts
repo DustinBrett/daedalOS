@@ -29,6 +29,7 @@ import {
   TASKBAR_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
+  TYPE_DELAY,
   UNKNOWN_ICON_PATH,
   WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
@@ -156,6 +157,15 @@ export const pressDesktopKeys = async (
   { page }: TestProps
 ): Promise<void> => page.locator(DESKTOP_SELECTOR).press(keys);
 
+export const pressFileExplorerAddressBarKeys = async (
+  keys: string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
+    .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
+    .press(keys);
+
 export const pressWindowKeys = async (
   keys: string,
   { page }: TestProps
@@ -244,6 +254,15 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .getByLabel(/^Minimize$/)
     .click();
 
+export const typeInFileExplorerAddressBar = async (
+  text: string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
+    .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
+    .type(text, { delay: TYPE_DELAY });
+
 export const typeInFileExplorerSearchBox = async (
   text: string,
   { page }: TestProps
@@ -251,7 +270,7 @@ export const typeInFileExplorerSearchBox = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-    .type(text, { delay: 100 });
+    .type(text, { delay: TYPE_DELAY });
 
 // expect->toHave
 export const pageHasTitle = async (

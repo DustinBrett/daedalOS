@@ -7,6 +7,8 @@ export type MenuItems = Record<string, IsShown>;
 type LocatorClickProps = Parameters<Locator["click"]>[0];
 type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
 
+export const TYPE_DELAY = 75;
+
 export const EXACT = { exact: true };
 export const FORCE = { force: true };
 export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
