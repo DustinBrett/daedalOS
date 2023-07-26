@@ -110,6 +110,18 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     );
   }, [items, subMenu, x, y]);
 
+  useEffect(() => {
+    const resetOnEscape = ({ key }: KeyboardEvent): void => {
+      if (key === "Escape") resetMenu();
+    };
+
+    if (items) {
+      window.addEventListener("keydown", resetOnEscape, { passive: true });
+    }
+
+    return () => window.removeEventListener("keydown", resetOnEscape);
+  }, [items, resetMenu]);
+
   return items ? (
     <StyledMenu
       ref={menuRef}
