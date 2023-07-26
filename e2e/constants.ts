@@ -19,6 +19,7 @@ const NEXT_JS_CONTAINER_SELECTOR = "body>#__next";
 
 export const FAVICON_SELECTOR = "head>link[rel=icon]";
 export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>nav`;
+export const CONTEXT_MENU_ENTRIES_SELECTOR = `${CONTEXT_MENU_SELECTOR}>ol>li`;
 export const DESKTOP_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>main`;
 export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_SELECTOR}>canvas`;
 export const DESKTOP_ENTRIES_SELECTOR = `${DESKTOP_SELECTOR}>ol>li`;
@@ -30,7 +31,8 @@ export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
-export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>figure>picture`;
+export const ICON_SELECTOR = "figure>picture";
+export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>${ICON_SELECTOR}`;
 export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>nav`;
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
 export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
@@ -55,7 +57,9 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 ]);
 export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
-
+export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
+  "firefox", // https://bugzilla.mozilla.org/show_bug.cgi?id=1375585
+]);
 export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
 ]);
@@ -93,6 +97,44 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   "View page source": true,
 };
 
+export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
+
+export const START_BUTTON_MENU_ITEMS = [
+  /^Terminal$/,
+  /^File Explorer$/,
+  /^Run$/,
+  /^Desktop$/,
+];
+
+export const START_MENU_APPS = [
+  /^AI Chat$/,
+  /^Browser$/,
+  /^DevTools$/,
+  /^IRC$/,
+  /^Marked$/,
+  /^Monaco Editor$/,
+  /^Paint$/,
+  /^PDF$/,
+  /^Photo Viewer$/,
+  /^Stable Diffusion$/,
+  /^Terminal$/,
+  /^TinyMCE$/,
+  /^Video Player$/,
+  /^Vim$/,
+  /^Webamp$/,
+];
+
+export const START_MENU_FOLDERS = {
+  Emulators: [
+    /^BoxedWine$/,
+    /^EmulatorJS$/,
+    /^js-dos$/,
+    /^Ruffle$/,
+    /^Virtual x86$/,
+  ],
+  Games: [/^ClassiCube$/, /^DX-Ball$/, /^Quake III Arena$/, /^Space Cadet$/],
+};
+
 export const TEST_APP_CONTAINER_APP = "Marked";
 export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
@@ -118,3 +160,6 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "icefishOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
+export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
+
+export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.png";

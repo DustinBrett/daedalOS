@@ -72,6 +72,7 @@ type FileEntryProps = {
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   focusFunctions: FocusEntryFunctions;
   focusedEntries: string[];
+  hasNewFolderIcon?: boolean;
   hideShortcutIcon?: boolean;
   isHeading?: boolean;
   isLoadingFileManager: boolean;
@@ -83,7 +84,6 @@ type FileEntryProps = {
   selectionRect?: SelectionRect;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
   stats: FileStat;
-  useNewFolderIcon?: boolean;
   view: FileManagerViewNames;
 };
 
@@ -131,7 +131,7 @@ const FileEntry: FC<FileEntryProps> = ({
   selectionRect,
   setRenaming,
   stats,
-  useNewFolderIcon,
+  hasNewFolderIcon,
   view,
 }) => {
   const { blurEntry, focusEntry } = focusFunctions;
@@ -139,7 +139,7 @@ const FileEntry: FC<FileEntryProps> = ({
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
-    useNewFolderIcon
+    hasNewFolderIcon
   );
   const openFile = useFile(url);
   const {
