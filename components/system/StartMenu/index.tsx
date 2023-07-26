@@ -58,6 +58,9 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       ref={menuRef}
       $showScrolling={showScrolling}
       onBlurCapture={maybeCloseMenu}
+      onKeyDown={({ key }) => {
+        if (key === "Escape") toggleStartMenu(false);
+      }}
       onMouseMove={revealScrolling}
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
