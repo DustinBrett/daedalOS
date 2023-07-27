@@ -151,7 +151,7 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
-    // P0: can rename
+    // P0: can rename (also w/F2)
     // P1: can add to archive
     // P0: open & open with (double click, context, enter)
 
