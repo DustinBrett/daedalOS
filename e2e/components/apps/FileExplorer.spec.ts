@@ -9,6 +9,7 @@ import {
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
+  TEST_ROOT_ARCHIVE,
   TEST_ROOT_FILE,
   TEST_ROOT_FILE_TEXT,
   TEST_ROOT_FILE_TOOLTIP,
@@ -37,15 +38,18 @@ import {
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
   fileExplorerEntryIsVisible,
+  fileExplorerRenameEntry,
   filterMenuItems,
   focusOnWindow,
   pageHasIcon,
   pageHasTitle,
   pressFileExplorerAddressBarKeys,
+  pressFileExplorerEntryKeys,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
   windowsAreVisible,
 } from "e2e/functions";
+import { dirname, extname } from "path";
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
@@ -95,6 +99,8 @@ test.describe("has file(s)", () => {
         await contextMenuEntryIsVisible(label, { page });
       }
     });
+
+    // TEST: open & open with (double click, context menu, Enter)
 
     test("can download", async ({ page }) => {
       const downloadPromise = page.waitForEvent("download");
@@ -149,9 +155,22 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
-    // TEST: can rename (also w/F2)
-    // TEST: can add to archive
-    // TEST: open & open with (double click, context menu, Enter)
+    test("can rename", async ({ page }) => {
+      await clickContextMenuEntry(/^Rename$/, { page });
+
+      const flippedName = [...dirname(TEST_ROOT_FILE_TEXT)].reverse().join("");
+
+      await fileExplorerRenameEntry(flippedName, { page });
+      await fileExplorerEntryIsVisible(
+        `${flippedName}${extname(TEST_ROOT_FILE_TEXT)}`,
+        { page }
+      );
+    });
+
+    test("can archive", async ({ page }) => {
+      await clickContextMenuEntry(/^Add to archive...$/, { page });
+      await fileExplorerEntryIsVisible(TEST_ROOT_ARCHIVE, { page });
+    });
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -174,6 +193,18 @@ test.describe("has file(s)", () => {
       await clickContextMenuEntry(/^Properties$/, { page });
       await appIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
     });
+  });
+
+  test("can rename via F2", async ({ page }) => {
+    await pressFileExplorerEntryKeys(TEST_ROOT_FILE, "F2", { page });
+
+    const flippedName = [...dirname(TEST_ROOT_FILE_TEXT)].reverse().join("");
+
+    await fileExplorerRenameEntry(flippedName, { page });
+    await fileExplorerEntryIsVisible(
+      `${flippedName}${extname(TEST_ROOT_FILE_TEXT)}`,
+      { page }
+    );
   });
 
   test("has status bar", async ({ page }) => {
@@ -245,8 +276,12 @@ test.describe("has context menu", () => {
         : contextMenuEntryIsHidden(label, { page }));
     }
   });
+
+  test("has properties", async ({ page }) => {
+    await clickContextMenuEntry(/^Properties$/, { page });
+    await appIsOpen("Properties", page);
+  });
 });
 
 // TEST: has back, forward, recent & up
-// TEST: has keyboard shortcuts (Arrows, Ctrl: C, X, V, Backspace)
-// TEST: has properties
+// TEST: has keyboard shortcuts (Arrows, Ctrl: C, X, V, Backspace, Multi-select via Ctrl)

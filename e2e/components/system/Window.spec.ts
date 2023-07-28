@@ -65,7 +65,16 @@ test.describe("can close", () => {
     await windowIsHidden({ page });
   });
 
-  // TEST: has close on alt + f4 in fullscreen
+  test("via alt + f4 (in fullscreen)", async ({ page }) => {
+    await page.evaluate((selector) => {
+      (
+        document as Document & { mozFullScreenElement?: HTMLElement }
+      ).mozFullScreenElement = document.querySelector(selector) as HTMLElement;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    }, DESKTOP_SELECTOR);
+    await pressDesktopKeys("Alt+F4", { page });
+    await windowIsHidden({ page });
+  });
 });
 
 test("can drag", async ({ page }) => {

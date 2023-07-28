@@ -39,6 +39,7 @@ export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTO
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
 export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
+export const FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR = `${FILE_EXPLORER_ENTRIES_SELECTOR}>button>figure>textarea`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
@@ -146,6 +147,7 @@ export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
+export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
 export const TEST_ROOT_FILE_TOOLTIP =

@@ -13,6 +13,7 @@ import {
   EXACT,
   FAVICON_SELECTOR,
   FILE_EXPLORER_ADDRESS_BAR_LABEL,
+  FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
@@ -166,6 +167,13 @@ export const pressFileExplorerAddressBarKeys = async (
     .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
     .press(keys);
 
+export const pressFileExplorerEntryKeys = async (
+  label: RegExp,
+  keys: string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label).press(keys);
+
 export const pressWindowKeys = async (
   keys: string,
   { page }: TestProps
@@ -253,6 +261,14 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .locator(WINDOW_TITLEBAR_SELECTOR)
     .getByLabel(/^Minimize$/)
     .click();
+
+export const fileExplorerRenameEntry = async (
+  newName: string,
+  { page }: TestProps
+): Promise<void> => {
+  await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).type(newName);
+  await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).press("Enter");
+};
 
 export const typeInFileExplorerAddressBar = async (
   text: string,
