@@ -107,10 +107,10 @@ test.describe("entries", () => {
     test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
-    // P0: has context menu
-    // P0: can minimize & restore
-    // P0: has peek
+    // TEST: has context menu
+    // TEST: can minimize & restore
+    // TEST: has peek
   });
 
-  // P0: has context menu
+  // TEST: has context menu
 });

@@ -114,4 +114,4 @@ test.describe("can close", () => {
   });
 });
 
-// P1: Shift+Escape
+// TEST: Shift+Escape

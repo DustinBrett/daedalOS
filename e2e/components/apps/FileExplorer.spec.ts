@@ -70,8 +70,6 @@ test("has address bar", async ({ page }) => {
 
   await fileExplorerAddressBarHasValue("System", { page });
   await fileExplorerEntryIsVisible("Icons", { page });
-
-  // P0: Test changing address
 });
 
 test("can search", async ({ page }) => {
@@ -133,7 +131,7 @@ test.describe("has file(s)", () => {
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
 
-      // P0: copy dialog shows
+      // TEST: copy dialog shows
 
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
@@ -151,9 +149,9 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     });
 
-    // P0: can rename (also w/F2)
-    // P1: can add to archive
-    // P0: open & open with (double click, context, enter)
+    // TEST: can rename (also w/F2)
+    // TEST: can add to archive
+    // TEST: open & open with (double click, context menu, Enter)
 
     test("can create shortcut", async ({ page }) => {
       const shortcutFile = `${TEST_ROOT_FILE_TEXT} - Shortcut`;
@@ -188,7 +186,7 @@ test.describe("has file(s)", () => {
     await expect(entryInfo).toContainText(/^\d items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
 
-    // P0: multi select
+    // TEST: multi file
   });
 
   test("has tooltip", async ({ page }) => {
@@ -202,8 +200,8 @@ test.describe("has file(s)", () => {
     });
   });
 
-  // P0: can drag (to Desktop)
-  // P0: can drop (from Desktop)
+  // TEST: can drag (to Desktop)
+  // TEST: can drop (from Desktop)
 });
 
 test("can change page title", async ({ page }) => {
@@ -249,6 +247,6 @@ test.describe("has context menu", () => {
   });
 });
 
-// P0: has back, forward, recent & up
-// P0: has keyboard shortcuts (Arrows, Paste, Ctrl: C, X, V, Backspace)
-// P0: has properties
+// TEST: has back, forward, recent & up
+// TEST: has keyboard shortcuts (Arrows, Ctrl: C, X, V, Backspace)
+// TEST: has properties
