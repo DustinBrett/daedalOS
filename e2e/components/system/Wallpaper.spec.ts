@@ -57,5 +57,5 @@ test.describe("can set backgound", () => {
     await canvasBackgroundIsHidden({ page });
   });
 
-  // P2: from video
+  // TEST: from video
 });

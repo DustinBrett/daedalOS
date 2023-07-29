@@ -65,7 +65,16 @@ test.describe("can close", () => {
     await windowIsHidden({ page });
   });
 
-  // P2: has close on alt + f4 in fullscreen
+  test("via alt + f4 (in fullscreen)", async ({ page }) => {
+    await page.evaluate((selector) => {
+      (
+        document as Document & { mozFullScreenElement?: HTMLElement }
+      ).mozFullScreenElement = document.querySelector(selector) as HTMLElement;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    }, DESKTOP_SELECTOR);
+    await pressDesktopKeys("Alt+F4", { page });
+    await windowIsHidden({ page });
+  });
 });
 
 test("can drag", async ({ page }) => {
@@ -85,7 +94,8 @@ test("can drag", async ({ page }) => {
   expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
 });
 
-// P0: move on viewport shrink
+// TEST: move on viewport shrink
+// TEST: move on drag outside viewport
 
 test("can resize", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
@@ -108,7 +118,7 @@ test("can resize", async ({ page }) => {
   expect(finalHeight).toEqual(initialHeight - RESIZE_OFFSET);
 });
 
-// P0: has context menu
-// P0: has keyboard shortcuts (Ctrl+Shift+Arrows)
-// P0: focus/blur
-// P0: foreground/background
+// TEST: has context menu
+// TEST: has keyboard shortcuts (Ctrl+Shift+Arrows)
+// TEST: focus/blur
+// TEST: foreground/background

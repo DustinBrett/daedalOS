@@ -20,7 +20,7 @@ import {
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { getExtension } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 
 const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
@@ -190,12 +190,14 @@ const FileManager: FC<FileManagerProps> = ({
           ref={fileManagerRef}
           $scrollable={!hideScrolling}
           onKeyDown={onKeyDown}
-          {...(!readOnly && {
-            $selecting: isSelecting,
-            ...fileDrop,
-            ...folderContextMenu,
-            ...selectionEvents,
-          })}
+          {...(readOnly
+            ? { onContextMenu: haltEvent }
+            : {
+                $selecting: isSelecting,
+                ...fileDrop,
+                ...folderContextMenu,
+                ...selectionEvents,
+              })}
           {...FOCUSABLE_ELEMENT}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}
