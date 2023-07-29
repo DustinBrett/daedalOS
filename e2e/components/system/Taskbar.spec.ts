@@ -22,6 +22,7 @@ import {
   contextMenuIsVisible,
   disableOffscreenCanvas,
   disableWallpaper,
+  fileExplorerEntriesAreVisible,
   loadApp,
   loadTestApp,
   sheepIsVisible,
@@ -105,9 +106,10 @@ test.describe("elements", () => {
 test.describe("entries", () => {
   test.beforeEach(loadTestApp);
   test.beforeEach(taskbarIsVisible);
+  test.beforeEach(taskbarEntriesAreVisible);
+  test.beforeEach(fileExplorerEntriesAreVisible);
 
   test.describe("has entry", () => {
-    test.beforeEach(taskbarEntriesAreVisible);
     test.beforeEach(async ({ page }) =>
       taskbarEntryIsVisible(TEST_APP_TITLE, { page })
     );
