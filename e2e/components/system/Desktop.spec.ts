@@ -166,8 +166,8 @@ test.describe("has keyboard shortcuts", () => {
   });
 
   // TEST: Shift+Escape (Start Menu)
-  // TEST: F5 (Reload)
-  // TEST: Meta+Up/Down (Min/Max)
+  // TEST: F5 (Reload Page)
+  // TEST: Meta+Up/Down (Min/Max Window)
   // TEST: Control+Shift+D (Show Desktop)
   // TEST: F11 & Escape (Fullscreen)
 });

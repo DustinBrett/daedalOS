@@ -28,7 +28,8 @@ export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_SELECTOR}>canvas`;
 export const DESKTOP_ENTRIES_SELECTOR = `${DESKTOP_SELECTOR}>ol>li`;
 export const SELECTION_SELECTOR = `${DESKTOP_SELECTOR}>ol>span`;
 export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
-export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol>li`;
+export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol`;
+export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_ENTRIES_SELECTOR}>li`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
@@ -106,6 +107,18 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
 };
 
 export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
+
+export const TASKBAR_ENTRIES_MENU_ITEMS = [
+  /^Enter full screen$/,
+  /^Show the desktop$/,
+];
+
+export const TASKBAR_ENTRY_MENU_ITEMS = [
+  /^Restore$/,
+  /^Minimize$/,
+  /^Maximize$/,
+  /^Close$/,
+];
 
 export const START_BUTTON_MENU_ITEMS = [
   /^Terminal$/,

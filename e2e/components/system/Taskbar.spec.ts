@@ -2,13 +2,18 @@ import { test } from "@playwright/test";
 import {
   CLOCK_MENU_ITEMS,
   START_BUTTON_MENU_ITEMS,
+  TASKBAR_ENTRIES_MENU_ITEMS,
+  TASKBAR_ENTRY_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
 } from "e2e/constants";
 import {
   calendarIsVisible,
   clickClock,
+  clickContextMenuEntry,
   clickStartButton,
+  clickTaskbar,
+  clickTaskbarEntry,
   clockCanvasIsHidden,
   clockCanvasMaybeIsVisible,
   clockTextIsVisible,
@@ -24,9 +29,15 @@ import {
   taskbarEntriesAreVisible,
   taskbarEntryHasIcon,
   taskbarEntryHasTooltip,
+  taskbarEntryIsHidden,
   taskbarEntryIsVisible,
   taskbarIsVisible,
+  windowIsMaximized,
+  windowIsOpaque,
+  windowIsTransparent,
 } from "e2e/functions";
+
+const CONTEXT_MENU_TEST = "has context menu";
 
 test.beforeEach(disableWallpaper);
 
@@ -45,7 +56,7 @@ test.describe("elements", () => {
       await sheepIsVisible({ page });
     });
 
-    test("has context menu", async ({ page }) => {
+    test(CONTEXT_MENU_TEST, async ({ page }) => {
       await clickStartButton({ page }, true);
       await contextMenuIsVisible({ page });
       await contextMenuHasCount(START_BUTTON_MENU_ITEMS.length, { page });
@@ -78,7 +89,7 @@ test.describe("elements", () => {
       await calendarIsVisible({ page });
     });
 
-    test("has context menu", async ({ page }) => {
+    test(CONTEXT_MENU_TEST, async ({ page }) => {
       await clickClock({ page }, 1, true);
       await contextMenuIsVisible({ page });
       await contextMenuHasCount(CLOCK_MENU_ITEMS.length, { page });
@@ -107,10 +118,73 @@ test.describe("entries", () => {
     test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
-    // TEST: has context menu
-    // TEST: can minimize & restore
+    test.describe(CONTEXT_MENU_TEST, () => {
+      test.beforeEach(async ({ page }) => {
+        await clickTaskbarEntry(TEST_APP_TITLE, { page }, true);
+        await contextMenuIsVisible({ page });
+      });
+
+      test("has items", async ({ page }) => {
+        await contextMenuHasCount(TASKBAR_ENTRY_MENU_ITEMS.length, { page });
+
+        for (const label of TASKBAR_ENTRY_MENU_ITEMS) {
+          // eslint-disable-next-line no-await-in-loop
+          await contextMenuEntryIsVisible(label, { page });
+        }
+      });
+
+      test("can close", async ({ page }) => {
+        await clickContextMenuEntry(/^Close$/, { page });
+        await taskbarEntryIsHidden(TEST_APP_TITLE, { page });
+      });
+
+      test("can minimize & restore", async ({ page }) => {
+        await windowIsOpaque({ page });
+        await clickContextMenuEntry(/^Minimize$/, { page });
+        await windowIsTransparent({ page });
+
+        await clickTaskbarEntry(TEST_APP_TITLE, { page }, true);
+        await clickContextMenuEntry(/^Restore$/, { page });
+        await windowIsOpaque({ page });
+      });
+
+      test("can maximize & restore", async ({ page }) => {
+        await clickContextMenuEntry(/^Maximize$/, { page });
+        await windowIsMaximized({ page });
+
+        await clickTaskbarEntry(TEST_APP_TITLE, { page }, true);
+        await clickContextMenuEntry(/^Restore$/, { page });
+        await windowIsMaximized({ page }, false);
+      });
+    });
+
+    test("can minimize & restore", async ({ page }) => {
+      await windowIsOpaque({ page });
+      await clickTaskbarEntry(TEST_APP_TITLE, { page });
+      await windowIsTransparent({ page });
+      await clickTaskbarEntry(TEST_APP_TITLE, { page });
+      await windowIsOpaque({ page });
+    });
+
     // TEST: has peek
   });
 
-  // TEST: has context menu
+  test.describe(CONTEXT_MENU_TEST, () => {
+    test.beforeEach(async ({ page }) => {
+      await clickTaskbar({ page }, true);
+      await contextMenuIsVisible({ page });
+    });
+
+    test("has items", async ({ page }) => {
+      await contextMenuHasCount(TASKBAR_ENTRIES_MENU_ITEMS.length, { page });
+
+      for (const label of TASKBAR_ENTRIES_MENU_ITEMS) {
+        // eslint-disable-next-line no-await-in-loop
+        await contextMenuEntryIsVisible(label, { page });
+      }
+    });
+
+    // TEST: Fullscreen
+    // TEST: Show the desktop
+  });
 });

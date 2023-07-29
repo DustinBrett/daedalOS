@@ -27,6 +27,7 @@ import {
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
+  TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
@@ -128,6 +129,20 @@ export const clickStartMenuEntry = async (
     .locator(START_MENU_SELECTOR)
     .getByLabel(label, EXACT)
     .click(right ? RIGHT_CLICK : undefined);
+
+export const clickTaskbar = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> => {
+  const taskEntriesSelector = page.locator(TASKBAR_ENTRIES_SELECTOR);
+  const { height = 0, width = 0 } =
+    (await taskEntriesSelector.boundingBox()) || {};
+
+  taskEntriesSelector.click({
+    button: right ? "right" : undefined,
+    position: { x: width / 2, y: height / 2 },
+  });
+};
 
 export const doubleClickWindowTitlebar = async ({
   page,
@@ -274,6 +289,16 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .getByLabel(/^Minimize$/)
     .click();
 
+export const clickTaskbarEntry = async (
+  label: RegExp | string,
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page
+    .locator(TASKBAR_ENTRY_SELECTOR)
+    .getByLabel(label, EXACT)
+    .click(right ? RIGHT_CLICK : undefined);
+
 export const fileExplorerRenameEntry = async (
   newName: string,
   { page }: TestProps
@@ -358,7 +383,10 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
     ).toBeTruthy()
   ).toPass();
 
-export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
+export const windowIsMaximized = async (
+  { page }: TestProps,
+  maximized = true
+): Promise<void> =>
   expect(async () =>
     expect(
       await page.evaluate(
@@ -377,7 +405,7 @@ export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
         },
         [WINDOW_SELECTOR, TASKBAR_SELECTOR]
       )
-    ).toBeTruthy()
+    ).toBe(maximized)
   ).toPass();
 
 // expect->locator
@@ -500,10 +528,18 @@ export const fileExplorerEntryHasTooltip = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
 
+export const taskbarEntryIsHidden = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label, EXACT)
+  ).toBeHidden();
+
 export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> => entryIsVisible(TASKBAR_ENTRIES_SELECTOR, label, page);
+): Promise<void> => entryIsVisible(TASKBAR_ENTRY_SELECTOR, label, page);
 
 export const startMenuEntryIsVisible = async (
   label: RegExp | string,
@@ -524,7 +560,7 @@ export const taskbarEntryHasTooltip = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
 
 export const windowTitlebarTextIsVisible = async (
@@ -562,7 +598,7 @@ export const taskbarEntryHasIcon = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
 // expect->locator->getBy->locator->locator
@@ -596,8 +632,7 @@ export const fileExplorerEntriesAreVisible = async ({
 
 export const taskbarEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  entriesAreVisible(TASKBAR_ENTRIES_SELECTOR, page);
+}: TestProps): Promise<void> => entriesAreVisible(TASKBAR_ENTRY_SELECTOR, page);
 
 export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
   entriesAreVisible(WINDOW_SELECTOR, page);
