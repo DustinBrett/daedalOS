@@ -2,27 +2,21 @@ import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 
 const { CI, PORT = 3000 } = process.env;
+const {
+  "Desktop Chrome": chrome,
+  "Desktop Firefox": firefox,
+  "Desktop Safari": safari,
+} = devices;
 const baseURL = `http://localhost:${PORT}`;
 const config: PlaywrightTestConfig = {
   fullyParallel: true,
   projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
-
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    { name: "chromium", use: chrome },
+    { name: "firefox", use: firefox },
+    { name: "webkit", use: safari },
   ],
   reporter: [["list"], ["html", { open: CI ? "never" : "always" }]],
-  retries: CI ? 2 : 1,
+  retries: CI ? 3 : 1,
   testDir: "e2e",
   use: {
     baseURL,

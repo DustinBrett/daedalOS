@@ -14,6 +14,7 @@ import {
   dragWindowToDesktop,
   loadTestApp,
   pressDesktopKeys,
+  triggerFullscreenDetection,
   windowAnimationIsFinished,
   windowIsHidden,
   windowIsMaximized,
@@ -65,13 +66,8 @@ test.describe("can close", () => {
     await windowIsHidden({ page });
   });
 
-  test("via alt + f4 (in fullscreen)", async ({ page }) => {
-    await page.evaluate((selector) => {
-      (
-        document as Document & { mozFullScreenElement?: HTMLElement }
-      ).mozFullScreenElement = document.querySelector(selector) as HTMLElement;
-      document.dispatchEvent(new Event("fullscreenchange"));
-    }, DESKTOP_SELECTOR);
+  test("via alt + f4 (in fullscreen)", async ({ browserName, page }) => {
+    await triggerFullscreenDetection({ browserName, page });
     await pressDesktopKeys("Alt+F4", { page });
     await windowIsHidden({ page });
   });

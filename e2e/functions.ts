@@ -48,6 +48,11 @@ type TestPropsWithBrowser = TestProps & {
   browserName: string;
 };
 
+type DocumentWithVendorFullscreen = Document & {
+  mozFullScreenElement?: HTMLElement;
+  webkitFullscreenElement?: HTMLElement;
+};
+
 export const filterMenuItems = (
   menuItems: MenuItems,
   browserName: string
@@ -310,6 +315,18 @@ export const pageHasIcon = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute("href", icon);
+
+// evaluate->action
+export const triggerFullscreenDetection = async ({
+  browserName,
+  page,
+}: TestProps): Promise<void> =>
+  page.evaluate((browser) => {
+    (document as DocumentWithVendorFullscreen)[
+      browser === "firefox" ? "webkitFullscreenElement" : "mozFullScreenElement"
+    ] = document.documentElement;
+    document.dispatchEvent(new Event("fullscreenchange"));
+  }, browserName);
 
 // expect->evaluate
 export const windowAnimationIsFinished = async ({
