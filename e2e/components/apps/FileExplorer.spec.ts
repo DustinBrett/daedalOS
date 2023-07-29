@@ -7,6 +7,7 @@ import {
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
+  MULTI_SELECT_NOT_SUPPORTED_BROWSERS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -228,7 +229,7 @@ test.describe("has file(s)", () => {
     );
   });
 
-  test("has status bar", async ({ page }) => {
+  test("has status bar", async ({ browserName, page }) => {
     await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
 
     const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
@@ -241,6 +242,10 @@ test.describe("has file(s)", () => {
     expect(
       await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
     ).toEqual(1);
+
+    if (MULTI_SELECT_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+      return;
+    }
 
     await page.keyboard.down("Control");
     await clickFileExplorerEntry(TEST_ROOT_FILE_2, { page });
@@ -354,6 +359,7 @@ test.describe("has navigation", () => {
 
   test("has recent locations", async ({ page }) => {
     await windowTitlebarTextIsVisible(/^System$/, { page });
+    await fileExplorerEntriesAreVisible({ page });
     await clickFileExplorerNavButton(/^Recent locations$/, { page });
     await contextMenuEntryIsVisible(/^My PC$/, { page });
     await contextMenuEntryIsVisible(/^System$/, { page });

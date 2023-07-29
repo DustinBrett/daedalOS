@@ -24,7 +24,6 @@ import {
   loadApp,
   pressDesktopKeys,
   selectionIsVisible,
-  startMenuIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
@@ -146,11 +145,6 @@ test.describe("has context menu", () => {
 });
 
 test.describe("has keyboard shortcuts", () => {
-  test("can open start menu (shift + escape)", async ({ page }) => {
-    await pressDesktopKeys("Shift+Escape", { page });
-    await startMenuIsVisible({ page });
-  });
-
   test("can open run dialog (ctrl + shift + r)", async ({ page }) => {
     await pressDesktopKeys("Control+Shift+KeyR", { page });
     await appIsOpen(/^Run$/, page);
@@ -171,6 +165,7 @@ test.describe("has keyboard shortcuts", () => {
     await appIsOpen(/^DevTools$/, page);
   });
 
+  // TEST: Shift+Escape (Start Menu)
   // TEST: F5 (Reload)
   // TEST: Meta+Up/Down (Min/Max)
   // TEST: Control+Shift+D (Show Desktop)

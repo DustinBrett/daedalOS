@@ -68,6 +68,9 @@ export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
 export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
 ]);
+export const MULTI_SELECT_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit", // https://github.com/DustinBrett/daedalOS/issues/287
+]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
