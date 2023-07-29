@@ -216,10 +216,16 @@ export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
     .click();
 
 export const clickContextMenuEntry = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label, EXACT).click();
+
+export const clickFileExplorerNavButton = async (
   label: RegExp,
   { page }: TestProps
 ): Promise<void> =>
-  page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label).click();
+  page.locator(FILE_EXPLORER_NAV_SELECTOR).getByLabel(label).click();
 
 export const clickFileExplorerAddressBar = async (
   { page }: TestProps,
@@ -248,12 +254,13 @@ export const clickFileExplorer = async (
 export const clickFileExplorerEntry = async (
   label: RegExp | string,
   { page }: TestProps,
-  right = false
+  right = false,
+  clickCount = 1
 ): Promise<void> =>
   page
     .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
     .getByLabel(label, EXACT)
-    .click(right ? RIGHT_CLICK : undefined);
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
   page

@@ -3,6 +3,7 @@ import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
   DESKTOP_SELECTOR,
+  FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
@@ -11,6 +12,9 @@ import {
   TEST_APP_TITLE_TEXT,
   TEST_ROOT_ARCHIVE,
   TEST_ROOT_FILE,
+  TEST_ROOT_FILE_2,
+  TEST_ROOT_FILE_ALT_APP,
+  TEST_ROOT_FILE_DEFAULT_APP,
   TEST_ROOT_FILE_TEXT,
   TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
@@ -23,6 +27,7 @@ import {
   clickFileExplorer,
   clickFileExplorerAddressBar,
   clickFileExplorerEntry,
+  clickFileExplorerNavButton,
   clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
   contextMenuEntryIsHidden,
@@ -47,6 +52,7 @@ import {
   pressFileExplorerEntryKeys,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
+  windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
 import { dirname, extname } from "path";
@@ -100,7 +106,22 @@ test.describe("has file(s)", () => {
       }
     });
 
-    // TEST: open & open with (double click, context menu, Enter)
+    test("can open", async ({ page }) => {
+      await clickContextMenuEntry(/^Open$/, { page });
+      await windowTitlebarTextIsVisible(
+        `${TEST_ROOT_FILE_TEXT} - ${TEST_ROOT_FILE_DEFAULT_APP}`,
+        { page }
+      );
+    });
+
+    test("can open with", async ({ page }) => {
+      await clickContextMenuEntry(/^Open with$/, { page });
+      await clickContextMenuEntry(TEST_ROOT_FILE_ALT_APP, { page });
+      await windowTitlebarTextIsVisible(
+        `${TEST_ROOT_FILE_TEXT} - ${TEST_ROOT_FILE_ALT_APP}`,
+        { page }
+      );
+    });
 
     test("can download", async ({ page }) => {
       const downloadPromise = page.waitForEvent("download");
@@ -208,7 +229,7 @@ test.describe("has file(s)", () => {
   });
 
   test("has status bar", async ({ page }) => {
-    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
 
     const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
     const entryInfo = statusBar.getByLabel(/^Total item count$/);
@@ -217,17 +238,46 @@ test.describe("has file(s)", () => {
     await expect(entryInfo).toContainText(/^\d items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
 
-    // TEST: multi file
+    expect(
+      await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
+    ).toEqual(1);
+
+    await page.keyboard.down("Control");
+    await clickFileExplorerEntry(TEST_ROOT_FILE_2, { page });
+
+    await expect(selectedInfo).toContainText(/^2 items selected|\d{3} KB$/);
+
+    expect(
+      await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
+    ).toEqual(2);
   });
 
   test("has tooltip", async ({ page }) => {
     const responsePromise = page.waitForResponse(TEST_ROOT_FILE_TEXT);
 
-    clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
 
     expect((await responsePromise).ok()).toBeTruthy();
     await fileExplorerEntryHasTooltip(TEST_ROOT_FILE, TEST_ROOT_FILE_TOOLTIP, {
       page,
+    });
+  });
+
+  test.describe("can open", () => {
+    test("via double click", async ({ page }) => {
+      await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, false, 2);
+      await windowTitlebarTextIsVisible(
+        `${TEST_ROOT_FILE_TEXT} - ${TEST_ROOT_FILE_DEFAULT_APP}`,
+        { page }
+      );
+    });
+
+    test("via enter", async ({ page }) => {
+      await pressFileExplorerEntryKeys(TEST_ROOT_FILE, "Enter", { page });
+      await windowTitlebarTextIsVisible(
+        `${TEST_ROOT_FILE_TEXT} - ${TEST_ROOT_FILE_DEFAULT_APP}`,
+        { page }
+      );
     });
   });
 
@@ -279,9 +329,38 @@ test.describe("has context menu", () => {
 
   test("has properties", async ({ page }) => {
     await clickContextMenuEntry(/^Properties$/, { page });
-    await appIsOpen("Properties", page);
+    await appIsOpen(/^Properties$/, page);
   });
 });
 
-// TEST: has back, forward, recent & up
-// TEST: has keyboard shortcuts (Arrows, Ctrl: C, X, V, Backspace, Multi-select via Ctrl)
+test.describe("has navigation", () => {
+  test.beforeEach(async ({ page }) =>
+    clickFileExplorerEntry(/^System$/, { page }, false, 2)
+  );
+
+  test("can go back & forward", async ({ page }) => {
+    await windowTitlebarTextIsVisible(/^System$/, { page });
+    await clickFileExplorerNavButton(/^Back to My PC$/, { page });
+    await windowTitlebarTextIsVisible(/^My PC$/, { page });
+    await clickFileExplorerNavButton(/^Forward to System$/, { page });
+    await windowTitlebarTextIsVisible(/^System$/, { page });
+  });
+
+  test("can go up", async ({ page }) => {
+    await windowTitlebarTextIsVisible(/^System$/, { page });
+    await clickFileExplorerNavButton(/^Up to "My PC"$/, { page });
+    await windowTitlebarTextIsVisible(/^My PC$/, { page });
+  });
+
+  test("has recent locations", async ({ page }) => {
+    await windowTitlebarTextIsVisible(/^System$/, { page });
+    await clickFileExplorerNavButton(/^Recent locations$/, { page });
+    await contextMenuEntryIsVisible(/^My PC$/, { page });
+    await contextMenuEntryIsVisible(/^System$/, { page });
+    await contextMenuHasCount(2, { page });
+    await clickContextMenuEntry(/^My PC$/, { page });
+    await windowTitlebarTextIsVisible(/^My PC$/, { page });
+  });
+});
+
+// TEST: has keyboard shortcuts (Arrows, Ctrl: A, C, X, V, Backspace, Delete, Multi-select via Ctrl)

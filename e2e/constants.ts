@@ -17,6 +17,7 @@ export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 const APP_CONTAINER_SELECTOR = "div";
 const VIEWPORT_SELECTOR = "div";
 const WINDOW_DRAG_SELECTOR = ".react-draggable";
+const FOCUSED_ENTRY_SELECTOR = ".focus-within";
 const NEXT_JS_CONTAINER_SELECTOR = "body>#__next";
 
 export const FAVICON_SELECTOR = "head>link[rel=icon]";
@@ -39,6 +40,7 @@ export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTO
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
 export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
+export const FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li${FOCUSED_ENTRY_SELECTOR}`;
 export const FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR = `${FILE_EXPLORER_ENTRIES_SELECTOR}>button>figure>textarea`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
@@ -149,7 +151,10 @@ export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
 export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
+export const TEST_ROOT_FILE_2 = /^favicon.ico$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
+export const TEST_ROOT_FILE_DEFAULT_APP = "Marked";
+export const TEST_ROOT_FILE_ALT_APP = "Monaco Editor";
 export const TEST_ROOT_FILE_TOOLTIP =
   /^Type: Markdown File\nSize: \d\.\d\d KB\nDate modified: \b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
 
