@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import {
   DESKTOP_ENTRIES_SELECTOR,
-  FILE_DRAG_NOT_SUPPORTED_BROWSERS,
+  FILE_DRAG_NOT_WORKING_BROWSERS,
   TEST_APP_CONTAINER_APP,
   TEST_APP_CONTAINER_APP_TITLE,
 } from "e2e/constants";
@@ -21,7 +21,7 @@ test.describe("app container", () => {
   test.beforeEach(windowsAreVisible);
 
   test("can drop", async ({ browserName, page }) => {
-    if (FILE_DRAG_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
+    if (FILE_DRAG_NOT_WORKING_BROWSERS.has(browserName)) return;
 
     await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 

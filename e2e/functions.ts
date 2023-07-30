@@ -19,7 +19,7 @@ import {
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
-  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
+  OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
@@ -563,14 +563,6 @@ export const taskbarEntryHasTooltip = async (
     page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
 
-export const windowTitlebarTextIsVisible = async (
-  text: RegExp | string,
-  { page }: TestProps
-): Promise<void> =>
-  expect(
-    page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text, EXACT)
-  ).toBeVisible();
-
 // expect->locator->getBy->getBy
 const clockTextLocator = (page: Page): Locator =>
   page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).getByText(CLOCK_REGEX);
@@ -613,6 +605,17 @@ export const fileExplorerEntryHasShortcutIcon = async (
       .locator(ICON_SELECTOR)
       .locator("img[src*=shortcut]")
   ).toBeVisible();
+
+// expect->locator->getBy->toPass
+export const windowTitlebarTextIsVisible = async (
+  text: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(async () =>
+    expect(
+      page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text, EXACT)
+    ).toBeVisible()
+  ).toPass();
 
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
@@ -658,7 +661,7 @@ export const clockCanvasMaybeIsVisible = async ({
   browserName,
   page,
 }: TestPropsWithBrowser): Promise<void> => {
-  if (OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+  if (OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS.has(browserName)) {
     await clockTextIsVisible({ page });
     await clockCanvasIsHidden({ page });
   } else {

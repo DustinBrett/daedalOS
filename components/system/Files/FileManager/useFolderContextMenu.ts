@@ -151,13 +151,12 @@ const useFolderContextMenu = (
       video: {
         frameRate: CAPTURE_FPS,
       },
-      ...(!isFirefox() &&
-        !isSafari() && {
-          preferCurrentTab: true,
-          selfBrowserSurface: "include",
-          surfaceSwitching: "include",
-          systemAudio: "include",
-        }),
+      ...(!isFirefox() && {
+        preferCurrentTab: true,
+        selfBrowserSurface: "include",
+        surfaceSwitching: "include",
+        systemAudio: "include",
+      }),
     };
     currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
       displayMediaOptions

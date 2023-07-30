@@ -58,19 +58,26 @@ export const ACCESSIBILITY_EXCEPTION_IDS = [
 ];
 
 export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
+  // https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker#browser_compatibility
   "webkit",
   "firefox",
 ]);
-export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
-export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+export const OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
+]);
 export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox", // https://bugzilla.mozilla.org/show_bug.cgi?id=1375585
 ]);
-export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
+
+export const SCREEN_CAPTURE_NOT_WORKING_BROWSERS = new Set(["webkit"]);
+export const FILE_DRAG_NOT_WORKING_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
 ]);
-export const MULTI_SELECT_NOT_SUPPORTED_BROWSERS = new Set([
+export const MULTI_SELECT_NOT_WORKING_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/287
+]);
+export const FOCUS_STATE_NOT_WORKING_BROWSERS = new Set([
+  "webkit", // https://github.com/DustinBrett/daedalOS/issues/329
 ]);
 
 export const FILE_MENU_ITEMS = [
@@ -100,7 +107,7 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   ...FOLDER_MENU_ITEMS,
   Background: true,
   "Capture screen": (browserName: string): boolean =>
-    !SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName),
+    !SCREEN_CAPTURE_NOT_WORKING_BROWSERS.has(browserName),
   Inspect: true,
   Properties: false,
   "View page source": true,
