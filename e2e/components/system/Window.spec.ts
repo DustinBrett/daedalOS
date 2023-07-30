@@ -115,6 +115,5 @@ test("can resize", async ({ page }) => {
 });
 
 // TEST: has context menu
-// TEST: has keyboard shortcuts (Ctrl+Shift+Arrows)
-// TEST: focus/blur
-// TEST: foreground/background
+// TEST: has keyboard shortcuts (Ctrl+Shift+Up/Down)
+// TEST: focus/blur | foreground/background focus

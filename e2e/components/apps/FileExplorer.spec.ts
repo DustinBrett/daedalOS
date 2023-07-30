@@ -343,6 +343,7 @@ test.describe("has navigation", () => {
     clickFileExplorerEntry(/^System$/, { page }, false, 2)
   );
 
+  // TODO: Test different result from "Up"
   test("can go back & forward", async ({ page }) => {
     await windowTitlebarTextIsVisible(/^System$/, { page });
     await clickFileExplorerNavButton(/^Back to My PC$/, { page });
