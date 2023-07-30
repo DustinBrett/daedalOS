@@ -77,7 +77,7 @@ export const MULTI_SELECT_NOT_WORKING_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/287
 ]);
 export const FOCUS_STATE_NOT_WORKING_BROWSERS = new Set([
-  "webkit", // https://github.com/DustinBrett/daedalOS/issues/329
+  "webkit", // https://bugs.webkit.org/show_bug.cgi?id=22261
 ]);
 
 export const FILE_MENU_ITEMS = [
