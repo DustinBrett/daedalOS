@@ -133,7 +133,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           disabled={count === 0}
           onClick={async () => {
             if (isSafari()) {
-              // Trick print-js into adding print delay by passing isFirefox
+              // Trick print-js into adding print delay
               window.InstallTrigger = true;
               setTimeout(() => {
                 delete window.InstallTrigger;
