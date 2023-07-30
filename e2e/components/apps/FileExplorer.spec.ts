@@ -44,6 +44,7 @@ import {
   fileExplorerEntryHasTooltip,
   fileExplorerEntryIsHidden,
   fileExplorerEntryIsVisible,
+  fileExplorerNavButtonIsVisible,
   fileExplorerRenameEntry,
   filterMenuItems,
   focusOnWindow,
@@ -339,32 +340,50 @@ test.describe("has context menu", () => {
 });
 
 test.describe("has navigation", () => {
-  test.beforeEach(async ({ page }) =>
-    clickFileExplorerEntry(/^System$/, { page }, false, 2)
-  );
+  test.beforeEach(async ({ page }) => {
+    await clickFileExplorerEntry(/^System$/, { page }, false, 2);
+    await windowTitlebarTextIsVisible(/^System$/, { page });
+  });
 
-  // TODO: Test different result from "Up"
   test("can go back & forward", async ({ page }) => {
+    await clickFileExplorerAddressBar({ page });
+    await typeInFileExplorerAddressBar("/Users", { page });
+    await pressFileExplorerAddressBarKeys("Enter", { page });
+    await windowTitlebarTextIsVisible(/^Users$/, { page });
+
+    await fileExplorerNavButtonIsVisible(/^Back to System$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Up to "My PC"$/, { page });
+
+    await clickFileExplorerNavButton(/^Back to System$/, { page });
     await windowTitlebarTextIsVisible(/^System$/, { page });
-    await clickFileExplorerNavButton(/^Back to My PC$/, { page });
-    await windowTitlebarTextIsVisible(/^My PC$/, { page });
-    await clickFileExplorerNavButton(/^Forward to System$/, { page });
-    await windowTitlebarTextIsVisible(/^System$/, { page });
+
+    await fileExplorerNavButtonIsVisible(/^Back to My PC$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Forward to Users$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Up to "My PC"$/, { page });
   });
 
   test("can go up", async ({ page }) => {
+    await clickFileExplorerEntry(/^Icons$/, { page }, false, 2);
+    await windowTitlebarTextIsVisible(/^Icons$/, { page });
+
+    await fileExplorerNavButtonIsVisible(/^Back to System$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Up to "System"$/, { page });
+
+    await clickFileExplorerNavButton(/^Up to "System"$/, { page });
     await windowTitlebarTextIsVisible(/^System$/, { page });
-    await clickFileExplorerNavButton(/^Up to "My PC"$/, { page });
-    await windowTitlebarTextIsVisible(/^My PC$/, { page });
+
+    await fileExplorerNavButtonIsVisible(/^Back to Icons$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Up to "My PC"$/, { page });
   });
 
   test("has recent locations", async ({ page }) => {
-    await windowTitlebarTextIsVisible(/^System$/, { page });
     await fileExplorerEntriesAreVisible({ page });
     await clickFileExplorerNavButton(/^Recent locations$/, { page });
+
     await contextMenuEntryIsVisible(/^My PC$/, { page });
     await contextMenuEntryIsVisible(/^System$/, { page });
     await contextMenuHasCount(2, { page });
+
     await clickContextMenuEntry(/^My PC$/, { page });
     await windowTitlebarTextIsVisible(/^My PC$/, { page });
   });

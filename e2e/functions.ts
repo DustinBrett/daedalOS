@@ -528,6 +528,14 @@ export const fileExplorerEntryHasTooltip = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
 
+export const fileExplorerNavButtonIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(FILE_EXPLORER_NAV_SELECTOR).getByLabel(label, EXACT)
+  ).toBeVisible();
+
 export const taskbarEntryIsHidden = async (
   label: RegExp | string,
   { page }: TestProps
