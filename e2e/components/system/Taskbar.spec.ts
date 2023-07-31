@@ -1,7 +1,6 @@
 import { test } from "@playwright/test";
 import {
   CLOCK_MENU_ITEMS,
-  FOCUS_STATE_NOT_WORKING_BROWSERS,
   START_BUTTON_MENU_ITEMS,
   TASKBAR_ENTRIES_MENU_ITEMS,
   TASKBAR_ENTRY_MENU_ITEMS,
@@ -161,11 +160,7 @@ test.describe("entries", () => {
       });
     });
 
-    test("can minimize & restore", async ({ browserName, page }) => {
-      if (FOCUS_STATE_NOT_WORKING_BROWSERS.has(browserName)) {
-        return;
-      }
-
+    test("can minimize & restore", async ({ page }) => {
       await windowIsOpaque({ page });
       await clickTaskbarEntry(TEST_APP_TITLE, { page });
       await windowIsTransparent({ page });

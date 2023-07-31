@@ -70,14 +70,13 @@ export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
 ]);
 
 export const SCREEN_CAPTURE_NOT_WORKING_BROWSERS = new Set(["webkit"]);
+
+// https://bugs.webkit.org/show_bug.cgi?id=22261
 export const FILE_DRAG_NOT_WORKING_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
 ]);
 export const MULTI_SELECT_NOT_WORKING_BROWSERS = new Set([
   "webkit", // https://github.com/DustinBrett/daedalOS/issues/287
-]);
-export const FOCUS_STATE_NOT_WORKING_BROWSERS = new Set([
-  "webkit", // https://bugs.webkit.org/show_bug.cgi?id=22261
 ]);
 
 export const FILE_MENU_ITEMS = [
