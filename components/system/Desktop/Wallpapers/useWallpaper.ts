@@ -92,7 +92,7 @@ const useWallpaper = (
 
       document.documentElement.style.setProperty(
         "background",
-        document.documentElement.style.background.replace(/"(.*)"/, ``)
+        document.documentElement.style.background.replace(/"(.*)"/, "")
       );
 
       if (!keepCanvas) {
@@ -264,7 +264,7 @@ const useWallpaper = (
     } else if (wallpaperName === "APOD") {
       document.documentElement.style.setProperty(
         "background",
-        document.documentElement.style.background.replace(/"(.*)"/, ``)
+        document.documentElement.style.background.replace(/"(.*)"/, "")
       );
 
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");
