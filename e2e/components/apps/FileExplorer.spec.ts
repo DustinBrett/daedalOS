@@ -76,7 +76,6 @@ test("has address bar", async ({ page }) => {
   await contextMenuIsHidden({ page });
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });
 
-  await clickFileExplorerAddressBar({ page });
   await typeInFileExplorerAddressBar("/System", { page });
   await pressFileExplorerAddressBarKeys("Enter", { page });
 
@@ -346,7 +345,8 @@ test.describe("has navigation", () => {
   });
 
   test("can go back & forward", async ({ page }) => {
-    await clickFileExplorerAddressBar({ page });
+    await fileExplorerEntriesAreVisible({ page });
+
     await typeInFileExplorerAddressBar("/Users", { page });
     await pressFileExplorerAddressBarKeys("Enter", { page });
     await windowTitlebarTextIsVisible(/^Users$/, { page });
