@@ -7,6 +7,7 @@ import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type {
   CompleteAction,
   Files,
+  NewPath,
 } from "components/system/Files/FileManager/useFolder";
 import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
@@ -221,11 +222,7 @@ export const getEventData = (
 
 export const handleFileInputEvent = (
   event: InputChangeEvent | React.DragEvent,
-  callback: (
-    fileName: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => Promise<void>,
+  callback: NewPath,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void,
   hasUpdateId = false

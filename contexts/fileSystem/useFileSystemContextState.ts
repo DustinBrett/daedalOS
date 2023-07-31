@@ -15,6 +15,7 @@ import {
   iterateFileName,
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
+import type { NewPath } from "components/system/Files/FileManager/useFolder";
 import {
   addFileSystemHandle,
   getFileSystemHandles,
@@ -53,7 +54,7 @@ type IFileSystemAccess = {
 type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => Promise<void>,
+    callback: NewPath,
     accept?: string,
     multiple?: boolean
   ) => void;
@@ -296,10 +297,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const { openTransferDialog } = useTransferDialog();
   const addFile = useCallback(
-    (
-      directory: string,
-      callback: (name: string, buffer?: Buffer) => Promise<void>
-    ): void => {
+    (directory: string, callback: NewPath): void => {
       const fileInput = document.createElement("input");
 
       fileInput.type = "file";

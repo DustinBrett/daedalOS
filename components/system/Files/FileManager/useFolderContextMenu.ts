@@ -8,6 +8,7 @@ import type {
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type {
+  CaptureTriggerEvent,
   ContextMenuCapture,
   MenuItem,
 } from "contexts/menu/useMenuContextState";
@@ -32,6 +33,7 @@ import {
   isFileSystemMappingSupported,
   isFirefox,
   isSafari,
+  updateIconPositions,
 } from "utils/functions";
 
 const stopGlobalMusicVisualization = (): void =>
@@ -83,9 +85,11 @@ const useFolderContextMenu = (
     updateFolder,
   } = useFileSystem();
   const {
+    iconPositions,
     setForegroundId,
     setWallpaper: setSessionWallpaper,
     setIconPositions,
+    sortOrders,
     wallpaperImage,
   } = useSession();
   const setWallpaper = useCallback(
@@ -215,10 +219,37 @@ const useFolderContextMenu = (
   }, [readFile, updateFolder, writeFile]);
   const hasWebGPU = useWebGPUCheck();
   const processesRef = useProcessesRef();
+  const newEntry = useCallback(
+    async (
+      entryName: string,
+      data?: Buffer,
+      event?: CaptureTriggerEvent
+    ): Promise<void> => {
+      const newName = await newPath(entryName, data, "rename");
+
+      if (event && isDesktop) {
+        const { clientX: x, clientY: y } =
+          event.nativeEvent instanceof TouchEvent
+            ? event.nativeEvent.touches[0]
+            : event.nativeEvent;
+
+        updateIconPositions(
+          DESKTOP_PATH,
+          event.target as HTMLElement,
+          iconPositions,
+          sortOrders,
+          { x, y },
+          [newName],
+          setIconPositions
+        );
+      }
+    },
+    [iconPositions, isDesktop, newPath, setIconPositions, sortOrders]
+  );
 
   return useMemo(
     () =>
-      contextMenu?.(() => {
+      contextMenu?.((event) => {
         const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
         const MAP_DIRECTORY = {
           action: () =>
@@ -346,20 +377,20 @@ const useFolderContextMenu = (
                   label: "New",
                   menu: [
                     {
-                      action: () => newPath(NEW_FOLDER, undefined, "rename"),
+                      action: () => newEntry(NEW_FOLDER, undefined, event),
                       icon: FOLDER_ICON,
                       label: "Folder",
                     },
                     MENU_SEPERATOR,
                     {
                       action: () =>
-                        newPath(NEW_RTF_DOCUMENT, Buffer.from(""), "rename"),
+                        newEntry(NEW_RTF_DOCUMENT, Buffer.from(""), event),
                       icon: richTextDocumentIcon,
                       label: "Rich Text Document",
                     },
                     {
                       action: () =>
-                        newPath(NEW_TEXT_DOCUMENT, Buffer.from(""), "rename"),
+                        newEntry(NEW_TEXT_DOCUMENT, Buffer.from(""), event),
                       icon: textDocumentIcon,
                       label: "Text Document",
                     },
@@ -428,7 +459,7 @@ const useFolderContextMenu = (
       isDesktop,
       mapFs,
       minimize,
-      newPath,
+      newEntry,
       open,
       pasteList,
       pasteToFolder,

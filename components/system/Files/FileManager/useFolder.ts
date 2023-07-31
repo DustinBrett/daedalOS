@@ -57,13 +57,15 @@ export const COMPLETE_ACTION: Record<string, CompleteAction> = {
   UPDATE_URL: "updateUrl",
 };
 
+export type NewPath = (
+  fileName: string,
+  buffer?: Buffer,
+  completeAction?: CompleteAction
+) => Promise<string>;
+
 export type FolderActions = {
   addToFolder: () => void;
-  newPath: (
-    path: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => Promise<void>;
+  newPath: NewPath;
   pasteToFolder: () => void;
   resetFiles: () => void;
   sortByOrder: [SortByOrder, SetSortBy];
@@ -356,7 +358,7 @@ const useFolder = (
       name: string,
       buffer?: Buffer,
       completeAction?: CompleteAction
-    ): Promise<void> => {
+    ): Promise<string> => {
       const uniqueName = await createPath(name, directory, buffer);
 
       if (uniqueName && !uniqueName.includes("/")) {
@@ -368,6 +370,8 @@ const useFolder = (
           focusEntry(uniqueName);
         }
       }
+
+      return uniqueName;
     },
     [blurEntry, createPath, directory, focusEntry, setRenaming, updateFolder]
   );
