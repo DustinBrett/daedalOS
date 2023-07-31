@@ -48,7 +48,7 @@ const utilCommandMap: Record<string, () => void> = {
   sheep: spawnSheep,
 };
 
-const Run: FC<ComponentProcessProps> = () => {
+const Run: FC<ComponentProcessProps> = ({ id }) => {
   const {
     open,
     closeWithTransition,
@@ -172,12 +172,13 @@ const Run: FC<ComponentProcessProps> = () => {
 
       setRunning(false);
 
-      if (closeOnExecute) closeWithTransition("Run");
+      if (closeOnExecute) closeWithTransition(id);
     },
     [
       closeWithTransition,
       createPath,
       exists,
+      id,
       open,
       readFile,
       setRunHistory,
@@ -187,11 +188,11 @@ const Run: FC<ComponentProcessProps> = () => {
   );
 
   useLayoutEffect(() => {
-    if (foregroundId === "Run") {
+    if (foregroundId === id) {
       inputRef.current?.focus(PREVENT_SCROLL);
       if (inputRef.current?.value) inputRef.current?.select();
     }
-  }, [foregroundId]);
+  }, [foregroundId, id]);
 
   useLayoutEffect(() => {
     if (runProcess?.url && inputRef.current) {
@@ -204,7 +205,7 @@ const Run: FC<ComponentProcessProps> = () => {
 
   return (
     <StyledRun
-      {...useFileDrop({ id: "Run" })}
+      {...useFileDrop({ id })}
       onContextMenu={(event) => {
         if (!(event.target instanceof HTMLInputElement)) {
           haltEvent(event);
@@ -242,7 +243,7 @@ const Run: FC<ComponentProcessProps> = () => {
               if (key === "Enter") runResource(inputRef.current?.value.trim());
               if (key === "Escape") {
                 haltEvent(event);
-                closeWithTransition("Run");
+                closeWithTransition(id);
               }
             }}
             onKeyUp={({ target }) =>
@@ -288,7 +289,7 @@ const Run: FC<ComponentProcessProps> = () => {
         </StyledButton>
         <StyledButton
           disabled={running}
-          onClick={() => closeWithTransition("Run")}
+          onClick={() => closeWithTransition(id)}
         >
           Cancel
         </StyledButton>

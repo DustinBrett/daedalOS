@@ -40,12 +40,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const isDirectory = useMemo(() => stats?.isDirectory(), [stats]);
   const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
+  const abortControllerRef = useRef<AbortController>();
 
   useEffect(() => {
     if (!checkedFileCounts.current && !isShortcut && isDirectory) {
       checkedFileCounts.current = true;
+      abortControllerRef.current = new AbortController();
 
       const countContents = async (contentUrl: string): Promise<void> => {
+        if (abortControllerRef.current?.signal.aborted) return;
+
         const entries = await readdir(contentUrl);
         let currentFileCount = 0;
         let currentFolderCount = 0;
@@ -73,6 +77,8 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
       countContents(url);
     }
   }, [isDirectory, isShortcut, readdir, stat, url]);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   return (
     <>
