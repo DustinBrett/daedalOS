@@ -37,11 +37,12 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const [fileCount, setFileCount] = useState(0);
   const [folderCount, setFolderCount] = useState(0);
   const [folderSize, setFolderSize] = useState(0);
-  const entrySize = folderSize || stats?.size;
+  const isDirectory = useMemo(() => stats?.isDirectory(), [stats]);
+  const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
 
   useEffect(() => {
-    if (!checkedFileCounts.current && !isShortcut && stats?.isDirectory()) {
+    if (!checkedFileCounts.current && !isShortcut && isDirectory) {
       checkedFileCounts.current = true;
 
       const countContents = async (contentUrl: string): Promise<void> => {
@@ -71,7 +72,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
 
       countContents(url);
     }
-  }, [isShortcut, readdir, stat, stats, url]);
+  }, [isDirectory, isShortcut, readdir, stat, url]);
 
   return (
     <>
@@ -99,18 +100,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <td className="spacer" colSpan={2} />
           </tr>
           <tr>
-            <th scope="row">
-              {stats?.isDirectory() ? "Type:" : "Type of file:"}
-            </th>
+            <th scope="row">{isDirectory ? "Type:" : "Type of file:"}</th>
             <td>
-              {stats?.isDirectory()
+              {isDirectory
                 ? "File folder"
                 : isShortcut || extType
                 ? `${isShortcut ? "Shortcut" : extType} (${extension})`
                 : "File"}
             </td>
           </tr>
-          {!stats?.isDirectory() && (
+          {!isDirectory && (
             <tr>
               <th scope="row">{pid ? "Opens with:" : "Description:"}</th>
               <td>
@@ -121,7 +120,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
               </td>
             </tr>
           )}
-          {!stats?.isDirectory() && (
+          {!isDirectory && (
             <tr>
               <td className="spacer" colSpan={2} />
             </tr>
@@ -136,11 +135,13 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
               {entrySize
                 ? `${getFormattedSize(
                     entrySize
-                  )} (${entrySize.toLocaleString()} bytes)`
+                  )} (${entrySize.toLocaleString()} byte${
+                    entrySize === 1 ? "" : "s"
+                  })`
                 : "0 bytes"}
             </td>
           </tr>
-          {stats?.isDirectory() && (
+          {isDirectory && (
             <tr>
               <th scope="row">Contains</th>
               <td>{`${fileCount.toLocaleString()} Files, ${folderCount.toLocaleString()} Folders`}</td>
