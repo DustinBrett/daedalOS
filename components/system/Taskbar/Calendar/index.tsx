@@ -3,10 +3,12 @@ import StyledCalendar from "components/system/Taskbar/Calendar/StyledCalendar";
 import type { Calendar as ICalendar } from "components/system/Taskbar/Calendar/functions";
 import { createCalendar } from "components/system/Taskbar/Calendar/functions";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
+import useTaskbarItemTransition from "../useTaskbarItemTransition";
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -34,6 +36,12 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     setCalendar(createCalendar(newDate));
   };
   const calendarRef = useRef<HTMLTableElement>(null);
+  const {
+    sizes: {
+      calendar: { maxHeight },
+    },
+  } = useTheme();
+  const calendarTransition = useTaskbarItemTransition(maxHeight, false);
 
   useEffect(() => {
     calendarRef.current?.addEventListener("blur", ({ relatedTarget }) => {
@@ -66,6 +74,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
         ref={calendarRef}
         aria-label="Calendar"
         onContextMenu={haltEvent}
+        {...calendarTransition}
         {...FOCUSABLE_ELEMENT}
       >
         <table>
