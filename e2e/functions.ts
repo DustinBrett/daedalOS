@@ -19,7 +19,6 @@ import {
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
-  OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
@@ -34,6 +33,7 @@ import {
   TYPE_DELAY,
   UNKNOWN_ICON_PATH,
   WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
+  WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
@@ -669,7 +669,7 @@ export const clockCanvasMaybeIsVisible = async ({
   browserName,
   page,
 }: TestPropsWithBrowser): Promise<void> => {
-  if (OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+  if (WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS.has(browserName)) {
     await clockTextIsVisible({ page });
     await clockCanvasIsHidden({ page });
   } else {

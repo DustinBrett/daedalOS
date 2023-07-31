@@ -62,7 +62,7 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit",
   "firefox",
 ]);
-export const OFFSCREEN_WEBGL_NOT_SUPPORTED_BROWSERS = new Set([
+export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
 ]);
 export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
