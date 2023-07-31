@@ -38,6 +38,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     [setMenu]
   );
   const isSubMenu = Boolean(subMenu);
+  const offsetCalculated = useRef(false);
 
   useEffect(() => {
     if (items && !subMenu) {
@@ -78,7 +79,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
-    if (!menuRef.current) return;
+    if (!menuRef.current || offsetCalculated.current) return;
 
     const {
       height = 0,
@@ -105,10 +106,15 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         ? newOffset.x - (newOffset.x - menuX)
         : 0;
 
+    offsetCalculated.current = true;
     setOffset(
       adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
     );
   }, [items, subMenu, x, y]);
+
+  useEffect(() => {
+    if (!items) offsetCalculated.current = false;
+  }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
     const resetOnEscape = ({ key }: KeyboardEvent): void => {

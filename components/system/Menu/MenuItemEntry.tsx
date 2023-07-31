@@ -87,7 +87,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     (event) => {
       haltEvent(event);
 
-      if (!menu) {
+      if (menu) {
+        setShowSubMenu(true);
+      } else {
         action?.();
         resetMenu();
       }
