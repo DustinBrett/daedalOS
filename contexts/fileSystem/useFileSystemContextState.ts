@@ -58,7 +58,7 @@ type FileSystemContextState = AsyncFS & {
     callback: NewPath,
     accept?: string,
     multiple?: boolean
-  ) => void;
+  ) => Promise<string[]>;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   copyEntries: (entries: string[]) => void;
   createPath: (

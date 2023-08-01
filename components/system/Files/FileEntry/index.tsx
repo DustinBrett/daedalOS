@@ -176,8 +176,14 @@ const FileEntry: FC<FileEntryProps> = ({
       if (!focusedEntries.includes(fileName)) {
         const uniqueName = await createPath(fileDropName, directory, data);
 
-        if (uniqueName) updateFolder(directory, uniqueName);
+        if (uniqueName) {
+          updateFolder(directory, uniqueName);
+
+          return uniqueName;
+        }
       }
+
+      return "";
     },
     directory,
     onDragLeave: () =>

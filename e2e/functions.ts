@@ -673,8 +673,8 @@ export const clockCanvasMaybeIsVisible = async ({
     await clockTextIsVisible({ page });
     await clockCanvasIsHidden({ page });
   } else {
-    await clockTextIsHidden({ page });
     await clockCanvasIsVisible({ page });
+    await clockTextIsHidden({ page });
   }
 };
 
