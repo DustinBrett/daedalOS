@@ -64,7 +64,7 @@ export type NewPath = (
 ) => Promise<string>;
 
 export type FolderActions = {
-  addToFolder: () => void;
+  addToFolder: () => Promise<string[]>;
   newPath: NewPath;
   pasteToFolder: () => void;
   resetFiles: () => void;

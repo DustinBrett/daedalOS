@@ -219,14 +219,8 @@ const useFolderContextMenu = (
   }, [readFile, updateFolder, writeFile]);
   const hasWebGPU = useWebGPUCheck();
   const processesRef = useProcessesRef();
-  const newEntry = useCallback(
-    async (
-      entryName: string,
-      data?: Buffer,
-      event?: CaptureTriggerEvent
-    ): Promise<void> => {
-      const newName = await newPath(entryName, data, "rename");
-
+  const updateDesktopIconPositions = useCallback(
+    (names: string[], event?: CaptureTriggerEvent) => {
       if (event && isDesktop) {
         const { clientX: x, clientY: y } =
           event.nativeEvent instanceof TouchEvent
@@ -239,22 +233,41 @@ const useFolderContextMenu = (
           iconPositions,
           sortOrders,
           { x, y },
-          [newName],
+          names,
           setIconPositions
         );
       }
     },
-    [iconPositions, isDesktop, newPath, setIconPositions, sortOrders]
+    [iconPositions, isDesktop, setIconPositions, sortOrders]
+  );
+  const newEntry = useCallback(
+    async (
+      entryName: string,
+      data?: Buffer,
+      event?: CaptureTriggerEvent
+    ): Promise<void> =>
+      updateDesktopIconPositions(
+        [await newPath(entryName, data, "rename")],
+        event
+      ),
+    [newPath, updateDesktopIconPositions]
   );
 
   return useMemo(
     () =>
       contextMenu?.((event) => {
-        const ADD_FILE = { action: () => addToFolder(), label: "Add file(s)" };
+        const ADD_FILE = {
+          action: () =>
+            addToFolder().then((files) =>
+              updateDesktopIconPositions(files, event)
+            ),
+          label: "Add file(s)",
+        };
         const MAP_DIRECTORY = {
           action: () =>
             mapFs(url)
               .then((mappedFolder) => {
+                updateDesktopIconPositions([mappedFolder], event);
                 updateFolder(url, mappedFolder);
                 open("FileExplorer", { url: join(url, mappedFolder) });
               })
@@ -467,6 +480,7 @@ const useFolderContextMenu = (
       setForegroundId,
       setWallpaper,
       sortBy,
+      updateDesktopIconPositions,
       updateFolder,
       updateSorting,
       url,

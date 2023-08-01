@@ -11,6 +11,7 @@ import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDia
 import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
+  getEventData,
   handleFileInputEvent,
   iterateFileName,
   removeInvalidFilenameCharacters,
@@ -297,26 +298,45 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const { openTransferDialog } = useTransferDialog();
   const addFile = useCallback(
-    (directory: string, callback: NewPath): void => {
-      const fileInput = document.createElement("input");
+    (directory: string, callback: NewPath): Promise<string[]> =>
+      new Promise((resolve) => {
+        const fileInput = document.createElement("input");
 
-      fileInput.type = "file";
-      fileInput.multiple = true;
-      fileInput.setAttribute("style", "display: none");
-      fileInput.addEventListener(
-        "change",
-        (event) =>
-          handleFileInputEvent(
-            event as InputChangeEvent,
-            callback,
-            directory,
-            openTransferDialog
-          ).then(() => fileInput.remove()),
-        { once: true }
-      );
-      document.body.append(fileInput);
-      fileInput.click();
-    },
+        fileInput.type = "file";
+        fileInput.multiple = true;
+        fileInput.setAttribute("style", "display: none");
+        fileInput.addEventListener(
+          "change",
+          (event) => {
+            handleFileInputEvent(
+              event as InputChangeEvent,
+              callback,
+              directory,
+              openTransferDialog
+            ).then(() => {
+              const { files } = getEventData(event as InputChangeEvent);
+
+              if (files) {
+                resolve(
+                  [...files].map((file) =>
+                    files instanceof FileList
+                      ? (file as File).name
+                      : (
+                          (
+                            file as DataTransferItem
+                          ).webkitGetAsEntry() as FileSystemEntry
+                        ).name
+                  )
+                );
+              }
+            });
+            fileInput.remove();
+          },
+          { once: true }
+        );
+        document.body.append(fileInput);
+        fileInput.click();
+      }),
     [openTransferDialog]
   );
   const mkdirRecursive = useCallback(
