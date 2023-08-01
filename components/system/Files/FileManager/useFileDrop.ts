@@ -4,7 +4,10 @@ import {
   handleFileInputEvent,
 } from "components/system/Files/FileManager/functions";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import type {
+  CompleteAction,
+  NewPath,
+} from "components/system/Files/FileManager/useFolder";
 import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -21,11 +24,7 @@ export type FileDrop = {
 };
 
 type FileDropProps = {
-  callback?: (
-    path: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => Promise<void>;
+  callback?: NewPath;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -43,13 +42,13 @@ const useFileDrop = ({
 }: FileDropProps): FileDrop => {
   const { url } = useProcesses();
   const { iconPositions, sortOrders, setIconPositions } = useSession();
-  const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
+  const { exists, mkdirRecursive, updateFolder, writeFile } = useFileSystem();
   const updateProcessUrl = useCallback(
     async (
       filePath: string,
       fileData?: Buffer,
       completeAction?: CompleteAction
-    ): Promise<void> => {
+    ): Promise<string> => {
       if (id) {
         if (fileData) {
           const tempPath = join(DESKTOP_PATH, filePath);
@@ -61,11 +60,15 @@ const useFileDrop = ({
               url(id, tempPath);
             }
             updateFolder(DESKTOP_PATH, filePath);
+
+            return basename(tempPath);
           }
         } else if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
           url(id, filePath);
         }
       }
+
+      return "";
     },
     [id, mkdirRecursive, updateFolder, url, writeFile]
   );
@@ -154,6 +157,7 @@ const useFileDrop = ({
         callback || updateProcessUrl,
         directory,
         openTransferDialog,
+        exists,
         Boolean(id)
       );
     },

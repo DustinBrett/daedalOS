@@ -305,15 +305,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
       fileInput.setAttribute("style", "display: none");
       fileInput.addEventListener(
         "change",
-        (event) => {
+        (event) =>
           handleFileInputEvent(
             event as InputChangeEvent,
             callback,
             directory,
             openTransferDialog
-          );
-          fileInput.remove();
-        },
+          ).then(() => fileInput.remove()),
         { once: true }
       );
       document.body.append(fileInput);

@@ -5,7 +5,6 @@ import type {
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import type {
-  CompleteAction,
   Files,
   NewPath,
 } from "components/system/Files/FileManager/useFolder";
@@ -132,11 +131,7 @@ export const iterateFileName = (name: string, iteration: number): string => {
 export const createFileReaders = async (
   files: DataTransferItemList | FileList | never[],
   directory: string,
-  callback: (
-    fileName: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => void
+  callback: NewPath
 ): Promise<FileReaders> => {
   const fileReaders: FileReaders = [];
   const addFile = (file: File, subFolder = ""): void => {
@@ -220,13 +215,14 @@ export const getEventData = (
   return { files, text };
 };
 
-export const handleFileInputEvent = (
+export const handleFileInputEvent = async (
   event: InputChangeEvent | React.DragEvent,
   callback: NewPath,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void,
+  fileExists?: (path: string) => Promise<boolean>,
   hasUpdateId = false
-): void => {
+): Promise<void> => {
   haltEvent(event);
 
   const { files, text } = getEventData(event);
@@ -234,8 +230,21 @@ export const handleFileInputEvent = (
   if (text) {
     try {
       const filePaths = JSON.parse(text) as string[];
-      const isSingleFile = filePaths.length === 1;
-      const objectReaders = filePaths.map((filePath) => {
+
+      if (!Array.isArray(filePaths)) return;
+
+      const existingFiles = fileExists
+        ? await filePaths.reduce<Promise<string[]>>(
+            async (paths, path) =>
+              (await fileExists(path)) ? [...(await paths), path] : paths,
+            Promise.resolve([])
+          )
+        : filePaths;
+
+      if (existingFiles.length === 0) return;
+
+      const isSingleFile = existingFiles.length === 1;
+      const objectReaders = existingFiles.map((filePath) => {
         let aborted = false;
 
         return {
@@ -265,10 +274,7 @@ export const handleFileInputEvent = (
         if (hasUpdateId || singleFile.directory === singleFile.name) return;
       }
 
-      if (
-        !Array.isArray(filePaths) ||
-        filePaths.every((filePath) => dirname(filePath) === directory)
-      ) {
+      if (existingFiles.every((filePath) => dirname(filePath) === directory)) {
         return;
       }
 
