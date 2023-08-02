@@ -111,13 +111,13 @@ const usePDF = ({
         // eslint-disable-next-line no-await-in-loop
         const page = await renderPage(i + 1, doc);
 
-        if (i === 0) setLoading(false);
-
         setPages((currentPages) => [...currentPages, page]);
       }
 
       renderingRef.current = false;
     }
+
+    setLoading(false);
   }, [
     argument,
     containerRef,
