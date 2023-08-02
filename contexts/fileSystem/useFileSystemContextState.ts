@@ -313,23 +313,24 @@ const useFileSystemContextState = (): FileSystemContextState => {
               callback,
               directory,
               openTransferDialog
-            ).then(() => {
-              const { files } = getEventData(event as InputChangeEvent);
+            );
 
-              if (files) {
-                resolve(
-                  [...files].map((file) =>
-                    files instanceof FileList
-                      ? (file as File).name
-                      : (
-                          (
-                            file as DataTransferItem
-                          ).webkitGetAsEntry() as FileSystemEntry
-                        ).name
-                  )
-                );
-              }
-            });
+            const { files } = getEventData(event as InputChangeEvent);
+
+            if (files) {
+              resolve(
+                [...files].map((file) =>
+                  files instanceof FileList
+                    ? (file as File).name
+                    : (
+                        (
+                          file as DataTransferItem
+                        ).webkitGetAsEntry() as FileSystemEntry
+                      ).name
+                )
+              );
+            }
+
             fileInput.remove();
           },
           { once: true }

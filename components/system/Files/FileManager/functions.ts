@@ -215,14 +215,13 @@ export const getEventData = (
   return { files, text };
 };
 
-export const handleFileInputEvent = async (
+export const handleFileInputEvent = (
   event: InputChangeEvent | React.DragEvent,
   callback: NewPath,
   directory: string,
   openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void,
-  fileExists?: (path: string) => Promise<boolean>,
   hasUpdateId = false
-): Promise<void> => {
+): void => {
   haltEvent(event);
 
   const { files, text } = getEventData(event);
@@ -231,20 +230,10 @@ export const handleFileInputEvent = async (
     try {
       const filePaths = JSON.parse(text) as string[];
 
-      if (!Array.isArray(filePaths)) return;
+      if (!Array.isArray(filePaths) || filePaths.length === 0) return;
 
-      const existingFiles = fileExists
-        ? await filePaths.reduce<Promise<string[]>>(
-            async (paths, path) =>
-              (await fileExists(path)) ? [...(await paths), path] : paths,
-            Promise.resolve([])
-          )
-        : filePaths;
-
-      if (existingFiles.length === 0) return;
-
-      const isSingleFile = existingFiles.length === 1;
-      const objectReaders = existingFiles.map((filePath) => {
+      const isSingleFile = filePaths.length === 1;
+      const objectReaders = filePaths.map((filePath) => {
         let aborted = false;
 
         return {
@@ -274,7 +263,7 @@ export const handleFileInputEvent = async (
         if (hasUpdateId || singleFile.directory === singleFile.name) return;
       }
 
-      if (existingFiles.every((filePath) => dirname(filePath) === directory)) {
+      if (filePaths.every((filePath) => dirname(filePath) === directory)) {
         return;
       }
 

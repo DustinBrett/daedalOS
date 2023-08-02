@@ -42,7 +42,7 @@ const useFileDrop = ({
 }: FileDropProps): FileDrop => {
   const { url } = useProcesses();
   const { iconPositions, sortOrders, setIconPositions } = useSession();
-  const { exists, mkdirRecursive, updateFolder, writeFile } = useFileSystem();
+  const { mkdirRecursive, updateFolder, writeFile } = useFileSystem();
   const updateProcessUrl = useCallback(
     async (
       filePath: string,
@@ -157,7 +157,6 @@ const useFileDrop = ({
         callback || updateProcessUrl,
         directory,
         openTransferDialog,
-        exists,
         Boolean(id)
       );
     },
