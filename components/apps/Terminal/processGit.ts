@@ -66,7 +66,7 @@ const processGit = async (
         events.push(phase);
       }
     };
-    const options = {
+    const options: GitOptions = {
       ...cliArgs,
       corsProxy,
       dir: cd,
@@ -78,8 +78,19 @@ const processGit = async (
     };
 
     if (command === "clone") {
+      if (
+        !options.url &&
+        cliArgs._ &&
+        Array.isArray(cliArgs._) &&
+        cliArgs._.length === 1
+      ) {
+        const [url] = cliArgs._;
+
+        options.url = url;
+      }
+
       const dirName =
-        (cliArgs.url as string)
+        (options.url as string)
           ?.split("/")
           .pop()
           ?.replace(/\.git$/, "") || "";
