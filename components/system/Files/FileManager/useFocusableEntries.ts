@@ -1,11 +1,8 @@
-import { useCallback, useRef, useState } from "react";
-import { PREVENT_SCROLL } from "utils/constants";
-import { clsx, haltEvent } from "utils/functions";
+import { useCallback, useState } from "react";
+import { clsx } from "utils/functions";
 
 type FocusedEntryProps = {
   className?: string;
-  onBlurCapture: React.FocusEventHandler;
-  onFocusCapture: React.FocusEventHandler;
   onMouseDown: React.MouseEventHandler;
 };
 
@@ -21,9 +18,7 @@ type FocusableEntries = FocusEntryFunctions & {
   focusedEntries: string[];
 };
 
-const useFocusableEntries = (
-  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
-): FocusableEntries => {
+const useFocusableEntries = (): FocusableEntries => {
   const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
   const blurEntry = useCallback(
     (entry?: string): void =>
@@ -46,31 +41,6 @@ const useFocusableEntries = (
       ),
     []
   );
-  const focusingRef = useRef(false);
-  const onBlurCapture: React.FocusEventHandler = useCallback(
-    (event) => {
-      const { relatedTarget, target } = event;
-      const isFileManagerFocus = fileManagerRef.current === relatedTarget;
-
-      if (isFileManagerFocus && focusingRef.current) {
-        haltEvent(event);
-        (target as HTMLElement)?.focus(PREVENT_SCROLL);
-      } else if (
-        isFileManagerFocus ||
-        !(relatedTarget instanceof HTMLElement) ||
-        !fileManagerRef.current?.contains(relatedTarget)
-      ) {
-        blurEntry();
-      }
-    },
-    [blurEntry, fileManagerRef]
-  );
-  const onFocusCapture: React.FocusEventHandler = useCallback(() => {
-    focusingRef.current = true;
-    window.requestAnimationFrame(() => {
-      focusingRef.current = false;
-    });
-  }, []);
   const focusableEntry = (file: string): FocusedEntryProps => {
     const isFocused = focusedEntries.includes(file);
     const isOnlyFocusedEntry =
@@ -92,12 +62,7 @@ const useFocusableEntries = (
       }
     };
 
-    return {
-      className,
-      onBlurCapture,
-      onFocusCapture,
-      onMouseDown,
-    };
+    return { className, onMouseDown };
   };
 
   return { blurEntry, focusEntry, focusableEntry, focusedEntries };

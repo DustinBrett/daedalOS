@@ -72,7 +72,7 @@ const FileManager: FC<FileManagerProps> = ({
   const [mounted, setMounted] = useState<boolean>(false);
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { focusedEntries, focusableEntry, ...focusFunctions } =
-    useFocusableEntries(fileManagerRef);
+    useFocusableEntries();
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
@@ -84,7 +84,7 @@ const FileManager: FC<FileManagerProps> = ({
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
-    useSelection(fileManagerRef);
+    useSelection(fileManagerRef, focusedEntries, focusFunctions);
   const draggableEntry = useDraggableEntries(
     focusedEntries,
     focusFunctions,

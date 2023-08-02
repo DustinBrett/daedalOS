@@ -7,7 +7,6 @@ import {
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
-  MULTI_SELECT_NOT_WORKING_BROWSERS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -229,7 +228,7 @@ test.describe("has file(s)", () => {
     );
   });
 
-  test("has status bar", async ({ browserName, page }) => {
+  test("has status bar", async ({ page }) => {
     await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
 
     const statusBar = page.locator(FILE_EXPLORER_STATUS_BAR_SELECTOR);
@@ -242,10 +241,6 @@ test.describe("has file(s)", () => {
     expect(
       await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
     ).toEqual(1);
-
-    if (MULTI_SELECT_NOT_WORKING_BROWSERS.has(browserName)) {
-      return;
-    }
 
     await page.keyboard.down("Control");
     await clickFileExplorerEntry(TEST_ROOT_FILE_2, { page });
