@@ -37,12 +37,14 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
     const { onContextMenuCapture } = useMemo(
       () =>
         contextMenu?.(() =>
-          history.map((historyUrl, index) => ({
-            action: () => moveHistory(index - position),
-            checked: position === index,
-            label: basename(historyUrl) || ROOT_NAME,
-            primary: position === index,
-          }))
+          history
+            .map((historyUrl, index) => ({
+              action: () => moveHistory(index - position),
+              checked: position === index,
+              label: basename(historyUrl) || ROOT_NAME,
+              primary: position === index,
+            }))
+            .reverse()
         ),
       [contextMenu, history, moveHistory, position]
     );
