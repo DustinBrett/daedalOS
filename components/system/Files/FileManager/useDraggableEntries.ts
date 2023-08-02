@@ -30,7 +30,7 @@ export type DragPosition = Partial<
 
 const useDraggableEntries = (
   focusedEntries: string[],
-  { blurEntry, focusEntry }: FocusEntryFunctions,
+  { focusEntry }: FocusEntryFunctions,
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
   isSelecting: boolean,
   allowMoving?: boolean
@@ -78,8 +78,6 @@ const useDraggableEntries = (
           return sortedEntries;
         });
       }
-
-      blurEntry();
     };
   const onDragOver =
     (file: string): React.DragEventHandler =>
