@@ -1,3 +1,5 @@
+import type { Position } from "react-rnd";
+import type { Track, URLTrack } from "webamp";
 import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
@@ -6,10 +8,8 @@ import type {
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
-import type { Track, URLTrack } from "webamp";
 
 const BROKEN_PRESETS = new Set([
   "Flexi - alien fish pond",
@@ -327,6 +327,7 @@ export const tracksFromPlaylist = async (
   defaultName?: string
 ): Promise<Track[]> => {
   const { ASX, M3U, PLS } = await import("playlist-parser");
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   const parser: Record<string, typeof ASX | typeof M3U | typeof PLS> = {
     ".asx": ASX,
     ".m3u": M3U,

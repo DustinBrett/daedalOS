@@ -1,5 +1,5 @@
-import processDirectory from "contexts/process/directory";
 import type { ITerminalOptions } from "xterm";
+import processDirectory from "contexts/process/directory";
 
 export const config: ITerminalOptions = {
   allowTransparency: true,

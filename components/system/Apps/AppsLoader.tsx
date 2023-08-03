@@ -1,7 +1,7 @@
-import { useProcesses } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { memo } from "react";
+import { useProcesses } from "contexts/process";
 
 const RenderComponent = dynamic(
   () => import("components/system/Apps/RenderComponent")

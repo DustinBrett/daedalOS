@@ -1,8 +1,8 @@
+import Head from "next/head";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import Head from "next/head";
 import desktopIcons from "public/.index/desktopIcons.json";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,

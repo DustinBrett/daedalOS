@@ -1,3 +1,6 @@
+import { basename, extname } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { Options } from "webamp";
 import {
   cleanBufferOnSkinLoad,
   focusWindow,
@@ -12,11 +15,8 @@ import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AUDIO_PLAYLIST_EXTENSIONS } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
-import type { Options } from "webamp";
 
 const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);

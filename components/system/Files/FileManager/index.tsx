@@ -1,3 +1,6 @@
+import { basename, join } from "path";
+import dynamic from "next/dynamic";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -11,9 +14,6 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
-import dynamic from "next/dynamic";
-import { basename, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,

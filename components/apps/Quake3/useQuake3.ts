@@ -1,8 +1,8 @@
+import { useEffect } from "react";
+import { useTheme } from "styled-components";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect } from "react";
-import { useTheme } from "styled-components";
 import { loadFiles, pxToNum } from "utils/functions";
 
 declare global {

@@ -1,3 +1,4 @@
+import { basename } from "path";
 import {
   Add,
   Download,
@@ -9,7 +10,6 @@ import { scales } from "components/apps/PDF/usePDF";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { bufferToUrl, isSafari, label } from "utils/functions";

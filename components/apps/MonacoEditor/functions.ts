@@ -1,9 +1,9 @@
+import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   customExtensionLanguages,
   URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
 
 export const detectLanguage = (ext: string): string => {

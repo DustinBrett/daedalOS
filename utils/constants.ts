@@ -1,6 +1,6 @@
+import type { AsyncZipOptions } from "fflate";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { ClockSource, WallpaperFit } from "contexts/session/types";
-import type { AsyncZipOptions } from "fflate";
 import type { ThemeName } from "styles/themes";
 
 export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {

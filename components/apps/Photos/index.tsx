@@ -1,3 +1,5 @@
+import { basename, dirname, extname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ExitFullscreen,
   Fullscreen,
@@ -13,8 +15,6 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
-import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   HIGH_PRIORITY_ELEMENT,

@@ -1,6 +1,6 @@
+import { useEffect, useRef } from "react";
 import { useProcesses } from "contexts/process";
 import type { Processes } from "contexts/process/types";
-import { useEffect, useRef } from "react";
 
 export const useProcessesRef = (): React.MutableRefObject<Processes> => {
   const { processes } = useProcesses();

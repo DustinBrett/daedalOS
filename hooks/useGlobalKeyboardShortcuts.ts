@@ -1,8 +1,8 @@
+import { useEffect, useRef } from "react";
 import useFullscreen from "components/apps/Photos/useFullscreen";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { useEffect, useRef } from "react";
 import { haltEvent, toggleShowDesktop } from "utils/functions";
 
 type NavigatorWithKeyboard = Navigator & {

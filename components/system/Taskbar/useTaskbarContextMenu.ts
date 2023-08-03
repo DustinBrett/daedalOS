@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useFullscreen from "components/apps/Photos/useFullscreen";
 import { useMenu } from "contexts/menu";
 import type {
@@ -6,7 +7,6 @@ import type {
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { useMemo } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 import { toggleShowDesktop } from "utils/functions";
 

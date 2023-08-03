@@ -1,3 +1,5 @@
+import { basename, extname, join, relative } from "path";
+import { useCallback } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   getEventData,
@@ -12,8 +14,6 @@ import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, extname, join, relative } from "path";
-import { useCallback } from "react";
 import { DESKTOP_PATH, MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension, haltEvent, updateIconPositions } from "utils/functions";
 

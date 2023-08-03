@@ -1,3 +1,5 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useMemo } from "react";
 import { WALLPAPER_MENU } from "components/system/Desktop/Wallpapers/constants";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
@@ -16,8 +18,6 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { basename, dirname, join } from "path";
-import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_ICON,

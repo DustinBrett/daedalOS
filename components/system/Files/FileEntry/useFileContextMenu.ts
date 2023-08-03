@@ -1,3 +1,6 @@
+import { basename, dirname, extname, join } from "path";
+import { useMemo } from "react";
+import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
@@ -15,8 +18,6 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
@@ -45,7 +46,6 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
-import type { URLTrack } from "webamp";
 
 const useFileContextMenu = (
   url: string,

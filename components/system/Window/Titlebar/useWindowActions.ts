@@ -1,7 +1,7 @@
+import { useCallback } from "react";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback } from "react";
 
 type WindowActions = {
   onClose: () => void;

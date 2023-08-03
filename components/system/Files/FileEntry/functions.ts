@@ -1,4 +1,6 @@
+import { join } from "path";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import ini from "ini";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -6,8 +8,6 @@ import type { FileStat } from "components/system/Files/FileManager/functions";
 import { get9pModifiedTime } from "contexts/fileSystem/functions";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
-import ini from "ini";
-import { join } from "path";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,

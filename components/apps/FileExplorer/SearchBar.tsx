@@ -1,3 +1,5 @@
+import { basename } from "path";
+import { memo, useEffect, useRef, useState } from "react";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
@@ -8,8 +10,6 @@ import {
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { memo, useEffect, useRef, useState } from "react";
 import { getExtension, preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 

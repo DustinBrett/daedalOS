@@ -1,3 +1,4 @@
+import { basename, dirname, isAbsolute, join } from "path";
 import type * as IBrowserFS from "browserfs";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
@@ -7,6 +8,7 @@ import type {
   FileSystem,
 } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
@@ -26,9 +28,7 @@ import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
-import { basename, dirname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,

@@ -1,5 +1,5 @@
-import type { StyledFileManagerProps } from "components/system/Files/Views";
 import styled from "styled-components";
+import type { StyledFileManagerProps } from "components/system/Files/Views";
 import ScrollBars from "styles/common/ScrollBars";
 import { DEFAULT_SCROLLBAR_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
 

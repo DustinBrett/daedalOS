@@ -1,3 +1,15 @@
+import { basename, dirname, extname, join } from "path";
+import { m as motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useTheme } from "styled-components";
 import { Down } from "components/apps/FileExplorer/NavigationIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -20,19 +32,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
-import dynamic from "next/dynamic";
-import { basename, dirname, extname, join } from "path";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -225,6 +225,7 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
+    // eslint-disable-next-line sonarjs/no-collection-size-mischeck
     const fullStats = stats.size < 0 ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
