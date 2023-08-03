@@ -38,7 +38,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     [setMenu]
   );
   const isSubMenu = Boolean(subMenu);
-  const offsetCalculated = useRef(false);
+  const offsetCalculated = useRef<Partial<DOMRect>>({});
 
   useEffect(() => {
     if (items && !subMenu) {
@@ -79,7 +79,12 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
-    if (!menuRef.current || offsetCalculated.current) return;
+    if (
+      !menuRef.current ||
+      (offsetCalculated.current.x === x && offsetCalculated.current.y === y)
+    ) {
+      return;
+    }
 
     const {
       height = 0,
@@ -106,14 +111,14 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         ? newOffset.x - (newOffset.x - menuX)
         : 0;
 
-    offsetCalculated.current = true;
+    offsetCalculated.current = { x, y };
     setOffset(
       adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
     );
   }, [items, subMenu, x, y]);
 
   useEffect(() => {
-    if (!items) offsetCalculated.current = false;
+    if (!items) offsetCalculated.current = {};
   }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
