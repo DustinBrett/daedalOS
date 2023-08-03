@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 import { memo, useCallback, useMemo, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { DIV_BUTTON_PROPS } from "utils/constants";
 import { isSafari, label } from "utils/functions";
 
 const PeekWindow = dynamic(
@@ -45,17 +45,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
 
     setForegroundId(isForeground ? nextFocusableId : id);
   };
-  const focusable = useMemo(
-    () =>
-      isSafari()
-        ? {
-            as: "div",
-            role: "button",
-            ...FOCUSABLE_ELEMENT,
-          }
-        : {},
-    []
-  );
+  const focusable = useMemo(() => (isSafari() ? DIV_BUTTON_PROPS : {}), []);
 
   return (
     <StyledTaskbarEntry

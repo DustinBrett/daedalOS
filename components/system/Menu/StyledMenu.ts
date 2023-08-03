@@ -39,7 +39,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
       margin: 3px 8px;
     }
 
-    figure {
+    li > div {
       display: flex;
       padding: 3px 0;
 

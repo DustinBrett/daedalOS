@@ -17,6 +17,7 @@ import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
+  DIV_BUTTON_PROPS,
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
   TRANSITIONS_IN_MILLISECONDS,
@@ -139,9 +140,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       ) : (
         <Button
           aria-label={label}
-          as="figure"
           className={showSubMenu && mouseOver ? "active" : undefined}
           onMouseUp={triggerAction}
+          {...DIV_BUTTON_PROPS}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}

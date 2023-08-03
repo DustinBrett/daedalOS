@@ -52,6 +52,12 @@ export const DEFAULT_MAPPED_NAME = "Share";
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
+export const DIV_BUTTON_PROPS = {
+  as: "div",
+  role: "button",
+  ...FOCUSABLE_ELEMENT,
+};
+
 export const FS_HANDLES = "FileSystemAccessHandles";
 
 export const HOME = "/Users/Public";
