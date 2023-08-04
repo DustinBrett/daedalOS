@@ -64,6 +64,7 @@ const MIME_TYPE_VIDEO_MP4 = "video/mp4";
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
 
 let currentMediaStream: MediaStream | undefined;
+let currentMediaRecorder: MediaRecorder | undefined;
 
 const useFolderContextMenu = (
   url: string,
@@ -136,54 +137,61 @@ const useFolderContextMenu = (
       typeof window !== "undefined" &&
       typeof navigator?.mediaDevices?.getDisplayMedia === "function" &&
       (window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_WEBM) ||
-        window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_MP4)) &&
-      !isSafari(),
+        window?.MediaRecorder?.isTypeSupported(MIME_TYPE_VIDEO_MP4)),
     [isDesktop]
   );
   const captureScreen = useCallback(async () => {
-    if (currentMediaStream) {
+    if (currentMediaRecorder && currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
 
+      currentMediaRecorder.requestData();
       currentMediaStream.getTracks().forEach((track) => track.stop());
+
+      currentMediaRecorder = undefined;
       currentMediaStream = undefined;
 
       if (wasActive) return;
     }
 
+    const isFirefoxOrSafari = isFirefox() || isSafari();
     const displayMediaOptions: DisplayMediaStreamOptions &
       MediaStreamConstraints = {
       video: {
         frameRate: CAPTURE_FPS,
       },
-      ...(!isFirefox() && {
+      ...(!isFirefoxOrSafari && {
         preferCurrentTab: true,
         selfBrowserSurface: "include",
         surfaceSwitching: "include",
         systemAudio: "include",
       }),
     };
+
     currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
       displayMediaOptions
     );
 
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
-    const mediaRecorder = new MediaRecorder(currentMediaStream, {
+    const supportsWebm = MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM);
+    const fileName = `Screen Capture ${generatePrettyTimestamp()}.${
+      supportsWebm ? "webm" : "mp4"
+    }`;
+
+    currentMediaRecorder = new MediaRecorder(currentMediaStream, {
       bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
-      mimeType: MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM)
-        ? MIME_TYPE_VIDEO_WEBM
-        : MIME_TYPE_VIDEO_MP4,
+      mimeType: supportsWebm ? MIME_TYPE_VIDEO_WEBM : MIME_TYPE_VIDEO_MP4,
     });
-    const fileName = `Screen Capture ${generatePrettyTimestamp()}.webm`;
+
     const capturePath = join(DESKTOP_PATH, fileName);
     const startTime = Date.now();
     let hasCapturedData = false;
 
-    mediaRecorder.start();
-    mediaRecorder.addEventListener("dataavailable", async (event) => {
+    currentMediaRecorder.start();
+    currentMediaRecorder.addEventListener("dataavailable", async (event) => {
       const { data } = event;
 
-      if (data) {
+      if (data?.size) {
         const bufferData = Buffer.from(await data.arrayBuffer());
 
         await writeFile(
@@ -194,7 +202,11 @@ const useFolderContextMenu = (
           hasCapturedData
         );
 
-        if (mediaRecorder.state === "inactive") {
+        if (
+          supportsWebm &&
+          !isFirefoxOrSafari &&
+          currentMediaRecorder?.state === "inactive"
+        ) {
           const { default: fixWebmDuration } = await import(
             "fix-webm-duration"
           );
@@ -211,6 +223,8 @@ const useFolderContextMenu = (
               updateFolder(DESKTOP_PATH, fileName);
             }
           );
+        } else {
+          updateFolder(DESKTOP_PATH, fileName);
         }
 
         hasCapturedData = true;
