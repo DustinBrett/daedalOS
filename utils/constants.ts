@@ -123,6 +123,8 @@ export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
   ".svg",
 ]);
 
+export const CURSOR_FILE_EXTENSIONS = new Set([".ani", ".cur"]);
+
 export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
   ".bmp",
   ".gif",

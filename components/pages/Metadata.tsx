@@ -45,7 +45,7 @@ const MemoizedPreloadDesktopIcons = memo(PreloadDesktopIcons);
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
-  const { foregroundId } = useSession();
+  const { cursor, foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
   const { icon: processIcon, title: processTitle } = process || {};
   const resetFaviconAndTitle = useCallback((): void => {
@@ -120,6 +120,9 @@ const Metadata: FC = () => {
       />
       <meta content={description} name="description" />
       <MemoizedPreloadDesktopIcons />
+      {cursor && (
+        <style>{`*, *::before, *::after { cursor: url(${cursor}), default !important; }`}</style>
+      )}
     </Head>
   );
 };

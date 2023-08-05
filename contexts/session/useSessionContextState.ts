@@ -36,6 +36,7 @@ const useSessionContextState = (): SessionContextState => {
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
+  const [cursor, setCursor] = useState("");
   const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
   );
@@ -151,6 +152,7 @@ const useSessionContextState = (): SessionContextState => {
           JSON.stringify({
             aiApi,
             clockSource,
+            cursor,
             iconPositions,
             runHistory,
             sortOrders,
@@ -175,6 +177,7 @@ const useSessionContextState = (): SessionContextState => {
   }, [
     aiApi,
     clockSource,
+    cursor,
     haltSession,
     iconPositions,
     runHistory,
@@ -208,6 +211,7 @@ const useSessionContextState = (): SessionContextState => {
 
           if (session.aiApi) setAiApi(session.aiApi);
           if (session.clockSource) setClockSource(session.clockSource);
+          if (session.cursor) setCursor(session.cursor);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);
@@ -249,6 +253,7 @@ const useSessionContextState = (): SessionContextState => {
   return {
     aiApi,
     clockSource,
+    cursor,
     foregroundId,
     iconPositions,
     prependToStack,
@@ -257,6 +262,7 @@ const useSessionContextState = (): SessionContextState => {
     sessionLoaded,
     setAiApi,
     setClockSource,
+    setCursor,
     setForegroundId,
     setHaltSession,
     setIconPositions: setAndUpdateIconPositions,

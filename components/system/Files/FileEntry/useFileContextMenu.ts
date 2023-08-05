@@ -4,7 +4,10 @@ import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getFirstAniImage,
+  getProcessByFileExtension,
+} from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
@@ -20,6 +23,7 @@ import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
+  CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
   EDITABLE_IMAGE_FILE_EXTENSIONS,
   EXTRACTABLE_EXTENSIONS,
@@ -40,7 +44,12 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { getExtension, isFirefox, isSafari } from "utils/functions";
+import {
+  getExtension,
+  imageToBufferUrl,
+  isFirefox,
+  isSafari,
+} from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -66,7 +75,7 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setForegroundId, setWallpaper } = useSession();
+  const { setCursor, setForegroundId, setWallpaper } = useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url);
@@ -429,10 +438,26 @@ const useFileContextMenu = (
         const hasBackgroundVideoExtension =
           VIDEO_FILE_EXTENSIONS.has(pathExtension);
 
+        if (CURSOR_FILE_EXTENSIONS.has(pathExtension)) {
+          menuItems.unshift({
+            action: async () => {
+              const imageBuffer = await readFile(path);
+              const image =
+                pathExtension === ".ani"
+                  ? await getFirstAniImage(imageBuffer)
+                  : imageBuffer;
+
+              if (image) setCursor(imageToBufferUrl(path, image));
+            },
+            label: "Set as mouse pointer",
+          });
+        }
+
         if (
           hasBackgroundVideoExtension ||
           (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension))
+            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension) &&
+            !CURSOR_FILE_EXTENSIONS.has(pathExtension))
         ) {
           menuItems.unshift({
             label: "Set as desktop background",
@@ -567,6 +592,7 @@ const useFileContextMenu = (
       readOnly,
       rootFs?.mntMap,
       rootFs?.mountList,
+      setCursor,
       setForegroundId,
       setRenaming,
       setWallpaper,

@@ -128,6 +128,8 @@ export const getProcessByFileExtension = (extension: string): string => {
 
 export const getMimeType = (url: string): string => {
   switch (getExtension(url)) {
+    case ".ani":
+    case ".cur":
     case ".ico":
       return "image/vnd.microsoft.icon";
     case ".jpg":
@@ -303,7 +305,7 @@ export const getInfoWithoutExtension = (
   }
 };
 
-const getFirstAniImage = async (
+export const getFirstAniImage = async (
   imageBuffer: Buffer
 ): Promise<Buffer | undefined> => {
   const { parseAni } = await import("ani-cursor/dist/parser");
