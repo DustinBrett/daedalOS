@@ -222,6 +222,11 @@ const FileEntry: FC<FileEntryProps> = ({
       return "";
     }
 
+    // Important check to avoid crashes on macOS
+    if (path.includes("__MACOSX") || path.includes(".DS_Store")) {
+      return `Type: Mac hidden file`;
+    }
+
     const type =
       extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
