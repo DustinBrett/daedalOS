@@ -90,7 +90,7 @@ test("can search", async ({ page }) => {
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
-test.describe("has file(s)", () => {
+test.describe("has files & folders", () => {
   test.describe("has context menu", () => {
     test.beforeEach(async ({ page }) => {
       await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, true);
@@ -164,7 +164,8 @@ test.describe("has file(s)", () => {
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     });
 
-    test("can delete", async ({ page }) => {
+    // TEST: can delete empty/non-empty folder
+    test("can delete file", async ({ page }) => {
       await clickContextMenuEntry(/^Delete$/, { page });
 
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });

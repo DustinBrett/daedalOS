@@ -39,3 +39,5 @@ test.describe("app container", () => {
   // TEST: has loading
   // TEST: has error
 });
+
+// TEST: iframe apps
