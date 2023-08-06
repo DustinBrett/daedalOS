@@ -335,8 +335,7 @@ const useFolder = (
         }`
       );
 
-      if (!(await exists(renamedPath))) {
-        await rename(path, renamedPath);
+      if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
         updateFolder(directory, renamedPath, path);
       }
 

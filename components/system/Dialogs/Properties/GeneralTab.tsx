@@ -172,7 +172,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
       </table>
       <Buttons
         id={id}
-        onClick={() => {
+        onClick={async () => {
           if (
             inputRef.current &&
             url &&
@@ -180,13 +180,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           ) {
             const directoryName = dirname(url);
 
-            rename(
-              url,
-              `${join(directoryName, inputRef.current.value)}${
-                isShortcut ? extname(url) : ""
-              }`
-            );
-            updateFolder(directoryName);
+            if (
+              await rename(
+                url,
+                `${join(directoryName, inputRef.current.value)}${
+                  isShortcut ? extname(url) : ""
+                }`
+              )
+            ) {
+              updateFolder(directoryName);
+            }
           }
 
           closeWithTransition(id);

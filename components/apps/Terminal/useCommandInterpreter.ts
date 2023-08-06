@@ -626,9 +626,10 @@ const useCommandInterpreter = (
                 );
               }
 
-              await rename(fullSourcePath, fullDestinationPath);
-              updateFile(fullSourcePath, true);
-              updateFile(fullDestinationPath);
+              if (await rename(fullSourcePath, fullDestinationPath)) {
+                updateFile(fullSourcePath, true);
+                updateFile(fullDestinationPath);
+              }
             } else {
               localEcho?.println(SYNTAX_ERROR);
             }
