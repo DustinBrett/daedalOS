@@ -413,8 +413,7 @@ const FileEntry: FC<FileEntryProps> = ({
               }
             } else {
               try {
-                await unlink(cachedIconPath);
-                updateFolder(dirname(path));
+                if (await unlink(cachedIconPath)) updateFolder(dirname(path));
               } catch {
                 // Ignore issues deleting bad cached icon
               }

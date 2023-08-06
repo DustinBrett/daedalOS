@@ -66,7 +66,7 @@ type FileSystemContextState = AsyncFS & {
     directory: string,
     buffer?: Buffer
   ) => Promise<string>;
-  deletePath: (path: string) => Promise<void>;
+  deletePath: (path: string) => Promise<boolean>;
   fs?: FSModule;
   mapFs: (
     directory: string,
@@ -367,9 +367,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [exists, mkdir]
   );
   const deletePath = useCallback(
-    async (path: string): Promise<void> => {
+    async (path: string): Promise<boolean> => {
+      let deleted = false;
+
       try {
-        await unlink(path);
+        deleted = await unlink(path);
       } catch (error) {
         if ((error as ApiError).code === "EISDIR") {
           const dirContents = await readdir(path);
@@ -384,6 +386,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
       if (Object.keys(fsWatchersRef.current || {}).includes(path)) {
         closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${path}`);
       }
+
+      return deleted;
     },
     [closeWithTransition, readdir, rmdir, unlink]
   );

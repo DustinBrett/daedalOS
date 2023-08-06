@@ -294,8 +294,9 @@ const useFolder = (
   );
   const deleteLocalPath = useCallback(
     async (path: string): Promise<void> => {
-      await deletePath(path);
-      updateFolder(directory, undefined, basename(path));
+      if (await deletePath(path)) {
+        updateFolder(directory, undefined, basename(path));
+      }
     },
     [deletePath, directory, updateFolder]
   );

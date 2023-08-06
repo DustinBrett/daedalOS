@@ -107,8 +107,7 @@ const useFileKeyboardShortcuts = (
                 focusedEntries.forEach(async (entry) => {
                   const path = join(url, entry);
 
-                  await deletePath(path);
-                  updateFiles(undefined, path);
+                  if (await deletePath(path)) updateFiles(undefined, path);
                 });
                 blurEntry();
               }

@@ -288,8 +288,7 @@ const useCommandInterpreter = (
           if (commandPath) {
             const fullPath = await getFullPath(commandPath);
 
-            if (await exists(fullPath)) {
-              await deletePath(fullPath);
+            if ((await exists(fullPath)) && (await deletePath(fullPath))) {
               updateFile(fullPath, true);
             }
           }
