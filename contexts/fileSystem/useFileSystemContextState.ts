@@ -379,7 +379,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
           await Promise.all(
             dirContents.map((entry) => deletePath(join(path, entry)))
           );
-          await rmdir(path);
+          deleted = await rmdir(path);
         }
       }
 
