@@ -51,6 +51,8 @@ const IDX_GID = 0;
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
 
+export const UNKNOWN_STATE_CODES = new Set(["EIO", "ENOENT"]);
+
 export const get9pModifiedTime = (path: string): number => {
   let fsPath = fsroot;
   let mTime = 0;
