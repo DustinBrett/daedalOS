@@ -66,7 +66,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
           focusedElement.removeEventListener(
             type === "click" ? "blur" : "click",
-            menuUnfocused
+            menuUnfocused,
+            { capture: true }
           );
         };
 
