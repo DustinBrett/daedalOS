@@ -5,7 +5,7 @@ import type {
   NavigatorWithKeyboard,
   FullscreenElement,
 } from "contexts/viewport/types";
-import { isFirefox } from "utils/functions";
+import { isFirefox, isSafari } from "utils/functions";
 
 const FULLSCREEN_LOCKED_KEYS = ["MetaLeft", "MetaRight", "Escape"];
 
@@ -70,7 +70,9 @@ const useViewportContextState = (): ViewportContextState => {
     if (fullscreenElement && (!element || element === fullscreenElement)) {
       await exitFullscreen();
     } else {
-      if (fullscreenElement && isFirefox()) await exitFullscreen();
+      if (fullscreenElement && (isFirefox() || isSafari())) {
+        await exitFullscreen();
+      }
 
       await enterFullscreen(element || document.documentElement, {
         navigationUI: navigationUI || "hide",
