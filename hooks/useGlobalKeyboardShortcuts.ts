@@ -1,16 +1,9 @@
 import { useEffect, useRef } from "react";
-import useFullscreen from "components/apps/Photos/useFullscreen";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { haltEvent, toggleShowDesktop } from "utils/functions";
-
-type NavigatorWithKeyboard = Navigator & {
-  keyboard?: {
-    lock?: (keys?: string[]) => void;
-    unlock?: () => void;
-  };
-};
+import { useViewport } from "contexts/viewport";
 
 const openStartMenu = (): void =>
   (
@@ -42,7 +35,7 @@ const useGlobalKeyboardShortcuts = (): void => {
   const { closeWithTransition, maximize, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
   const { foregroundId } = useSession();
-  const { fullscreen, toggleFullscreen } = useFullscreen();
+  const { fullscreenElement, toggleFullscreen } = useViewport();
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
@@ -82,17 +75,14 @@ const useGlobalKeyboardShortcuts = (): void => {
         );
       } else if (ctrlKey && altKey && altBindingsRef.current?.[keyName]) {
         altBindingsRef.current?.[keyName]?.();
-      } else if (fullscreen) {
+      } else if (fullscreenElement === document.documentElement) {
         if (keyName === "META") metaDown = true;
         else if (altKey && altBindingsRef.current?.[keyName]) {
           haltEvent(event);
           altBindingsRef.current?.[keyName]?.();
         } else if (keyName === "ESCAPE") {
-          setTimeout(
-            // eslint-disable-next-line unicorn/consistent-destructuring
-            () => !event.defaultPrevented && document.exitFullscreen(),
-            0
-          );
+          if (document.pointerLockElement) document.exitPointerLock();
+          else toggleFullscreen();
         } else if (
           metaDown &&
           metaCombos.has(keyName) &&
@@ -105,27 +95,14 @@ const useGlobalKeyboardShortcuts = (): void => {
       }
     };
     const onKeyUp = (event: KeyboardEvent): void => {
-      if (metaDown && fullscreen && event.key?.toUpperCase() === "META") {
+      if (
+        metaDown &&
+        fullscreenElement === document.documentElement &&
+        event.key?.toUpperCase() === "META"
+      ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
         else openStartMenu();
-      }
-    };
-    const onFullScreen = ({ target }: Event): void => {
-      if (target === document.documentElement) {
-        try {
-          if (fullscreen) {
-            (navigator as NavigatorWithKeyboard)?.keyboard?.lock?.([
-              "MetaLeft",
-              "MetaRight",
-              "Escape",
-            ]);
-          } else {
-            (navigator as NavigatorWithKeyboard)?.keyboard?.unlock?.();
-          }
-        } catch {
-          // Ignore failure to lock keys
-        }
       }
     };
 
@@ -136,16 +113,16 @@ const useGlobalKeyboardShortcuts = (): void => {
       capture: true,
       passive: true,
     });
-    document.addEventListener("fullscreenchange", onFullScreen, {
-      passive: true,
-    });
 
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("keyup", onKeyUp);
-      document.removeEventListener("fullscreenchange", onFullScreen);
+      document.removeEventListener("keydown", onKeyDown, {
+        capture: true,
+      });
+      document.removeEventListener("keyup", onKeyUp, {
+        capture: true,
+      });
     };
-  }, [fullscreen, toggleFullscreen]);
+  }, [fullscreenElement, toggleFullscreen]);
 
   useEffect(() => {
     altBindingsRef.current = {
