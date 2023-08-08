@@ -46,7 +46,7 @@ const toggleKeyboardLock = async (
   fullscreenElement: Element | null
 ): Promise<void> => {
   try {
-    if (fullscreenElement) {
+    if (fullscreenElement === document.documentElement) {
       await (navigator as NavigatorWithKeyboard)?.keyboard?.lock?.(
         FULLSCREEN_LOCKED_KEYS
       );
