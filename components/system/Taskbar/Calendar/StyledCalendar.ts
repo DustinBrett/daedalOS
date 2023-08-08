@@ -11,6 +11,7 @@ const StyledCalendar = styled(motion.section)`
   bottom: ${TASKBAR_HEIGHT}px;
   position: absolute;
   right: 0;
+  z-index: 10000;
 
   table {
     padding: 4px 10px 19px;
