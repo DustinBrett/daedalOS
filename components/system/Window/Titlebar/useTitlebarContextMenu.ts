@@ -23,33 +23,40 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { allowResizing = true, maximized, minimized } = process || {};
+  const {
+    allowResizing = true,
+    hideMaximizeButton,
+    hideMinimizeButton,
+    maximized,
+    minimized,
+  } = process || {};
 
   return useMemo(
     () =>
       contextMenu?.(() => {
         const isMaxOrMin = maximized || minimized;
+        const showMaxOrMin = !hideMaximizeButton || !hideMinimizeButton;
 
         return [
-          {
+          showMaxOrMin && {
             action: minimized ? onMinimize : onMaximize,
             disabled: !isMaxOrMin,
             icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
             label: "Restore",
           },
-          {
+          !hideMinimizeButton && {
             action: onMinimize,
             disabled: minimized,
             icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
             label: "Minimize",
           },
-          allowResizing && {
+          !hideMaximizeButton && {
             action: onMaximize,
-            disabled: isMaxOrMin,
+            disabled: isMaxOrMin || !allowResizing,
             icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
             label: "Maximize",
           },
-          MENU_SEPERATOR,
+          showMaxOrMin && MENU_SEPERATOR,
           {
             action: onClose,
             icon: CLOSE,
@@ -60,6 +67,8 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     [
       allowResizing,
       contextMenu,
+      hideMaximizeButton,
+      hideMinimizeButton,
       maximized,
       minimized,
       onClose,
