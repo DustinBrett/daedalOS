@@ -5,8 +5,6 @@ type PrettierPlugin = { default: Plugin };
 
 const prettyLanguages = new Set([
   "json",
-  "javascript",
-  "typescript",
   "css",
   "sass",
   "less",
@@ -22,6 +20,12 @@ const getLanguageParser = async (
     return {
       parser: language,
       plugins: [await import("prettier/plugins/postcss")],
+    };
+  }
+  if (language === "html") {
+    return {
+      parser: "html",
+      plugins: [await import("prettier/plugins/html")],
     };
   }
   if (language === "xml") {
