@@ -1,7 +1,7 @@
 import { basename, dirname } from "path";
 import { loader } from "@monaco-editor/react";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   URL_DELIMITER,
   config,
@@ -59,20 +59,16 @@ const useMonaco = ({
 
     return newModel as Monaco.editor.ITextModel;
   }, [createModelUri, monaco?.editor, prependFileToTitle, readFile, url]);
-  const lockTimerRef = useRef<number>();
   const loadFile = useCallback(async () => {
     if (monaco && editor && url.startsWith("/")) {
       unlockGlobal("define");
 
-      editor.onDidChangeModel(() => {
-        window.clearTimeout(lockTimerRef.current);
-        lockTimerRef.current = window.setTimeout(
-          () => lockGlobal("define"),
-          MILLISECONDS_IN_SECOND
-        );
-      });
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
+      window.setTimeout(
+        () => lockGlobal("define"),
+        2.5 * MILLISECONDS_IN_SECOND
+      );
     }
 
     prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
