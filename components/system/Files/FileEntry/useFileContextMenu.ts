@@ -4,10 +4,7 @@ import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
-import {
-  getFirstAniImage,
-  getProcessByFileExtension,
-} from "components/system/Files/FileEntry/functions";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
@@ -44,12 +41,7 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import {
-  getExtension,
-  imageToBufferUrl,
-  isFirefox,
-  isSafari,
-} from "utils/functions";
+import { getExtension, isFirefox, isSafari } from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -440,15 +432,7 @@ const useFileContextMenu = (
 
         if (CURSOR_FILE_EXTENSIONS.has(pathExtension)) {
           menuItems.unshift({
-            action: async () => {
-              const imageBuffer = await readFile(path);
-              const image =
-                pathExtension === ".ani"
-                  ? await getFirstAniImage(imageBuffer)
-                  : imageBuffer;
-
-              if (image) setCursor(imageToBufferUrl(path, image));
-            },
+            action: () => setCursor(path),
             label: "Set as mouse pointer",
           });
         }
