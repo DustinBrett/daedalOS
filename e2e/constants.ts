@@ -69,8 +69,9 @@ export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set([
 export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox", // https://bugzilla.mozilla.org/show_bug.cgi?id=1375585
 ]);
-
-export const SCREEN_CAPTURE_NOT_WORKING_BROWSERS = new Set(["webkit"]);
+export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit",
+]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
@@ -99,7 +100,7 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   ...FOLDER_MENU_ITEMS,
   Background: true,
   "Capture screen": (browserName: string): boolean =>
-    !SCREEN_CAPTURE_NOT_WORKING_BROWSERS.has(browserName),
+    !MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
   Inspect: true,
   Properties: false,
   "View page source": true,
