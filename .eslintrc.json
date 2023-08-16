@@ -35,6 +35,7 @@
   ],
   "rules": {
     "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
       "error",
