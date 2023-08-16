@@ -13,12 +13,12 @@ import {
   EXACT,
   FAVICON_SELECTOR,
   FILE_EXPLORER_ADDRESS_BAR_LABEL,
+  FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
-  OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS,
   RIGHT_CLICK,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
@@ -26,11 +26,14 @@ import {
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
+  TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
+  TYPE_DELAY,
   UNKNOWN_ICON_PATH,
   WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
+  WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
@@ -44,6 +47,11 @@ type TestProps = {
 
 type TestPropsWithBrowser = TestProps & {
   browserName: string;
+};
+
+type DocumentWithVendorFullscreen = Document & {
+  mozFullScreenElement?: HTMLElement;
+  webkitFullscreenElement?: HTMLElement;
 };
 
 export const filterMenuItems = (
@@ -122,6 +130,20 @@ export const clickStartMenuEntry = async (
     .getByLabel(label, EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
+export const clickTaskbar = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> => {
+  const taskEntriesSelector = page.locator(TASKBAR_ENTRIES_SELECTOR);
+  const { height = 0, width = 0 } =
+    (await taskEntriesSelector.boundingBox()) || {};
+
+  taskEntriesSelector.click({
+    button: right ? "right" : undefined,
+    position: { x: width / 2, y: height / 2 },
+  });
+};
+
 export const doubleClickWindowTitlebar = async ({
   page,
 }: TestProps): Promise<void> =>
@@ -155,6 +177,22 @@ export const pressDesktopKeys = async (
   keys: string,
   { page }: TestProps
 ): Promise<void> => page.locator(DESKTOP_SELECTOR).press(keys);
+
+export const pressFileExplorerAddressBarKeys = async (
+  keys: string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
+    .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
+    .press(keys);
+
+export const pressFileExplorerEntryKeys = async (
+  label: RegExp,
+  keys: string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label).press(keys);
 
 export const pressWindowKeys = async (
   keys: string,
@@ -193,10 +231,16 @@ export const clickCloseWindow = async ({ page }: TestProps): Promise<void> =>
     .click();
 
 export const clickContextMenuEntry = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label, EXACT).click();
+
+export const clickFileExplorerNavButton = async (
   label: RegExp,
   { page }: TestProps
 ): Promise<void> =>
-  page.locator(CONTEXT_MENU_ENTRIES_SELECTOR).getByLabel(label).click();
+  page.locator(FILE_EXPLORER_NAV_SELECTOR).getByLabel(label).click();
 
 export const clickFileExplorerAddressBar = async (
   { page }: TestProps,
@@ -225,12 +269,13 @@ export const clickFileExplorer = async (
 export const clickFileExplorerEntry = async (
   label: RegExp | string,
   { page }: TestProps,
-  right = false
+  right = false,
+  clickCount = 1
 ): Promise<void> =>
   page
     .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
     .getByLabel(label, EXACT)
-    .click(right ? RIGHT_CLICK : undefined);
+    .click({ button: right ? "right" : undefined, clickCount });
 
 export const clickMaximizeWindow = async ({ page }: TestProps): Promise<void> =>
   page
@@ -244,6 +289,33 @@ export const clickMinimizeWindow = async ({ page }: TestProps): Promise<void> =>
     .getByLabel(/^Minimize$/)
     .click();
 
+export const clickTaskbarEntry = async (
+  label: RegExp | string,
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page
+    .locator(TASKBAR_ENTRY_SELECTOR)
+    .getByLabel(label, EXACT)
+    .click(right ? RIGHT_CLICK : undefined);
+
+export const fileExplorerRenameEntry = async (
+  newName: string,
+  { page }: TestProps
+): Promise<void> => {
+  await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).type(newName);
+  await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).press("Enter");
+};
+
+export const typeInFileExplorerAddressBar = async (
+  text: string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_NAV_SELECTOR)
+    .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
+    .type(text, { delay: TYPE_DELAY });
+
 export const typeInFileExplorerSearchBox = async (
   text: string,
   { page }: TestProps
@@ -251,7 +323,7 @@ export const typeInFileExplorerSearchBox = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-    .type(text, { delay: 100 });
+    .type(text, { delay: TYPE_DELAY });
 
 // expect->toHave
 export const pageHasTitle = async (
@@ -276,6 +348,18 @@ export const pageHasIcon = async (
 ): Promise<void> =>
   expect(page.locator(FAVICON_SELECTOR)).toHaveAttribute("href", icon);
 
+// evaluate->action
+export const triggerFullscreenDetection = async ({
+  browserName,
+  page,
+}: TestProps): Promise<void> =>
+  page.evaluate((browser) => {
+    (document as DocumentWithVendorFullscreen)[
+      browser === "firefox" ? "webkitFullscreenElement" : "mozFullScreenElement"
+    ] = document.documentElement;
+    document.dispatchEvent(new Event("fullscreenchange"));
+  }, browserName);
+
 // expect->evaluate
 export const windowAnimationIsFinished = async ({
   page,
@@ -299,7 +383,10 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
     ).toBeTruthy()
   ).toPass();
 
-export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
+export const windowIsMaximized = async (
+  { page }: TestProps,
+  maximized = true
+): Promise<void> =>
   expect(async () =>
     expect(
       await page.evaluate(
@@ -318,7 +405,7 @@ export const windowIsMaximized = async ({ page }: TestProps): Promise<void> =>
         },
         [WINDOW_SELECTOR, TASKBAR_SELECTOR]
       )
-    ).toBeTruthy()
+    ).toBe(maximized)
   ).toPass();
 
 // expect->locator
@@ -441,10 +528,26 @@ export const fileExplorerEntryHasTooltip = async (
     page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
 
+export const fileExplorerNavButtonIsVisible = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(FILE_EXPLORER_NAV_SELECTOR).getByLabel(label, EXACT)
+  ).toBeVisible();
+
+export const taskbarEntryIsHidden = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label, EXACT)
+  ).toBeHidden();
+
 export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> => entryIsVisible(TASKBAR_ENTRIES_SELECTOR, label, page);
+): Promise<void> => entryIsVisible(TASKBAR_ENTRY_SELECTOR, label, page);
 
 export const startMenuEntryIsVisible = async (
   label: RegExp | string,
@@ -465,16 +568,8 @@ export const taskbarEntryHasTooltip = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label)
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label)
   ).toHaveAttribute("title", title);
-
-export const windowTitlebarTextIsVisible = async (
-  text: RegExp | string,
-  { page }: TestProps
-): Promise<void> =>
-  expect(
-    page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text, EXACT)
-  ).toBeVisible();
 
 // expect->locator->getBy->getBy
 const clockTextLocator = (page: Page): Locator =>
@@ -503,7 +598,7 @@ export const taskbarEntryHasIcon = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRIES_SELECTOR).getByLabel(label).locator("img")
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
 // expect->locator->getBy->locator->locator
@@ -518,6 +613,17 @@ export const fileExplorerEntryHasShortcutIcon = async (
       .locator(ICON_SELECTOR)
       .locator("img[src*=shortcut]")
   ).toBeVisible();
+
+// expect->locator->getBy->toPass
+export const windowTitlebarTextIsVisible = async (
+  text: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(async () =>
+    expect(
+      page.locator(WINDOW_TITLEBAR_SELECTOR).getByText(text, EXACT)
+    ).toBeVisible()
+  ).toPass();
 
 // expect->locator->first->toPass
 const entriesAreVisible = async (selector: string, page: Page): Promise<void> =>
@@ -537,8 +643,7 @@ export const fileExplorerEntriesAreVisible = async ({
 
 export const taskbarEntriesAreVisible = async ({
   page,
-}: TestProps): Promise<void> =>
-  entriesAreVisible(TASKBAR_ENTRIES_SELECTOR, page);
+}: TestProps): Promise<void> => entriesAreVisible(TASKBAR_ENTRY_SELECTOR, page);
 
 export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
   entriesAreVisible(WINDOW_SELECTOR, page);
@@ -564,12 +669,12 @@ export const clockCanvasMaybeIsVisible = async ({
   browserName,
   page,
 }: TestPropsWithBrowser): Promise<void> => {
-  if (OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS.has(browserName)) {
+  if (WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS.has(browserName)) {
     await clockTextIsVisible({ page });
     await clockCanvasIsHidden({ page });
   } else {
-    await clockTextIsHidden({ page });
     await clockCanvasIsVisible({ page });
+    await clockTextIsHidden({ page });
   }
 };
 

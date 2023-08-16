@@ -1,11 +1,10 @@
 import type { Plugin } from "prettier";
 
 type Parser = { parser: string; plugins: Plugin[] };
+type PrettierPlugin = { default: Plugin };
 
 const prettyLanguages = new Set([
   "json",
-  "javascript",
-  "typescript",
   "css",
   "sass",
   "less",
@@ -17,12 +16,6 @@ const prettyLanguages = new Set([
 const getLanguageParser = async (
   language: string
 ): Promise<Parser | undefined> => {
-  if (language === "javascript" || language === "typescript") {
-    return {
-      parser: "babel",
-      plugins: [await import("prettier/plugins/babel")],
-    };
-  }
   if (["css", "sass", "less"].includes(language)) {
     return {
       parser: language,
@@ -38,7 +31,9 @@ const getLanguageParser = async (
   if (language === "xml") {
     return {
       parser: "xml",
-      plugins: [(await import("@prettier/plugin-xml")) as Plugin],
+      plugins: [
+        ((await import("@prettier/plugin-xml")) as PrettierPlugin).default,
+      ],
     };
   }
   if (language === "markdown") {

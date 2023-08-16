@@ -1,8 +1,9 @@
+import { extname } from "path";
+import Head from "next/head";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import Head from "next/head";
 import desktopIcons from "public/.index/desktopIcons.json";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
@@ -12,7 +13,9 @@ import {
   PACKAGE_DATA,
   USER_ICON_PATH,
 } from "utils/constants";
-import { getDpi, imageSrc, imageSrcs } from "utils/functions";
+import { getDpi, imageSrc, imageSrcs, imageToBufferUrl } from "utils/functions";
+import { getFirstAniImage } from "components/system/Files/FileEntry/functions";
+import { useFileSystem } from "contexts/fileSystem";
 
 const { alias, description } = PACKAGE_DATA;
 
@@ -45,7 +48,9 @@ const MemoizedPreloadDesktopIcons = memo(PreloadDesktopIcons);
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
-  const { foregroundId } = useSession();
+  const { readFile } = useFileSystem();
+  const [customCursor, setCustomCursor] = useState("");
+  const { cursor, foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
   const { icon: processIcon, title: processTitle } = process || {};
   const resetFaviconAndTitle = useCallback((): void => {
@@ -62,6 +67,18 @@ const Metadata: FC = () => {
         ? favIcon
         : imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0],
     [favIcon]
+  );
+  const getCursor = useCallback(
+    async (path: string) => {
+      const imageBuffer = await readFile(path);
+      const image =
+        extname(path) === ".ani"
+          ? await getFirstAniImage(imageBuffer)
+          : imageBuffer;
+
+      return image ? imageToBufferUrl(path, image) : "";
+    },
+    [readFile]
   );
 
   useEffect(() => {
@@ -108,6 +125,10 @@ const Metadata: FC = () => {
     };
   }, [resetFaviconAndTitle]);
 
+  useEffect(() => {
+    if (cursor) getCursor(cursor).then(setCustomCursor);
+  }, [cursor, getCursor]);
+
   return (
     <Head>
       <title>{title}</title>
@@ -120,6 +141,9 @@ const Metadata: FC = () => {
       />
       <meta content={description} name="description" />
       <MemoizedPreloadDesktopIcons />
+      {customCursor && (
+        <style>{`*, *::before, *::after { cursor: url(${customCursor}), default !important; }`}</style>
+      )}
     </Head>
   );
 };

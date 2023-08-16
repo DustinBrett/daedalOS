@@ -1,3 +1,5 @@
+import { basename, dirname, extname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ExitFullscreen,
   Fullscreen,
@@ -5,7 +7,6 @@ import {
   ZoomOut,
 } from "components/apps/Photos/PhotoIcons";
 import StyledPhotos from "components/apps/Photos/StyledPhotos";
-import useFullscreen from "components/apps/Photos/useFullscreen";
 import usePanZoom, { panZoomConfig } from "components/apps/Photos/usePanZoom";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
@@ -13,8 +14,6 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
-import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   HIGH_PRIORITY_ELEMENT,
@@ -33,6 +32,7 @@ import {
   imgDataToBuffer,
   label,
 } from "utils/functions";
+import { useViewport } from "contexts/viewport";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -94,7 +94,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     imageRef.current,
     imageContainerRef.current
   );
-  const { fullscreen, toggleFullscreen } = useFullscreen(containerRef.current);
+  const { fullscreenElement, toggleFullscreen } = useViewport();
   const loadPhoto = useCallback(async (): Promise<void> => {
     let fileContents: Buffer | string = await readFile(url);
     const ext = getExtension(url);
@@ -225,10 +225,14 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       <nav className="bottom">
         <Button
           disabled={!url}
-          onClick={() => toggleFullscreen("show")}
+          onClick={() => toggleFullscreen(containerRef.current, "show")}
           {...label("Full-screen")}
         >
-          {fullscreen ? <ExitFullscreen /> : <Fullscreen />}
+          {fullscreenElement === containerRef.current ? (
+            <ExitFullscreen />
+          ) : (
+            <Fullscreen />
+          )}
         </Button>
       </nav>
     </StyledPhotos>

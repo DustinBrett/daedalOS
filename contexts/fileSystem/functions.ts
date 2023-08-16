@@ -1,9 +1,9 @@
+import { join } from "path";
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
-import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import { openDB } from "idb";
-import { join } from "path";
+import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import index from "public/.index/fs.9p.json";
 import { FS_HANDLES, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
@@ -50,6 +50,8 @@ const IDX_GID = 0;
 // eslint-disable-next-line unicorn/no-null
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
+
+export const UNKNOWN_STATE_CODES = new Set(["EIO", "ENOENT"]);
 
 export const get9pModifiedTime = (path: string): number => {
   let fsPath = fsroot;
@@ -158,9 +160,11 @@ export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
   const db = await getKeyValStore();
 
   return (
-    (await (<Promise<FileSystemHandles>>(
-      db.get(KEYVAL_STORE_NAME, FS_HANDLES)
-    ))) || (Object.create(null) as FileSystemHandles)
+    (await (db.get(
+      KEYVAL_STORE_NAME,
+      FS_HANDLES
+    ) as Promise<FileSystemHandles>)) ||
+    (Object.create(null) as FileSystemHandles)
   );
 };
 

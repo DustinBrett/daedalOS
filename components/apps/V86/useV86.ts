@@ -1,3 +1,5 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
@@ -18,8 +20,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,

@@ -1,3 +1,6 @@
+import { join } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
@@ -10,9 +13,6 @@ import { config as vantaNetConfig } from "components/system/Desktop/Wallpapers/v
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { join } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
@@ -92,7 +92,7 @@ const useWallpaper = (
 
       document.documentElement.style.setProperty(
         "background",
-        document.documentElement.style.background.replace(/"(.*)"/, ``)
+        document.documentElement.style.background.replace(/"(.*)"/, "")
       );
 
       if (!keepCanvas) {
@@ -264,7 +264,7 @@ const useWallpaper = (
     } else if (wallpaperName === "APOD") {
       document.documentElement.style.setProperty(
         "background",
-        document.documentElement.style.background.replace(/"(.*)"/, ``)
+        document.documentElement.style.background.replace(/"(.*)"/, "")
       );
 
       const [, currentUrl, currentDate] = wallpaperImage.split(" ");

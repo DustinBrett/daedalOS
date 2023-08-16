@@ -1,6 +1,6 @@
+import type { AsyncZipOptions } from "fflate";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { ClockSource, WallpaperFit } from "contexts/session/types";
-import type { AsyncZipOptions } from "fflate";
 import type { ThemeName } from "styles/themes";
 
 export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
@@ -51,6 +51,12 @@ export const DEFAULT_WINDOW_SIZE: Size = {
 export const DEFAULT_MAPPED_NAME = "Share";
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
+
+export const DIV_BUTTON_PROPS = {
+  as: "div",
+  role: "button",
+  ...FOCUSABLE_ELEMENT,
+};
 
 export const FS_HANDLES = "FileSystemAccessHandles";
 
@@ -116,6 +122,8 @@ export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
   ".qoi",
   ".svg",
 ]);
+
+export const CURSOR_FILE_EXTENSIONS = new Set([".ani", ".cur"]);
 
 export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
   ".bmp",
@@ -259,12 +267,13 @@ export const TRANSITIONS_IN_MILLISECONDS = {
   DOUBLE_CLICK: 500,
   LONG_PRESS: 500,
   MOUSE_IN_OUT: 300,
-  START_MENU: 400,
+  TASKBAR_ITEM: 400,
   WINDOW: 250,
 };
 
 export const TRANSITIONS_IN_SECONDS = {
-  START_MENU: TRANSITIONS_IN_MILLISECONDS.START_MENU / MILLISECONDS_IN_SECOND,
+  TASKBAR_ITEM:
+    TRANSITIONS_IN_MILLISECONDS.TASKBAR_ITEM / MILLISECONDS_IN_SECOND,
   WINDOW: TRANSITIONS_IN_MILLISECONDS.WINDOW / MILLISECONDS_IN_SECOND,
 };
 

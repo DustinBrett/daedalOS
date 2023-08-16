@@ -56,9 +56,9 @@ const useFocusableEntries = (
         haltEvent(event);
         (target as HTMLElement)?.focus(PREVENT_SCROLL);
       } else if (
-        isFileManagerFocus ||
-        !(relatedTarget instanceof HTMLElement) ||
-        !fileManagerRef.current?.contains(relatedTarget)
+        (!isFileManagerFocus &&
+          !fileManagerRef.current?.contains(relatedTarget)) ||
+        !(relatedTarget instanceof HTMLElement)
       ) {
         blurEntry();
       }

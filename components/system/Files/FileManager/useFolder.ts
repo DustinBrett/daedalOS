@@ -1,5 +1,8 @@
+import { basename, dirname, extname, join, relative } from "path";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import type { AsyncZipOptions, AsyncZippable } from "fflate";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   createShortcut,
@@ -24,9 +27,6 @@ import useSortBy from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { AsyncZipOptions, AsyncZippable } from "fflate";
-import { basename, dirname, extname, join, relative } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
@@ -57,13 +57,15 @@ export const COMPLETE_ACTION: Record<string, CompleteAction> = {
   UPDATE_URL: "updateUrl",
 };
 
+export type NewPath = (
+  fileName: string,
+  buffer?: Buffer,
+  completeAction?: CompleteAction
+) => Promise<string>;
+
 export type FolderActions = {
-  addToFolder: () => void;
-  newPath: (
-    path: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => Promise<void>;
+  addToFolder: () => Promise<string[]>;
+  newPath: NewPath;
   pasteToFolder: () => void;
   resetFiles: () => void;
   sortByOrder: [SortByOrder, SetSortBy];
@@ -292,8 +294,9 @@ const useFolder = (
   );
   const deleteLocalPath = useCallback(
     async (path: string): Promise<void> => {
-      await deletePath(path);
-      updateFolder(directory, undefined, basename(path));
+      if (await deletePath(path)) {
+        updateFolder(directory, undefined, basename(path));
+      }
     },
     [deletePath, directory, updateFolder]
   );
@@ -333,8 +336,7 @@ const useFolder = (
         }`
       );
 
-      if (!(await exists(renamedPath))) {
-        await rename(path, renamedPath);
+      if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
         updateFolder(directory, renamedPath, path);
       }
 
@@ -356,7 +358,7 @@ const useFolder = (
       name: string,
       buffer?: Buffer,
       completeAction?: CompleteAction
-    ): Promise<void> => {
+    ): Promise<string> => {
       const uniqueName = await createPath(name, directory, buffer);
 
       if (uniqueName && !uniqueName.includes("/")) {
@@ -368,6 +370,8 @@ const useFolder = (
           focusEntry(uniqueName);
         }
       }
+
+      return uniqueName;
     },
     [blurEntry, createPath, directory, focusEntry, setRenaming, updateFolder]
   );

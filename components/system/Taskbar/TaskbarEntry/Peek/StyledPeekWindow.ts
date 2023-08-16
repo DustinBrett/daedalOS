@@ -1,6 +1,6 @@
-import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
+import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { PEEK_MAX_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
 
 type StyledPeekWindowProps = {

@@ -1,8 +1,9 @@
+import { useRef, useState } from "react";
+import type { Position } from "react-rnd";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useMenu } from "contexts/menu";
 import type { MenuState } from "contexts/menu/useMenuContextState";
-import { useRef, useState } from "react";
-import type { Position } from "react-rnd";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export type SelectionRect = Partial<Position> & Partial<Size>;
@@ -23,7 +24,9 @@ const FPS = 60;
 const DEBOUNCE_TIME = MILLISECONDS_IN_SECOND / FPS;
 
 const useSelection = (
-  containerRef: React.MutableRefObject<HTMLElement | null>
+  containerRef: React.MutableRefObject<HTMLElement | null>,
+  focusedEntries: string[],
+  { blurEntry }: FocusEntryFunctions
 ): Selection => {
   const [position, setPosition] = useState<Position>(
     () => Object.create(null) as Position
@@ -68,6 +71,7 @@ const useSelection = (
       });
 
       if (menu) setMenu(Object.create(null) as MenuState);
+      if (focusedEntries.length > 0) blurEntry();
     }
   };
   const hasMenu = Object.keys(menu).length > 0;

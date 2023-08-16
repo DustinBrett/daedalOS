@@ -1,10 +1,3 @@
-import Menu, { topLeftPosition } from "components/system/Menu";
-import {
-  Checkmark,
-  ChevronRight,
-  Circle,
-} from "components/system/Menu/MenuIcons";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
 import {
   useCallback,
   useEffect,
@@ -14,9 +7,17 @@ import {
 } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
+import Menu, { topLeftPosition } from "components/system/Menu";
+import {
+  Checkmark,
+  ChevronRight,
+  Circle,
+} from "components/system/Menu/MenuIcons";
+import type { MenuItem } from "contexts/menu/useMenuContextState";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
+  DIV_BUTTON_PROPS,
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
   TRANSITIONS_IN_MILLISECONDS,
@@ -87,7 +88,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     (event) => {
       haltEvent(event);
 
-      if (!menu) {
+      if (menu) {
+        setShowSubMenu(true);
+      } else {
         action?.();
         resetMenu();
       }
@@ -137,9 +140,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       ) : (
         <Button
           aria-label={label}
-          as="figure"
           className={showSubMenu && mouseOver ? "active" : undefined}
           onMouseUp={triggerAction}
+          {...DIV_BUTTON_PROPS}
         >
           {icon && <Icon alt={label} imgSize={16} src={icon} />}
           {checked && <Checkmark className="left" />}

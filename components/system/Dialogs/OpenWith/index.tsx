@@ -1,3 +1,4 @@
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
@@ -5,29 +6,25 @@ import { getProcessByFileExtension } from "components/system/Files/FileEntry/fun
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
 
-const EXCLUDED_PROCESSES = new Set([
-  "Browser",
-  "Chat",
-  "ClassiCube",
-  "DXBall",
-  "DevTools",
-  "Emulator",
-  "FileExplorer",
-  "IRC",
-  "OpenWith",
-  "Properties",
-  "Quake3",
-  "Run",
-  "SpaceCadet",
-  "StableDiffusion",
-  "Terminal",
-  "Transfer",
+const INCLUDED_PROCESSES = new Set([
+  "BoxedWine",
+  "JSDOS",
+  "Marked",
+  "MonacoEditor",
+  "OpenType",
+  "PDF",
+  "Paint",
+  "Photos",
+  "Ruffle",
+  "TinyMCE",
+  "V86",
+  "VideoPlayer",
+  "Vim",
   "Webamp",
 ]);
 
@@ -131,8 +128,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
           {Object.entries(directory)
             .filter(
               ([pid]) =>
-                !EXCLUDED_PROCESSES.has(pid) &&
-                pid !== primaryExtensionProcesses
+                INCLUDED_PROCESSES.has(pid) && pid !== primaryExtensionProcesses
             )
             .map(([pid, { icon, title }]) => (
               <OpenWithEntry

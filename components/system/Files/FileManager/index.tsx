@@ -1,3 +1,6 @@
+import { basename, join } from "path";
+import dynamic from "next/dynamic";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -11,16 +14,13 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission } from "contexts/fileSystem/functions";
-import dynamic from "next/dynamic";
-import { basename, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { getExtension } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 
 const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
@@ -84,7 +84,7 @@ const FileManager: FC<FileManagerProps> = ({
   const { mountFs, rootFs, stat } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
-    useSelection(fileManagerRef);
+    useSelection(fileManagerRef, focusedEntries, focusFunctions);
   const draggableEntry = useDraggableEntries(
     focusedEntries,
     focusFunctions,
@@ -190,12 +190,14 @@ const FileManager: FC<FileManagerProps> = ({
           ref={fileManagerRef}
           $scrollable={!hideScrolling}
           onKeyDown={onKeyDown}
-          {...(!readOnly && {
-            $selecting: isSelecting,
-            ...fileDrop,
-            ...folderContextMenu,
-            ...selectionEvents,
-          })}
+          {...(readOnly
+            ? { onContextMenu: haltEvent }
+            : {
+                $selecting: isSelecting,
+                ...fileDrop,
+                ...folderContextMenu,
+                ...selectionEvents,
+              })}
           {...FOCUSABLE_ELEMENT}
         >
           {isSelecting && <StyledSelection style={selectionStyling} />}

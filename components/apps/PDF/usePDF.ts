@@ -1,12 +1,12 @@
+import { basename } from "path";
+import type * as PdfjsLib from "pdfjs-dist";
+import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { MetadataInfo } from "components/apps/PDF/types";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import type * as PdfjsLib from "pdfjs-dist";
-import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BASE_2D_CONTEXT_OPTIONS,
   DEFAULT_SCROLLBAR_WIDTH,
@@ -111,13 +111,13 @@ const usePDF = ({
         // eslint-disable-next-line no-await-in-loop
         const page = await renderPage(i + 1, doc);
 
-        if (i === 0) setLoading(false);
-
         setPages((currentPages) => [...currentPages, page]);
       }
 
       renderingRef.current = false;
     }
+
+    setLoading(false);
   }, [
     argument,
     containerRef,

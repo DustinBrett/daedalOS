@@ -1,3 +1,4 @@
+import { basename, dirname, isAbsolute, join } from "path";
 import type * as IBrowserFS from "browserfs";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
@@ -7,14 +8,17 @@ import type {
   FileSystem,
 } from "browserfs/dist/node/core/file_system";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
+  getEventData,
   handleFileInputEvent,
   iterateFileName,
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
+import type { NewPath } from "components/system/Files/FileManager/useFolder";
 import {
   addFileSystemHandle,
   getFileSystemHandles,
@@ -24,9 +28,7 @@ import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
-import { basename, dirname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
@@ -53,10 +55,10 @@ type IFileSystemAccess = {
 type FileSystemContextState = AsyncFS & {
   addFile: (
     directory: string,
-    callback: (name: string, buffer?: Buffer) => Promise<void>,
+    callback: NewPath,
     accept?: string,
     multiple?: boolean
-  ) => void;
+  ) => Promise<string[]>;
   addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   copyEntries: (entries: string[]) => void;
   createPath: (
@@ -64,7 +66,7 @@ type FileSystemContextState = AsyncFS & {
     directory: string,
     buffer?: Buffer
   ) => Promise<string>;
-  deletePath: (path: string) => Promise<void>;
+  deletePath: (path: string) => Promise<boolean>;
   fs?: FSModule;
   mapFs: (
     directory: string,
@@ -296,31 +298,46 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const { openTransferDialog } = useTransferDialog();
   const addFile = useCallback(
-    (
-      directory: string,
-      callback: (name: string, buffer?: Buffer) => Promise<void>
-    ): void => {
-      const fileInput = document.createElement("input");
+    (directory: string, callback: NewPath): Promise<string[]> =>
+      new Promise((resolve) => {
+        const fileInput = document.createElement("input");
 
-      fileInput.type = "file";
-      fileInput.multiple = true;
-      fileInput.setAttribute("style", "display: none");
-      fileInput.addEventListener(
-        "change",
-        (event) => {
-          handleFileInputEvent(
-            event as InputChangeEvent,
-            callback,
-            directory,
-            openTransferDialog
-          );
-          fileInput.remove();
-        },
-        { once: true }
-      );
-      document.body.append(fileInput);
-      fileInput.click();
-    },
+        fileInput.type = "file";
+        fileInput.multiple = true;
+        fileInput.setAttribute("style", "display: none");
+        fileInput.addEventListener(
+          "change",
+          (event) => {
+            handleFileInputEvent(
+              event as InputChangeEvent,
+              callback,
+              directory,
+              openTransferDialog
+            );
+
+            const { files } = getEventData(event as InputChangeEvent);
+
+            if (files) {
+              resolve(
+                [...files].map((file) =>
+                  files instanceof FileList
+                    ? (file as File).name
+                    : (
+                        (
+                          file as DataTransferItem
+                        ).webkitGetAsEntry() as FileSystemEntry
+                      ).name
+                )
+              );
+            }
+
+            fileInput.remove();
+          },
+          { once: true }
+        );
+        document.body.append(fileInput);
+        fileInput.click();
+      }),
     [openTransferDialog]
   );
   const mkdirRecursive = useCallback(
@@ -350,9 +367,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [exists, mkdir]
   );
   const deletePath = useCallback(
-    async (path: string): Promise<void> => {
+    async (path: string): Promise<boolean> => {
+      let deleted = false;
+
       try {
-        await unlink(path);
+        deleted = await unlink(path);
       } catch (error) {
         if ((error as ApiError).code === "EISDIR") {
           const dirContents = await readdir(path);
@@ -360,13 +379,15 @@ const useFileSystemContextState = (): FileSystemContextState => {
           await Promise.all(
             dirContents.map((entry) => deletePath(join(path, entry)))
           );
-          await rmdir(path);
+          deleted = await rmdir(path);
         }
       }
 
       if (Object.keys(fsWatchersRef.current || {}).includes(path)) {
         closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${path}`);
       }
+
+      return deleted;
     },
     [closeWithTransition, readdir, rmdir, unlink]
   );

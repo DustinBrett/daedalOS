@@ -95,7 +95,7 @@ const StyledProperties = styled.div`
       gap: 8px;
       height: 35px;
       margin-right: -1px;
-      place-content: end;
+      place-content: flex-end;
       place-items: center;
 
       button {
