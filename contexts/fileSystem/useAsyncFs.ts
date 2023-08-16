@@ -1,12 +1,16 @@
+import { join } from "path";
 import type * as IBrowserFS from "browserfs";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
-import { resetStorage, supportsIndexedDB } from "contexts/fileSystem/functions";
-import { join } from "path";
-import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
+import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
 import { useEffect, useMemo, useRef, useState } from "react";
+import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import {
+  UNKNOWN_STATE_CODES,
+  resetStorage,
+  supportsIndexedDB,
+} from "contexts/fileSystem/functions";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -97,7 +101,9 @@ const useAsyncFs = (): AsyncFSModule => {
       readFile: (path) =>
         new Promise((resolve, reject) => {
           fs?.readFile(path, (error, data = Buffer.from("")) => {
-            if (!error) return resolve(data);
+            if (!error || UNKNOWN_STATE_CODES.has(error.code)) {
+              return resolve(data);
+            }
 
             if (error.code === "EISDIR" && rootFs?.mntMap[path]?._data) {
               return resolve(rootFs.mntMap[path]._data);
@@ -137,6 +143,8 @@ const useAsyncFs = (): AsyncFSModule => {
             } else if (renameError.code === "EISDIR") {
               rootFs?.umount(oldPath);
               asyncFs.rename(oldPath, newPath).then(resolve, reject);
+            } else if (UNKNOWN_STATE_CODES.has(renameError.code)) {
+              resolve(false);
             } else {
               reject(renameError);
             }
@@ -148,13 +156,23 @@ const useAsyncFs = (): AsyncFSModule => {
         }),
       stat: (path) =>
         new Promise((resolve, reject) => {
-          fs?.stat(path, (error, stats = Object.create(null) as Stats) =>
-            error ? reject(error) : resolve(stats)
-          );
+          fs?.stat(path, (error, stats = Object.create(null) as Stats) => {
+            if (UNKNOWN_STATE_CODES.has(error?.code || "")) {
+              return resolve(new Stats(FileType.FILE, -1));
+            }
+
+            return error ? reject(error) : resolve(stats);
+          });
         }),
       unlink: (path) =>
         new Promise((resolve, reject) => {
-          fs?.unlink(path, (error) => (error ? reject(error) : resolve(true)));
+          fs?.unlink(path, (error) => {
+            if (UNKNOWN_STATE_CODES.has(error?.code || "")) {
+              return resolve(false);
+            }
+
+            return error ? reject(error) : resolve(true);
+          });
         }),
       writeFile: (path, data, overwrite = false) =>
         new Promise((resolve, reject) => {

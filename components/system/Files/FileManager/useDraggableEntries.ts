@@ -1,8 +1,9 @@
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { useSession } from "contexts/session";
 import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
 import {
   getHtmlToImage,
@@ -29,7 +30,7 @@ export type DragPosition = Partial<
 
 const useDraggableEntries = (
   focusedEntries: string[],
-  { blurEntry, focusEntry }: FocusEntryFunctions,
+  { focusEntry }: FocusEntryFunctions,
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
   isSelecting: boolean,
   allowMoving?: boolean
@@ -77,8 +78,6 @@ const useDraggableEntries = (
           return sortedEntries;
         });
       }
-
-      blurEntry();
     };
   const onDragOver =
     (file: string): React.DragEventHandler =>
@@ -103,16 +102,28 @@ const useDraggableEntries = (
       }
 
       focusEntry(file);
+
+      const singleFile = focusedEntries.length <= 1;
+
       event.nativeEvent.dataTransfer?.setData(
         "application/json",
         JSON.stringify(
-          focusedEntries.length <= 1
+          singleFile
             ? [join(entryUrl, file)]
             : focusedEntries.map((entryFile) => join(entryUrl, entryFile))
         )
       );
 
-      if (focusedEntries.length > 1 && dragImageRef.current) {
+      if (singleFile) {
+        event.nativeEvent.dataTransfer?.setData(
+          "DownloadURL",
+          `${getMimeType(file) || "application/octet-stream"}:${file}:${
+            window.location.href
+          }${join(entryUrl, file)}`
+        );
+      }
+
+      if (!singleFile && dragImageRef.current) {
         const iconPositionKeys = Object.keys(iconPositions);
 
         if (

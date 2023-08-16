@@ -1,5 +1,5 @@
-import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
+import { useProcesses } from "contexts/process";
 import {
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,

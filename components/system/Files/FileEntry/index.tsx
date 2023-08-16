@@ -1,3 +1,15 @@
+import { basename, dirname, extname, join } from "path";
+import { m as motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useTheme } from "styled-components";
 import { Down } from "components/apps/FileExplorer/NavigationIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -20,19 +32,7 @@ import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileEntryIconSize } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
-import dynamic from "next/dynamic";
-import { basename, dirname, extname, join } from "path";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -176,8 +176,14 @@ const FileEntry: FC<FileEntryProps> = ({
       if (!focusedEntries.includes(fileName)) {
         const uniqueName = await createPath(fileDropName, directory, data);
 
-        if (uniqueName) updateFolder(directory, uniqueName);
+        if (uniqueName) {
+          updateFolder(directory, uniqueName);
+
+          return uniqueName;
+        }
       }
+
+      return "";
     },
     directory,
     onDragLeave: () =>
@@ -219,11 +225,14 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
+    // eslint-disable-next-line sonarjs/no-collection-size-mischeck
     const fullStats = stats.size < 0 ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);
-    const toolTip = `Type: ${type}${size === "-1" ? "" : `\nSize: ${size}`}`;
+    const toolTip = `Type: ${type}${
+      size === "-1 bytes" ? "" : `\nSize: ${size}`
+    }`;
     const date = new Date(modifiedTime).toISOString().slice(0, 10);
     const time = new Intl.DateTimeFormat(
       DEFAULT_LOCALE,
@@ -404,8 +413,7 @@ const FileEntry: FC<FileEntryProps> = ({
               }
             } else {
               try {
-                await unlink(cachedIconPath);
-                updateFolder(dirname(path));
+                if (await unlink(cachedIconPath)) updateFolder(dirname(path));
               } catch {
                 // Ignore issues deleting bad cached icon
               }

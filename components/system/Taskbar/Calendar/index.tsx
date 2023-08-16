@@ -1,8 +1,10 @@
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import { Down, Up } from "components/system/Taskbar/Calendar/Icons";
 import StyledCalendar from "components/system/Taskbar/Calendar/StyledCalendar";
 import type { Calendar as ICalendar } from "components/system/Taskbar/Calendar/functions";
 import { createCalendar } from "components/system/Taskbar/Calendar/functions";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -34,6 +36,12 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     setCalendar(createCalendar(newDate));
   };
   const calendarRef = useRef<HTMLTableElement>(null);
+  const {
+    sizes: {
+      calendar: { maxHeight },
+    },
+  } = useTheme();
+  const calendarTransition = useTaskbarItemTransition(maxHeight, false);
 
   useEffect(() => {
     calendarRef.current?.addEventListener("blur", ({ relatedTarget }) => {
@@ -66,6 +74,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
         ref={calendarRef}
         aria-label="Calendar"
         onContextMenu={haltEvent}
+        {...calendarTransition}
         {...FOCUSABLE_ELEMENT}
       >
         <table>

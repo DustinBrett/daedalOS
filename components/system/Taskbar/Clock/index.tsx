@@ -1,10 +1,10 @@
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_CLOCK_WIDTH,
   FOCUSABLE_ELEMENT,

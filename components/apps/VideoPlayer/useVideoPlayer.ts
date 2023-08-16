@@ -1,3 +1,5 @@
+import { basename } from "path";
+import { useCallback, useEffect, useState } from "react";
 import {
   config,
   CONTROL_BAR_HEIGHT,
@@ -14,8 +16,6 @@ import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { useCallback, useEffect, useState } from "react";
 import { VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
 import {
   bufferToUrl,

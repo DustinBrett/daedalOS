@@ -1,3 +1,5 @@
+import { basename, join } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AI_IMAGES_FOLDER,
   commandMap,
@@ -23,8 +25,6 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { basename, join } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   IMAGE_FILE_EXTENSIONS,

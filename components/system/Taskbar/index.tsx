@@ -1,10 +1,11 @@
+import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+import { memo, useCallback, useState } from "react";
 import Clock from "components/system/Taskbar/Clock";
 import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import dynamic from "next/dynamic";
-import { memo, useCallback, useState } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const Calendar = dynamic(() => import("components/system/Taskbar/Calendar"));
@@ -28,7 +29,9 @@ const Taskbar: FC = () => {
 
   return (
     <>
-      {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
+      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+        {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
+      </AnimatePresence>
       <StyledTaskbar {...useTaskbarContextMenu()} {...FOCUSABLE_ELEMENT}>
         <StartButton
           startMenuVisible={startMenuVisible}
@@ -37,7 +40,9 @@ const Taskbar: FC = () => {
         <TaskbarEntries />
         <Clock toggleCalendar={toggleCalendar} />
       </StyledTaskbar>
-      {calendarVisible && <Calendar toggleCalendar={toggleCalendar} />}
+      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+        {calendarVisible && <Calendar toggleCalendar={toggleCalendar} />}
+      </AnimatePresence>
     </>
   );
 };

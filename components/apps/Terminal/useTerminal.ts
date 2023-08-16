@@ -1,3 +1,12 @@
+import { extname } from "path";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import type { IDisposable, Terminal } from "xterm";
 import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import { autoComplete } from "components/apps/Terminal/functions";
 import type {
@@ -12,17 +21,8 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
-import { extname } from "path";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
 import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
-import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
 

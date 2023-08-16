@@ -1,4 +1,7 @@
+import { basename, dirname } from "path";
 import { loader } from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { useCallback, useEffect, useState } from "react";
 import {
   URL_DELIMITER,
   config,
@@ -14,9 +17,6 @@ import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename, dirname } from "path";
-import { useCallback, useEffect, useState } from "react";
 import {
   DEFAULT_TEXT_FILE_SAVE_PATH,
   MILLISECONDS_IN_SECOND,
@@ -62,6 +62,7 @@ const useMonaco = ({
   const loadFile = useCallback(async () => {
     if (monaco && editor && url.startsWith("/")) {
       unlockGlobal("define");
+
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
       window.setTimeout(
@@ -88,6 +89,8 @@ const useMonaco = ({
     editor?.onKeyDown(async (event) => {
       const { ctrlKey, code, keyCode } = event;
 
+      // Q: Is it 83 or 49?
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
         event.preventDefault();
 

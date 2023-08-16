@@ -1,3 +1,6 @@
+import { useCallback, useMemo } from "react";
+import type { DraggableEventHandler } from "react-draggable";
+import type { Props, RndResizeCallback } from "react-rnd";
 import { isWindowOutsideBounds } from "components/system/Window/functions";
 import rndDefaults, {
   RESIZING_DISABLED,
@@ -7,9 +10,6 @@ import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useMemo } from "react";
-import type { DraggableEventHandler } from "react-draggable";
-import type { Props, RndResizeCallback } from "react-rnd";
 import { getWindowViewport, pxToNum } from "utils/functions";
 
 const enableIframeCapture = (enable = true): void =>

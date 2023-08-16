@@ -17,6 +17,7 @@ export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 const APP_CONTAINER_SELECTOR = "div";
 const VIEWPORT_SELECTOR = "div";
 const WINDOW_DRAG_SELECTOR = ".react-draggable";
+const FOCUSED_ENTRY_SELECTOR = ".focus-within";
 const NEXT_JS_CONTAINER_SELECTOR = "body>#__next";
 
 export const FAVICON_SELECTOR = "head>link[rel=icon]";
@@ -27,7 +28,8 @@ export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_SELECTOR}>canvas`;
 export const DESKTOP_ENTRIES_SELECTOR = `${DESKTOP_SELECTOR}>ol>li`;
 export const SELECTION_SELECTOR = `${DESKTOP_SELECTOR}>ol>span`;
 export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
-export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol>li`;
+export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol`;
+export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_ENTRIES_SELECTOR}>li`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>button`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
@@ -39,6 +41,7 @@ export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTO
 export const FILE_EXPLORER_STATUS_BAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>footer`;
 export const FILE_EXPLORER_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>ol`;
 export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
+export const FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li${FOCUSED_ENTRY_SELECTOR}`;
 export const FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR = `${FILE_EXPLORER_ENTRIES_SELECTOR}>button>figure>textarea`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
@@ -55,16 +58,19 @@ export const ACCESSIBILITY_EXCEPTION_IDS = [
 ];
 
 export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
+  // https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker#browser_compatibility
   "webkit",
   "firefox",
 ]);
-export const OFFSCREEN_CANVAS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
-export const SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+export const DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
+export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
+]);
 export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox", // https://bugzilla.mozilla.org/show_bug.cgi?id=1375585
 ]);
-export const FILE_DRAG_NOT_SUPPORTED_BROWSERS = new Set([
-  "webkit", // https://github.com/DustinBrett/daedalOS/issues/280
+export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
+  "webkit",
 ]);
 
 export const FILE_MENU_ITEMS = [
@@ -94,13 +100,25 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
   ...FOLDER_MENU_ITEMS,
   Background: true,
   "Capture screen": (browserName: string): boolean =>
-    !SCREEN_CAPTURE_NOT_SUPPORTED_BROWSERS.has(browserName),
+    !MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
   Inspect: true,
   Properties: false,
   "View page source": true,
 };
 
 export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
+
+export const TASKBAR_ENTRIES_MENU_ITEMS = [
+  /^Enter full screen$/,
+  /^Show the desktop$/,
+];
+
+export const TASKBAR_ENTRY_MENU_ITEMS = [
+  /^Restore$/,
+  /^Minimize$/,
+  /^Maximize$/,
+  /^Close$/,
+];
 
 export const START_BUTTON_MENU_ITEMS = [
   /^Terminal$/,
@@ -149,7 +167,10 @@ export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
 export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
+export const TEST_ROOT_FILE_2 = /^favicon.ico$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
+export const TEST_ROOT_FILE_DEFAULT_APP = "Marked";
+export const TEST_ROOT_FILE_ALT_APP = "Monaco Editor";
 export const TEST_ROOT_FILE_TOOLTIP =
   /^Type: Markdown File\nSize: \d\.\d\d KB\nDate modified: \b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
 

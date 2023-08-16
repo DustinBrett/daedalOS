@@ -23,6 +23,7 @@ test("can change background", async ({ headless, browserName, page }) => {
 
   await clickDesktop({ page }, true);
   await contextMenuIsVisible({ page });
+  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
   await clickContextMenuEntry(/^Background$/, { page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 

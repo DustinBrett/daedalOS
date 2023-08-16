@@ -1,3 +1,6 @@
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import type { Options, Track, URLTrack } from "webamp";
 import {
   BASE_WEBAMP_OPTIONS,
   cleanBufferOnSkinLoad,
@@ -21,8 +24,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, dirname } from "path";
-import { useCallback, useEffect, useRef } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
@@ -32,7 +33,6 @@ import {
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
-import type { Options, Track, URLTrack } from "webamp";
 
 type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;

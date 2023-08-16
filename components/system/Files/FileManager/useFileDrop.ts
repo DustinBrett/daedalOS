@@ -1,16 +1,19 @@
+import { basename, extname, join, relative } from "path";
+import { useCallback } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   getEventData,
   handleFileInputEvent,
 } from "components/system/Files/FileManager/functions";
 import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import type { CompleteAction } from "components/system/Files/FileManager/useFolder";
+import type {
+  CompleteAction,
+  NewPath,
+} from "components/system/Files/FileManager/useFolder";
 import { COMPLETE_ACTION } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, extname, join, relative } from "path";
-import { useCallback } from "react";
 import { DESKTOP_PATH, MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension, haltEvent, updateIconPositions } from "utils/functions";
 
@@ -21,11 +24,7 @@ export type FileDrop = {
 };
 
 type FileDropProps = {
-  callback?: (
-    path: string,
-    buffer?: Buffer,
-    completeAction?: CompleteAction
-  ) => Promise<void>;
+  callback?: NewPath;
   directory?: string;
   id?: string;
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -49,7 +48,7 @@ const useFileDrop = ({
       filePath: string,
       fileData?: Buffer,
       completeAction?: CompleteAction
-    ): Promise<void> => {
+    ): Promise<string> => {
       if (id) {
         if (fileData) {
           const tempPath = join(DESKTOP_PATH, filePath);
@@ -61,11 +60,15 @@ const useFileDrop = ({
               url(id, tempPath);
             }
             updateFolder(DESKTOP_PATH, filePath);
+
+            return basename(tempPath);
           }
         } else if (completeAction === COMPLETE_ACTION.UPDATE_URL) {
           url(id, filePath);
         }
       }
+
+      return "";
     },
     [id, mkdirRecursive, updateFolder, url, writeFile]
   );

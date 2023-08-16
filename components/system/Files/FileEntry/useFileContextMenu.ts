@@ -1,3 +1,6 @@
+import { basename, dirname, extname, join } from "path";
+import { useMemo } from "react";
+import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
@@ -15,10 +18,9 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
+  CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
   EDITABLE_IMAGE_FILE_EXTENSIONS,
   EXTRACTABLE_EXTENSIONS,
@@ -45,7 +47,6 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
-import type { URLTrack } from "webamp";
 
 const useFileContextMenu = (
   url: string,
@@ -66,7 +67,7 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setForegroundId, setWallpaper } = useSession();
+  const { setCursor, setForegroundId, setWallpaper } = useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url);
@@ -429,10 +430,18 @@ const useFileContextMenu = (
         const hasBackgroundVideoExtension =
           VIDEO_FILE_EXTENSIONS.has(pathExtension);
 
+        if (CURSOR_FILE_EXTENSIONS.has(pathExtension)) {
+          menuItems.unshift({
+            action: () => setCursor(path),
+            label: "Set as mouse pointer",
+          });
+        }
+
         if (
           hasBackgroundVideoExtension ||
           (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension))
+            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension) &&
+            !CURSOR_FILE_EXTENSIONS.has(pathExtension))
         ) {
           menuItems.unshift({
             label: "Set as desktop background",
@@ -567,6 +576,7 @@ const useFileContextMenu = (
       readOnly,
       rootFs?.mntMap,
       rootFs?.mountList,
+      setCursor,
       setForegroundId,
       setRenaming,
       setWallpaper,

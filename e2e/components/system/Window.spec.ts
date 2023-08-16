@@ -12,8 +12,10 @@ import {
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
   dragWindowToDesktop,
+  fileExplorerEntriesAreVisible,
   loadTestApp,
   pressDesktopKeys,
+  triggerFullscreenDetection,
   windowAnimationIsFinished,
   windowIsHidden,
   windowIsMaximized,
@@ -27,6 +29,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
 test.beforeEach(windowAnimationIsFinished);
+test.beforeEach(fileExplorerEntriesAreVisible);
 
 test("has title", async ({ page }) =>
   windowTitlebarTextIsVisible(TEST_APP_TITLE_TEXT, { page }));
@@ -65,13 +68,8 @@ test.describe("can close", () => {
     await windowIsHidden({ page });
   });
 
-  test("via alt + f4 (in fullscreen)", async ({ page }) => {
-    await page.evaluate((selector) => {
-      (
-        document as Document & { mozFullScreenElement?: HTMLElement }
-      ).mozFullScreenElement = document.querySelector(selector) as HTMLElement;
-      document.dispatchEvent(new Event("fullscreenchange"));
-    }, DESKTOP_SELECTOR);
+  test("via alt + f4 (in fullscreen)", async ({ browserName, page }) => {
+    await triggerFullscreenDetection({ browserName, page });
     await pressDesktopKeys("Alt+F4", { page });
     await windowIsHidden({ page });
   });
@@ -119,6 +117,5 @@ test("can resize", async ({ page }) => {
 });
 
 // TEST: has context menu
-// TEST: has keyboard shortcuts (Ctrl+Shift+Arrows)
-// TEST: focus/blur
-// TEST: foreground/background
+// TEST: has keyboard shortcuts (Ctrl+Shift+Up/Down)
+// TEST: focus/blur | foreground/background focus

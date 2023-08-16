@@ -1,5 +1,5 @@
-import { BOX_SHADOW } from "components/apps/Chat/config";
 import styled from "styled-components";
+import { BOX_SHADOW } from "components/apps/Chat/config";
 import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledInputAreaProps = {

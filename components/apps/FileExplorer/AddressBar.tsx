@@ -1,10 +1,10 @@
+import { basename } from "path";
+import { forwardRef, useEffect, useState } from "react";
 import { Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { forwardRef, useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { ROOT_NAME } from "utils/constants";

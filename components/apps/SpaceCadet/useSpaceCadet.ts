@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
-import { useEffect, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 

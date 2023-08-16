@@ -1,6 +1,6 @@
+import { useCallback, useLayoutEffect, useMemo } from "react";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useLayoutEffect, useMemo } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {

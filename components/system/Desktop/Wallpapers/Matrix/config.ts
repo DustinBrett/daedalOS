@@ -1,3 +1,5 @@
+import { viewWidth } from "utils/functions";
+
 const config = {
   animationSpeed: 1,
   backgroundColor: { space: "rgb", values: [0, 0, 0] },
@@ -14,7 +16,7 @@ const config = {
   density: 1,
   ditherMagnitude: 0.05,
   effect: "palette",
-  fallSpeed: 0.2,
+  fallSpeed: 0.09,
   font: "matrixcode",
   forwardSpeed: 0.25,
   glintBrightness: -1.5,
@@ -35,7 +37,7 @@ const config = {
   isolateGlint: false,
   isometric: false,
   loops: false,
-  numColumns: 80,
+  numColumns: Math.max(Math.floor(viewWidth() / 15), 50),
   palette: [
     { at: 0, color: { space: "hsl", values: [0.4, 0.8, 0] } },
     { at: 0.5, color: { space: "hsl", values: [0.4, 0.8, 0.5] } },

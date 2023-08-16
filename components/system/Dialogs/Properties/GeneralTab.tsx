@@ -1,11 +1,11 @@
+import { basename, dirname, extname, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import { basename, dirname, extname, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
@@ -37,14 +37,19 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const [fileCount, setFileCount] = useState(0);
   const [folderCount, setFolderCount] = useState(0);
   const [folderSize, setFolderSize] = useState(0);
-  const entrySize = folderSize || stats?.size;
+  const isDirectory = useMemo(() => stats?.isDirectory(), [stats]);
+  const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
+  const abortControllerRef = useRef<AbortController>();
 
   useEffect(() => {
-    if (!checkedFileCounts.current && !isShortcut && stats?.isDirectory()) {
+    if (!checkedFileCounts.current && !isShortcut && isDirectory) {
       checkedFileCounts.current = true;
+      abortControllerRef.current = new AbortController();
 
       const countContents = async (contentUrl: string): Promise<void> => {
+        if (abortControllerRef.current?.signal.aborted) return;
+
         const entries = await readdir(contentUrl);
         let currentFileCount = 0;
         let currentFolderCount = 0;
@@ -71,7 +76,9 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
 
       countContents(url);
     }
-  }, [isShortcut, readdir, stat, stats, url]);
+  }, [isDirectory, isShortcut, readdir, stat, url]);
+
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   return (
     <>
@@ -99,18 +106,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <td className="spacer" colSpan={2} />
           </tr>
           <tr>
-            <th scope="row">
-              {stats?.isDirectory() ? "Type:" : "Type of file:"}
-            </th>
+            <th scope="row">{isDirectory ? "Type:" : "Type of file:"}</th>
             <td>
-              {stats?.isDirectory()
+              {isDirectory
                 ? "File folder"
                 : isShortcut || extType
                 ? `${isShortcut ? "Shortcut" : extType} (${extension})`
                 : "File"}
             </td>
           </tr>
-          {!stats?.isDirectory() && (
+          {!isDirectory && (
             <tr>
               <th scope="row">{pid ? "Opens with:" : "Description:"}</th>
               <td>
@@ -121,7 +126,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
               </td>
             </tr>
           )}
-          {!stats?.isDirectory() && (
+          {!isDirectory && (
             <tr>
               <td className="spacer" colSpan={2} />
             </tr>
@@ -136,11 +141,13 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
               {entrySize
                 ? `${getFormattedSize(
                     entrySize
-                  )} (${entrySize.toLocaleString()} bytes)`
+                  )} (${entrySize.toLocaleString()} byte${
+                    entrySize === 1 ? "" : "s"
+                  })`
                 : "0 bytes"}
             </td>
           </tr>
-          {stats?.isDirectory() && (
+          {isDirectory && (
             <tr>
               <th scope="row">Contains</th>
               <td>{`${fileCount.toLocaleString()} Files, ${folderCount.toLocaleString()} Folders`}</td>
@@ -165,7 +172,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
       </table>
       <Buttons
         id={id}
-        onClick={() => {
+        onClick={async () => {
           if (
             inputRef.current &&
             url &&
@@ -173,13 +180,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           ) {
             const directoryName = dirname(url);
 
-            rename(
-              url,
-              `${join(directoryName, inputRef.current.value)}${
-                isShortcut ? extname(url) : ""
-              }`
-            );
-            updateFolder(directoryName);
+            if (
+              await rename(
+                url,
+                `${join(directoryName, inputRef.current.value)}${
+                  isShortcut ? extname(url) : ""
+                }`
+              )
+            ) {
+              updateFolder(directoryName);
+            }
           }
 
           closeWithTransition(id);

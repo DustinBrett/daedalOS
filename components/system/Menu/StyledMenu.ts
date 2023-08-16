@@ -23,7 +23,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
   max-height: fit-content;
   max-width: fit-content;
   padding: 4px 2px;
-  position: absolute;
+  position: fixed;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
@@ -39,7 +39,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
       margin: 3px 8px;
     }
 
-    figure {
+    li > div {
       display: flex;
       padding: 3px 0;
 

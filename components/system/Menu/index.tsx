@@ -1,10 +1,10 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Position } from "react-rnd";
 import MenuItemEntry from "components/system/Menu/MenuItemEntry";
 import menuTransition from "components/system/Menu/menuTransition";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import { useMenu } from "contexts/menu/index";
 import type { MenuState } from "contexts/menu/useMenuContextState";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Position } from "react-rnd";
 import {
   FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
@@ -38,6 +38,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     [setMenu]
   );
   const isSubMenu = Boolean(subMenu);
+  const offsetCalculated = useRef<Partial<DOMRect>>({});
 
   useEffect(() => {
     if (items && !subMenu) {
@@ -65,7 +66,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
           focusedElement.removeEventListener(
             type === "click" ? "blur" : "click",
-            menuUnfocused
+            menuUnfocused,
+            { capture: true }
           );
         };
 
@@ -78,7 +80,12 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
-    if (!menuRef.current) return;
+    if (
+      !menuRef.current ||
+      (offsetCalculated.current.x === x && offsetCalculated.current.y === y)
+    ) {
+      return;
+    }
 
     const {
       height = 0,
@@ -105,10 +112,15 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
         ? newOffset.x - (newOffset.x - menuX)
         : 0;
 
+    offsetCalculated.current = { x, y };
     setOffset(
       adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
     );
   }, [items, subMenu, x, y]);
+
+  useEffect(() => {
+    if (!items) offsetCalculated.current = {};
+  }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
     const resetOnEscape = ({ key }: KeyboardEvent): void => {

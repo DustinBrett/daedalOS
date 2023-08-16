@@ -1,3 +1,4 @@
+import { memo, useCallback, useRef } from "react";
 import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
@@ -11,7 +12,6 @@ import {
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
-import { memo, useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";
@@ -86,7 +86,9 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
       {...titlebarContextMenu}
     >
       <Button
-        {...(allowResizing && !closing ? onClickMaximize : {})}
+        {...(!hideMaximizeButton && allowResizing && !closing
+          ? onClickMaximize
+          : {})}
         onTouchEndCapture={onTouchEnd}
         onTouchStartCapture={onTouchStart}
       >

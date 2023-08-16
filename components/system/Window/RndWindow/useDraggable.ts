@@ -1,3 +1,6 @@
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import type { Position } from "react-rnd";
+import { useTheme } from "styled-components";
 import {
   cascadePosition,
   centerPosition,
@@ -8,9 +11,6 @@ import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import type { Position } from "react-rnd";
-import { useTheme } from "styled-components";
 import { calcInitialPosition, getWindowViewport } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
