@@ -167,9 +167,8 @@ const useFolderContextMenu = (
       }),
     };
 
-    currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
-      displayMediaOptions
-    );
+    currentMediaStream =
+      await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
