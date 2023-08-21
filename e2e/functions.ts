@@ -11,6 +11,7 @@ import {
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
   EXACT,
+  EXCLUDED_CONSOLE_LOGS,
   FAVICON_SELECTOR,
   FILE_EXPLORER_ADDRESS_BAR_LABEL,
   FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
@@ -53,6 +54,22 @@ type DocumentWithVendorFullscreen = Document & {
   mozFullScreenElement?: HTMLElement;
   webkitFullscreenElement?: HTMLElement;
 };
+
+export const captureConsoleLogs = ({ browserName, page }: TestProps): Page =>
+  page.on("console", (msg) => {
+    const text = msg.text();
+
+    if (
+      !EXCLUDED_CONSOLE_LOGS(browserName || "").some((excluded) =>
+        text.includes(excluded)
+      )
+    ) {
+      globalThis.capturedConsoleLogs = [
+        ...(globalThis.capturedConsoleLogs || []),
+        text,
+      ];
+    }
+  });
 
 export const filterMenuItems = (
   menuItems: MenuItems,
