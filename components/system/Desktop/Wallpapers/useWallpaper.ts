@@ -46,6 +46,7 @@ declare global {
 type WallpaperMessage = { message: string; type: string };
 
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
+const REDUCED_MOTION_PERCENT = 0.1;
 
 let slideshowFiles: string[];
 
@@ -72,12 +73,23 @@ const useWallpaper = (
       if (!desktopRef.current) return;
 
       let config: WallpaperConfig | undefined;
+      const { matches: prefersReducedMotion } = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
 
       if (wallpaperName === "VANTA") {
-        config = { ...vantaConfig };
+        config = {
+          ...vantaConfig,
+          waveSpeed:
+            vantaConfig.waveSpeed *
+            (prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1),
+        };
         vantaConfig.material.options.wireframe = vantaWireframe;
-      } else if (wallpaperImage === "MATRIX 3D") {
-        config = { volumetric: true };
+      } else if (wallpaperImage.startsWith("MATRIX")) {
+        config = {
+          animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+          volumetric: wallpaperImage.endsWith("3D"),
+        };
       } else if (wallpaperName === "STABLE_DIFFUSION") {
         const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
 
