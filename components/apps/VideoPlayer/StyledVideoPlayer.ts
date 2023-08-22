@@ -122,7 +122,7 @@ const StyledVideoPlayer = styled.div`
         color: rgb(237, 237, 237);
         text-shadow: 1px 2px 3px rgb(160, 160, 160);
         -webkit-text-stroke: 1px rgba(164, 164, 164, 80%);
-        top: -3px;
+        top: 1px;
       }
     }
 
