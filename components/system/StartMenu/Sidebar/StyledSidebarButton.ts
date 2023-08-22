@@ -36,6 +36,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
       height: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
       left: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
       margin-left: 1px;
+      pointer-events: none;
       position: absolute;
       width: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
     }
