@@ -5,26 +5,8 @@ declare global {
   var capturedConsoleLogs: string[] | undefined;
 }
 
-export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] =>
-  [
-    process.env.CI && browserName === "chromium"
-      ? "Failed to create WebGPU Context Provider"
-      : "",
-    process.env.CI && browserName === "chromium"
-      ? "WebGPU is experimental on this platform"
-      : "",
-    process.env.CI && browserName === "firefox" ? "WebGL warning" : "",
-    process.env.CI && browserName === "firefox"
-      ? "Failed to create WebGL context"
-      : "",
-    // as=fetch is not supported in webkit
-    browserName === "webkit"
-      ? "was preloaded using link preload but not used within a few seconds from the window's load event"
-      : "",
-    // https://bugs.webkit.org/show_bug.cgi?id=231150
-    browserName === "webkit"
-      ? "<link rel=preload> has an invalid `imagesrcset` value"
-      : "",
+export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
+  const excludedConsoleLogs = [
     // https://github.com/emotion-js/emotion/pull/3093
     'styled-components: it looks like an unknown prop "fetchpriority" is being sent through to the DOM',
     // Generic messages
@@ -33,7 +15,35 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] =>
     "[Fast Refresh] rebuilding",
     "chrome://juggler",
     "No available adapters.",
-  ].filter(Boolean);
+  ];
+
+  if (process.env.CI) {
+    if (browserName === "chromium") {
+      excludedConsoleLogs.push(
+        "Failed to create WebGPU Context Provider",
+        "WebGPU is experimental on this platform"
+      );
+    } else if (browserName === "firefox") {
+      excludedConsoleLogs.push(
+        "WebGL warning",
+        "Failed to create WebGL context",
+        "A WebGL context could not be created",
+        "Error creating WebGL context"
+      );
+    }
+  }
+
+  if (browserName === "webkit") {
+    excludedConsoleLogs.push(
+      // as=fetch is not supported in webkit
+      "was preloaded using link preload but not used within a few seconds from the window's load event",
+      // https://bugs.webkit.org/show_bug.cgi?id=231150
+      "<link rel=preload> has an invalid `imagesrcset` value"
+    );
+  }
+
+  return excludedConsoleLogs;
+};
 
 export type IsShown = boolean | ((browserName: string) => boolean);
 
