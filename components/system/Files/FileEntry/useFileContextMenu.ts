@@ -27,6 +27,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
+  PACKAGE_DATA,
   PROCESS_DELIMITER,
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
@@ -41,12 +42,19 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { getExtension, isFirefox, isSafari } from "utils/functions";
+import {
+  getExtension,
+  isFirefox,
+  isSafari,
+  isYouTubeUrl,
+} from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
+
+const { alias } = PACKAGE_DATA;
 
 const useFileContextMenu = (
   url: string,
@@ -93,8 +101,9 @@ const useFileContextMenu = (
           (process) => process !== pid
         );
         const openWithFiltered = openWith.filter((id) => id !== pid);
+        const isSingleSelection = focusedEntries.length === 1;
         const absoluteEntries = (): string[] =>
-          focusedEntries.length === 1 || !isFocusedEntry
+          isSingleSelection || !isFocusedEntry
             ? [path]
             : [
                 ...new Set([
@@ -384,6 +393,33 @@ const useFileContextMenu = (
                 });
               }
 
+              const opensInFileExplorer = pid === "FileExplorer";
+
+              if (
+                isSingleSelection &&
+                !opensInFileExplorer &&
+                !isYouTubeUrl(url)
+              ) {
+                const baseFileName = basename(url);
+                const shareData: ShareData = {
+                  text: `${baseFileName} - ${alias}`,
+                  title: baseFileName,
+                  url: `${window.location.origin}?url=${url}`,
+                };
+
+                try {
+                  if (navigator.canShare?.(shareData)) {
+                    menuItems.unshift({
+                      action: () => navigator.share(shareData),
+                      label: "Share",
+                      share: true,
+                    });
+                  }
+                } catch {
+                  // Ignore failure to use Share API
+                }
+              }
+
               menuItems.unshift(
                 {
                   action: () => archiveFiles(absoluteEntries()),
@@ -395,7 +431,7 @@ const useFileContextMenu = (
                 }
               );
 
-              if (!isShortcut && pid !== "FileExplorer") {
+              if (!isShortcut && !opensInFileExplorer) {
                 TEXT_EDITORS.forEach((textEditor) => {
                   if (
                     textEditor !== defaultProcess &&
