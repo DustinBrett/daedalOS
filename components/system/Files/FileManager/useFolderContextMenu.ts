@@ -144,8 +144,12 @@ const useFolderContextMenu = (
     if (currentMediaRecorder && currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
 
-      currentMediaRecorder.requestData();
-      currentMediaStream.getTracks().forEach((track) => track.stop());
+      try {
+        currentMediaRecorder.requestData();
+        currentMediaStream.getTracks().forEach((track) => track.stop());
+      } catch {
+        // Ignore errors with MediaRecorder
+      }
 
       currentMediaRecorder = undefined;
       currentMediaStream = undefined;
