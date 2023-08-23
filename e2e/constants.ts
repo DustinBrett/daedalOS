@@ -28,7 +28,8 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
         "WebGL warning",
         "Failed to create WebGL context",
         "A WebGL context could not be created",
-        "Error creating WebGL context"
+        "Error creating WebGL context",
+        "'experimental-webgl' (value of argument 1) is not a valid value"
       );
     }
   }
