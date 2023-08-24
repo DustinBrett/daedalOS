@@ -21,9 +21,8 @@ const StartButton: FC<StartButtonProps> = ({
     const preloadedLinks = [
       ...document.querySelectorAll("link[rel=preload]"),
     ] as HTMLLinkElement[];
-    const { default: startMenuIcons } = await import(
-      "public/.index/startMenuIcons.json"
-    );
+    const startMenuIcons = (await import("public/.index/startMenuIcons.json"))
+      .default;
 
     startMenuIcons?.forEach((icon) => {
       const link = document.createElement(
