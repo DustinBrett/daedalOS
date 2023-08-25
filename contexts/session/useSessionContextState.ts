@@ -123,14 +123,14 @@ const useSessionContextState = (): SessionContextState => {
                   ]),
                 ],
               ],
-            };
+            } as SortOrders;
 
             return setIconPositions(
               updateIconPositionsIfEmpty(
                 DESKTOP_PATH,
                 desktopGrid,
                 positions,
-                newDesktopSortOrder as SortOrders
+                newDesktopSortOrder
               )
             );
           } catch {
