@@ -121,10 +121,10 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
                 title={primaryTitle}
               />
             </StyledOpenWithList>
+            <h4>Other options</h4>
           </>
         )}
-        <h4>Other options</h4>
-        <StyledOpenWithList>
+        <StyledOpenWithList $hideBorder={!primaryTitle || !primaryIcon}>
           {Object.entries(directory)
             .filter(
               ([pid]) =>
