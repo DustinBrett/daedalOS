@@ -36,8 +36,10 @@ import {
   contextMenuHasCount,
   contextMenuIsHidden,
   contextMenuIsVisible,
+  desktopEntryIsHidden,
   desktopEntryIsVisible,
   disableWallpaper,
+  dragFileExplorerEntryToDesktop,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
   fileExplorerEntryHasShortcutIcon,
@@ -282,7 +284,12 @@ test.describe("has files & folders", () => {
     });
   });
 
-  // TEST: can drag (to Desktop)
+  test("can drag (to Desktop)", async ({ page }) => {
+    await desktopEntryIsHidden(TEST_ROOT_FILE, { page });
+    await dragFileExplorerEntryToDesktop(TEST_ROOT_FILE, { page });
+    await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
+  });
+
   // TEST: can drop (from Desktop)
 });
 

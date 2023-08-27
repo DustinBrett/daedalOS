@@ -171,6 +171,17 @@ export const doubleClickWindowTitlebarIcon = async ({
 }: TestProps): Promise<void> =>
   page.locator(WINDOW_TITLEBAR_ICON_SELECTOR).dblclick();
 
+export const dragFileExplorerEntryToDesktop = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+    .getByLabel(label)
+    .dragTo(page.locator(DESKTOP_SELECTOR), {
+      targetPosition: { x: 1, y: 1 },
+    });
+
 export const dragWindowToDesktop = async ({
   page,
 }: TestProps): Promise<void> => {
