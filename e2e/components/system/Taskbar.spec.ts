@@ -23,6 +23,7 @@ import {
   disableOffscreenCanvas,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
+  hoverOnTaskbarEntry,
   loadApp,
   loadTestApp,
   sheepIsVisible,
@@ -32,6 +33,8 @@ import {
   taskbarEntryHasTooltip,
   taskbarEntryIsHidden,
   taskbarEntryIsVisible,
+  taskbarEntryPeekImageIsVisible,
+  taskbarEntryPeekIsHidden,
   taskbarIsVisible,
   windowIsMaximized,
   windowIsOpaque,
@@ -168,7 +171,11 @@ test.describe("entries", () => {
       await windowIsOpaque({ page });
     });
 
-    // TEST: has peek
+    test("has peek image", async ({ page }) => {
+      await taskbarEntryPeekIsHidden({ page });
+      await hoverOnTaskbarEntry(TEST_APP_TITLE, { page });
+      await taskbarEntryPeekImageIsVisible({ page });
+    });
   });
 
   test.describe(HAS_CONTEXT_MENU, () => {

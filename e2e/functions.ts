@@ -27,6 +27,8 @@ import {
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
+  TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
+  TASKBAR_ENTRY_PEEK_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
   TEST_APP,
@@ -200,6 +202,12 @@ export const dragWindowToDesktop = async ({
 
 export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
   page.locator(WINDOW_SELECTOR).focus();
+
+export const hoverOnTaskbarEntry = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).hover();
 
 export const pressDesktopKeys = async (
   keys: string,
@@ -576,6 +584,18 @@ export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
 ): Promise<void> => entryIsVisible(TASKBAR_ENTRY_SELECTOR, label, page);
+
+export const taskbarEntryPeekIsHidden = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_ENTRY_PEEK_SELECTOR)).toBeHidden();
+
+export const taskbarEntryPeekImageIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR)).toBeVisible()
+  ).toPass();
 
 export const startMenuEntryIsVisible = async (
   label: RegExp | string,
