@@ -236,16 +236,6 @@ const useFileContextMenu = (
             } else {
               menuItems.unshift(MENU_SEPERATOR);
 
-              if (
-                EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
-                MOUNTABLE_EXTENSIONS.has(pathExtension)
-              ) {
-                menuItems.unshift({
-                  action: () => extractFiles(path),
-                  label: "Extract Here",
-                });
-              }
-
               const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
               const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
               const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
@@ -425,6 +415,15 @@ const useFileContextMenu = (
                   action: () => archiveFiles(absoluteEntries()),
                   label: "Add to archive...",
                 },
+                ...(EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
+                MOUNTABLE_EXTENSIONS.has(pathExtension)
+                  ? [
+                      {
+                        action: () => extractFiles(path),
+                        label: "Extract Here",
+                      },
+                    ]
+                  : []),
                 {
                   action: () => downloadFiles(absoluteEntries()),
                   label: "Download",
