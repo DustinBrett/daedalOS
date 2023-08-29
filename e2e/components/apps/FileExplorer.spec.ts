@@ -285,8 +285,11 @@ test.describe("has files & folders", () => {
     });
   });
 
-  test("can drag to desktop", async ({ browserName, page }) => {
-    if (DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
+  test("can drag to desktop", async ({ browserName, headless, page }) => {
+    test.skip(
+      headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless drag support"
+    );
 
     await desktopEntryIsHidden(TEST_ROOT_FILE, { page });
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });

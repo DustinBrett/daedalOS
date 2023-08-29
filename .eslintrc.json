@@ -110,6 +110,7 @@
     "no-unsafe-optional-chaining": "error",
     "playwright/expect-expect": "off",
     "playwright/no-conditional-in-test": "off",
+    "playwright/no-skipped-test": "off",
     "react/function-component-definition": [
       "error",
       { "namedComponents": "arrow-function" }
