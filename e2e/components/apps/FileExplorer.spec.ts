@@ -4,6 +4,7 @@ import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
   DESKTOP_SELECTOR,
+  DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS,
   FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
@@ -284,8 +285,11 @@ test.describe("has files & folders", () => {
     });
   });
 
-  test("can drag (to Desktop)", async ({ page }) => {
+  test("can drag to desktop", async ({ browserName, page }) => {
+    if (DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
+
     await desktopEntryIsHidden(TEST_ROOT_FILE, { page });
+    await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     await dragFileExplorerEntryToDesktop(TEST_ROOT_FILE, { page });
     await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
   });
