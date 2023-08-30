@@ -35,7 +35,6 @@ const PreloadDesktopIcons: FC = () => (
           href={isStaticIcon ? icon : undefined}
           imageSrcSet={isStaticIcon ? undefined : imageSrcs(icon, 48, ".webp")}
           rel="preload"
-          type={isCacheIcon ? undefined : "image/webp"}
           {...HIGH_PRIORITY_ELEMENT}
         />
       );

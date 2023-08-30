@@ -568,8 +568,10 @@ const FileEntry: FC<FileEntryProps> = ({
             />
           ) : (
             <figcaption
-              aria-level={isHeading ? 1 : undefined}
-              role={isHeading ? "heading" : undefined}
+              {...(isHeading && {
+                "aria-level": 1,
+                role: "heading",
+              })}
             >
               {!isOnlyFocusedEntry || name.length === truncatedName.length
                 ? truncatedName

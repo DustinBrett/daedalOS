@@ -49,10 +49,13 @@ const nextConfig = {
         }
       })
     );
-    config.resolve.fallback = {
-      module: false,
-      perf_hooks: false,
-    };
+
+    config.resolve.fallback = config.resolve.fallback || {};
+    config.resolve.fallback.module = false;
+    config.resolve.fallback.perf_hooks = false;
+
+    config.module.parser.javascript = config.module.parser.javascript || {};
+    config.module.parser.javascript.dynamicImportFetchPriority = "high";
 
     return config;
   },

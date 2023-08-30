@@ -1,5 +1,3 @@
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
-
 type NTPResponse = {
   backoff: number;
   now: number;
@@ -7,6 +5,7 @@ type NTPResponse = {
 };
 
 const DEFAULT_BACKOFF_SECONDS = 300;
+const MILLISECONDS_IN_SECOND = 1000;
 const HOUR_IN_SECONDS = 3600;
 const NTP_SERVER = "https://use.ntpjs.org/v1/time.json";
 
