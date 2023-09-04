@@ -70,6 +70,7 @@
       }
     ],
     "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "camelcase": "off",
     "class-methods-use-this": "off",
     "curly": "error",
     "import/extensions": [
