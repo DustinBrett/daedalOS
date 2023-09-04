@@ -137,6 +137,16 @@ const directory: Processes = {
     ],
     title: "Marked",
   },
+  Messenger: {
+    Component: dynamic(() => import("components/apps/Messenger")),
+    backgroundColor: "#242526",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/unknown.webp",
+    title: "Messenger",
+  },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
     backgroundColor: "#1E1E1E",
