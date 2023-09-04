@@ -33,7 +33,7 @@ const StyledMessenger = styled.ol`
       }
 
       &:nth-child(2) {
-        background-color: grey;
+        background-color: green;
         left: -6px;
         position: absolute;
         top: -6px;

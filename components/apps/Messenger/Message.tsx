@@ -5,32 +5,23 @@ import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { useProfile } from "nostr-react";
 
 const Message: FC<{ message: MessageType }> = ({ message }) => {
+  const { content, created_at, pubkey, sent } = message;
   const [decryptedContent, setDecryptedContent] = useState("");
-  const { data: userData } = useProfile({
-    pubkey: message.pubkey,
-  });
-
-  // return (
-  //   <>
-  //     <p>Name: {userData?.name}</p>
-  //     <p>Public key: {userData?.npub}</p>
-  //     <p>Picture URL: {userData?.picture}</p>
-  //   </>
-  // )
+  const { data: { name } = {} } = useProfile({ pubkey });
 
   useEffect(() => {
     if (!decryptedContent) {
-      decryptMessage(message).then(setDecryptedContent);
+      decryptMessage(content, pubkey).then(setDecryptedContent);
     }
-  }, [decryptedContent, message]);
+  }, [content, decryptedContent, pubkey]);
 
   return (
-    <li className={message.sent ? "sent" : "received"}>
-      {decryptedContent || message.content}
+    <li className={sent ? "sent" : "received"}>
+      {decryptedContent || content}
       <span>
-        {new Date(message.created_at * MILLISECONDS_IN_SECOND).toLocaleString()}
+        {new Date(created_at * MILLISECONDS_IN_SECOND).toLocaleString()}
       </span>
-      <span>{userData?.name || message.pubkey.slice(0, 8)}</span>
+      <span>{name || pubkey.slice(0, 8)}</span>
     </li>
   );
 };

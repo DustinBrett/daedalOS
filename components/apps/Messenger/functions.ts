@@ -1,13 +1,9 @@
 import { nip19, nip04, generatePrivateKey, getPublicKey } from "nostr-tools";
 import type { Event } from "nostr-tools";
-import type {
-  Messages,
-  Message,
-  NostrEvents,
-} from "components/apps/Messenger/types";
+import type { Messages, NostrEvents } from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
-  MESSAGE_KIND,
+  DM_EVENTS,
   PRIVATE_KEY_IDB_NAME,
   PUBLIC_KEY_IDB_NAME,
 } from "components/apps/Messenger/constants";
@@ -50,25 +46,24 @@ export const processMessages = (
   const messageIds = new Set(messages.map(({ id }) => id));
   const newMessages = events
     .filter(({ id }) => !messageIds.has(id))
-    /* eslint-disable camelcase */
     .map(({ content, created_at, id, pubkey, tags }) => ({
       content,
       created_at,
       id,
       pubkey:
         pubkey === publicKey
-          ? tags?.find(([type]) => type === "p")?.[1] || ""
+          ? tags?.find(([tag]) => tag === "p")?.[1] || ""
           : pubkey,
       sent: pubkey === publicKey,
     }));
-  /* eslint-enable camelcase */
 
   return newMessages.length > 0 ? [...messages, ...newMessages] : messages;
 };
 
-export const decryptMessage = async (message: Message): Promise<string> => {
-  const { content, pubkey } = message;
-
+export const decryptMessage = async (
+  content: string,
+  pubkey: string
+): Promise<string> => {
   try {
     return await (window.nostr?.nip04
       ? window.nostr.nip04.decrypt(pubkey, content)
@@ -84,7 +79,7 @@ export const getReceivedMessages = (publicKey?: string): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     "#p": publicKey ? [publicKey] : [],
-    ...MESSAGE_KIND,
+    ...DM_EVENTS,
   },
 });
 
@@ -92,7 +87,7 @@ export const getSentMessages = (publicKey?: string): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     authors: publicKey ? [publicKey] : [],
-    ...MESSAGE_KIND,
+    ...DM_EVENTS,
   },
 });
 
