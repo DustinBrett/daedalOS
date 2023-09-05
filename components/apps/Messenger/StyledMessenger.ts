@@ -2,41 +2,62 @@ import styled from "styled-components";
 
 const StyledMessenger = styled.ol`
   background-color: #242526;
+  overflow-y: auto;
 
   li {
-    border-radius: 18px;
+    border-radius: 10px;
     color: #fff;
-    margin: 12px;
-    padding: 12px;
+    margin: 8px;
+    padding: 8px;
     position: relative;
 
-    &.sent {
-      background-color: #0084ff;
-      margin-left: 50px;
+    &:hover {
+      background-color: #3a3b3c;
     }
 
-    &.received {
-      background-color: #3e4042;
-      margin-right: 50px;
+    &:focus {
+      background-color: rgba(45, 136, 255, 20%);
     }
 
-    span {
-      border-radius: 18px;
-      font-size: 9px;
-      padding: 3px 6px;
+    figure {
+      display: flex;
+      gap: 12px;
 
-      &:first-child {
-        background-color: grey;
-        bottom: -6px;
-        position: absolute;
-        right: -6px;
+      img {
+        border-radius: 50%;
+        width: 56px;
       }
 
-      &:nth-child(2) {
-        background-color: green;
-        left: -6px;
-        position: absolute;
-        top: -6px;
+      figcaption {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        justify-content: center;
+        overflow: hidden;
+
+        > span {
+          color: #e4e6eb;
+          font-size: 17px;
+          font-weight: 500;
+        }
+
+        > div {
+          color: #b0b3b8;
+          display: flex;
+          font-size: 14px;
+          gap: 3px;
+
+          div:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          div:last-child {
+            color: #8b8d92;
+            padding-right: 10px;
+          }
+        }
       }
     }
   }

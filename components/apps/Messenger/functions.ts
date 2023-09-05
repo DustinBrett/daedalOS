@@ -102,3 +102,12 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
 
   return toHexKey(newPublicKey);
 };
+
+export const descCreatedAt = (a: Event, b: Event): number =>
+  b.created_at - a.created_at;
+
+export const getKeyFromTags = (tags: string[][] = []): string => {
+  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
+
+  return key;
+};

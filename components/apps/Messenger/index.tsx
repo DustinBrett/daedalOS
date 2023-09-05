@@ -1,18 +1,17 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { NostrProvider, useNostrEvents } from "nostr-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Messages } from "components/apps/Messenger/types";
 import {
+  descCreatedAt,
+  getKeyFromTags,
   getPublicHexKey,
   getReceivedMessages,
   getRelayUrls,
   getSentMessages,
   maybeGetExistingPublicKey,
-  processMessages,
-  toHexKey,
 } from "components/apps/Messenger/functions";
 import StyledMessenger from "components/apps/Messenger/StyledMessenger";
-import Message from "components/apps/Messenger/Message";
+import Contact from "components/apps/Messenger/Contact";
 
 const NostrChat = (): JSX.Element => {
   const [publicKey, setPublicKey] = useState<string>("");
@@ -23,7 +22,32 @@ const NostrChat = (): JSX.Element => {
     () => [...receivedEvents.events, ...sentEvents.events],
     [receivedEvents, sentEvents]
   );
-  const [messages, setMessages] = useState<Messages>([]);
+  const contactKeys = useMemo(
+    () => [
+      ...new Set(
+        events.map(({ pubkey, tags }) =>
+          pubkey === publicKey
+            ? tags?.find(([tag]) => tag === "p")?.[1] || ""
+            : pubkey
+        )
+      ),
+    ],
+    [events, publicKey]
+  );
+  const lastEvents = useMemo(
+    () =>
+      Object.fromEntries(
+        contactKeys.map((pubkey) => [
+          pubkey,
+          events
+            .filter((event) =>
+              [event.pubkey, getKeyFromTags(event.tags)].includes(pubkey)
+            )
+            .sort(descCreatedAt)[0],
+        ])
+      ),
+    [contactKeys, events]
+  );
 
   useEffect(() => {
     if (publicKey || loggedInRef.current) return;
@@ -33,16 +57,14 @@ const NostrChat = (): JSX.Element => {
     maybeGetExistingPublicKey().then(getPublicHexKey).then(setPublicKey);
   }, [publicKey]);
 
-  useEffect(() => {
-    if (events.length > 0 && events.length !== messages.length) {
-      setMessages(processMessages(events, messages, toHexKey(publicKey)));
-    }
-  }, [events, messages, publicKey]);
-
   return (
     <StyledMessenger>
-      {messages.map((message) => (
-        <Message key={message.id} message={message} />
+      {contactKeys.map((pubkey) => (
+        <Contact
+          key={pubkey}
+          lastEvent={lastEvents[pubkey]}
+          publicKey={publicKey}
+        />
       ))}
     </StyledMessenger>
   );
