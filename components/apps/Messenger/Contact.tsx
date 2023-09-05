@@ -26,9 +26,8 @@ const Contact: FC<ContactProps> = ({
   const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
-  const profile = useProfile({ pubkey });
   const { data: { display_name, name, npub, picture, username } = {} } =
-    profile;
+    useProfile({ pubkey });
   const userName =
     display_name ||
     name ||
