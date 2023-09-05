@@ -1,4 +1,4 @@
-import type { Filter } from "nostr-tools";
+import type { Event, Filter } from "nostr-tools";
 
 type RelayPolicy = { read: boolean; write: boolean };
 
@@ -11,6 +11,7 @@ declare global {
         decrypt: (publicKey: string, cipherText: string) => Promise<string>;
         encrypt: (publicKey: string, plainText: string) => Promise<string>;
       };
+      signEvent: (event: Event) => Promise<Event>;
     };
   }
 }

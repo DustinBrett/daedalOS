@@ -144,7 +144,7 @@ const directory: Processes = {
       height: 480,
       width: 640,
     },
-    icon: "/System/Icons/unknown.webp",
+    icon: "/System/Icons/messenger.webp",
     title: "Messenger",
   },
   MonacoEditor: {

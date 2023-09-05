@@ -12,9 +12,11 @@ import {
 } from "components/apps/Messenger/functions";
 import StyledMessenger from "components/apps/Messenger/StyledMessenger";
 import Contact from "components/apps/Messenger/Contact";
+import SendMessage from "components/apps/Messenger/SendMessage";
 
 const NostrChat = (): JSX.Element => {
   const [publicKey, setPublicKey] = useState<string>("");
+  const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
   const loggedInRef = useRef<boolean>(false);
   const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
   const sentEvents = useNostrEvents(getSentMessages(publicKey));
@@ -26,9 +28,7 @@ const NostrChat = (): JSX.Element => {
     () => [
       ...new Set(
         events.map(({ pubkey, tags }) =>
-          pubkey === publicKey
-            ? tags?.find(([tag]) => tag === "p")?.[1] || ""
-            : pubkey
+          pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey
         )
       ),
     ],
@@ -59,13 +59,21 @@ const NostrChat = (): JSX.Element => {
 
   return (
     <StyledMessenger>
-      {contactKeys.map((pubkey) => (
-        <Contact
-          key={pubkey}
-          lastEvent={lastEvents[pubkey]}
-          publicKey={publicKey}
-        />
-      ))}
+      <ol>
+        {contactKeys.map((pubkey) => (
+          <Contact
+            key={pubkey}
+            lastEvent={lastEvents[pubkey]}
+            onClick={() => setSelectedRecipientKey(pubkey)}
+            publicKey={publicKey}
+            recipientPublicKey={selectedRecipientKey}
+          />
+        ))}
+      </ol>
+      <SendMessage
+        publicKey={publicKey}
+        recipientPublicKey={selectedRecipientKey}
+      />
     </StyledMessenger>
   );
 };

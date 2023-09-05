@@ -1,61 +1,68 @@
 import styled from "styled-components";
 
-const StyledMessenger = styled.ol`
-  background-color: #242526;
-  overflow-y: auto;
+const StyledMessenger = styled.div`
+  display: flex;
+  flex-direction: column;
 
-  li {
-    border-radius: 10px;
-    color: #fff;
-    margin: 8px;
-    padding: 8px;
-    position: relative;
+  ol {
+    background-color: #242526;
+    height: 100%;
+    overflow-y: auto;
 
-    &:hover {
-      background-color: #3a3b3c;
-    }
+    li {
+      border-radius: 10px;
+      color: #fff;
+      margin: 8px;
+      padding: 8px;
+      position: relative;
 
-    &:focus {
-      background-color: rgba(45, 136, 255, 20%);
-    }
-
-    figure {
-      display: flex;
-      gap: 12px;
-
-      img {
-        border-radius: 50%;
-        width: 56px;
+      &:hover {
+        background-color: #3a3b3c;
       }
 
-      figcaption {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        justify-content: center;
-        overflow: hidden;
+      &:focus,
+      &.selected {
+        background-color: rgba(45, 136, 255, 20%);
+      }
 
-        > span {
-          color: #e4e6eb;
-          font-size: 17px;
-          font-weight: 500;
+      figure {
+        display: flex;
+        gap: 12px;
+
+        img {
+          border-radius: 50%;
+          width: 56px;
         }
 
-        > div {
-          color: #b0b3b8;
+        figcaption {
           display: flex;
-          font-size: 14px;
+          flex-direction: column;
           gap: 3px;
+          justify-content: center;
+          overflow: hidden;
 
-          div:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+          > span {
+            color: #e4e6eb;
+            font-size: 17px;
+            font-weight: 500;
           }
 
-          div:last-child {
-            color: #8b8d92;
-            padding-right: 10px;
+          > div {
+            color: #b0b3b8;
+            display: flex;
+            font-size: 14px;
+            gap: 3px;
+
+            div:first-child {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            div:last-child {
+              color: #8b8d92;
+              padding-right: 10px;
+            }
           }
         }
       }
