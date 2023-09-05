@@ -38,6 +38,12 @@ export const maybeGetExistingPublicKey = async (): Promise<string> =>
   localStorage.getItem(PUBLIC_KEY_IDB_NAME) ||
   "";
 
+export const getKeyFromTags = (tags: string[][] = []): string => {
+  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
+
+  return key;
+};
+
 export const processMessages = (
   events: Event[],
   messages: Messages,
@@ -50,10 +56,7 @@ export const processMessages = (
       content,
       created_at,
       id,
-      pubkey:
-        pubkey === publicKey
-          ? tags?.find(([tag]) => tag === "p")?.[1] || ""
-          : pubkey,
+      pubkey: pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey,
       sent: pubkey === publicKey,
     }));
 
@@ -105,9 +108,3 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
 
 export const descCreatedAt = (a: Event, b: Event): number =>
   b.created_at - a.created_at;
-
-export const getKeyFromTags = (tags: string[][] = []): string => {
-  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
-
-  return key;
-};
