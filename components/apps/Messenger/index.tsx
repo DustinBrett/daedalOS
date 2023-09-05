@@ -1,53 +1,21 @@
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import { NostrProvider, useNostrEvents } from "nostr-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { NostrProvider } from "nostr-react";
+import { useEffect, useRef, useState } from "react";
 import {
-  descCreatedAt,
-  getKeyFromTags,
   getPublicHexKey,
-  getReceivedMessages,
   getRelayUrls,
-  getSentMessages,
   maybeGetExistingPublicKey,
 } from "components/apps/Messenger/functions";
 import StyledMessenger from "components/apps/Messenger/StyledMessenger";
 import Contact from "components/apps/Messenger/Contact";
 import SendMessage from "components/apps/Messenger/SendMessage";
+import { useNostrContacts } from "components/apps/Messenger/hooks";
 
 const NostrChat = (): JSX.Element => {
   const [publicKey, setPublicKey] = useState<string>("");
   const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
   const loggedInRef = useRef<boolean>(false);
-  const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
-  const sentEvents = useNostrEvents(getSentMessages(publicKey));
-  const events = useMemo(
-    () => [...receivedEvents.events, ...sentEvents.events],
-    [receivedEvents, sentEvents]
-  );
-  const contactKeys = useMemo(
-    () => [
-      ...new Set(
-        events.map(({ pubkey, tags }) =>
-          pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey
-        )
-      ),
-    ],
-    [events, publicKey]
-  );
-  const lastEvents = useMemo(
-    () =>
-      Object.fromEntries(
-        contactKeys.map((pubkey) => [
-          pubkey,
-          events
-            .filter((event) =>
-              [event.pubkey, getKeyFromTags(event.tags)].includes(pubkey)
-            )
-            .sort(descCreatedAt)[0],
-        ])
-      ),
-    [contactKeys, events]
-  );
+  const { contactKeys, lastEvents } = useNostrContacts(publicKey);
 
   useEffect(() => {
     if (publicKey || loggedInRef.current) return;
@@ -65,6 +33,7 @@ const NostrChat = (): JSX.Element => {
             key={pubkey}
             lastEvent={lastEvents[pubkey]}
             onClick={() => setSelectedRecipientKey(pubkey)}
+            pubkey={pubkey}
             publicKey={publicKey}
             recipientPublicKey={selectedRecipientKey}
           />

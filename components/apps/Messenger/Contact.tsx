@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   decryptMessage,
-  getKeyFromTags,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { FOCUSABLE_ELEMENT, MILLISECONDS_IN_MINUTE } from "utils/constants";
@@ -12,6 +11,7 @@ import { ANON_AVATAR } from "components/apps/Messenger/constants";
 type ContactProps = {
   lastEvent: Event;
   onClick: () => void;
+  pubkey: string;
   publicKey: string;
   recipientPublicKey: string;
 };
@@ -19,12 +19,11 @@ type ContactProps = {
 const Contact: FC<ContactProps> = ({
   lastEvent,
   onClick,
+  pubkey,
   publicKey,
   recipientPublicKey,
 }) => {
-  const { content, created_at, pubkey: eventPubkey, tags } = lastEvent;
-  const sent = eventPubkey === publicKey;
-  const pubkey = sent ? getKeyFromTags(tags) : eventPubkey;
+  const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
   const profile = useProfile({ pubkey });
@@ -37,7 +36,9 @@ const Contact: FC<ContactProps> = ({
     (npub || nip19.npubEncode(pubkey)).slice(0, 12);
 
   useEffect(() => {
-    decryptMessage(content, pubkey).then(setDecryptedContent);
+    if (content) {
+      decryptMessage(content, pubkey).then(setDecryptedContent);
+    }
   }, [content, pubkey]);
 
   useEffect(() => {
@@ -68,10 +69,11 @@ const Contact: FC<ContactProps> = ({
           <span>{userName}</span>
           <div>
             <div>
-              {sent ? "You: " : ""}
+              {eventPubkey === publicKey ? "You: " : ""}
               {decryptedContent || content}
             </div>
-            ·<div>{timeStamp}</div>
+            {timeStamp ? "·" : ""}
+            <div>{timeStamp}</div>
           </div>
         </figcaption>
       </figure>

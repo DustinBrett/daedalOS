@@ -170,7 +170,7 @@ export const createMessageEvent = async (
   if (window.nostr?.signEvent) {
     event = await window.nostr.signEvent(event);
   } else {
-    event.sig = getSignature(event, publicKey);
+    event.sig = getSignature(event, toHexKey(getPrivateKey()));
   }
 
   return event;
