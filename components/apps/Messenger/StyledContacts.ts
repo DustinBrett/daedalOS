@@ -28,9 +28,15 @@ const StyledContacts = styled.ol`
       display: flex;
       gap: 12px;
 
-      img {
+      img,
+      svg {
         border-radius: 50%;
         width: 56px;
+      }
+
+      svg {
+        background-color: rgb(202, 205, 210);
+        fill: #fff;
       }
 
       figcaption {

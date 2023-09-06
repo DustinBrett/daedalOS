@@ -5,8 +5,8 @@ import {
 } from "components/apps/Messenger/functions";
 import { FOCUSABLE_ELEMENT, MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { type Event } from "nostr-tools";
-import { ANON_AVATAR } from "components/apps/Messenger/constants";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { Avatar } from "components/apps/Messenger/Icons";
 
 type ContactProps = {
   lastEvent: Event;
@@ -57,7 +57,7 @@ const Contact: FC<ContactProps> = ({
       onClick={onClick}
     >
       <figure>
-        <img alt={userName} src={picture || ANON_AVATAR} />
+        {picture ? <img alt={userName} src={picture} /> : <Avatar />}
         <figcaption>
           <span>{userName}</span>
           <div>
