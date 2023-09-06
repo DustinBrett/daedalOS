@@ -30,3 +30,16 @@ export type NostrEvents = {
   enabled: boolean;
   filter: Filter;
 };
+
+export type NostrContacts = {
+  contactKeys: string[];
+  lastEvents: Record<string, Event>;
+};
+
+export type NostrProfile = {
+  about?: string;
+  banner?: string;
+  picture?: string;
+  userName?: string;
+  website?: string;
+};

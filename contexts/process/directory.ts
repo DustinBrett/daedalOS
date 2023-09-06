@@ -141,8 +141,8 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Messenger")),
     backgroundColor: "#242526",
     defaultSize: {
-      height: 480,
-      width: 640,
+      height: 525,
+      width: 450,
     },
     icon: "/System/Icons/messenger.webp",
     title: "Messenger",

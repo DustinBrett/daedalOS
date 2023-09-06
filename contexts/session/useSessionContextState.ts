@@ -34,7 +34,6 @@ const useSessionContextState = (): SessionContextState => {
   const [foregroundId, setForegroundId] = useState("");
   const [aiApi, setAiApi] = useState(DEFAULT_AI_API);
   const [stackOrder, setStackOrder] = useState<string[]>([]);
-  const [nostrGlobalContacts, setNostrGlobalContacts] = useState<string[]>([]);
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
   const [cursor, setCursor] = useState("");
@@ -155,7 +154,6 @@ const useSessionContextState = (): SessionContextState => {
             clockSource,
             cursor,
             iconPositions,
-            nostrGlobalContacts,
             runHistory,
             sortOrders,
             themeName,
@@ -182,7 +180,6 @@ const useSessionContextState = (): SessionContextState => {
     cursor,
     haltSession,
     iconPositions,
-    nostrGlobalContacts,
     runHistory,
     sessionLoaded,
     sortOrders,
@@ -237,12 +234,6 @@ const useSessionContextState = (): SessionContextState => {
           ) {
             setWindowStates(session.windowStates);
           }
-          if (
-            session.nostrGlobalContacts &&
-            session.nostrGlobalContacts.length > 0
-          ) {
-            setNostrGlobalContacts(session.nostrGlobalContacts);
-          }
           if (session.runHistory && session.runHistory.length > 0) {
             setRunHistory(session.runHistory);
           }
@@ -265,7 +256,6 @@ const useSessionContextState = (): SessionContextState => {
     cursor,
     foregroundId,
     iconPositions,
-    nostrGlobalContacts,
     prependToStack,
     removeFromStack,
     runHistory,
@@ -276,7 +266,6 @@ const useSessionContextState = (): SessionContextState => {
     setForegroundId,
     setHaltSession,
     setIconPositions: setAndUpdateIconPositions,
-    setNostrGlobalContacts,
     setRunHistory,
     setSortOrder,
     setThemeName,

@@ -17,17 +17,23 @@ import {
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 
-export const getRelayUrls = async (): Promise<string[]> =>
-  window.nostr?.getRelays
-    ? [
-        ...new Set([
-          ...BASE_RW_RELAYS,
-          ...Object.entries(await window.nostr.getRelays())
-            .filter(([, { read, write }]) => read && write)
-            .map(([url]) => url),
-        ]),
-      ]
-    : BASE_RW_RELAYS;
+export const getRelayUrls = async (
+  publicKey: string,
+  wellKnownRelays: Record<string, string[]>
+): Promise<string[]> => {
+  const relays = wellKnownRelays[publicKey] || BASE_RW_RELAYS;
+
+  if (window.nostr?.getRelays) {
+    return [
+      ...new Set([
+        ...relays,
+        ...Object.entries(await window.nostr.getRelays()).map(([url]) => url),
+      ]),
+    ];
+  }
+
+  return relays;
+};
 
 export const toHexKey = (key: string): string => {
   if (key.startsWith("npub") || key.startsWith("nsec")) {

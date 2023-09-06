@@ -718,3 +718,10 @@ export const generatePrettyTimestamp = (): string =>
 
 export const isFileSystemMappingSupported = (): boolean =>
   typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;
+
+export const shallowEqual = (
+  obj1: Record<string, string> = {},
+  obj2: Record<string, string> = {}
+): boolean =>
+  Object.keys(obj1).length === Object.keys(obj2).length &&
+  Object.keys(obj1).every((key) => obj1[key] === obj2[key]);

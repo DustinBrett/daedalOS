@@ -1,25 +1,99 @@
-import { useNostrEvents } from "nostr-react";
-import { useMemo } from "react";
+import { useNostrEvents, useProfile } from "nostr-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getReceivedMessages,
   getSentMessages,
   getKeyFromTags,
   descCreatedAt,
   toHexKey,
+  getPublicHexKey,
+  maybeGetExistingPublicKey,
 } from "components/apps/Messenger/functions";
-import type { Event } from "nostr-tools";
-import { useSession } from "contexts/session";
+import { nip19 } from "nostr-tools";
+import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type {
+  NostrProfile,
+  NostrContacts,
+} from "components/apps/Messenger/types";
+import { shallowEqual } from "utils/functions";
 
-type NostrContacts = {
-  contactKeys: string[];
-  lastEvents: Record<string, Event>;
+type ProfileData = ReturnType<typeof useProfile>["data"];
+
+const dataToProfile = (publicKey: string, data?: ProfileData): NostrProfile => {
+  const {
+    about,
+    banner,
+    display_name,
+    name,
+    npub,
+    picture,
+    username,
+    website,
+  } = data || {};
+
+  return {
+    about,
+    banner,
+    picture,
+    userName:
+      display_name ||
+      name ||
+      username ||
+      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
+    website,
+  };
 };
 
-export const useNostrContacts = (publicKey: string): NostrContacts => {
-  const { nostrGlobalContacts } = useSession();
+export const useNostrProfile = (publicKey: string): NostrProfile => {
+  const [profile, setProfile] = useState<ProfileData>({} as ProfileData);
+  const { data, isLoading, onDone } = useProfile({ pubkey: publicKey });
+
+  useEffect(() => {
+    if (profile && shallowEqual(data, profile)) return;
+
+    // TODO: Make custom/reliable profile(s) hook with useNostrEvents
+    if (isLoading) onDone(() => setProfile(data));
+    setProfile(data);
+  }, [data, isLoading, onDone, profile]);
+
+  return dataToProfile(publicKey, profile);
+};
+
+export const useNip05 = (): NIP05Result => {
+  const [nip05, setNip05] = useState<NIP05Result>();
+  const updateNip05 = useCallback(async (url: string): Promise<boolean> => {
+    const nostrJson = await fetch(url);
+
+    if (nostrJson.ok) {
+      const { names = {}, relays = {} } =
+        ((await nostrJson.json()) as NIP05Result) || {};
+
+      setNip05({ names, relays });
+    }
+
+    return nostrJson.ok;
+  }, []);
+  const fetchNip05Json = useCallback(
+    async (): Promise<boolean> =>
+      (await updateNip05("/.well-known/nostr.json")) ||
+      updateNip05("/nostr.json"),
+    [updateNip05]
+  );
+
+  useEffect(() => {
+    if (!nip05) fetchNip05Json();
+  }, [fetchNip05Json, nip05]);
+
+  return nip05 || ({} as NIP05Result);
+};
+
+export const useNostrContacts = (
+  publicKey: string,
+  wellKnownNames: Record<string, string>
+): NostrContacts => {
   const globalContacts = useMemo(
-    () => nostrGlobalContacts.map((key) => toHexKey(key)),
-    [nostrGlobalContacts]
+    () => Object.values(wellKnownNames).map((key) => toHexKey(key)),
+    [wellKnownNames]
   );
   const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
   const sentEvents = useNostrEvents(getSentMessages(publicKey));
@@ -36,7 +110,7 @@ export const useNostrContacts = (publicKey: string): NostrContacts => {
         .filter((pubkey) => !globalContacts.includes(pubkey))
     );
 
-    return [...globalContacts.filter((key) => key !== publicKey), ...keys];
+    return [...globalContacts, ...keys].filter((key) => key !== publicKey);
   }, [events, globalContacts, publicKey]);
 
   const lastEvents = useMemo(
@@ -55,4 +129,14 @@ export const useNostrContacts = (publicKey: string): NostrContacts => {
   );
 
   return { contactKeys, lastEvents };
+};
+
+export const usePublicKey = (): string => {
+  const [publicKey, setPublicKey] = useState<string>("");
+
+  useEffect(() => {
+    maybeGetExistingPublicKey().then(getPublicHexKey).then(setPublicKey);
+  }, []);
+
+  return publicKey;
 };

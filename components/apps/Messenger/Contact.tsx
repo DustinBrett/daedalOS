@@ -4,9 +4,9 @@ import {
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { FOCUSABLE_ELEMENT, MILLISECONDS_IN_MINUTE } from "utils/constants";
-import { useProfile } from "nostr-react";
-import { nip19, type Event } from "nostr-tools";
+import { type Event } from "nostr-tools";
 import { ANON_AVATAR } from "components/apps/Messenger/constants";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
 
 type ContactProps = {
   lastEvent: Event;
@@ -26,13 +26,7 @@ const Contact: FC<ContactProps> = ({
   const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
-  const { data: { display_name, name, npub, picture, username } = {} } =
-    useProfile({ pubkey });
-  const userName =
-    display_name ||
-    name ||
-    username ||
-    (npub || nip19.npubEncode(pubkey)).slice(0, 12);
+  const { picture, userName } = useNostrProfile(pubkey);
 
   useEffect(() => {
     if (content) {

@@ -33,7 +33,6 @@ export type SessionData = {
   clockSource: ClockSource;
   cursor: string;
   iconPositions: IconPositions;
-  nostrGlobalContacts: string[];
   runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
@@ -53,7 +52,6 @@ export type SessionContextState = SessionData & {
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
   setHaltSession: React.Dispatch<React.SetStateAction<boolean>>;
   setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
-  setNostrGlobalContacts: React.Dispatch<React.SetStateAction<string[]>>;
   setRunHistory: React.Dispatch<React.SetStateAction<string[]>>;
   setSortOrder: (
     directory: string,
