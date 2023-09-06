@@ -12,13 +12,14 @@ import {
 } from "components/apps/Messenger/hooks";
 import StyledContacts from "components/apps/Messenger/StyledContacts";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
+import ChatLog from "components/apps/Messenger/ChatLog";
 
 const NostrChat: FC<{
   publicKey: string;
   wellKnownNames: Record<string, string>;
 }> = ({ publicKey, wellKnownNames }) => {
   const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
-  const { contactKeys, lastEvents } = useNostrContacts(
+  const { contactKeys, events, lastEvents } = useNostrContacts(
     publicKey,
     wellKnownNames
   );
@@ -31,10 +32,17 @@ const NostrChat: FC<{
         selectedRecipientKey={selectedRecipientKey}
       />
       {selectedRecipientKey ? (
-        <SendMessage
-          publicKey={publicKey}
-          recipientPublicKey={selectedRecipientKey}
-        />
+        <>
+          <ChatLog
+            events={events}
+            publicKey={publicKey}
+            recipientPublicKey={selectedRecipientKey}
+          />
+          <SendMessage
+            publicKey={publicKey}
+            recipientPublicKey={selectedRecipientKey}
+          />
+        </>
       ) : (
         <StyledContacts>
           {contactKeys.map((pubkey) => (

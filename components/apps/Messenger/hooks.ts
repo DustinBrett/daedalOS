@@ -112,7 +112,6 @@ export const useNostrContacts = (
 
     return [...globalContacts, ...keys].filter((key) => key !== publicKey);
   }, [events, globalContacts, publicKey]);
-
   const lastEvents = useMemo(
     () =>
       Object.fromEntries(
@@ -128,7 +127,7 @@ export const useNostrContacts = (
     [contactKeys, events]
   );
 
-  return { contactKeys, lastEvents };
+  return { contactKeys, events, lastEvents };
 };
 
 export const usePublicKey = (): string => {

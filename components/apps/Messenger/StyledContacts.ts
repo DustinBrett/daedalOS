@@ -6,6 +6,7 @@ const StyledContacts = styled.ol`
   background-color: #242526;
   height: 100%;
   overflow-y: auto;
+  scrollbar-gutter: auto;
 
   li {
     border-radius: 10px;

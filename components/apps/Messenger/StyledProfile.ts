@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledProfile = styled.header`
+const StyledProfile = styled.div`
   border-bottom: 1px solid rgb(57, 58, 59);
   color: #fff;
   display: flex;

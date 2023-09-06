@@ -33,6 +33,7 @@ export type NostrEvents = {
 
 export type NostrContacts = {
   contactKeys: string[];
+  events: Event[];
   lastEvents: Record<string, Event>;
 };
 

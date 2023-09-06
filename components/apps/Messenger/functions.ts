@@ -136,6 +136,9 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
   return toHexKey(newPublicKey);
 };
 
+export const ascCreatedAt = (a: Event, b: Event): number =>
+  a.created_at - b.created_at;
+
 export const descCreatedAt = (a: Event, b: Event): number =>
   b.created_at - a.created_at;
 
