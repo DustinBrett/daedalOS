@@ -51,6 +51,7 @@ const StyledContacts = styled.ol`
         gap: 3px;
         justify-content: center;
         overflow: hidden;
+        place-items: flex-start;
 
         > span {
           color: #e4e6eb;
@@ -63,6 +64,7 @@ const StyledContacts = styled.ol`
           display: flex;
           font-size: 14px;
           gap: 3px;
+          width: 100%;
 
           div:first-child {
             overflow: hidden;

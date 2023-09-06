@@ -3,10 +3,11 @@ import {
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
-import { FOCUSABLE_ELEMENT, MILLISECONDS_IN_MINUTE } from "utils/constants";
+import { MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { type Event } from "nostr-tools";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { Avatar } from "components/apps/Messenger/Icons";
+import Button from "styles/common/Button";
 
 type ContactProps = {
   lastEvent: Event;
@@ -50,26 +51,23 @@ const Contact: FC<ContactProps> = ({
   }, [created_at, lastEvent]);
 
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <li
-      className={recipientPublicKey === pubkey ? "selected" : undefined}
-      {...FOCUSABLE_ELEMENT}
-      onClick={onClick}
-    >
-      <figure>
-        {picture ? <img alt={userName} src={picture} /> : <Avatar />}
-        <figcaption>
-          <span>{userName}</span>
-          <div>
+    <li className={recipientPublicKey === pubkey ? "selected" : undefined}>
+      <Button onClick={onClick}>
+        <figure>
+          {picture ? <img alt={userName} src={picture} /> : <Avatar />}
+          <figcaption>
+            <span>{userName}</span>
             <div>
-              {eventPubkey === publicKey ? "You: " : ""}
-              {decryptedContent || content}
+              <div>
+                {eventPubkey === publicKey ? "You: " : ""}
+                {decryptedContent || content}
+              </div>
+              {timeStamp ? "·" : ""}
+              <div>{timeStamp}</div>
             </div>
-            {timeStamp ? "·" : ""}
-            <div>{timeStamp}</div>
-          </div>
-        </figcaption>
-      </figure>
+          </figcaption>
+        </figure>
+      </Button>
     </li>
   );
 };

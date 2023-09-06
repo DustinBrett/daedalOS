@@ -7,7 +7,7 @@ import {
   getSignature,
 } from "nostr-tools";
 import type { Event } from "nostr-tools";
-import type { Messages, NostrEvents } from "components/apps/Messenger/types";
+import type { NostrEvents } from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
   DM_KIND,
@@ -59,25 +59,6 @@ export const getKeyFromTags = (tags: string[][] = []): string => {
   return key;
 };
 
-export const processMessages = (
-  events: Event[],
-  messages: Messages,
-  publicKey: string
-): Messages => {
-  const messageIds = new Set(messages.map(({ id }) => id));
-  const newMessages = events
-    .filter(({ id }) => !messageIds.has(id))
-    .map(({ content, created_at, id, pubkey, tags }) => ({
-      content,
-      created_at,
-      id,
-      pubkey: pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey,
-      sent: pubkey === publicKey,
-    }));
-
-  return newMessages.length > 0 ? [...messages, ...newMessages] : messages;
-};
-
 export const decryptMessage = async (
   content: string,
   pubkey: string
@@ -93,7 +74,7 @@ export const decryptMessage = async (
   return "";
 };
 
-export const encryptMessage = async (
+const encryptMessage = async (
   content: string,
   pubkey: string
 ): Promise<string> => {
