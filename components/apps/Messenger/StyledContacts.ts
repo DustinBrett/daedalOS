@@ -30,7 +30,13 @@ const StyledContacts = styled.ol`
 
       img,
       svg {
+        aspect-ratio: 1/1;
         border-radius: 50%;
+        height: 56px;
+        max-height: 56px;
+        max-width: 56px;
+        min-height: 56px;
+        min-width: 56px;
         width: 56px;
       }
 

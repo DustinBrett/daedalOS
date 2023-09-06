@@ -30,7 +30,7 @@ const SendMessage: FC<SendMessageProps> = ({
         onKeyDown={({ key }) => {
           if (key === "Enter") sendMessage();
         }}
-        placeholder="Aa"
+        placeholder="Type a message..."
         type="text"
       />
       <Button onClick={sendMessage}>
