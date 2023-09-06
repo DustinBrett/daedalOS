@@ -1,4 +1,4 @@
-import { useNostrEvents, useProfile } from "nostr-react";
+import { useNostrEvents, type Metadata } from "nostr-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getReceivedMessages,
@@ -15,9 +15,8 @@ import type {
   NostrProfile,
   NostrContacts,
 } from "components/apps/Messenger/types";
-import { shallowEqual } from "utils/functions";
 
-type ProfileData = ReturnType<typeof useProfile>["data"];
+type ProfileData = Metadata & { npub?: string };
 
 const dataToProfile = (publicKey: string, data?: ProfileData): NostrProfile => {
   const {
@@ -46,15 +45,22 @@ const dataToProfile = (publicKey: string, data?: ProfileData): NostrProfile => {
 
 export const useNostrProfile = (publicKey: string): NostrProfile => {
   const [profile, setProfile] = useState<ProfileData>({} as ProfileData);
-  const { data, isLoading, onDone } = useProfile({ pubkey: publicKey });
+  const { onEvent } = useNostrEvents({
+    filter: {
+      authors: [publicKey],
+      kinds: [0],
+    },
+  });
 
-  useEffect(() => {
-    if (profile && shallowEqual(data, profile)) return;
+  onEvent(({ content }) => {
+    try {
+      const metadata = JSON.parse(content) as Metadata;
 
-    // TODO: Make custom/reliable profile(s) hook with useNostrEvents
-    if (isLoading) onDone(() => setProfile(data));
-    setProfile(data);
-  }, [data, isLoading, onDone, profile]);
+      if (metadata) setProfile(metadata);
+    } catch {
+      // Ignore errors parsing profile data
+    }
+  });
 
   return dataToProfile(publicKey, profile);
 };

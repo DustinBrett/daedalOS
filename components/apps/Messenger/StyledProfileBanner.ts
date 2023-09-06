@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledProfile = styled.div`
+const StyledProfileBanner = styled.div`
   border-bottom: 1px solid rgb(57, 58, 59);
   color: #fff;
   display: flex;
@@ -35,4 +35,4 @@ const StyledProfile = styled.div`
   }
 `;
 
-export default StyledProfile;
+export default StyledProfileBanner;

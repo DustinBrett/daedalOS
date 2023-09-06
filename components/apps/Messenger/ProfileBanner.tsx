@@ -1,9 +1,9 @@
-import StyledProfile from "components/apps/Messenger/StyledProfile";
 import { ANON_AVATAR } from "components/apps/Messenger/constants";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { useMemo } from "react";
 import Button from "styles/common/Button";
 import { Back } from "components/apps/FileExplorer/NavigationIcons";
+import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -30,7 +30,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   );
 
   return (
-    <StyledProfile style={style}>
+    <StyledProfileBanner style={style}>
       {selectedRecipientKey ? (
         <Button onClick={goHome}>
           <Back />
@@ -42,7 +42,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
         <img alt={userName} src={picture || ANON_AVATAR} />
         <figcaption>{userName}</figcaption>
       </figure>
-    </StyledProfile>
+    </StyledProfileBanner>
   );
 };
 
