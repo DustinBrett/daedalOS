@@ -11,6 +11,23 @@ const StyledProfile = styled.header`
   place-items: center;
   text-shadow: 1px 1px 1px #000;
 
+  button {
+    height: 24px;
+    width: 24px;
+
+    svg {
+      fill: #fff;
+      height: inherit;
+      width: inherit;
+    }
+  }
+
+  figure {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 15px;
+  }
+
   img {
     border: 2px solid #fff;
     border-radius: 50%;

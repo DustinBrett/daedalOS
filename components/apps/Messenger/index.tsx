@@ -25,23 +25,30 @@ const NostrChat: FC<{
 
   return (
     <StyledMessenger>
-      <ProfileBanner publicKey={publicKey} />
-      <StyledContacts>
-        {contactKeys.map((pubkey) => (
-          <Contact
-            key={pubkey}
-            lastEvent={lastEvents[pubkey]}
-            onClick={() => setSelectedRecipientKey(pubkey)}
-            pubkey={pubkey}
-            publicKey={publicKey}
-            recipientPublicKey={selectedRecipientKey}
-          />
-        ))}
-      </StyledContacts>
-      <SendMessage
+      <ProfileBanner
+        goHome={() => setSelectedRecipientKey("")}
         publicKey={publicKey}
-        recipientPublicKey={selectedRecipientKey}
+        selectedRecipientKey={selectedRecipientKey}
       />
+      {selectedRecipientKey ? (
+        <SendMessage
+          publicKey={publicKey}
+          recipientPublicKey={selectedRecipientKey}
+        />
+      ) : (
+        <StyledContacts>
+          {contactKeys.map((pubkey) => (
+            <Contact
+              key={pubkey}
+              lastEvent={lastEvents[pubkey]}
+              onClick={() => setSelectedRecipientKey(pubkey)}
+              pubkey={pubkey}
+              publicKey={publicKey}
+              recipientPublicKey={selectedRecipientKey}
+            />
+          ))}
+        </StyledContacts>
+      )}
     </StyledMessenger>
   );
 };
