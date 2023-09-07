@@ -42,6 +42,16 @@ const StyledProfileBanner = styled.div`
       height: 24px;
       width: 24px;
     }
+
+    &.write {
+      height: 30px;
+      width: 30px;
+
+      svg {
+        height: 30px;
+        width: 30px;
+      }
+    }
   }
 `;
 

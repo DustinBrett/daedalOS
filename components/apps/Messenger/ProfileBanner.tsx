@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import Button from "styles/common/Button";
 import { Back } from "components/apps/FileExplorer/NavigationIcons";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
-import { Avatar } from "components/apps/Messenger/Icons";
+import { Avatar, Write } from "components/apps/Messenger/Icons";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -11,12 +11,14 @@ const STYLING =
 
 type ProfileBannerProps = {
   goHome: () => void;
+  newChat: () => void;
   publicKey: string;
   selectedRecipientKey: string;
 };
 
 const ProfileBanner: FC<ProfileBannerProps> = ({
   goHome,
+  newChat,
   selectedRecipientKey,
   publicKey,
 }) => {
@@ -36,7 +38,9 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
           <Back />
         </Button>
       ) : (
-        <div />
+        <Button className="write" onClick={newChat}>
+          <Write />
+        </Button>
       )}
       <figure>
         {picture ? <img alt={userName} src={picture} /> : <Avatar />}

@@ -36,6 +36,8 @@ const NostrChat: FC<{
     <StyledMessenger>
       <ProfileBanner
         goHome={() => setSelectedRecipientKey("")}
+        // TODO: Show chat with "To: ..."
+        newChat={() => setSelectedRecipientKey("")}
         publicKey={publicKey}
         selectedRecipientKey={selectedRecipientKey}
       />
@@ -65,7 +67,6 @@ const NostrChat: FC<{
               }}
               pubkey={pubkey}
               publicKey={publicKey}
-              recipientPublicKey={selectedRecipientKey}
               unreadEvent={unreadEvents.includes(lastEvents[pubkey])}
             />
           ))}
