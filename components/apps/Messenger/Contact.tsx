@@ -27,16 +27,21 @@ const Contact: FC<ContactProps> = ({
   recipientPublicKey,
   unreadEvent,
 }) => {
-  const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
+  const {
+    content = "",
+    created_at = 0,
+    id,
+    pubkey: eventPubkey,
+  } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
   const { picture, userName } = useNostrProfile(pubkey);
 
   useEffect(() => {
     if (content) {
-      decryptMessage(content, pubkey).then(setDecryptedContent);
+      decryptMessage(id, content, pubkey).then(setDecryptedContent);
     }
-  }, [content, pubkey]);
+  }, [content, id, pubkey]);
 
   useEffect(() => {
     let interval = 0;

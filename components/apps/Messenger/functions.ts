@@ -63,14 +63,23 @@ export const getKeyFromTags = (tags: string[][] = []): string => {
   return key;
 };
 
+const decryptedContent: Record<string, string> = {};
+
 export const decryptMessage = async (
+  id: string,
   content: string,
   pubkey: string
 ): Promise<string> => {
+  if (decryptedContent[id]) return decryptedContent[id];
+
   try {
-    return await (window.nostr?.nip04
+    const message = await (window.nostr?.nip04
       ? window.nostr.nip04.decrypt(pubkey, content)
       : nip04.decrypt(toHexKey(getPrivateKey()), pubkey, content));
+
+    decryptedContent[id] = message;
+
+    return message;
   } catch {
     // Ignore failure to decrypt
   }

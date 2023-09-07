@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect, useRef } from "react";
+import { useMemo, useCallback, useEffect, useRef, useState } from "react";
 import type { Event } from "nostr-tools";
 import {
   getKeyFromTags,
@@ -22,29 +22,33 @@ const ChatLog: FC<{
   const [decryptedContent, setDecryptedContent] = useState<
     Record<string, string>
   >({});
-  const decryptMessages = useCallback((): void => {
-    chatEvents.forEach(async ({ content, id }) => {
-      if (decryptedContent[id]) return;
-
-      const message = await decryptMessage(content, recipientPublicKey);
-
-      setDecryptedContent((currentDecryptedContent) => ({
-        ...currentDecryptedContent,
-        [id]: message,
-      }));
-    });
-  }, [chatEvents, decryptedContent, recipientPublicKey]);
+  const decryptMessages = useCallback(
+    async (): Promise<void> =>
+      setDecryptedContent(
+        Object.fromEntries(
+          await Promise.all(
+            chatEvents.map<Promise<[string, string]>>(
+              async ({ content, id }) => [
+                id,
+                await decryptMessage(id, content, recipientPublicKey),
+              ]
+            )
+          )
+        )
+      ),
+    [chatEvents, recipientPublicKey]
+  );
   const listRef = useRef<HTMLOListElement>(null);
 
   useEffect(() => {
-    if (chatEvents) decryptMessages();
-  }, [chatEvents, decryptMessages]);
-
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollTo(0, listRef.current.scrollHeight);
+    if (chatEvents) {
+      decryptMessages().then(() => {
+        if (listRef.current) {
+          listRef.current.scrollTo(0, listRef.current.scrollHeight);
+        }
+      });
     }
-  }, [decryptedContent]);
+  }, [chatEvents, decryptMessages]);
 
   return (
     <StyledChatLog ref={listRef}>
