@@ -41,11 +41,6 @@ const StyledContacts = styled.ol`
         width: 56px;
       }
 
-      svg {
-        background-color: rgb(202, 205, 210);
-        fill: #fff;
-      }
-
       figcaption {
         display: flex;
         flex-direction: column;

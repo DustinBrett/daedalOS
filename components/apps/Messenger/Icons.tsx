@@ -1,9 +1,14 @@
 import { memo } from "react";
 
 export const Avatar = memo(() => (
-  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    style={{ backgroundColor: "#cacdd2" }}
+    viewBox="0 0 512 512"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M256 281.602c-151.55 0-204.8 76.796-204.8 128v76.796h409.6v-76.796c0-51.204-53.25-128-204.8-128ZM371.2 140.8c0 63.622-51.575 115.2-115.2 115.2s-115.2-51.578-115.2-115.2c0-63.624 51.575-115.198 115.2-115.198S371.2 77.176 371.2 140.8Zm0 0"
+      fill="#fff"
       transform="translate(0, 50)"
     />
   </svg>
