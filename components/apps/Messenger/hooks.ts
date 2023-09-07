@@ -15,6 +15,9 @@ import type {
   NostrProfile,
   NostrContacts,
 } from "components/apps/Messenger/types";
+import { useProcesses } from "contexts/process";
+import directory from "contexts/process/directory";
+import { NOTIFICATION_SOUND } from "./constants";
 
 type ProfileData = Metadata & { npub?: string };
 
@@ -95,7 +98,9 @@ export const useNip05 = (): NIP05Result => {
 
 export const useNostrContacts = (
   publicKey: string,
-  wellKnownNames: Record<string, string>
+  wellKnownNames: Record<string, string>,
+  loginTime: number,
+  seenEventIds: string[]
 ): NostrContacts => {
   const globalContacts = useMemo(
     () => Object.values(wellKnownNames).map((key) => toHexKey(key)),
@@ -132,8 +137,18 @@ export const useNostrContacts = (
       ),
     [contactKeys, events]
   );
+  const unreadEvents = useMemo(
+    () =>
+      events.filter(
+        ({ created_at, id, pubkey }) =>
+          pubkey !== publicKey &&
+          created_at > loginTime &&
+          !seenEventIds.includes(id)
+      ),
+    [events, loginTime, publicKey, seenEventIds]
+  );
 
-  return { contactKeys, events, lastEvents };
+  return { contactKeys, events, lastEvents, unreadEvents };
 };
 
 export const usePublicKey = (): string => {
@@ -144,4 +159,24 @@ export const usePublicKey = (): string => {
   }, []);
 
   return publicKey;
+};
+
+export const useUnreadStatus = (id: string, unreadCount: number): void => {
+  const [currentUnreadCount, setCurrentUnreadCount] = useState(unreadCount);
+  const { title } = useProcesses();
+
+  useEffect(() => {
+    title(
+      id,
+      `${directory[id]?.title}${unreadCount > 0 ? ` (${unreadCount})` : ""}`
+    );
+  }, [id, title, unreadCount]);
+
+  useEffect(() => {
+    if (unreadCount > currentUnreadCount) {
+      new Audio(NOTIFICATION_SOUND).play();
+    }
+
+    setCurrentUnreadCount(unreadCount);
+  }, [currentUnreadCount, unreadCount]);
 };

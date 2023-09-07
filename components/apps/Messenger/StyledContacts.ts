@@ -27,6 +27,7 @@ const StyledContacts = styled.ol`
     figure {
       display: flex;
       gap: 12px;
+      width: calc(100% - 15px);
 
       img,
       svg {
@@ -56,7 +57,7 @@ const StyledContacts = styled.ol`
         > span {
           color: #e4e6eb;
           font-size: 17px;
-          font-weight: 500;
+          font-weight: 600;
         }
 
         > div {
@@ -70,6 +71,11 @@ const StyledContacts = styled.ol`
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+
+            &.unread {
+              color: #fff;
+              font-weight: 600;
+            }
           }
 
           div:last-child {
@@ -78,6 +84,17 @@ const StyledContacts = styled.ol`
           }
         }
       }
+    }
+
+    &.unread::after {
+      background-color: rgb(46, 137, 255);
+      border-radius: 50%;
+      content: "";
+      height: 12px;
+      position: absolute;
+      right: 8px;
+      top: calc(50% - 6px);
+      width: 12px;
     }
   }
 `;

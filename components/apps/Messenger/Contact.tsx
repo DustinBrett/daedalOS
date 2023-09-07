@@ -8,6 +8,7 @@ import { type Event } from "nostr-tools";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { Avatar } from "components/apps/Messenger/Icons";
 import Button from "styles/common/Button";
+import { clsx } from "utils/functions";
 
 type ContactProps = {
   lastEvent: Event;
@@ -15,6 +16,7 @@ type ContactProps = {
   pubkey: string;
   publicKey: string;
   recipientPublicKey: string;
+  unreadEvent: boolean;
 };
 
 const Contact: FC<ContactProps> = ({
@@ -23,6 +25,7 @@ const Contact: FC<ContactProps> = ({
   pubkey,
   publicKey,
   recipientPublicKey,
+  unreadEvent,
 }) => {
   const { content = "", created_at = 0, pubkey: eventPubkey } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
@@ -51,14 +54,19 @@ const Contact: FC<ContactProps> = ({
   }, [created_at, lastEvent]);
 
   return (
-    <li className={recipientPublicKey === pubkey ? "selected" : undefined}>
+    <li
+      className={clsx({
+        selected: recipientPublicKey === pubkey,
+        unread: unreadEvent,
+      })}
+    >
       <Button onClick={onClick}>
         <figure>
           {picture ? <img alt={userName} src={picture} /> : <Avatar />}
           <figcaption>
             <span>{userName}</span>
             <div>
-              <div>
+              <div className={unreadEvent ? "unread" : undefined}>
                 {eventPubkey === publicKey ? "You: " : ""}
                 {decryptedContent || content}
               </div>

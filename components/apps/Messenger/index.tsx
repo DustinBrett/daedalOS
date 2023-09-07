@@ -9,20 +9,28 @@ import {
   useNostrContacts,
   usePublicKey,
   useNip05,
+  useUnreadStatus,
 } from "components/apps/Messenger/hooks";
 import StyledContacts from "components/apps/Messenger/StyledContacts";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
 import ChatLog from "components/apps/Messenger/ChatLog";
 
 const NostrChat: FC<{
+  id: string;
+  loginTime: number;
   publicKey: string;
   wellKnownNames: Record<string, string>;
-}> = ({ publicKey, wellKnownNames }) => {
+}> = ({ id, loginTime, publicKey, wellKnownNames }) => {
+  const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
   const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
-  const { contactKeys, events, lastEvents } = useNostrContacts(
+  const { contactKeys, events, lastEvents, unreadEvents } = useNostrContacts(
     publicKey,
-    wellKnownNames
+    wellKnownNames,
+    loginTime,
+    seenEventIds
   );
+
+  useUnreadStatus(id, unreadEvents.length);
 
   return (
     <StyledMessenger>
@@ -49,10 +57,16 @@ const NostrChat: FC<{
             <Contact
               key={pubkey}
               lastEvent={lastEvents[pubkey]}
-              onClick={() => setSelectedRecipientKey(pubkey)}
+              onClick={() => {
+                setSeenEventIds((currentSeenEventIds) => [
+                  ...new Set([lastEvents[pubkey]?.id, ...currentSeenEventIds]),
+                ]);
+                setSelectedRecipientKey(pubkey);
+              }}
               pubkey={pubkey}
               publicKey={publicKey}
               recipientPublicKey={selectedRecipientKey}
+              unreadEvent={unreadEvents.includes(lastEvents[pubkey])}
             />
           ))}
         </StyledContacts>
@@ -61,7 +75,8 @@ const NostrChat: FC<{
   );
 };
 
-const Messenger: FC<ComponentProcessProps> = () => {
+const Messenger: FC<ComponentProcessProps> = ({ id }) => {
+  const [loginTime, setLoginTime] = useState<number>(0);
   const [relayUrls, setRelayUrls] = useState<string[] | undefined>();
   const { names, relays } = useNip05();
   const publicKey = usePublicKey();
@@ -69,12 +84,20 @@ const Messenger: FC<ComponentProcessProps> = () => {
   useEffect(() => {
     if (!publicKey || !relays) return;
 
-    getRelayUrls(publicKey, relays).then(setRelayUrls);
+    getRelayUrls(publicKey, relays).then((foundRelays) => {
+      setRelayUrls(foundRelays);
+      setLoginTime(Math.floor(Date.now() / 1000));
+    });
   }, [publicKey, relays]);
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
-      <NostrChat publicKey={publicKey} wellKnownNames={names} />
+      <NostrChat
+        id={id}
+        loginTime={loginTime}
+        publicKey={publicKey}
+        wellKnownNames={names}
+      />
     </NostrProvider>
   ) : (
     <> </>

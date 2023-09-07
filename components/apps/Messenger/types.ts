@@ -25,6 +25,7 @@ export type NostrContacts = {
   contactKeys: string[];
   events: Event[];
   lastEvents: Record<string, Event>;
+  unreadEvents: Event[];
 };
 
 export type NostrProfile = {
