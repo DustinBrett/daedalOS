@@ -7,7 +7,11 @@ import {
   getSignature,
 } from "nostr-tools";
 import type { Event } from "nostr-tools";
-import type { NostrEvents } from "components/apps/Messenger/types";
+import type {
+  NostrEvents,
+  NostrProfile,
+  ProfileData,
+} from "components/apps/Messenger/types";
 import {
   BASE_RW_RELAYS,
   DM_KIND,
@@ -164,4 +168,32 @@ export const createMessageEvent = async (
   }
 
   return event;
+};
+
+export const dataToProfile = (
+  publicKey: string,
+  data?: ProfileData
+): NostrProfile => {
+  const {
+    about,
+    banner,
+    display_name,
+    name,
+    npub,
+    picture,
+    username,
+    website,
+  } = data || {};
+
+  return {
+    about,
+    banner,
+    picture,
+    userName:
+      display_name ||
+      name ||
+      username ||
+      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
+    website,
+  };
 };

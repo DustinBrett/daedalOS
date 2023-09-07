@@ -8,43 +8,17 @@ import {
   toHexKey,
   getPublicHexKey,
   maybeGetExistingPublicKey,
+  dataToProfile,
 } from "components/apps/Messenger/functions";
-import { nip19 } from "nostr-tools";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type {
   NostrProfile,
   NostrContacts,
+  ProfileData,
 } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import { NOTIFICATION_SOUND } from "./constants";
-
-type ProfileData = Metadata & { npub?: string };
-
-const dataToProfile = (publicKey: string, data?: ProfileData): NostrProfile => {
-  const {
-    about,
-    banner,
-    display_name,
-    name,
-    npub,
-    picture,
-    username,
-    website,
-  } = data || {};
-
-  return {
-    about,
-    banner,
-    picture,
-    userName:
-      display_name ||
-      name ||
-      username ||
-      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
-    website,
-  };
-};
+import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
 
 export const useNostrProfile = (publicKey: string): NostrProfile => {
   const [profile, setProfile] = useState<ProfileData>({} as ProfileData);

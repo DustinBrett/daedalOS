@@ -1,3 +1,4 @@
+import { type Metadata } from "nostr-react";
 import type { Event, Filter } from "nostr-tools";
 
 type RelayPolicy = { read: boolean; write: boolean };
@@ -35,3 +36,5 @@ export type NostrProfile = {
   userName?: string;
   website?: string;
 };
+
+export type ProfileData = Metadata & { npub?: string };
