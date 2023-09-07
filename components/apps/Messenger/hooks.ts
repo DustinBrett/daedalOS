@@ -14,32 +14,55 @@ import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type {
   NostrProfile,
   NostrContacts,
-  ProfileData,
 } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
+import { MILLISECONDS_IN_MINUTE } from "utils/constants";
+
+const cachedNostrProfiles: Record<string, NostrProfile | undefined> = {};
+
+const PROFILE_CACHE_TIMEOUT_MINUTES = 60;
 
 export const useNostrProfile = (publicKey: string): NostrProfile => {
-  const [profile, setProfile] = useState<ProfileData>({} as ProfileData);
+  const cachedProfile = useMemo(
+    () => cachedNostrProfiles[publicKey],
+    [publicKey]
+  );
+  const [profile, setProfile] = useState<NostrProfile>({} as NostrProfile);
   const { onEvent } = useNostrEvents({
+    enabled: !cachedProfile,
     filter: {
       authors: [publicKey],
       kinds: [0],
     },
   });
 
+  useEffect(
+    () => setProfile(cachedProfile || dataToProfile(publicKey)),
+    [cachedProfile, publicKey]
+  );
+
   onEvent(({ content }) => {
     try {
       const metadata = JSON.parse(content) as Metadata;
 
-      if (metadata) setProfile(metadata);
+      if (metadata) {
+        const data = dataToProfile(publicKey, metadata);
+
+        setProfile(data);
+
+        cachedNostrProfiles[publicKey] = data;
+        window.setTimeout(() => {
+          cachedNostrProfiles[publicKey] = undefined;
+        }, MILLISECONDS_IN_MINUTE * PROFILE_CACHE_TIMEOUT_MINUTES);
+      }
     } catch {
       // Ignore errors parsing profile data
     }
   });
 
-  return dataToProfile(publicKey, profile);
+  return cachedProfile || profile;
 };
 
 export const useNip05 = (): NIP05Result => {
