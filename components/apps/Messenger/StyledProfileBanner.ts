@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledProfileBanner = styled.div`
-  background: linear-gradient(rgba(255, 255, 255, 10%), rgba(0, 0, 0, 50%));
+  background: linear-gradient(rgba(255, 255, 255, 25%), rgba(0, 0, 0, 50%));
   border-bottom: 1px solid rgb(57, 58, 59);
   color: #fff;
   display: flex;
@@ -53,6 +53,13 @@ const StyledProfileBanner = styled.div`
       outline: 4px solid rgb(0, 0, 0, 50%);
       pointer-events: none;
       width: 24px;
+    }
+
+    &:hover {
+      svg:first-child {
+        background-color: rgb(0, 0, 0, 75%);
+        outline: 4px solid rgb(0, 0, 0, 75%);
+      }
     }
   }
 `;
