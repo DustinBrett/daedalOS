@@ -4,6 +4,7 @@ import {
   getKeyFromTags,
   decryptMessage,
   ascCreatedAt,
+  descCreatedAt,
 } from "components/apps/Messenger/functions";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 
@@ -23,17 +24,13 @@ const ChatLog: FC<{
     Record<string, string>
   >({});
   const decryptMessages = useCallback(
-    async (): Promise<void> =>
-      setDecryptedContent(
-        Object.fromEntries(
-          await Promise.all(
-            chatEvents.map<Promise<[string, string]>>(
-              async ({ content, id }) => [
-                id,
-                await decryptMessage(id, content, recipientPublicKey),
-              ]
-            )
-          )
+    () =>
+      chatEvents.sort(descCreatedAt).forEach(({ content, id }) =>
+        decryptMessage(id, content, recipientPublicKey).then((message) =>
+          setDecryptedContent((currentDecryptedContent) => ({
+            ...currentDecryptedContent,
+            [id]: message,
+          }))
         )
       ),
     [chatEvents, recipientPublicKey]
@@ -42,11 +39,8 @@ const ChatLog: FC<{
 
   useEffect(() => {
     if (chatEvents) {
-      decryptMessages().then(() => {
-        if (listRef.current) {
-          listRef.current.scrollTo(0, listRef.current.scrollHeight);
-        }
-      });
+      decryptMessages();
+      listRef.current?.scrollTo(0, listRef.current.scrollHeight);
     }
   }, [chatEvents, decryptMessages]);
 
