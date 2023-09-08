@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledProfileBanner = styled.div`
+  background: linear-gradient(rgba(255, 255, 255, 10%), rgba(0, 0, 0, 50%));
   border-bottom: 1px solid rgb(57, 58, 59);
   color: #fff;
   display: flex;
@@ -31,26 +32,27 @@ const StyledProfileBanner = styled.div`
       min-width: 38px;
       width: 38px;
     }
+
+    figcaption {
+      padding-top: 1px;
+    }
   }
 
   button {
-    height: 24px;
-    width: 24px;
+    cursor: pointer;
+    height: 30px;
+    padding-top: 3px;
+    width: 30px;
 
     svg:first-child {
+      background-color: rgb(0, 0, 0, 50%);
+      border-radius: 5px;
+      color: #fff;
       fill: #fff;
       height: 24px;
+      outline: 4px solid rgb(0, 0, 0, 50%);
+      pointer-events: none;
       width: 24px;
-    }
-
-    &.write {
-      height: 30px;
-      width: 30px;
-
-      svg {
-        height: 30px;
-        width: 30px;
-      }
     }
   }
 `;

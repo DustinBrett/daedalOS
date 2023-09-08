@@ -11,9 +11,14 @@ const StyledContacts = styled.ol`
   li {
     border-radius: 10px;
     color: #fff;
+    cursor: pointer;
     margin: 8px;
     padding: 8px;
     position: relative;
+
+    button {
+      cursor: pointer;
+    }
 
     &:hover {
       background-color: #3a3b3c;
@@ -25,6 +30,7 @@ const StyledContacts = styled.ol`
     }
 
     figure {
+      cursor: pointer;
       display: flex;
       gap: 12px;
       width: calc(100% - 15px);
@@ -38,10 +44,12 @@ const StyledContacts = styled.ol`
         max-width: 56px;
         min-height: 56px;
         min-width: 56px;
+        pointer-events: none;
         width: 56px;
       }
 
       figcaption {
+        cursor: pointer;
         display: flex;
         flex-direction: column;
         gap: 3px;
@@ -51,18 +59,21 @@ const StyledContacts = styled.ol`
 
         > span {
           color: #e4e6eb;
+          cursor: pointer;
           font-size: 17px;
           font-weight: 600;
         }
 
         > div {
           color: #b0b3b8;
+          cursor: pointer;
           display: flex;
           font-size: 14px;
           gap: 3px;
           width: 100%;
 
           div:first-child {
+            cursor: pointer;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -75,6 +86,7 @@ const StyledContacts = styled.ol`
 
           div:last-child {
             color: #8b8d92;
+            cursor: pointer;
             padding-right: 10px;
           }
         }

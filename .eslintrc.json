@@ -95,6 +95,7 @@
         }
       }
     ],
+    "jsx-a11y/no-autofocus": "off",
     "no-console": ["error", { "allow": ["info", "error"] }],
     "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",

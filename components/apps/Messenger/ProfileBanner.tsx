@@ -1,9 +1,10 @@
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { useMemo } from "react";
 import Button from "styles/common/Button";
-import { Back } from "components/apps/FileExplorer/NavigationIcons";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
-import { Avatar, Write } from "components/apps/Messenger/Icons";
+import { Avatar, Back, Write } from "components/apps/Messenger/Icons";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import { haltEvent } from "utils/functions";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -22,8 +23,14 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   selectedRecipientKey,
   publicKey,
 }) => {
-  const { banner, picture, userName } = useNostrProfile(
-    selectedRecipientKey || publicKey
+  const {
+    banner,
+    picture,
+    userName = "...",
+  } = useNostrProfile(
+    selectedRecipientKey === UNKNOWN_PUBLIC_KEY
+      ? ""
+      : selectedRecipientKey || publicKey
   );
   const style = useMemo(
     () =>
@@ -32,16 +39,10 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   );
 
   return (
-    <StyledProfileBanner style={style}>
-      {selectedRecipientKey ? (
-        <Button onClick={goHome}>
-          <Back />
-        </Button>
-      ) : (
-        <Button className="write" onClick={newChat}>
-          <Write />
-        </Button>
-      )}
+    <StyledProfileBanner onContextMenuCapture={haltEvent} style={style}>
+      <Button onClick={selectedRecipientKey ? goHome : newChat}>
+        {selectedRecipientKey ? <Back /> : <Write />}
+      </Button>
       <figure>
         {picture ? <img alt={userName} src={picture} /> : <Avatar />}
         <figcaption>{userName}</figcaption>

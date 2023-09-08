@@ -31,17 +31,16 @@ export const useNostrProfile = (publicKey: string): NostrProfile => {
   );
   const [profile, setProfile] = useState<NostrProfile>({} as NostrProfile);
   const { onEvent } = useNostrEvents({
-    enabled: !cachedProfile,
+    enabled: !cachedProfile && !!publicKey,
     filter: {
       authors: [publicKey],
       kinds: [0],
     },
   });
 
-  useEffect(
-    () => setProfile(cachedProfile || dataToProfile(publicKey)),
-    [cachedProfile, publicKey]
-  );
+  useEffect(() => {
+    setProfile(publicKey ? cachedProfile || dataToProfile(publicKey) : {});
+  }, [cachedProfile, publicKey]);
 
   onEvent(({ content }) => {
     try {

@@ -20,6 +20,7 @@ import {
 } from "components/apps/Messenger/constants";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
+import type { ProfilePointer } from "nostr-tools/lib/nip19";
 
 export const getRelayUrls = async (
   publicKey: string,
@@ -41,9 +42,13 @@ export const getRelayUrls = async (
 
 export const toHexKey = (key: string): string => {
   if (key.startsWith("npub") || key.startsWith("nsec")) {
-    const { data } = nip19.decode(key);
+    try {
+      const { data } = nip19.decode(key);
 
-    if (typeof data === "string") return data;
+      if (typeof data === "string") return data;
+    } catch {
+      return key;
+    }
   }
 
   return key;
@@ -202,7 +207,34 @@ export const dataToProfile = (
       display_name ||
       name ||
       username ||
-      (npub || nip19.npubEncode(publicKey)).slice(0, 12),
+      (
+        npub ||
+        (publicKey.startsWith("npub") ? publicKey : nip19.npubEncode(publicKey))
+      ).slice(0, 12),
     website,
   };
+};
+
+export const getPublicHexFromNostrAddress = (key: string): string => {
+  const nprofile = key.startsWith("nprofile");
+  const nsec = key.startsWith("nsec");
+
+  if (nprofile || nsec || key.startsWith("npub")) {
+    try {
+      const { data } = nip19.decode(key) || {};
+      const hex = nprofile
+        ? (data as ProfilePointer)?.pubkey
+        : (data as string);
+
+      return nsec ? getPublicKey(hex) : hex;
+    } catch {
+      return "";
+    }
+  }
+
+  try {
+    return toHexKey(nip19.npubEncode(key));
+  } catch {
+    return "";
+  }
 };
