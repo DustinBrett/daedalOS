@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
 import Button from "styles/common/Button";
 import { useNostr } from "nostr-react";
@@ -15,32 +15,39 @@ const SendMessage: FC<SendMessageProps> = ({
 }) => {
   const { publish } = useNostr();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
-  const sendMessage = useCallback(async () => {
-    const message = inputRef.current?.value;
-
-    if (message) {
-      publish(await createMessageEvent(message, publicKey, recipientPublicKey));
-
-      inputRef.current.value = "";
-    }
-  }, [publicKey, publish, recipientPublicKey]);
+  const sendMessage = useCallback(
+    async (message: string) =>
+      publish(await createMessageEvent(message, publicKey, recipientPublicKey)),
+    [publicKey, publish, recipientPublicKey]
+  );
 
   return (
     <StyledSendMessage>
       <input
         ref={inputRef}
         disabled={isUnknownKey}
+        onChange={() => setCanSend(Boolean(inputRef.current?.value))}
         onKeyDown={({ key }) => {
-          if (key === "Enter") sendMessage();
+          const message = inputRef.current?.value;
+
+          if (message && key === "Enter") {
+            sendMessage(message);
+            inputRef.current.value = "";
+          }
+
+          setCanSend(Boolean(message));
         }}
         placeholder="Type a message..."
         type="text"
         autoFocus
       />
       <Button
-        disabled={isUnknownKey}
-        onClick={sendMessage}
+        disabled={isUnknownKey || !canSend}
+        onClick={() =>
+          inputRef.current?.value && sendMessage(inputRef.current.value)
+        }
         onContextMenuCapture={haltEvent}
       >
         <Send />

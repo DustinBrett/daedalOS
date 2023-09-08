@@ -15,15 +15,21 @@ const StyledSendMessage = styled.div`
     width: 100%;
   }
 
-  button {
-    width: unset;
-  }
-
   svg {
     fill: #0084ff;
     height: 28px;
     margin: 0 12px 0 10px;
     width: 28px;
+  }
+
+  button {
+    width: unset;
+
+    &:disabled {
+      svg {
+        fill: #3a3b3c;
+      }
+    }
   }
 `;
 
