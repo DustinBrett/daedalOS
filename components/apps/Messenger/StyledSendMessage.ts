@@ -13,13 +13,23 @@ const StyledSendMessage = styled.div`
     margin: 12px 0 12px 12px;
     padding: 6px 12px;
     width: 100%;
+
+    &:disabled {
+      &::placeholder {
+        color: rgba(117, 117, 117, 75%);
+      }
+    }
   }
 
   svg {
     fill: #0084ff;
     height: 28px;
-    margin: 0 12px 0 10px;
+    margin: 2px 12px 0 10px;
     width: 28px;
+
+    &:hover {
+      fill: rgb(0, 132, 255, 75%);
+    }
   }
 
   button {

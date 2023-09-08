@@ -7,6 +7,8 @@ import {
   descCreatedAt,
 } from "components/apps/Messenger/functions";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import ChatProfile from "components/apps/Messenger/ChatProfile";
 
 const ChatLog: FC<{
   events: Event[];
@@ -46,11 +48,16 @@ const ChatLog: FC<{
 
   return (
     <StyledChatLog ref={listRef}>
-      {chatEvents.sort(ascCreatedAt).map(({ id, pubkey, content }) => (
-        <li key={id} className={publicKey === pubkey ? "sent" : "received"}>
-          {decryptedContent[id] || content}
-        </li>
-      ))}
+      {recipientPublicKey !== UNKNOWN_PUBLIC_KEY && (
+        <>
+          <ChatProfile publicKey={recipientPublicKey} />
+          {chatEvents.sort(ascCreatedAt).map(({ id, pubkey, content }) => (
+            <li key={id} className={publicKey === pubkey ? "sent" : "received"}>
+              {decryptedContent[id] || content}
+            </li>
+          ))}
+        </>
+      )}
     </StyledChatLog>
   );
 };

@@ -5,7 +5,7 @@ import { useNostr } from "nostr-react";
 import { createMessageEvent } from "components/apps/Messenger/functions";
 import { Send } from "components/apps/Messenger/Icons";
 import { haltEvent } from "utils/functions";
-import { UNKNOWN_PUBLIC_KEY } from "./constants";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 
 type SendMessageProps = { publicKey: string; recipientPublicKey: string };
 
