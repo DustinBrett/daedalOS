@@ -24,15 +24,12 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   selectedRecipientKey,
   publicKey,
 }) => {
-  const {
-    banner,
-    picture,
-    userName = "...",
-  } = useNostrProfile(
+  const pubkey =
     selectedRecipientKey === UNKNOWN_PUBLIC_KEY
       ? ""
-      : selectedRecipientKey || publicKey
-  );
+      : selectedRecipientKey || publicKey;
+  const { banner, nip05, picture, userName = "..." } = useNostrProfile(pubkey);
+
   const style = useMemo(
     () =>
       banner ? { background: `${GRADIENT}, url(${banner}) ${STYLING}` } : {},
@@ -44,7 +41,12 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       <Button onClick={selectedRecipientKey ? goHome : newChat}>
         {selectedRecipientKey ? <Back /> : <Write />}
       </Button>
-      <Profile picture={picture} userName={userName} />
+      <Profile
+        nip05={nip05}
+        picture={picture}
+        pubkey={pubkey}
+        userName={userName}
+      />
     </StyledProfileBanner>
   );
 };

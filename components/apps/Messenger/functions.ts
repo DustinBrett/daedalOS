@@ -21,6 +21,7 @@ import {
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
+import type { NIP05Result } from "nostr-tools/lib/nip05";
 
 export const getRelayUrls = async (
   publicKey: string,
@@ -74,8 +75,10 @@ export const decryptMessage = async (
   id: string,
   content: string,
   pubkey: string
-): Promise<string> => {
+): Promise<string | false> => {
   if (decryptedContent[id]) return decryptedContent[id];
+
+  decryptedContent[id] = content;
 
   try {
     const message = await (window.nostr?.nip04
@@ -86,10 +89,10 @@ export const decryptMessage = async (
 
     return message;
   } catch {
-    // Ignore failure to decrypt
-  }
+    decryptedContent[id] = "";
 
-  return "";
+    return false;
+  }
 };
 
 const encryptMessage = async (
@@ -193,6 +196,7 @@ export const dataToProfile = (
     banner,
     display_name,
     name,
+    nip05,
     npub,
     picture,
     username,
@@ -202,6 +206,7 @@ export const dataToProfile = (
   return {
     about,
     banner,
+    nip05,
     picture,
     userName:
       display_name ||
@@ -237,4 +242,47 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
   } catch {
     return "";
   }
+};
+
+const BASE_NIP05_URL = "/.well-known/nostr.json";
+
+const verifiedNip05Addresses: Record<string, string> = {};
+
+export const verifyNip05 = async (
+  nip05address?: string,
+  pubkey?: string
+): Promise<boolean> => {
+  try {
+    if (!nip05address || !pubkey) return false;
+
+    const [userName, domain] = nip05address.split("@");
+
+    if (verifiedNip05Addresses[pubkey] === domain) return true;
+
+    const nostrJson = await fetch(`https://${domain}${BASE_NIP05_URL}`);
+
+    if (nostrJson.ok) {
+      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
+      let verified = false;
+
+      if (userName === "_") {
+        const [userKey, ...otherKeys] = Object.values(names);
+        const keyValue = otherKeys.length === 0 ? userKey : names[userName];
+
+        verified = keyValue === pubkey;
+      } else if (names[userName]) {
+        verified = names[userName] === pubkey;
+      }
+
+      if (verified) {
+        verifiedNip05Addresses[pubkey] = domain;
+      }
+
+      return verified;
+    }
+  } catch {
+    // Ignore error parsing nip05
+  }
+
+  return false;
 };

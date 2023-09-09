@@ -32,6 +32,7 @@ export type NostrContacts = {
 export type NostrProfile = {
   about?: string;
   banner?: string;
+  nip05?: string;
   picture?: string;
   userName?: string;
   website?: string;

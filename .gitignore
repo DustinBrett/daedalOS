@@ -7,7 +7,6 @@ test-results
 playwright-report
 playwright/.cache
 
-public/nostr.json
 public/robots.txt
 public/sitemap.xml
 public/.index/*

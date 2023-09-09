@@ -29,10 +29,10 @@ const SendMessage: FC<SendMessageProps> = ({
         ref={inputRef}
         disabled={isUnknownKey}
         onChange={() => setCanSend(Boolean(inputRef.current?.value))}
-        onKeyDown={({ key }) => {
+        onKeyDown={({ key, shiftKey }) => {
           const message = inputRef.current?.value;
 
-          if (message && key === "Enter") {
+          if (message && key === "Enter" && !shiftKey) {
             sendMessage(message);
             inputRef.current.value = "";
           }

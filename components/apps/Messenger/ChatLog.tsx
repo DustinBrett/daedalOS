@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from "react";
-import type { Event } from "nostr-tools";
+import { type Event } from "nostr-tools";
 import {
   getKeyFromTags,
   decryptMessage,
@@ -9,6 +9,15 @@ import {
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
+import { clsx } from "utils/functions";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { Avatar } from "components/apps/Messenger/Icons";
+
+const withImages = (content: string): string =>
+  content.replace(
+    /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
+    (match) => `<img src="${match}" />`
+  );
 
 const ChatLog: FC<{
   events: Event[];
@@ -23,7 +32,7 @@ const ChatLog: FC<{
     [events, recipientPublicKey]
   );
   const [decryptedContent, setDecryptedContent] = useState<
-    Record<string, string>
+    Record<string, string | false>
   >({});
   const decryptMessages = useCallback(
     () =>
@@ -38,6 +47,10 @@ const ChatLog: FC<{
     [chatEvents, recipientPublicKey]
   );
   const listRef = useRef<HTMLOListElement>(null);
+  const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
+  const { picture, userName } = useNostrProfile(
+    isUnknownKey ? "" : recipientPublicKey
+  );
 
   useEffect(() => {
     if (chatEvents) {
@@ -48,12 +61,33 @@ const ChatLog: FC<{
 
   return (
     <StyledChatLog ref={listRef}>
-      {recipientPublicKey !== UNKNOWN_PUBLIC_KEY && (
+      {!isUnknownKey && (
         <>
           <ChatProfile publicKey={recipientPublicKey} />
           {chatEvents.sort(ascCreatedAt).map(({ id, pubkey, content }) => (
-            <li key={id} className={publicKey === pubkey ? "sent" : "received"}>
-              {decryptedContent[id] || content}
+            <li
+              key={id}
+              className={clsx({
+                "cant-decrypt": decryptedContent[id] === false,
+                received: publicKey !== pubkey,
+                sent: publicKey === pubkey,
+              })}
+            >
+              {publicKey !== pubkey && (
+                <div className="avatar">
+                  {picture ? <img alt={userName} src={picture} /> : <Avatar />}
+                </div>
+              )}
+              <div
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: withImages(
+                    typeof decryptedContent[id] === "string"
+                      ? (decryptedContent[id] as string)
+                      : content
+                  ),
+                }}
+              />
             </li>
           ))}
         </>

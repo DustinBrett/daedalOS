@@ -33,7 +33,7 @@ const Contact: FC<ContactProps> = ({
   } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
-  const { picture, userName } = useNostrProfile(pubkey);
+  const { nip05, picture, userName } = useNostrProfile(pubkey);
   const unreadClass = unreadEvent ? "unread" : undefined;
   const { contextMenu } = useMenu();
   const { onContextMenuCapture } = useMemo(
@@ -72,7 +72,12 @@ const Contact: FC<ContactProps> = ({
   return (
     <li className={unreadClass} onContextMenuCapture={onContextMenuCapture}>
       <Button onClick={onClick}>
-        <Profile picture={picture} userName={userName}>
+        <Profile
+          nip05={nip05}
+          picture={picture}
+          pubkey={pubkey}
+          userName={userName}
+        >
           <div>
             <div className={unreadClass}>
               {eventPubkey === publicKey ? "You: " : ""}

@@ -9,6 +9,7 @@ import {
   getPublicHexKey,
   maybeGetExistingPublicKey,
   dataToProfile,
+  verifyNip05,
 } from "components/apps/Messenger/functions";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type {
@@ -78,12 +79,11 @@ export const useNip05 = (): NIP05Result => {
 
     return nostrJson.ok;
   }, []);
-  const fetchNip05Json = useCallback(
-    async (): Promise<boolean> =>
-      (await updateNip05("/.well-known/nostr.json")) ||
-      updateNip05("/nostr.json"),
-    [updateNip05]
-  );
+  const fetchNip05Json = useCallback(async (): Promise<void> => {
+    if (!(await updateNip05("/.well-known/nostr.json"))) {
+      setNip05({ relays: {} } as NIP05Result);
+    }
+  }, [updateNip05]);
 
   useEffect(() => {
     if (!nip05) fetchNip05Json();
@@ -99,7 +99,7 @@ export const useNostrContacts = (
   seenEventIds: string[]
 ): NostrContacts => {
   const globalContacts = useMemo(
-    () => Object.values(wellKnownNames).map((key) => toHexKey(key)),
+    () => Object.values(wellKnownNames || {}).map((key) => toHexKey(key)),
     [wellKnownNames]
   );
   const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
@@ -175,4 +175,14 @@ export const useUnreadStatus = (id: string, unreadCount: number): void => {
 
     setCurrentUnreadCount(unreadCount);
   }, [currentUnreadCount, unreadCount]);
+};
+
+export const useVerified = (nip05?: string, publicKey?: string): boolean => {
+  const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    verifyNip05(nip05, publicKey).then(setIsVerified);
+  }, [nip05, publicKey]);
+
+  return isVerified;
 };
