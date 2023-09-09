@@ -5,6 +5,7 @@ import {
   decryptMessage,
   ascCreatedAt,
   descCreatedAt,
+  convertImageLinksToHtml,
 } from "components/apps/Messenger/functions";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
@@ -12,12 +13,6 @@ import ChatProfile from "components/apps/Messenger/ChatProfile";
 import { clsx } from "utils/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { Avatar } from "components/apps/Messenger/Icons";
-
-const withImages = (content: string): string =>
-  content.replace(
-    /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
-    (match) => `<img src="${match}" />`
-  );
 
 const ChatLog: FC<{
   events: Event[];
@@ -81,7 +76,7 @@ const ChatLog: FC<{
               <div
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{
-                  __html: withImages(
+                  __html: convertImageLinksToHtml(
                     typeof decryptedContent[id] === "string"
                       ? (decryptedContent[id] as string)
                       : content

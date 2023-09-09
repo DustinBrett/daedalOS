@@ -13,6 +13,7 @@ import type {
   ProfileData,
 } from "components/apps/Messenger/types";
 import {
+  BASE_NIP05_URL,
   BASE_RW_RELAYS,
   DM_KIND,
   PRIVATE_KEY_IDB_NAME,
@@ -244,8 +245,6 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
   }
 };
 
-const BASE_NIP05_URL = "/.well-known/nostr.json";
-
 const verifiedNip05Addresses: Record<string, string> = {};
 
 export const verifyNip05 = async (
@@ -286,3 +285,22 @@ export const verifyNip05 = async (
 
   return false;
 };
+
+export const getWebSocketStatusIcon = (status: number): string => {
+  switch (status) {
+    case WebSocket.prototype.CONNECTING:
+      return "🟡";
+    case WebSocket.prototype.OPEN:
+      return "🟢";
+    case WebSocket.prototype.CLOSING:
+      return "🟠";
+    default:
+      return "🔴";
+  }
+};
+
+export const convertImageLinksToHtml = (content: string): string =>
+  content.replace(
+    /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
+    (match) => `<img src="${match}" />`
+  );

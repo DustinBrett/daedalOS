@@ -14,3 +14,5 @@ export const PUBLIC_KEY_IDB_NAME = "nostr_public_key";
 export const NOTIFICATION_SOUND = "/Program Files/Messenger/notification.mp3";
 
 export const UNKNOWN_PUBLIC_KEY = "?";
+
+export const BASE_NIP05_URL = "/.well-known/nostr.json";

@@ -13,6 +13,7 @@ const StyledProfileBanner = styled.div`
   padding: 8px 15px;
   place-content: space-between;
   place-items: center;
+  position: relative;
   text-shadow: 1px 1px 1px #000;
 
   figure {
@@ -60,6 +61,22 @@ const StyledProfileBanner = styled.div`
         background-color: rgb(0, 0, 0, 75%);
         outline: 4px solid rgb(0, 0, 0, 75%);
       }
+    }
+  }
+
+  ol {
+    bottom: 6px;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    max-width: calc(100% - 67px - 50px);
+    overflow: hidden;
+    place-content: flex-end;
+    position: absolute;
+    right: 68px;
+
+    li {
+      font-size: 7px;
     }
   }
 `;

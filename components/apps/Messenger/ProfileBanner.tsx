@@ -6,6 +6,8 @@ import { Back, Write } from "components/apps/Messenger/Icons";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { haltEvent } from "utils/functions";
 import Profile from "components/apps/Messenger/Profile";
+import { useNostr } from "nostr-react";
+import { getWebSocketStatusIcon } from "components/apps/Messenger/functions";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -28,8 +30,13 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     selectedRecipientKey === UNKNOWN_PUBLIC_KEY
       ? ""
       : selectedRecipientKey || publicKey;
-  const { banner, nip05, picture, userName = "..." } = useNostrProfile(pubkey);
-
+  const {
+    banner,
+    nip05,
+    picture,
+    userName = "New message",
+  } = useNostrProfile(pubkey);
+  const { connectedRelays } = useNostr();
   const style = useMemo(
     () =>
       banner ? { background: `${GRADIENT}, url(${banner}) ${STYLING}` } : {},
@@ -41,6 +48,15 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       <Button onClick={selectedRecipientKey ? goHome : newChat}>
         {selectedRecipientKey ? <Back /> : <Write />}
       </Button>
+      {!selectedRecipientKey && connectedRelays.length > 0 && (
+        <ol>
+          {connectedRelays?.map(({ status, url }) => (
+            <li key={url} title={url}>
+              {getWebSocketStatusIcon(status)}
+            </li>
+          ))}
+        </ol>
+      )}
       <Profile
         nip05={nip05}
         picture={picture}
