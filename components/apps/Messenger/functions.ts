@@ -34,7 +34,9 @@ export const getRelayUrls = async (
     return [
       ...new Set([
         ...relays,
-        ...Object.entries(await window.nostr.getRelays()).map(([url]) => url),
+        ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
+          url.endsWith("/") ? url.slice(0, -1) : url
+        ),
       ]),
     ];
   }
@@ -286,7 +288,7 @@ export const verifyNip05 = async (
   return false;
 };
 
-export const getWebSocketStatusIcon = (status: number): string => {
+export const getWebSocketStatusIcon = (status?: number): string => {
   switch (status) {
     case WebSocket.prototype.CONNECTING:
       return "🟡";

@@ -1,9 +1,10 @@
 export const BASE_RW_RELAYS = [
-  "wss://relayable.org",
   "wss://ca.relayable.org",
   "wss://la.relayable.org",
   "wss://au.relayable.org",
   "wss://he.relayable.org",
+  "wss://relay.damus.io",
+  "wss://nos.lol",
 ];
 
 export const DM_KIND = 4;

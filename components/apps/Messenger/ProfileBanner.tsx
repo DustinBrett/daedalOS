@@ -17,14 +17,16 @@ type ProfileBannerProps = {
   goHome: () => void;
   newChat: () => void;
   publicKey: string;
+  relayUrls: string[];
   selectedRecipientKey: string;
 };
 
 const ProfileBanner: FC<ProfileBannerProps> = ({
   goHome,
   newChat,
-  selectedRecipientKey,
   publicKey,
+  relayUrls,
+  selectedRecipientKey,
 }) => {
   const pubkey =
     selectedRecipientKey === UNKNOWN_PUBLIC_KEY
@@ -37,6 +39,13 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     userName = "New message",
   } = useNostrProfile(pubkey);
   const { connectedRelays } = useNostr();
+  const connectedRelayData = useMemo(
+    () =>
+      Object.fromEntries(
+        connectedRelays.map(({ url, status }) => [url, status])
+      ),
+    [connectedRelays]
+  );
   const style = useMemo(
     () =>
       banner ? { background: `${GRADIENT}, url(${banner}) ${STYLING}` } : {},
@@ -50,9 +59,9 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       </Button>
       {!selectedRecipientKey && connectedRelays.length > 0 && (
         <ol>
-          {connectedRelays?.map(({ status, url }) => (
-            <li key={url} title={url}>
-              {getWebSocketStatusIcon(status)}
+          {relayUrls.sort().map((relayUrl) => (
+            <li key={relayUrl} title={relayUrl}>
+              {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
             </li>
           ))}
         </ol>

@@ -26,6 +26,7 @@ type NostrChatProps = {
   loginTime: number;
   processId: string;
   publicKey: string;
+  relayUrls: string[];
   wellKnownNames: Record<string, string>;
 };
 
@@ -33,6 +34,7 @@ const NostrChat: FC<NostrChatProps> = ({
   processId,
   loginTime,
   publicKey,
+  relayUrls,
   wellKnownNames,
 }) => {
   const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
@@ -96,6 +98,7 @@ const NostrChat: FC<NostrChatProps> = ({
         goHome={() => changeRecipient("", events)}
         newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
         publicKey={publicKey}
+        relayUrls={relayUrls}
         selectedRecipientKey={selectedRecipientKey}
       />
       {selectedRecipientKey ? (
@@ -155,6 +158,7 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
         loginTime={loginTime}
         processId={id}
         publicKey={publicKey}
+        relayUrls={relayUrls}
         wellKnownNames={names}
       />
     </NostrProvider>
