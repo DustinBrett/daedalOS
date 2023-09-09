@@ -12,7 +12,7 @@ const StyledChatProfile = styled.span`
       border: 2px solid #fff;
       border-radius: 50%;
       height: 72px;
-      margin: 15px 0;
+      margin: 16px 0 8px;
       max-height: 72px;
       max-width: 72px;
       min-height: 72px;
