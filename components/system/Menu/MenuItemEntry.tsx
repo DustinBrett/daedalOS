@@ -146,7 +146,12 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
           onMouseUp={triggerAction}
           {...DIV_BUTTON_PROPS}
         >
-          {icon && <Icon alt={label} imgSize={16} src={icon} />}
+          {icon &&
+            (/\p{Emoji_Presentation}/gu.test(icon) ? (
+              <span>{icon}</span>
+            ) : (
+              <Icon alt={label} imgSize={16} src={icon} />
+            ))}
           {checked && <Checkmark className="left" />}
           {share && <Share className="share" />}
           {toggle && <Circle className="left" />}

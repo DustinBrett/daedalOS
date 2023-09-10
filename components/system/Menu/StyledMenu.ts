@@ -69,6 +69,10 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         margin: 0 -24px 0 8px;
       }
 
+      span {
+        margin: -1px -24px 0 8px;
+      }
+
       svg {
         fill: #fff;
         height: 13px;
