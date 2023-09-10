@@ -54,7 +54,7 @@ export const useNostrProfile = (publicKey: string): NostrProfile => {
     }
   });
 
-  return profiles[publicKey] || dataToProfile(publicKey);
+  return publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {};
 };
 
 export const ProfileProvider = memo<FC>(({ children }) => (

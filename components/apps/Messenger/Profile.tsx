@@ -1,5 +1,5 @@
 import { Avatar, Verified } from "components/apps/Messenger/Icons";
-import { useVerified } from "components/apps/Messenger/hooks";
+import { useNip05Domain } from "components/apps/Messenger/hooks";
 import StyledProfile from "components/apps/Messenger/StyledProfile";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ const Profile: FC<ProfileProps> = ({
   pubkey,
   userName = "Unknown",
 }) => {
-  const verified = useVerified(nip05, pubkey);
+  const verifiedDomain = useNip05Domain(nip05, pubkey);
   const [loadedImage, setLoadedImage] = useState("");
 
   return (
@@ -36,8 +36,8 @@ const Profile: FC<ProfileProps> = ({
           />
         )}
         {(!picture || loadedImage !== picture) && <Avatar />}
-        {verified && (
-          <div className="verified">
+        {verifiedDomain && (
+          <div className="verified" title={verifiedDomain}>
             <Verified />
           </div>
         )}

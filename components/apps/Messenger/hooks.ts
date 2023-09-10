@@ -8,7 +8,7 @@ import {
   toHexKey,
   getPublicHexKey,
   maybeGetExistingPublicKey,
-  verifyNip05,
+  getNip05Domain,
 } from "components/apps/Messenger/functions";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type { NostrContacts } from "components/apps/Messenger/types";
@@ -128,12 +128,12 @@ export const useUnreadStatus = (id: string, unreadCount: number): void => {
   }, [currentUnreadCount, unreadCount]);
 };
 
-export const useVerified = (nip05?: string, publicKey?: string): boolean => {
-  const [isVerified, setIsVerified] = useState(false);
+export const useNip05Domain = (nip05?: string, publicKey?: string): string => {
+  const [nip05Domain, setNip05Domain] = useState("");
 
   useEffect(() => {
-    verifyNip05(nip05, publicKey).then(setIsVerified);
+    getNip05Domain(nip05, publicKey).then(setNip05Domain);
   }, [nip05, publicKey]);
 
-  return isVerified;
+  return nip05Domain;
 };

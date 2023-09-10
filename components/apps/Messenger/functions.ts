@@ -249,16 +249,16 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
 
 const verifiedNip05Addresses: Record<string, string> = {};
 
-export const verifyNip05 = async (
+export const getNip05Domain = async (
   nip05address?: string,
   pubkey?: string
-): Promise<boolean> => {
+): Promise<string> => {
   try {
-    if (!nip05address || !pubkey) return false;
+    if (!nip05address || !pubkey) return "";
 
     const [userName, domain] = nip05address.split("@");
 
-    if (verifiedNip05Addresses[pubkey] === domain) return true;
+    if (verifiedNip05Addresses[pubkey] === domain) return domain;
 
     const nostrJson = await fetch(`https://${domain}${BASE_NIP05_URL}`);
 
@@ -279,13 +279,13 @@ export const verifyNip05 = async (
         verifiedNip05Addresses[pubkey] = domain;
       }
 
-      return verified;
+      return verified ? domain : "";
     }
   } catch {
     // Ignore error parsing nip05
   }
 
-  return false;
+  return "";
 };
 
 export const getWebSocketStatusIcon = (status?: number): string => {
