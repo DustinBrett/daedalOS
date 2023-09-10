@@ -1,6 +1,6 @@
 import Profile from "components/apps/Messenger/Profile";
 import StyledChatProfile from "components/apps/Messenger/StyledChatProfile";
-import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 
 const ChatProfile: FC<{ publicKey: string }> = ({ publicKey }) => {
   const { about, nip05, picture, userName } = useNostrProfile(publicKey);

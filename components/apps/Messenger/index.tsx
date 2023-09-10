@@ -21,6 +21,7 @@ import To from "components/apps/Messenger/To";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import type { Event } from "nostr-tools";
 import { haltEvent } from "utils/functions";
+import { ProfileProvider } from "components/apps/Messenger/ProfileContext";
 
 type NostrChatProps = {
   loginTime: number;
@@ -94,42 +95,44 @@ const NostrChat: FC<NostrChatProps> = ({
 
   return (
     <StyledMessenger>
-      <ProfileBanner
-        goHome={() => changeRecipient("", events)}
-        newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
-        publicKey={publicKey}
-        relayUrls={relayUrls}
-        selectedRecipientKey={selectedRecipientKey}
-      />
-      {selectedRecipientKey ? (
-        <>
-          {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
-            <To setRecipientKey={setRecipientKey} />
-          )}
-          <ChatLog
-            events={events}
-            publicKey={publicKey}
-            recipientPublicKey={selectedRecipientKey}
-          />
-          <SendMessage
-            publicKey={publicKey}
-            recipientPublicKey={selectedRecipientKey}
-          />
-        </>
-      ) : (
-        <StyledContacts onContextMenu={haltEvent}>
-          {contactKeys.map((contactKey) => (
-            <Contact
-              key={contactKey}
-              lastEvent={lastEvents[contactKey]}
-              onClick={() => changeRecipient(contactKey, events)}
-              pubkey={contactKey}
+      <ProfileProvider>
+        <ProfileBanner
+          goHome={() => changeRecipient("", events)}
+          newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
+          publicKey={publicKey}
+          relayUrls={relayUrls}
+          selectedRecipientKey={selectedRecipientKey}
+        />
+        {selectedRecipientKey ? (
+          <>
+            {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
+              <To setRecipientKey={setRecipientKey} />
+            )}
+            <ChatLog
+              events={events}
               publicKey={publicKey}
-              unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
+              recipientPublicKey={selectedRecipientKey}
             />
-          ))}
-        </StyledContacts>
-      )}
+            <SendMessage
+              publicKey={publicKey}
+              recipientPublicKey={selectedRecipientKey}
+            />
+          </>
+        ) : (
+          <StyledContacts onContextMenu={haltEvent}>
+            {contactKeys.map((contactKey) => (
+              <Contact
+                key={contactKey}
+                lastEvent={lastEvents[contactKey]}
+                onClick={() => changeRecipient(contactKey, events)}
+                pubkey={contactKey}
+                publicKey={publicKey}
+                unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
+              />
+            ))}
+          </StyledContacts>
+        )}
+      </ProfileProvider>
     </StyledMessenger>
   );
 };

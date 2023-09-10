@@ -5,7 +5,7 @@ import {
 } from "components/apps/Messenger/functions";
 import { MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { nip19, type Event } from "nostr-tools";
-import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 import Button from "styles/common/Button";
 import { useMenu } from "contexts/menu";
 import Profile from "components/apps/Messenger/Profile";

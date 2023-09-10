@@ -8,7 +8,8 @@ const To: FC<ToProps> = ({ setRecipientKey }) => (
       onKeyDown={(event) => {
         if (
           event.key === "Enter" &&
-          !setRecipientKey(event.currentTarget.value)
+          event.currentTarget.value &&
+          !setRecipientKey(event.currentTarget.value.trim())
         ) {
           // eslint-disable-next-line no-param-reassign
           event.currentTarget.value = "";

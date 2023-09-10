@@ -1,4 +1,4 @@
-import { useNostrEvents, type Metadata } from "nostr-react";
+import { useNostrEvents } from "nostr-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getReceivedMessages,
@@ -8,62 +8,13 @@ import {
   toHexKey,
   getPublicHexKey,
   maybeGetExistingPublicKey,
-  dataToProfile,
   verifyNip05,
 } from "components/apps/Messenger/functions";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
-import type {
-  NostrProfile,
-  NostrContacts,
-} from "components/apps/Messenger/types";
+import type { NostrContacts } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
-import { MILLISECONDS_IN_MINUTE } from "utils/constants";
-
-const cachedNostrProfiles: Record<string, NostrProfile | undefined> = {};
-
-const PROFILE_CACHE_TIMEOUT_MINUTES = 60;
-
-export const useNostrProfile = (publicKey: string): NostrProfile => {
-  const cachedProfile = useMemo(
-    () => cachedNostrProfiles[publicKey],
-    [publicKey]
-  );
-  const [profile, setProfile] = useState<NostrProfile>({} as NostrProfile);
-  const { onEvent } = useNostrEvents({
-    enabled: !cachedProfile && !!publicKey,
-    filter: {
-      authors: [publicKey],
-      kinds: [0],
-    },
-  });
-
-  useEffect(() => {
-    setProfile(publicKey ? cachedProfile || dataToProfile(publicKey) : {});
-  }, [cachedProfile, publicKey]);
-
-  onEvent(({ content }) => {
-    try {
-      const metadata = JSON.parse(content) as Metadata;
-
-      if (metadata) {
-        const data = dataToProfile(publicKey, metadata);
-
-        setProfile(data);
-
-        cachedNostrProfiles[publicKey] = data;
-        window.setTimeout(() => {
-          cachedNostrProfiles[publicKey] = undefined;
-        }, MILLISECONDS_IN_MINUTE * PROFILE_CACHE_TIMEOUT_MINUTES);
-      }
-    } catch {
-      // Ignore errors parsing profile data
-    }
-  });
-
-  return cachedProfile || profile;
-};
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();

@@ -11,8 +11,8 @@ import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
 import { clsx } from "utils/functions";
-import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { Avatar } from "components/apps/Messenger/Icons";
+import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 
 const ChatLog: FC<{
   events: Event[];

@@ -1,4 +1,4 @@
-import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 import { useMemo } from "react";
 import Button from "styles/common/Button";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
