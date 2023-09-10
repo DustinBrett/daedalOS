@@ -1,3 +1,8 @@
+import {
+  MILLISECONDS_IN_MINUTE,
+  MILLISECONDS_IN_SECOND,
+} from "utils/constants";
+
 export const BASE_RW_RELAYS = [
   "wss://ca.relayable.org",
   "wss://la.relayable.org",
@@ -17,3 +22,12 @@ export const NOTIFICATION_SOUND = "/Program Files/Messenger/notification.mp3";
 export const UNKNOWN_PUBLIC_KEY = "?";
 
 export const BASE_NIP05_URL = "/.well-known/nostr.json";
+
+export const GROUP_TIME_GAP_IN_SECONDS =
+  (MILLISECONDS_IN_MINUTE / MILLISECONDS_IN_SECOND) * 30;
+
+export const TIME_FORMAT: Partial<Intl.DateTimeFormatOptions> = {
+  hour: "numeric",
+  hour12: true,
+  minute: "numeric",
+};

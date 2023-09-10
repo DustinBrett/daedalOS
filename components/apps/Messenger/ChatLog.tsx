@@ -3,9 +3,8 @@ import { type Event } from "nostr-tools";
 import {
   getKeyFromTags,
   decryptMessage,
-  ascCreatedAt,
-  descCreatedAt,
   convertImageLinksToHtml,
+  groupChatEvents,
 } from "components/apps/Messenger/functions";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
@@ -21,8 +20,10 @@ const ChatLog: FC<{
 }> = ({ events, publicKey, recipientPublicKey }) => {
   const chatEvents = useMemo(
     () =>
-      events.filter(({ pubkey, tags }) =>
-        [pubkey, getKeyFromTags(tags)].includes(recipientPublicKey)
+      groupChatEvents(
+        events.filter(({ pubkey, tags }) =>
+          [pubkey, getKeyFromTags(tags)].includes(recipientPublicKey)
+        )
       ),
     [events, recipientPublicKey]
   );
@@ -31,12 +32,14 @@ const ChatLog: FC<{
   >({});
   const decryptMessages = useCallback(
     () =>
-      chatEvents.sort(descCreatedAt).forEach(({ content, id }) =>
-        decryptMessage(id, content, recipientPublicKey).then((message) =>
-          setDecryptedContent((currentDecryptedContent) => ({
-            ...currentDecryptedContent,
-            [id]: message,
-          }))
+      chatEvents.reverse().forEach(([, eventGroup]) =>
+        eventGroup.reverse().forEach(({ content, id }) =>
+          decryptMessage(id, content, recipientPublicKey).then((message) =>
+            setDecryptedContent((currentDecryptedContent) => ({
+              ...currentDecryptedContent,
+              [id]: message,
+            }))
+          )
         )
       ),
     [chatEvents, recipientPublicKey]
@@ -59,32 +62,39 @@ const ChatLog: FC<{
       {!isUnknownKey && (
         <>
           <ChatProfile publicKey={recipientPublicKey} />
-          {chatEvents.sort(ascCreatedAt).map(({ id, pubkey, content }) => (
-            <li
-              key={id}
-              className={clsx({
-                "cant-decrypt": decryptedContent[id] === false,
-                received: publicKey !== pubkey,
-                sent: publicKey === pubkey,
-              })}
-            >
-              {publicKey !== pubkey && (
-                <div className="avatar">
-                  {picture ? <img alt={userName} src={picture} /> : <Avatar />}
-                </div>
-              )}
-              <div
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: convertImageLinksToHtml(
-                    typeof decryptedContent[id] === "string"
-                      ? (decryptedContent[id] as string)
-                      : content
-                  ),
-                }}
-              />
-            </li>
-          ))}
+          {chatEvents.map(([timestamp, eventGroup]) =>
+            eventGroup.map(({ id, pubkey, content }, index) => (
+              <li
+                key={id}
+                className={clsx({
+                  "cant-decrypt": decryptedContent[id] === false,
+                  received: publicKey !== pubkey,
+                  sent: publicKey === pubkey,
+                })}
+                data-timestamp={index === 0 ? timestamp : undefined}
+              >
+                {publicKey !== pubkey && (
+                  <div className="avatar">
+                    {picture ? (
+                      <img alt={userName} src={picture} />
+                    ) : (
+                      <Avatar />
+                    )}
+                  </div>
+                )}
+                <div
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{
+                    __html: convertImageLinksToHtml(
+                      typeof decryptedContent[id] === "string"
+                        ? (decryptedContent[id] as string)
+                        : content
+                    ),
+                  }}
+                />
+              </li>
+            ))
+          )}
         </>
       )}
     </StyledChatLog>

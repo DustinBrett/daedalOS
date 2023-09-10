@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledChatProfile = styled.span`
+const StyledChatProfile = styled.li`
   figure {
     display: flex;
     flex-direction: column;

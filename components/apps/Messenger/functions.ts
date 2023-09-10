@@ -8,6 +8,7 @@ import {
 } from "nostr-tools";
 import type { Event } from "nostr-tools";
 import type {
+  ChatEvents,
   NostrEvents,
   NostrProfile,
   ProfileData,
@@ -16,10 +17,12 @@ import {
   BASE_NIP05_URL,
   BASE_RW_RELAYS,
   DM_KIND,
+  GROUP_TIME_GAP_IN_SECONDS,
   PRIVATE_KEY_IDB_NAME,
   PUBLIC_KEY_IDB_NAME,
+  TIME_FORMAT,
 } from "components/apps/Messenger/constants";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
@@ -303,3 +306,61 @@ export const convertImageLinksToHtml = (content: string): string =>
     /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
     (match) => `<img src="${match}" />`
   );
+
+const prettyChatTimestamp = (timestamp: number): string => {
+  const date = new Date(timestamp * MILLISECONDS_IN_SECOND);
+  const now = new Date();
+  const today = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  ).getTime();
+  const yesterday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1
+  ).getTime();
+  const dateTimestamp = date.getTime();
+  const datePretty = date.toLocaleString("en-US", TIME_FORMAT);
+
+  if (dateTimestamp > today) return datePretty;
+  if (dateTimestamp > yesterday) return `Yesterday at ${datePretty}`;
+  if (dateTimestamp > today - 6 * MILLISECONDS_IN_DAY) {
+    return date.toLocaleString("en-US", {
+      ...TIME_FORMAT,
+      weekday: "long",
+    });
+  }
+
+  return date.toLocaleString("en-US", {
+    ...TIME_FORMAT,
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+export const groupChatEvents = (events: Event[]): ChatEvents => {
+  if (events.length === 0) return [];
+
+  const sortedEvents = events.sort(ascCreatedAt);
+  const [oldestEvent, ...remainingEvents] = sortedEvents;
+  const groupedEvents: ChatEvents = [
+    [prettyChatTimestamp(oldestEvent.created_at), [oldestEvent]],
+  ];
+
+  remainingEvents.forEach((event) => {
+    const { created_at } = event;
+    const [, lastGroupedEvents] = groupedEvents[groupedEvents.length - 1];
+    const { created_at: last_created_at } =
+      lastGroupedEvents[lastGroupedEvents.length - 1];
+
+    if (Math.abs(created_at - last_created_at) < GROUP_TIME_GAP_IN_SECONDS) {
+      lastGroupedEvents.push(event);
+    } else {
+      groupedEvents.push([prettyChatTimestamp(created_at), [event]]);
+    }
+  });
+
+  return groupedEvents;
+};

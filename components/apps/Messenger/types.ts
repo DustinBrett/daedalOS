@@ -39,3 +39,5 @@ export type NostrProfile = {
 };
 
 export type ProfileData = Metadata & { npub?: string };
+
+export type ChatEvents = [string, Event[]][];
