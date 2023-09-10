@@ -18,8 +18,13 @@ const SendMessage: FC<SendMessageProps> = ({
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
   const sendMessage = useCallback(
-    async (message: string) =>
-      publish(await createMessageEvent(message, publicKey, recipientPublicKey)),
+    async (message: string) => {
+      publish(await createMessageEvent(message, publicKey, recipientPublicKey));
+
+      if (inputRef.current?.value) inputRef.current.value = "";
+
+      setCanSend(false);
+    },
     [publicKey, publish, recipientPublicKey]
   );
 
@@ -32,12 +37,8 @@ const SendMessage: FC<SendMessageProps> = ({
         onKeyDown={({ key, shiftKey }) => {
           const message = inputRef.current?.value;
 
-          if (message && key === "Enter" && !shiftKey) {
-            sendMessage(message);
-            inputRef.current.value = "";
-          }
-
-          setCanSend(Boolean(message));
+          if (message && key === "Enter" && !shiftKey) sendMessage(message);
+          else setCanSend(Boolean(message));
         }}
         placeholder="Type a message..."
         type="text"

@@ -7,7 +7,7 @@ const StyledChatLog = styled.ol`
   overflow-x: auto;
 
   li {
-    border-radius: 18px;
+    border-radius: 15px;
     color: #fff;
     list-style: none;
     margin: 12px;
@@ -49,7 +49,7 @@ const StyledChatLog = styled.ol`
 
     &.sent {
       background-color: #0084ff;
-      margin-left: 50px;
+      margin-left: 65px;
     }
 
     &.received {

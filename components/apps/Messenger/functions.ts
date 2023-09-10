@@ -73,7 +73,7 @@ export const decryptMessage = async (
   id: string,
   content: string,
   pubkey: string
-): Promise<string | false> => {
+): Promise<string> => {
   if (decryptedContent[id]) return decryptedContent[id];
 
   decryptedContent[id] = content;
@@ -89,7 +89,7 @@ export const decryptMessage = async (
   } catch {
     decryptedContent[id] = "";
 
-    return false;
+    return "";
   }
 };
 

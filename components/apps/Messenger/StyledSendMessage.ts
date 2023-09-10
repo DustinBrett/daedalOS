@@ -22,10 +22,15 @@ const StyledSendMessage = styled.div`
   }
 
   svg {
+    cursor: pointer;
     fill: #0084ff;
     height: 28px;
     margin: 2px 12px 0 10px;
     width: 28px;
+
+    path {
+      cursor: pointer;
+    }
 
     &:hover {
       fill: rgb(0, 132, 255, 75%);
