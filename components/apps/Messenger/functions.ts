@@ -24,16 +24,11 @@ import { dateToUnix } from "nostr-react";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 
-export const getRelayUrls = async (
-  publicKey: string,
-  wellKnownRelays: Record<string, string[]>
-): Promise<string[]> => {
-  const relays = wellKnownRelays[publicKey] || BASE_RW_RELAYS;
-
+export const getRelayUrls = async (): Promise<string[]> => {
   if (window.nostr?.getRelays) {
     return [
       ...new Set([
-        ...relays,
+        ...BASE_RW_RELAYS,
         ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
           url.endsWith("/") ? url.slice(0, -1) : url
         ),
@@ -41,7 +36,7 @@ export const getRelayUrls = async (
     ];
   }
 
-  return relays;
+  return BASE_RW_RELAYS;
 };
 
 export const toHexKey = (key: string): string => {
@@ -247,15 +242,15 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
   }
 };
 
-const verifiedNip05Addresses: Record<string, string> = {};
+const verifiedNip05Addresses: Record<string, string | false> = {};
 
 export const getNip05Domain = async (
   nip05address?: string,
   pubkey?: string
 ): Promise<string> => {
-  try {
-    if (!nip05address || !pubkey) return "";
+  if (!nip05address || !pubkey) return "";
 
+  try {
     const [userName, domain] = nip05address.split("@");
 
     if (verifiedNip05Addresses[pubkey] === domain) return domain;
@@ -281,8 +276,10 @@ export const getNip05Domain = async (
 
       return verified ? domain : "";
     }
+
+    verifiedNip05Addresses[pubkey] = false;
   } catch {
-    // Ignore error parsing nip05
+    verifiedNip05Addresses[pubkey] = false;
   }
 
   return "";

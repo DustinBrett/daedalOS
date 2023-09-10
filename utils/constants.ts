@@ -383,6 +383,7 @@ export const PACKAGE_DATA = {
   author: {
     email: "dustinbrett@gmail.com",
     name: "Dustin Brett",
+    npub: "npub12aqtpxwy5qr3nu0f0lha9zw987c3xa9ctsy2t5t9vntyc3st7l2qjnnqyz",
     url: "https://dustinbrett.com",
   },
   description: "Desktop environment in the browser",

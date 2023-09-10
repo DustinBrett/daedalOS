@@ -14,7 +14,11 @@ import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type { NostrContacts } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import { NOTIFICATION_SOUND } from "components/apps/Messenger/constants";
+import {
+  BASE_NIP05_URL,
+  NOTIFICATION_SOUND,
+} from "components/apps/Messenger/constants";
+import { PACKAGE_DATA } from "utils/constants";
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();
@@ -22,16 +26,15 @@ export const useNip05 = (): NIP05Result => {
     const nostrJson = await fetch(url);
 
     if (nostrJson.ok) {
-      const { names = {}, relays = {} } =
-        ((await nostrJson.json()) as NIP05Result) || {};
+      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
 
-      setNip05({ names, relays });
+      setNip05({ names });
     }
 
     return nostrJson.ok;
   }, []);
   const fetchNip05Json = useCallback(async (): Promise<void> => {
-    if (!(await updateNip05("/.well-known/nostr.json"))) {
+    if (!(await updateNip05(BASE_NIP05_URL))) {
       setNip05({ relays: {} } as NIP05Result);
     }
   }, [updateNip05]);
@@ -50,7 +53,10 @@ export const useNostrContacts = (
   seenEventIds: string[]
 ): NostrContacts => {
   const globalContacts = useMemo(
-    () => Object.values(wellKnownNames || {}).map((key) => toHexKey(key)),
+    () =>
+      [PACKAGE_DATA?.author?.npub, ...Object.values(wellKnownNames || {})]
+        .filter(Boolean)
+        .map((key) => toHexKey(key)),
     [wellKnownNames]
   );
   const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));

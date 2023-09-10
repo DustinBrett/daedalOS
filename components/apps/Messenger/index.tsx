@@ -141,19 +141,19 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
   const [loginTime, setLoginTime] = useState<number>(0);
   const [relayUrls, setRelayUrls] = useState<string[] | undefined>();
   const initStarted = useRef(false);
-  const { names, relays } = useNip05();
+  const { names } = useNip05();
   const publicKey = usePublicKey();
 
   useEffect(() => {
-    if (initStarted.current || !publicKey || !relays) return;
+    if (initStarted.current || !publicKey) return;
 
     initStarted.current = true;
 
-    getRelayUrls(publicKey, relays).then((foundRelays) => {
+    getRelayUrls().then((foundRelays) => {
       setRelayUrls(foundRelays);
       setLoginTime(Math.floor(Date.now() / 1000));
     });
-  }, [publicKey, relays]);
+  }, [publicKey]);
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
