@@ -47,7 +47,8 @@ const StyledChatLog = styled.ol`
       &.sent {
         &::before {
           margin-left: -65px;
-          width: calc(100% + 65px);
+          margin-right: -12px;
+          width: calc(100% + 65px + 12px);
         }
       }
 
@@ -97,13 +98,14 @@ const StyledChatLog = styled.ol`
       background-color: #910000;
       position: relative;
 
-      &::before {
+      &::after {
         content: "🔐";
-        left: 4px;
+        font-size: 12px;
+        left: 6px;
         margin-left: 0 !important;
         position: absolute;
         text-align: right;
-        top: -6px;
+        top: -4px;
         width: 100% !important;
       }
     }
