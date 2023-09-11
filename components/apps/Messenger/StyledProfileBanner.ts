@@ -35,10 +35,6 @@ const StyledProfileBanner = styled.div`
       width: 38px;
     }
 
-    figcaption {
-      padding-top: 1px;
-    }
-
     div {
       display: flex;
       place-items: center;
@@ -85,7 +81,7 @@ const StyledProfileBanner = styled.div`
     padding-right: 67px;
     place-content: flex-end;
     position: absolute;
-    top: 5px;
+    top: 4px;
     width: 100%;
 
     ol {

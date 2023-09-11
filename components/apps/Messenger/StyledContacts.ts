@@ -97,11 +97,11 @@ const StyledContacts = styled.ol`
       background-color: rgb(46, 137, 255);
       border-radius: 50%;
       content: "";
-      height: 12px;
+      height: 10px;
       position: absolute;
       right: 8px;
-      top: calc(50% - 6px);
-      width: 12px;
+      top: calc(50% - 5px);
+      width: 10px;
     }
   }
 `;
