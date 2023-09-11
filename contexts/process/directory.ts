@@ -142,7 +142,7 @@ const directory: Processes = {
     backgroundColor: "#242526",
     defaultSize: {
       height: 500,
-      width: 450,
+      width: 425,
     },
     icon: "/System/Icons/messenger.webp",
     singleton: true,
