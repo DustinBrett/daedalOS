@@ -6,7 +6,7 @@ const StyledChatLog = styled.ol`
   height: 100%;
   overflow-x: auto;
 
-  li {
+  li:not(:first-child) {
     border-radius: 15px;
     color: #fff;
     list-style: none;
@@ -99,10 +99,12 @@ const StyledChatLog = styled.ol`
 
       &::before {
         content: "🔐";
+        left: 4px;
+        margin-left: 0 !important;
         position: absolute;
-        right: -8px;
-        scale: 0.75;
+        text-align: right;
         top: -6px;
+        width: 100% !important;
       }
     }
   }

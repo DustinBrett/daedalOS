@@ -41,3 +41,5 @@ export type NostrProfile = {
 export type ProfileData = Metadata & { npub?: string };
 
 export type ChatEvents = [string, Event[]][];
+
+export type DecryptedContent = Record<string, string | false>;

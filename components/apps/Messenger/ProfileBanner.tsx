@@ -58,13 +58,15 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
         {selectedRecipientKey ? <Back /> : <Write />}
       </Button>
       {!selectedRecipientKey && connectedRelays.length > 0 && (
-        <ol>
-          {relayUrls.sort().map((relayUrl) => (
-            <li key={relayUrl} title={relayUrl}>
-              {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
-            </li>
-          ))}
-        </ol>
+        <div className="relays">
+          <ol>
+            {relayUrls.sort().map((relayUrl) => (
+              <li key={relayUrl} title={relayUrl}>
+                {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
+              </li>
+            ))}
+          </ol>
+        </div>
       )}
       <Profile
         nip05={nip05}

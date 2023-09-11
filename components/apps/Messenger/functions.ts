@@ -9,6 +9,7 @@ import {
 import type { Event } from "nostr-tools";
 import type {
   ChatEvents,
+  DecryptedContent,
   NostrEvents,
   NostrProfile,
   ProfileData,
@@ -70,14 +71,16 @@ export const getKeyFromTags = (tags: string[][] = []): string => {
   return key;
 };
 
-const decryptedContent: Record<string, string> = {};
+const decryptedContent: DecryptedContent = {};
 
 export const decryptMessage = async (
   id: string,
   content: string,
   pubkey: string
-): Promise<string> => {
-  if (decryptedContent[id]) return decryptedContent[id];
+): Promise<string | false> => {
+  if (decryptedContent[id] || decryptedContent[id] === false) {
+    return decryptedContent[id];
+  }
 
   decryptedContent[id] = content;
 
@@ -139,7 +142,7 @@ export const getPublicHexKey = (existingPublicKey?: string): string => {
   return toHexKey(newPublicKey);
 };
 
-export const ascCreatedAt = (a: Event, b: Event): number =>
+const ascCreatedAt = (a: Event, b: Event): number =>
   a.created_at - b.created_at;
 
 export const descCreatedAt = (a: Event, b: Event): number =>

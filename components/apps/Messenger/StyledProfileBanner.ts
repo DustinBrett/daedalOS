@@ -20,6 +20,7 @@ const StyledProfileBanner = styled.div`
     display: flex;
     flex-direction: row-reverse;
     gap: 15px;
+    place-items: center;
 
     svg,
     img {
@@ -37,9 +38,22 @@ const StyledProfileBanner = styled.div`
     figcaption {
       padding-top: 1px;
     }
+
+    div {
+      display: flex;
+      place-items: center;
+
+      div.verified {
+        svg {
+          bottom: -3px;
+          left: -5px;
+        }
+      }
+    }
   }
 
-  button {
+  button:first-child {
+    border-radius: 5px;
     cursor: pointer;
     height: 30px;
     padding-top: 3px;
@@ -64,19 +78,28 @@ const StyledProfileBanner = styled.div`
     }
   }
 
-  ol {
-    bottom: 6px;
+  .relays {
     display: flex;
     flex-direction: row;
-    gap: 2px;
-    max-width: calc(100% - 67px - 50px);
-    overflow: hidden;
+    left: 0;
+    padding-right: 67px;
     place-content: flex-end;
     position: absolute;
-    right: 68px;
+    top: 5px;
+    width: 100%;
 
-    li {
-      font-size: 7px;
+    ol {
+      background-color: rgb(0, 0, 0, 50%);
+      border-radius: 10px;
+      display: flex;
+      gap: 2px;
+      max-width: calc(100% - 50px);
+      overflow: hidden;
+      padding: 2px 4px;
+
+      li {
+        font-size: 6.5px;
+      }
     }
   }
 `;

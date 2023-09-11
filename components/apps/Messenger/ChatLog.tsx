@@ -12,6 +12,7 @@ import ChatProfile from "components/apps/Messenger/ChatProfile";
 import { clsx } from "utils/functions";
 import { Avatar } from "components/apps/Messenger/Icons";
 import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
+import type { DecryptedContent } from "components/apps/Messenger/types";
 
 const ChatLog: FC<{
   events: Event[];
@@ -27,17 +28,17 @@ const ChatLog: FC<{
       ),
     [events, recipientPublicKey]
   );
-  const [decryptedContent, setDecryptedContent] = useState<
-    Record<string, string | false>
-  >({});
+  const [decryptedContent, setDecryptedContent] = useState<DecryptedContent>(
+    {}
+  );
   const decryptMessages = useCallback(
     () =>
-      chatEvents.reverse().forEach(([, eventGroup]) =>
-        eventGroup.reverse().forEach(({ content, id }) =>
+      [...chatEvents].reverse().forEach(([, eventGroup]) =>
+        [...eventGroup].reverse().forEach(({ content, id }) =>
           decryptMessage(id, content, recipientPublicKey).then((message) =>
             setDecryptedContent((currentDecryptedContent) => ({
               ...currentDecryptedContent,
-              [id]: message,
+              [id]: message || false,
             }))
           )
         )
