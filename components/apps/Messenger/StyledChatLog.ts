@@ -62,7 +62,9 @@ const StyledChatLog = styled.ol`
     }
 
     div {
+      cursor: auto;
       overflow: hidden;
+      user-select: text;
       word-wrap: break-word;
 
       img {

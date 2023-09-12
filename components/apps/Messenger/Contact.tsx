@@ -60,7 +60,9 @@ const Contact: FC<ContactProps> = ({
 
   useEffect(() => {
     if (content) {
-      decryptMessage(id, content, pubkey).then(setDecryptedContent);
+      decryptMessage(id, content, pubkey).then(
+        (message) => message && setDecryptedContent(message)
+      );
     }
   }, [content, id, pubkey]);
 

@@ -4,14 +4,17 @@ const StyledSendMessage = styled.div`
   display: flex;
   place-items: center;
 
-  input {
+  textarea {
     background-color: #3a3b3c;
     border-radius: 20px;
     color: #b0b3b8;
+    font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 14px;
     height: 35px;
     margin: 12px 0 12px 12px;
-    padding: 6px 12px;
+    overflow: hidden;
+    padding: 8px 14px 4px;
+    resize: none;
     width: 100%;
 
     &:disabled {

@@ -14,7 +14,7 @@ const SendMessage: FC<SendMessageProps> = ({
   recipientPublicKey,
 }) => {
   const { publish } = useNostr();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
   const sendMessage = useCallback(
@@ -27,21 +27,35 @@ const SendMessage: FC<SendMessageProps> = ({
     },
     [publicKey, publish, recipientPublicKey]
   );
+  const updateHeight = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = "0px";
+      inputRef.current.style.height = `${Math.max(
+        35,
+        inputRef.current.scrollHeight + 4
+      )}px`;
+    }
+  }, []);
 
   return (
     <StyledSendMessage>
-      <input
+      <textarea
         ref={inputRef}
         disabled={isUnknownKey}
-        onChange={() => setCanSend(Boolean(inputRef.current?.value))}
-        onKeyDown={({ key, shiftKey }) => {
+        onChange={() => {
+          setCanSend(Boolean(inputRef.current?.value));
+          updateHeight();
+        }}
+        onKeyDown={async ({ key, shiftKey }) => {
           const message = inputRef.current?.value;
 
-          if (message && key === "Enter" && !shiftKey) sendMessage(message);
-          else setCanSend(Boolean(message));
+          if (message && key === "Enter" && !shiftKey) {
+            await sendMessage(message);
+          } else setCanSend(Boolean(message));
+
+          updateHeight();
         }}
         placeholder="Type a message..."
-        type="text"
         autoFocus
       />
       <Button
