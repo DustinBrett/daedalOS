@@ -55,10 +55,12 @@ export const useNostrContacts = (
   const globalContacts = useMemo(
     () =>
       [
-        ...new Set([
-          PACKAGE_DATA?.author?.npub,
-          ...Object.values(wellKnownNames || {}),
-        ]),
+        ...(PACKAGE_DATA?.author?.npub
+          ? new Set([
+              toHexKey(PACKAGE_DATA.author.npub),
+              ...Object.values(wellKnownNames || {}),
+            ])
+          : Object.values(wellKnownNames || {})),
       ]
         .filter(Boolean)
         .map((key) => toHexKey(key)),
