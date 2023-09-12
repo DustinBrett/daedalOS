@@ -4,7 +4,6 @@ import StyledStartButton from "components/system/Taskbar/StartButton/StyledStart
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
-import spawnSheep from "utils/spawnSheep";
 
 type StartButtonProps = {
   startMenuVisible: boolean;
@@ -64,8 +63,12 @@ const StartButton: FC<StartButtonProps> = ({
   return (
     <StyledStartButton
       $active={startMenuVisible}
-      onClick={({ ctrlKey, shiftKey }) => {
-        if (ctrlKey && shiftKey) spawnSheep();
+      onClick={async ({ ctrlKey, shiftKey }) => {
+        if (ctrlKey && shiftKey) {
+          const { default: spawnSheep } = await import("utils/spawnSheep");
+
+          spawnSheep();
+        }
         toggleStartMenu();
       }}
       onMouseOver={preloaded ? undefined : preloadIcons}

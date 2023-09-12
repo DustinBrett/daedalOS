@@ -7,9 +7,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import {
   UNKNOWN_STATE_CODES,
-  resetStorage,
   supportsIndexedDB,
-} from "contexts/fileSystem/functions";
+} from "contexts/fileSystem/core";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import {
   ICON_CACHE,
@@ -187,7 +186,12 @@ const useAsyncFs = (): AsyncFSModule => {
             (error) => {
               if (error && (!overwrite || error.code !== "EEXIST")) {
                 if (error.code === "ENOENT" && error.path === "/") {
-                  resetStorage(rootFs).finally(() => window.location.reload());
+                  import("contexts/fileSystem/functions").then(
+                    ({ resetStorage }) =>
+                      resetStorage(rootFs).finally(() =>
+                        window.location.reload()
+                      )
+                  );
                 }
 
                 reject(error);

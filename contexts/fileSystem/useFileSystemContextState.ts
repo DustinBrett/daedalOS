@@ -19,11 +19,7 @@ import {
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
 import type { NewPath } from "components/system/Files/FileManager/useFolder";
-import {
-  addFileSystemHandle,
-  getFileSystemHandles,
-  removeFileSystemHandle,
-} from "contexts/fileSystem/functions";
+import { getFileSystemHandles } from "contexts/fileSystem/core";
 import type { AsyncFS, RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
@@ -253,7 +249,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
             rootFs?.mount?.(join(directory, mappedName), newFs);
             resolve(systemDirectory ? directory : mappedName);
-            addFileSystemHandle(directory, handle, mappedName);
+
+            import("contexts/fileSystem/functions").then(
+              ({ addFileSystemHandle }) =>
+                addFileSystemHandle(directory, handle, mappedName)
+            );
           });
         } else {
           reject();
@@ -291,8 +291,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const unMapFs = useCallback(
     (directory: string): void => {
       unMountFs(directory);
-      removeFileSystemHandle(directory);
       updateFolder(dirname(directory), undefined, directory);
+
+      import("contexts/fileSystem/functions").then(
+        ({ removeFileSystemHandle }) => removeFileSystemHandle(directory)
+      );
     },
     [unMountFs, updateFolder]
   );

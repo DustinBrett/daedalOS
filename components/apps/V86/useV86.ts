@@ -17,7 +17,7 @@ import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
+import { fs9pV4ToV3 } from "contexts/fileSystem/core";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import {
