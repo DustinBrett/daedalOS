@@ -5,6 +5,7 @@ import {
   decryptMessage,
   convertImageLinksToHtml,
   groupChatEvents,
+  prettyChatTimestamp,
 } from "components/apps/Messenger/functions";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
@@ -64,7 +65,7 @@ const ChatLog: FC<{
         <>
           <ChatProfile publicKey={recipientPublicKey} />
           {chatEvents.map(([timestamp, eventGroup]) =>
-            eventGroup.map(({ id, pubkey, content }, index) => (
+            eventGroup.map(({ created_at, id, pubkey, content }, index) => (
               <li
                 key={id}
                 className={clsx({
@@ -73,6 +74,7 @@ const ChatLog: FC<{
                   sent: publicKey === pubkey,
                 })}
                 data-timestamp={index === 0 ? timestamp : undefined}
+                title={prettyChatTimestamp(created_at)}
               >
                 {publicKey !== pubkey && (
                   <div className="avatar">

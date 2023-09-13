@@ -18,7 +18,11 @@ const ProfileContext = createContext([
 
 const useProfileContext = (): ProfileState => useContext(ProfileContext);
 
-export const useNostrProfile = (publicKey: string): NostrProfile => {
+export const useNostrProfile = (
+  publicKey: string
+): NostrProfile & {
+  setProfiles: React.Dispatch<React.SetStateAction<Profiles>>;
+} => {
   const [profiles, setProfiles] = useProfileContext();
   const { onEvent } = useNostrEvents({
     enabled: !profiles[publicKey] && !!publicKey,
@@ -54,7 +58,10 @@ export const useNostrProfile = (publicKey: string): NostrProfile => {
     }
   });
 
-  return publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {};
+  return {
+    ...(publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {}),
+    setProfiles,
+  };
 };
 
 export const ProfileProvider = memo<FC>(({ children }) => (

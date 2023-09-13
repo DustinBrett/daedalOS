@@ -19,6 +19,7 @@ import {
   BASE_RW_RELAYS,
   DM_KIND,
   GROUP_TIME_GAP_IN_SECONDS,
+  METADATA_KIND,
   PRIVATE_KEY_IDB_NAME,
   PUBLIC_KEY_IDB_NAME,
   TIME_FORMAT,
@@ -167,29 +168,44 @@ export const shortTimeStamp = (timestamp: number): string => {
   return `${seconds}s`;
 };
 
+const signEvent = async (event: Event): Promise<Event> => {
+  let signedEvent = event;
+
+  signedEvent.id = getEventHash(event);
+
+  if (window.nostr?.signEvent) {
+    signedEvent = await window.nostr.signEvent(signedEvent);
+  } else {
+    signedEvent.sig = getSignature(signedEvent, toHexKey(getPrivateKey()));
+  }
+
+  return signedEvent;
+};
+
+export const createProfileEvent = async (
+  publicKey: string,
+  profile: ProfileData
+): Promise<Event> =>
+  signEvent({
+    content: JSON.stringify(profile),
+    created_at: dateToUnix(),
+    kind: METADATA_KIND,
+    pubkey: publicKey,
+    tags: [] as string[][],
+  } as Event);
+
 export const createMessageEvent = async (
   message: string,
   publicKey: string,
   recipientPublicKey: string
-): Promise<Event> => {
-  let event = {
+): Promise<Event> =>
+  signEvent({
     content: await encryptMessage(message, recipientPublicKey),
     created_at: dateToUnix(),
     kind: DM_KIND,
     pubkey: publicKey,
     tags: [["p", recipientPublicKey]],
-  } as Event;
-
-  event.id = getEventHash(event);
-
-  if (window.nostr?.signEvent) {
-    event = await window.nostr.signEvent(event);
-  } else {
-    event.sig = getSignature(event, toHexKey(getPrivateKey()));
-  }
-
-  return event;
-};
+  } as Event);
 
 export const dataToProfile = (
   publicKey: string,
@@ -210,6 +226,7 @@ export const dataToProfile = (
   return {
     about,
     banner,
+    data,
     nip05,
     picture,
     userName:
@@ -310,7 +327,7 @@ export const convertImageLinksToHtml = (content: string): string =>
     (match) => `<img src="${match}" />`
   );
 
-const prettyChatTimestamp = (timestamp: number): string => {
+export const prettyChatTimestamp = (timestamp: number): string => {
   const date = new Date(timestamp * MILLISECONDS_IN_SECOND);
   const now = new Date();
   const today = new Date(

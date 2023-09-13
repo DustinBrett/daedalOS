@@ -9,9 +9,9 @@ export const BASE_RW_RELAYS = [
   "wss://au.relayable.org",
   "wss://he.relayable.org",
   "wss://relay.damus.io",
-  "wss://nos.lol",
 ];
 
+export const METADATA_KIND = 0;
 export const DM_KIND = 4;
 
 export const PRIVATE_KEY_IDB_NAME = "nostr_private_key";

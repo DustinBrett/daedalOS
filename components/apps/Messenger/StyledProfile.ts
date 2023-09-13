@@ -1,14 +1,27 @@
 import styled from "styled-components";
 
-const StyledProfile = styled.figure`
+type StyledProfileProps = {
+  $clickable?: boolean;
+};
+
+const StyledProfile = styled.figure<StyledProfileProps>`
   > div {
+    cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
     position: relative;
 
+    > img,
+    > svg {
+      cursor: inherit;
+    }
+
     div.verified {
+      cursor: inherit;
+
       svg {
         border: none;
         bottom: 2px;
         color: #000;
+        cursor: inherit;
         fill: #000;
         height: 18px;
         left: -2px;
@@ -18,6 +31,10 @@ const StyledProfile = styled.figure`
         min-width: 18px;
         position: absolute;
         width: 18px;
+
+        path {
+          cursor: inherit;
+        }
       }
     }
   }

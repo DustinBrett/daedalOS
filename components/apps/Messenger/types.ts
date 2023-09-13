@@ -29,16 +29,17 @@ export type NostrContacts = {
   unreadEvents: Event[];
 };
 
+export type ProfileData = Metadata & { npub?: string };
+
 export type NostrProfile = {
   about?: string;
   banner?: string;
+  data?: ProfileData;
   nip05?: string;
   picture?: string;
   userName?: string;
   website?: string;
 };
-
-export type ProfileData = Metadata & { npub?: string };
 
 export type ChatEvents = [string, Event[]][];
 

@@ -5,6 +5,7 @@ import { useState } from "react";
 
 type ProfileProps = {
   nip05?: string;
+  onClick?: () => void;
   picture?: string;
   pubkey?: string;
   userName?: string;
@@ -13,6 +14,7 @@ type ProfileProps = {
 const Profile: FC<ProfileProps> = ({
   children,
   nip05,
+  onClick,
   picture,
   pubkey,
   userName = "Unknown",
@@ -21,8 +23,9 @@ const Profile: FC<ProfileProps> = ({
   const [loadedImage, setLoadedImage] = useState("");
 
   return (
-    <StyledProfile>
-      <div>
+    <StyledProfile $clickable={Boolean(onClick)}>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <div onClick={onClick}>
         {picture && (
           <img
             alt={userName}
