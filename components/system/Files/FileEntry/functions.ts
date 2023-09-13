@@ -778,7 +778,7 @@ const canvasContexts = Object.create(null) as Record<
   CanvasRenderingContext2D
 >;
 
-const measureText = (
+export const measureText = (
   text: string,
   fontSize: string,
   fontFamily: string

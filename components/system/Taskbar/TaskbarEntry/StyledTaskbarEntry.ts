@@ -68,6 +68,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
   > div {
     align-items: center;
     display: flex;
+    width: calc(100% - 4px);
   }
 
   figure {
