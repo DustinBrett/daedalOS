@@ -28,6 +28,7 @@ import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 import { dateToUnix } from "nostr-react";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type { MenuItem } from "contexts/menu/useMenuContextState";
 
 export const getRelayUrls = async (): Promise<string[]> => {
   if (window.nostr?.getRelays) {
@@ -167,6 +168,17 @@ export const shortTimeStamp = (timestamp: number): string => {
 
   return `${seconds}s`;
 };
+
+export const copyKeyMenuItems = (hexKey: string): MenuItem[] => [
+  {
+    action: () => navigator.clipboard?.writeText(nip19.npubEncode(hexKey)),
+    label: "Copy npub address",
+  },
+  {
+    action: () => navigator.clipboard?.writeText(hexKey),
+    label: "Copy hex address",
+  },
+];
 
 const signEvent = async (event: Event): Promise<Event> => {
   let signedEvent = event;

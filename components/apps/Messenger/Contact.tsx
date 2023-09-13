@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import {
+  copyKeyMenuItems,
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
-import { nip19, type Event } from "nostr-tools";
+import { type Event } from "nostr-tools";
 import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 import Button from "styles/common/Button";
 import { useMenu } from "contexts/menu";
@@ -45,15 +46,7 @@ const Contact: FC<ContactProps> = ({
           label: "Start end-to-end encrypted chat",
         },
         MENU_SEPERATOR,
-        {
-          action: () =>
-            navigator.clipboard?.writeText(nip19.npubEncode(pubkey)),
-          label: "Copy npub address",
-        },
-        {
-          action: () => navigator.clipboard?.writeText(pubkey),
-          label: "Copy hex address",
-        },
+        ...copyKeyMenuItems(pubkey),
       ]),
     [contextMenu, onClick, pubkey]
   );

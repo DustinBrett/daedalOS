@@ -8,6 +8,7 @@ import { haltEvent } from "utils/functions";
 import Profile from "components/apps/Messenger/Profile";
 import { useNostr } from "nostr-react";
 import {
+  copyKeyMenuItems,
   createProfileEvent,
   dataToProfile,
   getWebSocketStatusIcon,
@@ -85,6 +86,8 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     () =>
       /* eslint-disable no-alert */
       contextMenu?.(() => [
+        ...copyKeyMenuItems(pubkey),
+        MENU_SEPERATOR,
         {
           action: () => updateProfile({ username: prompt("Username") || "" }),
           label: "Edit Username",
@@ -100,7 +103,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
         },
       ]),
     /* eslint-enable no-alert */
-    [contextMenu, updateProfile]
+    [contextMenu, pubkey, updateProfile]
   );
 
   return (
@@ -121,7 +124,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       )}
       <Profile
         nip05={nip05}
-        onClick={onContextMenuCapture}
+        onClick={selectedRecipientKey ? undefined : onContextMenuCapture}
         picture={picture}
         pubkey={pubkey}
         userName={userName}
