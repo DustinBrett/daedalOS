@@ -65,12 +65,6 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     }
   }
 
-  > div {
-    align-items: center;
-    display: flex;
-    width: calc(100% - 4px);
-  }
-
   figure {
     align-items: center;
     display: flex;
@@ -92,6 +86,16 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
       position: relative;
       top: 1px;
       width: ${({ theme }) => theme.sizes.taskbar.entry.iconSize};
+    }
+  }
+
+  > div {
+    align-items: center;
+    display: flex;
+    width: calc(100% - 4px);
+
+    figure {
+      width: 100%;
     }
   }
 `;
