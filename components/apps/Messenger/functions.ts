@@ -169,15 +169,28 @@ export const shortTimeStamp = (timestamp: number): string => {
   return `${seconds}s`;
 };
 
-export const copyKeyMenuItems = (hexKey: string): MenuItem[] => [
+export const copyKeyMenuItems = (
+  hexKey: string,
+  nsecHex?: string
+): MenuItem[] => [
   {
     action: () => navigator.clipboard?.writeText(nip19.npubEncode(hexKey)),
     label: "Copy npub address",
   },
-  {
-    action: () => navigator.clipboard?.writeText(hexKey),
-    label: "Copy hex address",
-  },
+  ...(nsecHex
+    ? [
+        {
+          action: () =>
+            navigator.clipboard?.writeText(nip19.nsecEncode(nsecHex)),
+          label: "Copy nsec address",
+        },
+      ]
+    : [
+        {
+          action: () => navigator.clipboard?.writeText(hexKey),
+          label: "Copy hex address",
+        },
+      ]),
 ];
 
 const signEvent = async (event: Event): Promise<Event> => {
