@@ -46,10 +46,12 @@ const SendMessage: FC<SendMessageProps> = ({
           setCanSend(Boolean(inputRef.current?.value));
           updateHeight();
         }}
-        onKeyDown={async ({ key, shiftKey }) => {
+        onKeyDown={async (event) => {
+          const { key, shiftKey } = event;
           const message = inputRef.current?.value;
 
           if (message && key === "Enter" && !shiftKey) {
+            event.preventDefault();
             await sendMessage(message);
           } else setCanSend(Boolean(message));
 

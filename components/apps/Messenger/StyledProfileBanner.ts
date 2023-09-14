@@ -7,9 +7,9 @@ const StyledProfileBanner = styled.div`
   display: flex;
   font-size: 24px;
   font-weight: 700;
-  height: 60px;
-  max-height: 60px;
-  min-height: 60px;
+  height: 69px;
+  max-height: 69px;
+  min-height: 69px;
   padding: 8px 15px;
   place-content: space-between;
   place-items: center;
@@ -81,7 +81,7 @@ const StyledProfileBanner = styled.div`
     padding-right: 67px;
     place-content: flex-end;
     position: absolute;
-    top: 4px;
+    top: 5px;
     width: 100%;
 
     ol {

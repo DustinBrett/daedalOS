@@ -1,3 +1,4 @@
+import type { MotionProps } from "framer-motion";
 import {
   MILLISECONDS_IN_MINUTE,
   MILLISECONDS_IN_SECOND,
@@ -30,4 +31,20 @@ export const TIME_FORMAT: Partial<Intl.DateTimeFormatOptions> = {
   hour: "numeric",
   hour12: true,
   minute: "numeric",
+};
+
+const enterExitTransition = { bounce: 0, duration: 0.3, type: "spring" };
+
+export const inLeftOutRight: MotionProps = {
+  animate: { transform: "translateX(0%)" },
+  exit: { transform: "translateX(100%)" },
+  initial: { transform: "translateX(100%)" },
+  ...enterExitTransition,
+};
+
+export const inRightOutLeft: MotionProps = {
+  animate: { transform: "translateX(0%)" },
+  exit: { transform: "translateX(-100%)" },
+  initial: { transform: "translateX(-100%)" },
+  ...enterExitTransition,
 };

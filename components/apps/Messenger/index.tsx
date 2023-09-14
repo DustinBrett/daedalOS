@@ -18,10 +18,16 @@ import StyledContacts from "components/apps/Messenger/StyledContacts";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
 import ChatLog from "components/apps/Messenger/ChatLog";
 import To from "components/apps/Messenger/To";
-import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import {
+  UNKNOWN_PUBLIC_KEY,
+  inLeftOutRight,
+  inRightOutLeft,
+} from "components/apps/Messenger/constants";
 import type { Event } from "nostr-tools";
 import { haltEvent } from "utils/functions";
 import { ProfileProvider } from "components/apps/Messenger/ProfileContext";
+import { AnimatePresence } from "framer-motion";
+import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
 
 type NostrChatProps = {
   loginTime: number;
@@ -103,35 +109,43 @@ const NostrChat: FC<NostrChatProps> = ({
           relayUrls={relayUrls}
           selectedRecipientKey={selectedRecipientKey}
         />
-        {selectedRecipientKey ? (
-          <>
-            {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
-              <To setRecipientKey={setRecipientKey} />
+        <div>
+          <AnimatePresence initial={false} presenceAffectsLayout={false}>
+            {selectedRecipientKey ? (
+              <StyledChatContainer key="chat" {...inRightOutLeft}>
+                {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
+                  <To setRecipientKey={setRecipientKey} />
+                )}
+                <ChatLog
+                  events={events}
+                  publicKey={publicKey}
+                  recipientPublicKey={selectedRecipientKey}
+                />
+                <SendMessage
+                  publicKey={publicKey}
+                  recipientPublicKey={selectedRecipientKey}
+                />
+              </StyledChatContainer>
+            ) : (
+              <StyledContacts
+                key="contacts"
+                onContextMenu={haltEvent}
+                {...inLeftOutRight}
+              >
+                {contactKeys.map((contactKey) => (
+                  <Contact
+                    key={contactKey}
+                    lastEvent={lastEvents[contactKey]}
+                    onClick={() => changeRecipient(contactKey, events)}
+                    pubkey={contactKey}
+                    publicKey={publicKey}
+                    unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
+                  />
+                ))}
+              </StyledContacts>
             )}
-            <ChatLog
-              events={events}
-              publicKey={publicKey}
-              recipientPublicKey={selectedRecipientKey}
-            />
-            <SendMessage
-              publicKey={publicKey}
-              recipientPublicKey={selectedRecipientKey}
-            />
-          </>
-        ) : (
-          <StyledContacts onContextMenu={haltEvent}>
-            {contactKeys.map((contactKey) => (
-              <Contact
-                key={contactKey}
-                lastEvent={lastEvents[contactKey]}
-                onClick={() => changeRecipient(contactKey, events)}
-                pubkey={contactKey}
-                publicKey={publicKey}
-                unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
-              />
-            ))}
-          </StyledContacts>
-        )}
+          </AnimatePresence>
+        </div>
       </ProfileProvider>
     </StyledMessenger>
   );

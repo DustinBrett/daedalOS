@@ -1,12 +1,16 @@
+import { m as motion } from "framer-motion";
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
-const StyledContacts = styled.ol`
+const StyledContacts = styled(motion.ol)`
   ${ScrollBars()}
   background-color: #242526;
   height: 100%;
   overflow-y: auto;
+  position: absolute;
   scrollbar-gutter: auto;
+  top: 0;
+  width: 100%;
 
   li {
     border-radius: 10px;
