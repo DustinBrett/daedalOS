@@ -1,14 +1,11 @@
 import type { NostrProfile } from "components/apps/Messenger/types";
 import { useNostrEvents } from "nostr-react";
 import { createContext, memo, useContext, useState } from "react";
-import { MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { dataToProfile } from "components/apps/Messenger/functions";
 import { type Metadata } from "nostr-react";
 
 type Profiles = Record<string, NostrProfile>;
 type ProfileState = [Profiles, React.Dispatch<React.SetStateAction<Profiles>>];
-
-const PROFILE_CACHE_TIMEOUT_MINUTES = 60;
 
 const ProfileContext = createContext([
   Object.create(null),
@@ -25,7 +22,7 @@ export const useNostrProfile = (
 } => {
   const [profiles, setProfiles] = useProfileContext();
   const { onEvent } = useNostrEvents({
-    enabled: !profiles[publicKey] && !!publicKey,
+    enabled: !!publicKey,
     filter: {
       authors: [publicKey],
       kinds: [0],
@@ -33,7 +30,7 @@ export const useNostrProfile = (
   });
 
   onEvent(({ content, pubkey }) => {
-    if (!publicKey || profiles[publicKey] || publicKey !== pubkey) return;
+    if (!publicKey || publicKey !== pubkey) return;
 
     try {
       const metadata = JSON.parse(content) as Metadata;
@@ -43,15 +40,6 @@ export const useNostrProfile = (
           ...currentProfiles,
           [publicKey]: dataToProfile(publicKey, metadata),
         }));
-
-        window.setTimeout(
-          () =>
-            setProfiles(
-              ({ [publicKey]: _expiredProfile, ...currentProfiles }) =>
-                currentProfiles
-            ),
-          MILLISECONDS_IN_MINUTE * PROFILE_CACHE_TIMEOUT_MINUTES
-        );
       }
     } catch {
       // Ignore errors parsing profile data

@@ -290,7 +290,9 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
   }
 };
 
-const verifiedNip05Addresses: Record<string, string | false> = {};
+const verifiedNip05Addresses: Record<string, string | number> = {};
+
+const TIMEOUT_ERRORS = new Set([408, 504]);
 
 export const getNip05Domain = async (
   nip05address?: string,
@@ -302,6 +304,12 @@ export const getNip05Domain = async (
     const [userName, domain] = nip05address.split("@");
 
     if (verifiedNip05Addresses[pubkey] === domain) return domain;
+    if (
+      typeof verifiedNip05Addresses[pubkey] === "number" &&
+      !TIMEOUT_ERRORS.has(verifiedNip05Addresses[pubkey] as number)
+    ) {
+      return "";
+    }
 
     const nostrJson = await fetch(`https://${domain}${BASE_NIP05_URL}`);
 
@@ -324,10 +332,9 @@ export const getNip05Domain = async (
 
       return verified ? domain : "";
     }
-
-    verifiedNip05Addresses[pubkey] = false;
+    verifiedNip05Addresses[pubkey] = nostrJson.status;
   } catch {
-    verifiedNip05Addresses[pubkey] = false;
+    verifiedNip05Addresses[pubkey] = 0;
   }
 
   return "";
@@ -349,7 +356,7 @@ export const getWebSocketStatusIcon = (status?: number): string => {
 export const convertImageLinksToHtml = (content: string): string =>
   content.replace(
     /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
-    (match) => `<img src="${match}" />`
+    (match) => `<img loading="lazy" src="${match}" />`
   );
 
 export const prettyChatTimestamp = (timestamp: number): string => {

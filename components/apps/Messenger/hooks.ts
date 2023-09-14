@@ -75,6 +75,7 @@ export const useNostrContacts = (
   const contactKeys = useMemo(() => {
     const keys = new Set(
       events
+        .sort(descCreatedAt)
         .map(({ pubkey, tags }) =>
           pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey
         )
