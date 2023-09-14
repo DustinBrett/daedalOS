@@ -259,6 +259,7 @@ const FileEntry: FC<FileEntryProps> = ({
     if (
       openInFileExplorer &&
       fileManagerId &&
+      !window.globalKeyStates?.ctrlKey &&
       !MOUNTABLE_EXTENSIONS.has(urlExt)
     ) {
       changeUrl(fileManagerId, url);
