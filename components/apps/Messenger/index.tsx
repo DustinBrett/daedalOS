@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getRelayUrls,
   getPublicHexFromNostrAddress,
+  toHexKey,
 } from "components/apps/Messenger/functions";
 import StyledMessenger from "components/apps/Messenger/StyledMessenger";
 import Contact from "components/apps/Messenger/Contact";
@@ -28,6 +29,7 @@ import { haltEvent } from "utils/functions";
 import { ProfileProvider } from "components/apps/Messenger/ProfileContext";
 import { AnimatePresence } from "framer-motion";
 import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
+import { useProcesses } from "contexts/process";
 
 type NostrChatProps = {
   loginTime: number;
@@ -84,8 +86,33 @@ const NostrChat: FC<NostrChatProps> = ({
     },
     [changeRecipient]
   );
+  const {
+    processes: { [processId]: process },
+    url: setUrl,
+  } = useProcesses();
+  const { url } = process || {};
 
   useUnreadStatus(processId, unreadEvents.length);
+
+  useEffect(() => {
+    if (
+      !url ||
+      (!url.startsWith("nostr:npub") && !url.startsWith("nostr:nprofile"))
+    ) {
+      return;
+    }
+
+    const [, key] = url.split("nostr:");
+
+    if (key) {
+      const hexKey = toHexKey(key);
+
+      if (key !== hexKey) {
+        setSelectedRecipientKey(hexKey);
+        setUrl(processId, "");
+      }
+    }
+  }, [processId, setUrl, url]);
 
   useEffect(() => {
     if (unreadEvents && selectedRecipientKey) {

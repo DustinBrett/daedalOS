@@ -189,7 +189,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
       IconFile: icon = "",
       Type: type = "",
       URL: url = "",
-    },
+    } = {},
   } = (ini.parse(contents.toString()) || {}) as {
     InternetShortcut: InternetShortcut;
   };

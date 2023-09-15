@@ -18,7 +18,7 @@ import {
   BASE_NIP05_URL,
   NOTIFICATION_SOUND,
 } from "components/apps/Messenger/constants";
-import { PACKAGE_DATA } from "utils/constants";
+import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();
@@ -125,13 +125,14 @@ export const usePublicKey = (): string => {
 export const useUnreadStatus = (id: string, unreadCount: number): void => {
   const [currentUnreadCount, setCurrentUnreadCount] = useState(unreadCount);
   const { title } = useProcesses();
+  const [pid] = id.split(PROCESS_DELIMITER);
 
   useEffect(() => {
     title(
-      id,
-      `${directory[id]?.title}${unreadCount > 0 ? ` (${unreadCount})` : ""}`
+      pid,
+      `${directory[pid]?.title}${unreadCount > 0 ? ` (${unreadCount})` : ""}`
     );
-  }, [id, title, unreadCount]);
+  }, [pid, title, unreadCount]);
 
   useEffect(() => {
     if (unreadCount > currentUnreadCount) {

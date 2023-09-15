@@ -46,11 +46,22 @@ export const getRelayUrls = async (): Promise<string[]> => {
 };
 
 export const toHexKey = (key: string): string => {
-  if (key.startsWith("npub") || key.startsWith("nsec")) {
+  if (
+    key.startsWith("nprofile") ||
+    key.startsWith("npub") ||
+    key.startsWith("nsec")
+  ) {
     try {
       const { data } = nip19.decode(key);
 
       if (typeof data === "string") return data;
+
+      if (
+        typeof data === "object" &&
+        typeof (data as ProfilePointer).pubkey === "string"
+      ) {
+        return (data as ProfilePointer).pubkey;
+      }
     } catch {
       return key;
     }
