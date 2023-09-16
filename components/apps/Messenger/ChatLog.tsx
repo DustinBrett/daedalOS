@@ -23,11 +23,16 @@ const ChatLog: FC<{
   const chatEvents = useMemo(
     () =>
       groupChatEvents(
-        events.filter(({ pubkey, tags }) =>
-          [pubkey, getKeyFromTags(tags)].includes(recipientPublicKey)
-        )
+        events.filter(({ pubkey, tags }) => {
+          const isSender = pubkey === recipientPublicKey;
+          const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
+
+          return recipientPublicKey === publicKey
+            ? isSender && isRecipient
+            : isSender || isRecipient;
+        })
       ),
-    [events, recipientPublicKey]
+    [events, publicKey, recipientPublicKey]
   );
   const [decryptedContent, setDecryptedContent] = useState<DecryptedContent>(
     {}
