@@ -70,6 +70,8 @@ export const PROMPT_FILE = "prompts.json";
 
 export const SLIDESHOW_FILE = "slideshow.json";
 
+export const SLIDESHOW_TIMEOUT_IN_MILLISECONDS = 12000;
+
 export const ICON_GIF_SECONDS = 2;
 
 export const ICON_GIF_FPS = 24;

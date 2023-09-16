@@ -22,6 +22,7 @@ import {
   PICTURES_FOLDER,
   PROMPT_FILE,
   SLIDESHOW_FILE,
+  SLIDESHOW_TIMEOUT_IN_MILLISECONDS,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -377,7 +378,7 @@ const useWallpaper = (
           if (isSlideshow) {
             wallpaperTimerRef.current = window.setTimeout(
               loadFileWallpaper,
-              MILLISECONDS_IN_MINUTE
+              SLIDESHOW_TIMEOUT_IN_MILLISECONDS
             );
           }
         }
