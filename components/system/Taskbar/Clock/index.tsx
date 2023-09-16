@@ -6,7 +6,7 @@ import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
-  BASE_CLOCK_WIDTH,
+  CLOCK_CANVAS_BASE_WIDTH,
   FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
@@ -59,10 +59,12 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 type ClockProps = {
+  setClockWidth: React.Dispatch<React.SetStateAction<number>>;
   toggleCalendar: () => void;
+  width: number;
 };
 
-const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
+const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
   const [now, setNow] = useState<LocaleTimeDate>(
     Object.create(null) as LocaleTimeDate
   );
@@ -105,7 +107,7 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
   );
   const clockSize = useRef<Size>({
     height: TASKBAR_HEIGHT,
-    width: BASE_CLOCK_WIDTH,
+    width,
   });
   const {
     formats: { systemFont },
@@ -122,10 +124,14 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
       ) {
         [...clockContainer.children].forEach((element) => element.remove());
 
-        clockSize.current.width = Math.max(
-          BASE_CLOCK_WIDTH,
-          Math.ceil(measureText(LARGEST_CLOCK_TEXT, fontSize, systemFont))
+        clockSize.current.width = Math.min(
+          Math.max(
+            CLOCK_CANVAS_BASE_WIDTH,
+            Math.ceil(measureText(LARGEST_CLOCK_TEXT, fontSize, systemFont))
+          ),
+          CLOCK_CANVAS_BASE_WIDTH * 1.5
         );
+        setClockWidth(clockSize.current.width);
 
         offScreenClockCanvas.current = createOffscreenCanvas(
           clockContainer,
@@ -185,6 +191,7 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
   return (
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+      $width={width}
       aria-label="Clock"
       onClick={onClockClick}
       role="timer"

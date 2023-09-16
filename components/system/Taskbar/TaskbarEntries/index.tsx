@@ -8,11 +8,15 @@ const TaskbarEntry = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry")
 );
 
-const TaskbarEntries: FC = () => {
+type TaskbarEntriesProps = {
+  clockWidth: number;
+};
+
+const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth }) => {
   const { processes = {} } = useProcesses();
 
   return (
-    <StyledTaskbarEntries>
+    <StyledTaskbarEntries $clockWidth={clockWidth}>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {Object.entries(processes)
           .filter(

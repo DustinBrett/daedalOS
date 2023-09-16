@@ -39,7 +39,7 @@ export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
 
 export const THIN_SCROLLBAR_WIDTH = 13;
 
-export const BASE_CLOCK_WIDTH = 68;
+export const CLOCK_CANVAS_BASE_WIDTH = 68;
 
 export const SMALLEST_PNG_SIZE = 51;
 

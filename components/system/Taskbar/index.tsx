@@ -6,7 +6,7 @@ import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
 
 const Calendar = dynamic(() => import("components/system/Taskbar/Calendar"));
 const StartMenu = dynamic(() => import("components/system/StartMenu"));
@@ -14,6 +14,7 @@ const StartMenu = dynamic(() => import("components/system/StartMenu"));
 const Taskbar: FC = () => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const [calendarVisible, setCalendarVisible] = useState(false);
+  const [clockWidth, setClockWidth] = useState(CLOCK_CANVAS_BASE_WIDTH);
   const toggleStartMenu = useCallback(
     (showMenu?: boolean): void =>
       setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState),
@@ -37,8 +38,12 @@ const Taskbar: FC = () => {
           startMenuVisible={startMenuVisible}
           toggleStartMenu={toggleStartMenu}
         />
-        <TaskbarEntries />
-        <Clock toggleCalendar={toggleCalendar} />
+        <TaskbarEntries clockWidth={clockWidth} />
+        <Clock
+          setClockWidth={setClockWidth}
+          toggleCalendar={toggleCalendar}
+          width={clockWidth}
+        />
       </StyledTaskbar>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {calendarVisible && <Calendar toggleCalendar={toggleCalendar} />}
