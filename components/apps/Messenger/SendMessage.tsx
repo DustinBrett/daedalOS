@@ -48,7 +48,7 @@ const SendMessage: FC<SendMessageProps> = ({
         }}
         onKeyDown={async (event) => {
           const { key, shiftKey } = event;
-          const message = inputRef.current?.value;
+          const message = inputRef.current?.value.trim();
 
           if (message && key === "Enter" && !shiftKey) {
             event.preventDefault();

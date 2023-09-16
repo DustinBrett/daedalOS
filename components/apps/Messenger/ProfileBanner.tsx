@@ -3,10 +3,7 @@ import { useCallback, useMemo } from "react";
 import Button from "styles/common/Button";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 import { Back, Write } from "components/apps/Messenger/Icons";
-import {
-  PRIVATE_KEY_IDB_NAME,
-  UNKNOWN_PUBLIC_KEY,
-} from "components/apps/Messenger/constants";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { haltEvent } from "utils/functions";
 import Profile from "components/apps/Messenger/Profile";
 import { useNostr } from "nostr-react";
@@ -14,6 +11,7 @@ import {
   copyKeyMenuItems,
   createProfileEvent,
   dataToProfile,
+  getPrivateKey,
   getWebSocketStatusIcon,
 } from "components/apps/Messenger/functions";
 import { useMenu } from "contexts/menu";
@@ -89,10 +87,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     () =>
       /* eslint-disable no-alert */
       contextMenu?.(() => [
-        ...copyKeyMenuItems(
-          pubkey,
-          localStorage.getItem(PRIVATE_KEY_IDB_NAME) || ""
-        ),
+        ...copyKeyMenuItems(pubkey, getPrivateKey()),
         MENU_SEPERATOR,
         {
           action: () => updateProfile({ username: prompt("Username") || "" }),

@@ -1,5 +1,5 @@
 import { useNostrEvents } from "nostr-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getReceivedMessages,
   getSentMessages,
@@ -114,8 +114,13 @@ export const useNostrContacts = (
 
 export const usePublicKey = (): string => {
   const [publicKey, setPublicKey] = useState<string>("");
+  const initialized = useRef(false);
 
   useEffect(() => {
+    if (initialized.current) return;
+
+    initialized.current = true;
+
     maybeGetExistingPublicKey().then(getPublicHexKey).then(setPublicKey);
   }, []);
 

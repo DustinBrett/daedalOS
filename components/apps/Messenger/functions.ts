@@ -70,13 +70,25 @@ export const toHexKey = (key: string): string => {
   return key;
 };
 
-const getPrivateKey = (): string =>
+export const getPrivateKey = (): string =>
   localStorage.getItem(PRIVATE_KEY_IDB_NAME) || "";
 
 export const maybeGetExistingPublicKey = async (): Promise<string> =>
   (await window.nostr?.getPublicKey()) ||
   localStorage.getItem(PUBLIC_KEY_IDB_NAME) ||
   "";
+
+export const getPublicHexKey = (existingPublicKey?: string): string => {
+  if (existingPublicKey) return toHexKey(existingPublicKey);
+
+  const newPrivateKey = generatePrivateKey();
+  const newPublicKey = getPublicKey(newPrivateKey);
+
+  localStorage.setItem(PUBLIC_KEY_IDB_NAME, newPublicKey);
+  localStorage.setItem(PRIVATE_KEY_IDB_NAME, newPrivateKey);
+
+  return toHexKey(newPublicKey);
+};
 
 export const getKeyFromTags = (tags: string[][] = []): string => {
   const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
@@ -142,18 +154,6 @@ export const getSentMessages = (publicKey?: string): NostrEvents => ({
     kinds: [DM_KIND],
   },
 });
-
-export const getPublicHexKey = (existingPublicKey?: string): string => {
-  if (existingPublicKey) return toHexKey(existingPublicKey);
-
-  const newPrivateKey = generatePrivateKey();
-  const newPublicKey = getPublicKey(newPrivateKey);
-
-  localStorage.setItem(PUBLIC_KEY_IDB_NAME, newPublicKey);
-  localStorage.setItem(PRIVATE_KEY_IDB_NAME, newPrivateKey);
-
-  return toHexKey(newPublicKey);
-};
 
 const ascCreatedAt = (a: Event, b: Event): number =>
   a.created_at - b.created_at;
