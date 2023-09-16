@@ -220,7 +220,12 @@ const FileEntry: FC<FileEntryProps> = ({
         if (url.startsWith("http:") || url.startsWith("https:")) {
           return decodeURIComponent(url);
         }
-        return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
+
+        const directoryPath = dirname(url);
+
+        return `Location: ${basename(url, extname(url))}${
+          !directoryPath || directoryPath === "." ? "" : ` (${dirname(url)})`
+        }`;
       }
       return "";
     }
