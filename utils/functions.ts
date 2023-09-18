@@ -75,11 +75,12 @@ export const imageSrc = (
   const ratioSize = size * ratio;
   const imageSize =
     expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize;
+  const isCachedIcon = extname(imageName) === ".cache";
 
   return `${join(
     dirname(imagePath),
-    `${imageSize}x${imageSize}`,
-    `${imageName}${extension}`
+    isCachedIcon ? "" : `${imageSize}x${imageSize}`,
+    `${imageName}${isCachedIcon ? "" : extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
 

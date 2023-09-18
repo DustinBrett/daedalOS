@@ -86,7 +86,7 @@ const Metadata: FC = () => {
 
       if (title !== documentTitle) setTitle(documentTitle);
       if (favIcon !== processIcon || !favIcon) {
-        setFavIcon(processIcon || FAVICON_BASE_PATH);
+        setFavIcon(encodeURI(processIcon) || FAVICON_BASE_PATH);
       }
     } else {
       resetFaviconAndTitle();
