@@ -3,6 +3,8 @@ import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 declare global {
   interface Window {
@@ -23,6 +25,7 @@ const useSpaceCadet = ({
 }: ContainerHookProps): void => {
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+  const mountEmFs = useEmscriptenMount();
 
   useEffect(() => {
     const containerCanvas = containerRef.current?.querySelector("canvas");
@@ -30,11 +33,14 @@ const useSpaceCadet = ({
     if (containerCanvas instanceof HTMLCanvasElement) {
       window.Module = {
         canvas: containerCanvas,
-        postRun: () => setLoading(false),
+        postRun: () => {
+          setLoading(false);
+          mountEmFs(window.FS as EmscriptenFS, "SpaceCadet");
+        },
       };
       setCanvas(containerCanvas);
     }
-  }, [containerRef, setLoading]);
+  }, [containerRef, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (canvas) {
@@ -53,7 +59,11 @@ const useSpaceCadet = ({
 
     return () => {
       if (canvas && window.Module) {
-        window.Module.SDL2?.audioContext.close();
+        try {
+          window.Module.SDL2?.audioContext.close();
+        } catch {
+          // Ignore errors during closing
+        }
       }
     };
   }, [canvas, containerRef, libs]);

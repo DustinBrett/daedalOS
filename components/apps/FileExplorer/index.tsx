@@ -14,6 +14,7 @@ import {
   ROOT_NAME,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -47,7 +48,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         if (isMounted) {
           setProcessIcon(
             id,
-            rootFs?.mntMap[url].getName() === "FileSystemAccess"
+            isMountedFolder(rootFs?.mntMap[url])
               ? MOUNTED_FOLDER_ICON
               : COMPRESSED_FOLDER_ICON
           );

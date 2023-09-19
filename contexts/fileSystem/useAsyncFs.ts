@@ -15,6 +15,7 @@ import {
   ICON_CACHE_EXTENSION,
   SESSION_FILE,
 } from "utils/constants";
+import type EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -35,18 +36,26 @@ export type AsyncFS = {
 
 const { BFSRequire, configure } = BrowserFS as typeof IBrowserFS;
 
+export type EmscriptenFS = {
+  DB_NAME: () => string;
+  DB_STORE_NAME: string;
+};
+
+export type ExtendedEmscriptenFileSystem = Omit<EmscriptenFileSystem, "_FS"> & {
+  _FS?: EmscriptenFS;
+};
+
+export type Mount = {
+  _data?: Buffer;
+  data?: Buffer;
+  getName: () => string;
+};
+
 export type RootFileSystem = Omit<
   MountableFileSystem,
   "mntMap" | "mountList"
 > & {
-  mntMap: Record<
-    string,
-    {
-      _data?: Buffer;
-      data?: Buffer;
-      getName: () => string;
-    }
-  >;
+  mntMap: Record<string, Mount>;
   mountList: string[];
 };
 

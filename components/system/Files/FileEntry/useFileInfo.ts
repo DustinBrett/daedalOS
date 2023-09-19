@@ -6,6 +6,7 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 
 export type FileInfo = {
   comment?: string;
@@ -44,7 +45,7 @@ const useFileInfo = (
         !extension ||
         (isDirectory &&
           !MOUNTABLE_EXTENSIONS.has(extension) &&
-          rootFs.mntMap[path]?.getName() !== "FileSystemAccess")
+          !isMountedFolder(rootFs.mntMap[path]))
       ) {
         getInfoWithoutExtension(
           fs,

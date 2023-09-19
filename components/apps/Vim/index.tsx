@@ -9,6 +9,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
 import { haltEvent, loadFiles } from "utils/functions";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -16,6 +17,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
   } = useProcesses();
   const { readFile, updateFolder, writeFile } = useFileSystem();
+  const mountEmFs = useEmscriptenMount();
   const { prependFileToTitle } = useTitle(id);
   const { libs = [], url = "" } = process || {};
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
@@ -45,6 +47,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       postRun: [
         () => {
           loading.current = false;
+          mountEmFs(window.VimWrapperModule?.VimModule?.FS, "Vim");
         },
       ],
       preRun: [
@@ -90,7 +93,15 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     });
 
     prependFileToTitle(basename(saveUrl));
-  }, [closeWithTransition, id, libs, prependFileToTitle, readFile, url]);
+  }, [
+    closeWithTransition,
+    id,
+    libs,
+    mountEmFs,
+    prependFileToTitle,
+    readFile,
+    url,
+  ]);
 
   useEffect(() => {
     if (updateQueue.length > 0) {

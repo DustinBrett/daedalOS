@@ -1,7 +1,11 @@
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
-import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
+import type {
+  ExtendedEmscriptenFileSystem,
+  Mount,
+  RootFileSystem,
+} from "contexts/fileSystem/useAsyncFs";
 import { join } from "path";
 import { FS_HANDLES } from "utils/constants";
 import {
@@ -22,6 +26,11 @@ const KNOWN_IDB_DBS = [
   "js-dos-cache (emulators-ui-saves)",
   "keyval-store",
 ];
+
+export const isMountedFolder = (mount?: Mount): boolean =>
+  typeof mount === "object" &&
+  (mount.getName() === "FileSystemAccess" ||
+    (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
 
 export const addFileSystemHandle = async (
   directory: string,

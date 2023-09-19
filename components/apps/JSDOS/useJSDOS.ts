@@ -12,6 +12,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 const captureKeys = (event: KeyboardEvent): void => {
   if (CAPTURED_KEYS.has(event.key)) event.preventDefault();
@@ -26,6 +27,7 @@ const useJSDOS = ({
 }: ContainerHookProps): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
+  const mountEmFs = useEmscriptenMount();
   const loadingInstanceRef = useRef(false);
   const { foregroundId } = useSession();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
@@ -102,6 +104,7 @@ const useJSDOS = ({
       );
 
       setLoading(false);
+      mountEmFs(window.JSDOS_FS, "JS-DOS");
     }
   }, [
     closeWithTransition,
@@ -110,6 +113,7 @@ const useJSDOS = ({
     dosInstance?.layers,
     id,
     loading,
+    mountEmFs,
     setLoading,
     updateWindowSize,
   ]);

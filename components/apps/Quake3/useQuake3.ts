@@ -4,6 +4,8 @@ import type { ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { loadFiles, pxToNum } from "utils/functions";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 declare global {
   interface Window {
@@ -35,6 +37,7 @@ const useQuake3 = ({
   const {
     sizes: { titleBar },
   } = useTheme();
+  const mountEmFs = useEmscriptenMount();
   const { size } = windowState || {};
 
   useEffect(() => {
@@ -46,8 +49,9 @@ const useQuake3 = ({
       window.ioq3.callMain([]);
 
       setLoading(false);
+      mountEmFs(window.FS as EmscriptenFS, "Quake3");
     });
-  }, [containerRef, libs, setLoading]);
+  }, [containerRef, libs, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (!window.ioq3) return;

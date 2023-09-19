@@ -49,6 +49,7 @@ import {
   isSafari,
   isYouTubeUrl,
 } from "utils/functions";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 
 type InternetShortcut = {
   BaseURL: string;
@@ -277,7 +278,7 @@ export const getInfoWithoutExtension = (
     ): void =>
       callback({ getIcon, icon, pid: "FileExplorer", subIcons, url: path });
     const getFolderIcon = (): string => {
-      if (rootFs?.mntMap[path]?.getName() === "FileSystemAccess") {
+      if (isMountedFolder(rootFs?.mntMap[path])) {
         return MOUNTED_FOLDER_ICON;
       }
       if (hasNewFolderIcon) return NEW_FOLDER_ICON;

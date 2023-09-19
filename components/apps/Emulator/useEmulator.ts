@@ -10,6 +10,8 @@ import { useProcesses } from "contexts/process";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 const getCore = (extension: string): [string, Core] => {
   return (Object.entries(emulatorCores).find(([, { ext }]) =>
@@ -26,6 +28,7 @@ const useEmulator = ({
 }: ContainerHookProps): void => {
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
+  const mountEmFs = useEmscriptenMount();
   const { linkElement, processes: { [id]: { closing = false } = {} } = {} } =
     useProcesses();
   const { prependFileToTitle } = useTitle(id);
@@ -39,7 +42,13 @@ const useEmulator = ({
     if (loadedUrlRef.current) {
       if (loadedUrlRef.current !== url) {
         loadedUrlRef.current = "";
-        window.EJS_terminate?.();
+
+        try {
+          window.EJS_terminate?.();
+        } catch {
+          // Ignore errors during termination
+        }
+
         if (containerRef.current) {
           const div = document.createElement("div");
 
@@ -76,6 +85,7 @@ const useEmulator = ({
         }
 
         setLoading(false);
+        mountEmFs(window.FS as EmscriptenFS, "EmulatorJs");
         emulatorRef.current = currentEmulator;
       };
 
@@ -130,6 +140,7 @@ const useEmulator = ({
     mkdirRecursive,
     prependFileToTitle,
     readFile,
+    mountEmFs,
     setLoading,
     updateFolder,
     url,
@@ -140,9 +151,10 @@ const useEmulator = ({
     if (url) loadRom();
     else {
       setLoading(false);
+      mountEmFs(window.FS as EmscriptenFS, "EmulatorJs");
       containerRef.current?.classList.add("drop");
     }
-  }, [containerRef, loadRom, setLoading, url]);
+  }, [containerRef, loadRom, mountEmFs, setLoading, url]);
 
   useEffect(() => {
     if (!loading) {

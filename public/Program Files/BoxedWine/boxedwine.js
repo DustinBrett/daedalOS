@@ -2023,8 +2023,12 @@ var FS = {
   "r+": 2,
   "w": 577,
   "w+": 578,
+  "wx": 705,
+  "wx+": 706,
   "a": 1089,
-  "a+": 1090
+  "a+": 1090,
+  "ax": 1217,
+  "ax+": 1218
  },
  modeStringToFlags: function(str) {
   var flags = FS.flagModes[str];

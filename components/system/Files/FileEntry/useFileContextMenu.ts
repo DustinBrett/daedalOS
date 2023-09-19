@@ -53,6 +53,7 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 
 const { alias } = PACKAGE_DATA;
 
@@ -116,8 +117,7 @@ const useFileContextMenu = (
         const isShortcut = pathExtension === SHORTCUT_EXTENSION;
         const remoteMount = rootFs?.mountList.some(
           (mountPath) =>
-            mountPath === path &&
-            rootFs?.mntMap[mountPath]?.getName() === "FileSystemAccess"
+            mountPath === path && isMountedFolder(rootFs?.mntMap[mountPath])
         );
 
         if (!readOnly && !remoteMount) {
@@ -448,7 +448,11 @@ const useFileContextMenu = (
 
         if (remoteMount) {
           menuItems.push(MENU_SEPERATOR, {
-            action: () => unMapFs(path),
+            action: () =>
+              unMapFs(
+                path,
+                rootFs?.mntMap[path].getName() !== "FileSystemAccess"
+              ),
             label: "Disconnect",
           });
         }

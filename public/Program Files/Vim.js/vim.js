@@ -7650,6 +7650,7 @@ __ATEXIT__.push({
         FS.quit()
     })
 });
+VimModule["FS"] = FS;
 VimModule["FS_createFolder"] = FS.createFolder;
 VimModule["FS_createPath"] = FS.createPath;
 VimModule["FS_createDataFile"] = FS.createDataFile;
