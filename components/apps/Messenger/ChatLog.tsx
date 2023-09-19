@@ -14,6 +14,7 @@ import { clsx } from "utils/functions";
 import { Avatar } from "components/apps/Messenger/Icons";
 import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
 import type { DecryptedContent } from "components/apps/Messenger/types";
+import * as DOMPurify from "dompurify";
 
 const ChatLog: FC<{
   events: Event[];
@@ -93,10 +94,13 @@ const ChatLog: FC<{
                 <div
                   // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{
-                    __html: convertImageLinksToHtml(
-                      typeof decryptedContent[id] === "string"
-                        ? (decryptedContent[id] as string)
-                        : content
+                    __html: DOMPurify.sanitize(
+                      convertImageLinksToHtml(
+                        typeof decryptedContent[id] === "string"
+                          ? (decryptedContent[id] as string)
+                          : content
+                      ),
+                      { USE_PROFILES: { html: false } }
                     ),
                   }}
                 />
