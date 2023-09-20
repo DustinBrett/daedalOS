@@ -24,10 +24,6 @@ const nextConfig = {
   devIndicators: {
     buildActivityPosition: "top-right",
   },
-  experimental: {
-    legacyBrowsers: false,
-    swcFileReading: true,
-  },
   optimizeFonts: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
