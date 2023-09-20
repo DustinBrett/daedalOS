@@ -5,6 +5,7 @@ const StyledChatLog = styled.ol`
   ${ScrollBars()}
   height: 100%;
   overflow-x: auto;
+  scrollbar-gutter: auto;
 
   li:not(:first-child) {
     border-radius: 15px;
@@ -14,9 +15,22 @@ const StyledChatLog = styled.ol`
     padding: 12px;
     position: relative;
 
+    .status {
+      bottom: -4px;
+      position: absolute;
+      right: -15px;
+
+      svg {
+        fill: #ced7e0;
+        height: 12px;
+        width: 12px;
+      }
+    }
+
     &.sent {
       background-color: #0084ff;
       margin-left: 65px;
+      margin-right: 20px;
     }
 
     &.received {

@@ -6,26 +6,32 @@ import { createMessageEvent } from "components/apps/Messenger/functions";
 import { Send } from "components/apps/Messenger/Icons";
 import { haltEvent } from "utils/functions";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import { useMessageContext } from "components/apps/Messenger/MessageContext";
 
-type SendMessageProps = { publicKey: string; recipientPublicKey: string };
-
-const SendMessage: FC<SendMessageProps> = ({
-  publicKey,
+const SendMessage: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
 }) => {
+  const { publicKey, sendingEvent } = useMessageContext();
   const { publish } = useNostr();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
   const sendMessage = useCallback(
     async (message: string) => {
-      publish(await createMessageEvent(message, publicKey, recipientPublicKey));
+      const event = await createMessageEvent(
+        message,
+        publicKey,
+        recipientPublicKey
+      );
+
+      sendingEvent(event);
+      publish(event);
 
       if (inputRef.current?.value) inputRef.current.value = "";
 
       setCanSend(false);
     },
-    [publicKey, publish, recipientPublicKey]
+    [publicKey, publish, recipientPublicKey, sendingEvent]
   );
   const updateHeight = useCallback(() => {
     if (inputRef.current) {

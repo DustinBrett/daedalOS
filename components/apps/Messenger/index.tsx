@@ -30,6 +30,7 @@ import { ProfileProvider } from "components/apps/Messenger/ProfileContext";
 import { AnimatePresence } from "framer-motion";
 import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
 import { useProcesses } from "contexts/process";
+import { MessageProvider } from "components/apps/Messenger/MessageContext";
 
 type NostrChatProps = {
   loginTime: number;
@@ -143,15 +144,8 @@ const NostrChat: FC<NostrChatProps> = ({
                 {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
                   <To setRecipientKey={setRecipientKey} />
                 )}
-                <ChatLog
-                  events={events}
-                  publicKey={publicKey}
-                  recipientPublicKey={selectedRecipientKey}
-                />
-                <SendMessage
-                  publicKey={publicKey}
-                  recipientPublicKey={selectedRecipientKey}
-                />
+                <ChatLog recipientPublicKey={selectedRecipientKey} />
+                <SendMessage recipientPublicKey={selectedRecipientKey} />
               </StyledChatContainer>
             ) : (
               <StyledContacts
@@ -198,13 +192,15 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
-      <NostrChat
-        loginTime={loginTime}
-        processId={id}
-        publicKey={publicKey}
-        relayUrls={relayUrls}
-        wellKnownNames={names}
-      />
+      <MessageProvider publicKey={publicKey}>
+        <NostrChat
+          loginTime={loginTime}
+          processId={id}
+          publicKey={publicKey}
+          relayUrls={relayUrls}
+          wellKnownNames={names}
+        />
+      </MessageProvider>
     </NostrProvider>
   ) : (
     <> </>

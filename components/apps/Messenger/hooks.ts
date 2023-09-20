@@ -1,8 +1,5 @@
-import { useNostrEvents } from "nostr-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  getReceivedMessages,
-  getSentMessages,
   getKeyFromTags,
   descCreatedAt,
   toHexKey,
@@ -19,6 +16,7 @@ import {
   NOTIFICATION_SOUND,
 } from "components/apps/Messenger/constants";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
+import { useMessageContext } from "components/apps/Messenger/MessageContext";
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();
@@ -66,12 +64,7 @@ export const useNostrContacts = (
         .map((key) => toHexKey(key)),
     [wellKnownNames]
   );
-  const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
-  const sentEvents = useNostrEvents(getSentMessages(publicKey));
-  const events = useMemo(
-    () => [...receivedEvents.events, ...sentEvents.events],
-    [receivedEvents, sentEvents]
-  );
+  const { events } = useMessageContext();
   const contactKeys = useMemo(() => {
     const keys = new Set(
       events
