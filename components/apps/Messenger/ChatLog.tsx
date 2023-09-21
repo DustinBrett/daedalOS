@@ -54,7 +54,7 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
       decryptMessages();
       listRef.current?.scrollTo(0, listRef.current.scrollHeight);
     }
-  }, [messages, decryptMessages]);
+  }, [decryptMessages, messages]);
 
   return (
     <StyledChatLog ref={listRef}>

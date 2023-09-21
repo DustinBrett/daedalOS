@@ -42,6 +42,24 @@ export const useMessageContext = (): MessagesState =>
 
 export const useMessages = (recipientPublicKey: string): MessageData => {
   const { events, publicKey, outgoingEvents } = useMessageContext();
+  const [messages, setMessages] = useState<ChatEvents>([]);
+
+  useEffect(() => {
+    const currentMessages = groupChatEvents(
+      events.filter(({ pubkey, tags }) => {
+        const isSender = pubkey === recipientPublicKey;
+        const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
+
+        return recipientPublicKey === publicKey
+          ? isSender && isRecipient
+          : isSender || isRecipient;
+      })
+    );
+
+    if (currentMessages.length !== messages.length) {
+      setMessages(currentMessages);
+    }
+  }, [events, messages, publicKey, recipientPublicKey]);
 
   return {
     allEventsReceived: useMemo(
@@ -51,20 +69,7 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
         ),
       [outgoingEvents, recipientPublicKey]
     ),
-    messages: useMemo(
-      () =>
-        groupChatEvents(
-          events.filter(({ pubkey, tags }) => {
-            const isSender = pubkey === recipientPublicKey;
-            const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
-
-            return recipientPublicKey === publicKey
-              ? isSender && isRecipient
-              : isSender || isRecipient;
-          })
-        ),
-      [events, publicKey, recipientPublicKey]
-    ),
+    messages,
   };
 };
 
@@ -89,15 +94,18 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
       () => [...receivedEvents.events, ...sentEvents.events],
       [receivedEvents.events, sentEvents.events]
     );
-    const events = useMemo(
-      () => [
+    const [events, setEvents] = useState<Event[]>(chatEvents);
+
+    useEffect(() => {
+      const currentEvents = [
         ...chatEvents,
         ...outgoingEvents.filter(
           (event) => !sentEvents.events.some(({ id }) => id === event.id)
         ),
-      ],
-      [chatEvents, outgoingEvents, sentEvents.events]
-    );
+      ];
+
+      if (currentEvents.length !== events.length) setEvents(currentEvents);
+    }, [chatEvents, events, outgoingEvents, sentEvents.events]);
 
     useEffect(() => {
       outgoingEvents.forEach((message) => {
