@@ -1,7 +1,9 @@
 .next
 .swc
-node_modules
+certificates
 out
+
+node_modules
 
 test-results
 playwright-report
