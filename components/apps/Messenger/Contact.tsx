@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   copyKeyMenuItems,
   decryptMessage,
@@ -34,7 +34,8 @@ const Contact: FC<ContactProps> = ({
   } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
-  const { nip05, picture, userName } = useNostrProfile(pubkey);
+  const [isVisible, setIsVisible] = useState(false);
+  const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
   const unreadClass = unreadEvent ? "unread" : undefined;
   const { contextMenu } = useMenu();
   const { onContextMenuCapture } = useMemo(
@@ -50,14 +51,28 @@ const Contact: FC<ContactProps> = ({
       ]),
     [contextMenu, onClick, pubkey]
   );
+  const elementRef = useRef<HTMLLIElement>(null);
+  const watching = useRef(false);
 
   useEffect(() => {
-    if (content) {
+    if (!elementRef.current || watching.current) return;
+
+    watching.current = true;
+
+    new IntersectionObserver(
+      (entries) =>
+        entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
+      { root: elementRef.current.parentElement, threshold: 0.4 }
+    ).observe(elementRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (content && isVisible) {
       decryptMessage(id, content, pubkey).then(
         (message) => message && setDecryptedContent(message)
       );
     }
-  }, [content, id, pubkey]);
+  }, [content, id, isVisible, pubkey]);
 
   useEffect(() => {
     let interval = 0;
@@ -75,7 +90,11 @@ const Contact: FC<ContactProps> = ({
   }, [created_at, lastEvent]);
 
   return (
-    <li className={unreadClass} onContextMenuCapture={onContextMenuCapture}>
+    <li
+      ref={elementRef}
+      className={unreadClass}
+      onContextMenuCapture={onContextMenuCapture}
+    >
       <Button onClick={onClick}>
         <Profile
           nip05={nip05}

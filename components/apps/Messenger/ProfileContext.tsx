@@ -16,13 +16,14 @@ const ProfileContext = createContext([
 const useProfileContext = (): ProfileState => useContext(ProfileContext);
 
 export const useNostrProfile = (
-  publicKey: string
+  publicKey: string,
+  isVisible = false
 ): NostrProfile & {
   setProfiles: React.Dispatch<React.SetStateAction<Profiles>>;
 } => {
   const [profiles, setProfiles] = useProfileContext();
   const { onEvent } = useNostrEvents({
-    enabled: !!publicKey,
+    enabled: !!publicKey && isVisible,
     filter: {
       authors: [publicKey],
       kinds: [0],
