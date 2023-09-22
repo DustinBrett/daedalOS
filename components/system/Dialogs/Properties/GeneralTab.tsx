@@ -9,8 +9,10 @@ import directory from "contexts/process/directory";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, DESKTOP_PATH, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
+import type { FileStat } from "components/system/Files/FileManager/functions";
 import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
 import { useSession } from "contexts/session";
+import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 
 type TabProps = {
   icon: string;
@@ -161,11 +163,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           </tr>
           <tr>
             <th scope="row">Created:</th>
-            <td>{dateTimeString(stats?.birthtime)}</td>
+            <td>{dateTimeString(stats?.ctime)}</td>
           </tr>
           <tr>
             <th scope="row">Modified:</th>
-            <td>{dateTimeString(stats?.mtime)}</td>
+            <td>
+              {stats &&
+                dateTimeString(
+                  new Date(getModifiedTime(url, stats as FileStat))
+                )}
+            </td>
           </tr>
           <tr>
             <th scope="row">Accessed:</th>
