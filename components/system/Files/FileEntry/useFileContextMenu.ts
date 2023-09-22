@@ -545,7 +545,8 @@ const useFileContextMenu = (
             url &&
             url !== "/" &&
             !url.startsWith("http:") &&
-            !url.startsWith("https:")
+            !url.startsWith("https:") &&
+            !url.startsWith("nostr:")
           ) {
             const isFolder = urlExtension === "" || urlExtension === ".zip";
 
