@@ -8,6 +8,10 @@ const JS_MINIFIER_CONFIG = {
   compress: true,
   ecma: 2021,
   mangle: true,
+  output: {
+    comments: false,
+  },
+  sourceMap: false,
 };
 
 const minifyJsFiles = (path) =>

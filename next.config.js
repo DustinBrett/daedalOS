@@ -27,7 +27,7 @@ const nextConfig = {
   optimizeFonts: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
-  swcMinify: !isProduction,
+  swcMinify: true,
   webpack: (config) => {
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
