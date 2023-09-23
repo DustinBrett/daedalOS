@@ -17,7 +17,7 @@ const useProfileContext = (): ProfileState => useContext(ProfileContext);
 
 export const useNostrProfile = (
   publicKey: string,
-  isVisible = false
+  isVisible = true
 ): NostrProfile & {
   setProfiles: React.Dispatch<React.SetStateAction<Profiles>>;
 } => {

@@ -133,46 +133,44 @@ const NostrChat: FC<NostrChatProps> = ({
 
   return (
     <StyledMessenger>
-      <ProfileProvider>
-        <ProfileBanner
-          goHome={() => changeRecipient("", events)}
-          newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
-          publicKey={publicKey}
-          relayUrls={relayUrls}
-          selectedRecipientKey={selectedRecipientKey}
-        />
-        <div>
-          <AnimatePresence initial={false} presenceAffectsLayout={false}>
-            {selectedRecipientKey ? (
-              <StyledChatContainer key="chat" {...inRightOutLeft}>
-                {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
-                  <To setRecipientKey={setRecipientKey} />
-                )}
-                <ChatLog recipientPublicKey={selectedRecipientKey} />
-                <SendMessage recipientPublicKey={selectedRecipientKey} />
-              </StyledChatContainer>
-            ) : (
-              <StyledContacts
-                key="contacts"
-                onContextMenu={haltEvent}
-                {...inLeftOutRight}
-              >
-                {contactKeys.map((contactKey) => (
-                  <Contact
-                    key={contactKey}
-                    lastEvent={lastEvents[contactKey]}
-                    onClick={() => changeRecipient(contactKey, events)}
-                    pubkey={contactKey}
-                    publicKey={publicKey}
-                    unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
-                  />
-                ))}
-                <GetMoreMessages setSince={setSince} />
-              </StyledContacts>
-            )}
-          </AnimatePresence>
-        </div>
-      </ProfileProvider>
+      <ProfileBanner
+        goHome={() => changeRecipient("", events)}
+        newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
+        publicKey={publicKey}
+        relayUrls={relayUrls}
+        selectedRecipientKey={selectedRecipientKey}
+      />
+      <div>
+        <AnimatePresence initial={false} presenceAffectsLayout={false}>
+          {selectedRecipientKey ? (
+            <StyledChatContainer key="chat" {...inRightOutLeft}>
+              {selectedRecipientKey === UNKNOWN_PUBLIC_KEY && (
+                <To setRecipientKey={setRecipientKey} />
+              )}
+              <ChatLog recipientPublicKey={selectedRecipientKey} />
+              <SendMessage recipientPublicKey={selectedRecipientKey} />
+            </StyledChatContainer>
+          ) : (
+            <StyledContacts
+              key="contacts"
+              onContextMenu={haltEvent}
+              {...inLeftOutRight}
+            >
+              {contactKeys.map((contactKey) => (
+                <Contact
+                  key={contactKey}
+                  lastEvent={lastEvents[contactKey]}
+                  onClick={() => changeRecipient(contactKey, events)}
+                  pubkey={contactKey}
+                  publicKey={publicKey}
+                  unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
+                />
+              ))}
+              <GetMoreMessages setSince={setSince} />
+            </StyledContacts>
+          )}
+        </AnimatePresence>
+      </div>
     </StyledMessenger>
   );
 };
@@ -202,16 +200,18 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
-      <MessageProvider publicKey={publicKey} since={timeSince}>
-        <NostrChat
-          loginTime={loginTime}
-          processId={id}
-          publicKey={publicKey}
-          relayUrls={relayUrls}
-          setSince={setSince}
-          wellKnownNames={names}
-        />
-      </MessageProvider>
+      <ProfileProvider>
+        <MessageProvider publicKey={publicKey} since={timeSince}>
+          <NostrChat
+            loginTime={loginTime}
+            processId={id}
+            publicKey={publicKey}
+            relayUrls={relayUrls}
+            setSince={setSince}
+            wellKnownNames={names}
+          />
+        </MessageProvider>
+      </ProfileProvider>
     </NostrProvider>
   ) : (
     <> </>
