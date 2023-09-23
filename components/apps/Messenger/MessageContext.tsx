@@ -75,12 +75,15 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
 
 type MessageProviderProps = {
   publicKey: string;
+  since?: number;
 };
 
 export const MessageProvider = memo<FC<MessageProviderProps>>(
-  ({ children, publicKey }) => {
-    const receivedEvents = useNostrEvents(getReceivedMessages(publicKey));
-    const sentEvents = useNostrEvents(getSentMessages(publicKey));
+  ({ children, publicKey, since }) => {
+    const receivedEvents = useNostrEvents(
+      getReceivedMessages(publicKey, since)
+    );
+    const sentEvents = useNostrEvents(getSentMessages(publicKey, since));
     const [outgoingEvents, setOutgoingEvents] = useState<Event[]>([]);
     const sendingEvent = useCallback(
       (event: Event) =>

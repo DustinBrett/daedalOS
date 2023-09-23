@@ -24,8 +24,13 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
         recipientPublicKey
       );
 
-      publish(event);
       sendingEvent(event);
+
+      try {
+        publish(event);
+      } catch {
+        // Ignore error during publish
+      }
 
       if (inputRef.current?.value) inputRef.current.value = "";
 

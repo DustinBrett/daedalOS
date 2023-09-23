@@ -5,11 +5,13 @@ import {
 } from "utils/constants";
 
 export const BASE_RW_RELAYS = [
-  "wss://ca.relayable.org",
-  "wss://la.relayable.org",
-  "wss://au.relayable.org",
-  "wss://he.relayable.org",
-  "wss://relay.damus.io",
+  "wss://global.relay.red",
+  "wss://nos.lol",
+  "wss://nostr.mom",
+  "wss://public.relaying.io",
+  "wss://purplerelay.com",
+  "wss://relay1.nostrchat.io",
+  "wss://relayable.org",
 ];
 
 export const METADATA_KIND = 0;

@@ -139,19 +139,27 @@ const encryptMessage = async (
   return "";
 };
 
-export const getReceivedMessages = (publicKey?: string): NostrEvents => ({
+export const getReceivedMessages = (
+  publicKey?: string,
+  since = 0
+): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     "#p": publicKey ? [publicKey] : [],
     kinds: [DM_KIND],
+    since,
   },
 });
 
-export const getSentMessages = (publicKey?: string): NostrEvents => ({
+export const getSentMessages = (
+  publicKey?: string,
+  since = 0
+): NostrEvents => ({
   enabled: !!publicKey,
   filter: {
     authors: publicKey ? [publicKey] : [],
     kinds: [DM_KIND],
+    since,
   },
 });
 
