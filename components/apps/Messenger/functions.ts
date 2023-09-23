@@ -32,14 +32,18 @@ import type { MenuItem } from "contexts/menu/useMenuContextState";
 
 export const getRelayUrls = async (): Promise<string[]> => {
   if (window.nostr?.getRelays) {
-    return [
-      ...new Set([
-        ...BASE_RW_RELAYS,
-        ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
-          url.endsWith("/") ? url.slice(0, -1) : url
-        ),
-      ]),
-    ];
+    try {
+      return [
+        ...new Set([
+          ...BASE_RW_RELAYS,
+          ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
+            url.endsWith("/") ? url.slice(0, -1) : url
+          ),
+        ]),
+      ];
+    } catch {
+      // Ignore failure to get relays
+    }
   }
 
   return BASE_RW_RELAYS;
@@ -73,10 +77,18 @@ export const toHexKey = (key: string): string => {
 export const getPrivateKey = (): string =>
   localStorage.getItem(PRIVATE_KEY_IDB_NAME) || "";
 
-export const maybeGetExistingPublicKey = async (): Promise<string> =>
-  (await window.nostr?.getPublicKey()) ||
-  localStorage.getItem(PUBLIC_KEY_IDB_NAME) ||
-  "";
+export const maybeGetExistingPublicKey = async (): Promise<string> => {
+  const idbKey = localStorage.getItem(PUBLIC_KEY_IDB_NAME) || "";
+  let publicKey = "";
+
+  try {
+    publicKey = (await window.nostr?.getPublicKey()) || "";
+  } catch {
+    // Ignore failure to get public key
+  }
+
+  return publicKey || idbKey || "";
+};
 
 export const getPublicHexKey = (existingPublicKey?: string): string => {
   if (existingPublicKey) return toHexKey(existingPublicKey);
