@@ -1,6 +1,12 @@
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
+import {
+  KEYVAL_STORE_NAME,
+  getFileSystemHandles,
+  getKeyValStore,
+  supportsIndexedDB,
+} from "contexts/fileSystem/core";
 import type {
   ExtendedEmscriptenFileSystem,
   Mount,
@@ -8,12 +14,6 @@ import type {
 } from "contexts/fileSystem/useAsyncFs";
 import { join } from "path";
 import { FS_HANDLES } from "utils/constants";
-import {
-  supportsIndexedDB,
-  getFileSystemHandles,
-  getKeyValStore,
-  KEYVAL_STORE_NAME,
-} from "contexts/fileSystem/core";
 
 const KNOWN_IDB_DBS = [
   "/classicube",

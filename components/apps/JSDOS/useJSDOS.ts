@@ -1,5 +1,3 @@
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   CAPTURED_KEYS,
   dosOptions,
@@ -7,12 +5,14 @@ import {
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import type { DosInstance } from "emulators-ui/dist/types/js-dos";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
-import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 const captureKeys = (event: KeyboardEvent): void => {
   if (CAPTURED_KEYS.has(event.key)) event.preventDefault();

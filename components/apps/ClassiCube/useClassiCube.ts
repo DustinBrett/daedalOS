@@ -1,12 +1,12 @@
-import { useCallback, useEffect } from "react";
-import { useTheme } from "styled-components";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { useCallback, useEffect } from "react";
+import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
-import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 declare global {
   interface Window {

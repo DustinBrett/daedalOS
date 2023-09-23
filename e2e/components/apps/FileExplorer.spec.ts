@@ -1,4 +1,3 @@
-import { dirname, extname } from "path";
 import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
@@ -60,6 +59,7 @@ import {
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
+import { dirname, extname } from "path";
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));

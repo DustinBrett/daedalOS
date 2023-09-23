@@ -1,4 +1,3 @@
-import type { Position } from "react-rnd";
 import {
   MIN_WINDOW_HEIGHT,
   MIN_WINDOW_WIDTH,
@@ -6,6 +5,7 @@ import {
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { Processes } from "contexts/process/types";
 import type { WindowState } from "contexts/session/types";
+import type { Position } from "react-rnd";
 import { PROCESS_DELIMITER, TASKBAR_HEIGHT } from "utils/constants";
 import { pxToNum, viewHeight, viewWidth } from "utils/functions";
 

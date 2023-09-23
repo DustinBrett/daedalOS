@@ -1,6 +1,3 @@
-import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
-import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
@@ -9,6 +6,7 @@ import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useMenu } from "contexts/menu";
 import type {
   ContextMenuCapture,
@@ -18,6 +16,8 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
+import { basename, dirname, extname, join } from "path";
+import { useMemo } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   CURSOR_FILE_EXTENSIONS,
@@ -53,7 +53,7 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
-import { isMountedFolder } from "contexts/fileSystem/functions";
+import type { URLTrack } from "webamp";
 
 const { alias } = PACKAGE_DATA;
 

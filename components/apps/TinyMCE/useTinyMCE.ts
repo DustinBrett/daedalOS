@@ -1,7 +1,4 @@
-import { basename, dirname, extname, relative } from "path";
-import { useCallback, useEffect, useState } from "react";
-import type { Editor, NotificationSpec } from "tinymce";
-import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
+import { DEFAULT_SAVE_PATH, config } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
@@ -17,6 +14,9 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { basename, dirname, extname, relative } from "path";
+import { useCallback, useEffect, useState } from "react";
+import type { Editor, NotificationSpec } from "tinymce";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { getExtension, haltEvent, loadFiles } from "utils/functions";
 

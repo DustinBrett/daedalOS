@@ -1,5 +1,5 @@
-import type { DosFactoryType } from "emulators-ui/dist/types/js-dos";
 import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import type { DosFactoryType } from "emulators-ui/dist/types/js-dos";
 
 declare global {
   interface Window {

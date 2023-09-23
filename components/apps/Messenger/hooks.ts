@@ -1,22 +1,22 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  getKeyFromTags,
-  descCreatedAt,
-  toHexKey,
-  getPublicHexKey,
-  maybeGetExistingPublicKey,
-  getNip05Domain,
-} from "components/apps/Messenger/functions";
-import type { NIP05Result } from "nostr-tools/lib/nip05";
-import type { NostrContacts } from "components/apps/Messenger/types";
-import { useProcesses } from "contexts/process";
-import directory from "contexts/process/directory";
+import { useMessageContext } from "components/apps/Messenger/MessageContext";
 import {
   BASE_NIP05_URL,
   NOTIFICATION_SOUND,
 } from "components/apps/Messenger/constants";
+import {
+  descCreatedAt,
+  getKeyFromTags,
+  getNip05Domain,
+  getPublicHexKey,
+  maybeGetExistingPublicKey,
+  toHexKey,
+} from "components/apps/Messenger/functions";
+import type { NostrContacts } from "components/apps/Messenger/types";
+import { useProcesses } from "contexts/process";
+import directory from "contexts/process/directory";
+import type { NIP05Result } from "nostr-tools/lib/nip05";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
-import { useMessageContext } from "components/apps/Messenger/MessageContext";
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();

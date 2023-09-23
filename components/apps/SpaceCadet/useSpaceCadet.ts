@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
+import { useEffect, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
-import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 
 declare global {
   interface Window {

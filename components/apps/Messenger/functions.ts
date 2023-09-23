@@ -1,20 +1,4 @@
 import {
-  nip19,
-  nip04,
-  generatePrivateKey,
-  getPublicKey,
-  getEventHash,
-  getSignature,
-} from "nostr-tools";
-import type { Event } from "nostr-tools";
-import type {
-  ChatEvents,
-  DecryptedContent,
-  NostrEvents,
-  NostrProfile,
-  ProfileData,
-} from "components/apps/Messenger/types";
-import {
   BASE_NIP05_URL,
   BASE_RW_RELAYS,
   DM_KIND,
@@ -24,11 +8,27 @@ import {
   PUBLIC_KEY_IDB_NAME,
   TIME_FORMAT,
 } from "components/apps/Messenger/constants";
-import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
-import { dateToUnix } from "nostr-react";
-import type { ProfilePointer } from "nostr-tools/lib/nip19";
-import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type {
+  ChatEvents,
+  DecryptedContent,
+  NostrEvents,
+  NostrProfile,
+  ProfileData,
+} from "components/apps/Messenger/types";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
+import { dateToUnix } from "nostr-react";
+import type { Event } from "nostr-tools";
+import {
+  generatePrivateKey,
+  getEventHash,
+  getPublicKey,
+  getSignature,
+  nip04,
+  nip19,
+} from "nostr-tools";
+import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type { ProfilePointer } from "nostr-tools/lib/nip19";
+import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export const getRelayUrls = async (): Promise<string[]> => {
   if (window.nostr?.getRelays) {

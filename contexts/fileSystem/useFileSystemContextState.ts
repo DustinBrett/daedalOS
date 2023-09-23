@@ -1,14 +1,12 @@
-import { basename, dirname, isAbsolute, join } from "path";
 import type * as IBrowserFS from "browserfs";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type IZipFS from "browserfs/dist/node/backend/ZipFS";
+import type { FSModule } from "browserfs/dist/node/core/FS";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type {
   BFSCallback,
   FileSystem,
 } from "browserfs/dist/node/core/file_system";
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import { useCallback, useEffect, useRef, useState } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
 import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
@@ -20,6 +18,7 @@ import {
 } from "components/system/Files/FileManager/functions";
 import type { NewPath } from "components/system/Files/FileManager/useFolder";
 import { getFileSystemHandles } from "contexts/fileSystem/core";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import type {
   AsyncFS,
   EmscriptenFS,
@@ -29,7 +28,9 @@ import type {
 import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
+import { basename, dirname, isAbsolute, join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
@@ -37,7 +38,6 @@ import {
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { bufferToBlob, getExtension } from "utils/functions";
-import { isMountedFolder } from "contexts/fileSystem/functions";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 

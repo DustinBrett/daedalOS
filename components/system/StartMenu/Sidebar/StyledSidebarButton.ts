@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
+import styled from "styled-components";
 
 type StyledSidebarButtonProps = {
   $active?: boolean;

@@ -1,5 +1,5 @@
-import dynamic from "next/dynamic";
 import type { Processes } from "contexts/process/types";
+import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {

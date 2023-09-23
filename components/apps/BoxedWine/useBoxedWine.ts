@@ -1,14 +1,14 @@
-import { basename } from "path";
-import type { Unzipped } from "fflate";
-import { useCallback, useEffect, useRef } from "react";
 import { getConfig } from "components/apps/BoxedWine/config";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
+import { useProcesses } from "contexts/process";
+import type { Unzipped } from "fflate";
+import { basename } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
   interface Window {

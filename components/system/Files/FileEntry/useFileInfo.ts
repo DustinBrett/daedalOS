@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
 import {
   getInfoWithExtension,
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/functions";
+import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
-import { isMountedFolder } from "contexts/fileSystem/functions";
 
 export type FileInfo = {
   comment?: string;

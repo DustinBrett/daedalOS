@@ -1,18 +1,18 @@
-import { join } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
-  bgPositionSize,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
+  bgPositionSize,
 } from "components/system/Desktop/Wallpapers/constants";
 import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
+import { join } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
