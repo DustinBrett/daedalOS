@@ -1,38 +1,41 @@
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import { NostrProvider } from "nostr-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  getRelayUrls,
-  getPublicHexFromNostrAddress,
-  toHexKey,
-} from "components/apps/Messenger/functions";
-import StyledMessenger from "components/apps/Messenger/StyledMessenger";
-import Contact from "components/apps/Messenger/Contact";
-import SendMessage from "components/apps/Messenger/SendMessage";
-import {
-  useNostrContacts,
-  usePublicKey,
-  useNip05,
-  useUnreadStatus,
-} from "components/apps/Messenger/hooks";
-import StyledContacts from "components/apps/Messenger/StyledContacts";
-import ProfileBanner from "components/apps/Messenger/ProfileBanner";
 import ChatLog from "components/apps/Messenger/ChatLog";
+import Contact from "components/apps/Messenger/Contact";
+import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";
+import {
+  HistoryProvider,
+  useHistoryContext,
+} from "components/apps/Messenger/HistoryContext";
+import { MessageProvider } from "components/apps/Messenger/MessageContext";
+import ProfileBanner from "components/apps/Messenger/ProfileBanner";
+import SendMessage from "components/apps/Messenger/SendMessage";
+import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
+import StyledContacts from "components/apps/Messenger/StyledContacts";
+import StyledMessenger from "components/apps/Messenger/StyledMessenger";
 import To from "components/apps/Messenger/To";
 import {
   UNKNOWN_PUBLIC_KEY,
   inLeftOutRight,
   inRightOutLeft,
 } from "components/apps/Messenger/constants";
-import type { Event } from "nostr-tools";
-import { haltEvent } from "utils/functions";
-import { ProfileProvider } from "components/apps/Messenger/ProfileContext";
-import { AnimatePresence } from "framer-motion";
-import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
+import {
+  getPublicHexFromNostrAddress,
+  getRelayUrls,
+  toHexKey,
+} from "components/apps/Messenger/functions";
+import {
+  useNip05,
+  useNostrContacts,
+  usePublicKey,
+  useUnreadStatus,
+} from "components/apps/Messenger/hooks";
+import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
-import { MessageProvider } from "components/apps/Messenger/MessageContext";
+import { AnimatePresence } from "framer-motion";
+import { NostrProvider } from "nostr-react";
+import type { Event } from "nostr-tools";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
-import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";
+import { haltEvent } from "utils/functions";
 
 type NostrChatProps = {
   loginTime: number;
@@ -51,7 +54,7 @@ const NostrChat: FC<NostrChatProps> = ({
   setSince,
   wellKnownNames,
 }) => {
-  const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
+  const { setSeenEventIds } = useHistoryContext();
   const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
   const changeRecipient = useCallback(
     (recipientKey: string, currentEvents?: Event[]) =>
@@ -73,13 +76,12 @@ const NostrChat: FC<NostrChatProps> = ({
 
         return recipientKey;
       }),
-    [loginTime]
+    [loginTime, setSeenEventIds]
   );
   const { contactKeys, events, lastEvents, unreadEvents } = useNostrContacts(
     publicKey,
     wellKnownNames,
-    loginTime,
-    seenEventIds
+    loginTime
   );
   const setRecipientKey = useCallback(
     (recipientKey: string): boolean => {
@@ -129,7 +131,7 @@ const NostrChat: FC<NostrChatProps> = ({
           ])
         );
     }
-  }, [selectedRecipientKey, unreadEvents]);
+  }, [selectedRecipientKey, setSeenEventIds, unreadEvents]);
 
   return (
     <StyledMessenger>
@@ -200,7 +202,7 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
 
   return publicKey && relayUrls ? (
     <NostrProvider relayUrls={relayUrls}>
-      <ProfileProvider>
+      <HistoryProvider>
         <MessageProvider publicKey={publicKey} since={timeSince}>
           <NostrChat
             loginTime={loginTime}
@@ -211,7 +213,7 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
             wellKnownNames={names}
           />
         </MessageProvider>
-      </ProfileProvider>
+      </HistoryProvider>
     </NostrProvider>
   ) : (
     <> </>

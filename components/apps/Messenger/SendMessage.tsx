@@ -1,12 +1,12 @@
-import { useCallback, useRef, useState } from "react";
-import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
-import Button from "styles/common/Button";
-import { useNostr } from "nostr-react";
-import { createMessageEvent } from "components/apps/Messenger/functions";
 import { Send } from "components/apps/Messenger/Icons";
-import { haltEvent } from "utils/functions";
-import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
+import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import { createMessageEvent } from "components/apps/Messenger/functions";
+import { useNostr } from "nostr-react";
+import { useCallback, useRef, useState } from "react";
+import Button from "styles/common/Button";
+import { haltEvent } from "utils/functions";
 
 const SendMessage: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,

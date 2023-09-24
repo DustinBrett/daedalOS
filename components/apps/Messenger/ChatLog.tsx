@@ -1,25 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  decryptMessage,
-  convertImageLinksToHtml,
-  prettyChatTimestamp,
-} from "components/apps/Messenger/functions";
-import StyledChatLog from "components/apps/Messenger/StyledChatLog";
-import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
-import { clsx } from "utils/functions";
 import {
   Avatar,
   CheckCircle,
   CheckFullCircle,
 } from "components/apps/Messenger/Icons";
-import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
-import type { DecryptedContent } from "components/apps/Messenger/types";
-import * as DOMPurify from "dompurify";
 import {
   useMessageContext,
   useMessages,
 } from "components/apps/Messenger/MessageContext";
+import StyledChatLog from "components/apps/Messenger/StyledChatLog";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import {
+  convertImageLinksToHtml,
+  decryptMessage,
+  prettyChatTimestamp,
+} from "components/apps/Messenger/functions";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
+import type { DecryptedContent } from "components/apps/Messenger/types";
+import * as DOMPurify from "dompurify";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { clsx } from "utils/functions";
 
 const ChatLog: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,

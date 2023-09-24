@@ -1,15 +1,15 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import Profile from "components/apps/Messenger/Profile";
 import {
   copyKeyMenuItems,
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
-import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
-import { type Event } from "nostr-tools";
-import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
-import Button from "styles/common/Button";
+import { useIsVisible, useNostrProfile } from "components/apps/Messenger/hooks";
 import { useMenu } from "contexts/menu";
-import Profile from "components/apps/Messenger/Profile";
+import { type Event } from "nostr-tools";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Button from "styles/common/Button";
+import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
 
 type ContactProps = {
   lastEvent: Event;
@@ -34,7 +34,8 @@ const Contact: FC<ContactProps> = ({
   } = lastEvent || {};
   const [decryptedContent, setDecryptedContent] = useState("");
   const [timeStamp, setTimeStamp] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLLIElement | null>(null);
+  const isVisible = useIsVisible(elementRef);
   const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
   const unreadClass = unreadEvent ? "unread" : undefined;
   const { contextMenu } = useMenu();
@@ -51,20 +52,6 @@ const Contact: FC<ContactProps> = ({
       ]),
     [contextMenu, onClick, pubkey]
   );
-  const elementRef = useRef<HTMLLIElement>(null);
-  const watching = useRef(false);
-
-  useEffect(() => {
-    if (!elementRef.current || watching.current) return;
-
-    watching.current = true;
-
-    new IntersectionObserver(
-      (entries) =>
-        entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
-      { root: elementRef.current.parentElement, threshold: 0.4 }
-    ).observe(elementRef.current);
-  }, []);
 
   useEffect(() => {
     if (content && isVisible) {

@@ -1,12 +1,8 @@
-import { useNostrProfile } from "components/apps/Messenger/ProfileContext";
-import { useCallback, useMemo } from "react";
-import Button from "styles/common/Button";
-import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { Back, Write } from "components/apps/Messenger/Icons";
-import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
-import { haltEvent } from "utils/functions";
 import Profile from "components/apps/Messenger/Profile";
-import { useNostr } from "nostr-react";
+import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import {
   copyKeyMenuItems,
   createProfileEvent,
@@ -14,9 +10,14 @@ import {
   getPrivateKey,
   getWebSocketStatusIcon,
 } from "components/apps/Messenger/functions";
-import { useMenu } from "contexts/menu";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
 import type { ProfileData } from "components/apps/Messenger/types";
+import { useMenu } from "contexts/menu";
+import { useNostr } from "nostr-react";
+import { useCallback, useMemo } from "react";
+import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -46,7 +47,6 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     data,
     nip05,
     picture,
-    setProfiles,
     userName = "New message",
   } = useNostrProfile(pubkey);
   const { connectedRelays } = useNostr();
@@ -64,6 +64,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   );
   const { contextMenu } = useMenu();
   const { publish } = useNostr();
+  const { setProfiles } = useHistoryContext();
   const updateProfile = useCallback(
     async (newProfile: Partial<ProfileData>) => {
       if (Object.values(newProfile).filter(Boolean).length === 0) return;

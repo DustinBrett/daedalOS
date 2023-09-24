@@ -12,7 +12,7 @@ const StyledChatLog = styled.ol`
     color: #fff;
     list-style: none;
     margin: 12px;
-    padding: 12px;
+    padding: 10px 12px;
     position: relative;
 
     .status {

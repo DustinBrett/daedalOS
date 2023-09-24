@@ -39,10 +39,15 @@ const StyledContacts = styled(motion.ol)`
       gap: 12px;
       width: calc(100% - 15px);
 
+      div {
+        cursor: pointer;
+      }
+
       img,
       svg {
         aspect-ratio: 1/1;
         border-radius: 50%;
+        cursor: pointer;
         height: 56px;
         max-height: 56px;
         max-width: 56px;
@@ -101,7 +106,9 @@ const StyledContacts = styled(motion.ol)`
       background-color: rgb(46, 137, 255);
       border-radius: 50%;
       content: "";
+      cursor: pointer;
       height: 10px;
+      pointer-events: none;
       position: absolute;
       right: 8px;
       top: calc(50% - 5px);

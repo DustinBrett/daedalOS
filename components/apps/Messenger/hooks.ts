@@ -1,9 +1,11 @@
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
 import {
   BASE_NIP05_URL,
   NOTIFICATION_SOUND,
 } from "components/apps/Messenger/constants";
 import {
+  dataToProfile,
   descCreatedAt,
   getKeyFromTags,
   getNip05Domain,
@@ -11,9 +13,14 @@ import {
   maybeGetExistingPublicKey,
   toHexKey,
 } from "components/apps/Messenger/functions";
-import type { NostrContacts } from "components/apps/Messenger/types";
+import type {
+  NostrContacts,
+  NostrProfile,
+} from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
+import type { Metadata } from "nostr-react";
+import { useNostrEvents } from "nostr-react";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
@@ -47,8 +54,7 @@ export const useNip05 = (): NIP05Result => {
 export const useNostrContacts = (
   publicKey: string,
   wellKnownNames: Record<string, string>,
-  loginTime: number,
-  seenEventIds: string[]
+  loginTime: number
 ): NostrContacts => {
   const globalContacts = useMemo(
     () =>
@@ -91,6 +97,7 @@ export const useNostrContacts = (
       ),
     [contactKeys, events]
   );
+  const { seenEventIds } = useHistoryContext();
   const unreadEvents = useMemo(
     () =>
       events.filter(
@@ -149,4 +156,58 @@ export const useNip05Domain = (nip05?: string, publicKey?: string): string => {
   }, [nip05, publicKey]);
 
   return nip05Domain;
+};
+
+export const useNostrProfile = (
+  publicKey: string,
+  isVisible = true
+): NostrProfile => {
+  const { profiles, setProfiles } = useHistoryContext();
+  const { onEvent } = useNostrEvents({
+    enabled: !!publicKey && isVisible,
+    filter: {
+      authors: [publicKey],
+      kinds: [0],
+    },
+  });
+
+  onEvent(({ content, pubkey }) => {
+    if (!publicKey || publicKey !== pubkey) return;
+
+    try {
+      const metadata = JSON.parse(content) as Metadata;
+
+      if (metadata) {
+        setProfiles((currentProfiles) => ({
+          ...currentProfiles,
+          [publicKey]: dataToProfile(publicKey, metadata),
+        }));
+      }
+    } catch {
+      // Ignore errors parsing profile data
+    }
+  });
+
+  return publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {};
+};
+
+export const useIsVisible = (
+  elementRef: React.MutableRefObject<HTMLElement | null>
+): boolean => {
+  const watching = useRef(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (!elementRef.current || watching.current) return;
+
+    watching.current = true;
+
+    new IntersectionObserver(
+      (entries) =>
+        entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
+      { root: elementRef.current.parentElement, threshold: 0.4 }
+    ).observe(elementRef.current);
+  }, [elementRef]);
+
+  return isVisible;
 };
