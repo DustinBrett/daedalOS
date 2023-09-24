@@ -1,9 +1,11 @@
-import { extname } from "path";
-import Head from "next/head";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { getFirstAniImage } from "components/system/Files/FileEntry/functions";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import Head from "next/head";
+import { extname } from "path";
 import desktopIcons from "public/.index/desktopIcons.json";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
@@ -14,8 +16,6 @@ import {
   USER_ICON_PATH,
 } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, imageToBufferUrl } from "utils/functions";
-import { getFirstAniImage } from "components/system/Files/FileEntry/functions";
-import { useFileSystem } from "contexts/fileSystem";
 
 const { alias, description } = PACKAGE_DATA;
 

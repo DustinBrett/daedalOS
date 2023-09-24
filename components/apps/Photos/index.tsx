@@ -1,5 +1,3 @@
-import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ExitFullscreen,
   Fullscreen,
@@ -13,7 +11,10 @@ import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useViewport } from "contexts/viewport";
 import useDoubleClick from "hooks/useDoubleClick";
+import { basename, dirname, extname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   HIGH_PRIORITY_ELEMENT,
@@ -32,7 +33,6 @@ import {
   imgDataToBuffer,
   label,
 } from "utils/functions";
-import { useViewport } from "contexts/viewport";
 
 const { maxScale, minScale } = panZoomConfig;
 

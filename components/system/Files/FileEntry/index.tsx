@@ -1,6 +1,28 @@
-import { basename, dirname, extname, join } from "path";
+import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
+import extensions from "components/system/Files/FileEntry/extensions";
+import {
+  getModifiedTime,
+  getTextWrapData,
+} from "components/system/Files/FileEntry/functions";
+import useFile from "components/system/Files/FileEntry/useFile";
+import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
+import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import FileManager from "components/system/Files/FileManager";
+import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
+import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import type { FileStat } from "components/system/Files/FileManager/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import type { FileManagerViewNames } from "components/system/Files/Views";
+import { FileEntryIconSize } from "components/system/Files/Views";
+import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { m as motion } from "framer-motion";
+import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
+import { basename, dirname, extname, join } from "path";
 import {
   useCallback,
   useEffect,
@@ -10,28 +32,6 @@ import {
   useState,
 } from "react";
 import { useTheme } from "styled-components";
-import extensions from "components/system/Files/FileEntry/extensions";
-import {
-  getModifiedTime,
-  getTextWrapData,
-} from "components/system/Files/FileEntry/functions";
-import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
-import SubIcons from "components/system/Files/FileEntry/SubIcons";
-import useFile from "components/system/Files/FileEntry/useFile";
-import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
-import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
-import FileManager from "components/system/Files/FileManager";
-import type { FileStat } from "components/system/Files/FileManager/functions";
-import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
-import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
-import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { FileActions } from "components/system/Files/FileManager/useFolder";
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileEntryIconSize } from "components/system/Files/Views";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {

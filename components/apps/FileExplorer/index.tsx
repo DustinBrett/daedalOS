@@ -1,12 +1,13 @@
-import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "components/apps/FileExplorer/Navigation";
 import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
 import { useFileSystem } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   COMPRESSED_FOLDER_ICON,
   MOUNTED_FOLDER_ICON,
@@ -14,7 +15,6 @@ import {
   ROOT_NAME,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
-import { isMountedFolder } from "contexts/fileSystem/functions";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {

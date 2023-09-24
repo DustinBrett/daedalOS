@@ -1,3 +1,11 @@
+import Menu, { topLeftPosition } from "components/system/Menu";
+import {
+  Checkmark,
+  ChevronRight,
+  Circle,
+  Share,
+} from "components/system/Menu/MenuIcons";
+import type { MenuItem } from "contexts/menu/useMenuContextState";
 import {
   useCallback,
   useEffect,
@@ -7,14 +15,6 @@ import {
 } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import Menu, { topLeftPosition } from "components/system/Menu";
-import {
-  Checkmark,
-  ChevronRight,
-  Circle,
-  Share,
-} from "components/system/Menu/MenuIcons";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {

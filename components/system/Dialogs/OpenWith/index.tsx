@@ -1,4 +1,3 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
@@ -6,6 +5,7 @@ import { getProcessByFileExtension } from "components/system/Files/FileEntry/fun
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";

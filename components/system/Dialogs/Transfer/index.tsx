@@ -1,5 +1,3 @@
-import { basename, dirname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
@@ -8,6 +6,8 @@ import type {
   ObjectReaders,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { useProcesses } from "contexts/process";
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

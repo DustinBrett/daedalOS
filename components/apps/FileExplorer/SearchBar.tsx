@@ -1,12 +1,21 @@
-import { basename, join } from "path";
-import { memo, useEffect, useRef, useState } from "react";
+import type { FSModule } from "browserfs/dist/node/core/FS";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
 import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
+import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { basename, join } from "path";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
+  SHORTCUT_EXTENSION,
+  YT_ICON_CACHE,
+} from "utils/constants";
 import {
   bufferToUrl,
   getExtension,
@@ -14,15 +23,6 @@ import {
   preloadLibs,
 } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
-import { useFileSystem } from "contexts/fileSystem";
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
-import {
-  ICON_CACHE,
-  ICON_CACHE_EXTENSION,
-  SHORTCUT_EXTENSION,
-  YT_ICON_CACHE,
-} from "utils/constants";
 
 type SearchBarProps = {
   id: string;

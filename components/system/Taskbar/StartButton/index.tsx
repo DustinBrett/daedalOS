@@ -1,7 +1,7 @@
-import { useState } from "react";
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
+import { useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
 

@@ -1,7 +1,7 @@
+import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 import { useState } from "react";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
-import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 
 type TimeScale = "day" | "week" | "month" | "trimester" | "infinite";
 
