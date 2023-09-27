@@ -1,5 +1,6 @@
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { ClockSource, WallpaperFit } from "contexts/session/types";
+// eslint-disable-next-line import/order
 import type { AsyncZipOptions } from "fflate";
 import type { ThemeName } from "styles/themes";
 
@@ -385,6 +386,7 @@ export const PACKAGE_DATA = {
   author: {
     email: "aptrinh@protonmail.com",
     name: "Phan Trinh",
+    npub: "npub1wd4v4908cmftzjv87e4dx90t2eaykkxmjukzne4rgw3kdssplw9s9jarzq",
     url: "https://icefi.sh",
   },
   description: "A fishy desktop environment in the browser",
