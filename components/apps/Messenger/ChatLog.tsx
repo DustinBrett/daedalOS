@@ -18,9 +18,13 @@ import {
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import type { DecryptedContent } from "components/apps/Messenger/types";
-import * as DOMPurify from "dompurify";
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { clsx } from "utils/functions";
+
+const SanitizedContent = dynamic(
+  () => import("components/apps/Messenger/SanitizedContent")
+);
 
 const ChatLog: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
@@ -84,19 +88,16 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                       )}
                     </div>
                   )}
-                  <div
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(
-                        typeof decryptedContent[id] === "string"
-                          ? convertImageLinksToHtml(
-                              convertNewLinesToBreaks(
-                                decryptedContent[id] as string
-                              )
+                  <SanitizedContent
+                    content={
+                      typeof decryptedContent[id] === "string"
+                        ? convertImageLinksToHtml(
+                            convertNewLinesToBreaks(
+                              decryptedContent[id] as string
                             )
-                          : content
-                      ),
-                    }}
+                          )
+                        : content
+                    }
                   />
                   {publicKey === pubkey &&
                     gropupIndex === messages.length - 1 &&

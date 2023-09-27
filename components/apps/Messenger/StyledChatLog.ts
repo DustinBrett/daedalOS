@@ -50,7 +50,7 @@ const StyledChatLog = styled.ol`
         color: #8b8d92;
         content: attr(data-timestamp);
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 600;
         left: 0;
         position: absolute;
         text-align: center;
@@ -89,7 +89,7 @@ const StyledChatLog = styled.ol`
       }
 
       &.avatar {
-        bottom: -22px;
+        bottom: -24px;
         left: -30px;
         position: absolute;
 

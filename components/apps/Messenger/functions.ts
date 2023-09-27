@@ -156,7 +156,7 @@ export const getMessages = (
   recipientPublicKey?: string,
   since = 0
 ): NostrEvents => ({
-  enabled: Boolean(authorPublicKey),
+  enabled: Boolean(authorPublicKey) || Boolean(recipientPublicKey),
   filter: {
     ...(authorPublicKey ? { authors: [authorPublicKey] } : {}),
     ...(recipientPublicKey ? { "#p": [recipientPublicKey] } : {}),
@@ -255,7 +255,8 @@ export const createMessageEvent = async (
 
 export const dataToProfile = (
   publicKey: string,
-  data?: ProfileData
+  data?: ProfileData,
+  created_at?: number
 ): NostrProfile => {
   const {
     about,
@@ -272,6 +273,7 @@ export const dataToProfile = (
   return {
     about,
     banner,
+    created_at,
     data,
     nip05,
     picture,
