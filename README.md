@@ -126,6 +126,12 @@
 
 - Markdown Viewer
 
+### Messenger
+
+- Encrypted direct messaging client
+- Utilizes [Nostr Protocol](https://nostr.com/) ([NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md))
+- Automatic public/private key creation
+
 ### [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 
 - Code/text editor
