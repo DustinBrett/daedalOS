@@ -1,5 +1,5 @@
-import { basename, dirname, extname, join } from "path";
 import type { LocalEcho } from "components/apps/Terminal/types";
+import { basename, dirname, extname, join } from "path";
 import type {
   FFmpegTranscodeFile,
   IFFmpegInstance,

@@ -1,11 +1,3 @@
-import { basename, join } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AI_IMAGES_FOLDER,
-  commandMap,
-  EngineErrorMessage,
-} from "components/apps/Chat/config";
-import { getLetterTypingSpeed } from "components/apps/Chat/functions";
 import { Reset, Send, Settings } from "components/apps/Chat/Icons";
 import StyledChat from "components/apps/Chat/StyledChat";
 import StyledInfo from "components/apps/Chat/StyledInfo";
@@ -13,6 +5,12 @@ import StyledInputArea from "components/apps/Chat/StyledInputArea";
 import StyledLoadingEllipsis from "components/apps/Chat/StyledLoadingEllipsis";
 import StyledMessage from "components/apps/Chat/StyledMessage";
 import StyledWarning from "components/apps/Chat/StyledWarning";
+import {
+  AI_IMAGES_FOLDER,
+  EngineErrorMessage,
+  commandMap,
+} from "components/apps/Chat/config";
+import { getLetterTypingSpeed } from "components/apps/Chat/functions";
 import type { Message } from "components/apps/Chat/types";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
@@ -25,6 +23,8 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useInference } from "hooks/useInference/useInference";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
+import { basename, join } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import {
   IMAGE_FILE_EXTENSIONS,

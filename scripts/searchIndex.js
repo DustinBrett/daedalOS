@@ -18,6 +18,7 @@ const IGNORE_PATHS = [
   "Program Files",
   "System",
   "Users/Public/Icons",
+  "Users/Public/Pictures/Blog",
 ];
 
 const indexData = [];

@@ -1,5 +1,5 @@
-import { basename, dirname, extname, join } from "path";
 import type { LocalEcho } from "components/apps/Terminal/types";
+import { basename, dirname, extname, join } from "path";
 import { loadFiles } from "utils/functions";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 

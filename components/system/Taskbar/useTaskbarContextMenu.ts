@@ -1,14 +1,14 @@
-import { useMemo } from "react";
 import { useMenu } from "contexts/menu";
 import type {
   ContextMenuCapture,
   MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
+import { useMemo } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 import { toggleShowDesktop } from "utils/functions";
-import { useViewport } from "contexts/viewport";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();

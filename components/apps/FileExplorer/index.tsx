@@ -1,12 +1,13 @@
-import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "components/apps/FileExplorer/Navigation";
 import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
 import { useFileSystem } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
+import { basename } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   COMPRESSED_FOLDER_ICON,
   MOUNTED_FOLDER_ICON,
@@ -47,7 +48,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         if (isMounted) {
           setProcessIcon(
             id,
-            rootFs?.mntMap[url].getName() === "FileSystemAccess"
+            isMountedFolder(rootFs?.mntMap[url])
               ? MOUNTED_FOLDER_ICON
               : COMPRESSED_FOLDER_ICON
           );

@@ -20,7 +20,7 @@ const StyledTinyMceEditor = styled.div`
 
         &::before {
           background-color: rgba(255, 255, 255, 80%);
-          content: "Click to switch to design mode.";
+          content: "Click to switch into design mode.";
           cursor: pointer;
           display: flex;
           height: calc(100% - 1px);

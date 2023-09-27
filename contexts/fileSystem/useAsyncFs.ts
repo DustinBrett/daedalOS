@@ -1,16 +1,16 @@
-import { join } from "path";
 import type * as IBrowserFS from "browserfs";
+import type EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
-import { useEffect, useMemo, useRef, useState } from "react";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 import {
   UNKNOWN_STATE_CODES,
-  resetStorage,
   supportsIndexedDB,
-} from "contexts/fileSystem/functions";
+} from "contexts/fileSystem/core";
+import { join } from "path";
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -36,17 +36,26 @@ export type AsyncFS = {
 
 const { BFSRequire, configure } = BrowserFS as typeof IBrowserFS;
 
+export type EmscriptenFS = {
+  DB_NAME: () => string;
+  DB_STORE_NAME: string;
+};
+
+export type ExtendedEmscriptenFileSystem = Omit<EmscriptenFileSystem, "_FS"> & {
+  _FS?: EmscriptenFS;
+};
+
+export type Mount = {
+  _data?: Buffer;
+  data?: Buffer;
+  getName: () => string;
+};
+
 export type RootFileSystem = Omit<
   MountableFileSystem,
   "mntMap" | "mountList"
 > & {
-  mntMap: Record<
-    string,
-    {
-      _data: Buffer;
-      getName: () => string;
-    }
-  >;
+  mntMap: Record<string, Mount>;
   mountList: string[];
 };
 
@@ -105,8 +114,11 @@ const useAsyncFs = (): AsyncFSModule => {
               return resolve(data);
             }
 
-            if (error.code === "EISDIR" && rootFs?.mntMap[path]?._data) {
-              return resolve(rootFs.mntMap[path]._data);
+            if (error.code === "EISDIR" && rootFs?.mntMap[path]) {
+              const mountData =
+                rootFs.mntMap[path]._data || rootFs.mntMap[path].data;
+
+              if (mountData) return resolve(mountData);
             }
 
             return reject(error);
@@ -183,7 +195,12 @@ const useAsyncFs = (): AsyncFSModule => {
             (error) => {
               if (error && (!overwrite || error.code !== "EEXIST")) {
                 if (error.code === "ENOENT" && error.path === "/") {
-                  resetStorage(rootFs).finally(() => window.location.reload());
+                  import("contexts/fileSystem/functions").then(
+                    ({ resetStorage }) =>
+                      resetStorage(rootFs).finally(() =>
+                        window.location.reload()
+                      )
+                  );
                 }
 
                 reject(error);

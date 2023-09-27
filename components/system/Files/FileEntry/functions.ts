@@ -1,13 +1,14 @@
-import { join } from "path";
 import type { FSModule } from "browserfs/dist/node/core/FS";
-import ini from "ini";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { FileStat } from "components/system/Files/FileManager/functions";
-import { get9pModifiedTime } from "contexts/fileSystem/functions";
+import { get9pModifiedTime } from "contexts/fileSystem/core";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
+import ini from "ini";
+import { join } from "path";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
@@ -189,7 +190,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
       IconFile: icon = "",
       Type: type = "",
       URL: url = "",
-    },
+    } = {},
   } = (ini.parse(contents.toString()) || {}) as {
     InternetShortcut: InternetShortcut;
   };
@@ -277,7 +278,7 @@ export const getInfoWithoutExtension = (
     ): void =>
       callback({ getIcon, icon, pid: "FileExplorer", subIcons, url: path });
     const getFolderIcon = (): string => {
-      if (rootFs?.mntMap[path]?.getName() === "FileSystemAccess") {
+      if (isMountedFolder(rootFs?.mntMap[path])) {
         return MOUNTED_FOLDER_ICON;
       }
       if (hasNewFolderIcon) return NEW_FOLDER_ICON;
@@ -778,7 +779,7 @@ const canvasContexts = Object.create(null) as Record<
   CanvasRenderingContext2D
 >;
 
-const measureText = (
+export const measureText = (
   text: string,
   fontSize: string,
   fontFamily: string

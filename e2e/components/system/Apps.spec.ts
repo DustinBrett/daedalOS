@@ -20,8 +20,11 @@ test.describe("app container", () => {
   test.beforeEach(loadContainerTestApp);
   test.beforeEach(windowsAreVisible);
 
-  test("can drop", async ({ browserName, page }) => {
-    if (DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)) return;
+  test("can drop", async ({ browserName, headless, page }) => {
+    test.skip(
+      headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless drag support"
+    );
 
     await windowTitlebarTextIsVisible(TEST_APP_CONTAINER_APP, { page });
 

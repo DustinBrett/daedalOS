@@ -1,5 +1,3 @@
-import type { Position } from "react-rnd";
-import type { Track, URLTrack } from "webamp";
 import type {
   ButterChurnPresets,
   ButterChurnWebampPreset,
@@ -8,8 +6,10 @@ import type {
   WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
+import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
+import type { Track, URLTrack } from "webamp";
 
 const BROKEN_PRESETS = new Set([
   "Flexi - alien fish pond",

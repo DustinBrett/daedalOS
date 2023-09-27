@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { ACCESSIBILITY_EXCEPTION_IDS } from "e2e/constants";
 import {
   backgroundCanvasMaybeIsVisible,
+  captureConsoleLogs,
   clockCanvasMaybeIsVisible,
   desktopEntriesAreVisible,
   loadApp,
@@ -10,6 +11,7 @@ import {
   taskbarIsVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(loadApp);
 test.beforeEach(desktopEntriesAreVisible);
 test.beforeEach(taskbarIsVisible);
@@ -25,3 +27,6 @@ test("can pass accessibility scan", async ({ page }) =>
         .analyze()
     ).violations
   ).toEqual([]));
+
+test("has no console logs", () =>
+  expect(globalThis.capturedConsoleLogs || []).toHaveLength(0));

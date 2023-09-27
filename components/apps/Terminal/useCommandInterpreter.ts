@@ -1,8 +1,3 @@
-import { basename, dirname, extname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
-import type UAParser from "ua-parser-js";
-import type { Terminal } from "xterm";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import { PI_ASCII, config } from "components/apps/Terminal/config";
 import {
@@ -40,6 +35,10 @@ import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useProcessesRef } from "hooks/useProcessesRef";
+import { basename, dirname, extname, isAbsolute, join } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
+import type UAParser from "ua-parser-js";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
@@ -59,6 +58,7 @@ import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
+import type { Terminal } from "xterm";
 
 const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";

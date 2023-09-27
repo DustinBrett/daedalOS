@@ -1,3 +1,11 @@
+import Menu, { topLeftPosition } from "components/system/Menu";
+import {
+  Checkmark,
+  ChevronRight,
+  Circle,
+  Share,
+} from "components/system/Menu/MenuIcons";
+import type { MenuItem } from "contexts/menu/useMenuContextState";
 import {
   useCallback,
   useEffect,
@@ -7,13 +15,6 @@ import {
 } from "react";
 import type { Position } from "react-rnd";
 import { useTheme } from "styled-components";
-import Menu, { topLeftPosition } from "components/system/Menu";
-import {
-  Checkmark,
-  ChevronRight,
-  Circle,
-} from "components/system/Menu/MenuIcons";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -40,6 +41,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   primary,
   resetMenu,
   seperator,
+  share,
   toggle,
 }) => {
   const entryRef = useRef<HTMLLIElement | null>(null);
@@ -144,8 +146,14 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
           onMouseUp={triggerAction}
           {...DIV_BUTTON_PROPS}
         >
-          {icon && <Icon alt={label} imgSize={16} src={icon} />}
+          {icon &&
+            (/\p{Emoji_Presentation}/gu.test(icon) ? (
+              <span>{icon}</span>
+            ) : (
+              <Icon alt={label} imgSize={16} src={icon} />
+            ))}
           {checked && <Checkmark className="left" />}
+          {share && <Share className="share" />}
           {toggle && <Circle className="left" />}
           <figcaption className={primary ? "primary" : undefined}>
             {label}

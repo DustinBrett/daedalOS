@@ -1,4 +1,3 @@
-import { useCallback, useState } from "react";
 import {
   closeProcess,
   maximizeProcess,
@@ -15,6 +14,7 @@ import type {
   ProcessElements,
   Processes,
 } from "contexts/process/types";
+import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 type ProcessContextState = {

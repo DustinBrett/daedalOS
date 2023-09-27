@@ -28,6 +28,8 @@ var ENVIRONMENT_IS_NODE = false;
 
 var ENVIRONMENT_IS_SHELL = false;
 
+var BOXED_WINE_CANVAS_SELECTOR = "#boxedWineCanvas";
+
 ENVIRONMENT_IS_WEB = typeof window === "object";
 
 ENVIRONMENT_IS_WORKER = typeof importScripts === "function";
@@ -1097,7 +1099,7 @@ function listenOnce(object, event, func) {
 
 function autoResumeAudioContext(ctx, elements) {
  if (!elements) {
-  elements = [ document, document.getElementById("boxedWineCanvas") ];
+  elements = [ document, document.querySelector(BOXED_WINE_CANVAS_SELECTOR) ];
  }
  [ "keydown", "mousedown", "touchstart" ].forEach(function(event) {
   elements.forEach(function(element) {
@@ -2023,8 +2025,12 @@ var FS = {
   "r+": 2,
   "w": 577,
   "w+": 578,
+  "wx": 705,
+  "wx+": 706,
   "a": 1089,
-  "a+": 1090
+  "a+": 1090,
+  "ax": 1217,
+  "ax+": 1218
  },
  modeStringToFlags: function(str) {
   var flags = FS.flagModes[str];
@@ -5217,18 +5223,11 @@ var Browser = {
    }
   };
   Module["preloadPlugins"].push(audioPlugin);
-  function pointerLockChange() {
-   Browser.pointerLock = document["pointerLockElement"] === Module["canvas"] || document["mozPointerLockElement"] === Module["canvas"] || document["webkitPointerLockElement"] === Module["canvas"] || document["msPointerLockElement"] === Module["canvas"];
-  }
   var canvas = Module["canvas"];
   if (canvas) {
    canvas.requestPointerLock = canvas["requestPointerLock"] || canvas["mozRequestPointerLock"] || canvas["webkitRequestPointerLock"] || canvas["msRequestPointerLock"] || function() {};
    canvas.exitPointerLock = document["exitPointerLock"] || document["mozExitPointerLock"] || document["webkitExitPointerLock"] || document["msExitPointerLock"] || function() {};
    canvas.exitPointerLock = canvas.exitPointerLock.bind(document);
-   document.addEventListener("pointerlockchange", pointerLockChange, false);
-   document.addEventListener("mozpointerlockchange", pointerLockChange, false);
-   document.addEventListener("webkitpointerlockchange", pointerLockChange, false);
-   document.addEventListener("mspointerlockchange", pointerLockChange, false);
    if (Module["elementPointerLock"]) {
     canvas.addEventListener("click", function(ev) {
      if (!Browser.pointerLock && Module["canvas"].requestPointerLock) {
@@ -5312,20 +5311,10 @@ var Browser = {
   }
   if (!Browser.fullscreenHandlersInstalled) {
    Browser.fullscreenHandlersInstalled = true;
-  //  document.addEventListener("fullscreenchange", fullscreenChange, false);
-  //  document.addEventListener("mozfullscreenchange", fullscreenChange, false);
-  //  document.addEventListener("webkitfullscreenchange", fullscreenChange, false);
-  //  document.addEventListener("MSFullscreenChange", fullscreenChange, false);
   }
   var canvasContainer = document.createElement("div");
   canvas.parentNode.insertBefore(canvasContainer, canvas);
   canvasContainer.appendChild(canvas);
-  // canvasContainer.requestFullscreen = canvasContainer["requestFullscreen"] || canvasContainer["mozRequestFullScreen"] || canvasContainer["msRequestFullscreen"] || (canvasContainer["webkitRequestFullscreen"] ? function() {
-  //  canvasContainer["webkitRequestFullscreen"](Element["ALLOW_KEYBOARD_INPUT"]);
-  // } : null) || (canvasContainer["webkitRequestFullScreen"] ? function() {
-  //  canvasContainer["webkitRequestFullScreen"](Element["ALLOW_KEYBOARD_INPUT"]);
-  // } : null);
-  // canvasContainer.requestFullscreen();
  },
  exitFullscreen: function() {
   if (!Browser.isFullscreen) {
@@ -6302,7 +6291,8 @@ var specialHTMLTargets = [ 0, typeof document !== "undefined" ? document : 0, ty
 
 function findEventTarget(target) {
  target = maybeCStringToJsString(target);
- if (target === "#canvas") target = "#boxedWineCanvas";
+ if (target === 2) return document.querySelector(BOXED_WINE_CANVAS_SELECTOR).closest("section");
+ if (target === "#canvas") target = BOXED_WINE_CANVAS_SELECTOR;
  var domElement = specialHTMLTargets[target] || (typeof document !== "undefined" ? document.querySelector(target) : undefined);
  return domElement;
 }
@@ -6400,8 +6390,6 @@ function registerRestoreOldStyle(canvas) {
    }
   }
  }
-//  document.addEventListener("fullscreenchange", restoreOldStyle);
-//  document.addEventListener("webkitfullscreenchange", restoreOldStyle);
  return restoreOldStyle;
 }
 

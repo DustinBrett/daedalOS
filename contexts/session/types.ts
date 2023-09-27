@@ -1,6 +1,6 @@
-import type { Position } from "react-rnd";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
+import type { Position } from "react-rnd";
 import type { ThemeName } from "styles/themes";
 
 export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
@@ -15,7 +15,7 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
 
-type SortOrder = [string[], SortBy, boolean];
+type SortOrder = [string[], SortBy?, boolean?];
 
 export type SortOrders = Record<string, SortOrder>;
 

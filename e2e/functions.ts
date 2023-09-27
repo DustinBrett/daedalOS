@@ -11,6 +11,7 @@ import {
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
   EXACT,
+  EXCLUDED_CONSOLE_LOGS,
   FAVICON_SELECTOR,
   FILE_EXPLORER_ADDRESS_BAR_LABEL,
   FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
@@ -26,6 +27,8 @@ import {
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
+  TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
+  TASKBAR_ENTRY_PEEK_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
   TEST_APP,
@@ -53,6 +56,22 @@ type DocumentWithVendorFullscreen = Document & {
   mozFullScreenElement?: HTMLElement;
   webkitFullscreenElement?: HTMLElement;
 };
+
+export const captureConsoleLogs = ({ browserName, page }: TestProps): Page =>
+  page.on("console", (msg) => {
+    const text = msg.text();
+
+    if (
+      !EXCLUDED_CONSOLE_LOGS(browserName || "").some((excluded) =>
+        text.includes(excluded)
+      )
+    ) {
+      globalThis.capturedConsoleLogs = [
+        ...(globalThis.capturedConsoleLogs || []),
+        text,
+      ];
+    }
+  });
 
 export const filterMenuItems = (
   menuItems: MenuItems,
@@ -154,6 +173,17 @@ export const doubleClickWindowTitlebarIcon = async ({
 }: TestProps): Promise<void> =>
   page.locator(WINDOW_TITLEBAR_ICON_SELECTOR).dblclick();
 
+export const dragFileExplorerEntryToDesktop = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+    .getByLabel(label)
+    .dragTo(page.locator(DESKTOP_SELECTOR), {
+      targetPosition: { x: 1, y: 1 },
+    });
+
 export const dragWindowToDesktop = async ({
   page,
 }: TestProps): Promise<void> => {
@@ -172,6 +202,12 @@ export const dragWindowToDesktop = async ({
 
 export const focusOnWindow = async ({ page }: TestProps): Promise<void> =>
   page.locator(WINDOW_SELECTOR).focus();
+
+export const hoverOnTaskbarEntry = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).hover();
 
 export const pressDesktopKeys = async (
   keys: string,
@@ -548,6 +584,18 @@ export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
 ): Promise<void> => entryIsVisible(TASKBAR_ENTRY_SELECTOR, label, page);
+
+export const taskbarEntryPeekIsHidden = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_ENTRY_PEEK_SELECTOR)).toBeHidden();
+
+export const taskbarEntryPeekImageIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(page.locator(TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR)).toBeVisible()
+  ).toPass();
 
 export const startMenuEntryIsVisible = async (
   label: RegExp | string,

@@ -1,9 +1,20 @@
-import { useEffect, useRef } from "react";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
-import { haltEvent, toggleShowDesktop } from "utils/functions";
 import { useViewport } from "contexts/viewport";
+import { useProcessesRef } from "hooks/useProcessesRef";
+import { useEffect, useRef } from "react";
+import { haltEvent, toggleShowDesktop } from "utils/functions";
+
+declare global {
+  interface Window {
+    globalKeyStates?: {
+      altKey: boolean;
+      ctrlKey: boolean;
+      metaKey: boolean;
+      shiftKey: boolean;
+    };
+  }
+}
 
 const openStartMenu = (): void =>
   (
@@ -31,6 +42,12 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
 
 const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R"]);
 
+const updateKeyStates = (event: KeyboardEvent): void => {
+  const { altKey, ctrlKey, shiftKey, metaKey } = event;
+
+  window.globalKeyStates = { altKey, ctrlKey, metaKey, shiftKey };
+};
+
 const useGlobalKeyboardShortcuts = (): void => {
   const { closeWithTransition, maximize, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
@@ -48,6 +65,8 @@ const useGlobalKeyboardShortcuts = (): void => {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
+      updateKeyStates(event);
+
       const { altKey, ctrlKey, key, shiftKey } = event;
       const keyName = key?.toUpperCase();
 
@@ -95,6 +114,8 @@ const useGlobalKeyboardShortcuts = (): void => {
       }
     };
     const onKeyUp = (event: KeyboardEvent): void => {
+      updateKeyStates(event);
+
       if (
         metaDown &&
         fullscreenElement === document.documentElement &&

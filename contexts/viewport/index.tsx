@@ -1,5 +1,5 @@
-import useViewportContextState from "contexts/viewport/useViewportContextState";
 import contextFactory from "contexts/contextFactory";
+import useViewportContextState from "contexts/viewport/useViewportContextState";
 
 const { Provider, useContext } = contextFactory(useViewportContextState);
 

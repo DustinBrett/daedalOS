@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import type { Message } from "components/apps/Chat/types";
 import type { Engine } from "hooks/useInference/useInference";
 

@@ -1,8 +1,10 @@
-import { useCallback, useEffect } from "react";
-import { useTheme } from "styled-components";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { useCallback, useEffect } from "react";
+import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
@@ -26,6 +28,7 @@ const useClassiCube = ({
   setLoading,
 }: ContainerHookProps): void => {
   const { processes: { [id]: process } = {} } = useProcesses();
+  const mountEmFs = useEmscriptenMount();
   const {
     windowStates: { [id]: windowState },
   } = useSession();
@@ -62,7 +65,10 @@ const useClassiCube = ({
         arguments: ["Singleplayer"],
         canvas,
         postRun: [
-          () => setLoading(false),
+          () => {
+            setLoading(false);
+            mountEmFs(window.FS as EmscriptenFS, "ClassiCube");
+          },
           () => {
             const { width, height } = canvas.getBoundingClientRect() || {};
 
@@ -76,7 +82,7 @@ const useClassiCube = ({
 
       loadFiles(libs);
     }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
-  }, [getCanvas, libs, setLoading]);
+  }, [getCanvas, libs, mountEmFs, setLoading]);
 };
 
 export default useClassiCube;

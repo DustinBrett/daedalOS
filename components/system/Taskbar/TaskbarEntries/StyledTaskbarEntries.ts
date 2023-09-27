@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-const StyledTaskbarEntries = styled.ol`
+type StyledTaskbarEntriesProps = {
+  $clockWidth: number;
+};
+
+const StyledTaskbarEntries = styled.ol<StyledTaskbarEntriesProps>`
   column-gap: 1px;
   display: flex;
   height: 100%;
@@ -8,7 +12,8 @@ const StyledTaskbarEntries = styled.ol`
   margin: 0 3px;
   overflow: hidden;
   position: absolute;
-  right: ${({ theme }) => theme.sizes.clock.width};
+  right: ${({ $clockWidth, theme }) =>
+    `calc(${$clockWidth}px + ${theme.sizes.clock.padding * 2}px)`};
 `;
 
 export default StyledTaskbarEntries;

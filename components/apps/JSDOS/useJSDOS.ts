@@ -1,5 +1,3 @@
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   CAPTURED_KEYS,
   dosOptions,
@@ -7,9 +5,12 @@ import {
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import type { DosInstance } from "emulators-ui/dist/types/js-dos";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
@@ -26,6 +27,7 @@ const useJSDOS = ({
 }: ContainerHookProps): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
+  const mountEmFs = useEmscriptenMount();
   const loadingInstanceRef = useRef(false);
   const { foregroundId } = useSession();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
@@ -102,6 +104,7 @@ const useJSDOS = ({
       );
 
       setLoading(false);
+      mountEmFs(window.JSDOS_FS, "JS-DOS");
     }
   }, [
     closeWithTransition,
@@ -110,6 +113,7 @@ const useJSDOS = ({
     dosInstance?.layers,
     id,
     loading,
+    mountEmFs,
     setLoading,
     updateWindowSize,
   ]);

@@ -1,6 +1,28 @@
-import { basename, dirname, extname, join } from "path";
+import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
+import extensions from "components/system/Files/FileEntry/extensions";
+import {
+  getModifiedTime,
+  getTextWrapData,
+} from "components/system/Files/FileEntry/functions";
+import useFile from "components/system/Files/FileEntry/useFile";
+import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
+import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
+import FileManager from "components/system/Files/FileManager";
+import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
+import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import type { FileStat } from "components/system/Files/FileManager/functions";
+import useFileDrop from "components/system/Files/FileManager/useFileDrop";
+import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import type { FileManagerViewNames } from "components/system/Files/Views";
+import { FileEntryIconSize } from "components/system/Files/Views";
+import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
 import { m as motion } from "framer-motion";
+import useDoubleClick from "hooks/useDoubleClick";
 import dynamic from "next/dynamic";
+import { basename, dirname, extname, join } from "path";
 import {
   useCallback,
   useEffect,
@@ -10,29 +32,6 @@ import {
   useState,
 } from "react";
 import { useTheme } from "styled-components";
-import { Down } from "components/apps/FileExplorer/NavigationIcons";
-import extensions from "components/system/Files/FileEntry/extensions";
-import {
-  getModifiedTime,
-  getTextWrapData,
-} from "components/system/Files/FileEntry/functions";
-import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
-import SubIcons from "components/system/Files/FileEntry/SubIcons";
-import useFile from "components/system/Files/FileEntry/useFile";
-import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
-import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
-import FileManager from "components/system/Files/FileManager";
-import type { FileStat } from "components/system/Files/FileManager/functions";
-import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
-import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
-import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { FileActions } from "components/system/Files/FileManager/useFolder";
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileEntryIconSize } from "components/system/Files/Views";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -61,6 +60,10 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
+
+const Down = dynamic(() =>
+  import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
+);
 
 const RenameBox = dynamic(
   () => import("components/system/Files/FileEntry/RenameBox")
@@ -217,7 +220,12 @@ const FileEntry: FC<FileEntryProps> = ({
         if (url.startsWith("http:") || url.startsWith("https:")) {
           return decodeURIComponent(url);
         }
-        return `Location: ${basename(url, extname(url))} (${dirname(url)})`;
+
+        const directoryPath = dirname(url);
+
+        return `Location: ${basename(url, extname(url))}${
+          !directoryPath || directoryPath === "." ? "" : ` (${dirname(url)})`
+        }`;
       }
       return "";
     }
@@ -256,6 +264,7 @@ const FileEntry: FC<FileEntryProps> = ({
     if (
       openInFileExplorer &&
       fileManagerId &&
+      !window.globalKeyStates?.ctrlKey &&
       !MOUNTABLE_EXTENSIONS.has(urlExt)
     ) {
       changeUrl(fileManagerId, url);
@@ -568,8 +577,10 @@ const FileEntry: FC<FileEntryProps> = ({
             />
           ) : (
             <figcaption
-              aria-level={isHeading ? 1 : undefined}
-              role={isHeading ? "heading" : undefined}
+              {...(isHeading && {
+                "aria-level": 1,
+                role: "heading",
+              })}
             >
               {!isOnlyFocusedEntry || name.length === truncatedName.length
                 ? truncatedName
