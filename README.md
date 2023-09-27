@@ -211,6 +211,24 @@
 - Playlist & streaming support
 - Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
 
+# Games 🎮
+
+### [ClassiCube](https://www.classicube.net/)
+
+- Minecraft Classic compatible client
+
+### [DX-Ball](https://habr.com/en/post/147339/)
+
+- Block breaker arcade game like Arkanoid
+
+### [Space Cadet Pinball](https://github.com/alula/SpaceCadetPinball)
+
+- Reverse engineering of 3D Pinball from Windows
+
+### [Quake III Arena](https://github.com/lrusso/Quake3)
+
+- Port of the classic first-person shooter
+
 # Try It 🚀
 
 ##### Requirements
@@ -234,13 +252,13 @@ yarn build
 yarn start
 ```
 
-#### Docker
+##### Docker
 
 ```
 docker build -t daedalos .
 docker run -dp 3000:3000 --rm --name daedalos daedalos
 ```
 
-#### Notes
+##### Notes
 
 - If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider` ([1](https://github.com/DustinBrett/daedalOS/blob/main/Dockerfile#L3), [2](https://github.com/DustinBrett/daedalOS/blob/main/.github/workflows/main.yml#L17), [3](https://stackoverflow.com/a/69699772/5895982))
