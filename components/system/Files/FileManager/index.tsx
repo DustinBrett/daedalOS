@@ -1,6 +1,3 @@
-import { basename, join } from "path";
-import dynamic from "next/dynamic";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -13,7 +10,9 @@ import useFolderContextMenu from "components/system/Files/FileManager/useFolderC
 import type { FileManagerViewNames } from "components/system/Files/Views";
 import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import { requestPermission } from "contexts/fileSystem/functions";
+import dynamic from "next/dynamic";
+import { basename, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -125,24 +124,27 @@ const FileManager: FC<FileManagerProps> = ({
       rootFs?.mntMap[currentUrl]?.getName() === "FileSystemAccess"
     ) {
       requestingPermissions.current = true;
-      requestPermission(currentUrl)
-        .then((permissions) => {
-          const isGranted = permissions === "granted";
 
-          if (!permissions || isGranted) {
-            setPermission("granted");
+      import("contexts/fileSystem/functions").then(({ requestPermission }) =>
+        requestPermission(currentUrl)
+          .then((permissions) => {
+            const isGranted = permissions === "granted";
 
-            if (isGranted) updateFiles();
-          }
-        })
-        .catch((error: Error) => {
-          if (error.message === "Permission already granted") {
-            setPermission("granted");
-          }
-        })
-        .finally(() => {
-          requestingPermissions.current = false;
-        });
+            if (!permissions || isGranted) {
+              setPermission("granted");
+
+              if (isGranted) updateFiles();
+            }
+          })
+          .catch((error: Error) => {
+            if (error.message === "Permission already granted") {
+              setPermission("granted");
+            }
+          })
+          .finally(() => {
+            requestingPermissions.current = false;
+          })
+      );
     }
   }, [currentUrl, permission, rootFs?.mntMap, updateFiles]);
 

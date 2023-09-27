@@ -1,5 +1,5 @@
-import dynamic from "next/dynamic";
 import type { Processes } from "contexts/process/types";
+import dynamic from "next/dynamic";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {
@@ -136,6 +136,17 @@ const directory: Processes = {
       "/Program Files/Marked/purify.min.js",
     ],
     title: "Marked",
+  },
+  Messenger: {
+    Component: dynamic(() => import("components/apps/Messenger")),
+    backgroundColor: "#242526",
+    defaultSize: {
+      height: 500,
+      width: 425,
+    },
+    icon: "/System/Icons/messenger.webp",
+    singleton: true,
+    title: "Messenger",
   },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),

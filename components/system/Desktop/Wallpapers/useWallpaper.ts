@@ -1,18 +1,18 @@
-import { join } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
-  bgPositionSize,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
+  bgPositionSize,
 } from "components/system/Desktop/Wallpapers/constants";
 import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { config as vantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
+import { join } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
@@ -22,6 +22,7 @@ import {
   PICTURES_FOLDER,
   PROMPT_FILE,
   SLIDESHOW_FILE,
+  SLIDESHOW_TIMEOUT_IN_MILLISECONDS,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -46,6 +47,7 @@ declare global {
 type WallpaperMessage = { message: string; type: string };
 
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
+const REDUCED_MOTION_PERCENT = 0.1;
 
 let slideshowFiles: string[];
 
@@ -72,12 +74,18 @@ const useWallpaper = (
       if (!desktopRef.current) return;
 
       let config: WallpaperConfig | undefined;
+      const { matches: prefersReducedMotion } = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
 
       if (wallpaperName === "VANTA") {
         config = { ...vantaNetConfig };
         vantaNetConfig.material.options.wireframe = vantaWireframe;
       } else if (wallpaperImage === "MATRIX 3D") {
-        config = { volumetric: true };
+        config = {
+          animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+          volumetric: wallpaperImage.endsWith("3D"),
+        };
       } else if (wallpaperName === "STABLE_DIFFUSION") {
         const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
 
@@ -365,7 +373,7 @@ const useWallpaper = (
           if (isSlideshow) {
             wallpaperTimerRef.current = window.setTimeout(
               loadFileWallpaper,
-              MILLISECONDS_IN_MINUTE
+              SLIDESHOW_TIMEOUT_IN_MILLISECONDS
             );
           }
         }

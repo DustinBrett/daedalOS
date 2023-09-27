@@ -1,6 +1,7 @@
-import type { AsyncZipOptions } from "fflate";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type { ClockSource, WallpaperFit } from "contexts/session/types";
+// eslint-disable-next-line import/order
+import type { AsyncZipOptions } from "fflate";
 import type { ThemeName } from "styles/themes";
 
 export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
@@ -39,7 +40,7 @@ export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
 
 export const THIN_SCROLLBAR_WIDTH = 13;
 
-export const BASE_CLOCK_WIDTH = 68;
+export const CLOCK_CANVAS_BASE_WIDTH = 68;
 
 export const SMALLEST_PNG_SIZE = 51;
 
@@ -69,6 +70,8 @@ export const INDEX_FILE = "/index.html";
 export const PROMPT_FILE = "prompts.json";
 
 export const SLIDESHOW_FILE = "slideshow.json";
+
+export const SLIDESHOW_TIMEOUT_IN_MILLISECONDS = 15000;
 
 export const ICON_GIF_SECONDS = 2;
 
@@ -383,6 +386,7 @@ export const PACKAGE_DATA = {
   author: {
     email: "aptrinh@protonmail.com",
     name: "Phan Trinh",
+    npub: "npub1wd4v4908cmftzjv87e4dx90t2eaykkxmjukzne4rgw3kdssplw9s9jarzq",
     url: "https://icefi.sh",
   },
   description: "A fishy desktop environment in the browser",

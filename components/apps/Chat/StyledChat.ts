@@ -28,7 +28,7 @@ const StyledChat = styled.div`
   }
 
   > ul {
-    ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
+    ${ScrollBars()};
     height: 100%;
     overflow-y: scroll;
     padding-bottom: 84px;

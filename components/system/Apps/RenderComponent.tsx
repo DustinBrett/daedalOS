@@ -1,7 +1,7 @@
-import dynamic from "next/dynamic";
-import { memo } from "react";
 import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import ComponentError from "components/system/Apps/ComponentError";
+import dynamic from "next/dynamic";
+import { memo } from "react";
 
 const Window = dynamic(() => import("components/system/Window"));
 

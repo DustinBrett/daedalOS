@@ -71,6 +71,7 @@
       }
     ],
     "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "camelcase": "off",
     "class-methods-use-this": "off",
     "curly": "error",
     "import/extensions": [
@@ -95,6 +96,7 @@
         }
       }
     ],
+    "jsx-a11y/no-autofocus": "off",
     "no-console": ["error", { "allow": ["info", "error"] }],
     "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",
@@ -111,6 +113,7 @@
     "no-unsafe-optional-chaining": "error",
     "playwright/expect-expect": "off",
     "playwright/no-conditional-in-test": "off",
+    "playwright/no-skipped-test": "off",
     "react/function-component-definition": [
       "error",
       { "namedComponents": "arrow-function" }

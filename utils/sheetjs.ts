@@ -1,5 +1,5 @@
-import type * as XLSX from "xlsx";
 import { loadFiles } from "utils/functions";
+import type * as XLSX from "xlsx";
 
 declare global {
   interface Window {

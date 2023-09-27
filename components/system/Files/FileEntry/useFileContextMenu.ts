@@ -1,6 +1,3 @@
-import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
-import type { URLTrack } from "webamp";
 import extensions, {
   TEXT_EDITORS,
 } from "components/system/Files/FileEntry/extensions";
@@ -9,6 +6,7 @@ import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import type { FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useMenu } from "contexts/menu";
 import type {
   ContextMenuCapture,
@@ -18,6 +16,8 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
+import { basename, dirname, extname, join } from "path";
+import { useMemo } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   CURSOR_FILE_EXTENSIONS,
@@ -27,6 +27,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
+  PACKAGE_DATA,
   PROCESS_DELIMITER,
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
@@ -41,12 +42,20 @@ import {
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
 import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { getExtension, isFirefox, isSafari } from "utils/functions";
+import {
+  getExtension,
+  isFirefox,
+  isSafari,
+  isYouTubeUrl,
+} from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
+import type { URLTrack } from "webamp";
+
+const { alias } = PACKAGE_DATA;
 
 const useFileContextMenu = (
   url: string,
@@ -93,8 +102,9 @@ const useFileContextMenu = (
           (process) => process !== pid
         );
         const openWithFiltered = openWith.filter((id) => id !== pid);
+        const isSingleSelection = focusedEntries.length === 1;
         const absoluteEntries = (): string[] =>
-          focusedEntries.length === 1 || !isFocusedEntry
+          isSingleSelection || !isFocusedEntry
             ? [path]
             : [
                 ...new Set([
@@ -107,8 +117,7 @@ const useFileContextMenu = (
         const isShortcut = pathExtension === SHORTCUT_EXTENSION;
         const remoteMount = rootFs?.mountList.some(
           (mountPath) =>
-            mountPath === path &&
-            rootFs?.mntMap[mountPath]?.getName() === "FileSystemAccess"
+            mountPath === path && isMountedFolder(rootFs?.mntMap[mountPath])
         );
 
         if (!readOnly && !remoteMount) {
@@ -226,16 +235,6 @@ const useFileContextMenu = (
               }
             } else {
               menuItems.unshift(MENU_SEPERATOR);
-
-              if (
-                EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
-                MOUNTABLE_EXTENSIONS.has(pathExtension)
-              ) {
-                menuItems.unshift({
-                  action: () => extractFiles(path),
-                  label: "Extract Here",
-                });
-              }
 
               const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
               const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
@@ -384,18 +383,54 @@ const useFileContextMenu = (
                 });
               }
 
+              const opensInFileExplorer = pid === "FileExplorer";
+
+              if (
+                isSingleSelection &&
+                !opensInFileExplorer &&
+                !isYouTubeUrl(url)
+              ) {
+                const baseFileName = basename(url);
+                const shareData: ShareData = {
+                  text: `${baseFileName} - ${alias}`,
+                  title: baseFileName,
+                  url: `${window.location.origin}?url=${url}`,
+                };
+
+                try {
+                  if (navigator.canShare?.(shareData)) {
+                    menuItems.unshift({
+                      action: () => navigator.share(shareData),
+                      label: "Share",
+                      share: true,
+                    });
+                  }
+                } catch {
+                  // Ignore failure to use Share API
+                }
+              }
+
               menuItems.unshift(
                 {
                   action: () => archiveFiles(absoluteEntries()),
                   label: "Add to archive...",
                 },
+                ...(EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
+                MOUNTABLE_EXTENSIONS.has(pathExtension)
+                  ? [
+                      {
+                        action: () => extractFiles(path),
+                        label: "Extract Here",
+                      },
+                    ]
+                  : []),
                 {
                   action: () => downloadFiles(absoluteEntries()),
                   label: "Download",
                 }
               );
 
-              if (!isShortcut && pid !== "FileExplorer") {
+              if (!isShortcut && !opensInFileExplorer) {
                 TEXT_EDITORS.forEach((textEditor) => {
                   if (
                     textEditor !== defaultProcess &&
@@ -413,7 +448,11 @@ const useFileContextMenu = (
 
         if (remoteMount) {
           menuItems.push(MENU_SEPERATOR, {
-            action: () => unMapFs(path),
+            action: () =>
+              unMapFs(
+                path,
+                rootFs?.mntMap[path].getName() !== "FileSystemAccess"
+              ),
             label: "Disconnect",
           });
         }
@@ -506,7 +545,8 @@ const useFileContextMenu = (
             url &&
             url !== "/" &&
             !url.startsWith("http:") &&
-            !url.startsWith("https:")
+            !url.startsWith("https:") &&
+            !url.startsWith("nostr:")
           ) {
             const isFolder = urlExtension === "" || urlExtension === ".zip";
 

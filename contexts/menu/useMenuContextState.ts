@@ -11,6 +11,7 @@ export type MenuItem = {
   menu?: MenuItem[];
   primary?: boolean;
   seperator?: boolean;
+  share?: boolean;
   toggle?: boolean;
 };
 

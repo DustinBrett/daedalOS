@@ -23,6 +23,7 @@ import {
   disableOffscreenCanvas,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
+  hoverOnTaskbarEntry,
   loadApp,
   loadTestApp,
   sheepIsVisible,
@@ -32,13 +33,15 @@ import {
   taskbarEntryHasTooltip,
   taskbarEntryIsHidden,
   taskbarEntryIsVisible,
+  taskbarEntryPeekImageIsVisible,
+  taskbarEntryPeekIsHidden,
   taskbarIsVisible,
   windowIsMaximized,
   windowIsOpaque,
   windowIsTransparent,
 } from "e2e/functions";
 
-const CONTEXT_MENU_TEST = "has context menu";
+const HAS_CONTEXT_MENU = "has context menu";
 
 test.beforeEach(disableWallpaper);
 
@@ -57,7 +60,7 @@ test.describe("elements", () => {
       await sheepIsVisible({ page });
     });
 
-    test(CONTEXT_MENU_TEST, async ({ page }) => {
+    test(HAS_CONTEXT_MENU, async ({ page }) => {
       await clickStartButton({ page }, true);
       await contextMenuIsVisible({ page });
       await contextMenuHasCount(START_BUTTON_MENU_ITEMS.length, { page });
@@ -90,7 +93,7 @@ test.describe("elements", () => {
       await calendarIsVisible({ page });
     });
 
-    test(CONTEXT_MENU_TEST, async ({ page }) => {
+    test(HAS_CONTEXT_MENU, async ({ page }) => {
       await clickClock({ page }, 1, true);
       await contextMenuIsVisible({ page });
       await contextMenuHasCount(CLOCK_MENU_ITEMS.length, { page });
@@ -120,7 +123,7 @@ test.describe("entries", () => {
     test("has tooltip", async ({ page }) =>
       taskbarEntryHasTooltip(TEST_APP_TITLE, TEST_APP_TITLE, { page }));
 
-    test.describe(CONTEXT_MENU_TEST, () => {
+    test.describe(HAS_CONTEXT_MENU, () => {
       test.beforeEach(async ({ page }) => {
         await clickTaskbarEntry(TEST_APP_TITLE, { page }, true);
         await contextMenuIsVisible({ page });
@@ -168,10 +171,14 @@ test.describe("entries", () => {
       await windowIsOpaque({ page });
     });
 
-    // TEST: has peek
+    test("has peek image", async ({ page }) => {
+      await taskbarEntryPeekIsHidden({ page });
+      await hoverOnTaskbarEntry(TEST_APP_TITLE, { page });
+      await taskbarEntryPeekImageIsVisible({ page });
+    });
   });
 
-  test.describe(CONTEXT_MENU_TEST, () => {
+  test.describe(HAS_CONTEXT_MENU, () => {
     test.beforeEach(async ({ page }) => {
       await clickTaskbar({ page }, true);
       await contextMenuIsVisible({ page });

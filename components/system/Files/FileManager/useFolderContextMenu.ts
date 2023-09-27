@@ -1,5 +1,3 @@
-import { basename, dirname, join } from "path";
-import { useCallback, useMemo } from "react";
 import { WALLPAPER_MENU } from "components/system/Desktop/Wallpapers/constants";
 import { getIconByFileExtension } from "components/system/Files/FileEntry/functions";
 import type { FolderActions } from "components/system/Files/FileManager/useFolder";
@@ -18,6 +16,8 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
+import { basename, dirname, join } from "path";
+import { useCallback, useMemo } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_ICON,
@@ -144,8 +144,12 @@ const useFolderContextMenu = (
     if (currentMediaRecorder && currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
 
-      currentMediaRecorder.requestData();
-      currentMediaStream.getTracks().forEach((track) => track.stop());
+      try {
+        currentMediaRecorder.requestData();
+        currentMediaStream.getTracks().forEach((track) => track.stop());
+      } catch {
+        // Ignore errors with MediaRecorder
+      }
 
       currentMediaRecorder = undefined;
       currentMediaStream = undefined;
@@ -167,9 +171,8 @@ const useFolderContextMenu = (
       }),
     };
 
-    currentMediaStream = await navigator.mediaDevices.getDisplayMedia(
-      displayMediaOptions
-    );
+    currentMediaStream =
+      await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
@@ -205,7 +208,7 @@ const useFolderContextMenu = (
         if (
           supportsWebm &&
           !isFirefoxOrSafari &&
-          currentMediaRecorder?.state === "inactive"
+          (!currentMediaRecorder || currentMediaRecorder.state === "inactive")
         ) {
           const { default: fixWebmDuration } = await import(
             "fix-webm-duration"

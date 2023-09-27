@@ -1,5 +1,6 @@
-import { join } from "path";
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import { help } from "components/apps/Terminal/functions";
+import type { LocalEcho } from "components/apps/Terminal/types";
 import type index from "isomorphic-git";
 import type {
   AuthCallback,
@@ -8,8 +9,7 @@ import type {
   ProgressCallback,
 } from "isomorphic-git";
 import type { ParsedArgs } from "minimist";
-import type { LocalEcho } from "components/apps/Terminal/types";
-import { help } from "components/apps/Terminal/functions";
+import { join } from "path";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 

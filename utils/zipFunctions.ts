@@ -1,4 +1,3 @@
-import { basename, extname, join } from "path";
 import type SevenZip from "7z-wasm";
 import type {
   AsyncZipOptions,
@@ -6,6 +5,7 @@ import type {
   AsyncZippableFile,
   Unzipped,
 } from "fflate";
+import { basename, extname, join } from "path";
 import { BASE_ZIP_CONFIG } from "utils/constants";
 import { loadFiles } from "utils/functions";
 

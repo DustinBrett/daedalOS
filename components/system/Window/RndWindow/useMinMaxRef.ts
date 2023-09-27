@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
 import { useProcesses } from "contexts/process";
+import { useEffect, useRef } from "react";
 
 const useMinMaxRef = (id: string): React.MutableRefObject<boolean> => {
   const { processes } = useProcesses();

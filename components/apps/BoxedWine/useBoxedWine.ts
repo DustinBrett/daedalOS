@@ -1,11 +1,13 @@
-import { basename } from "path";
-import type { Unzipped } from "fflate";
-import { useCallback, useEffect, useRef } from "react";
 import { getConfig } from "components/apps/BoxedWine/config";
 import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
+import type { Unzipped } from "fflate";
+import { basename } from "path";
+import { useCallback, useEffect, useRef } from "react";
 import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
@@ -37,6 +39,7 @@ const useBoxedWine = ({
   const { appendFileToTitle } = useTitle(id);
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const { readFile } = useFileSystem();
+  const mountEmFs = useEmscriptenMount();
   const loadedUrl = useRef<string>();
   const blankCanvasCheckerTimer = useRef<number | undefined>();
   const loadEmulator = useCallback(async (): Promise<void> => {
@@ -101,15 +104,26 @@ const useBoxedWine = ({
     loadFiles(libs).then(() => {
       if (url) appendFileToTitle(appName || basename(url));
       try {
-        window.BoxedWineShell(() => setLoading(false));
+        window.BoxedWineShell(() => {
+          setLoading(false);
+          mountEmFs(window.FS as EmscriptenFS, "BoxedWine");
+        });
       } catch {
         // Ignore BoxedWine errors
       }
     });
-  }, [appendFileToTitle, containerRef, libs, readFile, setLoading, url]);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    libs,
+    mountEmFs,
+    readFile,
+    setLoading,
+    url,
+  ]);
 
   useEffect(() => {
-    if (loadedUrl.current !== url) {
+    if (loadedUrl.current !== url && (url || !loadedUrl.current)) {
       loadedUrl.current = url;
       loadEmulator();
     }

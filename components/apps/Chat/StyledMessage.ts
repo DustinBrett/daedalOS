@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
 import { BOX_SHADOW } from "components/apps/Chat/config";
+import styled, { css } from "styled-components";
 
 type StyledMessageProps = {
   $image?: string;

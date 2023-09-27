@@ -1,7 +1,4 @@
-import { dirname } from "path";
 import type { ApiError } from "browserfs/dist/node/core/api_error";
-import type { SetStateAction } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
@@ -12,7 +9,10 @@ import type {
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
+import { dirname } from "path";
 import defaultSession from "public/session.json";
+import type { SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DEFAULT_AI_API,
   DEFAULT_ASCENDING,
@@ -123,14 +123,14 @@ const useSessionContextState = (): SessionContextState => {
                   ]),
                 ],
               ],
-            };
+            } as SortOrders;
 
             return setIconPositions(
               updateIconPositionsIfEmpty(
                 DESKTOP_PATH,
                 desktopGrid,
                 positions,
-                newDesktopSortOrder as SortOrders
+                newDesktopSortOrder
               )
             );
           } catch {

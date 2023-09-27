@@ -1,12 +1,14 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
+import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
+import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
 import type { Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import {
-  BASE_CLOCK_WIDTH,
+  CLOCK_CANVAS_BASE_WIDTH,
   FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
@@ -22,10 +24,7 @@ const ClockSourceMap = {
 
 const EASTER_EGG_CLICK_COUNT = 7;
 
-const clockSize: Size = {
-  height: TASKBAR_HEIGHT,
-  width: BASE_CLOCK_WIDTH,
-};
+const LARGEST_CLOCK_TEXT = "44:44:44 AM";
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
 
@@ -60,10 +59,12 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 type ClockProps = {
+  setClockWidth: React.Dispatch<React.SetStateAction<number>>;
   toggleCalendar: () => void;
+  width: number;
 };
 
-const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
+const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
   const [now, setNow] = useState<LocaleTimeDate>(
     Object.create(null) as LocaleTimeDate
   );
@@ -104,6 +105,16 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
     clockWorkerInit,
     updateTime
   );
+  const clockSize = useRef<Size>({
+    height: TASKBAR_HEIGHT,
+    width,
+  });
+  const {
+    formats: { systemFont },
+    sizes: {
+      clock: { fontSize },
+    },
+  } = useTheme();
   const clockCallbackRef = useCallback(
     (clockContainer: HTMLDivElement | null) => {
       if (
@@ -113,10 +124,19 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
       ) {
         [...clockContainer.children].forEach((element) => element.remove());
 
+        clockSize.current.width = Math.min(
+          Math.max(
+            CLOCK_CANVAS_BASE_WIDTH,
+            Math.ceil(measureText(LARGEST_CLOCK_TEXT, fontSize, systemFont))
+          ),
+          CLOCK_CANVAS_BASE_WIDTH * 1.5
+        );
+        setClockWidth(clockSize.current.width);
+
         offScreenClockCanvas.current = createOffscreenCanvas(
           clockContainer,
           window.devicePixelRatio,
-          clockSize
+          clockSize.current
         );
 
         currentWorker.current.postMessage(
@@ -153,7 +173,7 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
             "change",
             () => {
               currentWorker.current?.postMessage({
-                clockSize,
+                clockSize: clockSize.current,
                 devicePixelRatio: window.devicePixelRatio,
               });
               monitorPixelRatio();
@@ -171,6 +191,7 @@ const Clock: FC<ClockProps> = ({ toggleCalendar }) => {
   return (
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+      $width={width}
       aria-label="Clock"
       onClick={onClockClick}
       role="timer"

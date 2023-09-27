@@ -1,5 +1,3 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { useTheme } from "styled-components";
 import type { SidebarButtons } from "components/system/StartMenu/Sidebar/SidebarButton";
 import SidebarButton from "components/system/StartMenu/Sidebar/SidebarButton";
 import {
@@ -12,9 +10,10 @@ import {
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
 import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import { useFileSystem } from "contexts/fileSystem";
-import { resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import { HOME, TASKBAR_HEIGHT } from "utils/constants";
 import { haltEvent, viewHeight } from "utils/functions";
 
@@ -108,7 +107,10 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
     {
       action: () => {
         setHaltSession(true);
-        resetStorage(rootFs).finally(() => window.location.reload());
+
+        import("contexts/fileSystem/functions").then(({ resetStorage }) =>
+          resetStorage(rootFs).finally(() => window.location.reload())
+        );
       },
       icon: <Power />,
       name: "Power",

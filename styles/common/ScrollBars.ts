@@ -1,6 +1,7 @@
 import type { RuleSet } from "styled-components";
 import { css } from "styled-components";
 import { DOWN, LEFT, RIGHT, UP } from "styles/ArrowIcons";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 type ColorSchemes = "dark" | "light";
 
@@ -33,7 +34,7 @@ const colorScheme: Record<ColorSchemes, ColorScheme> = {
 };
 
 const ScrollBars = (
-  size: number,
+  size = DEFAULT_SCROLLBAR_WIDTH,
   verticalX = 0,
   verticalY = 0,
   scheme: ColorSchemes = "dark"

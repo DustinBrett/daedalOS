@@ -1,13 +1,17 @@
-import { basename, dirname, extname, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import extensions from "components/system/Files/FileEntry/extensions";
+import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import type { FileStat } from "components/system/Files/FileManager/functions";
+import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
+import { useSession } from "contexts/session";
+import { basename, dirname, extname, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE, SHORTCUT_ICON } from "utils/constants";
+import { DEFAULT_LOCALE, DESKTOP_PATH, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
 
 type TabProps = {
@@ -28,6 +32,7 @@ const dateTimeString = (date?: Date): string =>
 
 const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const { closeWithTransition } = useProcesses();
+  const { setIconPositions } = useSession();
   const extension = useMemo(() => getExtension(url || ""), [url]);
   const { type } = extensions[extension] || {};
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
@@ -158,11 +163,16 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           </tr>
           <tr>
             <th scope="row">Created:</th>
-            <td>{dateTimeString(stats?.birthtime)}</td>
+            <td>{dateTimeString(stats?.ctime)}</td>
           </tr>
           <tr>
             <th scope="row">Modified:</th>
-            <td>{dateTimeString(stats?.mtime)}</td>
+            <td>
+              {stats &&
+                dateTimeString(
+                  new Date(getModifiedTime(url, stats as FileStat))
+                )}
+            </td>
           </tr>
           <tr>
             <th scope="row">Accessed:</th>
@@ -178,17 +188,36 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             url &&
             inputRef.current.value !== basename(url)
           ) {
-            const directoryName = dirname(url);
+            let newName = removeInvalidFilenameCharacters(
+              inputRef.current.value
+            ).trim();
 
-            if (
-              await rename(
-                url,
-                `${join(directoryName, inputRef.current.value)}${
-                  isShortcut ? extname(url) : ""
-                }`
-              )
-            ) {
-              updateFolder(directoryName);
+            if (newName?.endsWith(".")) {
+              newName = newName.slice(0, -1);
+            }
+
+            if (newName) {
+              const directoryName = dirname(url);
+              const renamedPath = `${join(directoryName, newName)}${
+                isShortcut ? extname(url) : ""
+              }`;
+
+              if (await rename(url, renamedPath)) {
+                updateFolder(directoryName, renamedPath, url);
+              }
+
+              if (dirname(url) === DESKTOP_PATH) {
+                setIconPositions((currentPositions) => {
+                  const { [url]: iconPosition, ...newPositions } =
+                    currentPositions;
+
+                  if (iconPosition) {
+                    newPositions[renamedPath] = iconPosition;
+                  }
+
+                  return newPositions;
+                });
+              }
             }
           }
 
