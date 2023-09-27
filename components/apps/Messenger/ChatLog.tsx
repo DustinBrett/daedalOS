@@ -12,6 +12,7 @@ import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import {
   convertImageLinksToHtml,
+  convertNewLinesToBreaks,
   decryptMessage,
   prettyChatTimestamp,
 } from "components/apps/Messenger/functions";
@@ -87,12 +88,13 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                     // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(
-                        convertImageLinksToHtml(
-                          typeof decryptedContent[id] === "string"
-                            ? (decryptedContent[id] as string)
-                            : content
-                        ),
-                        { USE_PROFILES: { html: false } }
+                        typeof decryptedContent[id] === "string"
+                          ? convertImageLinksToHtml(
+                              convertNewLinesToBreaks(
+                                decryptedContent[id] as string
+                              )
+                            )
+                          : content
                       ),
                     }}
                   />

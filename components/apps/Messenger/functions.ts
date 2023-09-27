@@ -151,25 +151,15 @@ const encryptMessage = async (
   return "";
 };
 
-export const getReceivedMessages = (
-  publicKey?: string,
+export const getMessages = (
+  authorPublicKey?: string,
+  recipientPublicKey?: string,
   since = 0
 ): NostrEvents => ({
-  enabled: !!publicKey,
+  enabled: Boolean(authorPublicKey),
   filter: {
-    "#p": publicKey ? [publicKey] : [],
-    kinds: [DM_KIND],
-    since,
-  },
-});
-
-export const getSentMessages = (
-  publicKey?: string,
-  since = 0
-): NostrEvents => ({
-  enabled: !!publicKey,
-  filter: {
-    authors: publicKey ? [publicKey] : [],
+    ...(authorPublicKey ? { authors: [authorPublicKey] } : {}),
+    ...(recipientPublicKey ? { "#p": [recipientPublicKey] } : {}),
     kinds: [DM_KIND],
     since,
   },
@@ -389,6 +379,9 @@ export const convertImageLinksToHtml = (content: string): string =>
     /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
     (match) => `<img loading="lazy" src="${match}" />`
   );
+
+export const convertNewLinesToBreaks = (content: string): string =>
+  content.replace(/\n/g, "<br />");
 
 export const prettyChatTimestamp = (timestamp: number): string => {
   const date = new Date(timestamp * MILLISECONDS_IN_SECOND);
