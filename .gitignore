@@ -16,8 +16,7 @@ public/Users/Public/**
 
 !public/Users/**/desktop.ini
 !public/Users/Public/Desktop
-!public/Users/Public/Desktop/My PC.url
-!public/Users/Public/Desktop/Phan's Resume.url
+!public/Users/Public/Desktop/*.url
 !public/Users/Public/Documents
 !public/Users/Public/Documents/Phan's Resume.pdf
 !public/Users/Public/Music
