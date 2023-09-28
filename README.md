@@ -2,7 +2,7 @@
 
 ## _Desktop environment in the browser_
 
-[![Feature Overview](https://img.youtube.com/vi/CkvKPspIPLs/mqdefault.jpg)](http://www.youtube.com/watch?v=CkvKPspIPLs)
+[![Feature Overview](https://img.youtube.com/vi/RRLq3T0Surs/mqdefault.jpg)](http://www.youtube.com/watch?v=RRLq3T0Surs)
 
 # TODO 🏁
 
@@ -134,6 +134,12 @@
 
 - Markdown Viewer
 
+### Messenger
+
+- Encrypted direct messaging client
+- Utilizes [Nostr Protocol](https://nostr.com/) ([NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md))
+- Automatic public/private key creation
+
 ### [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 
 - Code/text editor
@@ -213,6 +219,24 @@
 - Playlist & streaming support
 - Visualization support (["Milkdrop"](https://github.com/jberg/butterchurn))
 
+# Games 🎮
+
+### [ClassiCube](https://www.classicube.net/)
+
+- Minecraft Classic compatible client
+
+### [DX-Ball](https://habr.com/en/post/147339/)
+
+- Block breaker arcade game like Arkanoid
+
+### [Space Cadet Pinball](https://github.com/alula/SpaceCadetPinball)
+
+- Reverse engineering of 3D Pinball from Windows
+
+### [Quake III Arena](https://github.com/lrusso/Quake3)
+
+- Port of the classic first-person shooter
+
 # Try It 🚀
 
 ##### Requirements
@@ -223,6 +247,7 @@
 ##### Development
 
 ```
+yarn install
 yarn build:fs
 yarn dev
 ```
@@ -235,9 +260,13 @@ yarn build
 yarn start
 ```
 
-#### Docker
+##### Docker
 
 ```
 docker build -t icefishOS .
 docker run -dp 3000:3000 --rm --name icefishOS icefishOS
 ```
+
+##### Notes
+
+- If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider` ([1](https://github.com/DustinBrett/daedalOS/blob/main/Dockerfile#L3), [2](https://github.com/DustinBrett/daedalOS/blob/main/.github/workflows/main.yml#L17), [3](https://stackoverflow.com/a/69699772/5895982))

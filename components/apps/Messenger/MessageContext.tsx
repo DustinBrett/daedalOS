@@ -1,8 +1,7 @@
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import {
   getKeyFromTags,
-  getReceivedMessages,
-  getSentMessages,
+  getMessages,
   groupChatEvents,
 } from "components/apps/Messenger/functions";
 import type { ChatEvents } from "components/apps/Messenger/types";
@@ -44,17 +43,28 @@ export const useMessageContext = (): MessagesState =>
 export const useMessages = (recipientPublicKey: string): MessageData => {
   const { outgoingEvents } = useHistoryContext();
   const { events, publicKey } = useMessageContext();
+  const receivedEvents = useNostrEvents(
+    getMessages(recipientPublicKey, publicKey)
+  );
+  const sentEvents = useNostrEvents(getMessages(publicKey, recipientPublicKey));
   const [messages, setMessages] = useState<ChatEvents>([]);
 
   useEffect(() => {
-    const filteredEvents = events.filter(({ pubkey, tags }) => {
-      const isSender = pubkey === recipientPublicKey;
-      const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
+    const filteredEvents = [
+      ...receivedEvents.events,
+      ...sentEvents.events,
+      ...events.filter(({ pubkey, tags }) => {
+        const isSender = pubkey === recipientPublicKey;
+        const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
 
-      return recipientPublicKey === publicKey
-        ? isSender && isRecipient
-        : isSender || isRecipient;
-    });
+        return recipientPublicKey === publicKey
+          ? isSender && isRecipient
+          : isSender || isRecipient;
+      }),
+    ].filter(
+      (event, index, currentEvents) =>
+        currentEvents.findIndex(({ id }) => id === event.id) === index
+    );
     const currentMessages = groupChatEvents(filteredEvents);
 
     if (
@@ -67,7 +77,14 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
     ) {
       setMessages(currentMessages);
     }
-  }, [events, messages, publicKey, recipientPublicKey]);
+  }, [
+    events,
+    messages,
+    publicKey,
+    receivedEvents.events,
+    recipientPublicKey,
+    sentEvents.events,
+  ]);
 
   return {
     allEventsReceived: useMemo(
@@ -88,10 +105,8 @@ type MessageProviderProps = {
 
 export const MessageProvider = memo<FC<MessageProviderProps>>(
   ({ children, publicKey, since }) => {
-    const receivedEvents = useNostrEvents(
-      getReceivedMessages(publicKey, since)
-    );
-    const sentEvents = useNostrEvents(getSentMessages(publicKey, since));
+    const receivedEvents = useNostrEvents(getMessages("", publicKey, since));
+    const sentEvents = useNostrEvents(getMessages(publicKey, "", since));
     const { outgoingEvents, setOutgoingEvents } = useHistoryContext();
     const sendingEvent = useCallback(
       (event: Event) =>

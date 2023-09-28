@@ -9,7 +9,6 @@ export const BASE_RW_RELAYS = [
   "wss://nos.lol",
   "wss://nostr.mom",
   "wss://public.relaying.io",
-  "wss://purplerelay.com",
   "wss://relay1.nostrchat.io",
   "wss://relayable.org",
 ];

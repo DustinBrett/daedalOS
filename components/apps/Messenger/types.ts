@@ -34,6 +34,7 @@ export type ProfileData = Metadata & { npub?: string };
 export type NostrProfile = {
   about?: string;
   banner?: string;
+  created_at?: number;
   data?: ProfileData;
   nip05?: string;
   picture?: string;
