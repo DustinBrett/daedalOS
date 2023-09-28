@@ -20,7 +20,7 @@ public/Users/Public/**
 !public/Users/Public/Documents
 !public/Users/Public/Documents/Phan's Resume.pdf
 !public/Users/Public/Music
-!public/Users/Public/Pictures
+!public/Users/Public/Pictures/*.png
 !public/Users/Public/Pictures/prompts.json
 !public/Users/Public/Pictures/slideshow.json
 !public/Users/Public/Start Menu
