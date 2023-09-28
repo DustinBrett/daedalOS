@@ -171,8 +171,14 @@ export const useNostrProfile = (
     },
   });
 
-  onEvent(({ content, pubkey }) => {
-    if (!publicKey || publicKey !== pubkey) return;
+  onEvent(({ content, created_at, pubkey }) => {
+    if (
+      !publicKey ||
+      publicKey !== pubkey ||
+      (profiles?.[publicKey]?.created_at as number) >= created_at
+    ) {
+      return;
+    }
 
     try {
       const metadata = JSON.parse(content) as Metadata;
@@ -180,7 +186,7 @@ export const useNostrProfile = (
       if (metadata) {
         setProfiles((currentProfiles) => ({
           ...currentProfiles,
-          [publicKey]: dataToProfile(publicKey, metadata),
+          [publicKey]: dataToProfile(publicKey, metadata, created_at),
         }));
       }
     } catch {
