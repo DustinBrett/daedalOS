@@ -6,7 +6,7 @@ import {
   useHistoryContext,
 } from "components/apps/Messenger/HistoryContext";
 import { MessageProvider } from "components/apps/Messenger/MessageContext";
-import { NostrProvider } from "components/apps/Messenger/NostrProvider";
+import { NostrProvider } from "components/apps/Messenger/NostrContext";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
 import SendMessage from "components/apps/Messenger/SendMessage";
 import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";

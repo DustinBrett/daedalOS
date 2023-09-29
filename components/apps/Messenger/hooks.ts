@@ -1,6 +1,6 @@
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
-import { useNostr } from "components/apps/Messenger/NostrProvider";
+import { useNostr } from "components/apps/Messenger/NostrContext";
 import {
   BASE_NIP05_URL,
   METADATA_KIND,
