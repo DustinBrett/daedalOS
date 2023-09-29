@@ -11,13 +11,13 @@ import {
 
 interface NostrContextType {
   connectedRelays: Relay[];
-  publish: (event: NostrEvent) => Promise<void>;
+  publish: (event: NostrEvent) => void;
 }
 
 const NostrContext = createContext<NostrContextType>({
   connectedRelays: [],
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  publish: async () => {},
+  publish: () => {},
 });
 
 export const useNostr = (): NostrContextType => useContext(NostrContext);
@@ -69,10 +69,8 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
     [connectedRelays]
   );
   const publish = useCallback(
-    async (event: NostrEvent) => {
-      await Promise.all(
-        Object.values(connectedRelays).map((relay) => relay.publish(event))
-      );
+    (event: NostrEvent) => {
+      Object.values(connectedRelays).map((relay) => relay.publish(event));
     },
     [connectedRelays]
   );
@@ -87,6 +85,7 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
 
     disconnectToRelays(knownRelays.filter((url) => !relayUrls.includes(url)));
     connectToRelays(relayUrls);
+
     setKnownRelays(relayUrls);
   }, [connectToRelays, disconnectToRelays, knownRelays, relayUrls]);
 
