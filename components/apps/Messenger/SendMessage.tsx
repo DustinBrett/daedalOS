@@ -1,9 +1,9 @@
 import { Send } from "components/apps/Messenger/Icons";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
+import { useNostr } from "components/apps/Messenger/NostrProvider";
 import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { createMessageEvent } from "components/apps/Messenger/functions";
-import { useNostr } from "nostr-react";
 import { useCallback, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { haltEvent } from "utils/functions";

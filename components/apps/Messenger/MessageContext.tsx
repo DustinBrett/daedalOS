@@ -4,8 +4,8 @@ import {
   getMessages,
   groupChatEvents,
 } from "components/apps/Messenger/functions";
+import { useNostrEvents } from "components/apps/Messenger/hooks";
 import type { ChatEvents } from "components/apps/Messenger/types";
-import { useNostrEvents } from "nostr-react";
 import type { Event } from "nostr-tools";
 import {
   createContext,
@@ -14,10 +14,8 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 type MessageData = {
   allEventsReceived: boolean;
@@ -51,8 +49,8 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
 
   useEffect(() => {
     const filteredEvents = [
-      ...receivedEvents.events,
-      ...sentEvents.events,
+      ...receivedEvents,
+      ...sentEvents,
       ...events.filter(({ pubkey, tags }) => {
         const isSender = pubkey === recipientPublicKey;
         const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
@@ -81,9 +79,9 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
     events,
     messages,
     publicKey,
-    receivedEvents.events,
+    receivedEvents,
     recipientPublicKey,
-    sentEvents.events,
+    sentEvents,
   ]);
 
   return {
@@ -117,39 +115,30 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
       [setOutgoingEvents]
     );
     const chatEvents = useMemo(
-      () => [...receivedEvents.events, ...sentEvents.events],
-      [receivedEvents.events, sentEvents.events]
+      () => [...receivedEvents, ...sentEvents],
+      [receivedEvents, sentEvents]
     );
     const [events, setEvents] = useState<Event[]>(chatEvents);
-    const cleanOutgoingEventsTimerRef = useRef(0);
 
     useEffect(() => {
       const currentEvents = [
         ...chatEvents,
         ...outgoingEvents.filter(
-          (event) => !sentEvents.events.some(({ id }) => id === event.id)
+          (event) => !sentEvents.some(({ id }) => id === event.id)
         ),
       ];
 
       if (currentEvents.length !== events.length) setEvents(currentEvents);
-    }, [chatEvents, events, outgoingEvents, sentEvents.events]);
+    }, [chatEvents, events, outgoingEvents, sentEvents]);
 
     useEffect(() => {
-      if (cleanOutgoingEventsTimerRef.current) {
-        window.clearTimeout(cleanOutgoingEventsTimerRef.current);
-      }
-
-      cleanOutgoingEventsTimerRef.current = window.setTimeout(
-        () =>
-          outgoingEvents.forEach((message) => {
-            if (chatEvents.some(({ id }) => id === message.id)) {
-              setOutgoingEvents((currentOutgoingEvents) =>
-                currentOutgoingEvents.filter(({ id }) => id !== message.id)
-              );
-            }
-          }),
-        MILLISECONDS_IN_SECOND / 2
-      );
+      outgoingEvents.forEach((message) => {
+        if (chatEvents.some(({ id }) => id === message.id)) {
+          setOutgoingEvents((currentOutgoingEvents) =>
+            currentOutgoingEvents.filter(({ id }) => id !== message.id)
+          );
+        }
+      });
     }, [chatEvents, outgoingEvents, setOutgoingEvents]);
 
     return (

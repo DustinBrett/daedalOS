@@ -82,7 +82,6 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Quake 3](https://github.com/lrusso/Quake3)
 - [opentype.js](https://github.com/opentypejs/opentype.js)
 - [WebLLM](https://github.com/mlc-ai/web-llm)
-- [nostr-react](https://github.com/t4t5/nostr-react)
 - [nostr-tools](https://github.com/nbd-wtf/nostr-tools)
 - [DOMPurify](https://github.com/cure53/DOMPurify)
 

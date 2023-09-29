@@ -16,7 +16,6 @@ import type {
   ProfileData,
 } from "components/apps/Messenger/types";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
-import { dateToUnix } from "nostr-react";
 import type { Event } from "nostr-tools";
 import {
   generatePrivateKey,
@@ -228,13 +227,15 @@ const signEvent = async (event: Event): Promise<Event> => {
   return signedEvent;
 };
 
+const getUnixTime = (): number => Math.floor(Date.now() / 1000);
+
 export const createProfileEvent = async (
   publicKey: string,
   profile: ProfileData
 ): Promise<Event> =>
   signEvent({
     content: JSON.stringify(profile),
-    created_at: dateToUnix(),
+    created_at: getUnixTime(),
     kind: METADATA_KIND,
     pubkey: publicKey,
     tags: [] as string[][],
@@ -247,7 +248,7 @@ export const createMessageEvent = async (
 ): Promise<Event> =>
   signEvent({
     content: await encryptMessage(message, recipientPublicKey),
-    created_at: dateToUnix(),
+    created_at: getUnixTime(),
     kind: DM_KIND,
     pubkey: publicKey,
     tags: [["p", recipientPublicKey]],
