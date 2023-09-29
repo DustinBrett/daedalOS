@@ -51,7 +51,6 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
 
         const relay = relayInit(url);
 
-        relay.connect();
         relay.on("connect", () =>
           setConnectedRelays((currentConnectedRelays) => ({
             ...currentConnectedRelays,
@@ -65,6 +64,7 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
           )
         );
         relay.on("error", console.error);
+        relay.connect();
       }),
     [connectedRelays]
   );

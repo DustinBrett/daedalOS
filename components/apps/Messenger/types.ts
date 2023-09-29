@@ -18,7 +18,7 @@ declare global {
 
 export type NostrEvents = {
   enabled: boolean;
-  filter: Filter;
+  filter: Filter[];
 };
 
 export type NostrContacts = {

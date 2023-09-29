@@ -11,18 +11,14 @@ import { haltEvent } from "utils/functions";
 const SendMessage: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
 }) => {
-  const { publicKey, sendingEvent } = useMessageContext();
+  const { sendingEvent } = useMessageContext();
   const { publish } = useNostr();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
   const sendMessage = useCallback(
     async (message: string) => {
-      const event = await createMessageEvent(
-        message,
-        publicKey,
-        recipientPublicKey
-      );
+      const event = await createMessageEvent(message, recipientPublicKey);
 
       sendingEvent(event);
 
@@ -36,7 +32,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
 
       setCanSend(false);
     },
-    [publicKey, publish, recipientPublicKey, sendingEvent]
+    [publish, recipientPublicKey, sendingEvent]
   );
   const updateHeight = useCallback(() => {
     if (inputRef.current) {

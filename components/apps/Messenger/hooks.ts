@@ -34,7 +34,7 @@ export const useNostrEvents = ({
   onEvent,
 }: {
   enabled?: boolean;
-  filter: Filter;
+  filter: Filter[];
   onEvent?: (event: NostrEvent) => void;
 }): NostrEvent[] => {
   const { connectedRelays } = useNostr();
@@ -43,8 +43,8 @@ export const useNostrEvents = ({
   const filterString = useMemo(() => JSON.stringify(filter), [filter]);
   const seenDebounceTimer = useRef(0);
   const subscribe = useCallback(
-    (relay: Relay, subFilter: Filter): Sub => {
-      const sub = relay.sub([subFilter]);
+    (relay: Relay, subFilter: Filter[]): Sub => {
+      const sub = relay.sub(subFilter);
 
       sub.on("event", (event: NostrEvent) => {
         if (seenEventIds.current[event.id]) return;
@@ -81,7 +81,7 @@ export const useNostrEvents = ({
 
     const relaySubs = connectedRelays.map((relay) => ({
       relay,
-      sub: subscribe(relay, JSON.parse(filterString) as Filter),
+      sub: subscribe(relay, JSON.parse(filterString) as Filter[]),
     }));
 
     // eslint-disable-next-line consistent-return
@@ -257,10 +257,12 @@ export const useNostrProfile = (
   const profileFilter = useMemo(
     () => ({
       enabled: !!publicKey && isVisible,
-      filter: {
-        authors: [publicKey],
-        kinds: [METADATA_KIND],
-      },
+      filter: [
+        {
+          authors: [publicKey],
+          kinds: [METADATA_KIND],
+        },
+      ],
       onEvent,
     }),
     [isVisible, onEvent, publicKey]

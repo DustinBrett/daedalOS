@@ -41,16 +41,12 @@ export const useMessageContext = (): MessagesState =>
 export const useMessages = (recipientPublicKey: string): MessageData => {
   const { outgoingEvents } = useHistoryContext();
   const { events, publicKey } = useMessageContext();
-  const receivedEvents = useNostrEvents(
-    getMessages(recipientPublicKey, publicKey)
-  );
-  const sentEvents = useNostrEvents(getMessages(publicKey, recipientPublicKey));
+  const chatEvents = useNostrEvents(getMessages(publicKey, recipientPublicKey));
   const [messages, setMessages] = useState<ChatEvents>([]);
 
   useEffect(() => {
     const filteredEvents = [
-      ...receivedEvents,
-      ...sentEvents,
+      ...chatEvents,
       ...events.filter(({ pubkey, tags }) => {
         const isSender = pubkey === recipientPublicKey;
         const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
@@ -75,14 +71,7 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
     ) {
       setMessages(currentMessages);
     }
-  }, [
-    events,
-    messages,
-    publicKey,
-    receivedEvents,
-    recipientPublicKey,
-    sentEvents,
-  ]);
+  }, [chatEvents, events, messages, publicKey, recipientPublicKey]);
 
   return {
     allEventsReceived: useMemo(
@@ -103,8 +92,7 @@ type MessageProviderProps = {
 
 export const MessageProvider = memo<FC<MessageProviderProps>>(
   ({ children, publicKey, since }) => {
-    const receivedEvents = useNostrEvents(getMessages("", publicKey, since));
-    const sentEvents = useNostrEvents(getMessages(publicKey, "", since));
+    const chatEvents = useNostrEvents(getMessages(publicKey, "", since));
     const { outgoingEvents, setOutgoingEvents } = useHistoryContext();
     const sendingEvent = useCallback(
       (event: Event) =>
@@ -114,22 +102,18 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
         ]),
       [setOutgoingEvents]
     );
-    const chatEvents = useMemo(
-      () => [...receivedEvents, ...sentEvents],
-      [receivedEvents, sentEvents]
-    );
     const [events, setEvents] = useState<Event[]>(chatEvents);
 
     useEffect(() => {
       const currentEvents = [
         ...chatEvents,
         ...outgoingEvents.filter(
-          (event) => !sentEvents.some(({ id }) => id === event.id)
+          (event) => !chatEvents.some(({ id }) => id === event.id)
         ),
       ];
 
       if (currentEvents.length !== events.length) setEvents(currentEvents);
-    }, [chatEvents, events, outgoingEvents, sentEvents]);
+    }, [chatEvents, events, outgoingEvents]);
 
     useEffect(() => {
       outgoingEvents.forEach((message) => {

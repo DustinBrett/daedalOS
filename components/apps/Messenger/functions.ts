@@ -16,7 +16,7 @@ import type {
   ProfileData,
 } from "components/apps/Messenger/types";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
-import type { Event } from "nostr-tools";
+import type { Event, VerifiedEvent } from "nostr-tools";
 import {
   generatePrivateKey,
   getEventHash,
@@ -24,6 +24,9 @@ import {
   getSignature,
   nip04,
   nip19,
+  validateEvent,
+  verifiedSymbol,
+  verifySignature,
 } from "nostr-tools";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import type { ProfilePointer } from "nostr-tools/lib/nip19";
@@ -151,17 +154,25 @@ const encryptMessage = async (
 };
 
 export const getMessages = (
-  authorPublicKey?: string,
+  authorPublicKey: string,
   recipientPublicKey?: string,
   since = 0
 ): NostrEvents => ({
   enabled: Boolean(authorPublicKey) || Boolean(recipientPublicKey),
-  filter: {
-    ...(authorPublicKey ? { authors: [authorPublicKey] } : {}),
-    ...(recipientPublicKey ? { "#p": [recipientPublicKey] } : {}),
-    kinds: [DM_KIND],
-    since,
-  },
+  filter: [
+    {
+      ...(recipientPublicKey ? { "#p": [recipientPublicKey] } : {}),
+      authors: [authorPublicKey],
+      kinds: [DM_KIND],
+      since,
+    },
+    {
+      ...(recipientPublicKey ? { authors: [recipientPublicKey] } : {}),
+      "#p": [authorPublicKey],
+      kinds: [DM_KIND],
+      since,
+    },
+  ],
 });
 
 const ascCreatedAt = (a: Event, b: Event): number =>
@@ -214,14 +225,21 @@ export const copyKeyMenuItems = (
 ];
 
 const signEvent = async (event: Event): Promise<Event> => {
-  let signedEvent = event;
+  let signedEvent = event as VerifiedEvent;
 
+  signedEvent.pubkey = window.nostr?.getPublicKey
+    ? await window.nostr.getPublicKey()
+    : getPublicKey(getPrivateKey());
   signedEvent.id = getEventHash(event);
 
   if (window.nostr?.signEvent) {
-    signedEvent = await window.nostr.signEvent(signedEvent);
+    signedEvent = (await window.nostr.signEvent(signedEvent)) as VerifiedEvent;
   } else {
     signedEvent.sig = getSignature(signedEvent, toHexKey(getPrivateKey()));
+  }
+
+  if (validateEvent(signedEvent) && verifySignature(signedEvent)) {
+    signedEvent[verifiedSymbol] = true;
   }
 
   return signedEvent;
@@ -230,27 +248,23 @@ const signEvent = async (event: Event): Promise<Event> => {
 const getUnixTime = (): number => Math.floor(Date.now() / 1000);
 
 export const createProfileEvent = async (
-  publicKey: string,
   profile: ProfileData
 ): Promise<Event> =>
   signEvent({
     content: JSON.stringify(profile),
     created_at: getUnixTime(),
     kind: METADATA_KIND,
-    pubkey: publicKey,
     tags: [] as string[][],
   } as Event);
 
 export const createMessageEvent = async (
   message: string,
-  publicKey: string,
   recipientPublicKey: string
 ): Promise<Event> =>
   signEvent({
     content: await encryptMessage(message, recipientPublicKey),
     created_at: getUnixTime(),
     kind: DM_KIND,
-    pubkey: publicKey,
     tags: [["p", recipientPublicKey]],
   } as Event);
 
@@ -335,7 +349,9 @@ export const getNip05Domain = async (
       return "";
     }
 
-    const nostrJson = await fetch(`https://${domain}${BASE_NIP05_URL}`);
+    const nostrJson = await fetch(
+      `https://${domain}${BASE_NIP05_URL}?name=${userName}`
+    );
 
     if (nostrJson.ok) {
       const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};

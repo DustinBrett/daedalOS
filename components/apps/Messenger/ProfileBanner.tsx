@@ -71,7 +71,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
 
       try {
         const content = data ? Object.assign(data, newProfile) : newProfile;
-        const event = await createProfileEvent(pubkey, content);
+        const event = await createProfileEvent(content);
 
         publish(event);
         setProfiles((currentProfiles) => ({
