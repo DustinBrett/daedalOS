@@ -88,24 +88,31 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     () =>
       /* eslint-disable no-alert */
       contextMenu?.(() => [
-        ...copyKeyMenuItems(pubkey, getPrivateKey()),
-        MENU_SEPERATOR,
-        {
-          action: () => updateProfile({ username: prompt("Username") || "" }),
-          label: "Edit Username",
-        },
-        MENU_SEPERATOR,
-        {
-          action: () => updateProfile({ picture: prompt("Picture URL") || "" }),
-          label: "Edit Picture",
-        },
-        {
-          action: () => updateProfile({ banner: prompt("Banner URL") || "" }),
-          label: "Edit Banner",
-        },
+        ...copyKeyMenuItems(selectedRecipientKey || pubkey, getPrivateKey()),
+        ...(pubkey && !selectedRecipientKey
+          ? [
+              MENU_SEPERATOR,
+              {
+                action: () =>
+                  updateProfile({ username: prompt("Username") || "" }),
+                label: "Edit Username",
+              },
+              MENU_SEPERATOR,
+              {
+                action: () =>
+                  updateProfile({ picture: prompt("Picture URL") || "" }),
+                label: "Edit Picture",
+              },
+              {
+                action: () =>
+                  updateProfile({ banner: prompt("Banner URL") || "" }),
+                label: "Edit Banner",
+              },
+            ]
+          : []),
       ]),
     /* eslint-enable no-alert */
-    [contextMenu, pubkey, updateProfile]
+    [contextMenu, pubkey, selectedRecipientKey, updateProfile]
   );
 
   return (
@@ -126,7 +133,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       )}
       <Profile
         nip05={nip05}
-        onClick={selectedRecipientKey ? undefined : onContextMenuCapture}
+        onClick={onContextMenuCapture}
         picture={picture}
         pubkey={pubkey}
         userName={userName}
