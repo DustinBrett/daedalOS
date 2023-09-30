@@ -13,6 +13,7 @@ import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
   DYNAMIC_EXTENSION,
+  DYNAMIC_PREFIX,
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
@@ -371,10 +372,14 @@ export const getInfoWithExtension = (
           };
 
           callback({ comment, getIcon, icon, pid, subIcons, url });
-        } else if (DYNAMIC_EXTENSION.has(urlExt)) {
+        } else if (
+          DYNAMIC_EXTENSION.has(urlExt) ||
+          DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
+        ) {
+          const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
           const cachedIconPath = join(
             ICON_CACHE,
-            `${url}${ICON_CACHE_EXTENSION}`
+            `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
           );
 
           fs.lstat(cachedIconPath, (statError, cachedIconStats) => {

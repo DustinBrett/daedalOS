@@ -298,6 +298,8 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
+export const DYNAMIC_PREFIX = ["nostr:"];
+
 export const DYNAMIC_EXTENSION = new Set([
   ...AUDIO_FILE_EXTENSIONS,
   ...AUDIO_PLAYLIST_EXTENSIONS,

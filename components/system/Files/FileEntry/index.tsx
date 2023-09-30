@@ -171,8 +171,11 @@ const FileEntry: FC<FileEntryProps> = ({
   );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
-  const extension = getExtension(path);
-  const isShortcut = extension === SHORTCUT_EXTENSION;
+  const extension = useMemo(() => getExtension(path), [path]);
+  const isShortcut = useMemo(
+    () => extension === SHORTCUT_EXTENSION,
+    [extension]
+  );
   const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({
     callback: async (fileDropName, data) => {
@@ -400,7 +403,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else {
+        } else if (!isShortcut) {
           if (isIconCached.current) return;
 
           const cachedIconPath = join(
@@ -456,6 +459,7 @@ const FileEntry: FC<FileEntryProps> = ({
     getIcon,
     icon,
     isLoadingFileManager,
+    isShortcut,
     mkdirRecursive,
     path,
     readFile,
