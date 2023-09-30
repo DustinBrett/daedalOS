@@ -7,7 +7,7 @@
 # TODO 🏁
 
 - [x] Change wallpaper to Vanta.js Net (as of 2023-07-07)
-- [ ] Use gruvbox icons
+- [x] Use gruvbox icons (as of 2023-09-29)
 - [x] Use gruvbox color schemes (as of 2023-07-12)
 - [x] Put relevant files up for portfolio purposes
 - [ ] Write a few blog posts
