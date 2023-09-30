@@ -1,5 +1,6 @@
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { Back, Write } from "components/apps/Messenger/Icons";
+import { useNostr } from "components/apps/Messenger/NostrContext";
 import Profile from "components/apps/Messenger/Profile";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
@@ -13,7 +14,6 @@ import {
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import type { ProfileData } from "components/apps/Messenger/types";
 import { useMenu } from "contexts/menu";
-import { useNostr } from "nostr-react";
 import { useCallback, useMemo } from "react";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
@@ -71,7 +71,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
 
       try {
         const content = data ? Object.assign(data, newProfile) : newProfile;
-        const event = await createProfileEvent(pubkey, content);
+        const event = await createProfileEvent(content);
 
         publish(event);
         setProfiles((currentProfiles) => ({
@@ -88,24 +88,31 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     () =>
       /* eslint-disable no-alert */
       contextMenu?.(() => [
-        ...copyKeyMenuItems(pubkey, getPrivateKey()),
-        MENU_SEPERATOR,
-        {
-          action: () => updateProfile({ username: prompt("Username") || "" }),
-          label: "Edit Username",
-        },
-        MENU_SEPERATOR,
-        {
-          action: () => updateProfile({ picture: prompt("Picture URL") || "" }),
-          label: "Edit Picture",
-        },
-        {
-          action: () => updateProfile({ banner: prompt("Banner URL") || "" }),
-          label: "Edit Banner",
-        },
+        ...copyKeyMenuItems(selectedRecipientKey || pubkey, getPrivateKey()),
+        ...(pubkey && !selectedRecipientKey
+          ? [
+              MENU_SEPERATOR,
+              {
+                action: () =>
+                  updateProfile({ username: prompt("Username") || "" }),
+                label: "Edit Username",
+              },
+              MENU_SEPERATOR,
+              {
+                action: () =>
+                  updateProfile({ picture: prompt("Picture URL") || "" }),
+                label: "Edit Picture",
+              },
+              {
+                action: () =>
+                  updateProfile({ banner: prompt("Banner URL") || "" }),
+                label: "Edit Banner",
+              },
+            ]
+          : []),
       ]),
     /* eslint-enable no-alert */
-    [contextMenu, pubkey, updateProfile]
+    [contextMenu, pubkey, selectedRecipientKey, updateProfile]
   );
 
   return (
@@ -126,7 +133,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       )}
       <Profile
         nip05={nip05}
-        onClick={selectedRecipientKey ? undefined : onContextMenuCapture}
+        onClick={onContextMenuCapture}
         picture={picture}
         pubkey={pubkey}
         userName={userName}

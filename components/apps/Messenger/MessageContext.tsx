@@ -4,8 +4,8 @@ import {
   getMessages,
   groupChatEvents,
 } from "components/apps/Messenger/functions";
+import { useNostrEvents } from "components/apps/Messenger/hooks";
 import type { ChatEvents } from "components/apps/Messenger/types";
-import { useNostrEvents } from "nostr-react";
 import type { Event } from "nostr-tools";
 import {
   createContext,
@@ -14,10 +14,8 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 type MessageData = {
   allEventsReceived: boolean;
@@ -43,16 +41,12 @@ export const useMessageContext = (): MessagesState =>
 export const useMessages = (recipientPublicKey: string): MessageData => {
   const { outgoingEvents } = useHistoryContext();
   const { events, publicKey } = useMessageContext();
-  const receivedEvents = useNostrEvents(
-    getMessages(recipientPublicKey, publicKey)
-  );
-  const sentEvents = useNostrEvents(getMessages(publicKey, recipientPublicKey));
+  const chatEvents = useNostrEvents(getMessages(publicKey, recipientPublicKey));
   const [messages, setMessages] = useState<ChatEvents>([]);
 
   useEffect(() => {
     const filteredEvents = [
-      ...receivedEvents.events,
-      ...sentEvents.events,
+      ...chatEvents,
       ...events.filter(({ pubkey, tags }) => {
         const isSender = pubkey === recipientPublicKey;
         const isRecipient = getKeyFromTags(tags) === recipientPublicKey;
@@ -77,14 +71,7 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
     ) {
       setMessages(currentMessages);
     }
-  }, [
-    events,
-    messages,
-    publicKey,
-    receivedEvents.events,
-    recipientPublicKey,
-    sentEvents.events,
-  ]);
+  }, [chatEvents, events, messages, publicKey, recipientPublicKey]);
 
   return {
     allEventsReceived: useMemo(
@@ -105,8 +92,7 @@ type MessageProviderProps = {
 
 export const MessageProvider = memo<FC<MessageProviderProps>>(
   ({ children, publicKey, since }) => {
-    const receivedEvents = useNostrEvents(getMessages("", publicKey, since));
-    const sentEvents = useNostrEvents(getMessages(publicKey, "", since));
+    const chatEvents = useNostrEvents(getMessages(publicKey, "", since));
     const { outgoingEvents, setOutgoingEvents } = useHistoryContext();
     const sendingEvent = useCallback(
       (event: Event) =>
@@ -116,40 +102,27 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
         ]),
       [setOutgoingEvents]
     );
-    const chatEvents = useMemo(
-      () => [...receivedEvents.events, ...sentEvents.events],
-      [receivedEvents.events, sentEvents.events]
-    );
     const [events, setEvents] = useState<Event[]>(chatEvents);
-    const cleanOutgoingEventsTimerRef = useRef(0);
 
     useEffect(() => {
       const currentEvents = [
         ...chatEvents,
         ...outgoingEvents.filter(
-          (event) => !sentEvents.events.some(({ id }) => id === event.id)
+          (event) => !chatEvents.some(({ id }) => id === event.id)
         ),
       ];
 
       if (currentEvents.length !== events.length) setEvents(currentEvents);
-    }, [chatEvents, events, outgoingEvents, sentEvents.events]);
+    }, [chatEvents, events, outgoingEvents]);
 
     useEffect(() => {
-      if (cleanOutgoingEventsTimerRef.current) {
-        window.clearTimeout(cleanOutgoingEventsTimerRef.current);
-      }
-
-      cleanOutgoingEventsTimerRef.current = window.setTimeout(
-        () =>
-          outgoingEvents.forEach((message) => {
-            if (chatEvents.some(({ id }) => id === message.id)) {
-              setOutgoingEvents((currentOutgoingEvents) =>
-                currentOutgoingEvents.filter(({ id }) => id !== message.id)
-              );
-            }
-          }),
-        MILLISECONDS_IN_SECOND / 2
-      );
+      outgoingEvents.forEach((message) => {
+        if (chatEvents.some(({ id }) => id === message.id)) {
+          setOutgoingEvents((currentOutgoingEvents) =>
+            currentOutgoingEvents.filter(({ id }) => id !== message.id)
+          );
+        }
+      });
     }, [chatEvents, outgoingEvents, setOutgoingEvents]);
 
     return (

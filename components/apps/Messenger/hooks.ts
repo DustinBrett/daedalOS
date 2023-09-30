@@ -1,8 +1,11 @@
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
+import { useNostr } from "components/apps/Messenger/NostrContext";
 import {
   BASE_NIP05_URL,
+  METADATA_KIND,
   NOTIFICATION_SOUND,
+  SEEN_EVENTS_DEBOUNCE_MS,
 } from "components/apps/Messenger/constants";
 import {
   dataToProfile,
@@ -14,16 +17,79 @@ import {
   toHexKey,
 } from "components/apps/Messenger/functions";
 import type {
+  Metadata,
   NostrContacts,
   NostrProfile,
 } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import type { Metadata } from "nostr-react";
-import { useNostrEvents } from "nostr-react";
+import type { Filter, Event as NostrEvent, Relay, Sub } from "nostr-tools";
 import type { NIP05Result } from "nostr-tools/lib/nip05";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
+
+export const useNostrEvents = ({
+  enabled = true,
+  filter,
+  onEvent,
+}: {
+  enabled?: boolean;
+  filter: Filter[];
+  onEvent?: (event: NostrEvent) => void;
+}): NostrEvent[] => {
+  const { connectedRelays } = useNostr();
+  const [events, setEvents] = useState<NostrEvent[]>([]);
+  const seenEventIds = useRef<Record<string, NostrEvent>>({});
+  const filterString = useMemo(() => JSON.stringify(filter), [filter]);
+  const seenDebounceTimer = useRef(0);
+  const subscribe = useCallback(
+    (relay: Relay, subFilter: Filter[]): Sub => {
+      const sub = relay.sub(subFilter);
+
+      sub.on("event", (event: NostrEvent) => {
+        if (seenEventIds.current[event.id]) return;
+
+        seenEventIds.current[event.id] = event;
+
+        onEvent?.(event);
+
+        if (seenDebounceTimer.current) {
+          window.clearTimeout(seenDebounceTimer.current);
+        }
+
+        seenDebounceTimer.current = window.setTimeout(
+          () => {
+            seenDebounceTimer.current = 0;
+
+            setEvents((currentEvents) =>
+              currentEvents.some(({ id }) => id === event.id)
+                ? currentEvents
+                : Object.values(seenEventIds.current)
+            );
+          },
+          seenDebounceTimer.current ? SEEN_EVENTS_DEBOUNCE_MS : 0
+        );
+      });
+
+      return sub;
+    },
+    [onEvent]
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const relaySubs = connectedRelays.map((relay) => ({
+      relay,
+      sub: subscribe(relay, JSON.parse(filterString) as Filter[]),
+    }));
+
+    // eslint-disable-next-line consistent-return
+    return () => relaySubs.forEach(({ sub }) => sub.unsub());
+  }, [connectedRelays, enabled, filterString, subscribe]);
+
+  return events;
+};
 
 export const useNip05 = (): NIP05Result => {
   const [nip05, setNip05] = useState<NIP05Result>();
@@ -163,36 +229,46 @@ export const useNostrProfile = (
   isVisible = true
 ): NostrProfile => {
   const { profiles, setProfiles } = useHistoryContext();
-  const { onEvent } = useNostrEvents({
-    enabled: !!publicKey && isVisible,
-    filter: {
-      authors: [publicKey],
-      kinds: [0],
-    },
-  });
-
-  onEvent(({ content, created_at, pubkey }) => {
-    if (
-      !publicKey ||
-      publicKey !== pubkey ||
-      (profiles?.[publicKey]?.created_at as number) >= created_at
-    ) {
-      return;
-    }
-
-    try {
-      const metadata = JSON.parse(content) as Metadata;
-
-      if (metadata) {
-        setProfiles((currentProfiles) => ({
-          ...currentProfiles,
-          [publicKey]: dataToProfile(publicKey, metadata, created_at),
-        }));
+  const onEvent = useCallback(
+    ({ content, created_at, pubkey }: NostrEvent) => {
+      if (
+        !publicKey ||
+        publicKey !== pubkey ||
+        (profiles?.[publicKey]?.created_at as number) >= created_at
+      ) {
+        return;
       }
-    } catch {
-      // Ignore errors parsing profile data
-    }
-  });
+
+      try {
+        const metadata = JSON.parse(content) as Metadata;
+
+        if (metadata) {
+          setProfiles((currentProfiles) => ({
+            ...currentProfiles,
+            [publicKey]: dataToProfile(publicKey, metadata, created_at),
+          }));
+        }
+      } catch {
+        // Ignore errors parsing profile data
+      }
+    },
+    [profiles, publicKey, setProfiles]
+  );
+  const profileFilter = useMemo(
+    () => ({
+      enabled: !!publicKey && isVisible,
+      filter: [
+        {
+          authors: [publicKey],
+          kinds: [METADATA_KIND],
+        },
+      ],
+      onEvent,
+    }),
+    [isVisible, onEvent, publicKey]
+  );
+
+  useNostrEvents(profileFilter);
 
   return publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {};
 };

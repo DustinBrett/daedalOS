@@ -1,4 +1,3 @@
-import { type Metadata } from "nostr-react";
 import type { Event, Filter } from "nostr-tools";
 
 type RelayPolicy = { read: boolean; write: boolean };
@@ -19,7 +18,7 @@ declare global {
 
 export type NostrEvents = {
   enabled: boolean;
-  filter: Filter;
+  filter: Filter[];
 };
 
 export type NostrContacts = {
@@ -28,6 +27,17 @@ export type NostrContacts = {
   lastEvents: Record<string, Event>;
   unreadEvents: Event[];
 };
+
+export interface Metadata {
+  about?: string;
+  banner?: string;
+  display_name?: string;
+  name?: string;
+  nip05?: string;
+  picture?: string;
+  username?: string;
+  website?: string;
+}
 
 export type ProfileData = Metadata & { npub?: string };
 

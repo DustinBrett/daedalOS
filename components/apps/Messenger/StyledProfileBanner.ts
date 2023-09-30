@@ -27,12 +27,17 @@ const StyledProfileBanner = styled.div`
       aspect-ratio: 1/1;
       border: 2px solid #fff;
       border-radius: 50%;
+      cursor: pointer;
       height: 38px;
       max-height: 38px;
       max-width: 38px;
       min-height: 38px;
       min-width: 38px;
       width: 38px;
+
+      path {
+        cursor: pointer;
+      }
     }
 
     div {

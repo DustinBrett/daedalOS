@@ -6,6 +6,7 @@ import {
   useHistoryContext,
 } from "components/apps/Messenger/HistoryContext";
 import { MessageProvider } from "components/apps/Messenger/MessageContext";
+import { NostrProvider } from "components/apps/Messenger/NostrContext";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
 import SendMessage from "components/apps/Messenger/SendMessage";
 import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
@@ -31,7 +32,6 @@ import {
 import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
 import { AnimatePresence } from "framer-motion";
-import { NostrProvider } from "nostr-react";
 import type { Event } from "nostr-tools";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MILLISECONDS_IN_DAY } from "utils/constants";

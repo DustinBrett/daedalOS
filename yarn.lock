@@ -5460,11 +5460,6 @@ jest@^29.7.0:
     import-local "^3.0.2"
     jest-cli "^29.7.0"
 
-jotai@^1.12.1:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.13.1.tgz#20cc46454cbb39096b12fddfa635b873b3668236"
-  integrity sha512-RUmH1S4vLsG3V6fbGlKzGJnLrDcC/HNb5gH2AeA9DzuJknoVxSGvvg8OBB7lke+gDc4oXmdVsaKn/xDUhWZ0vw==
-
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -6159,15 +6154,7 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-nostr-react@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/nostr-react/-/nostr-react-0.7.0.tgz#115c1882434d59e6552ca498b7f4b1bb4ba0d5f8"
-  integrity sha512-m8fX+eaor+Xq7/DcxsHYS5IsNj4cyTYiIgm6lNqZeNR5mV8Yb4JlzOdw53WCJztgwDUrBx8/gPK3F88uIY1B6A==
-  dependencies:
-    jotai "^1.12.1"
-    nostr-tools "^1.1.0"
-
-nostr-tools@^1.1.0, nostr-tools@^1.16.0:
+nostr-tools@^1.16.0:
   version "1.16.0"
   resolved "https://registry.yarnpkg.com/nostr-tools/-/nostr-tools-1.16.0.tgz#5867f1d8bd055a5a3b27aadb199457dceb244314"
   integrity sha512-sx/aOl0gmkeHVoIVbyOhEQhzF88NsrBXMC8bsjhPASqA6oZ8uSOAyEGgRLMfC3SKgzQD5Gr6KvDoAahaD6xKcg==
