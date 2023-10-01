@@ -14,6 +14,7 @@ import {
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
+  SMALLEST_JXL_FILE,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
 } from "utils/constants";
@@ -115,6 +116,16 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 
     fileReader.readAsDataURL(blob);
     fileReader.onloadend = () => resolve(fileReader.result as string);
+  });
+
+export const hasJxlSupport = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const JXL = new Image();
+
+    JXL.src = SMALLEST_JXL_FILE;
+
+    JXL.addEventListener("load", () => resolve(true));
+    JXL.addEventListener("error", () => resolve(false));
   });
 
 type JxlDecodeResponse = { data: { imgData: ImageData } };
