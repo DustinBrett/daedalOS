@@ -179,7 +179,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
       <iframe
         ref={iframeRef}
         height="100%"
-        id="jspaint-iframe"
+        id={`jspaint-${id}`}
         onLoad={() => setLoaded(true)}
         src={paintSrc}
         title={id}

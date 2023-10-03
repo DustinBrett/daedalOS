@@ -143,7 +143,7 @@ const usePDF = ({
   useEffect(() => {
     if (pages.length > 0) {
       const ol = containerRef.current?.querySelector(
-        "#pages"
+        "ol.pages"
       ) as HTMLOListElement;
 
       if (ol) {

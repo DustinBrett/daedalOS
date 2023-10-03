@@ -64,6 +64,7 @@ const directory: Processes = {
     icon: "/System/Icons/dxball.webp",
     libs: ["/Program Files/DX-Ball/game.js"],
     lockAspectRatio: true,
+    singleton: true,
     title: "DX-Ball",
   },
   DevTools: {

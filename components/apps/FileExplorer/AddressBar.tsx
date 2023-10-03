@@ -62,7 +62,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           {...useAddressBarContextMenu(url)}
         />
         <Button
-          id="refresh"
+          className="refresh"
           onClick={() => updateFolder(url)}
           {...label(`Refresh "${displayName}" (F5)`)}
         >

@@ -60,10 +60,10 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             / {count}
           </li>
         )}
-        <li id="scale">
+        <li className="scale">
           <Button
+            className="subtract"
             disabled={scale === 0.25 || count === 0}
-            id="subtract"
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
@@ -102,8 +102,8 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             value={`${Math.round(scale * 100)}%`}
           />
           <Button
+            className="add"
             disabled={scale === 5 || count === 0}
-            id="add"
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
@@ -115,8 +115,8 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
       </ol>
       <div className="side-menu">
         <Button
+          className="download"
           disabled={count === 0}
-          id="download"
           onClick={async () => {
             const link = document.createElement("a");
 

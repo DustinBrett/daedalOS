@@ -39,7 +39,7 @@ class Document extends NextDocument {
       <Html lang={DEFAULT_LOCALE}>
         <Head />
         <body>
-          <Script id="initialHeight" strategy="beforeInteractive">
+          <Script id="initHeight" strategy="beforeInteractive">
             window.initialHeight = window.innerHeight;
           </Script>
           <Main />

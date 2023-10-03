@@ -60,7 +60,7 @@ const StyledStatusBar = styled.footer`
         padding: 0;
       }
 
-      &#save {
+      &.save {
         svg {
           margin-top: 4px;
         }
