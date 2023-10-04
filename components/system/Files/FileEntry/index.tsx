@@ -162,12 +162,13 @@ const FileEntry: FC<FileEntryProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
+  const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);
   const isDynamicIcon = useMemo(
     () =>
       IMAGE_FILE_EXTENSIONS.has(urlExt) ||
       VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-      isYouTubeUrl(url),
-    [url, urlExt]
+      isYTUrl,
+    [isYTUrl, urlExt]
   );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
@@ -403,7 +404,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else if (!isShortcut) {
+        } else if (!isShortcut || isYTUrl) {
           if (isIconCached.current) return;
 
           const cachedIconPath = join(
@@ -460,6 +461,7 @@ const FileEntry: FC<FileEntryProps> = ({
     icon,
     isLoadingFileManager,
     isShortcut,
+    isYTUrl,
     mkdirRecursive,
     path,
     readFile,
