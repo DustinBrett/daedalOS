@@ -240,9 +240,9 @@ const useFolderContextMenu = (
     (names: string[], event?: CaptureTriggerEvent) => {
       if (event && isDesktop) {
         const { clientX: x, clientY: y } =
-          event.nativeEvent instanceof TouchEvent
+          "TouchEvent" in window && event.nativeEvent instanceof TouchEvent
             ? event.nativeEvent.touches[0]
-            : event.nativeEvent;
+            : (event.nativeEvent as MouseEvent);
 
         updateIconPositions(
           DESKTOP_PATH,
