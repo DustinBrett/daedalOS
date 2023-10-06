@@ -49,7 +49,7 @@ type WallpaperMessage = { message: string; type: string };
 const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
 const REDUCED_MOTION_PERCENT = 0.1;
 
-let slideshowFiles: string[];
+const slideshowFiles: string[] = [];
 
 const useWallpaper = (
   desktopRef: React.MutableRefObject<HTMLElement | null>,
@@ -253,17 +253,34 @@ const useWallpaper = (
         updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
       }
 
-      slideshowFiles ||= [
-        ...new Set(
-          JSON.parse(
-            (await readFile(slideshowFilePath))?.toString() || "[]"
-          ) as string[]
-        ),
-      ];
+      if (slideshowFiles.length === 0) {
+        slideshowFiles.push(
+          ...[
+            ...new Set(
+              JSON.parse(
+                (await readFile(slideshowFilePath))?.toString() || "[]"
+              ) as string[]
+            ),
+          ].sort(() => Math.random() - 0.5)
+        );
+      }
 
       do {
-        wallpaperUrl =
-          slideshowFiles[Math.floor(Math.random() * slideshowFiles.length)];
+        wallpaperUrl = slideshowFiles.shift() || "";
+
+        const [nextWallpaper] = slideshowFiles;
+
+        if (nextWallpaper) {
+          const preloadLink = document.createElement("link");
+
+          preloadLink.id = "preloadWallpaper";
+          preloadLink.href = nextWallpaper;
+          preloadLink.rel = "preload";
+          preloadLink.as = "image";
+
+          document.querySelector("#preloadWallpaper")?.remove();
+          document.head.append(preloadLink);
+        }
 
         if (wallpaperUrl.startsWith("/")) {
           wallpaperUrl = `${window.location.origin}${wallpaperUrl}`;
