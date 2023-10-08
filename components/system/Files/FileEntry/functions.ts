@@ -199,10 +199,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
 
   return {
     comment,
-    icon:
-      !icon && pid && pid !== "FileExplorer"
-        ? processDirectory[pid]?.icon
-        : icon,
+    icon: !icon && pid ? processDirectory[pid]?.icon : icon,
     pid,
     type,
     url,
