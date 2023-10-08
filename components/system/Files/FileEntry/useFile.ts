@@ -27,8 +27,8 @@ const useFile = (url: string): UseFile => {
         icon: processIcon,
       } = processDirectory[pid] || {};
       const activePid = singleton
-        ? Object.keys(processesRef.current).find((id) =>
-            id.startsWith(`${pid}${PROCESS_DELIMITER}`)
+        ? Object.keys(processesRef.current).find(
+            (id) => id === pid || id.startsWith(`${pid}${PROCESS_DELIMITER}`)
           )
         : "";
       let runUrl = url;
