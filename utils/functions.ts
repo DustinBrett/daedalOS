@@ -49,6 +49,8 @@ export const sendMouseClick = (target: HTMLElement, count = 1): void => {
   sendMouseClick(target, count - 1);
 };
 
+let visibleWindows: string[] = [];
+
 export const toggleShowDesktop = (
   processes: Processes,
   stackOrder: string[],
@@ -57,12 +59,18 @@ export const toggleShowDesktop = (
   const restoreWindows =
     stackOrder.length > 0 &&
     !stackOrder.some((pid) => !processes[pid]?.minimized);
+  const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
 
-  (restoreWindows ? [...stackOrder].reverse() : stackOrder).forEach(
-    (pid) =>
-      (restoreWindows || (!restoreWindows && !processes[pid]?.minimized)) &&
-      minimize(pid)
-  );
+  if (!restoreWindows) visibleWindows = [];
+
+  allWindows.forEach((pid) => {
+    if (restoreWindows) {
+      if (visibleWindows.includes(pid)) minimize(pid);
+    } else if (!processes[pid]?.minimized) {
+      visibleWindows.push(pid);
+      minimize(pid);
+    }
+  });
 
   if (restoreWindows) {
     requestAnimationFrame(
