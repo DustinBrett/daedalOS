@@ -51,7 +51,7 @@ const updateKeyStates = (event: KeyboardEvent): void => {
 const useGlobalKeyboardShortcuts = (): void => {
   const { closeWithTransition, maximize, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
-  const { foregroundId } = useSession();
+  const { foregroundId, stackOrder } = useSession();
   const { fullscreenElement, toggleFullscreen } = useViewport();
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
@@ -182,9 +182,9 @@ const useGlobalKeyboardShortcuts = (): void => {
           maximize(foregroundId);
         }
       },
-      D: () => toggleShowDesktop(processesRef.current, minimize),
+      D: () => toggleShowDesktop(processesRef.current, stackOrder, minimize),
     };
-  }, [foregroundId, maximize, minimize, processesRef]);
+  }, [foregroundId, maximize, minimize, processesRef, stackOrder]);
 };
 
 export default useGlobalKeyboardShortcuts;
