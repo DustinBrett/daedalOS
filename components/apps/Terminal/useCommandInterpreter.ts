@@ -830,7 +830,7 @@ const useCommandInterpreter = (
               );
               localEcho?.println("");
             } else {
-              // Failed to connect message
+              localEcho?.println("Failed to contact name servers.");
             }
           }
           break;
