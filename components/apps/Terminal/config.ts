@@ -38,3 +38,9 @@ export const PI_ASCII = [
   "  .kWMMW0;         .l0WMMMMNO:  ",
   "   .lkkl.            .cxkkd:.   ",
 ];
+
+export const PRIMARY_NAME_SERVER = [
+  "https://cloudflare-dns.com/dns-query",
+  "1.1.1.1",
+];
+export const BACKUP_NAME_SERVER = ["https://dns.google/resolve", "8.8.8.8"];
