@@ -1,6 +1,7 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import type {
   FileReaders,
+  ObjectReader,
   ObjectReaders,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
@@ -233,7 +234,7 @@ export const handleFileInputEvent = (
       if (!Array.isArray(filePaths) || filePaths.length === 0) return;
 
       const isSingleFile = filePaths.length === 1;
-      const objectReaders = filePaths.map((filePath) => {
+      const objectReaders = filePaths.map<ObjectReader>((filePath) => {
         let aborted = false;
 
         return {
@@ -242,6 +243,7 @@ export const handleFileInputEvent = (
           },
           directory,
           name: filePath,
+          operation: "Moving",
           read: async () => {
             if (aborted || dirname(filePath) === ".") return;
 

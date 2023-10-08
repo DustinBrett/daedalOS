@@ -1,5 +1,6 @@
 import type { ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import type { ObjectReader } from "components/system/Dialogs/Transfer/useTransferDialog";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   createShortcut,
@@ -488,7 +489,7 @@ const useFolder = (
         path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
       );
       const uniqueName = await createPath(zipFolderName, directory);
-      const objectReaders = Object.entries(unzippedFiles).map(
+      const objectReaders = Object.entries(unzippedFiles).map<ObjectReader>(
         ([extractPath, fileContents]) => {
           let aborted = false;
 
@@ -499,6 +500,7 @@ const useFolder = (
             directory: join(directory, uniqueName),
             done: () => updateFolder(directory, uniqueName),
             name: extractPath,
+            operation: "Extracting",
             read: async () => {
               if (aborted) return;
 
@@ -562,7 +564,7 @@ const useFolder = (
       if (!basePath) updateFolder(directory, uniquePath);
     };
     const movedPaths: string[] = [];
-    const objectReaders = pasteEntries.map(([pasteEntry]) => {
+    const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
       let aborted = false;
 
       return {
@@ -580,6 +582,7 @@ const useFolder = (
           }
         },
         name: pasteEntry,
+        operation: moving ? "Moving" : "Copying",
         read: async () => {
           if (aborted) return;
 

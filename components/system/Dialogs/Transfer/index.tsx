@@ -4,6 +4,7 @@ import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
 import type {
   FileReaders,
   ObjectReaders,
+  Operation,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { useProcesses } from "contexts/process";
 import { basename, dirname } from "path";
@@ -28,10 +29,21 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
   const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState<number>(0);
-  const actionName = useMemo(
-    () => (url && !fileReaders ? "Extracting" : "Copying"),
-    [fileReaders, url]
-  );
+  const currentOperation = useRef<Operation | undefined>();
+  const actionName = useMemo(() => {
+    if (closing || !process) return currentOperation.current;
+
+    let operation: Operation = "Copying";
+    const { operation: objectOperation } =
+      (fileReaders as ObjectReaders)?.[0] || {};
+
+    if (objectOperation) operation = objectOperation;
+    else if (url && !fileReaders) operation = "Extracting";
+
+    currentOperation.current = operation;
+
+    return operation;
+  }, [closing, fileReaders, process, url]);
   const processing = useRef(false);
   const completeTransfer = useCallback(() => {
     processing.current = false;
