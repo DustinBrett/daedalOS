@@ -11,34 +11,54 @@ const StyledTinyMceEditor = styled.div`
       pointer-events: none;
     }
 
+    .tox-statusbar {
+      font-size: 12px;
+    }
+
     &[aria-disabled="true"] {
       .tox-editor-header {
-        height: 39px;
+        height: 0;
+        margin-top: -1px;
         overflow: hidden;
         padding: 0;
         position: relative;
+        visibility: hidden;
 
-        &::before {
-          background-color: rgba(42, 43, 46, 90%);
-          color: rgb(225, 225, 225);
-          content: "Click to switch into design mode";
+        &::after {
+          bottom: 0;
+          color: rgb(200, 200, 200);
+          content: "Edit Document";
           cursor: pointer;
           display: flex;
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 600;
-          height: calc(100% - 1px);
+          height: 24px;
+          left: 0;
+          padding: 0 10px;
+          padding-bottom: 2px;
           place-content: center;
           place-items: center;
-          position: absolute;
-          text-shadow: 0 0 5px rgba(255, 255, 255, 50%);
-          width: 100%;
+          position: fixed;
+          transform: translateZ(0);
+          visibility: visible;
+          width: auto;
           z-index: 1;
+        }
+
+        &:hover::after {
+          background-color: rgba(255, 255, 255, 15%);
         }
 
         .tox-toolbar-overlord {
           display: none;
         }
       }
+
+      /* stylelint-disable selector-class-pattern */
+      .tox-statusbar__path-item {
+        display: none;
+      }
+      /* stylelint-enable selector-class-pattern */
     }
 
     iframe {
