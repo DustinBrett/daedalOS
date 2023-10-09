@@ -19,15 +19,17 @@ const StyledTinyMceEditor = styled.div`
         position: relative;
 
         &::before {
-          background-color: rgba(255, 255, 255, 80%);
+          background-color: rgba(42, 43, 46, 90%);
+          color: #fff;
           content: "Click to switch into design mode.";
           cursor: pointer;
           display: flex;
+          font-weight: 600;
           height: calc(100% - 1px);
           place-content: center;
           place-items: center;
           position: absolute;
-          text-shadow: 0 0 25px rgba(0, 0, 0, 80%);
+          text-shadow: 0 0 10px rgba(0, 0, 0, 100%);
           width: 100%;
           z-index: 1;
         }

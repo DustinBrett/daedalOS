@@ -315,7 +315,7 @@ const directory: Processes = {
   },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#202124",
     defaultSize: {
       height: 480,
       width: 640,
