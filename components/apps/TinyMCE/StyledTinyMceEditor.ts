@@ -30,7 +30,7 @@ const StyledTinyMceEditor = styled.div`
           place-content: center;
           place-items: center;
           position: absolute;
-          text-shadow: 0 0 10px rgba(255, 255, 255, 50%);
+          text-shadow: 0 0 5px rgba(255, 255, 255, 50%);
           width: 100%;
           z-index: 1;
         }
