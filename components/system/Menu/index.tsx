@@ -23,7 +23,13 @@ export const topLeftPosition = (): Position => ({
 
 const Menu: FC<MenuProps> = ({ subMenu }) => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
-  const { items, offsetX, offsetY, x = 0, y = 0 } = subMenu || baseMenu;
+  const {
+    items,
+    offsetX = true,
+    offsetY = true,
+    x = 0,
+    y = 0,
+  } = subMenu || baseMenu || {};
   const [offset, setOffset] = useState<Position>(topLeftPosition);
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = useCallback(

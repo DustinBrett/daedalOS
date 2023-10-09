@@ -62,7 +62,7 @@ const useMenuContextState = (): MenuContextState => {
         domRect?: DOMRect,
         options?: MenuOptions
       ): void => {
-        const { offsetX = true, offsetY = true } = options || {};
+        const { offsetX, offsetY } = options || {};
         let x = 0;
         let y = 0;
 
