@@ -162,17 +162,21 @@ const FileEntry: FC<FileEntryProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
+  const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);
   const isDynamicIcon = useMemo(
     () =>
       IMAGE_FILE_EXTENSIONS.has(urlExt) ||
       VIDEO_FILE_EXTENSIONS.has(urlExt) ||
-      isYouTubeUrl(url),
-    [url, urlExt]
+      isYTUrl,
+    [isYTUrl, urlExt]
   );
   const isOnlyFocusedEntry =
     focusedEntries.length === 1 && focusedEntries[0] === fileName;
-  const extension = getExtension(path);
-  const isShortcut = extension === SHORTCUT_EXTENSION;
+  const extension = useMemo(() => getExtension(path), [path]);
+  const isShortcut = useMemo(
+    () => extension === SHORTCUT_EXTENSION,
+    [extension]
+  );
   const directory = isShortcut ? url : path;
   const fileDrop = useFileDrop({
     callback: async (fileDropName, data) => {
@@ -400,7 +404,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else {
+        } else if (!isShortcut || isYTUrl) {
           if (isIconCached.current) return;
 
           const cachedIconPath = join(
@@ -456,6 +460,8 @@ const FileEntry: FC<FileEntryProps> = ({
     getIcon,
     icon,
     isLoadingFileManager,
+    isShortcut,
+    isYTUrl,
     mkdirRecursive,
     path,
     readFile,
@@ -506,10 +512,9 @@ const FileEntry: FC<FileEntryProps> = ({
       } else if (
         isFocused &&
         focusedEntries.length === 1 &&
+        buttonRef.current !== document.activeElement &&
         !buttonRef.current.contains(document.activeElement)
       ) {
-        blurEntry();
-        focusEntry(fileName);
         buttonRef.current.focus(PREVENT_SCROLL);
       }
     }

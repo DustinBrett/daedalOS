@@ -146,13 +146,11 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
 
             if (pid) open(pid, { url });
           } else {
-            const basePid = getProcessByFileExtension(extension);
+            const basePid = getProcessByFileExtension(extension) || "OpenWith";
 
-            if (basePid) {
-              open(basePid, {
-                url: basePid === "Browser" && isIpfs ? resource : resourcePath,
-              });
-            }
+            open(basePid, {
+              url: basePid === "Browser" && isIpfs ? resource : resourcePath,
+            });
           }
 
           addRunHistoryEntry();

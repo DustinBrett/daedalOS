@@ -46,11 +46,11 @@ const StyledControls = styled.nav`
     place-items: center;
     width: 30px;
 
-    &#subtract {
+    &.subtract {
       margin-right: 7px;
     }
 
-    &#add {
+    &.add {
       margin-left: 7px;
     }
 
@@ -78,7 +78,7 @@ const StyledControls = styled.nav`
       }
     }
 
-    &#download {
+    &.download {
       svg {
         margin-left: 1px;
         scale: 1.15;
@@ -132,7 +132,7 @@ const StyledControls = styled.nav`
         }
       }
 
-      &#scale {
+      &.scale {
         display: flex;
         place-items: center;
 

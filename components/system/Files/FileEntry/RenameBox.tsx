@@ -12,6 +12,9 @@ type RenameBoxProps = {
   renameFile: (path: string, name?: string) => void;
 };
 
+const TEXT_HEIGHT_PADDING = 2;
+const TEXT_WIDTH_PADDING = 22;
+
 const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
@@ -29,12 +32,18 @@ const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
         textArea.setAttribute("style", "height: 1px");
         textArea.setAttribute(
           "style",
-          `height: ${textArea.scrollHeight + 2}px; width: ${width + 22}px`
+          `height: ${textArea.scrollHeight + TEXT_HEIGHT_PADDING}px; width: ${
+            width + TEXT_WIDTH_PADDING
+          }px`
         );
       }
     },
     [formats.systemFont, sizes.fileEntry.fontSize]
   );
+
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => updateDimensions(inputRef.current));
+  }, [updateDimensions]);
 
   useLayoutEffect(() => {
     updateDimensions(inputRef.current);

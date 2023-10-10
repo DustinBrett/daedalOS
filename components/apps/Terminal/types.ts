@@ -44,3 +44,11 @@ declare global {
     Terminal?: typeof Terminal;
   }
 }
+
+export type NsEntry = {
+  data: string;
+};
+
+export type NsResponse = {
+  Answer: NsEntry[];
+};

@@ -13,6 +13,7 @@ import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
   DYNAMIC_EXTENSION,
+  DYNAMIC_PREFIX,
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
@@ -45,6 +46,7 @@ import {
   getExtension,
   getGifJs,
   getHtmlToImage,
+  hasJxlSupport,
   imageToBufferUrl,
   imgDataToBuffer,
   isSafari,
@@ -197,10 +199,7 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
 
   return {
     comment,
-    icon:
-      !icon && pid && pid !== "FileExplorer"
-        ? processDirectory[pid]?.icon
-        : icon,
+    icon: !icon && pid ? processDirectory[pid]?.icon : icon,
     pid,
     type,
     url,
@@ -371,10 +370,14 @@ export const getInfoWithExtension = (
           };
 
           callback({ comment, getIcon, icon, pid, subIcons, url });
-        } else if (DYNAMIC_EXTENSION.has(urlExt)) {
+        } else if (
+          DYNAMIC_EXTENSION.has(urlExt) ||
+          DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
+        ) {
+          const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
           const cachedIconPath = join(
             ICON_CACHE,
-            `${url}${ICON_CACHE_EXTENSION}`
+            `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
           );
 
           fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
@@ -535,9 +538,11 @@ export const getInfoWithExtension = (
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
-            getInfoByFileExtension(
-              imageToBufferUrl(path, imgDataToBuffer(await decodeJxl(contents)))
-            );
+            const jxlData = (await hasJxlSupport())
+              ? contents
+              : imgDataToBuffer(await decodeJxl(contents));
+
+            getInfoByFileExtension(imageToBufferUrl(path, jxlData));
           }
         })
       );

@@ -29,6 +29,7 @@ import {
   getExtension,
   getGifJs,
   haltEvent,
+  hasJxlSupport,
   imageToBufferUrl,
   imgDataToBuffer,
   label,
@@ -101,7 +102,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
     if ([".ani", ".cur"].includes(ext)) {
       fileContents = await aniToGif(fileContents);
-    } else if (ext === ".jxl") {
+    } else if (ext === ".jxl" && !(await hasJxlSupport())) {
       fileContents = imgDataToBuffer(await decodeJxl(fileContents));
     } else if (ext === ".qoi") {
       const { decodeQoi } = await import("components/apps/Photos/qoi");

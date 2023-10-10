@@ -17,16 +17,24 @@ export type MenuItem = {
 
 export type MenuState = {
   items?: MenuItem[];
+  offsetX?: boolean;
+  offsetY?: boolean;
   x?: number;
   y?: number;
 };
 
 export type CaptureTriggerEvent = React.MouseEvent | React.TouchEvent;
 
+type MenuOptions = {
+  offsetX?: boolean;
+  offsetY?: boolean;
+};
+
 export type ContextMenuCapture = {
   onContextMenuCapture: (
     event?: CaptureTriggerEvent,
-    domRect?: DOMRect
+    domRect?: DOMRect,
+    options?: MenuOptions
   ) => void;
   onTouchEnd?: React.TouchEventHandler;
   onTouchMove?: React.TouchEventHandler;
@@ -51,8 +59,10 @@ const useMenuContextState = (): MenuContextState => {
     ): ContextMenuCapture => {
       const onContextMenuCapture = (
         event?: CaptureTriggerEvent,
-        domRect?: DOMRect
+        domRect?: DOMRect,
+        options?: MenuOptions
       ): void => {
+        const { offsetX, offsetY } = options || {};
         let x = 0;
         let y = 0;
 
@@ -70,7 +80,13 @@ const useMenuContextState = (): MenuContextState => {
 
         const items = getItems(event);
 
-        setMenu({ items: items.length > 0 ? items : undefined, x, y });
+        setMenu({
+          items: items.length > 0 ? items : undefined,
+          offsetX,
+          offsetY,
+          x,
+          y,
+        });
       };
 
       return {

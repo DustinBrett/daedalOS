@@ -16,30 +16,35 @@ const GetMoreMessages: FC<{
   setSince: React.Dispatch<React.SetStateAction<number>>;
 }> = ({ setSince }) => {
   const [timeScale, setTimeScale] = useState<TimeScale>("day");
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (timeScale === "infinite") return <></>;
 
+  const updateTimeScale = (since: number, scale: TimeScale): void => {
+    setSince(since);
+    setTimeScale(scale);
+    setDisabled(true);
+    setTimeout(() => setDisabled(false), 1000);
+  };
+
   return (
     <StyledGetMoreMessages>
       <Button
+        disabled={disabled}
         onClick={() => {
           switch (timeScale) {
             case "day":
-              setSince(MILLISECONDS_IN_DAY * 7);
-              setTimeScale("week");
+              updateTimeScale(MILLISECONDS_IN_DAY * 7, "week");
               break;
             case "week":
-              setSince(MILLISECONDS_IN_DAY * 30);
-              setTimeScale("month");
+              updateTimeScale(MILLISECONDS_IN_DAY * 30, "month");
               break;
             case "month":
-              setSince(MILLISECONDS_IN_DAY * 90);
-              setTimeScale("trimester");
+              updateTimeScale(MILLISECONDS_IN_DAY * 90, "trimester");
               break;
             default:
-              setSince(0);
-              setTimeScale("infinite");
+              updateTimeScale(0, "infinite");
               break;
           }
         }}

@@ -49,6 +49,7 @@ export const commands: Record<string, string> = {
   mount: "Mounts a local file system directory.",
   move: "Moves file or directory.",
   neofetch: "Displays system information.",
+  nslookup: "Displays DNS information about a domain.",
   pwd: "Prints the working directory.",
   python: "Run code through Python interpreter.",
   rd: "Removes a directory.",

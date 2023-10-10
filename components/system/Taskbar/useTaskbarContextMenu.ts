@@ -4,6 +4,7 @@ import type {
   MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { useMemo } from "react";
@@ -13,6 +14,7 @@ import { toggleShowDesktop } from "utils/functions";
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { minimize, open } = useProcesses();
+  const { stackOrder } = useSession();
   const processesRef = useProcessesRef();
   const { fullscreenElement, toggleFullscreen } = useViewport();
 
@@ -28,7 +30,8 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
           : "Show the desktop";
         const menuItems: MenuItem[] = [
           {
-            action: () => toggleShowDesktop(processesRef.current, minimize),
+            action: () =>
+              toggleShowDesktop(processesRef.current, stackOrder, minimize),
             label: onStartButton ? "Desktop" : toggleLabel,
           },
         ];
@@ -72,6 +75,7 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
       onStartButton,
       open,
       processesRef,
+      stackOrder,
       toggleFullscreen,
     ]
   );

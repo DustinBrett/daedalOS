@@ -99,7 +99,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         (items) =>
           contextMenu?.(() => items).onContextMenuCapture(
             undefined,
-            searchBarRef.current?.getBoundingClientRect()
+            searchBarRef.current?.getBoundingClientRect(),
+            { offsetY: false }
           )
       );
     }

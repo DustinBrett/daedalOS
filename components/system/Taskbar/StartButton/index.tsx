@@ -1,7 +1,7 @@
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
 
@@ -15,7 +15,11 @@ const StartButton: FC<StartButtonProps> = ({
   toggleStartMenu,
 }) => {
   const [preloaded, setPreloaded] = useState(false);
-  const preloadIcons = async (): Promise<void> => {
+  const initalizedPreload = useRef(false);
+  const preloadIcons = useCallback(async (): Promise<void> => {
+    if (initalizedPreload.current) return;
+    initalizedPreload.current = true;
+
     const supportsImageSrcSet = !isSafari();
     const preloadedLinks = [
       ...document.querySelectorAll("link[rel=preload]"),
@@ -58,19 +62,26 @@ const StartButton: FC<StartButtonProps> = ({
     });
 
     setPreloaded(true);
-  };
+  }, []);
+  const onClick = useCallback(
+    async ({ ctrlKey, shiftKey }: React.MouseEvent): Promise<void> => {
+      if (!preloaded) preloadIcons();
+
+      toggleStartMenu();
+
+      if (ctrlKey && shiftKey) {
+        const { default: spawnSheep } = await import("utils/spawnSheep");
+
+        spawnSheep();
+      }
+    },
+    [preloadIcons, preloaded, toggleStartMenu]
+  );
 
   return (
     <StyledStartButton
       $active={startMenuVisible}
-      onClick={async ({ ctrlKey, shiftKey }) => {
-        if (ctrlKey && shiftKey) {
-          const { default: spawnSheep } = await import("utils/spawnSheep");
-
-          spawnSheep();
-        }
-        toggleStartMenu();
-      }}
+      onClick={onClick}
       onMouseOver={preloaded ? undefined : preloadIcons}
       {...label("Start")}
       {...useTaskbarContextMenu(true)}

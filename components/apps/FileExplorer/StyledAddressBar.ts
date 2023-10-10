@@ -32,7 +32,7 @@ const StyledAddressBar = styled.div`
     top: 5px;
   }
 
-  #refresh {
+  .refresh {
     background-color: rgb(29, 32, 33);
     height: 28px;
     margin: 0;

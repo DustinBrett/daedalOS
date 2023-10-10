@@ -6,15 +6,20 @@ import { useEffect, useMemo, useRef } from "react";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension } from "utils/functions";
 
+export type Operation = "Copying" | "Extracting" | "Moving";
+
 export type FileReaders = [File, string, FileReader][];
 
-export type ObjectReaders = {
+export type ObjectReader = {
   abort: () => void;
   directory: string;
   done?: () => void;
   name: string;
+  operation: Operation;
   read: () => Promise<void>;
-}[];
+};
+
+export type ObjectReaders = ObjectReader[];
 
 type Dialog = {
   openTransferDialog: (

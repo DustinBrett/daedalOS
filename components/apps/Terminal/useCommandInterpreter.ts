@@ -1,5 +1,10 @@
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
-import { PI_ASCII, config } from "components/apps/Terminal/config";
+import {
+  BACKUP_NAME_SERVER,
+  PI_ASCII,
+  PRIMARY_NAME_SERVER,
+  config,
+} from "components/apps/Terminal/config";
 import {
   aliases,
   autoComplete,
@@ -18,6 +23,8 @@ import { runPython } from "components/apps/Terminal/python";
 import type {
   CommandInterpreter,
   LocalEcho,
+  NsEntry,
+  NsResponse,
 } from "components/apps/Terminal/types";
 import {
   displayLicense,
@@ -772,6 +779,59 @@ const useCommandInterpreter = (
                 }`
               );
             });
+          }
+          break;
+        }
+        case "nslookup": {
+          const [domainName] = commandArgs;
+
+          if (domainName) {
+            const nsLookup = async (
+              domain: string,
+              server = PRIMARY_NAME_SERVER[0]
+            ): Promise<NsEntry[]> => {
+              const { Answer = [] } = (await (
+                await fetch(`${server}?name=${domain}`, {
+                  headers: { Accept: "application/dns-json" },
+                })
+              ).json()) as NsResponse;
+
+              return Answer;
+            };
+            let answer: NsEntry[] | undefined;
+            let primaryFailed = false;
+
+            try {
+              answer = await nsLookup(domainName);
+            } catch {
+              try {
+                primaryFailed = true;
+                answer = await nsLookup(domainName, BACKUP_NAME_SERVER[0]);
+              } catch {
+                // Ignore failure on backup name server
+              }
+            }
+
+            if (answer) {
+              const [server, address] = primaryFailed
+                ? BACKUP_NAME_SERVER
+                : PRIMARY_NAME_SERVER;
+              const { host } = new URL(server);
+
+              localEcho?.println(`Server:  ${host}`);
+              localEcho?.println(`Address:  ${address}`);
+              localEcho?.println("");
+              localEcho?.println("Non-authoritative answer:");
+              localEcho?.println(`Name:    ${domainName}`);
+              localEcho?.println(
+                `Addresses:  ${answer
+                  .map(({ data }) => data)
+                  .join("\n          ")}`
+              );
+              localEcho?.println("");
+            } else {
+              localEcho?.println("Failed to contact name servers.");
+            }
           }
           break;
         }

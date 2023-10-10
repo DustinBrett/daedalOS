@@ -14,6 +14,7 @@ import {
   HIGH_PRIORITY_REQUEST,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
+  SMALLEST_JXL_FILE,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
 } from "utils/constants";
@@ -48,20 +49,34 @@ export const sendMouseClick = (target: HTMLElement, count = 1): void => {
   sendMouseClick(target, count - 1);
 };
 
+let visibleWindows: string[] = [];
+
 export const toggleShowDesktop = (
   processes: Processes,
+  stackOrder: string[],
   minimize: (id: string) => void
 ): void => {
-  const processArray = Object.entries(processes);
-  const allWindowsMinimized =
-    processArray.length > 0 &&
-    !processArray.some(([, { minimized }]) => !minimized);
+  const restoreWindows =
+    stackOrder.length > 0 &&
+    !stackOrder.some((pid) => !processes[pid]?.minimized);
+  const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
 
-  processArray.forEach(
-    ([pid, { minimized }]) =>
-      (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
-      minimize(pid)
-  );
+  if (!restoreWindows) visibleWindows = [];
+
+  allWindows.forEach((pid) => {
+    if (restoreWindows) {
+      if (visibleWindows.includes(pid)) minimize(pid);
+    } else if (!processes[pid]?.minimized) {
+      visibleWindows.push(pid);
+      minimize(pid);
+    }
+  });
+
+  if (restoreWindows) {
+    requestAnimationFrame(
+      () => processes[stackOrder[0]]?.componentWindow?.focus()
+    );
+  }
 };
 
 export const imageSrc = (
@@ -115,6 +130,16 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 
     fileReader.readAsDataURL(blob);
     fileReader.onloadend = () => resolve(fileReader.result as string);
+  });
+
+export const hasJxlSupport = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const JXL = new Image();
+
+    JXL.src = SMALLEST_JXL_FILE;
+
+    JXL.addEventListener("load", () => resolve(true));
+    JXL.addEventListener("error", () => resolve(false));
   });
 
 type JxlDecodeResponse = { data: { imgData: ImageData } };

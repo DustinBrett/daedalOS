@@ -11,9 +11,14 @@ const StyledGetMoreMessages = styled.li`
     color: inherit;
     display: flex;
     font-size: 16px;
+    font-weight: 600;
     height: 30px;
     place-content: center;
     place-items: center;
+
+    &:disabled {
+      opacity: 25%;
+    }
   }
 `;
 

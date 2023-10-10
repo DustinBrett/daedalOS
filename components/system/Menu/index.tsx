@@ -23,7 +23,13 @@ export const topLeftPosition = (): Position => ({
 
 const Menu: FC<MenuProps> = ({ subMenu }) => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
-  const { items, x = 0, y = 0 } = subMenu || baseMenu;
+  const {
+    items,
+    offsetX = true,
+    offsetY = true,
+    x = 0,
+    y = 0,
+  } = subMenu || baseMenu || {};
   const [offset, setOffset] = useState<Position>(topLeftPosition);
   const menuRef = useRef<HTMLElement | null>(null);
   const resetMenu = useCallback(
@@ -39,6 +45,60 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   );
   const isSubMenu = Boolean(subMenu);
   const offsetCalculated = useRef<Partial<DOMRect>>({});
+  const calculateOffset = useCallback(() => {
+    if (
+      !menuRef.current ||
+      (offsetCalculated.current.x === x && offsetCalculated.current.y === y)
+    ) {
+      return;
+    }
+
+    offsetCalculated.current = { x, y };
+
+    const {
+      height = 0,
+      width = 0,
+      x: menuX = 0,
+      y: menuY = 0,
+    } = menuRef.current?.getBoundingClientRect() || {};
+    const [vh, vw] = [viewHeight(), viewWidth()];
+    const newOffset = { x: 0, y: 0 };
+
+    if (offsetX) {
+      const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
+
+      newOffset.x =
+        Math.round(Math.max(0, x + width - vw)) +
+        (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0);
+
+      const adjustedOffsetX =
+        subMenuOffscreenX && menuX - newOffset.x < 0
+          ? newOffset.x - (newOffset.x - menuX)
+          : 0;
+
+      if (adjustedOffsetX > 0) newOffset.x = adjustedOffsetX;
+    }
+
+    if (offsetY) {
+      const bottomOffset = y + height > vh ? vh - y : 0;
+      const topAdjustedBottomOffset =
+        bottomOffset + height > vh ? 0 : bottomOffset;
+      const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
+
+      newOffset.y =
+        Math.round(Math.max(0, y + height - (vh - topAdjustedBottomOffset))) +
+        (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0);
+    }
+
+    setOffset(newOffset);
+  }, [offsetX, offsetY, subMenu, x, y]);
+  const menuCallbackRef = useCallback(
+    (ref: HTMLElement) => {
+      menuRef.current = ref;
+      calculateOffset();
+    },
+    [calculateOffset]
+  );
 
   useEffect(() => {
     if (items && !subMenu) {
@@ -80,45 +140,6 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   }, [items, resetMenu, subMenu]);
 
   useEffect(() => {
-    if (
-      !menuRef.current ||
-      (offsetCalculated.current.x === x && offsetCalculated.current.y === y)
-    ) {
-      return;
-    }
-
-    const {
-      height = 0,
-      width = 0,
-      x: menuX = 0,
-      y: menuY = 0,
-    } = menuRef.current?.getBoundingClientRect() || {};
-    const [vh, vw] = [viewHeight(), viewWidth()];
-    const bottomOffset = y + height > vh ? vh - y : 0;
-    const topAdjustedBottomOffset =
-      bottomOffset + height > vh ? 0 : bottomOffset;
-    const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
-    const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
-    const newOffset = {
-      x:
-        Math.round(Math.max(0, x + width - vw)) +
-        (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0),
-      y:
-        Math.round(Math.max(0, y + height - (vh - topAdjustedBottomOffset))) +
-        (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0),
-    };
-    const adjustedOffsetX =
-      subMenuOffscreenX && menuX - newOffset.x < 0
-        ? newOffset.x - (newOffset.x - menuX)
-        : 0;
-
-    offsetCalculated.current = { x, y };
-    setOffset(
-      adjustedOffsetX > 0 ? { ...newOffset, x: adjustedOffsetX } : newOffset
-    );
-  }, [items, subMenu, x, y]);
-
-  useEffect(() => {
     if (!items) offsetCalculated.current = {};
   }, [items, offset.x, offset.y, subMenu]);
 
@@ -136,7 +157,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
   return items ? (
     <StyledMenu
-      ref={menuRef}
+      ref={menuCallbackRef}
       $isSubMenu={isSubMenu}
       $x={x - offset.x}
       $y={y - offset.y}

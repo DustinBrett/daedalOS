@@ -84,7 +84,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
             <li>Lines {lineCount}</li>
           </ol>
           <ol>
-            <li className="clickable" id="save">
+            <li className="clickable save">
               <Button
                 onClick={async () => {
                   const [saveUrl, saveData] = getSaveFileInfo(url, editor);

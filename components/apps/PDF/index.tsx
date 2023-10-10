@@ -7,7 +7,7 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 const PDF: FC<ComponentProcessProps> = ({ id }) => (
   <>
     <AppContainer StyledComponent={StyledPDF} id={id} useHook={usePDF}>
-      <ol id="pages" />
+      <ol className="pages" />
     </AppContainer>
     <Controls id={id} />
   </>
