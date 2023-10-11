@@ -95,14 +95,15 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
             })
         );
 
-      getItems().then(
-        (items) =>
-          contextMenu?.(() => items).onContextMenuCapture(
-            undefined,
-            searchBarRef.current?.getBoundingClientRect(),
-            { offsetY: false }
-          )
-      );
+      getItems().then((items) => {
+        const searchBarRect = searchBarRef.current?.getBoundingClientRect();
+
+        contextMenu?.(() => items).onContextMenuCapture(
+          undefined,
+          searchBarRect,
+          { staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0) }
+        );
+      });
     }
   }, [contextMenu, exists, fs, open, readFile, results, url]);
 
