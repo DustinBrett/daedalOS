@@ -29,7 +29,7 @@ const AppContainer: FC<AppContainerProps> = ({
   useHook,
   StyledComponent,
   children,
-}): JSX.Element => {
+}): React.JSX.Element => {
   const {
     processes: { [id]: { url = "" } = {} },
   } = useProcesses();

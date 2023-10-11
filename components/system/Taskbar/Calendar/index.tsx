@@ -110,7 +110,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                 {week.map(([day, type]) => (
                   <td
                     key={`${day}${type}`}
-                    ref={(tdRef: HTMLTableDataCellElement) =>
+                    ref={(tdRef: HTMLTableCellElement) =>
                       type === "today"
                         ? undefined
                         : spotlightEffect(tdRef, false, 2)

@@ -576,6 +576,7 @@ export const getInfoWithExtension = (
             containerElement.style.overflow = "hidden";
             containerElement.style.opacity = "0";
             containerElement.style.userSelect = "none";
+            // eslint-disable-next-line deprecation/deprecation
             containerElement.style.webkitUserSelect = "none";
 
             containerElement.innerHTML = contents.toString();

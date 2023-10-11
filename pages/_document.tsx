@@ -34,7 +34,7 @@ class Document extends NextDocument {
     return withStyledComponents(ctx);
   }
 
-  public render(): JSX.Element {
+  public render(): React.JSX.Element {
     return (
       <Html lang={DEFAULT_LOCALE}>
         <Head />
