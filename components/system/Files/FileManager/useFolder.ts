@@ -531,8 +531,7 @@ const useFolder = (
         close(`Transfer${PROCESS_DELIMITER}${path}`);
 
         if ("message" in (error as Error)) {
-          // eslint-disable-next-line no-alert
-          alert((error as Error).message);
+          console.error((error as Error).message);
         }
       }
     },
