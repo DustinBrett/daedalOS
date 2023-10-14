@@ -70,7 +70,9 @@ const useSelection = (
         y: clientY - targetY + scrollTop,
       });
 
-      if (menu) setMenu(Object.create(null) as MenuState);
+      if (menu && Object.keys(menu).length > 0) {
+        setMenu(Object.create(null) as MenuState);
+      }
       if (focusedEntries.length > 0) blurEntry();
     }
   };
