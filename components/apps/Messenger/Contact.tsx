@@ -74,7 +74,7 @@ const Contact: FC<ContactProps> = ({
     }
 
     return () => window.clearInterval(interval);
-  }, [created_at, lastEvent]);
+  }, [created_at]);
 
   return (
     <li

@@ -52,14 +52,16 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   );
 
   useEffect(() => {
-    const { current: currentWindow } = rndRef;
-    const rndWindowElements =
-      currentWindow?.resizableElement?.current?.children || [];
-    const [windowContainer, resizeHandleContainer] =
-      rndWindowElements as HTMLElement[];
-    const resizeHandles = [...(resizeHandleContainer?.children || [])];
+    if (!maximized) {
+      const { current: currentWindow } = rndRef;
+      const rndWindowElements =
+        currentWindow?.resizableElement?.current?.children || [];
+      const [windowContainer, resizeHandleContainer] =
+        rndWindowElements as HTMLElement[];
+      const resizeHandles = [...(resizeHandleContainer?.children || [])];
 
-    resizeHandles.forEach(reRouteFocus(windowContainer));
+      resizeHandles.forEach(reRouteFocus(windowContainer));
+    }
   }, [maximized]);
 
   return (

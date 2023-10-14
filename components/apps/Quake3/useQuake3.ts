@@ -60,7 +60,7 @@ const useQuake3 = ({
       pxToNum(size?.width),
       pxToNum(size?.height) - titleBar.height
     );
-  }, [setLoading, size, titleBar.height]);
+  }, [size, titleBar.height]);
 
   useEffect(
     () => () => {

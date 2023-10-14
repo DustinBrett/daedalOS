@@ -222,6 +222,7 @@ const useDraggableEntries = (
     ) {
       lastfileManagerChildRef.current = fileManagerRef.current.lastElementChild;
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [fileManagerRef, focusedEntries]);
 
   useEffect(() => {
@@ -231,6 +232,7 @@ const useDraggableEntries = (
       debounceTimer.current = undefined;
       updateDragImage();
     }, MILLISECONDS_IN_SECOND / 2);
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [focusedEntries, updateDragImage]);
 
   useEffect(() => {

@@ -112,6 +112,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       searchBarRef.current.value = "";
       setSearchTerm("");
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [url]);
 
   return (

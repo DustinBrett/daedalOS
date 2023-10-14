@@ -68,6 +68,7 @@ const useWindowTransitions = (
       x: 0 - windowX,
       y: 0 - windowY,
     });
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, maximized]);
 
   useLayoutEffect(() => {
@@ -96,6 +97,7 @@ const useWindowTransitions = (
     if (!(x === 0 && y === 0)) {
       setMinimize({ ...baseMinimize, x, y });
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, minimized, taskbarEntry]);
 
   useEffect(() => {

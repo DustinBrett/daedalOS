@@ -195,7 +195,7 @@ const useTinyMCE = ({
 
   useEffect(() => {
     if (url && editor) loadFile();
-  }, [editor, loadFile, readFile, url]);
+  }, [editor, loadFile, url]);
 
   useEffect(
     () => () => {

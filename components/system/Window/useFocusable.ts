@@ -96,6 +96,7 @@ const useFocusable = (
     if (componentWindow && !closing && !minimized) {
       setForegroundId(id);
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, id, minimized, setForegroundId, url]);
 
   return useMemo(

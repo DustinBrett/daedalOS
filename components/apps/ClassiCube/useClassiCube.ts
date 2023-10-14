@@ -53,7 +53,7 @@ const useClassiCube = ({
       );
       window.CCModule.OnResize?.();
     }
-  }, [getCanvas, size, titleBar.height]);
+  }, [size, titleBar.height]);
 
   useEffect(() => {
     if (window.CCModule) return;

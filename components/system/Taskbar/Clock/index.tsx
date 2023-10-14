@@ -162,6 +162,7 @@ const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
 
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [clockSource]);
 
   useEffect(() => {

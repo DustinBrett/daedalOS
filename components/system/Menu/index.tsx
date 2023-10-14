@@ -141,6 +141,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
   useEffect(() => {
     if (!items) offsetCalculated.current = {};
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
