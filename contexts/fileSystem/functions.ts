@@ -12,8 +12,8 @@ import type {
   Mount,
   RootFileSystem,
 } from "contexts/fileSystem/useAsyncFs";
-import { join } from "path";
-import { FS_HANDLES } from "utils/constants";
+import { extname, join } from "path";
+import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 const KNOWN_IDB_DBS = [
   "/classicube",
@@ -127,3 +127,17 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       }
     });
   });
+
+export const getMountUrl = (
+  url: string,
+  mntMap: Record<string, Mount>
+): string | undefined => {
+  if (url === "/") return "";
+  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(extname(url))) return url;
+
+  return Object.keys(mntMap)
+    .filter((mountedUrl) => mountedUrl !== "/")
+    .find(
+      (mountedUrl) => url === mountedUrl || url.startsWith(`${mountedUrl}/`)
+    );
+};
