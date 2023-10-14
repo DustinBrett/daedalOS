@@ -1,5 +1,5 @@
 import { emulatorCores } from "components/apps/Emulator/config";
-import { EDITABLE_IMAGE_FILE_EXTENSIONS } from "utils/constants";
+import { EDITABLE_IMAGE_FILE_EXTENSIONS, TEXT_EDITORS } from "utils/constants";
 
 type Extension = {
   command?: string;
@@ -7,8 +7,6 @@ type Extension = {
   process: string[];
   type?: string;
 };
-
-export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 const types = {
   Application: {

@@ -43,7 +43,7 @@ export type ContextMenuCapture = {
 
 type MenuContextState = {
   contextMenu: (
-    getItems: (event?: CaptureTriggerEvent) => MenuItem[]
+    getItems: (event?: CaptureTriggerEvent) => MenuItem[] | Promise<MenuItem[]>
   ) => ContextMenuCapture;
   menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;
@@ -55,13 +55,15 @@ const useMenuContextState = (): MenuContextState => {
   const touchEvent = useRef<React.TouchEvent>();
   const contextMenu = useCallback(
     (
-      getItems: (event?: CaptureTriggerEvent) => MenuItem[]
+      getItems: (
+        event?: CaptureTriggerEvent
+      ) => MenuItem[] | Promise<MenuItem[]>
     ): ContextMenuCapture => {
-      const onContextMenuCapture = (
+      const onContextMenuCapture = async (
         event?: CaptureTriggerEvent,
         domRect?: DOMRect,
         options?: MenuOptions
-      ): void => {
+      ): Promise<void> => {
         const { staticX, staticY } = options || {};
         let x = 0;
         let y = 0;
@@ -78,7 +80,7 @@ const useMenuContextState = (): MenuContextState => {
           y = inputY + height;
         }
 
-        const items = getItems(event);
+        const items = await getItems(event);
 
         setMenu({
           items: items.length > 0 ? items : undefined,

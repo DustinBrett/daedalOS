@@ -1,7 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
-import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
 import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import { useFileSystem } from "contexts/fileSystem";
@@ -14,6 +13,7 @@ import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   SHORTCUT_EXTENSION,
+  TEXT_EDITORS,
   YT_ICON_CACHE,
 } from "utils/constants";
 import {

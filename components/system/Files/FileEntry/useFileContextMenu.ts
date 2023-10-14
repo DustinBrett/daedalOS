@@ -1,6 +1,4 @@
-import extensions, {
-  TEXT_EDITORS,
-} from "components/system/Files/FileEntry/extensions";
+import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
@@ -23,7 +21,6 @@ import {
   CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
   EDITABLE_IMAGE_FILE_EXTENSIONS,
-  EXTRACTABLE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
@@ -32,6 +29,7 @@ import {
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
+  TEXT_EDITORS,
   UNSUPPORTED_BACKGROUND_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
@@ -94,7 +92,7 @@ const useFileContextMenu = (
   const { contextMenu } = useMenu();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
-      contextMenu?.(() => {
+      contextMenu?.(async () => {
         const urlExtension = getExtension(url);
         const { process: extensionProcesses = [] } =
           urlExtension in extensions ? extensions[urlExtension] : {};
@@ -409,6 +407,10 @@ const useFileContextMenu = (
                   // Ignore failure to use Share API
                 }
               }
+
+              const { EXTRACTABLE_EXTENSIONS } = await import(
+                "components/system/Files/FileEntry/constants"
+              );
 
               menuItems.unshift(
                 {
