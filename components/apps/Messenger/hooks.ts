@@ -119,8 +119,7 @@ export const useNip05 = (): NIP05Result => {
 
 export const useNostrContacts = (
   publicKey: string,
-  wellKnownNames: Record<string, string>,
-  loginTime: number
+  wellKnownNames: Record<string, string>
 ): NostrContacts => {
   const globalContacts = useMemo(
     () =>
@@ -167,12 +166,9 @@ export const useNostrContacts = (
   const unreadEvents = useMemo(
     () =>
       events.filter(
-        ({ created_at, id, pubkey }) =>
-          pubkey !== publicKey &&
-          created_at > loginTime &&
-          !seenEventIds.includes(id)
+        ({ id, pubkey }) => pubkey !== publicKey && !seenEventIds.includes(id)
       ),
-    [events, loginTime, publicKey, seenEventIds]
+    [events, publicKey, seenEventIds]
   );
 
   return { contactKeys, events, lastEvents, unreadEvents };
