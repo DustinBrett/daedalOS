@@ -52,6 +52,7 @@ import {
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 import type { URLTrack } from "webamp";
+import { EXTRACTABLE_EXTENSIONS } from "./constants";
 
 const { alias } = PACKAGE_DATA;
 
@@ -92,7 +93,7 @@ const useFileContextMenu = (
   const { contextMenu } = useMenu();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
-      contextMenu?.(async () => {
+      contextMenu?.(() => {
         const urlExtension = getExtension(url);
         const { process: extensionProcesses = [] } =
           urlExtension in extensions ? extensions[urlExtension] : {};
@@ -407,10 +408,6 @@ const useFileContextMenu = (
                   // Ignore failure to use Share API
                 }
               }
-
-              const { EXTRACTABLE_EXTENSIONS } = await import(
-                "components/system/Files/FileEntry/constants"
-              );
 
               menuItems.unshift(
                 {
