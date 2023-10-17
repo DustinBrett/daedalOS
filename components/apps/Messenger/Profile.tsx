@@ -24,7 +24,7 @@ const Profile: FC<ProfileProps> = ({
 
   return (
     <StyledProfile $clickable={Boolean(onMouseDown)}>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div onMouseDown={onMouseDown}>
         {picture && (
           <img
