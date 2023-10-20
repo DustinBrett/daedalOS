@@ -231,15 +231,14 @@ const directory: Processes = {
   },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
+    autoSizing: true,
     backgroundColor: "#000",
     defaultSize: {
       height: 480,
       width: 640,
     },
-    hideMaximizeButton: true,
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
-    lockAspectRatio: true,
     title: "Quake III Arena",
   },
   Ruffle: {
