@@ -140,7 +140,7 @@ const directory: Processes = {
   },
   Messenger: {
     Component: dynamic(() => import("components/apps/Messenger")),
-    backgroundColor: "#242526",
+    backgroundColor: "#282828",
     defaultSize: {
       height: 500,
       width: 425,
@@ -231,15 +231,14 @@ const directory: Processes = {
   },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
+    autoSizing: true,
     backgroundColor: "#282828",
     defaultSize: {
       height: 480,
       width: 640,
     },
-    hideMaximizeButton: true,
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
-    lockAspectRatio: true,
     title: "Quake III Arena",
   },
   Ruffle: {
@@ -315,7 +314,7 @@ const directory: Processes = {
   },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
-    backgroundColor: "#fbf1c7",
+    backgroundColor: "#1D2021",
     defaultSize: {
       height: 480,
       width: 640,

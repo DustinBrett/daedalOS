@@ -49,7 +49,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     picture,
     userName = "New message",
   } = useNostrProfile(pubkey);
-  const { connectedRelays } = useNostr();
+  const { connectToRelays, connectedRelays } = useNostr();
   const connectedRelayData = useMemo(
     () =>
       Object.fromEntries(
@@ -124,7 +124,16 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
         <div className="relays">
           <ol>
             {relayUrls.sort().map((relayUrl) => (
-              <li key={relayUrl} title={relayUrl}>
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+              <li
+                key={relayUrl}
+                onClick={
+                  connectedRelayData[relayUrl]
+                    ? undefined
+                    : () => connectToRelays([relayUrl])
+                }
+                title={relayUrl}
+              >
                 {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
               </li>
             ))}
@@ -133,7 +142,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       )}
       <Profile
         nip05={nip05}
-        onClick={onContextMenuCapture}
+        onMouseDown={onContextMenuCapture}
         picture={picture}
         pubkey={pubkey}
         userName={userName}

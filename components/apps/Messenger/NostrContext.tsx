@@ -10,15 +10,18 @@ import {
 } from "react";
 
 interface NostrContextType {
+  connectToRelays: (urls: string[]) => void;
   connectedRelays: Relay[];
   publish: (event: NostrEvent) => void;
 }
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 const NostrContext = createContext<NostrContextType>({
+  connectToRelays: () => {},
   connectedRelays: [],
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   publish: () => {},
 });
+/* eslint-enable @typescript-eslint/no-empty-function */
 
 export const useNostr = (): NostrContextType => useContext(NostrContext);
 
@@ -93,10 +96,11 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
     <NostrContext.Provider
       value={useMemo(
         () => ({
+          connectToRelays,
           connectedRelays: Object.values(connectedRelays),
           publish,
         }),
-        [connectedRelays, publish]
+        [connectToRelays, connectedRelays, publish]
       )}
     >
       {children}

@@ -2,7 +2,7 @@ import { createContext, memo, useContext } from "react";
 
 const contextFactory = <T,>(
   useContextState: () => T,
-  ContextComponent?: JSX.Element
+  ContextComponent?: React.JSX.Element
 ): {
   Provider: React.MemoExoticComponent<FC>;
   useContext: () => T;

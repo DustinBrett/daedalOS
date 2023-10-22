@@ -9,13 +9,6 @@ export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
   desynchronized: true,
 };
 
-export const IPFS_GATEWAY_URLS = [
-  "https://<CID>.ipfs.cf-ipfs.com/",
-  "https://<CID>.ipfs.dweb.link/",
-  "https://cloudflare-ipfs.com/ipfs/<CID>/",
-  "https://gateway.ipfs.io/ipfs/<CID>/",
-];
-
 export const IFRAME_CONFIG = {
   referrerPolicy: "no-referrer" as React.HTMLAttributeReferrerPolicy,
   sandbox:
@@ -126,6 +119,8 @@ export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
   ".svg",
 ]);
 
+export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
+
 export const CURSOR_FILE_EXTENSIONS = new Set([".ani", ".cur"]);
 
 export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
@@ -153,77 +148,6 @@ export const MILLISECONDS_IN_SECOND = 1000;
 export const MILLISECONDS_IN_MINUTE = 60000;
 
 export const MILLISECONDS_IN_DAY = 86400000;
-
-export const EXTRACTABLE_EXTENSIONS = new Set([
-  ".001",
-  ".7z",
-  ".ace",
-  ".apk",
-  ".appx",
-  ".arj",
-  ".bz2",
-  ".bzip2",
-  ".cab",
-  ".chm",
-  ".chw",
-  ".cpio",
-  ".deb",
-  ".dll",
-  ".dmg",
-  ".doc",
-  ".docx",
-  ".epub",
-  ".esd",
-  ".exe",
-  ".flv",
-  ".gz",
-  ".gzip",
-  ".hfs",
-  ".hxs",
-  ".img",
-  ".ipa",
-  ".jar",
-  ".lha",
-  ".lit",
-  ".lzh",
-  ".lzma",
-  ".mbr",
-  ".msi",
-  ".ntfs",
-  ".ods",
-  ".odt",
-  ".ova",
-  ".pages",
-  ".pkg",
-  ".ppt",
-  ".qcow",
-  ".qcow2",
-  ".r00",
-  ".rar",
-  ".rpm",
-  ".squashfs",
-  ".swf",
-  ".swm",
-  ".sys",
-  ".tar",
-  ".taz",
-  ".tgz",
-  ".txz",
-  ".udf",
-  ".vdi",
-  ".vhd",
-  ".vhdx",
-  ".vmdk",
-  ".wim",
-  ".xar",
-  ".xip",
-  ".xls",
-  ".xlsx",
-  ".xpi",
-  ".xz",
-  ".z",
-  ".zipx",
-]);
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ".jsdos", ".wsz", ".zip"]);
 
@@ -347,9 +271,6 @@ export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.webp`;
 export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.webp`;
 
 export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
-
-export const UNKNOWN_ICON =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB0ElEQVR42u2ZVWLbQBiEp/K6DOpb+LF4ip47oCuULpAYH3uAlcbMNOZpm0lsizWz+/3CgEc9aiuFHz9/YYVIcjAAkODcYYDoTyPQHZse7m0E49tLkid/8rz4BuD7RgFIYpW+fvmMXStJEvz+/RuvXr1KG41mVhT5RiECRMUYsUuF0Nv18+fPcXp6ktbrjSzPhRBCDxxUpVKpG+Ls7DSt1eprhwjYWwAdJQD9EGftELV2iCiHCAQMAvT04sVznJ+fpdVqNcuj1hOBJj0wCvECFxcXaeWhIuEUYFADAGZCXF5dpg/3DxmA99YIZVmGRXr58lVqi1CMER8+fOh+pkUS5XIZd7d3ylEIViI5M7wCITqa1wOAtDVPKD1A45andC1ES/N6DZCuzKsIWZr3RoikMK4jZGleD2BsntDOA74tT0gIOZrXEfJmXiti24KleBi1M09SThBIU/P6mZiW5qEXMW3NUzuMGrc8NYRssSE0hFyZVxFyLVgdIcOW51oIWZqHfj9ga15+rOLb8lIRg47m9RoQ/R+eeb0GaGleR8i15XWEqL5VFIIJ87V5u70nvrm+AUF0/8nx4ZlxgOj+9KeTk+Oz8/rrYnIYBAoWeNSj9qwWS/T9vUU9j2EAAAAASUVORK5CYII=";
 
 export const SMALLEST_JXL_FILE =
   "data:image/jxl;base64,/woIAAAMABKIAgC4AF3lEgAAFSqjjBu8nOv58kOHxbSN6wxttW1hSaLIODZJJ3BIEkkaoCUzGM6qJAE=";

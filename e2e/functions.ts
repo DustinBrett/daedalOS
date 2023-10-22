@@ -339,7 +339,9 @@ export const fileExplorerRenameEntry = async (
   newName: string,
   { page }: TestProps
 ): Promise<void> => {
-  await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).type(newName);
+  await page
+    .locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR)
+    .pressSequentially(newName);
   await page.locator(FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR).press("Enter");
 };
 
@@ -350,7 +352,7 @@ export const typeInFileExplorerAddressBar = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL)
-    .type(text, { delay: TYPE_DELAY });
+    .pressSequentially(text, { delay: TYPE_DELAY });
 
 export const typeInFileExplorerSearchBox = async (
   text: string,
@@ -359,7 +361,7 @@ export const typeInFileExplorerSearchBox = async (
   page
     .locator(FILE_EXPLORER_NAV_SELECTOR)
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-    .type(text, { delay: TYPE_DELAY });
+    .pressSequentially(text, { delay: TYPE_DELAY });
 
 // expect->toHave
 export const pageHasTitle = async (

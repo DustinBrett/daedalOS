@@ -4,7 +4,7 @@ import { useSession } from "contexts/session";
 import { join } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Position } from "react-rnd";
-import { MILLISECONDS_IN_SECOND, UNKNOWN_ICON } from "utils/constants";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import {
   getHtmlToImage,
   haltEvent,
@@ -187,6 +187,10 @@ const useDraggableEntries = (
         let newDragImage: string | undefined;
 
         try {
+          const { UNKNOWN_ICON } = await import(
+            "components/system/Files/FileManager/icons"
+          );
+
           newDragImage = await htmlToImage?.toPng(fileManagerRef.current, {
             filter: (element) => {
               return (
@@ -218,6 +222,7 @@ const useDraggableEntries = (
     ) {
       lastfileManagerChildRef.current = fileManagerRef.current.lastElementChild;
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [fileManagerRef, focusedEntries]);
 
   useEffect(() => {
@@ -227,6 +232,7 @@ const useDraggableEntries = (
       debounceTimer.current = undefined;
       updateDragImage();
     }, MILLISECONDS_IN_SECOND / 2);
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [focusedEntries, updateDragImage]);
 
   useEffect(() => {

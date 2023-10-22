@@ -141,7 +141,7 @@ const useMonaco = ({
     if (monaco && editor && url) {
       loadFile();
     }
-  }, [editor, loadFile, monaco, prependFileToTitle, url]);
+  }, [editor, loadFile, monaco, url]);
 };
 
 export default useMonaco;

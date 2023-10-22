@@ -12,6 +12,7 @@ export const config = {
   base_url: "/Program Files/TinyMCE/",
   branding: false,
   draggable_modal: true,
+  help_accessibility: false,
   image_advtab: true,
   plugins,
   promotion: false,

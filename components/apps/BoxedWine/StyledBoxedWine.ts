@@ -19,8 +19,7 @@ const StyledBoxedWine = styled.div`
     font-size: 13px;
     height: 100%;
     line-height: 19px;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden scroll;
     width: 100%;
 
     li {

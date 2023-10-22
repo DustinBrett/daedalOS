@@ -38,7 +38,6 @@ import { MILLISECONDS_IN_DAY } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type NostrChatProps = {
-  loginTime: number;
   processId: string;
   publicKey: string;
   relayUrls: string[];
@@ -48,7 +47,6 @@ type NostrChatProps = {
 
 const NostrChat: FC<NostrChatProps> = ({
   processId,
-  loginTime,
   publicKey,
   relayUrls,
   setSince,
@@ -63,10 +61,8 @@ const NostrChat: FC<NostrChatProps> = ({
           setSeenEventIds((currentSeenEventIds) => [
             ...new Set([
               ...currentEvents
-                .filter(
-                  ({ created_at, pubkey }) =>
-                    [recipientKey, currenRecipientKey].includes(pubkey) &&
-                    created_at > loginTime
+                .filter(({ pubkey }) =>
+                  [recipientKey, currenRecipientKey].includes(pubkey)
                 )
                 .map(({ id }) => id),
               ...currentSeenEventIds,
@@ -76,12 +72,11 @@ const NostrChat: FC<NostrChatProps> = ({
 
         return recipientKey;
       }),
-    [loginTime, setSeenEventIds]
+    [setSeenEventIds]
   );
   const { contactKeys, events, lastEvents, unreadEvents } = useNostrContacts(
     publicKey,
-    wellKnownNames,
-    loginTime
+    wellKnownNames
   );
   const setRecipientKey = useCallback(
     (recipientKey: string): boolean => {
@@ -99,7 +94,10 @@ const NostrChat: FC<NostrChatProps> = ({
   } = useProcesses();
   const { url } = process || {};
 
-  useUnreadStatus(processId, unreadEvents.length);
+  useUnreadStatus(
+    processId,
+    new Set(unreadEvents.map(({ pubkey }) => pubkey)).size
+  );
 
   useEffect(() => {
     if (
@@ -178,7 +176,6 @@ const NostrChat: FC<NostrChatProps> = ({
 };
 
 const Messenger: FC<ComponentProcessProps> = ({ id }) => {
-  const [loginTime, setLoginTime] = useState(0);
   const [since, setSince] = useState(() => MILLISECONDS_IN_DAY);
   const timeSince = useMemo(
     () => Math.floor((Date.now() - since) / 1000),
@@ -194,10 +191,7 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
 
     initStarted.current = true;
 
-    getRelayUrls().then((foundRelays) => {
-      setRelayUrls(foundRelays);
-      setLoginTime(Math.floor(Date.now() / 1000));
-    });
+    getRelayUrls().then(setRelayUrls);
   }, [publicKey]);
 
   return publicKey && relayUrls ? (
@@ -205,7 +199,6 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
       <HistoryProvider>
         <MessageProvider publicKey={publicKey} since={timeSince}>
           <NostrChat
-            loginTime={loginTime}
             processId={id}
             publicKey={publicKey}
             relayUrls={relayUrls}

@@ -1,11 +1,17 @@
 import {
   HIGH_PRIORITY_REQUEST,
-  IPFS_GATEWAY_URLS,
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
 
 let IPFS_GATEWAY_URL = "";
+
+export const IPFS_GATEWAY_URLS = [
+  "https://<CID>.ipfs.cf-ipfs.com/",
+  "https://<CID>.ipfs.dweb.link/",
+  "https://cloudflare-ipfs.com/ipfs/<CID>/",
+  "https://gateway.ipfs.io/ipfs/<CID>/",
+];
 
 const isIpfsGatewayAvailable = (gatewayUrl: string): Promise<boolean> =>
   new Promise((resolve) => {
@@ -34,7 +40,7 @@ const isIpfsGatewayAvailable = (gatewayUrl: string): Promise<boolean> =>
 
     img.src = `${gatewayUrl.replace(
       "<CID>",
-      // https://github.com/ipfs/public-gateway-checker/blob/master/src/constants.ts
+      // https://github.com/ipfs/public-gateway-checker/blob/master/src/constants.ts (IMG_HASH)
       "bafybeibwzifw52ttrkqlikfzext5akxu7lz4xiwjgwzmqcpdzmp3n5vnbe"
     )}?now=${Date.now()}&filename=1x1.png#x-ipfs-companion-no-redirect`;
   });

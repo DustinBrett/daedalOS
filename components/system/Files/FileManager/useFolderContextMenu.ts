@@ -6,6 +6,7 @@ import type {
   SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
+import { getMountUrl, isMountedFolder } from "contexts/fileSystem/functions";
 import { useMenu } from "contexts/menu";
 import type {
   CaptureTriggerEvent,
@@ -46,9 +47,6 @@ const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
 const NEW_RTF_DOCUMENT = "New Rich Text Document.whtml";
 
-const richTextDocumentIcon = getIconByFileExtension(".whtml");
-const textDocumentIcon = getIconByFileExtension(".txt");
-
 const updateSortBy =
   (value: SortBy, defaultIsAscending: boolean) =>
   ([sortBy, isAscending]: SortByOrder): SortByOrder => [
@@ -82,6 +80,7 @@ const useFolderContextMenu = (
     mapFs,
     pasteList = {},
     readFile,
+    rootFs,
     writeFile,
     updateFolder,
   } = useFileSystem();
@@ -300,7 +299,10 @@ const useFolderContextMenu = (
         const isMusicVisualizationRunning =
           document.querySelector("main .webamp-desktop canvas") instanceof
           HTMLCanvasElement;
-        const isReadOnly = MOUNTABLE_EXTENSIONS.has(getExtension(url));
+        const mountUrl = getMountUrl(url, rootFs?.mntMap || {});
+        const isReadOnly =
+          MOUNTABLE_EXTENSIONS.has(getExtension(url)) ||
+          (mountUrl && !isMountedFolder(rootFs?.mntMap[mountUrl]));
 
         return [
           {
@@ -415,13 +417,13 @@ const useFolderContextMenu = (
                     {
                       action: () =>
                         newEntry(NEW_RTF_DOCUMENT, Buffer.from(""), event),
-                      icon: richTextDocumentIcon,
+                      icon: getIconByFileExtension(".whtml"),
                       label: "Rich Text Document",
                     },
                     {
                       action: () =>
                         newEntry(NEW_TEXT_DOCUMENT, Buffer.from(""), event),
-                      icon: textDocumentIcon,
+                      icon: getIconByFileExtension(".txt"),
                       label: "Text Document",
                     },
                   ],
@@ -494,6 +496,7 @@ const useFolderContextMenu = (
       pasteList,
       pasteToFolder,
       processesRef,
+      rootFs?.mntMap,
       setForegroundId,
       setWallpaper,
       sortBy,

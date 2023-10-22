@@ -11,8 +11,6 @@ import {
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import {
-  convertImageLinksToHtml,
-  convertNewLinesToBreaks,
   decryptMessage,
   prettyChatTimestamp,
 } from "components/apps/Messenger/functions";
@@ -89,15 +87,8 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                     </div>
                   )}
                   <SanitizedContent
-                    content={
-                      typeof decryptedContent[id] === "string"
-                        ? convertImageLinksToHtml(
-                            convertNewLinesToBreaks(
-                              decryptedContent[id] as string
-                            )
-                          )
-                        : content
-                    }
+                    content={decryptedContent[id] || content}
+                    decrypted={typeof decryptedContent[id] === "string"}
                   />
                   {publicKey === pubkey &&
                     gropupIndex === messages.length - 1 &&

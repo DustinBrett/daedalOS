@@ -6,7 +6,7 @@ type SidebarButton = {
   action?: () => void;
   active?: boolean;
   heading?: boolean;
-  icon: JSX.Element;
+  icon: React.JSX.Element;
   name: string;
   tooltip?: string;
 };

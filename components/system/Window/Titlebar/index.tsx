@@ -8,6 +8,8 @@ import {
 } from "components/system/Window/Titlebar/WindowActionIcons";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { useMenu } from "contexts/menu";
+import type { MenuState } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
@@ -41,6 +43,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const onClickClose = useDoubleClick(onClose);
   const onClickMaximize = useDoubleClick(onMaximize);
+  const { menu, setMenu } = useMenu();
   const titlebarContextMenu = useTitlebarContextMenu(id);
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<DOMRect>();
@@ -89,6 +92,11 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         {...(!hideMaximizeButton && allowResizing && !closing
           ? onClickMaximize
           : {})}
+        onMouseDownCapture={({ button }) => {
+          if (button === 0 && Object.keys(menu).length > 0) {
+            setMenu(Object.create(null) as MenuState);
+          }
+        }}
         onTouchEndCapture={onTouchEnd}
         onTouchStartCapture={onTouchStart}
       >

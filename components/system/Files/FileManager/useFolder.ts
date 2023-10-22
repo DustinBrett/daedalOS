@@ -31,6 +31,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
+  PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
@@ -136,7 +137,7 @@ const useFolder = (
     sortOrders: { [directory]: [sortOrder, sortBy, sortAscending] = [] } = {},
   } = useSession();
   const [currentDirectory, setCurrentDirectory] = useState(directory);
-  const { closeProcessesByUrl } = useProcesses();
+  const { close, closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
     async (fileName: string, stats: Stats): Promise<FileStat> => {
       if (
@@ -479,54 +480,63 @@ const useFolder = (
       const data = await readFile(path);
       const { unarchive, unzip } = await import("utils/zipFunctions");
       openTransferDialog(undefined, path);
-      const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
-        getExtension(path)
-      )
-        ? await unzip(data)
-        : await unarchive(path, data);
-      const zipFolderName = basename(
-        path,
-        path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
-      );
-      const uniqueName = await createPath(zipFolderName, directory);
-      const objectReaders = Object.entries(unzippedFiles).map<ObjectReader>(
-        ([extractPath, fileContents]) => {
-          let aborted = false;
+      try {
+        const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
+          getExtension(path)
+        )
+          ? await unzip(data)
+          : await unarchive(path, data);
+        const zipFolderName = basename(
+          path,
+          path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
+        );
+        const uniqueName = await createPath(zipFolderName, directory);
+        const objectReaders = Object.entries(unzippedFiles).map<ObjectReader>(
+          ([extractPath, fileContents]) => {
+            let aborted = false;
 
-          return {
-            abort: () => {
-              aborted = true;
-            },
-            directory: join(directory, uniqueName),
-            done: () => updateFolder(directory, uniqueName),
-            name: extractPath,
-            operation: "Extracting",
-            read: async () => {
-              if (aborted) return;
+            return {
+              abort: () => {
+                aborted = true;
+              },
+              directory: join(directory, uniqueName),
+              done: () => updateFolder(directory, uniqueName),
+              name: extractPath,
+              operation: "Extracting",
+              read: async () => {
+                if (aborted) return;
 
-              try {
-                const localPath = join(directory, uniqueName, extractPath);
+                try {
+                  const localPath = join(directory, uniqueName, extractPath);
 
-                if (fileContents.length === 0 && extractPath.endsWith("/")) {
-                  await mkdir(localPath);
-                } else {
-                  if (!(await exists(dirname(localPath)))) {
-                    await mkdirRecursive(dirname(localPath));
+                  if (fileContents.length === 0 && extractPath.endsWith("/")) {
+                    await mkdir(localPath);
+                  } else {
+                    if (!(await exists(dirname(localPath)))) {
+                      await mkdirRecursive(dirname(localPath));
+                    }
+
+                    await writeFile(localPath, Buffer.from(fileContents));
                   }
-
-                  await writeFile(localPath, Buffer.from(fileContents));
+                } catch {
+                  // Ignore failure to extract
                 }
-              } catch {
-                // Ignore failure to extract
-              }
-            },
-          };
-        }
-      );
+              },
+            };
+          }
+        );
 
-      openTransferDialog(objectReaders, path);
+        openTransferDialog(objectReaders, path);
+      } catch (error) {
+        close(`Transfer${PROCESS_DELIMITER}${path}`);
+
+        if ("message" in (error as Error)) {
+          console.error((error as Error).message);
+        }
+      }
     },
     [
+      close,
       createPath,
       directory,
       exists,

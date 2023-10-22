@@ -86,7 +86,7 @@ const useFocusableEntries = (
         } else {
           focusEntry(file);
         }
-      } else if (!isFocused) {
+      } else if (!isFocused || !isOnlyFocusedEntry) {
         blurEntry();
         focusEntry(file);
       }

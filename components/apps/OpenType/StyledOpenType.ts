@@ -6,8 +6,7 @@ type StyledOpenTypeProps = {
 
 const StyledOpenType = styled.div<StyledOpenTypeProps>`
   font-size: 13px;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden scroll;
 
   ${({ $drop }) =>
     $drop &&

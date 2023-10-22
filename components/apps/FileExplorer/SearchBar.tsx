@@ -1,7 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
-import { TEXT_EDITORS } from "components/system/Files/FileEntry/extensions";
 import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import { useFileSystem } from "contexts/fileSystem";
@@ -14,6 +13,7 @@ import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   SHORTCUT_EXTENSION,
+  TEXT_EDITORS,
   YT_ICON_CACHE,
 } from "utils/constants";
 import {
@@ -95,14 +95,15 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
             })
         );
 
-      getItems().then(
-        (items) =>
-          contextMenu?.(() => items).onContextMenuCapture(
-            undefined,
-            searchBarRef.current?.getBoundingClientRect(),
-            { offsetY: false }
-          )
-      );
+      getItems().then((items) => {
+        const searchBarRect = searchBarRef.current?.getBoundingClientRect();
+
+        contextMenu?.(() => items).onContextMenuCapture(
+          undefined,
+          searchBarRect,
+          { staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0) }
+        );
+      });
     }
   }, [contextMenu, exists, fs, open, readFile, results, url]);
 
@@ -111,6 +112,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       searchBarRef.current.value = "";
       setSearchTerm("");
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [url]);
 
   return (

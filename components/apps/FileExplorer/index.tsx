@@ -4,12 +4,13 @@ import type { ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
 import { useFileSystem } from "contexts/fileSystem";
-import { isMountedFolder } from "contexts/fileSystem/functions";
+import { getMountUrl, isMountedFolder } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import { basename } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   COMPRESSED_FOLDER_ICON,
+  FOLDER_ICON,
   MOUNTED_FOLDER_ICON,
   PREVENT_SCROLL,
   ROOT_NAME,
@@ -28,7 +29,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const [currentUrl, setCurrentUrl] = useState(url);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const directoryName = basename(url);
-  const isMounted = Boolean(rootFs?.mntMap[url] && directoryName);
+  const mountUrl = getMountUrl(url, rootFs?.mntMap || {});
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     if (event.altKey && event.key.toUpperCase() === "D") {
       haltEvent(event);
@@ -43,9 +44,10 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
       if (
         !icon ||
         url !== currentUrl ||
-        (isMounted && icon !== MOUNTED_FOLDER_ICON)
+        (mountUrl && icon !== MOUNTED_FOLDER_ICON) ||
+        icon === FOLDER_ICON
       ) {
-        if (isMounted) {
+        if (mountUrl && url === mountUrl) {
           setProcessIcon(
             id,
             isMountedFolder(rootFs?.mntMap[url])
@@ -71,10 +73,9 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     fs,
     icon,
     id,
-    isMounted,
+    mountUrl,
     rootFs?.mntMap,
     setProcessIcon,
-    setProcessUrl,
     title,
     url,
   ]);
@@ -94,7 +95,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
 
   return url ? (
     <StyledFileExplorer>
-      <Navigation ref={inputRef} hideSearch={isMounted} id={id} />
+      <Navigation ref={inputRef} hideSearch={Boolean(mountUrl)} id={id} />
       <FileManager id={id} url={url} view="icon" showStatusBar />
     </StyledFileExplorer>
   ) : // eslint-disable-next-line unicorn/no-null

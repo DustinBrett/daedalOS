@@ -25,8 +25,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   const { menu: baseMenu = {}, setMenu } = useMenu();
   const {
     items,
-    offsetX = true,
-    offsetY = true,
+    staticX = 0,
+    staticY = 0,
     x = 0,
     y = 0,
   } = subMenu || baseMenu || {};
@@ -64,7 +64,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     const [vh, vw] = [viewHeight(), viewWidth()];
     const newOffset = { x: 0, y: 0 };
 
-    if (offsetX) {
+    if (!staticX) {
       const subMenuOffscreenX = Boolean(subMenu) && menuX + width > vw;
 
       newOffset.x =
@@ -79,7 +79,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
       if (adjustedOffsetX > 0) newOffset.x = adjustedOffsetX;
     }
 
-    if (offsetY) {
+    if (!staticY) {
       const bottomOffset = y + height > vh ? vh - y : 0;
       const topAdjustedBottomOffset =
         bottomOffset + height > vh ? 0 : bottomOffset;
@@ -91,7 +91,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     }
 
     setOffset(newOffset);
-  }, [offsetX, offsetY, subMenu, x, y]);
+  }, [staticX, staticY, subMenu, x, y]);
   const menuCallbackRef = useCallback(
     (ref: HTMLElement) => {
       menuRef.current = ref;
@@ -141,6 +141,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
   useEffect(() => {
     if (!items) offsetCalculated.current = {};
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
@@ -159,8 +160,8 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     <StyledMenu
       ref={menuCallbackRef}
       $isSubMenu={isSubMenu}
-      $x={x - offset.x}
-      $y={y - offset.y}
+      $x={staticX || x - offset.x}
+      $y={staticY || y - offset.y}
       onBlurCapture={resetMenu}
       onContextMenu={haltEvent}
       {...menuTransition}
