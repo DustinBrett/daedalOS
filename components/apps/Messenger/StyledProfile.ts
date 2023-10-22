@@ -20,9 +20,9 @@ const StyledProfile = styled.figure<StyledProfileProps>`
       svg {
         border: none;
         bottom: 2px;
-        color: #000;
+        color: #1d2021;
         cursor: inherit;
-        fill: #000;
+        fill: #1d2021;
         height: 18px;
         left: -2px;
         max-height: auto;

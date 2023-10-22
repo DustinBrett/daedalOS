@@ -9,7 +9,7 @@ const StyledChatLog = styled.ol`
 
   li:not(:first-child) {
     border-radius: 15px;
-    color: #fff;
+    color: #fbf1c7;
     list-style: none;
     margin: 12px;
     padding: 10px 12px;
@@ -28,13 +28,13 @@ const StyledChatLog = styled.ol`
     }
 
     &.sent {
-      background-color: #0084ff;
+      background-color: #458588;
       margin-left: 65px;
       margin-right: 20px;
     }
 
     &.received {
-      background-color: #3e4042;
+      background-color: #504945;
       margin-left: 40px;
       margin-right: 50px;
     }
@@ -47,7 +47,7 @@ const StyledChatLog = styled.ol`
       }
 
       &::before {
-        color: #8b8d92;
+        color: #665c54;
         content: attr(data-timestamp);
         font-size: 11px;
         font-weight: 600;
@@ -111,7 +111,7 @@ const StyledChatLog = styled.ol`
     }
 
     &.cant-decrypt {
-      background-color: #910000;
+      background-color: #cc241d;
       position: relative;
 
       &::after {

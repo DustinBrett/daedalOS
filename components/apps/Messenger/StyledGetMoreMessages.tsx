@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const StyledGetMoreMessages = styled.li`
-  background-color: rgba(68, 69, 70, 50%);
+  background-color: rgba(60, 56, 54, 50%);
 
   &:hover {
-    background-color: rgba(68, 69, 70, 80%);
+    background-color: rgba(60, 56, 54, 80%);
   }
 
   button {

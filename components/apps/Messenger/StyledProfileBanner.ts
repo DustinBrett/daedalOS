@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 const StyledProfileBanner = styled.div`
-  background: linear-gradient(hsla(207, 100%, 72%, 50%), rgba(0, 0, 0, 100%));
-  border-bottom: 1px solid rgb(57, 58, 59);
-  color: #fff;
+  background: linear-gradient(hsla(157, 16%, 58%, 50%), rgba(29, 32, 33, 100%));
+  border-bottom: 1px solid rgb(60, 56, 54);
+  color: #fbf1c7;
   display: flex;
   font-size: 24px;
   font-weight: 700;
@@ -14,7 +14,7 @@ const StyledProfileBanner = styled.div`
   place-content: space-between;
   place-items: center;
   position: relative;
-  text-shadow: 1px 1px 1px #000;
+  text-shadow: 1px 1px 1px #1d2021;
 
   figure {
     display: flex;
@@ -25,7 +25,7 @@ const StyledProfileBanner = styled.div`
     svg,
     img {
       aspect-ratio: 1/1;
-      border: 2px solid #fff;
+      border: 2px solid #fbf1c7;
       border-radius: 50%;
       cursor: pointer;
       height: 38px;
@@ -61,20 +61,20 @@ const StyledProfileBanner = styled.div`
     width: 30px;
 
     svg:first-child {
-      background-color: rgb(0, 0, 0, 50%);
+      background-color: rgb(29, 32, 33, 50%);
       border-radius: 5px;
-      color: #fff;
-      fill: #fff;
+      color: #fbf1c7;
+      fill: #fbf1c7;
       height: 24px;
-      outline: 4px solid rgb(0, 0, 0, 50%);
+      outline: 4px solid rgb(29, 32, 33, 50%);
       pointer-events: none;
       width: 24px;
     }
 
     &:hover {
       svg:first-child {
-        background-color: rgb(0, 0, 0, 75%);
-        outline: 4px solid rgb(0, 0, 0, 75%);
+        background-color: rgb(29, 32, 33, 75%);
+        outline: 4px solid rgb(29, 32, 33, 75%);
       }
     }
   }
@@ -90,7 +90,7 @@ const StyledProfileBanner = styled.div`
     width: 100%;
 
     ol {
-      background-color: rgb(0, 0, 0, 50%);
+      background-color: rgb(29, 32, 33, 50%);
       border-radius: 10px;
       display: flex;
       gap: 2px;

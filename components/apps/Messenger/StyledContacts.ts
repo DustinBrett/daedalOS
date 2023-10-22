@@ -4,7 +4,7 @@ import ScrollBars from "styles/common/ScrollBars";
 
 const StyledContacts = styled(motion.ol)`
   ${ScrollBars()}
-  background-color: #242526;
+  background-color: #1D2021;
   height: 100%;
   overflow-y: auto;
   position: absolute;
@@ -14,7 +14,7 @@ const StyledContacts = styled(motion.ol)`
 
   li {
     border-radius: 10px;
-    color: #fff;
+    color: #fbf1c7;
     cursor: pointer;
     margin: 8px;
     padding: 8px;
@@ -25,12 +25,12 @@ const StyledContacts = styled(motion.ol)`
     }
 
     &:hover {
-      background-color: #3a3b3c;
+      background-color: #504945;
     }
 
     &:focus,
     &.selected {
-      background-color: rgba(45, 136, 255, 20%);
+      background-color: rgba(131, 165, 152, 20%);
     }
 
     figure {
@@ -67,14 +67,14 @@ const StyledContacts = styled(motion.ol)`
         place-items: flex-start;
 
         > span {
-          color: #e4e6eb;
+          color: #ebdbb2;
           cursor: pointer;
           font-size: 17px;
           font-weight: 600;
         }
 
         > div {
-          color: #b0b3b8;
+          color: #d5c4a1;
           cursor: pointer;
           display: flex;
           font-size: 14px;
@@ -88,13 +88,13 @@ const StyledContacts = styled(motion.ol)`
             white-space: nowrap;
 
             &.unread {
-              color: #fff;
+              color: #fbf1c7;
               font-weight: 600;
             }
           }
 
           div:last-child {
-            color: #8b8d92;
+            color: #928374;
             cursor: pointer;
             padding-right: 10px;
           }
@@ -103,7 +103,7 @@ const StyledContacts = styled(motion.ol)`
     }
 
     &.unread::after {
-      background-color: rgb(46, 137, 255);
+      background-color: rgb(69, 133, 136);
       border-radius: 50%;
       content: "";
       cursor: pointer;

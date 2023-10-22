@@ -5,9 +5,9 @@ const StyledSendMessage = styled.div`
   place-items: center;
 
   textarea {
-    background-color: #3a3b3c;
+    background-color: #3c3836;
     border-radius: 20px;
-    color: #b0b3b8;
+    color: #fbf1c7;
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 14px;
     height: 35px;
@@ -19,14 +19,14 @@ const StyledSendMessage = styled.div`
 
     &:disabled {
       &::placeholder {
-        color: rgba(117, 117, 117, 75%);
+        color: rgba(146, 131, 116, 75%);
       }
     }
   }
 
   svg {
     cursor: pointer;
-    fill: #0084ff;
+    fill: #458588;
     height: 28px;
     margin: 2px 12px 0 10px;
     width: 28px;
@@ -36,7 +36,7 @@ const StyledSendMessage = styled.div`
     }
 
     &:hover {
-      fill: rgb(0, 132, 255, 75%);
+      fill: rgb(131, 165, 152, 75%);
     }
   }
 
@@ -45,7 +45,7 @@ const StyledSendMessage = styled.div`
 
     &:disabled {
       svg {
-        fill: #3a3b3c;
+        fill: #32302f;
       }
     }
   }

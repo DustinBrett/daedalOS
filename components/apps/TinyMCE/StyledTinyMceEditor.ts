@@ -26,7 +26,7 @@ const StyledTinyMceEditor = styled.div`
 
         &::after {
           bottom: 0;
-          color: rgb(200, 200, 200);
+          color: rgb(235, 219, 178);
           content: "Edit Document";
           cursor: pointer;
           display: flex;
@@ -46,7 +46,7 @@ const StyledTinyMceEditor = styled.div`
         }
 
         &:hover::after {
-          background-color: rgba(255, 255, 255, 15%);
+          background-color: rgba(251, 241, 199, 15%);
         }
 
         .tox-toolbar-overlord {
@@ -62,7 +62,7 @@ const StyledTinyMceEditor = styled.div`
     }
 
     iframe {
-      background-color: #202124;
+      background-color: #1d2021;
     }
   }
 `;
