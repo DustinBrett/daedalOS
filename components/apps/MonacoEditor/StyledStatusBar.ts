@@ -11,7 +11,7 @@ const StyledStatusBar = styled.footer`
   place-content: space-between;
   position: fixed;
   width: 100%;
-  z-index: 1000;
+  z-index: 1;
 
   ol {
     display: flex;
