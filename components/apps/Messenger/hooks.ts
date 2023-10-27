@@ -24,7 +24,7 @@ import type {
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import type { Filter, Event as NostrEvent, Relay, Sub } from "nostr-tools";
-import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type { NIP05Result } from "nostr-tools/lib/types/nip05";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 

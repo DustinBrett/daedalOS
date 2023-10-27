@@ -28,8 +28,8 @@ import {
   verifiedSymbol,
   verifySignature,
 } from "nostr-tools";
-import type { NIP05Result } from "nostr-tools/lib/nip05";
-import type { ProfilePointer } from "nostr-tools/lib/nip19";
+import type { NIP05Result } from "nostr-tools/lib/types/nip05";
+import type { ProfilePointer } from "nostr-tools/lib/types/nip19";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export const getRelayUrls = async (): Promise<string[]> => {
