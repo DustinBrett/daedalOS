@@ -404,7 +404,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else if (!isShortcut || isYTUrl) {
+        } else if (!isShortcut || typeof getIcon === "function" || isYTUrl) {
           if (isIconCached.current) return;
 
           const cachedIconPath = join(
