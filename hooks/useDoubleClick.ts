@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
-const MAX_MOVES = 5;
+const MAX_MOVES = 12;
 
 const useDoubleClick = (
   handler: React.MouseEventHandler,
