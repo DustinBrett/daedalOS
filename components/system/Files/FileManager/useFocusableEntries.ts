@@ -99,10 +99,10 @@ const useFocusableEntries = (
         focusEntry(file);
       }
     };
-    const onMouseUp: React.MouseEventHandler = ({ pageX, pageY }) => {
+    const onMouseUp: React.MouseEventHandler = ({ ctrlKey, pageX, pageY }) => {
       const { x, y } = mouseDownPositionRef.current;
 
-      if (!isOnlyFocusedEntry && x === pageX && y === pageY) {
+      if (!ctrlKey && !isOnlyFocusedEntry && x === pageX && y === pageY) {
         blurEntry();
         focusEntry(file);
       }
