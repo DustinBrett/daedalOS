@@ -115,6 +115,17 @@ const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
       clock: { fontSize },
     },
   } = useTheme();
+  const getMeasuredWidth = useCallback(
+    () =>
+      Math.min(
+        Math.max(
+          CLOCK_CANVAS_BASE_WIDTH,
+          Math.ceil(measureText(LARGEST_CLOCK_TEXT, fontSize, systemFont))
+        ),
+        CLOCK_CANVAS_BASE_WIDTH * 1.5
+      ),
+    [fontSize, systemFont]
+  );
   const clockCallbackRef = useCallback(
     (clockContainer: HTMLDivElement | null) => {
       if (
@@ -124,13 +135,7 @@ const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
       ) {
         [...clockContainer.children].forEach((element) => element.remove());
 
-        clockSize.current.width = Math.min(
-          Math.max(
-            CLOCK_CANVAS_BASE_WIDTH,
-            Math.ceil(measureText(LARGEST_CLOCK_TEXT, fontSize, systemFont))
-          ),
-          CLOCK_CANVAS_BASE_WIDTH * 1.5
-        );
+        clockSize.current.width = getMeasuredWidth();
         setClockWidth(clockSize.current.width);
 
         offScreenClockCanvas.current = createOffscreenCanvas(
@@ -183,8 +188,8 @@ const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
           );
 
       monitorPixelRatio();
-    }
-  }, [currentWorker, supportsOffscreenCanvas]);
+    } else setClockWidth(getMeasuredWidth());
+  }, [currentWorker, getMeasuredWidth, setClockWidth, supportsOffscreenCanvas]);
 
   // eslint-disable-next-line unicorn/no-null
   if (!time) return null;

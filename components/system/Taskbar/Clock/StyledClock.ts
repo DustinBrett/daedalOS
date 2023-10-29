@@ -17,6 +17,7 @@ const StyledClock = styled.div<StyledClockProps>`
   place-items: center;
   position: absolute;
   right: 0;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.taskbar.hover};
