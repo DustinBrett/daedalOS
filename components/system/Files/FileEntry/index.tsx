@@ -193,10 +193,6 @@ const FileEntry: FC<FileEntryProps> = ({
       return "";
     },
     directory,
-    onDragLeave: () =>
-      buttonRef.current?.parentElement?.classList.remove("focus-within"),
-    onDragOver: () =>
-      buttonRef.current?.parentElement?.classList.add("focus-within"),
   });
   const openInFileExplorer = pid === "FileExplorer";
   const truncatedName = useMemo(
