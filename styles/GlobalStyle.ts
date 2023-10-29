@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: 100%;
     overflow: hidden;
+    position: fixed;
     text-size-adjust: none;
   }
 
