@@ -22,10 +22,6 @@ export const DEFAULT_CLOCK_SOURCE: ClockSource = "local";
 
 export const DEFAULT_THEME: ThemeName = "defaultTheme";
 
-export const DEFAULT_AI_API = "HuggingFace:"; // Engine:Key
-
-export const DEFAULT_NON_WEBGPU_ENGINE = "HuggingFace";
-
 export const DEFAULT_WALLPAPER = "VANTA";
 
 export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
