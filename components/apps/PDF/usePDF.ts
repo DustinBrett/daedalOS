@@ -60,13 +60,8 @@ const usePDF = ({
           containerRef.current?.clientWidth,
           pageWidth
         );
-        const { info } = await doc.getMetadata();
 
         argument(id, "scale", initialScale);
-
-        if ((info as MetadataInfo)?.Title) {
-          argument(id, "subTitle", (info as MetadataInfo).Title);
-        }
 
         viewport = page.getViewport({ scale: initialScale });
       }
@@ -91,6 +86,7 @@ const usePDF = ({
       !renderingRef.current
     ) {
       renderingRef.current = true;
+      argument(id, "rendering", true);
 
       // eslint-disable-next-line no-param-reassign
       containerRef.current.scrollTop = 0;
@@ -99,7 +95,9 @@ const usePDF = ({
 
       const doc = await window.pdfjsLib.getDocument(await readFile(url))
         .promise;
+      const { info } = await doc.getMetadata();
 
+      argument(id, "subTitle", (info as MetadataInfo).Title);
       argument(id, "count", doc.numPages);
       prependFileToTitle(basename(url));
 
@@ -107,6 +105,7 @@ const usePDF = ({
 
       for (let i = 0; i < doc.numPages; i += 1) {
         if (abortControllerRef.current.signal.aborted) break;
+        if (i === 1) setLoading(false);
 
         // eslint-disable-next-line no-await-in-loop
         const page = await renderPage(i + 1, doc);
@@ -114,6 +113,7 @@ const usePDF = ({
         setPages((currentPages) => [...currentPages, page]);
       }
 
+      argument(id, "rendering", false);
       renderingRef.current = false;
     }
 

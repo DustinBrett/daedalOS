@@ -27,6 +27,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
     count = 0,
     page: currentPage = 1,
     componentWindow,
+    rendering = false,
     scale = 1,
     subTitle = "",
     url = "",
@@ -63,7 +64,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
         <li className="scale">
           <Button
             className="subtract"
-            disabled={scale === 0.25 || count === 0}
+            disabled={rendering || scale === 0.25 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
@@ -72,7 +73,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             <Subtract />
           </Button>
           <input
-            disabled={count === 0}
+            disabled={rendering || count === 0}
             enterKeyHint="done"
             onChange={({ target }) => {
               if (
@@ -103,7 +104,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
           />
           <Button
             className="add"
-            disabled={scale === 5 || count === 0}
+            disabled={rendering || scale === 5 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
