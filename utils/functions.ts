@@ -169,6 +169,62 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
+const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {
+  for (let x = 0; x < width; ++x) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+const columnBlank = (
+  imageData: ImageData,
+  width: number,
+  x: number,
+  top: number,
+  bottom: number
+): boolean => {
+  for (let y = top; y < bottom; ++y) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+export const trimCanvasToTopLeft = (
+  canvas: HTMLCanvasElement
+): HTMLCanvasElement => {
+  const ctx = canvas.getContext("2d", {
+    alpha: true,
+    desynchronized: true,
+    willReadFrequently: true,
+  });
+
+  if (!ctx) return canvas;
+
+  const { height, ownerDocument, width } = canvas;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const { height: bottom, width: right } = imageData;
+
+  let top = 0;
+  let left = 0;
+
+  while (top < bottom && rowBlank(imageData, width, top)) ++top;
+  while (left < right && columnBlank(imageData, width, left, top, bottom)) {
+    ++left;
+  }
+
+  const trimmed = ctx.getImageData(left, top, right - left, bottom - top);
+  const copy = ownerDocument.createElement("canvas");
+  const copyCtx = copy.getContext("2d");
+
+  if (!copyCtx) return canvas;
+
+  copy.width = trimmed.width;
+  copy.height = trimmed.height;
+  copyCtx.putImageData(trimmed, 0, 0);
+
+  return copy;
+};
+
 const loadScript = (
   src: string,
   defer?: boolean,

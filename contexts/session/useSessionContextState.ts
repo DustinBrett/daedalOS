@@ -22,6 +22,7 @@ import {
   DEFAULT_WALLPAPER_FIT,
   DESKTOP_PATH,
   SESSION_FILE,
+  SYSTEM_FILES,
 } from "utils/constants";
 import { updateIconPositionsIfEmpty } from "utils/functions";
 
@@ -119,7 +120,9 @@ const useSessionContextState = (): SessionContextState => {
                 [
                   ...new Set([
                     ...desktopFileOrder,
-                    ...(await readdir(DESKTOP_PATH)),
+                    ...(await readdir(DESKTOP_PATH)).filter(
+                      (entry) => !SYSTEM_FILES.has(entry)
+                    ),
                   ]),
                 ],
               ],
