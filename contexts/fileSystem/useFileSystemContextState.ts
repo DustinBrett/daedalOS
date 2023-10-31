@@ -89,7 +89,7 @@ type FileSystemContextState = AsyncFS & {
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
 
 const {
-  FileSystem: { Emscripten, FileSystemAccess, IsoFS, ZipFS },
+  FileSystem: { Emscripten, FileSystemAccess },
 } = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
@@ -304,11 +304,17 @@ const useFileSystemContextState = (): FileSystemContextState => {
           }
         };
 
-        if (getExtension(url) === ".iso") {
-          IsoFS?.Create({ data: fileData }, createFs);
-        } else {
-          ZipFS?.Create({ zipData: fileData }, createFs);
-        }
+        import("public/System/BrowserFS/iso_zip_fs.min.js").then((IsoZipFS) => {
+          const {
+            FileSystem: { IsoFS, ZipFS },
+          } = IsoZipFS as typeof IBrowserFS;
+
+          if (getExtension(url) === ".iso") {
+            IsoFS?.Create({ data: fileData }, createFs);
+          } else {
+            ZipFS?.Create({ zipData: fileData }, createFs);
+          }
+        });
       });
     },
     [readFile, rootFs]
