@@ -52,6 +52,17 @@ type TestPropsWithBrowser = TestProps & {
   browserName: string;
 };
 
+type TestPropsWithSelection = TestProps & {
+  container?: string;
+  selection: {
+    height: number;
+    up?: boolean;
+    width: number;
+    x: number;
+    y: number;
+  };
+};
+
 type DocumentWithVendorFullscreen = Document & {
   mozFullScreenElement?: HTMLElement;
   webkitFullscreenElement?: HTMLElement;
@@ -463,9 +474,6 @@ export const contextMenuIsVisible = async ({
 export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
 
-export const selectionIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.locator(SELECTION_SELECTOR)).toBeVisible();
-
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
 
@@ -746,4 +754,26 @@ export const appIsOpen = async (
 
   await windowsAreVisible({ page });
   await windowTitlebarTextIsVisible(label, { page });
+};
+
+export const selectArea = async ({
+  container = SELECTION_SELECTOR,
+  page,
+  selection,
+}: TestPropsWithSelection): Promise<void> => {
+  const { x = 0, y = 0, width = 0, height = 0, up = false } = selection || {};
+  await page.mouse.move(x, y);
+  await page.mouse.down({ button: "left" });
+  await page.mouse.move(x + width, y + height);
+
+  await expect(page.locator(container)).toBeVisible();
+
+  const boundingBox = await page.locator(container).boundingBox();
+
+  expect(boundingBox?.width).toEqual(width);
+  expect(boundingBox?.height).toEqual(height);
+  expect(boundingBox?.x).toEqual(x);
+  expect(boundingBox?.y).toEqual(y);
+
+  if (up) await page.mouse.up({ button: "left" });
 };

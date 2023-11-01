@@ -5,6 +5,8 @@ import {
   DESKTOP_SELECTOR,
   DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS,
   FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR,
+  FILE_EXPLORER_SELECTION_SELECTOR,
+  FILE_EXPLORER_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
@@ -54,6 +56,7 @@ import {
   pageHasTitle,
   pressFileExplorerAddressBarKeys,
   pressFileExplorerEntryKeys,
+  selectArea,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
   windowTitlebarTextIsVisible,
@@ -295,6 +298,26 @@ test.describe("has files & folders", () => {
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     await dragFileExplorerEntryToDesktop(TEST_ROOT_FILE, { page });
     await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
+  });
+
+  test("can select multiple entries", async ({ page }) => {
+    await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
+
+    const { x = 0, y = 0 } =
+      (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};
+
+    await selectArea({
+      container: FILE_EXPLORER_SELECTION_SELECTOR,
+      page,
+      selection: {
+        height: 70,
+        up: true,
+        width: 140,
+        x: x + 3,
+        y: y + 3,
+      },
+    });
+    await expect(page.locator(".focus-within")).toHaveCount(2);
   });
 
   // TEST: can drop (from Desktop)
