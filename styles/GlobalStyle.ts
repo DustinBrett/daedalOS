@@ -30,7 +30,10 @@ const GlobalStyle = createGlobalStyle`
   html {
     background-color: ${({ theme }) => theme.colors.background};
     background-position: center;
-    height: fill-available;
+    /* stylelint-disable value-no-vendor-prefix */
+    height: -webkit-fill-available;
+    height: -moz-available;
+    /* stylelint-enable value-no-vendor-prefix */
     transition: background-image 1.25s linear;
   }
 
