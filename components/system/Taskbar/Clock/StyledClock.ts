@@ -11,7 +11,7 @@ const StyledClock = styled.div<StyledClockProps>`
   height: 100%;
   max-width: ${({ theme, $width }) =>
     `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
-  min-width: ${({ $width }) => `${$width}px`};
+  min-width: ${({ $width }) => $width}px;
   padding: ${({ theme }) => `0 ${theme.sizes.clock.padding}px`};
   place-content: center;
   place-items: center;
