@@ -29,8 +29,8 @@ const sizes = {
     rowGap: "28px",
   },
   search: {
-    maxHeight: 354,
-    size: 580,
+    maxHeight: 375,
+    size: 550,
   },
   startMenu: {
     maxHeight: 390,

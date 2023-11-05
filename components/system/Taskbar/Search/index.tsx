@@ -34,32 +34,30 @@ const TABS = ["All", "Documents", "Photos", "Videos"] as const;
 type TabName = (typeof TABS)[number];
 
 type TabData = {
-  description: string;
   icon: React.JSX.Element;
+  subtitle?: string;
   title: string;
 };
 
 const SUGGESTED = [
   "FileExplorer",
   "Terminal",
+  "Messenger",
   "Browser",
   "Paint",
-  "Messenger",
 ] as const;
 
 const METADATA = {
   Documents: {
-    description: "Start typing to search for documents",
     icon: <Documents />,
+    subtitle: "for documents",
     title: "Documents",
   },
   Photos: {
-    description: "Start typing to search photos",
     icon: <Pictures />,
     title: "Photos",
   },
   Videos: {
-    description: "Start typing to search videos",
     icon: <Videos />,
     title: "Videos",
   },
@@ -185,7 +183,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             <div className="tab">
               {METADATA[activeTab].icon}
               <h1>Search {METADATA[activeTab].title.toLowerCase()}</h1>
-              <h3>{METADATA[activeTab].description}</h3>
+              <h3>
+                Start typing to search{" "}
+                {METADATA[activeTab].subtitle ||
+                  METADATA[activeTab].title.toLowerCase()}
+              </h3>
             </div>
           )}
         </div>
