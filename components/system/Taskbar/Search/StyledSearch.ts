@@ -145,20 +145,22 @@ const StyledSearch = styled(motion.nav)`
         li {
           border-radius: 5px;
           display: flex;
+          flex-direction: column;
           height: 51px;
-          place-items: center;
+          place-items: start;
           position: relative;
           width: 100%;
 
           figure {
             display: flex;
-            padding: 15px;
+            padding: 9px 15px;
             place-items: center;
 
             figcaption {
               font-size: 15px;
               font-weight: 400;
               padding-left: 13px;
+              padding-top: 1px;
             }
           }
 
