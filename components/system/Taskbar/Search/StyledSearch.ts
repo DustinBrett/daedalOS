@@ -51,7 +51,7 @@ const StyledSearch = styled(motion.nav)`
   }
 
   .content {
-    animation: fade-in 0.75s;
+    animation: fade-in 0.85s;
     height: calc(100% - 40px);
 
     nav {
