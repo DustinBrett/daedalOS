@@ -1,3 +1,4 @@
+import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
@@ -52,7 +53,6 @@ import {
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 import type { URLTrack } from "webamp";
-import { EXTRACTABLE_EXTENSIONS } from "./constants";
 
 const { alias } = PACKAGE_DATA;
 
