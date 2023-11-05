@@ -1,5 +1,5 @@
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
-import StyledStartButton from "components/system/Taskbar/StartButton/StyledStartButton";
+import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useCallback, useRef, useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
@@ -79,15 +79,16 @@ const StartButton: FC<StartButtonProps> = ({
   );
 
   return (
-    <StyledStartButton
+    <StyledTaskbarButton
       $active={startMenuVisible}
       onClick={onClick}
       onMouseOver={preloaded ? undefined : preloadIcons}
+      $highlight
       {...label("Start")}
       {...useTaskbarContextMenu(true)}
     >
       <StartButtonIcon />
-    </StyledStartButton>
+    </StyledTaskbarButton>
   );
 };
 

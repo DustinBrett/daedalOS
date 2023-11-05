@@ -4,7 +4,8 @@ import { viewHeight } from "utils/functions";
 
 const useTaskbarItemTransition = (
   maxHeight: number,
-  dynamicPadding = true
+  dynamicPadding = true,
+  paddingOffset = 0.5
 ): MotionProps => {
   const height = Math.min(maxHeight, viewHeight() - TASKBAR_HEIGHT);
 
@@ -29,7 +30,7 @@ const useTaskbarItemTransition = (
       },
       initial: {
         height: `${height * 0.75}px`,
-        paddingTop: dynamicPadding ? `${height * 0.5}px` : 0,
+        paddingTop: dynamicPadding ? `${height * paddingOffset}px` : 0,
       },
     },
   };

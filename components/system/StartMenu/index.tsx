@@ -1,16 +1,17 @@
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
-import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
+import StyledBackground from "components/system/Taskbar/StyledBackground";
+import { maybeCloseTaskbarMenu } from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import type { Variant } from "framer-motion";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import {
-  DEFAULT_SCROLLBAR_WIDTH,
   FOCUSABLE_ELEMENT,
   HOME,
   PREVENT_SCROLL,
+  THIN_SCROLLBAR_WIDTH,
 } from "utils/constants";
 
 type StartMenuProps = {
@@ -23,45 +24,28 @@ type StyleVariant = Variant & {
 
 const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   const menuRef = useRef<HTMLElement | null>(null);
-  const [showScrolling, setShowScrolling] = useState(false);
-  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) => {
-    const { width = 0 } = menuRef.current?.getBoundingClientRect() || {};
-
-    setShowScrolling(clientX > width - DEFAULT_SCROLLBAR_WIDTH);
-  };
-  const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
-    relatedTarget,
-  }) => {
-    const focusedElement = relatedTarget as HTMLElement | null;
-    const focusedInsideMenu =
-      focusedElement && menuRef.current?.contains(focusedElement);
-
-    if (!focusedInsideMenu) {
-      const focusedTaskbar = focusedElement === menuRef.current?.nextSibling;
-      const focusedStartButton =
-        focusedElement?.parentElement === menuRef.current?.nextSibling;
-
-      if (!focusedTaskbar && !focusedStartButton) {
-        toggleStartMenu(false);
-      } else {
-        menuRef.current?.focus(PREVENT_SCROLL);
-      }
-    }
-  };
   const {
     sizes: { startMenu },
   } = useTheme();
+  const [showScrolling, setShowScrolling] = useState(false);
+  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) =>
+    setShowScrolling(clientX > startMenu.size - THIN_SCROLLBAR_WIDTH);
+  const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
+    element?.focus(PREVENT_SCROLL);
+    menuRef.current = element;
+  }, []);
+
   const startMenuTransition = useTaskbarItemTransition(startMenu.maxHeight);
   const { height } =
     (startMenuTransition.variants?.active as StyleVariant) ?? {};
 
-  useLayoutEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
-
   return (
     <StyledStartMenu
-      ref={menuRef}
+      ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
-      onBlurCapture={maybeCloseMenu}
+      onBlurCapture={(event) =>
+        maybeCloseTaskbarMenu(event, menuRef.current, toggleStartMenu)
+      }
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleStartMenu(false);
       }}
@@ -69,7 +53,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground $height={height} />
+      <StyledBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
         url={`${HOME}/Start Menu`}
