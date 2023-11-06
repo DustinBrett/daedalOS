@@ -7,6 +7,7 @@ import {
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
 import Details from "components/system/Taskbar/Search/Details";
 import ResultSection from "components/system/Taskbar/Search/ResultSection";
+import StyledResults from "components/system/Taskbar/Search/StyledResults";
 import StyledSearch from "components/system/Taskbar/Search/StyledSearch";
 import StyledSections from "components/system/Taskbar/Search/StyledSections";
 import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
@@ -41,7 +42,7 @@ type StyleVariant = Variant & {
 
 const TABS = ["All", "Documents", "Photos", "Videos"] as const;
 
-type TabName = (typeof TABS)[number];
+export type TabName = (typeof TABS)[number];
 
 type TabData = {
   icon: React.JSX.Element;
@@ -140,6 +141,20 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     [activeTab, results, subResults]
   );
   const [singleLineView, setSingleLineView] = useState(false);
+  const changeTab = useCallback(
+    (tab: TabName) => {
+      if (inputRef.current) {
+        inputRef.current.value = (
+          tab === "All"
+            ? inputRef.current.value
+            : `${tab}: ${inputRef.current.value}`
+        ).replace(`${activeTab}: `, "");
+      }
+
+      setActiveTab(tab);
+    },
+    [activeTab]
+  );
 
   useEffect(() => {
     if (firstResult?.ref && (!bestMatch || bestMatch !== firstResult?.ref)) {
@@ -182,18 +197,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               <li
                 key={tab}
                 className={tab === activeTab ? "active" : undefined}
-                onClick={() => {
-                  if (inputRef.current) {
-                    const tabText = `${activeTab}: `;
-                    inputRef.current.value = (
-                      tab === "All"
-                        ? inputRef.current.value
-                        : `${tab}: ${inputRef.current.value}`
-                    ).replace(tabText, "");
-                  }
-
-                  setActiveTab(tab);
-                }}
+                onClick={() => changeTab(tab)}
                 {...label(
                   tab === "All"
                     ? "Find the most relevant results on this PC"
@@ -270,16 +274,17 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           )}
           {searchTerm &&
             (firstResult ? (
-              <div className="results">
+              <StyledResults>
                 {(!singleLineView || !activeItem) && (
                   <div className="list">
                     {firstResult && (
                       <ResultSection
                         activeItem={activeItem}
+                        activeTab={activeTab}
                         results={[firstResult]}
                         searchTerm={searchTerm}
                         setActiveItem={setActiveItem}
-                        title="Best match"
+                        title={"Best match" as TabName}
                         details
                       />
                     )}
@@ -289,12 +294,14 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                           <ResultSection
                             key={title}
                             activeItem={activeItem}
+                            activeTab={activeTab}
+                            changeTab={changeTab}
                             results={subResult.filter(
                               (result) => firstResult !== result
                             )}
                             searchTerm={searchTerm}
                             setActiveItem={setActiveItem}
-                            title={title}
+                            title={title as TabName}
                           />
                         )
                     )}
@@ -306,7 +313,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     url={activeItem || firstResult?.ref}
                   />
                 )}
-              </div>
+              </StyledResults>
             ) : (
               // TODO: Debounce showing this at first
               <div className="no-results">NO RESULTS</div>

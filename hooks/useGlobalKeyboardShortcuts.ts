@@ -1,3 +1,7 @@
+import {
+  SEARCH_BUTTON_LABEL,
+  START_BUTTON_LABEL,
+} from "components/system/Taskbar/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useViewport } from "contexts/viewport";
@@ -16,10 +20,10 @@ declare global {
   }
 }
 
-const openStartMenu = (): void =>
+const openByTitle = (title: string): void =>
   (
     document.querySelector(
-      "main>nav>button[title='Start']"
+      `main>nav>button[title='${title}']`
     ) as HTMLButtonElement
   )?.click();
 
@@ -40,7 +44,7 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
   return false;
 };
 
-const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R"]);
+const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R", "S"]);
 
 const updateKeyStates = (event: KeyboardEvent): void => {
   const { altKey, ctrlKey, shiftKey, metaKey } = event;
@@ -56,11 +60,12 @@ const useGlobalKeyboardShortcuts = (): void => {
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
-    ESCAPE: openStartMenu,
+    ESCAPE: () => openByTitle(START_BUTTON_LABEL),
     F10: () => open("Terminal"),
     F12: () => open("DevTools"),
     F5: () => window.location.reload(),
     R: () => open("Run"),
+    S: () => openByTitle(SEARCH_BUTTON_LABEL),
   });
 
   useEffect(() => {
@@ -123,7 +128,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
-        else openStartMenu();
+        else openByTitle(START_BUTTON_LABEL);
       }
     };
 
