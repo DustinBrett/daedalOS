@@ -5,6 +5,7 @@ import {
   Pictures,
   Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
+import Details from "components/system/Taskbar/Search/Details";
 import ResultSection from "components/system/Taskbar/Search/ResultSection";
 import StyledSearch from "components/system/Taskbar/Search/StyledSearch";
 import StyledSections from "components/system/Taskbar/Search/StyledSections";
@@ -69,6 +70,7 @@ const METADATA = {
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
+  // TODO: Figure these out, ranApps & pastSearches
   const ranApps = [];
   const pastSearches = [];
   const [activeTab, setActiveTab] = useState<TabName>("All");
@@ -94,7 +96,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     menuRef.current = element;
   }, []);
   const [searchTerm, setSearchTerm] = useState("");
-  const [firstResult, ...results] = useSearch(searchTerm);
+  const results = useSearch(searchTerm);
   const [bestMatch, setBestMatch] = useState("");
   const [activeItem, setActiveItem] = useState("");
   const { open } = useProcesses();
@@ -128,6 +130,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           [title, subResult.slice(0, 10)] as [string, lunr.Index.Result[]]
       ),
     [results]
+  );
+  const firstResult = useMemo(
+    () =>
+      activeTab === "All"
+        ? results[0]
+        : Object.fromEntries(subResults)[activeTab]?.[0],
+    [activeTab, results, subResults]
   );
 
   useEffect(() => {
@@ -165,7 +174,18 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               <li
                 key={tab}
                 className={tab === activeTab ? "active" : undefined}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  if (inputRef.current) {
+                    const tabText = `${activeTab}: `;
+                    inputRef.current.value = (
+                      tab === "All"
+                        ? inputRef.current.value
+                        : `${tab}: ${inputRef.current.value}`
+                    ).replace(tabText, "");
+                  }
+
+                  setActiveTab(tab);
+                }}
                 {...label(
                   tab === "All"
                     ? "Find the most relevant results on this PC"
@@ -254,22 +274,27 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                       details
                     />
                   )}
-                  {subResults.map(([title, subResult]) => (
-                    <ResultSection
-                      key={title}
-                      activeItem={activeItem}
-                      results={subResult}
-                      searchTerm={searchTerm}
-                      setActiveItem={setActiveItem}
-                      title={title}
-                    />
-                  ))}
+                  {subResults.map(
+                    ([title, subResult]) =>
+                      (activeTab === "All" || activeTab === title) && (
+                        <ResultSection
+                          key={title}
+                          activeItem={activeItem}
+                          results={subResult.filter(
+                            (result) => firstResult !== result
+                          )}
+                          searchTerm={searchTerm}
+                          setActiveItem={setActiveItem}
+                          title={title}
+                        />
+                      )
+                  )}
                 </div>
-                <div className="details">{activeItem || firstResult?.ref}</div>
+                <Details url={activeItem || firstResult?.ref} />
               </div>
             ) : (
               // TODO: Debounce showing this at first
-              <div>NO RESULTS</div>
+              <div className="no-results">NO RESULTS</div>
             ))}
         </div>
         <motion.div className="search" {...inputTransition}>
@@ -277,7 +302,12 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           <input
             ref={delayedFocusOnRenderCallback}
             onChange={() => {
-              setSearchTerm(inputRef.current?.value ?? "");
+              const tabAppend = activeTab === "All" ? "" : `${activeTab}: `;
+              const value = inputRef.current?.value.startsWith(tabAppend)
+                ? inputRef.current?.value.replace(tabAppend, "")
+                : inputRef.current?.value;
+
+              setSearchTerm(value ?? "");
             }}
             placeholder="Type here to search"
             type="text"

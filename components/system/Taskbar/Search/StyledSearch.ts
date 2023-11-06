@@ -69,6 +69,16 @@ const StyledSearch = styled(motion.nav)`
       }
     }
 
+    .no-results {
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      font-size: 30px;
+      height: calc(100% - 52px);
+      place-content: center;
+      place-items: center;
+    }
+
     .tab {
       color: rgb(175, 175, 175);
       display: flex;
