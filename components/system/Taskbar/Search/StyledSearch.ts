@@ -36,7 +36,11 @@ const StyledSearch = styled(motion.nav)`
 
       &::placeholder {
         color: #000;
+        inset: 0;
+        left: 37px;
         opacity: 100%;
+        position: absolute;
+        top: 10px;
       }
     }
 
@@ -98,110 +102,137 @@ const StyledSearch = styled(motion.nav)`
     flex-direction: column;
     height: 100%;
     width: 100%;
+  }
 
-    .tabs {
-      border-bottom: 1px solid hsla(0, 0%, 13%, 40%);
-      color: #fff;
-      display: flex;
-      font-size: 12px;
-      font-weight: 600;
-      gap: 1px;
-      padding: 2px 13px 0;
+  .results {
+    color: #fff;
+    display: flex;
+    height: calc(100% - 52px);
+    width: 100%;
 
-      li {
-        color: rgb(215, 215, 215);
-        padding: 15px 13px 14px;
+    .list {
+      ${ScrollBars()}
+      background-color: rgba(40, 40, 40, 95%);
+      overflow-y: auto;
+      width: 50%;
 
-        &.active {
-          border-bottom: 4px solid rgb(0, 120, 215);
-          color: #fff;
-        }
-
-        &:hover {
-          color: #fff;
-        }
-      }
-    }
-
-    .sections {
-      ${ScrollBars()};
-      color: #fff;
-      display: flex;
-      gap: 20px;
-      height: calc(100% - 52px);
-      overflow: hidden auto;
-      place-content: space-evenly;
-      place-items: start;
-
-      figcaption {
+      > figure > figcaption {
         font-size: 13px;
         font-weight: 600;
+        padding-bottom: 8px;
+        padding-left: 12px;
+        padding-top: 7px;
       }
 
-      .suggested {
-        display: grid;
-        padding: 9px 0 15px;
+      li {
+        &.active-item {
+          background-color: rgba(30, 80, 115, 75%);
+        }
 
-        li {
-          border-radius: 5px;
+        position: relative;
+
+        figure {
           display: flex;
-          flex-direction: column;
-          height: 51px;
-          place-items: start;
-          position: relative;
-          width: 100%;
+          padding: 12px;
+          padding-right: 32px;
 
-          figure {
-            display: flex;
-            padding: 9px 15px;
-            place-items: center;
+          picture,
+          img {
+            height: 32px;
+            width: 32px;
+          }
+
+          figcaption {
+            font-size: 8px;
+            margin-top: -2px;
+            max-width: calc(100% - 26px);
+            padding-left: 8px;
+
+            h1 {
+              font-size: 14.5px;
+              font-weight: 400;
+              overflow: hidden;
+              padding-right: 12px;
+              text-overflow: ellipsis;
+
+              span {
+                font-weight: 600;
+              }
+            }
+
+            h2 {
+              font-size: 13px;
+              font-weight: 300;
+              padding-top: 6px;
+            }
+          }
+
+          &.simple {
+            padding: 10px;
+
+            picture,
+            img {
+              height: 16px;
+              width: 16px;
+            }
 
             figcaption {
-              font-size: 15px;
-              font-weight: 400;
-              padding-left: 13px;
-              padding-top: 1px;
-            }
-          }
-
-          &::before {
-            border-top: 1px solid rgba(80, 80, 80, 55%);
-            content: "";
-            height: 100%;
-            position: absolute;
-            width: 100%;
-          }
-
-          &:first-child {
-            &::before {
-              border-top: none;
-            }
-          }
-
-          &:hover {
-            background-color: rgba(80, 80, 80, 75%);
-
-            &::before {
-              border: none;
-            }
-
-            + li {
-              &::before {
-                border-top: none;
+              h1 {
+                font-size: 13px;
+                font-weight: 300;
+                white-space: nowrap;
               }
             }
           }
         }
-      }
 
-      section {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        height: 100%;
-        padding: 20px 24px;
-        width: 100%;
+        div.select {
+          border-left: 1px solid transparent;
+          display: flex;
+          height: 100%;
+          place-content: center;
+          place-items: center;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 26px;
+
+          svg {
+            fill: #fff;
+            height: 16px;
+            width: 16px;
+          }
+        }
+
+        &:hover {
+          background-color: rgba(100, 100, 100, 95%);
+
+          div.select {
+            background-color: rgba(60, 60, 60, 95%);
+            border-left: 1px solid rgba(40, 40, 40, 95%);
+          }
+
+          figure {
+            &:not(:hover) {
+              background-color: rgba(60, 60, 60, 95%);
+            }
+          }
+
+          &.active-item {
+            background-color: rgba(16, 88, 145, 95%);
+          }
+        }
+
+        div.select:hover {
+          background-color: rgba(100, 100, 100, 95%);
+        }
       }
+    }
+
+    .details {
+      background-color: rgba(20, 20, 20, 95%);
+      border: 12px solid rgba(30, 30, 30, 95%);
+      width: 50%;
     }
   }
 `;

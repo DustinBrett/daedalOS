@@ -30,7 +30,7 @@ const sizes = {
   },
   search: {
     maxHeight: 375,
-    size: 550,
+    size: 600,
   },
   startMenu: {
     maxHeight: 390,

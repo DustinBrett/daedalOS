@@ -2,7 +2,10 @@ import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
 import StyledBackground from "components/system/Taskbar/StyledBackground";
-import { maybeCloseTaskbarMenu } from "components/system/Taskbar/functions";
+import {
+  START_BUTTON_LABEL,
+  maybeCloseTaskbarMenu,
+} from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import type { Variant } from "framer-motion";
 import { useCallback, useRef, useState } from "react";
@@ -44,7 +47,13 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
       onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(event, menuRef.current, toggleStartMenu)
+        maybeCloseTaskbarMenu(
+          event,
+          menuRef.current,
+          toggleStartMenu,
+          undefined,
+          START_BUTTON_LABEL
+        )
       }
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleStartMenu(false);

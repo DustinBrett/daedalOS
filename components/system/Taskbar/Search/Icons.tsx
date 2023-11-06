@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const Search = memo(() => (
+export const Search = memo(() => (
   <svg
     style={{
       border: "1px solid transparent",
@@ -20,4 +20,8 @@ const Search = memo(() => (
   </svg>
 ));
 
-export default Search;
+export const RightArrow = memo(() => (
+  <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <path d="m257.5 977.5 465-465.5-465-465.5 45-45 511 510.5-511 510.5z" />
+  </svg>
+));

@@ -1,25 +1,34 @@
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import {
   Documents,
   Pictures,
   Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
+import ResultSection from "components/system/Taskbar/Search/ResultSection";
 import StyledSearch from "components/system/Taskbar/Search/StyledSearch";
+import StyledSections from "components/system/Taskbar/Search/StyledSections";
+import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
 import useSearchInputTransition from "components/system/Taskbar/Search/useSearchInputTransition";
 import StyledBackground from "components/system/Taskbar/StyledBackground";
+import {
+  SEARCH_BUTTON_LABEL,
+  maybeCloseTaskbarMenu,
+} from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import type { Variant } from "framer-motion";
 import { m as motion } from "framer-motion";
-import { useCallback, useRef, useState } from "react";
+import { extname } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
-import { maybeCloseTaskbarMenu } from "../functions";
+import { useSearch } from "utils/search";
 
 type SearchProps = {
   toggleSearch: (showMenu?: boolean) => void;
@@ -39,13 +48,7 @@ type TabData = {
   title: string;
 };
 
-const SUGGESTED = [
-  "FileExplorer",
-  "Terminal",
-  "Messenger",
-  "Browser",
-  "Paint",
-] as const;
+const SUGGESTED = ["FileExplorer", "Terminal", "Messenger", "Browser", "Paint"];
 
 const METADATA = {
   Documents: {
@@ -64,7 +67,7 @@ const METADATA = {
 } as Record<TabName, TabData>;
 
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
-  const focusRef = useRef<HTMLElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
   const ranApps = [];
   const pastSearches = [];
@@ -75,28 +78,75 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const searchTransition = useTaskbarItemTransition(
     search.maxHeight,
     true,
-    0.05
+    0.1
   );
   const inputTransition = useSearchInputTransition();
   const { height } = (searchTransition.variants?.active as StyleVariant) ?? {};
-  const focusOnRenderCallback = useCallback(
+  const delayedFocusOnRenderCallback = useCallback(
     (element: HTMLInputElement | null) => {
-      element?.focus(PREVENT_SCROLL);
-      focusRef.current = element;
+      setTimeout(() => element?.focus(PREVENT_SCROLL), 400);
+      inputRef.current = element;
     },
     []
   );
+  const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
+    element?.focus(PREVENT_SCROLL);
+    menuRef.current = element;
+  }, []);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [firstResult, ...results] = useSearch(searchTerm);
+  const [bestMatch, setBestMatch] = useState("");
+  const [activeItem, setActiveItem] = useState("");
   const { open } = useProcesses();
+  const subResults = useMemo(
+    () =>
+      Object.entries(
+        results.reduce(
+          (acc, result) => {
+            const pid = getProcessByFileExtension(extname(result.ref));
+
+            if (pid === "Photos") {
+              acc.Photos.push(result);
+            } else if (pid === "VideoPlayer") {
+              acc.Videos.push(result);
+            } else {
+              acc.Documents.push(result);
+            }
+
+            return acc;
+          },
+          {
+            Documents: [] as lunr.Index.Result[],
+            Photos: [] as lunr.Index.Result[],
+            Videos: [] as lunr.Index.Result[],
+          }
+        )
+      ).map(
+        ([title, subResult]) =>
+          // TODO: More results on scroll. Only show 10 each max for now
+          // - Add a last entry that gets increases the count depending on the field and if it had more
+          [title, subResult.slice(0, 10)] as [string, lunr.Index.Result[]]
+      ),
+    [results]
+  );
+
+  useEffect(() => {
+    if (firstResult?.ref && (!bestMatch || bestMatch !== firstResult?.ref)) {
+      setBestMatch(firstResult.ref);
+      setActiveItem(firstResult.ref);
+    }
+  }, [bestMatch, firstResult]);
 
   return (
     <StyledSearch
-      ref={menuRef}
+      ref={focusOnRenderCallback}
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,
           menuRef.current,
           toggleSearch,
-          focusRef.current,
+          inputRef.current,
+          SEARCH_BUTTON_LABEL,
           true
         )
       }
@@ -109,7 +159,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       <StyledBackground $height={height} />
       <div>
         <div className="content" onContextMenuCapture={haltEvent}>
-          <ol className="tabs">
+          <StyledTabs>
             {TABS.map((tab) => (
               // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
               <li
@@ -125,7 +175,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 {tab}
               </li>
             ))}
-          </ol>
+          </StyledTabs>
           <nav>
             <Button
               onClick={() => toggleSearch(false)}
@@ -134,8 +184,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               <CloseIcon />
             </Button>
           </nav>
-          {activeTab === "All" && (
-            <div className="sections">
+          {!searchTerm && activeTab === "All" && (
+            <StyledSections>
               <section>
                 <figure>
                   <figcaption>Suggested</figcaption>
@@ -177,9 +227,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   )}
                 </section>
               )}
-            </div>
+            </StyledSections>
           )}
-          {activeTab !== "All" && (
+          {!searchTerm && activeTab !== "All" && (
             <div className="tab">
               {METADATA[activeTab].icon}
               <h1>Search {METADATA[activeTab].title.toLowerCase()}</h1>
@@ -190,12 +240,45 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               </h3>
             </div>
           )}
+          {searchTerm &&
+            (firstResult ? (
+              <div className="results">
+                <div className="list">
+                  {firstResult && (
+                    <ResultSection
+                      activeItem={activeItem}
+                      results={[firstResult]}
+                      searchTerm={searchTerm}
+                      setActiveItem={setActiveItem}
+                      title="Best match"
+                      details
+                    />
+                  )}
+                  {subResults.map(([title, subResult]) => (
+                    <ResultSection
+                      key={title}
+                      activeItem={activeItem}
+                      results={subResult}
+                      searchTerm={searchTerm}
+                      setActiveItem={setActiveItem}
+                      title={title}
+                    />
+                  ))}
+                </div>
+                <div className="details">{activeItem || firstResult?.ref}</div>
+              </div>
+            ) : (
+              // TODO: Debounce showing this at first
+              <div>NO RESULTS</div>
+            ))}
         </div>
         <motion.div className="search" {...inputTransition}>
           <SearchIcon />
           <input
-            ref={focusOnRenderCallback}
-            // BUG: Text jiggles during animation
+            ref={delayedFocusOnRenderCallback}
+            onChange={() => {
+              setSearchTerm(inputRef.current?.value ?? "");
+            }}
             placeholder="Type here to search"
             type="text"
           />

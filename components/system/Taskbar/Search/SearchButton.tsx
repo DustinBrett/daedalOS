@@ -1,7 +1,8 @@
-import SearchIcon from "components/system/Taskbar/Search/Icon";
+import { Search as SearchIcon } from "components/system/Taskbar/Search/Icons";
 import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import { useTheme } from "styled-components";
 
+import { SEARCH_BUTTON_LABEL } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { label } from "utils/functions";
 
@@ -23,7 +24,7 @@ const SearchButton: FC<StartButtonProps> = ({
       $active={searchVisible}
       $left={taskbar.button.width}
       onClick={() => toggleSearch()}
-      {...label("Type here to search")}
+      {...label(SEARCH_BUTTON_LABEL)}
       {...useTaskbarContextMenu()}
     >
       <SearchIcon />

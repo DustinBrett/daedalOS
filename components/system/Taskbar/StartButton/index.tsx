@@ -1,5 +1,6 @@
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
+import { START_BUTTON_LABEL } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useCallback, useRef, useState } from "react";
 import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
@@ -84,7 +85,7 @@ const StartButton: FC<StartButtonProps> = ({
       onClick={onClick}
       onMouseOver={preloaded ? undefined : preloadIcons}
       $highlight
-      {...label("Start")}
+      {...label(START_BUTTON_LABEL)}
       {...useTaskbarContextMenu(true)}
     >
       <StartButtonIcon />
