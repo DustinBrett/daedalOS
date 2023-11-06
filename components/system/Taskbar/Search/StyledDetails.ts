@@ -4,16 +4,16 @@ import ScrollBars from "styles/common/ScrollBars";
 const StyledDetails = styled.div`
   ${ScrollBars()}
   background-color: rgba(20, 20, 20, 95%);
-  box-sizing: content-box;
   border: 8px solid rgba(30, 30, 30, 95%);
   border-bottom: none;
-  width: 50%;
+  box-sizing: content-box;
   display: flex;
-  place-items: center;
-  padding-top: 20px;
   flex-direction: column;
   overflow-x: hidden;
+  padding-top: 20px;
+  place-items: center;
   scrollbar-gutter: auto;
+  width: 50%;
 
   picture {
     padding-bottom: 18px;
