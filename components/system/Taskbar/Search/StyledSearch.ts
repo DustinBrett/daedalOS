@@ -124,7 +124,7 @@ const StyledSearch = styled(motion.nav)`
       ${ScrollBars()}
       background-color: rgba(40, 40, 40, 95%);
       overflow-y: auto;
-      width: 50%;
+      width: 100%;
 
       > figure > figcaption {
         font-size: 13px;
@@ -237,12 +237,6 @@ const StyledSearch = styled(motion.nav)`
           background-color: rgba(100, 100, 100, 95%);
         }
       }
-    }
-
-    .details {
-      background-color: rgba(20, 20, 20, 95%);
-      border: 12px solid rgba(30, 30, 30, 95%);
-      width: 50%;
     }
   }
 `;

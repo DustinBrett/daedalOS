@@ -20,7 +20,7 @@ const TaskbarPanel = (
   max-height: ${height}px;
   max-width: ${width}px;
   position: absolute;
-  width: 100%;
+  width: calc(100% - ${left}px);
   z-index: 10000;
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {

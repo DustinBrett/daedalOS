@@ -80,13 +80,14 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const searchTransition = useTaskbarItemTransition(
     search.maxHeight,
     true,
-    0.1
+    0.1,
+    0
   );
   const inputTransition = useSearchInputTransition();
   const { height } = (searchTransition.variants?.active as StyleVariant) ?? {};
   const delayedFocusOnRenderCallback = useCallback(
     (element: HTMLInputElement | null) => {
-      setTimeout(() => element?.focus(PREVENT_SCROLL), 400);
+      setTimeout(() => element?.focus(PREVENT_SCROLL), 375);
       inputRef.current = element;
     },
     []
@@ -138,11 +139,18 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
         : Object.fromEntries(subResults)[activeTab]?.[0],
     [activeTab, results, subResults]
   );
+  const [singleLineView, setSingleLineView] = useState(false);
 
   useEffect(() => {
     if (firstResult?.ref && (!bestMatch || bestMatch !== firstResult?.ref)) {
       setBestMatch(firstResult.ref);
-      setActiveItem(firstResult.ref);
+
+      if (menuRef.current && menuRef.current.clientWidth > 475) {
+        setActiveItem(firstResult.ref);
+      } else {
+        // TODO: Need to monitor viewport to update this
+        setSingleLineView(true);
+      }
     }
   }, [bestMatch, firstResult]);
 
@@ -263,34 +271,41 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           {searchTerm &&
             (firstResult ? (
               <div className="results">
-                <div className="list">
-                  {firstResult && (
-                    <ResultSection
-                      activeItem={activeItem}
-                      results={[firstResult]}
-                      searchTerm={searchTerm}
-                      setActiveItem={setActiveItem}
-                      title="Best match"
-                      details
-                    />
-                  )}
-                  {subResults.map(
-                    ([title, subResult]) =>
-                      (activeTab === "All" || activeTab === title) && (
-                        <ResultSection
-                          key={title}
-                          activeItem={activeItem}
-                          results={subResult.filter(
-                            (result) => firstResult !== result
-                          )}
-                          searchTerm={searchTerm}
-                          setActiveItem={setActiveItem}
-                          title={title}
-                        />
-                      )
-                  )}
-                </div>
-                <Details url={activeItem || firstResult?.ref} />
+                {(!singleLineView || !activeItem) && (
+                  <div className="list">
+                    {firstResult && (
+                      <ResultSection
+                        activeItem={activeItem}
+                        results={[firstResult]}
+                        searchTerm={searchTerm}
+                        setActiveItem={setActiveItem}
+                        title="Best match"
+                        details
+                      />
+                    )}
+                    {subResults.map(
+                      ([title, subResult]) =>
+                        (activeTab === "All" || activeTab === title) && (
+                          <ResultSection
+                            key={title}
+                            activeItem={activeItem}
+                            results={subResult.filter(
+                              (result) => firstResult !== result
+                            )}
+                            searchTerm={searchTerm}
+                            setActiveItem={setActiveItem}
+                            title={title}
+                          />
+                        )
+                    )}
+                  </div>
+                )}
+                {(!singleLineView || activeItem) && (
+                  <Details
+                    setActiveItem={setActiveItem}
+                    url={activeItem || firstResult?.ref}
+                  />
+                )}
               </div>
             ) : (
               // TODO: Debounce showing this at first

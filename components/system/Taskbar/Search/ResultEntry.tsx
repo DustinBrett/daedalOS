@@ -37,10 +37,10 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const extension = extname(url);
 
   useEffect(() => {
-    if (active) stat(url).then(setStats);
+    if (details) stat(url).then(setStats);
 
     getResultInfo(fs, url).then(setInfo);
-  }, [active, fs, stat, url]);
+  }, [details, fs, stat, url]);
 
   // TODO: Search for directories also?
 

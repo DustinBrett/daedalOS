@@ -12,8 +12,9 @@ const StyledDetails = styled.div`
   overflow-x: hidden;
   padding-top: 20px;
   place-items: center;
+  position: relative;
   scrollbar-gutter: auto;
-  width: 50%;
+  width: 100%;
 
   picture {
     padding-bottom: 18px;
@@ -23,6 +24,9 @@ const StyledDetails = styled.div`
     font-size: 15px;
     font-weight: 400;
     padding-bottom: 7px;
+    padding-left: 12px;
+    padding-right: 12px;
+    word-break: break-all;
   }
 
   h2 {
@@ -90,6 +94,30 @@ const StyledDetails = styled.div`
       &:hover {
         background-color: rgb(42, 42, 42);
       }
+    }
+  }
+
+  .back {
+    border-radius: 50%;
+    display: flex;
+    height: 32px;
+    left: 6px;
+    place-content: center;
+    place-items: center;
+    position: absolute;
+    top: 6px;
+    width: 32px;
+
+    svg {
+      fill: #fff;
+      height: 18px;
+      margin-right: 2px;
+      transform: scaleX(-1);
+      width: 18px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 20%);
     }
   }
 `;

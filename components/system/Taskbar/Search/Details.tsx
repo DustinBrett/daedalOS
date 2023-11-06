@@ -2,7 +2,11 @@ import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
-import { Open, OpenFolder } from "components/system/Taskbar/Search/Icons";
+import {
+  Open,
+  OpenFolder,
+  RightArrow,
+} from "components/system/Taskbar/Search/Icons";
 import StyledDetails from "components/system/Taskbar/Search/StyledDetails";
 import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
@@ -14,7 +18,10 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
 
-const Details: FC<{ url: string }> = ({ url }) => {
+const Details: FC<{
+  setActiveItem: React.Dispatch<React.SetStateAction<string>>;
+  url: string;
+}> = ({ setActiveItem, url }) => {
   const fs = useFileSystem();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
@@ -41,6 +48,10 @@ const Details: FC<{ url: string }> = ({ url }) => {
 
   return info?.url && stats ? (
     <StyledDetails ref={elementRef}>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <div className="back" onClick={() => setActiveItem("")}>
+        <RightArrow />
+      </div>
       <Icon
         displaySize={64}
         imgSize={96}
