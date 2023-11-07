@@ -6,10 +6,13 @@ import {
   Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
 import Details from "components/system/Taskbar/Search/Details";
+import { Games } from "components/system/Taskbar/Search/Icons";
 import ResultSection from "components/system/Taskbar/Search/ResultSection";
+import StyledFiles from "components/system/Taskbar/Search/StyledFiles";
 import StyledResults from "components/system/Taskbar/Search/StyledResults";
 import StyledSearch from "components/system/Taskbar/Search/StyledSearch";
 import StyledSections from "components/system/Taskbar/Search/StyledSections";
+import StyledSuggestions from "components/system/Taskbar/Search/StyledSuggestions";
 import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
 import useSearchInputTransition from "components/system/Taskbar/Search/useSearchInputTransition";
 import StyledBackground from "components/system/Taskbar/StyledBackground";
@@ -23,7 +26,7 @@ import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import type { Variant } from "framer-motion";
 import { m as motion } from "framer-motion";
-import { extname } from "path";
+import { basename, extname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
@@ -42,6 +45,8 @@ type StyleVariant = Variant & {
 
 const TABS = ["All", "Documents", "Photos", "Videos"] as const;
 
+const MAX_SINGLE_LINE = 550;
+
 export type TabName = (typeof TABS)[number];
 
 type TabData = {
@@ -50,7 +55,11 @@ type TabData = {
   title: string;
 };
 
+export const NO_RESULTS = "NO_RESULTS";
+
 const SUGGESTED = ["FileExplorer", "Terminal", "Messenger", "Browser", "Paint"];
+
+const GAMES = ["SpaceCadet", "Quake3", "DXBall"];
 
 const METADATA = {
   Documents: {
@@ -71,9 +80,11 @@ const METADATA = {
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
-  // TODO: Figure these out, ranApps & pastSearches
-  const ranApps = [];
-  const pastSearches = [];
+  // TODO: Come from session, update on open()'s, store only 10, put 5 pre-loaded
+  const recentFiles = [
+    ["/Users/Public/Music/SomaFM - Groove Salad.m3u", "Webamp"],
+    ["/Users/Public/Documents/Blog Posts/Interesting Times.whtml", "TinyMCE"],
+  ];
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },
@@ -86,17 +97,15 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   );
   const inputTransition = useSearchInputTransition();
   const { height } = (searchTransition.variants?.active as StyleVariant) ?? {};
-  const delayedFocusOnRenderCallback = useCallback(
+  const [showCaret, setShowCaret] = useState(false);
+  const focusOnRenderCallback = useCallback(
     (element: HTMLInputElement | null) => {
-      setTimeout(() => element?.focus(PREVENT_SCROLL), 375);
+      element?.focus(PREVENT_SCROLL);
+      setTimeout(() => setShowCaret(true), 400);
       inputRef.current = element;
     },
     []
   );
-  const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
-    element?.focus(PREVENT_SCROLL);
-    menuRef.current = element;
-  }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const results = useSearch(searchTerm);
   const [bestMatch, setBestMatch] = useState("");
@@ -151,27 +160,43 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
         ).replace(`${activeTab}: `, "");
       }
 
+      setActiveItem("");
       setActiveTab(tab);
     },
     [activeTab]
   );
 
   useEffect(() => {
-    if (firstResult?.ref && (!bestMatch || bestMatch !== firstResult?.ref)) {
+    if (
+      firstResult?.ref &&
+      (!bestMatch || bestMatch !== firstResult?.ref || !activeItem)
+    ) {
       setBestMatch(firstResult.ref);
 
-      if (menuRef.current && menuRef.current.clientWidth > 475) {
+      if (menuRef.current && menuRef.current.clientWidth > MAX_SINGLE_LINE) {
         setActiveItem(firstResult.ref);
-      } else {
-        // TODO: Need to monitor viewport to update this
-        setSingleLineView(true);
       }
+    } else if (!firstResult && activeItem) {
+      setActiveItem("");
     }
-  }, [bestMatch, firstResult]);
+  }, [activeItem, bestMatch, firstResult]);
+
+  useEffect(() => {
+    const checkMenuWidth = (): void =>
+      setSingleLineView(
+        menuRef.current ? menuRef.current.clientWidth < MAX_SINGLE_LINE : false
+      );
+
+    checkMenuWidth();
+
+    window.addEventListener("resize", checkMenuWidth);
+
+    return () => window.removeEventListener("resize", checkMenuWidth);
+  }, []);
 
   return (
     <StyledSearch
-      ref={focusOnRenderCallback}
+      ref={menuRef}
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,
@@ -217,11 +242,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             </Button>
           </nav>
           {!searchTerm && activeTab === "All" && (
-            <StyledSections>
+            <StyledSections
+              className={singleLineView ? "single-line" : undefined}
+            >
               <section>
                 <figure>
                   <figcaption>Suggested</figcaption>
-                  <ol className="suggested">
+                  <StyledSuggestions>
                     {SUGGESTED.map((app) => (
                       // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
                       <li
@@ -242,23 +269,48 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                         </figure>
                       </li>
                     ))}
+                  </StyledSuggestions>
+                </figure>
+              </section>
+              <section>
+                <StyledFiles>
+                  <figcaption>Recent files</figcaption>
+                  <ol>
+                    {recentFiles.map(([file, pid]) => (
+                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+                      <li key={file} onClick={() => open(pid, { url: file })}>
+                        <Icon
+                          displaySize={16}
+                          imgSize={16}
+                          src={directory[pid]?.icon}
+                        />
+                        <h2>{basename(file, extname(file))}</h2>
+                      </li>
+                    ))}
+                  </ol>
+                </StyledFiles>
+                <figure className="card">
+                  <figcaption>
+                    <Games /> Games for you
+                  </figcaption>
+                  <ol>
+                    {GAMES.map(
+                      (game) =>
+                        directory[game] && (
+                          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+                          <li key={game} onClick={() => open(game)}>
+                            <Icon
+                              displaySize={48}
+                              imgSize={48}
+                              src={directory[game].icon}
+                            />
+                            <h4>{directory[game].title}</h4>
+                          </li>
+                        )
+                    )}
                   </ol>
                 </figure>
               </section>
-              {(ranApps.length > 0 || pastSearches.length > 0) && (
-                <section>
-                  {ranApps.length > 0 && (
-                    <figure>
-                      <figcaption>Top apps</figcaption>
-                    </figure>
-                  )}
-                  {pastSearches.length > 0 && (
-                    <figure>
-                      <figcaption>Recent searches</figcaption>
-                    </figure>
-                  )}
-                </section>
-              )}
             </StyledSections>
           )}
           {!searchTerm && activeTab !== "All" && (
@@ -272,57 +324,52 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               </h3>
             </div>
           )}
-          {searchTerm &&
-            (firstResult ? (
-              <StyledResults>
-                {(!singleLineView || !activeItem) && (
-                  <div className="list">
-                    {firstResult && (
-                      <ResultSection
-                        activeItem={activeItem}
-                        activeTab={activeTab}
-                        results={[firstResult]}
-                        searchTerm={searchTerm}
-                        setActiveItem={setActiveItem}
-                        title={"Best match" as TabName}
-                        details
-                      />
-                    )}
-                    {subResults.map(
-                      ([title, subResult]) =>
-                        (activeTab === "All" || activeTab === title) && (
-                          <ResultSection
-                            key={title}
-                            activeItem={activeItem}
-                            activeTab={activeTab}
-                            changeTab={changeTab}
-                            results={subResult.filter(
-                              (result) => firstResult !== result
-                            )}
-                            searchTerm={searchTerm}
-                            setActiveItem={setActiveItem}
-                            title={title as TabName}
-                          />
-                        )
-                    )}
-                  </div>
-                )}
-                {(!singleLineView || activeItem) && (
-                  <Details
+          {searchTerm && (
+            <StyledResults>
+              {(!singleLineView || !activeItem) && (
+                <div className="list">
+                  <ResultSection
+                    activeItem={activeItem}
+                    activeTab={activeTab}
+                    results={[firstResult || { ref: NO_RESULTS }]}
+                    searchTerm={searchTerm}
                     setActiveItem={setActiveItem}
-                    url={activeItem || firstResult?.ref}
+                    title={"Best match" as TabName}
+                    details
                   />
-                )}
-              </StyledResults>
-            ) : (
-              // TODO: Debounce showing this at first
-              <div className="no-results">NO RESULTS</div>
-            ))}
+                  {subResults.map(
+                    ([title, subResult]) =>
+                      (activeTab === "All" || activeTab === title) && (
+                        <ResultSection
+                          key={title}
+                          activeItem={activeItem}
+                          activeTab={activeTab}
+                          changeTab={changeTab}
+                          results={subResult.filter(
+                            (result) => firstResult !== result
+                          )}
+                          searchTerm={searchTerm}
+                          setActiveItem={setActiveItem}
+                          title={title as TabName}
+                        />
+                      )
+                  )}
+                </div>
+              )}
+              {activeItem && firstResult && (
+                <Details
+                  setActiveItem={setActiveItem}
+                  singleLineView={singleLineView}
+                  url={activeItem || firstResult?.ref}
+                />
+              )}
+            </StyledResults>
+          )}
         </div>
         <motion.div className="search" {...inputTransition}>
           <SearchIcon />
           <input
-            ref={delayedFocusOnRenderCallback}
+            ref={focusOnRenderCallback}
             onChange={() => {
               const tabAppend = activeTab === "All" ? "" : `${activeTab}: `;
               const value = inputRef.current?.value.startsWith(tabAppend)
@@ -332,6 +379,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               setSearchTerm(value ?? "");
             }}
             placeholder="Type here to search"
+            style={{
+              caretColor: showCaret ? undefined : "transparent",
+            }}
             type="text"
           />
         </motion.div>

@@ -20,8 +20,9 @@ import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
 
 const Details: FC<{
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
+  singleLineView: boolean;
   url: string;
-}> = ({ setActiveItem, url }) => {
+}> = ({ setActiveItem, singleLineView, url }) => {
   const fs = useFileSystem();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
@@ -48,10 +49,12 @@ const Details: FC<{
 
   return info?.url && stats ? (
     <StyledDetails ref={elementRef}>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-      <div className="back" onClick={() => setActiveItem("")}>
-        <RightArrow />
-      </div>
+      {singleLineView && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div className="back" onClick={() => setActiveItem("")}>
+          <RightArrow />
+        </div>
+      )}
       <Icon
         displaySize={64}
         imgSize={96}
@@ -87,14 +90,16 @@ const Details: FC<{
             Open
           </Button>
         </li>
-        <li>
-          <Button
-            onClick={() => open("FileExplorer", { url: dirname(info?.url) })}
-          >
-            <OpenFolder />
-            Open file location
-          </Button>
-        </li>
+        {dirname(info?.url) !== "." && (
+          <li>
+            <Button
+              onClick={() => open("FileExplorer", { url: dirname(info?.url) })}
+            >
+              <OpenFolder />
+              Open file location
+            </Button>
+          </li>
+        )}
       </ol>
     </StyledDetails>
   ) : (

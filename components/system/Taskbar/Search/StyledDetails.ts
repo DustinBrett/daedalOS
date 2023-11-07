@@ -75,12 +75,11 @@ const StyledDetails = styled.div`
     width: 100%;
 
     li {
-      padding: 8px 24px;
-
       button {
         color: #fff;
         display: flex;
         font-size: 12px;
+        padding: 8px 18px;
         place-items: start;
 
         svg {

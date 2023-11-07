@@ -11,6 +11,7 @@ const StyledResults = styled.div`
     ${ScrollBars()}
     background-color: rgba(40, 40, 40, 95%);
     overflow-y: auto;
+    scrollbar-gutter: auto;
     width: 100%;
 
     li {

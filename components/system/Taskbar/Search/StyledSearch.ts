@@ -26,6 +26,7 @@ const StyledSearch = styled(motion.nav)`
 
     input {
       border: 2px solid rgb(0, 120, 215);
+      border-radius: 0;
       color: #000;
       font-size: 15px;
       height: 40px;
@@ -69,13 +70,20 @@ const StyledSearch = styled(motion.nav)`
     }
 
     .no-results {
-      color: #fff;
       display: flex;
-      flex-direction: column;
-      font-size: 30px;
-      height: calc(100% - 52px);
-      place-content: center;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 5px 15px;
       place-items: center;
+      pointer-events: none;
+      user-select: none;
+
+      svg {
+        fill: #fff;
+        height: 32px;
+        margin-right: 12px;
+        width: 32px;
+      }
     }
 
     .tab {

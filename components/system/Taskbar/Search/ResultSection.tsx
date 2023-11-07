@@ -1,6 +1,8 @@
-import type { TabName } from "components/system/Taskbar/Search";
+import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
+import { NO_RESULTS, type TabName } from "components/system/Taskbar/Search";
 import ResultEntry from "components/system/Taskbar/Search/ResultEntry";
-import StyledResultsHeader from "./StyledResultsHeader";
+import StyledResultsHeader from "components/system/Taskbar/Search/StyledResultsHeader";
+import { useMemo } from "react";
 
 type ResultsSectionProps = {
   activeItem: string;
@@ -22,8 +24,16 @@ const ResultSection: FC<ResultsSectionProps> = ({
   setActiveItem,
   changeTab,
   title,
-}) =>
-  results.length > 0 ? (
+}) => {
+  const noResults = useMemo(
+    () => results.length === 1 && results[0].ref === NO_RESULTS,
+    [results]
+  );
+
+  return results.length === 0 ? (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <></>
+  ) : (
     <figure>
       <StyledResultsHeader
         className={
@@ -36,21 +46,26 @@ const ResultSection: FC<ResultsSectionProps> = ({
         {title}
       </StyledResultsHeader>
       <ol>
-        {results.map(({ ref }) => (
-          <ResultEntry
-            key={ref}
-            active={activeItem === ref}
-            details={details}
-            searchTerm={searchTerm}
-            setActiveItem={setActiveItem}
-            url={ref}
-          />
-        ))}
+        {noResults ? (
+          <li className="no-results">
+            <SearchIcon />
+            No results found for &apos;{searchTerm}&apos;
+          </li>
+        ) : (
+          results.map(({ ref }) => (
+            <ResultEntry
+              key={ref}
+              active={activeItem === ref}
+              details={details}
+              searchTerm={searchTerm}
+              setActiveItem={setActiveItem}
+              url={ref}
+            />
+          ))
+        )}
       </ol>
     </figure>
-  ) : (
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    <></>
   );
+};
 
 export default ResultSection;

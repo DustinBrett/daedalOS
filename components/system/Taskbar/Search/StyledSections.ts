@@ -5,70 +5,77 @@ const StyledSections = styled.div`
   ${ScrollBars()};
   color: #fff;
   display: flex;
-  gap: 20px;
   height: calc(100% - 52px);
   overflow: hidden auto;
   place-content: space-evenly;
   place-items: start;
 
+  figure.card {
+    background-color: rgba(45, 45, 45, 60%);
+    border-radius: 5px;
+    padding: 8px 12px;
+
+    ol {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      place-content: space-between;
+
+      li {
+        display: flex;
+        flex-direction: column;
+        max-width: 80px;
+        min-width: 80px;
+        text-align: left;
+
+        img {
+          background-color: rgba(60, 60, 60, 85%);
+          border-radius: 5px;
+          margin-bottom: 3px;
+          min-height: 80px;
+          min-width: 80px;
+          padding: 16px;
+          pointer-events: all;
+          user-select: all;
+
+          &:hover {
+            background-color: rgba(16, 88, 145, 85%);
+          }
+        }
+
+        h4 {
+          font-size: 11px;
+          font-weight: 400;
+          padding-left: 2px;
+        }
+      }
+    }
+  }
+
+  &.single-line {
+    flex-direction: column;
+    gap: 20px;
+    place-content: flex-start;
+
+    figure.card {
+      width: min-content;
+
+      ol {
+        gap: 16px;
+      }
+    }
+  }
+
   figcaption {
     font-size: 13px;
     font-weight: 600;
-  }
 
-  .suggested {
-    display: grid;
-    padding: 9px 0 15px;
-
-    li {
-      border-radius: 5px;
-      display: flex;
-      flex-direction: column;
-      height: 51px;
-      place-items: start;
-      position: relative;
-      width: 100%;
-
-      figure {
-        display: flex;
-        padding: 9px 15px;
-        place-items: center;
-
-        figcaption {
-          font-size: 15px;
-          font-weight: 400;
-          padding-left: 13px;
-          padding-top: 1px;
-        }
-      }
-
-      &::before {
-        border-top: 1px solid rgba(80, 80, 80, 55%);
-        content: "";
-        height: 100%;
-        position: absolute;
-        width: 100%;
-      }
-
-      &:first-child {
-        &::before {
-          border-top: none;
-        }
-      }
-
-      &:hover {
-        background-color: rgba(80, 80, 80, 75%);
-
-        &::before {
-          border: none;
-        }
-
-        + li {
-          &::before {
-            border-top: none;
-          }
-        }
-      }
+    svg {
+      fill: #fff;
+      height: 16px;
+      margin-bottom: -3px;
+      margin-right: 5px;
+      width: 16px;
     }
   }
 

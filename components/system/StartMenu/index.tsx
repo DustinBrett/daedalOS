@@ -1,8 +1,10 @@
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
+import { updateInputValueOnReactElement } from "components/system/Taskbar/Search/functions";
 import StyledBackground from "components/system/Taskbar/StyledBackground";
 import {
+  SEARCH_BUTTON_LABEL,
   START_BUTTON_LABEL,
   maybeCloseTaskbarMenu,
 } from "components/system/Taskbar/functions";
@@ -37,7 +39,6 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     element?.focus(PREVENT_SCROLL);
     menuRef.current = element;
   }, []);
-
   const startMenuTransition = useTaskbarItemTransition(startMenu.maxHeight);
   const { height } =
     (startMenuTransition.variants?.active as StyleVariant) ?? {};
@@ -57,6 +58,32 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       }
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleStartMenu(false);
+        else if (key.length === 1) {
+          toggleStartMenu(false);
+
+          const searchButton = document.querySelector(
+            `main > nav > button[aria-label='${SEARCH_BUTTON_LABEL}']`
+          ) as HTMLButtonElement;
+
+          if (searchButton) {
+            searchButton.click();
+
+            let tries = 0;
+            const openSearchTimerRef = window.setInterval(() => {
+              const searchInput = document.querySelector(
+                `main > nav .search > input`
+              ) as HTMLInputElement;
+
+              if (searchInput) {
+                updateInputValueOnReactElement(searchInput, key);
+              }
+
+              if (searchInput || ++tries > 10) {
+                window.clearInterval(openSearchTimerRef);
+              }
+            }, 50);
+          }
+        }
       }}
       onMouseMove={revealScrolling}
       {...startMenuTransition}

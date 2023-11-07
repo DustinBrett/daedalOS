@@ -45,3 +45,20 @@ export const getResultInfo = async (
     url: infoUrl || url,
   };
 };
+
+export const updateInputValueOnReactElement = (
+  element: HTMLElement,
+  value: string
+): void => {
+  Object.getOwnPropertyDescriptor(
+    // eslint-disable-next-line no-proto
+    (
+      element as HTMLElement & {
+        __proto__: unknown;
+      }
+    ).__proto__,
+    "value"
+  )?.set?.call(element, value);
+
+  element.dispatchEvent(new Event("input", { bubbles: true }));
+};
