@@ -1,11 +1,17 @@
+import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
 
-const StyledSearch = styled(motion.nav)`
-  ${({ theme }) =>
+type StyledSearchProps = {
+  $singleLine: boolean;
+};
+
+const StyledSearch = styled(motion.nav)<StyledSearchProps>`
+  ${({ $singleLine, theme }) =>
     TaskbarPanel(
-      theme.sizes.search.maxHeight,
+      theme.sizes.search.maxHeight +
+        ($singleLine ? SINGLE_LINE_HEIGHT_ADDITION : 0),
       theme.sizes.search.size,
       theme.sizes.taskbar.button.width,
       true
@@ -39,6 +45,7 @@ const StyledSearch = styled(motion.nav)`
         inset: 0;
         left: 37px;
         opacity: 100%;
+        overflow: visible;
         position: absolute;
         top: 10px;
       }

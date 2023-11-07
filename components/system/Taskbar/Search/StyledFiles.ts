@@ -17,14 +17,14 @@ const StyledFiles = styled.figure`
       place-items: center;
 
       h2 {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 400;
       }
 
       picture,
       img {
         height: 16px;
-        margin-right: 4px;
+        margin-right: 5px;
         width: 16px;
       }
 

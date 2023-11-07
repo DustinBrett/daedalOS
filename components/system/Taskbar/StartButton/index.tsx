@@ -3,7 +3,7 @@ import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import { START_BUTTON_LABEL } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useCallback, useRef, useState } from "react";
-import { ICON_PATH, USER_ICON_PATH } from "utils/constants";
+import { DIV_BUTTON_PROPS, ICON_PATH, USER_ICON_PATH } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
 
 type StartButtonProps = {
@@ -85,6 +85,7 @@ const StartButton: FC<StartButtonProps> = ({
       onClick={onClick}
       onMouseOver={preloaded ? undefined : preloadIcons}
       $highlight
+      {...DIV_BUTTON_PROPS}
       {...label(START_BUTTON_LABEL)}
       {...useTaskbarContextMenu(true)}
     >

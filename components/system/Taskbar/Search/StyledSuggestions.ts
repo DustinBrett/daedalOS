@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledSuggestions = styled.ol`
   display: grid;
-  padding: 9px 0 15px;
+  padding: 9px 0 0;
 
   li {
     border-radius: 5px;

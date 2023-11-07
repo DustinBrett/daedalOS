@@ -48,6 +48,8 @@ const TABS = ["All", "Documents", "Photos", "Videos"] as const;
 
 const MAX_SINGLE_LINE = 550;
 
+export const SINGLE_LINE_HEIGHT_ADDITION = 34;
+
 export type TabName = (typeof TABS)[number];
 
 type TabData = {
@@ -86,8 +88,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const {
     sizes: { search },
   } = useTheme();
+  const [singleLineView, setSingleLineView] = useState(false);
   const searchTransition = useTaskbarItemTransition(
-    search.maxHeight,
+    search.maxHeight + (singleLineView ? SINGLE_LINE_HEIGHT_ADDITION : 0),
     true,
     0.1,
     0
@@ -146,7 +149,6 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
         : Object.fromEntries(subResults)[activeTab]?.[0],
     [activeTab, results, subResults]
   );
-  const [singleLineView, setSingleLineView] = useState(false);
   const changeTab = useCallback(
     (tab: TabName) => {
       if (inputRef.current) {
@@ -194,6 +196,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   return (
     <StyledSearch
       ref={menuRef}
+      $singleLine={singleLineView}
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,
@@ -240,6 +243,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           </nav>
           {!searchTerm && activeTab === "All" && (
             <StyledSections
+              $singleLine={singleLineView}
               className={singleLineView ? "single-line" : undefined}
             >
               <section>
@@ -374,6 +378,15 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 : inputRef.current?.value;
 
               setSearchTerm(value ?? "");
+            }}
+            onKeyDown={({ key }) => {
+              if (key === "Enter" && firstResult?.ref) {
+                const bestMatchElement = menuRef.current?.querySelector(
+                  ".list li:first-child figure"
+                );
+
+                (bestMatchElement as HTMLElement)?.click();
+              }
             }}
             placeholder="Type here to search"
             style={{

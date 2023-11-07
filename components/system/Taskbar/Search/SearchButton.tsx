@@ -4,6 +4,7 @@ import { useTheme } from "styled-components";
 
 import { SEARCH_BUTTON_LABEL } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
+import { DIV_BUTTON_PROPS } from "utils/constants";
 import { label } from "utils/functions";
 
 type StartButtonProps = {
@@ -24,6 +25,7 @@ const SearchButton: FC<StartButtonProps> = ({
       $active={searchVisible}
       $left={taskbar.button.width}
       onClick={() => toggleSearch()}
+      {...DIV_BUTTON_PROPS}
       {...label(SEARCH_BUTTON_LABEL)}
       {...useTaskbarContextMenu()}
     >

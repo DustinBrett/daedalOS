@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 
-const StyledSections = styled.div`
+type StyledSectionsProps = {
+  $singleLine: boolean;
+};
+
+const StyledSections = styled.div<StyledSectionsProps>`
   ${ScrollBars()};
   color: #fff;
   display: flex;
@@ -54,7 +58,6 @@ const StyledSections = styled.div`
 
   &.single-line {
     flex-direction: column;
-    gap: 20px;
     place-content: flex-start;
 
     figure.card {
@@ -83,9 +86,12 @@ const StyledSections = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
-    height: 100%;
     padding: 20px 24px;
     width: 100%;
+
+    &:first-child {
+      padding-bottom: ${({ $singleLine }) => ($singleLine ? 0 : undefined)};
+    }
   }
 `;
 

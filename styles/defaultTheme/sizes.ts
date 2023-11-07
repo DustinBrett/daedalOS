@@ -29,7 +29,7 @@ const sizes = {
     rowGap: "28px",
   },
   search: {
-    maxHeight: 375,
+    maxHeight: 415,
     size: 600,
   },
   startMenu: {
