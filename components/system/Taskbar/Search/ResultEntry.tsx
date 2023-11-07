@@ -7,6 +7,7 @@ import { getResultInfo } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename, extname } from "path";
 import { useEffect, useState } from "react";
 import Icon from "styles/common/Icon";
@@ -29,6 +30,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
 }) => {
   const fs = useFileSystem();
   const { open } = useProcesses();
+  const { updateRecentFiles } = useSession();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>({
@@ -51,6 +53,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
         className={details ? undefined : "simple"}
         onClick={() => {
           open(info?.pid, { url });
+          if (url && info?.pid) updateRecentFiles(url, info?.pid);
         }}
       >
         <Icon

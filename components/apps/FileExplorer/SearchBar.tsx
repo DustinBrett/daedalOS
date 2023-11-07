@@ -5,6 +5,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename } from "path";
 import { memo, useEffect, useRef, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
@@ -30,6 +31,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
   const fs = useFileSystem();
+  const { updateRecentFiles } = useSession();
 
   useEffect(() => {
     if (searchBarRef.current && hasUsedSearch.current) {
@@ -52,6 +54,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
                     searchBarRef.current.value = "";
                     searchBarRef.current.blur();
                   }
+                  if (infoUrl && pid) updateRecentFiles(infoUrl, pid);
                 },
                 icon,
                 label: basename(path, SHORTCUT_EXTENSION),
@@ -69,7 +72,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         );
       });
     }
-  }, [contextMenu, fs, open, results, url]);
+  }, [contextMenu, fs, open, results, updateRecentFiles, url]);
 
   useEffect(() => {
     if (searchBarRef.current) {

@@ -3,13 +3,14 @@ import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   IconPositions,
+  RecentFiles,
   SessionContextState,
   SessionData,
   SortOrders,
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
-import { dirname } from "path";
+import { dirname, extname } from "path";
 import defaultSession from "public/session.json";
 import type { SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -48,6 +49,27 @@ const useSessionContextState = (): SessionContextState => {
   const [wallpaperFit, setWallpaperFit] = useState(DEFAULT_WALLPAPER_FIT);
   const [wallpaperImage, setWallpaperImage] = useState(DEFAULT_WALLPAPER);
   const [runHistory, setRunHistory] = useState<string[]>([]);
+  const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
+  const updateRecentFiles = useCallback(
+    (url: string, pid: string) =>
+      extname(url) &&
+      setRecentFiles((currentRecentFiles) => {
+        const entryIndex = currentRecentFiles.findIndex(
+          ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid
+        );
+
+        if (entryIndex !== -1) {
+          return [
+            currentRecentFiles[entryIndex],
+            ...currentRecentFiles.slice(0, entryIndex),
+            ...currentRecentFiles.slice(entryIndex + 1),
+          ] as RecentFiles;
+        }
+
+        return [[url, pid], ...currentRecentFiles].slice(0, 5) as RecentFiles;
+      }),
+    []
+  );
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) =>
@@ -154,6 +176,7 @@ const useSessionContextState = (): SessionContextState => {
             clockSource,
             cursor,
             iconPositions,
+            recentFiles,
             runHistory,
             sortOrders,
             themeName,
@@ -179,6 +202,7 @@ const useSessionContextState = (): SessionContextState => {
     cursor,
     haltSession,
     iconPositions,
+    recentFiles,
     runHistory,
     sessionLoaded,
     sortOrders,
@@ -235,6 +259,9 @@ const useSessionContextState = (): SessionContextState => {
           if (session.runHistory && session.runHistory.length > 0) {
             setRunHistory(session.runHistory);
           }
+          if (session.recentFiles && session.recentFiles.length > 0) {
+            setRecentFiles(session.recentFiles);
+          }
         } catch (error) {
           if ((error as ApiError)?.code === "ENOENT") {
             deletePath(SESSION_FILE);
@@ -254,6 +281,7 @@ const useSessionContextState = (): SessionContextState => {
     foregroundId,
     iconPositions,
     prependToStack,
+    recentFiles,
     removeFromStack,
     runHistory,
     sessionLoaded,
@@ -270,6 +298,7 @@ const useSessionContextState = (): SessionContextState => {
     sortOrders,
     stackOrder,
     themeName,
+    updateRecentFiles,
     wallpaperFit,
     wallpaperImage,
     windowStates,

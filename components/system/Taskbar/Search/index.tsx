@@ -24,6 +24,7 @@ import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTr
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
+import { useSession } from "contexts/session";
 import type { Variant } from "framer-motion";
 import { m as motion } from "framer-motion";
 import { basename, extname } from "path";
@@ -80,11 +81,7 @@ const METADATA = {
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
-  // TODO: Come from session, update on open()'s, store only 10, put 5 pre-loaded
-  const recentFiles = [
-    ["/Users/Public/Music/SomaFM - Groove Salad.m3u", "Webamp"],
-    ["/Users/Public/Documents/Blog Posts/Interesting Times.whtml", "TinyMCE"],
-  ];
+  const { recentFiles } = useSession();
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },

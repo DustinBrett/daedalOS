@@ -12,6 +12,7 @@ import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
 import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
@@ -31,10 +32,11 @@ const Details: FC<{
   } as ResultInfo);
   const { open } = useProcesses();
   const extension = extname(url);
-  const openFile = useCallback(
-    () => open(info?.pid, { url: info?.url }),
-    [info?.pid, info?.url, open]
-  );
+  const { updateRecentFiles } = useSession();
+  const openFile = useCallback(() => {
+    open(info?.pid, { url: info?.url });
+    if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
+  }, [info?.pid, info?.url, open, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -75,7 +75,8 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setCursor, setForegroundId, setWallpaper } = useSession();
+  const { setCursor, setForegroundId, setWallpaper, updateRecentFiles } =
+    useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url);
@@ -460,6 +461,7 @@ const useFileContextMenu = (
           menuItems.unshift({
             action: () => {
               open("Paint", { url });
+              if (url) updateRecentFiles(url, "Paint");
             },
             label: "Edit",
           });
@@ -621,6 +623,7 @@ const useFileContextMenu = (
       setWallpaper,
       unMapFs,
       updateFolder,
+      updateRecentFiles,
       url,
     ]
   );
