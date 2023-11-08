@@ -235,6 +235,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           </StyledTabs>
           <nav>
             <Button
+              className="close-button"
               onClick={() => toggleSearch(false)}
               {...label("Close Search")}
             >
@@ -292,14 +293,19 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 </StyledFiles>
                 <figure className="card">
                   <figcaption>
-                    <Games /> Games for you
+                    <Games />
+                    Games for you
                   </figcaption>
                   <ol>
                     {GAMES.map(
                       (game) =>
                         directory[game] && (
                           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                          <li key={game} onClick={() => open(game)}>
+                          <li
+                            key={game}
+                            onClick={() => open(game)}
+                            title={directory[game].title}
+                          >
                             <Icon
                               displaySize={48}
                               imgSize={48}

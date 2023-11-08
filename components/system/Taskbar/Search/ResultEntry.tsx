@@ -51,17 +51,35 @@ const ResultEntry: FC<ResultEntryProps> = ({
 
     return text;
   }, [searchTerm, url]);
+  const lastModified = useMemo(
+    () =>
+      stats
+        ? `Last modified: ${new Date(
+            getModifiedTime(url, stats)
+          ).toLocaleString(DEFAULT_LOCALE, {
+            dateStyle: "short",
+            timeStyle: "short",
+          })}`
+        : "",
+    [url, stats]
+  );
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    if (details) stat(url).then(setStats);
+    if (details || hovered) stat(url).then(setStats);
 
     getResultInfo(fs, url).then(setInfo);
-  }, [details, fs, stat, url]);
+  }, [details, fs, hovered, stat, url]);
 
   // TODO: Search for directories also?
 
   return (
-    <li className={active ? "active-item" : undefined}>
+    <li
+      className={active ? "active-item" : undefined}
+      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+      onMouseOver={() => !details && setHovered(true)}
+      title={lastModified ? `${url}\n\n${lastModified}` : url}
+    >
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <figure
         className={details ? undefined : "simple"}
@@ -90,16 +108,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
                   : extensions[extension]?.type ||
                     `${extension.toUpperCase().replace(".", "")} File`}
               </h2>
-              <h2>
-                Last modified:{" "}
-                {new Date(getModifiedTime(url, stats)).toLocaleString(
-                  DEFAULT_LOCALE,
-                  {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  }
-                )}
-              </h2>
+              <h2>{lastModified}</h2>
             </>
           )}
         </figcaption>

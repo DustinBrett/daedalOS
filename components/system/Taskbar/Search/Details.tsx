@@ -62,7 +62,8 @@ const Details: FC<{
         imgSize={96}
         src={stats?.isDirectory() ? FOLDER_ICON : info?.icon}
       />
-      <h1>{basename(info?.url)}</h1>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+      <h1 onClick={openFile}>{basename(info?.url)}</h1>
       <h2>
         {stats?.isDirectory()
           ? "File folder"

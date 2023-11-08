@@ -65,17 +65,6 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
     animation: fade-in 0.85s;
     height: calc(100% - 40px);
 
-    nav {
-      position: absolute;
-      right: 25px;
-      top: 15px;
-
-      svg {
-        fill: #fff;
-        height: 14px;
-      }
-    }
-
     .no-results {
       display: flex;
       font-size: 14px;
@@ -117,6 +106,21 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
         fill: rgb(115, 115, 115);
         height: 128px;
         width: 128px;
+      }
+    }
+
+    > nav {
+      position: absolute;
+      right: 25px;
+      top: 15px;
+
+      .close-button svg {
+        fill: rgb(200, 200, 200);
+        height: 14px;
+
+        &:hover {
+          fill: #fff;
+        }
       }
     }
   }

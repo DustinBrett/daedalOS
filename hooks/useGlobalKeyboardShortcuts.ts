@@ -23,7 +23,7 @@ declare global {
 const openByTitle = (title: string): void =>
   (
     document.querySelector(
-      `main>nav>button[title='${title}']`
+      `main>nav>div[title='${title}']`
     ) as HTMLButtonElement
   )?.click();
 

@@ -27,6 +27,10 @@ const StyledDetails = styled.div`
     padding-left: 12px;
     padding-right: 12px;
     word-break: break-all;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   h2 {
