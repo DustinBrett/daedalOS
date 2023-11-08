@@ -9,7 +9,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { basename, extname } from "path";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
 
@@ -37,6 +37,20 @@ const ResultEntry: FC<ResultEntryProps> = ({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
   const extension = extname(url);
+  const name = useMemo(() => {
+    let text = basename(url);
+
+    try {
+      text = text.replace(
+        new RegExp(`(${searchTerm})`, "i"),
+        "<span>$1</span>"
+      );
+    } catch {
+      // Ignore failure to wrap search text
+    }
+
+    return text;
+  }, [searchTerm, url]);
 
   useEffect(() => {
     if (details) stat(url).then(setStats);
@@ -65,10 +79,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
           <h1
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
-              __html: basename(url).replace(
-                new RegExp(`(${searchTerm})`, "i"),
-                "<span>$1</span>"
-              ),
+              __html: name,
             }}
           />
           {details && stats && (
