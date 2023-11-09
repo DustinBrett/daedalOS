@@ -275,22 +275,24 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 </figure>
               </section>
               <section>
-                <StyledFiles>
-                  <figcaption>Recent</figcaption>
-                  <ol>
-                    {recentFiles.map(([file, pid]) => (
-                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                      <li key={file} onClick={() => open(pid, { url: file })}>
-                        <Icon
-                          displaySize={16}
-                          imgSize={16}
-                          src={directory[pid]?.icon}
-                        />
-                        <h2>{basename(file, extname(file))}</h2>
-                      </li>
-                    ))}
-                  </ol>
-                </StyledFiles>
+                {recentFiles.length > 0 && (
+                  <StyledFiles>
+                    <figcaption>Recent</figcaption>
+                    <ol>
+                      {recentFiles.map(([file, pid]) => (
+                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+                        <li key={file} onClick={() => open(pid, { url: file })}>
+                          <Icon
+                            displaySize={16}
+                            imgSize={16}
+                            src={directory[pid]?.icon}
+                          />
+                          <h2>{basename(file, extname(file))}</h2>
+                        </li>
+                      ))}
+                    </ol>
+                  </StyledFiles>
+                )}
                 <figure className="card">
                   <figcaption>
                     <Games />
