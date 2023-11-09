@@ -68,7 +68,7 @@ const StyledResults = styled.div`
 
           figcaption {
             h1 {
-              font-size: 13px;
+              font-size: 14px;
               font-weight: 300;
               white-space: nowrap;
             }

@@ -14,14 +14,31 @@ const StyledSections = styled.div<StyledSectionsProps>`
   place-content: space-evenly;
   place-items: start;
 
+  figcaption {
+    font-size: 13px;
+    font-weight: 600;
+
+    svg {
+      fill: #fff;
+      height: 16px;
+      margin-bottom: -3px;
+      margin-right: 6px;
+      width: 16px;
+    }
+  }
+
   figure.card {
     background-color: rgba(45, 45, 45, 60%);
     border-radius: 5px;
     padding: 8px 12px;
 
+    > figcaption {
+      padding-left: 2px;
+    }
+
     ol {
       display: flex;
-      gap: 8px;
+      gap: 9px;
       margin-top: 10px;
       place-content: space-between;
 
@@ -56,6 +73,18 @@ const StyledSections = styled.div<StyledSectionsProps>`
     }
   }
 
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 10px 20px 24px;
+    width: 100%;
+
+    &:first-child {
+      padding-bottom: ${({ $singleLine }) => ($singleLine ? 0 : undefined)};
+    }
+  }
+
   &.single-line {
     flex-direction: column;
     place-content: flex-start;
@@ -67,30 +96,13 @@ const StyledSections = styled.div<StyledSectionsProps>`
         gap: 16px;
       }
     }
-  }
 
-  figcaption {
-    font-size: 13px;
-    font-weight: 600;
+    section {
+      padding-right: 24px;
 
-    svg {
-      fill: #fff;
-      height: 16px;
-      margin-bottom: -3px;
-      margin-right: 5px;
-      width: 16px;
-    }
-  }
-
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px 24px;
-    width: 100%;
-
-    &:first-child {
-      padding-bottom: ${({ $singleLine }) => ($singleLine ? 0 : undefined)};
+      &:not(:first-child) {
+        padding-top: 16px;
+      }
     }
   }
 `;

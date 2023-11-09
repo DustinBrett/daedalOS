@@ -276,7 +276,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               </section>
               <section>
                 <StyledFiles>
-                  <figcaption>Recent files</figcaption>
+                  <figcaption>Recent</figcaption>
                   <ol>
                     {recentFiles.map(([file, pid]) => (
                       // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions

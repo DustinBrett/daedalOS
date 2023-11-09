@@ -15,14 +15,15 @@ const StyledSuggestions = styled.ol`
 
     figure {
       display: flex;
-      padding: 9px 15px;
+      padding: 9px 16px;
       place-items: center;
+      position: relative;
+      top: 1px;
 
       figcaption {
         font-size: 15px;
         font-weight: 400;
-        padding-left: 13px;
-        padding-top: 1px;
+        padding-left: 12px;
         white-space: nowrap;
       }
     }
