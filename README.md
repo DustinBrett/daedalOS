@@ -52,6 +52,7 @@
 
 - [Peek](https://github.com/bubkoo/html-to-image) hover preview of windows
 - Focused window indicator
+- Search
 
 ### Clock
 
