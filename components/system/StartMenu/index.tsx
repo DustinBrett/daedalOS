@@ -61,18 +61,18 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         else if (key.length === 1) {
           toggleStartMenu(false);
 
-          const searchButton = document.querySelector(
-            `main > nav > button[aria-label='${SEARCH_BUTTON_LABEL}']`
-          ) as HTMLButtonElement;
+          const searchButton = document.querySelector<HTMLButtonElement>(
+            `main > nav > div[aria-label='${SEARCH_BUTTON_LABEL}']`
+          );
 
           if (searchButton) {
             searchButton.click();
 
             let tries = 0;
             const openSearchTimerRef = window.setInterval(() => {
-              const searchInput = document.querySelector(
-                `main > nav .search > input`
-              ) as HTMLInputElement;
+              const searchInput = document.querySelector<HTMLInputElement>(
+                "main > nav .search > input"
+              );
 
               if (searchInput) {
                 updateInputValueOnReactElement(searchInput, key);
