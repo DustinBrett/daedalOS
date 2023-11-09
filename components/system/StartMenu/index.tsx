@@ -61,7 +61,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         else if (key.length === 1) {
           toggleStartMenu(false);
 
-          const searchButton = document.querySelector<HTMLButtonElement>(
+          const searchButton = document.querySelector<HTMLDivElement>(
             `main > nav > div[aria-label='${SEARCH_BUTTON_LABEL}']`
           );
 
