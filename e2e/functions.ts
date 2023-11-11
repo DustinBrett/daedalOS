@@ -21,6 +21,8 @@ import {
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
   RIGHT_CLICK,
+  SEARCH_BUTTON_SELECTOR,
+  SEARCH_MENU_SELECTOR,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
@@ -143,6 +145,12 @@ export const clickDesktop = async (
     button: right ? "right" : undefined,
     ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
   });
+
+export const clickSearchButton = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(SEARCH_BUTTON_SELECTOR).click(right ? RIGHT_CLICK : undefined);
 
 export const clickStartButton = async (
   { page }: TestProps,
@@ -473,6 +481,12 @@ export const contextMenuIsVisible = async ({
 
 export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
+
+export const searchMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(SEARCH_MENU_SELECTOR)).toBeHidden();
+
+export const searchMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(SEARCH_MENU_SELECTOR)).toBeVisible();
 
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();

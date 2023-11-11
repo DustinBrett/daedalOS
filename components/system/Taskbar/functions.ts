@@ -1,14 +1,14 @@
 import { PREVENT_SCROLL } from "utils/constants";
 
-export const START_BUTTON_LABEL = "Start";
-export const SEARCH_BUTTON_LABEL = "Type here to search";
+export const START_BUTTON_TITLE = "Start";
+export const SEARCH_BUTTON_TITLE = "Type here to search";
 
 export const maybeCloseTaskbarMenu = (
   { relatedTarget: focusedElement }: React.FocusEvent<HTMLElement>,
   menuElement: HTMLElement | null,
   toggleMenu: (toggle: boolean) => void,
   focusElement?: HTMLElement | null,
-  buttonLabel?: string,
+  buttonTitle?: string,
   closeOnTaskbarEntries = false
 ): void => {
   const focusedInsideMenu =
@@ -19,12 +19,14 @@ export const maybeCloseTaskbarMenu = (
     const focusedTaskbarEntries = focusedElement === taskbarElement;
     const focusedTaskbarButton =
       focusedElement?.parentElement === taskbarElement;
-    const focusedOnSelfButton = focusedElement?.ariaLabel === buttonLabel;
+    const focusedOnSelfButton =
+      (focusedElement as HTMLElement)?.title === buttonTitle;
 
     if (
-      (closeOnTaskbarEntries && focusedTaskbarEntries) ||
-      (!focusedTaskbarEntries &&
-        (!focusedTaskbarButton || !focusedOnSelfButton))
+      focusedElement &&
+      ((closeOnTaskbarEntries && focusedTaskbarEntries) ||
+        (!focusedTaskbarEntries &&
+          (!focusedTaskbarButton || !focusedOnSelfButton)))
     ) {
       toggleMenu(false);
     } else {

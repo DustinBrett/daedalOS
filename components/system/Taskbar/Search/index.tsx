@@ -17,7 +17,7 @@ import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
 import useSearchInputTransition from "components/system/Taskbar/Search/useSearchInputTransition";
 import StyledBackground from "components/system/Taskbar/StyledBackground";
 import {
-  SEARCH_BUTTON_LABEL,
+  SEARCH_BUTTON_TITLE,
   maybeCloseTaskbarMenu,
 } from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
@@ -203,7 +203,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           menuRef.current,
           toggleSearch,
           inputRef.current,
-          SEARCH_BUTTON_LABEL,
+          SEARCH_BUTTON_TITLE,
           true
         )
       }

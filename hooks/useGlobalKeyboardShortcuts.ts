@@ -1,6 +1,6 @@
 import {
-  SEARCH_BUTTON_LABEL,
-  START_BUTTON_LABEL,
+  SEARCH_BUTTON_TITLE,
+  START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -23,7 +23,7 @@ declare global {
 const openByTitle = (title: string): void =>
   (
     document.querySelector(
-      `main>nav>div[title='${title}']`
+      `main > nav > div[title='${title}']`
     ) as HTMLButtonElement
   )?.click();
 
@@ -60,12 +60,12 @@ const useGlobalKeyboardShortcuts = (): void => {
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
-    ESCAPE: () => openByTitle(START_BUTTON_LABEL),
+    ESCAPE: () => openByTitle(START_BUTTON_TITLE),
     F10: () => open("Terminal"),
     F12: () => open("DevTools"),
     F5: () => window.location.reload(),
     R: () => open("Run"),
-    S: () => openByTitle(SEARCH_BUTTON_LABEL),
+    S: () => openByTitle(SEARCH_BUTTON_TITLE),
   });
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
-        else openByTitle(START_BUTTON_LABEL);
+        else openByTitle(START_BUTTON_TITLE);
       }
     };
 

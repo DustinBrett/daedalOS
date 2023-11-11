@@ -15,6 +15,8 @@ import {
   disableWallpaper,
   loadApp,
   pressDesktopKeys,
+  searchMenuIsHidden,
+  searchMenuIsVisible,
   startMenuEntryIsVisible,
   startMenuIsHidden,
   startMenuIsVisible,
@@ -122,5 +124,12 @@ test.describe("can close", () => {
   test("via shift + escape", async ({ page }) => {
     await pressDesktopKeys("Shift+Escape", { page });
     await startMenuIsHidden({ page });
+  });
+
+  test("via searching", async ({ page }) => {
+    await searchMenuIsHidden({ page });
+    await page.keyboard.press("A");
+    await startMenuIsHidden({ page });
+    await searchMenuIsVisible({ page });
   });
 });
