@@ -282,6 +282,10 @@ export const TIMESTAMP_DATE_FORMAT: Intl.DateTimeFormatOptions = {
   year: "numeric",
 };
 
+export const ICON_RES_MAP: Record<number, number> = {
+  64: 96,
+};
+
 export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {
   desktop: [16, 32],
   document: [16, 32],

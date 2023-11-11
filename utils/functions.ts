@@ -12,6 +12,7 @@ import { basename, dirname, extname, join } from "path";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_RES_MAP,
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
@@ -97,7 +98,11 @@ export const imageSrc = (
 
   return `${join(
     dirname(imagePath),
-    isCachedIcon ? "" : `${imageSize}x${imageSize}`,
+    isCachedIcon
+      ? ""
+      : `${ICON_RES_MAP[imageSize] || imageSize}x${
+          ICON_RES_MAP[imageSize] || imageSize
+        }`,
     `${imageName}${isCachedIcon ? "" : extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
