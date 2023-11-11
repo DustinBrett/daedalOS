@@ -10,9 +10,7 @@ type StyledTaskbarButtonProps = {
 const StyledTaskbarButton = styled(Button)<StyledTaskbarButtonProps>`
   background-color: ${({ $active, $highlight, theme }) =>
     $active &&
-    ($highlight
-      ? theme.colors.taskbar.foreground
-      : theme.colors.taskbar.hover)};
+    ($highlight ? theme.colors.taskbar.foreground : "hsla(0, 0%, 25%, 50%)")};
   display: flex;
   fill: ${({ theme }) => theme.colors.taskbar.button.color};
   height: 100%;
@@ -31,7 +29,7 @@ const StyledTaskbarButton = styled(Button)<StyledTaskbarButtonProps>`
 
   &:hover {
     background-color: ${({ $active, theme }) =>
-      $active ? undefined : theme.colors.taskbar.hover};
+      $active ? theme.colors.taskbar.foreground : theme.colors.taskbar.hover};
 
     svg {
       fill: ${({ $highlight, theme }) =>
