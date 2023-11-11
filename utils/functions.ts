@@ -12,6 +12,7 @@ import { basename, dirname, extname, join } from "path";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   SMALLEST_JXL_FILE,
@@ -88,8 +89,10 @@ export const imageSrc = (
   const imageName = basename(imagePath, ".webp");
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
-  const imageSize =
-    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize;
+  const imageSize = Math.min(
+    MAX_ICON_SIZE,
+    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize
+  );
   const isCachedIcon = extname(imageName) === ".cache";
 
   return `${join(
