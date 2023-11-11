@@ -309,8 +309,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                             title={directory[game].title}
                           >
                             <Icon
-                              displaySize={48}
-                              imgSize={48}
+                              displaySize={56}
+                              imgSize={96}
                               src={directory[game].icon}
                             />
                             <h4>{directory[game].title}</h4>

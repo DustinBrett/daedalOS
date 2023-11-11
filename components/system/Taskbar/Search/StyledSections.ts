@@ -52,10 +52,10 @@ const StyledSections = styled.div<StyledSectionsProps>`
         img {
           background-color: rgba(60, 60, 60, 85%);
           border-radius: 5px;
-          margin-bottom: 3px;
+          margin-bottom: 4px;
           min-height: 80px;
           min-width: 80px;
-          padding: 16px;
+          padding: 12px;
           pointer-events: all;
           user-select: all;
 
