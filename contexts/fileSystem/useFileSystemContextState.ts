@@ -240,7 +240,12 @@ const useFileSystemContextState = (): FileSystemContextState => {
               `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${emscriptenFS
                 ._FS?.DB_STORE_NAME}`;
 
-            rootFs?.mount?.(join("/", dbName), newFs);
+            try {
+              rootFs?.mount?.(join("/", dbName), newFs);
+            } catch {
+              // Ignore error during mounting
+            }
+
             resolve(dbName);
           });
         });
