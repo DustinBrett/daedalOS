@@ -10,9 +10,17 @@ const StyledSections = styled.div<StyledSectionsProps>`
   color: #fff;
   display: flex;
   height: calc(100% - 52px);
-  overflow: hidden auto;
+  overflow: hidden;
   place-content: space-evenly;
   place-items: start;
+
+  @media (hover: none), (pointer: coarse) {
+    overflow-y: auto;
+  }
+
+  &:hover {
+    overflow-y: auto;
+  }
 
   figcaption {
     font-size: 13px;
