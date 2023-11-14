@@ -230,8 +230,8 @@ const useFolder = (
                     isSimpleSort
                       ? undefined
                       : sortBy === "date"
-                      ? sortByDate(directory)
-                      : sortBySize,
+                        ? sortByDate(directory)
+                        : sortBySize,
                     sortAscending
                   );
                 }

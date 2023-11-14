@@ -116,8 +116,8 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
               {isDirectory
                 ? "File folder"
                 : isShortcut || extType
-                ? `${isShortcut ? "Shortcut" : extType} (${extension})`
-                : "File"}
+                  ? `${isShortcut ? "Shortcut" : extType} (${extension})`
+                  : "File"}
             </td>
           </tr>
           {!isDirectory && (

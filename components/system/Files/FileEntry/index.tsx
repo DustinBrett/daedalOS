@@ -349,8 +349,8 @@ const FileEntry: FC<FileEntryProps> = ({
                         objectPosition: height
                           ? "top"
                           : width
-                          ? "left"
-                          : undefined,
+                            ? "left"
+                            : undefined,
                       },
                       width,
                     });
