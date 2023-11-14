@@ -134,11 +134,6 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             Videos: [] as lunr.Index.Result[],
           }
         )
-      ).map(
-        ([title, subResult]) =>
-          // TODO: More results on scroll. Only show 10 each max for now
-          // - Add a last entry that gets increases the count depending on the field and if it had more
-          [title, subResult.slice(0, 10)] as [string, lunr.Index.Result[]]
       ),
     [results]
   );

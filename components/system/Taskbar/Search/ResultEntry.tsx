@@ -1,4 +1,5 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import { useIsVisible } from "components/apps/Messenger/hooks";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -9,7 +10,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { basename, extname } from "path";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
 
@@ -64,17 +65,24 @@ const ResultEntry: FC<ResultEntryProps> = ({
     [url, stats]
   );
   const [hovered, setHovered] = useState(false);
+  const elementRef = useRef<HTMLLIElement | null>(null);
+  const isVisible = useIsVisible(elementRef, ".list");
 
   useEffect(() => {
-    if (details || hovered) stat(url).then(setStats);
+    const activeEntry = details || hovered;
 
-    getResultInfo(fs, url).then(setInfo);
-  }, [details, fs, hovered, stat, url]);
+    if (activeEntry || isVisible) {
+      if (activeEntry) stat(url).then(setStats);
+
+      getResultInfo(fs, url).then(setInfo);
+    }
+  }, [details, fs, hovered, isVisible, stat, url]);
 
   // TODO: Search for directories also?
 
   return (
     <li
+      ref={elementRef}
       className={active ? "active-item" : undefined}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseOver={() => !details && setHovered(true)}

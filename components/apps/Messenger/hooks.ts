@@ -270,7 +270,8 @@ export const useNostrProfile = (
 };
 
 export const useIsVisible = (
-  elementRef: React.MutableRefObject<HTMLElement | null>
+  elementRef: React.MutableRefObject<HTMLElement | null>,
+  parentSelector?: string
 ): boolean => {
   const watching = useRef(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -283,9 +284,14 @@ export const useIsVisible = (
     new IntersectionObserver(
       (entries) =>
         entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
-      { root: elementRef.current.parentElement, threshold: 0.4 }
+      {
+        root: parentSelector
+          ? elementRef.current.closest(parentSelector)
+          : elementRef.current.parentElement,
+        threshold: 0.4,
+      }
     ).observe(elementRef.current);
-  }, [elementRef]);
+  }, [elementRef, parentSelector]);
 
   return isVisible;
 };
