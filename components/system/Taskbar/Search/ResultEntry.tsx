@@ -1,10 +1,12 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { useIsVisible } from "components/apps/Messenger/hooks";
-import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import type { ResultInfo } from "components/system/Taskbar/Search/functions";
-import { getResultInfo } from "components/system/Taskbar/Search/functions";
+import {
+  fileType,
+  getResultInfo,
+} from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -12,7 +14,8 @@ import { useSession } from "contexts/session";
 import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
+import { DEFAULT_LOCALE } from "utils/constants";
+import { isYouTubeUrl } from "utils/functions";
 
 type ResultEntryProps = {
   active?: boolean;
@@ -37,9 +40,9 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
-  const extension = extname(url);
+  const extension = extname(info?.url || url);
   const name = useMemo(() => {
-    let text = basename(url);
+    let text = basename(url, ".url");
 
     try {
       text = text.replace(
@@ -52,21 +55,28 @@ const ResultEntry: FC<ResultEntryProps> = ({
 
     return text;
   }, [searchTerm, url]);
+  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
+  const baseUrl = isYTUrl ? url : url || info?.url;
   const lastModified = useMemo(
     () =>
       stats
         ? `Last modified: ${new Date(
-            getModifiedTime(url, stats)
+            getModifiedTime(baseUrl, stats)
           ).toLocaleString(DEFAULT_LOCALE, {
             dateStyle: "short",
             timeStyle: "short",
           })}`
         : "",
-    [url, stats]
+    [baseUrl, stats]
   );
   const [hovered, setHovered] = useState(false);
   const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef, ".list");
+  const isAppShortcut = info?.pid
+    ? url === info.url && extname(url) === ".url"
+    : false;
+  const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
+  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
 
   useEffect(() => {
     const activeEntry = details || hovered;
@@ -86,20 +96,20 @@ const ResultEntry: FC<ResultEntryProps> = ({
       className={active ? "active-item" : undefined}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseOver={() => !details && setHovered(true)}
-      title={lastModified ? `${url}\n\n${lastModified}` : url}
+      title={lastModified ? `${baseUrl}\n\n${lastModified}` : baseUrl}
     >
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <figure
         className={details ? undefined : "simple"}
         onClick={() => {
-          open(info?.pid, { url });
-          if (url && info?.pid) updateRecentFiles(url, info?.pid);
+          open(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
+          if (baseUrl && info?.pid) updateRecentFiles(baseUrl, info?.pid);
         }}
       >
         <Icon
           displaySize={details ? 32 : 16}
           imgSize={details ? 32 : 16}
-          src={stats?.isDirectory() ? FOLDER_ICON : info?.icon}
+          src={info?.icon}
         />
         <figcaption>
           <h1
@@ -111,12 +121,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
           {details && stats && (
             <>
               <h2>
-                {stats.isDirectory()
-                  ? "File folder"
-                  : extensions[extension]?.type ||
-                    `${extension.toUpperCase().replace(".", "")} File`}
+                {fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}
               </h2>
-              <h2>{lastModified}</h2>
+              {!isYTUrl && !isAppShortcut && !isDirectory && (
+                <h2>{lastModified}</h2>
+              )}
             </>
           )}
         </figcaption>

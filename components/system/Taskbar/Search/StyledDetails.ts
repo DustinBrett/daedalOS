@@ -39,7 +39,6 @@ const StyledDetails = styled.div`
   }
 
   table {
-    border-bottom: 2px solid rgb(161, 161, 161);
     border-collapse: collapse;
     border-top: 2px solid rgb(161, 161, 161);
     display: grid;
@@ -47,6 +46,8 @@ const StyledDetails = styled.div`
     gap: 10px;
     margin-top: 15px;
     padding: 15px 0;
+    padding-bottom: 0;
+    width: 100%;
 
     th {
       max-width: 100px;
@@ -75,6 +76,8 @@ const StyledDetails = styled.div`
   }
 
   ol {
+    border-top: 2px solid rgb(161, 161, 161);
+    margin-top: 15px;
     padding: 10px 0;
     width: 100%;
 

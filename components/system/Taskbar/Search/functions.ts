@@ -1,4 +1,6 @@
 import type { FSModule } from "browserfs/dist/node/core/FS";
+import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import extensions from "components/system/Files/FileEntry/extensions";
 import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
 import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import type { useFileSystem } from "contexts/fileSystem";
@@ -62,3 +64,21 @@ export const updateInputValueOnReactElement = (
 
   element.dispatchEvent(new Event("input", { bubbles: true }));
 };
+
+export const fileType = (
+  stats: Stats | undefined,
+  extension: string,
+  isYTUrl: boolean,
+  isAppShortcut: boolean,
+  isNostrUrl: boolean
+): string =>
+  isNostrUrl
+    ? "Nostr URI"
+    : isAppShortcut
+      ? "App"
+      : isYTUrl
+        ? "YouTube Video"
+        : stats?.isDirectory() || !extension
+          ? "File folder"
+          : extensions[extension]?.type ||
+            `${extension.toUpperCase().replace(".", "")} File`;

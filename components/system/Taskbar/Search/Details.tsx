@@ -1,5 +1,4 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import {
@@ -9,7 +8,10 @@ import {
 } from "components/system/Taskbar/Search/Icons";
 import StyledDetails from "components/system/Taskbar/Search/StyledDetails";
 import type { ResultInfo } from "components/system/Taskbar/Search/functions";
-import { getResultInfo } from "components/system/Taskbar/Search/functions";
+import {
+  fileType,
+  getResultInfo,
+} from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -17,7 +19,8 @@ import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE, FOLDER_ICON } from "utils/constants";
+import { DEFAULT_LOCALE, ROOT_NAME } from "utils/constants";
+import { isYouTubeUrl } from "utils/functions";
 
 const Details: FC<{
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
@@ -31,13 +34,21 @@ const Details: FC<{
     icon: UNKNOWN_ICON,
   } as ResultInfo);
   const { open } = useProcesses();
-  const extension = extname(url);
+  const extension = extname(info?.url || url);
   const { updateRecentFiles } = useSession();
   const openFile = useCallback(() => {
     open(info?.pid, { url: info?.url });
     if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
   }, [info?.pid, info?.url, open, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
+  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
+  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const isAppShortcut = info?.pid
+    ? url === info.url && extname(url) === ".url"
+    : false;
+  const isDirectory =
+    stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
+  const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
 
   useEffect(() => {
     stat(url).then(setStats);
@@ -57,35 +68,32 @@ const Details: FC<{
           <RightArrow />
         </div>
       )}
-      <Icon
-        displaySize={64}
-        imgSize={96}
-        src={stats?.isDirectory() ? FOLDER_ICON : info?.icon}
-      />
+      <Icon displaySize={64} imgSize={96} src={info?.icon} />
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-      <h1 onClick={openFile}>{basename(info?.url)}</h1>
-      <h2>
-        {stats?.isDirectory()
-          ? "File folder"
-          : extensions[extension]?.type ||
-            `${extension.toUpperCase().replace(".", "")} File`}
-      </h2>
-      <table>
-        <tbody>
-          <tr>
-            <th>Location</th>
-            <td onClick={openFile}>{info?.url}</td>
-          </tr>
-          <tr>
-            <th>Last modified</th>
-            <td>
-              {new Date(getModifiedTime(url, stats)).toLocaleString(
-                DEFAULT_LOCALE
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h1 onClick={openFile}>
+        {baseUrl === "/" ? ROOT_NAME : basename(baseUrl, ".url")}
+      </h1>
+      <h2>{fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}</h2>
+      {!isAppShortcut && info?.url && (
+        <table>
+          <tbody>
+            <tr>
+              <th>Location</th>
+              <td onClick={openFile}>{info.url}</td>
+            </tr>
+            {!isYTUrl && !isNostrUrl && !isDirectory && (
+              <tr>
+                <th>Last modified</th>
+                <td>
+                  {new Date(getModifiedTime(info.url, stats)).toLocaleString(
+                    DEFAULT_LOCALE
+                  )}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
       <ol>
         <li>
           <Button onClick={openFile}>
@@ -93,13 +101,17 @@ const Details: FC<{
             Open
           </Button>
         </li>
-        {dirname(info?.url) !== "." && (
+        {dirname(baseUrl) !== "." && (
           <li>
             <Button
-              onClick={() => open("FileExplorer", { url: dirname(info?.url) })}
+              onClick={() =>
+                open("FileExplorer", {
+                  url: dirname(baseUrl),
+                })
+              }
             >
               <OpenFolder />
-              Open file location
+              Open {isDirectory ? "folder" : "file"} location
             </Button>
           </li>
         )}
