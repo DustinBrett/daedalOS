@@ -23,6 +23,7 @@ import {
   DESKTOP_PATH,
   SESSION_FILE,
   SYSTEM_FILES,
+  TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { updateIconPositionsIfEmpty } from "utils/functions";
 
@@ -166,9 +167,10 @@ const useSessionContextState = (): SessionContextState => {
     },
     [readdir, sortOrders]
   );
+  const loadingDebounceRef = useRef(0);
 
   useEffect(() => {
-    if (sessionLoaded && !haltSession) {
+    if (!loadingDebounceRef.current && sessionLoaded && !haltSession) {
       const updateSessionFile = (): void => {
         writeFile(
           SESSION_FILE,
@@ -248,7 +250,23 @@ const useSessionContextState = (): SessionContextState => {
             session.iconPositions &&
             Object.keys(session.iconPositions).length > 0
           ) {
+            if (session !== DEFAULT_SESSION && DEFAULT_SESSION.iconPositions) {
+              Object.keys(DEFAULT_SESSION.iconPositions).forEach(
+                (iconPosition) => {
+                  if (!session.iconPositions?.[iconPosition]) {
+                    // TODO: Allow deleting iconPositions then compare w/Desktop entries
+                    session.iconPositions[iconPosition] =
+                      DEFAULT_SESSION.iconPositions[iconPosition];
+                  }
+                }
+              );
+            }
             setIconPositions(session.iconPositions);
+          } else if (typeof session.iconPositions !== "object") {
+            setIconPositions(
+              DEFAULT_SESSION.iconPositions ||
+                (Object.create(null) as IconPositions)
+            );
           }
           if (
             session.windowStates &&
@@ -261,12 +279,18 @@ const useSessionContextState = (): SessionContextState => {
           }
           if (session.recentFiles && session.recentFiles.length > 0) {
             setRecentFiles(session.recentFiles);
+          } else if (!Array.isArray(session.recentFiles)) {
+            setRecentFiles(DEFAULT_SESSION?.recentFiles || []);
           }
         } catch (error) {
           if ((error as ApiError)?.code === "ENOENT") {
             deletePath(SESSION_FILE);
           }
         }
+
+        loadingDebounceRef.current = window.setTimeout(() => {
+          loadingDebounceRef.current = 0;
+        }, TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
 
         setSessionLoaded(true);
       };
