@@ -9,7 +9,7 @@ import {
 } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
 import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import type { ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,6 +20,7 @@ import { isYouTubeUrl } from "utils/functions";
 type ResultEntryProps = {
   active?: boolean;
   details?: boolean;
+  openApp: (pid: string, args?: ProcessArguments) => void;
   searchTerm: string;
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
   url: string;
@@ -28,12 +29,12 @@ type ResultEntryProps = {
 const ResultEntry: FC<ResultEntryProps> = ({
   active,
   details,
+  openApp,
   searchTerm,
   setActiveItem,
   url,
 }) => {
   const fs = useFileSystem();
-  const { open } = useProcesses();
   const { updateRecentFiles } = useSession();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
@@ -102,7 +103,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
       <figure
         className={details ? undefined : "simple"}
         onClick={() => {
-          open(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
+          openApp(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
           if (baseUrl && info?.pid) updateRecentFiles(baseUrl, info?.pid);
         }}
       >

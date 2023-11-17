@@ -13,7 +13,7 @@ import {
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import type { ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -23,23 +23,23 @@ import { DEFAULT_LOCALE, ROOT_NAME } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
 
 const Details: FC<{
+  openApp: (pid: string, args?: ProcessArguments) => void;
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
   singleLineView: boolean;
   url: string;
-}> = ({ setActiveItem, singleLineView, url }) => {
+}> = ({ openApp, setActiveItem, singleLineView, url }) => {
   const fs = useFileSystem();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
-  const { open } = useProcesses();
   const extension = extname(info?.url || url);
   const { updateRecentFiles } = useSession();
   const openFile = useCallback(() => {
-    open(info?.pid, { url: info?.url });
+    openApp(info?.pid, { url: info?.url });
     if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
-  }, [info?.pid, info?.url, open, updateRecentFiles]);
+  }, [info?.pid, info?.url, openApp, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
   const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
@@ -105,7 +105,7 @@ const Details: FC<{
           <li>
             <Button
               onClick={() =>
-                open("FileExplorer", {
+                openApp("FileExplorer", {
                   url: dirname(baseUrl),
                 })
               }

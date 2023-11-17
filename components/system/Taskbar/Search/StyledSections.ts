@@ -42,6 +42,7 @@ const StyledSections = styled.div<StyledSectionsProps>`
 
     > figcaption {
       padding-left: 2px;
+      white-space: nowrap;
     }
 
     ol {

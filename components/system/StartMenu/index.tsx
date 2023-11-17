@@ -14,8 +14,8 @@ import { useCallback, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   FOCUSABLE_ELEMENT,
-  HOME,
   PREVENT_SCROLL,
+  START_MENU_PATH,
   THIN_SCROLLBAR_WIDTH,
 } from "utils/constants";
 
@@ -92,7 +92,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       <StyledBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
-        url={`${HOME}/Start Menu`}
+        url={START_MENU_PATH}
         view="list"
         hideLoading
         hideShortcutIcons

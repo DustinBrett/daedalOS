@@ -2,6 +2,7 @@ import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIco
 import { NO_RESULTS, type TabName } from "components/system/Taskbar/Search";
 import ResultEntry from "components/system/Taskbar/Search/ResultEntry";
 import StyledResultsHeader from "components/system/Taskbar/Search/StyledResultsHeader";
+import type { ProcessArguments } from "contexts/process/types";
 import { useMemo } from "react";
 
 type ResultsSectionProps = {
@@ -9,6 +10,7 @@ type ResultsSectionProps = {
   activeTab: TabName;
   changeTab?: (tab: TabName) => void;
   details?: boolean;
+  openApp: (pid: string, args?: ProcessArguments) => void;
   results: lunr.Index.Result[];
   searchTerm: string;
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
@@ -19,6 +21,7 @@ const ResultSection: FC<ResultsSectionProps> = ({
   activeTab,
   activeItem,
   details,
+  openApp,
   results,
   searchTerm,
   setActiveItem,
@@ -57,6 +60,7 @@ const ResultSection: FC<ResultsSectionProps> = ({
               key={ref}
               active={activeItem === ref}
               details={details}
+              openApp={openApp}
               searchTerm={searchTerm}
               setActiveItem={setActiveItem}
               url={ref}

@@ -1,5 +1,8 @@
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getProcessByFileExtension,
+  getShortcutInfo,
+} from "components/system/Files/FileEntry/functions";
 import {
   Documents,
   Pictures,
@@ -22,8 +25,10 @@ import {
 } from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
+import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
+import type { ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import type { Variant } from "framer-motion";
 import { m as motion } from "framer-motion";
@@ -32,7 +37,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import {
+  DESKTOP_PATH,
+  FOCUSABLE_ELEMENT,
+  PICTURES_FOLDER,
+  PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
+  START_MENU_PATH,
+  VIDEOS_FOLDER,
+} from "utils/constants";
 import { haltEvent, label } from "utils/functions";
 import { useSearch } from "utils/search";
 
@@ -46,7 +59,7 @@ type StyleVariant = Variant & {
 
 const TABS = ["All", "Documents", "Photos", "Videos"] as const;
 
-const MAX_SINGLE_LINE = 550;
+const MIN_MULTI_LINE = 550;
 
 export const SINGLE_LINE_HEIGHT_ADDITION = 34;
 
@@ -83,12 +96,14 @@ const METADATA = {
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
-  const { recentFiles } = useSession();
+  const { recentFiles, updateRecentFiles } = useSession();
+  const { readFile } = useFileSystem();
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },
   } = useTheme();
-  const [singleLineView, setSingleLineView] = useState(false);
+  const [menuWidth, setMenuWidth] = useState(MIN_MULTI_LINE);
+  const singleLineView = menuWidth < MIN_MULTI_LINE;
   const searchTransition = useTaskbarItemTransition(
     search.maxHeight + (singleLineView ? SINGLE_LINE_HEIGHT_ADDITION : 0),
     true,
@@ -111,31 +126,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const [bestMatch, setBestMatch] = useState("");
   const [activeItem, setActiveItem] = useState("");
   const { open } = useProcesses();
-  const subResults = useMemo(
-    () =>
-      Object.entries(
-        results.reduce(
-          (acc, result) => {
-            const pid = getProcessByFileExtension(extname(result.ref));
-
-            if (pid === "Photos") {
-              acc.Photos.push(result);
-            } else if (pid === "VideoPlayer") {
-              acc.Videos.push(result);
-            } else {
-              acc.Documents.push(result);
-            }
-
-            return acc;
-          },
-          {
-            Documents: [] as lunr.Index.Result[],
-            Photos: [] as lunr.Index.Result[],
-            Videos: [] as lunr.Index.Result[],
-          }
-        )
-      ),
-    [results]
+  const [subResults, setSubResults] = useState<[string, lunr.Index.Result[]][]>(
+    []
   );
   const firstResult = useMemo(
     () =>
@@ -144,6 +136,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
         : Object.fromEntries(subResults)[activeTab]?.[0],
     [activeTab, results, subResults]
   );
+  const listRef = useRef<HTMLDivElement | null>(null);
   const changeTab = useCallback(
     (tab: TabName) => {
       if (inputRef.current) {
@@ -152,12 +145,20 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             ? inputRef.current.value
             : `${tab}: ${inputRef.current.value}`
         ).replace(`${activeTab}: `, "");
+        listRef.current?.scrollTo(0, 0);
       }
 
       setActiveItem("");
       setActiveTab(tab);
     },
     [activeTab]
+  );
+  const openApp = useCallback(
+    (pid: string, args?: ProcessArguments) => {
+      toggleSearch(false);
+      open(pid, args);
+    },
+    [open, toggleSearch]
   );
 
   useEffect(() => {
@@ -167,7 +168,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     ) {
       setBestMatch(firstResult.ref);
 
-      if (menuRef.current && menuRef.current.clientWidth > MAX_SINGLE_LINE) {
+      if (menuRef.current && menuRef.current.clientWidth > MIN_MULTI_LINE) {
         setActiveItem(firstResult.ref);
       }
     } else if (!firstResult && activeItem) {
@@ -176,17 +177,58 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   }, [activeItem, bestMatch, firstResult]);
 
   useEffect(() => {
-    const checkMenuWidth = (): void =>
-      setSingleLineView(
-        menuRef.current ? menuRef.current.clientWidth < MAX_SINGLE_LINE : false
-      );
+    const updateMenuWidth = (): void =>
+      setMenuWidth(menuRef.current?.clientWidth || 0);
 
-    checkMenuWidth();
+    updateMenuWidth();
 
-    window.addEventListener("resize", checkMenuWidth);
+    window.addEventListener("resize", updateMenuWidth);
 
-    return () => window.removeEventListener("resize", checkMenuWidth);
+    return () => window.removeEventListener("resize", updateMenuWidth);
   }, []);
+
+  useEffect(() => {
+    if (results.length > 1) {
+      results
+        .reduce(
+          async (acc, result) => {
+            const currentResults = await acc;
+            const extension = extname(result.ref);
+            let pid = "";
+
+            if (extension === SHORTCUT_EXTENSION) {
+              if (result.ref.startsWith(`${PICTURES_FOLDER}/`)) pid = "Photos";
+              else if (result.ref.startsWith(`${VIDEOS_FOLDER}/`)) {
+                pid = "VideoPlayer";
+              } else if (
+                !(
+                  result.ref.startsWith(`${DESKTOP_PATH}/`) ||
+                  result.ref.startsWith(`${START_MENU_PATH}/`)
+                )
+              ) {
+                pid = getShortcutInfo(await readFile(result.ref))?.pid;
+              }
+            } else pid = getProcessByFileExtension(extension);
+
+            if (pid === "Photos") {
+              currentResults.Photos.push(result);
+            } else if (pid === "VideoPlayer") {
+              currentResults.Videos.push(result);
+            } else {
+              currentResults.Documents.push(result);
+            }
+
+            return currentResults;
+          },
+          Promise.resolve({
+            Documents: [] as lunr.Index.Result[],
+            Photos: [] as lunr.Index.Result[],
+            Videos: [] as lunr.Index.Result[],
+          })
+        )
+        .then((newResults) => setSubResults(Object.entries(newResults)));
+    }
+  }, [readFile, results]);
 
   return (
     <StyledSearch
@@ -212,7 +254,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       <div>
         <div className="content" onContextMenuCapture={haltEvent}>
           <StyledTabs>
-            {TABS.map((tab) => (
+            {TABS.filter(
+              (tab) =>
+                !(menuWidth < 325 && tab === "Videos") &&
+                !(menuWidth < 260 && tab === "Photos")
+            ).map((tab) => (
               // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
               <li
                 key={tab}
@@ -250,10 +296,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                       // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
                       <li
                         key={app}
-                        onClick={() => {
-                          toggleSearch(false);
-                          open(app);
-                        }}
+                        onClick={() => openApp(app)}
                         title={directory[app].title}
                       >
                         <figure>
@@ -274,9 +317,15 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   <StyledFiles>
                     <figcaption>Recent</figcaption>
                     <ol>
-                      {recentFiles.map(([file, pid]) => (
+                      {recentFiles.map(([file, pid], index) => (
                         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                        <li key={file} onClick={() => open(pid, { url: file })}>
+                        <li
+                          key={file}
+                          onClick={() => {
+                            openApp(pid, { url: file });
+                            if (index !== 0) updateRecentFiles(file, pid);
+                          }}
+                        >
                           <Icon
                             displaySize={16}
                             imgSize={16}
@@ -294,13 +343,17 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     Games for you
                   </figcaption>
                   <ol>
-                    {GAMES.map(
+                    {GAMES.filter(
+                      (game) =>
+                        !(menuWidth < 360 && game === "Quake3") &&
+                        !(menuWidth < 260 && game === "SpaceCadet")
+                    ).map(
                       (game) =>
                         directory[game] && (
                           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
                           <li
                             key={game}
-                            onClick={() => open(game)}
+                            onClick={() => openApp(game)}
                             title={directory[game].title}
                           >
                             <Icon
@@ -331,10 +384,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           {searchTerm && (
             <StyledResults>
               {(!singleLineView || !activeItem) && (
-                <div className="list">
+                <div ref={listRef} className="list">
                   <ResultSection
                     activeItem={activeItem}
                     activeTab={activeTab}
+                    openApp={openApp}
                     results={[firstResult || { ref: NO_RESULTS }]}
                     searchTerm={searchTerm}
                     setActiveItem={setActiveItem}
@@ -349,6 +403,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                           activeItem={activeItem}
                           activeTab={activeTab}
                           changeTab={changeTab}
+                          openApp={openApp}
                           results={subResult.filter(
                             (result) => firstResult !== result
                           )}
@@ -362,6 +417,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               )}
               {activeItem && firstResult && (
                 <Details
+                  openApp={openApp}
                   setActiveItem={setActiveItem}
                   singleLineView={singleLineView}
                   url={activeItem || firstResult?.ref}

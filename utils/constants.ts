@@ -53,6 +53,8 @@ export const HOME = "/Users/Public";
 
 export const PICTURES_FOLDER = `${HOME}/Pictures`;
 
+export const VIDEOS_FOLDER = `${HOME}/Videos`;
+
 export const INDEX_FILE = "/index.html";
 
 export const PROMPT_FILE = "prompts.json";
@@ -182,6 +184,8 @@ export const SYSTEM_FILES = new Set(["desktop.ini"]);
 export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
 export const DESKTOP_PATH = `${HOME}/Desktop`;
+
+export const START_MENU_PATH = `${HOME}/Start Menu`;
 
 export const SYSTEM_SHORTCUT_DIRECTORIES = new Set([DESKTOP_PATH]);
 
