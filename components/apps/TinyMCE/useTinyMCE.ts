@@ -80,9 +80,9 @@ const useTinyMCE = ({
   }, [containerRef, editor?.mode, open]);
   const loadFile = useCallback(async () => {
     if (editor) {
-      const fileContents = await readFile(url);
+      setReadOnlyMode(editor);
 
-      if (fileContents.length > 0) setReadOnlyMode(editor);
+      const fileContents = await readFile(url);
 
       if (getExtension(url) === ".rtf") {
         const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
