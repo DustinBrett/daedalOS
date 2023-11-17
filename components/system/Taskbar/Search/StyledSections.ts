@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledSectionsProps = {
   $singleLine: boolean;
@@ -16,6 +17,14 @@ const StyledSections = styled.div<StyledSectionsProps>`
 
   @media (hover: none), (pointer: coarse) {
     overflow-y: auto;
+  }
+
+  @supports (not (scrollbar-gutter: stable)) {
+    margin-right: ${DEFAULT_SCROLLBAR_WIDTH}px;
+
+    &:hover {
+      margin-right: 0;
+    }
   }
 
   &:hover {
