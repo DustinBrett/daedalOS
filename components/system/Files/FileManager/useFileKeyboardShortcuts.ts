@@ -167,8 +167,8 @@ const useFileKeyboardShortcuts = (
                               ? olChildren.length - 1
                               : liPosition - 1
                             : liPosition === olChildren.length - 1
-                            ? 0
-                            : liPosition + 1
+                              ? 0
+                              : liPosition + 1
                         ].querySelector("button");
                     }
                   }

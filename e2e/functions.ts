@@ -21,6 +21,8 @@ import {
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
   RIGHT_CLICK,
+  SEARCH_BUTTON_SELECTOR,
+  SEARCH_MENU_SELECTOR,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
   START_BUTTON_SELECTOR,
@@ -50,6 +52,17 @@ type TestProps = {
 
 type TestPropsWithBrowser = TestProps & {
   browserName: string;
+};
+
+type TestPropsWithSelection = TestProps & {
+  container?: string;
+  selection: {
+    height: number;
+    up?: boolean;
+    width: number;
+    x: number;
+    y: number;
+  };
 };
 
 type DocumentWithVendorFullscreen = Document & {
@@ -132,6 +145,12 @@ export const clickDesktop = async (
     button: right ? "right" : undefined,
     ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
   });
+
+export const clickSearchButton = async (
+  { page }: TestProps,
+  right = false
+): Promise<void> =>
+  page.locator(SEARCH_BUTTON_SELECTOR).click(right ? RIGHT_CLICK : undefined);
 
 export const clickStartButton = async (
   { page }: TestProps,
@@ -463,8 +482,11 @@ export const contextMenuIsVisible = async ({
 export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
 
-export const selectionIsVisible = async ({ page }: TestProps): Promise<void> =>
-  expect(page.locator(SELECTION_SELECTOR)).toBeVisible();
+export const searchMenuIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(SEARCH_MENU_SELECTOR)).toBeHidden();
+
+export const searchMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(SEARCH_MENU_SELECTOR)).toBeVisible();
 
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
@@ -746,4 +768,26 @@ export const appIsOpen = async (
 
   await windowsAreVisible({ page });
   await windowTitlebarTextIsVisible(label, { page });
+};
+
+export const selectArea = async ({
+  container = SELECTION_SELECTOR,
+  page,
+  selection,
+}: TestPropsWithSelection): Promise<void> => {
+  const { x = 0, y = 0, width = 0, height = 0, up = false } = selection || {};
+  await page.mouse.move(x, y);
+  await page.mouse.down({ button: "left" });
+  await page.mouse.move(x + width, y + height);
+
+  await expect(page.locator(container)).toBeVisible();
+
+  const boundingBox = await page.locator(container).boundingBox();
+
+  expect(boundingBox?.width).toEqual(width);
+  expect(boundingBox?.height).toEqual(height);
+  expect(boundingBox?.x).toEqual(x);
+  expect(boundingBox?.y).toEqual(y);
+
+  if (up) await page.mouse.up({ button: "left" });
 };

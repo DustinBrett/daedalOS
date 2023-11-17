@@ -29,11 +29,11 @@ import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import type { UpdateFiles } from "contexts/session/types";
 import { basename, dirname, isAbsolute, join } from "path";
-import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
+  DESKTOP_PATH,
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
@@ -87,10 +87,6 @@ type FileSystemContextState = AsyncFS & {
 };
 
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
-
-const {
-  FileSystem: { Emscripten, FileSystemAccess, IsoFS, ZipFS },
-} = BrowserFS as IFileSystemAccess & typeof IBrowserFS;
 
 const useFileSystemContextState = (): FileSystemContextState => {
   const asyncFs = useAsyncFs();
@@ -225,21 +221,33 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const mountEmscriptenFs = useCallback(
     async (FS: EmscriptenFS, fsName?: string) =>
       new Promise<string>((resolve, reject) => {
-        Emscripten?.Create({ FS }, (error, newFs) => {
-          const emscriptenFS = newFs as unknown as ExtendedEmscriptenFileSystem;
+        import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+          const {
+            FileSystem: { Emscripten },
+          } = ExtraFS as typeof IBrowserFS;
 
-          if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
-            reject();
-            return;
-          }
+          Emscripten?.Create({ FS }, (error, newFs) => {
+            const emscriptenFS =
+              newFs as unknown as ExtendedEmscriptenFileSystem;
 
-          const dbName =
-            fsName ||
-            `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${emscriptenFS
-              ._FS?.DB_STORE_NAME}`;
+            if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
+              reject();
+              return;
+            }
 
-          rootFs?.mount?.(join("/", dbName), newFs);
-          resolve(dbName);
+            const dbName =
+              fsName ||
+              `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${emscriptenFS
+                ._FS?.DB_STORE_NAME}`;
+
+            try {
+              rootFs?.mount?.(join("/", dbName), newFs);
+            } catch {
+              // Ignore error during mounting
+            }
+
+            resolve(dbName);
+          });
         });
       }),
     [rootFs]
@@ -265,24 +273,30 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       return new Promise((resolve, reject) => {
         if (handle instanceof FileSystemDirectoryHandle) {
-          FileSystemAccess?.Create({ handle }, (error, newFs) => {
-            if (error || !newFs) {
-              reject();
-              return;
-            }
+          import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+            const {
+              FileSystem: { FileSystemAccess },
+            } = ExtraFS as IFileSystemAccess;
 
-            const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
-            const mappedName =
-              removeInvalidFilenameCharacters(handle.name).trim() ||
-              (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
+            FileSystemAccess?.Create({ handle }, (error, newFs) => {
+              if (error || !newFs) {
+                reject();
+                return;
+              }
 
-            rootFs?.mount?.(join(directory, mappedName), newFs);
-            resolve(systemDirectory ? directory : mappedName);
+              const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
+              const mappedName =
+                removeInvalidFilenameCharacters(handle.name).trim() ||
+                (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
 
-            import("contexts/fileSystem/functions").then(
-              ({ addFileSystemHandle }) =>
-                addFileSystemHandle(directory, handle, mappedName)
-            );
+              rootFs?.mount?.(join(directory, mappedName), newFs);
+              resolve(systemDirectory ? directory : mappedName);
+
+              import("contexts/fileSystem/functions").then(
+                ({ addFileSystemHandle }) =>
+                  addFileSystemHandle(directory, handle, mappedName)
+              );
+            });
           });
         } else {
           reject();
@@ -304,11 +318,17 @@ const useFileSystemContextState = (): FileSystemContextState => {
           }
         };
 
-        if (getExtension(url) === ".iso") {
-          IsoFS?.Create({ data: fileData }, createFs);
-        } else {
-          ZipFS?.Create({ zipData: fileData }, createFs);
-        }
+        import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+          const {
+            FileSystem: { IsoFS, ZipFS },
+          } = ExtraFS as typeof IBrowserFS;
+
+          if (getExtension(url) === ".iso") {
+            IsoFS?.Create({ data: fileData }, createFs);
+          } else {
+            ZipFS?.Create({ zipData: fileData }, createFs);
+          }
+        });
       });
     },
     [readFile, rootFs]
@@ -501,27 +521,34 @@ const useFileSystemContextState = (): FileSystemContextState => {
       const restoreFsHandles = async (): Promise<void> => {
         restoredFsHandles.current = true;
 
-        Object.entries(await getFileSystemHandles()).forEach(
-          async ([handleDirectory, handle]) => {
-            if (!(await exists(handleDirectory))) {
-              try {
-                mapFs(
-                  SYSTEM_DIRECTORIES.has(handleDirectory)
+        let mappedOntoDesktop = false;
+
+        await Promise.all(
+          Object.entries(await getFileSystemHandles()).map(
+            async ([handleDirectory, handle]) => {
+              if (!(await exists(handleDirectory))) {
+                try {
+                  const mapDirectory = SYSTEM_DIRECTORIES.has(handleDirectory)
                     ? handleDirectory
-                    : dirname(handleDirectory),
-                  handle
-                );
-              } catch {
-                // Ignore failure
+                    : dirname(handleDirectory);
+
+                  await mapFs(mapDirectory, handle);
+
+                  if (mapDirectory === DESKTOP_PATH) mappedOntoDesktop = true;
+                } catch {
+                  // Ignore failure
+                }
               }
             }
-          }
+          )
         );
+
+        if (mappedOntoDesktop) updateFolder(DESKTOP_PATH);
       };
 
       restoreFsHandles();
     }
-  }, [exists, mapFs, rootFs]);
+  }, [exists, mapFs, rootFs, updateFolder]);
 
   return {
     addFile,

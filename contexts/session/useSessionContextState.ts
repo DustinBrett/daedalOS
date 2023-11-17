@@ -3,18 +3,18 @@ import type { SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import type {
   IconPositions,
+  RecentFiles,
   SessionContextState,
   SessionData,
   SortOrders,
   WallpaperFit,
   WindowStates,
 } from "contexts/session/types";
-import { dirname } from "path";
+import { dirname, extname } from "path";
 import defaultSession from "public/session.json";
 import type { SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  DEFAULT_AI_API,
   DEFAULT_ASCENDING,
   DEFAULT_CLOCK_SOURCE,
   DEFAULT_THEME,
@@ -22,6 +22,8 @@ import {
   DEFAULT_WALLPAPER_FIT,
   DESKTOP_PATH,
   SESSION_FILE,
+  SYSTEM_FILES,
+  TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { updateIconPositionsIfEmpty } from "utils/functions";
 
@@ -32,7 +34,6 @@ const useSessionContextState = (): SessionContextState => {
     useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
-  const [aiApi, setAiApi] = useState(DEFAULT_AI_API);
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
@@ -49,6 +50,27 @@ const useSessionContextState = (): SessionContextState => {
   const [wallpaperFit, setWallpaperFit] = useState(DEFAULT_WALLPAPER_FIT);
   const [wallpaperImage, setWallpaperImage] = useState(DEFAULT_WALLPAPER);
   const [runHistory, setRunHistory] = useState<string[]>([]);
+  const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
+  const updateRecentFiles = useCallback(
+    (url: string, pid: string) =>
+      extname(url) &&
+      setRecentFiles((currentRecentFiles) => {
+        const entryIndex = currentRecentFiles.findIndex(
+          ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid
+        );
+
+        if (entryIndex !== -1) {
+          return [
+            currentRecentFiles[entryIndex],
+            ...currentRecentFiles.slice(0, entryIndex),
+            ...currentRecentFiles.slice(entryIndex + 1),
+          ] as RecentFiles;
+        }
+
+        return [[url, pid], ...currentRecentFiles].slice(0, 5) as RecentFiles;
+      }),
+    []
+  );
   const prependToStack = useCallback(
     (id: string) =>
       setStackOrder((currentStackOrder) =>
@@ -119,7 +141,9 @@ const useSessionContextState = (): SessionContextState => {
                 [
                   ...new Set([
                     ...desktopFileOrder,
-                    ...(await readdir(DESKTOP_PATH)),
+                    ...(await readdir(DESKTOP_PATH)).filter(
+                      (entry) => !SYSTEM_FILES.has(entry)
+                    ),
                   ]),
                 ],
               ],
@@ -143,17 +167,18 @@ const useSessionContextState = (): SessionContextState => {
     },
     [readdir, sortOrders]
   );
+  const loadingDebounceRef = useRef(0);
 
   useEffect(() => {
-    if (sessionLoaded && !haltSession) {
+    if (!loadingDebounceRef.current && sessionLoaded && !haltSession) {
       const updateSessionFile = (): void => {
         writeFile(
           SESSION_FILE,
           JSON.stringify({
-            aiApi,
             clockSource,
             cursor,
             iconPositions,
+            recentFiles,
             runHistory,
             sortOrders,
             themeName,
@@ -175,11 +200,11 @@ const useSessionContextState = (): SessionContextState => {
       }
     }
   }, [
-    aiApi,
     clockSource,
     cursor,
     haltSession,
     iconPositions,
+    recentFiles,
     runHistory,
     sessionLoaded,
     sortOrders,
@@ -209,7 +234,6 @@ const useSessionContextState = (): SessionContextState => {
             session = DEFAULT_SESSION;
           }
 
-          if (session.aiApi) setAiApi(session.aiApi);
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.cursor) setCursor(session.cursor);
           if (session.themeName) setThemeName(session.themeName);
@@ -226,7 +250,23 @@ const useSessionContextState = (): SessionContextState => {
             session.iconPositions &&
             Object.keys(session.iconPositions).length > 0
           ) {
+            if (session !== DEFAULT_SESSION && DEFAULT_SESSION.iconPositions) {
+              Object.keys(DEFAULT_SESSION.iconPositions).forEach(
+                (iconPosition) => {
+                  if (!session.iconPositions?.[iconPosition]) {
+                    // TODO: Allow deleting iconPositions then compare w/Desktop entries
+                    session.iconPositions[iconPosition] =
+                      DEFAULT_SESSION.iconPositions[iconPosition];
+                  }
+                }
+              );
+            }
             setIconPositions(session.iconPositions);
+          } else if (typeof session.iconPositions !== "object") {
+            setIconPositions(
+              DEFAULT_SESSION.iconPositions ||
+                (Object.create(null) as IconPositions)
+            );
           }
           if (
             session.windowStates &&
@@ -237,11 +277,20 @@ const useSessionContextState = (): SessionContextState => {
           if (session.runHistory && session.runHistory.length > 0) {
             setRunHistory(session.runHistory);
           }
+          if (session.recentFiles && session.recentFiles.length > 0) {
+            setRecentFiles(session.recentFiles);
+          } else if (!Array.isArray(session.recentFiles)) {
+            setRecentFiles(DEFAULT_SESSION?.recentFiles || []);
+          }
         } catch (error) {
           if ((error as ApiError)?.code === "ENOENT") {
             deletePath(SESSION_FILE);
           }
         }
+
+        loadingDebounceRef.current = window.setTimeout(() => {
+          loadingDebounceRef.current = 0;
+        }, TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
 
         setSessionLoaded(true);
       };
@@ -251,16 +300,15 @@ const useSessionContextState = (): SessionContextState => {
   }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
-    aiApi,
     clockSource,
     cursor,
     foregroundId,
     iconPositions,
     prependToStack,
+    recentFiles,
     removeFromStack,
     runHistory,
     sessionLoaded,
-    setAiApi,
     setClockSource,
     setCursor,
     setForegroundId,
@@ -274,6 +322,7 @@ const useSessionContextState = (): SessionContextState => {
     sortOrders,
     stackOrder,
     themeName,
+    updateRecentFiles,
     wallpaperFit,
     wallpaperImage,
     windowStates,

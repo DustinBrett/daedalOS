@@ -60,9 +60,7 @@ const drawClockText = (dateTime: LocaleTimeDate): void => {
 };
 
 const sendTick = (): void => {
-  const now = getNow();
-
-  const dateTime = formatLocaleDateTime(now);
+  const dateTime = formatLocaleDateTime(getNow());
 
   globalThis.postMessage(dateTime);
   if (offscreenCanvas) drawClockText(dateTime);

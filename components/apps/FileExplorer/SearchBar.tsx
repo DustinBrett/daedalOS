@@ -1,27 +1,15 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
-import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
-import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import { getResultInfo } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
 import type { MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { basename, join } from "path";
+import { useSession } from "contexts/session";
+import { basename } from "path";
 import { memo, useEffect, useRef, useState } from "react";
-import {
-  ICON_CACHE,
-  ICON_CACHE_EXTENSION,
-  SHORTCUT_EXTENSION,
-  TEXT_EDITORS,
-  YT_ICON_CACHE,
-} from "utils/constants";
-import {
-  bufferToUrl,
-  getExtension,
-  isYouTubeUrl,
-  preloadLibs,
-} from "utils/functions";
+import { SHORTCUT_EXTENSION } from "utils/constants";
+import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
 
 type SearchBarProps = {
@@ -42,7 +30,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
-  const { exists, fs, readFile } = useFileSystem();
+  const fs = useFileSystem();
+  const { updateRecentFiles } = useSession();
 
   useEffect(() => {
     if (searchBarRef.current && hasUsedSearch.current) {
@@ -54,42 +43,20 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           ]
             .slice(0, MAX_ENTRIES - 1)
             .map(async ({ ref: path }) => {
-              const {
-                icon,
-                pid = TEXT_EDITORS[0],
-                url: infoUrl,
-              } = await new Promise<FileInfo>((resolve) => {
-                getInfoWithExtension(
-                  fs as FSModule,
-                  path,
-                  getExtension(path),
-                  (fileInfo) => resolve(fileInfo)
-                );
-              });
-              const isYT = isYouTubeUrl(infoUrl);
-              const cachedIconPath = join(
-                isYT ? YT_ICON_CACHE : ICON_CACHE,
-                `${
-                  isYT ? new URL(infoUrl).pathname.replace("/", "") : infoUrl
-                }${ICON_CACHE_EXTENSION}`
-              );
-              let cachedIcon = "";
-
-              if (await exists(cachedIconPath)) {
-                cachedIcon = bufferToUrl(await readFile(cachedIconPath));
-              }
+              const { icon, url: infoUrl, pid } = await getResultInfo(fs, path);
 
               return {
                 action: () => {
-                  open(pid, { url: infoUrl || path });
+                  open(pid, { url: infoUrl });
                   setSearchTerm("");
 
                   if (searchBarRef.current) {
                     searchBarRef.current.value = "";
                     searchBarRef.current.blur();
                   }
+                  if (infoUrl && pid) updateRecentFiles(infoUrl, pid);
                 },
-                icon: cachedIcon || icon,
+                icon,
                 label: basename(path, SHORTCUT_EXTENSION),
               };
             })
@@ -105,7 +72,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         );
       });
     }
-  }, [contextMenu, exists, fs, open, readFile, results, url]);
+  }, [contextMenu, fs, open, results, updateRecentFiles, url]);
 
   useEffect(() => {
     if (searchBarRef.current) {

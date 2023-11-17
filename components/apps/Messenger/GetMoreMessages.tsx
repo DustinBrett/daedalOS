@@ -1,9 +1,9 @@
+import type { TimeScale } from "components/apps/Messenger/HistoryContext";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 import { useState } from "react";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
-
-type TimeScale = "day" | "week" | "month" | "trimester" | "infinite";
 
 const TimeScaleLabel: Partial<Record<TimeScale, string>> = {
   day: "Retrieve last 7 days of messages",
@@ -15,7 +15,7 @@ const TimeScaleLabel: Partial<Record<TimeScale, string>> = {
 const GetMoreMessages: FC<{
   setSince: React.Dispatch<React.SetStateAction<number>>;
 }> = ({ setSince }) => {
-  const [timeScale, setTimeScale] = useState<TimeScale>("day");
+  const { timeScale, setTimeScale } = useHistoryContext();
   const [disabled, setDisabled] = useState<boolean>(false);
 
   // eslint-disable-next-line react/jsx-no-useless-fragment

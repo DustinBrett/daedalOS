@@ -14,7 +14,7 @@ import {
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
 const useFile = (url: string): UseFile => {
-  const { setForegroundId } = useSession();
+  const { setForegroundId, updateRecentFiles } = useSession();
   const { createPath, updateFolder } = useFileSystem();
   const { minimize, open, url: setUrl } = useProcesses();
   const processesRef = useProcessesRef();
@@ -61,6 +61,7 @@ const useFile = (url: string): UseFile => {
             ? processIcon
             : icon
         );
+        if (runUrl && pid) updateRecentFiles(runUrl, pid);
       }
     },
     [
@@ -71,6 +72,7 @@ const useFile = (url: string): UseFile => {
       setForegroundId,
       setUrl,
       updateFolder,
+      updateRecentFiles,
       url,
     ]
   );

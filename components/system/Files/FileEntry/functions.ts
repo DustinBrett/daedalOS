@@ -84,19 +84,27 @@ export const getIconFromIni = (
   directory: string
 ): Promise<string> =>
   new Promise((resolve) => {
-    fs.readFile(
-      join(directory, "desktop.ini"),
-      (error, contents = Buffer.from("")) => {
-        if (error) resolve("");
-        else {
-          const {
-            ShellClassInfo: { IconFile = "" },
-          } = ini.parse(contents.toString()) as ShellClassInfo;
+    const iniPath = join(directory, "desktop.ini");
 
-          resolve(IconFile);
-        }
+    fs.lstat(iniPath, (statError, stats) => {
+      if (statError) resolve("");
+      else if (stats?.mtimeMs === stats?.ctimeMs) {
+        import("public/.index/iniIcons.json").then(({ default: iniCache }) =>
+          resolve(iniCache[directory as keyof typeof iniCache] || "")
+        );
+      } else {
+        fs.readFile(iniPath, (readError, contents = Buffer.from("")) => {
+          if (readError) resolve("");
+          else {
+            const {
+              ShellClassInfo: { IconFile = "" },
+            } = ini.parse(contents.toString()) as ShellClassInfo;
+
+            resolve(IconFile);
+          }
+        });
       }
-    );
+    });
   });
 
 const getDefaultFileViewer = (extension: string): string => {
@@ -199,7 +207,10 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
 
   return {
     comment,
-    icon: !icon && pid ? processDirectory[pid]?.icon : icon,
+    icon:
+      !icon && pid && pid !== "FileExplorer"
+        ? processDirectory[pid]?.icon
+        : icon,
     pid,
     type,
     url,
@@ -358,18 +369,27 @@ export const getInfoWithExtension = (
 
         if (pid === "FileExplorer" && !icon) {
           const getIcon = (): void => {
-            getIconFromIni(fs, url).then((iniIcon) =>
-              callback({
-                comment,
-                icon: iniIcon || processDirectory[pid]?.icon,
-                pid,
-                subIcons,
-                url,
-              })
+            getIconFromIni(fs, url).then(
+              (iniIcon) =>
+                iniIcon &&
+                callback({
+                  comment,
+                  icon: iniIcon,
+                  pid,
+                  subIcons,
+                  url,
+                })
             );
           };
 
-          callback({ comment, getIcon, icon, pid, subIcons, url });
+          callback({
+            comment,
+            getIcon,
+            icon: processDirectory[pid]?.icon,
+            pid,
+            subIcons,
+            url,
+          });
         } else if (
           DYNAMIC_EXTENSION.has(urlExt) ||
           DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
@@ -571,7 +591,7 @@ export const getInfoWithExtension = (
             containerElement.style.height = "600px";
             containerElement.style.width = "600px";
             containerElement.style.padding = "32px";
-            containerElement.style.backgroundColor = "#fff";
+            containerElement.style.backgroundColor = "#fbf1c7";
             containerElement.style.zIndex = "-1";
             containerElement.style.overflow = "hidden";
             containerElement.style.opacity = "0";

@@ -54,6 +54,7 @@ const NostrChat: FC<NostrChatProps> = ({
 }) => {
   const { setSeenEventIds } = useHistoryContext();
   const [selectedRecipientKey, setSelectedRecipientKey] = useState<string>("");
+  const [hideReadMessages, setHideReadMessages] = useState<boolean>(false);
   const changeRecipient = useCallback(
     (recipientKey: string, currentEvents?: Event[]) =>
       setSelectedRecipientKey((currenRecipientKey: string) => {
@@ -96,7 +97,9 @@ const NostrChat: FC<NostrChatProps> = ({
 
   useUnreadStatus(
     processId,
-    new Set(unreadEvents.map(({ pubkey }) => pubkey)).size
+    contactKeys.filter((contactKey) =>
+      unreadEvents.includes(lastEvents[contactKey])
+    ).length
   );
 
   useEffect(() => {
@@ -135,10 +138,12 @@ const NostrChat: FC<NostrChatProps> = ({
     <StyledMessenger>
       <ProfileBanner
         goHome={() => changeRecipient("", events)}
+        hideReadMessages={hideReadMessages}
         newChat={() => changeRecipient(UNKNOWN_PUBLIC_KEY)}
         publicKey={publicKey}
         relayUrls={relayUrls}
         selectedRecipientKey={selectedRecipientKey}
+        setHideReadMessages={setHideReadMessages}
       />
       <div>
         <AnimatePresence initial={false} presenceAffectsLayout={false}>
@@ -156,16 +161,25 @@ const NostrChat: FC<NostrChatProps> = ({
               onContextMenu={haltEvent}
               {...inLeftOutRight}
             >
-              {contactKeys.map((contactKey) => (
-                <Contact
-                  key={contactKey}
-                  lastEvent={lastEvents[contactKey]}
-                  onClick={() => changeRecipient(contactKey, events)}
-                  pubkey={contactKey}
-                  publicKey={publicKey}
-                  unreadEvent={unreadEvents.includes(lastEvents[contactKey])}
-                />
-              ))}
+              {contactKeys
+                .filter(
+                  (contactKey) =>
+                    !hideReadMessages ||
+                    unreadEvents.includes(lastEvents[contactKey])
+                )
+                .map((contactKey) => (
+                  <Contact
+                    key={contactKey}
+                    lastEvent={lastEvents[contactKey]}
+                    onClick={() => changeRecipient(contactKey, events)}
+                    pubkey={contactKey}
+                    publicKey={publicKey}
+                    unreadEvent={
+                      hideReadMessages ||
+                      unreadEvents.includes(lastEvents[contactKey])
+                    }
+                  />
+                ))}
               <GetMoreMessages setSince={setSince} />
             </StyledContacts>
           )}

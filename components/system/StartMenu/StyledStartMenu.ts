@@ -1,8 +1,9 @@
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
+import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import { m as motion } from "framer-motion";
 import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
-import { TASKBAR_HEIGHT, THIN_SCROLLBAR_WIDTH } from "utils/constants";
+import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledStartMenuProps = {
   $showScrolling: boolean;
@@ -37,22 +38,8 @@ const ThinScrollBars = css<StyledStartMenuProps>`
 `;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
-  background-color: hsla(0, 0%, 13%, 95%);
-  bottom: ${TASKBAR_HEIGHT}px;
-  box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
-  contain: strict;
-  display: flex;
-  height: 100%;
-  left: 0;
-  max-height: ${({ theme }) => theme.sizes.startMenu.maxHeight}px;
-  max-width: ${({ theme }) => theme.sizes.startMenu.size}px;
-  position: absolute;
-  width: 100%;
-  z-index: 10000;
-
-  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: hsla(0, 0%, 16%, 70%);
-  }
+  ${({ theme }) =>
+    TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
 
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};

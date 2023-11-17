@@ -55,7 +55,8 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
     processes: { Run: runProcess } = {},
   } = useProcesses();
   const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
-  const { foregroundId, runHistory, setRunHistory } = useSession();
+  const { foregroundId, runHistory, setRunHistory, updateRecentFiles } =
+    useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
@@ -127,13 +128,14 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
           );
 
           if (pid) {
-            open(pid, {
-              url:
-                pid === "Browser" && isIpfs
-                  ? resourceUrl.join(" ")
-                  : resourcePath,
-            });
+            const openUrl =
+              pid === "Browser" && isIpfs
+                ? resourceUrl.join(" ")
+                : resourcePath;
+
+            open(pid, { url: openUrl });
             addRunHistoryEntry();
+            if (openUrl) updateRecentFiles(openUrl, pid);
           } else {
             notFound(resourcePid);
             closeOnExecute = false;
@@ -144,13 +146,17 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
           if (extension === SHORTCUT_EXTENSION) {
             const { pid, url } = getShortcutInfo(await readFile(resourcePath));
 
-            if (pid) open(pid, { url });
+            if (pid) {
+              open(pid, { url });
+              if (url) updateRecentFiles(url, pid);
+            }
           } else {
             const basePid = getProcessByFileExtension(extension) || "OpenWith";
+            const openUrl =
+              basePid === "Browser" && isIpfs ? resource : resourcePath;
 
-            open(basePid, {
-              url: basePid === "Browser" && isIpfs ? resource : resourcePath,
-            });
+            open(basePid, { url: openUrl });
+            if (openUrl && basePid) updateRecentFiles(openUrl, basePid);
           }
 
           addRunHistoryEntry();
@@ -190,6 +196,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
       setRunHistory,
       stat,
       updateFolder,
+      updateRecentFiles,
     ]
   );
 

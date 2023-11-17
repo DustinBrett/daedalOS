@@ -12,6 +12,8 @@ import { basename, dirname, extname, join } from "path";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_RES_MAP,
+  MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   SMALLEST_JXL_FILE,
@@ -88,13 +90,19 @@ export const imageSrc = (
   const imageName = basename(imagePath, ".webp");
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
-  const imageSize =
-    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize;
+  const imageSize = Math.min(
+    MAX_ICON_SIZE,
+    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize
+  );
   const isCachedIcon = extname(imageName) === ".cache";
 
   return `${join(
     dirname(imagePath),
-    isCachedIcon ? "" : `${imageSize}x${imageSize}`,
+    isCachedIcon
+      ? ""
+      : `${ICON_RES_MAP[imageSize] || imageSize}x${
+          ICON_RES_MAP[imageSize] || imageSize
+        }`,
     `${imageName}${isCachedIcon ? "" : extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
@@ -168,6 +176,62 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
 };
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
+
+const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {
+  for (let x = 0; x < width; ++x) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+const columnBlank = (
+  imageData: ImageData,
+  width: number,
+  x: number,
+  top: number,
+  bottom: number
+): boolean => {
+  for (let y = top; y < bottom; ++y) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+export const trimCanvasToTopLeft = (
+  canvas: HTMLCanvasElement
+): HTMLCanvasElement => {
+  const ctx = canvas.getContext("2d", {
+    alpha: true,
+    desynchronized: true,
+    willReadFrequently: true,
+  });
+
+  if (!ctx) return canvas;
+
+  const { height, ownerDocument, width } = canvas;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const { height: bottom, width: right } = imageData;
+
+  let top = 0;
+  let left = 0;
+
+  while (top < bottom && rowBlank(imageData, width, top)) ++top;
+  while (left < right && columnBlank(imageData, width, left, top, bottom)) {
+    ++left;
+  }
+
+  const trimmed = ctx.getImageData(left, top, right - left, bottom - top);
+  const copy = ownerDocument.createElement("canvas");
+  const copyCtx = copy.getContext("2d");
+
+  if (!copyCtx) return canvas;
+
+  copy.width = trimmed.width;
+  copy.height = trimmed.height;
+  copyCtx.putImageData(trimmed, 0, 0);
+
+  return copy;
+};
 
 const loadScript = (
   src: string,

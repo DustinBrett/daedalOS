@@ -2,7 +2,7 @@ import { memo } from "react";
 import styled from "styled-components";
 
 const StyledComponentError = styled.div`
-  background-color: #fff;
+  background-color: #fbf1c7;
   color: #000;
   display: flex;
   font-size: 20px;

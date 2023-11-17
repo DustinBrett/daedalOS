@@ -193,10 +193,6 @@ const FileEntry: FC<FileEntryProps> = ({
       return "";
     },
     directory,
-    onDragLeave: () =>
-      buttonRef.current?.parentElement?.classList.remove("focus-within"),
-    onDragOver: () =>
-      buttonRef.current?.parentElement?.classList.add("focus-within"),
   });
   const openInFileExplorer = pid === "FileExplorer";
   const truncatedName = useMemo(
@@ -353,8 +349,8 @@ const FileEntry: FC<FileEntryProps> = ({
                         objectPosition: height
                           ? "top"
                           : width
-                          ? "left"
-                          : undefined,
+                            ? "left"
+                            : undefined,
                       },
                       width,
                     });
@@ -404,7 +400,7 @@ const FileEntry: FC<FileEntryProps> = ({
               );
             }
           }
-        } else if (!isShortcut || isYTUrl) {
+        } else if (!isShortcut || typeof getIcon === "function" || isYTUrl) {
           if (isIconCached.current) return;
 
           const cachedIconPath = join(

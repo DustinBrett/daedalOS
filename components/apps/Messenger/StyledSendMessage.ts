@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
 
 const StyledSendMessage = styled.div`
   display: flex;
   place-items: center;
 
   textarea {
+    ${ScrollBars()}
     background-color: #3c3836;
     border-radius: 20px;
     color: #fbf1c7;
@@ -12,7 +14,8 @@ const StyledSendMessage = styled.div`
     font-size: 14px;
     height: 35px;
     margin: 12px 0 12px 12px;
-    overflow: hidden;
+    max-height: 150px;
+    overflow: hidden auto;
     padding: 8px 14px 4px;
     resize: none;
     width: 100%;

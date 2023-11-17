@@ -12,7 +12,7 @@ const StyledPaint = styled.div<StyledPaintProps>`
 
   .loading {
     &::before {
-      color: #fff;
+      color: #fbf1c7;
       font-weight: 500;
       mix-blend-mode: normal;
       text-shadow: 1px 2px 3px rgba(0, 0, 0, 50%);

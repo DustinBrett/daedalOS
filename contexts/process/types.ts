@@ -19,6 +19,7 @@ type MonacoProcessArguments = {
 type PdfProcessArguments = {
   count?: number;
   page?: number;
+  rendering?: boolean;
   scale?: number;
   subTitle?: string;
 };

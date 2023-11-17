@@ -57,7 +57,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
     open,
     processes: { [id]: process } = {},
   } = useProcesses();
-  const { foregroundId, setForegroundId } = useSession();
+  const { foregroundId, setForegroundId, updateRecentFiles } = useSession();
   const { url } = process || {};
   const urlExtension = url ? getExtension(url) : "";
   const primaryExtensionProcesses = getProcessByFileExtension(urlExtension);
@@ -70,8 +70,9 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
     (pid: string): void => {
       open(pid, { url });
       closeWithTransition(id);
+      if (url && pid) updateRecentFiles(url, pid);
     },
-    [closeWithTransition, id, open, url]
+    [closeWithTransition, id, open, updateRecentFiles, url]
   );
   const updateSelectedPid = useCallback(
     (pid: string) => {

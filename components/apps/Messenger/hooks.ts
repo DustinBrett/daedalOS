@@ -24,7 +24,7 @@ import type {
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import type { Filter, Event as NostrEvent, Relay, Sub } from "nostr-tools";
-import type { NIP05Result } from "nostr-tools/lib/nip05";
+import type { NIP05Result } from "nostr-tools/lib/types/nip05";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 
@@ -270,7 +270,8 @@ export const useNostrProfile = (
 };
 
 export const useIsVisible = (
-  elementRef: React.MutableRefObject<HTMLElement | null>
+  elementRef: React.MutableRefObject<HTMLElement | null>,
+  parentSelector?: string
 ): boolean => {
   const watching = useRef(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -283,9 +284,14 @@ export const useIsVisible = (
     new IntersectionObserver(
       (entries) =>
         entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
-      { root: elementRef.current.parentElement, threshold: 0.4 }
+      {
+        root: parentSelector
+          ? elementRef.current.closest(parentSelector)
+          : elementRef.current.parentElement,
+        threshold: 0.4,
+      }
     ).observe(elementRef.current);
-  }, [elementRef]);
+  }, [elementRef, parentSelector]);
 
   return isVisible;
 };

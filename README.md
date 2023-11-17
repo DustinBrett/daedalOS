@@ -60,6 +60,7 @@
 
 - [Peek](https://github.com/bubkoo/html-to-image) hover preview of windows
 - Focused window indicator
+- Search menu (w/Recent files)
 
 ### Clock
 
@@ -90,12 +91,6 @@
     - `/?app=Browser`
 
 # Apps 🧪
-
-### AI Chat
-
-- Have conversations with artificial intelligence
-- Supports [OpenAI](https://platform.openai.com/docs/api-reference/chat) & [HuggingFace](https://huggingface.co/inference-api) API's
-- Can run locally using [WebLLM](https://mlc.ai/web-llm/)
 
 ### [BoxedWine](http://www.boxedwine.org/) (**_.exe, .zip_**)
 

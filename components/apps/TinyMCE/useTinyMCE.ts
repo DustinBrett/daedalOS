@@ -15,7 +15,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { basename, dirname, extname, relative } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Editor, NotificationSpec } from "tinymce";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { getExtension, haltEvent, loadFiles } from "utils/functions";
@@ -104,6 +104,7 @@ const useTinyMCE = ({
       }
     }
   }, [editor, linksToProcesses, readFile, updateTitle, url]);
+  const initEditor = useRef(false);
 
   useEffect(() => {
     if (editor) {
@@ -137,12 +138,15 @@ const useTinyMCE = ({
   }, [editor, updateFolder, updateTitle, url, writeFile]);
 
   useEffect(() => {
-    if (!editor) {
+    if (!editor && !initEditor.current) {
+      initEditor.current = true;
+
       loadFiles(libs).then(() => {
         if (window.tinymce && containerRef.current) {
           window.tinymce.remove();
           window.tinymce
             .init({
+              readonly: Boolean(url),
               selector: `.${[...containerRef.current.classList].join(".")} div`,
               setup: (editorInstance) => {
                 editorInstance.on("ExecCommand", ({ command }) => {
@@ -191,6 +195,7 @@ const useTinyMCE = ({
     setForegroundId,
     setLoading,
     setUrl,
+    url,
   ]);
 
   useEffect(() => {

@@ -287,50 +287,43 @@ const useWallpaper = (
 
       newWallpaperFit = "fill";
     } else if (wallpaperName === "APOD") {
-      document.documentElement.style.setProperty(
-        "background",
-        document.documentElement.style.background.replace(/"(.*)"/, "")
-      );
-
-      const [, currentUrl, currentDate] = wallpaperImage.split(" ");
+      const [, currentDate] = wallpaperImage.split(" ");
       const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         timeZone: "US/Eastern",
       })
         .formatToParts(Date.now())
         .map(({ value }) => value);
 
-      if (currentDate === `${year}-${month}-${day}`) {
-        wallpaperUrl = currentUrl;
-      } else {
-        const {
-          date = "",
-          hdurl = "",
-          url = "",
-        } = await jsonFetch(
-          "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
-        );
+      if (currentDate === `${year}-${month}-${day}`) return;
 
-        if (hdurl || url) {
-          wallpaperUrl = ((viewWidth() > 1024 ? hdurl : url) || url) as string;
-          newWallpaperFit = "fit";
+      const {
+        date = "",
+        hdurl = "",
+        url = "",
+      } = await jsonFetch(
+        "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
+      );
 
-          if (isYouTubeUrl(wallpaperUrl)) {
-            const ytBaseUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
-              wallpaperUrl
-            )}`;
+      if (hdurl || url) {
+        wallpaperUrl = ((viewWidth() > 1024 ? hdurl : url) || url) as string;
+        newWallpaperFit = "fit";
 
-            wallpaperUrl = `${ytBaseUrl}/maxresdefault.jpg`;
-            fallbackBackground = `${ytBaseUrl}/hqdefault.jpg`;
-          } else if (hdurl && url && hdurl !== url) {
-            fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
-          }
+        if (isYouTubeUrl(wallpaperUrl)) {
+          const ytBaseUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
+            wallpaperUrl
+          )}`;
 
-          const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
+          wallpaperUrl = `${ytBaseUrl}/maxresdefault.jpg`;
+          fallbackBackground = `${ytBaseUrl}/hqdefault.jpg`;
+        } else if (hdurl && url && hdurl !== url) {
+          fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
+        }
 
-          if (newWallpaperImage !== wallpaperImage) {
-            setWallpaper(newWallpaperImage, newWallpaperFit);
-            setTimeout(loadWallpaper, MILLISECONDS_IN_DAY);
-          }
+        const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
+
+        if (newWallpaperImage !== wallpaperImage) {
+          setWallpaper(newWallpaperImage, newWallpaperFit);
+          setTimeout(loadWallpaper, MILLISECONDS_IN_DAY);
         }
       }
     } else if (await exists(wallpaperImage)) {

@@ -14,6 +14,16 @@ const StyledTerminal = styled.div`
     ${ScrollBars()};
     width: 100% !important;
   }
+
+  .xterm-cursor-underline {
+    border-bottom-color: #ebdbb2 !important;
+    border-bottom-width: 4px !important;
+    font-size: 15px !important;
+  }
+
+  .xterm-cursor-blink {
+    animation-duration: 1.067s !important;
+  }
 `;
 
 export default StyledTerminal;

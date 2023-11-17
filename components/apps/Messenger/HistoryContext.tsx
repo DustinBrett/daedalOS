@@ -1,3 +1,4 @@
+import { SEEN_EVENT_IDS_PATH } from "components/apps/Messenger/constants";
 import type { NostrProfile } from "components/apps/Messenger/types";
 import { useFileSystem } from "contexts/fileSystem";
 import type { Event } from "nostr-tools";
@@ -10,9 +11,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { SEEN_EVENT_IDS_PATH } from "./constants";
 
 type Profiles = Record<string, NostrProfile>;
+
+export type TimeScale = "day" | "week" | "month" | "trimester" | "infinite";
 
 type History = {
   outgoingEvents: Event[];
@@ -21,6 +23,8 @@ type History = {
   setOutgoingEvents: React.Dispatch<React.SetStateAction<Event[]>>;
   setProfiles: React.Dispatch<React.SetStateAction<Profiles>>;
   setSeenEventIds: React.Dispatch<React.SetStateAction<string[]>>;
+  setTimeScale: React.Dispatch<React.SetStateAction<TimeScale>>;
+  timeScale: TimeScale;
 };
 
 const HistoryContext = createContext({} as History);
@@ -29,6 +33,7 @@ export const useHistoryContext = (): History => useContext(HistoryContext);
 
 export const HistoryProvider = memo<FC>(({ children }) => {
   const { readFile, writeFile } = useFileSystem();
+  const [timeScale, setTimeScale] = useState<TimeScale>("day");
   const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
   const [outgoingEvents, setOutgoingEvents] = useState<Event[]>([]);
   const [profiles, setProfiles] = useState<Profiles>({});
@@ -66,8 +71,10 @@ export const HistoryProvider = memo<FC>(({ children }) => {
           setOutgoingEvents,
           setProfiles,
           setSeenEventIds,
+          setTimeScale,
+          timeScale,
         }),
-        [outgoingEvents, profiles, seenEventIds]
+        [outgoingEvents, profiles, seenEventIds, timeScale]
       )}
     >
       {children}

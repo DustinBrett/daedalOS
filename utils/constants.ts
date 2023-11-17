@@ -23,10 +23,6 @@ export const DEFAULT_CLOCK_SOURCE: ClockSource = "local";
 
 export const DEFAULT_THEME: ThemeName = "defaultTheme";
 
-export const DEFAULT_AI_API = "HuggingFace:"; // Engine:Key
-
-export const DEFAULT_NON_WEBGPU_ENGINE = "HuggingFace";
-
 export const DEFAULT_WALLPAPER = "VANTA";
 
 export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
@@ -57,6 +53,8 @@ export const FS_HANDLES = "FileSystemAccessHandles";
 export const HOME = "/Users/Public";
 
 export const PICTURES_FOLDER = `${HOME}/Pictures`;
+
+export const VIDEOS_FOLDER = `${HOME}/Videos`;
 
 export const INDEX_FILE = "/index.html";
 
@@ -188,6 +186,8 @@ export const SYSTEM_PATHS = new Set(["/.deletedFiles.log"]);
 
 export const DESKTOP_PATH = `${HOME}/Desktop`;
 
+export const START_MENU_PATH = `${HOME}/Start Menu`;
+
 export const SYSTEM_SHORTCUT_DIRECTORIES = new Set([DESKTOP_PATH]);
 
 export const TRANSITIONS_IN_MILLISECONDS = {
@@ -285,6 +285,10 @@ export const TIMESTAMP_DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: "2-digit",
   second: "2-digit",
   year: "numeric",
+};
+
+export const ICON_RES_MAP: Record<number, number> = {
+  64: 96,
 };
 
 export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {

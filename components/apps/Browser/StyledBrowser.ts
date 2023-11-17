@@ -6,14 +6,15 @@ type StyledBrowserProps = {
 
 const StyledBrowser = styled.div<StyledBrowserProps>`
   iframe {
-    background-color: ${({ $hasSrcDoc }) => ($hasSrcDoc ? "#fff" : "initial")};
+    background-color: ${({ $hasSrcDoc }) =>
+      $hasSrcDoc ? "#FBF1C7" : "initial"};
     border: 0;
     height: calc(100% - 36px - 33px);
     width: 100%;
   }
 
   nav {
-    background-color: rgb(87, 87, 87);
+    background-color: rgb(80, 73, 69);
     display: flex;
     padding: 4px 0;
     place-content: center;
@@ -37,30 +38,30 @@ const StyledBrowser = styled.div<StyledBrowserProps>`
       width: 28px;
 
       svg {
-        fill: rgb(240, 240, 240);
+        fill: rgb(235, 219, 178);
         height: 22px;
         width: 22px;
       }
 
       &:hover {
-        background-color: rgb(103, 103, 103);
+        background-color: rgb(102, 92, 84);
       }
 
       &:active {
-        background-color: rgb(110, 110, 110);
+        background-color: rgb(124, 111, 100);
       }
 
       &:disabled {
         background-color: inherit;
 
         svg {
-          fill: rgb(152, 152, 152);
+          fill: rgb(168, 153, 132);
         }
       }
     }
 
     &:not(:first-child) {
-      border-bottom: 1px solid rgb(118, 115, 118);
+      border-bottom: 1px solid rgb(124, 111, 100);
       height: 33px;
       justify-content: left;
       padding: 0 8px;
@@ -72,9 +73,9 @@ const StyledBrowser = styled.div<StyledBrowserProps>`
     }
 
     input {
-      background-color: rgb(64, 62, 65);
+      background-color: rgb(60, 56, 54);
       border-radius: 18px;
-      color: rgb(255, 255, 255);
+      color: rgb(251, 241, 199);
       font-family: ${({ theme }) => theme.formats.systemFont};
       font-size: 13px;
       height: 28px;
@@ -85,7 +86,7 @@ const StyledBrowser = styled.div<StyledBrowserProps>`
       width: 100%;
 
       &:focus {
-        outline: 2px solid rgb(138, 180, 248);
+        outline: 2px solid rgb(131, 165, 152);
       }
     }
   }

@@ -5,7 +5,6 @@ import {
   NEW_FILE_LABEL,
   NEW_FILE_LABEL_TEXT,
   NEW_FOLDER_LABEL,
-  SELECTION_SELECTOR,
 } from "e2e/constants";
 import {
   appIsOpen,
@@ -23,7 +22,7 @@ import {
   filterMenuItems,
   loadApp,
   pressDesktopKeys,
-  selectionIsVisible,
+  selectArea,
 } from "e2e/functions";
 
 test.beforeEach(disableWallpaper);
@@ -39,25 +38,20 @@ test.describe("has selection", () => {
     const { width = 0, height = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
 
-    const x = width / 2;
-    const y = height / 2;
-    const SELECTION_OFFSET = 25;
-
-    await page.mouse.move(x, y);
-    await page.mouse.down({ button: "left" });
-    await page.mouse.move(x + SELECTION_OFFSET, y + SELECTION_OFFSET);
-
-    await selectionIsVisible({ page });
-
-    const boundingBox = await page.locator(SELECTION_SELECTOR).boundingBox();
-
-    expect(boundingBox?.width).toEqual(SELECTION_OFFSET);
-    expect(boundingBox?.height).toEqual(SELECTION_OFFSET);
-    expect(boundingBox?.x).toEqual(x);
-    expect(boundingBox?.y).toEqual(y);
+    await selectArea({
+      page,
+      selection: { height: 25, width: 25, x: width / 2, y: height / 2 },
+    });
   });
 
-  // TEST: single/multi file
+  test("can select entry", async ({ page }) => {
+    await desktopEntriesAreVisible({ page });
+    await selectArea({
+      page,
+      selection: { height: 80, up: true, width: 70, x: 0, y: 0 },
+    });
+    await expect(page.locator(".focus-within")).toHaveCount(1);
+  });
 });
 
 test.describe("has context menu", () => {

@@ -7,6 +7,7 @@ type FocusedEntryProps = {
   onBlurCapture: React.FocusEventHandler;
   onFocusCapture: React.FocusEventHandler;
   onMouseDown: React.MouseEventHandler;
+  onMouseUp: React.MouseEventHandler;
 };
 
 type FocusableEntry = (file: string) => FocusedEntryProps;
@@ -71,6 +72,7 @@ const useFocusableEntries = (
       focusingRef.current = false;
     });
   }, []);
+  const mouseDownPositionRef = useRef({ x: 0, y: 0 });
   const focusableEntry = (file: string): FocusedEntryProps => {
     const isFocused = focusedEntries.includes(file);
     const isOnlyFocusedEntry =
@@ -79,17 +81,44 @@ const useFocusableEntries = (
       "focus-within": isFocused,
       "only-focused": isOnlyFocusedEntry,
     });
-    const onMouseDown: React.MouseEventHandler = ({ ctrlKey }) => {
+    const onMouseDown: React.MouseEventHandler = ({
+      ctrlKey,
+      pageX,
+      pageY,
+    }) => {
+      mouseDownPositionRef.current = { x: pageX, y: pageY };
+
       if (ctrlKey) {
         if (isFocused) {
           blurEntry(file);
         } else {
           focusEntry(file);
         }
-      } else if (!isFocused || !isOnlyFocusedEntry) {
+      } else if (!isFocused) {
         blurEntry();
         focusEntry(file);
       }
+    };
+    const onMouseUp: React.MouseEventHandler = ({
+      ctrlKey,
+      pageX,
+      pageY,
+      button,
+    }) => {
+      const { x, y } = mouseDownPositionRef.current;
+
+      if (
+        !ctrlKey &&
+        !isOnlyFocusedEntry &&
+        button === 0 &&
+        x === pageX &&
+        y === pageY
+      ) {
+        blurEntry();
+        focusEntry(file);
+      }
+
+      mouseDownPositionRef.current = { x: 0, y: 0 };
     };
 
     return {
@@ -97,6 +126,7 @@ const useFocusableEntries = (
       onBlurCapture,
       onFocusCapture,
       onMouseDown,
+      onMouseUp,
     };
   };
 

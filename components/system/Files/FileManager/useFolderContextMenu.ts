@@ -90,6 +90,7 @@ const useFolderContextMenu = (
     setWallpaper: setSessionWallpaper,
     setIconPositions,
     sortOrders,
+    updateRecentFiles,
     wallpaperImage,
   } = useSession();
   const setWallpaper = useCallback(
@@ -469,6 +470,9 @@ const useFolderContextMenu = (
                     }
 
                     open("MonacoEditor", { url: INDEX_FILE });
+                    if (INDEX_FILE) {
+                      updateRecentFiles(INDEX_FILE, "MonacoEditor");
+                    }
                   },
                   label: "View page source",
                 },
@@ -502,6 +506,7 @@ const useFolderContextMenu = (
       sortBy,
       updateDesktopIconPositions,
       updateFolder,
+      updateRecentFiles,
       updateSorting,
       url,
       wallpaperImage,

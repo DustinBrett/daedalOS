@@ -28,9 +28,9 @@ const sizes = {
     padding: "5px 0",
     rowGap: "28px",
   },
-  startButton: {
-    iconSize: "15px",
-    width: "36px",
+  search: {
+    maxHeight: 415,
+    size: 600,
   },
   startMenu: {
     maxHeight: 390,
@@ -44,6 +44,10 @@ const sizes = {
   },
   taskbar: {
     blur: "5px",
+    button: {
+      iconSize: "15px",
+      width: 36,
+    },
     entry: {
       borderSize: "2px",
       fontSize: "12px",

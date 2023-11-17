@@ -1,3 +1,4 @@
+import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
@@ -52,7 +53,6 @@ import {
 } from "utils/imagemagick/formats";
 import type { ImageMagickConvertFile } from "utils/imagemagick/types";
 import type { URLTrack } from "webamp";
-import { EXTRACTABLE_EXTENSIONS } from "./constants";
 
 const { alias } = PACKAGE_DATA;
 
@@ -75,7 +75,8 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setCursor, setForegroundId, setWallpaper } = useSession();
+  const { setCursor, setForegroundId, setWallpaper, updateRecentFiles } =
+    useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url);
@@ -460,6 +461,7 @@ const useFileContextMenu = (
           menuItems.unshift({
             action: () => {
               open("Paint", { url });
+              if (url) updateRecentFiles(url, "Paint");
             },
             label: "Edit",
           });
@@ -621,6 +623,7 @@ const useFileContextMenu = (
       setWallpaper,
       unMapFs,
       updateFolder,
+      updateRecentFiles,
       url,
     ]
   );

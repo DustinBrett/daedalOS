@@ -25,18 +25,22 @@ const STYLING =
 
 type ProfileBannerProps = {
   goHome: () => void;
+  hideReadMessages: boolean;
   newChat: () => void;
   publicKey: string;
   relayUrls: string[];
   selectedRecipientKey: string;
+  setHideReadMessages: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ProfileBanner: FC<ProfileBannerProps> = ({
   goHome,
+  hideReadMessages,
   newChat,
   publicKey,
   relayUrls,
   selectedRecipientKey,
+  setHideReadMessages,
 }) => {
   const pubkey =
     selectedRecipientKey === UNKNOWN_PUBLIC_KEY
@@ -108,11 +112,23 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                   updateProfile({ banner: prompt("Banner URL") || "" }),
                 label: "Edit Banner",
               },
+              MENU_SEPERATOR,
+              {
+                action: () => setHideReadMessages(!hideReadMessages),
+                label: `${hideReadMessages ? "Show" : "Hide"} Read Messages`,
+              },
             ]
           : []),
       ]),
     /* eslint-enable no-alert */
-    [contextMenu, pubkey, selectedRecipientKey, updateProfile]
+    [
+      contextMenu,
+      hideReadMessages,
+      pubkey,
+      selectedRecipientKey,
+      setHideReadMessages,
+      updateProfile,
+    ]
   );
 
   return (

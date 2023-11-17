@@ -21,6 +21,8 @@ export type SortOrders = Record<string, SortOrder>;
 
 export type ClockSource = "local" | "ntp";
 
+export type RecentFiles = [string, string][];
+
 export type IconPosition = {
   gridColumnStart: number;
   gridRowStart: number;
@@ -29,10 +31,10 @@ export type IconPosition = {
 export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
-  aiApi: string;
   clockSource: ClockSource;
   cursor: string;
   iconPositions: IconPositions;
+  recentFiles: RecentFiles;
   runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
@@ -46,7 +48,6 @@ export type SessionContextState = SessionData & {
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
   sessionLoaded: boolean;
-  setAiApi: React.Dispatch<React.SetStateAction<string>>;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setCursor: React.Dispatch<React.SetStateAction<string>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
@@ -63,4 +64,5 @@ export type SessionContextState = SessionData & {
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
+  updateRecentFiles: (url: string, pid: string) => void;
 };

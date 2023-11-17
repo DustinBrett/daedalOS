@@ -41,6 +41,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
+import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { basename, dirname, extname, isAbsolute, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
@@ -111,6 +112,7 @@ const useCommandInterpreter = (
     updateFolder,
   } = useFileSystem();
   const { closeWithTransition, open, title: changeTitle } = useProcesses();
+  const { updateRecentFiles } = useSession();
   const processesRef = useProcessesRef();
   const { name: themeName } = useTheme();
   const getFullPath = useCallback(
@@ -1007,11 +1009,11 @@ const useCommandInterpreter = (
             if (pid) {
               const [file] = commandArgs;
               const fullPath = await getFullPath(file);
+              const openUrl =
+                file && fullPath && (await exists(fullPath)) ? fullPath : "";
 
-              open(pid, {
-                url:
-                  file && fullPath && (await exists(fullPath)) ? fullPath : "",
-              });
+              open(pid, { url: openUrl });
+              if (openUrl) updateRecentFiles(openUrl, pid);
             } else {
               const baseFileExists = await exists(baseCommand);
 
@@ -1044,7 +1046,10 @@ const useCommandInterpreter = (
                     basePid = getProcessByFileExtension(fileExtension);
                   }
 
-                  if (basePid) open(basePid, { url: baseUrl });
+                  if (basePid) {
+                    open(basePid, { url: baseUrl });
+                    if (baseUrl) updateRecentFiles(baseUrl, basePid);
+                  }
                 }
               } else {
                 localEcho?.println(unknownCommand(baseCommand));
@@ -1084,6 +1089,7 @@ const useCommandInterpreter = (
       themeName,
       updateFile,
       updateFolder,
+      updateRecentFiles,
     ]
   );
   const commandInterpreterRef = useRef<CommandInterpreter>(commandInterpreter);
