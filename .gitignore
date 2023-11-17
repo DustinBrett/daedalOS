@@ -18,6 +18,8 @@ public/Users/Public/**
 !public/Users/Public/Desktop
 !public/Users/Public/Desktop/*.url
 !public/Users/Public/Desktop/*.html
+!public/Users/Public/Desktop/Bouldering*
+!public/Users/Public/Desktop/Bouldering*/*
 !public/Users/Public/Documents
 !public/Users/Public/Documents/Phan's Resume.pdf
 !public/Users/Public/Music
@@ -35,3 +37,5 @@ public/Users/Public/**
 !public/Users/Public/Start Menu/Games/Quake III Arena.url
 !public/Users/Public/Start Menu/Games/Space Cadet.url
 !public/Users/Public/Videos
+!public/Users/Public/Videos/*
+!public/Users/Public/Videos/*/*
