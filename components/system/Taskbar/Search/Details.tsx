@@ -49,15 +49,20 @@ const Details: FC<{
   const isDirectory =
     stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
   const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
+  const currentUrlRef = useRef(url);
 
   useEffect(() => {
-    stat(url).then(setStats);
-    getResultInfo(fs, url).then(setInfo);
+    stat(url).then(
+      (newStats) => currentUrlRef.current === url && setStats(newStats)
+    );
+    getResultInfo(fs, url).then(
+      (newInfo) => currentUrlRef.current === url && setInfo(newInfo)
+    );
   }, [fs, stat, url]);
 
   useEffect(() => {
     elementRef.current?.scrollTo({ behavior: "smooth", top: 0 });
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
+    currentUrlRef.current = url;
   }, [url]);
 
   return info?.url && stats ? (

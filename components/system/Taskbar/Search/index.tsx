@@ -40,6 +40,7 @@ import Icon from "styles/common/Icon";
 import {
   DESKTOP_PATH,
   FOCUSABLE_ELEMENT,
+  KEYPRESS_DEBOUNCE_MS,
   PICTURES_FOLDER,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
@@ -160,6 +161,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     },
     [open, toggleSearch]
   );
+  const searchTimeoutRef = useRef(0);
 
   useEffect(() => {
     if (
@@ -436,7 +438,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 ? inputRef.current?.value.replace(tabAppend, "")
                 : inputRef.current?.value;
 
-              setSearchTerm(value ?? "");
+              window.clearTimeout(searchTimeoutRef.current);
+              searchTimeoutRef.current = window.setTimeout(
+                () => setSearchTerm(value ?? ""),
+                searchTimeoutRef.current > 0 ? KEYPRESS_DEBOUNCE_MS : 0
+              );
             }}
             onKeyDown={({ key }) => {
               if (key === "Enter" && firstResult?.ref) {
