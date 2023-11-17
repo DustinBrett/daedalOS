@@ -114,14 +114,16 @@ export const imageSrcs = (
   imagePath: string,
   size: number,
   extension: string,
-  failedUrls?: string[]
+  failedUrls = [] as string[]
 ): string => {
   const srcs = [
     imageSrc(imagePath, size, 1, extension),
     imageSrc(imagePath, size, 2, extension),
     imageSrc(imagePath, size, 3, extension),
   ]
-    .filter((url) => failedUrls?.includes(url.split(" ")[0]))
+    .filter(
+      (url) => failedUrls.length === 0 || failedUrls.includes(url.split(" ")[0])
+    )
     .join(", ");
 
   return failedUrls?.includes(srcs) ? "" : srcs;
