@@ -12,13 +12,16 @@ import { basename, dirname, extname, join } from "path";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_PATH,
   ICON_RES_MAP,
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   SMALLEST_JXL_FILE,
+  SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
+  USER_ICON_PATH,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -113,14 +116,44 @@ export const imageSrcs = (
   extension: string,
   failedUrls?: string[]
 ): string => {
-  return [
+  const srcs = [
     imageSrc(imagePath, size, 1, extension),
     imageSrc(imagePath, size, 2, extension),
     imageSrc(imagePath, size, 3, extension),
   ]
-    .filter(
-      (url) => !failedUrls?.length || failedUrls?.includes(url.split(" ")[0])
+    .filter((url) => failedUrls?.includes(url.split(" ")[0]))
+    .join(", ");
+
+  return failedUrls?.includes(srcs) ? "" : srcs;
+};
+
+export const createFallbackSrcSet = (
+  src: string,
+  failedUrls: string[]
+): string => {
+  const failedSizes = new Set(
+    new Set(
+      failedUrls.map((failedUrl) => {
+        const fileName = basename(src, extname(src));
+
+        return Number(
+          failedUrl
+            .replace(`${ICON_PATH}/`, "")
+            .replace(`${USER_ICON_PATH}/`, "")
+            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.webp`, "")
+            .split("x")[0]
+        );
+      })
     )
+  );
+  const possibleSizes = SUPPORTED_ICON_SIZES.filter(
+    (size) => !failedSizes.has(size)
+  );
+
+  return possibleSizes
+    .map((size) => imageSrc(src, size, 1, extname(src)))
+    .reverse()
     .join(", ");
 };
 

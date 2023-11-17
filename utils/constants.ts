@@ -302,6 +302,10 @@ export const MAX_RES_ICON_OVERRIDE: Record<string, [number, number]> = {
   videos: [16, 32],
 };
 
+export const SUPPORTED_ICON_PIXEL_RATIOS = [3, 2, 1];
+
+export const SUPPORTED_ICON_SIZES = [16, 32, 48, 96, 144];
+
 export const MAX_ICON_SIZE = 144;
 
 export const DEFAULT_TEXT_FILE_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
