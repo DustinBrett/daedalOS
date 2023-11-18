@@ -8,9 +8,9 @@ const onKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (event) => {
   if (!(event.target instanceof HTMLTextAreaElement)) event.preventDefault();
 };
 
-const Button = styled.button.attrs(() => ({
+const Button = styled.button.attrs(({ as }) => ({
   onKeyDown,
-  type: "button",
+  type: !as || as === "button" ? "button" : undefined,
 }))<ButtonProps>`
   background-color: transparent;
   font-family: inherit;
