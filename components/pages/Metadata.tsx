@@ -17,7 +17,19 @@ import {
 } from "utils/constants";
 import { getDpi, imageSrc, imageSrcs, imageToBufferUrl } from "utils/functions";
 
-const { alias, description } = PACKAGE_DATA;
+const { alias, author, description } = PACKAGE_DATA;
+
+const OpenGraph: FC = () => (
+  <>
+    <meta content={alias} property="og:title" />
+    <meta content="website" property="og:type" />
+    <meta content={author.url} property="og:url" />
+    <meta content={`${author.url}/screenshot.png`} property="og:image" />
+    <meta content={description} property="og:description" />
+  </>
+);
+
+const MemoizedOpenGraph = memo(OpenGraph);
 
 const PreloadDesktopIcons: FC = () => (
   <>
@@ -139,6 +151,7 @@ const Metadata: FC = () => {
         name="viewport"
       />
       <meta content={description} name="description" />
+      <MemoizedOpenGraph />
       <MemoizedPreloadDesktopIcons />
       {customCursor && (
         <style>{`*, *::before, *::after { cursor: url(${customCursor}), default !important; }`}</style>
