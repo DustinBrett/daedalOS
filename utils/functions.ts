@@ -1,14 +1,14 @@
-import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { Processes, RelativePosition } from "contexts/process/types";
-import type {
-  IconPosition,
-  IconPositions,
-  SortOrders,
-} from "contexts/session/types";
-import type { Position } from "eruda";
-import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
+import { type Position } from "eruda";
+import type HtmlToImage from "html-to-image";
+import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type Processes, type RelativePosition } from "contexts/process/types";
+import {
+  type IconPosition,
+  type IconPositions,
+  type SortOrders,
+} from "contexts/session/types";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
@@ -700,7 +700,9 @@ export const isSafari = (): boolean => {
   if (typeof window === "undefined") return false;
   if (IS_SAFARI ?? false) return IS_SAFARI;
 
-  IS_SAFARI = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+  IS_SAFARI = /^(?:(?!chrome|android).)*safari/i.test(
+    window.navigator.userAgent
+  );
 
   return IS_SAFARI;
 };

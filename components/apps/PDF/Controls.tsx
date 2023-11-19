@@ -1,3 +1,4 @@
+import { basename } from "path";
 import {
   Add,
   Download,
@@ -6,10 +7,9 @@ import {
 } from "components/apps/PDF//ControlIcons";
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { bufferToUrl, isSafari, label } from "utils/functions";

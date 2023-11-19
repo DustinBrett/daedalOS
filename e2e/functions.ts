@@ -1,7 +1,12 @@
-import type { Locator, Page, Response } from "@playwright/test";
-import { expect } from "@playwright/test";
-import type { IsShown, MenuItems } from "e2e/constants";
 import {
+  type Locator,
+  type Page,
+  type Response,
+  expect,
+} from "@playwright/test";
+import {
+  type IsShown,
+  type MenuItems,
   BACKGROUND_CANVAS_SELECTOR,
   CALENDAR_LABEL,
   CLOCK_LABEL,

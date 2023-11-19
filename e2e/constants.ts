@@ -1,4 +1,4 @@
-import type { Locator } from "@playwright/test";
+import { type Locator } from "@playwright/test";
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -76,7 +76,7 @@ export const SELECTION_SELECTOR = `${DESKTOP_SELECTOR}>ol>span`;
 export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
 export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol`;
 export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_ENTRIES_SELECTOR}>li`;
-export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([type=button])`;
+export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([title])`;
 export const TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR = `${TASKBAR_ENTRY_PEEK_SELECTOR}>img`;
 export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]:not(:has(>ol))`;
 export const SEARCH_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title='Type here to search']`;
@@ -222,7 +222,7 @@ export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
 export const TEST_ROOT_FILE_DEFAULT_APP = "Marked";
 export const TEST_ROOT_FILE_ALT_APP = "Monaco Editor";
 export const TEST_ROOT_FILE_TOOLTIP =
-  /^Type: Markdown File\nSize: \d\.\d\d KB\nDate modified: \b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
+  /^Type: Markdown File\nSize: \d\.\d\d KB\nDate modified: \d{4}-\d{2}-\d{2} \d{1,2}:\d{2} (?:AM|PM)$/;
 
 export const TEST_SEARCH = "CREDITS";
 export const TEST_SEARCH_RESULT = /^CREDITS.md$/;

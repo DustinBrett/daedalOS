@@ -1,3 +1,7 @@
+import { basename, extname } from "path";
+import { useTheme } from "styled-components";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Variant, m as motion } from "framer-motion";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
   getProcessByFileExtension,
@@ -28,13 +32,8 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import type { ProcessArguments } from "contexts/process/types";
+import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
-import type { Variant } from "framer-motion";
-import { m as motion } from "framer-motion";
-import { basename, extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {

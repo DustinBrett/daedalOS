@@ -1,3 +1,4 @@
+import { memo, useLayoutEffect, useRef, useState } from "react";
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
 import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePeekTransition";
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
@@ -5,7 +6,6 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { memo, useLayoutEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { label, viewWidth } from "utils/functions";

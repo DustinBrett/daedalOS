@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   SEARCH_BUTTON_TITLE,
   START_BUTTON_TITLE,
@@ -6,7 +7,6 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { useEffect, useRef } from "react";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
 import { haltEvent, toggleShowDesktop } from "utils/functions";
 

@@ -1,6 +1,6 @@
+import { type WASIBindings } from "wasi-js";
 import { config } from "components/apps/Terminal/config";
-import type { LocalEcho } from "components/apps/Terminal/types";
-import type { WASIBindings } from "wasi-js";
+import { type LocalEcho } from "components/apps/Terminal/types";
 
 type WASIError = Error & {
   code: number;

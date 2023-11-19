@@ -1,3 +1,4 @@
+import { memo, useCallback, useRef } from "react";
 import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import {
@@ -9,11 +10,10 @@ import {
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useMenu } from "contexts/menu";
-import type { MenuState } from "contexts/menu/useMenuContextState";
+import { type MenuState } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
-import { memo, useCallback, useRef } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";

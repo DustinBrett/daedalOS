@@ -1,4 +1,4 @@
-import type { HandleStyles } from "react-rnd";
+import { type HandleStyles } from "react-rnd";
 
 export const RESIZING_DISABLED = {
   bottom: false,

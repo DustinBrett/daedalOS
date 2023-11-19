@@ -1,12 +1,12 @@
+import { memo, useCallback, useState } from "react";
+import dynamic from "next/dynamic";
+import { AnimatePresence } from "framer-motion";
 import Clock from "components/system/Taskbar/Clock";
 import SearchButton from "components/system/Taskbar/Search/SearchButton";
 import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
-import { memo, useCallback, useState } from "react";
 import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
 
 const Calendar = dynamic(() => import("components/system/Taskbar/Calendar"));

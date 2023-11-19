@@ -1,9 +1,9 @@
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { basename } from "path";
+import { useCallback, useEffect } from "react";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { useCallback, useEffect } from "react";
 import { haltEvent, isYouTubeUrl, loadFiles } from "utils/functions";
 
 type MarkedOptions = {

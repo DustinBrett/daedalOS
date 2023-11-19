@@ -1,5 +1,5 @@
-import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { useCallback } from "react";
+import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 type SidebarButton = {

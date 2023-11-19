@@ -1,7 +1,7 @@
-import type { SortBy } from "components/system/Files/FileManager/useSortBy";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { Position } from "react-rnd";
-import type { ThemeName } from "styles/themes";
+import { type Position } from "react-rnd";
+import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type ThemeName } from "styles/themes";
 
 export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
 

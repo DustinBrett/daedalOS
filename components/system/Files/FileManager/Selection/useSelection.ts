@@ -1,9 +1,9 @@
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import { useMenu } from "contexts/menu";
-import type { MenuState } from "contexts/menu/useMenuContextState";
+import { type Position } from "react-rnd";
 import { useRef, useState } from "react";
-import type { Position } from "react-rnd";
+import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { useMenu } from "contexts/menu";
+import { type MenuState } from "contexts/menu/useMenuContextState";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export type SelectionRect = Partial<Position> & Partial<Size>;

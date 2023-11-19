@@ -1,10 +1,10 @@
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { useTheme } from "styled-components";
+import { useEffect, useRef } from "react";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
-import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 

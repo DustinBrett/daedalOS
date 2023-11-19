@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
 import {
   Avatar,
@@ -15,9 +17,7 @@ import {
   prettyChatTimestamp,
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
-import type { DecryptedContent } from "components/apps/Messenger/types";
-import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type DecryptedContent } from "components/apps/Messenger/types";
 import { clsx } from "utils/functions";
 
 const SanitizedContent = dynamic(

@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import {
   closeProcess,
   maximizeProcess,
@@ -9,12 +10,11 @@ import {
   setTitle,
   setUrl,
 } from "contexts/process/functions";
-import type {
-  ProcessArguments,
-  ProcessElements,
-  Processes,
+import {
+  type ProcessArguments,
+  type ProcessElements,
+  type Processes,
 } from "contexts/process/types";
-import { useCallback, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 type ProcessContextState = {

@@ -1,10 +1,10 @@
+import { useCallback, useMemo, useRef, useState } from "react";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
-import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import useWorker from "hooks/useWorker";
-import { useCallback, useMemo, useRef, useState } from "react";
 
 type WorkerMessage = { data: { message: string; type: string } };
 

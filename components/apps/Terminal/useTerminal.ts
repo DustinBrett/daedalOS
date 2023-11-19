@@ -1,18 +1,5 @@
-import { PROMPT_CHARACTER, config } from "components/apps/Terminal/config";
-import { autoComplete } from "components/apps/Terminal/functions";
-import type {
-  FitAddon,
-  LocalEcho,
-  OnKeyEvent,
-} from "components/apps/Terminal/types";
-import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
-import extensions from "components/system/Files/FileEntry/extensions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
+import { type IDisposable, type Terminal } from "xterm";
 import {
   useCallback,
   useEffect,
@@ -20,9 +7,22 @@ import {
   useRef,
   useState,
 } from "react";
+import { PROMPT_CHARACTER, config } from "components/apps/Terminal/config";
+import { autoComplete } from "components/apps/Terminal/functions";
+import {
+  type FitAddon,
+  type LocalEcho,
+  type OnKeyEvent,
+} from "components/apps/Terminal/types";
+import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import extensions from "components/system/Files/FileEntry/extensions";
+import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import useResizeObserver from "hooks/useResizeObserver";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
 import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
-import type { IDisposable, Terminal } from "xterm";
 
 const { alias, author, license, version } = PACKAGE_DATA;
 

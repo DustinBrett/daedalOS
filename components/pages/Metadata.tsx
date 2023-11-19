@@ -1,11 +1,11 @@
+import { extname } from "path";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import { getFirstAniImage } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import Head from "next/head";
-import { extname } from "path";
 import desktopIcons from "public/.index/desktopIcons.json";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,

@@ -1,8 +1,7 @@
-import { useSession } from "contexts/session";
-import type { FeatureBundle } from "framer-motion";
-import { LazyMotion } from "framer-motion";
-import { memo } from "react";
 import { StyleSheetManager, ThemeProvider } from "styled-components";
+import { memo } from "react";
+import { type FeatureBundle, LazyMotion } from "framer-motion";
+import { useSession } from "contexts/session";
 import GlobalStyle from "styles/GlobalStyle";
 import themes from "styles/themes";
 import { DEFAULT_THEME } from "utils/constants";

@@ -1,12 +1,3 @@
-import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
-import {
-  getKeyFromTags,
-  getMessages,
-  groupChatEvents,
-} from "components/apps/Messenger/functions";
-import { useNostrEvents } from "components/apps/Messenger/hooks";
-import type { ChatEvents } from "components/apps/Messenger/types";
-import type { Event } from "nostr-tools";
 import {
   createContext,
   memo,
@@ -16,6 +7,15 @@ import {
   useMemo,
   useState,
 } from "react";
+import { type Event } from "nostr-tools";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
+import {
+  getKeyFromTags,
+  getMessages,
+  groupChatEvents,
+} from "components/apps/Messenger/functions";
+import { useNostrEvents } from "components/apps/Messenger/hooks";
+import { type ChatEvents } from "components/apps/Messenger/types";
 
 type MessageData = {
   allEventsReceived: boolean;

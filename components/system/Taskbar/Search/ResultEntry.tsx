@@ -1,18 +1,18 @@
+import { basename, extname } from "path";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { useIsVisible } from "components/apps/Messenger/hooks";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
-import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import {
+  type ResultInfo,
   fileType,
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
 import { useFileSystem } from "contexts/fileSystem";
-import type { ProcessArguments } from "contexts/process/types";
+import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
-import { basename, extname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";

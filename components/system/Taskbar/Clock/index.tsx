@@ -1,12 +1,12 @@
+import { useTheme } from "styled-components";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
-import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
+import { type LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTheme } from "styled-components";
 import {
   CLOCK_CANVAS_BASE_WIDTH,
   FOCUSABLE_ELEMENT,

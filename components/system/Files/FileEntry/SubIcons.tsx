@@ -1,6 +1,8 @@
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileEntryIconSize } from "components/system/Files/Views";
 import { memo, useMemo } from "react";
+import {
+  type FileManagerViewNames,
+  FileEntryIconSize,
+} from "components/system/Files/Views";
 import Icon from "styles/common/Icon";
 import {
   FOLDER_BACK_ICON,

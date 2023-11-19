@@ -1,21 +1,21 @@
+import { join } from "path";
+import { type FSModule } from "browserfs/dist/node/core/FS";
+import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type * as IBrowserFS from "browserfs";
 import type EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
-import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
-import {
-  UNKNOWN_STATE_CODES,
-  supportsIndexedDB,
-} from "contexts/fileSystem/core";
-import { join } from "path";
-import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
-import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   SESSION_FILE,
 } from "utils/constants";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
+import {
+  UNKNOWN_STATE_CODES,
+  supportsIndexedDB,
+} from "contexts/fileSystem/core";
+import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;

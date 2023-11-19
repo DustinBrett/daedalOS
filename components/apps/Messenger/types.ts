@@ -1,4 +1,4 @@
-import type { Event, Filter } from "nostr-tools";
+import { type Event, type Filter } from "nostr-tools";
 
 type RelayPolicy = { read: boolean; write: boolean };
 

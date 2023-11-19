@@ -1,10 +1,10 @@
+import { basename, join } from "path";
+import { useCallback } from "react";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { basename, join } from "path";
-import { useCallback } from "react";
 import {
   DESKTOP_PATH,
   FOLDER_BACK_ICON,

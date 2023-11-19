@@ -1,7 +1,3 @@
-import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
-import type { FileDrop } from "components/system/Files/FileManager/useFileDrop";
-import { useFileSystem } from "contexts/fileSystem";
-import useResizeObserver from "hooks/useResizeObserver";
 import { join } from "path";
 import {
   useCallback,
@@ -10,6 +6,10 @@ import {
   useRef,
   useState,
 } from "react";
+import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
+import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
+import { useFileSystem } from "contexts/fileSystem";
+import useResizeObserver from "hooks/useResizeObserver";
 import { getFormattedSize, haltEvent, label } from "utils/functions";
 
 type StatusBarProps = {

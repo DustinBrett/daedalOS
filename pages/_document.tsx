@@ -1,5 +1,11 @@
-import type { DocumentContext, DocumentInitialProps } from "next/document";
-import NextDocument, { Head, Html, Main, NextScript } from "next/document";
+import NextDocument, {
+  type DocumentContext,
+  type DocumentInitialProps,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from "next/document";
 import Script from "next/script";
 import { ServerStyleSheet } from "styled-components";
 import { DEFAULT_LOCALE } from "utils/constants";

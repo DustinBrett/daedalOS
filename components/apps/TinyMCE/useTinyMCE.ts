@@ -1,10 +1,13 @@
+import { basename, dirname, extname, relative } from "path";
+import { type Editor, type NotificationSpec } from "tinymce";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_SAVE_PATH, config } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
 } from "components/apps/TinyMCE/functions";
-import type { IRTFJS } from "components/apps/TinyMCE/types";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { type IRTFJS } from "components/apps/TinyMCE/types";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import {
   getModifiedTime,
   getProcessByFileExtension,
@@ -14,9 +17,6 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname, relative } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Editor, NotificationSpec } from "tinymce";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { getExtension, haltEvent, loadFiles } from "utils/functions";
 

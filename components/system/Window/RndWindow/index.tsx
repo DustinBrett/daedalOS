@@ -1,7 +1,7 @@
+import { Rnd } from "react-rnd";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Rnd } from "react-rnd";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

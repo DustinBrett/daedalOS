@@ -1,7 +1,7 @@
+import styled, { css } from "styled-components";
+import { m as motion } from "framer-motion";
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
-import { m as motion } from "framer-motion";
-import styled, { css } from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
 import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 

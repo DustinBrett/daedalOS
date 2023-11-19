@@ -1,4 +1,4 @@
-import type { LocalEcho } from "components/apps/Terminal/types";
+import { type LocalEcho } from "components/apps/Terminal/types";
 import { loadFiles } from "utils/functions";
 
 type Pyodide = {

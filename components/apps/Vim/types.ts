@@ -1,4 +1,4 @@
-import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 
 export type QueueItem = {
   buffer: Buffer;

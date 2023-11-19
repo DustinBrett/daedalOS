@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { Back, Write } from "components/apps/Messenger/Icons";
 import { useNostr } from "components/apps/Messenger/NostrContext";
@@ -12,9 +13,8 @@ import {
   getWebSocketStatusIcon,
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
-import type { ProfileData } from "components/apps/Messenger/types";
+import { type ProfileData } from "components/apps/Messenger/types";
 import { useMenu } from "contexts/menu";
-import { useCallback, useMemo } from "react";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
 import { haltEvent } from "utils/functions";

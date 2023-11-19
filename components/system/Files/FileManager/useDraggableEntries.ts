@@ -1,9 +1,9 @@
-import { getMimeType } from "components/system/Files/FileEntry/functions";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import { useSession } from "contexts/session";
 import { join } from "path";
+import { type Position } from "react-rnd";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Position } from "react-rnd";
+import { getMimeType } from "components/system/Files/FileEntry/functions";
+import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { useSession } from "contexts/session";
 import {
   getHtmlToImage,
   haltEvent,

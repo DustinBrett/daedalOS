@@ -1,4 +1,7 @@
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useState } from "react";
 import { loader } from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   URL_DELIMITER,
   config,
@@ -9,14 +12,11 @@ import {
   getSaveFileInfo,
   relocateShadowRoot,
 } from "components/apps/MonacoEditor/functions";
-import type { Model } from "components/apps/MonacoEditor/types";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { type Model } from "components/apps/MonacoEditor/types";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename, dirname } from "path";
-import { useCallback, useEffect, useState } from "react";
 import {
   DEFAULT_TEXT_FILE_SAVE_PATH,
   MILLISECONDS_IN_SECOND,

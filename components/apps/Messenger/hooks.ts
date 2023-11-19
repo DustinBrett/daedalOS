@@ -1,3 +1,12 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { NIP05Result } from "nostr-tools/lib/types/nip05";
+import {
+  type Filter,
+  type Event as NostrEvent,
+  type Relay,
+  type Sub,
+} from "nostr-tools";
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
 import { useNostr } from "components/apps/Messenger/NostrContext";
@@ -16,16 +25,13 @@ import {
   maybeGetExistingPublicKey,
   toHexKey,
 } from "components/apps/Messenger/functions";
-import type {
-  Metadata,
-  NostrContacts,
-  NostrProfile,
+import {
+  type Metadata,
+  type NostrContacts,
+  type NostrProfile,
 } from "components/apps/Messenger/types";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import type { Filter, Event as NostrEvent, Relay, Sub } from "nostr-tools";
-import type { NIP05Result } from "nostr-tools/lib/types/nip05";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 
 export const useNostrEvents = ({

@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Event } from "nostr-tools";
+import { AnimatePresence } from "framer-motion";
 import ChatLog from "components/apps/Messenger/ChatLog";
 import Contact from "components/apps/Messenger/Contact";
 import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";
@@ -29,11 +32,8 @@ import {
   usePublicKey,
   useUnreadStatus,
 } from "components/apps/Messenger/hooks";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcesses } from "contexts/process";
-import { AnimatePresence } from "framer-motion";
-import type { Event } from "nostr-tools";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

@@ -1,10 +1,10 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
+import { join } from "path";
+import { type FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getInfoWithExtension } from "components/system/Files/FileEntry/functions";
-import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
-import type { useFileSystem } from "contexts/fileSystem";
-import { join } from "path";
+import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import { type useFileSystem } from "contexts/fileSystem";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,

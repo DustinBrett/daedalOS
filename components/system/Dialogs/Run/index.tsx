@@ -1,5 +1,7 @@
+import { basename, join } from "path";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { parseCommand } from "components/apps/Terminal/functions";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import {
@@ -11,8 +13,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, join } from "path";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   DESKTOP_PATH,
   PACKAGE_DATA,

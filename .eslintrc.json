@@ -10,8 +10,10 @@
     "plugin:jest/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:playwright/recommended",
+    "plugin:promise/recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
+    "plugin:regexp/recommended",
     "plugin:sonarjs/recommended",
     "plugin:typescript-sort-keys/recommended",
     "plugin:unicorn/recommended",
@@ -27,8 +29,10 @@
     "import",
     "jest",
     "prettier",
+    "promise",
     "react",
     "react-hooks-addons",
+    "regexp",
     "sonarjs",
     "sort-keys-fix",
     "typescript-sort-keys",
@@ -40,7 +44,7 @@
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
       "error",
-      { "prefer": "type-imports" }
+      { "fixStyle": "inline-type-imports", "prefer": "type-imports" }
     ],
     "@typescript-eslint/explicit-function-return-type": [
       "error",
@@ -75,6 +79,7 @@
     "camelcase": "off",
     "class-methods-use-this": "off",
     "curly": "error",
+    "import/consistent-type-specifier-style": ["error", "prefer-inline"],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -83,11 +88,12 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-cycle": "off",
-    "import/no-duplicates": "error",
+    "import/no-duplicates": ["error", { "prefer-inline": true }],
     "import/no-extraneous-dependencies": [
       "error",
       { "devDependencies": ["*.config.ts", "e2e/**", "__tests__/**"] }
     ],
+    "import/order": ["error", { "newlines-between": "never" }],
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",
@@ -116,6 +122,11 @@
     "playwright/expect-expect": "off",
     "playwright/no-conditional-in-test": "off",
     "playwright/no-skipped-test": "off",
+    "promise/always-return": "off",
+    "promise/catch-or-return": "off",
+    "promise/no-nesting": "off",
+    "promise/no-callback-in-promise": "off",
+    "promise/no-promise-in-callback": "off",
     "react/function-component-definition": [
       "error",
       { "namedComponents": "arrow-function" }
@@ -137,6 +148,10 @@
     "react/require-default-props": "off",
     "react/require-optimization": "error",
     "react-hooks-addons/no-unused-deps": "warn",
+    "regexp/no-unused-capturing-group": "error",
+    "regexp/no-useless-assertions": "error",
+    "regexp/no-useless-flag": "error",
+    "regexp/strict": "error",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/no-nested-template-literals": "off",
     "sort-keys-fix/sort-keys-fix": "error",
@@ -155,6 +170,7 @@
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
     "unicorn/no-await-expression-member": "off",
+    "unicorn/no-unused-properties": "error",
     "unicorn/numeric-separators-style": "off",
     "unicorn/prefer-at": "off",
     "unicorn/prefer-node-protocol": "off",

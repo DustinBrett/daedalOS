@@ -1,7 +1,3 @@
-import { SEEN_EVENT_IDS_PATH } from "components/apps/Messenger/constants";
-import type { NostrProfile } from "components/apps/Messenger/types";
-import { useFileSystem } from "contexts/fileSystem";
-import type { Event } from "nostr-tools";
 import {
   createContext,
   memo,
@@ -11,6 +7,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { type Event } from "nostr-tools";
+import { SEEN_EVENT_IDS_PATH } from "components/apps/Messenger/constants";
+import { type NostrProfile } from "components/apps/Messenger/types";
+import { useFileSystem } from "contexts/fileSystem";
 
 type Profiles = Record<string, NostrProfile>;
 

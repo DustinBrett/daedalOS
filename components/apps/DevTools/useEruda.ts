@@ -1,8 +1,7 @@
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
-import { useProcesses } from "contexts/process";
-import type Eruda from "eruda";
-import type { InitOptions } from "eruda";
 import { useEffect } from "react";
+import { type default as Eruda, type InitOptions } from "eruda";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import { useProcesses } from "contexts/process";
 import { loadFiles, viewWidth } from "utils/functions";
 
 declare global {

@@ -1,6 +1,6 @@
-import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
 import { useMemo } from "react";
+import { useMenu } from "contexts/menu";
+import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 
 const useAddressBarContextMenu = (address: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();

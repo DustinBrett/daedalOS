@@ -1,4 +1,6 @@
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { basename, extname } from "path";
+import { useEffect, useRef } from "react";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import GeneralTab from "components/system/Dialogs/Properties/GeneralTab";
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
 import useStats from "components/system/Dialogs/Properties/useStats";
@@ -6,8 +8,6 @@ import StyledButton from "components/system/Dialogs/StyledButton";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useEffect, useRef } from "react";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

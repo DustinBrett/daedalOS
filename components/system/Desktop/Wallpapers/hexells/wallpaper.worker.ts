@@ -1,5 +1,5 @@
 import { libs } from "components/system/Desktop/Wallpapers/hexells";
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {

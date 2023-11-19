@@ -1,22 +1,7 @@
-import {
-  BASE_NIP05_URL,
-  BASE_RW_RELAYS,
-  DM_KIND,
-  GROUP_TIME_GAP_IN_SECONDS,
-  METADATA_KIND,
-  PRIVATE_KEY_IDB_NAME,
-  PUBLIC_KEY_IDB_NAME,
-  TIME_FORMAT,
-} from "components/apps/Messenger/constants";
-import type {
-  ChatEvents,
-  DecryptedContent,
-  NostrEvents,
-  NostrProfile,
-  ProfileData,
-} from "components/apps/Messenger/types";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
-import type { Event, VerifiedEvent } from "nostr-tools";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { ProfilePointer } from "nostr-tools/lib/types/nip19";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { NIP05Result } from "nostr-tools/lib/types/nip05";
 import {
   generatePrivateKey,
   getEventHash,
@@ -27,9 +12,27 @@ import {
   validateEvent,
   verifiedSymbol,
   verifySignature,
+  type Event,
+  type VerifiedEvent,
 } from "nostr-tools";
-import type { NIP05Result } from "nostr-tools/lib/types/nip05";
-import type { ProfilePointer } from "nostr-tools/lib/types/nip19";
+import {
+  BASE_NIP05_URL,
+  BASE_RW_RELAYS,
+  DM_KIND,
+  GROUP_TIME_GAP_IN_SECONDS,
+  METADATA_KIND,
+  PRIVATE_KEY_IDB_NAME,
+  PUBLIC_KEY_IDB_NAME,
+  TIME_FORMAT,
+} from "components/apps/Messenger/constants";
+import {
+  type ChatEvents,
+  type DecryptedContent,
+  type NostrEvents,
+  type NostrProfile,
+  type ProfileData,
+} from "components/apps/Messenger/types";
+import { type MenuItem } from "contexts/menu/useMenuContextState";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export const getRelayUrls = async (): Promise<string[]> => {

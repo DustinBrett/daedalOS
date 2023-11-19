@@ -1,16 +1,16 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type DosInstance } from "emulators-ui/dist/types/js-dos";
 import {
   CAPTURED_KEYS,
   dosOptions,
   pathPrefix,
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 

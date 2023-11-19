@@ -1,6 +1,6 @@
+import { useCallback } from "react";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useCallback } from "react";
 import { PROCESS_DELIMITER, SAVE_TITLE_CHAR } from "utils/constants";
 
 type Title = {

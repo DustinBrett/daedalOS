@@ -1,4 +1,4 @@
-import type { VideoJsPlayerOptions } from "video.js";
+import { type VideoJsPlayerOptions } from "video.js";
 
 export const YT_TYPE = "video/youtube";
 

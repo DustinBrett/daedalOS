@@ -1,6 +1,6 @@
-import { useFileSystem } from "contexts/fileSystem";
-import type { EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useCallback, useEffect, useRef } from "react";
+import { useFileSystem } from "contexts/fileSystem";
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 
 type EmscriptenMounter = (FS?: EmscriptenFS, fsName?: string) => Promise<void>;
 

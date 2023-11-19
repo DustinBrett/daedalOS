@@ -1,12 +1,12 @@
+import { memo, useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { AnimatePresence } from "framer-motion";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
-import { memo, useCallback, useMemo, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DIV_BUTTON_PROPS } from "utils/constants";
