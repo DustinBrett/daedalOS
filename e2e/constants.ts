@@ -79,6 +79,8 @@ export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_ENTRIES_SELECTOR}>li`;
 export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([title])`;
 export const TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR = `${TASKBAR_ENTRY_PEEK_SELECTOR}>img`;
 export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]:not(:has(>ol))`;
+export const SEARCH_MENU_INPUT_SELECTOR = `${SEARCH_MENU_SELECTOR} input[placeholder='Type here to search']`;
+export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure>ol`;
 export const SEARCH_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title='Type here to search']`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title=Start]`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav[style]:has(>ol)`;
@@ -226,6 +228,7 @@ export const TEST_ROOT_FILE_TOOLTIP =
 
 export const TEST_SEARCH = "CREDITS";
 export const TEST_SEARCH_RESULT = /^CREDITS.md$/;
+export const TEST_SEARCH_RESULT_TITLE = /^\/CREDITS.md/;
 
 export const NEW_FOLDER_LABEL = /^New folder$/;
 export const NEW_FILE_LABEL = /^New Text Document.txt$/;

@@ -47,6 +47,8 @@ import {
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
+  SEARCH_MENU_INPUT_SELECTOR,
+  SEARCH_MENU_RESULTS_SELECTOR,
 } from "e2e/constants";
 
 type TestProps = {
@@ -387,6 +389,14 @@ export const typeInFileExplorerSearchBox = async (
     .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
     .pressSequentially(text, { delay: TYPE_DELAY });
 
+export const typeInTaskbarSearchBar = async (
+  text: string,
+  { page }: TestProps
+): Promise<void> =>
+  page
+    .locator(SEARCH_MENU_INPUT_SELECTOR)
+    .pressSequentially(text, { delay: TYPE_DELAY });
+
 // expect->toHave
 export const pageHasTitle = async (
   title: string,
@@ -599,6 +609,14 @@ export const fileExplorerNavButtonIsVisible = async (
 ): Promise<void> =>
   expect(
     page.locator(FILE_EXPLORER_NAV_SELECTOR).getByLabel(label, EXACT)
+  ).toBeVisible();
+
+export const searchResultEntryIsVisible = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(SEARCH_MENU_RESULTS_SELECTOR).getByTitle(label)
   ).toBeVisible();
 
 export const taskbarEntryIsHidden = async (
