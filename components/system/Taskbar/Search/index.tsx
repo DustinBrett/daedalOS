@@ -228,6 +228,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           })
         )
         .then((newResults) => setSubResults(Object.entries(newResults)));
+    } else {
+      setSubResults([]);
     }
   }, [readFile, results]);
 
@@ -396,24 +398,25 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     title={"Best match" as TabName}
                     details
                   />
-                  {subResults.map(
-                    ([title, subResult]) =>
-                      (activeTab === "All" || activeTab === title) && (
-                        <ResultSection
-                          key={title}
-                          activeItem={activeItem}
-                          activeTab={activeTab}
-                          changeTab={changeTab}
-                          openApp={openApp}
-                          results={subResult.filter(
-                            (result) => firstResult !== result
-                          )}
-                          searchTerm={searchTerm}
-                          setActiveItem={setActiveItem}
-                          title={title as TabName}
-                        />
-                      )
-                  )}
+                  {results.length > 1 &&
+                    subResults.map(
+                      ([title, subResult]) =>
+                        (activeTab === "All" || activeTab === title) && (
+                          <ResultSection
+                            key={title}
+                            activeItem={activeItem}
+                            activeTab={activeTab}
+                            changeTab={changeTab}
+                            openApp={openApp}
+                            results={subResult.filter(
+                              (result) => firstResult !== result
+                            )}
+                            searchTerm={searchTerm}
+                            setActiveItem={setActiveItem}
+                            title={title as TabName}
+                          />
+                        )
+                    )}
                 </div>
               )}
               {activeItem && firstResult && (
