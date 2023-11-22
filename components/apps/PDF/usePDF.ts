@@ -7,10 +7,7 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import {
-  BASE_2D_CONTEXT_OPTIONS,
-  DEFAULT_SCROLLBAR_WIDTH,
-} from "utils/constants";
+import { BASE_2D_CONTEXT_OPTIONS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 export const scales = [
@@ -18,8 +15,10 @@ export const scales = [
   5,
 ];
 
+const CANVAS_MARGIN_PX = 4;
+
 const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
-  const adjustedWindowWidth = windowWidth - DEFAULT_SCROLLBAR_WIDTH;
+  const adjustedWindowWidth = windowWidth - CANVAS_MARGIN_PX * 2;
 
   if (adjustedWindowWidth >= canvasWidth) return 1;
 
