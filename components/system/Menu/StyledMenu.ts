@@ -87,12 +87,12 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         &.right {
           right: 8px;
         }
+      }
 
-        &.share {
-          height: 15px;
-          left: 10px;
-          width: 15px;
-        }
+      .icon > svg {
+        height: 15px;
+        left: 10px;
+        width: 15px;
       }
     }
   }

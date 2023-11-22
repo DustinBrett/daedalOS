@@ -53,6 +53,7 @@ import {
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
 import { type ImageMagickConvertFile } from "utils/imagemagick/types";
+import { Share } from "components/system/Menu/MenuIcons";
 
 const { alias } = PACKAGE_DATA;
 
@@ -400,9 +401,9 @@ const useFileContextMenu = (
                 try {
                   if (navigator.canShare?.(shareData)) {
                     menuItems.unshift({
+                      SvgIcon: Share,
                       action: () => navigator.share(shareData),
                       label: "Share",
-                      share: true,
                     });
                   }
                 } catch {

@@ -43,12 +43,8 @@ export const Circle = memo<SvgProps>(({ className }) => (
   </svg>
 ));
 
-export const Share = memo<SvgProps>(({ className }) => (
-  <svg
-    className={className}
-    viewBox="0 0 32 32"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+export const Share = memo(() => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M22 24l2-2v6h-24v-20h2v18h20v-2zM20 16q-2 0-3.914 0.398t-3.695 1.172-3.398 1.891-2.992 2.539v-2q0-1.938 0.5-3.727t1.414-3.344 2.188-2.828 2.828-2.188 3.344-1.414 3.727-0.5v-6l11 11-11 11v-6zM21.578 8q-0.875 0-1.641 0.016t-1.516 0.102-1.5 0.281-1.594 0.539q-1.359 0.563-2.523 1.438t-2.078 1.992-1.547 2.422-0.93 2.742q2.625-1.75 5.609-2.641t6.141-0.891h2v3.172l6.172-6.172-6.172-6.172v3.172h-0.422z" />
   </svg>
 ));

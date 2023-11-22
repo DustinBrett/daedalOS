@@ -12,7 +12,6 @@ import {
   Checkmark,
   ChevronRight,
   Circle,
-  Share,
 } from "components/system/Menu/MenuIcons";
 import { type MenuItem } from "contexts/menu/useMenuContextState";
 import Button from "styles/common/Button";
@@ -41,7 +40,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   primary,
   resetMenu,
   seperator,
-  share,
+  SvgIcon,
   toggle,
 }) => {
   const entryRef = useRef<HTMLLIElement | null>(null);
@@ -153,8 +152,12 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
               <Icon alt={label} imgSize={16} src={icon} />
             ))}
           {checked && <Checkmark className="left" />}
-          {share && <Share className="share" />}
           {toggle && <Circle className="left" />}
+          {SvgIcon && (
+            <div className="icon">
+              <SvgIcon />
+            </div>
+          )}
           <figcaption className={primary ? "primary" : undefined}>
             {label}
           </figcaption>
