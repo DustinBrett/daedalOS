@@ -205,7 +205,7 @@ const useV86 = ({
       loadDiskImage();
     }
 
-    const currentContainerRef = containerRef.current;
+    const currentContainer = containerRef.current;
 
     return () => {
       if (url && closing && !shutdown.current) {
@@ -216,15 +216,13 @@ const useV86 = ({
 
             if (emulator[url]?.v86.cpu.devices.vga.graphical_mode) {
               screenshot = (
-                currentContainerRef?.querySelector(
-                  "canvas"
-                ) as HTMLCanvasElement
+                currentContainer?.querySelector("canvas") as HTMLCanvasElement
               )?.toDataURL("image/png");
-            } else if (currentContainerRef instanceof HTMLElement) {
+            } else if (currentContainer instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
               try {
-                screenshot = await htmlToImage?.toPng(currentContainerRef, {
+                screenshot = await htmlToImage?.toPng(currentContainer, {
                   skipAutoScale: true,
                 });
               } catch {

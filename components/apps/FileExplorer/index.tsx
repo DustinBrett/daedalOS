@@ -33,7 +33,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     if (event.altKey && event.key.toUpperCase() === "D") {
       haltEvent(event);
-      inputRef?.current?.focus(PREVENT_SCROLL);
+      inputRef.current?.focus(PREVENT_SCROLL);
     }
   }, []);
 

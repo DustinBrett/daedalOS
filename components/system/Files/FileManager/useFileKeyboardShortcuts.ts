@@ -179,7 +179,7 @@ const useFileKeyboardShortcuts = (
 
                 if (
                   !(closestButton instanceof HTMLButtonElement) ||
-                  !fileManagerRef?.current?.contains(closestButton)
+                  !fileManagerRef.current?.contains(closestButton)
                 ) {
                   dispatchElement = targetElement;
                 }

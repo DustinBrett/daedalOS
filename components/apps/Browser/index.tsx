@@ -116,7 +116,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   }, [history, position, process, setUrl]);
 
   useEffect(() => {
-    if (iframeRef?.current) {
+    if (iframeRef.current) {
       linkElement(id, "peekElement", iframeRef.current);
     }
   }, [id, linkElement]);
