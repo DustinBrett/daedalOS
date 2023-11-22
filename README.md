@@ -235,7 +235,7 @@
 
 ```
 yarn install
-yarn build:fs
+yarn build:prebuild
 yarn dev
 ```
 
