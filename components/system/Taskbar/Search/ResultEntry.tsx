@@ -1,6 +1,7 @@
 import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import useResultsContextMenu from "./useResultsContextMenu";
 import { useIsVisible } from "components/apps/Messenger/hooks";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -42,8 +43,9 @@ const ResultEntry: FC<ResultEntryProps> = ({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
   const extension = extname(info?.url || url);
+  const baseName = basename(url, ".url");
   const name = useMemo(() => {
-    let text = basename(url, ".url");
+    let text = baseName;
 
     try {
       text = text.replace(
@@ -55,7 +57,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
     }
 
     return text;
-  }, [searchTerm, url]);
+  }, [baseName, searchTerm]);
   const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
   const baseUrl = isYTUrl ? url : url || info?.url;
   const lastModified = useMemo(
@@ -78,6 +80,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
     : false;
   const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const { onContextMenuCapture } = useResultsContextMenu(info?.url);
 
   useEffect(() => {
     const activeEntry = details || hovered;
@@ -94,6 +97,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   return (
     <li
       ref={elementRef}
+      aria-label={baseName}
       className={active ? "active-item" : undefined}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseOver={() => !details && setHovered(true)}
@@ -106,6 +110,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
           openApp(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
           if (baseUrl && info?.pid) updateRecentFiles(baseUrl, info?.pid);
         }}
+        onContextMenuCapture={
+          !isYTUrl && !isNostrUrl && !isAppShortcut && !isDirectory
+            ? onContextMenuCapture
+            : undefined
+        }
       >
         <Icon
           displaySize={details ? 32 : 16}

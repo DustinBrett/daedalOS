@@ -255,7 +255,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     >
       <StyledBackground $height={height} />
       <div>
-        <div className="content" onContextMenuCapture={haltEvent}>
+        <div className="content" onContextMenu={haltEvent}>
           <StyledTabs>
             {TABS.filter(
               (tab) =>
