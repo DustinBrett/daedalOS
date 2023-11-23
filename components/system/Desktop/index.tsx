@@ -11,6 +11,16 @@ const Desktop: FC = ({ children }) => {
 
   useWallpaper(desktopRef, heightOverride);
 
+const desktopNameStyle = {
+    position: 'absolute',
+    bottom: '10px',
+    right: '10px',
+    fontSize: '2em',
+    color: 'white',
+    opacity: 0.7,
+    textShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)'
+  };
+  
   return (
     <StyledDesktop ref={desktopRef} $height={heightOverride}>
       <div className="desktop-name">tommyos</div>
