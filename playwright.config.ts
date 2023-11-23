@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig = {
     video: "retain-on-failure",
   },
   webServer: {
-    command: CI ? "yarn start" : "yarn dev",
+    command: CI ? "yarn serve" : "yarn dev",
     url: baseURL,
   },
   workers: CI ? 1 : undefined,

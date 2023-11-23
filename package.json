@@ -27,7 +27,7 @@
     "export": "next export",
     "prepare": "husky install",
     "prettier": "prettier --write .",
-    "start": "next start",
+    "serve": "serve out",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "unused-exports": "ts-prune --project tsconfig.json --ignore \"\\pages|\\e2e\" --error"
@@ -130,6 +130,7 @@
     "postcss": "^8.4.31",
     "postcss-styled-syntax": "^0.5.0",
     "postcss-syntax": "^0.36.2",
+    "serve": "^14.2.1",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-order": "^6.0.3",
