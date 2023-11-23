@@ -27,7 +27,7 @@
     "export": "next export",
     "prepare": "husky install",
     "prettier": "prettier --write .",
-    "start": "next start",
+    "start": "npx serve@latest out",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
     "unused-exports": "ts-prune --project tsconfig.json --ignore \"\\pages|\\e2e\" --error"
