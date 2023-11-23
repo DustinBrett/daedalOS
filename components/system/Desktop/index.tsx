@@ -12,9 +12,9 @@ const Desktop: FC = ({ children }) => {
   useWallpaper(desktopRef, heightOverride);
 
   const desktopNameStyle: React.CSSProperties = {
-    bottom: "5rem",
+    bottom: "4rem",
     color: "white",
-    fontSize: "5em",
+    fontSize: "4rem",
     opacity: 0.7,
     position: "absolute",
     right: "2rem",
@@ -23,7 +23,9 @@ const Desktop: FC = ({ children }) => {
 
   return (
     <StyledDesktop ref={desktopRef} $height={heightOverride}>
-      <div style={desktopNameStyle}>tommyos</div>
+
+      <div style={desktopNameStyle}>TommyOS</div>
+
       <FileManager
         url={DESKTOP_PATH}
         view="icon"
