@@ -13,6 +13,7 @@ const Desktop: FC = ({ children }) => {
 
   return (
     <StyledDesktop ref={desktopRef} $height={heightOverride}>
+      <div className="desktop-name">tommyos</div>
       <FileManager
         url={DESKTOP_PATH}
         view="icon"
