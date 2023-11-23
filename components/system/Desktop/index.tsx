@@ -11,7 +11,7 @@ const Desktop: FC = ({ children }) => {
 
   useWallpaper(desktopRef, heightOverride);
 
-const desktopNameStyle = {
+const desktopNameStyle: React.CSSProperties = {
     position: 'absolute',
     bottom: '10px',
     right: '10px',
