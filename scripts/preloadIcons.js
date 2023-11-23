@@ -1,4 +1,5 @@
 const {
+  mkdirSync,
   readdirSync,
   readFileSync,
   writeFileSync,
@@ -108,6 +109,10 @@ const getIniIcons = () => {
 
   return iniIcons;
 };
+
+if (!existsSync(join(PUBLIC_DIR, ".index"))) {
+  mkdirSync(join(PUBLIC_DIR, ".index"));
+}
 
 writeFileSync(
   "./public/.index/desktopIcons.json",
