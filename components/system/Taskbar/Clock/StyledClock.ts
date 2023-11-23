@@ -1,17 +1,23 @@
 import styled from "styled-components";
 
-const StyledClock = styled.div`
+type StyledClockProps = {
+  $width: number;
+};
+
+const StyledClock = styled.div<StyledClockProps>`
   color: ${({ theme }) => theme.colors.text};
   display: flex;
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
-  max-width: ${({ theme }) => `calc(${theme.sizes.clock.width} + 10px)}`};
-  min-width: ${({ theme }) => theme.sizes.clock.width};
-  padding: 0 5px;
+  max-width: ${({ theme, $width }) =>
+    `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
+  min-width: ${({ $width }) => $width}px;
+  padding: ${({ theme }) => `0 ${theme.sizes.clock.padding}px`};
   place-content: center;
   place-items: center;
   position: absolute;
   right: 0;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.taskbar.hover};

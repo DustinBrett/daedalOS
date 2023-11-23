@@ -1,15 +1,16 @@
+import { memo, useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { AnimatePresence } from "framer-motion";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { label } from "utils/functions";
+import { DIV_BUTTON_PROPS } from "utils/constants";
+import { isSafari, label } from "utils/functions";
 
 const PeekWindow = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry/Peek/PeekWindow")
@@ -32,7 +33,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   } = useProcesses();
   const { minimized, progress } = process || {};
   const linkTaskbarEntry = useCallback(
-    (taskbarEntry: HTMLButtonElement) =>
+    (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) =>
       taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
     [id, linkElement]
   );
@@ -44,6 +45,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
 
     setForegroundId(isForeground ? nextFocusableId : id);
   };
+  const focusable = useMemo(() => (isSafari() ? DIV_BUTTON_PROPS : {}), []);
 
   return (
     <StyledTaskbarEntry
@@ -58,7 +60,12 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
-      <Button ref={linkTaskbarEntry} onClick={onClick} {...label(title)}>
+      <Button
+        ref={linkTaskbarEntry}
+        onClick={onClick}
+        {...focusable}
+        {...label(title)}
+      >
         <figure>
           <Icon alt={title} imgSize={16} src={icon} />
           <figcaption>{title}</figcaption>
@@ -68,4 +75,4 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   );
 };
 
-export default TaskbarEntry;
+export default memo(TaskbarEntry);

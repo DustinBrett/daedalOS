@@ -1,20 +1,27 @@
-import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { Processes, RelativePosition } from "contexts/process/types";
-import type {
-  IconPosition,
-  IconPositions,
-  SortOrders,
-} from "contexts/session/types";
-import type { Position } from "eruda";
-import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
-import type { HTMLAttributes } from "react";
+import { type Position } from "eruda";
+import type HtmlToImage from "html-to-image";
+import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type Processes, type RelativePosition } from "contexts/process/types";
 import {
+  type IconPosition,
+  type IconPositions,
+  type SortOrders,
+} from "contexts/session/types";
+import {
+  DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_PATH,
+  ICON_RES_MAP,
+  MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
+  SMALLEST_JXL_FILE,
+  SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
+  TIMESTAMP_DATE_FORMAT,
+  USER_ICON_PATH,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -37,30 +44,44 @@ export const getDpi = (): number => {
   return dpi;
 };
 
-export const toggleFullScreen = async (): Promise<void> => {
-  try {
-    await (document.fullscreenElement
-      ? document.exitFullscreen()
-      : document.documentElement.requestFullscreen());
-  } catch {
-    // Ignore failure to enter fullscreen
-  }
+export const getExtension = (url: string): string => extname(url).toLowerCase();
+
+export const sendMouseClick = (target: HTMLElement, count = 1): void => {
+  if (count === 0) return;
+
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+  sendMouseClick(target, count - 1);
 };
+
+let visibleWindows: string[] = [];
 
 export const toggleShowDesktop = (
   processes: Processes,
+  stackOrder: string[],
   minimize: (id: string) => void
 ): void => {
-  const processArray = Object.entries(processes);
-  const allWindowsMinimized =
-    processArray.length > 0 &&
-    !processArray.some(([, { minimized }]) => !minimized);
+  const restoreWindows =
+    stackOrder.length > 0 &&
+    !stackOrder.some((pid) => !processes[pid]?.minimized);
+  const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
 
-  processArray.forEach(
-    ([pid, { minimized }]) =>
-      (allWindowsMinimized || (!allWindowsMinimized && !minimized)) &&
-      minimize(pid)
-  );
+  if (!restoreWindows) visibleWindows = [];
+
+  allWindows.forEach((pid) => {
+    if (restoreWindows) {
+      if (visibleWindows.includes(pid)) minimize(pid);
+    } else if (!processes[pid]?.minimized) {
+      visibleWindows.push(pid);
+      minimize(pid);
+    }
+  });
+
+  if (restoreWindows) {
+    requestAnimationFrame(
+      () => processes[stackOrder[0]]?.componentWindow?.focus()
+    );
+  }
 };
 
 export const imageSrc = (
@@ -72,13 +93,20 @@ export const imageSrc = (
   const imageName = basename(imagePath, ".webp");
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
-  const imageSize =
-    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize;
+  const imageSize = Math.min(
+    MAX_ICON_SIZE,
+    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize
+  );
+  const isCachedIcon = extname(imageName) === ".cache";
 
   return `${join(
     dirname(imagePath),
-    `${imageSize}x${imageSize}`,
-    `${imageName}${extension}`
+    isCachedIcon
+      ? ""
+      : `${ICON_RES_MAP[imageSize] || imageSize}x${
+          ICON_RES_MAP[imageSize] || imageSize
+        }`,
+    `${imageName}${isCachedIcon ? "" : extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
 
@@ -86,16 +114,48 @@ export const imageSrcs = (
   imagePath: string,
   size: number,
   extension: string,
-  failedUrls?: string[]
+  failedUrls = [] as string[]
 ): string => {
-  return [
+  const srcs = [
     imageSrc(imagePath, size, 1, extension),
     imageSrc(imagePath, size, 2, extension),
     imageSrc(imagePath, size, 3, extension),
   ]
     .filter(
-      (url) => !failedUrls?.length || failedUrls?.includes(url.split(" ")[0])
+      (url) => failedUrls.length === 0 || failedUrls.includes(url.split(" ")[0])
     )
+    .join(", ");
+
+  return failedUrls?.includes(srcs) ? "" : srcs;
+};
+
+export const createFallbackSrcSet = (
+  src: string,
+  failedUrls: string[]
+): string => {
+  const failedSizes = new Set(
+    new Set(
+      failedUrls.map((failedUrl) => {
+        const fileName = basename(src, extname(src));
+
+        return Number(
+          failedUrl
+            .replace(`${ICON_PATH}/`, "")
+            .replace(`${USER_ICON_PATH}/`, "")
+            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.webp`, "")
+            .split("x")[0]
+        );
+      })
+    )
+  );
+  const possibleSizes = SUPPORTED_ICON_SIZES.filter(
+    (size) => !failedSizes.has(size)
+  );
+
+  return possibleSizes
+    .map((size) => imageSrc(src, size, 1, extname(src)))
+    .reverse()
     .join(", ");
 };
 
@@ -103,7 +163,7 @@ export const imageToBufferUrl = (
   path: string,
   buffer: Buffer | string
 ): string =>
-  extname(path) === ".svg"
+  getExtension(path) === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/png;base64,${buffer.toString("base64")}`;
 
@@ -113,6 +173,16 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 
     fileReader.readAsDataURL(blob);
     fileReader.onloadend = () => resolve(fileReader.result as string);
+  });
+
+export const hasJxlSupport = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    const JXL = new Image();
+
+    JXL.src = SMALLEST_JXL_FILE;
+
+    JXL.addEventListener("load", () => resolve(true));
+    JXL.addEventListener("error", () => resolve(false));
   });
 
 type JxlDecodeResponse = { data: { imgData: ImageData } };
@@ -141,6 +211,62 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
 };
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
+
+const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {
+  for (let x = 0; x < width; ++x) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+const columnBlank = (
+  imageData: ImageData,
+  width: number,
+  x: number,
+  top: number,
+  bottom: number
+): boolean => {
+  for (let y = top; y < bottom; ++y) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+export const trimCanvasToTopLeft = (
+  canvas: HTMLCanvasElement
+): HTMLCanvasElement => {
+  const ctx = canvas.getContext("2d", {
+    alpha: true,
+    desynchronized: true,
+    willReadFrequently: true,
+  });
+
+  if (!ctx) return canvas;
+
+  const { height, ownerDocument, width } = canvas;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const { height: bottom, width: right } = imageData;
+
+  let top = 0;
+  let left = 0;
+
+  while (top < bottom && rowBlank(imageData, width, top)) ++top;
+  while (left < right && columnBlank(imageData, width, left, top, bottom)) {
+    ++left;
+  }
+
+  const trimmed = ctx.getImageData(left, top, right - left, bottom - top);
+  const copy = ownerDocument.createElement("canvas");
+  const copyCtx = copy.getContext("2d");
+
+  if (!copyCtx) return canvas;
+
+  copy.width = trimmed.width;
+  copy.height = trimmed.height;
+  copyCtx.putImageData(trimmed, 0, 0);
+
+  return copy;
+};
 
 const loadScript = (
   src: string,
@@ -211,7 +337,7 @@ export const loadFiles = async (
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
-        await (extname(file).toLowerCase() === ".css"
+        await (getExtension(file) === ".css"
           ? loadStyle(encodeURI(file))
           : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
@@ -287,7 +413,7 @@ const calcGridDropPosition = (
   };
 };
 
-const updateIconPositionsIfEmpty = (
+export const updateIconPositionsIfEmpty = (
   url: string,
   gridElement: HTMLElement | null,
   iconPositions: IconPositions,
@@ -460,27 +586,53 @@ export const updateIconPositions = (
   }
 };
 
-export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean =>
-  canvas instanceof HTMLCanvasElement &&
-  Boolean(
+export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
+  if (!(canvas instanceof HTMLCanvasElement)) return false;
+
+  const { data: pixels = [] } =
     canvas
-      .getContext("2d", {
-        willReadFrequently: true,
-      })
-      ?.getImageData(0, 0, canvas.width, canvas.height)
-      .data.some((channel) => channel !== 0)
-  );
+      .getContext("2d", { willReadFrequently: true })
+      ?.getImageData(0, 0, canvas.width, canvas.height) || {};
+
+  if (pixels.length === 0) return false;
+
+  const bwPixels: Record<number, number> = { 0: 0, 255: 0 };
+
+  for (const pixel of pixels) {
+    if (pixel !== 0 && pixel !== 255) return true;
+
+    bwPixels[pixel] += 1;
+  }
+
+  const isBlankCanvas =
+    bwPixels[0] === pixels.length ||
+    bwPixels[255] === pixels.length ||
+    (bwPixels[255] + bwPixels[0] === pixels.length &&
+      bwPixels[0] / 3 === bwPixels[255]);
+
+  return !isBlankCanvas;
+};
 
 const bytesInKB = 1024;
 const bytesInMB = 1022976; // 1024 * 999
 const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
-const formatNumber = (number: number): string =>
-  new Intl.NumberFormat("en-US", {
-    maximumSignificantDigits: number < 1 ? 2 : 3,
+const formatNumber = (number: number): string => {
+  const formattedNumber = new Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: number < 1 ? 2 : 4,
     minimumSignificantDigits: number < 1 ? 2 : 3,
   }).format(Number(number.toFixed(4).slice(0, -2)));
+
+  const [integer, decimal] = formattedNumber.split(".");
+
+  if (integer.length === 3) return integer;
+  if (integer.length === 2 && decimal.length === 2) {
+    return `${integer}.${decimal[0]}`;
+  }
+
+  return formattedNumber;
+};
 
 export const getFormattedSize = (size = 0): string => {
   if (size === 1) return "1 byte";
@@ -531,15 +683,37 @@ export const getUrlOrSearch = async (input: string): Promise<string> => {
   }
 };
 
-export const isFirefox = (): boolean =>
-  typeof window !== "undefined" && /firefox/i.test(window.navigator.userAgent);
+let IS_FIREFOX: boolean;
 
-export const isSafari = (): boolean =>
-  typeof window !== "undefined" &&
-  /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+export const isFirefox = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_FIREFOX ?? false) return IS_FIREFOX;
+
+  IS_FIREFOX = /firefox/i.test(window.navigator.userAgent);
+
+  return IS_FIREFOX;
+};
+
+let IS_SAFARI: boolean;
+
+export const isSafari = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_SAFARI ?? false) return IS_SAFARI;
+
+  IS_SAFARI = /^(?:(?!chrome|android).)*safari/i.test(
+    window.navigator.userAgent
+  );
+
+  return IS_SAFARI;
+};
 
 export const haltEvent = (
-  event: Event | React.DragEvent | React.KeyboardEvent | React.MouseEvent
+  event:
+    | Event
+    | React.DragEvent
+    | React.FocusEvent
+    | React.KeyboardEvent
+    | React.MouseEvent
 ): void => {
   try {
     if (event.cancelable) {
@@ -580,7 +754,7 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .map(([className]) => className)
     .join(" ");
 
-export const label = (value: string): HTMLAttributes<HTMLElement> => ({
+export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
   "aria-label": value,
   title: value,
 });
@@ -623,7 +797,7 @@ export const preloadLibs = (libs: string[] = []): void => {
     link.rel = "preload";
     link.href = lib;
 
-    switch (extname(lib).toLowerCase()) {
+    switch (getExtension(lib)) {
       case ".css":
         link.as = "style";
         break;
@@ -663,8 +837,11 @@ export const jsonFetch = async (
   return json || {};
 };
 
-export const isCanvasEmpty = (canvas: HTMLCanvasElement): boolean =>
-  !canvas
-    .getContext("2d")
-    ?.getImageData(0, 0, canvas.width, canvas.height)
-    .data.some(Boolean);
+export const generatePrettyTimestamp = (): string =>
+  new Intl.DateTimeFormat(DEFAULT_LOCALE, TIMESTAMP_DATE_FORMAT)
+    .format(new Date())
+    .replace(/[/:]/g, "-")
+    .replace(",", "");
+
+export const isFileSystemMappingSupported = (): boolean =>
+  typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;

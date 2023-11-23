@@ -1,6 +1,6 @@
-import type { SizeCallback, V86Starter } from "components/apps/V86/types";
-import useWindowSize from "components/system/Window/useWindowSize";
 import { useEffect } from "react";
+import { type SizeCallback, type V86Starter } from "components/apps/V86/types";
+import useWindowSize from "components/system/Window/useWindowSize";
 
 const SET_SCREEN_GFX = "screen-set-size-graphical";
 const SET_SCREEN_TXT = "screen-set-size-text";

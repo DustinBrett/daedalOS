@@ -11,7 +11,9 @@ const toolbar = `
 export const config = {
   base_url: "/Program Files/TinyMCE/",
   branding: false,
+  contextmenu: "",
   draggable_modal: true,
+  help_accessibility: false,
   image_advtab: true,
   plugins,
   promotion: false,

@@ -1,10 +1,13 @@
-import { useCallback, useState } from "react";
-import { clsx } from "utils/functions";
+import { useCallback, useRef, useState } from "react";
+import { PREVENT_SCROLL } from "utils/constants";
+import { clsx, haltEvent } from "utils/functions";
 
 type FocusedEntryProps = {
   className?: string;
   onBlurCapture: React.FocusEventHandler;
+  onFocusCapture: React.FocusEventHandler;
   onMouseDown: React.MouseEventHandler;
+  onMouseUp: React.MouseEventHandler;
 };
 
 type FocusableEntry = (file: string) => FocusedEntryProps;
@@ -44,15 +47,32 @@ const useFocusableEntries = (
       ),
     []
   );
-  const onBlurCapture: React.FocusEventHandler = ({ relatedTarget }) => {
-    if (
-      !(relatedTarget instanceof HTMLElement) ||
-      fileManagerRef.current === relatedTarget ||
-      !fileManagerRef.current?.contains(relatedTarget)
-    ) {
-      blurEntry();
-    }
-  };
+  const focusingRef = useRef(false);
+  const onBlurCapture: React.FocusEventHandler = useCallback(
+    (event) => {
+      const { relatedTarget, target } = event;
+      const isFileManagerFocus = fileManagerRef.current === relatedTarget;
+
+      if (isFileManagerFocus && focusingRef.current) {
+        haltEvent(event);
+        (target as HTMLElement)?.focus(PREVENT_SCROLL);
+      } else if (
+        (!isFileManagerFocus &&
+          !fileManagerRef.current?.contains(relatedTarget)) ||
+        !(relatedTarget instanceof HTMLElement)
+      ) {
+        blurEntry();
+      }
+    },
+    [blurEntry, fileManagerRef]
+  );
+  const onFocusCapture: React.FocusEventHandler = useCallback(() => {
+    focusingRef.current = true;
+    window.requestAnimationFrame(() => {
+      focusingRef.current = false;
+    });
+  }, []);
+  const mouseDownPositionRef = useRef({ x: 0, y: 0 });
   const focusableEntry = (file: string): FocusedEntryProps => {
     const isFocused = focusedEntries.includes(file);
     const isOnlyFocusedEntry =
@@ -61,7 +81,13 @@ const useFocusableEntries = (
       "focus-within": isFocused,
       "only-focused": isOnlyFocusedEntry,
     });
-    const onMouseDown: React.MouseEventHandler = ({ ctrlKey }) => {
+    const onMouseDown: React.MouseEventHandler = ({
+      ctrlKey,
+      pageX,
+      pageY,
+    }) => {
+      mouseDownPositionRef.current = { x: pageX, y: pageY };
+
       if (ctrlKey) {
         if (isFocused) {
           blurEntry(file);
@@ -73,8 +99,35 @@ const useFocusableEntries = (
         focusEntry(file);
       }
     };
+    const onMouseUp: React.MouseEventHandler = ({
+      ctrlKey,
+      pageX,
+      pageY,
+      button,
+    }) => {
+      const { x, y } = mouseDownPositionRef.current;
 
-    return { className, onBlurCapture, onMouseDown };
+      if (
+        !ctrlKey &&
+        !isOnlyFocusedEntry &&
+        button === 0 &&
+        x === pageX &&
+        y === pageY
+      ) {
+        blurEntry();
+        focusEntry(file);
+      }
+
+      mouseDownPositionRef.current = { x: 0, y: 0 };
+    };
+
+    return {
+      className,
+      onBlurCapture,
+      onFocusCapture,
+      onMouseDown,
+      onMouseUp,
+    };
   };
 
   return { blurEntry, focusEntry, focusableEntry, focusedEntries };

@@ -1,4 +1,4 @@
-import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+import { type VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 
 export const config: VantaWavesConfig = {
   camera: {

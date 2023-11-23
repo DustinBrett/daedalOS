@@ -1,7 +1,7 @@
-import { useProcesses } from "contexts/process";
-import type Eruda from "eruda";
-import type { InitOptions } from "eruda";
 import { useEffect } from "react";
+import { type default as Eruda, type InitOptions } from "eruda";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import { useProcesses } from "contexts/process";
 import { loadFiles, viewWidth } from "utils/functions";
 
 declare global {
@@ -23,13 +23,13 @@ const config: InitOptions = {
 const FULL_TOOLBAR_WIDTH = 395;
 const RESOURCES_BUTTON_WIDTH = 74;
 
-const useEruda = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useEruda = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { processes: { [id]: { closing = false, libs = [] } = {} } = {} } =
     useProcesses();
 

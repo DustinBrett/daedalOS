@@ -1,10 +1,10 @@
-import { minMaxSize } from "components/system/Window/functions";
+import { type Props } from "react-rnd";
+import { useLayoutEffect, useState } from "react";
 import useDefaultSize from "components/system/Window/RndWindow/useDefaultSize";
 import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
+import { minMaxSize } from "components/system/Window/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useLayoutEffect, useState } from "react";
-import type { Props } from "react-rnd";
 
 export type Size = NonNullable<Props["size"]>;
 

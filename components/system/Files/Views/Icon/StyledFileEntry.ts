@@ -1,5 +1,5 @@
-import type { StyledFileEntryProps } from "components/system/Files/Views";
 import styled from "styled-components";
+import { type StyledFileEntryProps } from "components/system/Files/Views";
 
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
   display: ${({ $visible }) => ($visible ? "flex" : "none")};
@@ -13,12 +13,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     position: relative;
 
     &::before {
-      bottom: -1px;
       content: "";
-      left: -1px;
+      inset: -1px;
       position: absolute;
-      right: -1px;
-      top: -1px;
     }
   }
 
@@ -36,7 +33,7 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         line-height: 1.2;
         margin: 1px 0;
-        padding: 2px 1px;
+        padding: 2px 0;
         text-shadow: ${({ theme }) => theme.colors.fileEntry.textShadow};
         word-break: break-word;
       }

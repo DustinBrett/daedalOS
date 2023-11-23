@@ -1,5 +1,5 @@
 import { emulatorCores } from "components/apps/Emulator/config";
-import { EDITABLE_IMAGE_FILE_EXTENSIONS } from "utils/constants";
+import { EDITABLE_IMAGE_FILE_EXTENSIONS, TEXT_EDITORS } from "utils/constants";
 
 type Extension = {
   command?: string;
@@ -7,8 +7,6 @@ type Extension = {
   process: string[];
   type?: string;
 };
-
-export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 const types = {
   Application: {
@@ -30,6 +28,11 @@ const types = {
     icon: "emulator",
     process: ["Emulator"],
     type: "Game ROM File",
+  },
+  Font: {
+    icon: "font",
+    process: ["OpenType"],
+    type: "Font File",
   },
   FutureSplash: {
     process: ["Ruffle"],
@@ -64,7 +67,7 @@ const types = {
   },
   Music: {
     icon: "audio",
-    process: ["Webamp"],
+    process: ["Webamp", "VideoPlayer"],
   },
   PdfDocument: {
     icon: "pdf",
@@ -84,6 +87,12 @@ const types = {
   SvgFile: {
     process: ["Photos", ...TEXT_EDITORS],
     type: "Scalable Vector Graphics File",
+  },
+  WasmFile: {
+    command: "wapm",
+    icon: "wapm",
+    process: ["Terminal"],
+    type: "WebAssembly Module File",
   },
   WinampSkin: {
     icon: "audio",
@@ -105,6 +114,7 @@ const types = {
 const extensions: Record<string, Extension> = {
   ".asx": types.AudioPlaylist,
   ".bin": types.DiscImage,
+  ".dsk": types.DiscImage,
   ".exe": types.Application,
   ".htm": types.HtmlDocument,
   ".html": types.HtmlDocument,
@@ -115,6 +125,7 @@ const extensions: Record<string, Extension> = {
   ".m3u8": types.MediaPlaylist,
   ".md": types.Markdown,
   ".mp3": types.Music,
+  ".otf": types.Font,
   ".pdf": types.PdfDocument,
   ".pls": types.AudioPlaylist,
   ".py": types.PythonFile,
@@ -122,7 +133,10 @@ const extensions: Record<string, Extension> = {
   ".spl": types.FutureSplash,
   ".svg": types.SvgFile,
   ".swf": types.ShockwaveFlash,
+  ".ttf": types.Font,
+  ".wasm": types.WasmFile,
   ".whtml": types.WysiwygHtmlDocument,
+  ".woff": types.Font,
   ".wsz": types.WinampSkin,
   ".zip": types.ZipFile,
 };

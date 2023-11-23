@@ -1,7 +1,7 @@
-import type { SortBy } from "components/system/Files/FileManager/useSortBy";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { Position } from "react-rnd";
-import type { ThemeName } from "styles/themes";
+import { type Position } from "react-rnd";
+import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type ThemeName } from "styles/themes";
 
 export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
 
@@ -15,11 +15,13 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
 
-type SortOrder = [string[], SortBy, boolean];
+type SortOrder = [string[], SortBy?, boolean?];
 
 export type SortOrders = Record<string, SortOrder>;
 
 export type ClockSource = "local" | "ntp";
+
+export type RecentFiles = [string, string][];
 
 export type IconPosition = {
   gridColumnStart: number;
@@ -30,7 +32,9 @@ export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
   clockSource: ClockSource;
+  cursor: string;
   iconPositions: IconPositions;
+  recentFiles: RecentFiles;
   runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
@@ -40,14 +44,12 @@ export type SessionData = {
 };
 
 export type SessionContextState = SessionData & {
-  clockSource: ClockSource;
   foregroundId: string;
-  iconPositions: IconPositions;
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
-  runHistory: string[];
   sessionLoaded: boolean;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
+  setCursor: React.Dispatch<React.SetStateAction<string>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;
   setHaltSession: React.Dispatch<React.SetStateAction<boolean>>;
   setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
@@ -61,6 +63,6 @@ export type SessionContextState = SessionData & {
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
-  sortOrders: SortOrders;
   stackOrder: string[];
+  updateRecentFiles: (url: string, pid: string) => void;
 };

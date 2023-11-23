@@ -1,7 +1,7 @@
-import type { ErrorProps } from "next/error";
+import { type ErrorProps } from "next/error";
 
-const Error = ({ statusCode = 0 }: ErrorProps): React.ReactElement => (
+const PageError = ({ statusCode = 0 }: ErrorProps): React.ReactElement => (
   <>Error status code: {statusCode}</>
 );
 
-export default Error;
+export default PageError;

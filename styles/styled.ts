@@ -8,6 +8,8 @@ declare module "styled-components" {
   export interface DefaultTheme {
     colors: typeof colors;
     formats: typeof formats;
+    name: string;
     sizes: typeof sizes;
   }
+  export function useTheme(): DefaultTheme;
 }

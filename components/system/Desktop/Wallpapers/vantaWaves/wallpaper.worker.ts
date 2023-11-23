@@ -1,12 +1,13 @@
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import {
   config,
   disableControls,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
-import type {
-  VantaObject,
-  VantaWaves,
+import {
+  type VantaObject,
+  type VantaWaves,
+  type VantaWavesConfig,
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 
 declare global {
@@ -40,12 +41,19 @@ globalThis.addEventListener(
       if (!canvas || !WAVES) return;
       if (currentEffect) currentEffect.destroy();
 
-      waveEffect = WAVES({
-        ...(offscreenConfig || config),
-        ...disableControls,
-        canvas,
-        devicePixelRatio,
-      });
+      try {
+        waveEffect = WAVES({
+          ...((offscreenConfig || config) as VantaWavesConfig),
+          ...disableControls,
+          canvas,
+          devicePixelRatio,
+        });
+      } catch (error) {
+        globalThis.postMessage({
+          message: (error as Error)?.message,
+          type: "[error]",
+        });
+      }
     }
   },
   { passive: true }

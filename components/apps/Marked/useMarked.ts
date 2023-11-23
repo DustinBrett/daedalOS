@@ -1,8 +1,9 @@
+import { basename } from "path";
+import { useCallback, useEffect } from "react";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { useCallback, useEffect } from "react";
 import { haltEvent, isYouTubeUrl, loadFiles } from "utils/functions";
 
 type MarkedOptions = {
@@ -20,13 +21,13 @@ declare global {
   }
 }
 
-const useMarked = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useMarked = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
   const { prependFileToTitle } = useTitle(id);
   const { open, processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();

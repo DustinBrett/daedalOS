@@ -46,6 +46,8 @@ This project is greatly augmented by code from the open source community. Thank 
 - [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
 - [jxl.js](https://github.com/niutech/jxl.js)
 - [fix-webm-duration](https://github.com/yusitnikov/fix-webm-duration)
+- [UAParser.js](https://github.com/faisalman/ua-parser-js)
+- [Web Stable Diffusion](https://github.com/mlc-ai/web-stable-diffusion)
 
 ## App Libraries
 
@@ -72,13 +74,15 @@ This project is greatly augmented by code from the open source community. Thank 
 - [SheetJS](https://github.com/SheetJS/sheetjs)
 - [Vim.js](https://github.com/coolwanglu/vim.js)
 - [DX-Ball](https://habr.com/en/post/147339/)
-- [Chess](https://sourceforge.net/projects/htmlchess/)
 - [jspaint](https://github.com/1j01/jspaint)
 - [Print.js](https://github.com/crabbly/print.js)
 - [Kiwi IRC](https://github.com/kiwiirc/kiwiirc)
 - [ClassiCube](https://github.com/UnknownShadow200/ClassiCube)
 - [rtf.js](https://github.com/tbluemel/rtf.js)
 - [Quake 3](https://github.com/lrusso/Quake3)
+- [opentype.js](https://github.com/opentypejs/opentype.js)
+- [nostr-tools](https://github.com/nbd-wtf/nostr-tools)
+- [DOMPurify](https://github.com/cure53/DOMPurify)
 
 ## Services
 

@@ -1,20 +1,20 @@
+import { basename, dirname } from "path";
+import { memo, useEffect, useState } from "react";
+import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
 import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
   isPrettyLanguage,
   prettyPrint,
 } from "components/apps/MonacoEditor/language";
-import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
-import type { Model } from "components/apps/MonacoEditor/types";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type Model } from "components/apps/MonacoEditor/types";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, dirname } from "path";
-import { useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import { haltEvent, label } from "utils/functions";
 
-const SaveIcon: FC = () => (
+const SaveIcon = memo(() => (
   <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path
       clipRule="evenodd"
@@ -22,7 +22,7 @@ const SaveIcon: FC = () => (
       fillRule="evenodd"
     />
   </svg>
-);
+));
 
 const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -84,7 +84,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
             <li>Lines {lineCount}</li>
           </ol>
           <ol>
-            <li className="clickable" id="save">
+            <li className="clickable save">
               <Button
                 onClick={async () => {
                   const [saveUrl, saveData] = getSaveFileInfo(url, editor);
@@ -121,7 +121,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                   onClick={() => {
                     try {
                       editor?.focus();
-                      editor?.getAction("editor.action.gotoLine").run();
+                      editor?.getAction("editor.action.gotoLine")?.run();
                     } catch {
                       // Ignore focus issues
                     }

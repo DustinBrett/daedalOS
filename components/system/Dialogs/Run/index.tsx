@@ -1,6 +1,9 @@
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { basename, join } from "path";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { parseCommand } from "components/apps/Terminal/functions";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
-import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
+import StyledButton from "components/system/Dialogs/StyledButton";
 import {
   getProcessByFileExtension,
   getShortcutInfo,
@@ -10,22 +13,21 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, extname, join } from "path";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   DESKTOP_PATH,
   PACKAGE_DATA,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import spawnSheep from "utils/spawnSheep";
 
 const OPEN_ID = "open";
 
-const resourceAliasMap: Record<string, string> = {
+export const resourceAliasMap: Record<string, string> = {
   cmd: "Terminal",
+  code: "MonacoEditor",
   dos: "JSDOS",
   explorer: "FileExplorer",
   monaco: "MonacoEditor",
@@ -46,18 +48,23 @@ const utilCommandMap: Record<string, () => void> = {
   sheep: spawnSheep,
 };
 
-const Run: FC<ComponentProcessProps> = () => {
+const Run: FC<ComponentProcessProps> = ({ id }) => {
   const {
     open,
     closeWithTransition,
     processes: { Run: runProcess } = {},
   } = useProcesses();
   const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
-  const { foregroundId, runHistory, setRunHistory } = useSession();
+  const { foregroundId, runHistory, setRunHistory, updateRecentFiles } =
+    useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const [running, setRunning] = useState(false);
+  const checkIsEmpty: React.KeyboardEventHandler | React.ChangeEventHandler = ({
+    target,
+  }: React.KeyboardEvent | React.ChangeEvent): void =>
+    setIsEmptyInput(!(target as HTMLInputElement)?.value);
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;
@@ -70,7 +77,7 @@ const Run: FC<ComponentProcessProps> = () => {
             ? currentRunHistory
             : [resource, ...currentRunHistory]
         );
-      const [resourcePid, ...resourceUrl] = resource.split(" ");
+      const [resourcePid, ...resourceUrl] = parseCommand(resource);
       let resourcePath = resource;
       let closeOnExecute = true;
       const resourceExists = await exists(resourcePath);
@@ -80,9 +87,13 @@ const Run: FC<ComponentProcessProps> = () => {
           resourceUrl.length > 0 ? resourceUrl.join(" ") : resourcePid;
       }
 
+      const isNostr = resourcePath.startsWith("nostr:");
+
+      if (isNostr) open("Messenger", { url: resourcePath });
+
       const isIpfs = resourcePath.startsWith("ipfs://");
 
-      if (resourceExists || isIpfs || (await exists(resourcePath))) {
+      if (resourceExists || isNostr || isIpfs || (await exists(resourcePath))) {
         if (isIpfs) {
           try {
             const ipfsData = await getIpfsResource(resourcePath);
@@ -117,32 +128,35 @@ const Run: FC<ComponentProcessProps> = () => {
           );
 
           if (pid) {
-            open(pid, {
-              url:
-                pid === "Browser" && isIpfs
-                  ? resourceUrl.join(" ")
-                  : resourcePath,
-            });
+            const openUrl =
+              pid === "Browser" && isIpfs
+                ? resourceUrl.join(" ")
+                : resourcePath;
+
+            open(pid, { url: openUrl });
             addRunHistoryEntry();
+            if (openUrl) updateRecentFiles(openUrl, pid);
           } else {
             notFound(resourcePid);
             closeOnExecute = false;
           }
         } else {
-          const extension = extname(resourcePath);
+          const extension = getExtension(resourcePath);
 
           if (extension === SHORTCUT_EXTENSION) {
             const { pid, url } = getShortcutInfo(await readFile(resourcePath));
 
-            if (pid) open(pid, { url });
-          } else {
-            const basePid = getProcessByFileExtension(extension);
-
-            if (basePid) {
-              open(basePid, {
-                url: basePid === "Browser" && isIpfs ? resource : resourcePath,
-              });
+            if (pid) {
+              open(pid, { url });
+              if (url) updateRecentFiles(url, pid);
             }
+          } else {
+            const basePid = getProcessByFileExtension(extension) || "OpenWith";
+            const openUrl =
+              basePid === "Browser" && isIpfs ? resource : resourcePath;
+
+            open(basePid, { url: openUrl });
+            if (openUrl && basePid) updateRecentFiles(openUrl, basePid);
           }
 
           addRunHistoryEntry();
@@ -170,26 +184,28 @@ const Run: FC<ComponentProcessProps> = () => {
 
       setRunning(false);
 
-      if (closeOnExecute) closeWithTransition("Run");
+      if (closeOnExecute) closeWithTransition(id);
     },
     [
       closeWithTransition,
       createPath,
       exists,
+      id,
       open,
       readFile,
       setRunHistory,
       stat,
       updateFolder,
+      updateRecentFiles,
     ]
   );
 
   useLayoutEffect(() => {
-    if (foregroundId === "Run") {
+    if (foregroundId === id) {
       inputRef.current?.focus(PREVENT_SCROLL);
       if (inputRef.current?.value) inputRef.current?.select();
     }
-  }, [foregroundId]);
+  }, [foregroundId, id]);
 
   useLayoutEffect(() => {
     if (runProcess?.url && inputRef.current) {
@@ -201,7 +217,14 @@ const Run: FC<ComponentProcessProps> = () => {
   }, [runProcess?.url]);
 
   return (
-    <StyledRun {...useFileDrop({ id: "Run" })}>
+    <StyledRun
+      {...useFileDrop({ id })}
+      onContextMenu={(event) => {
+        if (!(event.target instanceof HTMLInputElement)) {
+          haltEvent(event);
+        }
+      }}
+    >
       <figure>
         <img alt="Run" src="/System/Icons/32x32/run.webp" />
         <figcaption>{MESSAGE}</figcaption>
@@ -226,6 +249,9 @@ const Run: FC<ComponentProcessProps> = () => {
                 setIsInputFocused(false);
               }
             }}
+            onChange={
+              checkIsEmpty as React.ChangeEventHandler<HTMLInputElement>
+            }
             onFocusCapture={() => setIsInputFocused(true)}
             onKeyDownCapture={(event) => {
               const { key } = event;
@@ -233,11 +259,11 @@ const Run: FC<ComponentProcessProps> = () => {
               if (key === "Enter") runResource(inputRef.current?.value.trim());
               if (key === "Escape") {
                 haltEvent(event);
-                closeWithTransition("Run");
+                closeWithTransition(id);
               }
             }}
-            onKeyUp={({ target }) =>
-              setIsEmptyInput(!(target as HTMLInputElement)?.value)
+            onKeyUp={
+              checkIsEmpty as React.KeyboardEventHandler<HTMLInputElement>
             }
             spellCheck="false"
             type="text"
@@ -271,7 +297,7 @@ const Run: FC<ComponentProcessProps> = () => {
       </div>
       <nav>
         <StyledButton
-          $active={isInputFocused}
+          className={isInputFocused ? "focus" : ""}
           disabled={isEmptyInput || running}
           onClick={() => runResource(inputRef.current?.value.trim())}
         >
@@ -279,7 +305,7 @@ const Run: FC<ComponentProcessProps> = () => {
         </StyledButton>
         <StyledButton
           disabled={running}
-          onClick={() => closeWithTransition("Run")}
+          onClick={() => closeWithTransition(id)}
         >
           Cancel
         </StyledButton>

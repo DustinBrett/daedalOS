@@ -1,9 +1,10 @@
+import { basename, join } from "path";
+import { useCallback } from "react";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, join } from "path";
-import { useCallback } from "react";
+import { useProcessesRef } from "hooks/useProcessesRef";
 import {
   DESKTOP_PATH,
   FOLDER_BACK_ICON,
@@ -13,16 +14,23 @@ import {
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
 const useFile = (url: string): UseFile => {
-  const { setForegroundId } = useSession();
+  const { setForegroundId, updateRecentFiles } = useSession();
   const { createPath, updateFolder } = useFileSystem();
-  const { minimize, open, processes, url: setUrl } = useProcesses();
+  const { minimize, open, url: setUrl } = useProcesses();
+  const processesRef = useProcessesRef();
 
   return useCallback(
     async (pid: string, icon?: string) => {
-      const { singleton, icon: processIcon } = processDirectory[pid] || {};
-      const activePid = Object.keys(processes).find((id) =>
-        id.startsWith(`${pid}${PROCESS_DELIMITER}`)
-      );
+      const {
+        preferProcessIcon,
+        singleton,
+        icon: processIcon,
+      } = processDirectory[pid] || {};
+      const activePid = singleton
+        ? Object.keys(processesRef.current).find(
+            (id) => id === pid || id.startsWith(`${pid}${PROCESS_DELIMITER}`)
+          )
+        : "";
       let runUrl = url;
 
       if (url.startsWith("ipfs://")) {
@@ -41,26 +49,30 @@ const useFile = (url: string): UseFile => {
         updateFolder(DESKTOP_PATH, basename(runUrl));
       }
 
-      if (singleton && activePid) {
+      if (activePid) {
         setUrl(activePid, runUrl);
-        if (processes[activePid].minimized) minimize(activePid);
+        if (processesRef.current[activePid].minimized) minimize(activePid);
         setForegroundId(activePid);
       } else {
         open(
-          pid,
+          pid || "OpenWith",
           { url: runUrl },
-          singleton || icon === FOLDER_BACK_ICON ? processIcon : icon
+          singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
+            ? processIcon
+            : icon
         );
+        if (runUrl && pid) updateRecentFiles(runUrl, pid);
       }
     },
     [
       createPath,
       minimize,
       open,
-      processes,
+      processesRef,
       setForegroundId,
       setUrl,
       updateFolder,
+      updateRecentFiles,
       url,
     ]
   );

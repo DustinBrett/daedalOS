@@ -1,6 +1,5 @@
-import Menu, { topLeftPosition } from "components/system/Menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
-import dynamic from "next/dynamic";
+import { useTheme } from "styled-components";
+import { type Position } from "react-rnd";
 import {
   useCallback,
   useEffect,
@@ -8,29 +7,27 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Position } from "react-rnd";
-import { useTheme } from "styled-components";
+import Menu, { topLeftPosition } from "components/system/Menu";
+import {
+  Checkmark,
+  ChevronRight,
+  Circle,
+} from "components/system/Menu/MenuIcons";
+import { type MenuItem } from "contexts/menu/useMenuContextState";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import {
+  DIV_BUTTON_PROPS,
+  FOCUSABLE_ELEMENT,
+  PREVENT_SCROLL,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type MenuItemEntryProps = MenuItem & {
   isSubMenu: boolean;
   resetMenu: () => void;
 };
-
-const Checkmark = dynamic(() =>
-  import("components/system/Menu/MenuIcons").then((mod) => mod.Checkmark)
-);
-
-const ChevronRight = dynamic(() =>
-  import("components/system/Menu/MenuIcons").then((mod) => mod.ChevronRight)
-);
-
-const Circle = dynamic(() =>
-  import("components/system/Menu/MenuIcons").then((mod) => mod.Circle)
-);
 
 const MenuItemEntry: FC<MenuItemEntryProps> = ({
   action,
@@ -43,19 +40,42 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   primary,
   resetMenu,
   seperator,
+  SvgIcon,
   toggle,
 }) => {
   const entryRef = useRef<HTMLLIElement | null>(null);
   const [subMenuOffset, setSubMenuOffset] = useState<Position>(topLeftPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const { sizes } = useTheme();
-  const onMouseEnter: React.MouseEventHandler = () => setShowSubMenu(true);
-  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget }) => {
+  const showSubMenuTimerRef = useRef<number>(0);
+  const [mouseOver, setMouseOver] = useState(false);
+  const setDelayedShowSubMenu = useCallback((show: boolean) => {
+    if (showSubMenuTimerRef.current) {
+      window.clearTimeout(showSubMenuTimerRef.current);
+      showSubMenuTimerRef.current = 0;
+    }
+
+    showSubMenuTimerRef.current = window.setTimeout(
+      () => setShowSubMenu(show),
+      TRANSITIONS_IN_MILLISECONDS.MOUSE_IN_OUT
+    );
+  }, []);
+  const onMouseEnter: React.MouseEventHandler = () => {
+    setMouseOver(true);
+    setDelayedShowSubMenu(true);
+  };
+  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget, type }) => {
     if (
       !(relatedTarget instanceof HTMLElement) ||
       !entryRef.current?.contains(relatedTarget)
     ) {
-      setShowSubMenu(false);
+      setMouseOver(false);
+
+      if (type === "mouseleave") {
+        setDelayedShowSubMenu(false);
+      } else {
+        setShowSubMenu(false);
+      }
     }
   };
   const subMenuEvents = menu
@@ -69,7 +89,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     (event) => {
       haltEvent(event);
 
-      if (!menu) {
+      if (menu) {
+        setShowSubMenu(true);
+      } else {
         action?.();
         resetMenu();
       }
@@ -102,7 +124,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
 
       setSubMenuOffset({
         x: width - sizes.contextMenu.subMenuOffset,
-        y: -height - sizes.contextMenu.subMenuOffset,
+        y: 0 - height - sizes.contextMenu.subMenuOffset,
       });
     }
   }, [menu, sizes.contextMenu.subMenuOffset]);
@@ -118,14 +140,24 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <hr />
       ) : (
         <Button
-          as="figure"
-          className={showSubMenu ? "active" : undefined}
-          onClick={triggerAction}
+          aria-label={label}
+          className={showSubMenu && mouseOver ? "active" : undefined}
           onMouseUp={triggerAction}
+          {...DIV_BUTTON_PROPS}
         >
-          {icon && <Icon alt={label} imgSize={16} src={icon} />}
+          {icon &&
+            (/\p{Emoji_Presentation}/u.test(icon) ? (
+              <span>{icon}</span>
+            ) : (
+              <Icon alt={label} imgSize={16} src={icon} />
+            ))}
           {checked && <Checkmark className="left" />}
           {toggle && <Circle className="left" />}
+          {SvgIcon && (
+            <div className="icon">
+              <SvgIcon />
+            </div>
+          )}
           <figcaption className={primary ? "primary" : undefined}>
             {label}
           </figcaption>

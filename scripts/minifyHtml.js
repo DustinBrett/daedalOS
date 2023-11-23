@@ -45,28 +45,28 @@ const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/><\/path>/, "/>"),
   (html) =>
     html.replace(
-      /<script defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
+      /<script crossorigin="" defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
       ""
     ),
   (html) =>
     html.replace(
-      /<script defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_buildManifest.js><\/script>/,
+      /<script crossorigin="" defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_buildManifest.js><\/script>/,
       ""
     ),
   (html) =>
     html.replace(
-      /<script defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_ssgManifest.js><\/script>/,
+      /<script crossorigin="" defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_ssgManifest.js><\/script>/,
       ""
     ),
   (html) =>
     html.replace(
-      /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
-      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
+      /<script crossorigin="" id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
+      `<script crossorigin="" id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
     ),
 ];
 
 readdirSync(OUT_PATH).forEach(async (entry) => {
-  if (extname(entry) === ".html") {
+  if (extname(entry).toLowerCase() === ".html") {
     const fullPath = join(OUT_PATH, entry);
     const html = readFileSync(fullPath);
     let minifiedHtml = await minify(html.toString(), HTML_MINIFIER_CONFIG);

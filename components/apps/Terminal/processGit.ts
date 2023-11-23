@@ -1,15 +1,15 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import { help } from "components/apps/Terminal/functions";
-import type { LocalEcho } from "components/apps/Terminal/types";
-import type index from "isomorphic-git";
-import type {
-  AuthCallback,
-  GitAuth,
-  MessageCallback,
-  ProgressCallback,
-} from "isomorphic-git";
-import type { ParsedArgs } from "minimist";
 import { join } from "path";
+import { type FSModule } from "browserfs/dist/node/core/FS";
+import {
+  type AuthCallback,
+  type GitAuth,
+  type MessageCallback,
+  type ProgressCallback,
+  type default as index,
+} from "isomorphic-git";
+import { type ParsedArgs } from "minimist";
+import { type LocalEcho } from "components/apps/Terminal/types";
+import { help } from "components/apps/Terminal/functions";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 
@@ -66,7 +66,7 @@ const processGit = async (
         events.push(phase);
       }
     };
-    const options = {
+    const options: GitOptions = {
       ...cliArgs,
       corsProxy,
       dir: cd,
@@ -78,8 +78,19 @@ const processGit = async (
     };
 
     if (command === "clone") {
+      if (
+        !options.url &&
+        cliArgs._ &&
+        Array.isArray(cliArgs._) &&
+        cliArgs._.length === 1
+      ) {
+        const [url] = cliArgs._;
+
+        options.url = url;
+      }
+
       const dirName =
-        (cliArgs.url as string)
+        (options.url as string)
           ?.split("/")
           .pop()
           ?.replace(/\.git$/, "") || "";

@@ -1,9 +1,9 @@
-import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
+import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import {
   disableControls,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
-import type { VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
+import { type VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";
 
 const vantaWaves = (

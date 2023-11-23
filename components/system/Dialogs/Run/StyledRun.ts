@@ -1,5 +1,5 @@
-import StyledButton from "components/system/Dialogs/Transfer/StyledButton";
 import styled from "styled-components";
+import StyledButton from "components/system/Dialogs/StyledButton";
 
 const StyledRun = styled.div`
   background-color: #fff;
@@ -58,7 +58,7 @@ const StyledRun = styled.div`
 
         &:disabled {
           border: 1px solid rgb(122, 122, 122);
-          opacity: 1;
+          opacity: 100%;
         }
       }
 

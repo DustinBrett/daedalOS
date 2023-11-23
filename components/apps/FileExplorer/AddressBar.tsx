@@ -1,11 +1,10 @@
+import { basename } from "path";
+import { forwardRef, useEffect, useState } from "react";
 import { Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import type { MutableRefObject } from "react";
-import { forwardRef, useEffect, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { ROOT_NAME } from "utils/constants";
@@ -16,7 +15,8 @@ type AddressBarProps = {
 };
 const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
   ({ id }, ref) => {
-    const addressBarRef = ref as MutableRefObject<HTMLInputElement | null>;
+    const addressBarRef =
+      ref as React.MutableRefObject<HTMLInputElement | null>;
     const {
       url: changeUrl,
       processes: {
@@ -62,7 +62,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           {...useAddressBarContextMenu(url)}
         />
         <Button
-          id="refresh"
+          className="refresh"
           onClick={() => updateFolder(url)}
           {...label(`Refresh "${displayName}" (F5)`)}
         >

@@ -1,6 +1,8 @@
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileEntryIconSize } from "components/system/Files/Views";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
+import {
+  type FileManagerViewNames,
+  FileEntryIconSize,
+} from "components/system/Files/Views";
 import Icon from "styles/common/Icon";
 import {
   FOLDER_BACK_ICON,
@@ -16,7 +18,8 @@ type IconProps = {
 
 type SubIconProps = IconProps & {
   baseIcon: string;
-  index: number;
+  isFirstImage: boolean;
+  totalSubIcons: number;
 };
 
 type SubIconsProps = IconProps & {
@@ -24,7 +27,17 @@ type SubIconsProps = IconProps & {
   subIcons?: string[];
 };
 
-const SubIcon: FC<SubIconProps> = ({ baseIcon, icon, index, name, view }) => {
+const WIDE_IMAGE_TRANSFORM = "matrix(0.5, 0.05, 0, 0.7, 2, 1)";
+const SHORT_IMAGE_TRANSFORM = "matrix(0.4, 0.14, 0, 0.7, -4, 2)";
+
+const SubIcon: FC<SubIconProps> = ({
+  baseIcon,
+  icon,
+  isFirstImage,
+  name,
+  totalSubIcons,
+  view,
+}) => {
   const iconView = useMemo(
     () =>
       FileEntryIconSize[
@@ -35,19 +48,26 @@ const SubIcon: FC<SubIconProps> = ({ baseIcon, icon, index, name, view }) => {
       ],
     [icon, view]
   );
-  const style = useMemo(
-    () =>
-      baseIcon === FOLDER_BACK_ICON && icon !== FOLDER_FRONT_ICON
-        ? {
-            transform: `${
-              index === 0
-                ? "matrix(0, 1.8, 1.8, 0.2, 1.2, 2)"
-                : "matrix(0, 1.8, 1.2, 0.4, -4, 4)"
-            } scaleX(-1) scale(0.4) translateZ(0px)`,
-          }
-        : undefined,
-    [baseIcon, icon, index]
-  );
+  const style = useMemo((): React.CSSProperties | undefined => {
+    if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
+
+    if (baseIcon === FOLDER_BACK_ICON) {
+      const hasMultipleSubIcons = totalSubIcons - 1 > 1;
+      const transform = isFirstImage
+        ? hasMultipleSubIcons
+          ? SHORT_IMAGE_TRANSFORM
+          : WIDE_IMAGE_TRANSFORM
+        : WIDE_IMAGE_TRANSFORM;
+
+      return {
+        objectFit: "cover",
+        transform: `${transform} translateZ(0px)`,
+        zIndex: isFirstImage ? 2 : 1,
+      };
+    }
+
+    return undefined;
+  }, [baseIcon, icon, isFirstImage, totalSubIcons]);
 
   return (
     <Icon
@@ -59,6 +79,8 @@ const SubIcon: FC<SubIconProps> = ({ baseIcon, icon, index, name, view }) => {
     />
   );
 };
+
+const MemoizedSubIcon = memo(SubIcon);
 
 const SubIcons: FC<SubIconsProps> = ({
   icon,
@@ -82,12 +104,13 @@ const SubIcons: FC<SubIconsProps> = ({
   return (
     <>
       {filteredSubIcons.map((entryIcon, subIconIndex) => (
-        <SubIcon
+        <MemoizedSubIcon
           key={entryIcon}
           baseIcon={icon}
           icon={entryIcon}
-          index={subIconIndex}
+          isFirstImage={subIconIndex === 0}
           name={name}
+          totalSubIcons={filteredSubIcons.length}
           view={view}
         />
       ))}
@@ -95,4 +118,4 @@ const SubIcons: FC<SubIconsProps> = ({
   );
 };
 
-export default SubIcons;
+export default memo(SubIcons);

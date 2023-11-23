@@ -2,15 +2,18 @@
   "extends": [
     "airbnb",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:deprecation/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
-    "plugin:jest-dom/recommended",
     "plugin:jsx-a11y/recommended",
+    "plugin:playwright/recommended",
+    "plugin:promise/recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
+    "plugin:regexp/recommended",
     "plugin:sonarjs/recommended",
     "plugin:typescript-sort-keys/recommended",
     "plugin:unicorn/recommended",
@@ -25,10 +28,11 @@
     "@typescript-eslint",
     "import",
     "jest",
-    "jest-dom",
     "prettier",
+    "promise",
     "react",
-    "simple-import-sort",
+    "react-hooks-addons",
+    "regexp",
     "sonarjs",
     "sort-keys-fix",
     "typescript-sort-keys",
@@ -37,11 +41,10 @@
   ],
   "rules": {
     "@next/next/no-img-element": "off",
-    "@typescript-eslint/await-thenable": "error",
-    "@typescript-eslint/consistent-indexed-object-style": "error",
+    "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
       "error",
-      { "prefer": "type-imports" }
+      { "fixStyle": "inline-type-imports", "prefer": "type-imports" }
     ],
     "@typescript-eslint/explicit-function-return-type": [
       "error",
@@ -50,7 +53,10 @@
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/method-signature-style": "error",
+    "@typescript-eslint/no-confusing-void-expression": "off",
+    "@typescript-eslint/no-dynamic-delete": "off",
     "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-invalid-void-type": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-shadow": [
@@ -60,12 +66,8 @@
         "ignoreTypeValueShadow": false
       }
     ],
-    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-    "@typescript-eslint/no-unnecessary-type-assertion": "error",
-    "@typescript-eslint/no-unsafe-argument": "error",
-    "@typescript-eslint/no-unsafe-assignment": "error",
-    "@typescript-eslint/no-unsafe-call": "error",
-    "@typescript-eslint/no-unsafe-member-access": "error",
+    "@typescript-eslint/no-unnecessary-condition": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -73,17 +75,25 @@
         "ignoreRestSiblings": true
       }
     ],
-    "@typescript-eslint/prefer-function-type": "error",
-    "@typescript-eslint/prefer-reduce-type-parameter": "error",
-    "@typescript-eslint/require-await": "error",
-    "@typescript-eslint/sort-type-union-intersection-members": "error",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "camelcase": "off",
+    "class-methods-use-this": "off",
     "curly": "error",
+    "import/consistent-type-specifier-style": ["error", "prefer-inline"],
     "import/extensions": [
       "error",
       "ignorePackages",
       { "ts": "never", "tsx": "never" }
     ],
+    "import/first": "error",
+    "import/newline-after-import": "error",
     "import/no-cycle": "off",
+    "import/no-duplicates": ["error", { "prefer-inline": true }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["*.config.ts", "e2e/**", "__tests__/**"] }
+    ],
+    "import/order": ["error", { "newlines-between": "never" }],
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",
@@ -93,10 +103,12 @@
         }
       }
     ],
+    "jsx-a11y/no-autofocus": "off",
     "no-console": ["error", { "allow": ["info", "error"] }],
     "no-constant-binary-expression": "error",
     "no-implicit-coercion": "error",
     "no-new-wrappers": "error",
+    "no-plusplus": "off",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",
@@ -107,6 +119,14 @@
     "no-undef-init": "error",
     "no-underscore-dangle": "off",
     "no-unsafe-optional-chaining": "error",
+    "playwright/expect-expect": "off",
+    "playwright/no-conditional-in-test": "off",
+    "playwright/no-skipped-test": "off",
+    "promise/always-return": "off",
+    "promise/catch-or-return": "off",
+    "promise/no-nesting": "off",
+    "promise/no-callback-in-promise": "off",
+    "promise/no-promise-in-callback": "off",
     "react/function-component-definition": [
       "error",
       { "namedComponents": "arrow-function" }
@@ -127,8 +147,11 @@
     "react/no-unused-state": "error",
     "react/require-default-props": "off",
     "react/require-optimization": "error",
-    "simple-import-sort/exports": "error",
-    "simple-import-sort/imports": "error",
+    "react-hooks-addons/no-unused-deps": "warn",
+    "regexp/no-unused-capturing-group": "error",
+    "regexp/no-useless-assertions": "error",
+    "regexp/no-useless-flag": "error",
+    "regexp/strict": "error",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/no-nested-template-literals": "off",
     "sort-keys-fix/sort-keys-fix": "error",
@@ -147,8 +170,12 @@
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
     "unicorn/no-await-expression-member": "off",
+    "unicorn/no-unused-properties": "error",
     "unicorn/numeric-separators-style": "off",
+    "unicorn/prefer-at": "off",
     "unicorn/prefer-node-protocol": "off",
+    "unicorn/prefer-string-replace-all": "off",
+    "unicorn/prefer-switch": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/switch-case-braces": ["error", "avoid"],
     "unused-imports/no-unused-imports": "error",
@@ -162,7 +189,9 @@
       }
     ]
   },
+  "reportUnusedDisableDirectives": true,
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.json"]
+    "project": true
   }
 }

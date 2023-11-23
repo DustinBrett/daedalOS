@@ -1,17 +1,5 @@
-import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
-import { autoComplete } from "components/apps/Terminal/functions";
-import type {
-  FitAddon,
-  LocalEcho,
-  OnKeyEvent,
-} from "components/apps/Terminal/types";
-import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
-import extensions from "components/system/Files/FileEntry/extensions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import useResizeObserver from "hooks/useResizeObserver";
 import { extname } from "path";
+import { type IDisposable, type Terminal } from "xterm";
 import {
   useCallback,
   useEffect,
@@ -19,9 +7,22 @@ import {
   useRef,
   useState,
 } from "react";
+import { PROMPT_CHARACTER, config } from "components/apps/Terminal/config";
+import { autoComplete } from "components/apps/Terminal/functions";
+import {
+  type FitAddon,
+  type LocalEcho,
+  type OnKeyEvent,
+} from "components/apps/Terminal/types";
+import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import extensions from "components/system/Files/FileEntry/extensions";
+import { useFileSystem } from "contexts/fileSystem";
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import useResizeObserver from "hooks/useResizeObserver";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent, isFirefox, loadFiles } from "utils/functions";
-import type { IDisposable, Terminal } from "xterm";
+import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
 
 const { alias, author, license, version } = PACKAGE_DATA;
 
@@ -33,22 +34,22 @@ export const displayVersion = (): string => {
   return `${version}${buildId ? `-${buildId}` : ""}`;
 };
 
-const useTerminal = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useTerminal = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     url: setUrl,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
-  const cd = useRef(url || HOME);
   const { readdir } = useFileSystem();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
+  const cd = useRef((!localEcho && url && !extname(url) ? url : "") || HOME);
   const [initialCommand, setInitialCommand] = useState("");
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
@@ -60,10 +61,14 @@ const useTerminal = (
       if (localEcho) {
         localEcho.handleCursorInsert(url.includes(" ") ? `"${url}"` : url);
       } else {
-        const fileExtension = extname(url).toLowerCase();
+        const fileExtension = getExtension(url);
         const { command: extCommand = "" } = extensions[fileExtension] || {};
 
-        if (extCommand) setInitialCommand(`${extCommand} ${url}`);
+        if (extCommand) {
+          setInitialCommand(
+            `${extCommand} ${url.includes(" ") ? `"${url}"` : url}`
+          );
+        }
       }
 
       setUrl(id, "");

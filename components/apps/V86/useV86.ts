@@ -1,24 +1,24 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
   config,
   saveExtension,
 } from "components/apps/V86/config";
-import type { V86ImageConfig } from "components/apps/V86/image";
-import { getImageType } from "components/apps/V86/image";
-import type {
-  NavigatorWithMemory,
-  V86Config,
-  V86Starter,
+import { type V86ImageConfig, getImageType } from "components/apps/V86/image";
+import {
+  type NavigatorWithMemory,
+  type V86Config,
+  type V86Starter,
 } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
-import { fs9pV4ToV3 } from "contexts/fileSystem/functions";
+import { fs9pV4ToV3 } from "contexts/fileSystem/core";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -28,17 +28,22 @@ import {
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   getHtmlToImage,
   loadFiles,
 } from "utils/functions";
 
-const useV86 = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+if (typeof window !== "undefined") {
+  window.DEBUG = false;
+}
+
+const useV86 = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const {
     processes: { [id]: process },
   } = useProcesses();
@@ -108,7 +113,7 @@ const useV86 = (
     if (currentUrl) await closeDiskImage(currentUrl);
 
     const imageContents = url ? await readFile(url) : Buffer.from("");
-    const ext = extname(url).toLowerCase();
+    const ext = getExtension(url);
     const isISO = ext === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
     const v86ImageConfig: V86ImageConfig = {
@@ -188,8 +193,9 @@ const useV86 = (
   useEffect(() => {
     const isActiveInstance = foregroundId === id;
 
-    Object.values(emulator).forEach((emulatorInstance) =>
-      emulatorInstance?.keyboard_set_status(isActiveInstance)
+    Object.values(emulator).forEach(
+      (emulatorInstance) =>
+        emulatorInstance?.keyboard_set_status(isActiveInstance)
     );
   }, [emulator, foregroundId, id]);
 
@@ -199,7 +205,7 @@ const useV86 = (
       loadDiskImage();
     }
 
-    const currentContainerRef = containerRef.current;
+    const currentContainer = containerRef.current;
 
     return () => {
       if (url && closing && !shutdown.current) {
@@ -210,16 +216,18 @@ const useV86 = (
 
             if (emulator[url]?.v86.cpu.devices.vga.graphical_mode) {
               screenshot = (
-                currentContainerRef?.querySelector(
-                  "canvas"
-                ) as HTMLCanvasElement
+                currentContainer?.querySelector("canvas") as HTMLCanvasElement
               )?.toDataURL("image/png");
-            } else if (currentContainerRef instanceof HTMLElement) {
+            } else if (currentContainer instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
-              screenshot = await htmlToImage?.toPng(currentContainerRef, {
-                skipAutoScale: true,
-              });
+              try {
+                screenshot = await htmlToImage?.toPng(currentContainer, {
+                  skipAutoScale: true,
+                });
+              } catch {
+                // Ignore failure to capture
+              }
             }
 
             return screenshot

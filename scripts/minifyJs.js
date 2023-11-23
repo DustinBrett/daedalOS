@@ -8,6 +8,10 @@ const JS_MINIFIER_CONFIG = {
   compress: true,
   ecma: 2021,
   mangle: true,
+  output: {
+    comments: false,
+  },
+  sourceMap: false,
 };
 
 const minifyJsFiles = (path) =>
@@ -18,7 +22,7 @@ const minifyJsFiles = (path) =>
 
       if (stats.isDirectory()) {
         minifyJsFiles(fullPath);
-      } else if (extname(entry) === ".js") {
+      } else if (extname(entry).toLowerCase() === ".js") {
         const js = readFileSync(fullPath);
         const { code: minifiedJs, error } = await minify(
           js.toString(),

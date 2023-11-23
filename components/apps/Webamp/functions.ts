@@ -1,14 +1,15 @@
-import type {
-  ButterChurnPresets,
-  ButterChurnWebampPreset,
-  SkinData,
-  WebampCI,
+import { type Track, type URLTrack } from "webamp";
+import { type Position } from "react-rnd";
+import {
+  type ButterChurnPresets,
+  type ButterChurnWebampPreset,
+  type SkinData,
+  type WebampApiResponse,
+  type WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import type { Position } from "react-rnd";
-import { HOME, MP3_MIME_TYPE } from "utils/constants";
+import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
-import type { Track, URLTrack } from "webamp";
 
 const BROKEN_PRESETS = new Set([
   "Flexi - alien fish pond",
@@ -16,6 +17,22 @@ const BROKEN_PRESETS = new Set([
 ]);
 
 const WEBAMP_SKINS_PATH = `${HOME}/Documents/Winamp Skins`;
+
+const ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM =
+  typeof window !== "undefined" &&
+  ["localhost", PACKAGE_DATA.author.url.replace("https://", "")].includes(
+    window.location.hostname
+  );
+
+const createWebampSkinMuseumQuery = (offset: number): string => `
+  query {
+    skins(filter: APPROVED, first: 1, offset: ${offset}) {
+      nodes {
+        download_url
+      }
+    }
+  }
+`;
 
 export const BASE_WEBAMP_OPTIONS = {
   availableSkins: [
@@ -27,6 +44,43 @@ export const BASE_WEBAMP_OPTIONS = {
       name: "Nucleo NLog v2G",
       url: `${WEBAMP_SKINS_PATH}/Nucleo_NLog_v102.wsz`,
     },
+    ...(ALLOWS_CORS_IN_WINAMP_SKIN_MUSEUM
+      ? [
+          {
+            defaultName: "Random (Winamp Skin Museum)",
+            loading: false,
+            get name(): string {
+              if (this.loading) return this.defaultName;
+
+              this.loading = true;
+
+              fetch("https://api.webamp.org/graphql", {
+                body: JSON.stringify({
+                  query: createWebampSkinMuseumQuery(
+                    Math.floor(Math.random() * 1000)
+                  ),
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              }).then(async (response) => {
+                const { data } = ((await response.json()) ||
+                  {}) as WebampApiResponse;
+
+                this.skinUrl = data?.skins?.nodes?.[0]?.download_url as string;
+                this.loading = false;
+              });
+
+              return this.defaultName;
+            },
+            skinUrl: "",
+            get url(): string {
+              return this.skinUrl || `${WEBAMP_SKINS_PATH}/base-2.91.wsz`;
+            },
+          },
+        ]
+      : []),
     {
       name: "SpyAMP Professional Edition v5",
       url: `${WEBAMP_SKINS_PATH}/SpyAMP_Professional_Edition_v5.wsz`,
@@ -151,8 +205,8 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
         unsubscribe();
 
         webamp.store.subscribe(() => {
-          const webampDesktop = [...document.body.children].find((node) =>
-            node.classList?.contains("webamp-desktop")
+          const webampDesktop = [...document.body.children].find(
+            (node) => node.classList?.contains("webamp-desktop")
           );
 
           if (webampDesktop) {
@@ -199,7 +253,7 @@ export const updateWebampPosition = (
   webamp.store.dispatch({
     positions: {
       main: { x, y },
-      milkdrop: { x: -width, y: -height },
+      milkdrop: { x: 0 - width, y: 0 - height },
       playlist: { x, y: height + y },
     },
     type: "UPDATE_WINDOW_POSITIONS",
@@ -265,20 +319,27 @@ export const createM3uPlaylist = (tracks: URLTrack[]): string => {
   return `${["#EXTM3U", ...m3uPlaylist.filter(Boolean)].join("\n")}\n`;
 };
 
+const MAX_PLAYLIST_ITEMS = 1000;
+
 export const tracksFromPlaylist = async (
   data: string,
   extension: string,
   defaultName?: string
 ): Promise<Track[]> => {
   const { ASX, M3U, PLS } = await import("playlist-parser");
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   const parser: Record<string, typeof ASX | typeof M3U | typeof PLS> = {
     ".asx": ASX,
     ".m3u": M3U,
     ".pls": PLS,
   };
-  const tracks = parser[extension]?.parse(data) ?? [];
+  const tracks =
+    parser[extension]
+      ?.parse(data)
+      .filter(Boolean)
+      .slice(0, MAX_PLAYLIST_ITEMS) ?? [];
 
-  return tracks.map(({ artist = "", file, length = 0, title = "" }) => {
+  return tracks.map(({ artist = "", file = "", length = 0, title = "" }) => {
     const [parsedArtist, parsedTitle] = [artist.trim(), title.trim()];
 
     return {
@@ -298,7 +359,8 @@ type MetadataGetter = () => Promise<Track["metaData"]>;
 type MetadataProvider = (url: string) => MetadataGetter;
 
 const removeCData = (string = ""): string =>
-  string.replace(/<!\[CDATA\[|]]>/g, "");
+  // eslint-disable-next-line unicorn/better-regex
+  string.replace(/<!\[CDATA\[|\]\]>/g, "");
 
 const streamingMetadataProviders: Record<string, MetadataProvider> = {
   "somafm.com": (url: string) => async () => {

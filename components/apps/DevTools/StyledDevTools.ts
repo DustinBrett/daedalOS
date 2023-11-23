@@ -7,7 +7,7 @@ const StyledDevTools = styled.div`
 
     .eruda-dev-tools {
       height: 100% !important;
-      opacity: 1 !important;
+      opacity: 100% !important;
 
       .eruda-nav-bar-container {
         .eruda-nav-bar {

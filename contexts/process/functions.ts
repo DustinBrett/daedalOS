@@ -1,9 +1,9 @@
 import processDirectory from "contexts/process/directory";
-import type {
-  Process,
-  ProcessArguments,
-  ProcessElements,
-  Processes,
+import {
+  type Process,
+  type ProcessArguments,
+  type ProcessElements,
+  type Processes,
 } from "contexts/process/types";
 import { PREVENT_SCROLL, PROCESS_DELIMITER } from "utils/constants";
 import { preloadLibs } from "utils/functions";

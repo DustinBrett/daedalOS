@@ -1,3 +1,4 @@
+import { memo } from "react";
 import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
@@ -20,4 +21,4 @@ const Index = (): React.ReactElement => {
   );
 };
 
-export default Index;
+export default memo(Index);

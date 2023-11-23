@@ -1,8 +1,10 @@
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
-import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
-import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import {
+  type LocaleTimeDate,
+  formatLocaleDateTime,
+} from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
-import type { ClockSource } from "contexts/session/types";
+import { type ClockSource } from "contexts/session/types";
 import formats from "styles/defaultTheme/formats";
 
 const MILLISECONDS_IN_SECOND = 1000;
@@ -60,9 +62,7 @@ const drawClockText = (dateTime: LocaleTimeDate): void => {
 };
 
 const sendTick = (): void => {
-  const now = getNow();
-
-  const dateTime = formatLocaleDateTime(now);
+  const dateTime = formatLocaleDateTime(getNow());
 
   globalThis.postMessage(dateTime);
   if (offscreenCanvas) drawClockText(dateTime);
@@ -92,7 +92,14 @@ globalThis.addEventListener(
 
       if (canvas instanceof OffscreenCanvas) {
         offscreenCanvas = canvas;
-      } else if (clockSize && devicePixelRatio) {
+      }
+
+      if (
+        offscreenCanvas instanceof OffscreenCanvas &&
+        clockSize?.height &&
+        clockSize?.width &&
+        devicePixelRatio
+      ) {
         offscreenCanvas.height = Math.floor(
           Number(clockSize.height) * devicePixelRatio
         );

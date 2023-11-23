@@ -1,6 +1,9 @@
+import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import { commands as gitCommands } from "components/apps/Terminal/processGit";
-import type { LocalEcho } from "components/apps/Terminal/types";
+import { type LocalEcho } from "components/apps/Terminal/types";
+import { resourceAliasMap } from "components/system/Dialogs/Run";
 import processDirectory from "contexts/process/directory";
+import { ONE_DAY_IN_MILLISECONDS } from "utils/constants";
 
 export const help = (
   localEcho: LocalEcho,
@@ -40,10 +43,13 @@ export const commands: Record<string, string> = {
   help: "Provides Help information for commands.",
   history: "Displays command history list.",
   imagemagick: "Convert an image file to another format.",
+  ipconfig: "Displays current IP.",
   license: "Displays license.",
   md: "Creates a directory.",
   mount: "Mounts a local file system directory.",
   move: "Moves file or directory.",
+  neofetch: "Displays system information.",
+  nslookup: "Displays DNS information about a domain.",
   pwd: "Prints the working directory.",
   python: "Run code through Python interpreter.",
   rd: "Removes a directory.",
@@ -74,8 +80,10 @@ export const aliases: Record<string, string[]> = {
   exit: ["quit"],
   find: ["search"],
   git: ["isogit"],
+  ipconfig: ["ifconfig", "whatsmyip"],
   md: ["mkdir"],
   move: ["mv"],
+  neofetch: ["systeminfo"],
   python: ["py"],
   rd: ["rmdir"],
   ren: ["rename"],
@@ -106,6 +114,8 @@ const directoryCommands = new Set([
   "mkdir",
   "move",
   "mv",
+  "py",
+  "python",
   "rd",
   "ren",
   "rename",
@@ -129,7 +139,9 @@ export const autoComplete = (
   handlers.forEach(({ fn }) => localEcho.removeAutocompleteHandler(fn));
 
   localEcho.addAutocompleteHandler((index: number, [command]): string[] => {
-    if (index === 0) return Object.keys(commands);
+    if (index === 0) {
+      return [...Object.keys(commands), ...directory];
+    }
     if (index === 1) {
       const lowerCommand = command.toLowerCase();
 
@@ -140,7 +152,12 @@ export const autoComplete = (
         pid.toLowerCase()
       );
 
-      if (lowerProcesses.includes(lowerCommand)) return directory;
+      if (
+        lowerProcesses.includes(lowerCommand) ||
+        Object.keys(resourceAliasMap).includes(lowerCommand)
+      ) {
+        return directory;
+      }
     }
 
     return [];
@@ -208,11 +225,49 @@ export const printTable = (
 };
 
 export const getFreeSpace = async (): Promise<string> => {
-  if (!navigator?.storage?.estimate) return "";
-
-  const { quota = 0, usage = 0 } = (await navigator.storage.estimate()) || {};
+  const { quota = 0, usage = 0 } =
+    (await navigator.storage?.estimate?.()) || {};
 
   if (quota === 0) return "";
 
   return `  ${(quota - usage).toLocaleString()} bytes`;
 };
+
+export const getUptime = (isShort = false): string => {
+  if (window.performance) {
+    const [{ duration }] = window.performance.getEntriesByType("navigation");
+    const bootTime = window.performance.timeOrigin + duration;
+    const uptimeInMilliseconds = Math.ceil(Date.now() - bootTime);
+    const days = Math.floor(uptimeInMilliseconds / ONE_DAY_IN_MILLISECONDS);
+    const uptime = new Date(uptimeInMilliseconds);
+    const hours = uptime.getUTCHours();
+    const mins = uptime.getUTCMinutes();
+    const secs = uptime.getUTCSeconds();
+
+    return [
+      ...(days ? [`${days} day${days === 1 ? "" : "s"}`] : []),
+      ...(hours ? [`${hours} hour${hours === 1 ? "" : "s"}`] : []),
+      ...(mins
+        ? [`${mins} ${isShort ? "min" : "minute"}${mins === 1 ? "" : "s"}`]
+        : []),
+      ...(secs
+        ? [`${secs} ${isShort ? "sec" : "second"}${secs === 1 ? "" : "s"}`]
+        : []),
+    ].join(", ");
+  }
+
+  return "Unknown";
+};
+
+export const printColor = (
+  colorIndex: number | string,
+  colorOutput?: string[]
+): string =>
+  `${rgbAnsi(...colorAttributes[colorIndex].rgb, true)}${rgbAnsi(
+    ...colorAttributes[colorIndex].rgb
+  )}|||${
+    colorOutput?.join("") ||
+    `${rgbAnsi(...colorAttributes[0].rgb, true)}${rgbAnsi(
+      ...colorAttributes[7].rgb
+    )}`
+  }\u001B[0m`;

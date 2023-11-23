@@ -1,3 +1,5 @@
+import { basename, dirname } from "path";
+import { forwardRef, useMemo } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -11,11 +13,9 @@ import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitleba
 import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
 import useHistory from "hooks/useHistory";
-import { basename, dirname } from "path";
-import { forwardRef, useMemo } from "react";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
-import { label } from "utils/functions";
+import { haltEvent, label } from "utils/functions";
 
 type NavigationProps = {
   hideSearch: boolean;
@@ -37,18 +37,24 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
     const { onContextMenuCapture } = useMemo(
       () =>
         contextMenu?.(() =>
-          history.map((historyUrl, index) => ({
-            action: () => moveHistory(index - position),
-            checked: position === index,
-            label: basename(historyUrl) || ROOT_NAME,
-            primary: position === index,
-          }))
+          history
+            .map((historyUrl, index) => ({
+              action: () => moveHistory(index - position),
+              checked: position === index,
+              label: basename(historyUrl) || ROOT_NAME,
+              primary: position === index,
+            }))
+            .reverse()
         ),
       [contextMenu, history, moveHistory, position]
     );
 
     return (
-      <StyledNavigation {...useTitlebarContextMenu(id)}>
+      <StyledNavigation
+        {...useTitlebarContextMenu(id)}
+        onDragOver={haltEvent}
+        onDrop={haltEvent}
+      >
         <Button
           disabled={!canGoBack}
           onClick={() => moveHistory(-1)}

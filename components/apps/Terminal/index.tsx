@@ -1,7 +1,7 @@
-import AppContainer from "components/apps/AppContainer";
 import StyledTerminal from "components/apps/Terminal/StyledTerminal";
 import useTerminal from "components/apps/Terminal/useTerminal";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import AppContainer from "components/system/Apps/AppContainer";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const Terminal: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer

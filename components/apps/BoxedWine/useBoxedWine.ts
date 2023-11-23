@@ -1,10 +1,14 @@
+import { basename } from "path";
+import { useCallback, useEffect, useRef } from "react";
+import { type Unzipped } from "fflate";
 import { getConfig } from "components/apps/BoxedWine/config";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { isCanvasDrawn, loadFiles } from "utils/functions";
+import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
   interface Window {
@@ -17,9 +21,8 @@ declare global {
   }
 }
 
-const getExeName = async (zipData: Buffer): Promise<string | undefined> => {
-  const { unzip } = await import("utils/zipFunctions");
-  const fileList = Object.entries(await unzip(zipData));
+const getExeName = (files: Unzipped): string | undefined => {
+  const fileList = Object.entries(files);
   const [[fileName] = []] = fileList
     .filter(([name]) => name.toLowerCase().endsWith(".exe"))
     .sort(([, aFile], [, bFile]) => bFile.length - aFile.length);
@@ -27,30 +30,39 @@ const getExeName = async (zipData: Buffer): Promise<string | undefined> => {
   return fileName;
 };
 
-const useBoxedWine = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useBoxedWine = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { appendFileToTitle } = useTitle(id);
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const { readFile } = useFileSystem();
+  const mountEmFs = useEmscriptenMount();
   const loadedUrl = useRef<string>();
   const blankCanvasCheckerTimer = useRef<number | undefined>();
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
     let appPayload = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const isExecutable = extension === ".exe";
     const { zipAsync } = await import("utils/zipFunctions");
-    const appName =
-      isExecutable || !url
-        ? basename(url, extension)
-        : await getExeName(appPayload);
+    let appName = basename(url, extension);
+    const zippedPayload = async (): Promise<Buffer> =>
+      Buffer.from(await zipAsync({ [basename(url)]: appPayload }));
 
     if (isExecutable) {
-      appPayload = Buffer.from(await zipAsync({ [basename(url)]: appPayload }));
+      appPayload = await zippedPayload();
+    } else if (url) {
+      const { unzip } = await import("utils/zipFunctions");
+
+      try {
+        appName = getExeName(await unzip(appPayload)) || "";
+      } catch {
+        appPayload = await zippedPayload();
+        appName = "";
+      }
     }
 
     dynamicConfig = {
@@ -92,15 +104,26 @@ const useBoxedWine = (
     loadFiles(libs).then(() => {
       if (url) appendFileToTitle(appName || basename(url));
       try {
-        window.BoxedWineShell(() => setLoading(false));
+        window.BoxedWineShell(() => {
+          setLoading(false);
+          mountEmFs(window.FS as EmscriptenFS, "BoxedWine");
+        });
       } catch {
         // Ignore BoxedWine errors
       }
     });
-  }, [appendFileToTitle, containerRef, libs, readFile, setLoading, url]);
+  }, [
+    appendFileToTitle,
+    containerRef,
+    libs,
+    mountEmFs,
+    readFile,
+    setLoading,
+    url,
+  ]);
 
   useEffect(() => {
-    if (loadedUrl.current !== url) {
+    if (loadedUrl.current !== url && (url || !loadedUrl.current)) {
       loadedUrl.current = url;
       loadEmulator();
     }

@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 const StyledFileEntry = styled.li`
+  display: flex;
+  flex-direction: column;
+
   figure {
     border: 1px solid transparent;
     display: flex;
@@ -28,7 +31,7 @@ const StyledFileEntry = styled.li`
     &:active {
       figcaption {
         letter-spacing: -0.15px;
-        opacity: 0.9;
+        opacity: 90%;
       }
 
       picture {

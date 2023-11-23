@@ -1,5 +1,5 @@
-import type { config } from "components/apps/V86/config";
-import type { V86ImageConfig } from "components/apps/V86/image";
+import { type config } from "components/apps/V86/config";
+import { type V86ImageConfig } from "components/apps/V86/image";
 
 export type SizeCallback = (dimensions: number[]) => void;
 

@@ -1,5 +1,4 @@
-import type { DefaultTheme } from "styled-components";
-import styled from "styled-components";
+import styled, { type DefaultTheme } from "styled-components";
 
 type StyledTitlebarProps = {
   $foreground: boolean;
@@ -25,7 +24,8 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
   top: 0;
   z-index: 2;
 
-  h1 {
+  > button {
+    align-items: center;
     color: ${({ $foreground, theme }) =>
       $foreground
         ? theme.colors.titleBar.text
@@ -41,6 +41,7 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
       display: flex;
       margin-left: 8px;
       min-width: inherit;
+      pointer-events: none;
       position: relative;
       top: -1px;
 
@@ -48,6 +49,11 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
         height: ${({ theme }) => theme.sizes.titleBar.iconSize};
         margin-right: ${({ theme }) => theme.sizes.titleBar.iconMarginRight};
         width: ${({ theme }) => theme.sizes.titleBar.iconSize};
+      }
+
+      img,
+      picture {
+        pointer-events: all;
       }
 
       figcaption {

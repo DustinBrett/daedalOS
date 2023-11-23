@@ -22,11 +22,14 @@ const colors = {
   highlightBackground: "hsla(207, 100%, 72%, 20%)",
   progress: "hsla(113, 78%, 56%, 90%)",
   progressBackground: "hsla(104, 22%, 45%, 70%)",
-  startButton: "#FFF",
+  progressBarRgb: "rgb(6, 176, 37)",
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",
     activeForeground: "hsla(0, 0%, 40%, 70%)",
     background: "hsla(0, 0%, 10%, 70%)",
+    button: {
+      color: "#FFF",
+    },
     foreground: "hsla(0, 0%, 35%, 70%)",
     foregroundHover: "hsla(0, 0%, 45%, 70%)",
     foregroundProgress: "hsla(104, 22%, 45%, 30%)",

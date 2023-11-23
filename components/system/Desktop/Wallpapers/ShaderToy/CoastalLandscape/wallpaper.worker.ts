@@ -1,5 +1,5 @@
 import { libs } from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
@@ -25,7 +25,14 @@ globalThis.addEventListener(
 
       globalThis.devicePixelRatio = devicePixelRatio;
 
-      globalThis.effectInit(canvas);
+      try {
+        globalThis.effectInit(canvas);
+      } catch (error) {
+        globalThis.postMessage({
+          message: (error as Error)?.message,
+          type: "[error]",
+        });
+      }
     }
   },
   { passive: true }

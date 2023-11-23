@@ -1,4 +1,4 @@
-import type { TinyMCE } from "tinymce";
+import { type TinyMCE } from "tinymce";
 
 declare global {
   interface Window {

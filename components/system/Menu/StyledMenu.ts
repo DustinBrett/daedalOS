@@ -14,7 +14,8 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
 }))<StyledMenuProps>`
   background-color: rgb(43, 43, 43);
   border: 1px solid rgb(160, 160, 160);
-  box-shadow: 1px 1px 1px hsla(0, 0%, 20%, 70%),
+  box-shadow:
+    1px 1px 1px hsla(0, 0%, 20%, 70%),
     2px 2px 2px hsla(0, 0%, 10%, 70%);
   color: rgb(255, 255, 255);
   contain: layout;
@@ -22,7 +23,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
   max-height: fit-content;
   max-width: fit-content;
   padding: 4px 2px;
-  position: absolute;
+  position: fixed;
   width: max-content;
   z-index: ${({ $isSubMenu }) => $isSubMenu && 1};
 
@@ -38,7 +39,7 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
       margin: 3px 8px;
     }
 
-    figure {
+    li > div {
       display: flex;
       padding: 3px 0;
 
@@ -68,6 +69,10 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         margin: 0 -24px 0 8px;
       }
 
+      span {
+        margin: -1px -24px 0 8px;
+      }
+
       svg {
         fill: #fff;
         height: 13px;
@@ -82,6 +87,12 @@ const StyledMenu = styled(motion.nav).attrs<StyledMenuProps>(({ $x, $y }) => ({
         &.right {
           right: 8px;
         }
+      }
+
+      .icon > svg {
+        height: 15px;
+        left: 10px;
+        width: 15px;
       }
     }
   }

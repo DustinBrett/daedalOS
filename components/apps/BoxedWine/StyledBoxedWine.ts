@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
-import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledBoxedWine = styled.div`
   canvas[style*="cursor: none;"] {
@@ -13,16 +12,14 @@ const StyledBoxedWine = styled.div`
   }
 
   ol {
-    ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
-
+    ${ScrollBars()};
     background-color: rgb(32, 33, 36);
     color: rgb(232, 234, 237);
     font-family: "Lucida Grande", sans-serif, monospace;
     font-size: 13px;
     height: 100%;
     line-height: 19px;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden scroll;
     width: 100%;
 
     li {

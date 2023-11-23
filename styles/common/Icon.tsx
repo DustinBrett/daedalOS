@@ -1,7 +1,16 @@
 import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { ICON_CACHE, YT_ICON_CACHE } from "utils/constants";
-import { cleanUpBufferUrl, imageSrc, imageSrcs } from "utils/functions";
+import {
+  ICON_CACHE,
+  SUPPORTED_ICON_PIXEL_RATIOS,
+  YT_ICON_CACHE,
+} from "utils/constants";
+import {
+  cleanUpBufferUrl,
+  createFallbackSrcSet,
+  imageSrc,
+  imageSrcs,
+} from "utils/functions";
 
 export type IconProps = {
   $eager?: boolean;
@@ -12,35 +21,33 @@ export type IconProps = {
 
 type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
   $height: number;
+  $loaded: boolean;
   $offset: number | string;
   $width: number;
 };
 
-const StyledIcon = styled.img
-  .withConfig({
-    shouldForwardProp: (prop, defaultValidatorFn) =>
-      ["fetchpriority"].includes(prop) || defaultValidatorFn(prop),
-  })
-  .attrs<StyledIconProps>(({ $eager = false, $height, $width }) => ({
+const StyledIcon = styled.img.attrs<StyledIconProps>(
+  ({ $eager = false, $height, $width }) => ({
     decoding: "async",
     draggable: false,
     fetchpriority: $eager ? "high" : undefined,
     height: $height,
     loading: $eager ? "eager" : "lazy",
     width: $width,
-  }))<StyledIconProps>`
+  })
+)<StyledIconProps>`
   aspect-ratio: 1;
-  left: ${({ $offset }) => $offset};
+  left: ${({ $offset }) => $offset || undefined};
   max-height: ${({ $height }) => $height}px;
   max-width: ${({ $width }) => $width}px;
   min-height: ${({ $height }) => $height}px;
   min-width: ${({ $width }) => $width}px;
   object-fit: contain;
-  opacity: ${({ $moving }) => ($moving ? 0.5 : 1)};
-  top: ${({ $offset }) => $offset};
+  opacity: ${({ $moving }) => ($moving ? "50%" : "100%")};
+  pointer-events: none;
+  top: ${({ $offset }) => $offset || undefined};
+  visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
-
-const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 
 const Icon = forwardRef<
   HTMLImageElement,
@@ -48,10 +55,6 @@ const Icon = forwardRef<
 >((props, ref) => {
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
-  const style = useMemo<React.CSSProperties>(
-    () => ({ visibility: loaded ? "visible" : "hidden" }),
-    [loaded]
-  );
   const isStaticIcon =
     !src ||
     src.startsWith("blob:") ||
@@ -83,24 +86,33 @@ const Icon = forwardRef<
   const RenderedIcon = (
     <StyledIcon
       ref={ref}
+      $loaded={loaded}
       onError={({ target }) => {
-        const { currentSrc = "" } = (target || {}) as HTMLImageElement;
+        const { currentSrc = "" } = (target as HTMLImageElement) || {};
 
-        if (currentSrc && !failedUrls.includes(currentSrc)) {
+        try {
           const { pathname } = new URL(currentSrc);
 
-          setFailedUrls((currentFailedUrls) => [
-            ...currentFailedUrls,
-            pathname,
-          ]);
+          if (pathname && !failedUrls.includes(pathname)) {
+            setFailedUrls((currentFailedUrls) => [
+              ...currentFailedUrls,
+              pathname,
+            ]);
+          }
+        } catch {
+          // Ignore failure to log failed url
         }
       }}
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
       srcSet={
-        isStaticIcon ? undefined : imageSrcs(src, imgSize, ".png", failedUrls)
+        isStaticIcon
+          ? undefined
+          : imageSrcs(src, imgSize, ".png", failedUrls) ||
+            (failedUrls.length === 0
+              ? ""
+              : createFallbackSrcSet(src, failedUrls))
       }
-      style={style}
       {...componentProps}
       {...dimensionProps}
     />
@@ -109,7 +121,7 @@ const Icon = forwardRef<
   return (
     <picture>
       {!isStaticIcon &&
-        SUPPORTED_PIXEL_RATIOS.map((ratio) => {
+        SUPPORTED_ICON_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, imgSize, ratio, ".webp");
           const mediaRatio = ratio - 0.99;
 

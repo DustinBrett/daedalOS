@@ -1,14 +1,16 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type DosInstance } from "emulators-ui/dist/types/js-dos";
 import {
   CAPTURED_KEYS,
   dosOptions,
   pathPrefix,
 } from "components/apps/JSDOS/config";
 import useDosCI from "components/apps/JSDOS/useDosCI";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
@@ -16,15 +18,16 @@ const captureKeys = (event: KeyboardEvent): void => {
   if (CAPTURED_KEYS.has(event.key)) event.preventDefault();
 };
 
-const useJSDOS = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  loading: boolean
-): void => {
+const useJSDOS = ({
+  containerRef,
+  id,
+  loading,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { updateWindowSize } = useWindowSize(id);
   const [dosInstance, setDosInstance] = useState<DosInstance>();
+  const mountEmFs = useEmscriptenMount();
   const loadingInstanceRef = useRef(false);
   const { foregroundId } = useSession();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
@@ -96,11 +99,12 @@ const useJSDOS = (
           updateWindowSize(height, width);
         }
       });
-      events.onExit(() =>
-        window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
+      events.onExit(
+        () => window.SimpleKeyboardInstances?.emulatorKeyboard?.destroy()
       );
 
       setLoading(false);
+      mountEmFs(window.JSDOS_FS, "JS-DOS");
     }
   }, [
     closeWithTransition,
@@ -109,6 +113,7 @@ const useJSDOS = (
     dosInstance?.layers,
     id,
     loading,
+    mountEmFs,
     setLoading,
     updateWindowSize,
   ]);

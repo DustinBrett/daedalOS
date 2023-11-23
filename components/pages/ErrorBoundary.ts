@@ -1,4 +1,3 @@
-import type React from "react";
 import { Component } from "react";
 
 type ErrorBoundaryProps = {

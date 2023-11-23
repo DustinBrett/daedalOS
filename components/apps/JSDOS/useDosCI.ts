@@ -1,3 +1,7 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useState } from "react";
+import { type DosInstance } from "emulators-ui/dist/types/js-dos";
+import { type CommandInterface } from "emulators";
 import {
   globals,
   saveExtension,
@@ -6,10 +10,6 @@ import {
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type { CommandInterface } from "emulators";
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -19,6 +19,7 @@ import {
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   imgDataToBuffer,
 } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
@@ -104,17 +105,26 @@ const useDosCI = (
     if (currentUrl) closeBundle(currentUrl);
 
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
-    const extension = extname(url).toLowerCase();
+    const extension = getExtension(url);
     const { zipAsync } = await import("utils/zipFunctions");
+    const zippedPayload = async (buffer: Buffer): Promise<Buffer> =>
+      Buffer.from(await zipAsync({ [basename(url)]: buffer }));
+    const zipBufferToUrl = async (buffer: Buffer): Promise<string> =>
+      bufferToUrl(await addJsDosConfig(buffer, readFile));
     const zipBuffer =
-      extension === ".exe"
-        ? Buffer.from(await zipAsync({ [basename(url)]: urlBuffer }))
-        : urlBuffer;
-    const bundleURL = bufferToUrl(
-      extension === ".jsdos"
-        ? zipBuffer
-        : await addJsDosConfig(zipBuffer, readFile)
-    );
+      extension === ".exe" ? await zippedPayload(urlBuffer) : urlBuffer;
+    let bundleURL: string;
+
+    if (extension === ".jsdos") {
+      bundleURL = bufferToUrl(zipBuffer);
+    } else {
+      try {
+        bundleURL = await zipBufferToUrl(zipBuffer);
+      } catch {
+        bundleURL = await zipBufferToUrl(await zippedPayload(urlBuffer));
+      }
+    }
+
     const savePath = join(SAVE_PATH, `${basename(url)}${saveExtension}`);
     const stateUrl = (await exists(savePath))
       ? bufferToUrl(await readFile(savePath))

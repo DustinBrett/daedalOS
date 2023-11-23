@@ -1,25 +1,41 @@
+import { basename, dirname, extname, isAbsolute, join } from "path";
+import { type Terminal } from "xterm";
+import { useTheme } from "styled-components";
+import { useCallback, useEffect, useRef } from "react";
+import type UAParser from "ua-parser-js";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
+import {
+  BACKUP_NAME_SERVER,
+  PI_ASCII,
+  PRIMARY_NAME_SERVER,
+  config,
+} from "components/apps/Terminal/config";
 import {
   aliases,
   autoComplete,
   commands,
   getFreeSpace,
+  getUptime,
   help,
   parseCommand,
+  printColor,
   printTable,
   unknownCommand,
 } from "components/apps/Terminal/functions";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import { runPython } from "components/apps/Terminal/python";
-import type {
-  CommandInterpreter,
-  LocalEcho,
+import {
+  type CommandInterpreter,
+  type LocalEcho,
+  type NsEntry,
+  type NsResponse,
 } from "components/apps/Terminal/types";
 import {
   displayLicense,
   displayVersion,
 } from "components/apps/Terminal/useTerminal";
+import { resourceAliasMap } from "components/system/Dialogs/Run";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getModifiedTime,
@@ -30,29 +46,49 @@ import { useFileSystem } from "contexts/fileSystem";
 import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { basename, dirname, extname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useRef } from "react";
+import { useSession } from "contexts/session";
+import { useProcessesRef } from "hooks/useProcessesRef";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
-  isFileSystemSupported,
   MILLISECONDS_IN_SECOND,
-  ONE_DAY_IN_MILLISECONDS,
+  PACKAGE_DATA,
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
-import { getTZOffsetISOString } from "utils/functions";
+import {
+  getExtension,
+  getTZOffsetISOString,
+  isFileSystemMappingSupported,
+  loadFiles,
+} from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
-import type { Terminal } from "xterm";
 
 const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";
 const PATH_NOT_FOUND = "The system cannot find the path specified.";
 const SYNTAX_ERROR = "The syntax of the command is incorrect.";
+
+const { alias } = PACKAGE_DATA;
+
+type WindowPerformance = Performance & {
+  memory: {
+    jsHeapSizeLimit: number;
+    totalJSHeapSize: number;
+  };
+};
+
+type IResultWithGPU = UAParser.IResult & { gpu: UAParser.IDevice };
+
+declare global {
+  interface Window {
+    UAParser: UAParser;
+  }
+}
 
 const useCommandInterpreter = (
   id: string,
@@ -75,12 +111,10 @@ const useCommandInterpreter = (
     stat,
     updateFolder,
   } = useFileSystem();
-  const {
-    closeWithTransition,
-    open,
-    processes,
-    title: changeTitle,
-  } = useProcesses();
+  const { closeWithTransition, open, title: changeTitle } = useProcesses();
+  const { updateRecentFiles } = useSession();
+  const processesRef = useProcessesRef();
+  const { name: themeName } = useTheme();
   const getFullPath = useCallback(
     async (file: string, writePath?: string): Promise<string> => {
       if (!file) return "";
@@ -263,8 +297,7 @@ const useCommandInterpreter = (
           if (commandPath) {
             const fullPath = await getFullPath(commandPath);
 
-            if (await exists(fullPath)) {
-              await deletePath(fullPath);
+            if ((await exists(fullPath)) && (await deletePath(fullPath))) {
               updateFile(fullPath, true);
             }
           }
@@ -492,11 +525,46 @@ const useCommandInterpreter = (
 
           break;
         }
+        case "ifconfig":
+        case "ipconfig":
+        case "whatsmyip": {
+          const cloudFlareIpTraceText =
+            (await (
+              await fetch("https://cloudflare.com/cdn-cgi/trace")
+            ).text()) || "";
+          const { ip = "" } = Object.fromEntries(
+            cloudFlareIpTraceText
+              .trim()
+              .split("\n")
+              .map((entry) => entry.split("=")) || []
+          ) as Record<string, string>;
+          const isValidIp = (possibleIp: string): boolean => {
+            const octets = possibleIp.split(".");
+
+            return (
+              octets.length === 4 &&
+              octets.map(Number).every((octet) => octet > 0 && octet < 256)
+            );
+          };
+
+          localEcho?.println("IP Configuration");
+          localEcho?.println("");
+          localEcho?.println(
+            `   IPv4 Address. . . . . . . . . . . : ${
+              isValidIp(ip) ? ip : "Unknown"
+            }`
+          );
+          break;
+        }
         case "kill":
         case "taskkill": {
-          const [processName] = commandArgs;
+          const [processId] = commandArgs;
+          const processName =
+            Number.isNaN(processId) || processesRef.current[processId]
+              ? processId
+              : Object.keys(processesRef.current)[Number(processId)];
 
-          if (processes[processName]) {
+          if (processesRef.current[processName]) {
             closeWithTransition(processName);
             localEcho?.println(
               `SUCCESS: Sent termination signal to the process "${processName}".`
@@ -525,7 +593,7 @@ const useCommandInterpreter = (
         }
         case "mount":
           if (localEcho) {
-            if (isFileSystemSupported()) {
+            if (isFileSystemMappingSupported()) {
               try {
                 const mappedFolder = await mapFs(cd.current);
 
@@ -566,14 +634,206 @@ const useCommandInterpreter = (
                 );
               }
 
-              await rename(fullSourcePath, fullDestinationPath);
-              updateFile(fullSourcePath, true);
-              updateFile(fullDestinationPath);
+              if (await rename(fullSourcePath, fullDestinationPath)) {
+                updateFile(fullSourcePath, true);
+                updateFile(fullDestinationPath);
+              }
             } else {
               localEcho?.println(SYNTAX_ERROR);
             }
           } else {
             localEcho?.println(FILE_NOT_FILE);
+          }
+          break;
+        }
+        case "neofetch":
+        case "systeminfo": {
+          await loadFiles(["/Program Files/Xterm.js/ua-parser.js"]);
+
+          const {
+            browser,
+            cpu,
+            engine,
+            gpu,
+            os: hostOS,
+          } = (new window.UAParser().getResult() || {}) as IResultWithGPU;
+          const { cols, options } = terminal || {};
+          const userId = `public@${window.location.hostname}`;
+          const terminalFont = (options?.fontFamily || config.fontFamily)
+            ?.split(", ")
+            .find((font) =>
+              document.fonts.check(
+                `${options?.fontSize || config.fontSize || 12}px ${font}`
+              )
+            );
+          const { quota = 0, usage = 0 } =
+            (await navigator.storage?.estimate?.()) || {};
+          const labelColor = 3;
+          const labelText = (text: string): string =>
+            `${rgbAnsi(...colorAttributes[labelColor].rgb)}${text}${
+              colorOutput.current?.[0] || rgbAnsi(...colorAttributes[7].rgb)
+            }`;
+          const output = [
+            userId,
+            Array.from({ length: userId.length }).fill("-").join(""),
+            `OS: ${alias} ${displayVersion()}`,
+          ];
+
+          if (hostOS?.name) {
+            output.push(
+              `Host: ${hostOS.name}${
+                hostOS?.version ? ` ${hostOS.version}` : ""
+              }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`
+            );
+          }
+
+          if (browser?.name) {
+            output.push(
+              `Kernel: ${browser.name}${
+                browser?.version ? ` ${browser.version}` : ""
+              }${engine?.name ? ` (${engine.name})` : ""}`
+            );
+          }
+
+          output.push(
+            `Uptime: ${getUptime(true)}`,
+            `Packages: ${Object.keys(processDirectory).length}`,
+            `Resolution: ${window.screen.width}x${window.screen.height}`,
+            `Theme: ${themeName}`
+          );
+
+          if (terminalFont) {
+            output.push(`Terminal Font: ${terminalFont}`);
+          }
+
+          if (gpu?.vendor) {
+            output.push(
+              `GPU: ${gpu.vendor}${gpu?.model ? ` ${gpu.model}` : ""}`
+            );
+          } else if (gpu?.model) {
+            output.push(`GPU: ${gpu.model}`);
+          }
+
+          if (window.performance && "memory" in window.performance) {
+            output.push(
+              `Memory: ${(
+                (window.performance as WindowPerformance).memory
+                  .totalJSHeapSize /
+                1024 /
+                1024
+              ).toFixed(0)}MB / ${(
+                (window.performance as WindowPerformance).memory
+                  .jsHeapSizeLimit /
+                1024 /
+                1024
+              ).toFixed(0)}MB`
+            );
+          }
+
+          if (quota) {
+            output.push(
+              `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
+                quota /
+                1024 /
+                1024 /
+                1024
+              ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`
+            );
+          }
+
+          const longestLineLength = output.reduce(
+            (max, line) => Math.max(max, line.length),
+            0
+          );
+          const maxCols = cols || config.cols || 70;
+
+          if (localEcho) {
+            const longestLine = PI_ASCII[0].length + longestLineLength;
+            const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
+
+            output.push(
+              "\n",
+              [0, 4, 2, 6, 1, 5, 3, 7]
+                .map((color) => printColor(color, colorOutput.current))
+                .join(""),
+              [8, "C", "A", "E", 9, "D", "B", "F"]
+                .map((color) => printColor(color, colorOutput.current))
+                .join("")
+            );
+            PI_ASCII.forEach((imgLine, lineIndex) => {
+              let outputLine = output[lineIndex] || "";
+
+              if (lineIndex === 0) {
+                const [user, system] = outputLine.split("@");
+
+                outputLine = `${labelText(user)}@${labelText(system)}`;
+              } else {
+                const [label, info] = outputLine.split(":");
+
+                if (info) {
+                  outputLine = `${labelText(label)}:${info}`;
+                }
+              }
+
+              localEcho.println(
+                `${labelText(imgLine)}${
+                  outputLine.padStart(outputLine.length + imgPadding, " ") || ""
+                }`
+              );
+            });
+          }
+          break;
+        }
+        case "nslookup": {
+          const [domainName] = commandArgs;
+
+          if (domainName) {
+            const nsLookup = async (
+              domain: string,
+              server = PRIMARY_NAME_SERVER[0]
+            ): Promise<NsEntry[]> => {
+              const { Answer = [] } = (await (
+                await fetch(`${server}?name=${domain}`, {
+                  headers: { Accept: "application/dns-json" },
+                })
+              ).json()) as NsResponse;
+
+              return Answer;
+            };
+            let answer: NsEntry[] | undefined;
+            let primaryFailed = false;
+
+            try {
+              answer = await nsLookup(domainName);
+            } catch {
+              try {
+                primaryFailed = true;
+                answer = await nsLookup(domainName, BACKUP_NAME_SERVER[0]);
+              } catch {
+                // Ignore failure on backup name server
+              }
+            }
+
+            if (answer) {
+              const [server, address] = primaryFailed
+                ? BACKUP_NAME_SERVER
+                : PRIMARY_NAME_SERVER;
+              const { host } = new URL(server);
+
+              localEcho?.println(`Server:  ${host}`);
+              localEcho?.println(`Address:  ${address}`);
+              localEcho?.println("");
+              localEcho?.println("Non-authoritative answer:");
+              localEcho?.println(`Name:    ${domainName}`);
+              localEcho?.println(
+                `Addresses:  ${answer
+                  .map(({ data }) => data)
+                  .join("\n          ")}`
+              );
+              localEcho?.println("");
+            } else {
+              localEcho?.println("Failed to contact name servers.");
+            }
           }
           break;
         }
@@ -605,10 +865,13 @@ const useCommandInterpreter = (
         case "tasklist":
           printTable(
             [
-              ["PID", 30],
-              ["Title", 25],
+              ["Image Name", 25],
+              ["PID", 8],
+              ["Title", 16],
             ],
-            Object.entries(processes).map(([pid, { title }]) => [pid, title]),
+            Object.entries(processesRef.current).map(
+              ([pid, { title }], index) => [pid, index.toString(), title]
+            ),
             localEcho
           );
           break;
@@ -621,12 +884,13 @@ const useCommandInterpreter = (
             if (await exists(fullSourcePath)) {
               const code = await readFile(fullSourcePath);
 
-              await runPython(code.toString(), localEcho);
+              if (code.length > 0) {
+                await runPython(code.toString(), localEcho);
+              }
             } else {
-              await runPython(
-                command.slice(command.indexOf(" ") + 1),
-                localEcho
-              );
+              const [, code = "version"] = command.split(" ");
+
+              await runPython(code, localEcho);
             }
           }
           break;
@@ -660,33 +924,29 @@ const useCommandInterpreter = (
           break;
         }
         case "uptime":
-          if (window.performance) {
-            const [{ duration }] =
-              window.performance.getEntriesByType("navigation");
-            const bootTime = window.performance.timeOrigin + duration;
-            const uptimeInMilliseconds = Math.ceil(Date.now() - bootTime);
-            const daysOfUptime = Math.floor(
-              uptimeInMilliseconds / ONE_DAY_IN_MILLISECONDS
-            );
-            const displayUptime = new Date(uptimeInMilliseconds)
-              .toISOString()
-              .slice(11, 19);
-
-            localEcho?.println(
-              `Uptime: ${daysOfUptime} days, ${displayUptime}`
-            );
-          } else {
-            localEcho?.println(unknownCommand(baseCommand));
-          }
+          localEcho?.println(`Uptime: ${getUptime()}`);
           break;
         case "ver":
         case "version":
           localEcho?.println(displayVersion());
           break;
         case "wapm":
-        case "wax":
-          if (localEcho) await loadWapm(commandArgs, localEcho);
+        case "wax": {
+          if (!localEcho) break;
+
+          const [file] = commandArgs;
+          const fullSourcePath = await getFullPath(file);
+
+          await loadWapm(
+            commandArgs,
+            localEcho,
+            fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
+              ? await readFile(fullSourcePath)
+              : undefined
+          );
+
           break;
+        }
         case "weather":
         case "wttr": {
           const response = await fetch(
@@ -703,11 +963,7 @@ const useCommandInterpreter = (
           break;
         }
         case "whoami":
-          if (window.navigator.userAgent) {
-            localEcho?.println(window.navigator.userAgent);
-          } else {
-            localEcho?.println(unknownCommand(baseCommand));
-          }
+          localEcho?.println(`${window.location.hostname}\\public`);
           break;
         case "xlsx": {
           const [file, format = "xlsx"] = commandArgs;
@@ -745,41 +1001,59 @@ const useCommandInterpreter = (
         }
         default:
           if (baseCommand) {
-            const pid = Object.keys(processDirectory).find(
-              (process) => process.toLowerCase() === lcBaseCommand
-            );
+            const pid =
+              Object.keys(processDirectory).find(
+                (process) => process.toLowerCase() === lcBaseCommand
+              ) || resourceAliasMap[lcBaseCommand];
 
             if (pid) {
               const [file] = commandArgs;
               const fullPath = await getFullPath(file);
+              const openUrl =
+                file && fullPath && (await exists(fullPath)) ? fullPath : "";
 
-              open(pid, {
-                url:
-                  file && fullPath && (await exists(fullPath)) ? fullPath : "",
-              });
-            } else if (await exists(baseCommand)) {
-              const fileExtension = extname(baseCommand).toLowerCase();
-              const { command: extCommand = "" } =
-                extensions[fileExtension] || {};
-
-              if (extCommand) {
-                await commandInterpreter(`${extCommand} ${baseCommand}`);
-              } else {
-                let basePid = "";
-                let baseUrl = baseCommand;
-
-                if (fileExtension === SHORTCUT_EXTENSION) {
-                  ({ pid: basePid, url: baseUrl } = getShortcutInfo(
-                    await readFile(baseCommand)
-                  ));
-                } else {
-                  basePid = getProcessByFileExtension(fileExtension);
-                }
-
-                if (basePid) open(basePid, { url: baseUrl });
-              }
+              open(pid, { url: openUrl });
+              if (openUrl) updateRecentFiles(openUrl, pid);
             } else {
-              localEcho?.println(unknownCommand(baseCommand));
+              const baseFileExists = await exists(baseCommand);
+
+              if (
+                baseFileExists ||
+                (await exists(join(cd.current, baseCommand)))
+              ) {
+                const fileExtension = getExtension(baseCommand);
+                const { command: extCommand = "" } =
+                  extensions[fileExtension] || {};
+
+                if (extCommand) {
+                  await commandInterpreter(
+                    `${extCommand} ${baseCommand}${
+                      commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
+                    }`
+                  );
+                } else {
+                  const fullFilePath = baseFileExists
+                    ? baseCommand
+                    : join(cd.current, baseCommand);
+                  let basePid = "";
+                  let baseUrl = fullFilePath;
+
+                  if (fileExtension === SHORTCUT_EXTENSION) {
+                    ({ pid: basePid, url: baseUrl } = getShortcutInfo(
+                      await readFile(fullFilePath)
+                    ));
+                  } else {
+                    basePid = getProcessByFileExtension(fileExtension);
+                  }
+
+                  if (basePid) {
+                    open(basePid, { url: baseUrl });
+                    if (baseUrl) updateRecentFiles(baseUrl, basePid);
+                  }
+                }
+              } else {
+                localEcho?.println(unknownCommand(baseCommand));
+              }
             }
           }
       }
@@ -805,15 +1079,17 @@ const useCommandInterpreter = (
       mapFs,
       mkdirRecursive,
       open,
-      processes,
+      processesRef,
       readFile,
       readdir,
       rename,
       rootFs,
       stat,
       terminal,
+      themeName,
       updateFile,
       updateFolder,
+      updateRecentFiles,
     ]
   );
   const commandInterpreterRef = useRef<CommandInterpreter>(commandInterpreter);

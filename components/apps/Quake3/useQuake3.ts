@@ -1,7 +1,11 @@
+import { useTheme } from "styled-components";
+import { useEffect, useRef } from "react";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useEffect } from "react";
-import { useTheme } from "styled-components";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
 declare global {
@@ -13,6 +17,7 @@ declare global {
     };
     ioq3?: {
       callMain: (args: string[]) => void;
+      canvas: HTMLCanvasElement | null;
       elementPointerLock: boolean;
       exit: () => void;
       exitHandler: (error: Error | null) => void;
@@ -22,19 +27,24 @@ declare global {
   }
 }
 
-const useQuake3 = (
-  id: string,
-  _url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+const useQuake3 = ({
+  containerRef,
+  id,
+  setLoading,
+}: ContainerHookProps): void => {
+  const {
+    processes: {
+      [id]: { componentWindow, defaultSize, libs = [], maximized = false },
+    } = {},
+  } = useProcesses();
   const {
     windowStates: { [id]: windowState },
   } = useSession();
   const {
     sizes: { titleBar },
   } = useTheme();
+  const wasMaximized = useRef(false);
+  const mountEmFs = useEmscriptenMount();
   const { size } = windowState || {};
 
   useEffect(() => {
@@ -46,17 +56,46 @@ const useQuake3 = (
       window.ioq3.callMain([]);
 
       setLoading(false);
+      mountEmFs(window.FS as EmscriptenFS, "Quake3");
     });
-  }, [containerRef, libs, setLoading]);
+  }, [containerRef, libs, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (!window.ioq3) return;
 
-    window.ioq3.setCanvasSize(
-      pxToNum(size?.width),
-      pxToNum(size?.height) - titleBar.height
+    setTimeout(
+      () => {
+        wasMaximized.current = maximized;
+
+        const { height, width } =
+          (!maximized && size) ||
+          componentWindow?.getBoundingClientRect() ||
+          {};
+
+        if (!height || !width) return;
+
+        const aspectRatio = defaultSize
+          ? pxToNum(defaultSize.width) / pxToNum(defaultSize.height)
+          : 4 / 3;
+        const numWidth = pxToNum(width);
+        const hasGreaterWidth = numWidth > pxToNum(height) - titleBar.height;
+        const newWidth =
+          maximized && hasGreaterWidth ? numWidth / aspectRatio : numWidth;
+        const newHeight = newWidth / aspectRatio;
+
+        if (newHeight > 0 && newWidth > 0 && window.ioq3?.canvas) {
+          window.ioq3.setCanvasSize(newWidth, newHeight);
+          window.ioq3.canvas.setAttribute(
+            "style",
+            `object-fit: ${hasGreaterWidth ? "contain" : "scale-down"}`
+          );
+        }
+      },
+      maximized || wasMaximized.current
+        ? TRANSITIONS_IN_MILLISECONDS.WINDOW + 10
+        : 0
     );
-  }, [setLoading, size, titleBar.height]);
+  }, [componentWindow, defaultSize, maximized, size, titleBar.height]);
 
   useEffect(
     () => () => {

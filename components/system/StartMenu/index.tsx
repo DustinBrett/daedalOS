@@ -1,15 +1,22 @@
+import { useTheme } from "styled-components";
+import { useCallback, useRef, useState } from "react";
+import { type Variant } from "framer-motion";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
-import StyledStartMenuBackground from "components/system/StartMenu/StyledStartMenuBackground";
-import useStartMenuTransition from "components/system/StartMenu/useStartMenuTransition";
-import type { Variant } from "framer-motion";
-import { useLayoutEffect, useRef, useState } from "react";
+import { updateInputValueOnReactElement } from "components/system/Taskbar/Search/functions";
+import StyledBackground from "components/system/Taskbar/StyledBackground";
 import {
-  DEFAULT_SCROLLBAR_WIDTH,
+  SEARCH_BUTTON_TITLE,
+  START_BUTTON_TITLE,
+  maybeCloseTaskbarMenu,
+} from "components/system/Taskbar/functions";
+import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
+import {
   FOCUSABLE_ELEMENT,
-  HOME,
   PREVENT_SCROLL,
+  START_MENU_PATH,
+  THIN_SCROLLBAR_WIDTH,
 } from "utils/constants";
 
 type StartMenuProps = {
@@ -22,59 +29,79 @@ type StyleVariant = Variant & {
 
 const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   const menuRef = useRef<HTMLElement | null>(null);
+  const {
+    sizes: { startMenu },
+  } = useTheme();
   const [showScrolling, setShowScrolling] = useState(false);
-  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) => {
-    const { width = 0 } = menuRef.current?.getBoundingClientRect() || {};
-
-    setShowScrolling(clientX > width - DEFAULT_SCROLLBAR_WIDTH);
-  };
-  const maybeCloseMenu: React.FocusEventHandler<HTMLElement> = ({
-    relatedTarget,
-  }) => {
-    const focusedElement = relatedTarget as HTMLElement | null;
-    const focusedInsideMenu =
-      focusedElement && menuRef.current?.contains(focusedElement);
-
-    if (!focusedInsideMenu) {
-      const focusedTaskbar = focusedElement === menuRef.current?.nextSibling;
-      const focusedStartButton =
-        focusedElement?.parentElement === menuRef.current?.nextSibling;
-
-      if (!focusedTaskbar && !focusedStartButton) {
-        toggleStartMenu(false);
-      } else {
-        menuRef.current?.focus(PREVENT_SCROLL);
-      }
-    }
-  };
-  const startMenuTransition = useStartMenuTransition();
+  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) =>
+    setShowScrolling(clientX > startMenu.size - THIN_SCROLLBAR_WIDTH);
+  const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
+    element?.focus(PREVENT_SCROLL);
+    menuRef.current = element;
+  }, []);
+  const startMenuTransition = useTaskbarItemTransition(startMenu.maxHeight);
   const { height } =
     (startMenuTransition.variants?.active as StyleVariant) ?? {};
 
-  useLayoutEffect(() => menuRef.current?.focus(PREVENT_SCROLL), []);
-
   return (
     <StyledStartMenu
-      ref={menuRef}
+      ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
-      onBlurCapture={maybeCloseMenu}
+      onBlurCapture={(event) =>
+        maybeCloseTaskbarMenu(
+          event,
+          menuRef.current,
+          toggleStartMenu,
+          undefined,
+          START_BUTTON_TITLE
+        )
+      }
+      onKeyDown={({ key }) => {
+        if (key === "Escape") toggleStartMenu(false);
+        else if (key.length === 1) {
+          toggleStartMenu(false);
+
+          const searchButton = document.querySelector<HTMLDivElement>(
+            `main > nav > div[title='${SEARCH_BUTTON_TITLE}']`
+          );
+
+          if (searchButton) {
+            searchButton.click();
+
+            let tries = 0;
+            const openSearchTimerRef = window.setInterval(() => {
+              const searchInput = document.querySelector<HTMLInputElement>(
+                "main > nav .search > input"
+              );
+
+              if (searchInput) {
+                updateInputValueOnReactElement(searchInput, key);
+              }
+
+              if (searchInput || ++tries > 10) {
+                window.clearInterval(openSearchTimerRef);
+              }
+            }, 50);
+          }
+        }
+      }}
       onMouseMove={revealScrolling}
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledStartMenuBackground $height={height} />
+      <StyledBackground $height={height} />
       <Sidebar height={height} />
       <FileManager
-        url={`${HOME}/Start Menu`}
+        url={START_MENU_PATH}
         view="list"
         hideLoading
         hideShortcutIcons
+        isStartMenu
         loadIconsImmediately
         preloadShortcuts
         readOnly
         skipFsWatcher
         skipSorting
-        useNewFolderIcon
       />
     </StyledStartMenu>
   );

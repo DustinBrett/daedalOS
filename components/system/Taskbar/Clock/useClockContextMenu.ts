@@ -1,15 +1,19 @@
-import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
-import { useSession } from "contexts/session";
 import { useMemo } from "react";
+import { useMenu } from "contexts/menu";
+import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import { useSession } from "contexts/session";
 
-const useClockContextMenu = (): ContextMenuCapture => {
+const useClockContextMenu = (
+  toggleCalendar: (showCalendar?: boolean) => void
+): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const { clockSource, setClockSource } = useSession();
 
   return useMemo(
     () =>
       contextMenu?.(() => {
+        toggleCalendar(false);
+
         const isLocal = clockSource === "local";
 
         return [
@@ -25,7 +29,7 @@ const useClockContextMenu = (): ContextMenuCapture => {
           },
         ];
       }),
-    [clockSource, contextMenu, setClockSource]
+    [clockSource, contextMenu, setClockSource, toggleCalendar]
   );
 };
 

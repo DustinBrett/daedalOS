@@ -1,4 +1,4 @@
-import type { Editor } from "tinymce";
+import { type Editor } from "tinymce";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export const draggableEditor = (activeEditor: Editor): boolean =>

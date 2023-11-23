@@ -1,7 +1,6 @@
-import { relocateShadowRoot } from "components/apps/MonacoEditor/functions";
 import styled from "styled-components";
 
-const StyledMonacoEditor = styled.div.attrs({ onBlur: relocateShadowRoot })`
+const StyledMonacoEditor = styled.div`
   color: ${({ theme }) => theme.colors.text};
   width: 100%;
 

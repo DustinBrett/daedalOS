@@ -1,6 +1,9 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
 
 const StyledPDF = styled.div`
+  ${ScrollBars()};
+
   display: block;
   overflow: auto;
   position: relative;

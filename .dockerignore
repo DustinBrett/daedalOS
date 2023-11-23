@@ -1,4 +1,9 @@
 .git
+.husky
 .next
+.swc
+.vscode
 node_modules
 out
+playwright-report
+test-results

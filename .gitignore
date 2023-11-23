@@ -1,7 +1,13 @@
 .next
 .swc
-node_modules
+certificates
 out
+
+node_modules
+
+test-results
+playwright-report
+playwright/.cache
 
 public/robots.txt
 public/sitemap.xml
@@ -12,10 +18,10 @@ public/Users/Public/**
 !public/Users/Public/Desktop
 !public/Users/Public/Desktop/My PC.url
 !public/Users/Public/Documents
-!public/Users/Public/Documents/Stream Notes
-!public/Users/Public/Documents/Stream Notes/*.md
 !public/Users/Public/Music
 !public/Users/Public/Pictures
+!public/Users/Public/Pictures/prompts.json
+!public/Users/Public/Pictures/slideshow.json
 !public/Users/Public/Start Menu
 !public/Users/Public/Start Menu/*.url
 !public/Users/Public/Start Menu/Emulators
@@ -26,5 +32,3 @@ public/Users/Public/**
 !public/Users/Public/Start Menu/Games/Quake III Arena.url
 !public/Users/Public/Start Menu/Games/Space Cadet.url
 !public/Users/Public/Videos
-!public/Users/Public/Videos/Make an OS with ReactJS & Next.js
-!public/Users/Public/Videos/Make an OS with ReactJS & Next.js/*.url

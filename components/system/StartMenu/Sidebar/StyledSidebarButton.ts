@@ -1,5 +1,5 @@
-import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 import styled from "styled-components";
+import StyledSidebar from "components/system/StartMenu/Sidebar/StyledSidebar";
 
 type StyledSidebarButtonProps = {
   $active?: boolean;
@@ -36,6 +36,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
       height: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
       left: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
       margin-left: 1px;
+      pointer-events: none;
       position: absolute;
       width: ${({ theme }) => theme.sizes.startMenu.sideBar.iconSize};
     }

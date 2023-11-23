@@ -1,6 +1,6 @@
+import { useCallback, useLayoutEffect, useMemo } from "react";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { useCallback, useLayoutEffect, useMemo } from "react";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
@@ -96,6 +96,7 @@ const useFocusable = (
     if (componentWindow && !closing && !minimized) {
       setForegroundId(id);
     }
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, id, minimized, setForegroundId, url]);
 
   return useMemo(

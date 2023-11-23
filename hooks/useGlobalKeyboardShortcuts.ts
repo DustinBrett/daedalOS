@@ -1,23 +1,30 @@
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
 import { useEffect, useRef } from "react";
 import {
-  haltEvent,
-  toggleFullScreen,
-  toggleShowDesktop,
-} from "utils/functions";
+  SEARCH_BUTTON_TITLE,
+  START_BUTTON_TITLE,
+} from "components/system/Taskbar/functions";
+import { useProcesses } from "contexts/process";
+import { useSession } from "contexts/session";
+import { useViewport } from "contexts/viewport";
+import { useProcessesRef } from "hooks/useProcessesRef";
+import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
+import { haltEvent, toggleShowDesktop } from "utils/functions";
 
-type NavigatorWithKeyboard = Navigator & {
-  keyboard?: {
-    lock?: (keys?: string[]) => void;
-    unlock?: () => void;
-  };
-};
+declare global {
+  interface Window {
+    globalKeyStates?: {
+      altKey: boolean;
+      ctrlKey: boolean;
+      metaKey: boolean;
+      shiftKey: boolean;
+    };
+  }
+}
 
-const openStartMenu = (): void =>
+const openByTitle = (title: string): void =>
   (
     document.querySelector(
-      "main>nav>button[title='Start']"
+      `main > nav > div[title='${title}']`
     ) as HTMLButtonElement
   )?.click();
 
@@ -33,28 +40,39 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
   triggeringBinding = true;
   setTimeout(() => {
     triggeringBinding = false;
-  }, 150);
+  }, KEYPRESS_DEBOUNCE_MS);
 
   return false;
 };
 
-const metaCombos = new Set(["D", "E", "R"]);
+const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R", "S"]);
+
+const updateKeyStates = (event: KeyboardEvent): void => {
+  const { altKey, ctrlKey, shiftKey, metaKey } = event;
+
+  window.globalKeyStates = { altKey, ctrlKey, metaKey, shiftKey };
+};
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { close, minimize, open, processes } = useProcesses();
-  const { foregroundId } = useSession();
+  const { closeWithTransition, maximize, minimize, open } = useProcesses();
+  const processesRef = useProcessesRef();
+  const { foregroundId, stackOrder } = useSession();
+  const { fullscreenElement, toggleFullscreen } = useViewport();
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
-    ESCAPE: openStartMenu,
+    ESCAPE: () => openByTitle(START_BUTTON_TITLE),
     F10: () => open("Terminal"),
     F12: () => open("DevTools"),
     F5: () => window.location.reload(),
     R: () => open("Run"),
+    S: () => openByTitle(SEARCH_BUTTON_TITLE),
   });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
+      updateKeyStates(event);
+
       const { altKey, ctrlKey, key, shiftKey } = event;
       const keyName = key?.toUpperCase();
 
@@ -70,18 +88,26 @@ const useGlobalKeyboardShortcuts = (): void => {
         }
       } else if (keyName === "F11") {
         haltEvent(event);
-        toggleFullScreen();
-      } else if (document.fullscreenElement) {
+        toggleFullscreen();
+      } else if (
+        document.activeElement === document.body &&
+        keyName.startsWith("ARROW")
+      ) {
+        document.body.querySelector("main ol li button")?.dispatchEvent(
+          new MouseEvent("mousedown", {
+            bubbles: true,
+          })
+        );
+      } else if (ctrlKey && altKey && altBindingsRef.current?.[keyName]) {
+        altBindingsRef.current?.[keyName]?.();
+      } else if (fullscreenElement === document.documentElement) {
         if (keyName === "META") metaDown = true;
         else if (altKey && altBindingsRef.current?.[keyName]) {
           haltEvent(event);
           altBindingsRef.current?.[keyName]?.();
         } else if (keyName === "ESCAPE") {
-          setTimeout(
-            // eslint-disable-next-line unicorn/consistent-destructuring
-            () => !event.defaultPrevented && document.exitFullscreen(),
-            0
-          );
+          if (document.pointerLockElement) document.exitPointerLock();
+          else toggleFullscreen();
         } else if (
           metaDown &&
           metaCombos.has(keyName) &&
@@ -94,31 +120,16 @@ const useGlobalKeyboardShortcuts = (): void => {
       }
     };
     const onKeyUp = (event: KeyboardEvent): void => {
+      updateKeyStates(event);
+
       if (
         metaDown &&
-        document.fullscreenElement &&
+        fullscreenElement === document.documentElement &&
         event.key?.toUpperCase() === "META"
       ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
-        else openStartMenu();
-      }
-    };
-    const onFullScreen = ({ target }: Event): void => {
-      if (target === document.documentElement) {
-        try {
-          if (document.fullscreenElement) {
-            (navigator as NavigatorWithKeyboard)?.keyboard?.lock?.([
-              "MetaLeft",
-              "MetaRight",
-              "Escape",
-            ]);
-          } else {
-            (navigator as NavigatorWithKeyboard)?.keyboard?.unlock?.();
-          }
-        } catch {
-          // Ignore failure to lock keys
-        }
+        else openByTitle(START_BUTTON_TITLE);
       }
     };
 
@@ -129,30 +140,57 @@ const useGlobalKeyboardShortcuts = (): void => {
       capture: true,
       passive: true,
     });
-    document.addEventListener("fullscreenchange", onFullScreen, {
-      passive: true,
-    });
 
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("keyup", onKeyUp);
-      document.removeEventListener("fullscreenchange", onFullScreen);
+      document.removeEventListener("keydown", onKeyDown, {
+        capture: true,
+      });
+      document.removeEventListener("keyup", onKeyUp, {
+        capture: true,
+      });
     };
-  }, []);
+  }, [fullscreenElement, toggleFullscreen]);
 
   useEffect(() => {
     altBindingsRef.current = {
       ...altBindingsRef.current,
-      F4: () => close(foregroundId),
+      F4: () => closeWithTransition(foregroundId),
     };
-  }, [close, foregroundId]);
+  }, [closeWithTransition, foregroundId]);
 
   useEffect(() => {
     shiftBindingsRef.current = {
       ...shiftBindingsRef.current,
-      D: () => toggleShowDesktop(processes, minimize),
+      ARROWDOWN: () => {
+        const {
+          hideMinimizeButton = false,
+          maximized,
+          minimized,
+        } = processesRef.current[foregroundId];
+
+        if (maximized) {
+          maximize(foregroundId);
+        } else if (!minimized && !hideMinimizeButton) {
+          minimize(foregroundId);
+        }
+      },
+      ARROWUP: () => {
+        const {
+          allowResizing = true,
+          hideMaximizeButton = false,
+          maximized,
+          minimized,
+        } = processesRef.current[foregroundId];
+
+        if (minimized) {
+          minimize(foregroundId);
+        } else if (!maximized && allowResizing && !hideMaximizeButton) {
+          maximize(foregroundId);
+        }
+      },
+      D: () => toggleShowDesktop(processesRef.current, stackOrder, minimize),
     };
-  }, [minimize, open, processes]);
+  }, [foregroundId, maximize, minimize, processesRef, stackOrder]);
 };
 
 export default useGlobalKeyboardShortcuts;

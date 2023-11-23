@@ -1,9 +1,12 @@
+import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
+
 export type QueueItem = {
   buffer: Buffer;
   url: string;
 };
 
 type VimModule = {
+  FS?: EmscriptenFS;
   FS_createDataFile?: (
     parentPath: string,
     newPath: string,

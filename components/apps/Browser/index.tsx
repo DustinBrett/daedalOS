@@ -1,18 +1,26 @@
-import { bookmarks, config, HOME_PAGE } from "components/apps/Browser/config";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { HOME_PAGE, bookmarks } from "components/apps/Browser/config";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
-import { extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { FAVICON_BASE_PATH, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
-import { getUrlOrSearch, GOOGLE_SEARCH_QUERY, label } from "utils/functions";
+import {
+  FAVICON_BASE_PATH,
+  IFRAME_CONFIG,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
+import {
+  GOOGLE_SEARCH_QUERY,
+  getExtension,
+  getUrlOrSearch,
+  label,
+} from "utils/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -43,7 +51,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
       if (contentWindow?.location) {
         const isHtml =
-          [".htm", ".html"].includes(extname(addressInput).toLowerCase()) &&
+          [".htm", ".html"].includes(getExtension(addressInput)) &&
           (await exists(addressInput));
 
         setLoading(true);
@@ -99,10 +107,6 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     },
     [exists, id, prependFileToTitle, readFile, setIcon]
   );
-  const style = useMemo<React.CSSProperties>(
-    () => ({ backgroundColor: srcDoc ? "#fff" : "initial" }),
-    [srcDoc]
-  );
 
   useEffect(() => {
     if (process && history[position] !== currentUrl.current) {
@@ -112,13 +116,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   }, [history, position, process, setUrl]);
 
   useEffect(() => {
-    if (iframeRef?.current) {
+    if (iframeRef.current) {
       linkElement(id, "peekElement", iframeRef.current);
     }
   }, [id, linkElement]);
 
   return (
-    <StyledBrowser>
+    <StyledBrowser $hasSrcDoc={Boolean(srcDoc)}>
       <nav>
         <div>
           <Button
@@ -179,9 +183,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         ref={iframeRef}
         onLoad={() => setLoading(false)}
         srcDoc={srcDoc || undefined}
-        style={style}
         title={id}
-        {...config}
+        {...IFRAME_CONFIG}
       />
     </StyledBrowser>
   );

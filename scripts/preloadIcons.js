@@ -1,6 +1,15 @@
-const { readdirSync, readFileSync, writeFileSync, existsSync } = require("fs");
+const {
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  statSync,
+} = require("fs");
 const { extname, join } = require("path");
 const { parse } = require("ini");
+
+const PUBLIC_DIR = "public";
 
 const HOME = "/Users/Public";
 const DESKTOP_PATH = `${HOME}/Desktop`;
@@ -32,53 +41,78 @@ const getYouTubeUrlId = (url) => {
   return "";
 };
 
-const getPublicDirectoryIcons = (directory) => {
-  const isDesktop = directory === DESKTOP_PATH;
-  const baseDirectory = join("./public", directory);
+const getPublicDirectoryIcons = (directory) => [
+  ...new Set(
+    readdirSync(join(PUBLIC_DIR, directory)).reduce((icons, file) => {
+      if (extname(file).toLowerCase() === ".url") {
+        const {
+          InternetShortcut: {
+            BaseURL: pid = "",
+            IconFile: icon = "",
+            URL: url = "",
+          },
+        } = parse(readFileSync(join(PUBLIC_DIR, directory, file)).toString());
+        const isVideo = pid === "VideoPlayer";
 
-  return readdirSync(baseDirectory).reduce((icons, file) => {
-    if (extname(file) === ".url") {
-      const {
-        InternetShortcut: {
-          BaseURL: pid = "",
-          IconFile: icon = "",
-          URL: url = "",
-        },
-      } = parse(readFileSync(join(baseDirectory, file)).toString());
+        if (isVideo && url) icons.push(encodeURI(VLC_SUBICON));
 
-      if (icon) icons.push(encodeURI(icon));
-
-      if (isDesktop) {
-        if (pid === "VideoPlayer") {
-          if (!icons.includes(VLC_SUBICON)) icons.push(encodeURI(VLC_SUBICON));
-          if (isYouTubeUrl(url)) {
+        if (icon) icons.push(encodeURI(icon));
+        else {
+          if (isVideo && isYouTubeUrl(url)) {
             const iconFileName = `/${getYouTubeUrlId(
               url
             )}${ICON_CACHE_EXTENSION}`;
 
             if (
-              existsSync(join("./public", YT_ICON_CACHE, `${iconFileName}`))
+              existsSync(join(PUBLIC_DIR, YT_ICON_CACHE, `${iconFileName}`))
             ) {
               icons.push(encodeURI(`${YT_ICON_CACHE}${iconFileName}`));
             }
+          } else {
+            const iconPath = url || `${directory}/${file}`;
+            const iconCacheFileName = `${iconPath}${ICON_CACHE_EXTENSION}`;
+
+            if (
+              extname(iconPath) &&
+              existsSync(join(PUBLIC_DIR, ICON_CACHE, `${iconCacheFileName}`))
+            ) {
+              icons.push(encodeURI(`${ICON_CACHE}${iconCacheFileName}`));
+            }
           }
         }
-
-        const iconPath = url || `${directory}/${file}`;
-        const iconCacheFileName = `${iconPath}${ICON_CACHE_EXTENSION}`;
-
-        if (
-          extname(iconPath) &&
-          existsSync(join("./public", ICON_CACHE, `${iconCacheFileName}`))
-        ) {
-          icons.push(encodeURI(`${ICON_CACHE}${iconCacheFileName}`));
-        }
       }
-    }
 
-    return icons;
-  }, []);
+      return icons;
+    }, [])
+  ),
+];
+
+const getIniIcons = () => {
+  const iniIcons = {};
+  const rootPath = join(PUBLIC_DIR, HOME);
+  const readDirectory = (directory) =>
+    readdirSync(directory).forEach((entry) => {
+      const currentPath = join(directory, entry);
+
+      if (statSync(currentPath).isDirectory()) readDirectory(currentPath);
+      else if (entry === "desktop.ini") {
+        const {
+          ShellClassInfo: { IconFile = "" },
+        } = parse(readFileSync(currentPath).toString());
+
+        iniIcons[directory.replace(PUBLIC_DIR, "").replace(/\\/g, "/")] =
+          IconFile;
+      }
+    });
+
+  readDirectory(rootPath);
+
+  return iniIcons;
 };
+
+if (!existsSync(join(PUBLIC_DIR, ".index"))) {
+  mkdirSync(join(PUBLIC_DIR, ".index"));
+}
 
 writeFileSync(
   "./public/.index/desktopIcons.json",
@@ -89,3 +123,5 @@ writeFileSync(
   "./public/.index/startMenuIcons.json",
   JSON.stringify([NEW_FOLDER_ICON, ...getPublicDirectoryIcons(START_MENU_PATH)])
 );
+
+writeFileSync("./public/.index/iniIcons.json", JSON.stringify(getIniIcons()));

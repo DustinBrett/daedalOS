@@ -1,5 +1,5 @@
-import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
+import { type Processes } from "contexts/process/types";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {
@@ -54,6 +54,7 @@ const directory: Processes = {
     icon: "/System/Icons/dxball.webp",
     libs: ["/Program Files/DX-Ball/game.js"],
     lockAspectRatio: true,
+    singleton: true,
     title: "DX-Ball",
   },
   DevTools: {
@@ -94,7 +95,7 @@ const directory: Processes = {
       width: 704,
     },
     icon: "/System/Icons/kiwiirc.webp",
-    libs: ["Program Files/kiwiirc/index.html"],
+    libs: ["/Program Files/kiwiirc/index.html"],
     title: "IRC",
   },
   JSDOS: {
@@ -127,6 +128,17 @@ const directory: Processes = {
     ],
     title: "Marked",
   },
+  Messenger: {
+    Component: dynamic(() => import("components/apps/Messenger")),
+    backgroundColor: "#242526",
+    defaultSize: {
+      height: 500,
+      width: 425,
+    },
+    icon: "/System/Icons/messenger.webp",
+    singleton: true,
+    title: "Messenger",
+  },
   MonacoEditor: {
     Component: dynamic(() => import("components/apps/MonacoEditor")),
     backgroundColor: "#1E1E1E",
@@ -136,6 +148,30 @@ const directory: Processes = {
     },
     icon: "/System/Icons/monaco.webp",
     title: "Monaco Editor",
+  },
+  OpenType: {
+    Component: dynamic(() => import("components/apps/OpenType")),
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
+    icon: "/System/Icons/opentype.webp",
+    preferProcessIcon: true,
+    title: "OpenType",
+  },
+  OpenWith: {
+    Component: dynamic(() => import("components/system/Dialogs/OpenWith")),
+    allowResizing: false,
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 492,
+      width: 392,
+    },
+    hideTaskbarEntry: true,
+    hideTitlebar: true,
+    icon: "/System/Icons/unknown.webp",
+    title: "Open With",
   },
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
@@ -156,7 +192,7 @@ const directory: Processes = {
       width: 640,
     },
     icon: "/System/Icons/paint.webp",
-    libs: ["Program Files/jspaint/index.html"],
+    libs: ["/Program Files/jspaint/index.html"],
     title: "Paint",
   },
   Photos: {
@@ -170,17 +206,29 @@ const directory: Processes = {
     icon: "/System/Icons/photos.webp",
     title: "Photos",
   },
+  Properties: {
+    Component: dynamic(() => import("components/system/Dialogs/Properties")),
+    allowResizing: false,
+    backgroundColor: "rgb(240, 240, 240)",
+    defaultSize: {
+      height: 412,
+      width: 361,
+    },
+    hideMaximizeButton: true,
+    hideMinimizeButton: true,
+    icon: "",
+    title: "Properties",
+  },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
+    autoSizing: true,
     backgroundColor: "#000",
     defaultSize: {
       height: 480,
       width: 640,
     },
-    hideMaximizeButton: true,
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
-    lockAspectRatio: true,
     title: "Quake III Arena",
   },
   Ruffle: {
@@ -225,12 +273,25 @@ const directory: Processes = {
     singleton: true,
     title: "Space Cadet",
   },
+  StableDiffusion: {
+    Component: dynamic(() => import("components/apps/StableDiffusion")),
+    allowResizing: false,
+    backgroundColor: "rgb(235, 251, 247)",
+    defaultSize: {
+      height: 600,
+      width: 544,
+    },
+    icon: "/System/Icons/stablediffusion.webp",
+    lockAspectRatio: true,
+    singleton: true,
+    title: "Stable Diffusion",
+  },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
     backgroundColor: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
-      height: 340,
-      width: 553,
+      height: 374,
+      width: 615,
     },
     icon: "/System/Icons/xterm.webp",
     libs: [
@@ -243,7 +304,7 @@ const directory: Processes = {
   },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
-    backgroundColor: "#FFF",
+    backgroundColor: "#202124",
     defaultSize: {
       height: 480,
       width: 640,
@@ -262,7 +323,7 @@ const directory: Processes = {
       width: 400,
     },
     icon: "/System/Icons/copying.webp",
-    title: "Copying...",
+    title: "",
   },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),

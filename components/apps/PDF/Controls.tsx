@@ -1,3 +1,4 @@
+import { basename } from "path";
 import {
   Add,
   Download,
@@ -6,12 +7,18 @@ import {
 } from "components/apps/PDF//ControlIcons";
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
 import Button from "styles/common/Button";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { bufferToUrl, isSafari, label } from "utils/functions";
+
+declare global {
+  interface Window {
+    InstallTrigger?: boolean;
+  }
+}
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { readFile } = useFileSystem();
@@ -20,6 +27,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
     count = 0,
     page: currentPage = 1,
     componentWindow,
+    rendering = false,
     scale = 1,
     subTitle = "",
     url = "",
@@ -28,7 +36,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledControls>
       <div className="side-menu">
-        <span>{subTitle}</span>
+        <span>{subTitle || basename(url)}</span>
       </div>
       <ol>
         {count !== 0 && (
@@ -53,10 +61,10 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             / {count}
           </li>
         )}
-        <li id="scale">
+        <li className="scale">
           <Button
-            disabled={scale === 0.25 || count === 0}
-            id="subtract"
+            className="subtract"
+            disabled={rendering || scale === 0.25 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) - 1])
             }
@@ -65,7 +73,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             <Subtract />
           </Button>
           <input
-            disabled={count === 0}
+            disabled={rendering || count === 0}
             enterKeyHint="done"
             onChange={({ target }) => {
               if (
@@ -95,8 +103,8 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             value={`${Math.round(scale * 100)}%`}
           />
           <Button
-            disabled={scale === 5 || count === 0}
-            id="add"
+            className="add"
+            disabled={rendering || scale === 5 || count === 0}
             onClick={() =>
               argument(id, "scale", scales[scales.indexOf(scale) + 1])
             }
@@ -108,8 +116,8 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
       </ol>
       <div className="side-menu">
         <Button
+          className="download"
           disabled={count === 0}
-          id="download"
           onClick={async () => {
             const link = document.createElement("a");
 
@@ -122,23 +130,29 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
         >
           <Download />
         </Button>
-        {!isSafari() && (
-          <Button
-            disabled={count === 0}
-            onClick={async () => {
-              const { default: printJs } = await import("print-js");
+        <Button
+          disabled={count === 0}
+          onClick={async () => {
+            if (isSafari()) {
+              // Trick print-js into adding print delay
+              window.InstallTrigger = true;
+              setTimeout(() => {
+                delete window.InstallTrigger;
+              }, 5 * MILLISECONDS_IN_SECOND);
+            }
 
-              printJs({
-                base64: true,
-                printable: (await readFile(url)).toString("base64"),
-                type: "pdf",
-              });
-            }}
-            {...label("Print")}
-          >
-            <Print />
-          </Button>
-        )}
+            const { default: printJs } = await import("print-js");
+
+            printJs({
+              base64: true,
+              printable: (await readFile(url)).toString("base64"),
+              type: "pdf",
+            });
+          }}
+          {...label("Print")}
+        >
+          <Print />
+        </Button>
       </div>
     </StyledControls>
   );

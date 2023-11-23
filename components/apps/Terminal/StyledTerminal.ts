@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import ScrollBars from "styles/common/ScrollBars";
-import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledTerminal = styled.div`
   height: 100%;
@@ -12,9 +11,18 @@ const StyledTerminal = styled.div`
   }
 
   .xterm-viewport {
-    ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH)};
-
+    ${ScrollBars()};
     width: 100% !important;
+  }
+
+  .xterm-cursor-underline {
+    border-bottom-color: #f3f3f3 !important;
+    border-bottom-width: 4px !important;
+    font-size: 15px !important;
+  }
+
+  .xterm-cursor-blink {
+    animation-duration: 1.067s !important;
   }
 `;
 

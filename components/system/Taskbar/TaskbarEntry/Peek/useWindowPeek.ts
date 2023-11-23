@@ -1,11 +1,11 @@
-import { useProcesses } from "contexts/process";
 import { useEffect, useRef, useState } from "react";
+import { useProcesses } from "contexts/process";
 import {
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
   PEEK_MAX_WIDTH,
 } from "utils/constants";
-import { getHtmlToImage } from "utils/functions";
+import { getHtmlToImage, isCanvasDrawn } from "utils/functions";
 
 const FPS = 15;
 
@@ -21,28 +21,29 @@ const renderFrame = async (
     );
 
   const htmlToImage = await getHtmlToImage();
-  const dataCanvas = await htmlToImage?.toCanvas(previewElement, {
-    ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
-      canvasHeight: Math.round(
-        (PEEK_MAX_WIDTH / previewElement.clientWidth) *
-          previewElement.clientHeight
-      ),
-      canvasWidth: PEEK_MAX_WIDTH,
-    }),
-    filter: (element) => !(element instanceof HTMLSourceElement),
-    skipAutoScale: true,
-    style: {
-      inset: "0",
-    },
-  });
+  let dataCanvas: HTMLCanvasElement | undefined;
+
+  try {
+    dataCanvas = await htmlToImage?.toCanvas(previewElement, {
+      ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
+        canvasHeight: Math.round(
+          (PEEK_MAX_WIDTH / previewElement.clientWidth) *
+            previewElement.clientHeight
+        ),
+        canvasWidth: PEEK_MAX_WIDTH,
+      }),
+      filter: (element) => !(element instanceof HTMLSourceElement),
+      skipAutoScale: true,
+      style: {
+        inset: "0",
+      },
+    });
+  } catch {
+    // Ignore failure to capture
+  }
 
   if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
-    if (
-      dataCanvas
-        .getContext("2d")
-        ?.getImageData(0, 0, dataCanvas.width, dataCanvas.height)
-        .data.some(Boolean)
-    ) {
+    if (isCanvasDrawn(dataCanvas)) {
       const previewImage = new Image();
       const dataUrl = dataCanvas.toDataURL();
 

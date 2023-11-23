@@ -1,32 +1,35 @@
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useState } from "react";
 import { loader } from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
+  URL_DELIMITER,
   config,
   theme,
-  URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
 import {
   detectLanguage,
   getSaveFileInfo,
+  relocateShadowRoot,
 } from "components/apps/MonacoEditor/functions";
-import type { Model } from "components/apps/MonacoEditor/types";
+import { type Model } from "components/apps/MonacoEditor/types";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useState } from "react";
 import {
   DEFAULT_TEXT_FILE_SAVE_PATH,
   MILLISECONDS_IN_SECOND,
 } from "utils/constants";
+import { getExtension } from "utils/functions";
 import { lockGlobal, unlockGlobal } from "utils/globals";
 
-const useMonaco = (
-  id: string,
-  url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
-): void => {
+const useMonaco = ({
+  containerRef,
+  id,
+  setLoading,
+  url,
+}: ContainerHookProps): void => {
   const { readFile, updateFolder, writeFile } = useFileSystem();
   const { argument: setArgument } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
@@ -48,7 +51,7 @@ const useMonaco = (
   const createModel = useCallback(async () => {
     const newModel = monaco?.editor.createModel(
       (await readFile(url)).toString(),
-      detectLanguage(extname(url).toLowerCase()),
+      detectLanguage(getExtension(url)),
       createModelUri(url)
     );
 
@@ -59,6 +62,7 @@ const useMonaco = (
   const loadFile = useCallback(async () => {
     if (monaco && editor && url.startsWith("/")) {
       unlockGlobal("define");
+
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
       window.setTimeout(
@@ -85,6 +89,8 @@ const useMonaco = (
     editor?.onKeyDown(async (event) => {
       const { ctrlKey, code, keyCode } = event;
 
+      // Q: Is it 83 or 49?
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
         event.preventDefault();
 
@@ -112,6 +118,11 @@ const useMonaco = (
           passive: true,
         });
 
+      containerRef.current?.addEventListener("blur", relocateShadowRoot, {
+        capture: true,
+        passive: true,
+      });
+
       setEditor(currentEditor);
       setArgument(id, "editor", currentEditor);
       setLoading(false);
@@ -130,7 +141,7 @@ const useMonaco = (
     if (monaco && editor && url) {
       loadFile();
     }
-  }, [editor, loadFile, monaco, prependFileToTitle, url]);
+  }, [editor, loadFile, monaco, url]);
 };
 
 export default useMonaco;
