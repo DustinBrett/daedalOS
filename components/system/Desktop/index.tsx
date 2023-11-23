@@ -12,14 +12,15 @@ const Desktop: FC = ({ children }) => {
   useWallpaper(desktopRef, heightOverride);
 
 const desktopNameStyle: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '10px',
-    right: '10px',
-    fontSize: '2em',
-    color: 'white',
-    opacity: 0.7,
-    textShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)'
-  };
+  bottom: "10px",
+  color: "white",
+  fontSize: "2em",
+  opacity: 0.7,
+  position: "absolute",
+  right: "10px",
+  textShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
+};
+
   
   return (
     <StyledDesktop ref={desktopRef} $height={heightOverride}>
