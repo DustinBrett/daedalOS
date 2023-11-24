@@ -455,6 +455,15 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
     ).toBeTruthy()
   ).toPass();
 
+export const sessionIsWriteable = async ({
+  page,
+}: {
+  page: Page;
+}): Promise<void> =>
+  expect(async () =>
+    expect(await page.evaluate(() => window.sessionIsWriteable)).toBeTruthy()
+  ).toPass();
+
 export const windowIsMaximized = async (
   { page }: TestProps,
   maximized = true

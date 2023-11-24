@@ -295,6 +295,7 @@ const useSessionContextState = (): SessionContextState => {
 
         loadingDebounceRef.current = window.setTimeout(() => {
           loadingDebounceRef.current = 0;
+          window.sessionIsWriteable = true;
         }, TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
 
         setSessionLoaded(true);

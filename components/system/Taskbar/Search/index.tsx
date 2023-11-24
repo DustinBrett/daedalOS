@@ -237,6 +237,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     <StyledSearch
       ref={menuRef}
       $singleLine={singleLineView}
+      id="searchMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,

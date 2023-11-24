@@ -60,6 +60,7 @@ import {
   selectArea,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
+  windowAnimationIsFinished,
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
@@ -302,6 +303,7 @@ test.describe("has files & folders", () => {
 
   test("can select multiple entries", async ({ page }) => {
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
+    await windowAnimationIsFinished({ page });
 
     const { x = 0, y = 0 } =
       (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};
