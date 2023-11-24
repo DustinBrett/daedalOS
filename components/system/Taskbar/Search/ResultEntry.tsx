@@ -1,7 +1,7 @@
 import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import useResultsContextMenu from "./useResultsContextMenu";
+import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
 import { useIsVisible } from "components/apps/Messenger/hooks";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";

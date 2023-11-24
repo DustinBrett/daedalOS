@@ -1,6 +1,6 @@
 import { dirname } from "path";
 import { useMemo } from "react";
-import { OpenFolder } from "./Icons";
+import { OpenFolder } from "components/system/Taskbar/Search/Icons";
 import { useMenu } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
