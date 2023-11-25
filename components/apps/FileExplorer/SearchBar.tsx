@@ -43,7 +43,11 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           ]
             .slice(0, MAX_ENTRIES - 1)
             .map(async ({ ref: path }) => {
-              const { icon, url: infoUrl, pid } = await getResultInfo(fs, path);
+              const {
+                icon,
+                url: infoUrl,
+                pid = "",
+              } = (await getResultInfo(fs, path)) || {};
 
               return {
                 action: () => {
