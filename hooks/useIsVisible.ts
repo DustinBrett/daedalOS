@@ -8,13 +8,13 @@ export const useIsVisible = (
 ): boolean => {
   const watching = useRef(false);
   const [isVisible, setIsVisible] = useState(alwaysVisible);
-  const observerRef = useRef<IntersectionObserver>();
 
   useEffect(() => {
     if (alwaysVisible || !elementRef.current || watching.current) return;
 
     watching.current = true;
-    observerRef.current = new IntersectionObserver(
+
+    new IntersectionObserver(
       (entries) =>
         entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
       {
@@ -25,12 +25,8 @@ export const useIsVisible = (
           elementRef.current.parentElement,
         ...DEFAULT_INTERSECTION_OPTIONS,
       }
-    );
-
-    observerRef.current.observe(elementRef.current);
+    ).observe(elementRef.current);
   }, [alwaysVisible, elementRef, parentSelector]);
-
-  useEffect(() => () => observerRef.current?.disconnect(), []);
 
   return isVisible;
 };
