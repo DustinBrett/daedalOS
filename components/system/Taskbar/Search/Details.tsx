@@ -56,7 +56,7 @@ const Details: FC<{
       (newStats) => currentUrlRef.current === url && setStats(newStats)
     );
     getResultInfo(fs, url).then(
-      (newInfo) => currentUrlRef.current === url && setInfo(newInfo)
+      (newInfo) => newInfo && currentUrlRef.current === url && setInfo(newInfo)
     );
   }, [fs, stat, url]);
 
