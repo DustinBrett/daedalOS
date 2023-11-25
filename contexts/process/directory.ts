@@ -26,8 +26,8 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Browser")),
     backgroundColor: "#FFF",
     defaultSize: {
-      height: 480,
-      width: 640,
+      height: 500,
+      width: 600,
     },
     icon: "/System/Icons/chromium.webp",
     title: "Browser",
