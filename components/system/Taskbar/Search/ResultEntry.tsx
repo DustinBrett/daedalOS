@@ -2,7 +2,6 @@ import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
-import { useIsVisible } from "components/apps/Messenger/hooks";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import {
@@ -17,6 +16,7 @@ import { useSession } from "contexts/session";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
+import { useIsVisible } from "hooks/useIsVisible";
 
 type ResultEntryProps = {
   active?: boolean;
@@ -26,6 +26,10 @@ type ResultEntryProps = {
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
   url: string;
 };
+
+const INITIAL_INFO = {
+  icon: UNKNOWN_ICON,
+} as ResultInfo;
 
 const ResultEntry: FC<ResultEntryProps> = ({
   active,
@@ -39,9 +43,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const { updateRecentFiles } = useSession();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
-  const [info, setInfo] = useState<ResultInfo>({
-    icon: UNKNOWN_ICON,
-  } as ResultInfo);
+  const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const extension = extname(info?.url || url);
   const baseName = basename(url, ".url");
   const name = useMemo(() => {
@@ -81,16 +83,39 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
   const { onContextMenuCapture } = useResultsContextMenu(info?.url);
+  const abortController = useRef<AbortController>();
 
   useEffect(() => {
     const activeEntry = details || hovered;
 
-    if (activeEntry || isVisible) {
-      if (activeEntry) stat(url).then(setStats);
+    if (!stats && activeEntry) stat(url).then(setStats);
+    if (abortController.current) {
+      if (!isVisible) {
+        abortController.current.abort();
+        abortController.current = undefined;
+      }
+    } else if ((activeEntry || isVisible) && info === INITIAL_INFO) {
+      abortController.current = new AbortController();
 
-      getResultInfo(fs, url).then(setInfo);
+      getResultInfo(fs, url, abortController.current.signal).then(
+        (resultsInfo) => {
+          if (resultsInfo) setInfo(resultsInfo);
+          abortController.current = undefined;
+        }
+      );
     }
-  }, [details, fs, hovered, isVisible, stat, url]);
+  }, [details, fs, hovered, info, isVisible, stat, stats, url]);
+
+  useEffect(
+    () => () => {
+      try {
+        abortController.current?.abort();
+      } catch {
+        // Failed to abort getResultInfo
+      }
+    },
+    []
+  );
 
   // TODO: Search for directories also?
 

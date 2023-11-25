@@ -345,7 +345,7 @@ export const getInfoWithExtension = (
   const subIcons: string[] = [];
   const getInfoByFileExtension = (
     icon?: string,
-    getIcon?: true | ((signal: AbortSignal) => void)
+    getIcon?: true | ((signal: AbortSignal) => void | Promise<void>)
   ): void =>
     callback({
       getIcon,

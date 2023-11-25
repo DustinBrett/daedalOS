@@ -222,6 +222,7 @@ const FileManager: FC<FileManagerProps> = ({
                 focusedEntries={focusedEntries}
                 hasNewFolderIcon={isStartMenu}
                 hideShortcutIcon={hideShortcutIcons}
+                isDesktop={isDesktop}
                 isHeading={isDesktop && files[file].systemShortcut}
                 isLoadingFileManager={isLoading}
                 loadIconImmediately={loadIconsImmediately}
