@@ -7,7 +7,10 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { BASE_2D_CONTEXT_OPTIONS } from "utils/constants";
+import {
+  BASE_2D_CONTEXT_OPTIONS,
+  DEFAULT_INTERSECTION_OPTIONS,
+} from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 export const scales = [
@@ -155,7 +158,10 @@ const usePDF = ({
               entries.forEach(({ isIntersecting }) => {
                 if (isIntersecting) argument(id, "page", pageNumber + 1);
               }),
-            { root: containerRef.current, threshold: 0.4 }
+            {
+              root: containerRef.current,
+              ...DEFAULT_INTERSECTION_OPTIONS,
+            }
           );
 
           li.append(page);
