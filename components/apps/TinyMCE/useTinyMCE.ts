@@ -14,7 +14,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { DEFAULT_LOCALE } from "utils/constants";
+import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
 
@@ -164,6 +164,15 @@ const useTinyMCE = ({
                 );
                 iframe.contentWindow.addEventListener("focus", () =>
                   setForegroundId(id)
+                );
+                iframe.contentWindow.addEventListener(
+                  "mousedown",
+                  ({ pageX }) =>
+                    iframe.contentWindow &&
+                    pageX >
+                      iframe.contentWindow.innerWidth -
+                        DEFAULT_SCROLLBAR_WIDTH &&
+                    setForegroundId(id)
                 );
               }
 
