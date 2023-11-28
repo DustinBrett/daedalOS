@@ -1,9 +1,9 @@
+import { useMemo } from "react";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import { NO_RESULTS, type TabName } from "components/system/Taskbar/Search";
 import ResultEntry from "components/system/Taskbar/Search/ResultEntry";
 import StyledResultsHeader from "components/system/Taskbar/Search/StyledResultsHeader";
-import type { ProcessArguments } from "contexts/process/types";
-import { useMemo } from "react";
+import { type ProcessArguments } from "contexts/process/types";
 
 type ResultsSectionProps = {
   activeItem: string;

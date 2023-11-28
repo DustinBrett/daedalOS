@@ -1,5 +1,5 @@
-import type { WallpaperFunc } from "components/system/Desktop/Wallpapers/types";
-import type { WallpaperFit } from "contexts/session/types";
+import { type WallpaperFunc } from "components/system/Desktop/Wallpapers/types";
+import { type WallpaperFit } from "contexts/session/types";
 
 export const bgPositionSize: Record<WallpaperFit, string> = {
   center: "center center",

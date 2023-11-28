@@ -1,35 +1,34 @@
-import type * as IBrowserFS from "browserfs";
-import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
-import type IZipFS from "browserfs/dist/node/backend/ZipFS";
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import type { ApiError } from "browserfs/dist/node/core/api_error";
-import type {
-  BFSCallback,
-  FileSystem,
+import { basename, dirname, isAbsolute, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type BFSCallback,
+  type FileSystem,
 } from "browserfs/dist/node/core/file_system";
+import { type ApiError } from "browserfs/dist/node/core/api_error";
+import { type FSModule } from "browserfs/dist/node/core/FS";
+import type IZipFS from "browserfs/dist/node/backend/ZipFS";
+import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
+import type * as IBrowserFS from "browserfs";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
-import type { InputChangeEvent } from "components/system/Files/FileManager/functions";
 import {
+  type InputChangeEvent,
   getEventData,
   handleFileInputEvent,
   iterateFileName,
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
-import type { NewPath } from "components/system/Files/FileManager/useFolder";
+import { type NewPath } from "components/system/Files/FileManager/useFolder";
 import { getFileSystemHandles } from "contexts/fileSystem/core";
 import { isMountedFolder } from "contexts/fileSystem/functions";
-import type {
-  AsyncFS,
-  EmscriptenFS,
-  ExtendedEmscriptenFileSystem,
-  RootFileSystem,
+import useAsyncFs, {
+  type AsyncFS,
+  type EmscriptenFS,
+  type ExtendedEmscriptenFileSystem,
+  type RootFileSystem,
 } from "contexts/fileSystem/useAsyncFs";
-import useAsyncFs from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
-import type { UpdateFiles } from "contexts/session/types";
-import { basename, dirname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type UpdateFiles } from "contexts/session/types";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,

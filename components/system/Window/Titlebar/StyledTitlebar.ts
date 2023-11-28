@@ -1,5 +1,4 @@
-import type { DefaultTheme } from "styled-components";
-import styled from "styled-components";
+import styled, { type DefaultTheme } from "styled-components";
 
 type StyledTitlebarProps = {
   $foreground: boolean;

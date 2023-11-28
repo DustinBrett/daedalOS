@@ -1,33 +1,33 @@
-import type { ApiError } from "browserfs/dist/node/core/api_error";
+import { basename, dirname, extname, join, relative } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type AsyncZipOptions, type AsyncZippable } from "fflate";
+import { type ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import type { ObjectReader } from "components/system/Dialogs/Transfer/useTransferDialog";
-import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
+import useTransferDialog, {
+  type ObjectReader,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
   createShortcut,
   filterSystemFiles,
   getShortcutInfo,
   makeExternalShortcut,
 } from "components/system/Files/FileEntry/functions";
-import type { FileStat } from "components/system/Files/FileManager/functions";
 import {
+  type FileStat,
   findPathsRecursive,
   removeInvalidFilenameCharacters,
   sortByDate,
   sortBySize,
   sortContents,
 } from "components/system/Files/FileManager/functions";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type {
-  SetSortBy,
-  SortByOrder,
+import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import useSortBy, {
+  type SetSortBy,
+  type SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
-import useSortBy from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { AsyncZipOptions, AsyncZippable } from "fflate";
-import { basename, dirname, extname, join, relative } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,

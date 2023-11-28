@@ -1,6 +1,6 @@
-import type {
-  DosOptions,
-  EmulatorFunction,
+import {
+  type DosOptions,
+  type EmulatorFunction,
 } from "emulators-ui/dist/types/js-dos";
 
 export const dosOptions: DosOptions = {

@@ -1,5 +1,5 @@
-import StyledButton from "components/system/Dialogs/StyledButton";
 import styled, { css } from "styled-components";
+import StyledButton from "components/system/Dialogs/StyledButton";
 
 const gradientAnimation = css`
   animation: gradient 5s ease-in-out alternate infinite;

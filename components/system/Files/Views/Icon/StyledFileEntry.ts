@@ -1,5 +1,5 @@
-import type { StyledFileEntryProps } from "components/system/Files/Views";
 import styled from "styled-components";
+import { type StyledFileEntryProps } from "components/system/Files/Views";
 
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
   display: ${({ $visible }) => ($visible ? "flex" : "none")};

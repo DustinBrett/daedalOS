@@ -1,4 +1,4 @@
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 export type VantaNetConfig = {
   backgroundColor: any;

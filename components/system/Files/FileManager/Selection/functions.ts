@@ -1,4 +1,4 @@
-import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import { type SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
 
 export const isSelectionIntersecting = (
   element: DOMRect,

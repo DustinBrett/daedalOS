@@ -1,4 +1,11 @@
-const { readdirSync, readFileSync, statSync, writeFileSync } = require("fs");
+const {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+  mkdirSync,
+} = require("fs");
 const { basename, extname, join } = require("path");
 const lunr = require("lunr");
 
@@ -66,6 +73,10 @@ const searchIndex = lunr(function () {
 
   indexData.forEach((doc) => this.add(doc));
 });
+
+if (!existsSync(join(PUBLIC_PATH, ".index"))) {
+  mkdirSync(join(PUBLIC_PATH, ".index"));
+}
 
 writeFileSync(
   join(PUBLIC_PATH, ".index/search.lunr.json"),

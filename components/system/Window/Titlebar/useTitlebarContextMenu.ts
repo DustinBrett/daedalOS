@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   CLOSE,
   MAXIMIZE,
@@ -9,12 +10,11 @@ import {
 } from "components/system/Window/Titlebar/Buttons";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useMenu } from "contexts/menu";
-import type {
-  ContextMenuCapture,
-  MenuItem,
+import {
+  type ContextMenuCapture,
+  type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { useMemo } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {

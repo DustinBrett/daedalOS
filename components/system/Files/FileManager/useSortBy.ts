@@ -1,7 +1,7 @@
-import { sortFiles } from "components/system/Files/FileManager/functions";
-import type { Files } from "components/system/Files/FileManager/useFolder";
-import { useSession } from "contexts/session";
 import { useEffect, useMemo, useState } from "react";
+import { sortFiles } from "components/system/Files/FileManager/functions";
+import { type Files } from "components/system/Files/FileManager/useFolder";
+import { useSession } from "contexts/session";
 
 export type SortBy = "date" | "name" | "size" | "type";
 

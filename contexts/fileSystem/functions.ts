@@ -1,19 +1,19 @@
+import { extname, join } from "path";
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
+import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
+import {
+  type ExtendedEmscriptenFileSystem,
+  type Mount,
+  type RootFileSystem,
+} from "contexts/fileSystem/useAsyncFs";
 import {
   KEYVAL_STORE_NAME,
   getFileSystemHandles,
   getKeyValStore,
   supportsIndexedDB,
 } from "contexts/fileSystem/core";
-import type {
-  ExtendedEmscriptenFileSystem,
-  Mount,
-  RootFileSystem,
-} from "contexts/fileSystem/useAsyncFs";
-import { extname, join } from "path";
-import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
 
 const KNOWN_IDB_DBS = [
   "/classicube",

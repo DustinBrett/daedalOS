@@ -1,4 +1,4 @@
-import type { Editor } from "tinymce";
+import { type Editor } from "tinymce";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export const draggableEditor = (activeEditor: Editor): boolean =>
@@ -19,4 +19,19 @@ export const setReadOnlyMode = (editor: Editor): void => {
   }
 
   editor.mode.set("readonly");
+};
+
+const allowedCorsDomains = new Set(["wikipedia.org", "archive.org"]);
+
+export const isCorsUrl = (url?: string): boolean => {
+  if (!url) return false;
+
+  try {
+    const { hostname } = new URL(url);
+    const [, domain, tld] = hostname.split(".");
+
+    return allowedCorsDomains.has(`${domain}.${tld}`);
+  } catch {
+    return false;
+  }
 };

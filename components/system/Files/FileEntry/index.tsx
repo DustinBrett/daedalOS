@@ -1,3 +1,15 @@
+import { basename, dirname, extname, join } from "path";
+import { useTheme } from "styled-components";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import dynamic from "next/dynamic";
+import { m as motion } from "framer-motion";
 import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
@@ -10,28 +22,18 @@ import useFileContextMenu from "components/system/Files/FileEntry/useFileContext
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import FileManager from "components/system/Files/FileManager";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
-import type { SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
-import type { FileStat } from "components/system/Files/FileManager/functions";
+import { type SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { FileActions } from "components/system/Files/FileManager/useFolder";
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileEntryIconSize } from "components/system/Files/Views";
+import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { type FileActions } from "components/system/Files/FileManager/useFolder";
+import {
+  type FileManagerViewNames,
+  FileEntryIconSize,
+} from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { m as motion } from "framer-motion";
 import useDoubleClick from "hooks/useDoubleClick";
-import dynamic from "next/dynamic";
-import { basename, dirname, extname, join } from "path";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -60,6 +62,7 @@ import {
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
+import { useIsVisible } from "hooks/useIsVisible";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
@@ -77,6 +80,7 @@ type FileEntryProps = {
   focusedEntries: string[];
   hasNewFolderIcon?: boolean;
   hideShortcutIcon?: boolean;
+  isDesktop?: boolean;
   isHeading?: boolean;
   isLoadingFileManager: boolean;
   loadIconImmediately?: boolean;
@@ -124,6 +128,7 @@ const FileEntry: FC<FileEntryProps> = ({
   focusedEntries,
   focusFunctions,
   hideShortcutIcon,
+  isDesktop,
   isHeading,
   isLoadingFileManager,
   loadIconImmediately,
@@ -139,10 +144,13 @@ const FileEntry: FC<FileEntryProps> = ({
 }) => {
   const { blurEntry, focusEntry } = focusFunctions;
   const { url: changeUrl } = useProcesses();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
-    hasNewFolderIcon
+    hasNewFolderIcon,
+    isDesktop || isVisible
   );
   const openFile = useFile(url);
   const {
@@ -159,7 +167,6 @@ const FileEntry: FC<FileEntryProps> = ({
   const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
   const listView = view === "list";
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
   const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);
@@ -289,7 +296,7 @@ const FileEntry: FC<FileEntryProps> = ({
   ]);
 
   useEffect(() => {
-    if (!isLoadingFileManager && !isIconCached.current) {
+    if (!isLoadingFileManager && isVisible && !isIconCached.current) {
       const updateIcon = async (): Promise<void> => {
         if (icon.startsWith("blob:") || icon.startsWith("data:")) {
           if (icon.startsWith("data:image/jpeg;base64,")) return;
@@ -372,7 +379,7 @@ const FileEntry: FC<FileEntryProps> = ({
                     await mkdirRecursive(baseCachedPath);
 
                     const cachedIcon = Buffer.from(
-                      generatedIcon.replace(/data:(.*);base64,/, ""),
+                      generatedIcon.replace(/data:.*;base64,/, ""),
                       "base64"
                     );
 
@@ -432,31 +439,27 @@ const FileEntry: FC<FileEntryProps> = ({
             buttonRef.current &&
             typeof getIcon === "function"
           ) {
-            isDynamicIconLoaded.current = true;
-            new IntersectionObserver(
-              (entries, observer) =>
-                entries.forEach(({ isIntersecting }) => {
-                  if (isIntersecting) {
-                    observer.disconnect();
-                    getIconAbortController.current = new AbortController();
-                    getIcon(getIconAbortController.current.signal);
-                  }
-                }),
-              { root: fileManagerRef.current, rootMargin: "5px" }
-            ).observe(buttonRef.current);
+            getIconAbortController.current = new AbortController();
+            await getIcon(getIconAbortController.current.signal);
+            isDynamicIconLoaded.current =
+              !getIconAbortController.current.signal.aborted;
           }
         }
       };
 
       updateIcon();
     }
+
+    if (!isVisible && getIconAbortController.current) {
+      getIconAbortController.current.abort();
+    }
   }, [
     exists,
-    fileManagerRef,
     getIcon,
     icon,
     isLoadingFileManager,
     isShortcut,
+    isVisible,
     isYTUrl,
     mkdirRecursive,
     path,
@@ -472,7 +475,7 @@ const FileEntry: FC<FileEntryProps> = ({
   useEffect(
     () => () => {
       try {
-        getIconAbortController?.current?.abort?.();
+        getIconAbortController.current?.abort();
       } catch {
         // Failed to abort getIcon
       }

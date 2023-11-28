@@ -1,10 +1,10 @@
+import { type Position } from "react-rnd";
+import { useCallback, useEffect, useRef, useState } from "react";
 import MenuItemEntry from "components/system/Menu/MenuItemEntry";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import menuTransition from "components/system/Menu/menuTransition";
 import { useMenu } from "contexts/menu/index";
-import type { MenuState } from "contexts/menu/useMenuContextState";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Position } from "react-rnd";
+import { type MenuState } from "contexts/menu/useMenuContextState";
 import {
   FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,

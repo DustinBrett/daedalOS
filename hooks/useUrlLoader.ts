@@ -1,8 +1,8 @@
+import { useEffect, useRef } from "react";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useEffect, useRef } from "react";
 import { getExtension, getSearchParam } from "utils/functions";
 
 const useUrlLoader = (): void => {

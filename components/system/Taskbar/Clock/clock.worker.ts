@@ -1,8 +1,10 @@
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
-import type { LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
-import { formatLocaleDateTime } from "components/system/Taskbar/Clock/functions";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import {
+  type LocaleTimeDate,
+  formatLocaleDateTime,
+} from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
-import type { ClockSource } from "contexts/session/types";
+import { type ClockSource } from "contexts/session/types";
 import formats from "styles/defaultTheme/formats";
 
 const MILLISECONDS_IN_SECOND = 1000;

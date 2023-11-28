@@ -1,15 +1,15 @@
-import type { MetadataInfo } from "components/apps/PDF/types";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { basename } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { type PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
+import type * as PdfjsLib from "pdfjs-dist";
+import { type MetadataInfo } from "components/apps/PDF/types";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import type * as PdfjsLib from "pdfjs-dist";
-import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BASE_2D_CONTEXT_OPTIONS,
-  DEFAULT_SCROLLBAR_WIDTH,
+  DEFAULT_INTERSECTION_OPTIONS,
 } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
@@ -18,8 +18,10 @@ export const scales = [
   5,
 ];
 
+const CANVAS_MARGIN_PX = 4;
+
 const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
-  const adjustedWindowWidth = windowWidth - DEFAULT_SCROLLBAR_WIDTH;
+  const adjustedWindowWidth = windowWidth - CANVAS_MARGIN_PX * 2;
 
   if (adjustedWindowWidth >= canvasWidth) return 1;
 
@@ -156,7 +158,10 @@ const usePDF = ({
               entries.forEach(({ isIntersecting }) => {
                 if (isIntersecting) argument(id, "page", pageNumber + 1);
               }),
-            { root: containerRef.current, threshold: 0.4 }
+            {
+              root: containerRef.current,
+              ...DEFAULT_INTERSECTION_OPTIONS,
+            }
           );
 
           li.append(page);

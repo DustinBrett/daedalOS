@@ -1,5 +1,4 @@
-import type { PlaywrightTestConfig } from "@playwright/test";
-import { devices } from "@playwright/test";
+import { type PlaywrightTestConfig, devices } from "@playwright/test";
 
 const { CI, PORT = 3000 } = process.env;
 const {
@@ -24,7 +23,7 @@ const config: PlaywrightTestConfig = {
     video: "retain-on-failure",
   },
   webServer: {
-    command: CI ? "yarn start" : "yarn dev",
+    command: CI ? "yarn serve" : "yarn dev",
     url: baseURL,
   },
   workers: CI ? 1 : undefined,

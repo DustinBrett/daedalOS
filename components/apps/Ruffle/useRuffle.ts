@@ -1,10 +1,10 @@
-import type { RufflePlayer } from "components/apps/Ruffle/types";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { basename, extname } from "path";
+import { useCallback, useEffect, useState } from "react";
+import { type RufflePlayer } from "components/apps/Ruffle/types";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename, extname } from "path";
-import { useCallback, useEffect, useState } from "react";
 import { loadFiles } from "utils/functions";
 
 const useRuffle = ({

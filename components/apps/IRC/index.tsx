@@ -1,9 +1,9 @@
+import { useEffect, useRef, useState } from "react";
 import { getNetworkConfig } from "components/apps/IRC/config";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useEffect, useRef, useState } from "react";
 import { IFRAME_CONFIG } from "utils/constants";
 
 type KiwiIrcClient = {

@@ -1,7 +1,7 @@
-import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
-import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
+import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
+import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 
 type StyledSearchProps = {
   $singleLine: boolean;

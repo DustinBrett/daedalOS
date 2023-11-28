@@ -1,8 +1,7 @@
 {
   "editor.codeActionsOnSave": {
     "source.addMissingImports": "always",
-    "source.fixAll": "always",
-    "source.organizeImports": "always"
+    "source.fixAll": "always"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true

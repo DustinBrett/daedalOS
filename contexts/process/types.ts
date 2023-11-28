@@ -1,10 +1,14 @@
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import type {
-  FileReaders,
-  ObjectReaders,
-} from "components/system/Dialogs/Transfer/useTransferDialog";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import {
+  type FileReaders,
+  type ObjectReaders,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+
+type BrowserProcessArguments = {
+  initialTitle?: string;
+};
 
 type DialogProcessArguments = {
   fileReaders?: FileReaders | ObjectReaders;
@@ -47,6 +51,7 @@ type BaseProcessArguments = {
 };
 
 export type ProcessArguments = BaseProcessArguments &
+  BrowserProcessArguments &
   DialogProcessArguments &
   MonacoProcessArguments &
   PdfProcessArguments;

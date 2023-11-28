@@ -1,13 +1,13 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import { HOME_PAGE, bookmarks } from "components/apps/Browser/config";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -30,7 +30,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
-  const { url = "" } = process || {};
+  const { initialTitle = "", url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(initialUrl, id);
@@ -67,7 +67,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
             prependFileToTitle(`${addressInput} - Google Search`);
           } else {
-            const { name = "" } =
+            const { name = initialTitle } =
               bookmarks?.find(
                 ({ url: bookmarkUrl }) => bookmarkUrl === addressInput
               ) || {};
@@ -76,7 +76,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }
 
           if (addressInput.startsWith("ipfs://")) {
-            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
+            setIcon(id, "/System/Icons/Favicons/ipfs.png");
           } else {
             const favicon = new Image();
             const faviconUrl = `${
@@ -105,7 +105,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         }
       }
     },
-    [exists, id, prependFileToTitle, readFile, setIcon]
+    [exists, id, initialTitle, prependFileToTitle, readFile, setIcon]
   );
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   }, [history, position, process, setUrl]);
 
   useEffect(() => {
-    if (iframeRef?.current) {
+    if (iframeRef.current) {
       linkElement(id, "peekElement", iframeRef.current);
     }
   }, [id, linkElement]);

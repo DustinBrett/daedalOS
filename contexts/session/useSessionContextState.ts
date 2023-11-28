@@ -1,19 +1,24 @@
-import type { ApiError } from "browserfs/dist/node/core/api_error";
-import type { SortBy } from "components/system/Files/FileManager/useSortBy";
-import { useFileSystem } from "contexts/fileSystem";
-import type {
-  IconPositions,
-  RecentFiles,
-  SessionContextState,
-  SessionData,
-  SortOrders,
-  WallpaperFit,
-  WindowStates,
-} from "contexts/session/types";
 import { dirname, extname } from "path";
+import {
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { type ApiError } from "browserfs/dist/node/core/api_error";
+import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { useFileSystem } from "contexts/fileSystem";
+import {
+  type IconPositions,
+  type RecentFiles,
+  type SessionContextState,
+  type SessionData,
+  type SortOrders,
+  type WallpaperFit,
+  type WindowStates,
+} from "contexts/session/types";
 import defaultSession from "public/session.json";
-import type { SetStateAction } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DEFAULT_ASCENDING,
   DEFAULT_CLOCK_SOURCE,
@@ -290,6 +295,7 @@ const useSessionContextState = (): SessionContextState => {
 
         loadingDebounceRef.current = window.setTimeout(() => {
           loadingDebounceRef.current = 0;
+          window.sessionIsWriteable = true;
         }, TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
 
         setSessionLoaded(true);

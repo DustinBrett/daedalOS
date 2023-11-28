@@ -1,3 +1,6 @@
+import { useTheme } from "styled-components";
+import { useCallback, useRef, useState } from "react";
+import { type Variant } from "framer-motion";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
@@ -9,9 +12,6 @@ import {
   maybeCloseTaskbarMenu,
 } from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
-import type { Variant } from "framer-motion";
-import { useCallback, useRef, useState } from "react";
-import { useTheme } from "styled-components";
 import {
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
@@ -47,6 +47,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     <StyledStartMenu
       ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
+      id="startMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,

@@ -1,15 +1,15 @@
-import type {
-  ButterChurnPresets,
-  ButterChurnWebampPreset,
-  SkinData,
-  WebampApiResponse,
-  WebampCI,
+import { type Track, type URLTrack } from "webamp";
+import { type Position } from "react-rnd";
+import {
+  type ButterChurnPresets,
+  type ButterChurnWebampPreset,
+  type SkinData,
+  type WebampApiResponse,
+  type WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import type { Position } from "react-rnd";
 import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
 import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
-import type { Track, URLTrack } from "webamp";
 
 const BROKEN_PRESETS = new Set([
   "Flexi - alien fish pond",
@@ -359,7 +359,8 @@ type MetadataGetter = () => Promise<Track["metaData"]>;
 type MetadataProvider = (url: string) => MetadataGetter;
 
 const removeCData = (string = ""): string =>
-  string.replace(/<!\[CDATA\[|]]>/g, "");
+  // eslint-disable-next-line unicorn/better-regex
+  string.replace(/<!\[CDATA\[|\]\]>/g, "");
 
 const streamingMetadataProviders: Record<string, MetadataProvider> = {
   "somafm.com": (url: string) => async () => {

@@ -1,21 +1,22 @@
+import { basename, extname } from "path";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { useIsVisible } from "components/apps/Messenger/hooks";
+import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
-import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import {
+  type ResultInfo,
   fileType,
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
 import { useFileSystem } from "contexts/fileSystem";
-import type { ProcessArguments } from "contexts/process/types";
+import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
-import { basename, extname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
+import { useIsVisible } from "hooks/useIsVisible";
 
 type ResultEntryProps = {
   active?: boolean;
@@ -25,6 +26,10 @@ type ResultEntryProps = {
   setActiveItem: React.Dispatch<React.SetStateAction<string>>;
   url: string;
 };
+
+const INITIAL_INFO = {
+  icon: UNKNOWN_ICON,
+} as ResultInfo;
 
 const ResultEntry: FC<ResultEntryProps> = ({
   active,
@@ -38,12 +43,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const { updateRecentFiles } = useSession();
   const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
-  const [info, setInfo] = useState<ResultInfo>({
-    icon: UNKNOWN_ICON,
-  } as ResultInfo);
+  const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const extension = extname(info?.url || url);
+  const baseName = basename(url, ".url");
   const name = useMemo(() => {
-    let text = basename(url, ".url");
+    let text = baseName;
 
     try {
       text = text.replace(
@@ -55,7 +59,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
     }
 
     return text;
-  }, [searchTerm, url]);
+  }, [baseName, searchTerm]);
   const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
   const baseUrl = isYTUrl ? url : url || info?.url;
   const lastModified = useMemo(
@@ -78,22 +82,47 @@ const ResultEntry: FC<ResultEntryProps> = ({
     : false;
   const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const { onContextMenuCapture } = useResultsContextMenu(info?.url);
+  const abortController = useRef<AbortController>();
 
   useEffect(() => {
     const activeEntry = details || hovered;
 
-    if (activeEntry || isVisible) {
-      if (activeEntry) stat(url).then(setStats);
+    if (!stats && activeEntry) stat(url).then(setStats);
+    if (abortController.current) {
+      if (!isVisible) {
+        abortController.current.abort();
+        abortController.current = undefined;
+      }
+    } else if ((activeEntry || isVisible) && info === INITIAL_INFO) {
+      abortController.current = new AbortController();
 
-      getResultInfo(fs, url).then(setInfo);
+      getResultInfo(fs, url, abortController.current.signal).then(
+        (resultsInfo) => {
+          if (resultsInfo) setInfo(resultsInfo);
+          abortController.current = undefined;
+        }
+      );
     }
-  }, [details, fs, hovered, isVisible, stat, url]);
+  }, [details, fs, hovered, info, isVisible, stat, stats, url]);
+
+  useEffect(
+    () => () => {
+      try {
+        abortController.current?.abort();
+      } catch {
+        // Failed to abort getResultInfo
+      }
+    },
+    []
+  );
 
   // TODO: Search for directories also?
 
   return (
     <li
       ref={elementRef}
+      aria-label={baseName}
       className={active ? "active-item" : undefined}
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
       onMouseOver={() => !details && setHovered(true)}
@@ -106,6 +135,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
           openApp(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
           if (baseUrl && info?.pid) updateRecentFiles(baseUrl, info?.pid);
         }}
+        onContextMenuCapture={
+          !isYTUrl && !isNostrUrl && !isAppShortcut && !isDirectory
+            ? onContextMenuCapture
+            : undefined
+        }
       >
         <Icon
           displaySize={details ? 32 : 16}

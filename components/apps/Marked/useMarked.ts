@@ -1,10 +1,11 @@
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { basename } from "path";
+import { useCallback, useEffect } from "react";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { basename } from "path";
-import { useCallback, useEffect } from "react";
-import { haltEvent, isYouTubeUrl, loadFiles } from "utils/functions";
+import { loadFiles } from "utils/functions";
+import { useLinkHandler } from "hooks/useLinkHandler";
 
 type MarkedOptions = {
   headerIds?: boolean;
@@ -30,7 +31,8 @@ const useMarked = ({
 }: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
   const { prependFileToTitle } = useTitle(id);
-  const { open, processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const openLink = useLinkHandler();
   const loadFile = useCallback(async () => {
     const markdownFile = await readFile(url);
     const container = containerRef.current?.querySelector(
@@ -43,22 +45,23 @@ const useMarked = ({
           headerIds: false,
         })
       );
-      container.querySelectorAll("a").forEach((link) =>
-        link.addEventListener("click", (event) => {
-          haltEvent(event);
-
-          if (isYouTubeUrl(link.href)) {
-            open("VideoPlayer", { url: link.href });
-          } else {
-            window.open(link.href, "_blank", "noopener, noreferrer");
-          }
-        })
-      );
+      container
+        .querySelectorAll("a")
+        .forEach((link) =>
+          link.addEventListener("click", (event) =>
+            openLink(
+              event,
+              link.href || "",
+              link.pathname,
+              link.textContent || ""
+            )
+          )
+        );
       container.scrollTop = 0;
     }
 
     prependFileToTitle(basename(url));
-  }, [containerRef, open, prependFileToTitle, readFile, url]);
+  }, [containerRef, openLink, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (loading) {

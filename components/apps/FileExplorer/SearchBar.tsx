@@ -1,13 +1,13 @@
+import { basename } from "path";
+import { memo, useEffect, useRef, useState } from "react";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useMenu } from "contexts/menu";
-import type { MenuItem } from "contexts/menu/useMenuContextState";
+import { type MenuItem } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename } from "path";
-import { memo, useEffect, useRef, useState } from "react";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { preloadLibs } from "utils/functions";
 import { SEARCH_LIBS, useSearch } from "utils/search";
@@ -43,7 +43,11 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           ]
             .slice(0, MAX_ENTRIES - 1)
             .map(async ({ ref: path }) => {
-              const { icon, url: infoUrl, pid } = await getResultInfo(fs, path);
+              const {
+                icon,
+                url: infoUrl,
+                pid = "",
+              } = (await getResultInfo(fs, path)) || {};
 
               return {
                 action: () => {

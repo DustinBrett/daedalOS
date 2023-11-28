@@ -1,9 +1,9 @@
-import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
+import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import {
   disableControls,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaNet/config";
-import type { VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
+import { type VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
 import { loadFiles } from "utils/functions";
 
 const vantaNet = (

@@ -1,10 +1,10 @@
-import type {
-  FullscreenDocument,
-  FullscreenElement,
-  NavigatorWithKeyboard,
-  ViewportContextState,
-} from "contexts/viewport/types";
 import { useEffect, useState } from "react";
+import {
+  type FullscreenDocument,
+  type FullscreenElement,
+  type NavigatorWithKeyboard,
+  type ViewportContextState,
+} from "contexts/viewport/types";
 import { isFirefox, isSafari } from "utils/functions";
 
 const FULLSCREEN_LOCKED_KEYS = ["MetaLeft", "MetaRight", "Escape"];

@@ -1,14 +1,14 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import StyledPaint from "components/apps/Paint/StyledPaint";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import type { WallpaperFit } from "contexts/session/types";
-import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type WallpaperFit } from "contexts/session/types";
 import {
   DESKTOP_PATH,
   IFRAME_CONFIG,

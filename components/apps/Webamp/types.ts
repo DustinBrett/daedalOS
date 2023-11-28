@@ -1,6 +1,5 @@
-import type { Position } from "react-rnd";
-import type Webamp from "webamp";
-import type { Track } from "webamp";
+import { type Position } from "react-rnd";
+import { type Track, type default as Webamp } from "webamp";
 
 type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;

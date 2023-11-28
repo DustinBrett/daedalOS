@@ -1,3 +1,5 @@
+import { basename, dirname, extname } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -7,16 +9,14 @@ import {
   RightArrow,
 } from "components/system/Taskbar/Search/Icons";
 import StyledDetails from "components/system/Taskbar/Search/StyledDetails";
-import type { ResultInfo } from "components/system/Taskbar/Search/functions";
 import {
+  type ResultInfo,
   fileType,
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import type { ProcessArguments } from "contexts/process/types";
+import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME } from "utils/constants";
@@ -49,15 +49,20 @@ const Details: FC<{
   const isDirectory =
     stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
   const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
+  const currentUrlRef = useRef(url);
 
   useEffect(() => {
-    stat(url).then(setStats);
-    getResultInfo(fs, url).then(setInfo);
+    stat(url).then(
+      (newStats) => currentUrlRef.current === url && setStats(newStats)
+    );
+    getResultInfo(fs, url).then(
+      (newInfo) => newInfo && currentUrlRef.current === url && setInfo(newInfo)
+    );
   }, [fs, stat, url]);
 
   useEffect(() => {
     elementRef.current?.scrollTo({ behavior: "smooth", top: 0 });
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
+    currentUrlRef.current = url;
   }, [url]);
 
   return info?.url && stats ? (

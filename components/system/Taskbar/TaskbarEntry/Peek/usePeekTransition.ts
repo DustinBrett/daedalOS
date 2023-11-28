@@ -1,4 +1,4 @@
-import type { MotionProps } from "framer-motion";
+import { type MotionProps } from "framer-motion";
 import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_SECONDS } from "utils/constants";
 

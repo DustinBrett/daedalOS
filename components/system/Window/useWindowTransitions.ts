@@ -1,6 +1,6 @@
-import { useProcesses } from "contexts/process";
-import type { MotionProps, Variant } from "framer-motion";
 import { useEffect, useLayoutEffect, useState } from "react";
+import { type MotionProps, type Variant } from "framer-motion";
+import { useProcesses } from "contexts/process";
 import { TASKBAR_HEIGHT, TRANSITIONS_IN_SECONDS } from "utils/constants";
 import { viewHeight, viewWidth } from "utils/functions";
 

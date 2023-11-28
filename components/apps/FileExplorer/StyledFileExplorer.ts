@@ -1,7 +1,7 @@
+import styled from "styled-components";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import StyledFileEntry from "components/system/Files/Views/Icon/StyledFileEntry";
 import StyledFileManager from "components/system/Files/Views/Icon/StyledFileManager";
-import styled from "styled-components";
 
 const StyledFileExplorer = styled.div`
   ${StyledFileManager} {

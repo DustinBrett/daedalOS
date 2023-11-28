@@ -243,7 +243,7 @@
 
 ```
 yarn install
-yarn build:fs
+yarn build:prebuild
 yarn dev
 ```
 
@@ -252,7 +252,7 @@ yarn dev
 ```
 yarn install
 yarn build
-yarn start
+yarn serve
 ```
 
 ##### Docker

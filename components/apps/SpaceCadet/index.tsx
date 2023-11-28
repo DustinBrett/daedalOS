@@ -1,7 +1,7 @@
 import StyledSpaceCadet from "components/apps/SpaceCadet/StyledSpaceCadet";
 import useSpaceCadet from "components/apps/SpaceCadet/useSpaceCadet";
 import AppContainer from "components/system/Apps/AppContainer";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { haltEvent } from "utils/functions";
 
 const SpaceCadet: FC<ComponentProcessProps> = ({ id }) => (

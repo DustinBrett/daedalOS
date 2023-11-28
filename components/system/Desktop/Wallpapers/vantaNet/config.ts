@@ -1,4 +1,4 @@
-import type { VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
+import { type VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
 
 export const config: VantaNetConfig = {
   backgroundColor: "hsl(0, 0%, 16%)",

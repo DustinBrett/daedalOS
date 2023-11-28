@@ -2,7 +2,7 @@ import StyledIconFileEntry from "components/system/Files/Views/Icon/StyledFileEn
 import StyledIconFileManager from "components/system/Files/Views/Icon/StyledFileManager";
 import StyledListFileEntry from "components/system/Files/Views/List/StyledFileEntry";
 import StyledListFileManager from "components/system/Files/Views/List/StyledFileManager";
-import type { IconProps } from "styles/common/Icon";
+import { type IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
   $selecting?: boolean;

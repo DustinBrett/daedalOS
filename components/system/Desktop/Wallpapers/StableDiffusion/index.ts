@@ -1,5 +1,5 @@
-import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
-import type { WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
+import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { loadFiles } from "utils/functions";
 
 export const libs = [

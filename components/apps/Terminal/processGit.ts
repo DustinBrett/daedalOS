@@ -1,15 +1,15 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
-import { help } from "components/apps/Terminal/functions";
-import type { LocalEcho } from "components/apps/Terminal/types";
-import type index from "isomorphic-git";
-import type {
-  AuthCallback,
-  GitAuth,
-  MessageCallback,
-  ProgressCallback,
-} from "isomorphic-git";
-import type { ParsedArgs } from "minimist";
 import { join } from "path";
+import { type FSModule } from "browserfs/dist/node/core/FS";
+import {
+  type AuthCallback,
+  type GitAuth,
+  type MessageCallback,
+  type ProgressCallback,
+  type default as index,
+} from "isomorphic-git";
+import { type ParsedArgs } from "minimist";
+import { type LocalEcho } from "components/apps/Terminal/types";
+import { help } from "components/apps/Terminal/functions";
 
 const corsProxy = "https://cors.isomorphic-git.org";
 

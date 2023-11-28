@@ -1,7 +1,6 @@
+import { useTheme } from "styled-components";
 import { Search as SearchIcon } from "components/system/Taskbar/Search/Icons";
 import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
-import { useTheme } from "styled-components";
-
 import { SEARCH_BUTTON_TITLE } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { DIV_BUTTON_PROPS } from "utils/constants";

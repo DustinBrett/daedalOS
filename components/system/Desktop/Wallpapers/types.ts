@@ -1,7 +1,7 @@
-import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
 import type MatrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
-import type { VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
+import { type VantaNetConfig } from "components/system/Desktop/Wallpapers/vantaNet/types";
 
 export type WallpaperConfig =
   | Partial<StableDiffusionConfig>

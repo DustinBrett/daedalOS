@@ -1,24 +1,27 @@
-import type { DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
-import type { Size } from "components/system/Window/RndWindow/useResizable";
-import type { Processes, RelativePosition } from "contexts/process/types";
-import type {
-  IconPosition,
-  IconPositions,
-  SortOrders,
-} from "contexts/session/types";
-import type { Position } from "eruda";
-import type HtmlToImage from "html-to-image";
 import { basename, dirname, extname, join } from "path";
+import { type Position } from "eruda";
+import type HtmlToImage from "html-to-image";
+import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type Processes, type RelativePosition } from "contexts/process/types";
+import {
+  type IconPosition,
+  type IconPositions,
+  type SortOrders,
+} from "contexts/session/types";
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_PATH,
   ICON_RES_MAP,
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   SMALLEST_JXL_FILE,
+  SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
+  USER_ICON_PATH,
 } from "utils/constants";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
@@ -111,16 +114,48 @@ export const imageSrcs = (
   imagePath: string,
   size: number,
   extension: string,
-  failedUrls?: string[]
+  failedUrls = [] as string[]
 ): string => {
-  return [
+  const srcs = [
     imageSrc(imagePath, size, 1, extension),
     imageSrc(imagePath, size, 2, extension),
     imageSrc(imagePath, size, 3, extension),
   ]
     .filter(
-      (url) => !failedUrls?.length || failedUrls?.includes(url.split(" ")[0])
+      (url) => failedUrls.length === 0 || failedUrls.includes(url.split(" ")[0])
     )
+    .join(", ");
+
+  return failedUrls?.includes(srcs) ? "" : srcs;
+};
+
+export const createFallbackSrcSet = (
+  src: string,
+  failedUrls: string[]
+): string => {
+  const failedSizes = new Set(
+    new Set(
+      failedUrls.map((failedUrl) => {
+        const fileName = basename(src, extname(src));
+
+        return Number(
+          failedUrl
+            .replace(`${ICON_PATH}/`, "")
+            .replace(`${USER_ICON_PATH}/`, "")
+            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.webp`, "")
+            .split("x")[0]
+        );
+      })
+    )
+  );
+  const possibleSizes = SUPPORTED_ICON_SIZES.filter(
+    (size) => !failedSizes.has(size)
+  );
+
+  return possibleSizes
+    .map((size) => imageSrc(src, size, 1, extname(src)))
+    .reverse()
     .join(", ");
 };
 
@@ -665,7 +700,9 @@ export const isSafari = (): boolean => {
   if (typeof window === "undefined") return false;
   if (IS_SAFARI ?? false) return IS_SAFARI;
 
-  IS_SAFARI = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+  IS_SAFARI = /^(?:(?!chrome|android).)*safari/i.test(
+    window.navigator.userAgent
+  );
 
   return IS_SAFARI;
 };
@@ -723,7 +760,10 @@ export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
 });
 
 export const isYouTubeUrl = (url: string): boolean =>
-  url.includes("youtube.com/") || url.includes("youtu.be/");
+  (url.includes("youtube.com/") || url.includes("youtu.be/")) &&
+  !url.includes("youtube.com/@") &&
+  !url.includes("/channel/") &&
+  !url.includes("/c/");
 
 export const getYouTubeUrlId = (url: string): string => {
   try {

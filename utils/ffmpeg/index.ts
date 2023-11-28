@@ -1,9 +1,9 @@
-import type { LocalEcho } from "components/apps/Terminal/types";
 import { basename, dirname, extname, join } from "path";
-import type {
-  FFmpegTranscodeFile,
-  IFFmpegInstance,
-  IFFmpegLog,
+import { type LocalEcho } from "components/apps/Terminal/types";
+import {
+  type FFmpegTranscodeFile,
+  type IFFmpegInstance,
+  type IFFmpegLog,
 } from "utils/ffmpeg/types";
 import { loadFiles } from "utils/functions";
 

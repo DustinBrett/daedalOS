@@ -1,4 +1,4 @@
-import type { Plugin } from "prettier";
+import { type Plugin } from "prettier";
 
 type Parser = { parser: string; plugins: Plugin[] };
 type PrettierPlugin = { default: Plugin };

@@ -1,3 +1,8 @@
+import { basename, dirname, extname, isAbsolute, join } from "path";
+import { type Terminal } from "xterm";
+import { useTheme } from "styled-components";
+import { useCallback, useEffect, useRef } from "react";
+import type UAParser from "ua-parser-js";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import {
   BACKUP_NAME_SERVER,
@@ -20,11 +25,11 @@ import {
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import { runPython } from "components/apps/Terminal/python";
-import type {
-  CommandInterpreter,
-  LocalEcho,
-  NsEntry,
-  NsResponse,
+import {
+  type CommandInterpreter,
+  type LocalEcho,
+  type NsEntry,
+  type NsResponse,
 } from "components/apps/Terminal/types";
 import {
   displayLicense,
@@ -43,10 +48,6 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { basename, dirname, extname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useRef } from "react";
-import { useTheme } from "styled-components";
-import type UAParser from "ua-parser-js";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
@@ -66,7 +67,6 @@ import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
-import type { Terminal } from "xterm";
 
 const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";

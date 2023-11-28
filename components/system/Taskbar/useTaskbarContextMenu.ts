@@ -1,13 +1,13 @@
+import { useMemo } from "react";
 import { useMenu } from "contexts/menu";
-import type {
-  ContextMenuCapture,
-  MenuItem,
+import {
+  type ContextMenuCapture,
+  type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { useMemo } from "react";
 import { MENU_SEPERATOR } from "utils/constants";
 import { toggleShowDesktop } from "utils/functions";
 

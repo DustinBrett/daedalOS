@@ -1,16 +1,16 @@
+import { useEffect, useRef, useState } from "react";
 import {
   getInfoWithExtension,
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { isMountedFolder } from "contexts/fileSystem/functions";
-import { useEffect, useRef, useState } from "react";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
 
 export type FileInfo = {
   comment?: string;
-  getIcon?: true | ((signal: AbortSignal) => void);
+  getIcon?: true | ((signal: AbortSignal) => void | Promise<void>);
   icon: string;
   pid: string;
   subIcons?: string[];
@@ -18,16 +18,19 @@ export type FileInfo = {
   url: string;
 };
 
+const INITIAL_FILE_INFO: FileInfo = {
+  icon: "",
+  pid: "",
+  url: "",
+};
+
 const useFileInfo = (
   path: string,
   isDirectory = false,
-  hasNewFolderIcon = false
+  hasNewFolderIcon = false,
+  isVisible = true
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
-  const [info, setInfo] = useState<FileInfo>(() => ({
-    icon: "",
-    pid: "",
-    url: "",
-  }));
+  const [info, setInfo] = useState<FileInfo>(INITIAL_FILE_INFO);
   const updatingInfo = useRef(false);
   const updateInfo = (newInfo: FileInfo): void => {
     setInfo(newInfo);
@@ -36,7 +39,13 @@ const useFileInfo = (
   const { fs, rootFs } = useFileSystem();
 
   useEffect(() => {
-    if (!updatingInfo.current && fs && rootFs) {
+    if (
+      fs &&
+      rootFs &&
+      !updatingInfo.current &&
+      isVisible &&
+      info === INITIAL_FILE_INFO
+    ) {
       updatingInfo.current = true;
 
       const extension = getExtension(path);
@@ -59,7 +68,7 @@ const useFileInfo = (
         getInfoWithExtension(fs, path, extension, updateInfo);
       }
     }
-  }, [fs, hasNewFolderIcon, isDirectory, path, rootFs]);
+  }, [fs, hasNewFolderIcon, info, isDirectory, isVisible, path, rootFs]);
 
   return [info, setInfo];
 };

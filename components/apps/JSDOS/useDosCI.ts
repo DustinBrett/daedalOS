@@ -1,3 +1,7 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useState } from "react";
+import { type DosInstance } from "emulators-ui/dist/types/js-dos";
+import { type CommandInterface } from "emulators";
 import {
   globals,
   saveExtension,
@@ -6,10 +10,6 @@ import {
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import type { CommandInterface } from "emulators";
-import type { DosInstance } from "emulators-ui/dist/types/js-dos";
-import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,

@@ -1,7 +1,9 @@
-import type { TimeScale } from "components/apps/Messenger/HistoryContext";
-import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
-import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 import { useState } from "react";
+import {
+  type TimeScale,
+  useHistoryContext,
+} from "components/apps/Messenger/HistoryContext";
+import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_DAY } from "utils/constants";
 

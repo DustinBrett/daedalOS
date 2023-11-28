@@ -1,7 +1,8 @@
+import { useRef } from "react";
 import Profile from "components/apps/Messenger/Profile";
 import StyledChatProfile from "components/apps/Messenger/StyledChatProfile";
-import { useIsVisible, useNostrProfile } from "components/apps/Messenger/hooks";
-import { useRef } from "react";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { useIsVisible } from "hooks/useIsVisible";
 
 const ChatProfile: FC<{ publicKey: string }> = ({ publicKey }) => {
   const elementRef = useRef<HTMLLIElement | null>(null);

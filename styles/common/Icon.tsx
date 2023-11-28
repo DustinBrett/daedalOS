@@ -1,7 +1,16 @@
 import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { ICON_CACHE, YT_ICON_CACHE } from "utils/constants";
-import { cleanUpBufferUrl, imageSrc, imageSrcs } from "utils/functions";
+import {
+  ICON_CACHE,
+  SUPPORTED_ICON_PIXEL_RATIOS,
+  YT_ICON_CACHE,
+} from "utils/constants";
+import {
+  cleanUpBufferUrl,
+  createFallbackSrcSet,
+  imageSrc,
+  imageSrcs,
+} from "utils/functions";
 
 export type IconProps = {
   $eager?: boolean;
@@ -39,8 +48,6 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   top: ${({ $offset }) => $offset || undefined};
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
-
-const SUPPORTED_PIXEL_RATIOS = [3, 2, 1];
 
 const Icon = forwardRef<
   HTMLImageElement,
@@ -83,19 +90,28 @@ const Icon = forwardRef<
       onError={({ target }) => {
         const { currentSrc = "" } = (target as HTMLImageElement) || {};
 
-        if (currentSrc && !failedUrls.includes(currentSrc)) {
+        try {
           const { pathname } = new URL(currentSrc);
 
-          setFailedUrls((currentFailedUrls) => [
-            ...currentFailedUrls,
-            pathname,
-          ]);
+          if (pathname && !failedUrls.includes(pathname)) {
+            setFailedUrls((currentFailedUrls) => [
+              ...currentFailedUrls,
+              pathname,
+            ]);
+          }
+        } catch {
+          // Ignore failure to log failed url
         }
       }}
       onLoad={() => setLoaded(true)}
       src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
       srcSet={
-        isStaticIcon ? undefined : imageSrcs(src, imgSize, ".png", failedUrls)
+        isStaticIcon
+          ? undefined
+          : imageSrcs(src, imgSize, ".png", failedUrls) ||
+            (failedUrls.length === 0
+              ? ""
+              : createFallbackSrcSet(src, failedUrls))
       }
       {...componentProps}
       {...dimensionProps}
@@ -105,7 +121,7 @@ const Icon = forwardRef<
   return (
     <picture>
       {!isStaticIcon &&
-        SUPPORTED_PIXEL_RATIOS.map((ratio) => {
+        SUPPORTED_ICON_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, imgSize, ratio, ".webp");
           const mediaRatio = ratio - 0.99;
 

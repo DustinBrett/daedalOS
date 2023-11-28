@@ -8,6 +8,11 @@ type Bookmark = {
 
 export const bookmarks: Bookmark[] = [
   {
+    icon: FAVICON_BASE_PATH,
+    name: "icefishOS",
+    url: "https://icefi.sh/",
+  },
+  {
     icon: "/System/Icons/Favicons/google.webp",
     name: "Google",
     url: "https://www.google.com/webhp?igu=1",
@@ -23,11 +28,6 @@ export const bookmarks: Bookmark[] = [
     url: "https://archive.org/",
   },
   {
-    icon: FAVICON_BASE_PATH,
-    name: "icefishOS",
-    url: "https://icefi.sh/",
-  },
-  {
     icon: "/System/Icons/Favicons/win96.webp",
     name: "Windows 96",
     url: "https://windows96.net/",
@@ -36,11 +36,6 @@ export const bookmarks: Bookmark[] = [
     icon: "/System/Icons/Favicons/aos.webp",
     name: "AaronOS",
     url: "https://aaronos.dev/",
-  },
-  {
-    icon: "/System/Icons/Favicons/diablo.webp",
-    name: "Diablo",
-    url: "https://d07riv.github.io/diabloweb/",
   },
 ];
 

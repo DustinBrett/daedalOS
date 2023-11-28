@@ -1,8 +1,8 @@
-import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
-import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import { extname } from "path";
-import { useCallback, useLayoutEffect, useRef } from "react";
 import { useTheme } from "styled-components";
+import { useCallback, useLayoutEffect, useRef } from "react";
+import { getTextWrapData } from "components/system/Files/FileEntry/functions";
+import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

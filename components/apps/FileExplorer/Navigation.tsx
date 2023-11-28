@@ -1,3 +1,5 @@
+import { basename, dirname } from "path";
+import { forwardRef, useMemo } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -11,8 +13,6 @@ import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitleba
 import { useMenu } from "contexts/menu";
 import { useProcesses } from "contexts/process";
 import useHistory from "hooks/useHistory";
-import { basename, dirname } from "path";
-import { forwardRef, useMemo } from "react";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { haltEvent, label } from "utils/functions";

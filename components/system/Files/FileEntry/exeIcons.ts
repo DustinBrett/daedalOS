@@ -1,12 +1,11 @@
-import type {
-  IconGroupEntry,
-  IconGroupItem,
-  ResourceEntry,
+import {
+  type IconGroupEntry,
+  type IconGroupItem,
+  type ResourceEntry,
 } from "resedit/dist/resource";
 
 const RESERVED = 0;
 const ICON_TYPE = {
-  CUR: 2,
   ICO: 1,
 };
 

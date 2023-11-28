@@ -1,22 +1,23 @@
+import { basename, dirname, extname, join } from "path";
+import { type URLTrack } from "webamp";
+import { useMemo } from "react";
 import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
-import type { FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import type { FileActions } from "components/system/Files/FileManager/useFolder";
+import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { type FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
 import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useMenu } from "contexts/menu";
-import type {
-  ContextMenuCapture,
-  MenuItem,
+import {
+  type ContextMenuCapture,
+  type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
-import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   CURSOR_FILE_EXTENSIONS,
@@ -40,7 +41,7 @@ import {
   VIDEO_DECODE_FORMATS,
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
-import type { FFmpegTranscodeFile } from "utils/ffmpeg/types";
+import { type FFmpegTranscodeFile } from "utils/ffmpeg/types";
 import {
   getExtension,
   isFirefox,
@@ -51,8 +52,8 @@ import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
-import type { ImageMagickConvertFile } from "utils/imagemagick/types";
-import type { URLTrack } from "webamp";
+import { type ImageMagickConvertFile } from "utils/imagemagick/types";
+import { Share } from "components/system/Menu/MenuIcons";
 
 const { alias } = PACKAGE_DATA;
 
@@ -400,9 +401,9 @@ const useFileContextMenu = (
                 try {
                   if (navigator.canShare?.(shareData)) {
                     menuItems.unshift({
+                      SvgIcon: Share,
                       action: () => navigator.share(shareData),
                       label: "Share",
-                      share: true,
                     });
                   }
                 } catch {

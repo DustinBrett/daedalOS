@@ -1,5 +1,5 @@
-import StyledButton from "components/system/Dialogs/StyledButton";
 import styled from "styled-components";
+import StyledButton from "components/system/Dialogs/StyledButton";
 
 const StyledRun = styled.div`
   background-color: #fbf1c7;

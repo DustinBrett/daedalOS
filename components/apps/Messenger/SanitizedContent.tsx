@@ -1,9 +1,9 @@
+import { sanitize } from "dompurify";
+import { useMemo } from "react";
 import {
   convertImageLinksToHtml,
   convertNewLinesToBreaks,
 } from "components/apps/Messenger/functions";
-import { sanitize } from "dompurify";
-import { useMemo } from "react";
 
 const SanitizedContent: FC<{ content: string; decrypted: boolean }> = ({
   content,

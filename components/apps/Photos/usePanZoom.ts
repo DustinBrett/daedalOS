@@ -1,13 +1,13 @@
-import Panzoom from "@panzoom/panzoom";
-import type {
-  PanzoomEventDetail,
-  PanzoomObject,
-} from "@panzoom/panzoom/dist/src/types";
-import useTitle from "components/system/Window/useTitle";
-import { useProcesses } from "contexts/process";
-import useResizeObserver from "hooks/useResizeObserver";
 import { basename } from "path";
+import Panzoom from "@panzoom/panzoom";
+import {
+  type PanzoomEventDetail,
+  type PanzoomObject,
+} from "@panzoom/panzoom/dist/src/types";
 import { useCallback, useEffect, useState } from "react";
+import useResizeObserver from "hooks/useResizeObserver";
+import { useProcesses } from "contexts/process";
+import useTitle from "components/system/Window/useTitle";
 
 export const panZoomConfig = {
   cursor: "default",

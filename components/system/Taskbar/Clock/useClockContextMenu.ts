@@ -1,7 +1,7 @@
-import { useMenu } from "contexts/menu";
-import type { ContextMenuCapture } from "contexts/menu/useMenuContextState";
-import { useSession } from "contexts/session";
 import { useMemo } from "react";
+import { useMenu } from "contexts/menu";
+import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
+import { useSession } from "contexts/session";
 
 const useClockContextMenu = (
   toggleCalendar: (showCalendar?: boolean) => void

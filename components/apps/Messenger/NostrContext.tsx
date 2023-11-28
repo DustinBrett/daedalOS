@@ -1,5 +1,4 @@
-import type { Event as NostrEvent, Relay } from "nostr-tools";
-import { relayInit } from "nostr-tools";
+import { type Event as NostrEvent, type Relay, relayInit } from "nostr-tools";
 import {
   createContext,
   useCallback,

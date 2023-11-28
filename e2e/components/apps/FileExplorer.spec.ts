@@ -1,3 +1,4 @@
+import { dirname, extname } from "path";
 import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
@@ -59,10 +60,10 @@ import {
   selectArea,
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
+  windowAnimationIsFinished,
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
-import { dirname, extname } from "path";
 
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
@@ -302,6 +303,7 @@ test.describe("has files & folders", () => {
 
   test("can select multiple entries", async ({ page }) => {
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
+    await windowAnimationIsFinished({ page });
 
     const { x = 0, y = 0 } =
       (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};

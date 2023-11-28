@@ -1,14 +1,14 @@
-import type { FSModule } from "browserfs/dist/node/core/FS";
+import { join } from "path";
+import ini from "ini";
+import { type FSModule } from "browserfs/dist/node/core/FS";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
-import type { FileInfo } from "components/system/Files/FileEntry/useFileInfo";
-import type { FileStat } from "components/system/Files/FileManager/functions";
+import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import { get9pModifiedTime } from "contexts/fileSystem/core";
 import { isMountedFolder } from "contexts/fileSystem/functions";
-import type { RootFileSystem } from "contexts/fileSystem/useAsyncFs";
+import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
-import ini from "ini";
-import { join } from "path";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
@@ -240,21 +240,22 @@ export const makeExternalShortcut = (contents: Buffer): Buffer => {
 };
 
 const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
-  new Promise((resolveIcons) => {
+  new Promise((resolve) => {
     const iconCacheDirectory = join(ICON_CACHE, path);
 
     fs?.readdir(
       iconCacheDirectory,
       async (dirError, [firstIcon, ...otherIcons] = []) => {
-        if (dirError) resolveIcons([]);
+        if (dirError) resolve([]);
         else {
-          resolveIcons(
+          resolve(
             (
               await Promise.all(
                 [firstIcon, otherIcons[otherIcons.length - 1]]
                   .filter(Boolean)
                   .map(
                     (cachedIcon): Promise<string> =>
+                      // eslint-disable-next-line promise/param-names
                       new Promise((resolveIcon) => {
                         fs?.readFile(
                           join(iconCacheDirectory, cachedIcon),
@@ -344,7 +345,7 @@ export const getInfoWithExtension = (
   const subIcons: string[] = [];
   const getInfoByFileExtension = (
     icon?: string,
-    getIcon?: true | ((signal: AbortSignal) => void)
+    getIcon?: true | ((signal: AbortSignal) => void | Promise<void>)
   ): void =>
     callback({
       getIcon,

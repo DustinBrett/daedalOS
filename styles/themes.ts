@@ -1,4 +1,4 @@
-import type { DefaultTheme } from "styled-components";
+import { type DefaultTheme } from "styled-components";
 import defaultTheme from "styles/defaultTheme";
 
 const themes = { defaultTheme };

@@ -1,25 +1,24 @@
+import { basename, dirname, join } from "path";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
   config,
   saveExtension,
 } from "components/apps/V86/config";
-import type { V86ImageConfig } from "components/apps/V86/image";
-import { getImageType } from "components/apps/V86/image";
-import type {
-  NavigatorWithMemory,
-  V86Config,
-  V86Starter,
+import { type V86ImageConfig, getImageType } from "components/apps/V86/image";
+import {
+  type NavigatorWithMemory,
+  type V86Config,
+  type V86Starter,
 } from "components/apps/V86/types";
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
-import type { ContainerHookProps } from "components/system/Apps/AppContainer";
+import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/core";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -206,7 +205,7 @@ const useV86 = ({
       loadDiskImage();
     }
 
-    const currentContainerRef = containerRef.current;
+    const currentContainer = containerRef.current;
 
     return () => {
       if (url && closing && !shutdown.current) {
@@ -217,15 +216,13 @@ const useV86 = ({
 
             if (emulator[url]?.v86.cpu.devices.vga.graphical_mode) {
               screenshot = (
-                currentContainerRef?.querySelector(
-                  "canvas"
-                ) as HTMLCanvasElement
+                currentContainer?.querySelector("canvas") as HTMLCanvasElement
               )?.toDataURL("image/png");
-            } else if (currentContainerRef instanceof HTMLElement) {
+            } else if (currentContainer instanceof HTMLElement) {
               const htmlToImage = await getHtmlToImage();
 
               try {
-                screenshot = await htmlToImage?.toPng(currentContainerRef, {
+                screenshot = await htmlToImage?.toPng(currentContainer, {
                   skipAutoScale: true,
                 });
               } catch {

@@ -1,15 +1,17 @@
+import { basename, dirname, extname, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
-import type { FileStat } from "components/system/Files/FileManager/functions";
-import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
+import {
+  type FileStat,
+  removeInvalidFilenameCharacters,
+} from "components/system/Files/FileManager/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
-import { basename, dirname, extname, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, DESKTOP_PATH, SHORTCUT_ICON } from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";

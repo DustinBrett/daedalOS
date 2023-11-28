@@ -1,13 +1,13 @@
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import {
   config,
   disableControls,
   libs,
 } from "components/system/Desktop/Wallpapers/vantaNet/config";
-import type {
-  VantaNet,
-  VantaNetConfig,
-  VantaNetObject,
+import {
+  type VantaNet,
+  type VantaNetConfig,
+  type VantaNetObject,
 } from "components/system/Desktop/Wallpapers/vantaNet/types";
 
 declare global {

@@ -1,9 +1,9 @@
-import type { StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import {
   libs,
   runStableDiffusion,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
-import type { OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
+import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 globalThis.addEventListener(
   "message",

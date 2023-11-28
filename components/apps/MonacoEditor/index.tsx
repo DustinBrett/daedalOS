@@ -2,7 +2,7 @@ import StatusBar from "components/apps/MonacoEditor/StatusBar";
 import StyledMonacoEditor from "components/apps/MonacoEditor/StyledMonacoEditor";
 import useMonaco from "components/apps/MonacoEditor/useMonaco";
 import AppContainer from "components/system/Apps/AppContainer";
-import type { ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const MonacoEditor: FC<ComponentProcessProps> = ({ id }) => (
   <>

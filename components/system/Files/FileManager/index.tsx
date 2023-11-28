@@ -1,3 +1,6 @@
+import { basename, join } from "path";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -7,12 +10,11 @@ import useFileKeyboardShortcuts from "components/system/Files/FileManager/useFil
 import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
 import useFolder from "components/system/Files/FileManager/useFolder";
 import useFolderContextMenu from "components/system/Files/FileManager/useFolderContextMenu";
-import type { FileManagerViewNames } from "components/system/Files/Views";
-import { FileManagerViews } from "components/system/Files/Views";
+import {
+  type FileManagerViewNames,
+  FileManagerViews,
+} from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
-import dynamic from "next/dynamic";
-import { basename, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -220,6 +222,7 @@ const FileManager: FC<FileManagerProps> = ({
                 focusedEntries={focusedEntries}
                 hasNewFolderIcon={isStartMenu}
                 hideShortcutIcon={hideShortcutIcons}
+                isDesktop={isDesktop}
                 isHeading={isDesktop && files[file].systemShortcut}
                 isLoadingFileManager={isLoading}
                 loadIconImmediately={loadIconsImmediately}

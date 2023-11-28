@@ -1,5 +1,5 @@
-import type { Processes } from "contexts/process/types";
 import dynamic from "next/dynamic";
+import { type Processes } from "contexts/process/types";
 import { FOLDER_ICON, TASKBAR_HEIGHT } from "utils/constants";
 
 const directory: Processes = {
@@ -26,8 +26,8 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Browser")),
     backgroundColor: "#fbf1c7",
     defaultSize: {
-      height: 480,
-      width: 640,
+      height: 500,
+      width: 600,
     },
     icon: "/System/Icons/chromium.webp",
     title: "Browser",

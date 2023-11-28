@@ -1,3 +1,7 @@
+import { basename, extname } from "path";
+import { useTheme } from "styled-components";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Variant, m as motion } from "framer-motion";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
   getProcessByFileExtension,
@@ -28,18 +32,14 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
-import type { ProcessArguments } from "contexts/process/types";
+import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
-import type { Variant } from "framer-motion";
-import { m as motion } from "framer-motion";
-import { basename, extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTheme } from "styled-components";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
   DESKTOP_PATH,
   FOCUSABLE_ELEMENT,
+  KEYPRESS_DEBOUNCE_MS,
   PICTURES_FOLDER,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
@@ -160,6 +160,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     },
     [open, toggleSearch]
   );
+  const searchTimeoutRef = useRef(0);
 
   useEffect(() => {
     if (
@@ -227,6 +228,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           })
         )
         .then((newResults) => setSubResults(Object.entries(newResults)));
+    } else {
+      setSubResults([]);
     }
   }, [readFile, results]);
 
@@ -234,6 +237,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     <StyledSearch
       ref={menuRef}
       $singleLine={singleLineView}
+      id="searchMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,
@@ -252,7 +256,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     >
       <StyledBackground $height={height} />
       <div>
-        <div className="content" onContextMenuCapture={haltEvent}>
+        <div className="content" onContextMenu={haltEvent}>
           <StyledTabs>
             {TABS.filter(
               (tab) =>
@@ -395,24 +399,25 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     title={"Best match" as TabName}
                     details
                   />
-                  {subResults.map(
-                    ([title, subResult]) =>
-                      (activeTab === "All" || activeTab === title) && (
-                        <ResultSection
-                          key={title}
-                          activeItem={activeItem}
-                          activeTab={activeTab}
-                          changeTab={changeTab}
-                          openApp={openApp}
-                          results={subResult.filter(
-                            (result) => firstResult !== result
-                          )}
-                          searchTerm={searchTerm}
-                          setActiveItem={setActiveItem}
-                          title={title as TabName}
-                        />
-                      )
-                  )}
+                  {results.length > 1 &&
+                    subResults.map(
+                      ([title, subResult]) =>
+                        (activeTab === "All" || activeTab === title) && (
+                          <ResultSection
+                            key={title}
+                            activeItem={activeItem}
+                            activeTab={activeTab}
+                            changeTab={changeTab}
+                            openApp={openApp}
+                            results={subResult.filter(
+                              (result) => firstResult !== result
+                            )}
+                            searchTerm={searchTerm}
+                            setActiveItem={setActiveItem}
+                            title={title as TabName}
+                          />
+                        )
+                    )}
                 </div>
               )}
               {activeItem && firstResult && (
@@ -436,7 +441,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 ? inputRef.current?.value.replace(tabAppend, "")
                 : inputRef.current?.value;
 
-              setSearchTerm(value ?? "");
+              window.clearTimeout(searchTimeoutRef.current);
+              searchTimeoutRef.current = window.setTimeout(
+                () => setSearchTerm(value ?? ""),
+                searchTimeoutRef.current > 0 ? KEYPRESS_DEBOUNCE_MS : 0
+              );
             }}
             onKeyDown={({ key }) => {
               if (key === "Enter" && firstResult?.ref) {
