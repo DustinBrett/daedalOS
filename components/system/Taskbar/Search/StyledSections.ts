@@ -49,6 +49,10 @@ const StyledSections = styled.div<StyledSectionsProps>`
     border-radius: 5px;
     padding: 8px 12px;
 
+    &:hover {
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 40%);
+    }
+
     > figcaption {
       padding-left: 2px;
       white-space: nowrap;
@@ -86,6 +90,12 @@ const StyledSections = styled.div<StyledSectionsProps>`
           font-size: 11px;
           font-weight: 400;
           padding-left: 2px;
+        }
+
+        &:hover {
+          h4 {
+            text-decoration: underline;
+          }
         }
       }
     }

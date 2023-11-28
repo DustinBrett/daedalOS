@@ -18,8 +18,11 @@ const StyledFiles = styled.figure`
 
       h2 {
         bottom: 1px;
+        display: flex;
         font-size: 12px;
         font-weight: 400;
+        height: 16px;
+        place-items: center;
         position: relative;
       }
 
