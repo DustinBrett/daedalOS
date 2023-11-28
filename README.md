@@ -1,6 +1,6 @@
 ## 🐟 **This is icefishOS - a gruvbox-focused fork of [daedalOS](https://github.com/DustinBrett/daedalOS)** 🐟
 
-![Alt text](gruvbox.png)
+[![Gruvbox palette](gruvbox.png)](https://arsmoriendy.github.io/GruvboxHSL/)
 
 ## _Desktop environment in the browser_
 
