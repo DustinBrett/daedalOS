@@ -1,5 +1,7 @@
 ## 🐟 **This is icefishOS - a gruvbox-focused fork of [daedalOS](https://github.com/DustinBrett/daedalOS)** 🐟
 
+![Alt text](gruvbox.png)
+
 ## _Desktop environment in the browser_
 
 [![Feature Overview](https://img.youtube.com/vi/RRLq3T0Surs/mqdefault.jpg)](http://www.youtube.com/watch?v=RRLq3T0Surs)
@@ -11,6 +13,8 @@
 - [x] Use gruvbox color schemes (as of 2023-07-12)
 - [x] Put relevant files up for portfolio purposes
 - [ ] Write a few blog posts
+- [x] Put up some bouldering vids (as of 2023-11-21)
+- [ ] Fix thumbnails not being there for YT vids
 
 # System 🧠
 
