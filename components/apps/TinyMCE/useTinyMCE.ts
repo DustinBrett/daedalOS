@@ -122,6 +122,25 @@ const useTinyMCE = ({
         }
 
         editor.notificationManager.open(saveSpec);
+
+        const notification = document.querySelector(
+          ".tox-notifications-container"
+        );
+        const mceContainer = document.querySelector(".tox-editor-container");
+
+        if (
+          notification instanceof HTMLElement &&
+          mceContainer instanceof HTMLElement
+        ) {
+          mceContainer.append(notification);
+          notification.setAttribute(
+            "style",
+            "position: absolute; right: 0; bottom: 0; padding: 30px 22px;"
+          );
+          notification
+            .querySelector("[role=alert]")
+            ?.setAttribute("style", "opacity: 1;");
+        }
       });
     }
   }, [editor, updateFolder, updateTitle, url, writeFile]);
