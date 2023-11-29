@@ -123,10 +123,10 @@ const useTinyMCE = ({
 
         editor.notificationManager.open(saveSpec);
 
-        const notification = document.querySelector(
-          ".tox-notifications-container"
-        );
-        const mceContainer = document.querySelector(".tox-editor-container");
+        const notification = editor.notificationManager
+          .getNotifications()?.[0]
+          ?.getEl()?.parentElement;
+        const mceContainer = editor.editorContainer;
 
         if (
           notification instanceof HTMLElement &&
@@ -135,7 +135,7 @@ const useTinyMCE = ({
           mceContainer.append(notification);
           notification.setAttribute(
             "style",
-            "position: absolute; right: 0; bottom: 0; padding: 30px 22px;"
+            "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
           );
           notification
             .querySelector("[role=alert]")
