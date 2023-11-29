@@ -30,7 +30,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
-  const fs = useFileSystem();
+  const { fs } = useFileSystem();
   const { updateRecentFiles } = useSession();
 
   useEffect(() => {

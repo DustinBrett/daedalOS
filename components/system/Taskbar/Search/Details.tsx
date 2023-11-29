@@ -28,8 +28,7 @@ const Details: FC<{
   singleLineView: boolean;
   url: string;
 }> = ({ openApp, setActiveItem, singleLineView, url }) => {
-  const fs = useFileSystem();
-  const { stat } = fs;
+  const { fs, stat } = useFileSystem();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,

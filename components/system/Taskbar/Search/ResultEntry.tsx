@@ -39,9 +39,8 @@ const ResultEntry: FC<ResultEntryProps> = ({
   setActiveItem,
   url,
 }) => {
-  const fs = useFileSystem();
+  const { fs, stat } = useFileSystem();
   const { updateRecentFiles } = useSession();
-  const { stat } = fs;
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const extension = extname(info?.url || url);
