@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathil's Korea strim 11-26</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #32302F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        iframe {
+            width: 90vw;  /* 90% of the viewport width */
+            height: 50vw; /* 50% of the viewport width - aspect ratio 16:9 */
+            max-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Video stuff under here -->
+<!-- Add a placeholder for the Twitch embed -->
+<div id="twitch-embed"></div>
+
+<!-- Load the Twitch embed script -->
+<script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+<!-- Create a Twitch.Player object. This will render within the placeholder div -->
+<script type="text/javascript">
+  new Twitch.Player("twitch-embed", {
+    video: "1987559806"
+  });
+</script>
+
+<!-- Video stuff above here -->
+</body>
+</html>
