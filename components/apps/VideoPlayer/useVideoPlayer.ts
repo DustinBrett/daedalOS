@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CONTROL_BAR_HEIGHT,
   VideoResizeKey,
@@ -69,11 +69,16 @@ const useVideoPlayer = ({
 
     return { src, type, url };
   }, [cleanUpSource, isYT, readFile, url]);
+  const initializedUrlRef = useRef(false);
   const loadPlayer = useCallback(() => {
     const [videoElement] =
       (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
     const videoPlayer = window.videojs(videoElement, config, () => {
-      videoPlayer.one("play", () => {
+      videoPlayer.on("play", () => {
+        if (initializedUrlRef.current) return;
+
+        initializedUrlRef.current = true;
+
         const { ytPlayer: youTubePlayer } =
           (videoPlayer as YouTubeTech).tech_ || {};
 
@@ -185,6 +190,7 @@ const useVideoPlayer = ({
       try {
         const source = await getSource();
 
+        initializedUrlRef.current = false;
         player.src(source);
         maybeHideControlbar(source.type);
         prependFileToTitle(
