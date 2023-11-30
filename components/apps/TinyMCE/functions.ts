@@ -31,7 +31,10 @@ export const isCorsUrl = (url?: string): boolean => {
     const { hostname } = new URL(url);
     const [, domain, tld] = hostname.split(".");
 
-    return allowedCorsDomains.has(`${domain}.${tld}`);
+    return (
+      allowedCorsDomains.has(`${domain}.${tld}`) ||
+      allowedCorsDomains.has(hostname)
+    );
   } catch {
     return false;
   }
