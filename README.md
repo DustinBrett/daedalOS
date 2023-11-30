@@ -14,7 +14,7 @@
 - [x] Put relevant files up for portfolio purposes
 - [ ] Write a few blog posts
 - [x] Put up some bouldering vids (as of 2023-11-21)
-- [ ] Fix thumbnails not being there for YT vids
+- [x] Fix thumbnails not being there for YT vids (as of 2023-11-28 using `IconFile=Thumbnail jpg`)
 
 # System 🧠
 
