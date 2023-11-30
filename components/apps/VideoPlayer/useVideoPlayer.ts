@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CONTROL_BAR_HEIGHT,
   VideoResizeKey,
@@ -7,8 +7,10 @@ import {
   config,
 } from "components/apps/VideoPlayer/config";
 import {
+  type YouTubeTech,
   type SourceObjectWithUrl,
   type VideoPlayer,
+  type YouTubePlayer,
 } from "components/apps/VideoPlayer/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import { getMimeType } from "components/system/Files/FileEntry/functions";
@@ -41,6 +43,7 @@ const useVideoPlayer = ({
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
+  const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
   const { prependFileToTitle } = useTitle(id);
   const cleanUpSource = useCallback((): void => {
     const { src: sources = [] } = player?.getMedia() || {};
@@ -53,26 +56,33 @@ const useVideoPlayer = ({
       }
     }
   }, [closing, player, url]);
+  const isYT = useMemo(() => isYouTubeUrl(url), [url]);
   const getSource = useCallback(async () => {
     cleanUpSource();
 
-    const isYT = isYouTubeUrl(url);
     const type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
     const src = isYT
       ? url
       : bufferToUrl(await readFile(url), isSafari() ? type : undefined);
 
     return { src, type, url };
-  }, [cleanUpSource, readFile, url]);
+  }, [cleanUpSource, isYT, readFile, url]);
   const loadPlayer = useCallback(() => {
     const [videoElement] =
       (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
     const videoPlayer = window.videojs(videoElement, config, () => {
-      videoPlayer.on("firstplay", () => {
-        const [height, width] = [
-          videoPlayer.videoHeight(),
-          videoPlayer.videoWidth(),
-        ];
+      videoPlayer.one("play", () => {
+        const { ytPlayer: youTubePlayer } =
+          (videoPlayer as YouTubeTech).tech_ || {};
+
+        if (youTubePlayer) setYtPlayer(youTubePlayer);
+
+        const [height, width] = youTubePlayer
+          ? [
+              youTubePlayer.getSize().height * 1.5,
+              youTubePlayer.getSize().width * 1.5,
+            ]
+          : [videoPlayer.videoHeight(), videoPlayer.videoWidth()];
         const [vh, vw] = [viewHeight(), viewWidth()];
 
         if (height && width) {
@@ -141,9 +151,9 @@ const useVideoPlayer = ({
         });
       setPlayer(videoPlayer);
       setLoading(false);
-      if (!isYouTubeUrl(url)) linkElement(id, "peekElement", videoElement);
+      if (!isYT) linkElement(id, "peekElement", videoElement);
     });
-  }, [containerRef, id, linkElement, setLoading, updateWindowSize, url]);
+  }, [containerRef, id, isYT, linkElement, setLoading, updateWindowSize]);
   const maybeHideControlbar = useCallback(
     (type?: string): void => {
       const controlBar =
@@ -166,12 +176,22 @@ const useVideoPlayer = ({
 
         player.src(source);
         maybeHideControlbar(source.type);
-        prependFileToTitle(isYouTubeUrl(url) ? "YouTube" : basename(url));
+        prependFileToTitle(
+          isYT ? ytPlayer?.videoTitle || "YouTube" : basename(url)
+        );
       } catch {
         // Ignore player errors
       }
     }
-  }, [getSource, maybeHideControlbar, player, prependFileToTitle, url]);
+  }, [
+    getSource,
+    isYT,
+    maybeHideControlbar,
+    player,
+    prependFileToTitle,
+    url,
+    ytPlayer,
+  ]);
 
   useEffect(() => {
     if (loading && !player) {
