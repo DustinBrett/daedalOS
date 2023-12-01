@@ -14,6 +14,7 @@ import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
+  getCachedIconUrl,
   getModifiedTime,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
@@ -48,7 +49,6 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
-  SMALLEST_PNG_SIZE,
   TRANSITIONS_IN_MILLISECONDS,
   USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
@@ -156,11 +156,10 @@ const FileEntry: FC<FileEntryProps> = ({
   const {
     createPath,
     exists,
+    fs,
     mkdirRecursive,
     pasteList,
-    readFile,
     stat,
-    unlink,
     updateFolder,
     writeFile,
   } = useFileSystem();
@@ -408,31 +407,18 @@ const FileEntry: FC<FileEntryProps> = ({
             }
           }
         } else if (!isShortcut || typeof getIcon === "function" || isYTUrl) {
-          if (isIconCached.current) return;
+          if (isIconCached.current || !fs) return;
 
-          const cachedIconPath = join(
-            ICON_CACHE,
-            `${path}${ICON_CACHE_EXTENSION}`
+          const cachedIconUrl = await getCachedIconUrl(
+            fs,
+            join(ICON_CACHE, `${path}${ICON_CACHE_EXTENSION}`)
           );
 
-          if (await exists(cachedIconPath)) {
-            const cachedIconData = await readFile(cachedIconPath);
+          if (cachedIconUrl) {
+            if (!isIconCached.current) {
+              isIconCached.current = true;
 
-            if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
-              if (!isIconCached.current) {
-                isIconCached.current = true;
-
-                setInfo((info) => ({
-                  ...info,
-                  icon: bufferToUrl(cachedIconData),
-                }));
-              }
-            } else {
-              try {
-                if (await unlink(cachedIconPath)) updateFolder(dirname(path));
-              } catch {
-                // Ignore issues deleting bad cached icon
-              }
+              setInfo((info) => ({ ...info, icon: cachedIconUrl }));
             }
           } else if (
             !isDynamicIconLoaded.current &&
@@ -455,6 +441,7 @@ const FileEntry: FC<FileEntryProps> = ({
     }
   }, [
     exists,
+    fs,
     getIcon,
     icon,
     isLoadingFileManager,
@@ -463,9 +450,7 @@ const FileEntry: FC<FileEntryProps> = ({
     isYTUrl,
     mkdirRecursive,
     path,
-    readFile,
     setInfo,
-    unlink,
     updateFolder,
     url,
     urlExt,

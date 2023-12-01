@@ -7,7 +7,9 @@ import Icon from "styles/common/Icon";
 import {
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
+  ICON_CACHE,
   SHORTCUT_ICON,
+  YT_ICON_CACHE,
 } from "utils/constants";
 
 type IconProps = {
@@ -42,7 +44,9 @@ const SubIcon: FC<SubIconProps> = ({
     () =>
       FileEntryIconSize[
         ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(icon) &&
-        !icon.startsWith("blob:")
+        !icon.startsWith("blob:") &&
+        !icon.startsWith(ICON_CACHE) &&
+        !icon.startsWith(YT_ICON_CACHE)
           ? "sub"
           : view
       ],

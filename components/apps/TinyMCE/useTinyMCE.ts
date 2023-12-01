@@ -69,7 +69,56 @@ const useTinyMCE = ({
   }, [containerRef, editor?.mode, openLink]);
   const loadFile = useCallback(async () => {
     if (editor) {
-      setReadOnlyMode(editor);
+      setReadOnlyMode(editor, () => {
+        (editor.options.set as OptionSetter)(
+          "save_onsavecallback",
+          async () => {
+            const saveSpec: NotificationSpec = {
+              closeButton: true,
+              text: "Successfully saved.",
+              timeout: 5000,
+              type: "success",
+            };
+            const saveUrl = url || DEFAULT_SAVE_PATH;
+
+            try {
+              await writeFile(
+                getExtension(saveUrl) === ".rtf"
+                  ? saveUrl.replace(".rtf", ".whtml")
+                  : saveUrl,
+                editor.getContent(),
+                true
+              );
+              updateFolder(dirname(saveUrl), basename(saveUrl));
+              updateTitle(saveUrl);
+            } catch {
+              saveSpec.text = "Error occurred while saving.";
+              saveSpec.type = "error";
+            }
+
+            editor.notificationManager.open(saveSpec);
+
+            const notification = editor.notificationManager
+              .getNotifications()?.[0]
+              ?.getEl()?.parentElement;
+            const mceContainer = editor.editorContainer;
+
+            if (
+              notification instanceof HTMLElement &&
+              mceContainer instanceof HTMLElement
+            ) {
+              mceContainer.append(notification);
+              notification.setAttribute(
+                "style",
+                "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
+              );
+              notification
+                .querySelector("[role=alert]")
+                ?.setAttribute("style", "opacity: 1;");
+            }
+          }
+        );
+      });
 
       const fileContents = await readFile(url);
 
@@ -92,39 +141,16 @@ const useTinyMCE = ({
         editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
       }
     }
-  }, [editor, linksToProcesses, readFile, updateTitle, url]);
+  }, [
+    editor,
+    linksToProcesses,
+    readFile,
+    updateFolder,
+    updateTitle,
+    url,
+    writeFile,
+  ]);
   const initEditor = useRef(false);
-
-  useEffect(() => {
-    if (editor) {
-      (editor.options.set as OptionSetter)("save_onsavecallback", async () => {
-        const saveSpec: NotificationSpec = {
-          closeButton: true,
-          text: "Successfully saved.",
-          timeout: 5000,
-          type: "success",
-        };
-        const saveUrl = url || DEFAULT_SAVE_PATH;
-
-        try {
-          await writeFile(
-            getExtension(saveUrl) === ".rtf"
-              ? saveUrl.replace(".rtf", ".whtml")
-              : saveUrl,
-            editor.getContent(),
-            true
-          );
-          updateFolder(dirname(saveUrl), basename(saveUrl));
-          updateTitle(saveUrl);
-        } catch {
-          saveSpec.text = "Error occurred while saving.";
-          saveSpec.type = "error";
-        }
-
-        editor.notificationManager.open(saveSpec);
-      });
-    }
-  }, [editor, updateFolder, updateTitle, url, writeFile]);
 
   useEffect(() => {
     if (!editor && !initEditor.current) {

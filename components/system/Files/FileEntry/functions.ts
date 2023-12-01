@@ -239,6 +239,29 @@ export const makeExternalShortcut = (contents: Buffer): Buffer => {
   );
 };
 
+export const getCachedIconUrl = async (
+  fs: FSModule,
+  cachedIconPath: string
+): Promise<string> =>
+  new Promise((resolve) => {
+    fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
+      if (!statError && cachedIconStats) {
+        if (cachedIconStats.birthtimeMs === cachedIconStats.ctimeMs) {
+          resolve(cachedIconPath);
+        } else {
+          fs.readFile(
+            cachedIconPath,
+            (readError, cachedIconData = Buffer.from("")) => {
+              if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
+                resolve(bufferToUrl(cachedIconData));
+              } else if (!readError) fs.unlink(cachedIconPath);
+            }
+          );
+        }
+      } else resolve("");
+    });
+  });
+
 const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
   new Promise((resolve) => {
     const iconCacheDirectory = join(ICON_CACHE, path);
@@ -252,17 +275,15 @@ const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
             (
               await Promise.all(
                 [firstIcon, otherIcons[otherIcons.length - 1]]
-                  .filter(Boolean)
+                  .filter((icon) => icon?.endsWith(ICON_CACHE_EXTENSION))
                   .map(
                     (cachedIcon): Promise<string> =>
                       // eslint-disable-next-line promise/param-names
                       new Promise((resolveIcon) => {
-                        fs?.readFile(
-                          join(iconCacheDirectory, cachedIcon),
-                          (fileError, contents = Buffer.from("")) => {
-                            resolveIcon(fileError ? "" : bufferToUrl(contents));
-                          }
-                        );
+                        getCachedIconUrl(
+                          fs,
+                          join(iconCacheDirectory, cachedIcon)
+                        ).then(resolveIcon);
                       })
                   )
               )
