@@ -529,6 +529,7 @@ const FileEntry: FC<FileEntryProps> = ({
           fileActions,
           focusFunctions,
           focusedEntries,
+          stats,
           fileManagerId,
           readOnly
         )}
