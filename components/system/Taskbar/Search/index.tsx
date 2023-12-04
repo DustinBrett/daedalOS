@@ -323,7 +323,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   <StyledFiles>
                     <figcaption>Recent</figcaption>
                     <ol>
-                      {recentFiles.map(([file, pid], index) => (
+                      {recentFiles.map(([file, pid, title], index) => (
                         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
                         <li
                           key={file}
@@ -331,7 +331,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                             openApp(pid, { url: file });
                             if (index !== 0) {
                               setTimeout(
-                                () => updateRecentFiles(file, pid),
+                                () => updateRecentFiles(file, pid, title),
                                 TRANSITIONS_IN_SECONDS.TASKBAR_ITEM *
                                   MILLISECONDS_IN_SECOND
                               );
@@ -343,7 +343,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                             imgSize={16}
                             src={directory[pid]?.icon}
                           />
-                          <h2>{basename(file, extname(file))}</h2>
+                          <h2>{title || basename(file, extname(file))}</h2>
                         </li>
                       ))}
                     </ol>

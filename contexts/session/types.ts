@@ -27,7 +27,7 @@ export type SortOrders = Record<string, SortOrder>;
 
 export type ClockSource = "local" | "ntp";
 
-export type RecentFiles = [string, string][];
+export type RecentFiles = [string, string, string][];
 
 export type IconPosition = {
   gridColumnStart: number;
@@ -70,5 +70,5 @@ export type SessionContextState = SessionData & {
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];
-  updateRecentFiles: (url: string, pid: string) => void;
+  updateRecentFiles: (url: string, pid: string, title?: string) => void;
 };

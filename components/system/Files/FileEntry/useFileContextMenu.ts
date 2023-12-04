@@ -85,7 +85,7 @@ const useFileContextMenu = (
     useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
-  const openFile = useFile(url);
+  const openFile = useFile(url, path);
   const {
     copyEntries,
     createPath,

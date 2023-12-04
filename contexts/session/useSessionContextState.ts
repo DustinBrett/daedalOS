@@ -34,6 +34,8 @@ import { updateIconPositionsIfEmpty } from "utils/functions";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
+const KEEP_RECENT_FILES_LIST_COUNT = 5;
+
 const useSessionContextState = (): SessionContextState => {
   const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
     useFileSystem();
@@ -57,8 +59,8 @@ const useSessionContextState = (): SessionContextState => {
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const updateRecentFiles = useCallback(
-    (url: string, pid: string) =>
-      extname(url) &&
+    (url: string, pid: string, title?: string) =>
+      (title || extname(url)) &&
       setRecentFiles((currentRecentFiles) => {
         const entryIndex = currentRecentFiles.findIndex(
           ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid
@@ -72,7 +74,10 @@ const useSessionContextState = (): SessionContextState => {
           ] as RecentFiles;
         }
 
-        return [[url, pid], ...currentRecentFiles].slice(0, 5) as RecentFiles;
+        return [[url, pid, title], ...currentRecentFiles].slice(
+          0,
+          KEEP_RECENT_FILES_LIST_COUNT - 1
+        ) as RecentFiles;
       }),
     []
   );

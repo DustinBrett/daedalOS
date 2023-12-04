@@ -1,4 +1,4 @@
-import { basename, join } from "path";
+import { basename, extname, join } from "path";
 import { useCallback } from "react";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
@@ -10,10 +10,11 @@ import {
   FOLDER_BACK_ICON,
   PROCESS_DELIMITER,
 } from "utils/constants";
+import { isYouTubeUrl } from "utils/functions";
 
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
-const useFile = (url: string): UseFile => {
+const useFile = (url: string, path: string): UseFile => {
   const { setForegroundId, updateRecentFiles } = useSession();
   const { createPath, updateFolder } = useFileSystem();
   const { minimize, open, url: setUrl } = useProcesses();
@@ -61,13 +62,20 @@ const useFile = (url: string): UseFile => {
             ? processIcon
             : icon
         );
-        if (runUrl && pid) updateRecentFiles(runUrl, pid);
+        if (runUrl && pid) {
+          updateRecentFiles(
+            runUrl,
+            pid,
+            isYouTubeUrl(runUrl) ? basename(path, extname(path)) : undefined
+          );
+        }
       }
     },
     [
       createPath,
       minimize,
       open,
+      path,
       processesRef,
       setForegroundId,
       setUrl,

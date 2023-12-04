@@ -152,7 +152,7 @@ const FileEntry: FC<FileEntryProps> = ({
     hasNewFolderIcon,
     isDesktop || isVisible
   );
-  const openFile = useFile(url);
+  const openFile = useFile(url, path);
   const {
     createPath,
     exists,
