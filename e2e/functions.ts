@@ -22,7 +22,6 @@ import {
   FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
-  FILE_EXPLORER_SEARCH_BOX_LABEL,
   FILE_EXPLORER_SELECTOR,
   ICON_SELECTOR,
   RIGHT_CLICK,
@@ -49,6 +48,7 @@ import {
   WINDOW_TITLEBAR_SELECTOR,
   SEARCH_MENU_INPUT_SELECTOR,
   SEARCH_MENU_RESULTS_SELECTOR,
+  FILE_EXPLORER_SEARCH_BOX_SELECTOR,
 } from "e2e/constants";
 
 type TestProps = {
@@ -317,10 +317,7 @@ export const clickFileExplorerAddressBar = async (
 export const clickFileExplorerSearchBox = async ({
   page,
 }: TestProps): Promise<void> =>
-  page
-    .locator(FILE_EXPLORER_NAV_SELECTOR)
-    .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
-    .click();
+  page.locator(FILE_EXPLORER_SEARCH_BOX_SELECTOR).click();
 
 export const clickFileExplorer = async (
   { page }: TestProps,
@@ -385,8 +382,7 @@ export const typeInFileExplorerSearchBox = async (
   { page }: TestProps
 ): Promise<void> =>
   page
-    .locator(FILE_EXPLORER_NAV_SELECTOR)
-    .getByLabel(FILE_EXPLORER_SEARCH_BOX_LABEL)
+    .locator(FILE_EXPLORER_SEARCH_BOX_SELECTOR)
     .pressSequentially(text, { delay: TYPE_DELAY });
 
 export const typeInTaskbarSearchBar = async (
@@ -665,6 +661,15 @@ export const startMenuSidebarEntryIsVisible = async (
   expect(
     page.locator(START_MENU_SIDEBAR_SELECTOR).getByLabel(label)
   ).toBeVisible();
+
+export const startMenuContextIsOpen = async (
+  entry: RegExp | string,
+  { page }: TestProps
+): Promise<void> =>
+  expect(async () => {
+    await clickStartMenuEntry(entry, { page }, true);
+    await contextMenuIsVisible({ page });
+  }).toPass();
 
 export const taskbarEntryHasTooltip = async (
   label: RegExp,
