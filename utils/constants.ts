@@ -209,6 +209,11 @@ export const LONG_PRESS_DELAY_MS = 750;
 
 export const ONE_DAY_IN_MILLISECONDS = 86400000;
 
+export const DEFAULT_INTERSECTION_OPTIONS: IntersectionObserverInit = {
+  rootMargin: "3px",
+  threshold: 0,
+};
+
 export const AUDIO_FILE_EXTENSIONS = new Set([".aac", ".oga", ".wav"]);
 
 export const AUDIO_PLAYLIST_EXTENSIONS = new Set([".asx", ".m3u", ".pls"]);

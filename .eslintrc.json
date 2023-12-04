@@ -28,6 +28,7 @@
     "@typescript-eslint",
     "import",
     "jest",
+    "no-relative-import-paths",
     "prettier",
     "promise",
     "react",
@@ -109,6 +110,7 @@
     "no-implicit-coercion": "error",
     "no-new-wrappers": "error",
     "no-plusplus": "off",
+    "no-relative-import-paths/no-relative-import-paths": "error",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",

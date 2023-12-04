@@ -1,6 +1,7 @@
 import { basename, dirname, extname, join } from "path";
 import { type URLTrack } from "webamp";
 import { useMemo } from "react";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
@@ -71,6 +72,7 @@ const useFileContextMenu = (
   }: FileActions,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   focusedEntries: string[],
+  { atimeMs, ctimeMs, mtimeMs }: FileStat,
   fileManagerId?: string,
   readOnly?: boolean
 ): ContextMenuCapture => {
@@ -399,7 +401,10 @@ const useFileContextMenu = (
                 };
 
                 try {
-                  if (navigator.canShare?.(shareData)) {
+                  const isExistingFile =
+                    atimeMs === ctimeMs && ctimeMs === mtimeMs;
+
+                  if (isExistingFile && navigator.canShare?.(shareData)) {
                     menuItems.unshift({
                       SvgIcon: Share,
                       action: () => navigator.share(shareData),
@@ -593,11 +598,13 @@ const useFileContextMenu = (
       }),
     [
       archiveFiles,
+      atimeMs,
       baseName,
       changeUrl,
       contextMenu,
       copyEntries,
       createPath,
+      ctimeMs,
       deleteLocalPath,
       downloadFiles,
       extractFiles,
@@ -608,6 +615,7 @@ const useFileContextMenu = (
       mapFs,
       minimize,
       moveEntries,
+      mtimeMs,
       newShortcut,
       open,
       openFile,

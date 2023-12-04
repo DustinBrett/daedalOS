@@ -1,4 +1,4 @@
-import { basename, dirname, extname, relative } from "path";
+import { basename, dirname, extname } from "path";
 import { type Editor, type NotificationSpec } from "tinymce";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_SAVE_PATH, config } from "components/apps/TinyMCE/config";
@@ -8,17 +8,15 @@ import {
 } from "components/apps/TinyMCE/functions";
 import { type IRTFJS } from "components/apps/TinyMCE/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
-import {
-  getModifiedTime,
-  getProcessByFileExtension,
-} from "components/system/Files/FileEntry/functions";
+import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { DEFAULT_LOCALE } from "utils/constants";
-import { getExtension, haltEvent, loadFiles } from "utils/functions";
+import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
+import { getExtension, loadFiles } from "utils/functions";
+import { useLinkHandler } from "hooks/useLinkHandler";
 
 type OptionSetter = <K, T>(name: K, value: T) => void;
 
@@ -28,11 +26,8 @@ const useTinyMCE = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const {
-    open,
-    processes: { [id]: { libs = [] } = {} } = {},
-    url: setUrl,
-  } = useProcesses();
+  const { processes: { [id]: { libs = [] } = {} } = {}, url: setUrl } =
+    useProcesses();
   const [editor, setEditor] = useState<Editor>();
   const { prependFileToTitle } = useTitle(id);
   const { readFile, stat, updateFolder, writeFile } = useFileSystem();
@@ -53,34 +48,77 @@ const useTinyMCE = ({
     },
     [prependFileToTitle, stat]
   );
+  const openLink = useLinkHandler();
   const linksToProcesses = useCallback(() => {
     const iframe = containerRef.current?.querySelector("iframe");
 
     if (iframe?.contentWindow) {
       [...iframe.contentWindow.document.links].forEach((link) =>
         link.addEventListener("click", (event) => {
-          const mceHref = link.dataset.mceHref || "";
-          const isRelative =
-            relative(
-              mceHref.startsWith("/") ? mceHref : `/${mceHref}`,
-              link.pathname
-            ) === "";
-          if (isRelative && editor?.mode.isReadOnly()) {
-            haltEvent(event);
-
-            const defaultProcess = getProcessByFileExtension(
-              getExtension(link.pathname)
+          if (editor?.mode.isReadOnly()) {
+            openLink(
+              event,
+              link.dataset.mceHref || "",
+              link.pathname,
+              link.textContent || ""
             );
-
-            if (defaultProcess) open(defaultProcess, { url: link.pathname });
           }
         })
       );
     }
-  }, [containerRef, editor?.mode, open]);
+  }, [containerRef, editor?.mode, openLink]);
   const loadFile = useCallback(async () => {
     if (editor) {
-      setReadOnlyMode(editor);
+      setReadOnlyMode(editor, () => {
+        (editor.options.set as OptionSetter)(
+          "save_onsavecallback",
+          async () => {
+            const saveSpec: NotificationSpec = {
+              closeButton: true,
+              text: "Successfully saved.",
+              timeout: 5000,
+              type: "success",
+            };
+            const saveUrl = url || DEFAULT_SAVE_PATH;
+
+            try {
+              await writeFile(
+                getExtension(saveUrl) === ".rtf"
+                  ? saveUrl.replace(".rtf", ".whtml")
+                  : saveUrl,
+                editor.getContent(),
+                true
+              );
+              updateFolder(dirname(saveUrl), basename(saveUrl));
+              updateTitle(saveUrl);
+            } catch {
+              saveSpec.text = "Error occurred while saving.";
+              saveSpec.type = "error";
+            }
+
+            editor.notificationManager.open(saveSpec);
+
+            const notification = editor.notificationManager
+              .getNotifications()?.[0]
+              ?.getEl()?.parentElement;
+            const mceContainer = editor.editorContainer;
+
+            if (
+              notification instanceof HTMLElement &&
+              mceContainer instanceof HTMLElement
+            ) {
+              mceContainer.append(notification);
+              notification.setAttribute(
+                "style",
+                "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
+              );
+              notification
+                .querySelector("[role=alert]")
+                ?.setAttribute("style", "opacity: 1;");
+            }
+          }
+        );
+      });
 
       const fileContents = await readFile(url);
 
@@ -103,39 +141,16 @@ const useTinyMCE = ({
         editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
       }
     }
-  }, [editor, linksToProcesses, readFile, updateTitle, url]);
+  }, [
+    editor,
+    linksToProcesses,
+    readFile,
+    updateFolder,
+    updateTitle,
+    url,
+    writeFile,
+  ]);
   const initEditor = useRef(false);
-
-  useEffect(() => {
-    if (editor) {
-      (editor.options.set as OptionSetter)("save_onsavecallback", async () => {
-        const saveSpec: NotificationSpec = {
-          closeButton: true,
-          text: "Successfully saved.",
-          timeout: 5000,
-          type: "success",
-        };
-        const saveUrl = url || DEFAULT_SAVE_PATH;
-
-        try {
-          await writeFile(
-            getExtension(saveUrl) === ".rtf"
-              ? saveUrl.replace(".rtf", ".whtml")
-              : saveUrl,
-            editor.getContent(),
-            true
-          );
-          updateFolder(dirname(saveUrl), basename(saveUrl));
-          updateTitle(saveUrl);
-        } catch {
-          saveSpec.text = "Error occurred while saving.";
-          saveSpec.type = "error";
-        }
-
-        editor.notificationManager.open(saveSpec);
-      });
-    }
-  }, [editor, updateFolder, updateTitle, url, writeFile]);
 
   useEffect(() => {
     if (!editor && !initEditor.current) {
@@ -175,6 +190,15 @@ const useTinyMCE = ({
                 );
                 iframe.contentWindow.addEventListener("focus", () =>
                   setForegroundId(id)
+                );
+                iframe.contentWindow.addEventListener(
+                  "mousedown",
+                  ({ pageX }) =>
+                    iframe.contentWindow &&
+                    pageX >
+                      iframe.contentWindow.innerWidth -
+                        DEFAULT_SCROLLBAR_WIDTH &&
+                    setForegroundId(id)
                 );
               }
 

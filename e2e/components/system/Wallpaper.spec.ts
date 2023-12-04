@@ -11,6 +11,7 @@ import {
   fileExplorerEntriesAreVisible,
   loadAppWithCanvas,
   mockPictureSlideshowRequest,
+  sessionIsWriteable,
   windowsAreVisible,
 } from "e2e/functions";
 
@@ -25,6 +26,7 @@ test("can change background", async ({ headless, browserName, page }) => {
   await contextMenuIsVisible({ page });
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
   await clickContextMenuEntry(/^Background$/, { page });
+  await sessionIsWriteable({ page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 
   await pictureSlideshowResponse();

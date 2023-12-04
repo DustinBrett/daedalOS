@@ -47,6 +47,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     <StyledStartMenu
       ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
+      id="startMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
           event,

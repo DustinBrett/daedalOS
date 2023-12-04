@@ -30,7 +30,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
-  const { url = "" } = process || {};
+  const { initialTitle = "", url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(initialUrl, id);
@@ -67,7 +67,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
             prependFileToTitle(`${addressInput} - Google Search`);
           } else {
-            const { name = "" } =
+            const { name = initialTitle } =
               bookmarks?.find(
                 ({ url: bookmarkUrl }) => bookmarkUrl === addressInput
               ) || {};
@@ -76,7 +76,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }
 
           if (addressInput.startsWith("ipfs://")) {
-            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
+            setIcon(id, "/System/Icons/Favicons/ipfs.png");
           } else {
             const favicon = new Image();
             const faviconUrl = `${
@@ -105,7 +105,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         }
       }
     },
-    [exists, id, prependFileToTitle, readFile, setIcon]
+    [exists, id, initialTitle, prependFileToTitle, readFile, setIcon]
   );
 
   useEffect(() => {

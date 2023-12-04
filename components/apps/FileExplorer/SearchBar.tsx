@@ -30,7 +30,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
-  const fs = useFileSystem();
+  const { fs } = useFileSystem();
   const { updateRecentFiles } = useSession();
 
   useEffect(() => {
@@ -43,7 +43,11 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           ]
             .slice(0, MAX_ENTRIES - 1)
             .map(async ({ ref: path }) => {
-              const { icon, url: infoUrl, pid } = await getResultInfo(fs, path);
+              const {
+                icon,
+                url: infoUrl,
+                pid = "",
+              } = (await getResultInfo(fs, path)) || {};
 
               return {
                 action: () => {

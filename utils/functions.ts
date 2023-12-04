@@ -760,7 +760,10 @@ export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
 });
 
 export const isYouTubeUrl = (url: string): boolean =>
-  url.includes("youtube.com/") || url.includes("youtu.be/");
+  (url.includes("youtube.com/") || url.includes("youtu.be/")) &&
+  !url.includes("youtube.com/@") &&
+  !url.includes("/channel/") &&
+  !url.includes("/c/");
 
 export const getYouTubeUrlId = (url: string): string => {
   try {

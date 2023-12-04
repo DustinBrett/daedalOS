@@ -1,12 +1,11 @@
 import { DESKTOP_PATH } from "utils/constants";
 
 const plugins = `
-  code help image link lists media
-  preview save searchreplace table wordcount`;
+  code help image link save wordcount`;
 
 const toolbar = `
   save undo redo | formatselect | bold italic underline | forecolor backcolor |
-  alignleft aligncenter alignright | bullist outdent indent | code | help`;
+  alignleft aligncenter alignright | outdent indent | code help`;
 
 export const config = {
   base_url: "/Program Files/TinyMCE/",

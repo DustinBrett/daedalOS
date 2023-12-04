@@ -6,10 +6,11 @@ import {
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
-import { useIsVisible, useNostrProfile } from "components/apps/Messenger/hooks";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { useMenu } from "contexts/menu";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
+import { useIsVisible } from "hooks/useIsVisible";
 
 type ContactProps = {
   lastEvent: Event;

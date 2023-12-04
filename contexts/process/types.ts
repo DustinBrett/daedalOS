@@ -6,6 +6,10 @@ import {
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 
+type BrowserProcessArguments = {
+  initialTitle?: string;
+};
+
 type DialogProcessArguments = {
   fileReaders?: FileReaders | ObjectReaders;
   progress?: number;
@@ -47,6 +51,7 @@ type BaseProcessArguments = {
 };
 
 export type ProcessArguments = BaseProcessArguments &
+  BrowserProcessArguments &
   DialogProcessArguments &
   MonacoProcessArguments &
   PdfProcessArguments;

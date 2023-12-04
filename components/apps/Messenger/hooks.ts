@@ -274,30 +274,3 @@ export const useNostrProfile = (
 
   return publicKey ? profiles[publicKey] || dataToProfile(publicKey) : {};
 };
-
-export const useIsVisible = (
-  elementRef: React.MutableRefObject<HTMLElement | null>,
-  parentSelector?: string
-): boolean => {
-  const watching = useRef(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    if (!elementRef.current || watching.current) return;
-
-    watching.current = true;
-
-    new IntersectionObserver(
-      (entries) =>
-        entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),
-      {
-        root: parentSelector
-          ? elementRef.current.closest(parentSelector)
-          : elementRef.current.parentElement,
-        threshold: 0.4,
-      }
-    ).observe(elementRef.current);
-  }, [elementRef, parentSelector]);
-
-  return isVisible;
-};

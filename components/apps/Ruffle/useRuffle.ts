@@ -20,14 +20,17 @@ const useRuffle = ({
   const { readFile } = useFileSystem();
   const loadFlash = useCallback(async () => {
     containerRef.current?.classList.remove("drop");
+
     try {
       await player?.load({ data: await readFile(url) });
     } catch {
       // Ruffle handles error reporting
+    } finally {
+      setLoading(false);
     }
 
     appendFileToTitle(basename(url, extname(url)));
-  }, [appendFileToTitle, containerRef, player, readFile, url]);
+  }, [appendFileToTitle, containerRef, player, readFile, setLoading, url]);
 
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -41,21 +44,25 @@ const useRuffle = ({
           preloader: false,
           unmuteOverlay: "hidden",
         };
+
         setPlayer(window.RufflePlayer.newest().createPlayer());
-        if (!url) containerRef.current?.classList.add("drop");
+
+        if (!url) {
+          containerRef.current?.classList.add("drop");
+          setLoading(false);
+        }
       }
     });
-  }, [containerRef, libs, url]);
+  }, [containerRef, libs, setLoading, url]);
 
   useEffect(() => {
     if (containerRef.current && player) {
       containerRef.current.append(player);
       linkElement(id, "peekElement", player);
-      setLoading(false);
     }
 
     return () => player?.remove();
-  }, [containerRef, id, linkElement, player, setLoading]);
+  }, [containerRef, id, linkElement, player]);
 
   useEffect(() => {
     if (containerRef.current && player && url) loadFlash();
