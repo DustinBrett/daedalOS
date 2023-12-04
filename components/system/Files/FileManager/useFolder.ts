@@ -9,7 +9,9 @@ import useTransferDialog, {
 import {
   createShortcut,
   filterSystemFiles,
+  getCachedShortcut,
   getShortcutInfo,
+  isExistingFile,
   makeExternalShortcut,
 } from "components/system/Files/FileEntry/functions";
 import {
@@ -36,12 +38,7 @@ import {
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
 } from "utils/constants";
-import {
-  bufferToUrl,
-  cleanUpBufferUrl,
-  getExtension,
-  preloadLibs,
-} from "utils/functions";
+import { bufferToUrl, cleanUpBufferUrl, getExtension } from "utils/functions";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -88,7 +85,6 @@ type Folder = {
 type FolderFlags = {
   hideFolders?: boolean;
   hideLoading?: boolean;
-  preloadShortcuts?: boolean;
   skipFsWatcher?: boolean;
   skipSorting?: boolean;
 };
@@ -99,13 +95,7 @@ const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  {
-    hideFolders,
-    hideLoading,
-    preloadShortcuts,
-    skipFsWatcher,
-    skipSorting,
-  }: FolderFlags
+  { hideFolders, hideLoading, skipFsWatcher, skipSorting }: FolderFlags
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -144,11 +134,12 @@ const useFolder = (
         SYSTEM_SHORTCUT_DIRECTORIES.has(directory) &&
         getExtension(fileName) === SHORTCUT_EXTENSION
       ) {
-        return Object.assign(stats, {
-          systemShortcut:
-            getShortcutInfo(await readFile(join(directory, fileName))).type ===
-            "System",
-        });
+        const shortcutPath = join(directory, fileName);
+        const { type } = isExistingFile(stats)
+          ? getCachedShortcut(shortcutPath)
+          : getShortcutInfo(await readFile(shortcutPath));
+
+        return Object.assign(stats, { systemShortcut: type === "System" });
       }
 
       return stats;
@@ -203,15 +194,6 @@ const useFolder = (
           const dirContents = (await readdir(directory)).filter(
             filterSystemFiles(directory)
           );
-
-          if (preloadShortcuts) {
-            preloadLibs(
-              dirContents
-                .filter((entry) => entry.endsWith(SHORTCUT_EXTENSION))
-                .map((entry) => `${directory}/${entry}`)
-            );
-          }
-
           const sortedFiles = await dirContents.reduce(
             async (processedFiles, file) => {
               try {
@@ -283,7 +265,6 @@ const useFolder = (
       hideLoading,
       isSimpleSort,
       lstat,
-      preloadShortcuts,
       readdir,
       setSortOrder,
       skipSorting,
