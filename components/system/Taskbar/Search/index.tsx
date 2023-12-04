@@ -47,7 +47,7 @@ import {
   VIDEOS_FOLDER,
 } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
-import { useSearch } from "utils/search";
+import { SEARCH_INPUT_PROPS, useSearch } from "utils/search";
 
 type SearchProps = {
   toggleSearch: (showMenu?: boolean) => void;
@@ -460,7 +460,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             style={{
               caretColor: showCaret ? undefined : "transparent",
             }}
-            type="text"
+            {...SEARCH_INPUT_PROPS}
           />
         </motion.div>
       </div>

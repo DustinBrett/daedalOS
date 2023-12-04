@@ -11,6 +11,18 @@ import { getExtension, loadFiles } from "utils/functions";
 
 const FILE_INDEX = "/.index/search.lunr.json";
 
+export const SEARCH_INPUT_PROPS = {
+  autoComplete: "off",
+  autoCorrect: "off",
+  enterKeyHint: "search",
+  inputMode: "search",
+  spellCheck: false,
+  type: "search",
+} as React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
 export const SEARCH_LIBS = ["/System/lunr/lunr.min.js"];
 
 let baseIndex = Object.create(null) as Index;

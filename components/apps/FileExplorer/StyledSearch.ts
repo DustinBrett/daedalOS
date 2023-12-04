@@ -33,6 +33,10 @@ const StyledSearch = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+
+    &::-webkit-search-cancel-button {
+      margin: 0 8px 0 6px;
+    }
   }
 `;
 
