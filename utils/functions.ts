@@ -12,6 +12,7 @@ import {
 import {
   DEFAULT_LOCALE,
   HIGH_PRIORITY_REQUEST,
+  ICON_CACHE,
   ICON_PATH,
   ICON_RES_MAP,
   MAX_ICON_SIZE,
@@ -97,16 +98,13 @@ export const imageSrc = (
     MAX_ICON_SIZE,
     expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize
   );
-  const isCachedIcon = extname(imageName) === ".cache";
 
   return `${join(
     dirname(imagePath),
-    isCachedIcon
-      ? ""
-      : `${ICON_RES_MAP[imageSize] || imageSize}x${
-          ICON_RES_MAP[imageSize] || imageSize
-        }`,
-    `${imageName}${isCachedIcon ? "" : extension}`
+    `${ICON_RES_MAP[imageSize] || imageSize}x${
+      ICON_RES_MAP[imageSize] || imageSize
+    }`,
+    `${imageName}${extension}`
   ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
 };
 
@@ -848,3 +846,8 @@ export const generatePrettyTimestamp = (): string =>
 
 export const isFileSystemMappingSupported = (): boolean =>
   typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;
+
+export const isDynamicIcon = (icon?: string): boolean =>
+  typeof icon === "string" &&
+  (icon.startsWith(ICON_PATH) ||
+    (icon.startsWith(USER_ICON_PATH) && !icon.startsWith(ICON_CACHE)));

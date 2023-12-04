@@ -3,8 +3,15 @@ import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIc
 import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import { START_BUTTON_TITLE } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { DIV_BUTTON_PROPS, ICON_PATH, USER_ICON_PATH } from "utils/constants";
-import { getDpi, imageSrc, imageSrcs, isSafari, label } from "utils/functions";
+import { DIV_BUTTON_PROPS } from "utils/constants";
+import {
+  getDpi,
+  imageSrc,
+  imageSrcs,
+  isDynamicIcon,
+  isSafari,
+  label,
+} from "utils/functions";
 
 type StartButtonProps = {
   startMenuVisible: boolean;
@@ -38,7 +45,7 @@ const StartButton: FC<StartButtonProps> = ({
       link.rel = "preload";
       link.type = "image/webp";
 
-      if (icon.startsWith(ICON_PATH) || icon.startsWith(USER_ICON_PATH)) {
+      if (isDynamicIcon(icon)) {
         if (supportsImageSrcSet) {
           link.imageSrcset = imageSrcs(icon, 48, ".webp");
         } else {
