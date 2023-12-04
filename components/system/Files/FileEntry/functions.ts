@@ -1,6 +1,7 @@
-import { join } from "path";
+import { basename, dirname, join } from "path";
 import ini from "ini";
 import { type FSModule } from "browserfs/dist/node/core/FS";
+import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -39,6 +40,7 @@ import {
   VIDEO_FILE_EXTENSIONS,
   YT_ICON_CACHE,
 } from "utils/constants";
+import shortcutCache from "public/.index/shortcutCache.json";
 import {
   blobToBase64,
   bufferToUrl,
@@ -71,12 +73,14 @@ type VideoElementWithSeek = HTMLVideoElement & {
   seekToNextFrame: () => Promise<void>;
 };
 
-export const getModifiedTime = (path: string, stats: FileStat): number => {
-  const { atimeMs, ctimeMs, mtimeMs } = stats;
+export const isExistingFile = (
+  { atimeMs, ctimeMs, mtimeMs }: Stats = {} as Stats
+): boolean => Boolean(ctimeMs) && atimeMs === ctimeMs && ctimeMs === mtimeMs;
 
-  return atimeMs === ctimeMs && ctimeMs === mtimeMs
-    ? get9pModifiedTime(path) || mtimeMs
-    : mtimeMs;
+export const getModifiedTime = (path: string, stats: FileStat): number => {
+  const { mtimeMs } = stats;
+
+  return isExistingFile(stats) ? get9pModifiedTime(path) || mtimeMs : mtimeMs;
 };
 
 export const getIconFromIni = (
@@ -88,7 +92,7 @@ export const getIconFromIni = (
 
     fs.lstat(iniPath, (statError, stats) => {
       if (statError) resolve("");
-      else if (stats?.mtimeMs === stats?.ctimeMs) {
+      else if (stats && isExistingFile(stats)) {
         import("public/.index/iniIcons.json").then(({ default: iniCache }) =>
           resolve(iniCache[directory as keyof typeof iniCache] || "")
         );
@@ -192,7 +196,10 @@ export const getMimeType = (url: string): string => {
   }
 };
 
-export const getShortcutInfo = (contents: Buffer): FileInfo => {
+export const getShortcutInfo = (
+  contents?: Buffer,
+  shortcutData?: InternetShortcut
+): FileInfo => {
   const {
     InternetShortcut: {
       BaseURL: pid = "",
@@ -201,9 +208,11 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
       Type: type = "",
       URL: url = "",
     } = {},
-  } = (ini.parse(contents.toString()) || {}) as {
-    InternetShortcut: InternetShortcut;
-  };
+  } = shortcutData
+    ? { InternetShortcut: shortcutData }
+    : ((ini.parse(contents?.toString() || "") || {}) as {
+        InternetShortcut: InternetShortcut;
+      });
 
   return {
     comment,
@@ -216,6 +225,17 @@ export const getShortcutInfo = (contents: Buffer): FileInfo => {
     url,
   };
 };
+
+export const getCachedShortcut = (path: string): FileInfo =>
+  getShortcutInfo(
+    undefined,
+    (
+      shortcutCache as unknown as Record<
+        string,
+        Record<string, InternetShortcut>
+      >
+    )[dirname(path)][basename(path)]
+  );
 
 export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
   ini
@@ -246,7 +266,7 @@ export const getCachedIconUrl = async (
   new Promise((resolve) => {
     fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
       if (!statError && cachedIconStats) {
-        if (cachedIconStats.birthtimeMs === cachedIconStats.ctimeMs) {
+        if (isExistingFile(cachedIconStats)) {
           resolve(cachedIconPath);
         } else {
           fs.readFile(
@@ -378,139 +398,152 @@ export const getInfoWithExtension = (
 
   switch (extension) {
     case SHORTCUT_EXTENSION:
-      fs.readFile(path, (error, contents = Buffer.from("")) => {
-        if (error) {
-          getInfoByFileExtension();
-          return;
-        }
+      {
+        const handleShortcut = ({
+          comment,
+          icon,
+          pid,
+          url,
+        }: FileInfo): void => {
+          const urlExt = getExtension(url);
 
-        const { comment, icon, pid, url } = getShortcutInfo(contents);
-        const urlExt = getExtension(url);
+          if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
 
-        if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
-
-        if (pid === "FileExplorer" && !icon) {
-          const getIcon = (): void => {
-            getIconFromIni(fs, url).then(
-              (iniIcon) =>
-                iniIcon &&
-                callback({
-                  comment,
-                  icon: iniIcon,
-                  pid,
-                  subIcons,
-                  url,
-                })
-            );
-          };
-
-          callback({
-            comment,
-            getIcon,
-            icon: processDirectory[pid]?.icon,
-            pid,
-            subIcons,
-            url,
-          });
-        } else if (
-          DYNAMIC_EXTENSION.has(urlExt) ||
-          DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
-        ) {
-          const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
-          const cachedIconPath = join(
-            ICON_CACHE,
-            `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
-          );
-
-          fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
-            if (!statError && cachedIconStats) {
-              if (cachedIconStats.birthtimeMs === cachedIconStats.ctimeMs) {
-                callback({
-                  comment,
-                  icon: cachedIconPath,
-                  pid,
-                  subIcons,
-                  url,
-                });
-              } else {
-                fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
+          if (pid === "FileExplorer" && !icon) {
+            const getIcon = (): void => {
+              getIconFromIni(fs, url).then(
+                (iniIcon) =>
+                  iniIcon &&
                   callback({
                     comment,
-                    icon: bufferToUrl(cachedIconData as Buffer),
+                    icon: iniIcon,
                     pid,
                     subIcons,
                     url,
                   })
-                );
-              }
-            } else {
-              getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-                const {
-                  icon: urlIcon = icon,
-                  getIcon,
-                  subIcons: fileSubIcons = [],
-                } = fileInfo;
+              );
+            };
 
-                if (fileSubIcons.length > 0) {
-                  subIcons.push(
-                    ...fileSubIcons.filter(
-                      (subIcon) => !subIcons.includes(subIcon)
-                    )
+            callback({
+              comment,
+              getIcon,
+              icon: processDirectory[pid]?.icon,
+              pid,
+              subIcons,
+              url,
+            });
+          } else if (
+            DYNAMIC_EXTENSION.has(urlExt) ||
+            DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
+          ) {
+            const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
+            const cachedIconPath = join(
+              ICON_CACHE,
+              `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
+            );
+
+            fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
+              if (!statError && cachedIconStats) {
+                if (isExistingFile(cachedIconStats)) {
+                  callback({
+                    comment,
+                    icon: cachedIconPath,
+                    pid,
+                    subIcons,
+                    url,
+                  });
+                } else {
+                  fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
+                    callback({
+                      comment,
+                      icon: bufferToUrl(cachedIconData as Buffer),
+                      pid,
+                      subIcons,
+                      url,
+                    })
                   );
                 }
+              } else {
+                getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
+                  const {
+                    icon: urlIcon = icon,
+                    getIcon,
+                    subIcons: fileSubIcons = [],
+                  } = fileInfo;
 
-                callback({
-                  comment,
-                  getIcon,
-                  icon: urlIcon,
-                  pid,
-                  subIcons,
-                  url,
+                  if (fileSubIcons.length > 0) {
+                    subIcons.push(
+                      ...fileSubIcons.filter(
+                        (subIcon) => !subIcons.includes(subIcon)
+                      )
+                    );
+                  }
+
+                  callback({
+                    comment,
+                    getIcon,
+                    icon: urlIcon,
+                    pid,
+                    subIcons,
+                    url,
+                  });
                 });
-              });
-            }
-          });
-        } else if (isYouTubeUrl(url)) {
-          const ytId = new URL(url).pathname.replace("/", "");
-          const cachedIconPath = join(
-            YT_ICON_CACHE,
-            `${ytId}${ICON_CACHE_EXTENSION}`
-          );
-          const baseFileInfo = {
-            comment,
-            pid,
-            url,
-          };
-          const isDefaultIcon = icon === processDirectory.VideoPlayer.icon;
-          const videoSubIcons = [processDirectory.VideoPlayer.icon];
+              }
+            });
+          } else if (isYouTubeUrl(url)) {
+            const ytId = new URL(url).pathname.replace("/", "");
+            const cachedIconPath = join(
+              YT_ICON_CACHE,
+              `${ytId}${ICON_CACHE_EXTENSION}`
+            );
+            const baseFileInfo = {
+              comment,
+              pid,
+              url,
+            };
+            const isDefaultIcon = icon === processDirectory.VideoPlayer.icon;
+            const videoSubIcons = [processDirectory.VideoPlayer.icon];
 
-          callback({
-            ...baseFileInfo,
-            getIcon: isDefaultIcon
-              ? () =>
-                  fs.exists(cachedIconPath, (cachedIconExists) =>
-                    callback({
-                      ...baseFileInfo,
-                      icon: cachedIconExists
-                        ? cachedIconPath
-                        : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
-                      subIcons: videoSubIcons,
-                    })
-                  )
-              : undefined,
-            icon: icon || processDirectory.VideoPlayer.icon,
-            subIcons: icon && !isDefaultIcon ? videoSubIcons : undefined,
-          });
-        } else {
-          callback({
-            comment,
-            icon: icon || UNKNOWN_ICON_PATH,
-            pid,
-            subIcons,
-            url,
-          });
-        }
-      });
+            callback({
+              ...baseFileInfo,
+              getIcon: isDefaultIcon
+                ? () =>
+                    fs.exists(cachedIconPath, (cachedIconExists) =>
+                      callback({
+                        ...baseFileInfo,
+                        icon: cachedIconExists
+                          ? cachedIconPath
+                          : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+                        subIcons: videoSubIcons,
+                      })
+                    )
+                : undefined,
+              icon: icon || processDirectory.VideoPlayer.icon,
+              subIcons: icon && !isDefaultIcon ? videoSubIcons : undefined,
+            });
+          } else {
+            callback({
+              comment,
+              icon: icon || UNKNOWN_ICON_PATH,
+              pid,
+              subIcons,
+              url,
+            });
+          }
+        };
+
+        fs.lstat(path, (statError, stats) => {
+          if (statError) getInfoByFileExtension();
+          else if (isExistingFile(stats)) {
+            handleShortcut(getCachedShortcut(path));
+          } else {
+            fs.readFile(path, (readError, contents): void => {
+              if (readError || !contents) getInfoByFileExtension();
+              else handleShortcut(getShortcutInfo(contents));
+            });
+          }
+        });
+      }
       break;
     case ".ani":
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
