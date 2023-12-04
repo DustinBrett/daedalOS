@@ -40,10 +40,12 @@ import {
   DESKTOP_PATH,
   FOCUSABLE_ELEMENT,
   KEYPRESS_DEBOUNCE_MS,
+  MILLISECONDS_IN_SECOND,
   PICTURES_FOLDER,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   START_MENU_PATH,
+  TRANSITIONS_IN_SECONDS,
   VIDEOS_FOLDER,
 } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
@@ -327,7 +329,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                           key={file}
                           onClick={() => {
                             openApp(pid, { url: file });
-                            if (index !== 0) updateRecentFiles(file, pid);
+                            if (index !== 0) {
+                              setTimeout(
+                                () => updateRecentFiles(file, pid),
+                                TRANSITIONS_IN_SECONDS.TASKBAR_ITEM *
+                                  MILLISECONDS_IN_SECOND
+                              );
+                            }
                           }}
                         >
                           <Icon
