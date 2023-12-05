@@ -116,8 +116,6 @@ const ResultEntry: FC<ResultEntryProps> = ({
     []
   );
 
-  // TODO: Search for directories also?
-
   return (
     <li
       ref={elementRef}

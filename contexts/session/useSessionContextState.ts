@@ -264,7 +264,6 @@ const useSessionContextState = (): SessionContextState => {
               Object.keys(DEFAULT_SESSION.iconPositions).forEach(
                 (iconPosition) => {
                   if (!session.iconPositions?.[iconPosition]) {
-                    // TODO: Allow deleting iconPositions then compare w/Desktop entries
                     session.iconPositions[iconPosition] =
                       DEFAULT_SESSION.iconPositions[iconPosition];
                   }
