@@ -4,11 +4,20 @@ export type VideoPlayer = ReturnType<typeof videojs>;
 
 export type SourceObjectWithUrl = videojs.Tech.SourceObject & { url: string };
 
+export type YouTubePlayerQuality =
+  | "hd2160"
+  | "hd1440"
+  | "hd1080"
+  | "hd720"
+  | "highres"
+  | "large"
+  | "medium"
+  | "small"
+  | "tiny"
+  | "auto";
+
 export type YouTubePlayer = {
-  getSize: () => {
-    height: number;
-    width: number;
-  };
+  getPlaybackQuality: () => YouTubePlayerQuality;
   videoTitle: string;
 };
 
