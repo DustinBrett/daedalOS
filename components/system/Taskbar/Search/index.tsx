@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Variant, m as motion } from "framer-motion";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
+  getCachedShortcut,
   getProcessByFileExtension,
   getShortcutInfo,
+  isExistingFile,
 } from "components/system/Files/FileEntry/functions";
 import {
   Documents,
@@ -37,14 +39,12 @@ import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
-  DESKTOP_PATH,
   FOCUSABLE_ELEMENT,
   KEYPRESS_DEBOUNCE_MS,
   MILLISECONDS_IN_SECOND,
   PICTURES_FOLDER,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
-  START_MENU_PATH,
   TRANSITIONS_IN_SECONDS,
   VIDEOS_FOLDER,
 } from "utils/constants";
@@ -99,7 +99,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
   const { recentFiles, updateRecentFiles } = useSession();
-  const { readFile } = useFileSystem();
+  const { lstat, readFile } = useFileSystem();
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },
@@ -203,13 +203,10 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               if (result.ref.startsWith(`${PICTURES_FOLDER}/`)) pid = "Photos";
               else if (result.ref.startsWith(`${VIDEOS_FOLDER}/`)) {
                 pid = "VideoPlayer";
-              } else if (
-                !(
-                  result.ref.startsWith(`${DESKTOP_PATH}/`) ||
-                  result.ref.startsWith(`${START_MENU_PATH}/`)
-                )
-              ) {
-                pid = getShortcutInfo(await readFile(result.ref))?.pid;
+              } else {
+                ({ pid } = isExistingFile(await lstat(result.ref))
+                  ? getCachedShortcut(result.ref)
+                  : getShortcutInfo(await readFile(result.ref)));
               }
             } else pid = getProcessByFileExtension(extension);
 
@@ -233,7 +230,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     } else {
       setSubResults([]);
     }
-  }, [readFile, results]);
+  }, [lstat, readFile, results]);
 
   return (
     <StyledSearch
