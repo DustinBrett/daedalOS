@@ -493,7 +493,7 @@ const useFileContextMenu = (
             !CURSOR_FILE_EXTENSIONS.has(pathExtension))
         ) {
           menuItems.unshift({
-            label: "Set as desktop background",
+            label: "Set as background",
             ...(hasBackgroundVideoExtension
               ? {
                   action: () => setWallpaper(path),
