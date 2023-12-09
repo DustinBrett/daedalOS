@@ -213,6 +213,24 @@ export const dragFileExplorerEntryToDesktop = async (
       targetPosition: { x: 1, y: 1 },
     });
 
+export const dragDesktopEntryToFileExplorer = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> => {
+  const { height = 0, width = 0 } =
+    (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};
+
+  page
+    .locator(DESKTOP_ENTRIES_SELECTOR)
+    .getByLabel(label)
+    .dragTo(page.locator(FILE_EXPLORER_SELECTOR), {
+      targetPosition: {
+        x: width - 5,
+        y: height - 5,
+      },
+    });
+};
+
 export const dragWindowToDesktop = async ({
   page,
 }: TestProps): Promise<void> => {

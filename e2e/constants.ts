@@ -220,6 +220,7 @@ export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
+export const TEST_DESKTOP_FILE = /^Public$/;
 export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
 export const TEST_ROOT_FILE_2 = /^favicon.ico$/;

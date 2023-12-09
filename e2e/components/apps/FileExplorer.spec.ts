@@ -14,6 +14,7 @@ import {
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
+  TEST_DESKTOP_FILE,
   TEST_ROOT_ARCHIVE,
   TEST_ROOT_FILE,
   TEST_ROOT_FILE_2,
@@ -44,6 +45,7 @@ import {
   desktopEntryIsVisible,
   didCaptureConsoleLogs,
   disableWallpaper,
+  dragDesktopEntryToFileExplorer,
   dragFileExplorerEntryToDesktop,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
@@ -292,7 +294,7 @@ test.describe("has files & folders", () => {
     });
   });
 
-  test("can drag to desktop", async ({ browserName, headless, page }) => {
+  test("can drop on desktop", async ({ browserName, headless, page }) => {
     test.skip(
       headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
       "no headless drag support"
@@ -301,6 +303,7 @@ test.describe("has files & folders", () => {
     await desktopEntryIsHidden(TEST_ROOT_FILE, { page });
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     await dragFileExplorerEntryToDesktop(TEST_ROOT_FILE, { page });
+    await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
   });
 
@@ -325,7 +328,18 @@ test.describe("has files & folders", () => {
     await expect(page.locator(".focus-within")).toHaveCount(2);
   });
 
-  // TEST: can drop (from Desktop)
+  test("can drop from desktop", async ({ browserName, headless, page }) => {
+    test.skip(
+      headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless drag support"
+    );
+
+    await fileExplorerEntryIsHidden(TEST_DESKTOP_FILE, { page });
+    await desktopEntryIsVisible(TEST_DESKTOP_FILE, { page });
+    await dragDesktopEntryToFileExplorer(TEST_DESKTOP_FILE, { page });
+    await desktopEntryIsHidden(TEST_DESKTOP_FILE, { page });
+    await fileExplorerEntryIsVisible(TEST_DESKTOP_FILE, { page });
+  });
 });
 
 test("can change page title", async ({ page }) => {

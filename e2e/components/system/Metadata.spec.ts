@@ -12,27 +12,26 @@ test.describe("has correct tags", () => {
 
     await expect(preloadElements).toHaveCount(desktopIcons.length);
 
-    const preloadHrefs = await Promise.all(
-      (await preloadElements.elementHandles()).map(
-        async (preloadElement) =>
-          basename(
-            (await preloadElement.getAttribute("href")) ||
-              (await preloadElement.getAttribute("imagesrcset")) ||
-              ""
-          ).split(" ")[0]
-      )
-    );
     const fileNames = desktopIcons.map((filePath) => basename(filePath));
 
-    preloadHrefs.forEach((preloadHref) =>
-      expect(fileNames).toContain(preloadHref)
-    );
+    (
+      await Promise.all(
+        (await preloadElements.elementHandles()).map(
+          async (preloadElement) =>
+            basename(
+              (await preloadElement.getAttribute("href")) ||
+                (await preloadElement.getAttribute("imagesrcset")) ||
+                ""
+            ).split(" ")[0]
+        )
+      )
+    ).forEach((preloadHref) => expect(fileNames).toContain(preloadHref));
   });
 
   test("has open graphs", async ({ page }) => {
-    const openGraphElements = page.locator("meta[property^='og:']");
-
-    await expect(openGraphElements).toHaveCount(OG_TAGS.length);
+    await expect(page.locator("meta[property^='og:']")).toHaveCount(
+      OG_TAGS.length
+    );
 
     OG_TAGS.forEach((tag) =>
       expect(() =>
