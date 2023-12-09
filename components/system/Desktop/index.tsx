@@ -21,7 +21,6 @@ const Desktop: FC = ({ children }) => {
         hideScrolling
         isDesktop
         loadIconsImmediately
-        preloadShortcuts
       />
       {children}
     </StyledDesktop>

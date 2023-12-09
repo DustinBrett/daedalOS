@@ -1,5 +1,7 @@
 import styled from "styled-components";
+import { ThinScrollBars } from "components/system/Taskbar/Search/styles";
 import ScrollBars from "styles/common/ScrollBars";
+import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledResults = styled.div`
   color: #fbf1c7;
@@ -8,7 +10,8 @@ const StyledResults = styled.div`
   width: 100%;
 
   .list {
-    ${ScrollBars()}
+    ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)}
+    ${ThinScrollBars}
     background-color: rgba(40, 40, 40, 95%);
     overflow-y: auto;
     scrollbar-gutter: auto;

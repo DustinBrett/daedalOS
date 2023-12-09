@@ -9,13 +9,16 @@ import desktopIcons from "public/.index/desktopIcons.json";
 import {
   FAVICON_BASE_PATH,
   HIGH_PRIORITY_ELEMENT,
-  ICON_CACHE_EXTENSION,
-  ICON_PATH,
   ONE_TIME_PASSIVE_EVENT,
   PACKAGE_DATA,
-  USER_ICON_PATH,
 } from "utils/constants";
-import { getDpi, imageSrc, imageSrcs, imageToBufferUrl } from "utils/functions";
+import {
+  getDpi,
+  imageSrc,
+  imageSrcs,
+  imageToBufferUrl,
+  isDynamicIcon,
+} from "utils/functions";
 
 const { alias, author, description } = PACKAGE_DATA;
 
@@ -34,18 +37,15 @@ const MemoizedOpenGraph = memo(OpenGraph);
 const PreloadDesktopIcons: FC = () => (
   <>
     {desktopIcons.map((icon) => {
-      const isCacheIcon = icon.endsWith(ICON_CACHE_EXTENSION);
-      const isStaticIcon =
-        isCacheIcon ||
-        ((!icon.startsWith(ICON_PATH) || icon.includes("/16x16/")) &&
-          !icon.startsWith(USER_ICON_PATH));
+      const isSubIcon = icon.includes("/16x16/");
+      const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
 
       return (
         <link
           key={icon}
           as="image"
-          href={isStaticIcon ? icon : undefined}
-          imageSrcSet={isStaticIcon ? undefined : imageSrcs(icon, 48, ".webp")}
+          href={dynamicIcon ? undefined : icon}
+          imageSrcSet={dynamicIcon ? imageSrcs(icon, 48, ".webp") : undefined}
           rel="preload"
           {...HIGH_PRIORITY_ELEMENT}
         />
@@ -63,7 +63,11 @@ const Metadata: FC = () => {
   const [customCursor, setCustomCursor] = useState("");
   const { cursor, foregroundId } = useSession();
   const { processes: { [foregroundId]: process } = {} } = useProcesses();
-  const { icon: processIcon, title: processTitle } = process || {};
+  const {
+    icon: processIcon,
+    hideTaskbarEntry,
+    title: processTitle,
+  } = process || {};
   const resetFaviconAndTitle = useCallback((): void => {
     setTitle(alias);
     setFavIcon((currentFavicon) =>
@@ -72,11 +76,9 @@ const Metadata: FC = () => {
   }, []);
   const currentFavIcon = useMemo(
     () =>
-      !favIcon ||
-      favIcon === FAVICON_BASE_PATH ||
-      favIcon.startsWith("https://")
-        ? favIcon
-        : imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0],
+      isDynamicIcon(favIcon)
+        ? imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0]
+        : favIcon,
     [favIcon]
   );
   const getCursor = useCallback(
@@ -93,7 +95,7 @@ const Metadata: FC = () => {
   );
 
   useEffect(() => {
-    if (processIcon || processTitle) {
+    if (!hideTaskbarEntry && (processIcon || processTitle)) {
       const documentTitle = processTitle ? `${processTitle} - ${alias}` : alias;
 
       if (title !== documentTitle) setTitle(documentTitle);
@@ -103,7 +105,14 @@ const Metadata: FC = () => {
     } else {
       resetFaviconAndTitle();
     }
-  }, [favIcon, processIcon, processTitle, resetFaviconAndTitle, title]);
+  }, [
+    favIcon,
+    hideTaskbarEntry,
+    processIcon,
+    processTitle,
+    resetFaviconAndTitle,
+    title,
+  ]);
 
   useEffect(() => {
     const onVisibilityChange = (): void => {

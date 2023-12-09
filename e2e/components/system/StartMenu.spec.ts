@@ -10,13 +10,13 @@ import {
   clickStartMenuEntry,
   contextMenuEntryIsVisible,
   contextMenuHasCount,
-  contextMenuIsVisible,
   desktopEntriesAreVisible,
   disableWallpaper,
   loadApp,
   pressDesktopKeys,
   searchMenuIsHidden,
   searchMenuIsVisible,
+  startMenuContextIsOpen,
   startMenuEntryIsVisible,
   startMenuIsHidden,
   startMenuIsVisible,
@@ -65,8 +65,7 @@ test.describe("has folders", () => {
     const [firstEntry] = MENU_FOLDERS;
 
     await startMenuEntryIsVisible(firstEntry, { page });
-    await clickStartMenuEntry(firstEntry, { page }, true);
-    await contextMenuIsVisible({ page });
+    await startMenuContextIsOpen(firstEntry, { page });
     await contextMenuEntryIsVisible(/^Open$/, { page });
     await contextMenuHasCount(1, { page });
   });
@@ -98,8 +97,7 @@ test.describe("has files", () => {
     const [firstEntry] = START_MENU_APPS;
 
     await startMenuEntryIsVisible(firstEntry, { page });
-    await clickStartMenuEntry(firstEntry, { page }, true);
-    await contextMenuIsVisible({ page });
+    await startMenuContextIsOpen(firstEntry, { page });
     await contextMenuEntryIsVisible(/^Open$/, { page });
     await contextMenuHasCount(1, { page });
   });

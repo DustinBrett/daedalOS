@@ -1,13 +1,15 @@
 import styled from "styled-components";
+import { ThinScrollBars } from "components/system/Taskbar/Search/styles";
 import ScrollBars from "styles/common/ScrollBars";
-import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
+import { DEFAULT_SCROLLBAR_WIDTH, THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledSectionsProps = {
   $singleLine: boolean;
 };
 
 const StyledSections = styled.div<StyledSectionsProps>`
-  ${ScrollBars()};
+  ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)}
+  ${ThinScrollBars}
   color: #fbf1c7;
   display: flex;
   height: calc(100% - 52px);

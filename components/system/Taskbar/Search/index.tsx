@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Variant, m as motion } from "framer-motion";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
+  getCachedShortcut,
   getProcessByFileExtension,
   getShortcutInfo,
+  isExistingFile,
 } from "components/system/Files/FileEntry/functions";
 import {
   Documents,
@@ -37,17 +39,17 @@ import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
-  DESKTOP_PATH,
   FOCUSABLE_ELEMENT,
   KEYPRESS_DEBOUNCE_MS,
+  MILLISECONDS_IN_SECOND,
   PICTURES_FOLDER,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
-  START_MENU_PATH,
+  TRANSITIONS_IN_SECONDS,
   VIDEOS_FOLDER,
 } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
-import { useSearch } from "utils/search";
+import { SEARCH_INPUT_PROPS, useSearch } from "utils/search";
 
 type SearchProps = {
   toggleSearch: (showMenu?: boolean) => void;
@@ -97,7 +99,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
   const { recentFiles, updateRecentFiles } = useSession();
-  const { readFile } = useFileSystem();
+  const { lstat, readFile } = useFileSystem();
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },
@@ -201,13 +203,10 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               if (result.ref.startsWith(`${PICTURES_FOLDER}/`)) pid = "Photos";
               else if (result.ref.startsWith(`${VIDEOS_FOLDER}/`)) {
                 pid = "VideoPlayer";
-              } else if (
-                !(
-                  result.ref.startsWith(`${DESKTOP_PATH}/`) ||
-                  result.ref.startsWith(`${START_MENU_PATH}/`)
-                )
-              ) {
-                pid = getShortcutInfo(await readFile(result.ref))?.pid;
+              } else {
+                ({ pid } = isExistingFile(await lstat(result.ref))
+                  ? getCachedShortcut(result.ref)
+                  : getShortcutInfo(await readFile(result.ref)));
               }
             } else pid = getProcessByFileExtension(extension);
 
@@ -231,7 +230,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     } else {
       setSubResults([]);
     }
-  }, [readFile, results]);
+  }, [lstat, readFile, results]);
 
   return (
     <StyledSearch
@@ -321,13 +320,19 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   <StyledFiles>
                     <figcaption>Recent</figcaption>
                     <ol>
-                      {recentFiles.map(([file, pid], index) => (
+                      {recentFiles.map(([file, pid, title], index) => (
                         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
                         <li
                           key={file}
                           onClick={() => {
                             openApp(pid, { url: file });
-                            if (index !== 0) updateRecentFiles(file, pid);
+                            if (index !== 0) {
+                              setTimeout(
+                                () => updateRecentFiles(file, pid, title),
+                                TRANSITIONS_IN_SECONDS.TASKBAR_ITEM *
+                                  MILLISECONDS_IN_SECOND
+                              );
+                            }
                           }}
                         >
                           <Icon
@@ -335,7 +340,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                             imgSize={16}
                             src={directory[pid]?.icon}
                           />
-                          <h2>{basename(file, extname(file))}</h2>
+                          <h2>{title || basename(file, extname(file))}</h2>
                         </li>
                       ))}
                     </ol>
@@ -460,7 +465,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             style={{
               caretColor: showCaret ? undefined : "transparent",
             }}
-            type="text"
+            {...SEARCH_INPUT_PROPS}
           />
         </motion.div>
       </div>

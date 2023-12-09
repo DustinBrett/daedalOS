@@ -10,7 +10,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { preloadLibs } from "utils/functions";
-import { SEARCH_LIBS, useSearch } from "utils/search";
+import { SEARCH_INPUT_PROPS, SEARCH_LIBS, useSearch } from "utils/search";
 
 type SearchBarProps = {
   id: string;
@@ -91,16 +91,13 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       <Search />
       <input
         ref={searchBarRef}
-        aria-label="Search box"
-        enterKeyHint="search"
         onChange={({ target }) => {
           hasUsedSearch.current = true;
           setSearchTerm(target.value);
         }}
         onFocus={() => preloadLibs(SEARCH_LIBS)}
         placeholder="Search"
-        spellCheck={false}
-        type="text"
+        {...SEARCH_INPUT_PROPS}
       />
     </StyledSearch>
   );

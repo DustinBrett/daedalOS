@@ -49,6 +49,10 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
         position: absolute;
         top: 10px;
       }
+
+      &::-webkit-search-cancel-button {
+        margin: 0 0 0 8px;
+      }
     }
 
     svg {

@@ -1,15 +1,12 @@
 import { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import {
-  ICON_CACHE,
-  SUPPORTED_ICON_PIXEL_RATIOS,
-  YT_ICON_CACHE,
-} from "utils/constants";
+import { SUPPORTED_ICON_PIXEL_RATIOS } from "utils/constants";
 import {
   cleanUpBufferUrl,
   createFallbackSrcSet,
   imageSrc,
   imageSrcs,
+  isDynamicIcon,
 } from "utils/functions";
 
 export type IconProps = {
@@ -55,15 +52,7 @@ const Icon = forwardRef<
 >((props, ref) => {
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
-  const isStaticIcon =
-    !src ||
-    src.startsWith("blob:") ||
-    src.startsWith("http:") ||
-    src.startsWith("https:") ||
-    src.startsWith("data:") ||
-    src.startsWith(ICON_CACHE) ||
-    src.startsWith(YT_ICON_CACHE) ||
-    src.endsWith(".ico");
+  const isDynamic = isDynamicIcon(src);
   const dimensionProps = useMemo(() => {
     const size = displaySize > imgSize ? imgSize : displaySize || imgSize;
     const $offset = displaySize > imgSize ? `${displaySize - imgSize}px` : 0;
@@ -104,14 +93,14 @@ const Icon = forwardRef<
         }
       }}
       onLoad={() => setLoaded(true)}
-      src={isStaticIcon ? src : imageSrc(src, imgSize, 1, ".png")}
+      src={isDynamic ? imageSrc(src, imgSize, 1, ".png") : src}
       srcSet={
-        isStaticIcon
-          ? undefined
-          : imageSrcs(src, imgSize, ".png", failedUrls) ||
+        isDynamic
+          ? imageSrcs(src, imgSize, ".png", failedUrls) ||
             (failedUrls.length === 0
               ? ""
               : createFallbackSrcSet(src, failedUrls))
+          : undefined
       }
       {...componentProps}
       {...dimensionProps}
@@ -120,7 +109,7 @@ const Icon = forwardRef<
 
   return (
     <picture>
-      {!isStaticIcon &&
+      {isDynamic &&
         SUPPORTED_ICON_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(src, imgSize, ratio, ".webp");
           const mediaRatio = ratio - 0.99;

@@ -2,9 +2,11 @@ import { basename } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CONTROL_BAR_HEIGHT,
+  DEFAULT_QUALITY_SIZE,
   VideoResizeKey,
   YT_TYPE,
   config,
+  ytQualitySizeMap,
 } from "components/apps/VideoPlayer/config";
 import {
   type YouTubeTech,
@@ -28,7 +30,6 @@ import {
   viewHeight,
   viewWidth,
 } from "utils/functions";
-import { useSession } from "contexts/session";
 
 const useVideoPlayer = ({
   containerRef,
@@ -42,7 +43,6 @@ const useVideoPlayer = ({
     linkElement,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
-  const { windowStates } = useSession();
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
@@ -84,17 +84,15 @@ const useVideoPlayer = ({
 
         if (youTubePlayer) setYtPlayer(youTubePlayer);
 
-        const [height, width] =
-          youTubePlayer && !windowStates[id]
-            ? [
-                youTubePlayer.getSize().height * 1.5,
-                youTubePlayer.getSize().width * 1.5,
-              ]
-            : [videoPlayer.videoHeight(), videoPlayer.videoWidth()];
+        const [height, width] = youTubePlayer
+          ? ytQualitySizeMap[youTubePlayer.getPlaybackQuality()] ||
+            DEFAULT_QUALITY_SIZE
+          : [videoPlayer.videoHeight(), videoPlayer.videoWidth()];
         const [vh, vw] = [viewHeight(), viewWidth()];
 
         if (height && width) {
-          const heightWithControlBar = CONTROL_BAR_HEIGHT + height;
+          const heightWithControlBar =
+            height + (youTubePlayer ? 0 : CONTROL_BAR_HEIGHT);
 
           if (heightWithControlBar > vh || width > vw) {
             updateWindowSize(vw * (heightWithControlBar / width), vw);
@@ -161,15 +159,7 @@ const useVideoPlayer = ({
       setLoading(false);
       if (!isYT) linkElement(id, "peekElement", videoElement);
     });
-  }, [
-    containerRef,
-    id,
-    isYT,
-    linkElement,
-    setLoading,
-    updateWindowSize,
-    windowStates,
-  ]);
+  }, [containerRef, id, isYT, linkElement, setLoading, updateWindowSize]);
   const maybeHideControlbar = useCallback(
     (type?: string): void => {
       const controlBar =

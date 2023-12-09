@@ -4,7 +4,7 @@ const StyledFiles = styled.figure`
   ol {
     display: flex;
     flex-flow: row wrap;
-    gap: 6px;
+    gap: 5px;
     padding-top: 9px;
 
     li {

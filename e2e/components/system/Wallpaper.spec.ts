@@ -53,7 +53,7 @@ test.describe("can set backgound", () => {
     await clickFileExplorerEntry("unknown.png", { page }, true);
     await contextMenuIsVisible({ page });
 
-    await clickContextMenuEntry(/^Set as desktop background$/, { page });
+    await clickContextMenuEntry(/^Set as background$/, { page });
     await clickContextMenuEntry(/^Fill$/, { page });
 
     await backgroundIsUrl({ page });

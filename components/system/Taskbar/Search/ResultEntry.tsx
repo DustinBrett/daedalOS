@@ -2,7 +2,10 @@ import { basename, extname } from "path";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
-import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import {
+  getModifiedTime,
+  getShortcutInfo,
+} from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import {
   type ResultInfo,
@@ -14,7 +17,7 @@ import { useFileSystem } from "contexts/fileSystem";
 import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE } from "utils/constants";
+import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
 import { useIsVisible } from "hooks/useIsVisible";
 
@@ -39,12 +42,12 @@ const ResultEntry: FC<ResultEntryProps> = ({
   setActiveItem,
   url,
 }) => {
-  const { fs, stat } = useFileSystem();
+  const { fs, readFile, stat } = useFileSystem();
   const { updateRecentFiles } = useSession();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const extension = extname(info?.url || url);
-  const baseName = basename(url, ".url");
+  const baseName = basename(url, SHORTCUT_EXTENSION);
   const name = useMemo(() => {
     let text = baseName;
 
@@ -77,7 +80,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef, ".list");
   const isAppShortcut = info?.pid
-    ? url === info.url && extname(url) === ".url"
+    ? url === info.url && extname(url) === SHORTCUT_EXTENSION
     : false;
   const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
@@ -116,8 +119,6 @@ const ResultEntry: FC<ResultEntryProps> = ({
     []
   );
 
-  // TODO: Search for directories also?
-
   return (
     <li
       ref={elementRef}
@@ -130,8 +131,18 @@ const ResultEntry: FC<ResultEntryProps> = ({
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <figure
         className={details ? undefined : "simple"}
-        onClick={() => {
-          openApp(info?.pid, isAppShortcut ? undefined : { url: baseUrl });
+        onClick={async () => {
+          openApp(
+            info?.pid,
+            isAppShortcut
+              ? undefined
+              : {
+                  url:
+                    extname(baseUrl) === SHORTCUT_EXTENSION
+                      ? getShortcutInfo(await readFile(baseUrl))?.url || baseUrl
+                      : baseUrl,
+                }
+          );
           if (baseUrl && info?.pid) updateRecentFiles(baseUrl, info?.pid);
         }}
         onContextMenuCapture={

@@ -41,7 +41,6 @@ type FileManagerProps = {
   isDesktop?: boolean;
   isStartMenu?: boolean;
   loadIconsImmediately?: boolean;
-  preloadShortcuts?: boolean;
   readOnly?: boolean;
   showStatusBar?: boolean;
   skipFsWatcher?: boolean;
@@ -60,7 +59,6 @@ const FileManager: FC<FileManagerProps> = ({
   isDesktop,
   isStartMenu,
   loadIconsImmediately,
-  preloadShortcuts,
   readOnly,
   showStatusBar,
   skipFsWatcher,
@@ -78,7 +76,6 @@ const FileManager: FC<FileManagerProps> = ({
     useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
       hideLoading,
-      preloadShortcuts,
       skipFsWatcher,
       skipSorting,
     });

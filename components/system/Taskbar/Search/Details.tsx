@@ -19,7 +19,7 @@ import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE, ROOT_NAME } from "utils/constants";
+import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
 
 const Details: FC<{
@@ -43,7 +43,7 @@ const Details: FC<{
   const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
   const isAppShortcut = info?.pid
-    ? url === info.url && extname(url) === ".url"
+    ? url === info.url && extname(url) === SHORTCUT_EXTENSION
     : false;
   const isDirectory =
     stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
@@ -75,7 +75,7 @@ const Details: FC<{
       <Icon displaySize={64} imgSize={96} src={info?.icon} />
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <h1 onClick={openFile}>
-        {baseUrl === "/" ? ROOT_NAME : basename(baseUrl, ".url")}
+        {baseUrl === "/" ? ROOT_NAME : basename(baseUrl, SHORTCUT_EXTENSION)}
       </h1>
       <h2>{fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}</h2>
       {!isAppShortcut && info?.url && (

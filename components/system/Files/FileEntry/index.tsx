@@ -152,7 +152,7 @@ const FileEntry: FC<FileEntryProps> = ({
     hasNewFolderIcon,
     isDesktop || isVisible
   );
-  const openFile = useFile(url);
+  const openFile = useFile(url, path);
   const {
     createPath,
     exists,
@@ -529,6 +529,7 @@ const FileEntry: FC<FileEntryProps> = ({
           fileActions,
           focusFunctions,
           focusedEntries,
+          stats,
           fileManagerId,
           readOnly
         )}
@@ -587,7 +588,6 @@ const FileEntry: FC<FileEntryProps> = ({
           hideLoading
           hideShortcutIcons
           loadIconsImmediately
-          preloadShortcuts
           readOnly
           skipFsWatcher
           skipSorting

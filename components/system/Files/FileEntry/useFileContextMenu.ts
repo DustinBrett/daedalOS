@@ -1,9 +1,13 @@
 import { basename, dirname, extname, join } from "path";
 import { type URLTrack } from "webamp";
 import { useMemo } from "react";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import {
+  getProcessByFileExtension,
+  isExistingFile,
+} from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type FileActions } from "components/system/Files/FileManager/useFolder";
@@ -71,6 +75,7 @@ const useFileContextMenu = (
   }: FileActions,
   { blurEntry, focusEntry }: FocusEntryFunctions,
   focusedEntries: string[],
+  stats: FileStat,
   fileManagerId?: string,
   readOnly?: boolean
 ): ContextMenuCapture => {
@@ -80,7 +85,7 @@ const useFileContextMenu = (
     useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
-  const openFile = useFile(url);
+  const openFile = useFile(url, path);
   const {
     copyEntries,
     createPath,
@@ -399,7 +404,10 @@ const useFileContextMenu = (
                 };
 
                 try {
-                  if (navigator.canShare?.(shareData)) {
+                  if (
+                    isExistingFile(stats) &&
+                    navigator.canShare?.(shareData)
+                  ) {
                     menuItems.unshift({
                       SvgIcon: Share,
                       action: () => navigator.share(shareData),
@@ -485,7 +493,7 @@ const useFileContextMenu = (
             !CURSOR_FILE_EXTENSIONS.has(pathExtension))
         ) {
           menuItems.unshift({
-            label: "Set as desktop background",
+            label: "Set as background",
             ...(hasBackgroundVideoExtension
               ? {
                   action: () => setWallpaper(path),
@@ -622,6 +630,7 @@ const useFileContextMenu = (
       setForegroundId,
       setRenaming,
       setWallpaper,
+      stats,
       unMapFs,
       updateFolder,
       updateRecentFiles,
