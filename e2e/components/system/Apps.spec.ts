@@ -6,7 +6,9 @@ import {
   TEST_APP_CONTAINER_APP_TITLE,
 } from "e2e/constants";
 import {
+  captureConsoleLogs,
   desktopEntriesAreVisible,
+  didCaptureConsoleLogs,
   disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
@@ -14,6 +16,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 
 test.describe("app container", () => {
@@ -44,3 +47,4 @@ test.describe("app container", () => {
 });
 
 // TEST: iframe apps
+test.afterEach(didCaptureConsoleLogs);

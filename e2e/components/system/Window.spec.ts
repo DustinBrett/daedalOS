@@ -5,9 +5,11 @@ import {
   WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
+  captureConsoleLogs,
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
+  didCaptureConsoleLogs,
   disableWallpaper,
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
@@ -25,6 +27,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
@@ -119,3 +122,5 @@ test("can resize", async ({ page }) => {
 // TEST: has context menu
 // TEST: has keyboard shortcuts (Ctrl+Shift+Up/Down)
 // TEST: focus/blur | foreground/background focus
+
+test.afterEach(didCaptureConsoleLogs);

@@ -6,6 +6,7 @@ import {
   captureConsoleLogs,
   clockCanvasMaybeIsVisible,
   desktopEntriesAreVisible,
+  didCaptureConsoleLogs,
   loadApp,
   startButtonIsVisible,
   taskbarIsVisible,
@@ -28,5 +29,4 @@ test("can pass accessibility scan", async ({ page }) =>
     ).violations
   ).toEqual([]));
 
-test("has no console logs", () =>
-  expect(globalThis.capturedConsoleLogs || []).toHaveLength(0));
+test.afterEach(didCaptureConsoleLogs);

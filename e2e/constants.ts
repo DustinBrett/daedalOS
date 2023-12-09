@@ -10,11 +10,14 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
     // https://github.com/emotion-js/emotion/pull/3093
     'styled-components: it looks like an unknown prop "fetchpriority" is being sent through to the DOM',
     // Generic messages
+    "was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
     "Download the React DevTools for a better development experience",
     "[HMR] connected",
     "[Fast Refresh] rebuilding",
     "chrome://juggler",
     "No available adapters.",
+    // Marked
+    "mangle parameter is enabled by default, but is deprecated",
   ];
 
   if (process.env.CI) {
@@ -241,3 +244,7 @@ export const BASE_APP_FAVICON = /^\/favicon.ico$/;
 export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
 
 export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.png";
+
+const OG_REQUIRED_TAGS = ["title", "image", "url", "type"];
+
+export const OG_TAGS = [...OG_REQUIRED_TAGS, "description"];

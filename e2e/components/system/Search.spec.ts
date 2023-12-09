@@ -1,7 +1,9 @@
 import { test } from "@playwright/test";
 import { TEST_SEARCH, TEST_SEARCH_RESULT_TITLE } from "e2e/constants";
 import {
+  captureConsoleLogs,
   clickSearchButton,
+  didCaptureConsoleLogs,
   disableWallpaper,
   loadApp,
   searchMenuIsHidden,
@@ -10,6 +12,7 @@ import {
   typeInTaskbarSearchBar,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(async ({ page }) => clickSearchButton({ page }));
@@ -28,3 +31,5 @@ test.describe("can search", () => {
     await searchResultEntryIsVisible(TEST_SEARCH_RESULT_TITLE, { page });
   });
 });
+
+test.afterEach(didCaptureConsoleLogs);

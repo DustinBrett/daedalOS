@@ -8,6 +8,7 @@ import {
 } from "e2e/constants";
 import {
   appIsOpen,
+  captureConsoleLogs,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuEntryIsHidden,
@@ -18,6 +19,7 @@ import {
   desktopEntryIsHidden,
   desktopEntryIsVisible,
   desktopIsVisible,
+  didCaptureConsoleLogs,
   disableWallpaper,
   filterMenuItems,
   loadApp,
@@ -25,6 +27,7 @@ import {
   selectArea,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(desktopIsVisible);
@@ -165,3 +168,5 @@ test.describe("has keyboard shortcuts", () => {
   // TEST: Control+Shift+D (Show Desktop)
   // TEST: F11 & Escape (Fullscreen)
 });
+
+test.afterEach(didCaptureConsoleLogs);

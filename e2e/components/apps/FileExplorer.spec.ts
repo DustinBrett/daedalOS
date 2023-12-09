@@ -26,6 +26,7 @@ import {
 } from "e2e/constants";
 import {
   appIsOpen,
+  captureConsoleLogs,
   clickContextMenuEntry,
   clickDesktop,
   clickFileExplorer,
@@ -41,6 +42,7 @@ import {
   contextMenuIsVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
+  didCaptureConsoleLogs,
   disableWallpaper,
   dragFileExplorerEntryToDesktop,
   fileExplorerAddressBarHasValue,
@@ -65,6 +67,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 test.beforeEach(windowsAreVisible);
@@ -425,3 +428,5 @@ test.describe("has navigation", () => {
 });
 
 // TEST: has keyboard shortcuts (Arrows, Ctrl: A, C, X, V, Backspace, Delete, Multi-select via Ctrl)
+
+test.afterEach(didCaptureConsoleLogs);

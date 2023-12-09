@@ -93,6 +93,9 @@ export const captureConsoleLogs = ({ browserName, page }: TestProps): Page =>
     }
   });
 
+export const didCaptureConsoleLogs = (): void =>
+  expect(globalThis.capturedConsoleLogs || []).toHaveLength(0);
+
 export const filterMenuItems = (
   menuItems: MenuItems,
   browserName: string

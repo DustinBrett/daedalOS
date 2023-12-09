@@ -11,6 +11,7 @@ import {
 } from "e2e/constants";
 import {
   calendarIsVisible,
+  captureConsoleLogs,
   clickClock,
   clickContextMenuEntry,
   clickStartButton,
@@ -22,6 +23,7 @@ import {
   contextMenuEntryIsVisible,
   contextMenuHasCount,
   contextMenuIsVisible,
+  didCaptureConsoleLogs,
   disableOffscreenCanvas,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
@@ -43,6 +45,7 @@ import {
   windowIsTransparent,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 
 test.describe("elements", () => {
@@ -197,3 +200,5 @@ test.describe("entries", () => {
     // TEST: Show the desktop
   });
 });
+
+test.afterEach(didCaptureConsoleLogs);

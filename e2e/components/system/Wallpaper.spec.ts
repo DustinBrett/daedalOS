@@ -3,17 +3,21 @@ import {
   backgroundCanvasMaybeIsVisible,
   backgroundIsUrl,
   canvasBackgroundIsHidden,
+  captureConsoleLogs,
   clickContextMenuEntry,
   clickDesktop,
   clickFileExplorerEntry,
   contextMenuIsVisible,
   desktopIsVisible,
+  didCaptureConsoleLogs,
   fileExplorerEntriesAreVisible,
   loadAppWithCanvas,
   mockPictureSlideshowRequest,
   sessionIsWriteable,
   windowsAreVisible,
 } from "e2e/functions";
+
+test.beforeEach(captureConsoleLogs);
 
 test("has background", loadAppWithCanvas);
 
@@ -62,3 +66,5 @@ test.describe("can set backgound", () => {
 
   // TEST: from video
 });
+
+test.afterEach(didCaptureConsoleLogs);
