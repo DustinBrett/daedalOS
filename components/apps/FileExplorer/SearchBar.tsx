@@ -88,7 +88,6 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
 
   return (
     <StyledSearch>
-      <Search />
       <input
         ref={searchBarRef}
         onChange={({ target }) => {
@@ -99,6 +98,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         placeholder="Search"
         {...SEARCH_INPUT_PROPS}
       />
+      <Search />
     </StyledSearch>
   );
 };
