@@ -44,7 +44,7 @@
     "@wasmer/wasm-terminal": "^0.12.0",
     "@wasmer/wasm-transformer": "^0.12.0",
     "ani-cursor": "^0.0.5",
-    "browserfs": "github:jvilk/BrowserFS#a96aa2d",
+    "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "butterchurn-presets": "^3.0.0-beta.4",
     "dompurify": "^3.0.6",
     "fflate": "^0.8.1",
@@ -70,7 +70,7 @@
     "resedit": "^2.0.0",
     "rtf.js": "^3.0.9",
     "styled-components": "^6.1.1",
-    "utif": "github:photopea/UTIF.js",
+    "utif": "https://github.com/photopea/UTIF.js",
     "wasi-js": "^1.7.3"
   },
   "devDependencies": {
