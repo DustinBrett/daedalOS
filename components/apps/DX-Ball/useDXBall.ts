@@ -12,7 +12,10 @@ declare global {
   interface Window {
     DXBall: {
       close: () => void;
-      init: (saveFunction: (name: string, score: string) => string) => void;
+      init: (
+        loadedFunction: () => void,
+        saveFunction: (name: string, score: string) => string
+      ) => void;
     };
   }
 }
@@ -41,26 +44,27 @@ const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
       libLoadingRef.current = false;
 
       loadFiles(libs, undefined, true).then(() => {
-        window.DXBall?.init((name, score) => {
-          records.current = `${
-            records.current ? `${records.current}\r` : ""
-          }#&${score}&${name}`
-            .split("\r")
-            .map((record) => record.split("&"))
-            .sort(([, scoreA], [, scoreB]) => Number(scoreB) - Number(scoreA))
-            .map(
-              ([, recordScore, recordName], index) =>
-                `${index}&${recordScore}&${recordName}`
-            )
-            .join("\r");
+        window.DXBall?.init(
+          () => setLoading(false),
+          (name, score) => {
+            records.current = `${
+              records.current ? `${records.current}\r` : ""
+            }#&${score}&${name}`
+              .split("\r")
+              .map((record) => record.split("&"))
+              .sort(([, scoreA], [, scoreB]) => Number(scoreB) - Number(scoreA))
+              .map(
+                ([, recordScore, recordName], index) =>
+                  `${index}&${recordScore}&${recordName}`
+              )
+              .join("\r");
 
-          writeFile(SAVE_PATH, records.current, true);
-          updateFolder(dirname(SAVE_PATH), basename(SAVE_PATH));
+            writeFile(SAVE_PATH, records.current, true);
+            updateFolder(dirname(SAVE_PATH), basename(SAVE_PATH));
 
-          return `${records.current}\r`;
-        });
-
-        setLoading(false);
+            return `${records.current}\r`;
+          }
+        );
       });
     }
   }, [libs, setLoading, updateFolder, writeFile]);
