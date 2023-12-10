@@ -34,8 +34,6 @@ test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
 
-// TEST: has grid (move file on grid)
-
 test.describe("has selection", () => {
   test("has effect", async ({ page }) => {
     const { width = 0, height = 0 } =
@@ -161,12 +159,6 @@ test.describe("has keyboard shortcuts", () => {
     await pressDesktopKeys("Shift+F12", { page });
     await appIsOpen(/^DevTools$/, page);
   });
-
-  // TEST: Shift+Escape (Start Menu)
-  // TEST: F5 (Reload Page)
-  // TEST: Meta+Up/Down (Min/Max Window)
-  // TEST: Control+Shift+D (Show Desktop)
-  // TEST: F11 & Escape (Fullscreen)
 });
 
 test.afterEach(didCaptureConsoleLogs);

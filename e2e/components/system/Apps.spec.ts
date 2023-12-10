@@ -41,10 +41,6 @@ test.describe("app container", () => {
       { page }
     );
   });
-
-  // TEST: has loading
-  // TEST: has error
 });
 
-// TEST: iframe apps
 test.afterEach(didCaptureConsoleLogs);

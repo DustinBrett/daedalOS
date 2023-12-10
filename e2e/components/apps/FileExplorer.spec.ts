@@ -169,14 +169,10 @@ test.describe("has files & folders", () => {
       await clickDesktop({ page }, true, width - 25, 25);
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
-
-      // TEST: copy dialog shows
-
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     });
 
-    // TEST: can delete empty/non-empty folder
     test("can delete file", async ({ page }) => {
       await clickContextMenuEntry(/^Delete$/, { page });
 
@@ -440,7 +436,5 @@ test.describe("has navigation", () => {
     await windowTitlebarTextIsVisible(/^My PC$/, { page });
   });
 });
-
-// TEST: has keyboard shortcuts (Arrows, Ctrl: A, C, X, V, Backspace, Delete, Multi-select via Ctrl)
 
 test.afterEach(didCaptureConsoleLogs);

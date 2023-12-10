@@ -195,9 +195,6 @@ test.describe("entries", () => {
         await contextMenuEntryIsVisible(label, { page });
       }
     });
-
-    // TEST: Fullscreen
-    // TEST: Show the desktop
   });
 });
 
