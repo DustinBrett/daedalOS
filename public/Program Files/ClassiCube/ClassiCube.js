@@ -2379,6 +2379,10 @@ function copyTempDouble(ptr) {
         JSEvents.eventHandlers.splice(i, 1);
       },registerOrRemoveHandler:function (eventHandler) {
         var jsEventHandler = function jsEventHandler(event) {
+          var windowElement = CCModule["canvas"]?.closest("section");
+          if (!windowElement || (document.activeElement !== windowElement && !windowElement?.contains(document.activeElement))) {
+            return;
+          }
           // Increment nesting count for the event handler.
           ++JSEvents.inEventHandler;
           JSEvents.currentEventHandler = eventHandler;
