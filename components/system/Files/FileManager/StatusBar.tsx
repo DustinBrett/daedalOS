@@ -11,6 +11,7 @@ import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { getFormattedSize, haltEvent, label } from "utils/functions";
+import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
 
 type StatusBarProps = {
   count: number;
@@ -20,7 +21,6 @@ type StatusBarProps = {
 };
 
 const MINIMUM_STATUSBAR_WIDTH = 225;
-const UNKNOWN_SIZE = -1;
 const UNCALCULATED_SIZE = -2;
 
 const StatusBar: FC<StatusBarProps> = ({

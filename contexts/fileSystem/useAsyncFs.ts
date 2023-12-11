@@ -13,9 +13,11 @@ import {
 import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import {
   UNKNOWN_STATE_CODES,
+  get9pSize,
   supportsIndexedDB,
 } from "contexts/fileSystem/core";
 import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import { isExistingFile } from "components/system/Files/FileEntry/functions";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -169,21 +171,37 @@ const useAsyncFs = (): AsyncFSModule => {
       stat: (path) =>
         new Promise((resolve, reject) => {
           fs?.stat(path, (error, stats = Object.create(null) as Stats) => {
-            if (UNKNOWN_STATE_CODES.has(error?.code || "")) {
-              return resolve(new Stats(FileType.FILE, -1));
+            if (error) {
+              return UNKNOWN_STATE_CODES.has(error.code)
+                ? resolve(new Stats(FileType.FILE, -1))
+                : reject(error);
             }
 
-            return error ? reject(error) : resolve(stats);
+            return resolve(
+              stats.size === -1 && isExistingFile(stats)
+                ? new Stats(
+                    FileType.FILE,
+                    get9pSize(path),
+                    stats.mode,
+                    stats.atimeMs,
+                    stats.mtimeMs,
+                    stats.ctimeMs,
+                    stats.birthtimeMs
+                  )
+                : stats
+            );
           });
         }),
       unlink: (path) =>
         new Promise((resolve, reject) => {
           fs?.unlink(path, (error) => {
-            if (UNKNOWN_STATE_CODES.has(error?.code || "")) {
-              return resolve(false);
+            if (error) {
+              return UNKNOWN_STATE_CODES.has(error.code)
+                ? resolve(false)
+                : reject(error);
             }
 
-            return error ? reject(error) : resolve(true);
+            return resolve(true);
           });
         }),
       writeFile: (path, data, overwrite = false) =>
