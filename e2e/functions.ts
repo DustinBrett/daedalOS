@@ -77,21 +77,34 @@ type DocumentWithVendorFullscreen = Document & {
   webkitFullscreenElement?: HTMLElement;
 };
 
-export const captureConsoleLogs = ({ browserName, page }: TestProps): Page =>
+const captureConsole = (
+  { browserName, page }: TestPropsWithBrowser,
+  logType?: string
+): Page =>
   page.on("console", (msg) => {
+    if (typeof logType === "string" && msg.type() !== logType) return;
+
     const text = msg.text();
 
     if (
-      !EXCLUDED_CONSOLE_LOGS(browserName || "").some((excluded) =>
+      !text ||
+      EXCLUDED_CONSOLE_LOGS(browserName).some((excluded) =>
         text.includes(excluded)
       )
     ) {
-      globalThis.capturedConsoleLogs = [
-        ...(globalThis.capturedConsoleLogs || []),
-        text,
-      ];
+      return;
     }
+
+    globalThis.capturedConsoleLogs = [
+      ...(globalThis.capturedConsoleLogs || []),
+      text,
+    ];
   });
+
+export const captureConsoleLogs = ({
+  browserName,
+  page,
+}: TestPropsWithBrowser): Page => captureConsole({ browserName, page });
 
 export const didCaptureConsoleLogs = (): void =>
   expect(globalThis.capturedConsoleLogs || []).toHaveLength(0);

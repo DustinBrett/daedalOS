@@ -10,7 +10,6 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
     // https://github.com/emotion-js/emotion/pull/3093
     'styled-components: it looks like an unknown prop "fetchpriority" is being sent through to the DOM',
     // Generic messages
-    "was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
     "Download the React DevTools for a better development experience",
     "[HMR] connected",
     "[Fast Refresh] rebuilding",
@@ -42,7 +41,9 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
       // as=fetch is not supported in webkit
       "was preloaded using link preload but not used within a few seconds from the window's load event",
       // https://bugs.webkit.org/show_bug.cgi?id=231150
-      "<link rel=preload> has an invalid `imagesrcset` value"
+      "<link rel=preload> has an invalid `imagesrcset` value",
+      // sandbox=allow-presentation is not supported in webkit
+      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag."
     );
   }
 
