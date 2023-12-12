@@ -39,7 +39,7 @@ const IDX_GID = 0;
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
 
-export const get9pData = (
+const get9pData = (
   path: string,
   pathIndex: typeof IDX_SIZE | typeof IDX_MTIME
 ): number => {
