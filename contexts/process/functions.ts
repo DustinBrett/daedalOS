@@ -55,9 +55,11 @@ export const openProcess =
   (processId: string, processArguments: ProcessArguments, icon?: string) =>
   (currentProcesses: Processes): Processes => {
     const { url = "" } = processArguments;
-    const { libs, singleton } = processDirectory[processId] || {};
+    const { dependantLibs, libs, singleton } =
+      processDirectory[processId] || {};
 
     if (libs) preloadLibs(libs);
+    if (dependantLibs) preloadLibs(dependantLibs);
 
     if (singleton) {
       const currentPid = Object.keys(currentProcesses).find(
