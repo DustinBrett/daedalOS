@@ -96,9 +96,10 @@ test("has address bar", async ({ page }) => {
 
 test("can search", async ({ page }) => {
   await clickFileExplorerSearchBox({ page });
-  await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
 
-  await contextMenuIsVisible({ page });
+  await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
+  await expect(() => contextMenuIsVisible({ page })).toPass();
+
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
@@ -273,6 +274,10 @@ test.describe("has files & folders", () => {
   });
 
   test.describe("can open", () => {
+    test.beforeEach(({ page }) =>
+      fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page })
+    );
+
     test("via double click", async ({ page }) => {
       await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, false, 2);
       await windowTitlebarTextIsVisible(

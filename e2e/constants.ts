@@ -83,7 +83,7 @@ export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([t
 export const TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR = `${TASKBAR_ENTRY_PEEK_SELECTOR}>img`;
 export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#searchMenu`;
 export const SEARCH_MENU_INPUT_SELECTOR = `${SEARCH_MENU_SELECTOR} input[placeholder='Type here to search']`;
-export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure>ol`;
+export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure:first-child>ol`;
 export const SEARCH_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title='Type here to search']`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title=Start]`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#startMenu`;
