@@ -31,12 +31,18 @@ const useQuake3 = ({
   containerRef,
   id,
   setLoading,
+  loading,
 }: ContainerHookProps): void => {
+  const { processes: { [id]: process } = {} } = useProcesses();
   const {
-    processes: {
-      [id]: { componentWindow, defaultSize, libs = [], maximized = false },
-    } = {},
-  } = useProcesses();
+    componentWindow = undefined,
+    defaultSize = {
+      height: 0,
+      width: 0,
+    },
+    libs = [],
+    maximized = false,
+  } = process || {};
   const {
     windowStates: { [id]: windowState },
   } = useSession();
@@ -48,17 +54,19 @@ const useQuake3 = ({
   const { size } = windowState || {};
 
   useEffect(() => {
-    loadFiles(libs).then(() => {
-      if (!window.ioq3) return;
+    if (loading) {
+      loadFiles(libs).then(() => {
+        if (!window.ioq3) return;
 
-      window.ioq3.viewport = containerRef.current;
-      window.ioq3.elementPointerLock = true;
-      window.ioq3.callMain([]);
+        window.ioq3.viewport = containerRef.current;
+        window.ioq3.elementPointerLock = true;
+        window.ioq3.callMain([]);
 
-      setLoading(false);
-      mountEmFs(window.FS as EmscriptenFS, "Quake3");
-    });
-  }, [containerRef, libs, mountEmFs, setLoading]);
+        setLoading(false);
+        mountEmFs(window.FS as EmscriptenFS, "Quake3");
+      });
+    }
+  }, [containerRef, libs, loading, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (!window.ioq3) return;
