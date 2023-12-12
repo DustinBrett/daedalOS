@@ -15,6 +15,7 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
     "[Fast Refresh] rebuilding",
     "chrome://juggler",
     "No available adapters.",
+    "not used within a few seconds",
     // Marked
     "mangle parameter is enabled by default, but is deprecated",
   ];
@@ -38,8 +39,6 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
 
   if (browserName === "webkit") {
     excludedConsoleLogs.push(
-      // as=fetch is not supported in webkit
-      "was preloaded using link preload but not used within a few seconds from the window's load event",
       // https://bugs.webkit.org/show_bug.cgi?id=231150
       "<link rel=preload> has an invalid `imagesrcset` value",
       // sandbox=allow-presentation is not supported in webkit
