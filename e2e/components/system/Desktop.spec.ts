@@ -8,6 +8,7 @@ import {
 } from "e2e/constants";
 import {
   appIsOpen,
+  captureConsoleLogs,
   clickContextMenuEntry,
   clickDesktop,
   contextMenuEntryIsHidden,
@@ -18,6 +19,7 @@ import {
   desktopEntryIsHidden,
   desktopEntryIsVisible,
   desktopIsVisible,
+  didCaptureConsoleLogs,
   disableWallpaper,
   filterMenuItems,
   loadApp,
@@ -25,13 +27,12 @@ import {
   selectArea,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);
-
-// TEST: has grid (move file on grid)
 
 test.describe("has selection", () => {
   test("has effect", async ({ page }) => {
@@ -158,10 +159,6 @@ test.describe("has keyboard shortcuts", () => {
     await pressDesktopKeys("Shift+F12", { page });
     await appIsOpen(/^DevTools$/, page);
   });
-
-  // TEST: Shift+Escape (Start Menu)
-  // TEST: F5 (Reload Page)
-  // TEST: Meta+Up/Down (Min/Max Window)
-  // TEST: Control+Shift+D (Show Desktop)
-  // TEST: F11 & Escape (Fullscreen)
 });
+
+test.afterEach(didCaptureConsoleLogs);

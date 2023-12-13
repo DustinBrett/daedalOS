@@ -69,7 +69,7 @@ const useTinyMCE = ({
   }, [containerRef, editor?.mode, openLink]);
   const loadFile = useCallback(async () => {
     if (editor) {
-      setReadOnlyMode(editor, () => {
+      const setupSaveCallback = (): void => {
         (editor.options.set as OptionSetter)(
           "save_onsavecallback",
           async () => {
@@ -118,9 +118,15 @@ const useTinyMCE = ({
             }
           }
         );
-      });
-
+      };
       const fileContents = await readFile(url);
+
+      if (fileContents.length === 0) {
+        editor.mode.set("design");
+        setupSaveCallback();
+      } else {
+        setReadOnlyMode(editor, setupSaveCallback);
+      }
 
       if (getExtension(url) === ".rtf") {
         const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;

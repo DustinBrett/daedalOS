@@ -17,6 +17,7 @@ public/Users/Public/**
 !public/Users/**/desktop.ini
 !public/Users/Public/Desktop
 !public/Users/Public/Desktop/*.url
+!public/Users/Public/Desktop/Public.url
 !public/Users/Public/Desktop/*.html
 !public/Users/Public/Desktop/Bouldering*
 !public/Users/Public/Desktop/Bouldering*/*

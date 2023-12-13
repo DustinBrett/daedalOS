@@ -806,7 +806,7 @@ export const preloadLibs = (libs: string[] = []): void => {
       case ".html":
         link.rel = "prerender";
         break;
-      case ".url":
+      case ".wasm":
         link.as = "fetch";
         link.crossOrigin = "anonymous";
         break;

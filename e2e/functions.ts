@@ -77,21 +77,37 @@ type DocumentWithVendorFullscreen = Document & {
   webkitFullscreenElement?: HTMLElement;
 };
 
-export const captureConsoleLogs = ({ browserName, page }: TestProps): Page =>
+const captureConsole = (
+  { browserName, page }: TestPropsWithBrowser,
+  logType?: string
+): Page =>
   page.on("console", (msg) => {
+    if (typeof logType === "string" && msg.type() !== logType) return;
+
     const text = msg.text();
 
     if (
-      !EXCLUDED_CONSOLE_LOGS(browserName || "").some((excluded) =>
+      !text ||
+      EXCLUDED_CONSOLE_LOGS(browserName).some((excluded) =>
         text.includes(excluded)
       )
     ) {
-      globalThis.capturedConsoleLogs = [
-        ...(globalThis.capturedConsoleLogs || []),
-        text,
-      ];
+      return;
     }
+
+    globalThis.capturedConsoleLogs = [
+      ...(globalThis.capturedConsoleLogs || []),
+      text,
+    ];
   });
+
+export const captureConsoleLogs = ({
+  browserName,
+  page,
+}: TestPropsWithBrowser): Page => captureConsole({ browserName, page });
+
+export const didCaptureConsoleLogs = (): void =>
+  expect(globalThis.capturedConsoleLogs || []).toHaveLength(0);
 
 export const filterMenuItems = (
   menuItems: MenuItems,
@@ -209,6 +225,24 @@ export const dragFileExplorerEntryToDesktop = async (
     .dragTo(page.locator(DESKTOP_SELECTOR), {
       targetPosition: { x: 1, y: 1 },
     });
+
+export const dragDesktopEntryToFileExplorer = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> => {
+  const { height = 0, width = 0 } =
+    (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};
+
+  page
+    .locator(DESKTOP_ENTRIES_SELECTOR)
+    .getByLabel(label)
+    .dragTo(page.locator(FILE_EXPLORER_SELECTOR), {
+      targetPosition: {
+        x: width - 5,
+        y: height - 5,
+      },
+    });
+};
 
 export const dragWindowToDesktop = async ({
   page,

@@ -34,7 +34,7 @@ export const CLOCK_CANVAS_BASE_WIDTH = 68;
 export const SMALLEST_PNG_SIZE = 51;
 
 export const DEFAULT_WINDOW_SIZE: Size = {
-  height: 300,
+  height: 295,
   width: 405,
 };
 

@@ -22,40 +22,6 @@ import {
 
 const { alias, author, description } = PACKAGE_DATA;
 
-const OpenGraph: FC = () => (
-  <>
-    <meta content={alias} property="og:title" />
-    <meta content="website" property="og:type" />
-    <meta content={author.url} property="og:url" />
-    <meta content={`${author.url}/screenshot.jpg`} property="og:image" />
-    <meta content={description} property="og:description" />
-  </>
-);
-
-const MemoizedOpenGraph = memo(OpenGraph);
-
-const PreloadDesktopIcons: FC = () => (
-  <>
-    {desktopIcons.map((icon) => {
-      const isSubIcon = icon.includes("/16x16/");
-      const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
-
-      return (
-        <link
-          key={icon}
-          as="image"
-          href={dynamicIcon ? undefined : icon}
-          imageSrcSet={dynamicIcon ? imageSrcs(icon, 48, ".webp") : undefined}
-          rel="preload"
-          {...HIGH_PRIORITY_ELEMENT}
-        />
-      );
-    })}
-  </>
-);
-
-const MemoizedPreloadDesktopIcons = memo(PreloadDesktopIcons);
-
 const Metadata: FC = () => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
@@ -160,8 +126,26 @@ const Metadata: FC = () => {
         name="viewport"
       />
       <meta content={description} name="description" />
-      <MemoizedOpenGraph />
-      <MemoizedPreloadDesktopIcons />
+      <meta content={alias} property="og:title" />
+      <meta content="website" property="og:type" />
+      <meta content={author.url} property="og:url" />
+      <meta content={`${author.url}/screenshot.png`} property="og:image" />
+      <meta content={description} property="og:description" />
+      {desktopIcons.map((icon) => {
+        const isSubIcon = icon.includes("/16x16/");
+        const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
+
+        return (
+          <link
+            key={icon}
+            as="image"
+            href={dynamicIcon ? undefined : icon}
+            imageSrcSet={dynamicIcon ? imageSrcs(icon, 48, ".webp") : undefined}
+            rel="preload"
+            {...HIGH_PRIORITY_ELEMENT}
+          />
+        );
+      })}
       {customCursor && (
         <style>{`*, *::before, *::after { cursor: url(${customCursor}), default !important; }`}</style>
       )}

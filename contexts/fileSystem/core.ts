@@ -22,11 +22,13 @@ type FS9P = {
 
 type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
 
+export const UNKNOWN_SIZE = -1;
 export const UNKNOWN_STATE_CODES = new Set(["EIO", "ENOENT"]);
 export const KEYVAL_STORE_NAME = "keyval";
 
 const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
+const IDX_SIZE = 1;
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
 const IDX_FILE_MODE = 33206;
@@ -37,9 +39,12 @@ const IDX_GID = 0;
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
 
-export const get9pModifiedTime = (path: string): number => {
+const get9pData = (
+  path: string,
+  pathIndex: typeof IDX_SIZE | typeof IDX_MTIME
+): number => {
   let fsPath = fsroot;
-  let mTime = 0;
+  let data = UNKNOWN_SIZE;
 
   path
     .split("/")
@@ -50,13 +55,18 @@ export const get9pModifiedTime = (path: string): number => {
       if (pathBranch) {
         const isBranch = Array.isArray(pathBranch[IDX_TARGET]);
 
-        if (!isBranch) mTime = pathBranch[IDX_MTIME];
+        if (!isBranch) data = pathBranch[pathIndex];
         fsPath = isBranch ? (pathBranch[IDX_TARGET] as FS9PV4[]) : [];
       }
     });
 
-  return mTime;
+  return data;
 };
+
+export const get9pModifiedTime = (path: string): number =>
+  get9pData(path, IDX_MTIME);
+
+export const get9pSize = (path: string): number => get9pData(path, IDX_SIZE);
 
 const mapReduce9pArray = (
   array: FS9PV4[],

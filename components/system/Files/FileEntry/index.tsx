@@ -63,6 +63,7 @@ import {
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 import { useIsVisible } from "hooks/useIsVisible";
+import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
@@ -239,8 +240,7 @@ const FileEntry: FC<FileEntryProps> = ({
     const type =
       extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
-    // eslint-disable-next-line sonarjs/no-collection-size-mischeck
-    const fullStats = stats.size < 0 ? await stat(path) : stats;
+    const fullStats = stats.size === UNKNOWN_SIZE ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
     const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);

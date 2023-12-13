@@ -7,7 +7,7 @@ const StyledNavigation = styled.nav`
 
   button {
     height: 16px;
-    margin: 13px 9px;
+    margin: 11px 9px;
     width: 16px;
 
     svg {
@@ -31,6 +31,7 @@ const StyledNavigation = styled.nav`
       margin-right: 8px;
       position: relative;
       right: -8px;
+      top: -1px;
     }
 
     &[title="Recent locations"] {

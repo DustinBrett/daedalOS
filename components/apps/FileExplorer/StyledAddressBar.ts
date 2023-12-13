@@ -6,7 +6,7 @@ const StyledAddressBar = styled.div`
   background-size: 16px;
   border: 1px solid rgb(80, 73, 69);
   display: flex;
-  height: 30px;
+  height: 25px;
   margin: 6px 12px 6px 5px;
   padding: 0 22px 2px 24px;
   position: relative;
@@ -19,29 +19,29 @@ const StyledAddressBar = styled.div`
     font-family: ${({ theme }) => theme.formats.systemFont};
     font-size: 12px;
     font-weight: 400;
-    height: 28px;
-    padding-bottom: 2px;
+    height: 23px;
+    padding-bottom: 1px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: calc(100% - 6px);
+    width: calc(100% - 2px);
   }
 
   img {
-    left: 2px;
+    left: 3px;
     position: absolute;
-    top: 5px;
+    top: 3px;
   }
 
   .refresh {
     background-color: rgb(29, 32, 33);
-    height: 28px;
+    height: 23px;
     margin: 0;
     position: absolute;
     right: 0;
     stroke: rgb(124, 111, 100);
     stroke-width: 3;
     top: 0;
-    width: 28px;
+    width: 24px;
 
     &:hover {
       background-color: rgb(69, 133, 136);
@@ -51,6 +51,16 @@ const StyledAddressBar = styled.div`
     &:active {
       background-color: rgb(177, 98, 134);
       border: 1px solid rgb(211, 134, 155);
+    }
+
+    svg {
+      position: relative;
+      top: 1px;
+    }
+
+    svg {
+      position: relative;
+      top: 1px;
     }
   }
 `;

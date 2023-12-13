@@ -15,15 +15,20 @@ const StyledFiles = styled.figure`
       padding: 4px 10px;
       place-content: center;
       place-items: center;
+      white-space: nowrap;
 
       h2 {
         bottom: 1px;
-        display: flex;
+        display: block;
         font-size: 12px;
         font-weight: 400;
         height: 16px;
+        max-width: 235px;
+        overflow: hidden;
+        padding-top: 1px;
         place-items: center;
         position: relative;
+        text-overflow: ellipsis;
       }
 
       picture,

@@ -13,9 +13,9 @@
           return EJS_paths[file];
         } else if ("undefined" != typeof EJS_pathtodata) {
           if (!EJS_pathtodata.endsWith("/")) EJS_pathtodata += "/";
-          return EJS_pathtodata + file + "?v=" + VERSION;
+          return EJS_pathtodata + file;
         } else {
-          return file + "?v=" + VERSION;
+          return file;
         }
       })();
       css.onload = resolve;
@@ -33,9 +33,9 @@
           return EJS_paths[file];
         } else if ("undefined" != typeof EJS_pathtodata) {
           if (!EJS_pathtodata.endsWith("/")) EJS_pathtodata += "/";
-          return EJS_pathtodata + file + "?v=" + VERSION;
+          return EJS_pathtodata + file;
         } else {
-          return file + "?v=" + VERSION;
+          return file;
         }
       })();
       scriptTag.parentNode.insertBefore(script, scriptTag);

@@ -5,9 +5,11 @@ import {
   WINDOW_SELECTOR,
 } from "e2e/constants";
 import {
+  captureConsoleLogs,
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
+  didCaptureConsoleLogs,
   disableWallpaper,
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
@@ -25,6 +27,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
@@ -92,9 +95,6 @@ test("can drag", async ({ page }) => {
   expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
 });
 
-// TEST: move on viewport shrink
-// TEST: move on drag outside viewport
-
 test("can resize", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
   const {
@@ -116,6 +116,4 @@ test("can resize", async ({ page }) => {
   expect(finalHeight).toEqual(initialHeight - RESIZE_OFFSET);
 });
 
-// TEST: has context menu
-// TEST: has keyboard shortcuts (Ctrl+Shift+Up/Down)
-// TEST: focus/blur | foreground/background focus
+test.afterEach(didCaptureConsoleLogs);

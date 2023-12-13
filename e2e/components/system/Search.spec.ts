@@ -1,7 +1,9 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { TEST_SEARCH, TEST_SEARCH_RESULT_TITLE } from "e2e/constants";
 import {
+  captureConsoleLogs,
   clickSearchButton,
+  didCaptureConsoleLogs,
   disableWallpaper,
   loadApp,
   searchMenuIsHidden,
@@ -10,6 +12,7 @@ import {
   typeInTaskbarSearchBar,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(async ({ page }) => clickSearchButton({ page }));
@@ -25,6 +28,10 @@ test.describe("can close", () => {
 test.describe("can search", () => {
   test("via 'All' tab", async ({ page }) => {
     await typeInTaskbarSearchBar(TEST_SEARCH, { page });
-    await searchResultEntryIsVisible(TEST_SEARCH_RESULT_TITLE, { page });
+    await expect(() =>
+      searchResultEntryIsVisible(TEST_SEARCH_RESULT_TITLE, { page })
+    ).toPass();
   });
 });
+
+test.afterEach(didCaptureConsoleLogs);

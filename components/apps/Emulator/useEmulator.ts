@@ -28,8 +28,10 @@ const useEmulator = ({
   const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
     useFileSystem();
   const mountEmFs = useEmscriptenMount();
-  const { linkElement, processes: { [id]: { closing = false } = {} } = {} } =
-    useProcesses();
+  const {
+    linkElement,
+    processes: { [id]: { closing = false, libs = [] } = {} } = {},
+  } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>();
   const loadedUrlRef = useRef<string>("");
@@ -130,16 +132,17 @@ const useEmulator = ({
       screenshot: false,
     };
 
-    await loadFiles(["/Program Files/EmulatorJs/loader.js"], undefined, true);
+    await loadFiles(libs, undefined, true);
 
     prependFileToTitle(`${window.EJS_gameName} (${console})`);
   }, [
     containerRef,
     exists,
+    libs,
     mkdirRecursive,
+    mountEmFs,
     prependFileToTitle,
     readFile,
-    mountEmFs,
     setLoading,
     updateFolder,
     url,

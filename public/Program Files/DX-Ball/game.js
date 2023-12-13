@@ -20,7 +20,7 @@ window.DXBall = {
 
     window.DXBall.status = "idle";
   },
-  init: (saveFunction) => {
+  init: (loadedFunction, saveFunction) => {
     window.DXBall.status = "running";
     window.DXBall.saveRecords = saveFunction;
     var mbbkgrnd_img = new Image();
@@ -796,6 +796,8 @@ window.DXBall = {
         })();
     }
     game = function () {
+      loadedFunction();
+
       var _0x56c3xa,
         _0x56c3xd = 1,
         _0x56c3xe = 1,

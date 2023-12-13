@@ -15,6 +15,9 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
     "[Fast Refresh] rebuilding",
     "chrome://juggler",
     "No available adapters.",
+    "not used within a few seconds",
+    // Marked
+    "mangle parameter is enabled by default, but is deprecated",
   ];
 
   if (process.env.CI) {
@@ -36,10 +39,10 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
 
   if (browserName === "webkit") {
     excludedConsoleLogs.push(
-      // as=fetch is not supported in webkit
-      "was preloaded using link preload but not used within a few seconds from the window's load event",
       // https://bugs.webkit.org/show_bug.cgi?id=231150
-      "<link rel=preload> has an invalid `imagesrcset` value"
+      "<link rel=preload> has an invalid `imagesrcset` value",
+      // sandbox=allow-presentation is not supported in webkit
+      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag."
     );
   }
 
@@ -80,7 +83,7 @@ export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([t
 export const TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR = `${TASKBAR_ENTRY_PEEK_SELECTOR}>img`;
 export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#searchMenu`;
 export const SEARCH_MENU_INPUT_SELECTOR = `${SEARCH_MENU_SELECTOR} input[placeholder='Type here to search']`;
-export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure>ol`;
+export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure:first-child>ol`;
 export const SEARCH_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title='Type here to search']`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title=Start]`;
 export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#startMenu`;
@@ -217,6 +220,7 @@ export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
+export const TEST_DESKTOP_FILE = /^Public$/;
 export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
 export const TEST_ROOT_FILE_2 = /^favicon.ico$/;
@@ -241,3 +245,7 @@ export const BASE_APP_FAVICON = /^\/favicon.ico$/;
 export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
 
 export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.png";
+
+const OG_REQUIRED_TAGS = ["title", "image", "url", "type"];
+
+export const OG_TAGS = [...OG_REQUIRED_TAGS, "description"];

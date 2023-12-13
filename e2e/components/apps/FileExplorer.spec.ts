@@ -14,6 +14,7 @@ import {
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
+  TEST_DESKTOP_FILE,
   TEST_ROOT_ARCHIVE,
   TEST_ROOT_FILE,
   TEST_ROOT_FILE_2,
@@ -26,6 +27,7 @@ import {
 } from "e2e/constants";
 import {
   appIsOpen,
+  captureConsoleLogs,
   clickContextMenuEntry,
   clickDesktop,
   clickFileExplorer,
@@ -41,7 +43,9 @@ import {
   contextMenuIsVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
+  didCaptureConsoleLogs,
   disableWallpaper,
+  dragDesktopEntryToFileExplorer,
   dragFileExplorerEntryToDesktop,
   fileExplorerAddressBarHasValue,
   fileExplorerEntriesAreVisible,
@@ -65,6 +69,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
+test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
 test.beforeEach(windowsAreVisible);
@@ -91,9 +96,10 @@ test("has address bar", async ({ page }) => {
 
 test("can search", async ({ page }) => {
   await clickFileExplorerSearchBox({ page });
-  await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
 
-  await contextMenuIsVisible({ page });
+  await typeInFileExplorerSearchBox(TEST_SEARCH, { page });
+  await expect(() => contextMenuIsVisible({ page })).toPass();
+
   await contextMenuEntryIsVisible(TEST_SEARCH_RESULT, { page });
 });
 
@@ -164,14 +170,10 @@ test.describe("has files & folders", () => {
       await clickDesktop({ page }, true, width - 25, 25);
       await contextMenuIsVisible({ page });
       await clickContextMenuEntry(/^Paste$/, { page });
-
-      // TEST: copy dialog shows
-
       await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
       await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     });
 
-    // TEST: can delete empty/non-empty folder
     test("can delete file", async ({ page }) => {
       await clickContextMenuEntry(/^Delete$/, { page });
 
@@ -272,6 +274,10 @@ test.describe("has files & folders", () => {
   });
 
   test.describe("can open", () => {
+    test.beforeEach(({ page }) =>
+      fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page })
+    );
+
     test("via double click", async ({ page }) => {
       await clickFileExplorerEntry(TEST_ROOT_FILE, { page }, false, 2);
       await windowTitlebarTextIsVisible(
@@ -289,7 +295,7 @@ test.describe("has files & folders", () => {
     });
   });
 
-  test("can drag to desktop", async ({ browserName, headless, page }) => {
+  test("can drop on desktop", async ({ browserName, headless, page }) => {
     test.skip(
       headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
       "no headless drag support"
@@ -298,6 +304,7 @@ test.describe("has files & folders", () => {
     await desktopEntryIsHidden(TEST_ROOT_FILE, { page });
     await fileExplorerEntryIsVisible(TEST_ROOT_FILE, { page });
     await dragFileExplorerEntryToDesktop(TEST_ROOT_FILE, { page });
+    await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
     await desktopEntryIsVisible(TEST_ROOT_FILE, { page });
   });
 
@@ -322,7 +329,18 @@ test.describe("has files & folders", () => {
     await expect(page.locator(".focus-within")).toHaveCount(2);
   });
 
-  // TEST: can drop (from Desktop)
+  test("can drop from desktop", async ({ browserName, headless, page }) => {
+    test.skip(
+      headless && DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless drag support"
+    );
+
+    await fileExplorerEntryIsHidden(TEST_DESKTOP_FILE, { page });
+    await desktopEntryIsVisible(TEST_DESKTOP_FILE, { page });
+    await dragDesktopEntryToFileExplorer(TEST_DESKTOP_FILE, { page });
+    await desktopEntryIsHidden(TEST_DESKTOP_FILE, { page });
+    await fileExplorerEntryIsVisible(TEST_DESKTOP_FILE, { page });
+  });
 });
 
 test("can change page title", async ({ page }) => {
@@ -424,4 +442,4 @@ test.describe("has navigation", () => {
   });
 });
 
-// TEST: has keyboard shortcuts (Arrows, Ctrl: A, C, X, V, Backspace, Delete, Multi-select via Ctrl)
+test.afterEach(didCaptureConsoleLogs);

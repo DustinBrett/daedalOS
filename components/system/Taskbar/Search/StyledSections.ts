@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ThinScrollBars } from "components/system/Taskbar/Search/styles";
 import ScrollBars from "styles/common/ScrollBars";
-import { DEFAULT_SCROLLBAR_WIDTH, THIN_SCROLLBAR_WIDTH } from "utils/constants";
+import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 
 type StyledSectionsProps = {
   $singleLine: boolean;
@@ -18,19 +18,22 @@ const StyledSections = styled.div<StyledSectionsProps>`
   place-items: start;
 
   @media (hover: none), (pointer: coarse) {
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 
   @supports (not (scrollbar-gutter: stable)) {
-    margin-right: ${DEFAULT_SCROLLBAR_WIDTH}px;
+    margin-right: ${THIN_SCROLLBAR_WIDTH}px;
 
     &:hover {
       margin-right: 0;
+      overflow-y: scroll;
     }
   }
 
-  &:hover {
-    overflow-y: auto;
+  @supports (scrollbar-gutter: stable) {
+    &:hover {
+      overflow-y: auto;
+    }
   }
 
   figcaption {
