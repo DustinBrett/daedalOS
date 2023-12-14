@@ -29,7 +29,8 @@ const StyledSearch = styled.div`
     width: 100%;
 
     &::-webkit-search-cancel-button {
-      margin: 0 8px 0 6px;
+      filter: invert(1);
+      padding-right: 4px;
     }
   }
 
