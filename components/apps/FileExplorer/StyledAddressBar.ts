@@ -34,8 +34,11 @@ const StyledAddressBar = styled.div`
 
   .refresh {
     background-color: rgb(25, 25, 25);
+    display: flex;
     height: 23px;
     margin: 0;
+    place-content: center;
+    place-items: center;
     position: absolute;
     right: 0;
     stroke: rgb(128, 128, 128);
@@ -55,7 +58,7 @@ const StyledAddressBar = styled.div`
 
     svg {
       position: relative;
-      top: 1px;
+      top: -1px;
     }
   }
 `;
