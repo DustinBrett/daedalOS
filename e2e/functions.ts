@@ -41,7 +41,6 @@ import {
   TEST_APP_CONTAINER_APP,
   TYPE_DELAY,
   UNKNOWN_ICON_PATH,
-  WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS,
   WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
@@ -797,11 +796,7 @@ export const backgroundCanvasMaybeIsVisible = async ({
   headless,
   page,
 }: TestProps): Promise<void> => {
-  if (
-    !headless ||
-    !browserName ||
-    !WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)
-  ) {
+  if (!headless || !browserName) {
     await expect(async () =>
       expect(page.locator(BACKGROUND_CANVAS_SELECTOR)).toBeVisible()
     ).toPass();
