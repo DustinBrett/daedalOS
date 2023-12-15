@@ -126,26 +126,27 @@ const useTinyMCE = ({
         setupSaveCallback();
       } else {
         setReadOnlyMode(editor, setupSaveCallback);
+
+        if (getExtension(url) === ".rtf") {
+          const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
+          const rtfDoc = new RTFJS.Document(fileContents);
+          const rtfHtml = await rtfDoc.render();
+
+          editor.setContent(
+            rtfHtml.map((domElement) => domElement.outerHTML).join("")
+          );
+        } else {
+          editor.setContent(fileContents.toString());
+        }
+
+        linksToProcesses();
+
+        if (editor.iframeElement?.contentDocument) {
+          editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
+        }
       }
 
-      if (getExtension(url) === ".rtf") {
-        const { RTFJS } = (await import("rtf.js")) as unknown as IRTFJS;
-        const rtfDoc = new RTFJS.Document(fileContents);
-        const rtfHtml = await rtfDoc.render();
-
-        editor.setContent(
-          rtfHtml.map((domElement) => domElement.outerHTML).join("")
-        );
-      } else {
-        editor.setContent(fileContents.toString());
-      }
-
-      linksToProcesses();
       updateTitle(url);
-
-      if (editor.iframeElement?.contentDocument) {
-        editor.iframeElement.contentDocument.documentElement.scrollTop = 0;
-      }
     }
   }, [
     editor,
