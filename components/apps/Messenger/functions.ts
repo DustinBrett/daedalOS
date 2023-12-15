@@ -271,6 +271,8 @@ export const createMessageEvent = async (
     tags: [["p", recipientPublicKey]],
   } as Event);
 
+const VALID_PICTURE_PROTOCOLS = new Set(["http", "https", "data"]);
+
 export const dataToProfile = (
   publicKey: string,
   data?: ProfileData,
@@ -287,6 +289,7 @@ export const dataToProfile = (
     username,
     website,
   } = data || {};
+  const [protocol = ""] = picture?.split(":") || [];
 
   return {
     about,
@@ -294,7 +297,7 @@ export const dataToProfile = (
     created_at,
     data,
     nip05,
-    picture,
+    picture: VALID_PICTURE_PROTOCOLS.has(protocol) ? picture : undefined,
     userName:
       display_name ||
       name ||
