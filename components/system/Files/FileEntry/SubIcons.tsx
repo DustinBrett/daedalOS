@@ -78,7 +78,7 @@ const SubIcon: FC<SubIconProps> = ({
 
   return (
     <Icon
-      $eager={icon === SHORTCUT_ICON || isDesktop}
+      $eager={isDesktop || icon === SHORTCUT_ICON}
       alt={name}
       src={icon}
       style={style}
