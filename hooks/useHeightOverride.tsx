@@ -28,16 +28,18 @@ const useHeightOverride = (): number => {
 
           const resetHeight = (): void => setHeight(0);
 
-          window.addEventListener(
-            "resize",
-            resetHeight,
-            ONE_TIME_PASSIVE_EVENT
-          );
-          window.screen.orientation?.addEventListener(
-            "change",
-            resetHeight,
-            ONE_TIME_PASSIVE_EVENT
-          );
+          setTimeout(() => {
+            window.addEventListener(
+              "resize",
+              resetHeight,
+              ONE_TIME_PASSIVE_EVENT
+            );
+            window.screen.orientation?.addEventListener(
+              "change",
+              resetHeight,
+              ONE_TIME_PASSIVE_EVENT
+            );
+          }, 500);
         }
       });
     }
