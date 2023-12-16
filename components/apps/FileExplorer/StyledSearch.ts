@@ -16,6 +16,7 @@ const StyledSearch = styled.div`
   }
 
   input {
+    appearance: none;
     background-color: rgb(25, 25, 25);
     color: #fff;
     font-family: ${({ theme }) => theme.formats.systemFont};
