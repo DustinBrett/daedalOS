@@ -5,6 +5,8 @@ const StyledFiles = styled.figure`
     display: flex;
     flex-flow: row wrap;
     gap: 5px;
+    max-height: 97px;
+    overflow-y: hidden;
     padding-top: 9px;
 
     li {

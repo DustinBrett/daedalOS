@@ -34,7 +34,7 @@ import { updateIconPositionsIfEmpty } from "utils/functions";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
-const KEEP_RECENT_FILES_LIST_COUNT = 5;
+const KEEP_RECENT_FILES_LIST_COUNT = 10;
 
 const useSessionContextState = (): SessionContextState => {
   const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
@@ -76,7 +76,7 @@ const useSessionContextState = (): SessionContextState => {
 
         return [[url, pid, title], ...currentRecentFiles].slice(
           0,
-          KEEP_RECENT_FILES_LIST_COUNT - 1
+          KEEP_RECENT_FILES_LIST_COUNT
         ) as RecentFiles;
       }),
     []
