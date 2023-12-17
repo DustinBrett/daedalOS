@@ -76,9 +76,16 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       padding-right: ${({ $showScrolling }) =>
         $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
 
-      @supports (scrollbar-width: thin) {
+      @supports not selector(::-webkit-scrollbar) {
         padding-right: 5px;
         scrollbar-width: thin;
+      }
+
+      @supports selector(::-webkit-scrollbar) and (scrollbar-width: thin) {
+        padding-right: ${({ $showScrolling }) =>
+          $showScrolling ? "2px" : `${THIN_SCROLLBAR_WIDTH}px`};
+        scrollbar-width: ${({ $showScrolling }) =>
+          $showScrolling ? "thin" : "none"};
       }
     }
 
