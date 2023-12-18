@@ -25,7 +25,7 @@ const nextConfig = {
     buildActivityPosition: "top-right",
   },
   optimizeFonts: false,
-  output: "export",
+  //output: "export",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   swcMinify: true,
