@@ -49,6 +49,10 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     padding-top: 7px;
     scrollbar-width: none;
 
+    @supports selector(::-webkit-scrollbar) and (scrollbar-width: thin) {
+      scrollbar-gutter: auto;
+    }
+
     ${StyledFileManager} {
       margin: 0;
       overflow: hidden;
