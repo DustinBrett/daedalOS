@@ -301,3 +301,11 @@ export const findPathsRecursive = async (
 
 export const removeInvalidFilenameCharacters = (name = ""): string =>
   name.replace(/["*/:<>?\\|]/g, "");
+
+export const getParentDirectories = (directory: string): string[] => {
+  if (directory === "/") return [];
+
+  const currentParent = dirname(directory);
+
+  return [currentParent, ...getParentDirectories(currentParent)];
+};
