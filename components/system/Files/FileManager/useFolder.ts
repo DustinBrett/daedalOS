@@ -540,6 +540,8 @@ const useFolder = (
   );
   const pasteToFolder = useCallback(
     (event?: CaptureTriggerEvent): void => {
+      if (directory in pasteList) delete pasteList[directory];
+
       const pasteEntries = Object.entries(pasteList);
       const moving = pasteEntries.some(([, operation]) => operation === "move");
       const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
