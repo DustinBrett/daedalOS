@@ -24,6 +24,10 @@ const StyledSections = styled.div<StyledSectionsProps>`
   @supports (not (scrollbar-gutter: stable)) {
     margin-right: ${THIN_SCROLLBAR_WIDTH}px;
 
+    @supports (scrollbar-width: thin) {
+      margin-right: 8px;
+    }
+
     &:hover {
       margin-right: 0;
       overflow-y: scroll;

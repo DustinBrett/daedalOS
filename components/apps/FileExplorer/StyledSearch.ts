@@ -16,6 +16,7 @@ const StyledSearch = styled.div`
   }
 
   input {
+    appearance: none;
     background-color: rgb(29, 32, 33);
     color: #fbf1c7;
     font-family: ${({ theme }) => theme.formats.systemFont};
@@ -29,7 +30,8 @@ const StyledSearch = styled.div`
     width: 100%;
 
     &::-webkit-search-cancel-button {
-      margin: 0 8px 0 6px;
+      filter: invert(1);
+      padding-right: 4px;
     }
   }
 

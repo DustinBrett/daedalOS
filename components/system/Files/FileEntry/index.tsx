@@ -551,6 +551,7 @@ const FileEntry: FC<FileEntryProps> = ({
           />
           <SubIcons
             icon={icon}
+            isDesktop={isDesktop}
             name={name}
             showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
             subIcons={subIcons}

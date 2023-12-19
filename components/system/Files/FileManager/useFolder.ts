@@ -38,7 +38,13 @@ import {
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
 } from "utils/constants";
-import { bufferToUrl, cleanUpBufferUrl, getExtension } from "utils/functions";
+import {
+  bufferToUrl,
+  cleanUpBufferUrl,
+  getExtension,
+  updateIconPositions,
+} from "utils/functions";
+import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => void;
@@ -65,7 +71,7 @@ export type NewPath = (
 export type FolderActions = {
   addToFolder: () => Promise<string[]>;
   newPath: NewPath;
-  pasteToFolder: () => void;
+  pasteToFolder: (event?: CaptureTriggerEvent) => void;
   resetFiles: () => void;
   sortByOrder: [SortByOrder, SetSortBy];
 };
@@ -121,11 +127,14 @@ const useFolder = (
     writeFile,
   } = useFileSystem();
   const {
+    iconPositions,
     sessionLoaded,
     setIconPositions,
     setSortOrder,
-    sortOrders: { [directory]: [sortOrder, sortBy, sortAscending] = [] } = {},
+    sortOrders,
   } = useSession();
+  const { [directory]: [sortOrder, sortBy, sortAscending] = [] } =
+    sortOrders || {};
   const [currentDirectory, setCurrentDirectory] = useState(directory);
   const { close, closeProcessesByUrl } = useProcesses();
   const statsWithShortcutInfo = useCallback(
@@ -529,72 +538,96 @@ const useFolder = (
       writeFile,
     ]
   );
-  const pasteToFolder = useCallback((): void => {
-    const pasteEntries = Object.entries(pasteList);
-    const moving = pasteEntries.some(([, operation]) => operation === "move");
-    const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
-      const newBasePath = join(basePath, basename(entry));
-      let uniquePath: string;
+  const pasteToFolder = useCallback(
+    (event?: CaptureTriggerEvent): void => {
+      const pasteEntries = Object.entries(pasteList);
+      const moving = pasteEntries.some(([, operation]) => operation === "move");
+      const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
+        const newBasePath = join(basePath, basename(entry));
+        let uniquePath: string;
 
-      if ((await lstat(entry)).isDirectory()) {
-        uniquePath = await createPath(newBasePath, directory);
+        if ((await lstat(entry)).isDirectory()) {
+          uniquePath = await createPath(newBasePath, directory);
 
-        await Promise.all(
-          (await readdir(entry)).map((dirEntry) =>
-            copyFiles(join(entry, dirEntry), uniquePath)
-          )
-        );
-      } else {
-        uniquePath = await createPath(
-          newBasePath,
+          await Promise.all(
+            (await readdir(entry)).map((dirEntry) =>
+              copyFiles(join(entry, dirEntry), uniquePath)
+            )
+          );
+        } else {
+          uniquePath = await createPath(
+            newBasePath,
+            directory,
+            await readFile(entry)
+          );
+        }
+
+        if (!basePath) updateFolder(directory, uniquePath);
+      };
+      const movedPaths: string[] = [];
+      const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
+        let aborted = false;
+
+        return {
+          abort: () => {
+            aborted = true;
+          },
           directory,
-          await readFile(entry)
+          done: () => {
+            if (moving) {
+              movedPaths
+                .filter(Boolean)
+                .forEach((movedPath) => updateFolder(directory, movedPath));
+
+              copyEntries([]);
+            }
+          },
+          name: pasteEntry,
+          operation: moving ? "Moving" : "Copying",
+          read: async () => {
+            if (aborted) return;
+
+            if (moving) {
+              movedPaths.push(await createPath(pasteEntry, directory));
+            } else await copyFiles(pasteEntry);
+          },
+        };
+      });
+
+      if (event) {
+        const { clientX: x, clientY: y } =
+          "TouchEvent" in window && event.nativeEvent instanceof TouchEvent
+            ? event.nativeEvent.touches[0]
+            : (event.nativeEvent as MouseEvent);
+
+        updateIconPositions(
+          directory,
+          event.target as HTMLElement,
+          iconPositions,
+          sortOrders,
+          { x, y },
+          pasteEntries.map(([entry]) => basename(entry)),
+          setIconPositions
         );
       }
 
-      if (!basePath) updateFolder(directory, uniquePath);
-    };
-    const movedPaths: string[] = [];
-    const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
-      let aborted = false;
-
-      return {
-        abort: () => {
-          aborted = true;
-        },
-        directory,
-        done: () => {
-          if (moving) {
-            movedPaths
-              .filter(Boolean)
-              .forEach((movedPath) => updateFolder(directory, movedPath));
-
-            copyEntries([]);
-          }
-        },
-        name: pasteEntry,
-        operation: moving ? "Moving" : "Copying",
-        read: async () => {
-          if (aborted) return;
-
-          if (moving) movedPaths.push(await createPath(pasteEntry, directory));
-          else await copyFiles(pasteEntry);
-        },
-      };
-    });
-
-    openTransferDialog(objectReaders);
-  }, [
-    copyEntries,
-    createPath,
-    directory,
-    lstat,
-    openTransferDialog,
-    pasteList,
-    readFile,
-    readdir,
-    updateFolder,
-  ]);
+      openTransferDialog(objectReaders);
+    },
+    [
+      copyEntries,
+      createPath,
+      directory,
+      iconPositions,
+      lstat,
+      openTransferDialog,
+      pasteList,
+      readFile,
+      readdir,
+      setIconPositions,
+      sortOrders,
+      updateFolder,
+    ]
+  );
   const sortByOrder = useSortBy(directory, files);
   const folderActions = useMemo(
     () => ({

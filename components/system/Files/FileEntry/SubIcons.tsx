@@ -20,11 +20,13 @@ type IconProps = {
 
 type SubIconProps = IconProps & {
   baseIcon: string;
+  isDesktop?: boolean;
   isFirstImage: boolean;
   totalSubIcons: number;
 };
 
 type SubIconsProps = IconProps & {
+  isDesktop?: boolean;
   showShortcutIcon: boolean;
   subIcons?: string[];
 };
@@ -35,6 +37,7 @@ const SHORT_IMAGE_TRANSFORM = "matrix(0.4, 0.14, 0, 0.7, -4, 2)";
 const SubIcon: FC<SubIconProps> = ({
   baseIcon,
   icon,
+  isDesktop,
   isFirstImage,
   name,
   totalSubIcons,
@@ -75,7 +78,7 @@ const SubIcon: FC<SubIconProps> = ({
 
   return (
     <Icon
-      $eager={icon === SHORTCUT_ICON}
+      $eager={isDesktop || icon === SHORTCUT_ICON}
       alt={name}
       src={icon}
       style={style}
@@ -88,6 +91,7 @@ const MemoizedSubIcon = memo(SubIcon);
 
 const SubIcons: FC<SubIconsProps> = ({
   icon,
+  isDesktop,
   name,
   showShortcutIcon,
   subIcons,
@@ -112,6 +116,7 @@ const SubIcons: FC<SubIconsProps> = ({
           key={entryIcon}
           baseIcon={icon}
           icon={entryIcon}
+          isDesktop={isDesktop}
           isFirstImage={subIconIndex === 0}
           name={name}
           totalSubIcons={filteredSubIcons.length}

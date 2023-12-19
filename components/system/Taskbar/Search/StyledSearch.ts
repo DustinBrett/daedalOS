@@ -31,6 +31,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
     width: 100%;
 
     input {
+      appearance: none;
       border: 2px solid rgb(7, 102, 120);
       border-radius: 0;
       color: #282828;
@@ -46,8 +47,6 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
         left: 37px;
         opacity: 100%;
         overflow: visible;
-        position: absolute;
-        top: 10px;
       }
 
       &::-webkit-search-cancel-button {

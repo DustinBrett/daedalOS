@@ -39,8 +39,6 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
 
   if (browserName === "webkit") {
     excludedConsoleLogs.push(
-      // https://bugs.webkit.org/show_bug.cgi?id=231150
-      "<link rel=preload> has an invalid `imagesrcset` value",
       // sandbox=allow-presentation is not supported in webkit
       "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag."
     );
@@ -121,9 +119,6 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
 export const DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
-]);
-export const WEBGL_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
-  "firefox", // https://bugzilla.mozilla.org/show_bug.cgi?id=1375585
 ]);
 export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit",

@@ -401,7 +401,7 @@ const useFolderContextMenu = (
                 },
                 MENU_SEPERATOR,
                 {
-                  action: () => pasteToFolder(),
+                  action: () => pasteToFolder(event),
                   disabled: Object.keys(pasteList).length === 0,
                   label: "Paste",
                 },

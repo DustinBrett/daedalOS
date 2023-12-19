@@ -93,7 +93,7 @@ const StyledProfileBanner = styled.div`
       background-color: rgb(29, 32, 33, 50%);
       border-radius: 10px;
       display: flex;
-      gap: 2px;
+      gap: 3px;
       max-width: calc(100% - 50px);
       overflow: hidden;
       padding: 2px 4px;

@@ -21,7 +21,7 @@ import { haltEvent } from "utils/functions";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
-  "center center / cover no-repeat fixed border-box border-box #000";
+  "center center / cover no-repeat local border-box border-box #000";
 
 type ProfileBannerProps = {
   goHome: () => void;
