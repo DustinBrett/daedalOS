@@ -21,6 +21,7 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 const Details: FC<{
   openApp: (pid: string, args?: ProcessArguments) => void;
@@ -49,6 +50,12 @@ const Details: FC<{
     stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
   const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
   const currentUrlRef = useRef(url);
+  const name =
+    baseUrl === "/"
+      ? ROOT_NAME
+      : baseUrl
+        ? basename(baseUrl, SHORTCUT_EXTENSION)
+        : "";
 
   useEffect(() => {
     stat(url).then(
@@ -73,10 +80,16 @@ const Details: FC<{
         </div>
       )}
       <Icon displaySize={64} imgSize={96} src={info?.icon} />
+      <SubIcons
+        icon={info?.icon}
+        imgSize={64}
+        name={name}
+        showShortcutIcon={false}
+        subIcons={info?.subIcons}
+        view="icon"
+      />
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-      <h1 onClick={openFile}>
-        {baseUrl === "/" ? ROOT_NAME : basename(baseUrl, SHORTCUT_EXTENSION)}
-      </h1>
+      <h1 onClick={openFile}>{name}</h1>
       <h2>{fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}</h2>
       {!isAppShortcut && info?.url && (
         <table>

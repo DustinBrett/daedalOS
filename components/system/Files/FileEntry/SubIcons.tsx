@@ -18,25 +18,33 @@ type IconProps = {
   view: FileManagerViewNames;
 };
 
-type SubIconProps = IconProps & {
-  baseIcon: string;
+type SharedSubIconProps = {
+  imgSize?: 64 | 32 | 16;
   isDesktop?: boolean;
-  isFirstImage: boolean;
-  totalSubIcons: number;
 };
 
-type SubIconsProps = IconProps & {
-  isDesktop?: boolean;
-  showShortcutIcon: boolean;
-  subIcons?: string[];
-};
+type SubIconProps = SharedSubIconProps &
+  IconProps & {
+    baseIcon: string;
+    isFirstImage: boolean;
+    totalSubIcons: number;
+  };
+
+type SubIconsProps = SharedSubIconProps &
+  IconProps & {
+    showShortcutIcon: boolean;
+    subIcons?: string[];
+  };
 
 const WIDE_IMAGE_TRANSFORM = "matrix(0.5, 0.05, 0, 0.7, 2, 1)";
+const WIDE_IMAGE_TRANSFORM_16 = "matrix(0.5, 0.05, 0, 0.8, 3.5, 2)";
 const SHORT_IMAGE_TRANSFORM = "matrix(0.4, 0.14, 0, 0.7, -4, 2)";
+const SHORT_IMAGE_TRANSFORM_16 = "matrix(0.4, 0.14, 0, 0.8, -0.5, 2)";
 
 const SubIcon: FC<SubIconProps> = ({
   baseIcon,
   icon,
+  imgSize,
   isDesktop,
   isFirstImage,
   name,
@@ -60,11 +68,18 @@ const SubIcon: FC<SubIconProps> = ({
 
     if (baseIcon === FOLDER_BACK_ICON) {
       const hasMultipleSubIcons = totalSubIcons - 1 > 1;
+      const isSmallImage = imgSize === 16;
+      const shortTransform = isSmallImage
+        ? SHORT_IMAGE_TRANSFORM_16
+        : SHORT_IMAGE_TRANSFORM;
+      const wideTransform = isSmallImage
+        ? WIDE_IMAGE_TRANSFORM_16
+        : WIDE_IMAGE_TRANSFORM;
       const transform = isFirstImage
         ? hasMultipleSubIcons
-          ? SHORT_IMAGE_TRANSFORM
-          : WIDE_IMAGE_TRANSFORM
-        : WIDE_IMAGE_TRANSFORM;
+          ? shortTransform
+          : wideTransform
+        : wideTransform;
 
       return {
         objectFit: "cover",
@@ -74,7 +89,7 @@ const SubIcon: FC<SubIconProps> = ({
     }
 
     return undefined;
-  }, [baseIcon, icon, isFirstImage, totalSubIcons]);
+  }, [baseIcon, icon, imgSize, isFirstImage, totalSubIcons]);
 
   return (
     <Icon
@@ -91,6 +106,7 @@ const MemoizedSubIcon = memo(SubIcon);
 
 const SubIcons: FC<SubIconsProps> = ({
   icon,
+  imgSize,
   isDesktop,
   name,
   showShortcutIcon,
@@ -116,6 +132,7 @@ const SubIcons: FC<SubIconsProps> = ({
           key={entryIcon}
           baseIcon={icon}
           icon={entryIcon}
+          imgSize={imgSize}
           isDesktop={isDesktop}
           isFirstImage={subIconIndex === 0}
           name={name}

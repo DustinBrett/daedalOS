@@ -32,6 +32,10 @@ const StyledResults = styled.div`
         picture,
         img {
           height: 32px;
+          max-height: 32px;
+          max-width: 32px;
+          min-height: 32px;
+          min-width: 32px;
           width: 32px;
         }
 
@@ -66,6 +70,10 @@ const StyledResults = styled.div`
           picture,
           img {
             height: 16px;
+            max-height: 16px;
+            max-width: 16px;
+            min-height: 16px;
+            min-width: 16px;
             width: 16px;
           }
 
@@ -75,6 +83,14 @@ const StyledResults = styled.div`
               font-weight: 300;
               white-space: nowrap;
             }
+          }
+        }
+
+        picture:not(:first-child) {
+          position: absolute;
+
+          img {
+            position: absolute;
           }
         }
       }

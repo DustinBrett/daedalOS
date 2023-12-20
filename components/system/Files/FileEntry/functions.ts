@@ -320,7 +320,8 @@ export const getInfoWithoutExtension = (
   path: string,
   isDirectory: boolean,
   hasNewFolderIcon: boolean,
-  callback: (value: FileInfo) => void
+  callback: (value: FileInfo) => void,
+  lazy = true
 ): void => {
   if (isDirectory) {
     const setFolderInfo = (
@@ -337,8 +338,7 @@ export const getInfoWithoutExtension = (
       return FOLDER_ICON;
     };
     const folderIcon = getFolderIcon();
-
-    setFolderInfo(folderIcon, [], async () => {
+    const getDynamicIcon = async (): Promise<void> => {
       const iconFromIni = await getIconFromIni(fs, path);
 
       if (iconFromIni) setFolderInfo(iconFromIni);
@@ -350,9 +350,17 @@ export const getInfoWithoutExtension = (
             ...iconsFromCache,
             FOLDER_FRONT_ICON,
           ]);
+        } else if (!lazy) {
+          setFolderInfo(folderIcon, []);
         }
       }
-    });
+    };
+
+    if (lazy) {
+      setFolderInfo(folderIcon, [], getDynamicIcon);
+    } else {
+      getDynamicIcon();
+    }
   } else {
     callback({ icon: UNKNOWN_ICON_PATH, pid: "", url: path });
   }

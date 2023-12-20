@@ -5,17 +5,25 @@ import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getCachedIconUrl,
   getInfoWithExtension,
+  getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
 import {
+  FOLDER_FRONT_ICON,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   TEXT_EDITORS,
   YT_ICON_CACHE,
 } from "utils/constants";
 import { getExtension, isYouTubeUrl } from "utils/functions";
+import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 
-export type ResultInfo = { icon: string; pid: string; url: string };
+export type ResultInfo = {
+  icon: string;
+  pid: string;
+  subIcons: string[];
+  url: string;
+};
 
 export const getResultInfo = async (
   fs: FSModule | undefined,
@@ -25,13 +33,28 @@ export const getResultInfo = async (
   if (!fs) return undefined;
 
   const {
+    subIcons,
     icon,
     pid = TEXT_EDITORS[0],
     url: infoUrl,
   } = await new Promise<FileInfo>((resolve) => {
-    getInfoWithExtension(fs, url, getExtension(url), (fileInfo) =>
-      resolve(fileInfo)
-    );
+    const extension = getExtension(url);
+
+    if (extension) {
+      getInfoWithExtension(fs, url, extension, (fileInfo) => resolve(fileInfo));
+    } else {
+      fs.stat(url, (err, stats) =>
+        getInfoWithoutExtension(
+          fs,
+          fs.getRootFS() as RootFileSystem,
+          url,
+          !err && stats ? stats.isDirectory() : false,
+          false,
+          (fileInfo) => resolve(fileInfo),
+          false
+        )
+      );
+    }
   });
 
   if (signal?.aborted) return undefined;
@@ -50,6 +73,7 @@ export const getResultInfo = async (
   return {
     icon: cachedIcon || icon,
     pid,
+    subIcons: subIcons?.includes(FOLDER_FRONT_ICON) ? subIcons : [],
     url: infoUrl || url,
   };
 };

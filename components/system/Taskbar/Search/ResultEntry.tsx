@@ -20,6 +20,7 @@ import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
 import { isYouTubeUrl } from "utils/functions";
 import { useIsVisible } from "hooks/useIsVisible";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 type ResultEntryProps = {
   active?: boolean;
@@ -155,6 +156,14 @@ const ResultEntry: FC<ResultEntryProps> = ({
           displaySize={details ? 32 : 16}
           imgSize={details ? 32 : 16}
           src={info?.icon}
+        />
+        <SubIcons
+          icon={info?.icon}
+          imgSize={details ? 32 : 16}
+          name={name}
+          showShortcutIcon={false}
+          subIcons={info?.subIcons}
+          view="icon"
         />
         <figcaption>
           <h1

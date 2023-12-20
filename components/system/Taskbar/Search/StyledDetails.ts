@@ -21,6 +21,20 @@ const StyledDetails = styled.div`
 
   picture {
     padding-bottom: 18px;
+
+    &:not(:first-of-type) {
+      position: absolute;
+
+      img {
+        height: 64px;
+        max-height: 64px;
+        max-width: 64px;
+        min-height: 64px;
+        min-width: 64px;
+        position: relative;
+        width: 64px;
+      }
+    }
   }
 
   h1 {
@@ -80,6 +94,7 @@ const StyledDetails = styled.div`
 
   ol {
     border-top: 2px solid rgb(161, 161, 161);
+    margin-bottom: 7px;
     margin-top: 15px;
     padding: 10px 0;
     width: 100%;

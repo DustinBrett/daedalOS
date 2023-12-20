@@ -7,6 +7,7 @@ const {
   mkdirSync,
 } = require("fs");
 const { basename, extname, join } = require("path");
+const { parse } = require("ini");
 const lunr = require("lunr");
 
 const PUBLIC_PATH = "public";
@@ -30,8 +31,34 @@ const IGNORE_PATHS = [
 
 const indexData = [];
 
+const normalizePath = (path) =>
+  path.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
+
+const normalizeText = (text) =>
+  text.replace(/\r?\n|\r/g, " ").replace(/<\/?[^>]+(>|$)/g, "");
+
 const createSearchIndex = (path) => {
-  readdirSync(path).forEach((entry) => {
+  const directoryContents = readdirSync(path);
+  const normalizedPath = normalizePath(path);
+
+  if (normalizedPath) {
+    const name = basename(path);
+
+    indexData.push({
+      name,
+      path: normalizedPath,
+      text: normalizeText(
+        [
+          name,
+          ...directoryContents.filter(
+            (entry) => !statSync(join(path, entry)).isDirectory()
+          ),
+        ].join(" ")
+      ),
+    });
+  }
+
+  directoryContents.forEach((entry) => {
     if (
       IGNORE_PATHS.some((ignoredPath) =>
         path.startsWith(join(PUBLIC_PATH, ignoredPath))
@@ -49,15 +76,23 @@ const createSearchIndex = (path) => {
       !IGNORE_FILES.has(entry) &&
       !SEARCH_EXTENSIONS.ignore.includes(extname(entry).toLowerCase())
     ) {
-      const keyPath = fullPath.replace(/\\/g, "/").replace(PUBLIC_PATH, "");
+      const keyPath = normalizePath(fullPath);
+
+      if (extname(entry).toLowerCase() === ".url") {
+        const {
+          InternetShortcut: { URL: url = "" },
+        } = parse(readFileSync(fullPath).toString());
+
+        if (url.length > 1 && url.startsWith("/")) {
+          return;
+        }
+      }
 
       indexData.push({
         name: basename(keyPath, extname(keyPath)),
         path: keyPath,
         text: SEARCH_EXTENSIONS.index.includes(extname(entry).toLowerCase())
-          ? readFileSync(fullPath, "utf8")
-              .replace(/\r?\n|\r/g, " ")
-              .replace(/<\/?[^>]+(>|$)/g, "")
+          ? normalizeText(readFileSync(fullPath, "utf8"))
           : undefined,
       });
     }
