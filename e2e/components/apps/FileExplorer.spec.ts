@@ -178,6 +178,7 @@ test.describe("has files & folders", () => {
       await clickContextMenuEntry(/^Delete$/, { page });
 
       await fileExplorerEntryIsHidden(TEST_ROOT_FILE, { page });
+      await fileExplorerEntriesAreVisible({ page });
 
       await page.reload();
 
@@ -392,10 +393,12 @@ test.describe("has context menu", () => {
 });
 
 test.describe("has navigation", () => {
-  test.beforeEach(async ({ page }) => {
-    await clickFileExplorerEntry(/^System$/, { page }, false, 2);
-    await windowTitlebarTextIsVisible(/^System$/, { page });
-  });
+  test.beforeEach(async ({ page }) =>
+    expect(async () => {
+      await clickFileExplorerEntry(/^System$/, { page }, false, 2);
+      await windowTitlebarTextIsVisible(/^System$/, { page });
+    }).toPass()
+  );
 
   test("can go back & forward", async ({ page }) => {
     await fileExplorerEntriesAreVisible({ page });
