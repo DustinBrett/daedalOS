@@ -45,12 +45,18 @@ const search = async (
   }
   const searchIndex = index ?? baseIndex;
   let results: Index.Result[] = [];
+  const normalizedSearchTerm = searchTerm
+    .trim()
+    .replace(/\./g, " ")
+    .replace(/\*~\^-\+/g, "");
 
   try {
-    results = searchIndex.search?.(searchTerm);
+    results = searchIndex.search?.(normalizedSearchTerm);
 
     if (results?.length === 0) {
-      results = searchIndex.search?.(`${searchTerm}*`);
+      results = searchIndex.search?.(
+        `${normalizedSearchTerm.split(" ").join("* ")}*`
+      );
     }
   } catch {
     // Ignore search errors
