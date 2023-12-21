@@ -61,7 +61,7 @@ const search = async (
 
 interface IWritableFs extends Omit<IndexedDBFileSystem, "_cache"> {
   _cache: {
-    map: Record<string, unknown>;
+    map: Map<string, unknown>;
   };
 }
 
@@ -72,13 +72,20 @@ const buildDynamicIndex = async (
   const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
   const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
   const writable = overlayedFileSystems?.writable as IWritableFs;
-  const filesToIndex = Object.keys(writable?._cache?.map ?? {}).filter(
-    (path) => {
-      const ext = getExtension(path);
 
-      return Boolean(ext) && !SEARCH_EXTENSIONS.ignore.includes(ext);
-    }
-  );
+  const writableFiles =
+    (typeof writable?._cache?.map?.keys === "function" && [
+      ...writable._cache.map.keys(),
+    ]) ||
+    Object.keys(
+      (writable?._cache?.map as unknown as Record<string, unknown>) || {}
+    ) ||
+    [];
+  const filesToIndex = writableFiles.filter((path) => {
+    const ext = getExtension(path);
+
+    return Boolean(ext) && !SEARCH_EXTENSIONS.ignore.includes(ext);
+  });
   const indexedFiles = await Promise.all(
     filesToIndex.map(async (path) => ({
       name: basename(path, extname(path)),
