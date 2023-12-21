@@ -62,6 +62,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
                 },
                 icon,
                 label: basename(path, SHORTCUT_EXTENSION),
+                tooltip: path,
               };
             })
         );

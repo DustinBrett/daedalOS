@@ -42,6 +42,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   seperator,
   SvgIcon,
   toggle,
+  tooltip,
 }) => {
   const entryRef = useRef<HTMLLIElement | null>(null);
   const [subMenuOffset, setSubMenuOffset] = useState<Position>(topLeftPosition);
@@ -133,6 +134,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     <li
       ref={entryRef}
       className={disabled ? "disabled" : undefined}
+      title={tooltip}
       {...FOCUSABLE_ELEMENT}
       {...(menu && subMenuEvents)}
     >

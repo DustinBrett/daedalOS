@@ -13,6 +13,7 @@ export type MenuItem = {
   primary?: boolean;
   seperator?: boolean;
   toggle?: boolean;
+  tooltip?: string;
 };
 
 export type MenuState = {
