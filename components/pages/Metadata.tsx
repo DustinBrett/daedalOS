@@ -139,8 +139,14 @@ const Metadata: FC = () => {
           <link
             key={icon}
             as="image"
-            href={dynamicIcon ? undefined : icon}
-            imageSrcSet={dynamicIcon ? imageSrcs(icon, 48, ".webp") : undefined}
+            href={dynamicIcon || isSubIcon ? undefined : icon}
+            imageSrcSet={
+              dynamicIcon
+                ? imageSrcs(icon, 48, ".webp")
+                : isSubIcon
+                  ? imageSrcs(icon.replace("16x16/", ""), 16, ".webp")
+                  : undefined
+            }
             rel="preload"
             {...HIGH_PRIORITY_ELEMENT}
           />
