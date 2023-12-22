@@ -15,8 +15,17 @@ test.beforeEach(async ({ page }) => page.goto("/?app=Terminal"));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(terminalHasRows);
 
-test("has current directory", async ({ page }) =>
+test("has base current directory", async ({ page }) =>
   terminalHasText({ page }, `${TERMINAL_BASE_CD}>`));
 
-test("has directory listing", async ({ page }) =>
+test("has base directory listing", async ({ page }) =>
   terminalDirectoryMatchesPublicFolder({ page }, TERMINAL_BASE_CD));
+
+test("has 'Program Files' directory listing", async ({ page }) =>
+  terminalDirectoryMatchesPublicFolder({ page }, "/Program Files"));
+
+test("has 'System' directory listing", async ({ page }) =>
+  terminalDirectoryMatchesPublicFolder({ page }, "/System"));
+
+test("has 'Users' directory listing", async ({ page }) =>
+  terminalDirectoryMatchesPublicFolder({ page }, "/Users"));

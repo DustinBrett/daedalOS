@@ -812,7 +812,7 @@ export const terminalDirectoryMatchesPublicFolder = async (
   { page }: TestProps,
   directory: string
 ): Promise<void> => {
-  await sendToTerminal({ page }, `dir ${directory}`);
+  await sendToTerminal({ page }, `dir "${directory}"`);
 
   const publicDirectory = join(ROOT_PUBLIC_FOLDER, directory);
   const dirContents = readdirSync(publicDirectory);
