@@ -5,8 +5,10 @@ import {
   disableWallpaper,
   sendToTerminal,
   terminalDirectoryMatchesPublicFolder,
+  terminalDoesNotHaveText,
   terminalHasRows,
   terminalHasText,
+  windowIsHidden,
   windowsAreVisible,
 } from "e2e/functions";
 
@@ -38,4 +40,18 @@ test.describe("has directory listings", () => {
 
   test("has 'Users'", async ({ page }) =>
     terminalDirectoryMatchesPublicFolder({ page }, "/Users"));
+});
+
+test.describe("has commands", () => {
+  test("can 'clear'", async ({ page }) => {
+    await sendToTerminal({ page }, "echo hi");
+    await terminalHasText({ page }, "hi", 2);
+    await sendToTerminal({ page }, "clear");
+    await terminalDoesNotHaveText({ page }, "hi");
+  });
+
+  test("can exit", async ({ page }) => {
+    await sendToTerminal({ page }, "exit");
+    await windowIsHidden({ page });
+  });
 });

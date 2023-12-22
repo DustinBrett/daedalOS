@@ -804,9 +804,27 @@ export const taskbarEntriesAreVisible = async ({
 
 export const terminalHasText = async (
   { page }: TestProps,
+  text: string,
+  count = 1
+): Promise<void> => {
+  const terminalWithTextRows = page
+    .locator(TERMINAL_ROWS_SELECTOR)
+    .getByText(text);
+
+  await expect(terminalWithTextRows).toHaveCount(count);
+
+  if (count) {
+    for (const row of await terminalWithTextRows.all()) {
+      // eslint-disable-next-line no-await-in-loop
+      await expect(row).toBeVisible();
+    }
+  }
+};
+
+export const terminalDoesNotHaveText = async (
+  { page }: TestProps,
   text: string
-): Promise<void> =>
-  expect(page.locator(TERMINAL_ROWS_SELECTOR).getByText(text)).toBeVisible();
+): Promise<void> => terminalHasText({ page }, text, 0);
 
 export const terminalDirectoryMatchesPublicFolder = async (
   { page }: TestProps,
