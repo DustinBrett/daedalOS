@@ -431,6 +431,11 @@ const useCommandInterpreter = (
         }
         case "find":
         case "search": {
+          if (commandArgs.length === 0) {
+            localEcho?.println("FIND: Parameter format not correct");
+            break;
+          }
+
           const results = await fullSearch(
             commandArgs.join(" "),
             readFile,
