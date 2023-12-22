@@ -1,3 +1,5 @@
+import { readdirSync, statSync } from "fs";
+import { join } from "path";
 import {
   type Locator,
   type Page,
@@ -48,6 +50,9 @@ import {
   SEARCH_MENU_INPUT_SELECTOR,
   SEARCH_MENU_RESULTS_SELECTOR,
   FILE_EXPLORER_SEARCH_BOX_SELECTOR,
+  TERMINAL_ROWS_SELECTOR,
+  TERMINAL_SELECTOR,
+  ROOT_PUBLIC_FOLDER,
 } from "e2e/constants";
 
 type TestProps = {
@@ -783,9 +788,51 @@ export const fileExplorerEntriesAreVisible = async ({
 }: TestProps): Promise<void> =>
   entriesAreVisible(FILE_EXPLORER_ENTRIES_SELECTOR, page);
 
+export const sendToTerminal = async (
+  { page }: TestProps,
+  text: string
+): Promise<void> => {
+  const terminal = page.locator(TERMINAL_SELECTOR);
+
+  await terminal.pressSequentially(text);
+  await terminal.press("Enter");
+};
+
 export const taskbarEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> => entriesAreVisible(TASKBAR_ENTRY_SELECTOR, page);
+
+export const terminalHasText = async (
+  { page }: TestProps,
+  text: string
+): Promise<void> =>
+  expect(page.locator(TERMINAL_ROWS_SELECTOR).getByText(text)).toBeVisible();
+
+export const terminalDirectoryMatchesPublicFolder = async (
+  { page }: TestProps,
+  directory: string
+): Promise<void> => {
+  await sendToTerminal({ page }, `dir ${directory}`);
+
+  const publicDirectory = join(ROOT_PUBLIC_FOLDER, directory);
+  const dirContents = readdirSync(publicDirectory);
+  const fileCount = dirContents.filter((entry) =>
+    statSync(join(publicDirectory, entry)).isFile()
+  ).length;
+  const dirCount = dirContents.length - fileCount;
+
+  await expect(async () => {
+    await terminalHasText({ page }, `${fileCount} File(s)`);
+    await terminalHasText({ page }, `${dirCount} Dir(s)`);
+  }).toPass();
+};
+
+export const terminalHasRows = async ({ page }: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(await page.locator(TERMINAL_ROWS_SELECTOR).count()).toBeGreaterThan(
+      0
+    )
+  ).toPass();
 
 export const windowsAreVisible = async ({ page }: TestProps): Promise<void> =>
   entriesAreVisible(WINDOW_SELECTOR, page);
