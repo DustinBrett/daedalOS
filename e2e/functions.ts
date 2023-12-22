@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from "fs";
+import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import {
   type Locator,
@@ -788,16 +788,6 @@ export const fileExplorerEntriesAreVisible = async ({
 }: TestProps): Promise<void> =>
   entriesAreVisible(FILE_EXPLORER_ENTRIES_SELECTOR, page);
 
-export const sendToTerminal = async (
-  { page }: TestProps,
-  text: string
-): Promise<void> => {
-  const terminal = page.locator(TERMINAL_SELECTOR);
-
-  await terminal.pressSequentially(text);
-  await terminal.press("Enter");
-};
-
 export const taskbarEntriesAreVisible = async ({
   page,
 }: TestProps): Promise<void> => entriesAreVisible(TASKBAR_ENTRY_SELECTOR, page);
@@ -805,11 +795,13 @@ export const taskbarEntriesAreVisible = async ({
 export const terminalHasText = async (
   { page }: TestProps,
   text: string,
-  count = 1
+  count = 1,
+  cursorLine = false
 ): Promise<void> => {
-  const terminalWithTextRows = page
-    .locator(TERMINAL_ROWS_SELECTOR)
-    .getByText(text);
+  const terminalRows = page.locator(TERMINAL_ROWS_SELECTOR);
+  const terminalWithTextRows = cursorLine
+    ? terminalRows.last().getByText(text)
+    : terminalRows.getByText(text);
 
   await expect(terminalWithTextRows).toHaveCount(count);
 
@@ -823,8 +815,21 @@ export const terminalHasText = async (
 
 export const terminalDoesNotHaveText = async (
   { page }: TestProps,
+  text: string,
+  cursorLine = false
+): Promise<void> => terminalHasText({ page }, text, 0, cursorLine);
+
+export const sendToTerminal = async (
+  { page }: TestProps,
   text: string
-): Promise<void> => terminalHasText({ page }, text, 0);
+): Promise<void> => {
+  const terminal = page.locator(TERMINAL_SELECTOR);
+
+  await terminal.pressSequentially(text);
+  await terminalHasText({ page }, `>${text}`, 1, true);
+  await terminal.press("Enter");
+  await terminalDoesNotHaveText({ page }, `>${text}`, true);
+};
 
 export const terminalDirectoryMatchesPublicFolder = async (
   { page }: TestProps,
@@ -843,6 +848,18 @@ export const terminalDirectoryMatchesPublicFolder = async (
     await terminalHasText({ page }, `${fileCount} File(s)`);
     await terminalHasText({ page }, `${dirCount} Dir(s)`);
   }).toPass();
+};
+
+export const terminalFileMatchesPublicFile = async (
+  { page }: TestProps,
+  file: string
+): Promise<void> => {
+  const fileLines = readFileSync(join(ROOT_PUBLIC_FOLDER, file))
+    .toString()
+    .split("\r\n")
+    .filter(Boolean);
+
+  await Promise.all(fileLines.map((line) => terminalHasText({ page }, line)));
 };
 
 export const terminalHasRows = async ({ page }: TestProps): Promise<void> =>

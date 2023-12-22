@@ -99,7 +99,7 @@ export const FILE_EXPLORER_ENTRIES_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li`;
 export const FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR = `${FILE_EXPLORER_SELECTOR}>li${FOCUSED_ENTRY_SELECTOR}`;
 export const FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR = `${FILE_EXPLORER_ENTRIES_SELECTOR}>button>figure>textarea`;
 export const TERMINAL_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>.terminal`;
-export const TERMINAL_ROWS_SELECTOR = `${TERMINAL_SELECTOR}>.xterm-screen>.xterm-rows>div`;
+export const TERMINAL_ROWS_SELECTOR = `${TERMINAL_SELECTOR}>.xterm-screen>.xterm-rows>div:not(:empty)`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
@@ -248,5 +248,7 @@ const OG_REQUIRED_TAGS = ["title", "image", "url", "type"];
 export const OG_TAGS = [...OG_REQUIRED_TAGS, "description"];
 
 export const TERMINAL_BASE_CD = "/Users/Public";
+
+export const TERMINAL_TEST_FILE = `${TERMINAL_BASE_CD}/desktop.ini`;
 
 export const ROOT_PUBLIC_FOLDER = "public";
