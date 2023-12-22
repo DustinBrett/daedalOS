@@ -796,12 +796,13 @@ export const terminalHasText = async (
   { page }: TestProps,
   text: string,
   count = 1,
-  cursorLine = false
+  cursorLine = false,
+  exact = false
 ): Promise<void> => {
   const terminalRows = page.locator(TERMINAL_ROWS_SELECTOR);
   const terminalWithTextRows = cursorLine
-    ? terminalRows.last().getByText(text)
-    : terminalRows.getByText(text);
+    ? terminalRows.last().getByText(text, { exact })
+    : terminalRows.getByText(text, { exact });
 
   await expect(terminalWithTextRows).toHaveCount(count);
 

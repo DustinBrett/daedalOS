@@ -249,6 +249,4 @@ export const OG_TAGS = [...OG_REQUIRED_TAGS, "description"];
 
 export const TERMINAL_BASE_CD = "/Users/Public";
 
-export const TERMINAL_TEST_FILE = `${TERMINAL_BASE_CD}/desktop.ini`;
-
 export const ROOT_PUBLIC_FOLDER = "public";
