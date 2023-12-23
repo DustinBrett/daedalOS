@@ -1,4 +1,5 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import directory from "contexts/process/directory";
 import { TERMINAL_BASE_CD } from "e2e/constants";
 import {
   captureConsoleLogs,
@@ -12,6 +13,7 @@ import {
   terminalHasRows,
   terminalHasText,
   windowIsHidden,
+  windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
 
@@ -146,7 +148,7 @@ test.describe("has file system access", () => {
 });
 
 test.describe("has commands", () => {
-  test("can 'echo' then 'clear'", async ({ page }) => {
+  test("echo & clear", async ({ page }) => {
     await sendToTerminal({ page }, "echo hi");
     await terminalHasText({ page }, "hi", 2);
 
@@ -154,14 +156,87 @@ test.describe("has commands", () => {
     await terminalDoesNotHaveText({ page }, "hi");
   });
 
-  test("can exit", async ({ page }) => {
+  test("color", async ({ page }) => {
+    await sendToTerminal({ page }, "color E3");
+    await terminalHasText({ page }, "Background: Light Yellow");
+    await terminalHasText({ page }, "Foreground: Aqua");
+  });
+
+  test("exit", async ({ page }) => {
     await sendToTerminal({ page }, "exit");
     await windowIsHidden({ page });
   });
 
-  test("can call 'sheep'", async ({ page }) => {
+  test("ipconfig", async ({ page }) => {
+    await sendToTerminal({ page }, "ipconfig");
+    await terminalHasText({ page }, "IPv4 Address");
+  });
+
+  test("history", async ({ page }) => {
+    await sendToTerminal({ page }, "history");
+    await terminalHasText({ page }, "1 history");
+  });
+
+  test("neofetch", async ({ page }) => {
+    await sendToTerminal({ page }, "neofetch");
+
+    const packageCount = Object.keys(directory).length;
+
+    await terminalHasText({ page }, `Packages: ${packageCount}`);
+  });
+
+  test("nslookup", async ({ page }) => {
+    await sendToTerminal({ page }, "nslookup dustinbrett.com");
+    await terminalHasText({ page }, "Server:  cloudflare-dns.com");
+  });
+
+  test("sheep", async ({ page }) => {
     await sendToTerminal({ page }, "sheep");
     await sheepIsVisible({ page });
+  });
+
+  test("shutdown", async ({ page }) => {
+    let pageLoaded = false;
+
+    page.once("load", () => {
+      pageLoaded = true;
+    });
+
+    expect(pageLoaded).toBeFalsy();
+
+    await sendToTerminal({ page }, "shutdown");
+    await expect(() => expect(pageLoaded).toBeTruthy()).toPass();
+  });
+
+  test("taskkill", async ({ page }) => {
+    await sendToTerminal({ page }, "taskkill Terminal");
+    await windowIsHidden({ page });
+  });
+
+  test("tasklist", async ({ page }) => {
+    await sendToTerminal({ page }, "tasklist");
+    await terminalHasText({ page }, "Terminal", -1);
+  });
+
+  test("title", async ({ page }) => {
+    const testTitle = "Testing";
+    await sendToTerminal({ page }, `title ${testTitle}`);
+    await windowTitlebarTextIsVisible(testTitle, { page });
+  });
+
+  test("time", async ({ page }) => {
+    await sendToTerminal({ page }, "time");
+    await terminalHasText({ page }, "The current time is:");
+  });
+
+  test("uptime", async ({ page }) => {
+    await sendToTerminal({ page }, "uptime");
+    await terminalHasText({ page }, "Uptime:");
+  });
+
+  test("weather", async ({ page }) => {
+    await sendToTerminal({ page }, "weather");
+    await terminalHasText({ page }, "Weather report:");
   });
 });
 

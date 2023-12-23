@@ -804,9 +804,11 @@ export const terminalHasText = async (
     ? terminalRows.last().getByText(text, { exact })
     : terminalRows.getByText(text, { exact });
 
-  await expect(terminalWithTextRows).toHaveCount(count);
+  if (count !== -1) {
+    await expect(terminalWithTextRows).toHaveCount(count);
+  }
 
-  if (count) {
+  if (count !== 0) {
     for (const row of await terminalWithTextRows.all()) {
       // eslint-disable-next-line no-await-in-loop
       await expect(row).toBeVisible();
