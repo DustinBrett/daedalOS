@@ -26,6 +26,11 @@ export const SEARCH_INPUT_PROPS = {
 export const SEARCH_LIBS = ["/System/lunr/lunr.min.js"];
 
 let baseIndex = Object.create(null) as Index;
+let basePaths = [] as string[];
+
+type ResponseIndex = Index & {
+  paths: string[];
+};
 
 const search = async (
   searchTerm: string,
@@ -36,13 +41,17 @@ const search = async (
     const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
 
     try {
-      baseIndex = window.lunr?.Index.load(
-        JSON.parse(await response.text()) as Index
-      );
+      const { paths, ...responseIndex } = JSON.parse(
+        await response.text()
+      ) as ResponseIndex;
+
+      baseIndex = window.lunr?.Index.load(responseIndex);
+      basePaths = paths;
     } catch {
       // Failed to parse text data to JSON
     }
   }
+
   const searchIndex = index ?? baseIndex;
   let results: Index.Result[] = [];
   const normalizedSearchTerm = searchTerm
@@ -62,7 +71,14 @@ const search = async (
     // Ignore search errors
   }
 
-  return results ?? [];
+  if (results) {
+    return results.map((result) => ({
+      ...result,
+      ref: basePaths[result.ref as unknown as number],
+    }));
+  }
+
+  return [];
 };
 
 interface IWritableFs extends Omit<IndexedDBFileSystem, "_cache"> {

@@ -37,6 +37,11 @@ const normalizePath = (path) =>
 const normalizeText = (text) =>
   text.replace(/\r?\n|\r/g, " ").replace(/<\/?[^>]+(>|$)/g, "");
 
+const keyPathMap = {};
+
+const keyPathMapper = (path) =>
+  (keyPathMap[path] ||= Object.keys(keyPathMap).length);
+
 const createSearchIndex = (path) => {
   const directoryContents = readdirSync(path);
   const normalizedPath = normalizePath(path);
@@ -46,7 +51,7 @@ const createSearchIndex = (path) => {
 
     indexData.push({
       name,
-      path: normalizedPath,
+      path: keyPathMapper(normalizedPath),
       text: normalizeText(
         [
           name,
@@ -88,12 +93,14 @@ const createSearchIndex = (path) => {
         }
       }
 
+      const name = basename(keyPath, extname(keyPath));
+
       indexData.push({
-        name: basename(keyPath, extname(keyPath)),
-        path: keyPath,
+        name,
+        path: keyPathMapper(keyPath),
         text: SEARCH_EXTENSIONS.index.includes(extname(entry).toLowerCase())
-          ? normalizeText(readFileSync(fullPath, "utf8"))
-          : undefined,
+          ? `${name} ${normalizeText(readFileSync(fullPath, "utf8"))}`
+          : name,
       });
     }
   });
@@ -113,9 +120,13 @@ if (!existsSync(join(PUBLIC_PATH, ".index"))) {
   mkdirSync(join(PUBLIC_PATH, ".index"));
 }
 
+const searchJson = searchIndex.toJSON();
+
+searchJson.paths = Object.keys(keyPathMap);
+
 writeFileSync(
   join(PUBLIC_PATH, ".index/search.lunr.json"),
-  JSON.stringify(searchIndex.toJSON()),
+  JSON.stringify(searchJson),
   {
     flag: "w",
   }
