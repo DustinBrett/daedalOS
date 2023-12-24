@@ -5,6 +5,7 @@ const BASE_LINE_HEIGHT = 21;
 const StyledButton = styled.button`
   background-color: rgb(225, 225, 225);
   border: 1px solid rgb(173, 173, 173);
+  color: #000;
   display: grid;
   font-family: ${({ theme }) => theme.formats.systemFont};
   font-size: 12px;
@@ -35,6 +36,7 @@ const StyledButton = styled.button`
   &:disabled {
     background-color: rgb(204, 204, 204);
     border: 1px solid rgb(191, 191, 191);
+    color: #808080;
     line-height: ${BASE_LINE_HEIGHT}px;
   }
 `;
