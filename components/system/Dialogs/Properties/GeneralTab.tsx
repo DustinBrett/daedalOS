@@ -167,15 +167,17 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <th scope="row">Created:</th>
             <td>{dateTimeString(stats?.ctime)}</td>
           </tr>
-          <tr>
-            <th scope="row">Modified:</th>
-            <td>
-              {stats &&
-                dateTimeString(
-                  new Date(getModifiedTime(url, stats as FileStat))
-                )}
-            </td>
-          </tr>
+          {!stats?.isDirectory() && (
+            <tr>
+              <th scope="row">Modified:</th>
+              <td>
+                {stats &&
+                  dateTimeString(
+                    new Date(getModifiedTime(url, stats as FileStat))
+                  )}
+              </td>
+            </tr>
+          )}
           <tr>
             <th scope="row">Accessed:</th>
             <td>{dateTimeString(stats?.atime)}</td>
