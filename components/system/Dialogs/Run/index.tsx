@@ -54,7 +54,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
     closeWithTransition,
     processes: { Run: runProcess } = {},
   } = useProcesses();
-  const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
+  const { createPath, exists, lstat, readFile, updateFolder } = useFileSystem();
   const { foregroundId, runHistory, setRunHistory, updateRecentFiles } =
     useSession();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -112,9 +112,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
           }
         }
 
-        const stats = await stat(resourcePath);
-
-        if (stats.isDirectory()) {
+        if ((await lstat(resourcePath)).isDirectory()) {
           open("FileExplorer", { url: resourcePath }, "");
           addRunHistoryEntry();
         } else if (
@@ -191,10 +189,10 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
       createPath,
       exists,
       id,
+      lstat,
       open,
       readFile,
       setRunHistory,
-      stat,
       updateFolder,
       updateRecentFiles,
     ]

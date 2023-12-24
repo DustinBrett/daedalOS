@@ -79,7 +79,7 @@ const FileManager: FC<FileManagerProps> = ({
       skipFsWatcher,
       skipSorting,
     });
-  const { mountFs, rootFs, stat } = useFileSystem();
+  const { lstat, mountFs, rootFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions);
@@ -150,7 +150,7 @@ const FileManager: FC<FileManagerProps> = ({
   useEffect(() => {
     if (!mounted && MOUNTABLE_EXTENSIONS.has(getExtension(url))) {
       const mountUrl = async (): Promise<void> => {
-        if (!(await stat(url)).isDirectory()) {
+        if (!(await lstat(url)).isDirectory()) {
           setMounted((currentlyMounted) => {
             if (!currentlyMounted) {
               mountFs(url)
@@ -166,7 +166,7 @@ const FileManager: FC<FileManagerProps> = ({
 
       mountUrl();
     }
-  }, [mountFs, mounted, stat, updateFiles, url]);
+  }, [lstat, mountFs, mounted, updateFiles, url]);
 
   useEffect(() => {
     if (url !== currentUrl) {

@@ -38,23 +38,26 @@ export const getResultInfo = async (
     pid = TEXT_EDITORS[0],
     url: infoUrl,
   } = await new Promise<FileInfo>((resolve) => {
-    const extension = getExtension(url);
+    fs.lstat(url, (err, stats) => {
+      const isDirectory = !err && stats ? stats.isDirectory() : false;
+      const extension = getExtension(url);
 
-    if (extension) {
-      getInfoWithExtension(fs, url, extension, (fileInfo) => resolve(fileInfo));
-    } else {
-      fs.stat(url, (err, stats) =>
+      if (extension && !isDirectory) {
+        getInfoWithExtension(fs, url, extension, (fileInfo) =>
+          resolve(fileInfo)
+        );
+      } else {
         getInfoWithoutExtension(
           fs,
           fs.getRootFS() as RootFileSystem,
           url,
-          !err && stats ? stats.isDirectory() : false,
+          isDirectory,
           false,
           (fileInfo) => resolve(fileInfo),
           false
-        )
-      );
-    }
+        );
+      }
+    });
   });
 
   if (signal?.aborted) return undefined;
