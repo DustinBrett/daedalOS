@@ -67,7 +67,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const baseUrl = isYTUrl ? url : url || info?.url;
   const lastModified = useMemo(
     () =>
-      stats
+      stats && !stats.isDirectory()
         ? `Last modified: ${new Date(
             getModifiedTime(baseUrl, stats)
           ).toLocaleString(DEFAULT_LOCALE, {
