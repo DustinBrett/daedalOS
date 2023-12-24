@@ -24,6 +24,9 @@ const renderFrame = async (
   let dataCanvas: HTMLCanvasElement | undefined;
 
   try {
+    const spacing =
+      previewElement.tagName === "VIDEO" ? { margin: "0", padding: "0" } : {};
+
     dataCanvas = await htmlToImage?.toCanvas(previewElement, {
       ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
         canvasHeight: Math.round(
@@ -36,6 +39,7 @@ const renderFrame = async (
       skipAutoScale: true,
       style: {
         inset: "0",
+        ...spacing,
       },
     });
   } catch {
