@@ -1,6 +1,6 @@
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useState } from "react";
-import { loader } from "@monaco-editor/react";
+import loader from "@monaco-editor/loader";
 import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   URL_DELIMITER,

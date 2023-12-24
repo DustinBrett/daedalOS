@@ -38,7 +38,7 @@
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
+    "@monaco-editor/loader": "^1.4.0",
     "@panzoom/panzoom": "^4.5.1",
     "@prettier/plugin-xml": "^3.2.2",
     "@wasmer/wasm-terminal": "^0.12.0",
