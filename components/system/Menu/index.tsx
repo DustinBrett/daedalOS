@@ -101,6 +101,10 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   );
 
   useEffect(() => {
+    if ((subMenu || baseMenu)?.items && (x || y)) calculateOffset();
+  }, [baseMenu, calculateOffset, subMenu, x, y]);
+
+  useEffect(() => {
     if (items && !subMenu) {
       const focusedElement = document.activeElement;
 
