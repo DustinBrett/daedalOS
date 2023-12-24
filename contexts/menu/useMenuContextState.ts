@@ -93,8 +93,9 @@ const useMenuContextState = (): MenuContextState => {
       return {
         onContextMenuCapture,
         ...(isSafari() && {
-          onTouchEnd: () => {
+          onTouchEnd: (event) => {
             if (touchEvent.current) {
+              event.preventDefault();
               onContextMenuCapture(touchEvent.current);
               touchEvent.current = undefined;
             }
