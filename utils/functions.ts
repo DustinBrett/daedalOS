@@ -365,14 +365,20 @@ export const getWindowViewport = (): Position => ({
 });
 
 export const calcInitialPosition = (
-  relativePosition: RelativePosition,
-  container: HTMLElement
-): Position => ({
-  x: relativePosition.left || viewWidth() - (relativePosition.right || 0),
-  y:
-    relativePosition.top ||
-    viewHeight() - (relativePosition.bottom || 0) - container.offsetHeight,
-});
+  { offsetHeight }: HTMLElement,
+  { right = 0, left = 0, top = 0, bottom = 0 } = {} as RelativePosition,
+  { width = 0, height = 0 } = {} as Size
+): Position => {
+  const [vh, vw] = [viewHeight(), viewWidth()];
+
+  return {
+    x: pxToNum(width) >= vw ? 0 : left || vw - right,
+    y:
+      pxToNum(height) + TASKBAR_HEIGHT >= vh
+        ? 0
+        : top || vh - bottom - offsetHeight,
+  };
+};
 
 const GRID_TEMPLATE_ROWS = "grid-template-rows";
 

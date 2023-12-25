@@ -73,12 +73,12 @@ const useDraggable = (id: string, size: Size): Draggable => {
   }, [autoSizing, blockAutoPositionRef, closing, sessionPosition, sessionSize]);
 
   useLayoutEffect(() => {
-    if (initialRelativePosition && componentWindow) {
+    if (initialRelativePosition && componentWindow && size) {
       setPosition(
-        calcInitialPosition(initialRelativePosition, componentWindow)
+        calcInitialPosition(componentWindow, initialRelativePosition, size)
       );
     }
-  }, [componentWindow, initialRelativePosition]);
+  }, [componentWindow, initialRelativePosition, size]);
 
   return [position, setPosition];
 };
