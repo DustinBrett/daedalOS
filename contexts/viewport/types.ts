@@ -3,7 +3,7 @@ export type ViewportContextState = {
   toggleFullscreen: (
     element?: HTMLElement | null,
     navigationUI?: FullscreenNavigationUI
-  ) => void;
+  ) => Promise<void>;
 };
 
 export type FullscreenDocument = Document & {
