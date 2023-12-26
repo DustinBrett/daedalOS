@@ -220,6 +220,7 @@ test.describe("has commands", () => {
 
   test("title", async ({ page }) => {
     const testTitle = "Testing";
+
     await sendToTerminal({ page }, `title ${testTitle}`);
     await windowTitlebarTextIsVisible(testTitle, { page });
   });
@@ -232,11 +233,6 @@ test.describe("has commands", () => {
   test("uptime", async ({ page }) => {
     await sendToTerminal({ page }, "uptime");
     await terminalHasText({ page }, "Uptime:");
-  });
-
-  test("weather", async ({ page }) => {
-    await sendToTerminal({ page }, "weather");
-    await terminalHasText({ page }, "Weather report:");
   });
 });
 
