@@ -22,7 +22,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { getExtension, haltEvent, isFirefox, loadFiles } from "utils/functions";
+import { getExtension, haltEvent, loadFiles } from "utils/functions";
 
 const { alias, author, license, version } = PACKAGE_DATA;
 
@@ -127,8 +127,6 @@ const useTerminal = ({
         );
 
       setLoading(false);
-
-      if (isFirefox()) terminal.options.letterSpacing = 0;
     }
 
     return () => {
