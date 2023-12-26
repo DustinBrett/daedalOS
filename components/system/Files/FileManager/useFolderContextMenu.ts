@@ -163,6 +163,7 @@ const useFolderContextMenu = (
       video: {
         frameRate: CAPTURE_FPS,
       },
+      // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#browser_compatibility
       ...(!isFirefoxOrSafari && {
         preferCurrentTab: true,
         selfBrowserSurface: "include",
