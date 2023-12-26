@@ -70,6 +70,7 @@ const useViewportContextState = (): ViewportContextState => {
     if (fullscreenElement && (!element || element === fullscreenElement)) {
       await exitFullscreen();
     } else {
+      // Only Chrome switches full screen elements without exiting
       if (fullscreenElement && (isFirefox() || isSafari())) {
         await exitFullscreen();
       }
