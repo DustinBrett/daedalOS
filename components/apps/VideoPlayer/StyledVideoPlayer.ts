@@ -169,6 +169,15 @@ const StyledVideoPlayer = styled.div`
           top: -5px;
         }
       }
+
+      &.vjs-ended {
+        .vjs-icon-placeholder {
+          &::before {
+            font-size: 2.3em;
+            top: -3px;
+          }
+        }
+      }
     }
 
     .vjs-poster {
