@@ -61,6 +61,7 @@ const useSessionContextState = (): SessionContextState => {
   const updateRecentFiles = useCallback(
     (url: string, pid: string, title?: string) =>
       (title || extname(url)) &&
+      pid !== "FileExplorer" &&
       setRecentFiles((currentRecentFiles) => {
         const entryIndex = currentRecentFiles.findIndex(
           ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid
