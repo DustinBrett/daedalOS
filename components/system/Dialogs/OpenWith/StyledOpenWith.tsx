@@ -32,6 +32,7 @@ const StyledOpenWith = styled.div`
 
     button {
       background-color: rgb(204, 204, 204);
+      color: #000;
       font-size: 15px;
       font-weight: 600;
       height: 32px;

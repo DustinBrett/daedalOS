@@ -35,6 +35,7 @@ const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
     }
 
     figure {
+      color: #000;
       display: flex;
       padding: 0 23px;
 
