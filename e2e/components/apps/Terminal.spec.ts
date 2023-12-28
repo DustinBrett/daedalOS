@@ -227,7 +227,10 @@ test.describe("has commands", () => {
 
   test("time", async ({ page }) => {
     await sendToTerminal({ page }, "time");
-    await terminalHasText({ page }, "The current time is:");
+    await terminalHasText(
+      { page },
+      /The current time is: ([01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{2}/
+    );
   });
 
   test("uptime", async ({ page }) => {
