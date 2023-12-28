@@ -100,6 +100,23 @@ test.describe("has file system access", () => {
     });
   });
 
+  test.describe("can copy", () => {
+    test("file", async ({ page }) => {
+      const testFile = "desktop.ini";
+      const newTestFile = "test.ini";
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, testFile);
+
+      await sendToTerminal({ page }, `copy ${testFile} ${newTestFile}`);
+      await sendToTerminal({ page }, "clear");
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, testFile);
+      await terminalHasText({ page }, newTestFile);
+    });
+  });
+
   test.describe("can delete", () => {
     test("file", async ({ page }) => {
       const testFile = "desktop.ini";
