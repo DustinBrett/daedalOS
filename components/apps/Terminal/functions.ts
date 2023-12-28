@@ -250,9 +250,7 @@ export const getUptime = (isShort = false): string => {
       ...(mins
         ? [`${mins} ${isShort ? "min" : "minute"}${mins === 1 ? "" : "s"}`]
         : []),
-      ...(secs
-        ? [`${secs} ${isShort ? "sec" : "second"}${secs === 1 ? "" : "s"}`]
-        : []),
+      `${secs} ${isShort ? "sec" : "second"}${secs === 1 ? "" : "s"}`,
     ].join(", ");
   }
 

@@ -232,7 +232,7 @@ test.describe("has commands", () => {
 
   test("uptime", async ({ page }) => {
     await sendToTerminal({ page }, "uptime");
-    await terminalHasText({ page }, "Uptime:");
+    await terminalHasText({ page }, /Uptime: \d+ second(s)?/);
   });
 });
 

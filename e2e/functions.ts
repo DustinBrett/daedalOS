@@ -794,7 +794,7 @@ export const taskbarEntriesAreVisible = async ({
 
 export const terminalHasText = async (
   { page }: TestProps,
-  text: string,
+  text: string | RegExp,
   count = 1,
   cursorLine = false,
   exact = false
