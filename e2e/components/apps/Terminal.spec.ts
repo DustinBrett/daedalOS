@@ -235,6 +235,11 @@ test.describe("has commands", () => {
     );
   });
 
+  test("date", async ({ page }) => {
+    await sendToTerminal({ page }, "date");
+    await terminalHasText({ page }, /The current date is: \d{4}-\d{2}-\d{2}/);
+  });
+
   test("uptime", async ({ page }) => {
     await sendToTerminal({ page }, "uptime");
     await terminalHasText({ page }, /Uptime: \d+ second(s)?/);
