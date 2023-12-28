@@ -179,15 +179,17 @@ test.describe("has commands", () => {
 
   test("neofetch", async ({ page }) => {
     await sendToTerminal({ page }, "neofetch");
-
-    const packageCount = Object.keys(directory).length;
-
-    await terminalHasText({ page }, `Packages: ${packageCount}`);
+    await terminalHasText(
+      { page },
+      `Packages: ${Object.keys(directory).length}`
+    );
   });
 
   test("nslookup", async ({ page }) => {
     await sendToTerminal({ page }, "nslookup dustinbrett.com");
     await terminalHasText({ page }, "Server:  cloudflare-dns.com");
+    await terminalHasText({ page }, "Address:  1.1.1.1");
+    await terminalHasText({ page }, "Name:    dustinbrett.com");
   });
 
   test("sheep", async ({ page }) => {
