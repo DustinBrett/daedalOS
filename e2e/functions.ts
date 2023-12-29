@@ -828,6 +828,7 @@ export const sendToTerminal = async (
 ): Promise<void> => {
   const terminal = page.locator(TERMINAL_SELECTOR);
 
+  await terminalHasText({ page }, /.*>$/, 1, true);
   await terminal.pressSequentially(text);
   await terminalHasText({ page }, `>${text}`, 1, true);
   await terminal.press("Enter");
