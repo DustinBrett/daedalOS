@@ -822,6 +822,16 @@ export const terminalDoesNotHaveText = async (
   cursorLine = false
 ): Promise<void> => terminalHasText({ page }, text, 0, cursorLine);
 
+export const sendKeyToTerminal = async (
+  { page }: TestProps,
+  key: string
+): Promise<void> => page.locator(TERMINAL_SELECTOR).press(key);
+
+export const sendTextToTerminal = async (
+  { page }: TestProps,
+  text: string
+): Promise<void> => page.locator(TERMINAL_SELECTOR).pressSequentially(text);
+
 export const sendToTerminal = async (
   { page }: TestProps,
   text: string

@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
 import directory from "contexts/process/directory";
-import { TERMINAL_BASE_CD } from "e2e/constants";
+import { ROOT_PUBLIC_TEST_FILE, TERMINAL_BASE_CD } from "e2e/constants";
 import {
   captureConsoleLogs,
   didCaptureConsoleLogs,
   disableWallpaper,
+  sendKeyToTerminal,
+  sendTextToTerminal,
   sendToTerminal,
   sheepIsVisible,
   terminalDirectoryMatchesPublicFolder,
@@ -102,7 +104,7 @@ test.describe("has file system access", () => {
 
   test.describe("can copy", () => {
     test("file", async ({ page }) => {
-      const testFile = "desktop.ini";
+      const testFile = ROOT_PUBLIC_TEST_FILE;
       const newTestFile = "test.ini";
 
       await sendToTerminal({ page }, "ls");
@@ -119,7 +121,7 @@ test.describe("has file system access", () => {
 
   test.describe("can delete", () => {
     test("file", async ({ page }) => {
-      const testFile = "desktop.ini";
+      const testFile = ROOT_PUBLIC_TEST_FILE;
 
       await sendToTerminal({ page }, "ls");
       await terminalHasText({ page }, testFile);
@@ -260,6 +262,30 @@ test.describe("has commands", () => {
   test("uptime", async ({ page }) => {
     await sendToTerminal({ page }, "uptime");
     await terminalHasText({ page }, /Uptime: \d+ second(s)?/);
+  });
+});
+
+test.describe("has tab completion", () => {
+  test("can see file/folder list", async ({ page }) => {
+    await sendTextToTerminal({ page }, "d");
+    await sendKeyToTerminal({ page }, "Tab");
+
+    await terminalHasText({ page }, "Documents");
+    await terminalHasText({ page }, ROOT_PUBLIC_TEST_FILE);
+  });
+
+  test("can complete folder name", async ({ page }) => {
+    await sendTextToTerminal({ page }, "Vi");
+    await sendKeyToTerminal({ page }, "Tab");
+
+    await terminalHasText({ page }, "Videos", 1, true);
+  });
+
+  test("can complete command name", async ({ page }) => {
+    await sendTextToTerminal({ page }, "he");
+    await sendKeyToTerminal({ page }, "Tab");
+
+    await terminalHasText({ page }, "help", 1, true);
   });
 });
 
