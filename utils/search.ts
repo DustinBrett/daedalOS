@@ -74,7 +74,10 @@ const search = async (
   if (results) {
     return results.map((result) => ({
       ...result,
-      ref: basePaths[result.ref as unknown as number],
+      ref:
+        (result.ref in basePaths
+          ? (basePaths[result.ref as keyof typeof basePaths] as string)
+          : result.ref) || "",
     }));
   }
 
@@ -109,13 +112,17 @@ const buildDynamicIndex = async (
     return Boolean(ext) && !SEARCH_EXTENSIONS.ignore.includes(ext);
   });
   const indexedFiles = await Promise.all(
-    filesToIndex.map(async (path) => ({
-      name: basename(path, extname(path)),
-      path,
-      text: SEARCH_EXTENSIONS.index.includes(getExtension(path))
-        ? (await readFile(path)).toString()
-        : undefined,
-    }))
+    filesToIndex.map(async (path) => {
+      const name = basename(path, extname(path));
+
+      return {
+        name,
+        path,
+        text: SEARCH_EXTENSIONS.index.includes(getExtension(path))
+          ? `${name} ${(await readFile(path)).toString()}`
+          : name,
+      };
+    })
   );
   const dynamicIndex = window.lunr?.(function buildIndex() {
     this.ref("path");
