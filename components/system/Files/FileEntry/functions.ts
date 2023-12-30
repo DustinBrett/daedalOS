@@ -235,7 +235,7 @@ export const getCachedShortcut = (path: string): FileInfo =>
         string,
         Record<string, InternetShortcut>
       >
-    )[dirname(path)][basename(path)]
+    )?.[dirname(path)]?.[basename(path)]
   );
 
 export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
