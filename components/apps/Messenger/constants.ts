@@ -6,7 +6,6 @@ import {
 } from "utils/constants";
 
 export const BASE_RW_RELAYS = [
-  "wss://global.relay.red",
   "wss://nos.lol",
   "wss://nostr.mom",
   "wss://public.relaying.io",
