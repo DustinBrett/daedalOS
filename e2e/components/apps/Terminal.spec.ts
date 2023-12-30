@@ -148,9 +148,20 @@ test.describe("has file system access", () => {
   });
 
   test.describe("can find", () => {
-    test("file", async ({ page }) => {
+    test("existing file", async ({ page }) => {
       await sendToTerminal({ page }, "find credit");
       await terminalHasText({ page }, "/CREDITS.md");
+    });
+
+    test("new file", async ({ page }) => {
+      const testFile = "abc123.txt";
+
+      await sendToTerminal({ page }, `find ${testFile}`);
+      await terminalDoesNotHaveText({ page }, `/Users/Public/${testFile}`);
+
+      await sendToTerminal({ page }, `touch ${testFile}`);
+      await sendToTerminal({ page }, `find ${testFile}`);
+      await terminalHasText({ page }, `/Users/Public/${testFile}`);
     });
 
     test("folder", async ({ page }) => {
