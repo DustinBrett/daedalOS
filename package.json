@@ -46,6 +46,7 @@
     "ani-cursor": "^0.0.5",
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "butterchurn-presets": "^3.0.0-beta.4",
+    "decode-ico": "^0.4.1",
     "dompurify": "^3.0.6",
     "fflate": "^0.8.1",
     "file-type": "^18.7.0",

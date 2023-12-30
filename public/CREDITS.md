@@ -29,6 +29,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
 - [ini](https://github.com/npm/ini)
 - [ani-cursor](https://github.com/captbaritone/webamp/tree/master/packages/ani-cursor)
+- [decode-ico](https://github.com/LinusU/decode-ico)
 - [gif.js](https://github.com/jnordberg/gif.js)
 - [multiformats](https://github.com/multiformats/multiformats)
 - [file-type](https://github.com/sindresorhus/file-type)

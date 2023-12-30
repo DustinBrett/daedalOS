@@ -385,6 +385,30 @@ export const getFirstAniImage = async (
   return undefined;
 };
 
+export const getLargestIcon = async (
+  imageBuffer: Buffer,
+  maxSize: number
+): Promise<string> => {
+  try {
+    const { default: icoData } = await import("decode-ico");
+    const [icon] = icoData(imageBuffer)
+      .filter(({ width }) => width <= maxSize)
+      .sort((a, b) => b.width - a.width);
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d", {
+      desynchronized: true,
+    });
+
+    canvas.width = icon.width;
+    canvas.height = icon.height;
+    context?.putImageData(icon as unknown as ImageData, 0, 0);
+
+    return canvas.toDataURL();
+  } catch {
+    return "";
+  }
+};
+
 export const getInfoWithExtension = (
   fs: FSModule,
   path: string,
