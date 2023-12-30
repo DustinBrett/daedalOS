@@ -44,6 +44,7 @@ import shortcutCache from "public/.index/shortcutCache.json";
 import {
   blobToBase64,
   bufferToUrl,
+  cleanUpBufferUrl,
   decodeJxl,
   getExtension,
   getGifJs,
@@ -385,6 +386,49 @@ export const getFirstAniImage = async (
   return undefined;
 };
 
+export const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
+  const gif = await getGifJs();
+  const { parseAni } = await import("ani-cursor/dist/parser");
+  let images: Uint8Array[] = [];
+
+  try {
+    ({ images } = parseAni(aniBuffer));
+  } catch {
+    return aniBuffer;
+  }
+
+  await Promise.all(
+    images.map(
+      (image) =>
+        new Promise<void>((resolve) => {
+          const imageIcon = new Image();
+          const bufferUrl = bufferToUrl(Buffer.from(image));
+          gif.setOptions({ transparent: "" });
+          imageIcon.addEventListener(
+            "load",
+            () => {
+              gif.addFrame(imageIcon);
+              cleanUpBufferUrl(bufferUrl);
+              resolve();
+            },
+            ONE_TIME_PASSIVE_EVENT
+          );
+          imageIcon.src = bufferUrl;
+        })
+    )
+  );
+
+  return new Promise((resolve) => {
+    gif
+      .on("finished", (blob) =>
+        blob
+          .arrayBuffer()
+          .then((arrayBuffer) => resolve(Buffer.from(arrayBuffer)))
+      )
+      .render();
+  });
+};
+
 export const getLargestIcon = async (
   imageBuffer: Buffer,
   maxSize: number
@@ -581,11 +625,27 @@ export const getInfoWithExtension = (
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
-            const firstImage = await getFirstAniImage(contents);
+            let icon = "";
 
-            if (firstImage && !signal.aborted) {
-              getInfoByFileExtension(imageToBufferUrl(path, firstImage));
+            try {
+              const animatedIcon = await aniToGif(contents);
+
+              if (animatedIcon && !signal.aborted) {
+                icon = imageToBufferUrl(path, animatedIcon);
+              }
+            } catch {
+              // Ignore failure to convert
             }
+
+            if (!icon && !signal.aborted) {
+              const firstImage = await getFirstAniImage(contents);
+
+              if (firstImage && !signal.aborted) {
+                icon = imageToBufferUrl(path, firstImage);
+              }
+            }
+
+            if (icon) getInfoByFileExtension(icon);
           }
         })
       );

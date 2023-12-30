@@ -166,7 +166,7 @@ export const imageToBufferUrl = (
   return extension === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/${
-        extension === ".gif" ? "gif" : "png"
+        extension === ".ani" || extension === ".gif" ? "gif" : "png"
       };base64,${buffer.toString("base64")}`;
 };
 

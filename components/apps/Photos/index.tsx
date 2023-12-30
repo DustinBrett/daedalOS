@@ -19,66 +19,20 @@ import Button from "styles/common/Button";
 import {
   HIGH_PRIORITY_ELEMENT,
   IMAGE_FILE_EXTENSIONS,
-  ONE_TIME_PASSIVE_EVENT,
   TIFF_IMAGE_FORMATS,
 } from "utils/constants";
 import {
-  bufferToUrl,
-  cleanUpBufferUrl,
   decodeJxl,
   getExtension,
-  getGifJs,
   haltEvent,
   hasJxlSupport,
   imageToBufferUrl,
   imgDataToBuffer,
   label,
 } from "utils/functions";
+import { aniToGif } from "components/system/Files/FileEntry/functions";
 
 const { maxScale, minScale } = panZoomConfig;
-
-const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
-  const gif = await getGifJs();
-  const { parseAni } = await import("ani-cursor/dist/parser");
-  let images: Uint8Array[] = [];
-
-  try {
-    ({ images } = parseAni(aniBuffer));
-  } catch {
-    return aniBuffer;
-  }
-
-  await Promise.all(
-    images.map(
-      (image) =>
-        new Promise<void>((resolve) => {
-          const imageIcon = new Image();
-          const bufferUrl = bufferToUrl(Buffer.from(image));
-
-          imageIcon.addEventListener(
-            "load",
-            () => {
-              gif.addFrame(imageIcon);
-              cleanUpBufferUrl(bufferUrl);
-              resolve();
-            },
-            ONE_TIME_PASSIVE_EVENT
-          );
-          imageIcon.src = bufferUrl;
-        })
-    )
-  );
-
-  return new Promise((resolve) => {
-    gif
-      .on("finished", (blob) =>
-        blob
-          .arrayBuffer()
-          .then((arrayBuffer) => resolve(Buffer.from(arrayBuffer)))
-      )
-      .render();
-  });
-};
 
 const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { processes: { [id]: process } = {}, url: setUrl } = useProcesses();
