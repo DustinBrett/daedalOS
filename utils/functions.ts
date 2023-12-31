@@ -597,6 +597,7 @@ export const updateIconPositions = (
 
 export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
   if (!(canvas instanceof HTMLCanvasElement)) return false;
+  if (canvas.width === 0 || canvas.height === 0) return false;
 
   const { data: pixels = [] } =
     canvas
