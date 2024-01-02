@@ -77,6 +77,7 @@ const useWallpaper = (
       const { matches: prefersReducedMotion } = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       );
+      const isTopWindow = window === window.top;
 
       if (wallpaperName === "VANTA") {
         config = {
@@ -85,11 +86,17 @@ const useWallpaper = (
             vantaConfig.waveSpeed *
             (prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1),
         };
-        vantaConfig.material.options.wireframe = vantaWireframe;
+        vantaConfig.material.options.wireframe = vantaWireframe || !isTopWindow;
       } else if (wallpaperImage.startsWith("MATRIX")) {
         config = {
           animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
           volumetric: wallpaperImage.endsWith("3D"),
+          ...(isTopWindow
+            ? {}
+            : {
+                fallSpeed: -0.09,
+                forwardSpeed: -0.25,
+              }),
         };
       } else if (wallpaperName === "STABLE_DIFFUSION") {
         const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
@@ -371,6 +378,13 @@ const useWallpaper = (
               colors.background
             }`
           );
+
+          if (window !== window.top) {
+            document.documentElement.style.setProperty(
+              "background-blend-mode",
+              "luminosity"
+            );
+          }
         };
 
         if (fallbackBackground) {
