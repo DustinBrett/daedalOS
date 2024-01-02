@@ -369,20 +369,21 @@ const useWallpaper = (
         const applyWallpaper = (url: string): void => {
           const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
           const positionSize = bgPositionSize[newWallpaperFit];
+          const isTopWindow = window === window.top;
 
           document.documentElement.style.setProperty(
             "background",
             `url(${CSS.escape(
               url
             )}) ${positionSize} ${repeat} fixed border-box border-box ${
-              colors.background
+              isTopWindow ? colors.background : colors.text
             }`
           );
 
-          if (window !== window.top) {
+          if (!isTopWindow) {
             document.documentElement.style.setProperty(
               "background-blend-mode",
-              "luminosity"
+              "difference"
             );
           }
         };
@@ -411,7 +412,7 @@ const useWallpaper = (
       loadWallpaper();
     }
   }, [
-    colors.background,
+    colors,
     desktopRef,
     exists,
     getAllImages,
