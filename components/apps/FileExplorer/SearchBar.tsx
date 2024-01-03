@@ -10,7 +10,12 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { preloadLibs } from "utils/functions";
-import { SEARCH_INPUT_PROPS, SEARCH_LIBS, useSearch } from "utils/search";
+import {
+  FILE_INDEX,
+  SEARCH_INPUT_PROPS,
+  SEARCH_LIB,
+  useSearch,
+} from "utils/search";
 
 type SearchBarProps = {
   id: string;
@@ -95,7 +100,7 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
           hasUsedSearch.current = true;
           setSearchTerm(target.value);
         }}
-        onFocus={() => preloadLibs(SEARCH_LIBS)}
+        onFocus={() => preloadLibs([SEARCH_LIB, FILE_INDEX])}
         placeholder="Search"
         {...SEARCH_INPUT_PROPS}
       />

@@ -48,8 +48,13 @@ import {
   TRANSITIONS_IN_SECONDS,
   VIDEOS_FOLDER,
 } from "utils/constants";
-import { haltEvent, label } from "utils/functions";
-import { SEARCH_INPUT_PROPS, useSearch } from "utils/search";
+import { haltEvent, label, preloadLibs } from "utils/functions";
+import {
+  FILE_INDEX,
+  SEARCH_INPUT_PROPS,
+  SEARCH_LIB,
+  useSearch,
+} from "utils/search";
 
 type SearchProps = {
   toggleSearch: (showMenu?: boolean) => void;
@@ -163,6 +168,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     [open, toggleSearch]
   );
   const searchTimeoutRef = useRef(0);
+  const preloadedSearch = useRef(false);
 
   useEffect(() => {
     if (
@@ -453,6 +459,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               );
             }}
             onKeyDown={({ key }) => {
+              if (!preloadedSearch.current) {
+                preloadedSearch.current = true;
+                preloadLibs([SEARCH_LIB, FILE_INDEX]);
+              }
+
               if (key === "Enter" && firstResult?.ref) {
                 const bestMatchElement = menuRef.current?.querySelector(
                   ".list li:first-child figure"

@@ -9,7 +9,9 @@ import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import { HIGH_PRIORITY_REQUEST } from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 
-const FILE_INDEX = "/.index/search.lunr.json";
+export const FILE_INDEX = "/.index/search.lunr.json";
+
+export const SEARCH_LIB = "/System/lunr/lunr.min.js";
 
 export const SEARCH_INPUT_PROPS = {
   autoComplete: "off",
@@ -23,8 +25,6 @@ export const SEARCH_INPUT_PROPS = {
   HTMLInputElement
 >;
 
-export const SEARCH_LIBS = ["/System/lunr/lunr.min.js"];
-
 let baseIndex = Object.create(null) as Index;
 let basePaths = [] as string[];
 
@@ -36,7 +36,7 @@ const search = async (
   searchTerm: string,
   index?: Index
 ): Promise<Index.Result[]> => {
-  if (!window.lunr) await loadFiles(SEARCH_LIBS);
+  if (!window.lunr) await loadFiles([SEARCH_LIB]);
   if (!index && !baseIndex?.search) {
     const response = await fetch(FILE_INDEX, HIGH_PRIORITY_REQUEST);
 
@@ -153,7 +153,7 @@ export const useSearch = (searchTerm: string): Index.Result[] => {
   useEffect(() => {
     const updateResults = async (): Promise<void> => {
       if (searchTerm.length > 0) {
-        if (!window.lunr) await loadFiles(SEARCH_LIBS);
+        if (!window.lunr) await loadFiles([SEARCH_LIB]);
 
         search(searchTerm).then(setResults);
         buildDynamicIndex(readFile, rootFs).then((dynamicIndex) =>
