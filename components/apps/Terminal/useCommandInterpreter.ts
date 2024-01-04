@@ -193,16 +193,28 @@ const useCommandInterpreter = (
 
           if (directory && lcBaseCommand !== "pwd") {
             const fullPath = await getFullPath(directory);
+            const checkNewPath = async (newPath: string): Promise<void> => {
+              if (!(await lstat(newPath)).isDirectory()) {
+                localEcho?.println("The directory name is invalid.");
+              } else if (cd.current !== newPath && localEcho) {
+                // eslint-disable-next-line no-param-reassign
+                cd.current = newPath;
+              }
+            };
 
             if (await exists(fullPath)) {
-              if (!(await lstat(fullPath)).isDirectory()) {
-                localEcho?.println("The directory name is invalid.");
-              } else if (cd.current !== fullPath && localEcho) {
-                // eslint-disable-next-line no-param-reassign
-                cd.current = fullPath;
-              }
+              await checkNewPath(fullPath);
             } else {
-              localEcho?.println(PATH_NOT_FOUND);
+              const lcEntry = (await readdir(cd.current)).find(
+                (entry) =>
+                  entry.toLowerCase() === basename(fullPath).toLowerCase()
+              );
+
+              if (lcEntry) {
+                await checkNewPath(join(cd.current, lcEntry));
+              } else {
+                localEcho?.println(PATH_NOT_FOUND);
+              }
             }
           } else {
             localEcho?.println(cd.current);
