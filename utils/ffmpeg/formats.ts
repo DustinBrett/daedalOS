@@ -21,6 +21,7 @@ export const VIDEO_DECODE_FORMATS = new Set([
   ".mov",
   ".mp4",
   ".mpeg",
+  ".mpg",
   ".ogv",
   ".webm",
   ".wmv",
