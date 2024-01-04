@@ -1,7 +1,7 @@
 import { type ITerminalOptions } from "xterm";
 import processDirectory from "contexts/process/directory";
 
-export const config: ITerminalOptions = {
+export const config: ITerminalOptions & { cols: number; rows: number } = {
   allowTransparency: true,
   cols: 70,
   cursorBlink: true,

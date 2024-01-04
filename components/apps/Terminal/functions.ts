@@ -93,7 +93,7 @@ export const aliases: Record<string, string[]> = {
   tasklist: ["ps"],
   type: ["cat"],
   ver: ["version"],
-  wapm: ["wax"],
+  wapm: ["wasmer", "wax"],
   weather: ["wttr"],
 };
 

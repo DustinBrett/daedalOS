@@ -949,6 +949,7 @@ const useCommandInterpreter = (
           localEcho?.println(displayVersion());
           break;
         case "wapm":
+        case "wasmer":
         case "wax": {
           if (!localEcho) break;
 
