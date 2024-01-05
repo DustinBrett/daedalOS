@@ -1046,7 +1046,11 @@ const useCommandInterpreter = (
 
                 if (extCommand) {
                   await commandInterpreter(
-                    `${extCommand} ${baseCommand}${
+                    `${extCommand} ${
+                      baseCommand.includes(" ")
+                        ? `"${baseCommand}"`
+                        : baseCommand
+                    }${
                       commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
                     }`
                   );
