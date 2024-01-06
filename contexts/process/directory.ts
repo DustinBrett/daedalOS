@@ -314,6 +314,7 @@ const directory: Processes = {
       "/Program Files/Xterm.js/xterm-addon-fit.js",
       "/Program Files/Xterm.js/local-echo.js",
     ],
+    preferProcessIcon: true,
     title: "Terminal",
   },
   TinyMCE: {
@@ -357,6 +358,7 @@ const directory: Processes = {
     dependantLibs: ["/Program Files/Virtual x86/v86.wasm"],
     icon: "/System/Icons/v86.webp",
     libs: ["/Program Files/Virtual x86/libv86.js"],
+    preferProcessIcon: true,
     title: "Virtual x86",
   },
   VideoPlayer: {
