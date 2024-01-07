@@ -169,6 +169,12 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   );
   const searchTimeoutRef = useRef(0);
   const preloadedSearch = useRef(false);
+  const preloadSearch = useCallback(() => {
+    if (!preloadedSearch.current) {
+      preloadedSearch.current = true;
+      preloadLibs([SEARCH_LIB, FILE_INDEX]);
+    }
+  }, []);
 
   useEffect(() => {
     if (
@@ -458,11 +464,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 searchTimeoutRef.current > 0 ? KEYPRESS_DEBOUNCE_MS : 0
               );
             }}
+            onClick={preloadedSearch.current ? undefined : preloadSearch}
             onKeyDown={({ key }) => {
-              if (!preloadedSearch.current) {
-                preloadedSearch.current = true;
-                preloadLibs([SEARCH_LIB, FILE_INDEX]);
-              }
+              preloadSearch();
 
               if (key === "Enter" && firstResult?.ref) {
                 const bestMatchElement = menuRef.current?.querySelector(
