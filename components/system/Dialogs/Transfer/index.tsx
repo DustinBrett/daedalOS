@@ -1,5 +1,6 @@
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
@@ -109,6 +110,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
         : fileReaders?.length || Number.POSITIVE_INFINITY,
     [fileReaders]
   );
+  const closeOnEscape = useCloseOnEscape(id);
 
   useEffect(() => {
     if (!processing.current) {
@@ -167,7 +169,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledTransfer onContextMenu={haltEvent}>
+    <StyledTransfer onContextMenu={haltEvent} {...closeOnEscape}>
       <h1>
         {name
           ? `${actionName} '${

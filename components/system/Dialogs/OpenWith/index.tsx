@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
@@ -8,7 +9,7 @@ import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
+import { PREVENT_SCROLL, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
 
 const INCLUDED_PROCESSES = new Set([
@@ -90,6 +91,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
     },
     [runApp]
   );
+  const closeOnEscape = useCloseOnEscape(id);
 
   useEffect(() => {
     const isForeground = foregroundId === id;
@@ -107,13 +109,17 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   }, [closeOnBlur, closeWithTransition, foregroundId, id, setForegroundId]);
 
   return (
-    <StyledOpenWith onContextMenu={haltEvent}>
+    <StyledOpenWith
+      ref={(element) => element?.focus(PREVENT_SCROLL)}
+      onContextMenu={haltEvent}
+      {...closeOnEscape}
+    >
       <h2>How do you want to open this file?</h2>
       <div>
         {primaryTitle && primaryIcon && (
           <>
             <h4>Keep using this app</h4>
-            <StyledOpenWithList>
+            <StyledOpenWithList {...closeOnEscape}>
               <OpenWithEntry
                 key={primaryTitle}
                 icon={primaryIcon}
