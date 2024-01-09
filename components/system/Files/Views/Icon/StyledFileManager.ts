@@ -16,7 +16,8 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   grid-template-rows: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryHeight})`};
   height: 100%;
-  overflow: ${({ $scrollable }) => ($scrollable ? undefined : "hidden")};
+  overflow: ${({ $isEmptyFolder, $scrollable }) =>
+    !$isEmptyFolder && $scrollable ? undefined : "hidden"};
   padding: ${({ theme }) => theme.sizes.fileManager.padding};
   place-content: flex-start;
   pointer-events: ${({ $selecting }) => ($selecting ? "auto" : undefined)};

@@ -9,6 +9,7 @@ const StyledStatusBar = styled.footer`
   font-weight: 200;
   height: ${({ theme }) => theme.sizes.fileExplorer.statusBarHeight};
   padding: 0 5px;
+  position: relative;
   white-space: nowrap;
   width: 100%;
 

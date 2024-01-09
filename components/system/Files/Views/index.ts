@@ -10,6 +10,7 @@ export type StyledFileEntryProps = {
 };
 
 export type StyledFileManagerProps = {
+  $isEmptyFolder: boolean;
   $scrollable: boolean;
   $selecting?: boolean;
 };

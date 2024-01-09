@@ -1,6 +1,7 @@
 import { basename, join } from "path";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import StyledEmpty from "components/system/Files/FileManager/StyledEmpty";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -115,6 +116,13 @@ const FileManager: FC<FileManagerProps> = ({
     () => (renaming === "" ? keyShortcuts() : undefined),
     [keyShortcuts, renaming]
   );
+  const fileKeys = useMemo(() => Object.keys(files), [files]);
+  const isEmptyFolder =
+    !isDesktop &&
+    !isStartMenu &&
+    !loading &&
+    view === "icon" &&
+    fileKeys.length === 0;
 
   useEffect(() => {
     if (
@@ -187,58 +195,62 @@ const FileManager: FC<FileManagerProps> = ({
       {loading ? (
         <StyledLoading />
       ) : (
-        <StyledFileManager
-          ref={fileManagerRef}
-          $scrollable={!hideScrolling}
-          onKeyDown={onKeyDown}
-          {...(readOnly
-            ? { onContextMenu: haltEvent }
-            : {
-                $selecting: isSelecting,
-                ...fileDrop,
-                ...folderContextMenu,
-                ...selectionEvents,
-              })}
-          {...FOCUSABLE_ELEMENT}
-        >
-          {isSelecting && <StyledSelection style={selectionStyling} />}
-          {Object.keys(files).map((file) => (
-            <StyledFileEntry
-              key={file}
-              $selecting={isSelecting}
-              $visible={!isLoading}
-              {...(!readOnly && draggableEntry(url, file, renaming === file))}
-              {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
-              {...focusableEntry(file)}
-            >
-              <FileEntry
-                fileActions={fileActions}
-                fileManagerId={id}
-                fileManagerRef={fileManagerRef}
-                focusFunctions={focusFunctions}
-                focusedEntries={focusedEntries}
-                hasNewFolderIcon={isStartMenu}
-                hideShortcutIcon={hideShortcutIcons}
-                isDesktop={isDesktop}
-                isHeading={isDesktop && files[file].systemShortcut}
-                isLoadingFileManager={isLoading}
-                loadIconImmediately={loadIconsImmediately}
-                name={basename(file, SHORTCUT_EXTENSION)}
-                path={join(url, file)}
-                readOnly={readOnly}
-                renaming={renaming === file}
-                selectionRect={selectionRect}
-                setRenaming={setRenaming}
-                stats={files[file]}
-                view={view}
-              />
-            </StyledFileEntry>
-          ))}
-        </StyledFileManager>
+        <>
+          {isEmptyFolder && <StyledEmpty />}
+          <StyledFileManager
+            ref={fileManagerRef}
+            $isEmptyFolder={isEmptyFolder}
+            $scrollable={!hideScrolling}
+            onKeyDown={onKeyDown}
+            {...(readOnly
+              ? { onContextMenu: haltEvent }
+              : {
+                  $selecting: isSelecting,
+                  ...fileDrop,
+                  ...folderContextMenu,
+                  ...selectionEvents,
+                })}
+            {...FOCUSABLE_ELEMENT}
+          >
+            {isSelecting && <StyledSelection style={selectionStyling} />}
+            {fileKeys.map((file) => (
+              <StyledFileEntry
+                key={file}
+                $selecting={isSelecting}
+                $visible={!isLoading}
+                {...(!readOnly && draggableEntry(url, file, renaming === file))}
+                {...(renaming === "" && { onKeyDown: keyShortcuts(file) })}
+                {...focusableEntry(file)}
+              >
+                <FileEntry
+                  fileActions={fileActions}
+                  fileManagerId={id}
+                  fileManagerRef={fileManagerRef}
+                  focusFunctions={focusFunctions}
+                  focusedEntries={focusedEntries}
+                  hasNewFolderIcon={isStartMenu}
+                  hideShortcutIcon={hideShortcutIcons}
+                  isDesktop={isDesktop}
+                  isHeading={isDesktop && files[file].systemShortcut}
+                  isLoadingFileManager={isLoading}
+                  loadIconImmediately={loadIconsImmediately}
+                  name={basename(file, SHORTCUT_EXTENSION)}
+                  path={join(url, file)}
+                  readOnly={readOnly}
+                  renaming={renaming === file}
+                  selectionRect={selectionRect}
+                  setRenaming={setRenaming}
+                  stats={files[file]}
+                  view={view}
+                />
+              </StyledFileEntry>
+            ))}
+          </StyledFileManager>
+        </>
       )}
       {showStatusBar && (
         <StatusBar
-          count={loading ? 0 : Object.keys(files).length}
+          count={loading ? 0 : fileKeys.length}
           directory={url}
           fileDrop={fileDrop}
           selected={focusedEntries}
