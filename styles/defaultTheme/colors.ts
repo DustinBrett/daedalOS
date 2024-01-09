@@ -19,10 +19,11 @@ const colors = {
       0 2px 2px rgba(0, 0, 0, 50%)`,
   },
   highlight: "hsla(207, 100%, 72%, 90%)",
-  highlightBackground: "hsla(207, 100%, 72%, 20%)",
   progress: "hsla(113, 78%, 56%, 90%)",
   progressBackground: "hsla(104, 22%, 45%, 70%)",
   progressBarRgb: "rgb(6, 176, 37)",
+  selectionHighlight: "hsla(207, 100%, 45%, 90%)",
+  selectionHighlightBackground: "hsla(207, 100%, 45%, 30%)",
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",
     activeForeground: "hsla(0, 0%, 40%, 70%)",
