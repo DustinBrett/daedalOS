@@ -28,6 +28,11 @@ const StyledFileEntry = styled.li`
       width: 8px;
     }
 
+    picture,
+    svg {
+      transition: margin 0.25s ease-out;
+    }
+
     &:active {
       figcaption {
         letter-spacing: -0.15px;
@@ -40,6 +45,11 @@ const StyledFileEntry = styled.li`
 
       svg {
         margin-right: 12px;
+      }
+
+      picture,
+      svg {
+        transition: none;
       }
     }
 

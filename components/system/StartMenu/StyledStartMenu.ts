@@ -57,16 +57,22 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       margin: 0;
       overflow: hidden;
       padding: 0;
+      scrollbar-gutter: auto;
 
       figure {
         picture {
-          margin-left: 9px;
+          margin-left: 11px;
         }
 
         &:active {
           picture {
-            margin-left: 13px;
+            margin-left: 15px;
           }
+        }
+
+        picture,
+        svg {
+          transition: none;
         }
       }
     }
@@ -79,6 +85,10 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       ${ThinScrollBars};
       padding-right: ${({ $showScrolling }) =>
         $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
+
+      ${StyledFileManager} {
+        padding-right: 0;
+      }
 
       @supports not selector(::-webkit-scrollbar) {
         padding-right: 5px;
