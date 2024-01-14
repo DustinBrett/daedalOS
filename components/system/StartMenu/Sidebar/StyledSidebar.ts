@@ -5,7 +5,6 @@ const StyledSidebar = styled.nav`
   flex-direction: column;
   height: 100%;
   justify-content: space-between;
-  margin-right: 7px;
   overflow: hidden;
   padding-top: 4px;
   position: absolute;
