@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   CLOSE,
   MAXIMIZE,
@@ -16,6 +16,7 @@ import {
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
 import { MENU_SEPERATOR } from "utils/constants";
+import { useSession } from "contexts/session";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();
@@ -23,13 +24,19 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const {
     processes: { [id]: process },
   } = useProcesses();
+  const { setForegroundId } = useSession();
   const {
     allowResizing = true,
+    componentWindow,
     hideMaximizeButton,
     hideMinimizeButton,
     maximized,
     minimized,
   } = process || {};
+  const focusWindow = useCallback((): void => {
+    setForegroundId(id);
+    componentWindow?.focus();
+  }, [componentWindow, id, setForegroundId]);
 
   return useMemo(
     () =>
@@ -39,7 +46,12 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
 
         return [
           showMaxOrMin && {
-            action: minimized ? onMinimize : onMaximize,
+            action: () => {
+              if (minimized) onMinimize();
+              else onMaximize();
+
+              focusWindow();
+            },
             disabled: !isMaxOrMin,
             icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
             label: "Restore",
@@ -51,7 +63,10 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
             label: "Minimize",
           },
           !hideMaximizeButton && {
-            action: onMaximize,
+            action: () => {
+              onMaximize();
+              focusWindow();
+            },
             disabled: isMaxOrMin || !allowResizing,
             icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
             label: "Maximize",
@@ -67,6 +82,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     [
       allowResizing,
       contextMenu,
+      focusWindow,
       hideMaximizeButton,
       hideMinimizeButton,
       maximized,
