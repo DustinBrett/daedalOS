@@ -8,7 +8,7 @@ import { useSession } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
-import { haltEvent, toggleShowDesktop } from "utils/functions";
+import { haltEvent, toggleShowDesktop, viewHeight } from "utils/functions";
 
 declare global {
   interface Window {
@@ -21,12 +21,10 @@ declare global {
   }
 }
 
-const openByTitle = (title: string): void =>
-  (
-    document.querySelector(
-      `main > nav > div[title='${title}']`
-    ) as HTMLButtonElement
-  )?.click();
+const getByTitle = (title: string): HTMLButtonElement | null =>
+  document.querySelector(
+    `main > nav > div[title='${title}']`
+  ) as HTMLButtonElement;
 
 let metaDown = false;
 let metaComboUsed = false;
@@ -45,7 +43,7 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
   return false;
 };
 
-const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R", "S"]);
+const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R", "S", "X"]);
 
 const updateKeyStates = (event: KeyboardEvent): void => {
   const { altKey, ctrlKey, shiftKey, metaKey } = event;
@@ -61,12 +59,19 @@ const useGlobalKeyboardShortcuts = (): void => {
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
-    ESCAPE: () => openByTitle(START_BUTTON_TITLE),
+    ESCAPE: () => getByTitle(START_BUTTON_TITLE)?.click(),
     F10: () => open("Terminal"),
     F12: () => open("DevTools"),
     F5: () => window.location.reload(),
     R: () => open("Run"),
-    S: () => openByTitle(SEARCH_BUTTON_TITLE),
+    S: () => getByTitle(SEARCH_BUTTON_TITLE)?.click(),
+    X: () =>
+      getByTitle(START_BUTTON_TITLE)?.dispatchEvent(
+        new MouseEvent("contextmenu", {
+          clientX: 1,
+          clientY: viewHeight() - 1,
+        })
+      ),
   });
 
   useEffect(() => {
@@ -129,7 +134,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
-        else openByTitle(START_BUTTON_TITLE);
+        else getByTitle(START_BUTTON_TITLE)?.click();
       }
     };
 
