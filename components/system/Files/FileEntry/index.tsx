@@ -99,7 +99,8 @@ const truncateName = (
   name: string,
   fontSize: string,
   fontFamily: string,
-  maxWidth: number
+  maxWidth: number,
+  alwaysShowPossibleLines = false
 ): string => {
   const nonBreakingName = name.replace(/-/g, NON_BREAKING_HYPHEN);
   const { lines } = getTextWrapData(
@@ -110,9 +111,12 @@ const truncateName = (
   );
 
   if (lines.length > 2) {
-    const text = name.includes(" ") ? lines.slice(0, 2).join("") : lines[0];
+    const text =
+      alwaysShowPossibleLines || name.includes(" ")
+        ? lines.slice(0, 2).join("")
+        : lines[0];
 
-    return `${text.slice(0, -3)}...`;
+    return `${text.slice(0, -3).trim()}...`;
   }
 
   return nonBreakingName;
@@ -210,9 +214,10 @@ const FileEntry: FC<FileEntryProps> = ({
         formats.systemFont,
         sizes.fileEntry[
           listView ? "maxListTextDisplayWidth" : "maxIconTextDisplayWidth"
-        ]
+        ],
+        !isDesktop
       ),
-    [formats.systemFont, listView, name, sizes.fileEntry]
+    [formats.systemFont, isDesktop, listView, name, sizes.fileEntry]
   );
   const iconRef = useRef<HTMLImageElement | null>(null);
   const isIconCached = useRef(false);

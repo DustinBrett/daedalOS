@@ -6,6 +6,7 @@ import { type IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
   $selecting?: boolean;
+  $shadows?: boolean;
   $visible?: boolean;
 };
 

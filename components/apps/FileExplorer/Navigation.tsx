@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useRef } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -16,11 +16,14 @@ import useHistory from "hooks/useHistory";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
+import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
 
 type NavigationProps = {
   hideSearch: boolean;
   id: string;
 };
+
+const CONTEXT_MENU_OFFSET = 3;
 
 const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
   ({ hideSearch, id }, inputRef) => {
@@ -48,9 +51,11 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
         ),
       [contextMenu, history, moveHistory, position]
     );
+    const navRef = useRef<HTMLElement | null>(null);
 
     return (
       <StyledNavigation
+        ref={navRef}
         {...useTitlebarContextMenu(id)}
         onDragOver={haltEvent}
         onDrop={haltEvent}
@@ -79,7 +84,24 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
         </Button>
         <Button
           disabled={history.length === 1}
-          onClick={onContextMenuCapture}
+          onClick={(event) => {
+            event.preventDefault();
+
+            const {
+              height = 0,
+              y = 0,
+              x = 0,
+            } = navRef.current?.getBoundingClientRect() || {};
+
+            onContextMenuCapture(
+              x && y && height
+                ? ({
+                    pageX: x,
+                    pageY: y + height - CONTEXT_MENU_OFFSET,
+                  } as CaptureTriggerEvent)
+                : event
+            );
+          }}
           {...label("Recent locations")}
         >
           <Down />
