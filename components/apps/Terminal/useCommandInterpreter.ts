@@ -67,6 +67,7 @@ import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
+import { analyzeFileToText } from "utils/mediainfo";
 
 const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";
@@ -608,6 +609,25 @@ const useCommandInterpreter = (
           }
           break;
         }
+        case "mediainfo":
+          {
+            const [commandPath] = commandArgs;
+
+            if (commandPath) {
+              const fullPath = await getFullPath(commandPath);
+
+              if (await exists(fullPath)) {
+                try {
+                  localEcho?.println(
+                    await analyzeFileToText(await readFile(fullPath))
+                  );
+                } catch {
+                  localEcho?.println("Failed to parse media file");
+                }
+              }
+            }
+          }
+          break;
         case "mount":
           if (localEcho) {
             if (isFileSystemMappingSupported()) {

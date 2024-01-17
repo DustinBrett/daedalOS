@@ -49,6 +49,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [fix-webm-duration](https://github.com/yusitnikov/fix-webm-duration)
 - [UAParser.js](https://github.com/faisalman/ua-parser-js)
 - [Web Stable Diffusion](https://github.com/mlc-ai/web-stable-diffusion)
+- [mediainfo.js]([text](https://github.com/buzz/mediainfo.js))
 
 ## App Libraries
 

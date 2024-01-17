@@ -46,6 +46,7 @@ export const commands: Record<string, string> = {
   ipconfig: "Displays current IP.",
   license: "Displays license.",
   md: "Creates a directory.",
+  mediainfo: "Displays relevant technical data about media files.",
   mount: "Mounts a local file system directory.",
   move: "Moves file or directory.",
   neofetch: "Displays system information.",

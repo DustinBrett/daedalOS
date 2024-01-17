@@ -55,6 +55,7 @@
     "idb": "^8.0.0",
     "ini": "^4.1.1",
     "isomorphic-git": "^1.25.3",
+    "mediainfo.js": "^0.2.1",
     "minimist": "^1.2.8",
     "multiformats": "^13.0.1",
     "music-metadata-browser": "^2.5.10",
