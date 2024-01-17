@@ -79,8 +79,8 @@ export const toggleShowDesktop = (
   });
 
   if (restoreWindows) {
-    requestAnimationFrame(
-      () => processes[stackOrder[0]]?.componentWindow?.focus()
+    requestAnimationFrame(() =>
+      processes[stackOrder[0]]?.componentWindow?.focus()
     );
   }
 };

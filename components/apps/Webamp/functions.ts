@@ -205,8 +205,8 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
         unsubscribe();
 
         webamp.store.subscribe(() => {
-          const webampDesktop = [...document.body.children].find(
-            (node) => node.classList?.contains("webamp-desktop")
+          const webampDesktop = [...document.body.children].find((node) =>
+            node.classList?.contains("webamp-desktop")
           );
 
           if (webampDesktop) {

@@ -236,8 +236,9 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
             const dbName =
               fsName ||
-              `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${emscriptenFS
-                ._FS?.DB_STORE_NAME}`;
+              `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${
+                emscriptenFS._FS?.DB_STORE_NAME
+              }`;
 
             try {
               rootFs?.mount?.(join("/", dbName), newFs);

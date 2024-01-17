@@ -11,9 +11,8 @@ const useIFrameFocuser = (): void => {
     const focusIframeWindow = (): void => {
       if (document.activeElement instanceof HTMLIFrameElement) {
         const [id] =
-          Object.entries(processesRef.current).find(
-            ([, { componentWindow }]) =>
-              componentWindow?.contains(document.activeElement)
+          Object.entries(processesRef.current).find(([, { componentWindow }]) =>
+            componentWindow?.contains(document.activeElement)
           ) || [];
 
         if (id) {

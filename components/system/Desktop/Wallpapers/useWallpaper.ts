@@ -184,8 +184,8 @@ const useWallpaper = (
         }
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         WALLPAPER_PATHS[wallpaperName]()
-          .then(
-            ({ default: wallpaper }) => wallpaper?.(desktopRef.current, config)
+          .then(({ default: wallpaper }) =>
+            wallpaper?.(desktopRef.current, config)
           )
           .catch(() => setWallpaper("VANTA"));
       } else {
