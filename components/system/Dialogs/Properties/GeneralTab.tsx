@@ -89,7 +89,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
 
   return (
     <>
-      <table>
+      <table className="general">
         <tbody>
           <tr className="header">
             <th scope="row">

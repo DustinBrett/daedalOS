@@ -1,5 +1,7 @@
 import { basename, extname } from "path";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { type MediaType } from "mediainfo.js";
+import dynamic from "next/dynamic";
 import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import GeneralTab from "components/system/Dialogs/Properties/GeneralTab";
@@ -10,6 +12,18 @@ import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useProcesses } from "contexts/process";
 import { haltEvent } from "utils/functions";
+
+const DetailsTab = dynamic(
+  () => import("components/system/Dialogs/Properties/DetailsTab")
+);
+
+const MEDIA_APPS = new Set([
+  "PDF",
+  "Photos",
+  "Ruffle",
+  "VideoPlayer",
+  "Webamp",
+]);
 
 const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const { icon: setIcon, processes: { [id]: process } = {} } = useProcesses();
@@ -24,6 +38,13 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const getIconAbortController = useRef<AbortController>();
   const propertiesRef = useRef<HTMLDivElement>(null);
   const closeOnEscape = useCloseOnEscape(id);
+  const [currentTab, setCurrentTab] = useState<"general" | "details">(
+    "general"
+  );
+  const isShortcut = Boolean(process?.shortcutPath);
+  const fileData = useRef<MediaType | undefined>();
+  const onGeneral = currentTab === "general";
+  const onDetails = currentTab === "details";
 
   useEffect(() => {
     setIcon(id, icon);
@@ -74,15 +95,31 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       {...closeOnEscape}
     >
       <nav className="tabs">
-        <StyledButton>General</StyledButton>
+        <StyledButton
+          className={onGeneral ? undefined : "inactive"}
+          onClick={onGeneral ? undefined : () => setCurrentTab("general")}
+        >
+          General
+        </StyledButton>
+        {MEDIA_APPS.has(pid) && !isShortcut && (
+          <StyledButton
+            className={onDetails ? undefined : "inactive"}
+            onClick={onDetails ? undefined : () => setCurrentTab("details")}
+          >
+            Details
+          </StyledButton>
+        )}
       </nav>
-      <GeneralTab
-        icon={icon}
-        id={id}
-        isShortcut={Boolean(process?.shortcutPath)}
-        pid={pid}
-        url={generalUrl}
-      />
+      {onGeneral && (
+        <GeneralTab
+          icon={icon}
+          id={id}
+          isShortcut={isShortcut}
+          pid={pid}
+          url={generalUrl}
+        />
+      )}
+      {onDetails && <DetailsTab fileDataRef={fileData} id={id} url={url} />}
     </StyledProperties>
   );
 };

@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledProperties = styled.div`
   padding: 0 8px 0 6px;
 
-  table {
+  table.general {
     background-color: #fff;
     border: 1px solid rgb(217, 217, 217);
     height: calc(100% - 36px - 28px);
@@ -82,11 +82,28 @@ const StyledProperties = styled.div`
         border: 1px solid rgb(217, 217, 217);
         border-bottom-width: 0;
         display: flex;
-        font-size: 11px;
+        font-size: 11.5px;
         height: 21px;
+        line-height: 21px;
         padding: 1px 7px;
         place-content: center;
         width: auto;
+        z-index: 2;
+
+        &.inactive {
+          background-color: rgb(240, 240, 240);
+          border-bottom: 1px solid rgb(217, 217, 217);
+          height: 19px;
+          left: -1px;
+          line-height: 18px;
+          position: relative;
+          top: 2px;
+          z-index: 1;
+
+          &:first-child {
+            left: 2px;
+          }
+        }
       }
     }
 
