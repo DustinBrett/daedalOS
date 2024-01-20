@@ -103,6 +103,10 @@ const StyledProperties = styled.div`
           &:first-child {
             left: 2px;
           }
+
+          &:hover {
+            background-color: rgb(216, 234, 249);
+          }
         }
       }
     }
