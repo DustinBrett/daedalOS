@@ -397,7 +397,13 @@ const useFileContextMenu = (
                 };
 
                 try {
+                  const isFileMounted = rootFs?.mountList.some(
+                    (mountPath) =>
+                      mountPath !== "/" && path.startsWith(mountPath)
+                  );
+
                   if (
+                    !isFileMounted &&
                     isExistingFile(stats) &&
                     navigator.canShare?.(shareData)
                   ) {
