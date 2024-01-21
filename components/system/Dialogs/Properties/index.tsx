@@ -49,14 +49,16 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     setIcon(id, icon);
 
-    if (typeof getIcon === "function") {
+    const extension = extname(generalUrl);
+
+    if (typeof getIcon === "function" && extension.toLowerCase() === ".exe") {
       getIconAbortController.current = new AbortController();
       getIcon(getIconAbortController.current.signal);
     }
 
     if (generalUrl) {
       prependFileToTitle(
-        basename(generalUrl, shortcutPath ? extname(generalUrl) : undefined),
+        basename(generalUrl, shortcutPath ? extension : undefined),
         false,
         true
       );

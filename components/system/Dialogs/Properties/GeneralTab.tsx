@@ -3,7 +3,10 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import {
+  getIconFromIni,
+  getModifiedTime,
+} from "components/system/Files/FileEntry/functions";
 import {
   type FileStat,
   removeInvalidFilenameCharacters,
@@ -13,7 +16,12 @@ import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import Icon from "styles/common/Icon";
-import { DEFAULT_LOCALE, DESKTOP_PATH, SHORTCUT_ICON } from "utils/constants";
+import {
+  DEFAULT_LOCALE,
+  DESKTOP_PATH,
+  FOLDER_ICON,
+  SHORTCUT_ICON,
+} from "utils/constants";
 import { getExtension, getFormattedSize } from "utils/functions";
 
 type TabProps = {
@@ -33,13 +41,13 @@ const dateTimeString = (date?: Date): string =>
     .replace(" at ", ", ") || "";
 
 const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
-  const { closeWithTransition } = useProcesses();
+  const { closeWithTransition, icon: setIcon } = useProcesses();
   const { setIconPositions } = useSession();
   const extension = useMemo(() => getExtension(url || ""), [url]);
   const { type } = extensions[extension] || {};
   const extType = type || `${extension.toUpperCase().replace(".", "")} File`;
   const inputRef = useRef<HTMLInputElement>(null);
-  const { readdir, rename, stat, updateFolder } = useFileSystem();
+  const { fs, readdir, rename, stat, updateFolder } = useFileSystem();
   const stats = useStats(url);
   const [fileCount, setFileCount] = useState(0);
   const [folderCount, setFolderCount] = useState(0);
@@ -48,6 +56,19 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
   const abortControllerRef = useRef<AbortController>();
+  const [folderIcon, setFolderIcon] = useState(FOLDER_ICON);
+
+  useEffect(() => {
+    if (isDirectory && fs) {
+      if (folderIcon === FOLDER_ICON) {
+        getIconFromIni(fs, url).then(
+          (iconFile) => iconFile && setFolderIcon(iconFile)
+        );
+      }
+
+      setIcon(id, folderIcon || FOLDER_ICON);
+    }
+  }, [folderIcon, fs, id, isDirectory, setIcon, url]);
 
   useEffect(() => {
     if (!checkedFileCounts.current && !isShortcut && isDirectory) {
@@ -93,7 +114,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
         <tbody>
           <tr className="header">
             <th scope="row">
-              <Icon imgSize={32} src={icon} />
+              <Icon imgSize={32} src={isDirectory ? folderIcon : icon} />
               {isShortcut && <Icon imgSize={48} src={SHORTCUT_ICON} />}
             </th>
             <td>
