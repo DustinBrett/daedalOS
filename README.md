@@ -95,6 +95,7 @@
 - Favicon support
 - Back/Forward & Reload
 - Google search via Address bar
+- [chrome://dino](https://github.com/wayou/t-rex-runner) game
 
 ### [DevTools](https://eruda.liriliri.io/)
 

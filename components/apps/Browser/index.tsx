@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
-import { HOME_PAGE, bookmarks } from "components/apps/Browser/config";
+import {
+  DINO_GAME,
+  HOME_PAGE,
+  bookmarks,
+} from "components/apps/Browser/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
@@ -59,7 +63,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
         setIcon(id, processDirectory.Browser.icon);
 
-        if (!isHtml) {
+        if (addressInput.startsWith(DINO_GAME.url)) {
+          contentWindow.location.replace(
+            `${window.location.origin}${DINO_GAME.path}`
+          );
+
+          prependFileToTitle(`${DINO_GAME.url}/`);
+        } else if (!isHtml) {
           const addressUrl = await getUrlOrSearch(addressInput);
 
           contentWindow.location.replace(addressUrl);

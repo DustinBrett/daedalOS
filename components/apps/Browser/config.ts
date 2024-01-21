@@ -3,7 +3,15 @@ import { FAVICON_BASE_PATH } from "utils/constants";
 type Bookmark = {
   icon: string;
   name: string;
+  path?: string;
   url: string;
+};
+
+export const DINO_GAME = {
+  icon: "/System/Icons/Favicons/dino.webp",
+  name: "T-Rex Chrome Dino Game",
+  path: "/Program Files/Browser/dino/index.html",
+  url: "chrome://dino",
 };
 
 export const bookmarks: Bookmark[] = [
@@ -37,6 +45,7 @@ export const bookmarks: Bookmark[] = [
     name: "AaronOS",
     url: "https://aaronos.dev/",
   },
+  DINO_GAME,
 ];
 
 export const HOME_PAGE = "https://www.google.com/webhp?igu=1";

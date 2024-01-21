@@ -1,0 +1,179 @@
+/* Copyright 2013 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file. */
+
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  place-content: center;
+  display: flex;
+}
+
+.icon {
+  -webkit-user-select: none;
+  user-select: none;
+  display: inline-block;
+}
+
+.icon-offline {
+  content: -webkit-image-set( url(assets/default_100_percent/100-error-offline.png) 1x, url(assets/default_200_percent/200-error-offline.png) 2x);
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
+
+h2 {
+	font-family: 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', sans-serif;
+	font-size: 24px;
+	font-weight: 500;
+	padding-top: 75px;
+}
+
+.touch {
+  padding-top: 85px;
+}
+
+/* Offline page */
+
+.offline .interstitial-wrapper {
+  color: #2b2b2b;
+  font-size: 1em;
+  line-height: 1.55;
+  margin: 0 auto;
+  max-width: 600px;
+  padding-top: 100px;
+  width: 100%;
+	box-sizing: border-box;
+    padding: 0 24px;
+}
+
+.offline .runner-container {
+  height: 150px;
+  max-width: 600px;
+  overflow: hidden;
+  position: absolute;
+  top: 35px;
+  width: 44px;
+}
+
+.offline .runner-canvas {
+  height: 150px;
+  max-width: 600px;
+  opacity: 1;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+
+.offline .controller {
+  background: rgba(247, 247, 247, .1);
+  height: 100vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 1;
+}
+
+#offline-resources {
+  display: none;
+}
+
+@media (max-width: 420px) {
+  .suggested-left > #control-buttons, .suggested-right > #control-buttons {
+    float: none;
+  }
+  .snackbar {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-radius: 0;
+  }
+}
+
+@media (max-height: 350px) {
+  h1 {
+    margin: 0 0 15px;
+  }
+  .icon-offline {
+    margin: 0 0 10px;
+  }
+  .interstitial-wrapper {
+    margin-top: 5%;
+  }
+  .nav-wrapper {
+    margin-top: 30px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 736px) and (orientation: landscape) {
+  .offline .interstitial-wrapper {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 420px) and (max-width: 736px) and (min-height: 240px) and (max-height: 420px) and (orientation:landscape) {
+  .interstitial-wrapper {
+    margin-bottom: 100px;
+  }
+}
+
+@media (min-height: 240px) and (orientation: landscape) {
+  .offline .interstitial-wrapper {
+    margin-bottom: 90px;
+  }
+  .icon-offline {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-height: 320px) and (orientation: landscape) {
+  .icon-offline {
+    margin-bottom: 0;
+  }
+  .offline .runner-container {
+    top: 10px;
+  }
+}
+
+@media (max-width: 240px) {
+  .interstitial-wrapper {
+    overflow: inherit;
+    padding: 0 8px;
+  }
+}
+
+.arcade-mode,
+.arcade-mode .runner-container,
+.arcade-mode .runner-canvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.arcade-mode #buttons,
+.arcade-mode #main-content {
+  opacity: 0;
+  overflow: hidden;
+}
+
+.arcade-mode .interstitial-wrapper {
+  height: 100vh;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.arcade-mode .runner-container {
+  left: 0;
+  margin: auto;
+  right: 0;
+  transform-origin: top center;
+  transition: transform 250ms cubic-bezier(0.4, 0, 1, 1) 400ms;
+  z-index: 2;
+}

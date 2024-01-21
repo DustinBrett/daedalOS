@@ -85,6 +85,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [opentype.js](https://github.com/opentypejs/opentype.js)
 - [nostr-tools](https://github.com/nbd-wtf/nostr-tools)
 - [DOMPurify](https://github.com/cure53/DOMPurify)
+- [t-rex-runner](https://github.com/wayou/t-rex-runner)
 
 ## Services
 
