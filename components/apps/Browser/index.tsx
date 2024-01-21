@@ -63,7 +63,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
         setIcon(id, processDirectory.Browser.icon);
 
-        if (addressInput.startsWith(DINO_GAME.url)) {
+        if (addressInput.toLowerCase().startsWith(DINO_GAME.url)) {
           contentWindow.location.replace(
             `${window.location.origin}${DINO_GAME.path}`
           );
