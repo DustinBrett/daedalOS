@@ -86,7 +86,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           }
 
           if (addressInput.startsWith("ipfs://")) {
-            setIcon(id, "/System/Icons/Favicons/ipfs.png");
+            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
           } else {
             const favicon = new Image();
             const faviconUrl = `${

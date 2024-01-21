@@ -90,11 +90,12 @@
 
 ### Browser (**_.htm, .html_**)
 
-- Loads websites (_w/HTTP header support_)
+- Loads websites (_w/CORS support_)
 - Bookmark bar
 - Favicon support
 - Back/Forward & Reload
 - Google search via Address bar
+- IPFS protocol support
 - [chrome://dino](https://github.com/wayou/t-rex-runner) game
 
 ### [DevTools](https://eruda.liriliri.io/)
