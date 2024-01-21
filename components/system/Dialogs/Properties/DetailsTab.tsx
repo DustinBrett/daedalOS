@@ -64,9 +64,10 @@ const DetailsTab: FC<TabProps> = ({ fileDataRef, id, url }) => {
               if (data) {
                 // eslint-disable-next-line no-param-reassign
                 fileDataRef.current = data;
-                done();
                 setFileData(data);
               }
+
+              done();
             })
             .catch(done)
         )
