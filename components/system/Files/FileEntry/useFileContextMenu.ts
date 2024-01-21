@@ -399,7 +399,7 @@ const useFileContextMenu = (
                 try {
                   const isFileMounted = rootFs?.mountList.some(
                     (mountPath) =>
-                      mountPath !== "/" && path.startsWith(mountPath)
+                      mountPath !== "/" && path.startsWith(`${mountPath}/`)
                   );
 
                   if (
@@ -430,6 +430,7 @@ const useFileContextMenu = (
                         action: () => extractFiles(path),
                         label: "Extract Here",
                       },
+                      MENU_SEPERATOR,
                     ]
                   : []),
                 {
