@@ -53,6 +53,8 @@ import {
   TERMINAL_ROWS_SELECTOR,
   TERMINAL_SELECTOR,
   ROOT_PUBLIC_FOLDER,
+  CURSOR_SPACE_LENGTH,
+  TAB_SPACE_LENGTH,
 } from "e2e/constants";
 
 type TestProps = {
@@ -822,10 +824,31 @@ export const terminalDoesNotHaveText = async (
   cursorLine = false
 ): Promise<void> => terminalHasText({ page }, text, 0, cursorLine);
 
-export const sendKeyToTerminal = async (
-  { page }: TestProps,
-  key: string
-): Promise<void> => page.locator(TERMINAL_SELECTOR).press(key);
+export const sendTabToTerminal = async ({ page }: TestProps): Promise<void> => {
+  await page.locator(TERMINAL_SELECTOR).press("Tab");
+
+  let checkCount = 0;
+  const hasEndingTabCharacter = async (): Promise<boolean> =>
+    (await page
+      .locator(TERMINAL_ROWS_SELECTOR)
+      .last()
+      .getByText(new RegExp(`\\s{${TAB_SPACE_LENGTH + CURSOR_SPACE_LENGTH}}$`))
+      .count()) > 0;
+
+  /* eslint-disable no-await-in-loop */
+  while (checkCount < 10 && (await hasEndingTabCharacter())) {
+    checkCount += 1;
+
+    for (let i = 0; i < TAB_SPACE_LENGTH; i += 1) {
+      await page.locator(TERMINAL_SELECTOR).press("Backspace");
+    }
+
+    await page.locator(TERMINAL_SELECTOR).press("Tab", {
+      delay: 100,
+    });
+  }
+  /* eslint-enable no-await-in-loop */
+};
 
 export const sendTextToTerminal = async (
   { page }: TestProps,

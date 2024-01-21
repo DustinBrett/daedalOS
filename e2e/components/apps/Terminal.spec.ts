@@ -5,7 +5,7 @@ import {
   captureConsoleLogs,
   didCaptureConsoleLogs,
   disableWallpaper,
-  sendKeyToTerminal,
+  sendTabToTerminal,
   sendTextToTerminal,
   sendToTerminal,
   sheepIsVisible,
@@ -279,7 +279,7 @@ test.describe("has commands", () => {
 test.describe("has tab completion", () => {
   test("can see file/folder list", async ({ page }) => {
     await sendTextToTerminal({ page }, "d");
-    await sendKeyToTerminal({ page }, "Tab");
+    await sendTabToTerminal({ page });
 
     await terminalHasText({ page }, "Documents");
     await terminalHasText({ page }, ROOT_PUBLIC_TEST_FILE);
@@ -287,14 +287,14 @@ test.describe("has tab completion", () => {
 
   test("can complete folder name", async ({ page }) => {
     await sendTextToTerminal({ page }, "Vi");
-    await sendKeyToTerminal({ page }, "Tab");
+    await sendTabToTerminal({ page });
 
     await terminalHasText({ page }, "Videos", 1, true);
   });
 
   test("can complete command name", async ({ page }) => {
     await sendTextToTerminal({ page }, "he");
-    await sendKeyToTerminal({ page }, "Tab");
+    await sendTabToTerminal({ page });
 
     await terminalHasText({ page }, "help", 1, true);
   });
