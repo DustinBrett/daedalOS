@@ -1085,7 +1085,10 @@ const useCommandInterpreter = (
                         : baseCommand
                     }${
                       commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
-                    }`
+                    }`,
+                    printLn,
+                    print,
+                    pipedCommand
                   );
                 } else {
                   const fullFilePath = baseFileExists
