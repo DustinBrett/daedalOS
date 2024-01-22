@@ -8,7 +8,6 @@ import {
   type default as index,
 } from "isomorphic-git";
 import { type ParsedArgs } from "minimist";
-import { type LocalEcho } from "components/apps/Terminal/types";
 import { help } from "components/apps/Terminal/functions";
 
 const corsProxy = "https://cors.isomorphic-git.org";
@@ -45,7 +44,7 @@ type GitFunction = (options: GitOptions) => Promise<string | void>;
 const processGit = async (
   [command, ...args]: string[],
   cd: string,
-  localEcho: LocalEcho,
+  printLn: (message: string) => void,
   fs: FSModule,
   updateFolder: (folder: string, newFile?: string, oldFile?: string) => void
 ): Promise<void> => {
@@ -58,11 +57,11 @@ const processGit = async (
       ParsedArgs;
     const onAuth: AuthCallback = () => ({ password, username });
     const onMessage: MessageCallback = (message = "") =>
-      localEcho.println(`remote: ${message.trim()}`);
+      printLn(`remote: ${message.trim()}`);
     const events: string[] = [];
     const onProgress: ProgressCallback = ({ phase }): void => {
       if (events[events.length - 1] !== phase) {
-        localEcho.println(phase);
+        printLn(phase);
         events.push(phase);
       }
     };
@@ -96,7 +95,7 @@ const processGit = async (
           ?.replace(/\.git$/, "") || "";
 
       if (dirName) {
-        localEcho.println(`Cloning into '${dirName}'...`);
+        printLn(`Cloning into '${dirName}'...`);
 
         options.dir = join(cd, dirName);
       }
@@ -108,17 +107,17 @@ const processGit = async (
       )?.(options);
 
       if (typeof result === "string") {
-        localEcho.println(result);
+        printLn(result);
       }
     } catch (error) {
-      localEcho.println((error as Error).message);
+      printLn((error as Error).message);
     }
 
     if (UPDATE_FOLDER_COMMANDS.has(command)) {
       updateFolder(cd);
     }
   } else {
-    help(localEcho, commands);
+    help(printLn, commands);
   }
 };
 

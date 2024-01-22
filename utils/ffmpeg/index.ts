@@ -1,5 +1,4 @@
 import { basename, dirname, extname, join } from "path";
-import { type LocalEcho } from "components/apps/Terminal/types";
 import {
   type FFmpegTranscodeFile,
   type IFFmpegInstance,
@@ -7,7 +6,9 @@ import {
 } from "utils/ffmpeg/types";
 import { loadFiles } from "utils/functions";
 
-const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
+const getFFmpeg = async (
+  printLn: (message: string) => void
+): Promise<IFFmpegInstance> => {
   if (!window.FFmpeg) {
     await loadFiles(["/Program Files/ffmpeg/ffmpeg.min.js"]);
   }
@@ -18,7 +19,7 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
       corePath: `${window.location.origin}/Program Files/ffmpeg/ffmpeg-core.js`,
       log: true,
       logger: ({ message }: IFFmpegLog) => {
-        localEcho?.println(message);
+        printLn(message);
         console.info(message);
       },
       mainName: "main",
@@ -32,9 +33,9 @@ const getFFmpeg = async (localEcho?: LocalEcho): Promise<IFFmpegInstance> => {
 export const transcode = async (
   files: FFmpegTranscodeFile[],
   extension: string,
-  localEcho?: LocalEcho
+  printLn: (message: string) => void
 ): Promise<FFmpegTranscodeFile[]> => {
-  const ffmpeg = await getFFmpeg(localEcho);
+  const ffmpeg = await getFFmpeg(printLn);
   const returnFiles: FFmpegTranscodeFile[] = [];
 
   await Promise.all(

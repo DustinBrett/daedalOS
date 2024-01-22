@@ -154,7 +154,39 @@ const useCommandInterpreter = (
     [updateFolder]
   );
   const commandInterpreter = useCallback(
-    async (command = ""): Promise<string> => {
+    async (
+      command = "",
+      /* eslint-disable no-console */
+      printLn = localEcho?.println.bind(localEcho) || console.log,
+      print = localEcho?.print.bind(localEcho) || console.log,
+      /* eslint-enable no-console */
+      pipedCommand = false
+    ): Promise<string> => {
+      const pipeCommands = command.split("|");
+
+      if (!pipedCommand && pipeCommands.length > 1) {
+        const output = [] as string[];
+        const stdout = (line: string): void => {
+          output.push(line);
+        };
+
+        return pipeCommands.reduce(async (result, pipeCommand, index) => {
+          await result;
+
+          const results = output.join("").replace(/\n$/, "");
+          const isLastCommand = index === pipeCommands.length - 1;
+
+          output.length = 0;
+
+          return commandInterpreter(
+            `${pipeCommand.trim()}${results ? ` ${results}` : ""}`,
+            isLastCommand ? undefined : (line) => stdout(`${line}\n`),
+            isLastCommand ? undefined : stdout,
+            true
+          );
+        }, Promise.resolve(""));
+      }
+
       const [baseCommand = "", ...commandArgs] = parseCommand(command);
       const lcBaseCommand = baseCommand.toLowerCase();
 
@@ -169,15 +201,15 @@ const useCommandInterpreter = (
 
             if (await exists(fullPath)) {
               if ((await lstat(fullPath)).isDirectory()) {
-                localEcho?.println("Access is denied.");
+                printLn("Access is denied.");
               } else {
-                localEcho?.println((await readFile(fullPath)).toString());
+                printLn((await readFile(fullPath)).toString());
               }
             } else {
-              localEcho?.println(PATH_NOT_FOUND);
+              printLn(PATH_NOT_FOUND);
             }
           } else {
-            localEcho?.println(SYNTAX_ERROR);
+            printLn(SYNTAX_ERROR);
           }
           break;
         }
@@ -196,8 +228,8 @@ const useCommandInterpreter = (
             const fullPath = await getFullPath(directory);
             const checkNewPath = async (newPath: string): Promise<void> => {
               if (!(await lstat(newPath)).isDirectory()) {
-                localEcho?.println("The directory name is invalid.");
-              } else if (cd.current !== newPath && localEcho) {
+                printLn("The directory name is invalid.");
+              } else if (cd.current !== newPath) {
                 // eslint-disable-next-line no-param-reassign
                 cd.current = newPath;
               }
@@ -214,11 +246,11 @@ const useCommandInterpreter = (
               if (lcEntry) {
                 await checkNewPath(join(cd.current, lcEntry));
               } else {
-                localEcho?.println(PATH_NOT_FOUND);
+                printLn(PATH_NOT_FOUND);
               }
             }
           } else {
-            localEcho?.println(cd.current);
+            printLn(cd.current);
           }
           break;
         }
@@ -226,7 +258,7 @@ const useCommandInterpreter = (
           const [r, g, b] = commandArgs;
 
           if (r !== undefined && g !== undefined && b !== undefined) {
-            localEcho?.print(rgbAnsi(Number(r), Number(g), Number(b)));
+            print(rgbAnsi(Number(r), Number(g), Number(b)));
           } else {
             const [[bg, fg] = []] = commandArgs;
             const { rgb: bgRgb, name: bgName } =
@@ -238,23 +270,21 @@ const useCommandInterpreter = (
               const useAsBg = Boolean(fgRgb);
               const bgAnsi = rgbAnsi(...bgRgb, useAsBg);
 
-              localEcho?.print(bgAnsi);
-              localEcho?.println(
-                `${useAsBg ? "Background" : "Foreground"}: ${bgName}`
-              );
+              print(bgAnsi);
+              printLn(`${useAsBg ? "Background" : "Foreground"}: ${bgName}`);
               colorOutput.current[0] = bgAnsi;
             }
 
             if (fgRgb) {
               const fgAnsi = rgbAnsi(...fgRgb);
 
-              localEcho?.print(fgAnsi);
-              localEcho?.println(`Foreground: ${fgName}`);
+              print(fgAnsi);
+              printLn(`Foreground: ${fgName}`);
               colorOutput.current[1] = fgAnsi;
             }
 
             if (!fgRgb && !bgRgb) {
-              localEcho?.print("\u001B[0m");
+              print("\u001B[0m");
               colorOutput.current = [];
             }
           }
@@ -280,13 +310,13 @@ const useCommandInterpreter = (
                   )
                 )
               );
-              localEcho?.println("\t1 file(s) copied.");
+              printLn("\t1 file(s) copied.");
             } else {
-              localEcho?.println("The file cannot be copied onto itself.");
-              localEcho?.println("\t0 file(s) copied.");
+              printLn("The file cannot be copied onto itself.");
+              printLn("\t0 file(s) copied.");
             }
           } else {
-            localEcho?.println(FILE_NOT_FILE);
+            printLn(FILE_NOT_FILE);
           }
           break;
         }
@@ -296,7 +326,7 @@ const useCommandInterpreter = (
           terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
           break;
         case "date":
-          localEcho?.println(
+          printLn(
             `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
           );
           break;
@@ -369,8 +399,8 @@ const useCommandInterpreter = (
                   ];
                 })
             );
-            localEcho?.println(` Directory of ${dirPath}`);
-            localEcho?.println("");
+            printLn(` Directory of ${dirPath}`);
+            printLn("");
 
             const fullSizeTerminal =
               !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
@@ -387,15 +417,13 @@ const useCommandInterpreter = (
                 ["Name", terminal?.cols ? terminal.cols - 40 : 30],
               ],
               entriesWithStats,
-              localEcho,
+              printLn,
               true
             );
-            localEcho?.println(
+            printLn(
               `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
             );
-            localEcho?.println(
-              `\t\t${directoryCount} Dir(s)${await getFreeSpace()}`
-            );
+            printLn(`\t\t${directoryCount} Dir(s)${await getFreeSpace()}`);
           };
 
           if (
@@ -409,10 +437,10 @@ const useCommandInterpreter = (
               if ((await lstat(fullPath)).isDirectory()) {
                 await listDir(fullPath);
               } else {
-                localEcho?.println(basename(fullPath));
+                printLn(basename(fullPath));
               }
             } else {
-              localEcho?.println("File Not Found");
+              printLn("File Not Found");
             }
           } else {
             await listDir(cd.current);
@@ -420,7 +448,7 @@ const useCommandInterpreter = (
           break;
         }
         case "echo":
-          localEcho?.println(command.slice(command.indexOf(" ") + 1));
+          printLn(command.slice(command.indexOf(" ") + 1));
           break;
         case "exit":
         case "quit":
@@ -437,7 +465,7 @@ const useCommandInterpreter = (
               const { mime = "Unknown" } =
                 (await fileTypeFromBuffer(await readFile(fullPath))) || {};
 
-              localEcho?.println(`${commandPath}: ${mime}`);
+              printLn(`${commandPath}: ${mime}`);
             }
           }
           break;
@@ -445,7 +473,7 @@ const useCommandInterpreter = (
         case "find":
         case "search": {
           if (commandArgs.length === 0) {
-            localEcho?.println("FIND: Parameter format not correct");
+            printLn("FIND: Parameter format not correct");
             break;
           }
 
@@ -454,7 +482,7 @@ const useCommandInterpreter = (
             readFile,
             rootFs
           );
-          results?.forEach(({ ref }) => localEcho?.println(ref));
+          results?.forEach(({ ref }) => printLn(ref));
           break;
         }
         case "ffmpeg":
@@ -473,7 +501,7 @@ const useCommandInterpreter = (
               const [[newName, newData]] = await convertOrTranscode(
                 [[basename(fullPath), await readFile(fullPath)]],
                 format,
-                localEcho
+                printLn
               );
 
               if (newName && newData) {
@@ -484,20 +512,20 @@ const useCommandInterpreter = (
                 );
               }
             } else {
-              localEcho?.println(FILE_NOT_FILE);
+              printLn(FILE_NOT_FILE);
             }
           } else {
-            localEcho?.println(SYNTAX_ERROR);
+            printLn(SYNTAX_ERROR);
           }
           break;
         }
         case "git":
         case "isogit":
-          if (fs && localEcho) {
+          if (fs) {
             await processGit(
               commandArgs,
               cd.current,
-              localEcho,
+              printLn,
               fs,
               updateFolder
             );
@@ -505,33 +533,28 @@ const useCommandInterpreter = (
           break;
         case "help": {
           const [commandName] = commandArgs;
+          const showAliases = commandName === "-a";
 
-          if (localEcho) {
-            const showAliases = commandName === "-a";
+          if (commandName && !showAliases) {
+            const helpCommand = commands[commandName]
+              ? commandName
+              : Object.entries(aliases).find(
+                  ([, [baseCommandName]]) => baseCommandName === commandName
+                )?.[0];
 
-            if (commandName && !showAliases) {
-              const helpCommand = commands[commandName]
-                ? commandName
-                : Object.entries(aliases).find(
-                    ([, [baseCommandName]]) => baseCommandName === commandName
-                  )?.[0];
-
-              if (helpCommand && commands[helpCommand]) {
-                localEcho.println(commands[helpCommand]);
-              } else {
-                localEcho.println(
-                  "This command is not supported by the help utility."
-                );
-              }
+            if (helpCommand && commands[helpCommand]) {
+              printLn(commands[helpCommand]);
             } else {
-              help(localEcho, commands, showAliases ? aliases : undefined);
+              printLn("This command is not supported by the help utility.");
             }
+          } else {
+            help(printLn, commands, showAliases ? aliases : undefined);
           }
           break;
         }
         case "history":
           localEcho?.history.entries.forEach((entry, index) =>
-            localEcho.println(`${(index + 1).toString().padStart(4)} ${entry}`)
+            printLn(`${(index + 1).toString().padStart(4)} ${entry}`)
           );
           break;
         case "ipfs": {
@@ -565,9 +588,9 @@ const useCommandInterpreter = (
             );
           };
 
-          localEcho?.println("IP Configuration");
-          localEcho?.println("");
-          localEcho?.println(
+          printLn("IP Configuration");
+          printLn("");
+          printLn(
             `   IPv4 Address. . . . . . . . . . . : ${
               isValidIp(ip) ? ip : "Unknown"
             }`
@@ -584,18 +607,16 @@ const useCommandInterpreter = (
 
           if (processesRef.current[processName]) {
             closeWithTransition(processName);
-            localEcho?.println(
+            printLn(
               `SUCCESS: Sent termination signal to the process "${processName}".`
             );
           } else {
-            localEcho?.println(
-              `ERROR: The process "${processName}" not found.`
-            );
+            printLn(`ERROR: The process "${processName}" not found.`);
           }
           break;
         }
         case "license":
-          localEcho?.println(displayLicense);
+          printLn(displayLicense);
           break;
         case "md":
         case "mkdir": {
@@ -618,36 +639,32 @@ const useCommandInterpreter = (
 
               if (await exists(fullPath)) {
                 try {
-                  localEcho?.println(
-                    await analyzeFileToText(await readFile(fullPath))
-                  );
+                  printLn(await analyzeFileToText(await readFile(fullPath)));
                 } catch {
-                  localEcho?.println("Failed to parse media file");
+                  printLn("Failed to parse media file");
                 }
               }
             }
           }
           break;
         case "mount":
-          if (localEcho) {
-            if (isFileSystemMappingSupported()) {
-              try {
-                const mappedFolder = await mapFs(cd.current);
+          if (isFileSystemMappingSupported()) {
+            try {
+              const mappedFolder = await mapFs(cd.current);
 
-                if (mappedFolder) {
-                  const fullPath = join(cd.current, mappedFolder);
+              if (mappedFolder) {
+                const fullPath = join(cd.current, mappedFolder);
 
-                  updateFolder(cd.current, mappedFolder);
+                updateFolder(cd.current, mappedFolder);
 
-                  // eslint-disable-next-line no-param-reassign
-                  cd.current = fullPath;
-                }
-              } catch {
-                // Ignore failure to mount
+                // eslint-disable-next-line no-param-reassign
+                cd.current = fullPath;
               }
-            } else {
-              localEcho?.println(COMMAND_NOT_SUPPORTED);
+            } catch {
+              // Ignore failure to mount
             }
+          } else {
+            printLn(COMMAND_NOT_SUPPORTED);
           }
           break;
         case "move":
@@ -677,10 +694,10 @@ const useCommandInterpreter = (
                 updateFile(fullDestinationPath);
               }
             } else {
-              localEcho?.println(SYNTAX_ERROR);
+              printLn(SYNTAX_ERROR);
             }
           } else {
-            localEcho?.println(FILE_NOT_FILE);
+            printLn(FILE_NOT_FILE);
           }
           break;
         }
@@ -784,42 +801,39 @@ const useCommandInterpreter = (
             0
           );
           const maxCols = cols || config.cols || 70;
+          const longestLine = PI_ASCII[0].length + longestLineLength;
+          const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
 
-          if (localEcho) {
-            const longestLine = PI_ASCII[0].length + longestLineLength;
-            const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
+          output.push(
+            "\n",
+            [0, 4, 2, 6, 1, 5, 3, 7]
+              .map((color) => printColor(color, colorOutput.current))
+              .join(""),
+            [8, "C", "A", "E", 9, "D", "B", "F"]
+              .map((color) => printColor(color, colorOutput.current))
+              .join("")
+          );
+          PI_ASCII.forEach((imgLine, lineIndex) => {
+            let outputLine = output[lineIndex] || "";
 
-            output.push(
-              "\n",
-              [0, 4, 2, 6, 1, 5, 3, 7]
-                .map((color) => printColor(color, colorOutput.current))
-                .join(""),
-              [8, "C", "A", "E", 9, "D", "B", "F"]
-                .map((color) => printColor(color, colorOutput.current))
-                .join("")
-            );
-            PI_ASCII.forEach((imgLine, lineIndex) => {
-              let outputLine = output[lineIndex] || "";
+            if (lineIndex === 0) {
+              const [user, system] = outputLine.split("@");
 
-              if (lineIndex === 0) {
-                const [user, system] = outputLine.split("@");
+              outputLine = `${labelText(user)}@${labelText(system)}`;
+            } else {
+              const [label, info] = outputLine.split(":");
 
-                outputLine = `${labelText(user)}@${labelText(system)}`;
-              } else {
-                const [label, info] = outputLine.split(":");
-
-                if (info) {
-                  outputLine = `${labelText(label)}:${info}`;
-                }
+              if (info) {
+                outputLine = `${labelText(label)}:${info}`;
               }
+            }
 
-              localEcho.println(
-                `${labelText(imgLine)}${
-                  outputLine.padStart(outputLine.length + imgPadding, " ") || ""
-                }`
-              );
-            });
-          }
+            printLn(
+              `${labelText(imgLine)}${
+                outputLine.padStart(outputLine.length + imgPadding, " ") || ""
+              }`
+            );
+          });
           break;
         }
         case "nslookup": {
@@ -858,19 +872,19 @@ const useCommandInterpreter = (
                 : PRIMARY_NAME_SERVER;
               const { host } = new URL(server);
 
-              localEcho?.println(`Server:  ${host}`);
-              localEcho?.println(`Address:  ${address}`);
-              localEcho?.println("");
-              localEcho?.println("Non-authoritative answer:");
-              localEcho?.println(`Name:    ${domainName}`);
-              localEcho?.println(
+              printLn(`Server:  ${host}`);
+              printLn(`Address:  ${address}`);
+              printLn("");
+              printLn("Non-authoritative answer:");
+              printLn(`Name:    ${domainName}`);
+              printLn(
                 `Addresses:  ${answer
                   .map(({ data }) => data)
                   .join("\n          ")}`
               );
-              localEcho?.println("");
+              printLn("");
             } else {
-              localEcho?.println("Failed to contact name servers.");
+              printLn("Failed to contact name servers.");
             }
           }
           break;
@@ -910,12 +924,12 @@ const useCommandInterpreter = (
             Object.entries(processesRef.current).map(
               ([pid, { title }], index) => [pid, index.toString(), title]
             ),
-            localEcho
+            printLn
           );
           break;
         case "py":
         case "python":
-          if (localEcho) {
+          {
             const [file] = commandArgs;
             const fullSourcePath = await getFullPath(file);
 
@@ -923,12 +937,12 @@ const useCommandInterpreter = (
               const code = await readFile(fullSourcePath);
 
               if (code.length > 0) {
-                await runPython(code.toString(), localEcho);
+                await runPython(code.toString(), printLn);
               }
             } else {
               const [, code = "version"] = command.split(" ");
 
-              await runPython(code, localEcho);
+              await runPython(code, printLn);
             }
           }
           break;
@@ -938,7 +952,7 @@ const useCommandInterpreter = (
           resetStorage(rootFs).finally(() => window.location.reload());
           break;
         case "time":
-          localEcho?.println(
+          printLn(
             `The current time is: ${getTZOffsetISOString().slice(11, 22)}`
           );
           break;
@@ -962,23 +976,22 @@ const useCommandInterpreter = (
           break;
         }
         case "uptime":
-          localEcho?.println(`Uptime: ${getUptime()}`);
+          printLn(`Uptime: ${getUptime()}`);
           break;
         case "ver":
         case "version":
-          localEcho?.println(displayVersion());
+          printLn(displayVersion());
           break;
         case "wapm":
         case "wasmer":
         case "wax": {
-          if (!localEcho) break;
-
           const [file] = commandArgs;
           const fullSourcePath = await getFullPath(file);
 
           await loadWapm(
             commandArgs,
-            localEcho,
+            print,
+            printLn,
             fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
               ? await readFile(fullSourcePath)
               : undefined
@@ -993,16 +1006,16 @@ const useCommandInterpreter = (
             HIGH_PRIORITY_REQUEST
           );
 
-          localEcho?.println(await response.text());
+          printLn(await response.text());
 
           const [bgAnsi, fgAnsi] = colorOutput.current;
 
-          if (bgAnsi) localEcho?.print(bgAnsi);
-          if (fgAnsi) localEcho?.print(fgAnsi);
+          if (bgAnsi) print(bgAnsi);
+          if (fgAnsi) print(fgAnsi);
           break;
         }
         case "whoami":
-          localEcho?.println(`${window.location.hostname}\\public`);
+          printLn(`${window.location.hostname}\\public`);
           break;
         case "xlsx": {
           const [file, format = "xlsx"] = commandArgs;
@@ -1031,10 +1044,10 @@ const useCommandInterpreter = (
                 )
               );
             } else {
-              localEcho?.println(FILE_NOT_FILE);
+              printLn(FILE_NOT_FILE);
             }
           } else {
-            localEcho?.println(SYNTAX_ERROR);
+            printLn(SYNTAX_ERROR);
           }
           break;
         }
@@ -1095,7 +1108,7 @@ const useCommandInterpreter = (
                   }
                 }
               } else {
-                localEcho?.println(unknownCommand(baseCommand));
+                printLn(unknownCommand(baseCommand));
               }
             }
           }

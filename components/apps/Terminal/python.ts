@@ -1,4 +1,3 @@
-import { type LocalEcho } from "components/apps/Terminal/types";
 import { loadFiles } from "utils/functions";
 
 type Pyodide = {
@@ -26,7 +25,7 @@ const captureStdOut =
 
 export const runPython = async (
   code: string,
-  localEcho: LocalEcho
+  printLn: (message: string) => void
 ): Promise<void> => {
   await loadFiles(["/Program Files/Pyodide/pyodide.js"]);
 
@@ -46,11 +45,11 @@ export const runPython = async (
         result = await window.pyodide.runPythonAsync("sys.stdout.getvalue()");
       }
 
-      if (result) localEcho?.println(result.toString());
+      if (result) printLn(result.toString());
     } catch (error) {
       const { message } = error as PyError;
 
-      if (message) localEcho?.println(message);
+      if (message) printLn(message);
     }
   }
 };

@@ -1,6 +1,5 @@
 import { type WASIBindings } from "wasi-js";
-import { config } from "components/apps/Terminal/config";
-import { type LocalEcho } from "components/apps/Terminal/types";
+import { WAPM_STD_IN_APPS, config } from "components/apps/Terminal/config";
 
 type WASIError = Error & {
   code: number;
@@ -142,7 +141,8 @@ const fetchCommandFromWAPM = async ({
 
 const loadWapm = async (
   commandArgs: string[],
-  localEcho: LocalEcho,
+  print: (message: string) => void,
+  printLn: (message: string) => void,
   wasmFile?: Buffer
 ): Promise<void> => {
   const args = commandArgs[0] === "run" ? commandArgs.slice(1) : commandArgs;
@@ -166,15 +166,43 @@ const loadWapm = async (
       bindings ||= (await import("wasi-js/dist/bindings/browser")).default;
 
       const wasmModule = await WebAssembly.compile(moduleResponse);
+      const stdIn = WAPM_STD_IN_APPS.includes(args[0]);
+      let readStdIn = false;
+      let exitStdIn = false;
       const wasi = new WASI({
-        args,
+        args: stdIn ? [] : args,
         bindings,
         env: {
           COLUMNS: config.cols?.toString(),
           LINES: config.rows?.toString(),
         },
-        sendStderr: (buffer: Uint8Array) => localEcho?.print(buffer.toString()),
-        sendStdout: (buffer: Uint8Array) => localEcho?.print(buffer.toString()),
+        ...(stdIn
+          ? {
+              getStdin() {
+                if (exitStdIn) {
+                  // eslint-disable-next-line unicorn/no-null
+                  this.getStdin = null as unknown as undefined;
+                }
+
+                const argBuffer = Buffer.from(args.slice(1).join(" "), "utf8");
+
+                return Object.assign(argBuffer, {
+                  copy: () => {
+                    if (readStdIn) return 0;
+
+                    readStdIn = true;
+
+                    return argBuffer.length;
+                  },
+                }) as Buffer;
+              },
+            }
+          : {}),
+        sendStderr: (buffer: Uint8Array) => print(buffer.toString()),
+        sendStdout: (buffer: Uint8Array) => {
+          if (stdIn) exitStdIn = true;
+          print(buffer.toString());
+        },
       });
       const instance = await WebAssembly.instantiate(
         wasmModule,
@@ -186,7 +214,7 @@ const loadWapm = async (
   } catch (error) {
     const { message } = error as WASIError;
 
-    localEcho?.println(message);
+    printLn(message);
   }
 };
 
