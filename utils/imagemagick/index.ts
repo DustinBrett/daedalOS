@@ -5,7 +5,7 @@ import { type ImageMagickConvertFile } from "utils/imagemagick/types";
 export const convert = async (
   files: ImageMagickConvertFile[],
   extension: string,
-  printLn: (message: string) => void
+  printLn?: (message: string) => void
 ): Promise<ImageMagickConvertFile[]> => {
   const returnFiles: ImageMagickConvertFile[] = [];
 
@@ -29,7 +29,7 @@ export const convert = async (
       );
       const output = [...stdout, ...stderr].join("\n");
 
-      if (output) printLn(output);
+      if (output) printLn?.(output);
 
       returnFiles.push([
         join(dirname(fileName), newName),

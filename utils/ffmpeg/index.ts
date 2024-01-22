@@ -7,7 +7,7 @@ import {
 import { loadFiles } from "utils/functions";
 
 const getFFmpeg = async (
-  printLn: (message: string) => void
+  printLn?: (message: string) => void
 ): Promise<IFFmpegInstance> => {
   if (!window.FFmpeg) {
     await loadFiles(["/Program Files/ffmpeg/ffmpeg.min.js"]);
@@ -19,7 +19,7 @@ const getFFmpeg = async (
       corePath: `${window.location.origin}/Program Files/ffmpeg/ffmpeg-core.js`,
       log: true,
       logger: ({ message }: IFFmpegLog) => {
-        printLn(message);
+        printLn?.(message);
         console.info(message);
       },
       mainName: "main",
@@ -33,7 +33,7 @@ const getFFmpeg = async (
 export const transcode = async (
   files: FFmpegTranscodeFile[],
   extension: string,
-  printLn: (message: string) => void
+  printLn?: (message: string) => void
 ): Promise<FFmpegTranscodeFile[]> => {
   const ffmpeg = await getFFmpeg(printLn);
   const returnFiles: FFmpegTranscodeFile[] = [];
