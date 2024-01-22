@@ -134,8 +134,6 @@ export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
   ".webp",
 ]);
 
-export const PHOTO_ICON = "/System/Icons/photo.webp";
-
 export const MAX_FILE_NAME_LENGTH = 223;
 
 export const MENU_SEPERATOR = { seperator: true };
@@ -248,9 +246,13 @@ export const SAVE_TITLE_CHAR = "\u25CF";
 
 export const ROOT_NAME = "My PC";
 
+export const SYSTEM_PATH = "/System";
+
 export const ROOT_SHORTCUT = `${ROOT_NAME}.url`;
 
-export const ICON_PATH = "/System/Icons";
+export const ICON_PATH = `${SYSTEM_PATH}/Icons`;
+
+export const PHOTO_ICON = `${ICON_PATH}/photo.webp`;
 
 export const USER_ICON_PATH = `${HOME}/Icons`;
 
