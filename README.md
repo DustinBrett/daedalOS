@@ -168,6 +168,7 @@
 
 - File system support
 - Autocomplete & history
+- Pipe commands together
 - Command list via `help`
 - [Git support](https://isomorphic-git.org/) (checkout & clone)
 - [Python support](https://pyodide.org/) (**_.py_**)
