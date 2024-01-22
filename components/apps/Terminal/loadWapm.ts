@@ -1,5 +1,7 @@
+import { basename, extname } from "path";
 import { type WASIBindings } from "wasi-js";
 import { WAPM_STD_IN_APPS, config } from "components/apps/Terminal/config";
+import { getExtension } from "utils/functions";
 
 type WASIError = Error & {
   code: number;
@@ -166,7 +168,10 @@ const loadWapm = async (
       bindings ||= (await import("wasi-js/dist/bindings/browser")).default;
 
       const wasmModule = await WebAssembly.compile(moduleResponse);
-      const stdIn = WAPM_STD_IN_APPS.includes(args[0]);
+      const stdIn =
+        WAPM_STD_IN_APPS.includes(args[0]) ||
+        (getExtension(args[0]) === ".wasm" &&
+          WAPM_STD_IN_APPS.includes(basename(args[0], extname(args[0]))));
       let readStdIn = false;
       let exitStdIn = false;
       const wasi = new WASI({
