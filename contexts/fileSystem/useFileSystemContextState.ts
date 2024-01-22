@@ -230,7 +230,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
               newFs as unknown as ExtendedEmscriptenFileSystem;
 
             if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
-              reject();
+              reject(new Error("Error while mounting Emscripten FS."));
               return;
             }
 
@@ -280,7 +280,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
             FileSystemAccess?.Create({ handle }, (error, newFs) => {
               if (error || !newFs) {
-                reject();
+                reject(new Error("Error while mounting FileSystemAccess FS."));
                 return;
               }
 
@@ -299,7 +299,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
             });
           });
         } else {
-          reject();
+          reject(new Error("Unsupported FileSystemDirectoryHandle type."));
         }
       });
     },
@@ -310,9 +310,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
       const fileData = await readFile(url);
 
       return new Promise((resolve, reject) => {
+        const isIso = getExtension(url) === ".iso";
         const createFs: BFSCallback<IIsoFS | IZipFS> = (createError, newFs) => {
-          if (createError) reject();
-          else if (newFs) {
+          if (createError) {
+            reject(
+              new Error(`Error while mounting ${isIso ? "ISO" : "ZIP"} FS.`)
+            );
+          } else if (newFs) {
             rootFs?.mount?.(url, newFs);
             resolve();
           }
@@ -323,7 +327,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
             FileSystem: { IsoFS, ZipFS },
           } = ExtraFS as typeof IBrowserFS;
 
-          if (getExtension(url) === ".iso") {
+          if (isIso) {
             IsoFS?.Create({ data: fileData }, createFs);
           } else {
             ZipFS?.Create({ zipData: fileData }, createFs);

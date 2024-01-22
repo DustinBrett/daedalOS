@@ -142,12 +142,16 @@ const useAsyncFs = (): AsyncFSModule => {
                 oldPath,
                 (_statsError, stats = Object.create(null) as Stats) => {
                   if (stats.isDirectory()) {
-                    reject();
+                    reject(new Error("Renaming directories is not supported."));
                   } else {
                     fs.readFile(oldPath, (readError, data) =>
                       fs.writeFile(newPath, data, (writeError) =>
                         readError || writeError
-                          ? reject(readError || writeError)
+                          ? reject(
+                              readError ||
+                                writeError ||
+                                new Error("Failed to rename file.")
+                            )
                           : resolve(false)
                       )
                     );
