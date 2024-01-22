@@ -1,6 +1,11 @@
 import { basename, extname } from "path";
 import { type WASIBindings } from "wasi-js";
-import { WAPM_STD_IN_APPS, config } from "components/apps/Terminal/config";
+import {
+  WAPM_STD_IN_APPS,
+  WAPM_STD_IN_EXCLUDE_ARGS,
+  config,
+} from "components/apps/Terminal/config";
+import { parseCommand } from "components/apps/Terminal/functions";
 import { getExtension } from "utils/functions";
 
 type WASIError = Error & {
@@ -145,7 +150,8 @@ const loadWapm = async (
   commandArgs: string[],
   print: (message: string) => void,
   printLn: (message: string) => void,
-  wasmFile?: Buffer
+  wasmFile?: Buffer,
+  pipedCommand?: string
 ): Promise<void> => {
   const args = commandArgs[0] === "run" ? commandArgs.slice(1) : commandArgs;
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
@@ -169,13 +175,19 @@ const loadWapm = async (
 
       const wasmModule = await WebAssembly.compile(moduleResponse);
       const stdIn =
-        WAPM_STD_IN_APPS.includes(args[0]) ||
-        (getExtension(args[0]) === ".wasm" &&
-          WAPM_STD_IN_APPS.includes(basename(args[0], extname(args[0]))));
+        (WAPM_STD_IN_APPS.includes(args[0]) ||
+          (getExtension(args[0]) === ".wasm" &&
+            WAPM_STD_IN_APPS.includes(basename(args[0], extname(args[0]))))) &&
+        (args[2] !== undefined || !WAPM_STD_IN_EXCLUDE_ARGS.includes(args[1]));
       let readStdIn = false;
       let exitStdIn = false;
+      const wasiArgs = stdIn
+        ? pipedCommand
+          ? parseCommand(pipedCommand).slice(1)
+          : []
+        : args;
       const wasi = new WASI({
-        args: stdIn ? [] : args,
+        args: wasiArgs,
         bindings,
         env: {
           COLUMNS: config.cols?.toString(),
@@ -189,7 +201,10 @@ const loadWapm = async (
                   this.getStdin = null as unknown as undefined;
                 }
 
-                const argBuffer = Buffer.from(args.slice(1).join(" "), "utf8");
+                const argBuffer = Buffer.from(
+                  args.slice(wasiArgs.length).join(" "),
+                  "utf8"
+                );
 
                 return Object.assign(argBuffer, {
                   copy: () => {
@@ -217,9 +232,9 @@ const loadWapm = async (
       wasi.start(instance);
     }
   } catch (error) {
-    const { message } = error as WASIError;
+    const { code, message } = error as WASIError;
 
-    printLn(message);
+    if (code !== 0 && !/^WASI Exit error: \d$/.test(message)) printLn(message);
   }
 };
 

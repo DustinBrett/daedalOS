@@ -55,6 +55,7 @@ import {
   MILLISECONDS_IN_SECOND,
   PACKAGE_DATA,
   SHORTCUT_EXTENSION,
+  SYSTEM_PATH,
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import {
@@ -153,6 +154,16 @@ const useCommandInterpreter = (
     },
     [updateFolder]
   );
+  const findCommandInSystemPath = useCallback(
+    async (baseCommand: string): Promise<string | undefined> =>
+      (await readdir(SYSTEM_PATH)).find(
+        (entry) =>
+          [".exe", ".wasm"].includes(getExtension(entry)) &&
+          basename(entry, extname(entry)).toLowerCase() ===
+            baseCommand.toLowerCase()
+      ),
+    [readdir]
+  );
   const commandInterpreter = useCallback(
     async (
       command = "",
@@ -160,7 +171,7 @@ const useCommandInterpreter = (
       printLn = localEcho?.println.bind(localEcho) || console.log,
       print = localEcho?.print.bind(localEcho) || console.log,
       /* eslint-enable no-console */
-      pipedCommand = false
+      pipedCommand = ""
     ): Promise<string> => {
       const pipeCommands = command.split("|");
 
@@ -175,19 +186,23 @@ const useCommandInterpreter = (
 
           const results = output.join("").replace(/\n$/, "");
           const isLastCommand = index === pipeCommands.length - 1;
+          const trimmedPipeCommand = pipeCommand.trim();
 
           output.length = 0;
 
           return commandInterpreter(
-            `${pipeCommand.trim()}${results ? ` ${results}` : ""}`,
+            `${trimmedPipeCommand}${results ? ` ${results}` : ""}`,
             isLastCommand ? undefined : (line) => stdout(`${line}\n`),
             isLastCommand ? undefined : stdout,
-            true
+            trimmedPipeCommand
           );
         }, Promise.resolve(""));
       }
 
-      const [baseCommand = "", ...commandArgs] = parseCommand(command);
+      const [baseCommand = "", ...commandArgs] = parseCommand(
+        command,
+        pipedCommand
+      );
       const lcBaseCommand = baseCommand.toLowerCase();
 
       // eslint-disable-next-line sonarjs/max-switch-cases
@@ -929,6 +944,7 @@ const useCommandInterpreter = (
           break;
         case "py":
         case "python":
+        case "python3":
           {
             const [file] = commandArgs;
             const fullSourcePath = await getFullPath(file);
@@ -994,7 +1010,8 @@ const useCommandInterpreter = (
             printLn,
             fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
               ? await readFile(fullSourcePath)
-              : undefined
+              : undefined,
+            pipedCommand
           );
 
           break;
@@ -1078,17 +1095,19 @@ const useCommandInterpreter = (
                   extensions[fileExtension] || {};
 
                 if (extCommand) {
+                  const newCommand = `${extCommand} ${
+                    baseCommand.includes(" ") ? `"${baseCommand}"` : baseCommand
+                  }`;
+
                   await commandInterpreter(
-                    `${extCommand} ${
-                      baseCommand.includes(" ")
-                        ? `"${baseCommand}"`
-                        : baseCommand
-                    }${
+                    `${newCommand}${
                       commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
                     }`,
                     printLn,
                     print,
                     pipedCommand
+                      ? newCommand.replace(baseCommand, pipedCommand)
+                      : undefined
                   );
                 } else {
                   const fullFilePath = baseFileExists
@@ -1111,7 +1130,23 @@ const useCommandInterpreter = (
                   }
                 }
               } else {
-                printLn(unknownCommand(baseCommand));
+                const systemProgram =
+                  await findCommandInSystemPath(baseCommand);
+
+                if (systemProgram) {
+                  const newCommand = `${SYSTEM_PATH}/${systemProgram}`;
+
+                  await commandInterpreter(
+                    `${newCommand}${
+                      commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
+                    }`,
+                    printLn,
+                    print,
+                    pipedCommand?.replace(baseCommand, newCommand)
+                  );
+                } else {
+                  printLn(unknownCommand(baseCommand));
+                }
               }
             }
           }
@@ -1130,6 +1165,7 @@ const useCommandInterpreter = (
       createPath,
       deletePath,
       exists,
+      findCommandInSystemPath,
       fs,
       getFullPath,
       id,

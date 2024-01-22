@@ -83,7 +83,7 @@ export const aliases: Record<string, string[]> = {
   md: ["mkdir"],
   move: ["mv"],
   neofetch: ["systeminfo"],
-  python: ["py"],
+  python: ["py", "python3"],
   rd: ["rmdir"],
   ren: ["rename"],
   sheep: ["esheep"],
@@ -115,6 +115,7 @@ const directoryCommands = new Set([
   "mv",
   "py",
   "python",
+  "python3",
   "rd",
   "ren",
   "rename",
@@ -163,24 +164,33 @@ export const autoComplete = (
   });
 };
 
-export const parseCommand = (commandString: string): string[] => {
+export const parseCommand = (
+  commandString: string,
+  pipedCommand = ""
+): string[] => {
   let readingQuotedArg = false;
   let currentArg = "";
   const addArg = (acc: string[]): void => {
     acc.push(currentArg);
     currentArg = "";
   };
-  const parsedCommand = [...commandString].reduce<string[]>((acc, char) => {
-    if (char === " " && !readingQuotedArg && currentArg) addArg(acc);
-    else if (char === '"') {
-      readingQuotedArg = !readingQuotedArg;
-      if (!readingQuotedArg) addArg(acc);
-    } else {
-      currentArg += char;
-    }
+  const parsedCommand = [...commandString].reduce<string[]>(
+    (acc, char, index) => {
+      if (pipedCommand && index > pipedCommand.length) {
+        currentArg += char;
+      } else if (char === " " && !readingQuotedArg && currentArg) {
+        addArg(acc);
+      } else if (char === '"') {
+        readingQuotedArg = !readingQuotedArg;
+        if (!readingQuotedArg) addArg(acc);
+      } else {
+        currentArg += char;
+      }
 
-    return acc;
-  }, []);
+      return acc;
+    },
+    []
+  );
 
   return currentArg ? [...parsedCommand, currentArg] : parsedCommand;
 };
