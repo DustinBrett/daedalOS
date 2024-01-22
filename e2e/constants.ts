@@ -44,7 +44,8 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
     );
   } else if (browserName === "firefox") {
     excludedConsoleLogs.push(
-      "Layout was forced before the page was fully loaded"
+      "Layout was forced before the page was fully loaded",
+      "while rendering a different component (`ForwardRef`)"
     );
   }
 
