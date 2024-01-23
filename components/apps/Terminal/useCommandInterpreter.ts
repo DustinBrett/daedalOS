@@ -167,10 +167,8 @@ const useCommandInterpreter = (
   const commandInterpreter = useCallback(
     async (
       command = "",
-      /* eslint-disable no-console */
-      printLn = localEcho?.println.bind(localEcho) || console.log,
-      print = localEcho?.print.bind(localEcho) || console.log,
-      /* eslint-enable no-console */
+      printLn = localEcho?.println.bind(localEcho) || console.info,
+      print = localEcho?.print.bind(localEcho) || console.info,
       pipedCommand = ""
     ): Promise<string> => {
       const pipeCommands = command.split("|");
