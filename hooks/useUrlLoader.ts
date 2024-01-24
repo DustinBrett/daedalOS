@@ -5,6 +5,11 @@ import { useProcesses } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { getExtension, getSearchParam } from "utils/functions";
 
+const isBrowserUrl = (url: string): boolean =>
+  url.startsWith("http://") ||
+  url.startsWith("https://") ||
+  url.startsWith("chrome://");
+
 const useUrlLoader = (): void => {
   const { exists, fs } = useFileSystem();
   const { open } = useProcesses();
@@ -25,7 +30,7 @@ const useUrlLoader = (): void => {
 
       try {
         urlExists =
-          (initialApp === "Browser" && url.startsWith("http")) ||
+          (initialApp === "Browser" && isBrowserUrl(url)) ||
           (await exists(url));
       } catch {
         // Ignore error checking if url exists
@@ -46,7 +51,11 @@ const useUrlLoader = (): void => {
       const extension = getExtension(url);
 
       loadInitialApp(
-        extension ? getProcessByFileExtension(extension) : "FileExplorer"
+        isBrowserUrl(url)
+          ? "Browser"
+          : extension
+            ? getProcessByFileExtension(extension)
+            : "FileExplorer"
       );
     }
   }, [exists, fs, open]);
