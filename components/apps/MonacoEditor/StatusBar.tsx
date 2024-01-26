@@ -40,7 +40,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
       type: NotificationType;
     }[]
   >([]);
-  const addNotification = (message: string, type: NotificationType) =>
+  const addNotification = (message: string, type: NotificationType): void =>
     setNotifications((currentNotifications) => [
       ...currentNotifications,
       { message, type },
