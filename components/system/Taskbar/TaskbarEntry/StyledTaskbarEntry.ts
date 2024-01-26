@@ -1,5 +1,6 @@
 import { m as motion } from "framer-motion";
 import styled from "styled-components";
+import Button from "styles/common/Button";
 
 type StyledTaskbarEntryProps = {
   $foreground: boolean;
@@ -89,7 +90,7 @@ const StyledTaskbarEntry = styled(motion.li)<StyledTaskbarEntryProps>`
     }
   }
 
-  > div {
+  > ${Button} {
     align-items: center;
     display: flex;
 
