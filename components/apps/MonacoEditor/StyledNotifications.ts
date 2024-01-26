@@ -1,22 +1,22 @@
 import styled from "styled-components";
 
 const StyledNotifications = styled.ol`
-  position: absolute;
   bottom: calc(18px + 29px);
-  right: 26px;
   display: flex;
-  width: calc(100% - 80px);
   flex-direction: column;
   gap: 12px;
   place-items: flex-end;
+  position: absolute;
+  right: 26px;
+  width: calc(100% - 80px);
 
   .notification {
     background: rgb(54, 53, 55);
     border-radius: 4px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 50%);
     color: rgb(186, 182, 192);
-    padding: 12px 14px 12px 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     max-width: 100%;
+    padding: 12px 14px 12px 12px;
     width: fit-content;
 
     &:hover {
@@ -46,10 +46,10 @@ const StyledNotifications = styled.ol`
 
       figcaption {
         font-size: 14px;
-        padding-left: 6px;
         max-width: calc(100% - 16px);
-        text-overflow: ellipsis;
         overflow: hidden;
+        padding-left: 6px;
+        text-overflow: ellipsis;
         white-space: nowrap;
       }
     }
