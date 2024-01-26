@@ -8,7 +8,7 @@ const StyledBrowser = styled.div<StyledBrowserProps>`
   iframe {
     background-color: ${({ $hasSrcDoc }) => ($hasSrcDoc ? "#fff" : "initial")};
     border: 0;
-    height: calc(100% - 36px - 33px);
+    height: calc(100% - 42px - 37px);
     width: 100%;
   }
 
