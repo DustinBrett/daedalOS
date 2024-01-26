@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -50,6 +51,10 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   const { sizes } = useTheme();
   const showSubMenuTimerRef = useRef<number>(0);
   const [mouseOver, setMouseOver] = useState(false);
+  const canMouseOver = useMemo(
+    () => window.matchMedia("(hover: hover)").matches,
+    []
+  );
   const setDelayedShowSubMenu = useCallback((show: boolean) => {
     if (showSubMenuTimerRef.current) {
       window.clearTimeout(showSubMenuTimerRef.current);
@@ -63,7 +68,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   }, []);
   const onMouseEnter: React.MouseEventHandler = () => {
     setMouseOver(true);
-    setDelayedShowSubMenu(true);
+    if (menu) setDelayedShowSubMenu(true);
   };
   const onMouseLeave: React.MouseEventHandler = ({ relatedTarget, type }) => {
     if (
@@ -90,9 +95,8 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     (event) => {
       haltEvent(event);
 
-      if (menu) {
-        setShowSubMenu(true);
-      } else {
+      if (menu) setShowSubMenu(true);
+      else {
         action?.();
         resetMenu();
       }
@@ -108,7 +112,7 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         haltEvent(event);
         menuEntryElement?.focus(PREVENT_SCROLL);
       }
-      setShowSubMenu(true);
+      if (menu) setShowSubMenu(true);
     };
 
     menuEntryElement?.addEventListener("touchstart", touchListener, {
@@ -143,7 +147,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       ) : (
         <Button
           aria-label={label}
-          className={showSubMenu && mouseOver ? "active" : undefined}
+          className={
+            showSubMenu && (!canMouseOver || mouseOver) ? "active" : undefined
+          }
           onMouseUp={triggerAction}
           {...DIV_BUTTON_PROPS}
         >
@@ -166,7 +172,9 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
           {menu && <ChevronRight className="right" />}
         </Button>
       )}
-      {showSubMenu && <Menu subMenu={{ items: menu, ...subMenuOffset }} />}
+      {showSubMenu && menu && (
+        <Menu subMenu={{ items: menu, ...subMenuOffset }} />
+      )}
     </li>
   );
 };
