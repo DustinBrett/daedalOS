@@ -38,7 +38,11 @@ const usePDF = ({
   url,
 }: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
-  const { argument, processes: { [id]: process } = {} } = useProcesses();
+  const {
+    argument,
+    processes: { [id]: process } = {},
+    url: setUrl,
+  } = useProcesses();
   const { libs = [], scale } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const renderPage = useCallback(
@@ -95,8 +99,11 @@ const usePDF = ({
       setPages([]);
       setLoading(true);
 
-      const doc = await window.pdfjsLib.getDocument(await readFile(url))
-        .promise;
+      const fileData = await readFile(url);
+
+      if (fileData.length === 0) throw new Error("File is empty");
+
+      const doc = await window.pdfjsLib.getDocument(fileData).promise;
       const { info } = await doc.getMetadata();
 
       argument(id, "subTitle", (info as MetadataInfo).Title);
@@ -137,10 +144,13 @@ const usePDF = ({
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "/Program Files/PDF.js/pdf.worker.js";
 
-        renderPages();
+        renderPages().catch(() => {
+          setUrl(id, "");
+          setLoading(false);
+        });
       }
     });
-  }, [libs, renderPages]);
+  }, [id, libs, renderPages, setLoading, setUrl]);
 
   useEffect(() => {
     if (pages.length > 0) {
