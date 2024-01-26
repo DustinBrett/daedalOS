@@ -13,7 +13,7 @@ const StyledStatusBar = styled.footer`
   width: 100%;
   z-index: 1;
 
-  ol {
+  ol.status {
     display: flex;
     place-content: flex-end;
     place-items: center;

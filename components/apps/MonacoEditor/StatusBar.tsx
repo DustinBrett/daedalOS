@@ -1,8 +1,16 @@
 import { basename, dirname } from "path";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  ErrorIcon,
+  InfoIcon,
+  SaveIcon,
+  WarningIcon,
+} from "components/apps/MonacoEditor/Icons";
+import StyledNotifications from "components/apps/MonacoEditor/StyledNotifications";
 import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
 import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
+  type PrettierError,
   isPrettyLanguage,
   prettyPrint,
 } from "components/apps/MonacoEditor/language";
@@ -14,15 +22,7 @@ import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
 import { haltEvent, label } from "utils/functions";
 
-const SaveIcon = memo(() => (
-  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-    <path
-      clipRule="evenodd"
-      d="m13.353 1.146 1.5 1.5L15 3v11.5l-.5.5h-13l-.5-.5v-13l.5-.5H13l.353.146zM2 2v12h12V3.208L12.793 2H11v4H4V2H2zm6 0v3h2V2H8z"
-      fillRule="evenodd"
-    />
-  </svg>
-));
+type NotificationType = "error" | "warning" | "info";
 
 const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -34,6 +34,27 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const [language, setLanguage] = useState("");
   const [position, setPosition] = useState("Ln 1, Col 1");
   const [lineCount, setLineCount] = useState(1);
+  const [notifications, setNotifications] = useState<
+    {
+      message: string;
+      type: NotificationType;
+    }[]
+  >([]);
+  const addNotification = (message: string, type: NotificationType) =>
+    setNotifications((currentNotifications) => [
+      ...currentNotifications,
+      { message, type },
+    ]);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      setTimeout(() => {
+        setNotifications((currentNotifications) =>
+          currentNotifications.slice(1)
+        );
+      }, 10000);
+    }
+  }, [notifications]);
 
   useEffect(() => {
     const updatePosition = (): void => {
@@ -80,10 +101,10 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
     <StyledStatusBar onContextMenuCapture={haltEvent}>
       {editor && (
         <>
-          <ol>
+          <ol className="status">
             <li>Lines {lineCount}</li>
           </ol>
-          <ol>
+          <ol className="status">
             <li className="clickable save">
               <Button
                 onClick={async () => {
@@ -93,6 +114,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                     await writeFile(saveUrl, saveData, true);
                     updateFolder(dirname(saveUrl), basename(saveUrl));
                     prependFileToTitle(basename(saveUrl));
+                    addNotification("File saved", "info");
                   }
                 }}
                 {...label("Save")}
@@ -104,11 +126,24 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
               <li className="clickable">
                 <Button
                   className="pretty"
-                  onClick={async () =>
-                    editor?.setValue(
-                      await prettyPrint(language, editor.getValue())
-                    )
-                  }
+                  onClick={async () => {
+                    try {
+                      editor?.setValue(
+                        await prettyPrint(language, editor.getValue())
+                      );
+
+                      addNotification("Formatted successfully", "info");
+                    } catch (error) {
+                      const { cause, loc, message } = error as PrettierError;
+
+                      addNotification(
+                        cause
+                          ? `${cause.msg || message}${loc?.start ? ` (${loc.start.line}:${loc.start.column})` : ""}`
+                          : message,
+                        "error"
+                      );
+                    }
+                  }}
                   {...label(`Pretty print ${basename(url)}`)}
                 >
                   {"{ }"}
@@ -134,6 +169,18 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
             )}
             {language !== "" && <li>{language}</li>}
           </ol>
+          <StyledNotifications>
+            {notifications.map(({ message, type }) => (
+              <li key={`${type} ${message}`} className="notification">
+                <figure>
+                  {type === "error" && <ErrorIcon />}
+                  {type === "warning" && <WarningIcon />}
+                  {type === "info" && <InfoIcon />}
+                  <figcaption>{message}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </StyledNotifications>
         </>
       )}
     </StyledStatusBar>

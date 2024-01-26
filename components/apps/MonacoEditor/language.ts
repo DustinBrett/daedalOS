@@ -3,6 +3,19 @@ import { type Plugin } from "prettier";
 type Parser = { parser: string; plugins: Plugin[] };
 type PrettierPlugin = { default: Plugin };
 
+export type PrettierError = Error &
+  Partial<{
+    cause: {
+      msg: string;
+    };
+    loc: {
+      start: {
+        column: number;
+        line: number;
+      };
+    };
+  }>;
+
 const prettyLanguages = new Set([
   "json",
   "css",
