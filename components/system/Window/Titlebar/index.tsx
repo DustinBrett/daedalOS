@@ -97,6 +97,11 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
             setMenu(Object.create(null) as MenuState);
           }
         }}
+        onMouseUpCapture={() => {
+          if (componentWindow && componentWindow !== document.activeElement) {
+            componentWindow.focus(PREVENT_SCROLL);
+          }
+        }}
         onTouchEndCapture={onTouchEnd}
         onTouchStartCapture={onTouchStart}
       >
