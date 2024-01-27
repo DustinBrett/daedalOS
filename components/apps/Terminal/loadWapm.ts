@@ -152,7 +152,7 @@ const loadWapm = async (
   printLn: (message: string) => void,
   wasmFile?: Buffer,
   pipedCommand?: string
-): Promise<void> => {
+): Promise<[string, Uint8Array | Buffer] | []> => {
   const args = commandArgs[0] === "run" ? commandArgs.slice(1) : commandArgs;
   const { lowerI64Imports } = await import("@wasmer/wasm-transformer");
   const { default: WASI } = await import("wasi-js");
@@ -229,13 +229,21 @@ const loadWapm = async (
         wasi.getImports(wasmModule) as WebAssembly.Imports
       );
 
-      wasi.start(instance);
+      try {
+        wasi.start(instance);
+      } catch {
+        // Ignore error while running command
+      }
+
+      if (!wasmFile) return [args[0].split("/").slice(-1)[0], wasmBinary];
     }
   } catch (error) {
     const { code, message } = error as WASIError;
 
     if (code !== 0 && !/^WASI Exit error: \d$/.test(message)) printLn(message);
   }
+
+  return [];
 };
 
 export default loadWapm;
