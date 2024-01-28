@@ -50,6 +50,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [UAParser.js](https://github.com/faisalman/ua-parser-js)
 - [Web Stable Diffusion](https://github.com/mlc-ai/web-stable-diffusion)
 - [mediainfo.js](https://github.com/buzz/mediainfo.js)
+- [exif-js](https://github.com/exif-js/exif-js)
 
 ## App Libraries
 

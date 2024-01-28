@@ -68,6 +68,10 @@ const StyledDetailsTab = styled.div`
           overflow: hidden;
           text-overflow: ellipsis;
           user-select: text;
+
+          img {
+            width: 100%;
+          }
         }
 
         &.header {

@@ -1,6 +1,5 @@
 import { basename, extname } from "path";
-import { useEffect, useRef, useState } from "react";
-import { type MediaType } from "mediainfo.js";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -25,6 +24,15 @@ const MEDIA_APPS = new Set([
   "Webamp",
 ]);
 
+const EXIF_TYPES = new Set([".jpg", "jpeg", ".tif", ".tiff"]);
+
+export type MetaData = Record<string, Record<string, string | number>>;
+
+export type PropertiesMetaData = {
+  exif?: MetaData;
+  mediaType?: MetaData;
+};
+
 const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const { icon: setIcon, processes: { [id]: process } = {} } = useProcesses();
   const { shortcutPath, url } = process || {};
@@ -42,14 +50,13 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
     "general"
   );
   const isShortcut = Boolean(process?.shortcutPath);
-  const fileData = useRef<MediaType | undefined>();
+  const [metaData, setMetaData] = useState<PropertiesMetaData>({});
   const onGeneral = currentTab === "general";
   const onDetails = currentTab === "details";
+  const extension = useMemo(() => extname(generalUrl), [generalUrl]);
 
   useEffect(() => {
     setIcon(id, icon);
-
-    const extension = extname(generalUrl);
 
     if (typeof getIcon === "function" && extension.toLowerCase() === ".exe") {
       getIconAbortController.current = new AbortController();
@@ -64,6 +71,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       );
     }
   }, [
+    extension,
     generalUrl,
     getIcon,
     icon,
@@ -121,7 +129,15 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
           url={generalUrl}
         />
       )}
-      {onDetails && <DetailsTab fileDataRef={fileData} id={id} url={url} />}
+      {onDetails && (
+        <DetailsTab
+          hasExif={EXIF_TYPES.has(extension.toLowerCase())}
+          id={id}
+          metaData={metaData}
+          setMetaData={setMetaData}
+          url={url}
+        />
+      )}
     </StyledProperties>
   );
 };

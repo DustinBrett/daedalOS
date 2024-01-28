@@ -47,6 +47,7 @@
     "butterchurn-presets": "^3.0.0-beta.4",
     "decode-ico": "^0.4.1",
     "dompurify": "^3.0.8",
+    "exif-js": "^2.3.0",
     "fflate": "^0.8.1",
     "file-type": "^19.0.0",
     "fix-webm-duration": "^1.0.5",
