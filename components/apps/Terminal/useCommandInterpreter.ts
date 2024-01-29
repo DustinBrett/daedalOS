@@ -766,10 +766,16 @@ const useCommandInterpreter = (
 
           output.push(
             `Uptime: ${getUptime(true)}`,
-            `Packages: ${Object.keys(processDirectory).length}`,
-            `Resolution: ${window.screen.width}x${window.screen.height}`,
-            `Theme: ${themeName}`
+            `Packages: ${Object.keys(processDirectory).length}`
           );
+
+          if (window.screen?.width && window.screen?.height) {
+            output.push(
+              `Resolution: ${window.screen.width}x${window.screen.height}`
+            );
+          }
+
+          output.push(`Theme: ${themeName}`);
 
           if (terminalFont) {
             output.push(`Terminal Font: ${terminalFont}`);
