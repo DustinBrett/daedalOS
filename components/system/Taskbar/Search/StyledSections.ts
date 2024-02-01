@@ -24,7 +24,7 @@ const StyledSections = styled.div<StyledSectionsProps>`
   @supports (not (scrollbar-gutter: stable)) {
     margin-right: ${THIN_SCROLLBAR_WIDTH}px;
 
-    @supports not (selector(::-webkit-scrollbar)) {
+    @supports not selector(::-webkit-scrollbar) {
       margin-right: 8px;
     }
 
