@@ -39,8 +39,11 @@ const ScrollBars = (
   scheme: ColorSchemes = "dark"
 ): RuleSet<object> => css`
   overflow: auto;
-  scrollbar-color: ${colorScheme[scheme].thumb} ${colorScheme[scheme].track};
   scrollbar-gutter: stable;
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: ${colorScheme[scheme].thumb} ${colorScheme[scheme].track};
+  }
 
   &::-webkit-scrollbar {
     height: ${size}px;

@@ -47,10 +47,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
     padding-right: ${THIN_SCROLLBAR_WIDTH}px;
     padding-top: 7px;
-    scrollbar-width: none;
 
-    @supports selector(::-webkit-scrollbar) and (scrollbar-width: thin) {
-      scrollbar-gutter: auto;
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-width: none;
     }
 
     ${StyledFileManager} {
@@ -93,13 +92,6 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       @supports not selector(::-webkit-scrollbar) {
         padding-right: 5px;
         scrollbar-width: thin;
-      }
-
-      @supports selector(::-webkit-scrollbar) and (scrollbar-width: thin) {
-        padding-right: ${({ $showScrolling }) =>
-          $showScrolling ? "2px" : `${THIN_SCROLLBAR_WIDTH}px`};
-        scrollbar-width: ${({ $showScrolling }) =>
-          $showScrolling ? "thin" : "none"};
       }
     }
 
