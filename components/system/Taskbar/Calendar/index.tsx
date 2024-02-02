@@ -32,8 +32,17 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
   );
   const changeMonth = (direction: number): void => {
     const newDate = new Date(date);
+    const newMonth = newDate.getMonth() + direction;
 
-    newDate.setMonth(newDate.getMonth() + direction);
+    newDate.setDate(1);
+    newDate.setMonth(newMonth);
+
+    const isCurrentMonth =
+      (newMonth === 12 ? 0 : newMonth === -1 ? 11 : newMonth) ===
+      today.getMonth();
+
+    if (isCurrentMonth) newDate.setDate(today.getDate());
+
     setDate(newDate);
     setCalendar(createCalendar(newDate));
   };
