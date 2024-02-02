@@ -28,6 +28,7 @@ public/Users/Public/**
 !public/Users/Public/Start Menu/Emulators
 !public/Users/Public/Start Menu/Emulators/*.url
 !public/Users/Public/Start Menu/Games
+!public/Users/Public/Start Menu/Games/Chrome Dino.url
 !public/Users/Public/Start Menu/Games/ClassiCube.url
 !public/Users/Public/Start Menu/Games/DX-Ball.url
 !public/Users/Public/Start Menu/Games/Quake III Arena.url
