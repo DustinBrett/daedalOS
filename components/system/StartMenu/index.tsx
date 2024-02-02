@@ -1,5 +1,5 @@
 import { useTheme } from "styled-components";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { type Variant } from "framer-motion";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
@@ -17,6 +17,7 @@ import {
   PREVENT_SCROLL,
   START_MENU_PATH,
   THIN_SCROLLBAR_WIDTH,
+  THIN_SCROLLBAR_WIDTH_NON_WEBKIT,
 } from "utils/constants";
 
 type StartMenuProps = {
@@ -33,8 +34,22 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     sizes: { startMenu },
   } = useTheme();
   const [showScrolling, setShowScrolling] = useState(false);
-  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) =>
-    setShowScrolling(clientX > startMenu.size - THIN_SCROLLBAR_WIDTH);
+  const canCustomizeScrollbarWidth = useMemo(
+    () => CSS.supports("selector(::-webkit-scrollbar)"),
+    []
+  );
+  const startMenuWidth = useMemo(
+    () =>
+      startMenu.size -
+      (canCustomizeScrollbarWidth
+        ? THIN_SCROLLBAR_WIDTH
+        : THIN_SCROLLBAR_WIDTH_NON_WEBKIT),
+    [canCustomizeScrollbarWidth, startMenu.size]
+  );
+  const revealScrolling: React.MouseEventHandler = useCallback(
+    ({ clientX = 0 }) => setShowScrolling(clientX > startMenuWidth),
+    [startMenuWidth]
+  );
   const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
     element?.focus(PREVENT_SCROLL);
     menuRef.current = element;
@@ -86,6 +101,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
           }
         }
       }}
+      onMouseLeave={() => setShowScrolling(false)}
       onMouseMove={revealScrolling}
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}

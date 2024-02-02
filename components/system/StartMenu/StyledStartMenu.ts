@@ -1,41 +1,17 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { m as motion } from "framer-motion";
+import StyledFileEntry from "components/system/Files/Views/List/StyledFileEntry";
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
 import ScrollBars from "styles/common/ScrollBars";
-import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
+import {
+  THIN_SCROLLBAR_WIDTH,
+  THIN_SCROLLBAR_WIDTH_NON_WEBKIT,
+} from "utils/constants";
 
 type StyledStartMenuProps = {
   $showScrolling: boolean;
 };
-
-const SCROLLBAR_PADDING_OFFSET = 3;
-const HOVER_ADJUSTED_PADDING = THIN_SCROLLBAR_WIDTH - SCROLLBAR_PADDING_OFFSET;
-
-const ThinScrollBars = css<StyledStartMenuProps>`
-  &::-webkit-scrollbar {
-    width: ${({ $showScrolling }) =>
-      $showScrolling ? THIN_SCROLLBAR_WIDTH : SCROLLBAR_PADDING_OFFSET}px;
-  }
-
-  &::-webkit-scrollbar-corner,
-  &::-webkit-scrollbar-track {
-    background-color: ${({ $showScrolling }) =>
-      $showScrolling ? undefined : "transparent"};
-  }
-
-  &::-webkit-scrollbar-button:single-button {
-    background-color: ${({ $showScrolling }) =>
-      $showScrolling ? undefined : "transparent"};
-    border: ${({ $showScrolling }) =>
-      $showScrolling ? undefined : "1px solid transparent"};
-  }
-
-  &::-webkit-scrollbar-thumb:vertical {
-    background-color: ${({ $showScrolling }) =>
-      $showScrolling ? undefined : "rgb(167, 167, 167)"};
-  }
-`;
 
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   ${({ theme }) =>
@@ -45,11 +21,17 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
     margin-top: 0;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
-    padding-right: ${THIN_SCROLLBAR_WIDTH}px;
     padding-top: 7px;
+    overflow-x: hidden;
 
-    @supports not selector(::-webkit-scrollbar) {
-      scrollbar-width: none;
+    ${StyledFileEntry} {
+      width: ${({ theme }) =>
+        `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH}px`};
+
+      @supports not selector(::-webkit-scrollbar) {
+        width: ${({ theme }) =>
+          `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH_NON_WEBKIT}px`};
+      }
     }
 
     ${StyledFileManager} {
@@ -76,40 +58,32 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       }
     }
 
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-width: ${({ $showScrolling }) =>
+        $showScrolling ? "thin" : "none"};
+    }
+
     &::-webkit-scrollbar {
-      width: 0;
+      width: ${({ $showScrolling }) =>
+        $showScrolling ? THIN_SCROLLBAR_WIDTH : 0}px;
     }
 
-    &:hover {
-      ${ThinScrollBars};
-      padding-right: ${({ $showScrolling }) =>
-        $showScrolling ? 0 : `${HOVER_ADJUSTED_PADDING}px`};
-
-      ${StyledFileManager} {
-        padding-right: 0;
-      }
-
-      @supports not selector(::-webkit-scrollbar) {
-        padding-right: 5px;
-        scrollbar-width: thin;
-      }
+    &::-webkit-scrollbar-corner,
+    &::-webkit-scrollbar-track {
+      background-color: ${({ $showScrolling }) =>
+        $showScrolling ? undefined : "transparent"};
     }
 
-    @media (hover: none), (pointer: coarse) {
-      ${ThinScrollBars};
-      @supports selector(::-webkit-scrollbar) {
-        &::-webkit-scrollbar-track {
-          margin: ${THIN_SCROLLBAR_WIDTH}px 0;
-        }
+    &::-webkit-scrollbar-button:single-button {
+      background-color: ${({ $showScrolling }) =>
+        $showScrolling ? undefined : "transparent"};
+      border: ${({ $showScrolling }) =>
+        $showScrolling ? undefined : "1px solid transparent"};
+    }
 
-        &:hover {
-          padding-right: ${THIN_SCROLLBAR_WIDTH}px;
-        }
-
-        &:focus {
-          padding-right: ${SCROLLBAR_PADDING_OFFSET}px;
-        }
-      }
+    &::-webkit-scrollbar-thumb:vertical {
+      background-color: ${({ $showScrolling }) =>
+        $showScrolling ? undefined : "rgb(167, 167, 167)"};
     }
   }
 `;
