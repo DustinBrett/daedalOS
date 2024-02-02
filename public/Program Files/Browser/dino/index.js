@@ -35,7 +35,7 @@
         this.distanceMeter = null;
         this.distanceRan = 0;
 
-        this.highestScore = 0;
+        this.highestScore = Number(window.localStorage.getItem("dinoHighestScore") || "0");
 
         this.time = 0;
         this.runningTime = 0;
@@ -377,6 +377,10 @@
             // Distance meter
             this.distanceMeter = new DistanceMeter(this.canvas,
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
+
+            if (this.highestScore) {
+              this.distanceMeter.setHighScore(this.highestScore);
+            }
 
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
@@ -799,6 +803,7 @@
             // Update the high score.
             if (this.distanceRan > this.highestScore) {
                 this.highestScore = Math.ceil(this.distanceRan);
+                window.localStorage.setItem("dinoHighestScore", this.highestScore.toString());
                 this.distanceMeter.setHighScore(this.highestScore);
             }
 
