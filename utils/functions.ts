@@ -24,6 +24,7 @@ import {
   TIMESTAMP_DATE_FORMAT,
   USER_ICON_PATH,
 } from "utils/constants";
+import { LOCAL_HOST } from "components/apps/Browser/config";
 
 export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
@@ -666,7 +667,7 @@ export const getTZOffsetISOString = (): string => {
   ).toISOString();
 };
 
-export const getUrlOrSearch = async (input: string): Promise<string> => {
+export const getUrlOrSearch = async (input: string): Promise<URL> => {
   const isIpfs = input.startsWith("ipfs://");
   const hasHttpSchema =
     input.startsWith("http://") || input.startsWith("https://");
@@ -675,21 +676,24 @@ export const getUrlOrSearch = async (input: string): Promise<string> => {
     input.endsWith(".ca") ||
     input.endsWith(".net") ||
     input.endsWith(".org");
+  const isLocalHost = LOCAL_HOST.has(input);
 
   try {
-    const { href } = new URL(
-      hasHttpSchema || !hasTld || isIpfs ? input : `https://${input}`
+    const url = new URL(
+      !isLocalHost && (hasHttpSchema || !hasTld || isIpfs)
+        ? input
+        : `https://${input}`
     );
 
     if (isIpfs) {
       const { getIpfsGatewayUrl } = await import("utils/ipfs");
 
-      return await getIpfsGatewayUrl(href);
+      return new URL(await getIpfsGatewayUrl(url.href));
     }
 
-    return href;
+    return url;
   } catch {
-    return `${GOOGLE_SEARCH_QUERY}${input}`;
+    return new URL(`${GOOGLE_SEARCH_QUERY}${input}`);
   }
 };
 

@@ -1,9 +1,15 @@
+import { dirname, join, resolve } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createDirectoryIndex,
+  type DirectoryEntries,
+} from "components/apps/Browser/directoryIndex";
 import { Arrow, Refresh, Stop } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import {
   DINO_GAME,
   HOME_PAGE,
+  LOCAL_HOST,
   bookmarks,
 } from "components/apps/Browser/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -18,6 +24,7 @@ import {
   FAVICON_BASE_PATH,
   IFRAME_CONFIG,
   ONE_TIME_PASSIVE_EVENT,
+  SHORTCUT_EXTENSION,
 } from "utils/constants";
 import {
   GOOGLE_SEARCH_QUERY,
@@ -25,6 +32,10 @@ import {
   getUrlOrSearch,
   label,
 } from "utils/functions";
+import {
+  getInfoWithExtension,
+  getShortcutInfo,
+} from "components/system/Files/FileEntry/functions";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -32,13 +43,14 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     linkElement,
     url: changeUrl,
     processes: { [id]: process },
+    open,
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const { initialTitle = "", url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(initialUrl, id);
-  const { exists, readFile } = useFileSystem();
+  const { exists, fs, stat, readFile, readdir } = useFileSystem();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,6 +61,34 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     if (inputRef.current) inputRef.current.value = history[position + step];
   };
   const currentUrl = useRef("");
+  const changeIframeWindowLocation = (
+    newUrl: string,
+    contentWindow: Window
+  ): void => {
+    let isSrcDoc = false;
+
+    try {
+      isSrcDoc = contentWindow.location?.pathname === "srcdoc";
+    } catch {
+      // Ignore failure to read iframe window path
+    }
+
+    if (isSrcDoc) {
+      iframeRef.current?.setAttribute("src", newUrl);
+    } else {
+      contentWindow.location?.replace(newUrl);
+    }
+  };
+  const goToLink = useCallback(
+    (newUrl: string): void => {
+      if (inputRef.current) {
+        inputRef.current.value = newUrl;
+      }
+
+      changeUrl(id, newUrl);
+    },
+    [changeUrl, id]
+  );
   const setUrl = useCallback(
     async (addressInput: string): Promise<void> => {
       const { contentWindow } = iframeRef.current || {};
@@ -64,58 +104,174 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         setIcon(id, processDirectory.Browser.icon);
 
         if (addressInput.toLowerCase().startsWith(DINO_GAME.url)) {
-          contentWindow.location.replace(
-            `${window.location.origin}${DINO_GAME.path}`
+          changeIframeWindowLocation(
+            `${window.location.origin}${DINO_GAME.path}`,
+            contentWindow
           );
-
           prependFileToTitle(`${DINO_GAME.url}/`);
         } else if (!isHtml) {
-          const addressUrl = await getUrlOrSearch(addressInput);
+          const processedUrl = await getUrlOrSearch(addressInput);
 
-          contentWindow.location.replace(addressUrl);
+          if (
+            LOCAL_HOST.has(processedUrl.host) ||
+            LOCAL_HOST.has(addressInput)
+          ) {
+            const directory =
+              decodeURI(processedUrl.pathname).replace(/\/$/, "") || "/";
+            const dirStats = (
+              await Promise.all<DirectoryEntries>(
+                (await readdir(directory)).map(async (entry) => {
+                  const href = join(directory, entry);
+                  let description;
+                  let shortcutUrl;
 
-          if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
-            prependFileToTitle(`${addressInput} - Google Search`);
-          } else {
-            const { name = initialTitle } =
-              bookmarks?.find(
-                ({ url: bookmarkUrl }) => bookmarkUrl === addressInput
-              ) || {};
+                  if (getExtension(entry) === SHORTCUT_EXTENSION) {
+                    try {
+                      ({ comment: description, url: shortcutUrl } =
+                        getShortcutInfo(await readFile(href)));
+                    } catch {
+                      // Ignore failure to read shortcut
+                    }
+                  }
 
-            prependFileToTitle(name);
-          }
+                  const stats = await stat(
+                    shortcutUrl && (await exists(shortcutUrl))
+                      ? shortcutUrl
+                      : href
+                  );
+                  const isDir = stats.isDirectory();
 
-          if (addressInput.startsWith("ipfs://")) {
-            setIcon(id, "/System/Icons/Favicons/ipfs.webp");
-          } else {
-            const favicon = new Image();
-            const faviconUrl = `${
-              new URL(addressUrl).origin
-            }${FAVICON_BASE_PATH}`;
+                  return {
+                    description,
+                    href: isDir && shortcutUrl ? shortcutUrl : href,
+                    icon: isDir ? "folder" : undefined,
+                    modified: stats.mtime,
+                    size: isDir || shortcutUrl ? undefined : stats.size,
+                  };
+                })
+              )
+            ).sort(
+              (a, b) =>
+                Number(b.icon === "folder") - Number(a.icon === "folder")
+            );
+            // TODO: Sort files/folders by name
 
-            favicon.addEventListener(
-              "error",
+            iframeRef.current?.addEventListener(
+              "load",
               () => {
-                const { icon } =
-                  bookmarks?.find(
-                    ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
-                  ) || {};
+                try {
+                  contentWindow.document.body
+                    .querySelectorAll("a")
+                    .forEach((a) => {
+                      a.addEventListener("click", (event) => {
+                        event.preventDefault();
 
-                if (icon) setIcon(id, icon);
+                        const target = event.currentTarget as HTMLAnchorElement;
+                        const isDir = target.getAttribute("type") === "folder";
+
+                        // TODO: Handle sorting columns via query params
+                        // TODO: Handle shortcuts (nostr/YT)
+
+                        if (isDir) goToLink(target.href);
+                        else if (fs && target.href) {
+                          const { pathname } = new URL(target.href);
+
+                          getInfoWithExtension(
+                            fs,
+                            dirname(pathname),
+                            getExtension(pathname),
+                            ({ pid }) =>
+                              open(pid || "OpenWith", {
+                                url: decodeURI(pathname),
+                              })
+                          );
+                        }
+                      });
+                    });
+                } catch {
+                  // Ignore failure to add click event listeners
+                }
               },
               ONE_TIME_PASSIVE_EVENT
             );
-            favicon.addEventListener(
-              "load",
-              () => setIcon(id, faviconUrl),
-              ONE_TIME_PASSIVE_EVENT
+
+            setSrcDoc(
+              createDirectoryIndex(
+                directory,
+                processedUrl.origin,
+                directory === "/"
+                  ? dirStats
+                  : [
+                      {
+                        href: resolve(directory, ".."),
+                        icon: "back",
+                      },
+                      ...dirStats,
+                    ]
+              )
             );
-            favicon.src = faviconUrl;
+
+            prependFileToTitle(`Index of ${directory}`);
+          } else {
+            const addressUrl = processedUrl.href;
+
+            changeIframeWindowLocation(addressUrl, contentWindow);
+
+            if (addressUrl.startsWith(GOOGLE_SEARCH_QUERY)) {
+              prependFileToTitle(`${addressInput} - Google Search`);
+            } else {
+              const { name = initialTitle } =
+                bookmarks?.find(
+                  ({ url: bookmarkUrl }) => bookmarkUrl === addressInput
+                ) || {};
+
+              prependFileToTitle(name);
+            }
+
+            if (addressInput.startsWith("ipfs://")) {
+              setIcon(id, "/System/Icons/Favicons/ipfs.webp");
+            } else {
+              const favicon = new Image();
+              const faviconUrl = `${
+                new URL(addressUrl).origin
+              }${FAVICON_BASE_PATH}`;
+
+              favicon.addEventListener(
+                "error",
+                () => {
+                  const { icon } =
+                    bookmarks?.find(
+                      ({ url: bookmarkUrl }) => bookmarkUrl === addressUrl
+                    ) || {};
+
+                  if (icon) setIcon(id, icon);
+                },
+                ONE_TIME_PASSIVE_EVENT
+              );
+              favicon.addEventListener(
+                "load",
+                () => setIcon(id, faviconUrl),
+                ONE_TIME_PASSIVE_EVENT
+              );
+              favicon.src = faviconUrl;
+            }
           }
         }
       }
     },
-    [exists, id, initialTitle, prependFileToTitle, readFile, setIcon]
+    [
+      exists,
+      fs,
+      goToLink,
+      id,
+      initialTitle,
+      open,
+      prependFileToTitle,
+      readFile,
+      readdir,
+      setIcon,
+      stat,
+    ]
   );
 
   useEffect(() => {
@@ -179,13 +335,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
           <Button
             key={name}
-            onClick={() => {
-              if (inputRef.current) {
-                inputRef.current.value = bookmarkUrl;
-              }
-
-              changeUrl(id, bookmarkUrl);
-            }}
+            onClick={() => goToLink(bookmarkUrl)}
             {...label(`${name}\n${bookmarkUrl}`)}
           >
             <Icon alt={name} imgSize={16} src={icon} />

@@ -21,6 +21,12 @@ export const bookmarks: Bookmark[] = [
     url: "https://dustinbrett.com/",
   },
   {
+    icon: "/System/Icons/Favicons/dir.webp",
+    name: "Index of /",
+    url: "http://localhost/",
+  },
+  DINO_GAME,
+  {
     icon: "/System/Icons/Favicons/google.webp",
     name: "Google",
     url: "https://www.google.com/webhp?igu=1",
@@ -45,7 +51,8 @@ export const bookmarks: Bookmark[] = [
     name: "AaronOS",
     url: "https://aaronos.dev/",
   },
-  DINO_GAME,
 ];
 
 export const HOME_PAGE = "https://www.google.com/webhp?igu=1";
+
+export const LOCAL_HOST = new Set(["127.0.0.1", "localhost"]);
