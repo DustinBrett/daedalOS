@@ -12,11 +12,10 @@ import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
 
-const getCore = (extension: string): [string, Core] => {
-  return (Object.entries(emulatorCores).find(([, { ext }]) =>
+const getCore = (extension: string): [string, Core] =>
+  (Object.entries(emulatorCores).find(([, { ext }]) =>
     ext.includes(extension)
   ) || []) as [string, Core];
-};
 
 const useEmulator = ({
   containerRef,
