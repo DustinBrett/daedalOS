@@ -20,9 +20,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
     margin-top: 0;
+    overflow-x: hidden;
     padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
     padding-top: 7px;
-    overflow-x: hidden;
 
     ${StyledFileEntry} {
       width: ${({ theme }) =>
