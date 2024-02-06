@@ -1,4 +1,4 @@
-import { basename, dirname, join, resolve } from "path";
+import { basename, join, resolve } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createDirectoryIndex,
@@ -247,15 +247,12 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                           } else if (isDir) {
                             goToLink(target.href);
                           } else if (fs && target.href) {
-                            // TODO: Handle shortcuts (nostr/YT)
                             getInfoWithExtension(
                               fs,
-                              dirname(pathname),
+                              decodeURI(pathname),
                               getExtension(pathname),
-                              ({ pid }) =>
-                                open(pid || "OpenWith", {
-                                  url: decodeURI(pathname),
-                                })
+                              ({ pid, url: infoUrl }) =>
+                                open(pid || "OpenWith", { url: infoUrl })
                             );
                           }
                         });
