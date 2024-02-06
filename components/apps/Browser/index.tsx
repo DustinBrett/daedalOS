@@ -1,4 +1,4 @@
-import { dirname, join, resolve } from "path";
+import { basename, dirname, join, resolve } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createDirectoryIndex,
@@ -10,6 +10,7 @@ import {
   DINO_GAME,
   HOME_PAGE,
   LOCAL_HOST,
+  NOT_FOUND,
   bookmarks,
 } from "components/apps/Browser/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -118,87 +119,158 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           ) {
             const directory =
               decodeURI(processedUrl.pathname).replace(/\/$/, "") || "/";
-            const dirStats = (
-              await Promise.all<DirectoryEntries>(
-                (await readdir(directory)).map(async (entry) => {
-                  const href = join(directory, entry);
-                  let description;
-                  let shortcutUrl;
+            const searchParams = Object.fromEntries(
+              new URLSearchParams(
+                processedUrl.search.replace(";", "&")
+              ).entries()
+            );
+            const { O: order, C: column } = searchParams;
+            const isAscending = !order || order === "A";
 
-                  if (getExtension(entry) === SHORTCUT_EXTENSION) {
-                    try {
-                      ({ comment: description, url: shortcutUrl } =
-                        getShortcutInfo(await readFile(href)));
-                    } catch {
-                      // Ignore failure to read shortcut
+            let newSrcDoc = NOT_FOUND;
+            let newTitle = "404 Not Found";
+
+            if (
+              (await exists(directory)) &&
+              (await stat(directory)).isDirectory()
+            ) {
+              const dirStats = (
+                await Promise.all<DirectoryEntries>(
+                  (await readdir(directory)).map(async (entry) => {
+                    const href = join(directory, entry);
+                    let description;
+                    let shortcutUrl;
+
+                    if (getExtension(entry) === SHORTCUT_EXTENSION) {
+                      try {
+                        ({ comment: description, url: shortcutUrl } =
+                          getShortcutInfo(await readFile(href)));
+                      } catch {
+                        // Ignore failure to read shortcut
+                      }
                     }
+
+                    const stats = await stat(
+                      shortcutUrl && (await exists(shortcutUrl))
+                        ? shortcutUrl
+                        : href
+                    );
+                    const isDir = stats.isDirectory();
+
+                    return {
+                      description,
+                      href: isDir && shortcutUrl ? shortcutUrl : href,
+                      icon: isDir ? "folder" : undefined,
+                      modified: stats.mtime,
+                      size: isDir || shortcutUrl ? undefined : stats.size,
+                    };
+                  })
+                )
+              )
+                .sort(
+                  (a, b) =>
+                    Number(b.icon === "folder") - Number(a.icon === "folder")
+                )
+                .sort((a, b) => {
+                  const aIsFolder = a.icon === "folder";
+                  const bIsFolder = b.icon === "folder";
+
+                  if (aIsFolder === bIsFolder) {
+                    const aName = basename(a.href);
+                    const bName = basename(b.href);
+
+                    if (isAscending) return aName < bName ? -1 : 1;
+
+                    return aName > bName ? -1 : 1;
                   }
 
-                  const stats = await stat(
-                    shortcutUrl && (await exists(shortcutUrl))
-                      ? shortcutUrl
-                      : href
-                  );
-                  const isDir = stats.isDirectory();
-
-                  return {
-                    description,
-                    href: isDir && shortcutUrl ? shortcutUrl : href,
-                    icon: isDir ? "folder" : undefined,
-                    modified: stats.mtime,
-                    size: isDir || shortcutUrl ? undefined : stats.size,
-                  };
+                  return 0;
                 })
-              )
-            ).sort(
-              (a, b) =>
-                Number(b.icon === "folder") - Number(a.icon === "folder")
-            );
-            // TODO: Sort files/folders by name
+                .sort((a, b) => {
+                  if (!column || column === "N") return 0;
 
-            iframeRef.current?.addEventListener(
-              "load",
-              () => {
-                try {
-                  contentWindow.document.body
-                    .querySelectorAll("a")
-                    .forEach((a) => {
-                      a.addEventListener("click", (event) => {
-                        event.preventDefault();
+                  const sortValue = (
+                    getValue: (entry: DirectoryEntries) => number | string
+                  ): number => {
+                    const aValue = getValue(a);
+                    const bValue = getValue(b);
 
-                        const target = event.currentTarget as HTMLAnchorElement;
-                        const isDir = target.getAttribute("type") === "folder";
+                    if (aValue === bValue) return 0;
+                    if (isAscending) return aValue < bValue ? -1 : 1;
 
-                        // TODO: Handle sorting columns via query params
-                        // TODO: Handle shortcuts (nostr/YT)
+                    return aValue > bValue ? -1 : 1;
+                  };
 
-                        if (isDir) goToLink(target.href);
-                        else if (fs && target.href) {
-                          const { pathname } = new URL(target.href);
+                  if (column === "S") {
+                    return sortValue(({ size }) => size ?? 0);
+                  }
 
-                          getInfoWithExtension(
-                            fs,
-                            dirname(pathname),
-                            getExtension(pathname),
-                            ({ pid }) =>
-                              open(pid || "OpenWith", {
-                                url: decodeURI(pathname),
-                              })
+                  if (column === "M") {
+                    return sortValue(
+                      ({ modified }) => modified?.getTime() ?? 0
+                    );
+                  }
+
+                  if (column === "D") {
+                    return sortValue(({ description }) => description ?? "");
+                  }
+
+                  return 0;
+                })
+                .sort(
+                  (a, b) =>
+                    Number(b.icon === "folder") - Number(a.icon === "folder")
+                );
+
+              iframeRef.current?.addEventListener(
+                "load",
+                () => {
+                  try {
+                    contentWindow.document.body
+                      .querySelectorAll("a")
+                      .forEach((a) => {
+                        a.addEventListener("click", (event) => {
+                          event.preventDefault();
+
+                          const target =
+                            event.currentTarget as HTMLAnchorElement;
+                          const isDir =
+                            target.getAttribute("type") === "folder";
+                          const { origin, pathname, search } = new URL(
+                            target.href
                           );
-                        }
-                      });
-                    });
-                } catch {
-                  // Ignore failure to add click event listeners
-                }
-              },
-              ONE_TIME_PASSIVE_EVENT
-            );
 
-            setSrcDoc(
-              createDirectoryIndex(
+                          if (search) {
+                            goToLink(
+                              `${origin}${encodeURI(directory)}${search}`
+                            );
+                          } else if (isDir) {
+                            goToLink(target.href);
+                          } else if (fs && target.href) {
+                            // TODO: Handle shortcuts (nostr/YT)
+                            getInfoWithExtension(
+                              fs,
+                              dirname(pathname),
+                              getExtension(pathname),
+                              ({ pid }) =>
+                                open(pid || "OpenWith", {
+                                  url: decodeURI(pathname),
+                                })
+                            );
+                          }
+                        });
+                      });
+                  } catch {
+                    // Ignore failure to add click event listeners
+                  }
+                },
+                ONE_TIME_PASSIVE_EVENT
+              );
+
+              newSrcDoc = createDirectoryIndex(
                 directory,
                 processedUrl.origin,
+                searchParams,
                 directory === "/"
                   ? dirStats
                   : [
@@ -208,10 +280,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                       },
                       ...dirStats,
                     ]
-              )
-            );
+              );
 
-            prependFileToTitle(`Index of ${directory}`);
+              newTitle = `Index of ${directory}`;
+            }
+
+            setSrcDoc(newSrcDoc);
+            prependFileToTitle(newTitle);
           } else {
             const addressUrl = processedUrl.href;
 
@@ -336,7 +411,11 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           <Button
             key={name}
             onClick={() => goToLink(bookmarkUrl)}
-            {...label(`${name}\n${bookmarkUrl}`)}
+            {...label(
+              `${name}\n${bookmarkUrl
+                .replace(/^http:\/\//, "")
+                .replace(/\/$/, "")}`
+            )}
           >
             <Icon alt={name} imgSize={16} src={icon} />
           </Button>

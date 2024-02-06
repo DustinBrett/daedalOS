@@ -1,6 +1,7 @@
 import { basename } from "path";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { getExtension } from "utils/functions";
+import { ROOT_NAME } from "utils/constants";
 
 export type DirectoryEntries = {
   alt?: string;
@@ -93,9 +94,9 @@ const formatDate = (date?: Date): string =>
 export const createDirectoryIndex = (
   url: string,
   origin: string,
+  { C, O }: Record<string, string>,
   data: DirectoryEntries[]
-): string =>
-  `
+): string => `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -110,8 +111,8 @@ export const createDirectoryIndex = (
       <table>
         <tr>
           <th valign="top"><img src="${DIRECTORY_INDEX_ICON_PATH}/blank.gif" alt="[ICO]" /></th>
-          <th><a href="?C=N;O=D">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th>
-          <th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th>
+          <th><a href="${origin}?C=N;O=${!C || (C === "N" && O === "A") ? "D" : "A"}">Name</a></th><th><a href="${origin}?C=M;O=${C === "M" && O === "A" ? "D" : "A"}">Last modified</a></th>
+          <th><a href="${origin}?C=S;O=${C === "S" && O === "A" ? "D" : "A"}">Size</a></th><th><a href="${origin}?C=D;O=${C === "D" && O === "A" ? "D" : "A"}">Description</a></th>
         </tr>
         <tr>
           <th colspan="5"><hr /></th>
@@ -122,7 +123,11 @@ export const createDirectoryIndex = (
             const isBack = entryIcon === "back";
             const linkType =
               isBack || entryIcon === "folder" ? "folder" : "file";
-            const name = isBack ? "Parent Directory" : basename(href);
+            const name = isBack
+              ? "Parent Directory"
+              : href === "/"
+                ? ROOT_NAME
+                : basename(href);
 
             return `
               <tr>
@@ -144,4 +149,4 @@ export const createDirectoryIndex = (
       </table>
     </body>
   </html>
-  `;
+`;
