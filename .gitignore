@@ -10,6 +10,7 @@ playwright-report
 playwright/.cache
 
 public/robots.txt
+public/rss.xml
 public/sitemap.xml
 public/.index/*
 public/Users/Public/**
