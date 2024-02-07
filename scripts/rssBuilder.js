@@ -34,7 +34,7 @@ const createRssFeedItems = (url) => {
   getFeedFiles(join(PUBLIC_PATH, url));
   feedFiles.sort(([, aStats], [, bStats]) => bStats.mtimeMs - aStats.mtimeMs);
 
-  lastBuildDate = feedFiles?.[0][1].mtime.toUTCString();
+  lastBuildDate = feedFiles?.[0]?.[1]?.mtime.toUTCString();
 
   return feedFiles.map(([link, stats]) => {
     const fileData = readFileSync(link);
