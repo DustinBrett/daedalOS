@@ -246,7 +246,7 @@ test.describe("has files & folders", () => {
     const entryInfo = statusBar.getByLabel(/^Total item count$/);
     const selectedInfo = statusBar.getByLabel(/^Selected item count and size$/);
 
-    await expect(entryInfo).toContainText(/^\d items$/);
+    await expect(entryInfo).toContainText(/^\d+ items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
 
     expect(
