@@ -27,7 +27,7 @@ const buildFileSitemap = (path, excludePaths, callback) => {
         buildFileSitemap(entryPath, excludePaths, callback);
       }
     } else if (![".ini", ".url"].includes(extname(entry).toLowerCase())) {
-      const encodedUrlEntryPath = encodeURI(urlEntryPath);
+      const encodedUrlEntryPath = encodeURI(urlEntryPath).replace(/'/g, "%27");
 
       xmlUrls.push(
         callback(
