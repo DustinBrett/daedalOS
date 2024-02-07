@@ -1,5 +1,11 @@
 const { createHash } = require("crypto");
-const { readdirSync, readFileSync, statSync, writeFileSync } = require("fs");
+const {
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+  existsSync,
+} = require("fs");
 const { basename, extname, join, relative } = require("path");
 const { author, description } = require("../package.json");
 
@@ -9,6 +15,7 @@ const PUBLIC_PATH = "public";
 const feedFiles = [];
 
 const getFeedFiles = (path) =>
+  existsSync(path) &&
   readdirSync(path).forEach((entry) => {
     const fullPath = join(path, entry);
     const stats = statSync(fullPath);
