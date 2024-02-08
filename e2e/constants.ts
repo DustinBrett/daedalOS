@@ -71,6 +71,7 @@ const VIEWPORT_SELECTOR = "div";
 const WINDOW_DRAG_SELECTOR = ".react-draggable";
 const FOCUSED_ENTRY_SELECTOR = ".focus-within";
 const NEXT_JS_CONTAINER_SELECTOR = "body>#__next";
+const ICON_SELECTOR = "figure>picture";
 
 export const FAVICON_SELECTOR = "head>link[rel=icon]";
 export const CONTEXT_MENU_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>nav`;
@@ -93,7 +94,7 @@ export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#startMenu`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
-export const ICON_SELECTOR = "figure>picture";
+export const SHORTCUT_ICON_SELECTOR = `${ICON_SELECTOR}>img[src*=shortcut]`;
 export const WINDOW_TITLEBAR_ICON_SELECTOR = `${WINDOW_TITLEBAR_SELECTOR}>button>${ICON_SELECTOR}`;
 export const FILE_EXPLORER_NAV_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>nav`;
 export const FILE_EXPLORER_SEARCH_BOX_SELECTOR = `${FILE_EXPLORER_NAV_SELECTOR}>div>input[type=search]`;

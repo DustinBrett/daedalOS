@@ -25,7 +25,6 @@ import {
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SELECTOR,
-  ICON_SELECTOR,
   RIGHT_CLICK,
   SEARCH_BUTTON_SELECTOR,
   SEARCH_MENU_SELECTOR,
@@ -55,6 +54,7 @@ import {
   ROOT_PUBLIC_FOLDER,
   CURSOR_SPACE_LENGTH,
   TAB_SPACE_LENGTH,
+  SHORTCUT_ICON_SELECTOR,
 } from "e2e/constants";
 
 type TestProps = {
@@ -750,18 +750,18 @@ export const taskbarEntryHasIcon = async (
     page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).locator("img")
   ).toHaveAttribute("src", src);
 
-// expect->locator->getBy->locator->locator
 export const fileExplorerEntryHasShortcutIcon = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> =>
-  expect(
-    page
-      .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
-      .getByLabel(label, EXACT)
-      .locator(ICON_SELECTOR)
-      .locator("img[src*=shortcut]")
-  ).toBeVisible();
+): Promise<void> => {
+  const labelLocator = page
+    .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+    .getByLabel(label, EXACT);
+
+  await labelLocator.scrollIntoViewIfNeeded();
+
+  return expect(labelLocator.locator(SHORTCUT_ICON_SELECTOR)).toBeVisible();
+};
 
 // expect->locator->getBy->toPass
 export const windowTitlebarTextIsVisible = async (
