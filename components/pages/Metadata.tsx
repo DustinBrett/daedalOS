@@ -142,6 +142,7 @@ const Metadata: FC = () => {
       <link
         href={`${author.url}/rss.xml`}
         rel="alternate"
+        title={`RSS Feed for ${alias}`}
         type="application/rss+xml"
       />
       {desktopIcons.map((icon) => {
