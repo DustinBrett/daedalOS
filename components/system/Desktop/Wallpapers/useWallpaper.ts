@@ -77,7 +77,16 @@ const useWallpaper = (
       const { matches: prefersReducedMotion } = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       );
-      const isTopWindow = window === window.top;
+      let isTopWindow = !window.top || window === window.top;
+
+      if (!isTopWindow) {
+        try {
+          isTopWindow = window.location.origin !== window.top?.location.origin;
+        } catch {
+          // Can't read origin, assume top window
+          isTopWindow = true;
+        }
+      }
 
       if (wallpaperName === "VANTA") {
         config = {
