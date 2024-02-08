@@ -72,6 +72,7 @@ const formatSize = (size?: number): string => {
   if (size === undefined) return " - ";
 
   const units = ["", "K", "M", "G", "T"];
+
   let power = Math.floor((size ? Math.log(size) : 0) / Math.log(1024));
   power = Math.min(power, units.length - 1);
   let newSize = size / 1024 ** power;
@@ -83,7 +84,7 @@ const formatSize = (size?: number): string => {
     newNumber = Number(Math.round(newSize)).toString();
   }
 
-  const addTrailingZero = newSize < 10 && newSize % 1 === 0;
+  const addTrailingZero = newSize !== 0 && newSize < 10 && newSize % 1 === 0;
 
   return newNumber + (addTrailingZero ? ".0" : "") + units[power];
 };
