@@ -470,56 +470,67 @@ const useFolder = (
     async (path: string): Promise<void> => {
       const data = await readFile(path);
       const { unarchive, unzip } = await import("utils/zipFunctions");
-      openTransferDialog(undefined, path);
-      try {
-        const unzippedFiles = [".jsdos", ".wsz", ".zip"].includes(
-          getExtension(path)
-        )
-          ? await unzip(data)
-          : await unarchive(path, data);
-        const zipFolderName = basename(
-          path,
-          path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
-        );
-        const uniqueName = await createPath(zipFolderName, directory);
-        const objectReaders = Object.entries(unzippedFiles).map<ObjectReader>(
-          ([extractPath, fileContents]) => {
-            let aborted = false;
-
-            return {
-              abort: () => {
-                aborted = true;
-              },
-              directory: join(directory, uniqueName),
-              done: () => updateFolder(directory, uniqueName),
-              name: extractPath,
-              operation: "Extracting",
-              read: async () => {
-                if (aborted) return;
-
-                try {
-                  const localPath = join(directory, uniqueName, extractPath);
-
-                  if (fileContents.length === 0 && extractPath.endsWith("/")) {
-                    await mkdir(localPath);
-                  } else {
-                    if (!(await exists(dirname(localPath)))) {
-                      await mkdirRecursive(dirname(localPath));
-                    }
-
-                    await writeFile(localPath, Buffer.from(fileContents));
-                  }
-                } catch {
-                  // Ignore failure to extract
-                }
-              },
-            };
-          }
-        );
-
-        openTransferDialog(objectReaders, path);
-      } catch (error) {
+      const closeDialog = (): void =>
         close(`Transfer${PROCESS_DELIMITER}${path}`);
+
+      openTransferDialog(undefined, path);
+
+      try {
+        const unzippedFiles = Object.entries(
+          [".jsdos", ".wsz", ".zip"].includes(getExtension(path))
+            ? await unzip(data)
+            : await unarchive(path, data)
+        );
+
+        if (unzippedFiles.length === 0) closeDialog();
+        else {
+          const zipFolderName = basename(
+            path,
+            path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
+          );
+          const uniqueName = await createPath(zipFolderName, directory);
+          const objectReaders = unzippedFiles.map<ObjectReader>(
+            ([extractPath, fileContents]) => {
+              let aborted = false;
+
+              return {
+                abort: () => {
+                  aborted = true;
+                },
+                directory: join(directory, uniqueName),
+                done: () => updateFolder(directory, uniqueName),
+                name: extractPath,
+                operation: "Extracting",
+                read: async () => {
+                  if (aborted) return;
+
+                  try {
+                    const localPath = join(directory, uniqueName, extractPath);
+
+                    if (
+                      fileContents.length === 0 &&
+                      extractPath.endsWith("/")
+                    ) {
+                      await mkdir(localPath);
+                    } else {
+                      if (!(await exists(dirname(localPath)))) {
+                        await mkdirRecursive(dirname(localPath));
+                      }
+
+                      await writeFile(localPath, Buffer.from(fileContents));
+                    }
+                  } catch {
+                    // Ignore failure to extract
+                  }
+                },
+              };
+            }
+          );
+
+          openTransferDialog(objectReaders, path);
+        }
+      } catch (error) {
+        closeDialog();
 
         if ("message" in (error as Error)) {
           console.error((error as Error).message);
