@@ -40,6 +40,7 @@ const useVideoPlayer = ({
 }: ContainerHookProps): void => {
   const { readFile } = useFileSystem();
   const {
+    argument,
     linkElement,
     processes: { [id]: { closing = false, libs = [] } = {} },
   } = useProcesses();
@@ -158,8 +159,19 @@ const useVideoPlayer = ({
       setPlayer(videoPlayer);
       setLoading(false);
       if (!isYT) linkElement(id, "peekElement", videoElement);
+      argument?.(id, "play", () => videoPlayer.play());
+      argument?.(id, "pause", () => videoPlayer.pause());
+      argument?.(id, "paused", () => videoPlayer.paused());
     });
-  }, [containerRef, id, isYT, linkElement, setLoading, updateWindowSize]);
+  }, [
+    argument,
+    containerRef,
+    id,
+    isYT,
+    linkElement,
+    setLoading,
+    updateWindowSize,
+  ]);
   const maybeHideControlbar = useCallback(
     (type?: string): void => {
       const controlBar =

@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useRef, useState } from "react";
+import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
 import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePeekTransition";
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
@@ -8,22 +8,39 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
-import { label, viewWidth } from "utils/functions";
+import { haltEvent, label, viewWidth } from "utils/functions";
 
 type PeekWindowProps = {
   id: string;
 };
 
+const Pause = memo(() => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 29.328V2.672h2.672v26.656H8zM21.328 2.672H24v26.656h-2.672V2.672z" />
+  </svg>
+));
+
+const Play = memo(() => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M28 16 8 30V2z" />
+  </svg>
+));
+
 const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   const {
     minimize,
-    processes: { [id]: { minimized = false, title = id } = {} },
+    processes: { [id]: process },
   } = useProcesses();
+  const { pause, paused, play, minimized = false, title = id } = process || {};
   const { setForegroundId } = useSession();
   const { onClose } = useWindowActions(id);
   const [offsetX, setOffsetX] = useState(0);
   const image = useWindowPeek(id);
-  const peekTransition = usePeekTransition();
+  const showControls = useMemo(
+    () => Boolean(play && pause && paused),
+    [pause, paused, play]
+  );
+  const peekTransition = usePeekTransition(showControls);
   const peekRef = useRef<HTMLDivElement | null>(null);
   const onClick = (): void => {
     if (minimized) minimize(id);
@@ -61,9 +78,37 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
         src={image}
         {...HIGH_PRIORITY_ELEMENT}
       />
-      <Button onClick={onClose} {...label("Close")}>
+      <Button className="close" onClick={onClose} {...label("Close")}>
         <CloseIcon />
       </Button>
+      {showControls && (
+        <div className="controls">
+          {paused?.() && (
+            <Button
+              onClick={(event) => {
+                haltEvent(event);
+                play?.();
+              }}
+              {...label("Play")}
+              {...FOCUSABLE_ELEMENT}
+            >
+              <Play />
+            </Button>
+          )}
+          {!paused?.() && (
+            <Button
+              onClick={(event) => {
+                haltEvent(event);
+                pause?.();
+              }}
+              {...label("Pause")}
+              {...FOCUSABLE_ELEMENT}
+            >
+              <Pause />
+            </Button>
+          )}
+        </div>
+      )}
     </StyledPeekWindow>
   ) : // eslint-disable-next-line unicorn/no-null
   null;

@@ -2,12 +2,14 @@ import { type MotionProps } from "framer-motion";
 import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_SECONDS } from "utils/constants";
 
-const usePeekTransition = (): MotionProps => {
+const usePeekTransition = (showControls = false): MotionProps => {
   const {
     sizes: { taskbar },
   } = useTheme();
-  const peekContainerHeight =
+  let peekContainerHeight =
     taskbar.entry.peekImage.height + taskbar.entry.peekImage.margin * 2;
+
+  if (showControls) peekContainerHeight += taskbar.entry.peekControlsHeight;
 
   return {
     animate: "active",

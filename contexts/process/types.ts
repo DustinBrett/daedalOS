@@ -16,6 +16,12 @@ type DialogProcessArguments = {
   shortcutPath?: string;
 };
 
+type MediaPlayerProcessArguments = {
+  pause?: () => void;
+  paused?: () => boolean;
+  play?: () => void;
+};
+
 type MonacoProcessArguments = {
   editor?: Monaco.editor.IStandaloneCodeEditor;
 };
@@ -54,6 +60,7 @@ type BaseProcessArguments = {
 export type ProcessArguments = BaseProcessArguments &
   BrowserProcessArguments &
   DialogProcessArguments &
+  MediaPlayerProcessArguments &
   MonacoProcessArguments &
   PdfProcessArguments;
 

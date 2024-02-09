@@ -53,6 +53,7 @@ const sizes = {
       fontSize: "12px",
       iconSize: "16px",
       maxWidth: "160px",
+      peekControlsHeight: 36,
       peekImage: {
         height: 82,
         margin: 8,
