@@ -29,6 +29,7 @@ window.Sheep = class eSheep {
     this.sprite = new Image(); // sprite image (Tiles)
     this.HTMLelement = null; // the HTML element where the pet is walking on
     this.randS = Math.random() * 100; // random value, will change when page is reloaded
+    this.taskbarHeight = 30;
 
     this.screenW =
       window.innerWidth ||
@@ -196,6 +197,13 @@ window.Sheep = class eSheep {
         this.imageX = Number.parseInt(this.imageX) + Number.parseInt(x);
         this.imageY = Number.parseInt(this.imageY) + Number.parseInt(y);
       }
+
+      const maxY = (this.screenH - this.imageH - this.taskbarHeight);
+
+      if (this.imageY > maxY && !this._checkOverlapping()) {
+        this.imageY = maxY;
+      }
+
       this.DOMdiv.style.left = `${this.imageX}px`;
       this.DOMdiv.style.top = `${this.imageY}px`;
     }
