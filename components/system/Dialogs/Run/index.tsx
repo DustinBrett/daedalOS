@@ -15,6 +15,7 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import {
   DESKTOP_PATH,
+  ICON_PATH,
   PACKAGE_DATA,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
@@ -22,6 +23,7 @@ import {
 import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import spawnSheep from "utils/spawnSheep";
+import Icon from "styles/common/Icon";
 
 const OPEN_ID = "open";
 
@@ -224,7 +226,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
       }}
     >
       <figure>
-        <img alt="Run" src="/System/Icons/32x32/run.webp" />
+        <Icon alt="Run" imgSize={32} src={`${ICON_PATH}/run.webp`} />
         <figcaption>{MESSAGE}</figcaption>
       </figure>
       <div>

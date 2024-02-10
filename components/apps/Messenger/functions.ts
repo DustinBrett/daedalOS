@@ -402,7 +402,7 @@ export const getWebSocketStatusIcon = (status?: number): string => {
 export const convertImageLinksToHtml = (content: string): string =>
   content.replace(
     /https?:\/\/\S+\.(?:png|jpg|jpeg|gif|webp)/gi,
-    (match) => `<img loading="lazy" src="${match}" />`
+    (match) => `<img decoding="async" loading="lazy" src="${match}" />`
   );
 
 export const convertNewLinesToBreaks = (content: string): string =>

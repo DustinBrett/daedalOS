@@ -80,7 +80,7 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                   {publicKey !== pubkey && (
                     <div className="avatar">
                       {picture ? (
-                        <img alt={userName} src={picture} />
+                        <img alt={userName} decoding="async" src={picture} />
                       ) : (
                         <Avatar />
                       )}

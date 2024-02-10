@@ -66,7 +66,12 @@ const DetailsTab: FC<TabProps> = ({
                         <td>
                           {typeof value === "string" &&
                           value.startsWith("blob:") ? (
-                            <img alt="Thumbnail" decoding="async" src={value} />
+                            <img
+                              alt="Thumbnail"
+                              decoding="async"
+                              loading="lazy"
+                              src={value}
+                            />
                           ) : (
                             value
                           )}

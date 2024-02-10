@@ -111,7 +111,7 @@ export const createDirectoryIndex = (
       <h1>Index of ${url}</h1>
       <table>
         <tr>
-          <th valign="top"><img src="${DIRECTORY_INDEX_ICON_PATH}/blank.gif" alt="[ICO]" /></th>
+          <th valign="top"><img decoding="async" src="${DIRECTORY_INDEX_ICON_PATH}/blank.gif" alt="[ICO]" /></th>
           <th><a href="${origin}?C=N;O=${!C || (C === "N" && O === "A") ? "D" : "A"}">Name</a></th><th><a href="${origin}?C=M;O=${C === "M" && O === "A" ? "D" : "A"}">Last modified</a></th>
           <th><a href="${origin}?C=S;O=${C === "S" && O === "A" ? "D" : "A"}">Size</a></th><th><a href="${origin}?C=D;O=${C === "D" && O === "A" ? "D" : "A"}">Description</a></th>
         </tr>
@@ -134,7 +134,7 @@ export const createDirectoryIndex = (
               <tr>
                 <td valign="top">
                   <a href="${origin}${href}" type=${linkType}>
-                    <img src="${DIRECTORY_INDEX_ICON_PATH}/${entryIcon}.gif" alt="[${altIconMap[entryIcon] || alt || "   "}]">
+                    <img decoding="async" src="${DIRECTORY_INDEX_ICON_PATH}/${entryIcon}.gif" alt="[${altIconMap[entryIcon] || alt || "   "}]">
                   </a>
                 </td>
                 <td>
