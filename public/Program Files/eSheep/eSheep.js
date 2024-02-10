@@ -198,12 +198,6 @@ window.Sheep = class eSheep {
         this.imageY = Number.parseInt(this.imageY) + Number.parseInt(y);
       }
 
-      const maxY = (this.screenH - this.imageH - this.taskbarHeight);
-
-      if (this.imageY > maxY && !this._checkOverlapping()) {
-        this.imageY = maxY;
-      }
-
       this.DOMdiv.style.left = `${this.imageX}px`;
       this.DOMdiv.style.top = `${this.imageY}px`;
     }
