@@ -15,13 +15,11 @@ const useEmscriptenMount = (): EmscriptenMounter => {
 
         mountName.current = "";
 
-        try {
-          unMapFs(unMountPath, true).then(() =>
-            updateFolder("/", undefined, unMountPath)
-          );
-        } catch {
-          // Ignore error during unmounting
-        }
+        unMapFs(unMountPath, true)
+          .then(() => updateFolder("/", undefined, unMountPath))
+          .catch(() => {
+            // Ignore error during unmounting
+          });
       }
     },
     [unMapFs, updateFolder]
