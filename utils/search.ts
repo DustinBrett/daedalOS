@@ -75,7 +75,7 @@ const search = async (
     return results.map((result) => ({
       ...result,
       ref:
-        (Object.hasOwn(basePaths, result.ref)
+        (Object.prototype.hasOwnProperty.call(basePaths, result.ref)
           ? (basePaths[result.ref as keyof typeof basePaths] as string)
           : result.ref) || "",
     }));

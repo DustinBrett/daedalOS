@@ -27,7 +27,7 @@ const StartButton: FC<StartButtonProps> = ({
     if (initalizedPreload.current) return;
     initalizedPreload.current = true;
 
-    const supportsImageSrcSet = Object.hasOwn(
+    const supportsImageSrcSet = Object.prototype.hasOwnProperty.call(
       HTMLLinkElement.prototype,
       "imageSrcset"
     );
