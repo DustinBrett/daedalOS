@@ -238,7 +238,7 @@ const useWallpaper = (
   );
   const loadFileWallpaper = useCallback(async () => {
     const [, currentWallpaperUrl] =
-      document.documentElement.style.background.match(/"(.*?)"/) || [];
+      /"(.*?)"/.exec(document.documentElement.style.background) || [];
 
     if (currentWallpaperUrl?.startsWith("blob:")) {
       cleanUpBufferUrl(currentWallpaperUrl);
