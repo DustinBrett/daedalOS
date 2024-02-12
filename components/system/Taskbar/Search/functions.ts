@@ -86,12 +86,7 @@ export const updateInputValueOnReactElement = (
   value: string
 ): void => {
   Object.getOwnPropertyDescriptor(
-    // eslint-disable-next-line no-proto
-    (
-      element as HTMLElement & {
-        __proto__: unknown;
-      }
-    ).__proto__,
+    Object.getPrototypeOf(element),
     "value"
   )?.set?.call(element, value);
 
