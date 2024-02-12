@@ -6,14 +6,12 @@ import useGlobalErrorHandler from "hooks/useGlobalErrorHandler";
 import useGlobalKeyboardShortcuts from "hooks/useGlobalKeyboardShortcuts";
 import useIFrameFocuser from "hooks/useIFrameFocuser";
 import useUrlLoader from "hooks/useUrlLoader";
-import { useExtensionDisabler } from "hooks/useExtensionDisabler";
 
 const Index = (): React.ReactElement => {
   useIFrameFocuser();
   useUrlLoader();
   useGlobalKeyboardShortcuts();
   useGlobalErrorHandler();
-  useExtensionDisabler();
 
   return (
     <Desktop>
