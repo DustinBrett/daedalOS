@@ -12,20 +12,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-Usage:
-  const gui = new dat.GUI();
-  const ca = new CA(gl, models_json, [W, H], gui); // gui is optional
-  ca.step();
-
-  ca.paint(x, y, radius, modelIndex);
-  ca.clearCircle(x, y, radius;
-
-  const stats = ca.benchmark();
-  ca.draw();
-  ca.draw(zoom);
-*/
-
 const vs_code = `
     attribute vec4 position;
     varying vec2 uv;
@@ -509,40 +495,29 @@ function setTensorUniforms(uniforms, name, tensor) {
     }
 }
 
-function decodeBase64(b64) {
-    const bin = atob(b64);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) {
-        bytes[i] = bin.charCodeAt(i);
-    }
-    return bytes;
-}
-
-function createDenseInfo(gl, params, onready) {
+function createDenseInfo(gl, params, rootPath, onready) {
     const coefs = [params.scale, 127.0 / 255.0];
     const [in_n, out_n] = params.shape;
     const info = { coefs, layout: params.layout, in_n: in_n - 1, out_n,
         quantScaleZero: params.quant_scale_zero, ready: false };
-    // workaround against iOS WebKit bug (https://bugs.webkit.org/show_bug.cgi?id=138477)
-    // non-premultiplied PNG were decoded incorrectly
-    const img = UPNG.decode(decodeBase64(params.data.split(',')[1]));
-    const data = new Uint8Array(UPNG.toRGBA8(img)[0]);
-    info.tex = twgl.createTexture(gl, {
-        width: img.width, height: img.height,
-        minMag: gl.NEAREST, src: data,//, flipY: false, premultiplyAlpha: false,
-    }, ()=>{
-        //info.ready = true;
-        //onready();
-    });
-    setTimeout(()=>{
+    fetch(`${rootPath}/${params.data}`, { priority: "high" })
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        const img = UPNG.decode(buffer);
+        const data = new Uint8Array(UPNG.toRGBA8(img)[0]);
+        info.tex = twgl.createTexture(gl, {
+            width: img.width, height: img.height,
+            minMag: gl.NEAREST, src: data,
+        });
         info.ready = true;
         onready();
-    }, 0);
+      });
     return info;
 }
 
 class CA {
-    constructor(gl, models, gridSize, onready) {
+    constructor(gl, models, gridSize, rootPath, onready) {
+        this.rootPath = rootPath;
         this.onready = onready || (()=>{});
         this.gl = gl;
         this.gridSize = gridSize || [96, 96];
@@ -582,15 +557,6 @@ class CA {
             u_r: -1,
         });
     }
-
-    disturbCircle(x, y, r, viewSize) {
-        viewSize = viewSize || [128, 128];
-        this.runLayer(this.progs.align, this.buf.align, {
-            u_input: this.buf.newAlign, u_hexGrid: this.hexGrid, u_init: Math.random()*1000+1,
-            u_pos: [x, y], u_r: r, u_viewSize: viewSize,
-        });
-    }
-
 
     setupBuffers() {
         const gl = this.gl;
@@ -644,20 +610,21 @@ class CA {
 
     step(stage) {
         stage = stage || 'all';
+        const isStageAll = stage == 'all';
         if (!this.layers.every(l=>l.ready))
             return;
 
-        if (stage == 'all') {
+        if (isStageAll) {
             const [gridW, gridH] = this.gridSize;
             this.shuffleOfs = [Math.floor(Math.random() * gridW), Math.floor(Math.random() * gridH)];
         }
 
-        if (stage == 'all' || stage == 'align') {
+        if (isStageAll || stage == 'align') {
             this.runLayer(this.progs.align, this.buf.newAlign, {
                 u_input: this.buf.align, u_hexGrid: this.hexGrid, u_init: 0.0
             });
         }
-        if (stage == 'all' || stage == 'perception') {
+        if (isStageAll || stage == 'perception') {
             this.runLayer(this.progs.perception, this.buf.perception, {
                 u_input: this.buf.state, u_angle: this.rotationAngle / 180.0 * Math.PI,
                 u_alignTex: this.buf.newAlign,
@@ -666,11 +633,11 @@ class CA {
         }
         let inputBuf = this.buf.perception;
         for (let i=0; i<this.layers.length; ++i) {
-            if (stage == 'all' || stage == `layer${i}`)
+            if (isStageAll || stage == `layer${i}`)
                 this.runDense(this.buf[`layer${i}`], inputBuf, this.layers[i]);
             inputBuf = this.buf[`layer${i}`];
         }
-        if (stage == 'all' || stage == 'newState') {
+        if (isStageAll || stage == 'newState') {
             this.runLayer(this.progs.update, this.buf.newState, {
                 u_input: this.buf.state, u_update: inputBuf,
                 u_unshuffleTex: this.unshuffleTex,
@@ -678,53 +645,10 @@ class CA {
             });
         }
 
-        if (stage == 'all') {
+        if (isStageAll) {
             [this.buf.state, this.buf.newState] = [this.buf.newState, this.buf.state];
             [this.buf.align, this.buf.newAlign] = [this.buf.newAlign, this.buf.align];
         }
-    }
-
-    benchmark() {
-        const gl = this.gl;
-        const flushBuf = new Uint8Array(4);
-        const flush = buf=>{
-            buf = buf || this.buf.state;
-            // gl.flush/finish don't seem to do anything, so reading a single
-            // pixel from the state buffer to flush the GPU command pipeline
-            twgl.bindFramebufferInfo(gl, buf.fbi);
-            gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, flushBuf);
-        }
-
-        flush();
-        const stepN = 100;
-        const start = Date.now();
-        for (let i = 0; i < stepN; ++i)
-            this.step();
-        flush();
-        const total = (Date.now() - start) / stepN;
-
-        const ops = ['align', 'perception'];
-        for (let i=0; i<this.layers.length; ++i)
-            ops.push(`layer${i}`);
-        ops.push('newState');
-        let perOpTotal = 0.0;
-        const perOp = [];
-        for (const op of ops) {
-            const start = Date.now();
-            for (let i = 0; i < stepN; ++i) {
-                this.step(op);
-            }
-            flush(this.buf[op]);
-            const dt = (Date.now() - start) / stepN;
-            perOpTotal += dt
-            perOp.push([op, dt]);
-        }
-        const perOpStr = perOp.map((p) => {
-            const [programName, dt] = p;
-            const percent = 100.0 * dt / perOpTotal;
-            return `${programName}: ${percent.toFixed(1)}%`;
-        }).join(', ');
-        return `${(total).toFixed(2)} ms/step, ${(1000.0 / total).toFixed(2)} step/sec\n` + perOpStr + '\n\n';
     }
 
     paint(x, y, r, brush, viewSize) {
@@ -732,17 +656,6 @@ class CA {
         this.runLayer(this.progs.paint, this.buf.control, {
             u_pos: [x, y], u_r: r, u_brush: [brush, 0, 0, 0], u_viewSize: viewSize,
         });
-    }
-
-    peek(x, y, viewSize) {
-        this.runLayer(this.progs.peek, this.buf.sonic, {
-            u_pos: [x, y], u_viewSize: viewSize, u_input: this.buf.state
-        });
-        const {width, height} = this.buf.sonic.fbi;
-        const gl = this.gl;
-        twgl.bindFramebufferInfo(gl, this.buf.sonic.fbi);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, this.sonicBuf);
-        return {buf: this.sonicBuf, tex: this.buf.sonic.tex, pos: [x, y]};
     }
 
     clearCircle(x, y, r, viewSize) {
@@ -759,7 +672,7 @@ class CA {
             if (this.layers.every(l=>l.ready))
                 this.onready();
         }
-        this.layers = models.layers.map(layer=>createDenseInfo(gl, layer, onready));
+        this.layers = models.layers.map(layer=>createDenseInfo(gl, layer, this.rootPath, onready));
     }
 
     runLayer(program, output, inputs) {

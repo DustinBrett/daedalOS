@@ -1,9 +1,9 @@
-import { libs } from "components/system/Desktop/Wallpapers/hexells";
+import { ROOT_PATH, libs } from "components/system/Desktop/Wallpapers/hexells";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {
-  var Demo: new (canvas: OffscreenCanvas) => unknown;
+  var Demo: new (canvas: OffscreenCanvas, rootPath: string) => unknown;
   var Hexells: unknown;
   var demoCanvasRect: DOMRect;
   var devicePixelRatio: number;
@@ -25,7 +25,7 @@ globalThis.addEventListener(
       globalThis.devicePixelRatio = devicePixelRatio;
 
       try {
-        globalThis.Hexells = new globalThis.Demo(canvas);
+        globalThis.Hexells = new globalThis.Demo(canvas, ROOT_PATH);
       } catch (error) {
         globalThis.postMessage({
           message: (error as Error)?.message,
