@@ -37,6 +37,7 @@ import {
   getInfoWithExtension,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
+import { useSession } from "contexts/session";
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -46,6 +47,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
     open,
   } = useProcesses();
+  const { setForegroundId } = useSession();
   const { prependFileToTitle } = useTitle(id);
   const { initialTitle = "", url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
@@ -420,7 +422,17 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
       </nav>
       <iframe
         ref={iframeRef}
-        onLoad={() => setLoading(false)}
+        onLoad={() => {
+          try {
+            iframeRef.current?.contentWindow?.addEventListener("focus", () =>
+              setForegroundId(id)
+            );
+          } catch {
+            // Ignore failure to add focus event listener
+          }
+
+          if (loading) setLoading(false);
+        }}
         srcDoc={srcDoc || undefined}
         title={id}
         {...IFRAME_CONFIG}
