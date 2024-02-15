@@ -409,7 +409,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
           <Button
             key={name}
-            onClick={() => goToLink(bookmarkUrl)}
+            onClick={({ ctrlKey }) => {
+              if (ctrlKey) {
+                open("Browser", { url: bookmarkUrl });
+              } else {
+                goToLink(bookmarkUrl);
+              }
+            }}
             {...label(
               `${name}\n${bookmarkUrl
                 .replace(/^http:\/\//, "")
