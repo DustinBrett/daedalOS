@@ -43,7 +43,8 @@ const StyledDetails = styled.div`
     padding-bottom: 7px;
     padding-left: 12px;
     padding-right: 12px;
-    word-break: break-all;
+    text-align: center;
+    word-break: break-word;
 
     &:hover {
       text-decoration: underline;
