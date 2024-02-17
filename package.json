@@ -66,6 +66,7 @@
     "playlist-parser": "^0.0.12",
     "prettier": "^3.2.5",
     "print-js": "^1.6.0",
+    "quickjs-emscripten": "^0.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-rnd": "^10.4.1",

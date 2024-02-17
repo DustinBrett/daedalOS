@@ -665,6 +665,39 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
+"@jitl/quickjs-ffi-types@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-ffi-types/-/quickjs-ffi-types-0.28.0.tgz#51600ff6ec5efe06507ee637daec33f17a043947"
+  integrity sha512-OzEGuyeJuOzIbdMkFiLrTuKrvSAzksp+N1yfBrTimnApb/il6nH/UeontqLeEFm++iH9xWqYNFuwVZ/R0GeNEg==
+
+"@jitl/quickjs-wasmfile-debug-asyncify@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-asyncify/-/quickjs-wasmfile-debug-asyncify-0.28.0.tgz#498ab54a0606603e0322358f89acb21d0365cf64"
+  integrity sha512-8CtMcr1BTCJZR4NaokUNsRVyJewHRk6iu6WfvGoK+iz4cRVot0U2QmI0dQekjKHkKEUn58YFQ2dxPqYYOfEKgA==
+  dependencies:
+    "@jitl/quickjs-ffi-types" "0.28.0"
+
+"@jitl/quickjs-wasmfile-debug-sync@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-sync/-/quickjs-wasmfile-debug-sync-0.28.0.tgz#dd5580530be1ae2779ba0f86aeed65cdfd1582ce"
+  integrity sha512-cQ+3lVymPRFAzdPi1GmjSrgRfOj+vlILx06aAD42hd7SpbhtNOUthpocxv4HkkpHeU/pj7nLOC1JjHj/4ODLbQ==
+  dependencies:
+    "@jitl/quickjs-ffi-types" "0.28.0"
+
+"@jitl/quickjs-wasmfile-release-asyncify@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-asyncify/-/quickjs-wasmfile-release-asyncify-0.28.0.tgz#c6747251221dbc1472bdea4f2433f366cd08c49b"
+  integrity sha512-OwIyGEOPvxS7takf0htokBdb0AZrFpUrGP+/hb2on+EBHczkO8/cwymczQIQsaxiz5FHxwNagdWYK6dnf2OL2w==
+  dependencies:
+    "@jitl/quickjs-ffi-types" "0.28.0"
+
+"@jitl/quickjs-wasmfile-release-sync@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-sync/-/quickjs-wasmfile-release-sync-0.28.0.tgz#93a0c087d2eb56149fe4d30a2463208ac22a488e"
+  integrity sha512-gsPVQj7PNs2h+f7M8KTPxVsvxHTh8QoYSGRqTcIbr9NSKLG6k1h5Aaj5TEcVOGuqxgVXz0vI6Z4BCWZZGSVm5w==
+  dependencies:
+    "@jitl/quickjs-ffi-types" "0.28.0"
+
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.3.tgz#7e02e6eb5df901aaedb08514203b096614024098"
@@ -5939,6 +5972,24 @@ queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+quickjs-emscripten-core@0.28.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/quickjs-emscripten-core/-/quickjs-emscripten-core-0.28.0.tgz#a14b8a67effc4731bdf0e5e0cc9177a189361679"
+  integrity sha512-4s+QvWerzum9MJdkaID7HKAujanTOE0DfpOOUJ8XIHJVO4fQdj5GOg6vjSNOcvpySBVM8E4qD3e28E+lDAuoYw==
+  dependencies:
+    "@jitl/quickjs-ffi-types" "0.28.0"
+
+quickjs-emscripten@^0.28.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/quickjs-emscripten/-/quickjs-emscripten-0.28.0.tgz#88d7aae76209c792230a887b3e8f45cae88f26ce"
+  integrity sha512-VdM+p1FYgmC4b9NU8bPkjL0b1hTBwX/xU8AwMv36om0GxcndXmbiuFOZbGPzJT+Ij2W1JChztKrMiX/5yq2AAQ==
+  dependencies:
+    "@jitl/quickjs-wasmfile-debug-asyncify" "0.28.0"
+    "@jitl/quickjs-wasmfile-debug-sync" "0.28.0"
+    "@jitl/quickjs-wasmfile-release-asyncify" "0.28.0"
+    "@jitl/quickjs-wasmfile-release-sync" "0.28.0"
+    quickjs-emscripten-core "0.28.0"
 
 randombytes@^2.0.5:
   version "2.1.0"

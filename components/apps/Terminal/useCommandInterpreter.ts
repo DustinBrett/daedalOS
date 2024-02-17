@@ -3,6 +3,7 @@ import { type Terminal } from "xterm";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useRef } from "react";
 import type UAParser from "ua-parser-js";
+import { runJs } from "components/apps/Terminal/js";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import {
   BACKUP_NAME_SERVER,
@@ -964,6 +965,26 @@ const useCommandInterpreter = (
               const [, code = "version"] = command.split(" ");
 
               await runPython(code, printLn);
+            }
+          }
+          break;
+        case "qjs":
+        case "quickjs":
+        case "node":
+          {
+            const [file] = commandArgs;
+            const fullSourcePath = await getFullPath(file);
+
+            if (await exists(fullSourcePath)) {
+              const code = await readFile(fullSourcePath);
+
+              if (code.length > 0) {
+                await runJs(code.toString(), printLn);
+              }
+            } else {
+              const [, code] = command.split(" ");
+
+              await runJs(code, printLn);
             }
           }
           break;

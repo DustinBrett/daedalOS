@@ -66,6 +66,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Butterchurn](https://github.com/jberg/butterchurn)
 - [Eruda](https://github.com/liriliri/eruda)
 - [Pyodide](https://github.com/pyodide/pyodide)
+- [quickjs-emscripten](https://github.com/justjake/quickjs-emscripten)
 - [Video.js](https://github.com/videojs/video.js)
 - [TinyMCE](https://github.com/tinymce/tinymce)
 - [Space Cadet Pinball](https://github.com/alula/SpaceCadetPinball)
