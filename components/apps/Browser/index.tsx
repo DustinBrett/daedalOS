@@ -1,5 +1,7 @@
 import { basename, join, resolve } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import useHistoryMenu from "components/apps/Browser/useHistoryMenu";
+import useBookmarkMenu from "components/apps/Browser/useBookmarkMenu";
 import {
   createDirectoryIndex,
   type DirectoryEntries,
@@ -92,6 +94,12 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     },
     [changeUrl, id]
   );
+  const { backMenu, forwardMenu } = useHistoryMenu(
+    history,
+    position,
+    moveHistory
+  );
+  const bookmarkMenu = useBookmarkMenu();
   const setUrl = useCallback(
     async (addressInput: string): Promise<void> => {
       const { contentWindow } = iframeRef.current || {};
@@ -369,6 +377,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             disabled={!canGoBack}
             onClick={() => changeHistory(-1)}
             {...label("Click to go back")}
+            {...backMenu}
           >
             <Arrow direction="left" />
           </Button>
@@ -376,6 +385,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             disabled={!canGoForward}
             onClick={() => changeHistory(+1)}
             {...label("Click to go forward")}
+            {...forwardMenu}
           >
             <Arrow direction="right" />
           </Button>
@@ -421,6 +431,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                 .replace(/^http:\/\//, "")
                 .replace(/\/$/, "")}`
             )}
+            {...bookmarkMenu}
           >
             <Icon alt={name} imgSize={16} src={icon} />
           </Button>
