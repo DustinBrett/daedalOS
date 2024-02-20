@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-export type UpdateFiles = (newFile?: string, oldFile?: string) => void;
+export type UpdateFiles = (newFile?: string, oldFile?: string) => Promise<void>;
 
 export type WindowState = {
   maximized?: boolean;

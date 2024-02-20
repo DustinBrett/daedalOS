@@ -82,7 +82,11 @@ type FileSystemContextState = AsyncFS & {
   rootFs?: RootFileSystem;
   unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
   unMountFs: (url: string) => void;
-  updateFolder: (folder: string, newFile?: string, oldFile?: string) => void;
+  updateFolder: (
+    folder: string,
+    newFile?: string,
+    oldFile?: string
+  ) => Promise<void>;
 };
 
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
@@ -211,10 +215,19 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [cleanupUnusedMounts]
   );
   const updateFolder = useCallback(
-    (folder: string, newFile?: string, oldFile?: string): void =>
-      fsWatchersRef.current[folder]?.forEach((updateFiles) =>
-        updateFiles(newFile, oldFile)
-      ),
+    async (
+      folder: string,
+      newFile?: string,
+      oldFile?: string
+    ): Promise<void> => {
+      const { [folder]: folderWatchers } = fsWatchersRef.current;
+
+      if (folderWatchers) {
+        await Promise.all(
+          folderWatchers.map((updateFiles) => updateFiles(newFile, oldFile))
+        );
+      }
+    },
     []
   );
   const mountEmscriptenFs = useCallback(
