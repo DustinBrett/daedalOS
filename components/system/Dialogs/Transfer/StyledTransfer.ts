@@ -108,7 +108,7 @@ const StyledTransfer = styled.div`
     ${StyledButton} {
       padding-bottom: 1px;
       position: absolute;
-      right: 23px;
+      right: 22px;
     }
   }
 `;
