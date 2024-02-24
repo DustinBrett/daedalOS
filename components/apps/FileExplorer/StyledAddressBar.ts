@@ -33,7 +33,7 @@ const StyledAddressBar = styled.div`
   img {
     left: 2px;
     position: absolute;
-    top: 2px;
+    top: 3px;
   }
 
   .refresh {
