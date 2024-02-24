@@ -7,6 +7,10 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
     backgroundColor: "#000",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
     dependantLibs: ["/Program Files/BoxedWine/boxedwine.wasm"],
     icon: "/System/Icons/boxedwine.webp",
     libs: [
@@ -220,6 +224,10 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Quake3")),
     autoSizing: true,
     backgroundColor: "#000",
+    defaultSize: {
+      height: 480,
+      width: 640,
+    },
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
     title: "Quake III Arena",
