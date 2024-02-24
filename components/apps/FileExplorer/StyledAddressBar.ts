@@ -20,20 +20,16 @@ const StyledAddressBar = styled.div`
     font-size: 12px;
     font-weight: 400;
     height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight - 2}px;
-    padding-bottom: 2px;
+    padding-bottom: 1px;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: calc(100% - 2px);
-
-    &:focus {
-      padding-bottom: 0;
-    }
   }
 
   img {
     left: 2px;
     position: absolute;
-    top: 2px;
+    top: 3px;
   }
 
   .refresh {
