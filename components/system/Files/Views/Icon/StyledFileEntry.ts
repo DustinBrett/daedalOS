@@ -31,9 +31,9 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       figcaption {
         color: ${({ theme }) => theme.colors.fileEntry.text};
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
-        line-height: ${({ $shadows }) => ($shadows ? "1.2" : "1.25")};
-        margin: ${({ $shadows }) => ($shadows ? "1px 0" : "0 0 3px 0")};
-        padding: ${({ $shadows }) => ($shadows ? "2px 0" : 0)};
+        line-height: 1.2;
+        margin: 1px 0;
+        padding: 2px 0;
         text-shadow: ${({ $shadows, theme }) =>
           $shadows ? theme.colors.fileEntry.textShadow : undefined};
         word-break: break-word;
