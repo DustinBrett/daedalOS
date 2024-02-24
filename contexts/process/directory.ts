@@ -7,10 +7,6 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/BoxedWine")),
     allowResizing: false,
     backgroundColor: "#000",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     dependantLibs: ["/Program Files/BoxedWine/boxedwine.wasm"],
     icon: "/System/Icons/boxedwine.webp",
     libs: [
@@ -48,10 +44,6 @@ const directory: Processes = {
   DXBall: {
     Component: dynamic(() => import("components/apps/DX-Ball")),
     backgroundColor: "#000",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     icon: "/System/Icons/dxball.webp",
     libs: ["/Program Files/DX-Ball/game.js"],
     lockAspectRatio: true,
@@ -90,6 +82,10 @@ const directory: Processes = {
   FileExplorer: {
     Component: dynamic(() => import("components/apps/FileExplorer")),
     backgroundColor: "#202020",
+    defaultSize: {
+      height: 260,
+      width: 405,
+    },
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
@@ -165,10 +161,6 @@ const directory: Processes = {
   OpenType: {
     Component: dynamic(() => import("components/apps/OpenType")),
     backgroundColor: "#FFF",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     icon: "/System/Icons/opentype.webp",
     preferProcessIcon: true,
     title: "OpenType",
@@ -189,10 +181,6 @@ const directory: Processes = {
   PDF: {
     Component: dynamic(() => import("components/apps/PDF")),
     backgroundColor: "#525659",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     icon: "/System/Icons/pdf.webp",
     libs: ["/Program Files/PDF.js/pdf.js"],
     title: "PDF",
@@ -200,10 +188,6 @@ const directory: Processes = {
   Paint: {
     Component: dynamic(() => import("components/apps/Paint")),
     backgroundColor: "#808080",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     icon: "/System/Icons/paint.webp",
     libs: ["/Program Files/jspaint/index.html"],
     title: "Paint",
@@ -236,10 +220,6 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/Quake3")),
     autoSizing: true,
     backgroundColor: "#000",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
     title: "Quake III Arena",
@@ -320,10 +300,6 @@ const directory: Processes = {
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
     backgroundColor: "#202124",
-    defaultSize: {
-      height: 480,
-      width: 640,
-    },
     dependantLibs: [
       "/Program Files/TinyMCE/themes/silver/theme.min.js",
       "/Program Files/TinyMCE/models/dom/model.min.js",
@@ -365,6 +341,10 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/VideoPlayer")),
     autoSizing: true,
     backgroundColor: "#000",
+    defaultSize: {
+      height: 390,
+      width: 640,
+    },
     icon: "/System/Icons/vlc.webp",
     libs: [
       "/Program Files/Video.js/video-js.min.css",

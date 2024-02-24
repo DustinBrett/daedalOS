@@ -130,7 +130,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
 
         if (
           target instanceof HTMLElement &&
-          (target === sidebarRef.current ||
+          ((target === sidebarRef.current && collapsed) ||
             (sidebarRef.current?.contains(target) &&
               target.textContent === "START"))
         ) {

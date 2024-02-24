@@ -8,7 +8,7 @@ type StyledSidebarButtonProps = {
 const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   border: 1px solid transparent;
   display: flex;
-  height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
+  height: ${({ theme }) => theme.sizes.startMenu.sideBar.buttonHeight}px;
   place-content: center;
   place-items: center;
   transition-duration: 150ms;
@@ -18,7 +18,7 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     border-left: ${({ $active, theme }) =>
       `4px solid ${$active ? theme.colors.selectionHighlight : "transparent"}`};
     content: "";
-    height: ${({ theme }) => theme.sizes.startMenu.sideBar.height};
+    height: ${({ theme }) => theme.sizes.startMenu.sideBar.buttonHeight}px;
     left: 0;
     position: absolute;
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;

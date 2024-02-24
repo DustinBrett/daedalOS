@@ -19,6 +19,7 @@ const sizes = {
   },
   fileExplorer: {
     navBarHeight: "38px",
+    navInputHeight: 24,
     statusBarHeight: "23px",
   },
   fileManager: {
@@ -35,8 +36,8 @@ const sizes = {
   startMenu: {
     maxHeight: 390,
     sideBar: {
-      expandedWidth: "220px",
-      height: "48px",
+      buttonHeight: 48,
+      expandedWidth: "228px",
       iconSize: "16px",
       width: 48,
     },
@@ -65,7 +66,7 @@ const sizes = {
     buttonWidth: "45px",
     fontSize: "12px",
     height: 30,
-    iconMarginRight: "5px",
+    iconMarginRight: "4px",
     iconSize: "16px",
   },
   window: {

@@ -35,8 +35,8 @@ export const CLOCK_CANVAS_BASE_WIDTH = 68;
 export const SMALLEST_PNG_SIZE = 51;
 
 export const DEFAULT_WINDOW_SIZE: Size = {
-  height: 295,
-  width: 405,
+  height: 510,
+  width: 640,
 };
 
 export const DEFAULT_MAPPED_NAME = "Share";
