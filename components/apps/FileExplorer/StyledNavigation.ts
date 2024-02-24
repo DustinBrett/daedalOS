@@ -28,14 +28,15 @@ const StyledNavigation = styled.nav`
     }
 
     &[title^="Up"] {
-      margin-bottom: 12px;
-      margin-right: 0;
-      margin-top: 10px;
+      margin-right: 8px;
+      position: relative;
+      right: -8px;
+      top: -1px;
     }
 
     &[title="Recent locations"] {
-      margin-left: 1px;
-      margin-right: 0;
+      left: 55px;
+      position: absolute;
 
       svg {
         stroke: currentColor;

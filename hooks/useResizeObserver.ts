@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const useResizeObserver = (
-  componentWindow?: HTMLElement | null,
+  element?: HTMLElement | null,
   callback?: ResizeObserverCallback
 ): void => {
   const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
@@ -13,16 +13,16 @@ const useResizeObserver = (
   }, [callback]);
 
   useEffect(() => {
-    if (componentWindow instanceof HTMLElement) {
-      resizeObserver?.observe(componentWindow);
+    if (element instanceof HTMLElement) {
+      resizeObserver?.observe(element);
     }
 
     return () => {
-      if (componentWindow instanceof HTMLElement) {
-        resizeObserver?.unobserve(componentWindow);
+      if (element instanceof HTMLElement) {
+        resizeObserver?.unobserve(element);
       }
     };
-  }, [componentWindow, resizeObserver]);
+  }, [element, resizeObserver]);
 };
 
 export default useResizeObserver;

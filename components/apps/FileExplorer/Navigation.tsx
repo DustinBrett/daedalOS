@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { forwardRef, useMemo, useRef } from "react";
+import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -17,6 +17,7 @@ import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
 import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
+import useResizeObserver from "hooks/useResizeObserver";
 
 type NavigationProps = {
   hideSearch: boolean;
@@ -52,6 +53,21 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
       [contextMenu, history, moveHistory, position]
     );
     const navRef = useRef<HTMLElement | null>(null);
+    const [removeSearch, setRemoveSearch] = useState(false);
+    const resizeCallback = useCallback<ResizeObserverCallback>(
+      ([{ contentRect }]) => {
+        const tooSmallForSearch = contentRect.width < 260;
+
+        if (removeSearch && !tooSmallForSearch) {
+          setRemoveSearch(false);
+        } else if (!removeSearch && tooSmallForSearch) {
+          setRemoveSearch(true);
+        }
+      },
+      [removeSearch]
+    );
+
+    useResizeObserver(navRef.current, resizeCallback);
 
     return (
       <StyledNavigation
@@ -118,7 +134,7 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
           <Up />
         </Button>
         <AddressBar ref={inputRef} id={id} />
-        {!hideSearch && <SearchBar id={id} />}
+        {!hideSearch && !removeSearch && <SearchBar id={id} />}
       </StyledNavigation>
     );
   }
