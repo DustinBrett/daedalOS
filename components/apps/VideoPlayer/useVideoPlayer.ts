@@ -161,7 +161,14 @@ const useVideoPlayer = ({
       if (!isYT) linkElement(id, "peekElement", videoElement);
       argument?.(id, "play", () => videoPlayer.play());
       argument?.(id, "pause", () => videoPlayer.pause());
-      argument?.(id, "paused", () => videoPlayer.paused());
+      argument?.(id, "paused", (callback?: (paused: boolean) => void) => {
+        if (callback) {
+          videoPlayer.on("pause", () => callback(true));
+          videoPlayer.on("play", () => callback(false));
+        }
+
+        return videoPlayer.paused();
+      });
     });
   }, [
     argument,

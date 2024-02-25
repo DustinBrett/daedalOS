@@ -18,7 +18,7 @@ type DialogProcessArguments = {
 
 type MediaPlayerProcessArguments = {
   pause?: () => void;
-  paused?: () => boolean;
+  paused?: (callback?: (paused: boolean) => void) => boolean;
   play?: () => void;
 };
 

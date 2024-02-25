@@ -1,4 +1,11 @@
-import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
 import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePeekTransition";
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
@@ -47,6 +54,15 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
 
     setForegroundId(id);
   };
+  const [isPaused, setIsPaused] = useState(false);
+  const monitoringPaused = useRef(false);
+
+  useEffect(() => {
+    if (showControls && paused && !monitoringPaused.current) {
+      monitoringPaused.current = true;
+      setIsPaused(paused(setIsPaused));
+    }
+  }, [paused, showControls]);
 
   useLayoutEffect(() => {
     if (image) {
@@ -83,7 +99,7 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
       </Button>
       {showControls && (
         <div className="controls">
-          {paused?.() && (
+          {isPaused && (
             <Button
               onClick={(event) => {
                 haltEvent(event);
@@ -95,7 +111,7 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
               <Play />
             </Button>
           )}
-          {!paused?.() && (
+          {!isPaused && (
             <Button
               onClick={(event) => {
                 haltEvent(event);
