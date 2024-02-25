@@ -564,6 +564,7 @@ const FileEntry: FC<FileEntryProps> = ({
           />
           {renaming ? (
             <RenameBox
+              isDesktop={isDesktop}
               name={name}
               path={path}
               renameFile={(origPath, newName) => {

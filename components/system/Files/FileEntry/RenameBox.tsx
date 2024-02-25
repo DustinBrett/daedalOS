@@ -7,6 +7,7 @@ import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 type RenameBoxProps = {
+  isDesktop?: boolean;
   name: string;
   path: string;
   renameFile: (path: string, name?: string) => void;
@@ -15,7 +16,12 @@ type RenameBoxProps = {
 const TEXT_HEIGHT_PADDING = 2;
 const TEXT_WIDTH_PADDING = 22;
 
-const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
+const RenameBox: FC<RenameBoxProps> = ({
+  isDesktop,
+  name,
+  path,
+  renameFile,
+}) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
   const { formats, sizes } = useTheme();
@@ -54,6 +60,7 @@ const RenameBox: FC<RenameBoxProps> = ({ name, path, renameFile }) => {
   return (
     <StyledRenameBox
       ref={inputRef}
+      $darkMode={!isDesktop}
       defaultValue={name}
       onBlurCapture={saveRename}
       onClick={haltEvent}

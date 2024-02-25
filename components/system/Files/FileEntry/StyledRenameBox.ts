@@ -1,15 +1,23 @@
 import styled from "styled-components";
 import { MAX_FILE_NAME_LENGTH } from "utils/constants";
 
-const StyledRenameBox = styled.textarea.attrs(() => ({
+type StyledRenameBoxProps = {
+  $darkMode: boolean;
+};
+
+const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
   autoComplete: "off",
   enterKeyHint: "done",
   maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,
   spellCheck: false,
 }))`
-  border: 1px solid rgb(100, 100, 100);
+  background-color: ${({ $darkMode }) =>
+    $darkMode ? "rgb(33, 33, 33)" : "#fff"};
+  border: ${({ $darkMode }) =>
+    `1px solid ${$darkMode ? "#fff" : "rgb(100, 100, 100)"}`};
   border-radius: 0;
+  color: ${({ $darkMode }) => ($darkMode ? "#fff" : "#000")};
   font-family: inherit;
   font-size: 11.5px;
   margin-bottom: 2px;
