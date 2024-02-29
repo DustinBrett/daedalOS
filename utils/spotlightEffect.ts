@@ -13,20 +13,13 @@ export const spotlightEffect = (
 
   element.addEventListener(
     "mousemove",
-    ({ clientX, clientY, target }) => {
-      if (element.contains(target as Node)) {
-        const { left, top } = element.getBoundingClientRect();
-        const x = clientX - left;
-        const y = clientY - top;
-
-        Object.assign(element.style, {
-          background: onlyBorder
-            ? undefined
-            : `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0))`,
-          borderImage: `radial-gradient(20% 75% at ${x}px ${y}px, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1)) 1 / ${border}px / 0px stretch`,
-        });
-      }
-    },
+    ({ offsetX: x, offsetY: y }) =>
+      Object.assign(element.style, {
+        background: onlyBorder
+          ? undefined
+          : `radial-gradient(circle at ${x}px ${y}px, rgba(200, 200, 200, 30%), transparent)`,
+        borderImage: `radial-gradient(50% 75% at ${x}px ${y}px, rgba(200, 200, 200, 60%), transparent) 1 / ${border}px / 0 stretch`,
+      }),
     { passive: true }
   );
 };

@@ -5,10 +5,10 @@ const StyledFileEntry = styled.li`
   flex-direction: column;
 
   figure {
-    border: 1px solid transparent;
     display: flex;
     height: 36px;
     padding-bottom: 1px;
+    padding-left: 1px;
     place-items: center;
 
     figcaption {
@@ -25,6 +25,7 @@ const StyledFileEntry = styled.li`
       height: 8px;
       margin-left: auto;
       margin-right: 8px;
+      pointer-events: none;
       width: 8px;
     }
 
@@ -53,9 +54,17 @@ const StyledFileEntry = styled.li`
       }
     }
 
-    &:hover {
-      background-color: hsla(0, 0%, 35%, 70%);
-      border: 1px solid hsla(0, 0%, 45%, 70%);
+    @media (hover: hover) {
+      &:hover {
+        background-color: hsla(0, 0%, 35%, 70%);
+      }
+    }
+
+    @media (hover: none) {
+      &:active {
+        background-color: hsla(0, 0%, 35%, 70%);
+        border: 1px solid hsla(0, 0%, 45%, 70%);
+      }
     }
   }
 `;

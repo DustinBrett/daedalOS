@@ -11,6 +11,7 @@ import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
+import { useCanHover } from "hooks/useCanHover";
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -53,6 +54,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     },
   } = useTheme();
   const calendarTransition = useTaskbarItemTransition(maxHeight, false);
+  const canMouseOver = useCanHover();
 
   useEffect(() => {
     calendarRef.current?.addEventListener("blur", ({ relatedTarget }) => {
@@ -122,9 +124,9 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                   <td
                     key={`${day}${type}`}
                     ref={(tdRef: HTMLTableCellElement) =>
-                      type === "today"
-                        ? undefined
-                        : spotlightEffect(tdRef, false, 2)
+                      canMouseOver &&
+                      type !== "today" &&
+                      spotlightEffect(tdRef, true, 2)
                     }
                     className={type}
                   >
