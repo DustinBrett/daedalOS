@@ -126,7 +126,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                     ref={(tdRef: HTMLTableCellElement) =>
                       canMouseOver &&
                       type !== "today" &&
-                      spotlightEffect(tdRef, true, 2)
+                      spotlightEffect(tdRef, true, 2, true)
                     }
                     className={type}
                   >
