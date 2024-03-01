@@ -1,4 +1,7 @@
-const PASSIVE = { passive: true };
+/* eslint-disable no-param-reassign */
+
+const CAPTURE = { capture: true, passive: true };
+const PASSIVE = { capture: false, passive: true };
 
 export const spotlightEffect = (
   element: HTMLElement | null,
@@ -8,7 +11,11 @@ export const spotlightEffect = (
 ): void => {
   if (!element) return;
 
-  const removeStyle = (): void => element.removeAttribute("style");
+  const removeStyle = (): void => {
+    if (!onlyBorder) element.style.background = "";
+
+    element.style.borderImage = "";
+  };
 
   if (onlyBorder) {
     const mouseMove = ({ clientX, clientY }: MouseEvent): void => {
@@ -18,27 +25,22 @@ export const spotlightEffect = (
           highlightHovered &&
           document.elementFromPoint(clientX, clientY) === element;
 
-        Object.assign(element.style, {
-          borderImage: `radial-gradient(150% 150% at ${clientX - x}px ${clientY - y}px, rgba(${hovered ? "255, 255, 255" : "150, 150, 150"}, 60%), transparent) 1 / ${border}px / 0 stretch`,
-        });
+        element.style.borderImage = `radial-gradient(150% 150% at ${clientX - x}px ${clientY - y}px, rgba(${hovered ? "255, 255, 255, 80%" : "150, 150, 150, 60%"}), transparent) 1 / ${border}px / 0 stretch`;
       } else {
         document.removeEventListener("mousemove", mouseMove);
         document.removeEventListener("mouseleave", removeStyle);
       }
     };
 
-    document.addEventListener("mousemove", mouseMove, PASSIVE);
-    document.addEventListener("mouseleave", removeStyle, PASSIVE);
+    document.addEventListener("mousemove", mouseMove, CAPTURE);
+    document.addEventListener("mouseleave", removeStyle, CAPTURE);
   } else {
-    element.addEventListener(
-      "mousemove",
-      ({ offsetX: x, offsetY: y }) =>
-        Object.assign(element.style, {
-          background: `radial-gradient(circle at ${x}px ${y}px, rgba(200, 200, 200, 30%), transparent)`,
-          borderImage: `radial-gradient(50% 75% at ${x}px ${y}px, rgba(200, 200, 200, 60%), transparent) 1 / ${border}px / 0 stretch`,
-        }),
-      PASSIVE
-    );
+    const mouseMove = ({ offsetX: x, offsetY: y }: MouseEvent): void => {
+      element.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(200, 200, 200, 30%), transparent)`;
+      element.style.borderImage = `radial-gradient(50% 75% at ${x}px ${y}px, rgba(200, 200, 200, 60%), transparent) 1 / ${border}px / 0 stretch`;
+    };
+
+    element.addEventListener("mousemove", mouseMove, PASSIVE);
     element.addEventListener("mouseleave", removeStyle, PASSIVE);
   }
 };
