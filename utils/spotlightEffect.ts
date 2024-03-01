@@ -25,7 +25,7 @@ export const spotlightEffect = (
           highlightHovered &&
           document.elementFromPoint(clientX, clientY) === element;
 
-        element.style.borderImage = `radial-gradient(150% 150% at ${clientX - x}px ${clientY - y}px, rgba(${hovered ? "255, 255, 255, 80%" : "150, 150, 150, 60%"}), transparent) 1 / ${border}px / 0 stretch`;
+        element.style.borderImage = `radial-gradient(75px at ${clientX - x}px ${clientY - y}px, rgba(${hovered ? "255, 255, 255, 80%" : "200, 200, 200, 60%"}), transparent) 1 / ${border}px / 0 stretch`;
       } else {
         document.removeEventListener("mousemove", mouseMove);
         document.removeEventListener("mouseleave", removeStyle);
@@ -37,7 +37,7 @@ export const spotlightEffect = (
   } else {
     const mouseMove = ({ offsetX: x, offsetY: y }: MouseEvent): void => {
       element.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(200, 200, 200, 30%), transparent)`;
-      element.style.borderImage = `radial-gradient(50% 75% at ${x}px ${y}px, rgba(200, 200, 200, 60%), transparent) 1 / ${border}px / 0 stretch`;
+      element.style.borderImage = `radial-gradient(75px at ${x}px ${y}px, rgba(200, 200, 200, 60%), transparent) 1 / ${border}px / 0 stretch`;
     };
 
     element.addEventListener("mousemove", mouseMove, PASSIVE);
