@@ -189,6 +189,14 @@
       }
     ]
   },
+  "overrides": [
+    {
+      "files": ["__tests__/**/*.spec.tsx"],
+      "rules": {
+        "playwright/no-standalone-expect": "off"
+      }
+    }
+  ],
   "reportUnusedDisableDirectives": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
