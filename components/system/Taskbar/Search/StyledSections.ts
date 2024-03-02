@@ -28,7 +28,7 @@ const StyledSections = styled.div<StyledSectionsProps>`
       margin-right: 8px;
     }
 
-    @media (hover: hover) {
+    @media (hover: hover), (pointer: fine) {
       &:hover {
         margin-right: 0;
       }

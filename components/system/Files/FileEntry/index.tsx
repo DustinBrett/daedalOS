@@ -64,7 +64,7 @@ import {
 import { spotlightEffect } from "utils/spotlightEffect";
 import { useIsVisible } from "hooks/useIsVisible";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
-import { useCanHover } from "hooks/useCanHover";
+import { useFinePointer } from "hooks/useFinePointer";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
@@ -299,7 +299,7 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
     urlExt,
   ]);
-  const canMouseOver = useCanHover();
+  const hasFinePointer = useFinePointer();
 
   useEffect(() => {
     if (!isLoadingFileManager && isVisible && !isIconCached.current) {
@@ -544,8 +544,8 @@ const FileEntry: FC<FileEntryProps> = ({
         <StyledFigure
           ref={useCallback(
             (figureRef: HTMLElement) =>
-              listView && canMouseOver && spotlightEffect(figureRef),
-            [canMouseOver, listView]
+              listView && hasFinePointer && spotlightEffect(figureRef),
+            [hasFinePointer, listView]
           )}
           $renaming={renaming}
         >

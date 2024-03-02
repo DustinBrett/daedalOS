@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { spotlightEffect } from "utils/spotlightEffect";
-import { useCanHover } from "hooks/useCanHover";
+import { useFinePointer } from "hooks/useFinePointer";
 
 type SidebarButton = {
   action?: () => void;
@@ -22,14 +22,14 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
   name,
   tooltip,
 }) => {
-  const canMouseOver = useCanHover();
+  const hasFinePointer = useFinePointer();
 
   return (
     <StyledSidebarButton
       ref={useCallback(
         (buttonRef: HTMLLIElement) =>
-          canMouseOver && spotlightEffect(buttonRef, true),
-        [canMouseOver]
+          hasFinePointer && spotlightEffect(buttonRef, true),
+        [hasFinePointer]
       )}
       $active={active}
       aria-label={name}

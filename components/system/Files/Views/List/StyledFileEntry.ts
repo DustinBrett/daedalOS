@@ -54,13 +54,13 @@ const StyledFileEntry = styled.li`
       }
     }
 
-    @media (hover: hover) {
+    @media (pointer: fine) {
       &:hover {
         background-color: hsla(0, 0%, 35%, 70%);
       }
     }
 
-    @media (hover: none) {
+    @media (pointer: coarse) {
       &:active {
         background-color: hsla(0, 0%, 35%, 70%);
         border: 1px solid hsla(0, 0%, 45%, 70%);

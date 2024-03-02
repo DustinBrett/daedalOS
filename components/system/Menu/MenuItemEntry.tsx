@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -23,7 +24,6 @@ import {
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
-import { useCanHover } from "hooks/useCanHover";
 
 type MenuItemEntryProps = MenuItem & {
   isSubMenu: boolean;
@@ -51,7 +51,10 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   const { sizes } = useTheme();
   const showSubMenuTimerRef = useRef<number>(0);
   const [mouseOver, setMouseOver] = useState(false);
-  const canMouseOver = useCanHover();
+  const canMouseOver = useMemo(
+    () => window.matchMedia("(hover: hover)").matches,
+    []
+  );
   const setDelayedShowSubMenu = useCallback((show: boolean) => {
     if (showSubMenuTimerRef.current) {
       window.clearTimeout(showSubMenuTimerRef.current);
