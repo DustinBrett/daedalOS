@@ -18,7 +18,6 @@ import {
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
-  SMALLEST_JXL_FILE,
   SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
@@ -179,27 +178,23 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
     fileReader.onloadend = () => resolve(fileReader.result as string);
   });
 
-export const hasJxlSupport = (): Promise<boolean> =>
-  new Promise((resolve) => {
-    const JXL = new Image();
+export const supportsImageType = async (type: string): Promise<boolean> => {
+  const img = document.createElement("img");
 
-    JXL.src = SMALLEST_JXL_FILE;
+  document.createElement("picture").append(
+    Object.assign(document.createElement("source"), {
+      srcset: "data:,x",
+      type,
+    }),
+    img
+  );
 
-    JXL.addEventListener("load", () => resolve(true));
-    JXL.addEventListener("error", () => resolve(false));
+  await new Promise((resolve) => {
+    requestAnimationFrame(resolve);
   });
 
-type JxlDecodeResponse = { data: { imgData: ImageData } };
-
-export const decodeJxl = async (image: Buffer): Promise<ImageData> =>
-  new Promise((resolve) => {
-    const worker = new Worker("System/JXL.js/jxl_dec.js");
-
-    worker.postMessage({ image, jxlSrc: "image.jxl" });
-    worker.addEventListener("message", (message: JxlDecodeResponse) =>
-      resolve(message?.data?.imgData)
-    );
-  });
+  return typeof img.currentSrc === "string" && img.currentSrc.length > 0;
+};
 
 export const imgDataToBuffer = (imageData: ImageData): Buffer => {
   const canvas = document.createElement("canvas");
@@ -213,6 +208,20 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
     "base64"
   );
 };
+
+type JxlDecodeResponse = { data: { imgData: ImageData } };
+
+export const decodeJxl = async (image: Buffer): Promise<Buffer> =>
+  (await supportsImageType("image/jxl"))
+    ? image
+    : new Promise((resolve) => {
+        const worker = new Worker("System/JXL.js/jxl_dec.js");
+
+        worker.postMessage({ image, jxlSrc: "image.jxl" });
+        worker.addEventListener("message", (message: JxlDecodeResponse) =>
+          resolve(imgDataToBuffer(message?.data?.imgData))
+        );
+      });
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
@@ -375,6 +384,8 @@ type LibHeif = {
 };
 
 export const decodeHeic = async (image: Buffer): Promise<Buffer> => {
+  if (await supportsImageType("image/heic")) return image;
+
   await loadFiles(["/System/libheif/libheif-bundle.js"], false, true);
 
   const { libheif } = window as unknown as Window & LibHeif;

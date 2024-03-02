@@ -51,9 +51,7 @@ import {
   getExtension,
   getGifJs,
   getHtmlToImage,
-  hasJxlSupport,
   imageToBufferUrl,
-  imgDataToBuffer,
   isSafari,
   isYouTubeUrl,
 } from "utils/functions";
@@ -707,11 +705,9 @@ export const getInfoWithExtension = (
       getInfoByFileExtension(PHOTO_ICON, (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
           if (!error && contents.length > 0 && !signal.aborted) {
-            const jxlData = (await hasJxlSupport())
-              ? contents
-              : imgDataToBuffer(await decodeJxl(contents));
-
-            getInfoByFileExtension(imageToBufferUrl(path, jxlData));
+            getInfoByFileExtension(
+              imageToBufferUrl(path, await decodeJxl(contents))
+            );
           }
         })
       );

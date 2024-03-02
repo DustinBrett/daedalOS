@@ -293,9 +293,6 @@ export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.webp`;
 
 export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
 
-export const SMALLEST_JXL_FILE =
-  "data:image/jxl;base64,/woIAAAMABKIAgC4AF3lEgAAFSqjjBu8nOv58kOHxbSN6wxttW1hSaLIODZJJ3BIEkkaoCUzGM6qJAE=";
-
 export const UNKNOWN_ICON_PATH = `${ICON_PATH}/unknown.webp`;
 
 export const TIMESTAMP_DATE_FORMAT: Intl.DateTimeFormatOptions = {

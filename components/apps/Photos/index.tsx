@@ -27,9 +27,7 @@ import {
   decodeJxl,
   getExtension,
   haltEvent,
-  hasJxlSupport,
   imageToBufferUrl,
-  imgDataToBuffer,
   label,
 } from "utils/functions";
 import { aniToGif } from "components/system/Files/FileEntry/functions";
@@ -58,8 +56,8 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
     if ([".ani", ".cur"].includes(ext)) {
       fileContents = await aniToGif(fileContents);
-    } else if (ext === ".jxl" && !(await hasJxlSupport())) {
-      fileContents = imgDataToBuffer(await decodeJxl(fileContents));
+    } else if (ext === ".jxl") {
+      fileContents = await decodeJxl(fileContents);
     } else if (ext === ".qoi") {
       const { decodeQoi } = await import("components/apps/Photos/qoi");
 
