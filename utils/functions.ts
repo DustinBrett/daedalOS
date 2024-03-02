@@ -178,7 +178,7 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
     fileReader.onloadend = () => resolve(fileReader.result as string);
   });
 
-export const supportsImageType = async (type: string): Promise<boolean> => {
+const supportsImageType = async (type: string): Promise<boolean> => {
   const img = document.createElement("img");
 
   document.createElement("picture").append(
