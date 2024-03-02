@@ -358,6 +358,47 @@ export const getHtmlToImage = async (): Promise<
   return htmlToImage;
 };
 
+type LibHeif = {
+  libheif: () => {
+    HeifDecoder: new () => {
+      decode: (file: Buffer) => {
+        display: (
+          imageData: ImageData,
+          callback: (data: ImageData) => void
+        ) => void;
+        get_height: () => number;
+        get_width: () => number;
+      }[];
+    };
+    ready: Promise<void>;
+  };
+};
+
+export const decodeHeic = async (image: Buffer): Promise<Buffer> => {
+  await loadFiles(["/System/libheif/libheif-bundle.js"], false, true);
+
+  const { libheif } = window as unknown as Window & LibHeif;
+  const { HeifDecoder, ready } = libheif();
+
+  await ready;
+
+  const [decodedImage] = new HeifDecoder().decode(image);
+  const width = decodedImage.get_width();
+  const height = decodedImage.get_height();
+  const { data } = await new Promise<ImageData>((resolve) => {
+    decodedImage.display(
+      {
+        data: new Uint8ClampedArray(width * height * 4),
+        height,
+        width,
+      } as ImageData,
+      resolve
+    );
+  });
+
+  return imgDataToBuffer(new ImageData(data, width, height));
+};
+
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
 

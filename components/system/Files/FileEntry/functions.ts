@@ -18,6 +18,7 @@ import {
   FOLDER_BACK_ICON,
   FOLDER_FRONT_ICON,
   FOLDER_ICON,
+  HEIF_IMAGE_FORMATS,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   ICON_GIF_FPS,
@@ -45,6 +46,7 @@ import {
   blobToBase64,
   bufferToUrl,
   cleanUpBufferUrl,
+  decodeHeic,
   decodeJxl,
   getExtension,
   getGifJs,
@@ -781,6 +783,18 @@ export const getInfoWithExtension = (
 
               if (firstImage && !signal.aborted) {
                 getInfoByFileExtension(firstImage);
+              }
+            }
+          })
+        );
+      } else if (HEIF_IMAGE_FORMATS.has(extension)) {
+        getInfoByFileExtension(PHOTO_ICON, (signal) =>
+          fs.readFile(path, async (error, contents = Buffer.from("")) => {
+            if (!error && contents.length > 0 && !signal.aborted) {
+              const icon = await decodeHeic(contents);
+
+              if (icon && !signal.aborted) {
+                getInfoByFileExtension(imageToBufferUrl(path, icon));
               }
             }
           })

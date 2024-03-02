@@ -17,11 +17,13 @@ import { useViewport } from "contexts/viewport";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import {
+  HEIF_IMAGE_FORMATS,
   HIGH_PRIORITY_ELEMENT,
   IMAGE_FILE_EXTENSIONS,
   TIFF_IMAGE_FORMATS,
 } from "utils/constants";
 import {
+  decodeHeic,
   decodeJxl,
   getExtension,
   haltEvent,
@@ -62,6 +64,8 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       const { decodeQoi } = await import("components/apps/Photos/qoi");
 
       fileContents = decodeQoi(fileContents);
+    } else if (HEIF_IMAGE_FORMATS.has(ext)) {
+      fileContents = await decodeHeic(fileContents);
     } else if (TIFF_IMAGE_FORMATS.has(ext)) {
       fileContents = (await import("utif"))
         .bufferToURI(fileContents)

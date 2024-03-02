@@ -77,6 +77,15 @@ export const LIST_VIEW_ANIMATION = {
   transition: { duration: 0.15 },
 };
 
+export const HEIF_IMAGE_FORMATS = new Set([
+  ".heic",
+  ".heics",
+  ".heif",
+  ".heifs",
+  ".avci",
+  ".avcs",
+]);
+
 export const TIFF_IMAGE_FORMATS = new Set([
   ".cr2",
   ".dng",
@@ -88,6 +97,7 @@ export const TIFF_IMAGE_FORMATS = new Set([
 export const CLIPBOARD_FILE_EXTENSIONS = new Set([".jpeg", ".jpg", ".png"]);
 
 export const IMAGE_FILE_EXTENSIONS = new Set([
+  ...HEIF_IMAGE_FORMATS,
   ...TIFF_IMAGE_FORMATS,
   ".ani",
   ".apng",
@@ -112,6 +122,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
 ]);
 
 export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
+  ...HEIF_IMAGE_FORMATS,
   ...TIFF_IMAGE_FORMATS,
   ".jxl",
   ".qoi",

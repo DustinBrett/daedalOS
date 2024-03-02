@@ -150,6 +150,7 @@
 ### Photos
 
 - [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#supported_image_formats)
+  - [HEIF](https://github.com/catdad-experiments/libheif-js) (**_.heic, .heif_**)
   - [JPEG XL](https://github.com/niutech/jxl.js) (**_.jxl_**)
   - [QOI](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba) (**_.qoi_**)
   - [TIFF](https://github.com/photopea/UTIF.js) (**_.tif, .tiff_**)

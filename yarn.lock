@@ -4942,6 +4942,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+libheif-js@^1.17.1:
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/libheif-js/-/libheif-js-1.17.1.tgz#7772cc5a31098df0354f0fadb49a939030765acd"
+  integrity sha512-g9wBm/CasGZMjmH3B2sD9+AO7Y5+79F0oPS+sdAulSxQeYeCeiTIP+lDqvlPofD+y76wvfVtotKZ8AuvZQnWgg==
+
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
