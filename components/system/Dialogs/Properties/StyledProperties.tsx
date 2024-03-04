@@ -84,8 +84,8 @@ const StyledProperties = styled.div`
         display: flex;
         font-size: 11.5px;
         height: 21px;
-        line-height: 21px;
-        padding: 1px 7px;
+        line-height: 16px;
+        padding: 1px 6px;
         place-content: center;
         width: auto;
         z-index: 2;
@@ -95,7 +95,6 @@ const StyledProperties = styled.div`
           border-bottom: 1px solid rgb(217, 217, 217);
           height: 19px;
           left: -1px;
-          line-height: 18px;
           position: relative;
           top: 2px;
           z-index: 1;
