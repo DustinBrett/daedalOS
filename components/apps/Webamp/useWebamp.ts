@@ -223,18 +223,16 @@ const useWebamp = (id: string): Webamp => {
             } else {
               const { playlist: { currentTrack = -1 } = {}, tracks } =
                 webamp.store.getState() || {};
+              const { artist = "", title: trackTitle = "" } =
+                tracks?.[currentTrack] || {};
 
-              if (tracks[currentTrack]) {
-                const { artist, title: trackTitle } = tracks[currentTrack];
-                let newTitle = "";
-
-                if (trackTitle && artist) {
-                  newTitle = `${artist} - ${trackTitle}`;
-                } else if (trackTitle || artist) {
-                  newTitle = trackTitle || artist;
-                }
-
-                if (newTitle) title(id, newTitle);
+              if (trackTitle || artist) {
+                title(
+                  id,
+                  trackTitle && artist
+                    ? `${artist} - ${trackTitle}`
+                    : trackTitle || artist
+                );
               }
             }
           } else {
