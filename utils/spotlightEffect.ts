@@ -1,11 +1,7 @@
 /* eslint-disable no-param-reassign */
 
-import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-
 const CAPTURE = { capture: true, passive: true };
 const PASSIVE = { capture: false, passive: true };
-
-const INIT_DELAY_MS = TRANSITIONS_IN_MILLISECONDS.TASKBAR_ITEM + 100;
 
 export const spotlightEffect = (
   element: HTMLElement | null,
@@ -15,7 +11,7 @@ export const spotlightEffect = (
 ): void => {
   if (!element) return;
 
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     const removeStyle = (): void => {
       if (!onlyBorder) element.style.background = "";
 
@@ -48,5 +44,5 @@ export const spotlightEffect = (
       element.addEventListener("mousemove", mouseMove, PASSIVE);
       element.addEventListener("mouseleave", removeStyle, PASSIVE);
     }
-  }, INIT_DELAY_MS);
+  });
 };
