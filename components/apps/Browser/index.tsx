@@ -79,6 +79,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     }
 
     if (isSrcDoc) {
+      setSrcDoc("");
       iframeRef.current?.setAttribute("src", newUrl);
     } else {
       contentWindow.location?.replace(newUrl);
@@ -110,7 +111,6 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           (await exists(addressInput));
 
         setLoading(true);
-        setSrcDoc("");
         if (isHtml) setSrcDoc((await readFile(addressInput)).toString());
         setIcon(id, processDirectory.Browser.icon);
 
