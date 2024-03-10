@@ -68,6 +68,7 @@ export const commands: Record<string, string> = {
   wapm: "Run universal Wasm binaries.",
   weather: "Weather forecast service",
   whoami: "Displays user information.",
+  wsl: "Launches the default Linux shell.",
   xlsx: "Convert a spreadsheet file to another format.",
 };
 
@@ -96,6 +97,7 @@ export const aliases: Record<string, string[]> = {
   ver: ["version"],
   wapm: ["wasmer", "wax"],
   weather: ["wttr"],
+  wsl: ["linux"],
 };
 
 const directoryCommands = new Set([
