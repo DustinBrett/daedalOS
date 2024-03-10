@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import ScrollBars from "styles/common/ScrollBars";
+import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 
 const StyledDetailsTab = styled.div`
   background-color: #fff;
@@ -9,6 +11,7 @@ const StyledDetailsTab = styled.div`
   top: -1px;
 
   table {
+    ${ScrollBars(DEFAULT_SCROLLBAR_WIDTH, 0, 0, "light")};
     border: 1px solid rgb(130, 135, 144);
     display: flex;
     flex-direction: column;
