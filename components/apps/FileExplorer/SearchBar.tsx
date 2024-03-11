@@ -73,13 +73,15 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         );
 
       getItems().then((items) => {
-        const searchBarRect = searchBarRef.current?.getBoundingClientRect();
+        if (searchBarRef.current?.value || items.length === 0) {
+          const searchBarRect = searchBarRef.current?.getBoundingClientRect();
 
-        contextMenu?.(() => items).onContextMenuCapture(
-          undefined,
-          searchBarRect,
-          { staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0) }
-        );
+          contextMenu?.(() => items).onContextMenuCapture(
+            undefined,
+            searchBarRect,
+            { staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0) }
+          );
+        }
       });
     }
   }, [contextMenu, fs, open, results, updateRecentFiles, url]);
