@@ -82,15 +82,28 @@ export const getResultInfo = async (
 };
 
 export const updateInputValueOnReactElement = (
-  element: HTMLElement,
+  element: HTMLInputElement,
   value: string
 ): void => {
-  Object.getOwnPropertyDescriptor(
-    Object.getPrototypeOf(element),
-    "value"
-  )?.set?.call(element, value);
+  const wasEmpty = element.value.length === 0;
+  const updateInputValue = (): void => {
+    Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(element),
+      "value"
+    )?.set?.call(element, value);
 
-  element.dispatchEvent(new Event("input", { bubbles: true }));
+    element.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  updateInputValue();
+  requestAnimationFrame(
+    () =>
+      wasEmpty &&
+      value.length === 1 &&
+      element.value.length === 2 &&
+      // Reset the value if it got doubled
+      updateInputValue()
+  );
 };
 
 export const fileType = (
