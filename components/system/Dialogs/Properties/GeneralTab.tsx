@@ -120,7 +120,9 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <td>
               <input
                 ref={inputRef}
+                autoCapitalize="off"
                 autoComplete="off"
+                autoCorrect="off"
                 defaultValue={basename(
                   url,
                   isShortcut ? extname(url) : undefined

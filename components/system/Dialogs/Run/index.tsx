@@ -234,7 +234,9 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
         <div>
           <input
             ref={inputRef}
+            autoCapitalize="off"
             autoComplete="off"
+            autoCorrect="off"
             defaultValue={runHistory[0]}
             disabled={running}
             enterKeyHint="go"

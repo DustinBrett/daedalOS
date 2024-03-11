@@ -6,7 +6,9 @@ type StyledRenameBoxProps = {
 };
 
 const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
+  autoCapitalize: "off",
   autoComplete: "off",
+  autoCorrect: "off",
   enterKeyHint: "done",
   maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,

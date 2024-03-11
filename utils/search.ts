@@ -14,6 +14,7 @@ export const FILE_INDEX = "/.index/search.lunr.json";
 export const SEARCH_LIB = "/System/lunr/lunr.min.js";
 
 export const SEARCH_INPUT_PROPS = {
+  autoCapitalize: "off",
   autoComplete: "off",
   autoCorrect: "off",
   enterKeyHint: "search",
