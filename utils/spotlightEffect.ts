@@ -28,8 +28,8 @@ export const spotlightEffect = (
 
           element.style.borderImage = `radial-gradient(75px at ${clientX - x}px ${clientY - y}px, rgba(${hovered ? "255, 255, 255, 80%" : "200, 200, 200, 60%"}), transparent) 1 / ${border}px / 0 stretch`;
         } else {
-          document.removeEventListener("mousemove", mouseMove);
-          document.removeEventListener("mouseleave", removeStyle);
+          document.removeEventListener("mousemove", mouseMove, CAPTURE);
+          document.removeEventListener("mouseleave", removeStyle, CAPTURE);
         }
       };
 
