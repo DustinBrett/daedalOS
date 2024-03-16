@@ -42,7 +42,15 @@ if (!commit) {
 
 const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),
-  (html) => html.replace(/><\/path>/, "/>"),
+  (html) => html.replace(/><\/path>/g, "/>"),
+  (html) => {
+    const [style] = html.match(/<style[\s\S]+>[\s\S]+<\/style>/);
+
+    return html.replace(
+      style,
+      style.replace(/(?:-ms-[^:;{}]+|[^:;{}]+:-ms-)[^;{}]+;/g, "")
+    );
+  },
   (html) =>
     html.replace(
       /<script crossorigin="" defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
