@@ -75,6 +75,11 @@
       }
     ],
     "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      { "allowNumber": true }
+    ],
+    "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
     "camelcase": "off",
     "class-methods-use-this": "off",
     "curly": "error",

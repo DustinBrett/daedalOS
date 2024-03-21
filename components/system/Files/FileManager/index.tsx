@@ -144,7 +144,7 @@ const FileManager: FC<FileManagerProps> = ({
             }
           })
           .catch((error: Error) => {
-            if (error.message === "Permission already granted") {
+            if (error?.message === "Permission already granted") {
               setPermission("granted");
             }
           })
