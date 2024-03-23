@@ -1,5 +1,5 @@
 import { basename, dirname, extname, join } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import extensions from "components/system/Files/FileEntry/extensions";
@@ -19,10 +19,12 @@ import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
+  DISBALE_AUTO_INPUT_FEATURES,
   FOLDER_ICON,
+  MAX_FILE_NAME_LENGTH,
   SHORTCUT_ICON,
 } from "utils/constants";
-import { getExtension, getFormattedSize } from "utils/functions";
+import { getExtension, getFormattedSize, haltEvent } from "utils/functions";
 
 type TabProps = {
   icon: string;
@@ -57,6 +59,50 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const checkedFileCounts = useRef(false);
   const abortControllerRef = useRef<AbortController>();
   const [folderIcon, setFolderIcon] = useState(FOLDER_ICON);
+  const okAction = useCallback(async (): Promise<void> => {
+    if (inputRef.current && url && inputRef.current.value !== basename(url)) {
+      let newName = removeInvalidFilenameCharacters(
+        inputRef.current.value
+      ).trim();
+
+      if (newName?.endsWith(".")) {
+        newName = newName.slice(0, -1);
+      }
+
+      if (newName) {
+        const directoryName = dirname(url);
+        const renamedPath = `${join(directoryName, newName)}${
+          isShortcut ? extname(url) : ""
+        }`;
+
+        if (await rename(url, renamedPath)) {
+          updateFolder(directoryName, renamedPath, url);
+        }
+
+        if (dirname(url) === DESKTOP_PATH) {
+          setIconPositions((currentPositions) => {
+            const { [url]: iconPosition, ...newPositions } = currentPositions;
+
+            if (iconPosition) {
+              newPositions[renamedPath] = iconPosition;
+            }
+
+            return newPositions;
+          });
+        }
+      }
+    }
+
+    closeWithTransition(id);
+  }, [
+    closeWithTransition,
+    id,
+    isShortcut,
+    rename,
+    setIconPositions,
+    updateFolder,
+    url,
+  ]);
 
   useEffect(() => {
     if (isDirectory && fs) {
@@ -120,15 +166,20 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <td>
               <input
                 ref={inputRef}
-                autoCapitalize="off"
-                autoComplete="off"
-                autoCorrect="off"
                 defaultValue={basename(
                   url,
                   isShortcut ? extname(url) : undefined
                 )}
-                spellCheck="false"
+                enterKeyHint="done"
+                maxLength={MAX_FILE_NAME_LENGTH}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    haltEvent(event);
+                    okAction();
+                  }
+                }}
                 type="text"
+                {...DISBALE_AUTO_INPUT_FEATURES}
               />
             </td>
           </tr>
@@ -207,50 +258,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
           </tr>
         </tbody>
       </table>
-      <Buttons
-        id={id}
-        onClick={async () => {
-          if (
-            inputRef.current &&
-            url &&
-            inputRef.current.value !== basename(url)
-          ) {
-            let newName = removeInvalidFilenameCharacters(
-              inputRef.current.value
-            ).trim();
-
-            if (newName?.endsWith(".")) {
-              newName = newName.slice(0, -1);
-            }
-
-            if (newName) {
-              const directoryName = dirname(url);
-              const renamedPath = `${join(directoryName, newName)}${
-                isShortcut ? extname(url) : ""
-              }`;
-
-              if (await rename(url, renamedPath)) {
-                updateFolder(directoryName, renamedPath, url);
-              }
-
-              if (dirname(url) === DESKTOP_PATH) {
-                setIconPositions((currentPositions) => {
-                  const { [url]: iconPosition, ...newPositions } =
-                    currentPositions;
-
-                  if (iconPosition) {
-                    newPositions[renamedPath] = iconPosition;
-                  }
-
-                  return newPositions;
-                });
-              }
-            }
-          }
-
-          closeWithTransition(id);
-        }}
-      />
+      <Buttons id={id} onClick={okAction} />
     </>
   );
 };
