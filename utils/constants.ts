@@ -357,3 +357,10 @@ export const HIGH_PRIORITY_REQUEST = { priority: "high" } as RequestInit;
 export const HIGH_PRIORITY_ELEMENT = {
   fetchpriority: "high",
 } as React.HTMLAttributes<HTMLElement>;
+
+export const DISBALE_AUTO_INPUT_FEATURES = {
+  autoCapitalize: "off",
+  autoComplete: "off",
+  autoCorrect: "off",
+  spellCheck: false,
+};

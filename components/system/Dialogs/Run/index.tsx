@@ -15,6 +15,7 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import {
   DESKTOP_PATH,
+  DISBALE_AUTO_INPUT_FEATURES,
   ICON_PATH,
   PACKAGE_DATA,
   PREVENT_SCROLL,
@@ -234,9 +235,6 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
         <div>
           <input
             ref={inputRef}
-            autoCapitalize="off"
-            autoComplete="off"
-            autoCorrect="off"
             defaultValue={runHistory[0]}
             disabled={running}
             enterKeyHint="go"
@@ -267,8 +265,8 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
             onKeyUp={
               checkIsEmpty as React.KeyboardEventHandler<HTMLInputElement>
             }
-            spellCheck="false"
             type="text"
+            {...DISBALE_AUTO_INPUT_FEATURES}
           />
           <select
             disabled={runHistory.length === 0}

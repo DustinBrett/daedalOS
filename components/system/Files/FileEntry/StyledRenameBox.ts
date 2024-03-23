@@ -1,18 +1,18 @@
 import styled from "styled-components";
-import { MAX_FILE_NAME_LENGTH } from "utils/constants";
+import {
+  DISBALE_AUTO_INPUT_FEATURES,
+  MAX_FILE_NAME_LENGTH,
+} from "utils/constants";
 
 type StyledRenameBoxProps = {
   $darkMode: boolean;
 };
 
 const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
-  autoCapitalize: "off",
-  autoComplete: "off",
-  autoCorrect: "off",
   enterKeyHint: "done",
   maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,
-  spellCheck: false,
+  ...DISBALE_AUTO_INPUT_FEATURES,
 }))`
   background-color: ${({ $darkMode }) =>
     $darkMode ? "rgb(33, 33, 33)" : "#fff"};

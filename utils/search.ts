@@ -6,7 +6,10 @@ import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import { useFileSystem } from "contexts/fileSystem";
 import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
-import { HIGH_PRIORITY_REQUEST } from "utils/constants";
+import {
+  DISBALE_AUTO_INPUT_FEATURES,
+  HIGH_PRIORITY_REQUEST,
+} from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 
 export const FILE_INDEX = "/.index/search.lunr.json";
@@ -14,13 +17,10 @@ export const FILE_INDEX = "/.index/search.lunr.json";
 export const SEARCH_LIB = "/System/lunr/lunr.min.js";
 
 export const SEARCH_INPUT_PROPS = {
-  autoCapitalize: "off",
-  autoComplete: "off",
-  autoCorrect: "off",
   enterKeyHint: "search",
   inputMode: "search",
-  spellCheck: false,
   type: "search",
+  ...DISBALE_AUTO_INPUT_FEATURES,
 } as React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
