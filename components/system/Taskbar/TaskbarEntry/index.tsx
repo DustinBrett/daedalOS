@@ -33,8 +33,9 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   } = useProcesses();
   const { minimized, progress } = process || {};
   const linkTaskbarEntry = useCallback(
-    (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) =>
-      taskbarEntry && linkElement(id, "taskbarEntry", taskbarEntry),
+    (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) => {
+      if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
+    },
     [id, linkElement]
   );
   const [isPeekVisible, setIsPeekVisible] = useState(false);

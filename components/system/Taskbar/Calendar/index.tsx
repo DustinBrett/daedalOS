@@ -123,11 +123,11 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                 {week.map(([day, type]) => (
                   <td
                     key={`${day}${type}`}
-                    ref={(tdRef: HTMLTableCellElement) =>
-                      hasFinePointer &&
-                      type !== "today" &&
-                      spotlightEffect(tdRef, true, 2, true)
-                    }
+                    ref={(tdRef: HTMLTableCellElement) => {
+                      if (hasFinePointer && type !== "today") {
+                        spotlightEffect(tdRef, true, 2, true);
+                      }
+                    }}
                     className={type}
                   >
                     {day}

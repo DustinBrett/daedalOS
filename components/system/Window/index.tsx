@@ -21,11 +21,11 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);
   const linkViewportEntry = useCallback(
-    (viewportEntry: HTMLDivElement) =>
-      Component &&
-      !peekElement &&
-      viewportEntry &&
-      linkElement(id, "peekElement", viewportEntry),
+    (viewportEntry: HTMLDivElement) => {
+      if (Component && !peekElement && viewportEntry) {
+        linkElement(id, "peekElement", viewportEntry);
+      }
+    },
     [Component, id, linkElement, peekElement]
   );
 

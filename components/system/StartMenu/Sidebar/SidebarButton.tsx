@@ -27,8 +27,9 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
   return (
     <StyledSidebarButton
       ref={useCallback(
-        (buttonRef: HTMLLIElement) =>
-          hasFinePointer && spotlightEffect(buttonRef, true),
+        (buttonRef: HTMLLIElement) => {
+          if (hasFinePointer) spotlightEffect(buttonRef, true);
+        },
         [hasFinePointer]
       )}
       $active={active}

@@ -543,8 +543,9 @@ const FileEntry: FC<FileEntryProps> = ({
       >
         <StyledFigure
           ref={useCallback(
-            (figureRef: HTMLElement) =>
-              listView && hasFinePointer && spotlightEffect(figureRef),
+            (figureRef: HTMLElement) => {
+              if (listView && hasFinePointer) spotlightEffect(figureRef);
+            },
             [hasFinePointer, listView]
           )}
           $renaming={renaming}
