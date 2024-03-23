@@ -89,9 +89,7 @@ const useMonaco = ({
     editor?.onKeyDown(async (event) => {
       const { ctrlKey, code, keyCode } = event;
 
-      // Q: Is it 83 or 49?
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-      if (ctrlKey && (code === "KeyS" || keyCode === 83)) {
+      if (ctrlKey && (code === "KeyS" || (keyCode as number) === 49)) {
         event.preventDefault();
 
         const [saveUrl, saveData] = getSaveFileInfo(url, editor);
