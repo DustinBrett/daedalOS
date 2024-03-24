@@ -16,21 +16,14 @@ import { useProcesses } from "contexts/process";
 import { useViewport } from "contexts/viewport";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
+import { HIGH_PRIORITY_ELEMENT, IMAGE_FILE_EXTENSIONS } from "utils/constants";
 import {
-  HEIF_IMAGE_FORMATS,
-  HIGH_PRIORITY_ELEMENT,
-  IMAGE_FILE_EXTENSIONS,
-  TIFF_IMAGE_FORMATS,
-} from "utils/constants";
-import {
-  decodeHeic,
-  decodeJxl,
   getExtension,
   haltEvent,
   imageToBufferUrl,
   label,
 } from "utils/functions";
-import { aniToGif } from "components/system/Files/FileEntry/functions";
+import { decodeImageToBuffer } from "utils/imageDecoder";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -51,24 +44,9 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   );
   const { fullscreenElement, toggleFullscreen } = useViewport();
   const loadPhoto = useCallback(async (): Promise<void> => {
-    let fileContents: Buffer | string = await readFile(url);
+    const fileContents = await readFile(url);
     const ext = getExtension(url);
-
-    if ([".ani", ".cur"].includes(ext)) {
-      fileContents = await aniToGif(fileContents);
-    } else if (ext === ".jxl") {
-      fileContents = await decodeJxl(fileContents);
-    } else if (ext === ".qoi") {
-      const { decodeQoi } = await import("components/apps/Photos/qoi");
-
-      fileContents = decodeQoi(fileContents);
-    } else if (HEIF_IMAGE_FORMATS.has(ext)) {
-      fileContents = await decodeHeic(fileContents);
-    } else if (TIFF_IMAGE_FORMATS.has(ext)) {
-      fileContents = (await import("utif"))
-        .bufferToURI(fileContents)
-        .replace("data:image/png;base64,", "");
-    }
+    const imageBuffer = await decodeImageToBuffer(ext, fileContents);
 
     setSrc((currentSrc) => {
       const [currentUrl] = Object.keys(currentSrc);
@@ -78,7 +56,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
         reset?.();
       }
 
-      return { [url]: imageToBufferUrl(url, fileContents) };
+      return { [url]: imageToBufferUrl(ext, imageBuffer || fileContents) };
     });
     prependFileToTitle(basename(url));
   }, [prependFileToTitle, readFile, reset, url]);

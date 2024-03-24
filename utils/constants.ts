@@ -121,7 +121,7 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".xbm",
 ]);
 
-export const UNSUPPORTED_BACKGROUND_EXTENSIONS = new Set([
+export const UNSUPPORTED_SLIDESHOW_EXTENSIONS = new Set([
   ...HEIF_IMAGE_FORMATS,
   ...TIFF_IMAGE_FORMATS,
   ".jxl",

@@ -36,7 +36,6 @@ import {
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
   TEXT_EDITORS,
-  UNSUPPORTED_BACKGROUND_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
@@ -489,8 +488,8 @@ const useFileContextMenu = (
         if (
           hasBackgroundVideoExtension ||
           (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-            !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(pathExtension) &&
-            !CURSOR_FILE_EXTENSIONS.has(pathExtension))
+            !CURSOR_FILE_EXTENSIONS.has(pathExtension) &&
+            pathExtension !== ".svg")
         ) {
           menuItems.unshift({
             label: "Set as background",

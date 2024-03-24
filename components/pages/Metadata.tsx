@@ -1,10 +1,5 @@
-import { extname } from "path";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
-import {
-  getFirstAniImage,
-  getLargestIcon,
-} from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
@@ -17,6 +12,7 @@ import {
 } from "utils/constants";
 import {
   getDpi,
+  getExtension,
   imageSrc,
   imageSrcs,
   imageToBufferUrl,
@@ -52,10 +48,14 @@ const Metadata: FC = () => {
   );
   const getCursor = useCallback(
     async (path: string) => {
+      const { getFirstAniImage, getLargestIcon } = await import(
+        "utils/imageDecoder"
+      );
       const imageBuffer = await readFile(path);
+      const extension = getExtension(path);
       let image: Buffer | undefined = imageBuffer;
 
-      if (extname(path) === ".ani") {
+      if (extension === ".ani") {
         image = await getFirstAniImage(imageBuffer);
       } else {
         const largestIcon = await getLargestIcon(imageBuffer, 128);
@@ -63,7 +63,7 @@ const Metadata: FC = () => {
         if (largestIcon) return largestIcon;
       }
 
-      return image ? imageToBufferUrl(path, image) : "";
+      return image ? imageToBufferUrl(extension, image) : "";
     },
     [readFile]
   );

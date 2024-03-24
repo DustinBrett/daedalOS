@@ -23,7 +23,7 @@ import {
   PROMPT_FILE,
   SLIDESHOW_FILE,
   SLIDESHOW_TIMEOUT_IN_MILLISECONDS,
-  UNSUPPORTED_BACKGROUND_EXTENSIONS,
+  UNSUPPORTED_SLIDESHOW_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
@@ -224,9 +224,7 @@ const useWallpaper = (
               ? await getAllImages(entryPath)
               : [
                   IMAGE_FILE_EXTENSIONS.has(getExtension(entryPath)) &&
-                  !UNSUPPORTED_BACKGROUND_EXTENSIONS.has(
-                    getExtension(entryPath)
-                  )
+                  !UNSUPPORTED_SLIDESHOW_EXTENSIONS.has(getExtension(entryPath))
                     ? entryPath
                     : "",
                 ]),
@@ -348,7 +346,14 @@ const useWallpaper = (
         }
       }
     } else if (await exists(wallpaperImage)) {
-      wallpaperUrl = bufferToUrl(await readFile(wallpaperImage));
+      const { decodeImageToBuffer } = await import("utils/imageDecoder");
+      const fileData = await readFile(wallpaperImage);
+      const imageBuffer = await decodeImageToBuffer(
+        getExtension(wallpaperImage),
+        fileData
+      );
+
+      wallpaperUrl = bufferToUrl(imageBuffer || fileData);
     }
 
     if (wallpaperUrl) {
