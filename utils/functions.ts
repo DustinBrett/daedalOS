@@ -158,17 +158,14 @@ export const createFallbackSrcSet = (
 };
 
 export const imageToBufferUrl = (
-  path: string,
+  extension: string,
   buffer: Buffer | string
-): string => {
-  const extension = getExtension(path);
-
-  return extension === ".svg"
+): string =>
+  extension === ".svg"
     ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
     : `data:image/${
         extension === ".ani" || extension === ".gif" ? "gif" : "png"
       };base64,${buffer.toString("base64")}`;
-};
 
 export const blobToBase64 = (blob: Blob): Promise<string> =>
   new Promise((resolve) => {
