@@ -9,3 +9,7 @@ type FC<TProps = Record<string, unknown>> = (
 type HTMLElementWithPriority<T> = T & {
   fetchPriority?: "auto" | "high" | "low";
 };
+
+declare module "utif" {
+  export const bufferToURI: (data: Buffer) => string;
+}

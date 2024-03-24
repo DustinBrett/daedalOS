@@ -15,7 +15,3 @@ declare module "playlist-parser" {
 }
 
 declare module "butterchurn-presets";
-
-declare module "utif" {
-  export const bufferToURI: (data: Buffer) => string;
-}
