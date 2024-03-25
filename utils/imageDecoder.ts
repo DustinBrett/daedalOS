@@ -194,7 +194,7 @@ const canLoadNative = async (
 export const decodeImageToBuffer = async (
   extension: string,
   file: Buffer
-): Promise<Buffer | void> => {
+): Promise<Buffer | undefined> => {
   switch (extension) {
     case ".jxl":
       return decodeJxl(file);
