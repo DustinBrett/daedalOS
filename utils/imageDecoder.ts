@@ -10,26 +10,9 @@ import {
   getGifJs,
   imageToBufferUrl,
   imgDataToBuffer,
-  loadFiles,
 } from "utils/functions";
 
 type JxlDecodeResponse = { data: { imgData: ImageData } };
-
-type LibHeif = {
-  libheif: () => {
-    HeifDecoder: new () => {
-      decode: (file: Buffer) => {
-        display: (
-          imageData: ImageData,
-          callback: (data: ImageData) => void
-        ) => void;
-        get_height: () => number;
-        get_width: () => number;
-      }[];
-    };
-    ready: Promise<void>;
-  };
-};
 
 const supportsImageType = async (type: string): Promise<boolean> => {
   const img = document.createElement("img");
@@ -64,28 +47,18 @@ const decodeJxl = async (image: Buffer): Promise<Buffer> =>
 const decodeHeic = async (image: Buffer): Promise<Buffer> => {
   if (await supportsImageType("image/heic")) return image;
 
-  await loadFiles(["/System/libheif/libheif-bundle.js"], false, true);
+  return new Promise((resolve) => {
+    const worker = new Worker(new URL("utils/heic.worker", import.meta.url), {
+      name: "libheif",
+    });
 
-  const { libheif } = window as unknown as Window & LibHeif;
-  const { HeifDecoder, ready } = libheif();
-
-  await ready;
-
-  const [decodedImage] = new HeifDecoder().decode(image);
-  const width = decodedImage.get_width();
-  const height = decodedImage.get_height();
-  const { data } = await new Promise<ImageData>((resolve) => {
-    decodedImage.display(
-      {
-        data: new Uint8ClampedArray(width * height * 4),
-        height,
-        width,
-      } as ImageData,
-      resolve
+    worker.postMessage(image);
+    worker.addEventListener(
+      "message",
+      ({ data: imageData }: { data: ImageData }) =>
+        resolve(imgDataToBuffer(imageData))
     );
   });
-
-  return imgDataToBuffer(new ImageData(data, width, height));
 };
 
 const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
