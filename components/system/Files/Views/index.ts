@@ -5,8 +5,8 @@ import StyledListFileManager from "components/system/Files/Views/List/StyledFile
 import { type IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
+  $desktop?: boolean;
   $selecting?: boolean;
-  $shadows?: boolean;
   $visible?: boolean;
 };
 
