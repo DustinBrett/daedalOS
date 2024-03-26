@@ -42,7 +42,6 @@ if (!commit) {
 
 const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),
-  (html) => html.replace(/><\/path>/g, "/>"),
   (html) => {
     const [style] = html.match(/<style[\s\S]+>[\s\S]+<\/style>/);
 
