@@ -203,7 +203,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   }, []);
 
   useEffect(() => {
-    if (results.length > 1) {
+    if (results.length > 0) {
       results
         .reduce(
           async (acc, result) => {
