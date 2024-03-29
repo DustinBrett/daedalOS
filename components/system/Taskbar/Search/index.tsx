@@ -281,7 +281,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 onClick={() => changeTab(tab)}
                 {...label(
                   tab === "All"
-                    ? "Find the most relevant results on this PC"
+                    ? "Find the most relevant results"
                     : `Find results in ${tab}`
                 )}
               >
