@@ -8,6 +8,7 @@ const StyledTabs = styled.ol`
   font-weight: 600;
   gap: 1px;
   padding: 2px 13px 0;
+  position: absolute;
 
   li {
     color: rgb(215, 215, 215);

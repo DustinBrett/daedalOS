@@ -30,6 +30,8 @@ const sizes = {
     rowGap: "28px",
   },
   search: {
+    headerHeight: 52,
+    inputHeight: 40,
     maxHeight: 415,
     size: 600,
   },

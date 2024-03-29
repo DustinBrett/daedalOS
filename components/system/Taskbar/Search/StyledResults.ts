@@ -6,7 +6,10 @@ import { THIN_SCROLLBAR_WIDTH } from "utils/constants";
 const StyledResults = styled.div`
   color: #fff;
   display: flex;
-  height: calc(100% - 52px);
+  height: ${({ theme }) =>
+    `calc(100% - ${theme.sizes.search.headerHeight}px - ${theme.sizes.search.inputHeight}px)`};
+  position: absolute;
+  top: ${({ theme }) => `${theme.sizes.search.headerHeight}px`};
   width: 100%;
 
   .list {

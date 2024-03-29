@@ -12,10 +12,14 @@ const StyledSections = styled.div<StyledSectionsProps>`
   ${ThinScrollBars}
   color: #fff;
   display: flex;
-  height: calc(100% - 52px);
+  height: ${({ theme }) =>
+    `calc(100% - ${theme.sizes.search.headerHeight}px - ${theme.sizes.search.inputHeight}px)`};
   overflow: hidden;
   place-content: space-evenly;
   place-items: start;
+  position: absolute;
+  top: ${({ theme }) => `${theme.sizes.search.headerHeight}px`};
+  width: 100%;
 
   @media (hover: none), (pointer: coarse) {
     overflow-y: scroll;

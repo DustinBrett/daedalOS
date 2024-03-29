@@ -89,9 +89,13 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
       color: rgb(175, 175, 175);
       display: flex;
       flex-direction: column;
-      height: calc(100% - 52px);
+      height: ${({ theme }) =>
+        `calc(100% - ${theme.sizes.search.headerHeight}px - ${theme.sizes.search.inputHeight}px)`};
       place-content: center;
       place-items: center;
+      position: absolute;
+      top: ${({ theme }) => `${theme.sizes.search.headerHeight}px`};
+      width: 100%;
 
       h1 {
         font-size: 28px;

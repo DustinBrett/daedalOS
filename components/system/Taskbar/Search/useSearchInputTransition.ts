@@ -1,31 +1,39 @@
 import { type MotionProps } from "framer-motion";
+import { useTheme } from "styled-components";
 import { TRANSITIONS_IN_SECONDS } from "utils/constants";
 
-const useSearchInputTransition = (): MotionProps => ({
-  animate: "active",
-  exit: {
-    bottom: "-40px",
-    position: "absolute",
+const useSearchInputTransition = (): MotionProps => {
+  const {
+    sizes: { search },
+  } = useTheme();
+  const negativeInputHeight = `-${search.inputHeight}px`;
+
+  return {
+    animate: "active",
+    exit: {
+      bottom: negativeInputHeight,
+      position: "absolute",
+      transition: {
+        duration: TRANSITIONS_IN_SECONDS.TASKBAR_ITEM / 10,
+        ease: "easeIn",
+      },
+    },
+    initial: "initial",
     transition: {
-      duration: TRANSITIONS_IN_SECONDS.TASKBAR_ITEM / 10,
-      ease: "easeIn",
+      duration: TRANSITIONS_IN_SECONDS.TASKBAR_ITEM / 1,
+      ease: "easeOut",
     },
-  },
-  initial: "initial",
-  transition: {
-    duration: TRANSITIONS_IN_SECONDS.TASKBAR_ITEM / 1,
-    ease: "easeOut",
-  },
-  variants: {
-    active: {
-      bottom: 0,
-      position: "absolute",
+    variants: {
+      active: {
+        bottom: 0,
+        position: "absolute",
+      },
+      initial: {
+        bottom: negativeInputHeight,
+        position: "absolute",
+      },
     },
-    initial: {
-      bottom: "-40px",
-      position: "absolute",
-    },
-  },
-});
+  };
+};
 
 export default useSearchInputTransition;
