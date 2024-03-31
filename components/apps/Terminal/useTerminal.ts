@@ -34,6 +34,16 @@ export const displayVersion = (): string => {
   return `${version}${buildId ? `-${buildId}` : ""}`;
 };
 
+const readClipboardToTerminal = (localEcho: LocalEcho): void => {
+  try {
+    navigator.clipboard
+      ?.readText?.()
+      .then((clipboardText) => localEcho.handleCursorInsert(clipboardText));
+  } catch {
+    // Ignore failure to read clipboard
+  }
+};
+
 const useTerminal = ({
   containerRef,
   id,
@@ -111,11 +121,7 @@ const useTerminal = ({
           navigator.clipboard?.writeText(textSelection);
           terminal.clearSelection();
         } else {
-          navigator.clipboard
-            ?.readText?.()
-            .then((clipboardText) =>
-              newLocalEcho.handleCursorInsert(clipboardText)
-            );
+          readClipboardToTerminal(newLocalEcho);
         }
       });
       containerRef.current
@@ -142,11 +148,7 @@ const useTerminal = ({
       currentOnKey = terminal.onKey(
         ({ domEvent: { ctrlKey, code } }: OnKeyEvent) => {
           if (ctrlKey && code === "KeyV") {
-            navigator.clipboard
-              ?.readText?.()
-              .then((clipboardText) =>
-                localEcho.handleCursorInsert(clipboardText)
-              );
+            readClipboardToTerminal(localEcho);
           }
         }
       );
