@@ -282,3 +282,13 @@ export const printColor = (
       ...colorAttributes[7].rgb
     )}`
   }\u001B[0m`;
+
+export const readClipboardToTerminal = (localEcho: LocalEcho): void => {
+  try {
+    navigator.clipboard
+      ?.readText?.()
+      .then((clipboardText) => localEcho.handleCursorInsert(clipboardText));
+  } catch {
+    // Ignore failure to read clipboard
+  }
+};

@@ -8,7 +8,10 @@ import {
   useState,
 } from "react";
 import { PROMPT_CHARACTER, config } from "components/apps/Terminal/config";
-import { autoComplete } from "components/apps/Terminal/functions";
+import {
+  autoComplete,
+  readClipboardToTerminal,
+} from "components/apps/Terminal/functions";
 import {
   type FitAddon,
   type LocalEcho,
@@ -32,16 +35,6 @@ export const displayVersion = (): string => {
   const { __NEXT_DATA__: { buildId } = {} } = window;
 
   return `${version}${buildId ? `-${buildId}` : ""}`;
-};
-
-const readClipboardToTerminal = (localEcho: LocalEcho): void => {
-  try {
-    navigator.clipboard
-      ?.readText?.()
-      .then((clipboardText) => localEcho.handleCursorInsert(clipboardText));
-  } catch {
-    // Ignore failure to read clipboard
-  }
 };
 
 const useTerminal = ({
