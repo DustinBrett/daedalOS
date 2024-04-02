@@ -2,6 +2,12 @@
 
 ## _Desktop environment in the browser_
 
+# Webby Nomination 🏆
+
+We've been nominated for a Webby Award in the category of Personal Blog/Website!
+
+### [Please vote for daedalOS to win People's Voice Award](https://vote.webbyawards.com/PublicVoting#/2024/websites-and-mobile-sites/general-desktop-mobile-sites/personal-blogwebsite)!
+
 [![Feature Overview](https://img.youtube.com/vi/RRLq3T0Surs/mqdefault.jpg)](http://www.youtube.com/watch?v=RRLq3T0Surs)
 
 # System 🧠
