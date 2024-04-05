@@ -11,6 +11,7 @@ import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useProcesses } from "contexts/process";
 import { haltEvent } from "utils/functions";
+import { PREVENT_SCROLL } from "utils/constants";
 
 const DetailsTab = dynamic(
   () => import("components/system/Dialogs/Properties/DetailsTab")
@@ -92,7 +93,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
     []
   );
 
-  useEffect(() => propertiesRef.current?.focus(), []);
+  useEffect(() => propertiesRef.current?.focus(PREVENT_SCROLL), []);
 
   return (
     <StyledProperties

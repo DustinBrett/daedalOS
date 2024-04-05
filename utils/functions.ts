@@ -18,6 +18,7 @@ import {
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
+  PREVENT_SCROLL,
   SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
@@ -80,7 +81,7 @@ export const toggleShowDesktop = (
 
   if (restoreWindows) {
     requestAnimationFrame(() =>
-      processes[stackOrder[0]]?.componentWindow?.focus()
+      processes[stackOrder[0]]?.componentWindow?.focus(PREVENT_SCROLL)
     );
   }
 };

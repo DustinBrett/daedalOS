@@ -15,7 +15,7 @@ import {
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { MENU_SEPERATOR } from "utils/constants";
+import { MENU_SEPERATOR, PREVENT_SCROLL } from "utils/constants";
 import { useSession } from "contexts/session";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
@@ -35,7 +35,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   } = process || {};
   const focusWindow = useCallback((): void => {
     setForegroundId(id);
-    componentWindow?.focus();
+    componentWindow?.focus(PREVENT_SCROLL);
   }, [componentWindow, id, setForegroundId]);
 
   return useMemo(
