@@ -26,15 +26,15 @@ const StyledSections = styled.div<StyledSectionsProps>`
   }
 
   @supports (not (scrollbar-gutter: stable)) {
-    margin-right: ${THIN_SCROLLBAR_WIDTH}px;
+    padding-right: ${THIN_SCROLLBAR_WIDTH}px;
 
     @supports not selector(::-webkit-scrollbar) {
-      margin-right: 8px;
+      padding-right: 8px;
     }
 
     @media (hover: hover), (pointer: fine) {
       &:hover {
-        margin-right: 0;
+        padding-right: 0;
       }
     }
 
