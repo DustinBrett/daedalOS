@@ -1,7 +1,7 @@
 import { basename, extname } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type Variant, m as motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
   getCachedShortcut,
@@ -24,7 +24,6 @@ import StyledSections from "components/system/Taskbar/Search/StyledSections";
 import StyledSuggestions from "components/system/Taskbar/Search/StyledSuggestions";
 import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
 import useSearchInputTransition from "components/system/Taskbar/Search/useSearchInputTransition";
-import StyledBackground from "components/system/Taskbar/StyledBackground";
 import {
   SEARCH_BUTTON_TITLE,
   maybeCloseTaskbarMenu,
@@ -58,10 +57,6 @@ import {
 
 type SearchProps = {
   toggleSearch: (showMenu?: boolean) => void;
-};
-
-type StyleVariant = Variant & {
-  height?: string;
 };
 
 const TABS = ["All", "Documents", "Photos", "Videos"] as const;
@@ -118,7 +113,6 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     0
   );
   const inputTransition = useSearchInputTransition();
-  const { height } = (searchTransition.variants?.active as StyleVariant) ?? {};
   const [showCaret, setShowCaret] = useState(false);
   const focusOnRenderCallback = useCallback(
     (element: HTMLInputElement | null) => {
@@ -265,7 +259,6 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       {...searchTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledBackground $height={height} />
       <div>
         <div className="content" onContextMenu={haltEvent}>
           <StyledTabs>

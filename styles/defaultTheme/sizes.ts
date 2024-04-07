@@ -62,6 +62,7 @@ const sizes = {
         margin: 8,
       },
     },
+    panelBlur: "12px",
   },
   titleBar: {
     buttonIconWidth: "10px",

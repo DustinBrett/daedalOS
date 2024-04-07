@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
-type StyledStartMenuBackgroundProps = {
+type StyledBackgroundProps = {
   $height?: string;
 };
 
-const StyledStartMenuBackground = styled.span<StyledStartMenuBackgroundProps>`
-  backdrop-filter: blur(12px);
+const StyledBackground = styled.span<StyledBackgroundProps>`
+  backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.panelBlur})`};
   height: ${({ $height }) => $height};
   inset: 0;
   position: absolute;
@@ -13,4 +13,4 @@ const StyledStartMenuBackground = styled.span<StyledStartMenuBackgroundProps>`
   z-index: -1;
 `;
 
-export default StyledStartMenuBackground;
+export default StyledBackground;

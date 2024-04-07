@@ -17,6 +17,8 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
       true
     )}
 
+  backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.panelBlur})`};
+
   @keyframes fade-in {
     0% {
       opacity: 0%;
