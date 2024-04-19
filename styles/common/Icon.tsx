@@ -93,7 +93,7 @@ const Icon = forwardRef<
         }
       }}
       onLoad={() => setLoaded(true)}
-      src={isDynamic ? imageSrc(src, imgSize, 1, ".png") : src}
+      src={isDynamic ? imageSrc(src, imgSize, 1, ".png") : src || undefined}
       srcSet={
         isDynamic
           ? imageSrcs(src, imgSize, ".png", failedUrls) ||
