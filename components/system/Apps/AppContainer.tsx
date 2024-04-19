@@ -1,12 +1,8 @@
-import dynamic from "next/dynamic";
 import { memo, useMemo, useRef, useState } from "react";
 import { type styled } from "styled-components";
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
-
-const StyledLoading = dynamic(
-  () => import("components/system/Files/FileManager/StyledLoading")
-);
 
 export type ContainerHookProps = {
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
