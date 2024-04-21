@@ -40,7 +40,8 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
   if (browserName === "webkit") {
     excludedConsoleLogs.push(
       // sandbox=allow-presentation is not supported in webkit
-      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag."
+      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag.",
+      'Viewport argument key "interactive-widget" not recognized and ignored.'
     );
   } else if (browserName === "firefox") {
     excludedConsoleLogs.push(
