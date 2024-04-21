@@ -2,17 +2,15 @@ import { useRef } from "react";
 import StyledDesktop from "components/system/Desktop/StyledDesktop";
 import useWallpaper from "components/system/Desktop/Wallpapers/useWallpaper";
 import FileManager from "components/system/Files/FileManager";
-import useHeightOverride from "hooks/useHeightOverride";
 import { DESKTOP_PATH } from "utils/constants";
 
 const Desktop: FC = ({ children }) => {
-  const heightOverride = useHeightOverride();
   const desktopRef = useRef<HTMLElement | null>(null);
 
-  useWallpaper(desktopRef, heightOverride);
+  useWallpaper(desktopRef);
 
   return (
-    <StyledDesktop ref={desktopRef} $height={heightOverride}>
+    <StyledDesktop ref={desktopRef}>
       <FileManager
         url={DESKTOP_PATH}
         view="icon"

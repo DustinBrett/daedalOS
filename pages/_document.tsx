@@ -6,7 +6,6 @@ import NextDocument, {
   Main,
   NextScript,
 } from "next/document";
-import Script from "next/script";
 import { ServerStyleSheet } from "styled-components";
 import { DEFAULT_LOCALE } from "utils/constants";
 
@@ -45,9 +44,6 @@ class Document extends NextDocument {
       <Html lang={DEFAULT_LOCALE}>
         <Head />
         <body>
-          <Script id="initHeight" strategy="beforeInteractive">
-            window.initialHeight = window.innerHeight;
-          </Script>
           <Main />
           <NextScript />
         </body>

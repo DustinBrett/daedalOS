@@ -1,13 +1,9 @@
 import styled from "styled-components";
 
-type StyledDesktopProps = {
-  $height: number;
-};
-
-const StyledDesktop = styled.main<StyledDesktopProps>`
+const StyledDesktop = styled.main`
   background-color: transparent;
   contain: strict;
-  height: ${({ $height }) => ($height ? `${$height}px` : "100%")};
+  height: 100%;
   inset: 0;
   overscroll-behavior: none;
   position: fixed;
@@ -28,7 +24,7 @@ const StyledDesktop = styled.main<StyledDesktopProps>`
 
   > canvas {
     background-color: inherit;
-    height: ${({ $height }) => ($height ? `${$height}px` : "100%")};
+    height: 100%;
     left: 0;
     object-fit: cover;
     position: absolute;

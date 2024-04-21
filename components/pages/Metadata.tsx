@@ -130,7 +130,7 @@ const Metadata: FC = () => {
         <link href={currentFavIcon} rel="icon" type="image/webp" />
       )}
       <meta
-        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, interactive-widget=resizes-content"
         name="viewport"
       />
       <meta content={description} name="description" />

@@ -52,8 +52,7 @@ const REDUCED_MOTION_PERCENT = 0.1;
 const slideshowFiles: string[] = [];
 
 const useWallpaper = (
-  desktopRef: React.MutableRefObject<HTMLElement | null>,
-  heightOverride: number
+  desktopRef: React.MutableRefObject<HTMLElement | null>
 ): void => {
   const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
     useFileSystem();
@@ -467,16 +466,14 @@ const useWallpaper = (
 
       if (canvasElement instanceof HTMLCanvasElement) {
         canvasElement.style.width = `${desktopRect.width}px`;
-        canvasElement.style.height = `${
-          heightOverride || desktopRect.height
-        }px`;
+        canvasElement.style.height = `${desktopRect.height}px`;
       }
     };
 
     window.addEventListener("resize", resizeListener, { passive: true });
 
     return () => window.removeEventListener("resize", resizeListener);
-  }, [desktopRef, heightOverride, wallpaperName, wallpaperWorker]);
+  }, [desktopRef, wallpaperName, wallpaperWorker]);
 };
 
 export default useWallpaper;
