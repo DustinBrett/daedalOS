@@ -28,16 +28,23 @@ const HTML_MINIFIER_CONFIG = {
   useShortDoctype: true,
 };
 
-let commit = process.env.npm_package_gitHead?.slice(0, 6);
+const COMMIT_HASH_LENGTH = 7;
+let commit = "";
+
+try {
+  commit = execSync(`git rev-parse --short=${COMMIT_HASH_LENGTH} HEAD`, {
+    cwd: __dirname,
+  })
+    .toString()
+    .trim();
+} catch {
+  // Ignore failure to get commit hash from git
+}
 
 if (!commit) {
-  try {
-    commit = execSync("git rev-parse --short HEAD", { cwd: __dirname })
-      .toString()
-      .trim();
-  } catch {
-    commit = new Date().toISOString().slice(0, 10);
-  }
+  commit =
+    process.env.npm_package_gitHead?.slice(0, COMMIT_HASH_LENGTH - 1) ||
+    new Date().toISOString().slice(0, 10);
 }
 
 const CODE_REPLACE_FUNCTIONS = [
@@ -52,23 +59,13 @@ const CODE_REPLACE_FUNCTIONS = [
   },
   (html) =>
     html.replace(
-      /<script crossorigin="" defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
+      /<script defer src=\/_next\/static\/chunks\/polyfills-[a-zA-Z0-9-_]+.js nomodule=""><\/script>/,
       ""
     ),
   (html) =>
     html.replace(
-      /<script crossorigin="" defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_buildManifest.js><\/script>/,
-      ""
-    ),
-  (html) =>
-    html.replace(
-      /<script crossorigin="" defer src=\/_next\/static\/[a-zA-Z0-9-_]+\/_ssgManifest.js><\/script>/,
-      ""
-    ),
-  (html) =>
-    html.replace(
-      /<script crossorigin="" id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
-      `<script crossorigin="" id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
+      /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
+      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
     ),
 ];
 
