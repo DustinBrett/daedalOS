@@ -11,6 +11,7 @@ type RenameBoxProps = {
   name: string;
   path: string;
   renameFile: (path: string, name?: string) => void;
+  setRenaming: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const TEXT_HEIGHT_PADDING = 2;
@@ -21,6 +22,7 @@ const RenameBox: FC<RenameBoxProps> = ({
   name,
   path,
   renameFile,
+  setRenaming,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
@@ -67,6 +69,7 @@ const RenameBox: FC<RenameBoxProps> = ({
       onDragStart={haltEvent}
       onKeyDown={({ key }) => {
         if (key === "Enter") saveRename();
+        else if (key === "Escape") setRenaming("");
       }}
       onKeyUp={(event) => {
         updateDimensions(event.target);

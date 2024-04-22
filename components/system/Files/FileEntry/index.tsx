@@ -575,6 +575,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 fileActions.renameFile(origPath, newName);
                 setRenaming("");
               }}
+              setRenaming={setRenaming}
             />
           ) : (
             <figcaption
