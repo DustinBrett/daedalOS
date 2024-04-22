@@ -70,7 +70,7 @@
     "quickjs-emscripten": "^0.29.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-rnd": "^10.4.1",
+    "react-rnd": "^10.4.10",
     "resedit": "^2.0.2",
     "rtf.js": "^3.0.9",
     "styled-components": "^6.1.8",
