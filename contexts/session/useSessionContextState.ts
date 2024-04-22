@@ -262,14 +262,43 @@ const useSessionContextState = (): SessionContextState => {
             Object.keys(session.iconPositions).length > 0
           ) {
             if (session !== DEFAULT_SESSION && DEFAULT_SESSION.iconPositions) {
-              Object.keys(DEFAULT_SESSION.iconPositions).forEach(
-                (iconPosition) => {
-                  if (!session.iconPositions?.[iconPosition]) {
+              const defaultIconPositions = Object.entries(
+                DEFAULT_SESSION.iconPositions
+              );
+
+              defaultIconPositions.forEach(([iconPosition]) => {
+                const sessionIconPosition =
+                  session.iconPositions?.[iconPosition];
+
+                if (sessionIconPosition) {
+                  const [conflictingDefaultIconPath] =
+                    defaultIconPositions.find(
+                      ([
+                        defaultIconPosition,
+                        { gridColumnStart, gridRowStart },
+                      ]) =>
+                        defaultIconPosition !== iconPosition &&
+                        sessionIconPosition.gridColumnStart ===
+                          gridColumnStart &&
+                        sessionIconPosition.gridRowStart === gridRowStart
+                    ) || [];
+
+                  if (
+                    conflictingDefaultIconPath &&
+                    session.iconPositions[conflictingDefaultIconPath]
+                      .gridColumnStart ===
+                      sessionIconPosition.gridColumnStart &&
+                    session.iconPositions[conflictingDefaultIconPath]
+                      .gridRowStart === sessionIconPosition.gridRowStart
+                  ) {
                     session.iconPositions[iconPosition] =
                       DEFAULT_SESSION.iconPositions[iconPosition];
                   }
+                } else {
+                  session.iconPositions[iconPosition] =
+                    DEFAULT_SESSION.iconPositions[iconPosition];
                 }
-              );
+              });
             }
             setIconPositions(session.iconPositions);
           } else if (typeof session.iconPositions !== "object") {

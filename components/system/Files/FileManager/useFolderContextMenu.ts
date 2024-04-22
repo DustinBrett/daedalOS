@@ -252,11 +252,12 @@ const useFolderContextMenu = (
           sortOrders,
           { x, y },
           names,
-          setIconPositions
+          setIconPositions,
+          exists
         );
       }
     },
-    [iconPositions, isDesktop, setIconPositions, sortOrders]
+    [exists, iconPositions, isDesktop, setIconPositions, sortOrders]
   );
   const newEntry = useCallback(
     async (

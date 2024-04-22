@@ -497,9 +497,10 @@ export const updateIconPositions = (
   sortOrders: SortOrders,
   dragPosition: DragPosition,
   draggedEntries: string[],
-  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>,
+  exists: (path: string) => Promise<boolean>
 ): void => {
-  if (!gridElement) return;
+  if (!gridElement || draggedEntries.length === 0) return;
 
   const currentIconPositions = updateIconPositionsIfEmpty(
     directory,
@@ -508,15 +509,12 @@ export const updateIconPositions = (
     sortOrders
   );
   const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
-
-  if (
-    draggedEntries.length > 0 &&
-    !Object.values(currentIconPositions).some(
-      ({ gridColumnStart, gridRowStart }) =>
-        gridColumnStart === gridDropPosition.gridColumnStart &&
-        gridRowStart === gridDropPosition.gridRowStart
-    )
-  ) {
+  const conflictingIcon = Object.entries(currentIconPositions).find(
+    ([, { gridColumnStart, gridRowStart }]) =>
+      gridColumnStart === gridDropPosition.gridColumnStart &&
+      gridRowStart === gridDropPosition.gridRowStart
+  );
+  const processIconMove = (): void => {
     const targetFile =
       draggedEntries.find((entry) =>
         entry.startsWith(document.activeElement?.textContent || "")
@@ -567,6 +565,19 @@ export const updateIconPositions = (
         )
       ),
     });
+  };
+
+  if (conflictingIcon) {
+    const [conflictingIconPath] = conflictingIcon;
+
+    exists(conflictingIconPath).then((pathExists) => {
+      if (!pathExists) {
+        delete currentIconPositions[conflictingIconPath];
+        processIconMove();
+      }
+    });
+  } else {
+    processIconMove();
   }
 };
 

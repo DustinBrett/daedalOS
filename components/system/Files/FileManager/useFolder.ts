@@ -624,7 +624,8 @@ const useFolder = (
           sortOrders,
           { x, y },
           pasteEntries.map(([entry]) => basename(entry)),
-          setIconPositions
+          setIconPositions,
+          exists
         );
       }
 
@@ -634,6 +635,7 @@ const useFolder = (
       copyEntries,
       createPath,
       directory,
+      exists,
       iconPositions,
       lstat,
       openTransferDialog,

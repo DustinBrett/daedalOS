@@ -10,6 +10,7 @@ import {
   trimCanvasToTopLeft,
   updateIconPositions,
 } from "utils/functions";
+import { useFileSystem } from "contexts/fileSystem";
 
 type DraggableEntryProps = {
   draggable: boolean;
@@ -38,6 +39,7 @@ const useDraggableEntries = (
   allowMoving?: boolean
 ): DraggableEntry => {
   const [dropIndex, setDropIndex] = useState(-1);
+  const { exists } = useFileSystem();
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
   const dragImageRef = useRef<HTMLImageElement | null>();
@@ -64,7 +66,8 @@ const useDraggableEntries = (
           sortOrders,
           dragPositionRef.current,
           focusedEntries,
-          setIconPositions
+          setIconPositions,
+          exists
         );
         fileManagerRef.current?.removeEventListener("dragover", onDragging);
       } else if (dropIndex !== -1) {
