@@ -266,18 +266,17 @@ const useSessionContextState = (): SessionContextState => {
                 DEFAULT_SESSION.iconPositions
               );
 
-              defaultIconPositions.forEach(([iconPosition]) => {
-                const sessionIconPosition =
-                  session.iconPositions?.[iconPosition];
+              Object.keys({
+                ...DEFAULT_SESSION.iconPositions,
+                ...session.iconPositions,
+              }).forEach((iconPath) => {
+                const sessionIconPosition = session.iconPositions?.[iconPath];
 
                 if (sessionIconPosition) {
                   const [conflictingDefaultIconPath] =
                     defaultIconPositions.find(
-                      ([
-                        defaultIconPosition,
-                        { gridColumnStart, gridRowStart },
-                      ]) =>
-                        defaultIconPosition !== iconPosition &&
+                      ([defaultIconPath, { gridColumnStart, gridRowStart }]) =>
+                        defaultIconPath !== iconPath &&
                         sessionIconPosition.gridColumnStart ===
                           gridColumnStart &&
                         sessionIconPosition.gridRowStart === gridRowStart
@@ -285,18 +284,17 @@ const useSessionContextState = (): SessionContextState => {
 
                   if (
                     conflictingDefaultIconPath &&
-                    session.iconPositions[conflictingDefaultIconPath]
+                    session.iconPositions?.[conflictingDefaultIconPath]
                       .gridColumnStart ===
                       sessionIconPosition.gridColumnStart &&
-                    session.iconPositions[conflictingDefaultIconPath]
+                    session.iconPositions?.[conflictingDefaultIconPath]
                       .gridRowStart === sessionIconPosition.gridRowStart
                   ) {
-                    session.iconPositions[iconPosition] =
-                      DEFAULT_SESSION.iconPositions[iconPosition];
+                    delete session.iconPositions[iconPath];
                   }
                 } else {
-                  session.iconPositions[iconPosition] =
-                    DEFAULT_SESSION.iconPositions[iconPosition];
+                  session.iconPositions[iconPath] =
+                    DEFAULT_SESSION.iconPositions[iconPath];
                 }
               });
             }
