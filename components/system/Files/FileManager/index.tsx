@@ -99,7 +99,12 @@ const FileManager: FC<FileManagerProps> = ({
     directory: url,
     updatePositions: allowMovingDraggableEntries,
   });
-  const folderContextMenu = useFolderContextMenu(url, folderActions, isDesktop);
+  const folderContextMenu = useFolderContextMenu(
+    url,
+    folderActions,
+    isDesktop,
+    isStartMenu
+  );
   const loading = (!hideLoading && isLoading) || url !== currentUrl;
   const keyShortcuts = useFileKeyboardShortcuts(
     files,

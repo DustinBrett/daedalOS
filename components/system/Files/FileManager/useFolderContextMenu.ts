@@ -72,7 +72,8 @@ const useFolderContextMenu = (
     pasteToFolder,
     sortByOrder: [[sortBy, isAscending], setSortBy],
   }: FolderActions,
-  isDesktop?: boolean
+  isDesktop?: boolean,
+  isStartMenu?: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
   const {
@@ -275,6 +276,101 @@ const useFolderContextMenu = (
   return useMemo(
     () =>
       contextMenu?.((event) => {
+        const { offsetX, offsetY, target } = (event as React.MouseEvent)
+          .nativeEvent;
+        const targetElement = target as HTMLElement;
+
+        if (!isDesktop && !isStartMenu && offsetX > targetElement.clientWidth) {
+          const SCROLL_BUTTON_HEIGHT = 17;
+          const SCROLL_ITERATION_HEIGHT = 44;
+
+          return [
+            {
+              action: () => {
+                let top = 0;
+
+                if (
+                  offsetY >
+                  targetElement.clientHeight - SCROLL_BUTTON_HEIGHT
+                ) {
+                  top = targetElement.scrollHeight;
+                } else if (offsetY > SCROLL_BUTTON_HEIGHT) {
+                  const scrollBarButtonsHeight = SCROLL_BUTTON_HEIGHT * 2;
+
+                  top = Math.round(
+                    (targetElement.scrollHeight *
+                      (offsetY - scrollBarButtonsHeight)) /
+                      (targetElement.clientHeight - scrollBarButtonsHeight)
+                  );
+                }
+
+                targetElement.scrollTo({
+                  behavior: "instant",
+                  top,
+                });
+              },
+              label: "Scroll Here",
+            },
+            MENU_SEPERATOR,
+            {
+              action: () => {
+                targetElement.scrollTo({
+                  behavior: "instant",
+                  top: 0,
+                });
+              },
+              label: "Top",
+            },
+            {
+              action: () => {
+                targetElement.scrollTo({
+                  behavior: "instant",
+                  top: targetElement.scrollHeight,
+                });
+              },
+              label: "Bottom",
+            },
+            MENU_SEPERATOR,
+            {
+              action: () => {
+                targetElement.scrollBy({
+                  behavior: "instant",
+                  top: -targetElement.clientHeight,
+                });
+              },
+              label: "Page Up",
+            },
+            {
+              action: () => {
+                targetElement.scrollBy({
+                  behavior: "instant",
+                  top: targetElement.clientHeight,
+                });
+              },
+              label: "Page Down",
+            },
+            MENU_SEPERATOR,
+            {
+              action: () => {
+                targetElement.scrollBy({
+                  behavior: "instant",
+                  top: -SCROLL_ITERATION_HEIGHT,
+                });
+              },
+              label: "Scroll Up",
+            },
+            {
+              action: () => {
+                targetElement.scrollBy({
+                  behavior: "instant",
+                  top: SCROLL_ITERATION_HEIGHT,
+                });
+              },
+              label: "Scroll Down",
+            },
+          ];
+        }
+
         const ADD_FILE = {
           action: () =>
             addToFolder().then((files) =>
@@ -495,6 +591,7 @@ const useFolderContextMenu = (
       hasWebGPU,
       isAscending,
       isDesktop,
+      isStartMenu,
       mapFs,
       minimize,
       newEntry,
