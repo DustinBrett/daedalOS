@@ -16,9 +16,12 @@ const nextConfig = {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,
     styledComponents: {
-      displayName: !isProduction,
+      displayName: false,
+      fileName: false,
       minify: isProduction,
       pure: true,
+      ssr: false,
+      transpileTemplateLiterals: true,
     },
   },
   devIndicators: {
