@@ -8,7 +8,8 @@ import { loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
 
 type MarkedOptions = {
-  headerIds?: boolean;
+  headerIds: boolean;
+  mangle: boolean;
 };
 
 declare global {
@@ -43,6 +44,7 @@ const useMarked = ({
       container.innerHTML = window.DOMPurify.sanitize(
         window.marked.parse(markdownFile.toString(), {
           headerIds: false,
+          mangle: false,
         })
       );
       container
