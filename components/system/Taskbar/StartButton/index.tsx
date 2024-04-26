@@ -38,9 +38,7 @@ const StartButton: FC<StartButtonProps> = ({
       .default;
 
     startMenuIcons?.forEach((icon) => {
-      const link = document.createElement(
-        "link"
-      ) as HTMLElementWithPriority<HTMLLinkElement>;
+      const link = document.createElement("link");
 
       link.as = "image";
       link.fetchPriority = "high";

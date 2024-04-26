@@ -267,9 +267,7 @@ const loadScript = (
       currentScript.remove();
     }
 
-    const script = document.createElement(
-      "script"
-    ) as HTMLElementWithPriority<HTMLScriptElement>;
+    const script = document.createElement("script");
 
     script.async = false;
     if (defer) script.defer = true;
@@ -293,9 +291,7 @@ const loadStyle = (href: string): Promise<Event> =>
       return;
     }
 
-    const link = document.createElement(
-      "link"
-    ) as HTMLElementWithPriority<HTMLLinkElement>;
+    const link = document.createElement("link");
 
     link.rel = "stylesheet";
     link.fetchPriority = "high";
@@ -791,9 +787,7 @@ export const preloadLibs = (libs: string[] = []): void => {
       return;
     }
 
-    const link = document.createElement(
-      "link"
-    ) as HTMLElementWithPriority<HTMLLinkElement>;
+    const link = document.createElement("link");
 
     link.fetchPriority = "high";
     link.rel = "preload";
