@@ -58,13 +58,13 @@ import {
   getExtension,
   getFormattedSize,
   getHtmlToImage,
+  hasFinePointer,
   isCanvasDrawn,
   isYouTubeUrl,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 import { useIsVisible } from "hooks/useIsVisible";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
-import { useFinePointer } from "hooks/useFinePointer";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
@@ -299,7 +299,6 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
     urlExt,
   ]);
-  const hasFinePointer = useFinePointer();
 
   useEffect(() => {
     if (!isLoadingFileManager && isVisible && !isIconCached.current) {
@@ -544,9 +543,9 @@ const FileEntry: FC<FileEntryProps> = ({
         <StyledFigure
           ref={useCallback(
             (figureRef: HTMLElement) => {
-              if (listView && hasFinePointer) spotlightEffect(figureRef);
+              if (listView && hasFinePointer()) spotlightEffect(figureRef);
             },
-            [hasFinePointer, listView]
+            [listView]
           )}
           $renaming={renaming}
         >

@@ -9,9 +9,8 @@ import {
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { haltEvent, hasFinePointer } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-import { useFinePointer } from "hooks/useFinePointer";
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -54,7 +53,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     },
   } = useTheme();
   const calendarTransition = useTaskbarItemTransition(maxHeight, false);
-  const hasFinePointer = useFinePointer();
+  const finePointer = hasFinePointer();
 
   useEffect(() => {
     calendarRef.current?.addEventListener("blur", ({ relatedTarget }) => {
@@ -124,7 +123,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                   <td
                     key={`${day}${type}`}
                     ref={(tdRef: HTMLTableCellElement) => {
-                      if (hasFinePointer && type !== "today") {
+                      if (finePointer && type !== "today") {
                         spotlightEffect(tdRef, true, 2, true);
                       }
                     }}

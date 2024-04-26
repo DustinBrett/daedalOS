@@ -847,3 +847,6 @@ export const isDynamicIcon = (icon?: string): boolean =>
   typeof icon === "string" &&
   (icon.startsWith(ICON_PATH) ||
     (icon.startsWith(USER_ICON_PATH) && !icon.startsWith(ICON_CACHE)));
+
+export const hasFinePointer = (): boolean =>
+  window.matchMedia("(pointer: fine)").matches;

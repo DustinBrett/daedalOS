@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { spotlightEffect } from "utils/spotlightEffect";
-import { useFinePointer } from "hooks/useFinePointer";
+import { hasFinePointer } from "utils/functions";
 
 type SidebarButton = {
   action?: () => void;
@@ -21,28 +21,21 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
   icon,
   name,
   tooltip,
-}) => {
-  const hasFinePointer = useFinePointer();
-
-  return (
-    <StyledSidebarButton
-      ref={useCallback(
-        (buttonRef: HTMLLIElement) => {
-          if (hasFinePointer) spotlightEffect(buttonRef, true);
-        },
-        [hasFinePointer]
-      )}
-      $active={active}
-      aria-label={name}
-      onClick={action}
-      title={tooltip}
-    >
-      <figure>
-        {icon}
-        <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
-      </figure>
-    </StyledSidebarButton>
-  );
-};
+}) => (
+  <StyledSidebarButton
+    ref={useCallback((buttonRef: HTMLLIElement) => {
+      if (hasFinePointer()) spotlightEffect(buttonRef, true);
+    }, [])}
+    $active={active}
+    aria-label={name}
+    onClick={action}
+    title={tooltip}
+  >
+    <figure>
+      {icon}
+      <figcaption>{heading ? <strong>{name}</strong> : name}</figcaption>
+    </figure>
+  </StyledSidebarButton>
+);
 
 export default SidebarButtonComponent;
