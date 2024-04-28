@@ -189,6 +189,33 @@ const useFileKeyboardShortcuts = (
                     bubbles: true,
                   })
                 );
+              } else if (/^[\da-z]$/i.test(key)) {
+                haltEvent(event);
+
+                const fileNames = Object.keys(files);
+                const lastFocusedEntryIndex = fileNames.indexOf(
+                  focusedEntries[focusedEntries.length - 1]
+                );
+                const lowerCaseKey = key.toLowerCase();
+                const upperCaseKey = key.toUpperCase();
+                const fileNamesStartingFromLastFocusedEntry = [
+                  ...fileNames.slice(lastFocusedEntryIndex),
+                  ...fileNames.slice(0, lastFocusedEntryIndex),
+                ];
+                const focusOnEntry = fileNamesStartingFromLastFocusedEntry.find(
+                  (name) =>
+                    !focusedEntries.includes(name) &&
+                    (name.startsWith(lowerCaseKey) ||
+                      name.startsWith(upperCaseKey))
+                );
+
+                if (focusOnEntry) {
+                  blurEntry();
+                  focusEntry(focusOnEntry);
+                  fileManagerRef.current
+                    ?.querySelector(`button[aria-label='${focusOnEntry}']`)
+                    ?.scrollIntoView();
+                }
               }
           }
         }
