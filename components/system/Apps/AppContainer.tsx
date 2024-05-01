@@ -1,5 +1,6 @@
 import { memo, useMemo, useRef, useState } from "react";
-import { type styled } from "styled-components";
+import { type IStyledComponent } from "styled-components";
+import { type FastOmit } from "styled-components/dist/types";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
@@ -15,7 +16,16 @@ export type ContainerHookProps = {
 type ContainerHook = (props: ContainerHookProps) => void;
 
 type AppContainerProps = {
-  StyledComponent: ReturnType<typeof styled.div>;
+  StyledComponent: IStyledComponent<
+    "web",
+    FastOmit<
+      React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLDivElement>,
+        HTMLDivElement
+      >,
+      never
+    >
+  >;
   id: string;
   useHook: ContainerHook;
 };
