@@ -73,7 +73,7 @@
     "react-rnd": "^10.4.10",
     "resedit": "^2.0.2",
     "rtf.js": "^3.0.9",
-    "styled-components": "^6.1.10",
+    "styled-components": "^6.1.11",
     "utif": "https://github.com/photopea/UTIF.js",
     "wasi-js": "^1.7.3"
   },
