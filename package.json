@@ -107,7 +107,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jest": "^28.3.0",
+    "eslint-plugin-jest": "^28.5.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-no-relative-import-paths": "^1.5.4",
     "eslint-plugin-playwright": "^1.6.0",
