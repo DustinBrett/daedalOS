@@ -25,7 +25,7 @@
     "e2e:ui": "playwright test --ui",
     "eslint": "eslint .",
     "export": "next export",
-    "prepare": "husky install",
+    "prepare": "husky",
     "prettier": "prettier --write .",
     "serve": "serve out",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
