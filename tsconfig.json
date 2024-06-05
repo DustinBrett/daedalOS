@@ -17,7 +17,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "types": ["jest", "offscreencanvas", "wicg-file-system-access"]
+    "types": ["jest", "wicg-file-system-access"]
   },
   "exclude": ["node_modules"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
