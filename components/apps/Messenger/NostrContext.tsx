@@ -71,9 +71,8 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
     [connectedRelays]
   );
   const publish = useCallback(
-    (event: NostrEvent) => {
-      Object.values(connectedRelays).map((relay) => relay.publish(event));
-    },
+    (event: NostrEvent) =>
+      Object.values(connectedRelays).forEach((relay) => relay.publish(event)),
     [connectedRelays]
   );
 

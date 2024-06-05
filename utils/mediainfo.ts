@@ -1,4 +1,4 @@
-import { type MediaType, type FormatType, type MediaInfo } from "mediainfo.js";
+import { type Media, type FormatType, type MediaInfo } from "mediainfo.js";
 
 const getMediaInfo = async <T extends FormatType>(
   format: T
@@ -19,7 +19,7 @@ export const analyzeFileToText = async (file: Buffer): Promise<string> =>
 
 export const analyzeFileToObject = async (
   file: Buffer
-): Promise<MediaType | undefined> =>
+): Promise<Media | undefined> =>
   (
     await (
       await getMediaInfo("object")

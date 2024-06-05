@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { type MediaType } from "mediainfo.js";
+import { type Media } from "mediainfo.js";
 import {
   type PropertiesMetaData,
   type MetaData,
@@ -41,7 +41,7 @@ const maybeConvertValue = (key: string, value: number): string | number => {
   return value;
 };
 
-const convertToMetaData = (mediaTypeData?: MediaType): MetaData =>
+const convertToMetaData = (mediaTypeData?: Media): MetaData =>
   mediaTypeData?.track?.reduce(
     (data, track) => ({
       ...data,
