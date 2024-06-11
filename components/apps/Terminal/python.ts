@@ -1,6 +1,12 @@
 import { loadFiles } from "utils/functions";
 
 type Pyodide = {
+  loadPackage: (
+    name: string,
+    options: {
+      checkIntegrity?: boolean;
+    }
+  ) => Promise<void>;
   runPythonAsync: (code: string) => Promise<string>;
 };
 
@@ -37,6 +43,10 @@ export const runPython = async (
     const getVersion = code === "ver" || code === "version";
 
     try {
+      if (code.includes("import micropip")) {
+        await window.pyodide.loadPackage("micropip", { checkIntegrity: false });
+      }
+
       let result = await window.pyodide.runPythonAsync(
         getVersion ? versionCommand : captureStdOut + code
       );
