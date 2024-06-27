@@ -74,9 +74,7 @@ const useDosCI = (
         dosCI[bundleUrl] !== undefined &&
         (await writeFile(
           savePath,
-          Buffer.from(
-            (await (dosCI[bundleUrl] as CommandInterface).persist()) || []
-          ),
+          Buffer.from((await dosCI[bundleUrl].persist()) || []),
           true
         ))
       ) {
