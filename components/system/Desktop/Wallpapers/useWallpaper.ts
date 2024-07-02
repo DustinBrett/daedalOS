@@ -191,11 +191,14 @@ const useWallpaper = (
           }
         }
       } else if (WALLPAPER_PATHS[wallpaperName]) {
+        const fallbackWallpaper = (): void =>
+          setWallpaper(wallpaperName === "VANTA" ? "SLIDESHOW" : "VANTA");
+
         WALLPAPER_PATHS[wallpaperName]()
           .then(({ default: wallpaper }) =>
-            wallpaper?.(desktopRef.current, config)
+            wallpaper?.(desktopRef.current, config, fallbackWallpaper)
           )
-          .catch(() => setWallpaper("VANTA"));
+          .catch(fallbackWallpaper);
       } else {
         setWallpaper("VANTA");
       }

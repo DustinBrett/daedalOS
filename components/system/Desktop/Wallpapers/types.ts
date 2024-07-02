@@ -10,7 +10,8 @@ export type WallpaperConfig =
 
 export type WallpaperFunc = (
   el: HTMLElement | null,
-  config?: WallpaperConfig
+  config?: WallpaperConfig,
+  fallback?: () => void
 ) => Promise<void> | void;
 
 export type OffscreenRenderProps = {

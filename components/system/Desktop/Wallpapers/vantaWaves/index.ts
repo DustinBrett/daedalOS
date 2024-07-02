@@ -8,7 +8,8 @@ import { loadFiles } from "utils/functions";
 
 const vantaWaves = (
   el: HTMLElement | null,
-  config: WallpaperConfig = {} as WallpaperConfig
+  config?: WallpaperConfig,
+  fallback?: () => void
 ): void => {
   const { VANTA: { current: currentEffect } = {} } = window;
 
@@ -24,11 +25,15 @@ const vantaWaves = (
     const { VANTA: { WAVES } = {} } = window;
 
     if (WAVES) {
-      WAVES({
-        el,
-        ...disableControls,
-        ...(config as VantaWavesConfig),
-      });
+      try {
+        WAVES({
+          el,
+          ...disableControls,
+          ...(config as VantaWavesConfig),
+        });
+      } catch {
+        fallback?.();
+      }
     }
   });
 };
