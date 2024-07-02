@@ -34,6 +34,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
 
     input {
       appearance: none;
+      background-color: #fff;
       border: 2px solid rgb(0, 120, 215);
       border-radius: 0;
       color: #000;
