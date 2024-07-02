@@ -113,32 +113,41 @@ export const fs9pV4ToV3 = (): FS9P =>
 
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
-    const db = window.indexedDB.open("browserfs");
+    try {
+      const db = window.indexedDB.open("browserfs");
 
-    db.addEventListener("error", () => resolve(false), ONE_TIME_PASSIVE_EVENT);
-    db.addEventListener(
-      "success",
-      ({ target }) => {
-        resolve(true);
+      db.addEventListener(
+        "error",
+        () => resolve(false),
+        ONE_TIME_PASSIVE_EVENT
+      );
+      db.addEventListener(
+        "success",
+        ({ target }) => {
+          resolve(true);
 
-        try {
-          db.result.close();
-        } catch {
-          // Ignore errors to close database
-        }
-
-        const { objectStoreNames } = (target as IDBOpenDBRequest)?.result || {};
-
-        if (objectStoreNames?.length === 0) {
           try {
-            window.indexedDB.deleteDatabase("browserfs");
+            db.result.close();
           } catch {
-            // Ignore errors to delete database
+            // Ignore errors to close database
           }
-        }
-      },
-      ONE_TIME_PASSIVE_EVENT
-    );
+
+          const { objectStoreNames } =
+            (target as IDBOpenDBRequest)?.result || {};
+
+          if (objectStoreNames?.length === 0) {
+            try {
+              window.indexedDB.deleteDatabase("browserfs");
+            } catch {
+              // Ignore errors to delete database
+            }
+          }
+        },
+        ONE_TIME_PASSIVE_EVENT
+      );
+    } catch {
+      resolve(false);
+    }
   });
 
 export const getKeyValStore = (): ReturnType<typeof openDB> =>

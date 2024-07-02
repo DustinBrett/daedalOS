@@ -2,6 +2,7 @@ import { extname, join } from "path";
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
+import type InMemoryFileSystem from "browserfs/dist/node/backend/InMemory";
 import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
 import {
   type ExtendedEmscriptenFileSystem,
@@ -99,7 +100,9 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       const overlayFs = rootFs?._getFs("/")?.fs as OverlayFS;
       const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
       const readable = overlayedFileSystems?.readable as HTTPRequest;
-      const writable = overlayedFileSystems?.writable as IndexedDBFileSystem;
+      const writable = overlayedFileSystems?.writable as
+        | IndexedDBFileSystem
+        | InMemoryFileSystem;
 
       readable?.empty();
 
@@ -110,22 +113,26 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       }
     };
 
-    import("idb").then(({ deleteDB }) => {
-      if (window.indexedDB.databases) {
-        window.indexedDB
-          .databases()
-          .then((databases) =>
-            databases
-              .filter(({ name }) => name && name !== "browserfs")
-              .forEach(({ name }) => deleteDB(name as string))
-          )
-          .then(clearFs)
-          .catch(clearFs);
-      } else {
-        KNOWN_IDB_DBS.forEach((name) => deleteDB(name));
-        clearFs();
-      }
-    });
+    if (window.indexedDB) {
+      import("idb").then(({ deleteDB }) => {
+        if (window.indexedDB.databases) {
+          window.indexedDB
+            .databases()
+            .then((databases) =>
+              databases
+                .filter(({ name }) => name && name !== "browserfs")
+                .forEach(({ name }) => deleteDB(name as string))
+            )
+            .then(clearFs)
+            .catch(clearFs);
+        } else {
+          KNOWN_IDB_DBS.forEach((name) => deleteDB(name));
+          clearFs();
+        }
+      });
+    } else {
+      clearFs();
+    }
   });
 
 export const getMountUrl = (
