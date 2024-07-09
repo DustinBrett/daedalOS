@@ -501,8 +501,8 @@ const FileEntry: FC<FileEntryProps> = ({
         }
       } else if (
         isFocused &&
-        focusedEntries.length === 1 &&
         buttonRef.current !== document.activeElement &&
+        focusedEntries.length === 1 &&
         !buttonRef.current.contains(document.activeElement)
       ) {
         buttonRef.current.focus(PREVENT_SCROLL);

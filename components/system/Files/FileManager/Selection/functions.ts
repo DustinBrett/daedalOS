@@ -1,5 +1,32 @@
 import { type SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
 
+type SelectionStyling = {
+  height?: string;
+  transform?: string;
+  width?: string;
+};
+
+export const createSelectionStyling = (
+  isSelecting: boolean,
+  h: number | string,
+  w: number | string,
+  x: number | string,
+  y: number | string
+): SelectionStyling => {
+  if (!isSelecting) return Object.create(null) as SelectionStyling;
+
+  const height = Number(h);
+  const width = Number(w);
+
+  return {
+    height: `${Math.abs(height)}px`,
+    transform: `translate(
+        ${Number(x) + (width < 0 ? width : 0)}px,
+        ${Number(y) + (height < 0 ? height : 0)}px)`,
+    width: `${Math.abs(width)}px`,
+  };
+};
+
 export const isSelectionIntersecting = (
   element: DOMRect,
   containerElement: DOMRect,
