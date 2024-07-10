@@ -850,3 +850,20 @@ export const isDynamicIcon = (icon?: string): boolean =>
 
 export const hasFinePointer = (): boolean =>
   window.matchMedia("(pointer: fine)").matches;
+
+export const isBeforeBg = (): boolean =>
+  document.documentElement.style.getPropertyValue(
+    "--before-background-opacity"
+  ) === "1";
+
+export const parseBgPosition = (position?: string): `${number}%` | "center" => {
+  if (typeof position === "string") {
+    const positionNum = Number.parseFloat(position);
+
+    if (!Number.isNaN(positionNum) && positionNum >= 0 && positionNum <= 100) {
+      return `${positionNum}%`;
+    }
+  }
+
+  return "center";
+};

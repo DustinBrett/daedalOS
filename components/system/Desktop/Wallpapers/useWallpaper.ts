@@ -14,8 +14,8 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
+  BG_TRANSITION_MS,
   DEFAULT_LOCALE,
-  HIGH_PRIORITY_REQUEST,
   IMAGE_FILE_EXTENSIONS,
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_MINUTE,
@@ -32,8 +32,10 @@ import {
   createOffscreenCanvas,
   getExtension,
   getYouTubeUrlId,
+  isBeforeBg,
   isYouTubeUrl,
   jsonFetch,
+  parseBgPosition,
   viewWidth,
 } from "utils/functions";
 
@@ -237,8 +239,14 @@ const useWallpaper = (
     [readdir, lstat]
   );
   const loadFileWallpaper = useCallback(async () => {
-    const [, currentWallpaperUrl] =
-      /"(.*?)"/.exec(document.documentElement.style.background) || [];
+    let [, currentWallpaperUrl] =
+      /url\((.*)\)/.exec(
+        document.documentElement.style.getPropertyValue(
+          isBeforeBg() ? "--before-background" : "--after-background"
+        )
+      ) || [];
+
+    currentWallpaperUrl = currentWallpaperUrl?.replace(/\\/g, "");
 
     if (currentWallpaperUrl?.startsWith("blob:")) {
       cleanUpBufferUrl(currentWallpaperUrl);
@@ -253,6 +261,11 @@ const useWallpaper = (
     let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
     const isSlideshow = wallpaperName === "SLIDESHOW";
+
+    if (!isSlideshow) {
+      document.documentElement.style.removeProperty("--after-background");
+      document.documentElement.style.removeProperty("--before-background");
+    }
 
     if (isSlideshow) {
       const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
@@ -284,10 +297,14 @@ const useWallpaper = (
       do {
         wallpaperUrl = slideshowFiles.shift() || "";
 
-        const [nextWallpaper] = slideshowFiles;
+        let [nextWallpaper] = slideshowFiles;
 
         if (nextWallpaper) {
           const preloadLink = document.createElement("link");
+
+          if (nextWallpaper.startsWith("/")) {
+            nextWallpaper = `${window.location.origin}${nextWallpaper}`;
+          }
 
           preloadLink.id = "preloadWallpaper";
           preloadLink.href = nextWallpaper;
@@ -383,12 +400,44 @@ const useWallpaper = (
         desktopRef.current?.append(video);
       } else {
         const applyWallpaper = (url: string): void => {
+          let positionSize = bgPositionSize[newWallpaperFit];
+
+          if (isSlideshow) {
+            try {
+              const { searchParams } = new URL(url);
+              const { x, y } = Object.fromEntries(searchParams.entries());
+
+              positionSize = `${parseBgPosition(x)} ${parseBgPosition(y)} / cover`;
+            } catch {
+              // Ignore failure to specify background position
+            }
+          }
+
           const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
-          const positionSize = bgPositionSize[newWallpaperFit];
           const isTopWindow = window === window.top;
+          const isAfterNextBackground = isBeforeBg();
+          const selectorBackground = isAfterNextBackground ? "after" : "before";
+          const delayTransition =
+            document.documentElement.style.getPropertyValue(
+              `--${selectorBackground}-background`
+            );
+
+          setTimeout(
+            () => {
+              document.documentElement.style.setProperty(
+                "--after-background-opacity",
+                isAfterNextBackground ? "1" : "0"
+              );
+              document.documentElement.style.setProperty(
+                "--before-background-opacity",
+                isAfterNextBackground ? "0" : "1"
+              );
+            },
+            delayTransition && isSlideshow ? BG_TRANSITION_MS : 0
+          );
 
           document.documentElement.style.setProperty(
-            "background",
+            `--${selectorBackground}-background`,
             `url(${CSS.escape(
               url
             )}) ${positionSize} ${repeat} fixed border-box border-box ${
@@ -398,21 +447,20 @@ const useWallpaper = (
 
           if (!isTopWindow) {
             document.documentElement.style.setProperty(
-              "background-blend-mode",
+              "--background-blend-mode",
               "difference"
             );
           }
         };
 
         if (fallbackBackground) {
-          fetch(wallpaperUrl, {
-            ...HIGH_PRIORITY_REQUEST,
-            mode: "no-cors",
-          })
-            .then(({ ok }) => {
-              if (!ok) throw new Error("Failed to load url");
-            })
-            .catch(() => applyWallpaper(fallbackBackground));
+          const checkImg = new Image();
+
+          checkImg.addEventListener("load", () => applyWallpaper(wallpaperUrl));
+          checkImg.addEventListener("error", () =>
+            applyWallpaper(fallbackBackground)
+          );
+          checkImg.src = wallpaperUrl;
         } else {
           applyWallpaper(wallpaperUrl);
 
