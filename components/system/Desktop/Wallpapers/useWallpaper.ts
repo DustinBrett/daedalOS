@@ -14,7 +14,6 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
-  BG_TRANSITION_MS,
   DEFAULT_LOCALE,
   IMAGE_FILE_EXTENSIONS,
   MILLISECONDS_IN_DAY,
@@ -416,33 +415,22 @@ const useWallpaper = (
           const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
           const isTopWindow = window === window.top;
           const isAfterNextBackground = isBeforeBg();
-          const selectorBackground = isAfterNextBackground ? "after" : "before";
-          const delayTransition =
-            document.documentElement.style.getPropertyValue(
-              `--${selectorBackground}-background`
-            );
-
-          setTimeout(
-            () => {
-              document.documentElement.style.setProperty(
-                "--after-background-opacity",
-                isAfterNextBackground ? "1" : "0"
-              );
-              document.documentElement.style.setProperty(
-                "--before-background-opacity",
-                isAfterNextBackground ? "0" : "1"
-              );
-            },
-            delayTransition && isSlideshow ? BG_TRANSITION_MS : 0
-          );
 
           document.documentElement.style.setProperty(
-            `--${selectorBackground}-background`,
+            `--${isAfterNextBackground ? "after" : "before"}-background`,
             `url(${CSS.escape(
               url
             )}) ${positionSize} ${repeat} fixed border-box border-box ${
               isTopWindow ? colors.background : colors.text
             }`
+          );
+          document.documentElement.style.setProperty(
+            "--after-background-opacity",
+            isAfterNextBackground ? "1" : "0"
+          );
+          document.documentElement.style.setProperty(
+            "--before-background-opacity",
+            isAfterNextBackground ? "0" : "1"
           );
 
           if (!isTopWindow) {

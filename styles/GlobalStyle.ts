@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import { BG_TRANSITION_MS } from "utils/constants";
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -17,7 +16,8 @@ const GlobalStyle = createGlobalStyle`
     user-select: none;
   }
 
-  body, html {
+  body,
+  html {
     font-family: ${({ theme }) => theme.formats.systemFont};
   }
 
@@ -35,13 +35,14 @@ const GlobalStyle = createGlobalStyle`
     height: -moz-available;
     /* stylelint-enable value-no-vendor-prefix */
 
-    &::before, &::after {
+    &::before,
+    &::after {
       background-blend-mode: var(--background-blend-mode);
       background-position: center;
-      content: '';
+      content: "";
       height: 100%;
       position: absolute;
-      transition: opacity ${BG_TRANSITION_MS}ms ease-in-out;
+      transition: opacity 1.25s ease-in-out;
       width: 100%;
       z-index: -1;
     }
@@ -63,7 +64,8 @@ const GlobalStyle = createGlobalStyle`
     color: #fff;
   }
 
-  input, textarea {
+  input,
+  textarea {
     cursor: text;
     user-select: text;
   }

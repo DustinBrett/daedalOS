@@ -65,8 +65,6 @@ export const SLIDESHOW_FILE = "slideshow.json";
 
 export const SLIDESHOW_TIMEOUT_IN_MILLISECONDS = 15000;
 
-export const BG_TRANSITION_MS = 1250;
-
 export const ICON_GIF_SECONDS = 2;
 
 export const ICON_GIF_FPS = 24;
