@@ -460,6 +460,7 @@ const useWallpaper = (
           checkImg.addEventListener("error", () =>
             applyWallpaper(fallbackBackground)
           );
+          checkImg.decoding = "async";
           checkImg.src = wallpaperUrl;
         } else {
           applyWallpaper(wallpaperUrl);

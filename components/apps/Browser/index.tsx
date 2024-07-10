@@ -335,6 +335,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                 () => setIcon(id, faviconUrl),
                 ONE_TIME_PASSIVE_EVENT
               );
+              favicon.decoding = "async";
               favicon.src = faviconUrl;
             }
           }

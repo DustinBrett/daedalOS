@@ -666,6 +666,7 @@ export const getInfoWithExtension = (
                 () => getInfoByFileExtension(imageIcon.src),
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
+              imageIcon.decoding = "async";
               imageIcon.src = imageToBufferUrl(extension, contents);
             }
           })

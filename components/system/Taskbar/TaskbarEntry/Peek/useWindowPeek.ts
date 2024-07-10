@@ -60,6 +60,7 @@ const renderFrame = async (
         },
         ONE_TIME_PASSIVE_EVENT
       );
+      previewImage.decoding = "async";
       previewImage.src = dataUrl;
     } else {
       nextFrame();
