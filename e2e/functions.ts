@@ -485,8 +485,8 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
       await page.evaluate(() =>
         window
           .getComputedStyle(document.documentElement)
-          .getPropertyValue("background-image")
-          .match(/^url\(.*?\)$/)
+          .getPropertyValue("--before-background")
+          .match(/^url\(.*?\)/)
       )
     ).toBeTruthy()
   ).toPass();
