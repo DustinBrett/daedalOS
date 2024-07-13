@@ -16,8 +16,11 @@ const useSortBy = (
   files?: Files
 ): [SortByOrder, SetSortBy] => {
   const { setSortOrder, sortOrders } = useSession();
-  const [currentSortBy, setCurrentSortBy] =
-    useState<SortByOrder>(DEFAULT_SORT_BY);
+  const [currentSortBy, setCurrentSortBy] = useState<
+    Record<string, SortByOrder>
+  >({
+    [directory]: DEFAULT_SORT_BY,
+  });
 
   useEffect(() => {
     const { [directory]: [, sessionSortBy, sessionAscending] = [] } =
@@ -27,15 +30,15 @@ const useSortBy = (
       typeof sessionSortBy === "string" &&
       typeof sessionAscending === "boolean"
     ) {
-      setCurrentSortBy([sessionSortBy, sessionAscending]);
+      setCurrentSortBy({ [directory]: [sessionSortBy, sessionAscending] });
     }
   }, [directory, sortOrders]);
 
   return useMemo(
     () => [
-      currentSortBy,
+      currentSortBy[directory] || DEFAULT_SORT_BY,
       (sortBy: (current: SortByOrder) => SortByOrder): void => {
-        const newSortBy = sortBy(currentSortBy);
+        const newSortBy = sortBy(currentSortBy[directory] || DEFAULT_SORT_BY);
         const [sortByValue, isAscending] = newSortBy;
 
         if (files) {
