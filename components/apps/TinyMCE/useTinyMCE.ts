@@ -116,10 +116,12 @@ const useTinyMCE = ({
                 .querySelector("[role=alert]")
                 ?.setAttribute("style", "opacity: 1;");
             }
+
+            if (saveUrl === DEFAULT_SAVE_PATH) updateTitle(saveUrl);
           }
         );
       };
-      const fileContents = await readFile(url);
+      const fileContents = url ? await readFile(url) : Buffer.from("");
 
       if (fileContents.length === 0) {
         editor.mode.set("design");
@@ -146,7 +148,7 @@ const useTinyMCE = ({
         }
       }
 
-      updateTitle(url);
+      if (url) updateTitle(url);
     }
   }, [
     editor,
@@ -230,8 +232,8 @@ const useTinyMCE = ({
   ]);
 
   useEffect(() => {
-    if (url && editor) loadFile();
-  }, [editor, loadFile, url]);
+    if (editor) loadFile();
+  }, [editor, loadFile]);
 
   useEffect(
     () => () => {
