@@ -7,8 +7,12 @@ const StyledTinyMceEditor = styled.div`
     border-radius: 0;
     height: 100% !important;
 
-    button:disabled {
+    button[aria-disabled="true"] {
       pointer-events: none;
+
+      svg {
+        fill: rgb(255, 255, 255, 50%);
+      }
     }
 
     .tox-statusbar {
