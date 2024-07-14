@@ -116,7 +116,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         {!hideMinimizeButton && (
           <Button
             className="minimize"
-            onClick={onMinimize}
+            onClick={() => onMinimize()}
             {...label("Minimize")}
           >
             <MinimizeIcon />
