@@ -65,7 +65,8 @@ const useRnd = (id: string): Props => {
       _delta,
       resizePosition
     ) => {
-      const [, x, y] = transform.match(/translate\((\d+)px, (\d+)px\)/) || [];
+      const [, x, y] =
+        transform.match(/translate\((-?\d+)px, (-?\d+)px\)/) || [];
       const newPositon =
         typeof x === "string" && typeof y === "string"
           ? { x: pxToNum(x), y: pxToNum(y) }
@@ -74,6 +75,11 @@ const useRnd = (id: string): Props => {
       enableIframeCapture();
 
       const newSize = { height: pxToNum(height), width: pxToNum(width) };
+
+      if (newPositon.y < 0) {
+        newSize.height += newPositon.y;
+        newPositon.y = 0;
+      }
 
       setSize(newSize);
       setPosition(newPositon);
