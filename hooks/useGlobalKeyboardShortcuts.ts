@@ -9,6 +9,7 @@ import { useViewport } from "contexts/viewport";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
 import { haltEvent, toggleShowDesktop, viewHeight } from "utils/functions";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 
 declare global {
   interface Window {
@@ -52,10 +53,11 @@ const updateKeyStates = (event: KeyboardEvent): void => {
 };
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { closeWithTransition, maximize, minimize, open } = useProcesses();
+  const { closeWithTransition, minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
   const { foregroundId, stackOrder } = useSession();
   const { fullscreenElement, toggleFullscreen } = useViewport();
+  const { onMaximize, onMinimize } = useWindowActions(foregroundId);
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
@@ -171,12 +173,12 @@ const useGlobalKeyboardShortcuts = (): void => {
           hideMinimizeButton = false,
           maximized,
           minimized,
-        } = processesRef.current[foregroundId];
+        } = processesRef.current[foregroundId] || {};
 
         if (maximized) {
-          maximize(foregroundId);
+          onMaximize();
         } else if (!minimized && !hideMinimizeButton) {
-          minimize(foregroundId);
+          onMinimize(true);
         }
       },
       ARROWUP: () => {
@@ -185,17 +187,24 @@ const useGlobalKeyboardShortcuts = (): void => {
           hideMaximizeButton = false,
           maximized,
           minimized,
-        } = processesRef.current[foregroundId];
+        } = processesRef.current[foregroundId] || {};
 
         if (minimized) {
-          minimize(foregroundId);
+          onMinimize(true);
         } else if (!maximized && allowResizing && !hideMaximizeButton) {
-          maximize(foregroundId);
+          onMaximize();
         }
       },
       D: () => toggleShowDesktop(processesRef.current, stackOrder, minimize),
     };
-  }, [foregroundId, maximize, minimize, processesRef, stackOrder]);
+  }, [
+    foregroundId,
+    minimize,
+    onMaximize,
+    onMinimize,
+    processesRef,
+    stackOrder,
+  ]);
 };
 
 export default useGlobalKeyboardShortcuts;

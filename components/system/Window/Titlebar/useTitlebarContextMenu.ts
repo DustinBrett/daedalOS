@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import {
   CLOSE,
   MAXIMIZE,
@@ -15,8 +15,7 @@ import {
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcesses } from "contexts/process";
-import { MENU_SEPERATOR, PREVENT_SCROLL } from "utils/constants";
-import { useSession } from "contexts/session";
+import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const { contextMenu } = useMenu();
@@ -24,19 +23,13 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { setForegroundId } = useSession();
   const {
     allowResizing = true,
-    componentWindow,
     hideMaximizeButton,
     hideMinimizeButton,
     maximized,
     minimized,
   } = process || {};
-  const focusWindow = useCallback((): void => {
-    setForegroundId(id);
-    componentWindow?.focus(PREVENT_SCROLL);
-  }, [componentWindow, id, setForegroundId]);
 
   return useMemo(
     () =>
@@ -49,8 +42,6 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
             action: () => {
               if (minimized) onMinimize();
               else onMaximize();
-
-              focusWindow();
             },
             disabled: !isMaxOrMin,
             icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
@@ -63,10 +54,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
             label: "Minimize",
           },
           !hideMaximizeButton && {
-            action: () => {
-              onMaximize();
-              focusWindow();
-            },
+            action: onMaximize,
             disabled: isMaxOrMin || !allowResizing,
             icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
             label: "Maximize",
@@ -82,7 +70,6 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     [
       allowResizing,
       contextMenu,
-      focusWindow,
       hideMaximizeButton,
       hideMinimizeButton,
       maximized,
