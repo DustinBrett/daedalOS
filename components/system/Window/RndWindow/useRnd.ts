@@ -58,7 +58,19 @@ const useRnd = (id: string): Props => {
     [id, setPosition, setWindowStates, size]
   );
   const onResizeStop: RndResizeCallback = useCallback(
-    (_event, _direction, { style: { height, width } }, _delta, newPositon) => {
+    (
+      _event,
+      _direction,
+      { style: { height, width, transform } },
+      _delta,
+      resizePosition
+    ) => {
+      const [, x, y] = transform.match(/translate\((\d+)px, (\d+)px\)/) || [];
+      const newPositon =
+        typeof x === "string" && typeof y === "string"
+          ? { x: pxToNum(x), y: pxToNum(y) }
+          : resizePosition;
+
       enableIframeCapture();
 
       const newSize = { height: pxToNum(height), width: pxToNum(width) };
