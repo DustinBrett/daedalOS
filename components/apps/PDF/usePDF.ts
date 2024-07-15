@@ -86,6 +86,8 @@ const usePDF = ({
   const abortControllerRef = useRef<AbortController | null>(null);
   const renderPages = useCallback(async (): Promise<void> => {
     if (containerRef.current) {
+      setPages([]);
+
       if (url) {
         containerRef.current.classList.remove("drop");
 
@@ -95,7 +97,6 @@ const usePDF = ({
 
           // eslint-disable-next-line no-param-reassign
           containerRef.current.scrollTop = 0;
-          setPages([]);
           setLoading(true);
 
           const fileData = await readFile(url);
@@ -126,6 +127,9 @@ const usePDF = ({
         }
       } else {
         containerRef.current.classList.add("drop");
+        argument(id, "subTitle", "");
+        argument(id, "count", 0);
+        prependFileToTitle("");
       }
     }
 
@@ -150,39 +154,39 @@ const usePDF = ({
         renderPages().catch(() => {
           setUrl(id, "");
           setLoading(false);
+          argument(id, "rendering", false);
+          renderingRef.current = false;
         });
       }
     });
-  }, [id, libs, renderPages, setLoading, setUrl]);
+  }, [argument, id, libs, renderPages, setLoading, setUrl]);
 
   useEffect(() => {
-    if (pages.length > 0) {
-      const ol = containerRef.current?.querySelector(
-        "ol.pages"
-      ) as HTMLOListElement;
+    const ol = containerRef.current?.querySelector(
+      "ol.pages"
+    ) as HTMLOListElement;
 
-      if (ol) {
-        [...ol.children].forEach((li) => li.remove());
+    if (ol) {
+      [...ol.children].forEach((li) => li.remove());
 
-        pages.forEach((page, pageNumber) => {
-          const li = document.createElement("li");
-          const observer = new IntersectionObserver(
-            (entries) =>
-              entries.forEach(({ isIntersecting }) => {
-                if (isIntersecting) argument(id, "page", pageNumber + 1);
-              }),
-            {
-              root: containerRef.current,
-              ...DEFAULT_INTERSECTION_OPTIONS,
-            }
-          );
+      pages?.forEach((page, pageNumber) => {
+        const li = document.createElement("li");
+        const observer = new IntersectionObserver(
+          (entries) =>
+            entries.forEach(({ isIntersecting }) => {
+              if (isIntersecting) argument(id, "page", pageNumber + 1);
+            }),
+          {
+            root: containerRef.current,
+            ...DEFAULT_INTERSECTION_OPTIONS,
+          }
+        );
 
-          li.append(page);
-          ol.append(li);
+        li.append(page);
+        ol.append(li);
 
-          observer.observe(li);
-        });
-      }
+        observer.observe(li);
+      });
     }
   }, [argument, containerRef, id, pages]);
 
