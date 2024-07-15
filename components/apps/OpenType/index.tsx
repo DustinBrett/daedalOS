@@ -77,6 +77,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
         setFont(openType.parse(buffer));
       } catch {
         setUrl(id, "");
+        setFont(undefined);
       }
     },
     [id, readFile, setUrl]
