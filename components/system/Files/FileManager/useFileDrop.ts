@@ -14,8 +14,13 @@ import {
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { DESKTOP_PATH, MOUNTABLE_EXTENSIONS } from "utils/constants";
+import {
+  DESKTOP_PATH,
+  MOUNTABLE_EXTENSIONS,
+  PREVENT_SCROLL,
+} from "utils/constants";
 import { getExtension, haltEvent, updateIconPositions } from "utils/functions";
+import { useProcessesRef } from "hooks/useProcessesRef";
 
 export type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -41,6 +46,7 @@ const useFileDrop = ({
   updatePositions,
 }: FileDropProps): FileDrop => {
   const { url } = useProcesses();
+  const processesRef = useProcessesRef();
   const { iconPositions, sortOrders, setIconPositions } = useSession();
   const { exists, mkdirRecursive, updateFolder, writeFile } = useFileSystem();
   const updateProcessUrl = useCallback(
@@ -153,12 +159,18 @@ const useFileDrop = ({
         );
       }
 
+      const hasUpdateId = typeof id === "string";
+
+      if (hasUpdateId && !updatePositions && directory === DESKTOP_PATH) {
+        processesRef.current[id]?.componentWindow?.focus(PREVENT_SCROLL);
+      }
+
       handleFileInputEvent(
         event as React.DragEvent,
         callback || updateProcessUrl,
         directory,
         openTransferDialog,
-        Boolean(id)
+        hasUpdateId
       );
     },
   };
