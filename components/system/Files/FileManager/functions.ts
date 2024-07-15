@@ -265,7 +265,10 @@ export const handleFileInputEvent = (
         if (hasUpdateId || singleFile.directory === singleFile.name) return;
       }
 
-      if (filePaths.every((filePath) => dirname(filePath) === directory)) {
+      if (
+        filePaths.every((filePath) => dirname(filePath) === directory) ||
+        filePaths.includes(directory)
+      ) {
         return;
       }
 
