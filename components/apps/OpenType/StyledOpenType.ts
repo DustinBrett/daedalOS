@@ -1,30 +1,13 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+import Message from "styles/common/Message";
 
-type StyledOpenTypeProps = {
-  $drop?: boolean;
-};
-
-const StyledOpenType = styled.div<StyledOpenTypeProps>`
+const StyledOpenType = styled.div`
   font-size: 13px;
-  overflow: hidden scroll;
+  overflow: hidden auto;
 
-  ${({ $drop }) =>
-    $drop &&
-    css`
-      &::before {
-        content: "Drop OTF/TTF/WOFF file here";
-        display: flex;
-        font-size: 16px;
-        font-weight: 600;
-        height: 100%;
-        left: 0;
-        place-content: center;
-        place-items: center;
-        position: absolute;
-        top: 0;
-        width: 100%;
-      }
-    `}
+  &.drop {
+    ${Message("Drop OTF/TTF/WOFF file here", "#000")};
+  }
 
   ol {
     &:not(:last-child) {

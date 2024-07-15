@@ -34,13 +34,17 @@ const useMarked = ({
   const { prependFileToTitle } = useTitle(id);
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const openLink = useLinkHandler();
+  const getContainer = useCallback(
+    (): HTMLElement | null =>
+      containerRef.current?.querySelector("article") as HTMLElement,
+    [containerRef]
+  );
   const loadFile = useCallback(async () => {
     const markdownFile = await readFile(url);
-    const container = containerRef.current?.querySelector(
-      "article"
-    ) as HTMLElement;
+    const container = getContainer();
 
     if (container instanceof HTMLElement) {
+      container.classList.remove("drop");
       container.innerHTML = window.DOMPurify.sanitize(
         window.marked.parse(markdownFile.toString(), {
           headerIds: false,
@@ -63,7 +67,7 @@ const useMarked = ({
     }
 
     prependFileToTitle(basename(url));
-  }, [containerRef, openLink, prependFileToTitle, readFile, url]);
+  }, [getContainer, openLink, prependFileToTitle, readFile, url]);
 
   useEffect(() => {
     if (loading) {
@@ -76,8 +80,11 @@ const useMarked = ({
   }, [libs, loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && url) loadFile();
-  }, [loadFile, loading, url]);
+    if (!loading) {
+      if (url) loadFile();
+      else getContainer()?.classList.add("drop");
+    }
+  }, [getContainer, loadFile, loading, url]);
 };
 
 export default useMarked;

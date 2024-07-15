@@ -61,24 +61,25 @@ const FontCanvas: FC<FontCanvasProps> = ({
 const MemoizedFontCanvas = memo(FontCanvas);
 
 const OpenType: FC<ComponentProcessProps> = ({ id }) => {
-  const { processes: { [id]: { url = "" } = {} } = {}, title } = useProcesses();
+  const {
+    processes: { [id]: { url = "" } = {} } = {},
+    title,
+    url: setUrl,
+  } = useProcesses();
   const { readFile } = useFileSystem();
   const [font, setFont] = useState<Font>();
-  const [showDrop, setShowDrop] = useState(true);
   const loadFont = useCallback(
     async (fontUrl: string) => {
-      setShowDrop(false);
-
       const { default: openType } = await import("opentype.js");
       const { buffer } = await readFile(fontUrl);
 
       try {
         setFont(openType.parse(buffer));
       } catch {
-        setShowDrop(true);
+        setUrl(id, "");
       }
     },
-    [readFile]
+    [id, readFile, setUrl]
   );
   const { name, types, version } = useMemo(() => {
     const supportedTypes = [];
@@ -112,7 +113,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledOpenType
-      $drop={showDrop}
+      className={url ? "" : "drop"}
       {...useFileDrop({ id })}
       onContextMenuCapture={haltEvent}
     >

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Message from "styles/common/Message";
 
 const buttonSize = "48px";
 const paddingSize = "32px";
@@ -88,6 +89,10 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
         background-color: rgba(100, 100, 100, 50%);
       }
     }
+  }
+
+  &.drop {
+    ${Message("Drop photo file here", "#fff")};
   }
 `;
 

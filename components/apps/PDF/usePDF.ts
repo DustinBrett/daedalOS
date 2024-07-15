@@ -85,45 +85,48 @@ const usePDF = ({
   const renderingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const renderPages = useCallback(async (): Promise<void> => {
-    if (
-      window.pdfjsLib &&
-      url &&
-      containerRef.current &&
-      !renderingRef.current
-    ) {
-      renderingRef.current = true;
-      argument(id, "rendering", true);
+    if (containerRef.current) {
+      if (url) {
+        containerRef.current.classList.remove("drop");
 
-      // eslint-disable-next-line no-param-reassign
-      containerRef.current.scrollTop = 0;
-      setPages([]);
-      setLoading(true);
+        if (window.pdfjsLib && !renderingRef.current) {
+          renderingRef.current = true;
+          argument(id, "rendering", true);
 
-      const fileData = await readFile(url);
+          // eslint-disable-next-line no-param-reassign
+          containerRef.current.scrollTop = 0;
+          setPages([]);
+          setLoading(true);
 
-      if (fileData.length === 0) throw new Error("File is empty");
+          const fileData = await readFile(url);
 
-      const doc = await window.pdfjsLib.getDocument(fileData).promise;
-      const { info } = await doc.getMetadata();
+          if (fileData.length === 0) throw new Error("File is empty");
 
-      argument(id, "subTitle", (info as MetadataInfo).Title);
-      argument(id, "count", doc.numPages);
-      prependFileToTitle(basename(url));
+          const doc = await window.pdfjsLib.getDocument(fileData).promise;
+          const { info } = await doc.getMetadata();
 
-      abortControllerRef.current = new AbortController();
+          argument(id, "subTitle", (info as MetadataInfo).Title);
+          argument(id, "count", doc.numPages);
+          prependFileToTitle(basename(url));
 
-      for (let i = 0; i < doc.numPages; i += 1) {
-        if (abortControllerRef.current.signal.aborted) break;
-        if (i === 1) setLoading(false);
+          abortControllerRef.current = new AbortController();
 
-        // eslint-disable-next-line no-await-in-loop
-        const page = await renderPage(i + 1, doc);
+          for (let i = 0; i < doc.numPages; i += 1) {
+            if (abortControllerRef.current.signal.aborted) break;
+            if (i === 1) setLoading(false);
 
-        setPages((currentPages) => [...currentPages, page]);
+            // eslint-disable-next-line no-await-in-loop
+            const page = await renderPage(i + 1, doc);
+
+            setPages((currentPages) => [...currentPages, page]);
+          }
+
+          argument(id, "rendering", false);
+          renderingRef.current = false;
+        }
+      } else {
+        containerRef.current.classList.add("drop");
       }
-
-      argument(id, "rendering", false);
-      renderingRef.current = false;
     }
 
     setLoading(false);

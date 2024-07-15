@@ -109,6 +109,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     <StyledPhotos
       ref={containerRef}
       $showImage={Boolean(src[url] && !brokenImage)}
+      className={url ? "" : "drop"}
       onContextMenu={haltEvent}
       {...useFileDrop({ id })}
     >
