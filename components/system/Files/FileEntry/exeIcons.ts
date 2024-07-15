@@ -99,7 +99,9 @@ export const extractExeIcon = async (
   );
   const iconHeader = iconGroupEntry.icons.reduce(
     (accHeader, iconBitmapInfo, index) => {
-      currentIconOffset += index ? iconData[index - 1]?.bin.byteLength ?? 0 : 0;
+      currentIconOffset += index
+        ? (iconData[index - 1]?.bin.byteLength ?? 0)
+        : 0;
 
       return Buffer.concat([
         accHeader,
