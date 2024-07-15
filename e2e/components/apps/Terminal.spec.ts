@@ -211,7 +211,11 @@ test.describe("has commands", () => {
     await sendToTerminal({ page }, "neofetch");
     await terminalHasText(
       { page },
-      `Packages: ${Object.keys(directory).length}`
+      `Packages: ${
+        Object.entries(directory).filter(
+          ([, { dialogProcess }]) => !dialogProcess
+        ).length
+      }`
     );
   });
 

@@ -75,6 +75,7 @@ export type Process = ProcessArguments &
     Component: React.ComponentType<ComponentProcessProps>;
     closing?: boolean;
     defaultSize?: Size;
+    dialogProcess?: boolean;
     hasWindow?: boolean;
     icon: string;
     maximized?: boolean;

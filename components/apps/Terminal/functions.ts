@@ -152,9 +152,9 @@ export const autoComplete = (
       if (lowerCommand === "git") return Object.keys(gitCommands);
       if (directoryCommands.has(lowerCommand)) return directory;
 
-      const lowerProcesses = Object.keys(processDirectory).map((pid) =>
-        pid.toLowerCase()
-      );
+      const lowerProcesses = Object.entries(processDirectory)
+        .filter(([, { dialogProcess }]) => !dialogProcess)
+        .map(([pid]) => pid.toLowerCase());
 
       if (
         lowerProcesses.includes(lowerCommand) ||

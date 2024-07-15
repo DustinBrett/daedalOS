@@ -43,7 +43,9 @@ const useUrlLoader = (): void => {
 
     if (app) {
       const lcAppNames = Object.fromEntries(
-        Object.keys(processDirectory).map((name) => [name.toLowerCase(), name])
+        Object.entries(processDirectory)
+          .filter(([, { dialogProcess }]) => !dialogProcess)
+          .map(([name]) => [name.toLowerCase(), name])
       );
 
       loadInitialApp(lcAppNames[app.toLowerCase()]);

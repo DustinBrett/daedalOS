@@ -768,7 +768,11 @@ const useCommandInterpreter = (
 
           output.push(
             `Uptime: ${getUptime(true)}`,
-            `Packages: ${Object.keys(processDirectory).length}`
+            `Packages: ${
+              Object.entries(processDirectory).filter(
+                ([, { dialogProcess }]) => !dialogProcess
+              ).length
+            }`
           );
 
           if (window.screen?.width && window.screen?.height) {
@@ -1109,10 +1113,11 @@ const useCommandInterpreter = (
         }
         default:
           if (baseCommand) {
-            const pid =
-              Object.keys(processDirectory).find(
-                (process) => process.toLowerCase() === lcBaseCommand
-              ) || resourceAliasMap[lcBaseCommand];
+            const [pid] = Object.entries(processDirectory)
+              .filter(([, { dialogProcess }]) => !dialogProcess)
+              .find(([process]) => process.toLowerCase() === lcBaseCommand) || [
+              resourceAliasMap[lcBaseCommand],
+            ];
 
             if (pid) {
               const [file] = commandArgs;
