@@ -20,7 +20,7 @@ const nextConfig = {
       fileName: false,
       minify: isProduction,
       pure: true,
-      ssr: false,
+      ssr: true,
       transpileTemplateLiterals: true,
     },
   },
