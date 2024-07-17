@@ -483,10 +483,11 @@ export const backgroundIsUrl = async ({ page }: TestProps): Promise<void> =>
   expect(async () =>
     expect(
       await page.evaluate(() =>
-        window
-          .getComputedStyle(document.documentElement)
-          .getPropertyValue("--before-background")
-          .match(/^url\(.*?\)/)
+        /^url\(.*?\)/.exec(
+          window
+            .getComputedStyle(document.documentElement)
+            .getPropertyValue("--before-background")
+        )
       )
     ).toBeTruthy()
   ).toPass();

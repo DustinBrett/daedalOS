@@ -57,7 +57,7 @@ const useSelection = (
     clientY,
     target,
   }) => {
-    if (target !== containerRef.current) return;
+    if ((target as HTMLElement) !== containerRef.current) return;
 
     const { scrollTop } = containerRef.current;
     const { x: targetX = 0, y: targetY = 0 } =

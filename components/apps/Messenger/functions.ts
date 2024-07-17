@@ -34,6 +34,7 @@ import {
 } from "components/apps/Messenger/types";
 import { type MenuItem } from "contexts/menu/useMenuContextState";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
+import { toSorted } from "utils/functions";
 
 export const getRelayUrls = async (): Promise<string[]> => {
   if (window.nostr?.getRelays) {
@@ -444,7 +445,7 @@ export const prettyChatTimestamp = (timestamp: number): string => {
 export const groupChatEvents = (events: Event[]): ChatEvents => {
   if (events.length === 0) return [];
 
-  const sortedEvents = events.sort(ascCreatedAt);
+  const sortedEvents = toSorted(events, ascCreatedAt);
   const [oldestEvent, ...remainingEvents] = sortedEvents;
   const groupedEvents: ChatEvents = [
     [prettyChatTimestamp(oldestEvent.created_at), [oldestEvent]],

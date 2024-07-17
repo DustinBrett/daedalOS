@@ -222,7 +222,7 @@ const useVideoPlayer = ({
   useEffect(() => {
     if (loading && !player) {
       loadFiles(libs).then(() => {
-        if (window.videojs !== undefined) {
+        if (typeof window.videojs === "function") {
           loadPlayer();
         }
       });

@@ -13,7 +13,7 @@ import {
 } from "components/system/Files/FileManager/useFolder";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { haltEvent, toSorted } from "utils/functions";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;
@@ -82,11 +82,11 @@ export const sortContents = (
   });
 
   const sortContent = (fileStats: FileStats[]): FileStats[] => {
-    fileStats.sort(sortByName);
+    const newFileStats = toSorted(fileStats, sortByName);
 
     return sortFunction && sortFunction !== sortByName
-      ? fileStats.sort(sortFunction)
-      : fileStats;
+      ? toSorted(newFileStats, sortFunction)
+      : newFileStats;
   };
   const sortedFolders = sortContent(folders);
   const sortedFiles = sortContent(files);
@@ -220,7 +220,9 @@ export const handleFileInputEvent = (
   event: InputChangeEvent | React.DragEvent,
   callback: NewPath,
   directory: string,
-  openTransferDialog: (fileReaders: FileReaders | ObjectReaders) => void,
+  openTransferDialog: (
+    fileReaders: FileReaders | ObjectReaders
+  ) => Promise<void>,
   hasUpdateId = false
 ): void => {
   haltEvent(event);

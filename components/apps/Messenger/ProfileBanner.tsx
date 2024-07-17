@@ -17,7 +17,7 @@ import { type ProfileData } from "components/apps/Messenger/types";
 import { useMenu } from "contexts/menu";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
-import { haltEvent } from "utils/functions";
+import { haltEvent, toSorted } from "utils/functions";
 
 const GRADIENT = "linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.5))";
 const STYLING =
@@ -139,7 +139,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       {!selectedRecipientKey && connectedRelays.length > 0 && (
         <div className="relays">
           <ol>
-            {relayUrls.sort().map((relayUrl) => (
+            {toSorted(relayUrls).map((relayUrl) => (
               // eslint-disable-next-line jsx-a11y/click-events-have-key-events
               <li
                 key={relayUrl}

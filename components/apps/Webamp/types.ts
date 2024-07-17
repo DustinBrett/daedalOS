@@ -15,8 +15,6 @@ export type ButterChurnWebampPreset = {
 
 export type SkinData = Record<string, unknown>;
 
-type EmitterEventData = SkinData;
-
 type CloseWindow = {
   type: "CLOSE_WINDOW";
   windowId: string;
@@ -80,10 +78,7 @@ export type WebampCI = Webamp & {
   _actionEmitter: {
     on: (
       event: string,
-      listener: (emitterEvent: {
-        data?: EmitterEventData;
-        type: string;
-      }) => void
+      listener: (emitterEvent: { data?: SkinData; type: string }) => void
     ) => () => void;
   };
   store: {

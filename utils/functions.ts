@@ -867,3 +867,8 @@ export const parseBgPosition = (position?: string): `${number}%` | "center" => {
 
   return "center";
 };
+
+export const toSorted = <T>(
+  array: T[],
+  compareFn?: (a: T, b: T) => number
+): T[] => [...array].sort(compareFn);

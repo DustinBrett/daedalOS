@@ -273,7 +273,11 @@ const useCommandInterpreter = (
         case "color": {
           const [r, g, b] = commandArgs;
 
-          if (r !== undefined && g !== undefined && b !== undefined) {
+          if (
+            typeof r === "string" &&
+            typeof g === "string" &&
+            typeof b === "string"
+          ) {
             print(rgbAnsi(Number(r), Number(g), Number(b)));
           } else {
             const [[bg, fg] = []] = commandArgs;

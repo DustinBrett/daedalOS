@@ -66,7 +66,7 @@ const useRnd = (id: string): Props => {
       resizePosition
     ) => {
       const [, x, y] =
-        transform.match(/translate\((-?\d+)px, (-?\d+)px\)/) || [];
+        /translate\((-?\d+)px, (-?\d+)px\)/.exec(transform) || [];
       const newPositon =
         typeof x === "string" && typeof y === "string"
           ? { x: pxToNum(x), y: pxToNum(y) }

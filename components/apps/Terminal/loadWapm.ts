@@ -170,7 +170,10 @@ const loadWapm = async (
 
     const moduleResponse = await lowerI64Imports(wasmBinary);
 
-    if (moduleResponse !== undefined && moduleResponse instanceof Uint8Array) {
+    if (
+      typeof moduleResponse === "object" &&
+      moduleResponse instanceof Uint8Array
+    ) {
       bindings ||= (await import("wasi-js/dist/bindings/browser")).default;
 
       const wasmModule = await WebAssembly.compile(moduleResponse);
@@ -178,7 +181,8 @@ const loadWapm = async (
         (WAPM_STD_IN_APPS.includes(args[0]) ||
           (getExtension(args[0]) === ".wasm" &&
             WAPM_STD_IN_APPS.includes(basename(args[0], extname(args[0]))))) &&
-        (args[2] !== undefined || !WAPM_STD_IN_EXCLUDE_ARGS.includes(args[1]));
+        (typeof args[2] === "string" ||
+          !WAPM_STD_IN_EXCLUDE_ARGS.includes(args[1]));
       let readStdIn = false;
       let exitStdIn = false;
       const wasiArgs = stdIn

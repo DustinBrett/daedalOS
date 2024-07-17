@@ -37,7 +37,8 @@ const useFocusable = (
     (event) => {
       const { relatedTarget } = event;
       const focusedElement = relatedTarget as HTMLElement | null;
-      const focusedOnTaskbarEntry = relatedTarget === taskbarEntry;
+      const focusedOnTaskbarEntry =
+        (relatedTarget as HTMLElement) === taskbarEntry;
       const focusedOnTaskbarPeek =
         focusedElement &&
         taskbarEntry?.previousSibling?.contains(focusedElement);
@@ -71,7 +72,10 @@ const useFocusable = (
       if (componentWindow?.contains(document.activeElement)) {
         prependToStack(id);
         setForegroundId(id);
-      } else if (!relatedTarget || document.activeElement === taskbarEntry) {
+      } else if (
+        !relatedTarget ||
+        (document.activeElement as HTMLElement) === taskbarEntry
+      ) {
         componentWindow?.focus(PREVENT_SCROLL);
         callbackEvents?.onFocusCapture?.(
           event as React.FocusEvent<HTMLElement>

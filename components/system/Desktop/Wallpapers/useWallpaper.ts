@@ -132,7 +132,7 @@ const useWallpaper = (
 
       if (
         !failedOffscreenContext.current &&
-        window.OffscreenCanvas !== undefined &&
+        typeof window.OffscreenCanvas === "function" &&
         wallpaperWorker.current
       ) {
         const workerConfig = { config, devicePixelRatio: 1 };

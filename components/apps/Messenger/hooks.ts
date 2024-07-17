@@ -33,6 +33,7 @@ import {
 import { useProcesses } from "contexts/process";
 import directory from "contexts/process/directory";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
+import { toSorted } from "utils/functions";
 
 export const useNostrEvents = ({
   enabled = true,
@@ -144,8 +145,7 @@ export const useNostrContacts = (
   const { events } = useMessageContext();
   const contactKeys = useMemo(() => {
     const keys = new Set(
-      events
-        .sort(descCreatedAt)
+      toSorted(events, descCreatedAt)
         .map(({ pubkey, tags }) =>
           pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey
         )

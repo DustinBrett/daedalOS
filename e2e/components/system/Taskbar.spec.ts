@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-
 import { test } from "@playwright/test";
 import {
   CLOCK_MENU_ITEMS,
