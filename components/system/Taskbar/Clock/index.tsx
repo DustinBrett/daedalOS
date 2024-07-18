@@ -50,7 +50,7 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
   triggerEasterEggCountdown -= 1;
 
   if (triggerEasterEggCountdown === 0) {
-    const { default: spawnSheep } = await import("utils/spawnSheep");
+    const { spawnSheep } = await import("utils/spawnSheep");
 
     spawnSheep();
 

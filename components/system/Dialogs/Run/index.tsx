@@ -23,7 +23,7 @@ import {
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
-import spawnSheep from "utils/spawnSheep";
+import { spawnSheep } from "utils/spawnSheep";
 import Icon from "styles/common/Icon";
 
 const OPEN_ID = "open";

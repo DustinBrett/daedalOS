@@ -78,7 +78,7 @@ const StartButton: FC<StartButtonProps> = ({
       toggleStartMenu();
 
       if (ctrlKey && shiftKey) {
-        const { default: spawnSheep } = await import("utils/spawnSheep");
+        const { spawnSheep } = await import("utils/spawnSheep");
 
         spawnSheep();
       }

@@ -41,7 +41,7 @@ const pickRandomPet = (): string => {
   return petPath;
 };
 
-const spawnSheep = (): Promise<void> =>
+export const spawnSheep = (): Promise<void> =>
   loadFiles(["/Program Files/eSheep/eSheep.js"]).then(() => {
     if (window.Sheep) {
       const sheep = new window.Sheep({
@@ -59,4 +59,14 @@ const spawnSheep = (): Promise<void> =>
     }
   });
 
-export default spawnSheep;
+const sheepSelector =
+  "main > div[style*='z-index: 2000'] > img[src^='data:image']";
+
+export const killSheep = (): void => {
+  const firstSheep = document.querySelector(sheepSelector) as HTMLElement;
+
+  firstSheep?.parentElement?.remove();
+};
+
+export const countSheep = (): number =>
+  document.querySelectorAll(sheepSelector).length;

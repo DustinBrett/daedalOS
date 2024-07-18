@@ -921,7 +921,9 @@ const useCommandInterpreter = (
         }
         case "sheep":
         case "esheep": {
-          const { default: spawnSheep } = await import("utils/spawnSheep");
+          const { countSheep, killSheep, spawnSheep } = await import(
+            "utils/spawnSheep"
+          );
           let [count = 1, duration = 0] = commandArgs;
 
           if (!Number.isNaN(count) && !Number.isNaN(duration)) {
@@ -936,10 +938,12 @@ const useCommandInterpreter = (
             const maxDuration =
               (duration || (count > 1 ? 1 : 0)) * MILLISECONDS_IN_SECOND;
 
-            Array.from({ length: count })
+            Array.from({ length: count === 0 ? countSheep() : count })
               .fill(0)
               .map(() => Math.floor(Math.random() * maxDuration))
-              .forEach((delay) => setTimeout(spawnSheep, delay));
+              .forEach((delay) =>
+                setTimeout(count === 0 ? killSheep : spawnSheep, delay)
+              );
           }
           break;
         }
