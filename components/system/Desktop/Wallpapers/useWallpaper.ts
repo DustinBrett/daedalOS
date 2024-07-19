@@ -69,9 +69,22 @@ const useWallpaper = (
   );
   const wallpaperTimerRef = useRef<number>();
   const failedOffscreenContext = useRef(false);
+  const resetWallpaper = useCallback((): void => {
+    desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
+
+    window.WallpaperDestroy?.();
+
+    if (wallpaperName !== "SLIDESHOW") {
+      document.documentElement.style.removeProperty("--after-background");
+      document.documentElement.style.removeProperty("--before-background");
+    }
+  }, [desktopRef, wallpaperName]);
   const loadWallpaper = useCallback(
     async (keepCanvas?: boolean) => {
       if (!desktopRef.current) return;
+
+      resetWallpaper();
 
       let config: WallpaperConfig | undefined;
       const { matches: prefersReducedMotion } = window.matchMedia(
@@ -208,6 +221,7 @@ const useWallpaper = (
       desktopRef,
       exists,
       readFile,
+      resetWallpaper,
       setWallpaper,
       vantaWireframe,
       wallpaperImage,
@@ -251,20 +265,12 @@ const useWallpaper = (
       cleanUpBufferUrl(currentWallpaperUrl);
     }
 
-    desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
-    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
-
-    window.WallpaperDestroy?.();
+    resetWallpaper();
 
     let wallpaperUrl = "";
     let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
     const isSlideshow = wallpaperName === "SLIDESHOW";
-
-    if (!isSlideshow) {
-      document.documentElement.style.removeProperty("--after-background");
-      document.documentElement.style.removeProperty("--before-background");
-    }
 
     if (isSlideshow) {
       const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
@@ -471,6 +477,7 @@ const useWallpaper = (
     getAllImages,
     loadWallpaper,
     readFile,
+    resetWallpaper,
     setWallpaper,
     updateFolder,
     wallpaperFit,
