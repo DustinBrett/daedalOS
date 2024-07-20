@@ -5,6 +5,7 @@ import {
 } from "utils/constants";
 import { decodeQoi } from "components/apps/Photos/qoi";
 import {
+  blobToBuffer,
   bufferToUrl,
   cleanUpBufferUrl,
   getGifJs,
@@ -94,13 +95,7 @@ const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
   );
 
   return new Promise((resolve) => {
-    gif
-      .on("finished", (blob) =>
-        blob
-          .arrayBuffer()
-          .then((arrayBuffer) => resolve(Buffer.from(arrayBuffer)))
-      )
-      .render();
+    gif.on("finished", (blob) => blobToBuffer(blob).then(resolve)).render();
   });
 };
 

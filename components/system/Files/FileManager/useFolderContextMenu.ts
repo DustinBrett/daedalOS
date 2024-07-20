@@ -28,6 +28,7 @@ import {
   PROCESS_DELIMITER,
 } from "utils/constants";
 import {
+  blobToBuffer,
   bufferToBlob,
   generatePrettyTimestamp,
   getExtension,
@@ -197,7 +198,7 @@ const useFolderContextMenu = (
       const { data } = event;
 
       if (data?.size) {
-        const bufferData = Buffer.from(await data.arrayBuffer());
+        const bufferData = await blobToBuffer(data);
 
         await writeFile(
           capturePath,
@@ -222,7 +223,7 @@ const useFolderContextMenu = (
             async (capturedFile) => {
               await writeFile(
                 capturePath,
-                Buffer.from(await capturedFile.arrayBuffer()),
+                await blobToBuffer(capturedFile),
                 true
               );
               updateFolder(DESKTOP_PATH, fileName);

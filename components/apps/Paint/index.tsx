@@ -15,6 +15,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PICUTRES_PATH,
 } from "utils/constants";
+import { blobToBuffer } from "utils/functions";
 
 type JsPaint = {
   close: () => void;
@@ -56,11 +57,7 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
         const wallpaperPath = join(PICUTRES_PATH, "wallpaper.png");
 
         canvas.toBlob(async (blob) => {
-          await writeFile(
-            wallpaperPath,
-            Buffer.from((await blob?.arrayBuffer()) as ArrayBuffer),
-            true
-          );
+          await writeFile(wallpaperPath, await blobToBuffer(blob), true);
           setWallpaper(wallpaperPath, fit);
         });
       },
@@ -119,16 +116,12 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
           await createPath(
             `${defaultFileName}.png`,
             DESKTOP_PATH,
-            Buffer.from(await (await getBlob("image/png")).arrayBuffer())
+            await blobToBuffer(await getBlob("image/png"))
           )
         );
       jsPaint.systemHooks.writeBlobToHandle = async (fileHandle, blob) => {
         if (await exists(fileHandle)) {
-          await writeFile(
-            fileHandle,
-            Buffer.from(await blob.arrayBuffer()),
-            true
-          );
+          await writeFile(fileHandle, await blobToBuffer(blob), true);
           updateFolder(dirname(fileHandle), basename(fileHandle));
         }
       };

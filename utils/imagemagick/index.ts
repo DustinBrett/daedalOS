@@ -1,5 +1,5 @@
 import { basename, dirname, extname, join } from "path";
-import { loadFiles } from "utils/functions";
+import { blobToBuffer, loadFiles } from "utils/functions";
 import { type ImageMagickConvertFile } from "utils/imagemagick/types";
 
 export const convert = async (
@@ -33,9 +33,7 @@ export const convert = async (
 
       returnFiles.push([
         join(dirname(fileName), newName),
-        image?.blob
-          ? Buffer.from(await image.blob.arrayBuffer())
-          : Buffer.from(""),
+        await blobToBuffer(image?.blob),
       ]);
     })
   );
