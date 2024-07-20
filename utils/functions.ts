@@ -818,14 +818,16 @@ export const preloadLibs = (libs: string[] = []): void => {
   });
 };
 
-export const getGifJs = async (): Promise<GIF> => {
+type GIFWithWorkers = GIF & { freeWorkers: Worker[] };
+
+export const getGifJs = async (): Promise<GIFWithWorkers> => {
   const { default: GIFInstance } = await import("gif.js");
 
   return new GIFInstance({
     quality: 10,
     workerScript: "Program Files/gif.js/gif.worker.js",
     workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
-  });
+  }) as GIFWithWorkers;
 };
 
 export const jsonFetch = async (

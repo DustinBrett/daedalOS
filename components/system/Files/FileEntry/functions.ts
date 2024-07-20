@@ -715,9 +715,12 @@ export const getInfoWithExtension = (
 
                     if (framesRemaining === 0) {
                       gif
-                        .on("finished", (blob) =>
-                          blobToBase64(blob).then(getInfoByFileExtension)
-                        )
+                        .on("finished", (blob) => {
+                          blobToBase64(blob).then(getInfoByFileExtension);
+                          gif.freeWorkers.forEach((worker) =>
+                            worker?.terminate()
+                          );
+                        })
                         .render();
                     }
 
