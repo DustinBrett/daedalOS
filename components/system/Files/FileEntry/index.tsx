@@ -320,7 +320,9 @@ const FileEntry: FC<FileEntryProps> = ({
             !(await exists(cachedIconPath)) &&
             iconRef.current instanceof HTMLImageElement
           ) {
-            const cacheIcon = async (): Promise<void> => {
+            const cacheIcon = async (
+              retryCanvasDraw?: boolean
+            ): Promise<void> => {
               if (iconRef.current instanceof HTMLImageElement) {
                 const nextQueueItem = (): Promise<void> => {
                   cacheQueue.shift();
@@ -370,10 +372,16 @@ const FileEntry: FC<FileEntryProps> = ({
                     // Ignore failure to capture
                   }
 
-                  if (iconCanvas && isCanvasDrawn(iconCanvas)) {
+                  if (
+                    iconCanvas &&
+                    (isCanvasDrawn(iconCanvas) || retryCanvasDraw)
+                  ) {
                     generatedIcon = iconCanvas.toDataURL("image/png");
                   } else {
-                    setTimeout(cacheIcon, TRANSITIONS_IN_MILLISECONDS.WINDOW);
+                    setTimeout(
+                      () => cacheIcon(true),
+                      TRANSITIONS_IN_MILLISECONDS.WINDOW
+                    );
                   }
                 }
 
@@ -407,7 +415,7 @@ const FileEntry: FC<FileEntryProps> = ({
             else {
               iconRef.current.addEventListener(
                 "load",
-                cacheIcon,
+                () => cacheIcon(),
                 ONE_TIME_PASSIVE_EVENT
               );
             }
