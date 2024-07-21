@@ -93,9 +93,10 @@ const useDosCI = (
           await writeFile(iconCachePath, screenshot, true);
         }
 
-        if (closeInstance) dosInstance?.stop();
         updateFolder(SAVE_PATH, saveName);
       }
+
+      if (closeInstance) dosInstance?.stop();
     },
     [dosCI, dosInstance, exists, mkdirRecursive, updateFolder, writeFile]
   );
