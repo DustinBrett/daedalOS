@@ -163,20 +163,24 @@ const useDosCI = (
     }
 
     return () => {
-      if (url && closing) {
-        const takeScreenshot = async (): Promise<Buffer | undefined> => {
-          const imageData = await dosCI[url]?.screenshot();
+      if (closing) {
+        if (url) {
+          const takeScreenshot = async (): Promise<Buffer | undefined> => {
+            const imageData = await dosCI[url]?.screenshot();
 
-          return imageData ? imgDataToBuffer(imageData) : undefined;
-        };
-        const scheduleSaveState = (screenshot?: Buffer): void => {
-          window.setTimeout(
-            () => closeBundle(url, screenshot, closing),
-            TRANSITIONS_IN_MILLISECONDS.WINDOW
-          );
-        };
+            return imageData ? imgDataToBuffer(imageData) : undefined;
+          };
+          const scheduleSaveState = (screenshot?: Buffer): void => {
+            window.setTimeout(
+              () => closeBundle(url, screenshot, closing),
+              TRANSITIONS_IN_MILLISECONDS.WINDOW
+            );
+          };
 
-        takeScreenshot().then(scheduleSaveState).catch(scheduleSaveState);
+          takeScreenshot().then(scheduleSaveState).catch(scheduleSaveState);
+        } else {
+          dosInstance?.stop();
+        }
       }
     };
   }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);
