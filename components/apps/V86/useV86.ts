@@ -103,8 +103,6 @@ const useV86 = ({
         emulator[diskImageUrl]?.destroy();
       } catch {
         // Ignore failures on destroy
-      } finally {
-        updateFolder(SAVE_PATH, saveName);
       }
     },
     [emulator, exists, mkdirRecursive, saveStateAsync, updateFolder, writeFile]
