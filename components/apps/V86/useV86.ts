@@ -110,7 +110,10 @@ const useV86 = ({
   const loadDiskImage = useCallback(async () => {
     const [currentUrl] = Object.keys(emulator);
 
-    if (currentUrl) await closeDiskImage(currentUrl);
+    if (typeof currentUrl === "string") {
+      await closeDiskImage(currentUrl);
+      setEmulator({ [url]: undefined });
+    }
 
     const imageContents = url ? await readFile(url) : Buffer.from("");
     const ext = getExtension(url);
@@ -200,11 +203,6 @@ const useV86 = ({
 
   useEffect(() => {
     if (process && !closing && !loading && !(url in emulator)) {
-      const [currentUrl] = Object.keys(emulator);
-
-      if (typeof currentUrl === "string") closeDiskImage(currentUrl);
-
-      setEmulator({ [url]: undefined });
       loadDiskImage();
     }
 

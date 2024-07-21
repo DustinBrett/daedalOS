@@ -103,7 +103,10 @@ const useDosCI = (
   const loadBundle = useCallback(async () => {
     const [currentUrl] = Object.keys(dosCI);
 
-    if (currentUrl) closeBundle(currentUrl);
+    if (typeof currentUrl === "string") {
+      await closeBundle(currentUrl);
+      setDosCI({ [url]: undefined });
+    }
 
     const urlBuffer = url ? await readFile(url) : Buffer.from("");
     const extension = getExtension(url);
@@ -159,7 +162,6 @@ const useDosCI = (
 
   useEffect(() => {
     if (process && !closing && dosInstance && !(url in dosCI)) {
-      setDosCI({ [url]: undefined });
       loadBundle();
     }
 
