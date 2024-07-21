@@ -1,6 +1,9 @@
 import { basename } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { type PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
+import {
+  type PDFWorker,
+  type PDFDocumentProxy,
+} from "pdfjs-dist/types/src/display/api";
 import type * as PdfjsLib from "pdfjs-dist";
 import { type MetadataInfo } from "components/apps/PDF/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
@@ -45,6 +48,7 @@ const usePDF = ({
   } = useProcesses();
   const { libs = [], scale } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
+  const pdfWorker = useRef<PDFWorker | null>(null);
   const renderPage = useCallback(
     async (
       pageNumber: number,
@@ -103,8 +107,11 @@ const usePDF = ({
 
           if (fileData.length === 0) throw new Error("File is empty");
 
-          const doc = await window.pdfjsLib.getDocument(fileData).promise;
+          const loader = window.pdfjsLib.getDocument(fileData);
+          const doc = await loader.promise;
           const { info } = await doc.getMetadata();
+
+          pdfWorker.current = loader._worker as PDFWorker;
 
           argument(id, "subTitle", (info as MetadataInfo).Title);
           argument(id, "count", doc.numPages);
@@ -190,7 +197,13 @@ const usePDF = ({
     }
   }, [argument, containerRef, id, pages]);
 
-  useEffect(() => () => abortControllerRef.current?.abort(), []);
+  useEffect(
+    () => () => {
+      abortControllerRef.current?.abort();
+      pdfWorker.current?.destroy();
+    },
+    []
+  );
 };
 
 export default usePDF;
