@@ -15,6 +15,7 @@
       - [Coqui.ai](https://github.com/coqui-ai/tts)
       - [speak.js](https://github.com/mtttmpl/speak-js)
     - [window.ai](https://docs.google.com/document/d/1VG8HIyz361zGduWgNG7R_R8Xkv0OOJ8b5C9QKeCjU0c/edit)
+    - [Transformers.js](https://xenova.github.io/transformers.js/)
 - Screen Savers (.scr)
   - [Pipes](https://github.com/1j01/pipes)
   - [3D Maze](https://github.com/ibid-11962/Windows-95-3D-Maze-Screensaver)
@@ -87,11 +88,20 @@
   - [webR](https://github.com/georgestagg/webR)
 - Jupyter
   - [JupyterLite](https://github.com/jupyterlite/jupyterlite)
+- SQL
+  - [SQL.JS](https://github.com/sql-js/sql.js)
+  - [AlaSQL](https://github.com/AlaSQL/alasql)
 
 ### Window Management
 
 - Wayland
   - [Greenfield](https://github.com/udevbe/greenfield)
+
+### Calendar
+
+- [react-big-calendar](https://github.com/jquense/react-big-calendar)
+- iCAL
+  - [ical.js](https://github.com/kewisch/ical.js)
 
 ### File Systems
 
@@ -127,7 +137,7 @@
 
 ### IDE Enhancements
 
-- [Tabs](https://codesandbox.io/s/multi-model-editor-kugi6?file=/src/App.js)
+- [Tabs](https://codesandbox.io/s/multi-model-editor-kugi6)
 - [VSCode Web](https://github.com/Felx-B/vscode-web)
 
 ### Email Viewer
@@ -143,6 +153,8 @@
 - Waveforms
   - [AudioMass](https://github.com/pkalogiros/audiomass)
   - [peaks.js](https://github.com/bbc/peaks.js)
+- [Meyda](https://meyda.js.org/)
+- [Quiet.js](https://github.com/quiet/quiet-js/)
 
 ### Photo Editor
 
@@ -154,11 +166,28 @@
 - [Photon](https://silvia-odwyer.github.io/photon/)
 - [SVGEdit](https://github.com/SVG-Edit/svgedit)
 
+### PDF Creator
+
+- [jsPDF](https://github.com/parallax/jsPDF)
+- [PDF-LIB](https://github.com/Hopding/pdf-lib)
+
 ### Photo Viewer
 
 - [TGA](https://github.com/schmittl/tgajs/tree/gh-pages)
 - [RAW](https://github.com/zfedoran/dcraw.js)
 - [PSD](https://webtoon.github.io/psd/)
+
+### Document/Book Viewer
+
+- [WebODF](https://webodf.org/)
+- [docx2html](https://github.com/lalalic/docx2html)
+- [Pandoc](https://github.com/jgm/pandoc)
+- [gdal3.js](https://github.com/bugra9/gdal3.js)
+- [Epub.js](https://github.com/futurepress/epub.js/)
+- Barcode / QR
+  - [Html5-QRCode](https://github.com/mebjas/html5-qrcode)
+  - [QRCode.js](https://github.com/davidshimjs/qrcodejs)
+  - [ZXing](https://github.com/zxing-js/library)
 
 ### Video Player
 
