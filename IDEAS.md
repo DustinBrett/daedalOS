@@ -10,6 +10,10 @@
   - [ClippyJS](https://github.com/pi0/clippyjs)
   - AI Powered
     - [WebLLM](https://webllm.mlc.ai/)
+    - [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/talk.wasm)
+    - TTS
+      - [Coqui.ai](https://github.com/coqui-ai/tts)
+      - [speak.js](https://github.com/mtttmpl/speak-js)
     - [window.ai](https://docs.google.com/document/d/1VG8HIyz361zGduWgNG7R_R8Xkv0OOJ8b5C9QKeCjU0c/edit)
 - Screen Savers (.scr)
   - [Pipes](https://github.com/1j01/pipes)
@@ -18,6 +22,7 @@
   - [After Dark](https://www.bryanbraun.com/after-dark-css/)
   - [Hackers](https://simone.computer/#/webdesktops) (Shows when site is inactive)
   - [Bouncing DVD Logo](https://www.bouncingdvdlogo.com/)
+  - [Drift](https://github.com/sandydoo/flux)
 - Add my old personal website
   - [http://surf.to/misc](https://web.archive.org/web/20050826192118if_/http://surf.to:80/misc)
 - File Explorer Details/Column View
@@ -108,11 +113,17 @@
   - [Local Font Access API](https://developer.chrome.com/docs/capabilities/web-apis/local-fonts)
 - React
   - [DevTools Inline](https://www.npmjs.com/package/react-devtools-inline)
+- Benchmarks
+  - [CanvasMark](https://github.com/kevinroast/CanvasMark)
 
 ### Terminal Enhancements
 
 - [PTY](https://github.com/mame/xterm-pty)
+- SSH
+  - [SSHy](https://github.com/stuicey/SSHy)
+  - [ssheasy](https://github.com/hullarb/ssheasy)
 - [Wasmer Multithreading](https://wasmer.io/posts/introducing-the-wasmer-js-sdk)
+- [ShellJS](https://github.com/shelljs/shelljs)
 
 ### IDE Enhancements
 
@@ -139,11 +150,15 @@
 - [miniPaint](https://github.com/viliusle/miniPaint) (Photoshop alternative)
 - [DPaint](https://www.stef.be/dpaint/)
 - [AnyPalette.js](https://github.com/1j01/anypalette.js)
+- [Cropper.js](https://github.com/fengyuanchen/cropperjs/blob/main/README.md)
+- [Photon](https://silvia-odwyer.github.io/photon/)
+- [SVGEdit](https://github.com/SVG-Edit/svgedit)
 
 ### Photo Viewer
 
 - [TGA](https://github.com/schmittl/tgajs/tree/gh-pages)
 - [RAW](https://github.com/zfedoran/dcraw.js)
+- [PSD](https://webtoon.github.io/psd/)
 
 ### Video Player
 
@@ -217,6 +232,7 @@
   - [noclip](https://noclip.website/)
   - [Object Viewer](https://rubenandrebarreiro.github.io/projects/threejs/3d-object-viewer-super-mario-bros/3d-object-viewer-super-mario-bros.html)
   - [3D Viewer](https://3dviewer.net/)
+  - [Model Viewer](https://modelviewer.dev/)
 - Shader Toy Wallpapers
   - [Auroras](https://www.shadertoy.com/view/XtGGRt)
   - [Space](https://www.shadertoy.com/view/Mll3zj)
@@ -230,6 +246,12 @@
 - [Google Easter Eggs](https://elgoog.im/)
 - [Shan, Shui](https://github.com/LingDong-/shan-shui-inf) (Procedural Chinese Landscape)
 - [gpu-io](https://github.com/amandaghassaei/gpu-io) (Physics Simulations)
+- [Retro Synthwave](https://github.com/victorqribeiro/retroSynthwave)
+- [GPU Shaders](https://www.kevs3d.co.uk/dev/shaders/)
+- [Better Rainbow](https://krazydad.com/tutorials/makecolors.php)
+- [fireworks.js](https://github.com/crashmax-dev/fireworks-js)
+- [Cursor Effects](https://tholman.com/cursor-effects/)
+- [Bobby Blue-Eyes](https://www.derschmale.com/lab/doodles/blueeyes/build/)
 
 ## Games
 
