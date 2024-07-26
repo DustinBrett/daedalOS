@@ -166,6 +166,7 @@
     "sonarjs/media-has-caption": "off",
     "sonarjs/mouse-events-a11y": "off",
     "sonarjs/new-cap": "off",
+    "sonarjs/no-duplicate-string": "off",
     "sonarjs/no-hardcoded-credentials": "off",
     "sonarjs/no-hardcoded-ip": "off",
     "sonarjs/no-misused-promises": "off",
