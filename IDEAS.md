@@ -173,52 +173,40 @@
 
 ### Emulators
 
-- ARM
-  - https://github.com/ozaki-r/arm-js
-- x86-64
-  - https://github.com/xarantolus/ax
-- Linux Binaries
-  - https://github.com/raoofha/box86js
-- Mac OS 8
-  - https://github.com/felixrieseberg/macintosh.js
-- Palm
-  - https://github.com/cloudpilot-emu/cloudpilot-emu
-- Commodore 64
-  - https://github.com/mborgbrant/c64js
-- RetroArch
-  - https://github.com/BinBashBanana/webretro
+- [ARM](https://github.com/ozaki-r/arm-js)
+- [x86-64](https://github.com/xarantolus/ax)
+- [Linux](https://github.com/raoofha/box86js)
+- [Mac OS 8](https://github.com/felixrieseberg/macintosh.js)
+- [Palm](https://github.com/cloudpilot-emu/cloudpilot-emu)
+- [Commodore 64](https://github.com/mborgbrant/c64js)
+- [RetroArch](https://github.com/BinBashBanana/webretro)
 
 ### Messaging Protocols
 
 - MQTT
-  - https://github.com/mqttjs/MQTT.js
-  - https://www.hivemq.com/mqtt/public-mqtt-broker/
+  - [MQTT.js](https://github.com/mqttjs/MQTT.js)
+  - [Public MQTT Broker](https://www.hivemq.com/mqtt/public-mqtt-broker/)
 - XMPP
-  - https://github.com/strophe/strophejs
+  - [Strophe.js](https://github.com/strophe/strophejs)
 
 ### Remote Desktop
 
 - VNC
-  - https://github.com/novnc/noVNC
+  - [noVNC](https://github.com/novnc/noVNC)
 
 ### Web Server
 
-- nohost
-  - https://github.com/humphd/nohost
-- WordPress
-  - https://github.com/WordPress/wordpress-playground
-- Vite
-  - https://github.com/divriots/browser-vite
+- [nohost](https://github.com/humphd/nohost)
+- [WordPress](https://github.com/WordPress/wordpress-playground)
+- [Vite](https://github.com/divriots/browser-vite)
 
 ### Multithreading
 
-- Main Thread Scheduling
-  - https://github.com/astoilkov/main-thread-scheduling
+- [Main Thread Scheduling](https://github.com/astoilkov/main-thread-scheduling)
 
 ### Containers
 
-- Container to WASM
-  - https://github.com/ktock/container2wasm
+- [Container to WASM](https://github.com/ktock/container2wasm)
 
 ## Visuals & Effects
 
