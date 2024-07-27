@@ -3700,10 +3700,10 @@ frac@~1.1.2:
   resolved "https://registry.yarnpkg.com/frac/-/frac-1.1.2.tgz#3d74f7f6478c88a1b5020306d747dc6313c74d0b"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
-framer-motion@^11.3.17:
-  version "11.3.17"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.3.17.tgz#47bd13fe3af660e4e3eebaf21f3a0d9d32c7939b"
-  integrity sha512-LZcckvZL8Rjod03bud8LQcp+R0PLmWIlOSu+NVc+v6Uh43fQr4IBsEAX7sSn7CdBQ1L0fZ/IqSXZVPnGFSMxHw==
+framer-motion@^11.3.18:
+  version "11.3.18"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.3.18.tgz#ca380896ef4f4b3a15fa6627309e964d2af63189"
+  integrity sha512-pPJXcshW+AABch6FQxFCeBd/bZFaZC2w/VdkSEZGvKIaVGA4IsOS2SqUEIWMKMJJsKwr96O+7vY66M+/S7mOlw==
   dependencies:
     tslib "^2.4.0"
 
@@ -4091,10 +4091,10 @@ human-signals@^5.0.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-5.0.0.tgz#42665a284f9ae0dade3ba41ebc37eb4b852f3a28"
   integrity sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==
 
-husky@^9.1.2:
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-9.1.2.tgz#ddaf290384c7adab4fd3143571c73d05b19f42ee"
-  integrity sha512-1/aDMXZdhr1VdJJTLt6e7BipM0Jd9qkpubPiIplon1WmCeOy3nnzsCMeBqS9AsL5ioonl8F8y/F2CLOmk19/Pw==
+husky@^9.1.3:
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-9.1.3.tgz#46cddff01f9a551f87b39accc67860bce5d00680"
+  integrity sha512-ET3TQmQgdIu0pt+jKkpo5oGyg/4MQZpG6xcam5J5JyNJV+CBT23OBpCF15bKHKycRyMH9k6ONy8g2HdGIsSkMQ==
 
 iconv-lite@0.6.3:
   version "0.6.3"
