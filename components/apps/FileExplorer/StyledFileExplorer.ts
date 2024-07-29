@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
-import StyledFileEntry from "components/system/Files/Views/Icon/StyledFileEntry";
 import StyledFileManager from "components/system/Files/Views/Icon/StyledFileManager";
 
 const StyledFileExplorer = styled.div`
@@ -15,18 +14,6 @@ const StyledFileExplorer = styled.div`
   ${StyledLoading} {
     height: ${({ theme }) =>
       `calc(100% - ${theme.sizes.fileExplorer.navBarHeight} - ${theme.sizes.fileExplorer.statusBarHeight})`};
-  }
-
-  ${StyledFileEntry} {
-    &:hover {
-      &::before {
-        border-width: 0;
-      }
-    }
-
-    &::before {
-      border-width: 0;
-    }
   }
 `;
 
