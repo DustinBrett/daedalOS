@@ -3,8 +3,6 @@ import styled from "styled-components";
 const StyledV86 = styled.div`
   canvas {
     background-color: #000;
-    height: auto !important;
-    width: auto !important;
   }
 
   div {
