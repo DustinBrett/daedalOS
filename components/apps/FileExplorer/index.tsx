@@ -34,6 +34,20 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     if (event.altKey && event.key.toUpperCase() === "D") {
       haltEvent(event);
       inputRef.current?.focus(PREVENT_SCROLL);
+    } else {
+      const fileManagerEntry = (event?.target as HTMLElement)?.querySelector(
+        "ol li button"
+      );
+
+      fileManagerEntry?.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          bubbles: true,
+          cancelable: true,
+          ctrlKey: event.ctrlKey,
+          key: event.key,
+          shiftKey: event.shiftKey,
+        })
+      );
     }
   }, []);
 
