@@ -134,7 +134,7 @@
     "postcss-styled-syntax": "^0.6.4",
     "postcss-syntax": "^0.36.2",
     "serve": "^14.2.3",
-    "stylelint": "^16.7.0",
+    "stylelint": "^16.8.1",
     "stylelint-config-standard": "^36.0.1",
     "stylelint-order": "^6.0.4",
     "terser": "^5.31.3",
