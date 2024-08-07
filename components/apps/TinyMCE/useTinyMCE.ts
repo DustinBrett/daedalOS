@@ -18,8 +18,6 @@ import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
 
-type OptionSetter = <K, T>(name: K, value: T) => void;
-
 const useTinyMCE = ({
   containerRef,
   id,
@@ -70,56 +68,53 @@ const useTinyMCE = ({
   const loadFile = useCallback(async () => {
     if (editor) {
       const setupSaveCallback = (): void => {
-        (editor.options.set as OptionSetter)(
-          "save_onsavecallback",
-          async () => {
-            const saveSpec: NotificationSpec = {
-              closeButton: true,
-              text: "Successfully saved.",
-              timeout: 5000,
-              type: "success",
-            };
-            const saveUrl = url || DEFAULT_SAVE_PATH;
+        editor.options.set("save_onsavecallback", async () => {
+          const saveSpec: NotificationSpec = {
+            closeButton: true,
+            text: "Successfully saved.",
+            timeout: 5000,
+            type: "success",
+          };
+          const saveUrl = url || DEFAULT_SAVE_PATH;
 
-            try {
-              await writeFile(
-                getExtension(saveUrl) === ".rtf"
-                  ? saveUrl.replace(".rtf", ".whtml")
-                  : saveUrl,
-                editor.getContent(),
-                true
-              );
-              updateFolder(dirname(saveUrl), basename(saveUrl));
-              updateTitle(saveUrl);
-            } catch {
-              saveSpec.text = "Error occurred while saving.";
-              saveSpec.type = "error";
-            }
-
-            editor.notificationManager.open(saveSpec);
-
-            const notification = editor.notificationManager
-              .getNotifications()?.[0]
-              ?.getEl()?.parentElement;
-            const mceContainer = editor.editorContainer;
-
-            if (
-              notification instanceof HTMLElement &&
-              mceContainer instanceof HTMLElement
-            ) {
-              mceContainer.append(notification);
-              notification.setAttribute(
-                "style",
-                "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
-              );
-              notification
-                .querySelector("[role=alert]")
-                ?.setAttribute("style", "opacity: 1;");
-            }
-
-            if (saveUrl === DEFAULT_SAVE_PATH) updateTitle(saveUrl);
+          try {
+            await writeFile(
+              getExtension(saveUrl) === ".rtf"
+                ? saveUrl.replace(".rtf", ".whtml")
+                : saveUrl,
+              editor.getContent(),
+              true
+            );
+            updateFolder(dirname(saveUrl), basename(saveUrl));
+            updateTitle(saveUrl);
+          } catch {
+            saveSpec.text = "Error occurred while saving.";
+            saveSpec.type = "error";
           }
-        );
+
+          editor.notificationManager.open(saveSpec);
+
+          const notification = editor.notificationManager
+            .getNotifications()?.[0]
+            ?.getEl()?.parentElement;
+          const mceContainer = editor.editorContainer;
+
+          if (
+            notification instanceof HTMLElement &&
+            mceContainer instanceof HTMLElement
+          ) {
+            mceContainer.append(notification);
+            notification.setAttribute(
+              "style",
+              "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
+            );
+            notification
+              .querySelector("[role=alert]")
+              ?.setAttribute("style", "opacity: 1;");
+          }
+
+          if (saveUrl === DEFAULT_SAVE_PATH) updateTitle(saveUrl);
+        });
       };
       const fileContents = url ? await readFile(url) : Buffer.from("");
 

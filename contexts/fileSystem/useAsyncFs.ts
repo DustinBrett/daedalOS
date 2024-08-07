@@ -78,7 +78,7 @@ const runQueuedFsCalls = (fs: FSModule): void => {
       const fsCall = fs[name as keyof FSModule];
 
       if (typeof fsCall === "function") {
-        // eslint-disable-next-line @typescript-eslint/ban-types
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
         (fsCall as unknown as Function)(...args);
       }
     }
@@ -258,7 +258,7 @@ const useAsyncFs = (): AsyncFSModule => {
         (name: string) =>
         (...args: unknown[]) => {
           if (fsRef.current) {
-            // eslint-disable-next-line @typescript-eslint/ban-types
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
             (fsRef.current[name as keyof FSModule] as unknown as Function)(
               ...args
             );

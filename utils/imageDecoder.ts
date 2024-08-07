@@ -178,7 +178,7 @@ export const decodeImageToBuffer = async (
       return decodeQoi(file);
     case ".ani":
       try {
-        return aniToGif(file);
+        return await aniToGif(file);
       } catch {
         return getFirstAniImage(file);
       }
