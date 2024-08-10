@@ -44,15 +44,15 @@ const supportsWebGPU = async (): Promise<boolean> => {
   return !insufficientLimits;
 };
 
-export const useWebGPUCheck = (): boolean | undefined => {
-  const [hasWebGPU, setHasWebGPU] = useState<boolean | undefined>();
+export const useWebGPUCheck = (): boolean => {
+  const [hasWebGPU, setHasWebGPU] = useState<boolean>(false);
   const checkWebGPU = useCallback(
     async () => setHasWebGPU(await supportsWebGPU()),
     []
   );
 
   useEffect(() => {
-    checkWebGPU();
+    requestAnimationFrame(checkWebGPU);
   }, [checkWebGPU]);
 
   return hasWebGPU;
