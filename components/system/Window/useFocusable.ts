@@ -16,7 +16,8 @@ type Focusable = Events &
 
 const useFocusable = (
   id: string,
-  callbackEvents?: Partial<Events>
+  callbackEvents?: Partial<Events>,
+  focusElement?: HTMLElement | null
 ): Focusable => {
   const {
     foregroundId,
@@ -27,8 +28,13 @@ const useFocusable = (
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { closing, componentWindow, minimized, taskbarEntry, url } =
-    process || {};
+  const {
+    closing = false,
+    componentWindow = focusElement,
+    minimized = false,
+    taskbarEntry,
+    url,
+  } = process || {};
   const zIndex = useMemo(
     () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
     [id, minimized, stackOrder]
