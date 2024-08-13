@@ -52,6 +52,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Web Stable Diffusion](https://github.com/mlc-ai/web-stable-diffusion)
 - [mediainfo.js](https://github.com/buzz/mediainfo.js)
 - [exif-js](https://github.com/exif-js/exif-js)
+- [WebLLM](https://github.com/mlc-ai/web-llm)
 
 ## App Libraries
 
