@@ -59,12 +59,18 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 type ClockProps = {
+  hasAI: boolean;
   setClockWidth: React.Dispatch<React.SetStateAction<number>>;
   toggleCalendar: () => void;
   width: number;
 };
 
-const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
+const Clock: FC<ClockProps> = ({
+  hasAI,
+  setClockWidth,
+  toggleCalendar,
+  width,
+}) => {
   const [now, setNow] = useState<LocaleTimeDate>(
     Object.create(null) as LocaleTimeDate
   );
@@ -197,6 +203,7 @@ const Clock: FC<ClockProps> = ({ setClockWidth, toggleCalendar, width }) => {
   return (
     <StyledClock
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
+      $hasAI={hasAI}
       $width={width}
       aria-label="Clock"
       onClick={onClockClick}

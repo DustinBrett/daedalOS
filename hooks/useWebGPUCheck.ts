@@ -14,6 +14,8 @@ type NavigatorWithGPU = Navigator & {
   };
 };
 
+let HAS_WEB_GPU = false;
+
 const supportsWebGPU = async (): Promise<boolean> => {
   if (typeof navigator === "undefined") return false;
   if (!("gpu" in navigator)) return false;
@@ -41,19 +43,22 @@ const supportsWebGPU = async (): Promise<boolean> => {
     requiredMaxComputeWorkgroupStorageSize >
       (adapter.limits.maxComputeWorkgroupStorageSize ?? 0);
 
+  if (!insufficientLimits) HAS_WEB_GPU = true;
+
   return !insufficientLimits;
 };
 
 export const useWebGPUCheck = (): boolean => {
-  const [hasWebGPU, setHasWebGPU] = useState<boolean>(false);
-  const checkWebGPU = useCallback(
-    async () => setHasWebGPU(await supportsWebGPU()),
-    []
-  );
+  const [hasWebGPU, setHasWebGPU] = useState<boolean>(HAS_WEB_GPU);
+  const checkWebGPU = useCallback(async () => {
+    const sufficientLimits = await supportsWebGPU();
+
+    if (sufficientLimits) setHasWebGPU(true);
+  }, []);
 
   useEffect(() => {
-    requestAnimationFrame(checkWebGPU);
-  }, [checkWebGPU]);
+    if (!hasWebGPU) requestAnimationFrame(checkWebGPU);
+  }, [checkWebGPU, hasWebGPU]);
 
   return hasWebGPU;
 };

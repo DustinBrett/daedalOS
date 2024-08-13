@@ -45,6 +45,7 @@ const useSessionContextState = (): SessionContextState => {
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
   const [cursor, setCursor] = useState("");
+  const [aiEnabled, setAiEnabled] = useState(false);
   const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
   );
@@ -186,6 +187,7 @@ const useSessionContextState = (): SessionContextState => {
         writeFile(
           SESSION_FILE,
           JSON.stringify({
+            aiEnabled,
             clockSource,
             cursor,
             iconPositions,
@@ -211,6 +213,7 @@ const useSessionContextState = (): SessionContextState => {
       }
     }
   }, [
+    aiEnabled,
     clockSource,
     cursor,
     haltSession,
@@ -247,6 +250,7 @@ const useSessionContextState = (): SessionContextState => {
 
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.cursor) setCursor(session.cursor);
+          if (session.aiEnabled) setAiEnabled(session.aiEnabled);
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);
@@ -338,6 +342,7 @@ const useSessionContextState = (): SessionContextState => {
   }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
+    aiEnabled,
     clockSource,
     cursor,
     foregroundId,
@@ -347,6 +352,7 @@ const useSessionContextState = (): SessionContextState => {
     removeFromStack,
     runHistory,
     sessionLoaded,
+    setAiEnabled,
     setClockSource,
     setCursor,
     setForegroundId,

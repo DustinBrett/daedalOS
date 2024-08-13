@@ -37,6 +37,7 @@
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.58",
     "@monaco-editor/loader": "^1.4.0",
     "@panzoom/panzoom": "^4.5.1",
     "@prettier/plugin-xml": "^3.4.1",

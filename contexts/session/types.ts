@@ -37,6 +37,7 @@ export type IconPosition = {
 export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
+  aiEnabled: boolean;
   clockSource: ClockSource;
   cursor: string;
   iconPositions: IconPositions;
@@ -54,6 +55,7 @@ export type SessionContextState = SessionData & {
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
   sessionLoaded: boolean;
+  setAiEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setCursor: React.Dispatch<React.SetStateAction<string>>;
   setForegroundId: React.Dispatch<React.SetStateAction<string>>;

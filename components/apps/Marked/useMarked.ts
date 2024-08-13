@@ -7,7 +7,7 @@ import { useProcesses } from "contexts/process";
 import { loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
 
-type MarkedOptions = {
+export type MarkedOptions = {
   headerIds: boolean;
   mangle: boolean;
 };

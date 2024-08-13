@@ -27,6 +27,15 @@ const colors = {
   taskbar: {
     active: "hsla(0, 0%, 20%, 70%)",
     activeForeground: "hsla(0, 0%, 40%, 70%)",
+    ai: {
+      balanced: ["rgb(112, 203, 255)", "rgb(40, 112, 234)", "rgb(0, 95, 184)"],
+      creative: [
+        "rgb(215, 167, 187)",
+        "rgb(145, 72, 135)",
+        "rgb(139, 37, 126)",
+      ],
+      precise: ["rgb(167, 224, 235)", "rgb(0, 104, 128)", "rgb(0, 83, 102)"],
+    },
     background: "hsla(0, 0%, 10%, 70%)",
     button: {
       color: "#FFF",

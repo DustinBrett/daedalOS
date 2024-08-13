@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 type StyledClockProps = {
+  $hasAI: boolean;
   $width: number;
 };
 
@@ -16,7 +17,8 @@ const StyledClock = styled.div<StyledClockProps>`
   place-content: center;
   place-items: center;
   position: absolute;
-  right: 0;
+  right: ${({ theme, $hasAI }) =>
+    $hasAI ? theme.sizes.taskbar.ai.buttonWidth : 0};
   white-space: nowrap;
 
   &:hover {

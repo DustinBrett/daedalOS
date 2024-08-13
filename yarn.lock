@@ -746,6 +746,13 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@mlc-ai/web-llm@^0.2.58":
+  version "0.2.58"
+  resolved "https://registry.yarnpkg.com/@mlc-ai/web-llm/-/web-llm-0.2.58.tgz#9cb4ed31ebde0573bd0a84d2baf9b5cfbc0799ea"
+  integrity sha512-QWMwMC6E4JyfBSQ0rRu/Z1V+nicMycE0wXSnrCKebsTAg/Z7h8l5JXAES2v3Yls99qHZtmrKXwn0ZSHUccd7yw==
+  dependencies:
+    loglevel "^1.9.1"
+
 "@monaco-editor/loader@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.4.0.tgz#f08227057331ec890fa1e903912a5b711a2ad558"
@@ -5233,6 +5240,11 @@ log-update@^6.1.0:
     slice-ansi "^7.1.0"
     strip-ansi "^7.1.0"
     wrap-ansi "^9.0.0"
+
+loglevel@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.9.1.tgz#d63976ac9bcd03c7c873116d41c2a85bafff1be7"
+  integrity sha512-hP3I3kCrDIMuRwAwHltphhDM1r8i55H33GgqjXbrisuJhF4kRhW1dNuxsRklp4bXl8DSdLaNLuiL4A/LWRfxvg==
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
