@@ -58,7 +58,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       place-content: center;
       place-items: center;
       width: ${({ $scrollbarVisible }) =>
-        $scrollbarVisible ? "100%" : "calc(100% + 13px)"};
+        $scrollbarVisible ? "calc(100% + 6px)" : "100%"};
 
       .title {
         display: flex;
@@ -266,7 +266,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         place-content: center;
         place-items: center;
         width: ${({ $scrollbarVisible }) =>
-          $scrollbarVisible ? "100%" : "calc(100% + 13px)"};
+          $scrollbarVisible ? "calc(100% + 6px)" : "100%"};
 
         &::before,
         &::after {

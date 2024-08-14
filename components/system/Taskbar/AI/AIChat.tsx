@@ -130,13 +130,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     undefined,
     containerElement
   );
-  const scrollbarVisible = useMemo(
-    () =>
-      conversation.length > 0 &&
-      sectionRef.current instanceof HTMLElement &&
-      sectionRef.current.scrollHeight > sectionRef.current.clientHeight,
-    [conversation.length]
-  );
+  const [scrollbarVisible, setScrollbarVisible] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(-1);
   const [progressMessage, setProgressMessage] = useState<string>("");
   const autoSizeText = useCallback(() => {
@@ -167,6 +161,12 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         })
       );
     }
+
+    setScrollbarVisible(
+      conversation.length > 0 &&
+        sectionRef.current instanceof HTMLElement &&
+        sectionRef.current.scrollHeight > sectionRef.current.clientHeight
+    );
   }, [conversation, failedSession]);
 
   useEffect(() => {
