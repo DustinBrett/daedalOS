@@ -54,6 +54,7 @@ import {
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
+  blobToBase64,
   bufferToUrl,
   getExtension,
   getFormattedSize,
@@ -333,9 +334,16 @@ const FileEntry: FC<FileEntryProps> = ({
                 if (
                   iconRef.current.currentSrc.startsWith(
                     "data:image/gif;base64,"
+                  ) ||
+                  iconRef.current.currentSrc.startsWith(
+                    "data:image/png;base64,"
                   )
                 ) {
                   generatedIcon = iconRef.current.currentSrc;
+                } else if (iconRef.current.currentSrc.startsWith("blob:")) {
+                  generatedIcon = await blobToBase64(
+                    await (await fetch(iconRef.current.currentSrc)).blob()
+                  );
                 } else {
                   const { clientHeight, clientWidth } = iconRef.current;
                   const { naturalHeight, naturalWidth } = iconRef.current;
