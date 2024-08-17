@@ -154,12 +154,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
   useEffect(() => {
     if (conversation.length > 0 || failedSession) {
-      requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
         sectionRef.current?.scrollTo({
           behavior: "smooth",
           top: sectionRef.current.scrollHeight,
-        })
-      );
+        });
+        autoSizeText();
+      });
     }
 
     setScrollbarVisible(
@@ -167,7 +168,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         sectionRef.current instanceof HTMLElement &&
         sectionRef.current.scrollHeight > sectionRef.current.clientHeight
     );
-  }, [conversation, failedSession]);
+  }, [autoSizeText, conversation, failedSession]);
 
   useEffect(() => {
     if (
