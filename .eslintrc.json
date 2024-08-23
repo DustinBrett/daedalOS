@@ -158,6 +158,7 @@
     "regexp/no-useless-assertions": "error",
     "regexp/no-useless-flag": "error",
     "regexp/strict": "error",
+    "sonarjs/anchor-is-valid": "off",
     "sonarjs/anchor-precedence": "off",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/deprecation": "off",

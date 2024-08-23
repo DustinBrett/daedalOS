@@ -291,7 +291,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         <div className="conversation">
           {conversation.map(({ formattedText, type, text }, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={index} className={type}>
+            <div key={`${text}-${index}`} className={type}>
               {(index === 0 || conversation[index - 1].type !== type) && (
                 <div className="avatar">
                   {type === "user" ? <PersonIcon /> : <AIIcon />}
