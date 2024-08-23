@@ -1,4 +1,7 @@
-import { type WallpaperFunc } from "components/system/Desktop/Wallpapers/types";
+import {
+  type WallpaperMenuItem,
+  type WallpaperFunc,
+} from "components/system/Desktop/Wallpapers/types";
 import { type WallpaperFit } from "contexts/session/types";
 
 export const bgPositionSize: Record<WallpaperFit, string> = {
@@ -54,12 +57,9 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
     ),
 };
 
-type WallpaperMenuItem = {
-  id: string;
-  name?: string;
-  requiresWebGPU?: boolean;
-  startsWith?: boolean;
-};
+export const WALLPAPER_WORKER_NAMES = Object.keys(WALLPAPER_WORKERS);
+
+export const REDUCED_MOTION_PERCENT = 0.1;
 
 export const WALLPAPER_MENU: WallpaperMenuItem[] = [
   {

@@ -20,9 +20,7 @@ globalThis.addEventListener(
       const { canvas, config } = data as OffscreenRenderProps;
 
       runStableDiffusion(config as StableDiffusionConfig, canvas, true).then(
-        () => {
-          globalThis.tvmjsGlobalEnv.logger("", "");
-        }
+        () => globalThis.tvmjsGlobalEnv.logger("", "")
       );
     }
   },

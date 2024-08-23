@@ -42,7 +42,7 @@ export const runStableDiffusion = async (
 
   globalThis.tvmjsGlobalEnv.prompts = prompts?.length
     ? prompts
-    : [["A photo of an astronaut riding a horse on mars", ""]];
+    : [["A photo of an astronaut riding a elephant on jupiter", ""]];
 
   await globalThis.tvmjsGlobalEnv.asyncOnGenerate();
 };
