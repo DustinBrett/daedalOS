@@ -17,12 +17,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...safari,
         launchOptions: {
-          args: [
-            "--headless",
-            "--no-sandbox",
-            "--use-gl=angle",
-            "--use-angle=gl-egl",
-          ],
+          args: ["--headless", "--use-angle=gl"],
         },
       },
     },
