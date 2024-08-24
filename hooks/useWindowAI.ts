@@ -7,13 +7,18 @@ const supportsAI = async (): Promise<boolean> => {
   if (!("ai" in window)) return false;
 
   try {
-    if (!("canCreateTextSession" in window.ai)) return false;
+    if ("canCreateTextSession" in window.ai) {
+      HAS_WINDOW_AI = (await window.ai.canCreateTextSession?.()) === "readily";
+    } else if (
+      "assistant" in window.ai &&
+      typeof window.ai.assistant === "object" &&
+      "capabilities" in window.ai.assistant
+    ) {
+      HAS_WINDOW_AI =
+        (await window.ai.assistant.capabilities?.())?.available === "readily";
+    }
 
-    const hasWindowAi = (await window.ai.canCreateTextSession()) !== "no";
-
-    if (hasWindowAi) HAS_WINDOW_AI = true;
-
-    return hasWindowAi;
+    return HAS_WINDOW_AI;
   } catch {
     return false;
   }

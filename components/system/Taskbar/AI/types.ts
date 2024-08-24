@@ -1,19 +1,37 @@
 import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
-export type Session = {
+export type AITextSession = {
   destroy: () => void;
   prompt: (message: string) => Promise<string>;
 };
 
+type AITextSessionOptions = {
+  temperature: number;
+  topK: number;
+};
+
+type AIModelAvailability = "readily" | "after-download" | "no";
+
+type OldAiApi = {
+  canCreateTextSession?: () => Promise<AIModelAvailability>;
+  createTextSession?: (
+    config?: Partial<AITextSessionOptions>
+  ) => Promise<AITextSession>;
+};
+
+// Chrome canary 129.0.6667.0+
+type NewAiApi = {
+  assistant?: {
+    capabilities: () => Promise<{ available: AIModelAvailability }>;
+    create: (config?: Partial<AITextSessionOptions>) => Promise<AITextSession>;
+  };
+};
+
+type AI = OldAiApi & NewAiApi;
+
 declare global {
   /* eslint-disable vars-on-top, no-var  */
-  var ai: {
-    canCreateTextSession: () => Promise<string>;
-    createTextSession: (config?: {
-      temperature?: number;
-      topK?: number;
-    }) => Promise<Session>;
-  };
+  var ai: AI;
   var marked: {
     parse: (markdownString: string, options: MarkedOptions) => string;
   };

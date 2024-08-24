@@ -4,7 +4,7 @@ import {
 } from "@mlc-ai/web-llm";
 import {
   type WorkerMessage,
-  type Session,
+  type AITextSession,
 } from "components/system/Taskbar/AI/types";
 
 const MARKED_LIBS = [
@@ -45,7 +45,7 @@ let cancel = false;
 let responding = false;
 
 let sessionId = 0;
-let session: Session | ChatCompletionMessageParam[] | undefined;
+let session: AITextSession | ChatCompletionMessageParam[] | undefined;
 let engine: MLCEngine;
 
 let markedLoaded = false;
@@ -64,11 +64,15 @@ globalThis.addEventListener(
         sessionId = data.id;
 
         if (data.hasWindowAI) {
-          (session as Session)?.destroy();
+          (session as AITextSession)?.destroy();
 
-          session = await globalThis.ai.createTextSession(
-            CONVO_STYLE_TEMPS[data.style]
-          );
+          const config = CONVO_STYLE_TEMPS[data.style];
+
+          if (globalThis.ai.assistant) {
+            session = await globalThis.ai.assistant.create(config);
+          } else if (globalThis.ai.createTextSession) {
+            session = await globalThis.ai.createTextSession(config);
+          }
         } else {
           session = [WEB_LLM_SYSTEM_PROMPT];
 
@@ -94,8 +98,9 @@ globalThis.addEventListener(
 
           try {
             if (data.hasWindowAI) {
-              // eslint-disable-next-line no-await-in-loop
-              response = (await (session as Session)?.prompt(data.text)) || "";
+              response =
+                // eslint-disable-next-line no-await-in-loop
+                (await (session as AITextSession)?.prompt(data.text)) || "";
             } else {
               (session as ChatCompletionMessageParam[]).push({
                 content: data.text,
