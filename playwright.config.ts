@@ -12,15 +12,7 @@ const config: PlaywrightTestConfig = {
   projects: [
     { name: "chromium", use: chrome },
     { name: "firefox", use: firefox },
-    {
-      name: "webkit",
-      use: {
-        ...safari,
-        launchOptions: {
-          args: ["--headless", "--disable-accelerated-compositing"],
-        },
-      },
-    },
+    { name: "webkit", use: safari },
   ],
   reporter: [["list"], ["html", { open: CI ? "never" : "always" }]],
   retries: CI ? 3 : 1,
