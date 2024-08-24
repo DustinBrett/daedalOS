@@ -17,7 +17,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...safari,
         launchOptions: {
-          args: ["--headless", "--use-angle=gl"],
+          args: ["--headless", "--disable-accelerated-compositing"],
         },
       },
     },
