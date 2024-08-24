@@ -54,11 +54,11 @@ test.describe("can set backgound", () => {
   test("via image", async ({ headless, browserName, page }) => {
     await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
-    await clickFileExplorerEntry("unknown.png", { page }, true);
+    await clickFileExplorerEntry("audio.png", { page }, true);
     await contextMenuIsVisible({ page });
 
     await clickContextMenuEntry(/^Set as background$/, { page });
-    await clickContextMenuEntry(/^Fill$/, { page });
+    await clickContextMenuEntry(/^Tile$/, { page });
 
     await backgroundIsUrl({ page });
     await canvasBackgroundIsHidden({ page });
