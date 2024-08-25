@@ -58,6 +58,7 @@ test.describe("can set backgound", () => {
     await contextMenuIsVisible({ page });
 
     await clickContextMenuEntry(/^Set as background$/, { page });
+    await sessionIsWriteable({ page });
     await clickContextMenuEntry(/^Tile$/, { page });
 
     await backgroundIsUrl({ page });
