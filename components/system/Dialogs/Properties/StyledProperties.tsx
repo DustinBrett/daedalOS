@@ -84,6 +84,7 @@ const StyledProperties = styled.div`
         display: flex;
         font-size: 11.5px;
         height: 21px;
+        letter-spacing: -0.25px;
         line-height: 16px;
         padding: 1px 6px;
         place-content: center;
