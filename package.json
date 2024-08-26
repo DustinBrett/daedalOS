@@ -29,7 +29,8 @@
     "serve": "serve out",
     "stylelint": "stylelint --formatter=verbose **/*.ts*",
     "test": "jest",
-    "unused-exports": "ts-prune --project tsconfig.json --ignore \"\\pages|\\e2e\" --error"
+    "unused-exports": "ts-prune --project tsconfig.json --ignore \"\\pages|\\e2e\" --error",
+    "update": "yarn upgrade-interactive --latest"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
