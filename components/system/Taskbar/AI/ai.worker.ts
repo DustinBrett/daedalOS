@@ -5,6 +5,8 @@ import {
 import {
   type WorkerMessage,
   type AITextSession,
+  type ConvoStyles,
+  type AITextSessionOptions,
 } from "components/system/Taskbar/AI/types";
 
 const MARKED_LIBS = [
@@ -12,7 +14,10 @@ const MARKED_LIBS = [
   "/Program Files/Marked/purify.min.js",
 ];
 
-const CONVO_STYLE_TEMPS = {
+const CONVO_STYLE_TEMPS: Record<
+  ConvoStyles,
+  Omit<AITextSessionOptions, "systemPrompt">
+> = {
   balanced: {
     temperature: 0.5,
     topK: 3,
@@ -36,7 +41,7 @@ const WEB_LLM_MODEL_CONFIG = {
     top_p: 0.9,
   },
 };
-const WEB_LLM_SYSTEM_PROMPT: ChatCompletionMessageParam = {
+const SYSTEM_PROMPT: ChatCompletionMessageParam = {
   content: "You are a helpful AI assistant.",
   role: "system",
 };
@@ -66,15 +71,14 @@ globalThis.addEventListener(
         if (data.hasWindowAI) {
           (session as AITextSession)?.destroy();
 
-          const config = CONVO_STYLE_TEMPS[data.style];
+          const config: AITextSessionOptions = {
+            ...CONVO_STYLE_TEMPS[data.style],
+            systemPrompt: SYSTEM_PROMPT.content,
+          };
 
-          if (globalThis.ai.assistant) {
-            session = await globalThis.ai.assistant.create(config);
-          } else if (globalThis.ai.createTextSession) {
-            session = await globalThis.ai.createTextSession(config);
-          }
+          session = await globalThis.ai.assistant.create(config);
         } else {
-          session = [WEB_LLM_SYSTEM_PROMPT];
+          session = [SYSTEM_PROMPT];
 
           if (!engine) {
             const { CreateMLCEngine } = await import("@mlc-ai/web-llm");

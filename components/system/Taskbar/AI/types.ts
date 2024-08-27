@@ -1,33 +1,33 @@
+import { type ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 import { type MarkedOptions } from "components/apps/Marked/useMarked";
+
+type AIAssistantPromptOptions = {
+  signal?: AbortSignal;
+};
 
 export type AITextSession = {
   destroy: () => void;
-  prompt: (message: string) => Promise<string>;
+  prompt: (
+    message: string,
+    options?: AIAssistantPromptOptions
+  ) => Promise<string>;
 };
 
-type AITextSessionOptions = {
+export type AITextSessionOptions = {
+  initialPrompts: ChatCompletionMessageParam[];
+  systemPrompt: string;
   temperature: number;
   topK: number;
 };
 
-type AIModelAvailability = "readily" | "after-download" | "no";
+type AICapabilityAvailability = "readily" | "after-download" | "no";
 
-type OldAiApi = {
-  canCreateTextSession?: () => Promise<AIModelAvailability>;
-  createTextSession?: (
-    config?: Partial<AITextSessionOptions>
-  ) => Promise<AITextSession>;
-};
-
-// Chrome canary 129.0.6667.0+
-type NewAiApi = {
-  assistant?: {
-    capabilities: () => Promise<{ available: AIModelAvailability }>;
+type AI = {
+  assistant: {
+    capabilities: () => Promise<{ available: AICapabilityAvailability }>;
     create: (config?: Partial<AITextSessionOptions>) => Promise<AITextSession>;
   };
 };
-
-type AI = OldAiApi & NewAiApi;
 
 declare global {
   /* eslint-disable vars-on-top, no-var  */
