@@ -7,6 +7,8 @@ import {
 } from "utils/constants";
 import { getHtmlToImage, isCanvasDrawn } from "utils/functions";
 
+const FPS = 15;
+
 const renderFrame = async (
   previewElement: HTMLElement,
   animate: React.MutableRefObject<boolean>,
@@ -54,7 +56,7 @@ const renderFrame = async (
         () => {
           if (!animate.current) return;
           callback(dataUrl);
-          nextFrame();
+          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
         },
         ONE_TIME_PASSIVE_EVENT
       );
