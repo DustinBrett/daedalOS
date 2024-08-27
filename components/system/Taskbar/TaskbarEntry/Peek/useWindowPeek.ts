@@ -7,19 +7,17 @@ import {
 } from "utils/constants";
 import { getHtmlToImage, isCanvasDrawn } from "utils/functions";
 
-const FPS = 15;
-
 const renderFrame = async (
   previewElement: HTMLElement,
   animate: React.MutableRefObject<boolean>,
   callback: (url: string) => void
 ): Promise<void> => {
   if (!animate.current) return;
+
   const nextFrame = (): number =>
     window.requestAnimationFrame(() =>
       renderFrame(previewElement, animate, callback)
     );
-
   const htmlToImage = await getHtmlToImage();
   let dataCanvas: HTMLCanvasElement | undefined;
 
@@ -56,7 +54,7 @@ const renderFrame = async (
         () => {
           if (!animate.current) return;
           callback(dataUrl);
-          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
+          nextFrame();
         },
         ONE_TIME_PASSIVE_EVENT
       );
