@@ -28,24 +28,48 @@ const HTML_MINIFIER_CONFIG = {
   useShortDoctype: true,
 };
 
-const COMMIT_HASH_LENGTH = 7;
-let commit = "";
+const getCommitHash = () => {
+  const COMMIT_HASH_LENGTH = 7;
+  let commit = "";
 
-try {
-  commit = execSync(`git rev-parse --short=${COMMIT_HASH_LENGTH} HEAD`, {
-    cwd: __dirname,
-  })
-    .toString()
-    .trim();
-} catch {
-  // Ignore failure to get commit hash from git
-}
+  try {
+    commit = execSync(`git rev-parse --short=${COMMIT_HASH_LENGTH} HEAD`, {
+      cwd: __dirname,
+    })
+      .toString()
+      .trim();
+  } catch {
+    // Ignore failure to get commit hash from git
+  }
 
-if (!commit) {
-  commit =
-    process.env.npm_package_gitHead?.slice(0, COMMIT_HASH_LENGTH - 1) ||
-    new Date().toISOString().slice(0, 10);
-}
+  if (!commit) {
+    commit =
+      process.env.npm_package_gitHead?.slice(0, COMMIT_HASH_LENGTH - 1) ||
+      new Date().toISOString().slice(0, 10);
+  }
+
+  return commit;
+};
+
+const getRepoUrl = () => {
+  let url = "";
+
+  try {
+    url = execSync("git config --get remote.origin.url", {
+      cwd: __dirname,
+    })
+      .toString()
+      .trim();
+
+    if (url.endsWith(".git")) {
+      url = url.slice(0, -4);
+    }
+  } catch {
+    // Ignore failure to get commit hash from git
+  }
+
+  return url;
+};
 
 const CODE_REPLACE_FUNCTIONS = [
   (html) => html.replace(/<noscript (.*)><\/noscript>/, ""),
@@ -65,7 +89,7 @@ const CODE_REPLACE_FUNCTIONS = [
   (html) =>
     html.replace(
       /<script id=__NEXT_DATA__ type=application\/json>(.*)<\/script>/,
-      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${commit}","page":"/","props":{}}</script>`
+      `<script id=__NEXT_DATA__ type=application/json>{"buildId":"${getCommitHash() || Date.now()}","page":"/","props":{}}</script>`
     ),
 ];
 
@@ -78,6 +102,12 @@ readdirSync(OUT_PATH).forEach(async (entry) => {
     CODE_REPLACE_FUNCTIONS.forEach((codeFunction) => {
       minifiedHtml = codeFunction(minifiedHtml);
     });
+
+    const repoUrl = getRepoUrl();
+
+    if (repoUrl) {
+      minifiedHtml = `<!-- ${repoUrl} -->\n${minifiedHtml}`;
+    }
 
     writeFileSync(fullPath, minifiedHtml);
   }
