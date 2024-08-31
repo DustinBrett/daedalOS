@@ -14,8 +14,8 @@ export type AITextSession = {
 };
 
 export type AITextSessionOptions = {
-  initialPrompts: ChatCompletionMessageParam[];
-  systemPrompt: string;
+  initialPrompts?: ChatCompletionMessageParam[];
+  systemPrompt?: string;
   temperature: number;
   topK: number;
 };

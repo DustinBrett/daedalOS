@@ -14,10 +14,7 @@ const MARKED_LIBS = [
   "/Program Files/Marked/purify.min.js",
 ];
 
-const CONVO_STYLE_TEMPS: Record<
-  ConvoStyles,
-  Omit<AITextSessionOptions, "systemPrompt">
-> = {
+const CONVO_STYLE_TEMPS: Record<ConvoStyles, AITextSessionOptions> = {
   balanced: {
     temperature: 0.5,
     topK: 3,
