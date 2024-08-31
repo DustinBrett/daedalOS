@@ -13,7 +13,6 @@ This project is greatly augmented by code from the open source community. Thank 
 
 - [Jest](https://github.com/facebook/jest)
 - [Playwright](https://github.com/microsoft/playwright)
-- [React Testing Library](https://github.com/testing-library/react-testing-library)
 - [ESLint](https://github.com/eslint/eslint)
 - [Stylelint](https://github.com/stylelint/stylelint)
 - [Prettier](https://github.com/prettier/prettier)
