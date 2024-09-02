@@ -564,6 +564,10 @@ const FileEntry: FC<FileEntryProps> = ({
             [listView]
           )}
           $renaming={renaming}
+          {...(isHeading && {
+            "aria-level": 1,
+            role: "heading",
+          })}
         >
           <Icon
             ref={iconRef}
@@ -574,9 +578,9 @@ const FileEntry: FC<FileEntryProps> = ({
             {...FileEntryIconSize[view]}
           />
           <SubIcons
+            alt={name}
             icon={icon}
             isDesktop={isDesktop}
-            name={name}
             showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
             subIcons={subIcons}
             view={view}
@@ -593,12 +597,7 @@ const FileEntry: FC<FileEntryProps> = ({
               setRenaming={setRenaming}
             />
           ) : (
-            <figcaption
-              {...(isHeading && {
-                "aria-level": 1,
-                role: "heading",
-              })}
-            >
+            <figcaption>
               {!isOnlyFocusedEntry || name.length === truncatedName.length
                 ? truncatedName
                 : name}
