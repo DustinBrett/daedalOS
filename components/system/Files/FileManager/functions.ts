@@ -134,6 +134,7 @@ export const createFileReaders = async (
   directory: string,
   callback: NewPath
 ): Promise<FileReaders> => {
+  const hasSingleFile = files.length === 1;
   const fileReaders: FileReaders = [];
   const addFile = (file: File, subFolder = ""): void => {
     const reader = new FileReader();
@@ -145,7 +146,7 @@ export const createFileReaders = async (
           callback(
             join(subFolder, file.name),
             Buffer.from(target.result),
-            files.length === 1 ? COMPLETE_ACTION.UPDATE_URL : undefined
+            hasSingleFile ? COMPLETE_ACTION.UPDATE_URL : undefined
           );
         }
       },
