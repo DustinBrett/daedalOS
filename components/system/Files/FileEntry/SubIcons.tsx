@@ -105,10 +105,10 @@ const SubIcon: FC<SubIconProps> = ({
 const MemoizedSubIcon = memo(SubIcon);
 
 const SubIcons: FC<SubIconsProps> = ({
+  alt,
   icon,
   imgSize,
   isDesktop,
-  alt,
   showShortcutIcon,
   subIcons,
   view,

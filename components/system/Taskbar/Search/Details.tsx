@@ -81,9 +81,9 @@ const Details: FC<{
       )}
       <Icon displaySize={64} imgSize={96} src={info?.icon} />
       <SubIcons
+        alt={name}
         icon={info?.icon}
         imgSize={64}
-        name={name}
         showShortcutIcon={false}
         subIcons={info?.subIcons}
         view="icon"

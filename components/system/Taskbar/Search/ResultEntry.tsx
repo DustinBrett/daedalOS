@@ -158,9 +158,9 @@ const ResultEntry: FC<ResultEntryProps> = ({
           src={info?.icon}
         />
         <SubIcons
+          alt={name}
           icon={info?.icon}
           imgSize={details ? 32 : 16}
-          name={name}
           showShortcutIcon={false}
           subIcons={info?.subIcons}
           view="icon"
