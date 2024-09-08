@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 type StyledTaskbarEntriesProps = {
   $clockWidth: number;
+  $hasAI: boolean;
 };
 
 const StyledTaskbarEntries = styled.ol<StyledTaskbarEntriesProps>`
@@ -12,8 +13,8 @@ const StyledTaskbarEntries = styled.ol<StyledTaskbarEntriesProps>`
   margin: 0 3px;
   overflow: hidden;
   position: absolute;
-  right: ${({ $clockWidth, theme }) =>
-    `calc(${$clockWidth}px + ${theme.sizes.clock.padding * 2}px)`};
+  right: ${({ $clockWidth, $hasAI, theme }) =>
+    `calc(${$clockWidth}px + ${theme.sizes.clock.padding * 2}px + ${$hasAI ? theme.sizes.taskbar.ai.buttonWidth : "0px"})`};
 `;
 
 export default StyledTaskbarEntries;

@@ -67,7 +67,10 @@ const Taskbar: FC = () => {
           searchVisible={searchVisible}
           toggleSearch={toggleSearch}
         />
-        <TaskbarEntries clockWidth={clockWidth} />
+        <TaskbarEntries
+          clockWidth={clockWidth}
+          hasAI={hasWindowAI || aiEnabled}
+        />
         <Clock
           hasAI={hasWindowAI || aiEnabled}
           setClockWidth={setClockWidth}

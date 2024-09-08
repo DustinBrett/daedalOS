@@ -10,13 +10,14 @@ const TaskbarEntry = dynamic(
 
 type TaskbarEntriesProps = {
   clockWidth: number;
+  hasAI: boolean;
 };
 
-const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth }) => {
+const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth, hasAI }) => {
   const { processes = {} } = useProcesses();
 
   return (
-    <StyledTaskbarEntries $clockWidth={clockWidth}>
+    <StyledTaskbarEntries $clockWidth={clockWidth} $hasAI={hasAI}>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {Object.entries(processes)
           .filter(
