@@ -49,6 +49,7 @@ const Taskbar: FC = () => {
       setAIVisible((currentAIState) => showAI ?? !currentAIState),
     []
   );
+  const hasAI = hasWindowAI || aiEnabled;
 
   return (
     <>
@@ -67,23 +68,20 @@ const Taskbar: FC = () => {
           searchVisible={searchVisible}
           toggleSearch={toggleSearch}
         />
-        <TaskbarEntries
-          clockWidth={clockWidth}
-          hasAI={hasWindowAI || aiEnabled}
-        />
+        <TaskbarEntries clockWidth={clockWidth} hasAI={hasAI} />
         <Clock
-          hasAI={hasWindowAI || aiEnabled}
+          hasAI={hasAI}
           setClockWidth={setClockWidth}
           toggleCalendar={toggleCalendar}
           width={clockWidth}
         />
-        {(hasWindowAI || aiEnabled) && (
-          <AIButton aiVisible={aiVisible} toggleAI={toggleAI} />
-        )}
+        {hasAI && <AIButton aiVisible={aiVisible} toggleAI={toggleAI} />}
       </StyledTaskbar>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {calendarVisible && <Calendar toggleCalendar={toggleCalendar} />}
-        {aiVisible && <AIChat toggleAI={toggleAI} />}
+        {calendarVisible && (
+          <Calendar key="calendar" toggleCalendar={toggleCalendar} />
+        )}
+        {aiVisible && <AIChat key="aiChat" toggleAI={toggleAI} />}
       </AnimatePresence>
     </>
   );
