@@ -1,37 +1,10 @@
-import { type ChatCompletionMessageParam } from "@mlc-ai/web-llm";
+/// <reference types="dom-chromium-ai" />
+
 import { type MarkedOptions } from "components/apps/Marked/useMarked";
-
-type AIAssistantPromptOptions = {
-  signal?: AbortSignal;
-};
-
-export type AITextSession = {
-  destroy: () => void;
-  prompt: (
-    message: string,
-    options?: AIAssistantPromptOptions
-  ) => Promise<string>;
-};
-
-export type AITextSessionOptions = {
-  initialPrompts?: ChatCompletionMessageParam[];
-  systemPrompt?: string;
-  temperature: number;
-  topK: number;
-};
-
-type AICapabilityAvailability = "readily" | "after-download" | "no";
-
-type AI = {
-  assistant: {
-    capabilities: () => Promise<{ available: AICapabilityAvailability }>;
-    create: (config?: Partial<AITextSessionOptions>) => Promise<AITextSession>;
-  };
-};
 
 declare global {
   /* eslint-disable vars-on-top, no-var  */
-  var ai: AI;
+  var ai: { assistant: AIAssistantFactory };
   var marked: {
     parse: (markdownString: string, options: MarkedOptions) => string;
   };

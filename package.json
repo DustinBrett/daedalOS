@@ -84,6 +84,7 @@
     "@next/bundle-analyzer": "^14.2.7",
     "@next/eslint-plugin-next": "^14.2.7",
     "@playwright/test": "1.44.1",
+    "@types/dom-chromium-ai": "^0.0.0",
     "@types/dompurify": "^3.0.5",
     "@types/gif.js": "^0.2.5",
     "@types/ini": "^4.1.1",

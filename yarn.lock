@@ -1775,6 +1775,11 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/dom-chromium-ai@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.0.tgz#003f26741ca5d1726a5da66025b72c3e02e4b992"
+  integrity sha512-hDYiRUtSWuDqXgjpltqX3n60FRsj6PNivRL2w5QAYOiNstdcjkKq9YYC6VP7nbtVO2F+55wf/TCBXAK8L3HBjA==
+
 "@types/dompurify@^3.0.5":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-3.0.5.tgz#02069a2fcb89a163bacf1a788f73cb415dd75cb7"

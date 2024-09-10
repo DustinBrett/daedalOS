@@ -4,9 +4,7 @@ import {
 } from "@mlc-ai/web-llm";
 import {
   type WorkerMessage,
-  type AITextSession,
   type ConvoStyles,
-  type AITextSessionOptions,
 } from "components/system/Taskbar/AI/types";
 
 const MARKED_LIBS = [
@@ -14,7 +12,10 @@ const MARKED_LIBS = [
   "/Program Files/Marked/purify.min.js",
 ];
 
-const CONVO_STYLE_TEMPS: Record<ConvoStyles, AITextSessionOptions> = {
+const CONVO_STYLE_TEMPS: Record<
+  ConvoStyles,
+  AIAssistantCreateOptionsWithSystemPrompt
+> = {
   balanced: {
     temperature: 0.5,
     topK: 3,
@@ -47,7 +48,7 @@ let cancel = false;
 let responding = false;
 
 let sessionId = 0;
-let session: AITextSession | ChatCompletionMessageParam[] | undefined;
+let session: AIAssistant | ChatCompletionMessageParam[] | undefined;
 let engine: MLCEngine;
 
 let markedLoaded = false;
@@ -66,9 +67,9 @@ globalThis.addEventListener(
         sessionId = data.id;
 
         if (data.hasWindowAI) {
-          (session as AITextSession)?.destroy();
+          (session as AIAssistant)?.destroy();
 
-          const config: AITextSessionOptions = {
+          const config: AIAssistantCreateOptionsWithSystemPrompt = {
             ...CONVO_STYLE_TEMPS[data.style],
             systemPrompt: SYSTEM_PROMPT.content,
           };
@@ -101,7 +102,7 @@ globalThis.addEventListener(
             if (data.hasWindowAI) {
               response =
                 // eslint-disable-next-line no-await-in-loop
-                (await (session as AITextSession)?.prompt(data.text)) || "";
+                (await (session as AIAssistant)?.prompt(data.text)) || "";
             } else {
               (session as ChatCompletionMessageParam[]).push({
                 content: data.text,
