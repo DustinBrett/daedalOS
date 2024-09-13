@@ -268,6 +268,9 @@
   - [Paper Clouds](https://www.shadertoy.com/view/WtjGRc)
   - [Descent](https://www.shadertoy.com/view/wdfGW4)
   - [Glassy Field](https://www.shadertoy.com/view/4ttGDH)
+- Art Wallpapers
+  - [MMoA](https://metmuseum.github.io/)
+  - [AIoC](https://api.artic.edu/docs/)
 - [spacekit](https://github.com/typpo/spacekit)
 - [UVCanvas](https://github.com/latentcat/uvcanvas)
 - [Google Easter Eggs](https://elgoog.im/)
