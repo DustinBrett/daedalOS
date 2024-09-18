@@ -1179,6 +1179,8 @@ const useCommandInterpreter = (
                   if (basePid) {
                     open(basePid, { url: baseUrl });
                     if (baseUrl) updateRecentFiles(baseUrl, basePid);
+                  } else {
+                    printLn(unknownCommand(baseCommand));
                   }
                 }
               } else {
