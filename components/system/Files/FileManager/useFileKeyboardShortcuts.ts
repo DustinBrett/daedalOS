@@ -90,7 +90,7 @@ const useFileKeyboardShortcuts = (
         } else {
           switch (key) {
             case "F2":
-              if (file) {
+              if (focusedEntries.length > 0 && file) {
                 haltEvent(event);
                 setRenaming(file);
               }
@@ -119,7 +119,10 @@ const useFileKeyboardShortcuts = (
               }
               break;
             case "Enter":
-              if (target instanceof HTMLButtonElement) {
+              if (
+                focusedEntries.length > 0 &&
+                target instanceof HTMLButtonElement
+              ) {
                 haltEvent(event);
                 sendMouseClick(target, 2);
               }
