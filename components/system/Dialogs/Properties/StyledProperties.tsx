@@ -1,7 +1,22 @@
 import styled from "styled-components";
+import directory from "contexts/process/directory";
+
+const leftPadding = 6;
+const rightPadding = 8;
+const linePadding = 12;
+const nameWidth = 74;
+const tableToTBodyOffset = 6;
+
+const cellWidth =
+  ((directory.Properties.defaultSize?.width as number) || 0) -
+  leftPadding -
+  rightPadding -
+  tableToTBodyOffset -
+  linePadding * 2 -
+  nameWidth;
 
 const StyledProperties = styled.div`
-  padding: 0 8px 0 6px;
+  padding: 0 ${rightPadding}px 0 ${leftPadding}px;
 
   table.general {
     background-color: #fff;
@@ -20,7 +35,7 @@ const StyledProperties = styled.div`
 
       tr {
         display: flex;
-        padding: 0 12px;
+        padding: 0 ${linePadding}px;
         place-content: center;
         place-items: center;
 
@@ -34,7 +49,7 @@ const StyledProperties = styled.div`
       th {
         font-weight: 400;
         text-align: left;
-        width: 74px;
+        width: ${nameWidth}px;
 
         picture:nth-child(2) {
           position: absolute;
@@ -45,7 +60,11 @@ const StyledProperties = styled.div`
       td {
         cursor: text;
         display: flex;
+        max-width: ${cellWidth}px;
+        overflow: auto;
+        scrollbar-width: none;
         user-select: text;
+        white-space: nowrap;
         width: calc(100% - 70px);
 
         &.spacer {
