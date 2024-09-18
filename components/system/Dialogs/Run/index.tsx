@@ -115,10 +115,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
           }
         }
 
-        if (
-          resourcePid === "FileExplorer" &&
-          (await lstat(resourcePath)).isDirectory()
-        ) {
+        if ((await lstat(resourcePath)).isDirectory()) {
           open("FileExplorer", { url: resourcePath }, "");
           addRunHistoryEntry();
         } else if (
