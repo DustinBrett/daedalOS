@@ -69,6 +69,7 @@ export const toggleShowDesktop = (
   const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
 
   if (!restoreWindows) visibleWindows = [];
+  else if (visibleWindows.length === 0) visibleWindows = allWindows;
 
   allWindows.forEach((pid) => {
     if (restoreWindows) {
