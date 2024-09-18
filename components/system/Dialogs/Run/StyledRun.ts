@@ -52,7 +52,7 @@ const StyledRun = styled.div`
 
       select {
         background-color: #fff;
-        clip-path: inset(0 0 0 calc(100% - 20px));
+        clip-path: inset(0 0 0 calc(100% - 19px));
         position: absolute;
         width: calc(100% - 21px);
 
@@ -64,7 +64,7 @@ const StyledRun = styled.div`
 
       input {
         border-right: 0;
-        margin-right: 33px;
+        margin-right: 32px;
 
         &:focus {
           border: 1px solid rgb(0, 120, 215);
