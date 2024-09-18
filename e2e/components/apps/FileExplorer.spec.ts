@@ -228,6 +228,7 @@ test.describe("has files & folders", () => {
   });
 
   test("can rename via F2", async ({ page }) => {
+    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
     await pressFileExplorerEntryKeys(TEST_ROOT_FILE, "F2", { page });
 
     const flippedName = [...dirname(TEST_ROOT_FILE_TEXT)].reverse().join("");
@@ -288,6 +289,7 @@ test.describe("has files & folders", () => {
     });
 
     test("via enter", async ({ page }) => {
+      await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
       await pressFileExplorerEntryKeys(TEST_ROOT_FILE, "Enter", { page });
       await windowTitlebarTextIsVisible(
         `${TEST_ROOT_FILE_TEXT} - ${TEST_ROOT_FILE_DEFAULT_APP}`,
