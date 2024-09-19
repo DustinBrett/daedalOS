@@ -34,6 +34,10 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
         "Error creating WebGL context",
         "'experimental-webgl' (value of argument 1) is not a valid value"
       );
+    } else if (browserName === "webkit") {
+      excludedConsoleLogs.push(
+        'THREE.WebGLRenderer: Argument 1 (\'contextType\') to OffscreenCanvas.getContext must be one of: "2d", "webgl", "webgl2", "bitmaprenderer", "webgpu"'
+      );
     }
   }
 
