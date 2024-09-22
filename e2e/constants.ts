@@ -7,8 +7,6 @@ declare global {
 
 export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
   const excludedConsoleLogs = [
-    // https://github.com/emotion-js/emotion/pull/3093
-    'styled-components: it looks like an unknown prop "fetchpriority" is being sent through to the DOM',
     // Generic messages
     "Download the React DevTools for a better development experience",
     "[HMR] connected",
