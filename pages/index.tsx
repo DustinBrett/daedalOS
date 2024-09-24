@@ -14,7 +14,7 @@ const Index = (): React.ReactElement => {
   useGlobalErrorHandler();
 
   return (
-    <Desktop>
+  <Desktop>
       <Taskbar />
       <AppsLoader />
     </Desktop>

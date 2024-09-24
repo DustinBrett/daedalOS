@@ -1,89 +1,79 @@
-import { memo, useCallback, useState } from "react";
-import dynamic from "next/dynamic";
-import { AnimatePresence } from "framer-motion";
-import Clock from "components/system/Taskbar/Clock";
-import SearchButton from "components/system/Taskbar/Search/SearchButton";
-import StartButton from "components/system/Taskbar/StartButton";
-import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
-import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
-import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
-import { useWindowAI } from "hooks/useWindowAI";
-import { useSession } from "contexts/session";
-
-const AIButton = dynamic(() => import("components/system/Taskbar/AI/AIButton"));
-const AIChat = dynamic(() => import("components/system/Taskbar/AI/AIChat"));
-const Calendar = dynamic(() => import("components/system/Taskbar/Calendar"));
-const Search = dynamic(() => import("components/system/Taskbar/Search"));
-const StartMenu = dynamic(() => import("components/system/StartMenu"));
+/* eslint-disable import/no-extraneous-dependencies */
+import { memo, useRef, useState } from "react";
+import { format } from "date-fns";
+import { Flex } from "@chakra-ui/react";
+import { Icon } from "@iconify/react";
+import AppleMenu from "components/system/Taskbar/Topbar/menus/AppleMenu";
 
 const Taskbar: FC = () => {
-  const [startMenuVisible, setStartMenuVisible] = useState(false);
-  const [searchVisible, setSearchVisible] = useState(false);
-  const [calendarVisible, setCalendarVisible] = useState(false);
-  const [aiVisible, setAIVisible] = useState(false);
-  const [clockWidth, setClockWidth] = useState(CLOCK_CANVAS_BASE_WIDTH);
-  const { aiEnabled } = useSession();
-  const hasWindowAI = useWindowAI();
-  const toggleStartMenu = useCallback(
-    (showMenu?: boolean): void =>
-      setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState),
-    []
-  );
-  const toggleSearch = useCallback(
-    (showSearch?: boolean): void =>
-      setSearchVisible(
-        (currentSearchState) => showSearch ?? !currentSearchState
-      ),
-    []
-  );
-  const toggleCalendar = useCallback(
-    (showCalendar?: boolean): void =>
-      setCalendarVisible(
-        (currentCalendarState) => showCalendar ?? !currentCalendarState
-      ),
-    []
-  );
-  const toggleAI = useCallback(
-    (showAI?: boolean): void =>
-      setAIVisible((currentAIState) => showAI ?? !currentAIState),
-    []
-  );
-  const hasAI = hasWindowAI || aiEnabled;
+  interface TopBarState {
+    date: Date;
+    showAppleMenu: boolean;
+    showControlCenter: boolean;
+    showWifiMenu: boolean;
+  }
+
+  const [state, setState] = useState<TopBarState>({
+    date: new Date(),
+    showAppleMenu: true,
+    showControlCenter: false,
+    showWifiMenu: false,
+  });
+
+  const appleBtnRef = useRef<HTMLDivElement>(null);
+  const toggleAppleMenu = (): void => {
+    setState({
+      ...state,
+      showAppleMenu: !state.showAppleMenu,
+    });
+  };
+
+  const logout = (): void => {
+    controls.pause();
+    props.setLogin(false);
+  };
+
+  const shut = (e: React.MouseEvent<HTMLLIElement>): void => {
+    controls.pause();
+    props.shutMac(e);
+  };
+
+  const restart = (e: React.MouseEvent<HTMLLIElement>): void => {
+    controls.pause();
+    props.restartMac(e);
+  };
+
+  const sleep = (e: React.MouseEvent<HTMLLIElement>): void => {
+    controls.pause();
+    props.sleepMac(e);
+  };
 
   return (
-    <>
-      <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {startMenuVisible && (
-          <StartMenu key="startMenu" toggleStartMenu={toggleStartMenu} />
+    <div className="w-full h-8 px-2 fixed top-0 flex justify-between text-sm text-white bg-gray-700/10 backdrop-blur-2xl shadow transition p-1 px-2">
+      <Flex className="gap-1">
+        <div className="space-x-1 font-semibold h-6 px-2 cursor-default rounded inline-flex hover:bg-gray-100/30 hover:dark:bg-gray-400/40 ">
+          <Icon className="w-5 h-5" icon="ic:outline-apple" />
+        </div>
+        <div className="space-x-1 font-semibold h-6 px-2 cursor-default rounded inline-flex hover:bg-gray-100/30 hover:dark:bg-gray-400/40 ">
+          Finder
+        </div>
+        {state.showAppleMenu && (
+          <AppleMenu
+            btnRef={appleBtnRef}
+            logout={logout}
+            restart={restart}
+            shut={shut}
+            sleep={sleep}
+            toggleAppleMenu={toggleAppleMenu}
+          />
         )}
-        {searchVisible && <Search key="search" toggleSearch={toggleSearch} />}
-      </AnimatePresence>
-      <StyledTaskbar {...useTaskbarContextMenu()} {...FOCUSABLE_ELEMENT}>
-        <StartButton
-          startMenuVisible={startMenuVisible}
-          toggleStartMenu={toggleStartMenu}
-        />
-        <SearchButton
-          searchVisible={searchVisible}
-          toggleSearch={toggleSearch}
-        />
-        <TaskbarEntries clockWidth={clockWidth} hasAI={hasAI} />
-        <Clock
-          hasAI={hasAI}
-          setClockWidth={setClockWidth}
-          toggleCalendar={toggleCalendar}
-          width={clockWidth}
-        />
-        {hasAI && <AIButton aiVisible={aiVisible} toggleAI={toggleAI} />}
-      </StyledTaskbar>
-      <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {calendarVisible && (
-          <Calendar key="calendar" toggleCalendar={toggleCalendar} />
-        )}
-        {aiVisible && <AIChat key="aiChat" toggleAI={toggleAI} />}
-      </AnimatePresence>
-    </>
+      </Flex>
+
+      <div className="space-x-1 h-6 px-2 cursor-default rounded inline-flex hover:bg-gray-100/30 hover:dark:bg-gray-400/40 ">
+        <span>{format(state.date, "eee MMM d")}</span>
+        <span>{format(state.date, "h:mm aa")}</span>
+      </div>
+    </div>
   );
 };
 
