@@ -1,4 +1,6 @@
-type Prompts = [string, string][];
+export type Prompt = [string, string];
+
+type Prompts = Prompt[];
 
 /* eslint-disable vars-on-top, no-var  */
 declare global {

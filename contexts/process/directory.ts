@@ -280,14 +280,12 @@ const directory: Processes = {
   },
   StableDiffusion: {
     Component: dynamic(() => import("components/apps/StableDiffusion")),
-    allowResizing: false,
     backgroundColor: "rgb(235, 251, 247)",
     defaultSize: {
-      height: 600,
-      width: 544,
+      height: 644,
+      width: 538,
     },
     icon: "/System/Icons/stablediffusion.webp",
-    lockAspectRatio: true,
     singleton: true,
     title: "Stable Diffusion",
   },
