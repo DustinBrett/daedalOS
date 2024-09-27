@@ -7,7 +7,7 @@ const StyledNavigation = styled.nav`
 
   button {
     height: 16px;
-    margin: 11px 9px;
+    margin: 9px 9px 10px;
     width: 16px;
 
     svg {

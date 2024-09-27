@@ -7,7 +7,7 @@ const StyledAddressBar = styled.div`
   border: 1px solid rgb(83, 83, 83);
   display: flex;
   height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
-  margin: 7px 12px 6px 5px;
+  margin: 6px 12px 5px 5px;
   padding: 0 22px 2px 25px;
   position: relative;
   width: 100%;
@@ -20,7 +20,7 @@ const StyledAddressBar = styled.div`
     font-size: 12px;
     font-weight: 400;
     height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight - 2}px;
-    padding-bottom: 1px;
+    padding-bottom: 2px;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: calc(100% - 2px);
@@ -29,7 +29,7 @@ const StyledAddressBar = styled.div`
   img {
     left: 2px;
     position: absolute;
-    top: 3px;
+    top: 1px;
   }
 
   .refresh {

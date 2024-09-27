@@ -88,7 +88,7 @@ const directory: Processes = {
     backgroundColor: "#202020",
     defaultSize: {
       height: 260,
-      width: 405,
+      width: 407,
     },
     icon: FOLDER_ICON,
     title: "File Explorer",

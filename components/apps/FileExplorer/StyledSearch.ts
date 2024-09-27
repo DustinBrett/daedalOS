@@ -4,7 +4,7 @@ const StyledSearch = styled.div`
   border: 1px solid rgb(83, 83, 83);
   display: flex;
   height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
-  margin: 7px 12px 6px 0;
+  margin: 6px 12px 6px 0;
   max-width: 148px;
   overflow: hidden;
   padding: 0;
@@ -23,7 +23,7 @@ const StyledSearch = styled.div`
     font-size: 12px;
     font-weight: 400;
     height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight - 2}px;
-    padding-bottom: 1px;
+    padding-bottom: 2px;
     padding-left: 8px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -32,6 +32,12 @@ const StyledSearch = styled.div`
     &::-webkit-search-cancel-button {
       filter: invert(1);
       padding-right: 4px;
+    }
+
+    &:focus {
+      &::placeholder {
+        color: transparent;
+      }
     }
   }
 
