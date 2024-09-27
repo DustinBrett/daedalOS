@@ -182,6 +182,7 @@
     "sonarjs/slow-regex": "off",
     "sonarjs/sonar-max-params": "off",
     "sonarjs/sonar-no-unused-vars": "off",
+    "sonarjs/todo-tag": "off",
     "sort-keys-fix/sort-keys-fix": "error",
     "unicorn/filename-case": "off",
     "unicorn/import-style": [
