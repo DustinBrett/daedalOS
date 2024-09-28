@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledAIButton = styled.div`
+  contain: strict;
   display: flex;
   height: 100%;
   place-content: center;
