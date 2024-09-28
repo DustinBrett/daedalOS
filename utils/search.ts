@@ -17,8 +17,10 @@ export const FILE_INDEX = "/.index/search.lunr.json";
 export const SEARCH_LIB = "/System/lunr/lunr.min.js";
 
 export const SEARCH_INPUT_PROPS = {
+  "aria-label": "Search",
   enterKeyHint: "search",
   inputMode: "search",
+  name: "search",
   type: "search",
   ...DISBALE_AUTO_INPUT_FEATURES,
 } as React.DetailedHTMLProps<

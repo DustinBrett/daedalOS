@@ -7,12 +7,25 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { ROOT_NAME } from "utils/constants";
+import { DISBALE_AUTO_INPUT_FEATURES, ROOT_NAME } from "utils/constants";
 import { label } from "utils/functions";
 
 type AddressBarProps = {
   id: string;
 };
+
+export const ADDRESS_INPUT_PROPS = {
+  "aria-label": "Address",
+  enterKeyHint: "go",
+  inputMode: "url",
+  name: "address",
+  type: "url",
+  ...DISBALE_AUTO_INPUT_FEATURES,
+} as React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
 const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
   ({ id }, ref) => {
     const addressBarRef =
@@ -44,8 +57,6 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
         <Icon alt={displayName} imgSize={16} src={icon} />
         <input
           ref={addressBarRef}
-          aria-label="Address"
-          enterKeyHint="go"
           onBlurCapture={() => setAddressBar(displayName)}
           onChange={({ target }) => setAddressBar(target.value)}
           onFocusCapture={() => setAddressBar(url)}
@@ -56,9 +67,8 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
               addressBarRef.current.blur();
             }
           }}
-          spellCheck={false}
-          type="text"
           value={addressBar}
+          {...ADDRESS_INPUT_PROPS}
           {...useAddressBarContextMenu(url)}
         />
         <Button
