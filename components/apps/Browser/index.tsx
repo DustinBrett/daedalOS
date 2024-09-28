@@ -1,5 +1,6 @@
 import { basename, join, resolve } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 import useHistoryMenu from "components/apps/Browser/useHistoryMenu";
 import useBookmarkMenu from "components/apps/Browser/useBookmarkMenu";
 import {
@@ -401,7 +402,6 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         <input
           ref={inputRef}
           defaultValue={initialUrl}
-          enterKeyHint="go"
           onFocusCapture={() => inputRef.current?.select()}
           onKeyDown={({ key }) => {
             if (inputRef.current && key === "Enter") {
@@ -413,7 +413,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
               inputRef.current.blur();
             }
           }}
-          type="text"
+          {...ADDRESS_INPUT_PROPS}
         />
       </nav>
       <nav>

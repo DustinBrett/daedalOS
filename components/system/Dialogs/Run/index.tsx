@@ -15,7 +15,6 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import {
   DESKTOP_PATH,
-  DISBALE_AUTO_INPUT_FEATURES,
   ICON_PATH,
   PACKAGE_DATA,
   PREVENT_SCROLL,
@@ -25,6 +24,7 @@ import { getExtension, haltEvent } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { spawnSheep } from "utils/spawnSheep";
 import Icon from "styles/common/Icon";
+import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 
 const OPEN_ID = "open";
 
@@ -243,7 +243,6 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
             ref={inputRef}
             defaultValue={runHistory[0]}
             disabled={running}
-            enterKeyHint="go"
             id={OPEN_ID}
             onBlurCapture={({ relatedTarget }) => {
               if (
@@ -271,11 +270,11 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
             onKeyUp={
               checkIsEmpty as React.KeyboardEventHandler<HTMLInputElement>
             }
-            type="text"
-            {...DISBALE_AUTO_INPUT_FEATURES}
+            {...ADDRESS_INPUT_PROPS}
           />
           <select
             disabled={runHistory.length === 0}
+            name="addressHistory"
             onChange={({ target }) => {
               if (inputRef.current) {
                 inputRef.current.value = target.value;
