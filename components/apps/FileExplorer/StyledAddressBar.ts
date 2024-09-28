@@ -8,6 +8,7 @@ const StyledAddressBar = styled.div`
   display: flex;
   height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
   margin: 6px 12px 5px 5px;
+  overflow: hidden;
   padding: 0 22px 2px 25px;
   position: relative;
   width: 100%;
@@ -24,6 +25,10 @@ const StyledAddressBar = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     width: calc(100% - 2px);
+
+    &:focus {
+      height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
+    }
   }
 
   img {

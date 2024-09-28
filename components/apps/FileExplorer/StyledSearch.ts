@@ -35,6 +35,8 @@ const StyledSearch = styled.div`
     }
 
     &:focus {
+      height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
+
       &::placeholder {
         color: transparent;
       }
