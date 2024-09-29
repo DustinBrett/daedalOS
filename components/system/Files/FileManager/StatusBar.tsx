@@ -6,21 +6,26 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTheme } from "styled-components";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
 import { useFileSystem } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { getFormattedSize, haltEvent, label } from "utils/functions";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
+import Icon from "styles/common/Icon";
+import Button from "styles/common/Button";
 
 type StatusBarProps = {
   count: number;
   directory: string;
   fileDrop: FileDrop;
   selected: string[];
+  setView: (view: FileManagerViewNames) => void;
+  view: FileManagerViewNames;
 };
 
-const MINIMUM_STATUSBAR_WIDTH = 225;
 const UNCALCULATED_SIZE = -2;
 
 const StatusBar: FC<StatusBarProps> = ({
@@ -28,12 +33,18 @@ const StatusBar: FC<StatusBarProps> = ({
   directory,
   fileDrop,
   selected,
+  setView,
+  view,
 }) => {
   const { exists, lstat, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(UNKNOWN_SIZE);
   const [showSelected, setShowSelected] = useState(false);
-  const updateShowSelected = (width: number): void =>
-    setShowSelected(width > MINIMUM_STATUSBAR_WIDTH);
+  const { sizes } = useTheme();
+  const updateShowSelected = useCallback(
+    (width: number): void =>
+      setShowSelected(width > sizes.fileExplorer.minimumStatusBarWidth),
+    [sizes.fileExplorer.minimumStatusBarWidth]
+  );
   const statusBarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -68,13 +79,13 @@ const StatusBar: FC<StatusBarProps> = ({
     if (statusBarRef.current) {
       updateShowSelected(statusBarRef.current.getBoundingClientRect().width);
     }
-  }, []);
+  }, [updateShowSelected]);
 
   useResizeObserver(
     statusBarRef.current,
     useCallback<ResizeObserverCallback>(
       ([{ contentRect: { width = 0 } = {} }]) => updateShowSelected(width),
-      []
+      [updateShowSelected]
     )
   );
 
@@ -95,6 +106,30 @@ const StatusBar: FC<StatusBarProps> = ({
             : ""}
         </div>
       )}
+      <nav className="views">
+        <Button
+          className={view === "details" ? "active" : undefined}
+          onClick={() => setView("details")}
+          {...label("Displays information about each item in the window.")}
+        >
+          <Icon
+            displaySize={16}
+            imgSize={16}
+            src="/System/Icons/details_view.webp"
+          />
+        </Button>
+        <Button
+          className={view === "icon" ? "active" : undefined}
+          onClick={() => setView("icon")}
+          {...label("Display items by using thumbnails.")}
+        >
+          <Icon
+            displaySize={16}
+            imgSize={16}
+            src="/System/Icons/icon_view.webp"
+          />
+        </Button>
+      </nav>
     </StyledStatusBar>
   );
 };

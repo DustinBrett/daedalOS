@@ -110,7 +110,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   return url ? (
     <StyledFileExplorer>
       <Navigation ref={inputRef} hideSearch={Boolean(mountUrl)} id={id} />
-      <FileManager id={id} url={url} view="icon" showStatusBar />
+      <FileManager id={id} url={url} showStatusBar />
     </StyledFileExplorer>
   ) : // eslint-disable-next-line unicorn/no-null
   null;

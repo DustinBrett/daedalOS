@@ -1,12 +1,16 @@
 import styled from "styled-components";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
+import StyledDetailsFileManager from "components/system/Files/Views/Details/StyledFileManager";
 import StyledIconFileManager from "components/system/Files/Views/Icon/StyledFileManager";
 
 const StyledFileExplorer = styled.div`
-  ${StyledIconFileManager} {
-    column-gap: 2px;
+  ${StyledDetailsFileManager}, ${StyledIconFileManager} {
     height: ${({ theme }) =>
       `calc(100% - ${theme.sizes.fileExplorer.navBarHeight} - ${theme.sizes.fileExplorer.statusBarHeight})`};
+  }
+
+  ${StyledIconFileManager} {
+    column-gap: 2px;
     padding: 6px;
 
     figcaption {

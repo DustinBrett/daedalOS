@@ -2,6 +2,7 @@ import { type Position } from "react-rnd";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { type ThemeName } from "styles/themes";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 
 declare global {
   interface Window {
@@ -25,6 +26,8 @@ type SortOrder = [string[], SortBy?, boolean?];
 
 export type SortOrders = Record<string, SortOrder>;
 
+export type Views = Record<string, FileManagerViewNames>;
+
 export type ClockSource = "local" | "ntp";
 
 export type RecentFiles = [string, string, string][];
@@ -45,6 +48,7 @@ export type SessionData = {
   runHistory: string[];
   sortOrders: SortOrders;
   themeName: ThemeName;
+  views: Views;
   wallpaperFit: WallpaperFit;
   wallpaperImage: string;
   windowStates: WindowStates;
@@ -69,6 +73,7 @@ export type SessionContextState = SessionData & {
     ascending?: boolean
   ) => void;
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
+  setViews: React.Dispatch<React.SetStateAction<Views>>;
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
   stackOrder: string[];

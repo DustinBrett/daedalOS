@@ -614,11 +614,22 @@ const bytesInMB = 1022976; // 1024 * 999
 const bytesInGB = 1047527424; // 1024 * 1024 * 999
 const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
 
-const formatNumber = (number: number): string => {
-  const formattedNumber = new Intl.NumberFormat("en-US", {
-    maximumSignificantDigits: number < 1 ? 2 : 4,
-    minimumSignificantDigits: number < 1 ? 2 : 3,
-  }).format(Number(number.toFixed(4).slice(0, -2)));
+const formatNumber = (number: number, roundUpNumber = false): string => {
+  const formattedNumber = new Intl.NumberFormat(
+    "en-US",
+    roundUpNumber
+      ? undefined
+      : {
+          maximumSignificantDigits: number < 1 ? 2 : 4,
+          minimumSignificantDigits: number < 1 ? 2 : 3,
+        }
+  ).format(
+    roundUpNumber
+      ? Math.ceil(Number(number))
+      : Number(number.toFixed(4).slice(0, -2))
+  );
+
+  if (roundUpNumber) return formattedNumber;
 
   const [integer, decimal] = formattedNumber.split(".");
 
@@ -630,7 +641,14 @@ const formatNumber = (number: number): string => {
   return formattedNumber;
 };
 
-export const getFormattedSize = (size = 0): string => {
+export const getFormattedSize = (size = 0, asKB = false): string => {
+  if (asKB) {
+    if (size === 0) return "0 KB";
+    if (size <= bytesInKB) return "1 KB";
+
+    return `${formatNumber(size / bytesInKB, true)} KB`;
+  }
+
   if (size === 1) return "1 byte";
   if (size < bytesInKB) return `${size} bytes`;
   if (size < bytesInMB) return `${formatNumber(size / bytesInKB)} KB`;

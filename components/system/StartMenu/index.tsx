@@ -110,7 +110,6 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       <Sidebar height={height} />
       <FileManager
         url={START_MENU_PATH}
-        view="list"
         hideLoading
         hideShortcutIcons
         isStartMenu

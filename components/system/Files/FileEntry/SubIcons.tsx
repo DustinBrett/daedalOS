@@ -19,7 +19,7 @@ type IconProps = {
 };
 
 type SharedSubIconProps = {
-  imgSize?: 64 | 32 | 16;
+  imgSize?: 64 | 32 | 16 | 8;
   isDesktop?: boolean;
 };
 
@@ -51,18 +51,25 @@ const SubIcon: FC<SubIconProps> = ({
   totalSubIcons,
   view,
 }) => {
-  const iconView = useMemo(
-    () =>
-      FileEntryIconSize[
-        ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(icon) &&
-        !icon.startsWith("blob:") &&
-        !icon.startsWith(ICON_CACHE) &&
-        !icon.startsWith(YT_ICON_CACHE)
-          ? "sub"
-          : view
-      ],
-    [icon, view]
-  );
+  const iconView = useMemo(() => {
+    const isSub =
+      ![SHORTCUT_ICON, FOLDER_FRONT_ICON].includes(icon) &&
+      !icon.startsWith("blob:") &&
+      !icon.startsWith(ICON_CACHE) &&
+      !icon.startsWith(YT_ICON_CACHE);
+
+    if (icon === SHORTCUT_ICON && view === "details") {
+      return {
+        displaySize: 16,
+        imgSize: 48,
+      };
+    }
+
+    return FileEntryIconSize[
+      isSub ? (view === "details" ? "detailsSub" : "sub") : view
+    ];
+  }, [icon, view]);
+
   const style = useMemo((): React.CSSProperties | undefined => {
     if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
 
@@ -120,10 +127,19 @@ const SubIcons: FC<SubIconsProps> = ({
         : subIcons,
     [showShortcutIcon, subIcons]
   );
-  const filteredSubIcons = useMemo(
-    () => icons?.filter((subIcon) => subIcon !== icon) || [],
-    [icon, icons]
-  );
+  const filteredSubIcons = useMemo(() => {
+    const iconsLength = icons?.length;
+
+    if (
+      iconsLength &&
+      view === "details" &&
+      icons[iconsLength - 1] === FOLDER_FRONT_ICON
+    ) {
+      return [];
+    }
+
+    return icons?.filter((subIcon) => subIcon !== icon) || [];
+  }, [icon, icons, view]);
 
   return (
     <>

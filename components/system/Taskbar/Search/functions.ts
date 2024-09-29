@@ -1,9 +1,9 @@
 import { join } from "path";
 import { type FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getCachedIconUrl,
+  getFileType,
   getInfoWithExtension,
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
@@ -121,5 +121,4 @@ export const fileType = (
         ? "YouTube Video"
         : stats?.isDirectory() || !extension
           ? "File folder"
-          : extensions[extension]?.type ||
-            `${extension.toUpperCase().replace(".", "")} File`;
+          : getFileType(extension);

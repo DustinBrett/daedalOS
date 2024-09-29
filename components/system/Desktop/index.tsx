@@ -13,7 +13,6 @@ const Desktop: FC = ({ children }) => {
     <StyledDesktop ref={desktopRef}>
       <FileManager
         url={DESKTOP_PATH}
-        view="icon"
         allowMovingDraggableEntries
         hideLoading
         hideScrolling

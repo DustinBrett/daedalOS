@@ -8,7 +8,7 @@ const StyledStatusBar = styled.footer`
   font-size: 12px;
   font-weight: 200;
   height: ${({ theme }) => theme.sizes.fileExplorer.statusBarHeight};
-  padding: 0 5px;
+  padding: 0 4px 0 5px;
   position: relative;
   white-space: nowrap;
   width: 100%;
@@ -32,6 +32,36 @@ const StyledStatusBar = styled.footer`
 
       &::after {
         margin-left: 13px;
+      }
+    }
+  }
+
+  nav {
+    display: flex;
+    position: absolute;
+    right: 4px;
+
+    button {
+      border: 1px solid transparent;
+      display: flex;
+      height: ${({ theme }) => theme.sizes.fileExplorer.statusBarHeight};
+      place-content: center;
+      place-items: center;
+      width: 22px;
+
+      &:hover {
+        background-color: rgb(77, 77, 77);
+        border: 1px solid rgb(99, 99, 99);
+      }
+
+      &.active {
+        background-color: rgb(102, 102, 102);
+        border: 1px solid rgb(131, 131, 131);
+
+        picture {
+          padding-left: 1px;
+          padding-top: 1px;
+        }
       }
     }
   }

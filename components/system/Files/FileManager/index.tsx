@@ -1,6 +1,10 @@
 import { basename, join } from "path";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import {
+  DEFAULT_COLUMNS,
+  type Columns as ColumnsObject,
+} from "components/system/Files/FileManager/Columns/constants";
 import FileEntry from "components/system/Files/FileEntry";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
@@ -10,10 +14,7 @@ import useFileKeyboardShortcuts from "components/system/Files/FileManager/useFil
 import useFocusableEntries from "components/system/Files/FileManager/useFocusableEntries";
 import useFolder from "components/system/Files/FileManager/useFolder";
 import useFolderContextMenu from "components/system/Files/FileManager/useFolderContextMenu";
-import {
-  type FileManagerViewNames,
-  FileManagerViews,
-} from "components/system/Files/Views";
+import { FileManagerViews } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import {
   FOCUSABLE_ELEMENT,
@@ -22,6 +23,8 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
+import Columns from "components/system/Files/FileManager/Columns";
+import { useSession } from "contexts/session";
 
 const StatusBar = dynamic(
   () => import("components/system/Files/FileManager/StatusBar")
@@ -50,8 +53,9 @@ type FileManagerProps = {
   skipFsWatcher?: boolean;
   skipSorting?: boolean;
   url: string;
-  view: FileManagerViewNames;
 };
+
+const DEFAULT_VIEW = "icon";
 
 const FileManager: FC<FileManagerProps> = ({
   allowMovingDraggableEntries,
@@ -68,8 +72,18 @@ const FileManager: FC<FileManagerProps> = ({
   skipFsWatcher,
   skipSorting,
   url,
-  view,
 }) => {
+  const { views, setViews } = useSession();
+  const view = useMemo(() => {
+    if (isDesktop) return "icon";
+    if (isStartMenu) return "list";
+
+    return views[url] || DEFAULT_VIEW;
+  }, [isDesktop, isStartMenu, url, views]);
+  const isDetailsView = useMemo(() => view === "details", [view]);
+  const [columns, setColumns] = useState<ColumnsObject | undefined>(() =>
+    isDetailsView ? DEFAULT_COLUMNS : undefined
+  );
   const [currentUrl, setCurrentUrl] = useState(url);
   const [renaming, setRenaming] = useState("");
   const [mounted, setMounted] = useState<boolean>(false);
@@ -129,7 +143,7 @@ const FileManager: FC<FileManagerProps> = ({
     !isDesktop &&
     !isStartMenu &&
     !loading &&
-    view === "icon" &&
+    view !== "list" &&
     fileKeys.length === 0;
 
   useEffect(() => {
@@ -198,6 +212,10 @@ const FileManager: FC<FileManagerProps> = ({
     }
   }, [isDesktop, isStartMenu, loading]);
 
+  useEffect(() => {
+    setColumns(isDetailsView ? DEFAULT_COLUMNS : undefined);
+  }, [isDetailsView]);
+
   return (
     <>
       {loading ? (
@@ -220,6 +238,14 @@ const FileManager: FC<FileManagerProps> = ({
                 })}
             {...FOCUSABLE_ELEMENT}
           >
+            {isDetailsView && columns && (
+              <Columns
+                columns={columns}
+                directory={url}
+                files={files}
+                setColumns={setColumns}
+              />
+            )}
             {isSelecting && <StyledSelection style={selectionStyling} />}
             {fileKeys.map((file) => (
               <StyledFileEntry
@@ -232,6 +258,7 @@ const FileManager: FC<FileManagerProps> = ({
                 {...focusableEntry(file)}
               >
                 <FileEntry
+                  columns={columns}
                   fileActions={fileActions}
                   fileManagerId={id}
                   fileManagerRef={fileManagerRef}
@@ -263,6 +290,11 @@ const FileManager: FC<FileManagerProps> = ({
           directory={url}
           fileDrop={fileDrop}
           selected={focusedEntries}
+          setView={(newView) => {
+            setViews((currentViews) => ({ ...currentViews, [url]: newView }));
+            setColumns(newView === "details" ? DEFAULT_COLUMNS : undefined);
+          }}
+          view={view}
         />
       )}
     </>

@@ -10,6 +10,7 @@ import { type ApiError } from "browserfs/dist/node/core/api_error";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystem } from "contexts/fileSystem";
 import {
+  type Views,
   type IconPositions,
   type RecentFiles,
   type SessionContextState,
@@ -52,6 +53,7 @@ const useSessionContextState = (): SessionContextState => {
   const [sortOrders, setSortOrders] = useState(
     Object.create(null) as SortOrders
   );
+  const [views, setViews] = useState(Object.create(null) as Views);
   const [iconPositions, setIconPositions] = useState(
     Object.create(null) as IconPositions
   );
@@ -195,6 +197,7 @@ const useSessionContextState = (): SessionContextState => {
             runHistory,
             sortOrders,
             themeName,
+            views,
             wallpaperFit,
             wallpaperImage,
             windowStates,
@@ -223,6 +226,7 @@ const useSessionContextState = (): SessionContextState => {
     sessionLoaded,
     sortOrders,
     themeName,
+    views,
     wallpaperFit,
     wallpaperImage,
     windowStates,
@@ -260,6 +264,9 @@ const useSessionContextState = (): SessionContextState => {
             Object.keys(session.sortOrders).length > 0
           ) {
             setSortOrders(session.sortOrders);
+          }
+          if (session.views && Object.keys(session.views).length > 0) {
+            setViews(session.views);
           }
           if (
             session.iconPositions &&
@@ -361,12 +368,14 @@ const useSessionContextState = (): SessionContextState => {
     setRunHistory,
     setSortOrder,
     setThemeName,
+    setViews,
     setWallpaper,
     setWindowStates,
     sortOrders,
     stackOrder,
     themeName,
     updateRecentFiles,
+    views,
     wallpaperFit,
     wallpaperImage,
     windowStates,

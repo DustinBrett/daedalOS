@@ -10,12 +10,14 @@ import {
 } from "react";
 import dynamic from "next/dynamic";
 import { m as motion } from "framer-motion";
+import ColumnRow from "components/system/Files/FileEntry/ColumnRow";
+import { type Columns } from "components/system/Files/FileManager/Columns/constants";
 import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
-import extensions from "components/system/Files/FileEntry/extensions";
 import {
   getCachedIconUrl,
-  getModifiedTime,
+  getDateModified,
+  getFileType,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
@@ -38,7 +40,6 @@ import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
-  DEFAULT_LOCALE,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   ICON_PATH,
@@ -76,6 +77,7 @@ const RenameBox = dynamic(
 );
 
 type FileEntryProps = {
+  columns?: Columns;
   fileActions: FileActions;
   fileManagerId?: string;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
@@ -129,6 +131,7 @@ const focusing: string[] = [];
 const cacheQueue: (() => Promise<void>)[] = [];
 
 const FileEntry: FC<FileEntryProps> = ({
+  columns,
   fileActions,
   fileManagerId,
   fileManagerRef,
@@ -153,9 +156,10 @@ const FileEntry: FC<FileEntryProps> = ({
   const { url: changeUrl } = useProcesses();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
+  const isDirectory = useMemo(() => stats.isDirectory(), [stats]);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
-    stats.isDirectory(),
+    isDirectory,
     hasNewFolderIcon,
     isDesktop || isVisible
   );
@@ -226,7 +230,7 @@ const FileEntry: FC<FileEntryProps> = ({
   const isDynamicIconLoaded = useRef(false);
   const getIconAbortController = useRef<AbortController>();
   const createTooltip = useCallback(async (): Promise<string> => {
-    if (stats.isDirectory()) return "";
+    if (isDirectory) return "";
 
     if (isShortcut) {
       if (comment) return comment;
@@ -244,28 +248,21 @@ const FileEntry: FC<FileEntryProps> = ({
       return "";
     }
 
-    const type =
-      extensions[extension]?.type ||
-      `${extension.toUpperCase().replace(".", "")} File`;
+    const type = getFileType(extension);
     const fullStats = stats.size === UNKNOWN_SIZE ? await stat(path) : stats;
     const { size: sizeInBytes } = fullStats;
-    const modifiedTime = getModifiedTime(path, fullStats);
     const size = getFormattedSize(sizeInBytes);
     const toolTip = `Type: ${type}${
       size === "-1 bytes" ? "" : `\nSize: ${size}`
     }`;
-    const date = new Date(modifiedTime).toISOString().slice(0, 10);
-    const time = new Intl.DateTimeFormat(
-      DEFAULT_LOCALE,
-      formats.dateModified
-    ).format(modifiedTime);
-    const dateModified = `${date} ${time}`;
+    const dateModified = getDateModified(path, fullStats, formats.dateModified);
 
     return `${toolTip}\nDate modified: ${dateModified}`;
   }, [
     comment,
     extension,
     formats.dateModified,
+    isDirectory,
     isShortcut,
     path,
     stat,
@@ -300,6 +297,17 @@ const FileEntry: FC<FileEntryProps> = ({
     url,
     urlExt,
   ]);
+  const showColumn = useMemo(
+    () => isVisible && columns !== undefined && view === "details",
+    [columns, isVisible, view]
+  );
+  const columnWidth = useMemo(
+    () =>
+      showColumn && columns
+        ? columns.name.width - sizes.fileManager.detailsStartPadding
+        : 0,
+    [columns, showColumn, sizes.fileManager.detailsStartPadding]
+  );
 
   useEffect(() => {
     if (!isLoadingFileManager && isVisible && !isIconCached.current) {
@@ -564,6 +572,11 @@ const FileEntry: FC<FileEntryProps> = ({
             [listView]
           )}
           $renaming={renaming}
+          style={
+            showColumn
+              ? { maxWidth: columnWidth, minWidth: columnWidth }
+              : undefined
+          }
           {...(isHeading && {
             "aria-level": 1,
             role: "heading",
@@ -605,14 +618,23 @@ const FileEntry: FC<FileEntryProps> = ({
           )}
           {listView && openInFileExplorer && <Down flip={showInFileManager} />}
         </StyledFigure>
+        {showColumn && columns && (
+          <ColumnRow
+            columns={columns}
+            isDirectory={isDirectory}
+            isShortcut={isShortcut}
+            path={path}
+            stats={stats}
+          />
+        )}
       </Button>
       {showInFileManager && (
         <FileManager
           url={url}
-          view="list"
           hideFolders
           hideLoading
           hideShortcutIcons
+          isStartMenu
           loadIconsImmediately
           readOnly
           skipFsWatcher

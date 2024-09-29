@@ -18,12 +18,17 @@ const sizes = {
     renameWidth: 75,
   },
   fileExplorer: {
+    minimumStatusBarWidth: 247,
     navBarHeight: "35px",
     navInputHeight: 22,
     statusBarHeight: "23px",
   },
   fileManager: {
     columnGap: "1px",
+    columnHeight: "25px",
+    columnMinWidth: 80,
+    columnResizeWidth: 6,
+    detailsStartPadding: 14,
     gridEntryHeight: "70px",
     gridEntryWidth: "74px",
     padding: "5px 0",
