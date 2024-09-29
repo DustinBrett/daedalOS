@@ -34,6 +34,7 @@ import {
   GOOGLE_SEARCH_QUERY,
   getExtension,
   getUrlOrSearch,
+  haltEvent,
   label,
 } from "utils/functions";
 import {
@@ -394,6 +395,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           <Button
             disabled={loading}
             onClick={() => setUrl(history[position])}
+            onContextMenu={haltEvent}
             {...label("Reload this page")}
           >
             {loading ? <Stop /> : <Refresh />}
