@@ -19,7 +19,6 @@ export const ADDRESS_INPUT_PROPS = {
   enterKeyHint: "go",
   inputMode: "url",
   name: "address",
-  type: "url",
   ...DISBALE_AUTO_INPUT_FEATURES,
 } as React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
