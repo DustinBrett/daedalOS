@@ -28,6 +28,7 @@ const sizes = {
     columnHeight: "25px",
     columnMinWidth: 80,
     columnResizeWidth: 7,
+    detailsEndPadding: 15,
     detailsRowHeight: "22px",
     detailsStartPadding: 14,
     gridEntryHeight: "70px",

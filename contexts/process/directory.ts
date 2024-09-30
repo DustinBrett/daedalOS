@@ -87,8 +87,8 @@ const directory: Processes = {
     Component: dynamic(() => import("components/apps/FileExplorer")),
     backgroundColor: "#202020",
     defaultSize: {
-      height: 260,
-      width: 407,
+      height: 330,
+      width: 484,
     },
     icon: FOLDER_ICON,
     title: "File Explorer",
