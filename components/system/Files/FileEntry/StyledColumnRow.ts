@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 const StyledColumnRow = styled.div`
   display: flex;
+  height: ${({ theme }) => theme.sizes.fileManager.detailsRowHeight};
+  place-items: center;
 
   div {
     color: #fff;

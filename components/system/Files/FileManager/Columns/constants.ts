@@ -4,6 +4,7 @@ type ColumnData = {
 };
 
 export const MAX_STEPS_PER_RESIZE = 15;
+
 export type ColumnName = "date" | "name" | "size" | "type";
 
 export type Columns = Record<ColumnName, ColumnData>;

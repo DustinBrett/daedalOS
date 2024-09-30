@@ -14,7 +14,7 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
       bottom: 1px;
       display: flex;
       flex-direction: row;
-      height: 22px;
+      height: ${({ theme }) => theme.sizes.fileManager.detailsRowHeight};
       place-items: center;
       position: relative;
 

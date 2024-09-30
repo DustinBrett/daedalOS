@@ -28,7 +28,7 @@ const StyledColumns = styled.span`
         position: absolute;
         top: 1px;
         transition: none !important;
-        width: 8px;
+        width: 7px;
       }
 
       div {
