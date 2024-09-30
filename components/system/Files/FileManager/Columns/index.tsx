@@ -11,6 +11,7 @@ import {
 } from "components/system/Files/FileManager/Columns/constants";
 import { useSession } from "contexts/session";
 import { type Files } from "components/system/Files/FileManager/useFolder";
+import { Down } from "components/apps/FileExplorer/NavigationIcons";
 
 type ColumnsProps = {
   columns: ColumnsObject;
@@ -29,8 +30,7 @@ const Columns: FC<ColumnsProps> = ({
   const draggingRef = useRef("");
   const lastClientX = useRef(0);
   const { setSortOrder, sortOrders } = useSession();
-  // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
-  const [, , ascending] = sortOrders[directory] ?? [];
+  const [, sortedBy = "name", ascending] = sortOrders[directory] ?? [];
 
   return (
     <StyledColumns>
@@ -94,6 +94,7 @@ const Columns: FC<ColumnsProps> = ({
             }}
             style={{ width: `${columns[name].width}px` }}
           >
+            {sortedBy === name && <Down flip={ascending} />}
             <div>{columns[name].name}</div>
           </li>
         ))}

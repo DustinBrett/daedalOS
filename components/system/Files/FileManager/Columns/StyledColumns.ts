@@ -22,6 +22,15 @@ const StyledColumns = styled.span`
       position: relative;
       top: -1px;
 
+      > svg {
+        fill: rgb(222, 222, 222);
+        left: 50%;
+        position: absolute;
+        top: 1px;
+        transition: none !important;
+        width: 8px;
+      }
+
       div {
         overflow: hidden;
         text-overflow: ellipsis;
