@@ -38,14 +38,15 @@ const StyledColumns = styled.span`
       }
 
       &::after {
-        border-right: 1px solid rgb(99, 99, 99);
+        border-left: 1px solid rgb(99, 99, 99);
         content: "";
         cursor: col-resize;
         height: 25px;
         padding-left: ${({ theme }) =>
           theme.sizes.fileManager.columnResizeWidth}px;
         position: absolute;
-        right: 0;
+        right: -${({ theme }) => theme.sizes.fileManager.columnResizeWidth}px;
+        z-index: 1;
       }
 
       &:hover {

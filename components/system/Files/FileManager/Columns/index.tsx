@@ -36,28 +36,14 @@ const Columns: FC<ColumnsProps> = ({
     <StyledColumns>
       <ol>
         {DEFAULT_COLUMN_ORDER.map((name) => (
-          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
           <li
             key={columns[name].name}
-            onClick={() => {
-              const sortBy = name as SortBy;
-
-              setSortOrder(
-                directory,
-                Object.keys(sortFiles(directory, files, sortBy, !ascending)),
-                sortBy,
-                !ascending
-              );
-            }}
             onPointerDownCapture={(event) => {
               const widthToEdge =
                 (event.target as HTMLElement).clientWidth -
                 event.nativeEvent.offsetX;
-              const startDragging =
-                widthToEdge <= sizes.fileManager.columnResizeWidth &&
-                widthToEdge >= 0;
 
-              draggingRef.current = startDragging ? name : "";
+              draggingRef.current = widthToEdge <= 1 ? name : "";
               lastClientX.current = event.clientX;
             }}
             onPointerMoveCapture={(event) => {
@@ -89,8 +75,19 @@ const Columns: FC<ColumnsProps> = ({
               }
             }}
             onPointerUpCapture={() => {
-              draggingRef.current = "";
-              lastClientX.current = 0;
+              if (draggingRef.current) {
+                draggingRef.current = "";
+                lastClientX.current = 0;
+              } else {
+                const sortBy = name as SortBy;
+
+                setSortOrder(
+                  directory,
+                  Object.keys(sortFiles(directory, files, sortBy, !ascending)),
+                  sortBy,
+                  !ascending
+                );
+              }
             }}
             style={{ width: `${columns[name].width}px` }}
           >
