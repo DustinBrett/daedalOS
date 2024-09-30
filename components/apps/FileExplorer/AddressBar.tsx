@@ -8,7 +8,8 @@ import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DISBALE_AUTO_INPUT_FEATURES, ROOT_NAME } from "utils/constants";
-import { label } from "utils/functions";
+import { getExtension, label } from "utils/functions";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 
 type AddressBarProps = {
   id: string;
@@ -30,6 +31,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
     const addressBarRef =
       ref as React.MutableRefObject<HTMLInputElement | null>;
     const {
+      open,
       url: changeUrl,
       processes: {
         [id]: { icon, url = "" },
@@ -37,7 +39,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
     } = useProcesses();
     const displayName = basename(url) || ROOT_NAME;
     const [addressBar, setAddressBar] = useState(displayName);
-    const { exists, updateFolder } = useFileSystem();
+    const { exists, stat, updateFolder } = useFileSystem();
 
     useEffect(() => {
       if (addressBarRef.current) {
@@ -62,7 +64,16 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           onKeyDown={async ({ key }) => {
             if (key === "Enter" && addressBarRef.current) {
               const { value } = addressBarRef.current;
-              if (value && (await exists(value))) changeUrl(id, value);
+              if (value && (await exists(value))) {
+                if ((await stat(value)).isDirectory()) changeUrl(id, value);
+                else {
+                  open(
+                    getProcessByFileExtension(getExtension(value)) ||
+                      "OpenWith",
+                    { url: value }
+                  );
+                }
+              }
               addressBarRef.current.blur();
             }
           }}
