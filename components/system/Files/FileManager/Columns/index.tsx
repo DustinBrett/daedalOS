@@ -49,8 +49,6 @@ const Columns: FC<ColumnsProps> = ({
               lastClientX.current = event.clientX;
             }}
             onPointerMoveCapture={(event) => {
-              if (event.button !== 0) return;
-
               if (draggingRef.current) {
                 const dragName = draggingRef.current as ColumnName;
 
