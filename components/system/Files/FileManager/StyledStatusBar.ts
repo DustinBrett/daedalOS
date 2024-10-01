@@ -49,6 +49,11 @@ const StyledStatusBar = styled.footer`
       place-items: center;
       width: 22px;
 
+      picture {
+        position: relative;
+        top: -1px;
+      }
+
       &:hover {
         background-color: rgb(77, 77, 77);
         border: 1px solid rgb(99, 99, 99);
@@ -60,7 +65,7 @@ const StyledStatusBar = styled.footer`
 
         picture {
           padding-left: 1px;
-          padding-top: 1px;
+          top: 0;
         }
       }
     }

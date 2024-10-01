@@ -4,6 +4,7 @@ const StyledColumns = styled.span`
   background-color: rgb(32, 32, 32);
   display: block;
   margin-right: ${({ theme }) => theme.sizes.fileManager.detailsStartPadding}px;
+  padding-bottom: 6px;
   position: sticky;
   top: 0;
   width: fit-content;
@@ -20,20 +21,25 @@ const StyledColumns = styled.span`
       padding-left: 6px;
       place-items: center;
       position: relative;
-      top: -1px;
 
       > svg {
-        fill: rgb(222, 222, 222);
+        fill: rgb(149, 149, 149);
         left: calc(50% - 4px);
         position: absolute;
-        top: 1px;
+        top: 0;
         transition: none !important;
         width: 7px;
+
+        &[style^="transform"] {
+          top: -1px;
+        }
       }
 
       .name {
         overflow: hidden;
+        position: relative;
         text-overflow: ellipsis;
+        top: -1px;
         white-space: nowrap;
       }
 
