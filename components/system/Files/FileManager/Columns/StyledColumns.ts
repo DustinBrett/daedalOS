@@ -31,15 +31,14 @@ const StyledColumns = styled.span`
         width: 7px;
       }
 
-      div {
+      .name {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
-      &::after {
+      .resize {
         border-left: 1px solid rgb(99, 99, 99);
-        content: "";
         cursor: col-resize;
         height: 25px;
         padding-left: ${({ theme }) =>
@@ -52,7 +51,7 @@ const StyledColumns = styled.span`
       &:hover {
         background-color: rgb(67, 67, 67);
 
-        &::after {
+        .resize {
           border-right: none;
         }
       }

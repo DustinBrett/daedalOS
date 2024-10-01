@@ -41,11 +41,10 @@ const Columns: FC<ColumnsProps> = ({
             onPointerDownCapture={(event) => {
               if (event.button !== 0) return;
 
-              const widthToEdge =
-                (event.target as HTMLElement).clientWidth -
-                event.nativeEvent.offsetX;
-
-              draggingRef.current = widthToEdge <= 1 ? name : "";
+              draggingRef.current =
+                (event.target as HTMLElement).className === "resize"
+                  ? name
+                  : "";
               lastClientX.current = event.clientX;
             }}
             onPointerMoveCapture={(event) => {
@@ -96,7 +95,8 @@ const Columns: FC<ColumnsProps> = ({
             style={{ width: `${columns[name].width}px` }}
           >
             {sortedBy === name && <Down flip={ascending} />}
-            <div>{columns[name].name}</div>
+            <div className="name">{columns[name].name}</div>
+            <span className="resize" />
           </li>
         ))}
       </ol>
