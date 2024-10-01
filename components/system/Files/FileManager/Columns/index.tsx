@@ -39,6 +39,8 @@ const Columns: FC<ColumnsProps> = ({
           <li
             key={columns[name].name}
             onPointerDownCapture={(event) => {
+              if (event.button !== 0) return;
+
               const widthToEdge =
                 (event.target as HTMLElement).clientWidth -
                 event.nativeEvent.offsetX;
@@ -47,6 +49,8 @@ const Columns: FC<ColumnsProps> = ({
               lastClientX.current = event.clientX;
             }}
             onPointerMoveCapture={(event) => {
+              if (event.button !== 0) return;
+
               if (draggingRef.current) {
                 const dragName = draggingRef.current as ColumnName;
 
@@ -74,7 +78,9 @@ const Columns: FC<ColumnsProps> = ({
                 });
               }
             }}
-            onPointerUpCapture={() => {
+            onPointerUpCapture={(event) => {
+              if (event.button !== 0) return;
+
               if (draggingRef.current) {
                 draggingRef.current = "";
                 lastClientX.current = 0;
