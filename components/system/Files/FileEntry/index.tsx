@@ -608,6 +608,7 @@ const FileEntry: FC<FileEntryProps> = ({
                 setRenaming("");
               }}
               setRenaming={setRenaming}
+              view={view}
             />
           ) : (
             <figcaption>

@@ -6,6 +6,7 @@ import {
 
 type StyledRenameBoxProps = {
   $darkMode: boolean;
+  $singleLineMode: boolean;
 };
 
 const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
@@ -22,18 +23,23 @@ const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
   color: ${({ $darkMode }) => ($darkMode ? "#fff" : "#000")};
   font-family: inherit;
   font-size: 11.5px;
+  left: ${({ $singleLineMode }) => ($singleLineMode ? "16px" : undefined)};
   margin-bottom: 2px;
-  max-width: ${({ theme }) => theme.sizes.fileEntry.renameWidth}px;
+  max-width: ${({ $singleLineMode, theme }) =>
+    $singleLineMode ? undefined : `${theme.sizes.fileEntry.renameWidth}px`};
   min-height: 19px;
   min-width: 30px;
   overflow: hidden;
   padding: ${({ theme }) => `1px ${theme.sizes.fileEntry.renamePadding}px`};
-  position: relative;
+  position: ${({ $singleLineMode }) =>
+    $singleLineMode ? "absolute" : "relative"};
   resize: none;
-  text-align: center;
-  top: 2px;
+  text-align: ${({ $singleLineMode }) => ($singleLineMode ? "left" : "center")};
+  top: ${({ $singleLineMode }) => ($singleLineMode ? "3px" : "2px")};
   user-select: text;
   white-space: break-spaces;
+  word-wrap: ${({ $singleLineMode }) =>
+    $singleLineMode ? "normal" : undefined};
   z-index: 1;
 `;
 

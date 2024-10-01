@@ -1,6 +1,7 @@
 import { extname } from "path";
 import { useTheme } from "styled-components";
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 import { getTextWrapData } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { PREVENT_SCROLL } from "utils/constants";
@@ -12,6 +13,7 @@ type RenameBoxProps = {
   path: string;
   renameFile: (path: string, name?: string) => void;
   setRenaming: React.Dispatch<React.SetStateAction<string>>;
+  view: FileManagerViewNames;
 };
 
 const TEXT_HEIGHT_PADDING = 2;
@@ -23,10 +25,12 @@ const RenameBox: FC<RenameBoxProps> = ({
   path,
   renameFile,
   setRenaming,
+  view,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
   const { formats, sizes } = useTheme();
+  const isDetails = useMemo(() => view === "details", [view]);
   const updateDimensions = useCallback(
     (textArea: EventTarget | HTMLTextAreaElement | null): void => {
       if (textArea instanceof HTMLTextAreaElement) {
@@ -37,16 +41,18 @@ const RenameBox: FC<RenameBoxProps> = ({
         );
 
         // Force height to re-calculate
-        textArea.setAttribute("style", "height: 1px");
+        if (!isDetails) textArea.setAttribute("style", "height: 1px");
+
+        const newWidth = `width: ${width + TEXT_WIDTH_PADDING}px`;
+        const newHeight = `height: ${textArea.scrollHeight + TEXT_HEIGHT_PADDING}px`;
+
         textArea.setAttribute(
           "style",
-          `height: ${textArea.scrollHeight + TEXT_HEIGHT_PADDING}px; width: ${
-            width + TEXT_WIDTH_PADDING
-          }px`
+          isDetails ? newWidth : `${newHeight}; ${newWidth}`
         );
       }
     },
-    [formats.systemFont, sizes.fileEntry.fontSize]
+    [formats.systemFont, isDetails, sizes.fileEntry.fontSize]
   );
 
   useLayoutEffect(() => {
@@ -63,6 +69,7 @@ const RenameBox: FC<RenameBoxProps> = ({
     <StyledRenameBox
       ref={inputRef}
       $darkMode={!isDesktop}
+      $singleLineMode={isDetails}
       defaultValue={name}
       onBlurCapture={saveRename}
       onClick={haltEvent}
