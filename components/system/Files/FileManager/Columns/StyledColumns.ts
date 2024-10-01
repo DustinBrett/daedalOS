@@ -24,7 +24,7 @@ const StyledColumns = styled.span`
 
       > svg {
         fill: rgb(222, 222, 222);
-        left: 50%;
+        left: calc(50% - 4px);
         position: absolute;
         top: 1px;
         transition: none !important;
@@ -52,7 +52,7 @@ const StyledColumns = styled.span`
         background-color: rgb(67, 67, 67);
 
         .resize {
-          border-right: none;
+          border-left: none;
         }
       }
 
