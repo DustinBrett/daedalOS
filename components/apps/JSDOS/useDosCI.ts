@@ -96,7 +96,14 @@ const useDosCI = (
         updateFolder(SAVE_PATH, saveName);
       }
 
-      if (closeInstance) dosInstance?.stop();
+      if (closeInstance) {
+        try {
+          await dosInstance?.stop();
+          await dosCI[bundleUrl]?.exit();
+        } catch {
+          // Ignore errors during closing
+        }
+      }
     },
     [dosCI, dosInstance, exists, mkdirRecursive, updateFolder, writeFile]
   );
