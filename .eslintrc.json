@@ -175,6 +175,8 @@
     "sonarjs/no-nested-conditional": "off",
     "sonarjs/no-nested-functions": "off",
     "sonarjs/no-nested-template-literals": "off",
+    "sonarjs/no-selector-parameter": "off",
+    "sonarjs/no-skipped-test": "off",
     "sonarjs/no-try-promise": "off",
     "sonarjs/no-var": "off",
     "sonarjs/prefer-nullish-coalescing": "off",
