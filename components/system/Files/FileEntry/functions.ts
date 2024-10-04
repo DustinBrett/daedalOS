@@ -901,6 +901,16 @@ export const getDateModified = (
   return `${date} ${time}`;
 };
 
-export const getFileType = (extension: string): string =>
-  extensions[extension]?.type ||
-  `${extension.toUpperCase().replace(".", "")} File`;
+export const getFileType = (extension: string): string => {
+  const ext = extension.toUpperCase();
+
+  switch (ext) {
+    case ".TXT":
+      return "Text Document";
+    case ".RTF":
+    case ".WHTML":
+      return "Rich Text Document";
+    default:
+      return extensions[extension]?.type || `${ext.replace(".", "")} File`;
+  }
+};
