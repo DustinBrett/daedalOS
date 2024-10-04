@@ -176,9 +176,12 @@ const FileEntry: FC<FileEntryProps> = ({
   } = useFileSystem();
   const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
-  const listView = view === "list";
-  const fileName = basename(path);
-  const urlExt = getExtension(url);
+  const listView = useMemo(() => view === "list", [view]);
+  const fileName = useMemo(() => basename(path), [path]);
+  const urlExt = useMemo(
+    () => (isDirectory ? "" : getExtension(url)),
+    [isDirectory, url]
+  );
   const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);
   const isDynamicIcon = useMemo(
     () =>
@@ -187,8 +190,10 @@ const FileEntry: FC<FileEntryProps> = ({
       isYTUrl,
     [isYTUrl, urlExt]
   );
-  const isOnlyFocusedEntry =
-    focusedEntries.length === 1 && focusedEntries[0] === fileName;
+  const isOnlyFocusedEntry = useMemo(
+    () => focusedEntries.length === 1 && focusedEntries[0] === fileName,
+    [fileName, focusedEntries]
+  );
   const extension = useMemo(() => getExtension(path), [path]);
   const isShortcut = useMemo(
     () => extension === SHORTCUT_EXTENSION,
@@ -211,7 +216,7 @@ const FileEntry: FC<FileEntryProps> = ({
     },
     directory,
   });
-  const openInFileExplorer = pid === "FileExplorer";
+  const openInFileExplorer = useMemo(() => pid === "FileExplorer", [pid]);
   const truncatedName = useMemo(
     () =>
       truncateName(
