@@ -3,8 +3,8 @@ import styled from "styled-components";
 const StyledColumns = styled.span`
   background-color: rgb(32, 32, 32);
   display: block;
+  margin-bottom: 6px;
   margin-right: ${({ theme }) => theme.sizes.fileManager.detailsStartPadding}px;
-  padding-bottom: 6px;
   position: sticky;
   top: 0;
   width: fit-content;
