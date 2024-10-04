@@ -61,6 +61,8 @@
 - Tiles in Start Menu
 - Windows 11 Theme
 - Fancy Drag Zones for Windows
+- Calculator
+  - [MCalculator](https://github.com/muzam1l/mcalculator)
 
 ## Features
 
