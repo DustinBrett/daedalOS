@@ -20,10 +20,9 @@ type ColumnDataProps = {
 const ColumnRow: FC<{
   columns: Columns;
   isDirectory: boolean;
-  isShortcut: boolean;
   path: string;
   stats: Stats;
-}> = ({ columns, isDirectory, isShortcut, path, stats }) => {
+}> = ({ columns, isDirectory, path, stats }) => {
   const { stat } = useFileSystem();
   const { formats } = useTheme();
   const getColumnData = useCallback(async (): Promise<ColumnDataProps> => {
@@ -32,13 +31,9 @@ const ColumnRow: FC<{
     return {
       date: getDateModified(path, fullStats, formats.dateModified),
       size: isDirectory ? "" : getFormattedSize(fullStats.size, true),
-      type: isDirectory
-        ? "File folder"
-        : isShortcut
-          ? "Shortcut"
-          : getFileType(getExtension(path)),
+      type: isDirectory ? "File folder" : getFileType(getExtension(path)),
     };
-  }, [formats.dateModified, isDirectory, isShortcut, path, stat, stats]);
+  }, [formats.dateModified, isDirectory, path, stat, stats]);
   const [columnData, setColumnData] = useState<ColumnDataProps>();
   const creatingRef = useRef(false);
 

@@ -628,7 +628,6 @@ const FileEntry: FC<FileEntryProps> = ({
           <ColumnRow
             columns={columns}
             isDirectory={isDirectory}
-            isShortcut={isShortcut}
             path={path}
             stats={stats}
           />

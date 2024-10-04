@@ -905,6 +905,8 @@ export const getFileType = (extension: string): string => {
   const ext = extension.toUpperCase();
 
   switch (ext) {
+    case SHORTCUT_EXTENSION:
+      return "Shortcut";
     case ".TXT":
       return "Text Document";
     case ".RTF":
