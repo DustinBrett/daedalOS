@@ -46,7 +46,17 @@ export const getDpi = (): number => {
   return dpi;
 };
 
-export const getExtension = (url: string): string => extname(url).toLowerCase();
+export const getExtension = (url: string): string => {
+  let ext = extname(url);
+
+  if (!ext) {
+    const baseName = basename(url);
+
+    if (baseName.startsWith(".")) ext = baseName;
+  }
+
+  return ext.toLowerCase();
+};
 
 export const sendMouseClick = (target: HTMLElement, count = 1): void => {
   if (count === 0) return;
