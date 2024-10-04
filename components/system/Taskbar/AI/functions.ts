@@ -3,7 +3,6 @@ export const formatWebLlmProgress = (text: string): string => {
   if (text.startsWith("Finish loading on WebGPU")) return "";
 
   const [, progressCurrent, progressTotal] =
-    // eslint-disable-next-line unicorn/better-regex
     /\[(\d+)\/(\d+)\]/.exec(text) || [];
 
   let progress = "";

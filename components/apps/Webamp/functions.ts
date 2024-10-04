@@ -343,7 +343,7 @@ export const tracksFromPlaylist = async (
     const [parsedArtist, parsedTitle] = [artist.trim(), title.trim()];
 
     return {
-      duration: length > 0 ? length : 0,
+      duration: Math.max(length, 0),
       metaData: {
         album: parsedTitle || defaultName,
         artist: parsedArtist,
@@ -359,7 +359,6 @@ type MetadataGetter = () => Promise<Track["metaData"]>;
 type MetadataProvider = (url: string) => MetadataGetter;
 
 const removeCData = (string = ""): string =>
-  // eslint-disable-next-line unicorn/better-regex
   string.replace(/<!\[CDATA\[|\]\]>/g, "");
 
 const streamingMetadataProviders: Record<string, MetadataProvider> = {

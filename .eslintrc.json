@@ -204,6 +204,7 @@
     "unicorn/no-unused-properties": "error",
     "unicorn/numeric-separators-style": "off",
     "unicorn/prefer-at": "off",
+    "unicorn/prefer-global-this": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-string-replace-all": "off",
     "unicorn/prefer-switch": "off",

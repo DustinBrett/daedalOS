@@ -21,8 +21,8 @@ export const createSelectionStyling = (
   return {
     height: `${Math.abs(height)}px`,
     transform: `translate(
-        ${Number(x) + (width < 0 ? width : 0)}px,
-        ${Number(y) + (height < 0 ? height : 0)}px)`,
+        ${Number(x) + Math.min(width, 0)}px,
+        ${Number(y) + Math.min(height, 0)}px)`,
     width: `${Math.abs(width)}px`,
   };
 };

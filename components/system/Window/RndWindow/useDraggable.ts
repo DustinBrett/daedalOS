@@ -48,8 +48,8 @@ const useDraggable = (id: string, size: Size): Draggable => {
           const yOffset = vwSize.y - WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM;
 
           return {
-            x: x > xOffset ? xOffset : x,
-            y: y > yOffset ? yOffset : y,
+            x: Math.min(x, xOffset),
+            y: Math.min(y, yOffset),
           };
         });
       }
