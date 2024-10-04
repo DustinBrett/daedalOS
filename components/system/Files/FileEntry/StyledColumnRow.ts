@@ -7,7 +7,7 @@ const StyledColumnRow = styled.div`
   place-items: center;
 
   div {
-    color: #fff;
+    color: rgb(222, 222, 222);
     overflow: hidden;
     padding-right: ${({ theme }) =>
       theme.sizes.fileManager.detailsEndPadding}px;
