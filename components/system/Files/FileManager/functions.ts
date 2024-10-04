@@ -5,15 +5,23 @@ import {
   type ObjectReader,
   type ObjectReaders,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
-import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import {
+  getFileType,
+  getModifiedTime,
+} from "components/system/Files/FileEntry/functions";
 import {
   type Files,
   type NewPath,
   COMPLETE_ACTION,
 } from "components/system/Files/FileManager/useFolder";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
-import { ONE_TIME_PASSIVE_EVENT, ROOT_SHORTCUT } from "utils/constants";
-import { haltEvent, toSorted } from "utils/functions";
+import {
+  MILLISECONDS_IN_MINUTE,
+  ONE_TIME_PASSIVE_EVENT,
+  ROOT_SHORTCUT,
+} from "utils/constants";
+import { getExtension, haltEvent, toSorted } from "utils/functions";
+import { get9pSize } from "contexts/fileSystem/core";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;
@@ -23,22 +31,45 @@ type FileStats = [string, FileStat];
 
 type SortFunction = (a: FileStats, b: FileStats) => number;
 
-export const sortByDate =
-  (directory: string) =>
-  ([aPath, aStats]: FileStats, [bPath, bStats]: FileStats): number =>
-    getModifiedTime(join(directory, aPath), aStats) -
-    getModifiedTime(join(directory, bPath), bStats);
-
 const sortByName = ([a]: FileStats, [b]: FileStats): number =>
   a.localeCompare(b, "en", { sensitivity: "base" });
 
-export const sortBySize = (
-  [, { size: aSize }]: FileStats,
-  [, { size: bSize }]: FileStats
-): number => aSize - bSize;
+export const sortByDate =
+  (directory: string) =>
+  (a: FileStats, b: FileStats): number => {
+    const [aPath, aStats] = a;
+    const [bPath, bStats] = b;
+    const diff =
+      getModifiedTime(join(directory, aPath), aStats) -
+      getModifiedTime(join(directory, bPath), bStats);
 
-const sortByType = ([a]: FileStats, [b]: FileStats): number =>
-  extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
+    return Math.abs(diff) < MILLISECONDS_IN_MINUTE ? sortByName(a, b) : diff;
+  };
+
+export const sortBySize = (
+  [aPath, aStats]: FileStats,
+  [bPath, bStats]: FileStats
+): number => {
+  let aSize = aStats.size;
+  let bSize = bStats.size;
+
+  if (aSize === -1) aSize = get9pSize(aPath);
+  if (bSize === -1) bSize = get9pSize(bPath);
+
+  return aSize - bSize;
+};
+
+const sortByType = (
+  [aPath, aStats]: FileStats,
+  [bPath, bStats]: FileStats
+): number => {
+  const aExt = aStats.isDirectory() ? "" : getExtension(aPath);
+  const bExt = bStats.isDirectory() ? "" : getExtension(bPath);
+  const aType = aExt ? getFileType(aExt) : "";
+  const bType = bExt ? getFileType(bExt) : "";
+
+  return aType.localeCompare(bType, "en", { sensitivity: "base" });
+};
 
 const sortSystemShortcuts = (
   [aName, { systemShortcut: aSystem = false }]: FileStats,
@@ -97,7 +128,7 @@ export const sortContents = (
   }
 
   return Object.fromEntries(
-    (ascending
+    (ascending || sortFunction === sortByType
       ? [...sortedFolders, ...sortedFiles]
       : [...sortedFiles, ...sortedFolders]
     ).sort(sortSystemShortcuts)
