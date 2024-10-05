@@ -21,7 +21,6 @@ import {
   DESKTOP_PATH,
   DISBALE_AUTO_INPUT_FEATURES,
   FOLDER_ICON,
-  MAX_FILE_NAME_LENGTH,
   SHORTCUT_ICON,
 } from "utils/constants";
 import { getExtension, getFormattedSize, haltEvent } from "utils/functions";
@@ -170,7 +169,6 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
                   isShortcut ? extname(url) : undefined
                 )}
                 enterKeyHint="done"
-                maxLength={MAX_FILE_NAME_LENGTH}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     haltEvent(event);

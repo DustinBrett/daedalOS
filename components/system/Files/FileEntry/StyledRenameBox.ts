@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  DISBALE_AUTO_INPUT_FEATURES,
-  MAX_FILE_NAME_LENGTH,
-} from "utils/constants";
+import { DISBALE_AUTO_INPUT_FEATURES } from "utils/constants";
 
 type StyledRenameBoxProps = {
   $darkMode: boolean;
@@ -11,7 +8,6 @@ type StyledRenameBoxProps = {
 
 const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
   enterKeyHint: "done",
-  maxLength: MAX_FILE_NAME_LENGTH,
   rows: 1,
   ...DISBALE_AUTO_INPUT_FEATURES,
 }))`
