@@ -1540,10 +1540,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@mlc-ai/web-llm@^0.2.72":
-  version "0.2.72"
-  resolved "https://registry.yarnpkg.com/@mlc-ai/web-llm/-/web-llm-0.2.72.tgz#92400fb039175405f11256bc3c9cd70f243106e9"
-  integrity sha512-ppmyfW8HnHHZhZpi/cAbKmcbypTQeuTtev9ysppfvrKjto+8oapKZccd7Dcv/pbcJtoY2r9LzUMIXh/TcvZxZQ==
+"@mlc-ai/web-llm@^0.2.73":
+  version "0.2.73"
+  resolved "https://registry.yarnpkg.com/@mlc-ai/web-llm/-/web-llm-0.2.73.tgz#42c208cac7f5efdd0df4ad5f974101437a094e49"
+  integrity sha512-v9eS05aptZYNBhRZ7KEq5dr1kMESHvkdwru9tNY1oS1GDDEBjUt4Y/u06ejvP3qF4VatCakEezzJT3SkuMhDnQ==
   dependencies:
     loglevel "^1.9.1"
 
@@ -3821,10 +3821,10 @@ emulators-ui@^0.73.9:
   resolved "https://registry.yarnpkg.com/emulators-ui/-/emulators-ui-0.73.9.tgz#194bf4d7712c3e5b31c073826373b42d2c9200be"
   integrity sha512-Zx1eD9yHt+QjMwU0ay9FQKhyvvKucL1bRsTlZdHZsBrU3rNsZm52XODXFLSHMmAksEUe5TRocopWduJF7R9+xw==
 
-emulators@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.yarnpkg.com/emulators/-/emulators-8.2.1.tgz#33541a2a9fe976d83abe50b5d451c1ba55366d80"
-  integrity sha512-oRp+S+xjNJtu5eh+0il1Sb/uYx51+w7mW+/fQ89Wq2ejUCjsxeDh5XL4i+59Nl7nPpjK9uAcGLAt+KaSALiUEA==
+emulators@^8.2.2:
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/emulators/-/emulators-8.2.2.tgz#a68d76089fdce1de303e66267885c5521dd92310"
+  integrity sha512-gRNEIIke7JKjEAWXugdwjSgDkEA9JNhZzkQk9X81/G0+kvrP9fDb9OdR7tEog7TfYjh6tU+B91Xic5oPRsewFQ==
 
 endianness@^8.0.2:
   version "8.0.2"
@@ -4791,10 +4791,10 @@ frac@~1.1.2:
   resolved "https://registry.yarnpkg.com/frac/-/frac-1.1.2.tgz#3d74f7f6478c88a1b5020306d747dc6313c74d0b"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
-framer-motion@^11.11.0:
-  version "11.11.0"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.11.0.tgz#1814a7abaf69d897fac2ae9e9d6db3b6151d6f29"
-  integrity sha512-H6Pv12fcXaebinvnLDabTS9vHwtJKAo7XsnVeNLm5t8Yq5LuVvQ3DtL/2yBa2kGmhdIgx9cw8mbj6I8PYx7jPA==
+framer-motion@^11.11.1:
+  version "11.11.1"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-11.11.1.tgz#84c4bf333b445ef8abc59a5567a197b8bc0cd6cb"
+  integrity sha512-Ucr9eHSrk0d+l6vyl9fvq6omh/PAWHjS+PlczpsoUdhJo1TuF3ULWJNuAMnpWQ1dGyPOyoUVuYlUKjE/s8dyCA==
   dependencies:
     tslib "^2.4.0"
 
