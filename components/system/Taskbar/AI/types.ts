@@ -24,11 +24,17 @@ export type ConvoStyles = "balanced" | "creative" | "precise";
 export type WorkerMessage = {
   hasWindowAI: boolean;
   id: number;
+  streamId?: number;
   style: ConvoStyles;
   text: string;
 };
 
-export type AIResponse = { formattedResponse: string; response: string };
+export type AIResponse = {
+  complete?: boolean;
+  formattedResponse: string;
+  response: string;
+  streamId?: number;
+};
 
 export type WebLlmProgress = {
   progress: {

@@ -46,6 +46,8 @@ type AIChatProps = {
   toggleAI: () => void;
 };
 
+const STREAMING_SUPPORT = true;
+
 const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const {
     colors: { taskbar: taskbarColor },
@@ -69,13 +71,27 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     (
       text: string | undefined,
       type: MessageTypes,
-      formattedText?: string
+      formattedText?: string,
+      streamId?: number
     ): void => {
       if (text) {
-        setConversation((prevMessages) => [
-          ...prevMessages,
-          { formattedText: formattedText || text, text, type },
-        ]);
+        setConversation((prevMessages) => {
+          const newMessage = {
+            formattedText: formattedText || text,
+            text,
+            type,
+          };
+
+          if (streamId) {
+            const newMessages = [...prevMessages];
+
+            newMessages[streamId] = newMessage;
+
+            return newMessages;
+          }
+
+          return [...prevMessages, newMessage];
+        });
       }
     },
     []
@@ -185,6 +201,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       aiWorker.current.postMessage({
         hasWindowAI,
         id: sessionIdRef.current,
+        streamId: STREAMING_SUPPORT ? conversation.length : undefined,
         style: convoStyle,
         text,
       });
@@ -194,9 +211,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   useEffect(() => {
     const workerRef = aiWorker.current;
     const workerResponse = ({ data }: WorkerResponse): void => {
-      const doneResponding = typeof data === "string" || "response" in data;
+      const isStreaming = (data as AIResponse).streamId;
 
-      setResponding(!doneResponding);
+      if (!isStreaming) {
+        const doneResponding = typeof data === "string" || "response" in data;
+
+        setResponding(!doneResponding);
+      }
 
       if (data === "canceled") {
         setCanceling(false);
@@ -206,10 +227,12 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         } = data as WebLlmProgress;
 
         setProgressMessage(formatWebLlmProgress(text));
-      } else if ((data as AIResponse).response) {
-        const { formattedResponse, response } = data as AIResponse;
+      } else if ((data as AIResponse).response || isStreaming) {
+        const { complete, formattedResponse, response, streamId } =
+          data as AIResponse;
 
-        addMessage(response, "ai", formattedResponse);
+        if (complete) setResponding(false);
+        else addMessage(response, "ai", formattedResponse, streamId);
       } else if ((data as AIResponse).response === "") {
         setFailedSession(true);
       }
@@ -224,6 +247,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     <StyledAIChat
       ref={setContainerElement}
       $primaryColor={primaryColor}
+      $responding={responding}
       $scrollbarVisible={scrollbarVisible}
       $secondaryColor={secondaryColor}
       $tertiaryColor={tertiaryColor}
