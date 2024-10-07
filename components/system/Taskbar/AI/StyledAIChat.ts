@@ -130,7 +130,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       font-size: 13.5px;
       gap: 13px;
       letter-spacing: 0.2px;
-      margin-bottom: ${({ $responding }) => ($responding ? "55px" : undefined)};
+      margin-bottom: ${({ $responding }) => ($responding ? "43px" : undefined)};
       padding: 16px;
       padding-bottom: 5px;
 
@@ -224,14 +224,17 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       .responding {
-        bottom: 127px;
+        background-color: rgb(32, 32, 32);
+        bottom: 120px;
         display: flex;
         left: 0;
+        margin: 0 16px;
         margin-top: -6px;
+        padding: 7px 0;
         place-content: center;
         place-items: center;
         position: absolute;
-        width: calc(100% + 13px);
+        width: calc(100% - 32px);
 
         .stop {
           background-color: rgb(45, 45, 45);

@@ -137,10 +137,7 @@ globalThis.addEventListener(
         console.error("Failed to create text session.", error);
       }
 
-      if (cancel) {
-        cancel = false;
-        globalThis.postMessage("canceled");
-      } else {
+      if (!cancel) {
         if (response && !markedLoaded) {
           globalThis.importScripts(...MARKED_LIBS);
           markedLoaded = true;
@@ -176,6 +173,11 @@ globalThis.addEventListener(
       }
 
       responding = false;
+
+      if (cancel) {
+        cancel = false;
+        globalThis.postMessage("canceled");
+      }
     }
   },
   { passive: true }
