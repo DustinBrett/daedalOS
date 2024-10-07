@@ -163,6 +163,8 @@ globalThis.addEventListener(
             // @ts-expect-error ReadableStream will have an asyncIterator if Prompt API exists
             // eslint-disable-next-line @typescript-eslint/await-thenable
             for await (const chunk of response) {
+              if (cancel) break;
+
               sendMessage(chunk as string, data.streamId);
             }
           } catch (error) {
