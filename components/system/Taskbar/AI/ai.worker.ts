@@ -156,11 +156,13 @@ globalThis.addEventListener(
             streamId,
           });
 
-        if (data.streamId) {
+        if (typeof response === "string") {
+          sendMessage(response);
+        } else {
           try {
             // @ts-expect-error ReadableStream will have an asyncIterator if Prompt API exists
             // eslint-disable-next-line @typescript-eslint/await-thenable
-            for await (const chunk of response as ReadableStream<string>) {
+            for await (const chunk of response) {
               sendMessage(chunk as string, data.streamId);
             }
           } catch (error) {
@@ -168,8 +170,6 @@ globalThis.addEventListener(
           }
 
           globalThis.postMessage({ complete: true, streamId: data.streamId });
-        } else {
-          sendMessage(response as string);
         }
       }
 
