@@ -19,18 +19,18 @@ export const DEFAULT_COLUMN_ORDER: ColumnName[] = [
 export const DEFAULT_COLUMNS: Columns = {
   date: {
     name: "Date modified",
-    width: 140,
+    width: 133,
   },
   name: {
     name: "Name",
-    width: 150,
+    width: 133,
   },
   size: {
     name: "Size",
-    width: 80,
+    width: 70,
   },
   type: {
     name: "Type",
-    width: 82,
+    width: 80,
   },
 };

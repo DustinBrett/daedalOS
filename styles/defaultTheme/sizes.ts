@@ -26,7 +26,7 @@ const sizes = {
   fileManager: {
     columnGap: "1px",
     columnHeight: "25px",
-    columnMinWidth: 80,
+    columnMinWidth: 70,
     columnResizeWidth: 7,
     detailsEndPadding: 16,
     detailsRowHeight: "22px",
