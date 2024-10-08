@@ -4370,10 +4370,10 @@ eslint-plugin-sort-keys-fix@^1.1.2:
     natural-compare "^1.4.0"
     requireindex "~1.2.0"
 
-eslint-plugin-typescript-sort-keys@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-typescript-sort-keys/-/eslint-plugin-typescript-sort-keys-3.2.0.tgz#9308a2d4134acf06a3028c6e01c331c51d5f5e3d"
-  integrity sha512-GutszvriaVtwmn7pQjuj9/9o0iXhD7XZs0/424+zsozdRr/fdg5e8206t478Vnqnqi1GjuxcAolj1kf74KnhPA==
+eslint-plugin-typescript-sort-keys@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-typescript-sort-keys/-/eslint-plugin-typescript-sort-keys-3.3.0.tgz#a3ba29e5d6b7f3e5e66ad898347fa9142d3596d1"
+  integrity sha512-bRW3Rc/VNdrSP9OoY5wgjjaXCOOkZKpzvl/Mk6l8Sg8CMehVIcg9K4y33l+ZcZiknpl0aR6rKusxuCJNGZWmVw==
   dependencies:
     "@typescript-eslint/experimental-utils" "^5.0.0"
     json-schema "^0.4.0"
@@ -7045,10 +7045,10 @@ path2d@^0.2.1:
   resolved "https://registry.yarnpkg.com/path2d/-/path2d-0.2.1.tgz#faf98e5e2222541805a6ac232adc026332330765"
   integrity sha512-Fl2z/BHvkTNvkuBzYTpTuirHZg6wW9z8+4SND/3mDTEcYbbNKWAy21dz9D3ePNNwrrK8pqZO5vLPZ1hLF6T7XA==
 
-pdfjs-dist@^4.6.82:
-  version "4.6.82"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-4.6.82.tgz#4f171289f1810f324cd17c58bc59bd5bd0e0db7e"
-  integrity sha512-BUOryeRFwvbLe0lOU6NhkJNuVQUp06WxlJVVCsxdmJ4y5cU3O3s3/0DunVdK1PMm7v2MUw52qKYaidhDH1Z9+w==
+pdfjs-dist@^4.7.76:
+  version "4.7.76"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-4.7.76.tgz#abd1df2b94d22b4a467f91b89e33f3b45b60330f"
+  integrity sha512-8y6wUgC/Em35IumlGjaJOCm3wV4aY/6sqnIT3fVW/67mXsOZ9HWBn8GDKmJUK0GSzpbmX3gQqwfoFayp78Mtqw==
   optionalDependencies:
     canvas "^2.11.2"
     path2d "^0.2.1"
