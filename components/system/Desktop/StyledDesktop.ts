@@ -12,11 +12,13 @@ const StyledDesktop = styled.main`
 
   #loading-status {
     background-color: #fff;
-    border-radius: 10px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    box-shadow: 0 0 50px 1px #000;
     display: none;
     font-weight: 600;
     left: 50%;
-    padding: 15px;
+    padding: 12px 15px;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);

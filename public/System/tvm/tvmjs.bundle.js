@@ -2441,10 +2441,10 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	            const reportCallback = (iter) => {
 	                // report
 	                for (let j = 0; j < this.initProgressCallback.length; ++j) {
-	                    let text = "[" + iter + "/" + list.length + "]: ";
+	                    let text = "Loading model [" + iter + "/" + list.length + "]: ";
 	                    text += Math.ceil(fetchedBytes / (1024 * 1024)).toString() + " MB, ";
-	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% complete, ";
-	                    text += timeElapsed + " secs";
+	                    text += Math.floor(fetchedBytes * 100 / totalBytes).toString() + "% complete (";
+	                    text += timeElapsed + " secs)";
 	                    this.initProgressCallback[j]({
 	                        progress: fetchedBytes / totalBytes,
 	                        timeElapsed: timeElapsed,
@@ -2801,9 +2801,9 @@ fn fragment_clear(@location(0) uv : vec2<f32>) -> @location(0) vec4<f32> {
 	                    // report
 	                    for (let j = 0; j < this.initProgressCallback.length; ++j) {
 	                        const progress = finishCounter / fmapEntries.length;
-	                        let text = "Loading GPU shader modules[" + finishCounter + "/" + fmapEntries.length + "]: ";
-	                        text += Math.floor(progress * 100).toString() + "% completed, ";
-	                        text += timeElapsed + " secs elapsed.";
+	                        let text = "Loading GPU shader modules [" + finishCounter + "/" + fmapEntries.length + "]: ";
+	                        text += Math.floor(progress * 100).toString() + "% complete (";
+	                        text += timeElapsed + " secs)";
 	                        this.initProgressCallback[j]({
 	                            progress: progress,
 	                            timeElapsed: timeElapsed,

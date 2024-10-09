@@ -34,9 +34,6 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
   const sdWorker = useWorker<void>(SD_WORKER);
   const transferedCanvas = useRef(false);
   const [status, setStatus] = useState<string>(NO_WEBGPU_SUPPORT);
-  const statusLogger = useCallback((type: string, message: string) => {
-    setStatus(type && message ? `${type} ${message}` : "");
-  }, []);
   const generateImage = useCallback(async () => {
     if (canvasRef.current) {
       const config: StableDiffusionConfig = { prompts: [prompt] };
@@ -54,22 +51,20 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
           ]);
           sdWorker.current.addEventListener(
             "message",
-            ({ data }: WorkerMessage) => {
-              statusLogger(data.type, data.message);
-            }
+            ({ data }: WorkerMessage) => setStatus(data.message)
           );
         }
       } else {
-        window.tvmjsGlobalEnv.logger = statusLogger;
+        window.tvmjsGlobalEnv.logger = setStatus;
 
         await runStableDiffusion(config, canvasRef.current);
 
-        statusLogger("", "");
+        setStatus("");
       }
 
       generatedAnImage.current = true;
     }
-  }, [prompt, sdWorker, statusLogger, supportsOffscreenCanvas]);
+  }, [prompt, sdWorker, supportsOffscreenCanvas]);
   const hasWebGPU = useWebGPUCheck();
 
   useEffect(() => {
