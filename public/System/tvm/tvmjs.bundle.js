@@ -610,7 +610,12 @@
 	                    `exceeds limit. requested=${requiredMaxComputeWorkgroupStorageSize}, ` +
 	                    `limit=${adapter.limits.maxComputeWorkgroupStorageSize}. `);
 	            }
-	            const adapterInfo = yield adapter.requestAdapterInfo();
+	            let adapterInfo = adapter.info;
+
+              if (!adapterInfo && typeof adapter.requestAdapterInfo === 'function') {
+                adapterInfo = yield adapter.requestAdapterInfo()
+              }
+
 	            const device = yield adapter.requestDevice({
 	                requiredLimits: {
 	                    maxBufferSize: requiedMaxBufferSize,
