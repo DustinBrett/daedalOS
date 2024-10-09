@@ -5,6 +5,7 @@ import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
   REDUCED_MOTION_PERCENT,
+  STABLE_DIFFUSION_DELAY_IN_MIN,
   WALLPAPER_PATHS,
   WALLPAPER_WORKERS,
   WALLPAPER_WORKER_NAMES,
@@ -178,7 +179,9 @@ const useWallpaper = (
                 } else if (!data.message) {
                   wallpaperTimerRef.current = window.setTimeout(
                     () => loadWallpaper(true),
-                    MILLISECONDS_IN_MINUTE * 10
+                    MILLISECONDS_IN_MINUTE *
+                      (window.STABLE_DIFFUSION_DELAY_IN_MIN_OVERRIDE ??
+                        STABLE_DIFFUSION_DELAY_IN_MIN)
                   );
                 }
 

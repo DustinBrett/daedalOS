@@ -6,6 +6,7 @@ import type MatrixConfig from "components/system/Desktop/Wallpapers/Matrix/confi
 declare global {
   interface Window {
     DEBUG_DISABLE_WALLPAPER?: boolean;
+    STABLE_DIFFUSION_DELAY_IN_MIN_OVERRIDE?: number;
     WallpaperDestroy?: () => void;
   }
 }
