@@ -128,9 +128,13 @@ export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox",
 ]);
 export const DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
-export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set([
-  "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
-]);
+export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set(
+  process.platform === "win32"
+    ? [
+        "webkit", // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#browser_compatibility
+      ]
+    : []
+);
 export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit",
 ]);
