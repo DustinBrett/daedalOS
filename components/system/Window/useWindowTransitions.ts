@@ -37,7 +37,7 @@ const baseMinimize = {
   scale: 0.7,
 };
 
-const getMaxDimensions = (): Partial<Variant> => ({
+const getMaxDimensions = (): Variant => ({
   height: viewHeight() - TASKBAR_HEIGHT,
   width: viewWidth(),
 });
