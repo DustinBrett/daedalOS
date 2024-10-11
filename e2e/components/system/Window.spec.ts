@@ -82,17 +82,19 @@ test("can drag", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
   const initialBoundingBox = await windowElement.boundingBox();
 
-  await dragWindowToDesktop({ page });
+  await expect(async () => {
+    await dragWindowToDesktop({ page });
 
-  const finalBoundingBox = await windowElement.boundingBox();
+    const finalBoundingBox = await windowElement.boundingBox();
 
-  expect(initialBoundingBox?.x).not.toEqual(finalBoundingBox?.x);
-  expect(initialBoundingBox?.y).not.toEqual(finalBoundingBox?.y);
+    expect(initialBoundingBox?.x).not.toEqual(finalBoundingBox?.x);
+    expect(initialBoundingBox?.y).not.toEqual(finalBoundingBox?.y);
 
-  const mainBoundingBox = await page.locator(DESKTOP_SELECTOR).boundingBox();
+    const mainBoundingBox = await page.locator(DESKTOP_SELECTOR).boundingBox();
 
-  expect(finalBoundingBox?.y).toEqual(mainBoundingBox?.y);
-  expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
+    expect(finalBoundingBox?.y).toEqual(mainBoundingBox?.y);
+    expect(finalBoundingBox?.x).toEqual(mainBoundingBox?.x);
+  }).toPass();
 });
 
 test("can resize", async ({ page }) => {

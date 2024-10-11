@@ -5,12 +5,15 @@ import {
   BASE_APP_TITLE,
   DESKTOP_SELECTOR,
   DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS,
+  FILE_EXPLORER_COLUMN_HEIGHT,
   FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR,
+  FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_SELECTION_SELECTOR,
   FILE_EXPLORER_SELECTOR,
   FILE_EXPLORER_STATUS_BAR_SELECTOR,
   FILE_MENU_ITEMS,
   FOLDER_MENU_ITEMS,
+  ROOT_FOLDER_VIEW,
   TEST_APP_ICON,
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
@@ -24,6 +27,7 @@ import {
   TEST_ROOT_FILE_TOOLTIP,
   TEST_SEARCH,
   TEST_SEARCH_RESULT,
+  WINDOW_RESIZE_HANDLE_WIDTH,
 } from "e2e/constants";
 import {
   appIsOpen,
@@ -317,16 +321,23 @@ test.describe("has files & folders", () => {
 
     const { x = 0, y = 0 } =
       (await page.locator(FILE_EXPLORER_SELECTOR).boundingBox()) || {};
+    const { height = 0, width = 0 } =
+      (await page
+        .locator(FILE_EXPLORER_ENTRIES_SELECTOR)
+        .first()
+        .boundingBox()) || {};
 
     await selectArea({
       container: FILE_EXPLORER_SELECTION_SELECTOR,
       page,
       selection: {
-        height: 70,
+        height: Math.round(height) * 2,
         up: true,
-        width: 140,
-        x: x + 3,
-        y: y + 3,
+        width: Math.round(width),
+        x: x + WINDOW_RESIZE_HANDLE_WIDTH / 2,
+        y:
+          y +
+          (ROOT_FOLDER_VIEW === "details" ? FILE_EXPLORER_COLUMN_HEIGHT : 0),
       },
     });
     await expect(page.locator(".focus-within")).toHaveCount(2);
@@ -370,7 +381,12 @@ test("can change page icon", async ({ page }) => {
 
 test.describe("has context menu", () => {
   test.beforeEach(async ({ page }) => {
-    await clickFileExplorer({ page }, true);
+    await clickFileExplorer(
+      { page },
+      true,
+      WINDOW_RESIZE_HANDLE_WIDTH / 2,
+      ROOT_FOLDER_VIEW === "details" ? FILE_EXPLORER_COLUMN_HEIGHT : 0
+    );
     await contextMenuIsVisible({ page });
   });
 

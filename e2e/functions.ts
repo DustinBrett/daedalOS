@@ -172,7 +172,7 @@ export const clickDesktop = async (
 ): Promise<void> =>
   page.locator(DESKTOP_SELECTOR).click({
     button: right ? "right" : undefined,
-    ...(x && y ? { position: { x: x + offset, y: y + offset } } : {}),
+    ...(x || y ? { position: { x: x + offset, y: y + offset } } : {}),
   });
 
 export const clickSearchButton = async (
@@ -361,9 +361,14 @@ export const clickFileExplorerSearchBox = async ({
 
 export const clickFileExplorer = async (
   { page }: TestProps,
-  right = false
+  right = false,
+  x = 0,
+  y = 0
 ): Promise<void> =>
-  page.locator(FILE_EXPLORER_SELECTOR).click(right ? RIGHT_CLICK : undefined);
+  page.locator(FILE_EXPLORER_SELECTOR).click({
+    button: right ? "right" : undefined,
+    ...(x || y ? { position: { x, y } } : {}),
+  });
 
 export const clickFileExplorerEntry = async (
   label: RegExp | string,

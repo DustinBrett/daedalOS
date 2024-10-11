@@ -129,7 +129,7 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
               } = navRef.current?.getBoundingClientRect() || {};
 
               onContextMenuCapture(
-                x && y && height
+                (x || y) && height
                   ? ({
                       pageX: x,
                       pageY: y + height - CONTEXT_MENU_OFFSET,
