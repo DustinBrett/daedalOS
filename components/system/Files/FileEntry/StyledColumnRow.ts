@@ -4,6 +4,7 @@ const StyledColumnRow = styled.div`
   display: flex;
   font-size: 12px;
   height: ${({ theme }) => theme.sizes.fileManager.detailsRowHeight};
+  margin-left: 2px;
   place-items: center;
 
   div {
