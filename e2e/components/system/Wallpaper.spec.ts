@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
   backgroundCanvasMaybeIsVisible,
   backgroundIsUrl,
@@ -54,17 +54,15 @@ test.describe("can set backgound", () => {
   test("via image", async ({ headless, browserName, page }) => {
     await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
-    await expect(async () => {
-      await clickFileExplorerEntry("audio.png", { page }, true);
-      await contextMenuIsVisible({ page });
+    await clickFileExplorerEntry("audio.png", { page }, true);
+    await contextMenuIsVisible({ page });
 
-      await clickContextMenuEntry(/^Set as background$/, { page });
-      await sessionIsWriteable({ page });
-      await clickContextMenuEntry(/^Tile$/, { page });
+    await clickContextMenuEntry(/^Set as background$/, { page });
+    await sessionIsWriteable({ page });
+    await clickContextMenuEntry(/^Tile$/, { page });
 
-      await backgroundIsUrl({ page });
-      await canvasBackgroundIsHidden({ page });
-    }).toPass();
+    await backgroundIsUrl({ page });
+    await canvasBackgroundIsHidden({ page });
   });
 });
 
