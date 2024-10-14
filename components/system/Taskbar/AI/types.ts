@@ -4,7 +4,7 @@ import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
 declare global {
   /* eslint-disable vars-on-top, no-var  */
-  var ai: { assistant: AIAssistantFactory };
+  var ai: { languageModel: AIAssistantFactory };
   var marked: {
     parse: (markdownString: string, options: MarkedOptions) => string;
   };

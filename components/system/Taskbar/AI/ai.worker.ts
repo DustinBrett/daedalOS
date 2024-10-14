@@ -74,7 +74,7 @@ globalThis.addEventListener(
             systemPrompt: SYSTEM_PROMPT.content,
           };
 
-          session = await globalThis.ai.assistant.create(config);
+          session = await globalThis.ai.languageModel.create(config);
         } else {
           session = [SYSTEM_PROMPT];
 
