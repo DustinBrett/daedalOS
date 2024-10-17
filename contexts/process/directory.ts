@@ -15,7 +15,6 @@ const directory: Processes = {
     icon: "/System/Icons/boxedwine.webp",
     libs: [
       "/Program Files/BoxedWine/browserfs.boxedwine.js",
-      "/Program Files/BoxedWine/jszip.min.js",
       "/Program Files/BoxedWine/boxedwine-shell.js",
       "/Program Files/BoxedWine/boxedwine.js",
     ],
