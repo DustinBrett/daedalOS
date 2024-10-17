@@ -11,7 +11,7 @@ const StyledFileExplorer = styled.div`
 
   ${StyledIconFileManager} {
     column-gap: 2px;
-    padding: 6px;
+    padding: 6px 6px 6px 14px;
 
     figcaption {
       padding: 1px 0 2px;
