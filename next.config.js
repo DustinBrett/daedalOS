@@ -47,6 +47,9 @@ const nextConfig = {
           default:
             throw new Error(`Not found ${mod}`);
         }
+      }),
+      new webpack.DefinePlugin({
+        __REACT_DEVTOOLS_GLOBAL_HOOK__: "({ isDisabled: true })",
       })
     );
 
