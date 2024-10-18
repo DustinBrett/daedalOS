@@ -14,7 +14,7 @@ const MARKED_LIBS = [
 
 const CONVO_STYLE_TEMPS: Record<
   ConvoStyles,
-  AIAssistantCreateOptionsWithSystemPrompt
+  AILanguageModelCreateOptionsWithSystemPrompt
 > = {
   balanced: {
     temperature: 0.5,
@@ -48,7 +48,7 @@ let cancel = false;
 let responding = false;
 
 let sessionId = 0;
-let session: AIAssistant | ChatCompletionMessageParam[] | undefined;
+let session: AILanguageModel | ChatCompletionMessageParam[] | undefined;
 let engine: MLCEngine;
 
 let markedLoaded = false;
@@ -67,9 +67,9 @@ globalThis.addEventListener(
         sessionId = data.id;
 
         if (data.hasWindowAI) {
-          (session as AIAssistant)?.destroy();
+          (session as AILanguageModel)?.destroy();
 
-          const config: AIAssistantCreateOptionsWithSystemPrompt = {
+          const config: AILanguageModelCreateOptionsWithSystemPrompt = {
             ...CONVO_STYLE_TEMPS[data.style],
             systemPrompt: SYSTEM_PROMPT.content,
           };
@@ -100,7 +100,7 @@ globalThis.addEventListener(
 
           try {
             if (data.hasWindowAI) {
-              const aiAssistant = session as AIAssistant;
+              const aiAssistant = session as AILanguageModel;
 
               response = data.streamId
                 ? aiAssistant?.promptStreaming(data.text)
