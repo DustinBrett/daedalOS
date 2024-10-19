@@ -1090,6 +1090,13 @@ const useCommandInterpreter = (
 
           if (file && format) {
             const fullPath = await getFullPath(file);
+            let ext = format.toLowerCase().trim();
+
+            ext = ext.startsWith(".")
+              ? ext.slice(1)
+              : ext.includes(".")
+                ? extname(ext).slice(1)
+                : ext;
 
             if (
               (await exists(fullPath)) &&
@@ -1097,7 +1104,7 @@ const useCommandInterpreter = (
             ) {
               const workBook = await convertSheet(
                 await readFile(fullPath),
-                format
+                ext
               );
               const dirName = dirname(fullPath);
 
@@ -1105,7 +1112,7 @@ const useCommandInterpreter = (
                 join(
                   dirName,
                   await createPath(
-                    `${basename(file, extname(file))}.${format}`,
+                    `${basename(file, extname(file))}.${ext}`,
                     dirName,
                     Buffer.from(workBook)
                   )
