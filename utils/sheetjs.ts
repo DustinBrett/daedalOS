@@ -31,18 +31,9 @@ export const convertSheet = async (
     numbers = window.XLSX_ZAHL_PAYLOAD;
   }
 
-  // eslint-disable-next-line no-undef-init
-  let sheet: Uint8Array | undefined = undefined;
-
-  try {
-    sheet = sheetJs.write(sheetJs.read(fileData), {
-      bookType: extension as XLSX.BookType,
-      numbers,
-      type: "buffer",
-    }) as Uint8Array;
-  } catch {
-    // Ignore failure to read/write sheet
-  }
-
-  return sheet || Buffer.from("");
+  return sheetJs.write(sheetJs.read(fileData), {
+    bookType: extension as XLSX.BookType,
+    numbers,
+    type: "buffer",
+  }) as Uint8Array;
 };

@@ -43,17 +43,13 @@ export const transcode = async (
       const baseName = basename(fileName);
       const newName = `${basename(fileName, extname(fileName))}.${extension}`;
 
-      try {
-        ffmpeg.FS("writeFile", baseName, fileData);
-        await ffmpeg.run("-i", baseName, newName);
+      ffmpeg.FS("writeFile", baseName, fileData);
+      await ffmpeg.run("-i", baseName, newName);
 
-        returnFiles.push([
-          join(dirname(fileName), newName),
-          Buffer.from(ffmpeg.FS("readFile", newName) as Uint8Array),
-        ]);
-      } catch {
-        // Ignore failure while reading/writing files
-      }
+      returnFiles.push([
+        join(dirname(fileName), newName),
+        Buffer.from(ffmpeg.FS("readFile", newName) as Uint8Array),
+      ]);
     })
   );
 
