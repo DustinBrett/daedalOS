@@ -1,3 +1,4 @@
+import { extname } from "path";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import { commands as gitCommands } from "components/apps/Terminal/processGit";
 import { type LocalEcho } from "components/apps/Terminal/types";
@@ -297,4 +298,14 @@ export const readClipboardToTerminal = (localEcho: LocalEcho): void => {
   } catch {
     // Ignore failure to read clipboard
   }
+};
+
+export const formatToExtension = (format: string): string => {
+  const extension = format.toLowerCase().trim();
+
+  return extension.startsWith(".")
+    ? extension.slice(1)
+    : extension.includes(".")
+      ? extname(extension).slice(1)
+      : extension;
 };

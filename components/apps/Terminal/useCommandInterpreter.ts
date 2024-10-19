@@ -16,6 +16,7 @@ import {
   aliases,
   autoComplete,
   commands,
+  formatToExtension,
   getFreeSpace,
   getUptime,
   help,
@@ -511,6 +512,7 @@ const useCommandInterpreter = (
 
           if (file && format) {
             const fullPath = await getFullPath(file);
+            const ext = formatToExtension(format);
 
             if (
               (await exists(fullPath)) &&
@@ -518,9 +520,9 @@ const useCommandInterpreter = (
             ) {
               const convertOrTranscode =
                 lcBaseCommand === "ffmpeg" ? transcode : convert;
-              const [[newName, newData]] = await convertOrTranscode(
+              const [[newName, newData] = []] = await convertOrTranscode(
                 [[basename(fullPath), await readFile(fullPath)]],
-                format,
+                ext,
                 printLn
               );
 
@@ -1090,13 +1092,7 @@ const useCommandInterpreter = (
 
           if (file && format) {
             const fullPath = await getFullPath(file);
-            let ext = format.toLowerCase().trim();
-
-            ext = ext.startsWith(".")
-              ? ext.slice(1)
-              : ext.includes(".")
-                ? extname(ext).slice(1)
-                : ext;
+            const ext = formatToExtension(format);
 
             if (
               (await exists(fullPath)) &&
