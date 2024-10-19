@@ -266,10 +266,9 @@ const useFolderContextMenu = (
       entryName: string,
       data?: Buffer,
       event?: CaptureTriggerEvent
-    ): Promise<void> =>
-      updateDesktopIconPositions(
-        [await newPath(entryName, data, "rename")],
-        event
+    ): Promise<string> =>
+      newPath(entryName, data, "rename", (name) =>
+        updateDesktopIconPositions([name], event)
       ),
     [newPath, updateDesktopIconPositions]
   );

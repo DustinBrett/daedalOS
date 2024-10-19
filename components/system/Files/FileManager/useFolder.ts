@@ -66,7 +66,8 @@ export const COMPLETE_ACTION: Record<string, CompleteAction> = {
 export type NewPath = (
   fileName: string,
   buffer?: Buffer,
-  completeAction?: CompleteAction
+  completeAction?: CompleteAction,
+  earlyNameCallback?: (newName: string) => void
 ) => Promise<string>;
 
 export type FolderActions = {
@@ -330,19 +331,31 @@ const useFolder = (
       );
 
       if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
-        updateFolder(directory, renamedPath, path);
-      }
+        if (dirname(path) === DESKTOP_PATH) {
+          setIconPositions((currentPositions) => ({
+            ...currentPositions,
+            ...(currentPositions[path]
+              ? { [renamedPath]: currentPositions[path] }
+              : undefined),
+          }));
 
-      if (dirname(path) === DESKTOP_PATH) {
-        setIconPositions((currentPositions) => {
-          const { [path]: iconPosition, ...newPositions } = currentPositions;
+          await updateFolder(directory, renamedPath, path);
 
-          if (iconPosition) {
-            newPositions[renamedPath] = iconPosition;
-          }
+          requestAnimationFrame(() =>
+            setIconPositions((currentPositions) => {
+              const { [path]: iconPosition, ...newPositions } =
+                currentPositions;
 
-          return newPositions;
-        });
+              if (iconPosition) {
+                newPositions[renamedPath] = iconPosition;
+              }
+
+              return newPositions;
+            })
+          );
+        } else {
+          await updateFolder(directory, renamedPath, path);
+        }
       }
     }
   };
@@ -350,12 +363,14 @@ const useFolder = (
     async (
       name: string,
       buffer?: Buffer,
-      completeAction?: CompleteAction
+      completeAction?: CompleteAction,
+      earlyNameCallback?: (newName: string) => void
     ): Promise<string> => {
       const uniqueName = await createPath(name, directory, buffer);
 
       if (uniqueName && !uniqueName.includes("/")) {
-        updateFolder(directory, uniqueName);
+        earlyNameCallback?.(uniqueName);
+        await updateFolder(directory, uniqueName);
 
         if (completeAction === "rename") setRenaming(uniqueName);
         else {
