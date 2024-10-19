@@ -85,7 +85,7 @@ const useWallpaper = (
   );
   const loadWallpaper = useCallback(
     async (keepCanvas?: boolean) => {
-      if (!desktopRef.current) return;
+      if (!desktopRef.current || window.DEBUG_DISABLE_WALLPAPER) return;
 
       let config: WallpaperConfig | undefined;
       const { matches: prefersReducedMotion } = window.matchMedia(
@@ -487,7 +487,7 @@ const useWallpaper = (
   ]);
 
   useEffect(() => {
-    if (sessionLoaded && !window.DEBUG_DISABLE_WALLPAPER) {
+    if (sessionLoaded) {
       if (wallpaperTimerRef.current) {
         window.clearTimeout(wallpaperTimerRef.current);
       }

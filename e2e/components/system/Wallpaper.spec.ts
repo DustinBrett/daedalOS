@@ -10,6 +10,7 @@ import {
   contextMenuIsVisible,
   desktopIsVisible,
   didCaptureConsoleLogs,
+  disableWallpaper,
   fileExplorerEntriesAreVisible,
   loadAppWithCanvas,
   mockPictureSlideshowRequest,
@@ -46,6 +47,7 @@ test("can change background", async ({ headless, browserName, page }) => {
 });
 
 test.describe("can set backgound", () => {
+  test.beforeEach(disableWallpaper);
   test.beforeEach(async ({ page }) => page.goto("/?url=/System/Icons/48x48"));
   test.beforeEach(windowsAreVisible);
   test.beforeEach(fileExplorerEntriesAreVisible);
