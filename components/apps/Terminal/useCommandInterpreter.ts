@@ -207,1006 +207,1018 @@ const useCommandInterpreter = (
       );
       const lcBaseCommand = baseCommand.toLowerCase();
 
-      // eslint-disable-next-line sonarjs/max-switch-cases
-      switch (lcBaseCommand) {
-        case "cat":
-        case "type": {
-          const [file] = commandArgs;
+      try {
+        // eslint-disable-next-line sonarjs/max-switch-cases
+        switch (lcBaseCommand) {
+          case "cat":
+          case "type": {
+            const [file] = commandArgs;
 
-          if (file) {
-            const fullPath = await getFullPath(file);
+            if (file) {
+              const fullPath = await getFullPath(file);
 
-            if (await exists(fullPath)) {
-              if ((await lstat(fullPath)).isDirectory()) {
-                printLn("Access is denied.");
-              } else {
-                printLn((await readFile(fullPath)).toString());
-              }
-            } else {
-              printLn(PATH_NOT_FOUND);
-            }
-          } else {
-            printLn(SYNTAX_ERROR);
-          }
-          break;
-        }
-        case "cd":
-        case "cd/":
-        case "cd.":
-        case "cd..":
-        case "chdir":
-        case "pwd": {
-          const [directory] =
-            lcBaseCommand.startsWith("cd") && lcBaseCommand.length > 2
-              ? [lcBaseCommand.slice(2)]
-              : commandArgs;
-
-          if (directory && lcBaseCommand !== "pwd") {
-            const fullPath = await getFullPath(directory);
-            const checkNewPath = async (newPath: string): Promise<void> => {
-              if (!(await lstat(newPath)).isDirectory()) {
-                printLn("The directory name is invalid.");
-              } else if (cd.current !== newPath) {
-                // eslint-disable-next-line no-param-reassign
-                cd.current = newPath;
-              }
-            };
-
-            if (await exists(fullPath)) {
-              await checkNewPath(fullPath);
-            } else {
-              const lcEntry = (await readdir(cd.current)).find(
-                (entry) =>
-                  entry.toLowerCase() === basename(fullPath).toLowerCase()
-              );
-
-              if (lcEntry) {
-                await checkNewPath(join(cd.current, lcEntry));
+              if (await exists(fullPath)) {
+                if ((await lstat(fullPath)).isDirectory()) {
+                  printLn("Access is denied.");
+                } else {
+                  printLn((await readFile(fullPath)).toString());
+                }
               } else {
                 printLn(PATH_NOT_FOUND);
               }
-            }
-          } else {
-            printLn(cd.current);
-          }
-          break;
-        }
-        case "color": {
-          const [r, g, b] = commandArgs;
-
-          if (
-            typeof r === "string" &&
-            typeof g === "string" &&
-            typeof b === "string"
-          ) {
-            print(rgbAnsi(Number(r), Number(g), Number(b)));
-          } else {
-            const [[bg, fg] = []] = commandArgs;
-            const { rgb: bgRgb, name: bgName } =
-              colorAttributes[bg?.toUpperCase()] || {};
-            const { rgb: fgRgb, name: fgName } =
-              colorAttributes[fg?.toUpperCase()] || {};
-
-            if (bgRgb) {
-              const useAsBg = Boolean(fgRgb);
-              const bgAnsi = rgbAnsi(...bgRgb, useAsBg);
-
-              print(bgAnsi);
-              printLn(`${useAsBg ? "Background" : "Foreground"}: ${bgName}`);
-              colorOutput.current[0] = bgAnsi;
-            }
-
-            if (fgRgb) {
-              const fgAnsi = rgbAnsi(...fgRgb);
-
-              print(fgAnsi);
-              printLn(`Foreground: ${fgName}`);
-              colorOutput.current[1] = fgAnsi;
-            }
-
-            if (!fgRgb && !bgRgb) {
-              print("\u001B[0m");
-              colorOutput.current = [];
-            }
-          }
-          break;
-        }
-        case "copy":
-        case "cp": {
-          const [source, destination] = commandArgs;
-          const fullSourcePath = await getFullPath(source);
-
-          if (await exists(fullSourcePath)) {
-            if (destination) {
-              const fullDestinationPath = await getFullPath(destination);
-              const dirName = dirname(fullDestinationPath);
-
-              updateFile(
-                join(
-                  dirName,
-                  await createPath(
-                    basename(fullDestinationPath),
-                    dirName,
-                    await readFile(fullSourcePath)
-                  )
-                )
-              );
-              printLn("\t1 file(s) copied.");
             } else {
-              printLn("The file cannot be copied onto itself.");
-              printLn("\t0 file(s) copied.");
+              printLn(SYNTAX_ERROR);
             }
-          } else {
-            printLn(FILE_NOT_FILE);
-          }
-          break;
-        }
-        case "clear":
-        case "cls":
-          terminal?.reset();
-          terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
-          break;
-        case "date":
-          printLn(
-            `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
-          );
-          break;
-        case "del":
-        case "erase":
-        case "rd":
-        case "rm":
-        case "rmdir": {
-          const [commandPath] = commandArgs;
-
-          if (commandPath) {
-            const fullPath = await getFullPath(commandPath);
-
-            if ((await exists(fullPath)) && (await deletePath(fullPath))) {
-              updateFile(fullPath, true);
-            }
-          }
-          break;
-        }
-        case "dir":
-        case "ls": {
-          const [directory = ""] = commandArgs;
-          const listDir = async (dirPath: string): Promise<void> => {
-            let totalSize = 0;
-            let fileCount = 0;
-            let directoryCount = 0;
-            let entries = await readdir(dirPath);
-
-            if (
-              entries.length === 0 &&
-              rootFs?.mntMap[dirPath]?.getName() === "FileSystemAccess"
-            ) {
-              await requestPermission(dirPath);
-              entries = await readdir(dirPath);
-            }
-
-            const timeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
-              timeStyle: "short",
-            });
-            const entriesWithStats = await Promise.all(
-              entries
-                .filter(
-                  (entry) =>
-                    (!directory.startsWith("*") ||
-                      entry.endsWith(directory.slice(1))) &&
-                    (!directory.endsWith("*") ||
-                      entry.startsWith(directory.slice(0, -1)))
-                )
-                .map(async (entry) => {
-                  const filePath = join(dirPath, entry);
-                  const fileStats = await stat(filePath);
-                  const mDate = new Date(getModifiedTime(filePath, fileStats));
-                  const date = mDate.toISOString().slice(0, 10);
-                  const time = timeFormatter.format(mDate).padStart(8, "0");
-                  const isDirectory = fileStats.isDirectory();
-
-                  totalSize += isDirectory ? 0 : fileStats.size;
-                  if (isDirectory) {
-                    directoryCount += 1;
-                  } else {
-                    fileCount += 1;
-                  }
-
-                  return [
-                    `${date}  ${time}`,
-                    isDirectory
-                      ? "<DIR>        "
-                      : fileStats.size.toLocaleString(),
-                    entry,
-                  ];
-                })
-            );
-            printLn(` Directory of ${dirPath}`);
-            printLn("");
-
-            const fullSizeTerminal =
-              !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
-
-            printTable(
-              [
-                ["Date", fullSizeTerminal ? 22 : 20],
-                [
-                  "Type/Size",
-                  fullSizeTerminal ? 15 : 13,
-                  true,
-                  (size) => (size === "-1" ? "" : size),
-                ],
-                ["Name", terminal?.cols ? terminal.cols - 40 : 30],
-              ],
-              entriesWithStats,
-              printLn,
-              true
-            );
-            printLn(
-              `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
-            );
-            printLn(`\t\t${directoryCount} Dir(s)${await getFreeSpace()}`);
-          };
-
-          if (
-            directory &&
-            !directory.startsWith("*") &&
-            !directory.endsWith("*")
-          ) {
-            const fullPath = await getFullPath(directory);
-
-            if (await exists(fullPath)) {
-              if ((await lstat(fullPath)).isDirectory()) {
-                await listDir(fullPath);
-              } else {
-                printLn(basename(fullPath));
-              }
-            } else {
-              printLn("File Not Found");
-            }
-          } else {
-            await listDir(cd.current);
-          }
-          break;
-        }
-        case "echo":
-          printLn(command.slice(command.indexOf(" ") + 1));
-          break;
-        case "exit":
-        case "quit":
-          closeWithTransition(id);
-          break;
-        case "file": {
-          const [commandPath] = commandArgs;
-
-          if (commandPath) {
-            const fullPath = await getFullPath(commandPath);
-
-            if (await exists(fullPath)) {
-              const { fileTypeFromBuffer } = await import("file-type");
-              const { mime = "Unknown" } =
-                (await fileTypeFromBuffer(await readFile(fullPath))) || {};
-
-              printLn(`${commandPath}: ${mime}`);
-            }
-          }
-          break;
-        }
-        case "find":
-        case "search": {
-          if (commandArgs.length === 0) {
-            printLn("FIND: Parameter format not correct");
             break;
           }
+          case "cd":
+          case "cd/":
+          case "cd.":
+          case "cd..":
+          case "chdir":
+          case "pwd": {
+            const [directory] =
+              lcBaseCommand.startsWith("cd") && lcBaseCommand.length > 2
+                ? [lcBaseCommand.slice(2)]
+                : commandArgs;
 
-          const results = await fullSearch(
-            commandArgs.join(" "),
-            readFile,
-            rootFs
-          );
-          results?.forEach(({ ref }) => printLn(ref));
-          break;
-        }
-        case "ffmpeg":
-        case "imagemagick": {
-          const [file, format] = commandArgs;
+            if (directory && lcBaseCommand !== "pwd") {
+              const fullPath = await getFullPath(directory);
+              const checkNewPath = async (newPath: string): Promise<void> => {
+                if (!(await lstat(newPath)).isDirectory()) {
+                  printLn("The directory name is invalid.");
+                } else if (cd.current !== newPath) {
+                  // eslint-disable-next-line no-param-reassign
+                  cd.current = newPath;
+                }
+              };
 
-          if (file && format) {
-            const fullPath = await getFullPath(file);
-            const ext = formatToExtension(format);
+              if (await exists(fullPath)) {
+                await checkNewPath(fullPath);
+              } else {
+                const lcEntry = (await readdir(cd.current)).find(
+                  (entry) =>
+                    entry.toLowerCase() === basename(fullPath).toLowerCase()
+                );
+
+                if (lcEntry) {
+                  await checkNewPath(join(cd.current, lcEntry));
+                } else {
+                  printLn(PATH_NOT_FOUND);
+                }
+              }
+            } else {
+              printLn(cd.current);
+            }
+            break;
+          }
+          case "color": {
+            const [r, g, b] = commandArgs;
 
             if (
-              (await exists(fullPath)) &&
-              !(await lstat(fullPath)).isDirectory()
+              typeof r === "string" &&
+              typeof g === "string" &&
+              typeof b === "string"
             ) {
-              const convertOrTranscode =
-                lcBaseCommand === "ffmpeg" ? transcode : convert;
-              const [[newName, newData] = []] = await convertOrTranscode(
-                [[basename(fullPath), await readFile(fullPath)]],
-                ext,
-                printLn
-              );
+              print(rgbAnsi(Number(r), Number(g), Number(b)));
+            } else {
+              const [[bg, fg] = []] = commandArgs;
+              const { rgb: bgRgb, name: bgName } =
+                colorAttributes[bg?.toUpperCase()] || {};
+              const { rgb: fgRgb, name: fgName } =
+                colorAttributes[fg?.toUpperCase()] || {};
 
-              if (newName && newData) {
-                const dirName = dirname(fullPath);
+              if (bgRgb) {
+                const useAsBg = Boolean(fgRgb);
+                const bgAnsi = rgbAnsi(...bgRgb, useAsBg);
+
+                print(bgAnsi);
+                printLn(`${useAsBg ? "Background" : "Foreground"}: ${bgName}`);
+                colorOutput.current[0] = bgAnsi;
+              }
+
+              if (fgRgb) {
+                const fgAnsi = rgbAnsi(...fgRgb);
+
+                print(fgAnsi);
+                printLn(`Foreground: ${fgName}`);
+                colorOutput.current[1] = fgAnsi;
+              }
+
+              if (!fgRgb && !bgRgb) {
+                print("\u001B[0m");
+                colorOutput.current = [];
+              }
+            }
+            break;
+          }
+          case "copy":
+          case "cp": {
+            const [source, destination] = commandArgs;
+            const fullSourcePath = await getFullPath(source);
+
+            if (await exists(fullSourcePath)) {
+              if (destination) {
+                const fullDestinationPath = await getFullPath(destination);
+                const dirName = dirname(fullDestinationPath);
 
                 updateFile(
-                  join(dirName, await createPath(newName, dirName, newData))
+                  join(
+                    dirName,
+                    await createPath(
+                      basename(fullDestinationPath),
+                      dirName,
+                      await readFile(fullSourcePath)
+                    )
+                  )
                 );
+                printLn("\t1 file(s) copied.");
+              } else {
+                printLn("The file cannot be copied onto itself.");
+                printLn("\t0 file(s) copied.");
               }
             } else {
               printLn(FILE_NOT_FILE);
             }
-          } else {
-            printLn(SYNTAX_ERROR);
+            break;
           }
-          break;
-        }
-        case "git":
-        case "isogit":
-          if (fs) {
-            await processGit(
-              commandArgs,
-              cd.current,
-              printLn,
-              fs,
-              updateFolder
-            );
-          }
-          break;
-        case "help": {
-          const [commandName] = commandArgs;
-          const showAliases = commandName === "-a";
-
-          if (commandName && !showAliases) {
-            const helpCommand = commands[commandName]
-              ? commandName
-              : Object.entries(aliases).find(
-                  ([, [baseCommandName]]) => baseCommandName === commandName
-                )?.[0];
-
-            if (helpCommand && commands[helpCommand]) {
-              printLn(commands[helpCommand]);
-            } else {
-              printLn("This command is not supported by the help utility.");
-            }
-          } else {
-            help(printLn, commands, showAliases ? aliases : undefined);
-          }
-          break;
-        }
-        case "history":
-          localEcho?.history.entries.forEach((entry, index) =>
-            printLn(`${(index + 1).toString().padStart(4)} ${entry}`)
-          );
-          break;
-        case "ipfs": {
-          const [commandName, cid] = commandArgs;
-
-          if (commandName === "get" && cid) {
-            await getFullPath(`ipfs://${cid}`, cd.current);
-          }
-
-          break;
-        }
-        case "ifconfig":
-        case "ipconfig":
-        case "whatsmyip": {
-          const cloudFlareIpTraceText =
-            (await (
-              await fetch("https://cloudflare.com/cdn-cgi/trace")
-            ).text()) || "";
-          const { ip = "" } = Object.fromEntries(
-            cloudFlareIpTraceText
-              .trim()
-              .split("\n")
-              .map((entry) => entry.split("=")) || []
-          ) as Record<string, string>;
-          const isValidIp = (possibleIp: string): boolean => {
-            const octets = possibleIp.split(".");
-
-            return (
-              octets.length === 4 &&
-              octets.map(Number).every((octet) => octet > 0 && octet < 256)
-            );
-          };
-
-          printLn("IP Configuration");
-          printLn("");
-          printLn(
-            `   IPv4 Address. . . . . . . . . . . : ${
-              isValidIp(ip) ? ip : "Unknown"
-            }`
-          );
-          break;
-        }
-        case "kill":
-        case "taskkill": {
-          const [processId] = commandArgs;
-          const processName =
-            Number.isNaN(processId) || processesRef.current[processId]
-              ? processId
-              : Object.keys(processesRef.current)[Number(processId)];
-
-          if (processesRef.current[processName]) {
-            closeWithTransition(processName);
+          case "clear":
+          case "cls":
+            terminal?.reset();
+            terminal?.write(`\u001Bc${colorOutput.current.join("")}`);
+            break;
+          case "date":
             printLn(
-              `SUCCESS: Sent termination signal to the process "${processName}".`
+              `The current date is: ${getTZOffsetISOString().slice(0, 10)}`
             );
-          } else {
-            printLn(`ERROR: The process "${processName}" not found.`);
-          }
-          break;
-        }
-        case "license":
-          printLn(displayLicense);
-          break;
-        case "md":
-        case "mkdir": {
-          const [directory] = commandArgs;
+            break;
+          case "del":
+          case "erase":
+          case "rd":
+          case "rm":
+          case "rmdir": {
+            const [commandPath] = commandArgs;
 
-          if (directory) {
-            const fullPath = await getFullPath(directory);
+            if (commandPath) {
+              const fullPath = await getFullPath(commandPath);
 
-            await mkdirRecursive(fullPath);
-            updateFile(fullPath);
+              if ((await exists(fullPath)) && (await deletePath(fullPath))) {
+                updateFile(fullPath, true);
+              }
+            }
+            break;
           }
-          break;
-        }
-        case "mediainfo":
-          {
+          case "dir":
+          case "ls": {
+            const [directory = ""] = commandArgs;
+            const listDir = async (dirPath: string): Promise<void> => {
+              let totalSize = 0;
+              let fileCount = 0;
+              let directoryCount = 0;
+              let entries = await readdir(dirPath);
+
+              if (
+                entries.length === 0 &&
+                rootFs?.mntMap[dirPath]?.getName() === "FileSystemAccess"
+              ) {
+                await requestPermission(dirPath);
+                entries = await readdir(dirPath);
+              }
+
+              const timeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+                timeStyle: "short",
+              });
+              const entriesWithStats = await Promise.all(
+                entries
+                  .filter(
+                    (entry) =>
+                      (!directory.startsWith("*") ||
+                        entry.endsWith(directory.slice(1))) &&
+                      (!directory.endsWith("*") ||
+                        entry.startsWith(directory.slice(0, -1)))
+                  )
+                  .map(async (entry) => {
+                    const filePath = join(dirPath, entry);
+                    const fileStats = await stat(filePath);
+                    const mDate = new Date(
+                      getModifiedTime(filePath, fileStats)
+                    );
+                    const date = mDate.toISOString().slice(0, 10);
+                    const time = timeFormatter.format(mDate).padStart(8, "0");
+                    const isDirectory = fileStats.isDirectory();
+
+                    totalSize += isDirectory ? 0 : fileStats.size;
+                    if (isDirectory) {
+                      directoryCount += 1;
+                    } else {
+                      fileCount += 1;
+                    }
+
+                    return [
+                      `${date}  ${time}`,
+                      isDirectory
+                        ? "<DIR>        "
+                        : fileStats.size.toLocaleString(),
+                      entry,
+                    ];
+                  })
+              );
+              printLn(` Directory of ${dirPath}`);
+              printLn("");
+
+              const fullSizeTerminal =
+                !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
+
+              printTable(
+                [
+                  ["Date", fullSizeTerminal ? 22 : 20],
+                  [
+                    "Type/Size",
+                    fullSizeTerminal ? 15 : 13,
+                    true,
+                    (size) => (size === "-1" ? "" : size),
+                  ],
+                  ["Name", terminal?.cols ? terminal.cols - 40 : 30],
+                ],
+                entriesWithStats,
+                printLn,
+                true
+              );
+              printLn(
+                `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
+              );
+              printLn(`\t\t${directoryCount} Dir(s)${await getFreeSpace()}`);
+            };
+
+            if (
+              directory &&
+              !directory.startsWith("*") &&
+              !directory.endsWith("*")
+            ) {
+              const fullPath = await getFullPath(directory);
+
+              if (await exists(fullPath)) {
+                if ((await lstat(fullPath)).isDirectory()) {
+                  await listDir(fullPath);
+                } else {
+                  printLn(basename(fullPath));
+                }
+              } else {
+                printLn("File Not Found");
+              }
+            } else {
+              await listDir(cd.current);
+            }
+            break;
+          }
+          case "echo":
+            printLn(command.slice(command.indexOf(" ") + 1));
+            break;
+          case "exit":
+          case "quit":
+            closeWithTransition(id);
+            break;
+          case "file": {
             const [commandPath] = commandArgs;
 
             if (commandPath) {
               const fullPath = await getFullPath(commandPath);
 
               if (await exists(fullPath)) {
-                try {
-                  printLn(await analyzeFileToText(await readFile(fullPath)));
-                } catch {
-                  printLn("Failed to parse media file");
-                }
+                const { fileTypeFromBuffer } = await import("file-type");
+                const { mime = "Unknown" } =
+                  (await fileTypeFromBuffer(await readFile(fullPath))) || {};
+
+                printLn(`${commandPath}: ${mime}`);
               }
             }
+            break;
           }
-          break;
-        case "mount":
-          if (isFileSystemMappingSupported()) {
-            try {
-              const mappedFolder = await mapFs(cd.current);
-
-              if (mappedFolder) {
-                const fullPath = join(cd.current, mappedFolder);
-
-                updateFolder(cd.current, mappedFolder);
-
-                // eslint-disable-next-line no-param-reassign
-                cd.current = fullPath;
-              }
-            } catch {
-              // Ignore failure to mount
+          case "find":
+          case "search": {
+            if (commandArgs.length === 0) {
+              printLn("FIND: Parameter format not correct");
+              break;
             }
-          } else {
-            printLn(COMMAND_NOT_SUPPORTED);
-          }
-          break;
-        case "move":
-        case "mv":
-        case "ren":
-        case "rename": {
-          const [source, destination] = commandArgs;
-          const fullSourcePath = await getFullPath(source);
 
-          if (await exists(fullSourcePath)) {
-            if (destination) {
-              let fullDestinationPath = await getFullPath(destination);
+            const results = await fullSearch(
+              commandArgs.join(" "),
+              readFile,
+              rootFs
+            );
+            results?.forEach(({ ref }) => printLn(ref));
+            break;
+          }
+          case "ffmpeg":
+          case "imagemagick": {
+            const [file, format] = commandArgs;
+
+            if (file && format) {
+              const fullPath = await getFullPath(file);
+              const ext = formatToExtension(format);
 
               if (
-                ["move", "mv"].includes(lcBaseCommand) &&
-                (await exists(fullDestinationPath)) &&
-                (await lstat(fullDestinationPath)).isDirectory()
+                (await exists(fullPath)) &&
+                !(await lstat(fullPath)).isDirectory()
               ) {
-                fullDestinationPath = join(
-                  fullDestinationPath,
-                  basename(fullSourcePath)
+                const convertOrTranscode =
+                  lcBaseCommand === "ffmpeg" ? transcode : convert;
+                const [[newName, newData] = []] = await convertOrTranscode(
+                  [[basename(fullPath), await readFile(fullPath)]],
+                  ext,
+                  printLn
                 );
-              }
 
-              if (await rename(fullSourcePath, fullDestinationPath)) {
-                updateFile(fullSourcePath, true);
-                updateFile(fullDestinationPath);
+                if (newName && newData) {
+                  const dirName = dirname(fullPath);
+
+                  updateFile(
+                    join(dirName, await createPath(newName, dirName, newData))
+                  );
+                }
+              } else {
+                printLn(FILE_NOT_FILE);
               }
             } else {
               printLn(SYNTAX_ERROR);
             }
-          } else {
-            printLn(FILE_NOT_FILE);
+            break;
           }
-          break;
-        }
-        case "neofetch":
-        case "systeminfo": {
-          await loadFiles(["/Program Files/Xterm.js/ua-parser.js"]);
+          case "git":
+          case "isogit":
+            if (fs) {
+              await processGit(
+                commandArgs,
+                cd.current,
+                printLn,
+                fs,
+                updateFolder
+              );
+            }
+            break;
+          case "help": {
+            const [commandName] = commandArgs;
+            const showAliases = commandName === "-a";
 
-          const {
-            browser,
-            cpu,
-            engine,
-            gpu,
-            os: hostOS,
-          } = (new window.UAParser().getResult() || {}) as IResultWithGPU;
-          const { cols, options } = terminal || {};
-          const userId = `public@${window.location.hostname}`;
-          const terminalFont = (options?.fontFamily || config.fontFamily)
-            ?.split(", ")
-            .find((font) =>
-              document.fonts.check(
-                `${options?.fontSize || config.fontSize || 12}px ${font}`
-              )
-            );
-          const { quota = 0, usage = 0 } =
-            (await navigator.storage?.estimate?.()) || {};
-          const labelColor = 3;
-          const labelText = (text: string): string =>
-            `${rgbAnsi(...colorAttributes[labelColor].rgb)}${text}${
-              colorOutput.current?.[0] || rgbAnsi(...colorAttributes[7].rgb)
-            }`;
-          const output = [
-            userId,
-            Array.from({ length: userId.length }).fill("-").join(""),
-            `OS: ${alias} ${displayVersion()}`,
-          ];
+            if (commandName && !showAliases) {
+              const helpCommand = commands[commandName]
+                ? commandName
+                : Object.entries(aliases).find(
+                    ([, [baseCommandName]]) => baseCommandName === commandName
+                  )?.[0];
 
-          if (hostOS?.name) {
-            output.push(
-              `Host: ${hostOS.name}${
-                hostOS?.version ? ` ${hostOS.version}` : ""
-              }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`
-            );
-          }
-
-          if (browser?.name) {
-            output.push(
-              `Kernel: ${browser.name}${
-                browser?.version ? ` ${browser.version}` : ""
-              }${engine?.name ? ` (${engine.name})` : ""}`
-            );
-          }
-
-          output.push(
-            `Uptime: ${getUptime(true)}`,
-            `Packages: ${
-              Object.entries(processDirectory).filter(
-                ([, { dialogProcess }]) => !dialogProcess
-              ).length
-            }`
-          );
-
-          if (window.screen?.width && window.screen?.height) {
-            output.push(
-              `Resolution: ${window.screen.width}x${window.screen.height}`
-            );
-          }
-
-          output.push(`Theme: ${themeName}`);
-
-          if (terminalFont) {
-            output.push(`Terminal Font: ${terminalFont}`);
-          }
-
-          if (gpu?.vendor) {
-            output.push(
-              `GPU: ${gpu.vendor}${gpu?.model ? ` ${gpu.model}` : ""}`
-            );
-          } else if (gpu?.model) {
-            output.push(`GPU: ${gpu.model}`);
-          }
-
-          if (window.performance && "memory" in window.performance) {
-            output.push(
-              `Memory: ${(
-                (window.performance as WindowPerformance).memory
-                  .totalJSHeapSize /
-                1024 /
-                1024
-              ).toFixed(0)}MB / ${(
-                (window.performance as WindowPerformance).memory
-                  .jsHeapSizeLimit /
-                1024 /
-                1024
-              ).toFixed(0)}MB`
-            );
-          }
-
-          if (quota) {
-            output.push(
-              `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
-                quota /
-                1024 /
-                1024 /
-                1024
-              ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`
-            );
-          }
-
-          const longestLineLength = output.reduce(
-            (max, line) => Math.max(max, line.length),
-            0
-          );
-          const maxCols = cols || config.cols || 70;
-          const longestLine = PI_ASCII[0].length + longestLineLength;
-          const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
-
-          output.push(
-            "\n",
-            [0, 4, 2, 6, 1, 5, 3, 7]
-              .map((color) => printColor(color, colorOutput.current))
-              .join(""),
-            [8, "C", "A", "E", 9, "D", "B", "F"]
-              .map((color) => printColor(color, colorOutput.current))
-              .join("")
-          );
-          PI_ASCII.forEach((imgLine, lineIndex) => {
-            let outputLine = output[lineIndex] || "";
-
-            if (lineIndex === 0) {
-              const [user, system] = outputLine.split("@");
-
-              outputLine = `${labelText(user)}@${labelText(system)}`;
-            } else {
-              const [label, info] = outputLine.split(":");
-
-              if (info) {
-                outputLine = `${labelText(label)}:${info}`;
+              if (helpCommand && commands[helpCommand]) {
+                printLn(commands[helpCommand]);
+              } else {
+                printLn("This command is not supported by the help utility.");
               }
+            } else {
+              help(printLn, commands, showAliases ? aliases : undefined);
+            }
+            break;
+          }
+          case "history":
+            localEcho?.history.entries.forEach((entry, index) =>
+              printLn(`${(index + 1).toString().padStart(4)} ${entry}`)
+            );
+            break;
+          case "ipfs": {
+            const [commandName, cid] = commandArgs;
+
+            if (commandName === "get" && cid) {
+              await getFullPath(`ipfs://${cid}`, cd.current);
             }
 
+            break;
+          }
+          case "ifconfig":
+          case "ipconfig":
+          case "whatsmyip": {
+            const cloudFlareIpTraceText =
+              (await (
+                await fetch("https://cloudflare.com/cdn-cgi/trace")
+              ).text()) || "";
+            const { ip = "" } = Object.fromEntries(
+              cloudFlareIpTraceText
+                .trim()
+                .split("\n")
+                .map((entry) => entry.split("=")) || []
+            ) as Record<string, string>;
+            const isValidIp = (possibleIp: string): boolean => {
+              const octets = possibleIp.split(".");
+
+              return (
+                octets.length === 4 &&
+                octets.map(Number).every((octet) => octet > 0 && octet < 256)
+              );
+            };
+
+            printLn("IP Configuration");
+            printLn("");
             printLn(
-              `${labelText(imgLine)}${
-                outputLine.padStart(outputLine.length + imgPadding, " ") || ""
+              `   IPv4 Address. . . . . . . . . . . : ${
+                isValidIp(ip) ? ip : "Unknown"
               }`
             );
-          });
-          break;
-        }
-        case "nslookup": {
-          const [domainName] = commandArgs;
+            break;
+          }
+          case "kill":
+          case "taskkill": {
+            const [processId] = commandArgs;
+            const processName =
+              Number.isNaN(processId) || processesRef.current[processId]
+                ? processId
+                : Object.keys(processesRef.current)[Number(processId)];
 
-          if (domainName) {
-            const nsLookup = async (
-              domain: string,
-              server = PRIMARY_NAME_SERVER[0]
-            ): Promise<NsEntry[]> => {
-              const { Answer = [] } = (await (
-                await fetch(`${server}?name=${domain}`, {
-                  headers: { Accept: "application/dns-json" },
-                })
-              ).json()) as NsResponse;
-
-              return Answer;
-            };
-            let answer: NsEntry[] | undefined;
-            let primaryFailed = false;
-
-            try {
-              answer = await nsLookup(domainName);
-            } catch {
-              try {
-                primaryFailed = true;
-                answer = await nsLookup(domainName, BACKUP_NAME_SERVER[0]);
-              } catch {
-                // Ignore failure on backup name server
-              }
-            }
-
-            if (answer) {
-              const [server, address] = primaryFailed
-                ? BACKUP_NAME_SERVER
-                : PRIMARY_NAME_SERVER;
-              const { host } = new URL(server);
-
-              printLn(`Server:  ${host}`);
-              printLn(`Address:  ${address}`);
-              printLn("");
-              printLn("Non-authoritative answer:");
-              printLn(`Name:    ${domainName}`);
+            if (processesRef.current[processName]) {
+              closeWithTransition(processName);
               printLn(
-                `Addresses:  ${answer
-                  .map(({ data }) => data)
-                  .join("\n          ")}`
+                `SUCCESS: Sent termination signal to the process "${processName}".`
               );
-              printLn("");
             } else {
-              printLn("Failed to contact name servers.");
+              printLn(`ERROR: The process "${processName}" not found.`);
             }
+            break;
           }
-          break;
-        }
-        case "sheep":
-        case "esheep": {
-          const { countSheep, killSheep, spawnSheep } = await import(
-            "utils/spawnSheep"
-          );
-          let [count = 1, duration = 0] = commandArgs;
+          case "license":
+            printLn(displayLicense);
+            break;
+          case "md":
+          case "mkdir": {
+            const [directory] = commandArgs;
 
-          if (!Number.isNaN(count) && !Number.isNaN(duration)) {
-            count = Number(count);
-            duration = Number(duration);
+            if (directory) {
+              const fullPath = await getFullPath(directory);
 
-            if (count > 1) {
-              await spawnSheep();
-              count -= 1;
+              await mkdirRecursive(fullPath);
+              updateFile(fullPath);
             }
-
-            const maxDuration =
-              (duration || (count > 1 ? 1 : 0)) * MILLISECONDS_IN_SECOND;
-
-            Array.from({ length: count === 0 ? countSheep() : count })
-              .fill(0)
-              .map(() => Math.floor(Math.random() * maxDuration))
-              .forEach((delay) =>
-                setTimeout(count === 0 ? killSheep : spawnSheep, delay)
-              );
+            break;
           }
-          break;
-        }
-        case "ps":
-        case "tasklist":
-          printTable(
-            [
-              ["Image Name", 25],
-              ["PID", 8],
-              ["Title", 16],
-            ],
-            Object.entries(processesRef.current).map(
-              ([pid, { title }], index) => [pid, index.toString(), title]
-            ),
-            printLn
-          );
-          break;
-        case "py":
-        case "python":
-        case "python3":
-          {
-            const [file] = commandArgs;
-            const fullSourcePath = await getFullPath(file);
+          case "mediainfo":
+            {
+              const [commandPath] = commandArgs;
 
-            if (await exists(fullSourcePath)) {
-              const code = await readFile(fullSourcePath);
+              if (commandPath) {
+                const fullPath = await getFullPath(commandPath);
 
-              if (code.length > 0) {
-                await runPython(code.toString(), printLn);
+                if (await exists(fullPath)) {
+                  try {
+                    printLn(await analyzeFileToText(await readFile(fullPath)));
+                  } catch {
+                    printLn("Failed to parse media file");
+                  }
+                }
+              }
+            }
+            break;
+          case "mount":
+            if (isFileSystemMappingSupported()) {
+              try {
+                const mappedFolder = await mapFs(cd.current);
+
+                if (mappedFolder) {
+                  const fullPath = join(cd.current, mappedFolder);
+
+                  updateFolder(cd.current, mappedFolder);
+
+                  // eslint-disable-next-line no-param-reassign
+                  cd.current = fullPath;
+                }
+              } catch {
+                // Ignore failure to mount
               }
             } else {
-              const [, code = "version"] = command.split(" ");
-
-              await runPython(code, printLn);
+              printLn(COMMAND_NOT_SUPPORTED);
             }
-          }
-          break;
-        case "qjs":
-        case "quickjs":
-        case "node":
-          {
-            const [file] = commandArgs;
-            const fullSourcePath = await getFullPath(file);
+            break;
+          case "move":
+          case "mv":
+          case "ren":
+          case "rename": {
+            const [source, destination] = commandArgs;
+            const fullSourcePath = await getFullPath(source);
 
             if (await exists(fullSourcePath)) {
-              const code = await readFile(fullSourcePath);
+              if (destination) {
+                let fullDestinationPath = await getFullPath(destination);
 
-              if (code.length > 0) {
-                await runJs(code.toString(), printLn);
+                if (
+                  ["move", "mv"].includes(lcBaseCommand) &&
+                  (await exists(fullDestinationPath)) &&
+                  (await lstat(fullDestinationPath)).isDirectory()
+                ) {
+                  fullDestinationPath = join(
+                    fullDestinationPath,
+                    basename(fullSourcePath)
+                  );
+                }
+
+                if (await rename(fullSourcePath, fullDestinationPath)) {
+                  updateFile(fullSourcePath, true);
+                  updateFile(fullDestinationPath);
+                }
+              } else {
+                printLn(SYNTAX_ERROR);
               }
             } else {
-              const [, code] = command.split(" ");
-
-              await runJs(code, printLn);
+              printLn(FILE_NOT_FILE);
             }
+            break;
           }
-          break;
-        case "logout":
-        case "restart":
-        case "shutdown":
-          resetStorage(rootFs).finally(() => window.location.reload());
-          break;
-        case "time":
-          printLn(
-            `The current time is: ${getTZOffsetISOString().slice(11, 22)}`
-          );
-          break;
-        case "title":
-          changeTitle(id, command.slice(command.indexOf(" ") + 1));
-          break;
-        case "touch": {
-          const [file] = commandArgs;
+          case "neofetch":
+          case "systeminfo": {
+            await loadFiles(["/Program Files/Xterm.js/ua-parser.js"]);
 
-          if (file) {
-            const fullPath = await getFullPath(file);
-            const dirName = dirname(fullPath);
-
-            updateFile(
-              join(
-                dirName,
-                await createPath(basename(fullPath), dirName, Buffer.from(""))
-              )
-            );
-          }
-          break;
-        }
-        case "uptime":
-          printLn(`Uptime: ${getUptime()}`);
-          break;
-        case "ver":
-        case "version":
-          printLn(displayVersion());
-          break;
-        case "wapm":
-        case "wasmer":
-        case "wax": {
-          const [file] = commandArgs;
-          const fullSourcePath = await getFullPath(file);
-
-          const [wasmName, wasmFile] = await loadWapm(
-            commandArgs,
-            print,
-            printLn,
-            fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
-              ? await readFile(fullSourcePath)
-              : undefined,
-            pipedCommand
-          );
-
-          if (wasmName && wasmFile) {
-            writeFile(
-              join(SYSTEM_PATH, `${wasmName}.wasm`),
-              Buffer.from(wasmFile),
-              true
-            );
-          }
-
-          break;
-        }
-        case "weather":
-        case "wttr": {
-          const response = await fetch(
-            "https://wttr.in/?1nAF",
-            HIGH_PRIORITY_REQUEST
-          );
-
-          printLn(await response.text());
-
-          const [bgAnsi, fgAnsi] = colorOutput.current;
-
-          if (bgAnsi) print(bgAnsi);
-          if (fgAnsi) print(fgAnsi);
-          break;
-        }
-        case "whoami":
-          printLn(`${window.location.hostname}\\public`);
-          break;
-        case "wsl":
-        case "linux":
-          open("V86", { url: LINUX_IMAGE_PATH });
-          break;
-        case "xlsx": {
-          const [file, format = "xlsx"] = commandArgs;
-
-          if (file && format) {
-            const fullPath = await getFullPath(file);
-            const ext = formatToExtension(format);
-
-            if (
-              (await exists(fullPath)) &&
-              !(await lstat(fullPath)).isDirectory()
-            ) {
-              const workBook = await convertSheet(
-                await readFile(fullPath),
-                ext
+            const {
+              browser,
+              cpu,
+              engine,
+              gpu,
+              os: hostOS,
+            } = (new window.UAParser().getResult() || {}) as IResultWithGPU;
+            const { cols, options } = terminal || {};
+            const userId = `public@${window.location.hostname}`;
+            const terminalFont = (options?.fontFamily || config.fontFamily)
+              ?.split(", ")
+              .find((font) =>
+                document.fonts.check(
+                  `${options?.fontSize || config.fontSize || 12}px ${font}`
+                )
               );
+            const { quota = 0, usage = 0 } =
+              (await navigator.storage?.estimate?.()) || {};
+            const labelColor = 3;
+            const labelText = (text: string): string =>
+              `${rgbAnsi(...colorAttributes[labelColor].rgb)}${text}${
+                colorOutput.current?.[0] || rgbAnsi(...colorAttributes[7].rgb)
+              }`;
+            const output = [
+              userId,
+              Array.from({ length: userId.length }).fill("-").join(""),
+              `OS: ${alias} ${displayVersion()}`,
+            ];
+
+            if (hostOS?.name) {
+              output.push(
+                `Host: ${hostOS.name}${
+                  hostOS?.version ? ` ${hostOS.version}` : ""
+                }${cpu?.architecture ? ` ${cpu?.architecture}` : ""}`
+              );
+            }
+
+            if (browser?.name) {
+              output.push(
+                `Kernel: ${browser.name}${
+                  browser?.version ? ` ${browser.version}` : ""
+                }${engine?.name ? ` (${engine.name})` : ""}`
+              );
+            }
+
+            output.push(
+              `Uptime: ${getUptime(true)}`,
+              `Packages: ${
+                Object.entries(processDirectory).filter(
+                  ([, { dialogProcess }]) => !dialogProcess
+                ).length
+              }`
+            );
+
+            if (window.screen?.width && window.screen?.height) {
+              output.push(
+                `Resolution: ${window.screen.width}x${window.screen.height}`
+              );
+            }
+
+            output.push(`Theme: ${themeName}`);
+
+            if (terminalFont) {
+              output.push(`Terminal Font: ${terminalFont}`);
+            }
+
+            if (gpu?.vendor) {
+              output.push(
+                `GPU: ${gpu.vendor}${gpu?.model ? ` ${gpu.model}` : ""}`
+              );
+            } else if (gpu?.model) {
+              output.push(`GPU: ${gpu.model}`);
+            }
+
+            if (window.performance && "memory" in window.performance) {
+              output.push(
+                `Memory: ${(
+                  (window.performance as WindowPerformance).memory
+                    .totalJSHeapSize /
+                  1024 /
+                  1024
+                ).toFixed(0)}MB / ${(
+                  (window.performance as WindowPerformance).memory
+                    .jsHeapSizeLimit /
+                  1024 /
+                  1024
+                ).toFixed(0)}MB`
+              );
+            }
+
+            if (quota) {
+              output.push(
+                `Disk (/): ${(usage / 1024 / 1024 / 1024).toFixed(0)}G / ${(
+                  quota /
+                  1024 /
+                  1024 /
+                  1024
+                ).toFixed(0)}G (${((usage / quota) * 100).toFixed(2)}%)`
+              );
+            }
+
+            const longestLineLength = output.reduce(
+              (max, line) => Math.max(max, line.length),
+              0
+            );
+            const maxCols = cols || config.cols || 70;
+            const longestLine = PI_ASCII[0].length + longestLineLength;
+            const imgPadding = Math.max(Math.min(maxCols - longestLine, 3), 1);
+
+            output.push(
+              "\n",
+              [0, 4, 2, 6, 1, 5, 3, 7]
+                .map((color) => printColor(color, colorOutput.current))
+                .join(""),
+              [8, "C", "A", "E", 9, "D", "B", "F"]
+                .map((color) => printColor(color, colorOutput.current))
+                .join("")
+            );
+            PI_ASCII.forEach((imgLine, lineIndex) => {
+              let outputLine = output[lineIndex] || "";
+
+              if (lineIndex === 0) {
+                const [user, system] = outputLine.split("@");
+
+                outputLine = `${labelText(user)}@${labelText(system)}`;
+              } else {
+                const [label, info] = outputLine.split(":");
+
+                if (info) {
+                  outputLine = `${labelText(label)}:${info}`;
+                }
+              }
+
+              printLn(
+                `${labelText(imgLine)}${
+                  outputLine.padStart(outputLine.length + imgPadding, " ") || ""
+                }`
+              );
+            });
+            break;
+          }
+          case "nslookup": {
+            const [domainName] = commandArgs;
+
+            if (domainName) {
+              const nsLookup = async (
+                domain: string,
+                server = PRIMARY_NAME_SERVER[0]
+              ): Promise<NsEntry[]> => {
+                const { Answer = [] } = (await (
+                  await fetch(`${server}?name=${domain}`, {
+                    headers: { Accept: "application/dns-json" },
+                  })
+                ).json()) as NsResponse;
+
+                return Answer;
+              };
+              let answer: NsEntry[] | undefined;
+              let primaryFailed = false;
+
+              try {
+                answer = await nsLookup(domainName);
+              } catch {
+                try {
+                  primaryFailed = true;
+                  answer = await nsLookup(domainName, BACKUP_NAME_SERVER[0]);
+                } catch {
+                  // Ignore failure on backup name server
+                }
+              }
+
+              if (answer) {
+                const [server, address] = primaryFailed
+                  ? BACKUP_NAME_SERVER
+                  : PRIMARY_NAME_SERVER;
+                const { host } = new URL(server);
+
+                printLn(`Server:  ${host}`);
+                printLn(`Address:  ${address}`);
+                printLn("");
+                printLn("Non-authoritative answer:");
+                printLn(`Name:    ${domainName}`);
+                printLn(
+                  `Addresses:  ${answer
+                    .map(({ data }) => data)
+                    .join("\n          ")}`
+                );
+                printLn("");
+              } else {
+                printLn("Failed to contact name servers.");
+              }
+            }
+            break;
+          }
+          case "sheep":
+          case "esheep": {
+            const { countSheep, killSheep, spawnSheep } = await import(
+              "utils/spawnSheep"
+            );
+            let [count = 1, duration = 0] = commandArgs;
+
+            if (!Number.isNaN(count) && !Number.isNaN(duration)) {
+              count = Number(count);
+              duration = Number(duration);
+
+              if (count > 1) {
+                await spawnSheep();
+                count -= 1;
+              }
+
+              const maxDuration =
+                (duration || (count > 1 ? 1 : 0)) * MILLISECONDS_IN_SECOND;
+
+              Array.from({ length: count === 0 ? countSheep() : count })
+                .fill(0)
+                .map(() => Math.floor(Math.random() * maxDuration))
+                .forEach((delay) =>
+                  setTimeout(count === 0 ? killSheep : spawnSheep, delay)
+                );
+            }
+            break;
+          }
+          case "ps":
+          case "tasklist":
+            printTable(
+              [
+                ["Image Name", 25],
+                ["PID", 8],
+                ["Title", 16],
+              ],
+              Object.entries(processesRef.current).map(
+                ([pid, { title }], index) => [pid, index.toString(), title]
+              ),
+              printLn
+            );
+            break;
+          case "py":
+          case "python":
+          case "python3":
+            {
+              const [file] = commandArgs;
+              const fullSourcePath = await getFullPath(file);
+
+              if (await exists(fullSourcePath)) {
+                const code = await readFile(fullSourcePath);
+
+                if (code.length > 0) {
+                  await runPython(code.toString(), printLn);
+                }
+              } else {
+                const [, code = "version"] = command.split(" ");
+
+                await runPython(code, printLn);
+              }
+            }
+            break;
+          case "qjs":
+          case "quickjs":
+          case "node":
+            {
+              const [file] = commandArgs;
+              const fullSourcePath = await getFullPath(file);
+
+              if (await exists(fullSourcePath)) {
+                const code = await readFile(fullSourcePath);
+
+                if (code.length > 0) {
+                  await runJs(code.toString(), printLn);
+                }
+              } else {
+                const [, code] = command.split(" ");
+
+                await runJs(code, printLn);
+              }
+            }
+            break;
+          case "logout":
+          case "restart":
+          case "shutdown":
+            resetStorage(rootFs).finally(() => window.location.reload());
+            break;
+          case "time":
+            printLn(
+              `The current time is: ${getTZOffsetISOString().slice(11, 22)}`
+            );
+            break;
+          case "title":
+            changeTitle(id, command.slice(command.indexOf(" ") + 1));
+            break;
+          case "touch": {
+            const [file] = commandArgs;
+
+            if (file) {
+              const fullPath = await getFullPath(file);
               const dirName = dirname(fullPath);
 
               updateFile(
                 join(
                   dirName,
-                  await createPath(
-                    `${basename(file, extname(file))}.${ext}`,
-                    dirName,
-                    Buffer.from(workBook)
-                  )
+                  await createPath(basename(fullPath), dirName, Buffer.from(""))
                 )
               );
-            } else {
-              printLn(FILE_NOT_FILE);
             }
-          } else {
-            printLn(SYNTAX_ERROR);
+            break;
           }
-          break;
-        }
-        default:
-          if (baseCommand) {
-            const [pid] = Object.entries(processDirectory)
-              .filter(([, { dialogProcess }]) => !dialogProcess)
-              .find(([process]) => process.toLowerCase() === lcBaseCommand) || [
-              resourceAliasMap[lcBaseCommand],
-            ];
+          case "uptime":
+            printLn(`Uptime: ${getUptime()}`);
+            break;
+          case "ver":
+          case "version":
+            printLn(displayVersion());
+            break;
+          case "wapm":
+          case "wasmer":
+          case "wax": {
+            const [file] = commandArgs;
+            const fullSourcePath = await getFullPath(file);
 
-            if (pid) {
-              const [file] = commandArgs;
+            const [wasmName, wasmFile] = await loadWapm(
+              commandArgs,
+              print,
+              printLn,
+              fullSourcePath.endsWith(".wasm") && (await exists(fullSourcePath))
+                ? await readFile(fullSourcePath)
+                : undefined,
+              pipedCommand
+            );
+
+            if (wasmName && wasmFile) {
+              writeFile(
+                join(SYSTEM_PATH, `${wasmName}.wasm`),
+                Buffer.from(wasmFile),
+                true
+              );
+            }
+
+            break;
+          }
+          case "weather":
+          case "wttr": {
+            const response = await fetch(
+              "https://wttr.in/?1nAF",
+              HIGH_PRIORITY_REQUEST
+            );
+
+            printLn(await response.text());
+
+            const [bgAnsi, fgAnsi] = colorOutput.current;
+
+            if (bgAnsi) print(bgAnsi);
+            if (fgAnsi) print(fgAnsi);
+            break;
+          }
+          case "whoami":
+            printLn(`${window.location.hostname}\\public`);
+            break;
+          case "wsl":
+          case "linux":
+            open("V86", { url: LINUX_IMAGE_PATH });
+            break;
+          case "xlsx": {
+            const [file, format = "xlsx"] = commandArgs;
+
+            if (file && format) {
               const fullPath = await getFullPath(file);
-              const openUrl =
-                file && fullPath && (await exists(fullPath)) ? fullPath : "";
-
-              open(pid, { url: openUrl });
-              if (openUrl) updateRecentFiles(openUrl, pid);
-            } else {
-              const baseFileExists = await exists(baseCommand);
+              const ext = formatToExtension(format);
 
               if (
-                baseFileExists ||
-                (await exists(join(cd.current, baseCommand)))
+                (await exists(fullPath)) &&
+                !(await lstat(fullPath)).isDirectory()
               ) {
-                const fileExtension = getExtension(baseCommand);
-                const { command: extCommand = "" } =
-                  extensions[fileExtension] || {};
+                const workBook = await convertSheet(
+                  await readFile(fullPath),
+                  ext
+                );
+                const dirName = dirname(fullPath);
 
-                if (extCommand) {
-                  const newCommand = `${extCommand} ${
-                    baseCommand.includes(" ") ? `"${baseCommand}"` : baseCommand
-                  }`;
+                updateFile(
+                  join(
+                    dirName,
+                    await createPath(
+                      `${basename(file, extname(file))}.${ext}`,
+                      dirName,
+                      Buffer.from(workBook)
+                    )
+                  )
+                );
+              } else {
+                printLn(FILE_NOT_FILE);
+              }
+            } else {
+              printLn(SYNTAX_ERROR);
+            }
+            break;
+          }
+          default:
+            if (baseCommand) {
+              const [pid] = Object.entries(processDirectory)
+                .filter(([, { dialogProcess }]) => !dialogProcess)
+                .find(
+                  ([process]) => process.toLowerCase() === lcBaseCommand
+                ) || [resourceAliasMap[lcBaseCommand]];
 
-                  await commandInterpreter(
-                    `${newCommand}${
-                      commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
-                    }`,
-                    printLn,
-                    print,
-                    pipedCommand
-                      ? newCommand.replace(baseCommand, pipedCommand)
-                      : undefined
-                  );
-                } else {
-                  const fullFilePath = baseFileExists
-                    ? baseCommand
-                    : join(cd.current, baseCommand);
-                  let basePid = "";
-                  let baseUrl = fullFilePath;
+              if (pid) {
+                const [file] = commandArgs;
+                const fullPath = await getFullPath(file);
+                const openUrl =
+                  file && fullPath && (await exists(fullPath)) ? fullPath : "";
 
-                  if (fileExtension === SHORTCUT_EXTENSION) {
-                    ({ pid: basePid, url: baseUrl } = getShortcutInfo(
-                      await readFile(fullFilePath)
-                    ));
+                open(pid, { url: openUrl });
+                if (openUrl) updateRecentFiles(openUrl, pid);
+              } else {
+                const baseFileExists = await exists(baseCommand);
+
+                if (
+                  baseFileExists ||
+                  (await exists(join(cd.current, baseCommand)))
+                ) {
+                  const fileExtension = getExtension(baseCommand);
+                  const { command: extCommand = "" } =
+                    extensions[fileExtension] || {};
+
+                  if (extCommand) {
+                    const newCommand = `${extCommand} ${
+                      baseCommand.includes(" ")
+                        ? `"${baseCommand}"`
+                        : baseCommand
+                    }`;
+
+                    await commandInterpreter(
+                      `${newCommand}${
+                        commandArgs.length > 0
+                          ? ` ${commandArgs.join(" ")}`
+                          : ""
+                      }`,
+                      printLn,
+                      print,
+                      pipedCommand
+                        ? newCommand.replace(baseCommand, pipedCommand)
+                        : undefined
+                    );
                   } else {
-                    basePid = getProcessByFileExtension(fileExtension);
-                  }
+                    const fullFilePath = baseFileExists
+                      ? baseCommand
+                      : join(cd.current, baseCommand);
+                    let basePid = "";
+                    let baseUrl = fullFilePath;
 
-                  if (basePid) {
-                    open(basePid, { url: baseUrl });
-                    if (baseUrl) updateRecentFiles(baseUrl, basePid);
+                    if (fileExtension === SHORTCUT_EXTENSION) {
+                      ({ pid: basePid, url: baseUrl } = getShortcutInfo(
+                        await readFile(fullFilePath)
+                      ));
+                    } else {
+                      basePid = getProcessByFileExtension(fileExtension);
+                    }
+
+                    if (basePid) {
+                      open(basePid, { url: baseUrl });
+                      if (baseUrl) updateRecentFiles(baseUrl, basePid);
+                    } else {
+                      printLn(unknownCommand(baseCommand));
+                    }
+                  }
+                } else {
+                  const systemProgram =
+                    await findCommandInSystemPath(baseCommand);
+
+                  if (systemProgram) {
+                    const newCommand = `${SYSTEM_PATH}/${systemProgram}`;
+
+                    await commandInterpreter(
+                      `${newCommand}${
+                        commandArgs.length > 0
+                          ? ` ${commandArgs.join(" ")}`
+                          : ""
+                      }`,
+                      printLn,
+                      print,
+                      pipedCommand?.replace(baseCommand, newCommand)
+                    );
                   } else {
                     printLn(unknownCommand(baseCommand));
                   }
                 }
-              } else {
-                const systemProgram =
-                  await findCommandInSystemPath(baseCommand);
-
-                if (systemProgram) {
-                  const newCommand = `${SYSTEM_PATH}/${systemProgram}`;
-
-                  await commandInterpreter(
-                    `${newCommand}${
-                      commandArgs.length > 0 ? ` ${commandArgs.join(" ")}` : ""
-                    }`,
-                    printLn,
-                    print,
-                    pipedCommand?.replace(baseCommand, newCommand)
-                  );
-                } else {
-                  printLn(unknownCommand(baseCommand));
-                }
               }
             }
-          }
+        }
+      } catch {
+        printLn("An error occurred while attempting to execute the command");
       }
 
       if (localEcho) {
