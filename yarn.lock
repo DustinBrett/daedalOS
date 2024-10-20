@@ -4255,10 +4255,10 @@ eslint-plugin-no-relative-import-paths@^1.5.5:
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-relative-import-paths/-/eslint-plugin-no-relative-import-paths-1.5.5.tgz#c1cf7fed05943b1ec038e29086b190f14f42ed6e"
   integrity sha512-UjudFFdBbv93v0CsVdEKcMLbBzRIjeK2PubTctX57tgnHxZcMj1Jm8lDBWoETnPxk0S5g5QLSltEM+511yL4+w==
 
-eslint-plugin-playwright@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-playwright/-/eslint-plugin-playwright-1.7.0.tgz#53b5d4e9338558289332cca0b33fe3e8378b7f80"
-  integrity sha512-pDp2jFeWbBmlwDfZ39Ypdlz1+IafmRKvFTnnonX0TbS7hAByy4oh7Y6ioZRKvLGE+djd/e2VbqOo9sxgZSY2ow==
+eslint-plugin-playwright@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-playwright/-/eslint-plugin-playwright-1.8.0.tgz#b54359804f458964afb460cb2d689f41deb70081"
+  integrity sha512-+vHG8VdtgMKwsEJrj973FqoTSn7GAtUsgudSeolLrigBPKwuXeHjcWKYPYPpMUVAISl3IMR7reQmK2v13sjaRw==
   dependencies:
     globals "^13.23.0"
 
