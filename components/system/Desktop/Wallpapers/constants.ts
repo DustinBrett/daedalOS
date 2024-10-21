@@ -88,7 +88,7 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
   },
   {
     id: "STABLE_DIFFUSION",
-    name: "Stable Diffusion (Beta)",
+    name: "Stable Diffusion (beta)",
     requiresWebGPU: true,
   },
   {
