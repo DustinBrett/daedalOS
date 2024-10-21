@@ -1,6 +1,5 @@
 import {
-  AI_STAGE,
-  AI_TITLE,
+  AI_DISPLAY_TITLE,
   WINDOW_ID,
 } from "components/system/Taskbar/AI/constants";
 import { AIIcon } from "components/system/Taskbar/AI/icons";
@@ -25,7 +24,7 @@ const AIButton: FC<AIButtonProps> = ({ aiVisible, toggleAI }) => {
         if (aiVisible) removeFromStack(WINDOW_ID);
       }}
       {...DIV_BUTTON_PROPS}
-      {...label(`${AI_TITLE} (${AI_STAGE})`)}
+      {...label(AI_DISPLAY_TITLE)}
       {...useTaskbarContextMenu()}
     >
       <AIIcon />

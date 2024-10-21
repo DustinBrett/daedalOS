@@ -4,6 +4,8 @@ export const AI_TITLE = "Talos";
 
 export const AI_STAGE = "alpha";
 
+export const AI_DISPLAY_TITLE = `${AI_TITLE} (${AI_STAGE})`;
+
 export const DEFAULT_CONVO_STYLE: ConvoStyles = "balanced";
 
 export const AI_WORKER = (): Worker =>
