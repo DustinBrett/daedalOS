@@ -4,11 +4,17 @@ import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
 declare global {
   /* eslint-disable vars-on-top, no-var  */
-  var ai: { languageModel: AILanguageModelFactory };
+  var ai: {
+    languageModel: AILanguageModelFactory;
+    summarizer: AISummarizerFactory;
+  };
   var marked: {
     parse: (markdownString: string, options: MarkedOptions) => string;
   };
   /* eslint-enable vars-on-top, no-var */
+  interface Window {
+    initialAiPrompt?: string;
+  }
 }
 
 export type MessageTypes = "user" | "ai";
@@ -26,6 +32,7 @@ export type WorkerMessage = {
   id: number;
   streamId?: number;
   style: ConvoStyles;
+  summarizeText?: string;
   text: string;
 };
 

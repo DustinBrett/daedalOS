@@ -36,6 +36,7 @@ import {
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
   TEXT_EDITORS,
+  TEXT_FILE_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
@@ -52,6 +53,12 @@ import {
 } from "utils/imagemagick/formats";
 import { type ImageMagickConvertFile } from "utils/imagemagick/types";
 import { Share } from "components/system/Menu/MenuIcons";
+import { useWindowAI } from "hooks/useWindowAI";
+import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
+import {
+  AI_DISPLAY_TITLE,
+  AI_STAGE,
+} from "components/system/Taskbar/AI/constants";
 
 const { alias } = PACKAGE_DATA;
 
@@ -92,6 +99,7 @@ const useFileContextMenu = (
     updateFolder,
   } = useFileSystem();
   const { contextMenu } = useMenu();
+  const hasWindowAI = useWindowAI();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
       contextMenu?.(() => {
@@ -486,6 +494,35 @@ const useFileContextMenu = (
         }
 
         if (
+          hasWindowAI &&
+          "summarizer" in window.ai &&
+          TEXT_FILE_EXTENSIONS.has(urlExtension)
+        ) {
+          const aiCommand = (command: string): void => {
+            const aiButton = getNavButtonByTitle(AI_DISPLAY_TITLE);
+
+            if (aiButton) {
+              window.initialAiPrompt = `${command}: ${url}`;
+              aiButton.click();
+            }
+          };
+
+          menuItems.unshift(MENU_SEPERATOR, {
+            label: `AI (${AI_STAGE})`,
+            menu: [
+              ...("summarizer" in window.ai
+                ? [
+                    {
+                      action: () => aiCommand("Summarize"),
+                      label: "Summarize Text",
+                    },
+                  ]
+                : []),
+            ],
+          });
+        }
+
+        if (
           hasBackgroundVideoExtension ||
           (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
             !CURSOR_FILE_EXTENSIONS.has(pathExtension) &&
@@ -610,6 +647,7 @@ const useFileContextMenu = (
       extractFiles,
       fileManagerId,
       focusedEntries,
+      hasWindowAI,
       isFocusedEntry,
       lstat,
       mapFs,

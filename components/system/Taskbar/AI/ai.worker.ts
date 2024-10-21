@@ -49,6 +49,9 @@ let responding = false;
 
 let sessionId = 0;
 let session: AILanguageModel | ChatCompletionMessageParam[] | undefined;
+let summarizer: AISummarizer | undefined;
+let prompts: (AILanguageModelAssistantPrompt | AILanguageModelUserPrompt)[] =
+  [];
 let engine: MLCEngine;
 
 let markedLoaded = false;
@@ -67,6 +70,8 @@ globalThis.addEventListener(
         sessionId = data.id;
 
         if (data.hasWindowAI) {
+          prompts = [];
+          summarizer?.destroy();
           (session as AILanguageModel)?.destroy();
 
           const config: AILanguageModelCreateOptionsWithSystemPrompt = {
@@ -95,6 +100,16 @@ globalThis.addEventListener(
       let retry = 0;
 
       try {
+        if (
+          data.hasWindowAI &&
+          data.summarizeText &&
+          "summarizer" in globalThis.ai &&
+          (await globalThis.ai.summarizer.capabilities())?.available ===
+            "readily"
+        ) {
+          summarizer = await globalThis.ai.summarizer.create();
+        }
+
         while (retry++ < 3 && !response) {
           if (cancel) break;
 
@@ -102,10 +117,33 @@ globalThis.addEventListener(
             if (data.hasWindowAI) {
               const aiAssistant = session as AILanguageModel;
 
-              response = data.streamId
-                ? aiAssistant?.promptStreaming(data.text)
-                : // eslint-disable-next-line no-await-in-loop
-                  (await aiAssistant?.prompt(data.text)) || "";
+              if (summarizer && data.summarizeText) {
+                // eslint-disable-next-line no-await-in-loop
+                response = await summarizer.summarize(data.summarizeText);
+
+                (session as AILanguageModel)?.destroy();
+
+                prompts.push(
+                  { content: data.text, role: "user" },
+                  { content: response, role: "assistant" }
+                );
+
+                const config: AILanguageModelCreateOptionsWithSystemPrompt = {
+                  ...CONVO_STYLE_TEMPS[data.style],
+                  initialPrompts: [
+                    SYSTEM_PROMPT as unknown as AILanguageModelAssistantPrompt,
+                    ...prompts,
+                  ],
+                };
+
+                // eslint-disable-next-line no-await-in-loop
+                session = await globalThis.ai.languageModel.create(config);
+              } else if (aiAssistant) {
+                response = data.streamId
+                  ? aiAssistant.promptStreaming(data.text)
+                  : // eslint-disable-next-line no-await-in-loop
+                    (await aiAssistant.prompt(data.text)) || "";
+              }
             } else {
               (session as ChatCompletionMessageParam[]).push({
                 content: data.text,
@@ -143,7 +181,7 @@ globalThis.addEventListener(
           markedLoaded = true;
         }
 
-        const sendMessage = (message: string, streamId?: number): void =>
+        const sendMessage = (message: string, streamId?: number): void => {
           globalThis.postMessage({
             formattedResponse: globalThis.marked.parse(message, {
               headerIds: false,
@@ -152,8 +190,13 @@ globalThis.addEventListener(
             response: message,
             streamId,
           });
+          prompts.push(
+            { content: data.text, role: "user" },
+            { content: message, role: "assistant" }
+          );
+        };
 
-        if (typeof response === "string") {
+        if (response && typeof response === "string") {
           sendMessage(response);
         } else {
           try {

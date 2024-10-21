@@ -1,3 +1,4 @@
+import { extname } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -18,7 +19,7 @@ import {
 } from "components/system/Taskbar/AI/icons";
 import useAITransition from "components/system/Taskbar/AI/useAITransition";
 import {
-  AI_STAGE,
+  AI_DISPLAY_TITLE,
   AI_TITLE,
   AI_WORKER,
   DEFAULT_CONVO_STYLE,
@@ -41,6 +42,7 @@ import useWorker from "hooks/useWorker";
 import useFocusable from "components/system/Window/useFocusable";
 import { useSession } from "contexts/session";
 import { useWindowAI } from "hooks/useWindowAI";
+import { useFileSystem } from "contexts/fileSystem";
 
 type AIChatProps = {
   toggleAI: () => void;
@@ -62,7 +64,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const [convoStyle, setConvoStyle] = useState(DEFAULT_CONVO_STYLE);
   const [primaryColor, secondaryColor, tertiaryColor] =
     taskbarColor.ai[convoStyle];
-  const [promptText, setPromptText] = useState("");
+  const [promptText, setPromptText] = useState(window.initialAiPrompt || "");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const typing = promptText.length > 0;
@@ -155,6 +157,45 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
   }, []);
+  const { exists, readFile, stat } = useFileSystem();
+  const sendMessage = useCallback(async () => {
+    const { text } = conversation[conversation.length - 1];
+
+    setResponding(true);
+
+    sessionIdRef.current ||= Date.now();
+
+    let summarizeText = "";
+    const lcText = text.toLowerCase();
+
+    if (lcText.startsWith("summarize: /")) {
+      const docPath = text.slice(11).trim();
+
+      if ((await exists(docPath)) && !(await stat(docPath)).isDirectory()) {
+        let docText = (await readFile(docPath)).toString();
+
+        if ([".html", ".htm", ".whtml"].includes(extname(docPath))) {
+          const domContent = new DOMParser().parseFromString(
+            docText,
+            "text/html"
+          );
+
+          docText = domContent.body.textContent || "";
+        }
+
+        summarizeText = docText;
+      }
+    }
+
+    aiWorker.current?.postMessage({
+      hasWindowAI,
+      id: sessionIdRef.current,
+      streamId: STREAMING_SUPPORT ? conversation.length : undefined,
+      style: convoStyle,
+      summarizeText,
+      text,
+    });
+  }, [aiWorker, conversation, convoStyle, exists, hasWindowAI, readFile, stat]);
 
   useEffect(() => {
     textAreaRef.current?.focus(PREVENT_SCROLL);
@@ -192,21 +233,16 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       conversation.length > 0 &&
       conversation[conversation.length - 1].type === "user"
     ) {
-      const { text } = conversation[conversation.length - 1];
-
-      setResponding(true);
-
-      sessionIdRef.current ||= Date.now();
-
-      aiWorker.current.postMessage({
-        hasWindowAI,
-        id: sessionIdRef.current,
-        streamId: STREAMING_SUPPORT ? conversation.length : undefined,
-        style: convoStyle,
-        text,
-      });
+      sendMessage();
     }
-  }, [aiWorker, conversation, convoStyle, hasWindowAI]);
+  }, [aiWorker, conversation, sendMessage]);
+
+  useEffect(() => {
+    if (window.initialAiPrompt && aiWorker.current) {
+      window.initialAiPrompt = "";
+      addUserPrompt();
+    }
+  }, [addUserPrompt, aiWorker]);
 
   useEffect(() => {
     const workerRef = aiWorker.current;
@@ -259,7 +295,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     >
       <div className="header">
         <header>
-          {`${AI_TITLE} (${AI_STAGE})`}
+          {AI_DISPLAY_TITLE}
           <nav>
             <Button
               className="close"
