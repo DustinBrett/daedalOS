@@ -22,7 +22,7 @@ declare global {
   }
 }
 
-const getByTitle = (title: string): HTMLButtonElement | null =>
+export const getNavButtonByTitle = (title: string): HTMLButtonElement | null =>
   document.querySelector(
     `main > nav > div[title='${title}']`
   ) as HTMLButtonElement;
@@ -61,14 +61,14 @@ const useGlobalKeyboardShortcuts = (): void => {
   const altBindingsRef = useRef<Record<string, () => void>>({});
   const shiftBindingsRef = useRef<Record<string, () => void>>({
     E: () => open("FileExplorer"),
-    ESCAPE: () => getByTitle(START_BUTTON_TITLE)?.click(),
+    ESCAPE: () => getNavButtonByTitle(START_BUTTON_TITLE)?.click(),
     F10: () => open("Terminal"),
     F12: () => open("DevTools"),
     F5: () => window.location.reload(),
     R: () => open("Run"),
-    S: () => getByTitle(SEARCH_BUTTON_TITLE)?.click(),
+    S: () => getNavButtonByTitle(SEARCH_BUTTON_TITLE)?.click(),
     X: () =>
-      getByTitle(START_BUTTON_TITLE)?.dispatchEvent(
+      getNavButtonByTitle(START_BUTTON_TITLE)?.dispatchEvent(
         new MouseEvent("contextmenu", {
           clientX: 1,
           clientY: viewHeight() - 1,
@@ -136,7 +136,7 @@ const useGlobalKeyboardShortcuts = (): void => {
       ) {
         metaDown = false;
         if (metaComboUsed) metaComboUsed = false;
-        else getByTitle(START_BUTTON_TITLE)?.click();
+        else getNavButtonByTitle(START_BUTTON_TITLE)?.click();
       }
     };
 

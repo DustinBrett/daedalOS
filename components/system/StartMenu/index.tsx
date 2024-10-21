@@ -19,6 +19,7 @@ import {
   THIN_SCROLLBAR_WIDTH,
   THIN_SCROLLBAR_WIDTH_NON_WEBKIT,
 } from "utils/constants";
+import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -77,9 +78,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
         else if (key.length === 1) {
           toggleStartMenu(false);
 
-          const searchButton = document.querySelector<HTMLDivElement>(
-            `main > nav > div[title='${SEARCH_BUTTON_TITLE}']`
-          );
+          const searchButton = getNavButtonByTitle(SEARCH_BUTTON_TITLE);
 
           if (searchButton) {
             searchButton.click();
