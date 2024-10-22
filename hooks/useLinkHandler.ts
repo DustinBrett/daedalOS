@@ -4,6 +4,7 @@ import { isCorsUrl } from "components/apps/TinyMCE/functions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useProcesses } from "contexts/process";
 import { haltEvent, isYouTubeUrl, getExtension } from "utils/functions";
+import { useSession } from "contexts/session";
 
 type LinkHandler = (
   event: Event,
@@ -14,6 +15,7 @@ type LinkHandler = (
 
 export const useLinkHandler = (): LinkHandler => {
   const { open } = useProcesses();
+  const { updateRecentFiles } = useSession();
 
   return useCallback(
     (event: Event, url: string, pathName: string, title?: string) => {
@@ -37,11 +39,17 @@ export const useLinkHandler = (): LinkHandler => {
           getExtension(pathName)
         );
 
-        if (defaultProcess) open(defaultProcess, { url: decodeURI(pathName) });
+        if (defaultProcess) {
+          const pathUrl = decodeURI(pathName);
+
+          open(defaultProcess, { url: pathUrl });
+
+          if (pathUrl) updateRecentFiles(pathUrl, defaultProcess);
+        }
       } else {
         window.open(url, "_blank", "noopener, noreferrer");
       }
     },
-    [open]
+    [open, updateRecentFiles]
   );
 };

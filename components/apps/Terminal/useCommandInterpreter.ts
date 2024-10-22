@@ -1089,6 +1089,7 @@ const useCommandInterpreter = (
           case "wsl":
           case "linux":
             open("V86", { url: LINUX_IMAGE_PATH });
+            updateRecentFiles(LINUX_IMAGE_PATH, "V86");
             break;
           case "xlsx": {
             const [file, format = "xlsx"] = commandArgs;

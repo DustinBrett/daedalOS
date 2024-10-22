@@ -568,9 +568,7 @@ const useFolderContextMenu = (
                     }
 
                     open("MonacoEditor", { url: INDEX_FILE });
-                    if (INDEX_FILE) {
-                      updateRecentFiles(INDEX_FILE, "MonacoEditor");
-                    }
+                    updateRecentFiles(INDEX_FILE, "MonacoEditor");
                   },
                   label: "View page source",
                 },

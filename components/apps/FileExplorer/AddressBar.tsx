@@ -10,6 +10,7 @@ import Icon from "styles/common/Icon";
 import { DISBALE_AUTO_INPUT_FEATURES, ROOT_NAME } from "utils/constants";
 import { getExtension, label } from "utils/functions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
+import { useSession } from "contexts/session";
 
 type AddressBarProps = {
   id: string;
@@ -40,6 +41,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
     const displayName = basename(url) || ROOT_NAME;
     const [addressBar, setAddressBar] = useState(displayName);
     const { exists, stat, updateFolder } = useFileSystem();
+    const { updateRecentFiles } = useSession();
 
     useEffect(() => {
       if (addressBarRef.current) {
@@ -67,11 +69,15 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
               if (value && (await exists(value))) {
                 if ((await stat(value)).isDirectory()) changeUrl(id, value);
                 else {
-                  open(
-                    getProcessByFileExtension(getExtension(value)) ||
-                      "OpenWith",
-                    { url: value }
+                  const openPid = getProcessByFileExtension(
+                    getExtension(value)
                   );
+
+                  open(openPid || "OpenWith", { url: value });
+
+                  if (openPid && value) {
+                    updateRecentFiles(value, openPid);
+                  }
                 }
               }
               addressBarRef.current.blur();

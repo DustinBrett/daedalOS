@@ -51,7 +51,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     processes: { [id]: process },
     open,
   } = useProcesses();
-  const { setForegroundId } = useSession();
+  const { setForegroundId, updateRecentFiles } = useSession();
   const { prependFileToTitle } = useTitle(id);
   const { initialTitle = "", url = "" } = process || {};
   const initialUrl = url || HOME_PAGE;
@@ -263,8 +263,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                               fs,
                               decodeURI(pathname),
                               getExtension(pathname),
-                              ({ pid, url: infoUrl }) =>
-                                open(pid || "OpenWith", { url: infoUrl })
+                              ({ pid, url: infoUrl }) => {
+                                open(pid || "OpenWith", { url: infoUrl });
+
+                                if (pid && infoUrl) {
+                                  updateRecentFiles(infoUrl, pid);
+                                }
+                              }
                             );
                           }
                         });
@@ -356,6 +361,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
       readdir,
       setIcon,
       stat,
+      updateRecentFiles,
     ]
   );
 
