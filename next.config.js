@@ -27,11 +27,9 @@ const nextConfig = {
   devIndicators: {
     buildActivityPosition: "top-right",
   },
-  optimizeFonts: false,
   output: "export",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
-  swcMinify: true,
   webpack: (config) => {
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
