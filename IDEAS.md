@@ -45,6 +45,7 @@
 - Batch File Support
 - Compress Images via Context Menu
   - [Squoosh](https://github.com/GoogleChromeLabs/squoosh) ([lib](https://www.npmjs.com/package/@squoosh/lib))
+  - [wasm-vips](https://github.com/kleisauke/wasm-vips)
   - [SVGO](https://github.com/svg/svgo)
 - Set WOFF/TTF as System Font
   - [wasm-ttf2woff](https://github.com/touchifyapp/wasm-ttf2woff)
