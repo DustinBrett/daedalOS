@@ -430,11 +430,11 @@ const useFileContextMenu = (
                   action: () => archiveFiles(absoluteEntries()),
                   label: "Add to archive...",
                 },
-                ...(EXTRACTABLE_EXTENSIONS.has(pathExtension) ||
-                MOUNTABLE_EXTENSIONS.has(pathExtension)
+                ...(EXTRACTABLE_EXTENSIONS.has(urlExtension) ||
+                MOUNTABLE_EXTENSIONS.has(urlExtension)
                   ? [
                       {
-                        action: () => extractFiles(path),
+                        action: () => extractFiles(url),
                         label: "Extract Here",
                       },
                       MENU_SEPERATOR,
@@ -483,12 +483,9 @@ const useFileContextMenu = (
           });
         }
 
-        const hasBackgroundVideoExtension =
-          VIDEO_FILE_EXTENSIONS.has(pathExtension);
-
-        if (CURSOR_FILE_EXTENSIONS.has(pathExtension)) {
+        if (CURSOR_FILE_EXTENSIONS.has(urlExtension)) {
           menuItems.unshift({
-            action: () => setCursor(path),
+            action: () => setCursor(url),
             label: "Set as mouse pointer",
           });
         }
@@ -522,38 +519,41 @@ const useFileContextMenu = (
           });
         }
 
+        const hasBackgroundVideoExtension =
+          VIDEO_FILE_EXTENSIONS.has(urlExtension);
+
         if (
           hasBackgroundVideoExtension ||
-          (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-            !CURSOR_FILE_EXTENSIONS.has(pathExtension) &&
-            pathExtension !== ".svg")
+          (IMAGE_FILE_EXTENSIONS.has(urlExtension) &&
+            !CURSOR_FILE_EXTENSIONS.has(urlExtension) &&
+            urlExtension !== ".svg")
         ) {
           menuItems.unshift({
             label: "Set as background",
             ...(hasBackgroundVideoExtension
               ? {
-                  action: () => setWallpaper(path),
+                  action: () => setWallpaper(url),
                 }
               : {
                   menu: [
                     {
-                      action: () => setWallpaper(path, "fill"),
+                      action: () => setWallpaper(url, "fill"),
                       label: "Fill",
                     },
                     {
-                      action: () => setWallpaper(path, "fit"),
+                      action: () => setWallpaper(url, "fit"),
                       label: "Fit",
                     },
                     {
-                      action: () => setWallpaper(path, "stretch"),
+                      action: () => setWallpaper(url, "stretch"),
                       label: "Stretch",
                     },
                     {
-                      action: () => setWallpaper(path, "tile"),
+                      action: () => setWallpaper(url, "tile"),
                       label: "Tile",
                     },
                     {
-                      action: () => setWallpaper(path, "center"),
+                      action: () => setWallpaper(url, "center"),
                       label: "Center",
                     },
                   ],
