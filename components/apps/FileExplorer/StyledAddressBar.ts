@@ -26,7 +26,8 @@ const StyledAddressBar = styled.div`
     white-space: nowrap;
     width: calc(100% - 2px);
 
-    &:focus {
+    &:focus,
+    &.inputing {
       height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
     }
   }
@@ -37,7 +38,7 @@ const StyledAddressBar = styled.div`
     top: 1px;
   }
 
-  .refresh {
+  .action {
     background-color: rgb(25, 25, 25);
     display: flex;
     height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight - 2}px;
@@ -46,8 +47,6 @@ const StyledAddressBar = styled.div`
     place-items: center;
     position: absolute;
     right: 0;
-    stroke: rgb(128, 128, 128);
-    stroke-width: 3;
     top: 0;
     width: 24px;
 
@@ -62,8 +61,20 @@ const StyledAddressBar = styled.div`
     }
 
     svg {
-      position: relative;
-      top: -1px;
+      color: rgb(128, 128, 128);
+      stroke: rgb(128, 128, 128);
+
+      &.refresh {
+        position: relative;
+        stroke-width: 3;
+        top: -1px;
+      }
+
+      &.go-to {
+        height: 12px;
+        stroke-width: 2;
+        width: 12px;
+      }
     }
   }
 `;
