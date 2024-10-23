@@ -496,11 +496,16 @@ const useFileContextMenu = (
           TEXT_FILE_EXTENSIONS.has(urlExtension)
         ) {
           const aiCommand = (command: string): void => {
-            const aiButton = getNavButtonByTitle(AI_DISPLAY_TITLE);
+            window.initialAiPrompt = `${command}: ${url}`;
 
-            if (aiButton) {
-              window.initialAiPrompt = `${command}: ${url}`;
-              aiButton.click();
+            const newTopicButton = document.querySelector<HTMLButtonElement>(
+              "main > section > footer > button.new-topic"
+            );
+
+            if (newTopicButton) {
+              newTopicButton?.click();
+            } else {
+              getNavButtonByTitle(AI_DISPLAY_TITLE)?.click();
             }
           };
 

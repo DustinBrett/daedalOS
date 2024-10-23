@@ -98,6 +98,24 @@ globalThis.addEventListener(
 
       let response: string | ReadableStream<string> = "";
       let retry = 0;
+      const rebuildSession = async (): Promise<void> => {
+        (session as AILanguageModel)?.destroy();
+
+        prompts.push(
+          { content: data.text, role: "user" },
+          { content: response as string, role: "assistant" }
+        );
+
+        const config: AILanguageModelCreateOptionsWithSystemPrompt = {
+          ...CONVO_STYLE_TEMPS[data.style],
+          initialPrompts: [
+            SYSTEM_PROMPT as unknown as AILanguageModelAssistantPrompt,
+            ...prompts,
+          ],
+        };
+
+        session = await globalThis.ai.languageModel.create(config);
+      };
 
       try {
         if (
@@ -120,24 +138,7 @@ globalThis.addEventListener(
               if (summarizer && data.summarizeText) {
                 // eslint-disable-next-line no-await-in-loop
                 response = await summarizer.summarize(data.summarizeText);
-
-                (session as AILanguageModel)?.destroy();
-
-                prompts.push(
-                  { content: data.text, role: "user" },
-                  { content: response, role: "assistant" }
-                );
-
-                const config: AILanguageModelCreateOptionsWithSystemPrompt = {
-                  ...CONVO_STYLE_TEMPS[data.style],
-                  initialPrompts: [
-                    SYSTEM_PROMPT as unknown as AILanguageModelAssistantPrompt,
-                    ...prompts,
-                  ],
-                };
-
-                // eslint-disable-next-line no-await-in-loop
-                session = await globalThis.ai.languageModel.create(config);
+                rebuildSession();
               } else if (aiAssistant) {
                 response = data.streamId
                   ? aiAssistant.promptStreaming(data.text)

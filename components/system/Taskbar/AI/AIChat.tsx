@@ -64,7 +64,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const [convoStyle, setConvoStyle] = useState(DEFAULT_CONVO_STYLE);
   const [primaryColor, secondaryColor, tertiaryColor] =
     taskbarColor.ai[convoStyle];
-  const [promptText, setPromptText] = useState(window.initialAiPrompt || "");
+  const [promptText, setPromptText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const typing = promptText.length > 0;
@@ -167,8 +167,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
     let summarizeText = "";
     const lcText = text.toLowerCase();
+    const isSummarize = lcText.startsWith("summarize: /");
 
-    if (lcText.startsWith("summarize: /")) {
+    if (isSummarize) {
       const docPath = text.slice(11).trim();
 
       if ((await exists(docPath)) && !(await stat(docPath)).isDirectory()) {
@@ -238,11 +239,17 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   }, [aiWorker, conversation, sendMessage]);
 
   useEffect(() => {
-    if (window.initialAiPrompt && aiWorker.current) {
-      window.initialAiPrompt = "";
-      addUserPrompt();
+    if (!window.initialAiPrompt) return;
+
+    if (window.initialAiPrompt === promptText) {
+      if (conversation.length === 0 && aiWorker.current) {
+        window.initialAiPrompt = "";
+        addUserPrompt();
+      }
+    } else {
+      setPromptText(window.initialAiPrompt);
     }
-  }, [addUserPrompt, aiWorker]);
+  }, [addUserPrompt, aiWorker, conversation.length, promptText]);
 
   useEffect(() => {
     const workerRef = aiWorker.current;
