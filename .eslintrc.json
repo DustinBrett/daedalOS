@@ -19,11 +19,9 @@
     "plugin:unicorn/recommended",
     "prettier",
     "next",
-    "next/core-web-vitals",
-    "plugin:@next/next/recommended"
+    "next/core-web-vitals"
   ],
   "plugins": [
-    "@next/next",
     "@typescript-eslint",
     "import",
     "jest",
