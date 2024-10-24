@@ -44,6 +44,7 @@ const SYSTEM_PROMPT: ChatCompletionMessageParam = {
   role: "system",
 };
 
+const abortController = new AbortController();
 let cancel = false;
 let responding = false;
 
@@ -62,7 +63,10 @@ globalThis.addEventListener(
     if (!data || data === "init") return;
 
     if (data === "cancel") {
-      if (responding) cancel = true;
+      if (responding) {
+        cancel = true;
+        abortController.abort();
+      }
     } else if (data.id && data.text && data.style) {
       responding = true;
 
@@ -76,6 +80,7 @@ globalThis.addEventListener(
 
           const config: AILanguageModelCreateOptionsWithSystemPrompt = {
             ...CONVO_STYLE_TEMPS[data.style],
+            signal: abortController.signal,
             systemPrompt: SYSTEM_PROMPT.content,
           };
 
@@ -134,16 +139,24 @@ globalThis.addEventListener(
           try {
             if (data.hasWindowAI) {
               const aiAssistant = session as AILanguageModel;
+              const aiOptions:
+                | AILanguageModelPromptOptions
+                | AISummarizerSummarizeOptions = {
+                signal: abortController.signal,
+              };
 
               if (summarizer && data.summarizeText) {
                 // eslint-disable-next-line no-await-in-loop
-                response = await summarizer.summarize(data.summarizeText);
+                response = await summarizer.summarize(
+                  data.summarizeText,
+                  aiOptions
+                );
                 rebuildSession();
               } else if (aiAssistant) {
                 response = data.streamId
-                  ? aiAssistant.promptStreaming(data.text)
+                  ? aiAssistant.promptStreaming(data.text, aiOptions)
                   : // eslint-disable-next-line no-await-in-loop
-                    (await aiAssistant.prompt(data.text)) || "";
+                    (await aiAssistant.prompt(data.text, aiOptions)) || "";
               }
             } else {
               (session as ChatCompletionMessageParam[]).push({
