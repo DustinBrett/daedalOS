@@ -82,8 +82,13 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setCursor, setForegroundId, setWallpaper, updateRecentFiles } =
-    useSession();
+  const {
+    aiEnabled,
+    setCursor,
+    setForegroundId,
+    setWallpaper,
+    updateRecentFiles,
+  } = useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url, path);
@@ -491,8 +496,7 @@ const useFileContextMenu = (
         }
 
         if (
-          hasWindowAI &&
-          "summarizer" in window.ai &&
+          (aiEnabled || (hasWindowAI && "summarizer" in window.ai)) &&
           TEXT_FILE_EXTENSIONS.has(urlExtension)
         ) {
           const aiCommand = (command: string): void => {
@@ -512,7 +516,7 @@ const useFileContextMenu = (
           menuItems.unshift(MENU_SEPERATOR, {
             label: `AI (${AI_STAGE})`,
             menu: [
-              ...("summarizer" in window.ai
+              ...(aiEnabled || (hasWindowAI && "summarizer" in window.ai)
                 ? [
                     {
                       action: () => aiCommand("Summarize"),
@@ -641,6 +645,7 @@ const useFileContextMenu = (
         return menuItems[0] === MENU_SEPERATOR ? menuItems.slice(1) : menuItems;
       }),
     [
+      aiEnabled,
       archiveFiles,
       baseName,
       changeUrl,
