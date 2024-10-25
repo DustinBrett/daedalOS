@@ -103,7 +103,7 @@ export const imageSrc = (
   ratio: number,
   extension: string
 ): string => {
-  const imageName = basename(imagePath, ".webp");
+  const imageName = basename(imagePath, extension);
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
   const imageSize = Math.min(
@@ -804,11 +804,119 @@ export const getYouTubeUrlId = (url: string): string => {
   return "";
 };
 
+export const getMimeType = (url: string): string => {
+  switch (getExtension(url)) {
+    case ".ani":
+    case ".cur":
+    case ".ico":
+      return "image/vnd.microsoft.icon";
+    case ".cache":
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".json":
+      return "application/json";
+    case ".html":
+    case ".htm":
+    case ".whtml":
+      return "text/html";
+    case ".m3u":
+    case ".m3u8":
+      return "application/x-mpegURL";
+    case ".m4v":
+    case ".mkv":
+    case ".mov":
+    case ".mp4":
+      return "video/mp4";
+    case ".mp3":
+      return "audio/mpeg";
+    case ".oga":
+      return "audio/ogg";
+    case ".ogg":
+    case ".ogm":
+    case ".ogv":
+      return "video/ogg";
+    case ".pdf":
+      return "application/pdf";
+    case ".png":
+      return "image/png";
+    case ".md":
+    case ".txt":
+      return "text/plain";
+    case ".wav":
+      return "audio/wav";
+    case ".webm":
+      return "video/webm";
+    case ".webp":
+      return "image/webp";
+    case ".xml":
+      return "application/xml";
+    case ".wsz":
+    case ".jsdos":
+    case ".zip":
+      return "application/zip";
+    default:
+      return "";
+  }
+};
+
+export const isDynamicIcon = (icon?: string): boolean =>
+  typeof icon === "string" &&
+  (icon.startsWith(ICON_PATH) ||
+    (icon.startsWith(USER_ICON_PATH) && !icon.startsWith(ICON_CACHE)));
+
+const getPreloadedLinks = (): HTMLLinkElement[] => [
+  ...document.querySelectorAll<HTMLLinkElement>("link[rel=preload]"),
+];
+
+export const preloadImage = (
+  image: string,
+  id?: string,
+  fetchPriority: "auto" | "high" | "low" = "high"
+): void => {
+  const extension = getExtension(image);
+  const link = document.createElement("link");
+
+  link.as = "image";
+  if (id) link.id = id;
+  link.fetchPriority = fetchPriority;
+  link.rel = "preload";
+  link.type = getMimeType(extension);
+
+  if (isDynamicIcon(image)) {
+    const supportsImageSrcSet = Object.prototype.hasOwnProperty.call(
+      HTMLLinkElement.prototype,
+      "imageSrcset"
+    );
+
+    if (supportsImageSrcSet) {
+      link.imageSrcset = imageSrcs(image, 48, extension);
+    } else {
+      const [href] = imageSrc(image, 48, getDpi(), extension).split(" ");
+
+      link.href = href;
+    }
+  } else {
+    link.href = image;
+  }
+
+  const preloadedLinks = getPreloadedLinks();
+
+  if (
+    !preloadedLinks.some(
+      (preloadedLink) =>
+        (link.imageSrcset &&
+          preloadedLink?.imageSrcset?.endsWith(link.imageSrcset)) ||
+        (link.href && preloadedLink?.href?.endsWith(link.href))
+    )
+  ) {
+    document.head.append(link);
+  }
+};
+
 export const preloadLibs = (libs: string[] = []): void => {
   const scripts = [...document.scripts];
-  const preloadedLinks = [
-    ...document.querySelectorAll("link[rel=preload]"),
-  ] as HTMLLinkElement[];
+  const preloadedLinks = getPreloadedLinks();
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   libs.map(encodeURI).forEach((lib) => {
@@ -876,11 +984,6 @@ export const generatePrettyTimestamp = (): string =>
 
 export const isFileSystemMappingSupported = (): boolean =>
   typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;
-
-export const isDynamicIcon = (icon?: string): boolean =>
-  typeof icon === "string" &&
-  (icon.startsWith(ICON_PATH) ||
-    (icon.startsWith(USER_ICON_PATH) && !icon.startsWith(ICON_CACHE)));
 
 export const hasFinePointer = (): boolean =>
   window.matchMedia("(pointer: fine)").matches;

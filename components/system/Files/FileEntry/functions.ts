@@ -49,6 +49,7 @@ import {
   getExtension,
   getGifJs,
   getHtmlToImage,
+  getMimeType,
   imageToBufferUrl,
   isSafari,
   isYouTubeUrl,
@@ -144,61 +145,6 @@ export const getProcessByFileExtension = (extension: string): string => {
       : [getDefaultFileViewer(extension)];
 
   return defaultProcess;
-};
-
-export const getMimeType = (url: string): string => {
-  switch (getExtension(url)) {
-    case ".ani":
-    case ".cur":
-    case ".ico":
-      return "image/vnd.microsoft.icon";
-    case ".jpg":
-    case ".jpeg":
-      return "image/jpeg";
-    case ".json":
-      return "application/json";
-    case ".html":
-    case ".htm":
-    case ".whtml":
-      return "text/html";
-    case ".m3u":
-    case ".m3u8":
-      return "application/x-mpegURL";
-    case ".m4v":
-    case ".mkv":
-    case ".mov":
-    case ".mp4":
-      return "video/mp4";
-    case ".mp3":
-      return "audio/mpeg";
-    case ".oga":
-      return "audio/ogg";
-    case ".ogg":
-    case ".ogm":
-    case ".ogv":
-      return "video/ogg";
-    case ".pdf":
-      return "application/pdf";
-    case ".png":
-      return "image/png";
-    case ".md":
-    case ".txt":
-      return "text/plain";
-    case ".wav":
-      return "audio/wav";
-    case ".webm":
-      return "video/webm";
-    case ".webp":
-      return "image/webp";
-    case ".xml":
-      return "application/xml";
-    case ".wsz":
-    case ".jsdos":
-    case ".zip":
-      return "application/zip";
-    default:
-      return "";
-  }
 };
 
 export const getShortcutInfo = (

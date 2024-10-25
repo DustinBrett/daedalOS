@@ -10,7 +10,6 @@ import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type * as IBrowserFS from "browserfs";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
-import { getMimeType } from "components/system/Files/FileEntry/functions";
 import {
   type InputChangeEvent,
   getEventData,
@@ -36,7 +35,7 @@ import {
   PROCESS_DELIMITER,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { bufferToBlob, getExtension } from "utils/functions";
+import { bufferToBlob, getExtension, getMimeType } from "utils/functions";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 

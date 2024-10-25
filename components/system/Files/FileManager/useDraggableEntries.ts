@@ -1,11 +1,11 @@
 import { join } from "path";
 import { type Position } from "react-rnd";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getMimeType } from "components/system/Files/FileEntry/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useSession } from "contexts/session";
 import {
   getHtmlToImage,
+  getMimeType,
   haltEvent,
   trimCanvasToTopLeft,
   updateIconPositions,

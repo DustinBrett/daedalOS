@@ -13,6 +13,7 @@ import {
 import {
   getDpi,
   getExtension,
+  getMimeType,
   imageSrc,
   imageSrcs,
   imageToBufferUrl,
@@ -148,6 +149,7 @@ const Metadata: FC = () => {
       {desktopIcons.map((icon) => {
         const isSubIcon = icon.includes("/16x16/");
         const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
+        const extension = getExtension(icon);
 
         return (
           <link
@@ -156,12 +158,13 @@ const Metadata: FC = () => {
             href={dynamicIcon || isSubIcon ? undefined : icon}
             imageSrcSet={
               dynamicIcon
-                ? imageSrcs(icon, 48, ".webp")
+                ? imageSrcs(icon, 48, extension)
                 : isSubIcon
-                  ? imageSrcs(icon.replace("16x16/", ""), 16, ".webp")
+                  ? imageSrcs(icon.replace("16x16/", ""), 16, extension)
                   : undefined
             }
             rel="preload"
+            type={getMimeType(extension)}
             {...HIGH_PRIORITY_ELEMENT}
           />
         );

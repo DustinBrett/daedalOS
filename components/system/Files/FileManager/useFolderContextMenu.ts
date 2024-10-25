@@ -456,7 +456,7 @@ const useFolderContextMenu = (
                           if (isMusicVisualizationRunning) {
                             stopGlobalMusicVisualization?.();
                           }
-                          if (item.id) setWallpaper(item.id);
+                          setWallpaper(item.id);
                         },
                         label: item.name || item.id,
                         toggle: item.startsWith

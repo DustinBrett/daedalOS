@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
+  PRELOAD_ID,
   REDUCED_MOTION_PERCENT,
   STABLE_DIFFUSION_DELAY_IN_MIN,
   WALLPAPER_PATHS,
@@ -41,6 +42,7 @@ import {
   isYouTubeUrl,
   jsonFetch,
   parseBgPosition,
+  preloadImage,
   viewWidth,
 } from "utils/functions";
 
@@ -302,22 +304,18 @@ const useWallpaper = (
       do {
         wallpaperUrl = slideshowFiles.shift() || "";
 
-        let [nextWallpaper] = slideshowFiles;
+        const [nextWallpaper] = slideshowFiles;
 
         if (nextWallpaper) {
-          const preloadLink = document.createElement("link");
+          document.querySelector(`#${PRELOAD_ID}`)?.remove();
 
-          if (nextWallpaper.startsWith("/")) {
-            nextWallpaper = `${window.location.origin}${nextWallpaper}`;
-          }
-
-          preloadLink.id = "preloadWallpaper";
-          preloadLink.href = nextWallpaper;
-          preloadLink.rel = "preload";
-          preloadLink.as = "image";
-
-          document.querySelector("#preloadWallpaper")?.remove();
-          document.head.append(preloadLink);
+          preloadImage(
+            nextWallpaper.startsWith("/")
+              ? `${window.location.origin}${nextWallpaper}`
+              : nextWallpaper,
+            PRELOAD_ID,
+            "auto"
+          );
         }
 
         if (wallpaperUrl.startsWith("/")) {
