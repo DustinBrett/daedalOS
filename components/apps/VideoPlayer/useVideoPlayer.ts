@@ -96,7 +96,10 @@ const useVideoPlayer = ({
             height + (youTubePlayer ? 0 : CONTROL_BAR_HEIGHT);
 
           if (heightWithControlBar > vh || width > vw) {
-            updateWindowSize(vw * (heightWithControlBar / width), vw);
+            updateWindowSize(
+              Math.floor(vw * (heightWithControlBar / width)),
+              Math.min(width, vw)
+            );
           } else {
             updateWindowSize(heightWithControlBar, width);
           }
