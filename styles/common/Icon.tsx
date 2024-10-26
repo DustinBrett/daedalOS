@@ -4,9 +4,12 @@ import { SUPPORTED_ICON_PIXEL_RATIOS } from "utils/constants";
 import {
   cleanUpBufferUrl,
   createFallbackSrcSet,
+  getExtension,
+  getMimeType,
   imageSrc,
   imageSrcs,
   isDynamicIcon,
+  supportsWebp,
 } from "utils/functions";
 
 export type IconProps = {
@@ -53,6 +56,14 @@ const Icon = forwardRef<
   const [loaded, setLoaded] = useState(false);
   const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
   const isDynamic = isDynamicIcon(src);
+  const imgSrc = useMemo(
+    () =>
+      isDynamic && !supportsWebp()
+        ? src.replace(getExtension(src), ".png")
+        : src,
+    [isDynamic, src]
+  );
+  const srcExt = getExtension(imgSrc);
   const dimensionProps = useMemo(() => {
     const size = displaySize > imgSize ? imgSize : displaySize || imgSize;
     const $offset = displaySize > imgSize ? `${displaySize - imgSize}px` : 0;
@@ -93,13 +104,13 @@ const Icon = forwardRef<
         }
       }}
       onLoad={() => setLoaded(true)}
-      src={isDynamic ? imageSrc(src, imgSize, 1, ".png") : src || undefined}
+      src={isDynamic ? imageSrc(imgSrc, imgSize, 1, srcExt) : src || undefined}
       srcSet={
         isDynamic
-          ? imageSrcs(src, imgSize, ".png", failedUrls) ||
+          ? imageSrcs(imgSrc, imgSize, srcExt, failedUrls) ||
             (failedUrls.length === 0
               ? ""
-              : createFallbackSrcSet(src, failedUrls))
+              : createFallbackSrcSet(imgSrc, failedUrls))
           : undefined
       }
       {...componentProps}
@@ -111,7 +122,7 @@ const Icon = forwardRef<
     <picture>
       {isDynamic &&
         SUPPORTED_ICON_PIXEL_RATIOS.map((ratio) => {
-          const srcSet = imageSrc(src, imgSize, ratio, ".webp");
+          const srcSet = imageSrc(imgSrc, imgSize, ratio, srcExt);
           const mediaRatio = ratio - 0.99;
 
           if (
@@ -131,7 +142,7 @@ const Icon = forwardRef<
                   : undefined
               }
               srcSet={srcSet}
-              type="image/webp"
+              type={getMimeType(srcExt)}
             />
           );
         })}

@@ -143,10 +143,11 @@ export const createFallbackSrcSet = (
   src: string,
   failedUrls: string[]
 ): string => {
+  const srcExt = getExtension(src);
   const failedSizes = new Set(
     new Set(
       failedUrls.map((failedUrl) => {
-        const fileName = basename(src, extname(src));
+        const fileName = basename(src, srcExt);
 
         return Number(
           failedUrl
@@ -164,7 +165,7 @@ export const createFallbackSrcSet = (
   );
 
   return possibleSizes
-    .map((size) => imageSrc(src, size, 1, extname(src)))
+    .map((size) => imageSrc(src, size, 1, srcExt))
     .reverse()
     .join(", ");
 };
@@ -869,6 +870,29 @@ const getPreloadedLinks = (): HTMLLinkElement[] => [
   ...document.querySelectorAll<HTMLLinkElement>("link[rel=preload]"),
 ];
 
+let HAS_WEBP_SUPPORT = false;
+
+export const supportsWebp = (): boolean => {
+  if (HAS_WEBP_SUPPORT) return true;
+
+  try {
+    HAS_WEBP_SUPPORT = document
+      .createElement("canvas")
+      .toDataURL("image/webp")
+      .startsWith("data:image/webp");
+  } catch {
+    // Ignore failure to check for WebP support
+  }
+
+  return HAS_WEBP_SUPPORT;
+};
+
+const supportsImageSrcSet = (): boolean =>
+  Object.prototype.hasOwnProperty.call(
+    HTMLLinkElement.prototype,
+    "imageSrcset"
+  );
+
 export const preloadImage = (
   image: string,
   id?: string,
@@ -884,12 +908,7 @@ export const preloadImage = (
   link.type = getMimeType(extension);
 
   if (isDynamicIcon(image)) {
-    const supportsImageSrcSet = Object.prototype.hasOwnProperty.call(
-      HTMLLinkElement.prototype,
-      "imageSrcset"
-    );
-
-    if (supportsImageSrcSet) {
+    if (supportsImageSrcSet()) {
       link.imageSrcset = imageSrcs(image, 48, extension);
     } else {
       const [href] = imageSrc(image, 48, getDpi(), extension).split(" ");

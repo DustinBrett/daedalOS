@@ -43,9 +43,13 @@ const Metadata: FC = () => {
   const currentFavIcon = useMemo(
     () =>
       isDynamicIcon(favIcon)
-        ? imageSrc(favIcon, 16, getDpi(), ".webp").split(" ")[0]
+        ? imageSrc(favIcon, 16, getDpi(), getExtension(favIcon)).split(" ")[0]
         : favIcon,
     [favIcon]
+  );
+  const favIconMimeType = useMemo(
+    () => getMimeType(currentFavIcon),
+    [currentFavIcon]
   );
   const getCursor = useCallback(
     async (path: string) => {
@@ -128,7 +132,7 @@ const Metadata: FC = () => {
     <Head>
       <title>{title}</title>
       {currentFavIcon && (
-        <link href={currentFavIcon} rel="icon" type="image/webp" />
+        <link href={currentFavIcon} rel="icon" type={favIconMimeType} />
       )}
       <meta
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, interactive-widget=resizes-content"
