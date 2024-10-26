@@ -63,10 +63,6 @@ export const REDUCED_MOTION_PERCENT = 0.1;
 
 export const WALLPAPER_MENU: WallpaperMenuItem[] = [
   {
-    id: "APOD",
-    startsWith: true,
-  },
-  {
     id: "COASTAL_LANDSCAPE",
     name: "Coastal Landscape",
   },
@@ -81,6 +77,11 @@ export const WALLPAPER_MENU: WallpaperMenuItem[] = [
   {
     id: "MATRIX 3D",
     name: "Matrix (3D)",
+  },
+  {
+    id: "APOD",
+    name: "NASA APOD",
+    startsWith: true,
   },
   {
     id: "SLIDESHOW",
