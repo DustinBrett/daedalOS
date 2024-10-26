@@ -851,15 +851,13 @@ export const getFileType = (extension: string): string => {
   const ext = extension.toUpperCase();
 
   switch (ext) {
-    case SHORTCUT_EXTENSION:
+    case ".URL":
       return "Shortcut";
     case ".TXT":
       return "Text Document";
     case ".RTF":
     case ".WHTML":
       return "Rich Text Document";
-    case ".URL":
-      return "Shortcut";
     default:
       return extensions[extension]?.type || `${ext.replace(".", "")} File`;
   }
