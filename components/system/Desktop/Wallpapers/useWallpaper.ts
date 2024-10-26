@@ -328,7 +328,8 @@ const useWallpaper = (
 
       newWallpaperFit = "fill";
     } else if (wallpaperName === "APOD") {
-      const [, currentDate] = wallpaperImage.split(" ");
+      // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+      const [, , currentDate] = wallpaperImage.split(" ");
       const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
         timeZone: "US/Eastern",
       })
