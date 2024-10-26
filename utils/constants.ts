@@ -141,6 +141,11 @@ export const TEXT_FILE_EXTENSIONS = new Set([
   ".txt",
 ]);
 
+export const SUMMARIZABLE_FILE_EXTENSIONS = new Set([
+  ...TEXT_FILE_EXTENSIONS,
+  ".pdf",
+]);
+
 export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
   ".bmp",
   ".gif",

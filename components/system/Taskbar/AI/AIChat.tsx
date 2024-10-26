@@ -1,4 +1,3 @@
-import { extname } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -28,7 +27,7 @@ import {
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import Button from "styles/common/Button";
-import { label, viewWidth } from "utils/functions";
+import { getExtension, label, viewWidth } from "utils/functions";
 import { PREVENT_SCROLL } from "utils/constants";
 import {
   type MessageTypes,
@@ -43,6 +42,7 @@ import useFocusable from "components/system/Window/useFocusable";
 import { useSession } from "contexts/session";
 import { useWindowAI } from "hooks/useWindowAI";
 import { useFileSystem } from "contexts/fileSystem";
+import { readPdfText } from "components/apps/PDF/functions";
 
 type AIChatProps = {
   toggleAI: () => void;
@@ -173,18 +173,19 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       const docPath = text.slice(11).trim();
 
       if ((await exists(docPath)) && !(await stat(docPath)).isDirectory()) {
-        let docText = (await readFile(docPath)).toString();
+        const docText = await readFile(docPath);
+        const extension = getExtension(docPath);
 
-        if ([".html", ".htm", ".whtml"].includes(extname(docPath))) {
+        if ([".html", ".htm", ".whtml"].includes(extension)) {
           const domContent = new DOMParser().parseFromString(
-            docText,
+            docText.toString(),
             "text/html"
           );
 
-          docText = domContent.body.textContent || "";
+          summarizeText = domContent.body.textContent || "";
+        } else if (extension === ".pdf") {
+          summarizeText = await readPdfText(docText);
         }
-
-        summarizeText = docText;
       }
     }
 

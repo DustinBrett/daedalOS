@@ -35,8 +35,8 @@ import {
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
   SPREADSHEET_FORMATS,
+  SUMMARIZABLE_FILE_EXTENSIONS,
   TEXT_EDITORS,
-  TEXT_FILE_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
 import {
@@ -497,7 +497,7 @@ const useFileContextMenu = (
 
         if (
           (aiEnabled || (hasWindowAI && "summarizer" in window.ai)) &&
-          TEXT_FILE_EXTENSIONS.has(urlExtension)
+          SUMMARIZABLE_FILE_EXTENSIONS.has(urlExtension)
         ) {
           const aiCommand = (command: string): void => {
             window.initialAiPrompt = `${command}: ${url}`;
