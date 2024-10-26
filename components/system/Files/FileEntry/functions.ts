@@ -858,6 +858,8 @@ export const getFileType = (extension: string): string => {
     case ".RTF":
     case ".WHTML":
       return "Rich Text Document";
+    case ".URL":
+      return "Shortcut";
     default:
       return extensions[extension]?.type || `${ext.replace(".", "")} File`;
   }
