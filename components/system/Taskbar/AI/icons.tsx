@@ -74,7 +74,7 @@ export const PersonIcon = memo(() => (
 
 export const CopyIcon = memo(() => (
   <svg
-    className="copy-icon"
+    className="control-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -82,9 +82,29 @@ export const CopyIcon = memo(() => (
   </svg>
 ));
 
+export const BackgroundIcon = memo(() => (
+  <svg
+    className="control-icon background-icon"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M13.5 7.5h9V24H0V7.5h9V9H1.5v13.5H21V9h-7.5Zm-3-4.629L7.277 6.094 6.223 5.027 11.25 0l5.027 5.027-1.054 1.067L12 2.87V13.5h-1.5ZM9 12H4.5v7.5H18V12h-4.5v-1.5h6V21H3V10.5h6Zm0 0" />
+  </svg>
+));
+
+export const SaveIcon = memo(() => (
+  <svg
+    className="control-icon save-icon"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M21 1.5c.21 0 .406.04.586.117.18.078.336.188.477.32.132.141.242.297.32.477.078.18.117.375.117.586v19.5H4.184L1.5 19.805V3c0-.21.04-.406.117-.586.078-.18.188-.336.32-.477.141-.132.297-.242.477-.32.18-.078.375-.117.586-.117Zm-15 9h12V3H6Zm9 6H7.5V21H9v-3h1.5v3H15ZM21 3h-1.5v9h-15V3H3v16.184L4.805 21H6v-6h10.5v6H21Zm0 0" />
+  </svg>
+));
+
 export const EditIcon = memo(() => (
   <svg
-    className="edit-icon"
+    className="control-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -114,7 +134,7 @@ export const WarningIcon = memo(() => (
 
 export const SpeakIcon = memo(() => (
   <svg
-    className="speak-icon"
+    className="control-icon"
     viewBox="0 0 20 19"
     xmlns="http://www.w3.org/2000/svg"
   >

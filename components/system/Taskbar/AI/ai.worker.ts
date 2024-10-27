@@ -174,7 +174,9 @@ globalThis.addEventListener(
           globalThis.tvmjsGlobalEnv.logger("", "");
 
           if (data.hasWindowAI) {
-            rebuildSession("I'll try to create that.");
+            rebuildSession(
+              "I'll try to create that using Stable Diffusion 1.5."
+            );
           }
         } else {
           while (retry++ < 3 && !response) {

@@ -390,9 +390,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           pointer-events: none;
         }
 
-        .copy,
-        .edit,
-        .speak {
+        .control {
           background-color: transparent;
           border-radius: 5px;
           height: 32px;
@@ -408,20 +406,26 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
             background-color: rgb(42, 42, 42);
           }
 
-          .copy-icon,
-          .edit-icon,
-          .speak-icon {
+          .control-icon {
             fill: #fff;
             height: 20px;
             width: 20px;
+          }
+
+          .save-icon {
+            position: relative;
+            top: 1px;
+          }
+
+          .background-icon {
+            position: relative;
+            top: -1px;
           }
         }
 
         &:hover,
         &.last {
-          .copy,
-          .edit,
-          .speak {
+          .control {
             visibility: visible;
           }
         }

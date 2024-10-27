@@ -6,10 +6,12 @@ import {
 } from "components/system/Taskbar/AI/functions";
 import {
   AIIcon,
+  BackgroundIcon,
   ChatIcon,
   CopyIcon,
   EditIcon,
   PersonIcon,
+  SaveIcon,
   SendFilledIcon,
   SendIcon,
   SpeakIcon,
@@ -28,7 +30,7 @@ import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import Button from "styles/common/Button";
 import { clsx, getExtension, label, viewWidth } from "utils/functions";
-import { PREVENT_SCROLL } from "utils/constants";
+import { DESKTOP_PATH, PREVENT_SCROLL, SAVE_PATH } from "utils/constants";
 import {
   type MessageTypes,
   type ConvoStyles,
@@ -144,7 +146,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
   const [containerElement, setContainerElement] =
     useState<HTMLElement | null>();
-  const { removeFromStack } = useSession();
+  const { removeFromStack, setWallpaper } = useSession();
   const { zIndex, ...focusableProps } = useFocusable(
     WINDOW_ID,
     undefined,
@@ -159,7 +161,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
   }, []);
-  const { exists, readFile, stat } = useFileSystem();
+  const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
   const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
   const sendMessage = useCallback(async () => {
     const { text } = conversation[conversation.length - 1];
@@ -221,6 +223,32 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     readFile,
     stat,
   ]);
+  const saveCanvasImage = useCallback(
+    async (
+      index: number,
+      saveName: string,
+      savePath: string
+    ): Promise<string> => {
+      const canvas = canvasRefs.current[index];
+      let newFileName = `${saveName}.png`;
+
+      if (canvas) {
+        newFileName = await createPath(
+          newFileName,
+          savePath,
+          Buffer.from(
+            canvas.toDataURL("image/png").replace("data:image/png;base64,", ""),
+            "base64"
+          )
+        );
+
+        updateFolder(savePath);
+      }
+
+      return newFileName;
+    },
+    [createPath, updateFolder]
+  );
 
   useEffect(() => {
     textAreaRef.current?.focus(PREVENT_SCROLL);
@@ -407,7 +435,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   })}
                 >
                   <button
-                    className="copy"
+                    className="control"
                     onClick={() => {
                       navigator.clipboard?.writeText(text);
                       setCopiedIndex(index);
@@ -420,7 +448,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   </button>
                   {type === "user" && (
                     <button
-                      className="edit"
+                      className="control"
                       onClick={() => {
                         if (textAreaRef.current) {
                           textAreaRef.current.value = text;
@@ -436,13 +464,40 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   )}
                   {"speechSynthesis" in window && type === "ai" && (
                     <button
-                      className="speak"
+                      className="control"
                       onClick={() => speakMessage(text)}
                       type="button"
                       {...label("Read aloud")}
                     >
                       <SpeakIcon />
                     </button>
+                  )}
+                  {type === "ai" && withCanvas && (
+                    <>
+                      <button
+                        className="control"
+                        onClick={() =>
+                          saveCanvasImage(index, text, DESKTOP_PATH)
+                        }
+                        type="button"
+                        {...label("Save")}
+                      >
+                        <SaveIcon />
+                      </button>
+                      <button
+                        className="control"
+                        onClick={() =>
+                          saveCanvasImage(index, text, SAVE_PATH).then(
+                            (newFileName) =>
+                              setWallpaper(`${SAVE_PATH}/${newFileName}`)
+                          )
+                        }
+                        type="button"
+                        {...label("Set as background")}
+                      >
+                        <BackgroundIcon />
+                      </button>
+                    </>
                   )}
                 </div>
                 {withCanvas && (
