@@ -223,6 +223,67 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
       }
 
+      .image-container {
+        background-color: rgb(240, 240, 240);
+        border: 1px solid rgb(102, 102, 102);
+        border-radius: 10px;
+        margin-bottom: 18px;
+        margin-top: 10px;
+        padding: 15px;
+
+        canvas {
+          @keyframes gradient {
+            0% {
+              background-position: 0% 50%;
+            }
+
+            50% {
+              background-position: 100% 50%;
+            }
+
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+
+          animation: gradient 15s ease infinite;
+          background: linear-gradient(
+            -45deg,
+            #ee7752,
+            #e73c7e,
+            #23a6d5,
+            #23d5ab
+          );
+          background-size: 400% 400%;
+          border-radius: 10px;
+          height: auto;
+          max-width: 100%;
+        }
+
+        .prompt {
+          color: rgb(15, 15, 15);
+          font-size: 12px;
+          padding-left: 6px;
+          padding-top: 3px;
+        }
+
+        .powered-by {
+          display: flex;
+          place-content: end;
+          width: 100%;
+
+          div {
+            background-color: rgb(230, 230, 230);
+            border: 1px solid rgb(220, 220, 220);
+            border-radius: 5px;
+            color: rgb(90, 90, 90);
+            font-size: 12px;
+            padding: 5px;
+            width: fit-content;
+          }
+        }
+      }
+
       .responding {
         background-color: rgb(32, 32, 32);
         bottom: 120px;
@@ -315,6 +376,11 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
 
         &.hidden {
           display: none;
+        }
+
+        &.invisible {
+          opacity: 0%;
+          pointer-events: none;
         }
 
         .copy,

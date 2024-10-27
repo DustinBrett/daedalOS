@@ -14,7 +14,7 @@ declare global {
   var tvmjsGlobalEnv: {
     asyncOnGenerate: () => Promise<void>;
     asyncOnReset: () => Promise<void>;
-    canvas: HTMLCanvasElement;
+    canvas?: HTMLCanvasElement | OffscreenCanvas;
     getTokenizer: (name: string) => Promise<unknown>;
     initialized: boolean;
     logger: (type: string, message: string) => void;

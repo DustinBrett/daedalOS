@@ -2,7 +2,7 @@ import { type StableDiffusionConfig } from "components/apps/StableDiffusion/type
 import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { loadFiles } from "utils/functions";
 
-export const libs = [
+export const StableDiffusionLibs = [
   "/System/tvm/tvmjs_runtime.wasi.js",
   "/System/tvm/tvmjs.bundle.js",
   "/Program Files/StableDiffusion/tokenizers-wasm/tokenizers_wasm.js",
@@ -12,12 +12,13 @@ export const libs = [
 export const runStableDiffusion = async (
   config: StableDiffusionConfig,
   canvas: HTMLCanvasElement | OffscreenCanvas,
-  skipLibs = false
+  skipLibs = false,
+  reUseCanvas = true
 ): Promise<void> => {
   if (!skipLibs) {
     window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
 
-    await loadFiles(libs);
+    await loadFiles(StableDiffusionLibs);
   }
 
   globalThis.tvmjsGlobalEnv.getTokenizer = async () => {
@@ -35,6 +36,10 @@ export const runStableDiffusion = async (
       ).text()
     );
   };
+
+  if (!reUseCanvas) {
+    globalThis.tvmjsGlobalEnv.canvas = undefined;
+  }
 
   globalThis.tvmjsGlobalEnv.canvas = globalThis.tvmjsGlobalEnv.canvas || canvas;
 

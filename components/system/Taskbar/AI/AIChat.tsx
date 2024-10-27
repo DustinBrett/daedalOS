@@ -27,7 +27,7 @@ import {
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import Button from "styles/common/Button";
-import { getExtension, label, viewWidth } from "utils/functions";
+import { clsx, getExtension, label, viewWidth } from "utils/functions";
 import { PREVENT_SCROLL } from "utils/constants";
 import {
   type MessageTypes,
@@ -74,7 +74,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       text: string | undefined,
       type: MessageTypes,
       formattedText?: string,
-      streamId?: number
+      streamId?: number,
+      withCanvas = false
     ): void => {
       if (text) {
         setConversation((prevMessages) => {
@@ -82,6 +83,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
             formattedText: formattedText || text,
             text,
             type,
+            withCanvas,
           };
 
           if (streamId) {
@@ -158,6 +160,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     textArea.style.height = `${textArea.scrollHeight}px`;
   }, []);
   const { exists, readFile, stat } = useFileSystem();
+  const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
   const sendMessage = useCallback(async () => {
     const { text } = conversation[conversation.length - 1];
 
@@ -168,6 +171,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     let summarizeText = "";
     const lcText = text.toLowerCase();
     const isSummarize = lcText.startsWith("summarize: /");
+    const isGenerate = lcText.startsWith("generate: ");
 
     if (isSummarize) {
       const docPath = text.slice(11).trim();
@@ -187,6 +191,16 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           summarizeText = await readPdfText(docText);
         }
       }
+    } else if (isGenerate) {
+      addMessage(
+        text.slice(10).trim(),
+        "ai",
+        "I'll try to create that.",
+        conversation.length,
+        true
+      );
+
+      return;
     }
 
     aiWorker.current?.postMessage({
@@ -197,7 +211,16 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       summarizeText,
       text,
     });
-  }, [aiWorker, conversation, convoStyle, exists, hasWindowAI, readFile, stat]);
+  }, [
+    addMessage,
+    aiWorker,
+    conversation,
+    convoStyle,
+    exists,
+    hasWindowAI,
+    readFile,
+    stat,
+  ]);
 
   useEffect(() => {
     textAreaRef.current?.focus(PREVENT_SCROLL);
@@ -357,64 +380,118 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           </div>
         </div>
         <div className="conversation">
-          {conversation.map(({ formattedText, type, text }, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div key={`${text}-${index}`} className={type}>
-              {(index === 0 || conversation[index - 1].type !== type) && (
-                <div className="avatar">
-                  {type === "user" ? <PersonIcon /> : <AIIcon />}
-                  {type === "user" ? "You" : "AI"}
-                </div>
-              )}
-              <div
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: formattedText }}
-                className="message"
-              />
-              <div
-                className={`controls${index === lastAiMessageIndex ? " last" : ""}${responding && index === conversation.length - 1 ? " hidden" : ""}`}
-              >
-                <button
-                  className="copy"
-                  onClick={() => {
-                    navigator.clipboard?.writeText(text);
-                    setCopiedIndex(index);
-                    setTimeout(() => setCopiedIndex(-1), 5000);
-                  }}
-                  type="button"
-                  {...label(copiedIndex === index ? "Copied" : "Copy")}
+          {conversation.map(
+            ({ formattedText, type, text, withCanvas }, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={`${text}-${index}`} className={type}>
+                {(index === 0 || conversation[index - 1].type !== type) && (
+                  <div className="avatar">
+                    {type === "user" ? <PersonIcon /> : <AIIcon />}
+                    {type === "user" ? "You" : "AI"}
+                  </div>
+                )}
+                <div
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: formattedText }}
+                  className="message"
+                />
+                <div
+                  className={clsx({
+                    controls: true,
+                    hidden:
+                      responding &&
+                      !withCanvas &&
+                      index === conversation.length - 1,
+                    invisible: responding && !!withCanvas,
+                    last: index === lastAiMessageIndex,
+                  })}
                 >
-                  <CopyIcon />
-                </button>
-                {type === "user" && (
                   <button
-                    className="edit"
+                    className="copy"
                     onClick={() => {
-                      if (textAreaRef.current) {
-                        textAreaRef.current.value = text;
-                        textAreaRef.current.focus(PREVENT_SCROLL);
-                        setPromptText(text);
-                      }
+                      navigator.clipboard?.writeText(text);
+                      setCopiedIndex(index);
+                      setTimeout(() => setCopiedIndex(-1), 5000);
                     }}
                     type="button"
-                    {...label("Edit")}
+                    {...label(copiedIndex === index ? "Copied" : "Copy")}
                   >
-                    <EditIcon />
+                    <CopyIcon />
                   </button>
-                )}
-                {"speechSynthesis" in window && type === "ai" && (
-                  <button
-                    className="speak"
-                    onClick={() => speakMessage(text)}
-                    type="button"
-                    {...label("Read aloud")}
-                  >
-                    <SpeakIcon />
-                  </button>
+                  {type === "user" && (
+                    <button
+                      className="edit"
+                      onClick={() => {
+                        if (textAreaRef.current) {
+                          textAreaRef.current.value = text;
+                          textAreaRef.current.focus(PREVENT_SCROLL);
+                          setPromptText(text);
+                        }
+                      }}
+                      type="button"
+                      {...label("Edit")}
+                    >
+                      <EditIcon />
+                    </button>
+                  )}
+                  {"speechSynthesis" in window && type === "ai" && (
+                    <button
+                      className="speak"
+                      onClick={() => speakMessage(text)}
+                      type="button"
+                      {...label("Read aloud")}
+                    >
+                      <SpeakIcon />
+                    </button>
+                  )}
+                </div>
+                {withCanvas && (
+                  <div className="image-container">
+                    <canvas
+                      ref={(canvas) => {
+                        if (
+                          !(canvas instanceof HTMLCanvasElement) ||
+                          canvasRefs.current[index] === canvas
+                        ) {
+                          return;
+                        }
+
+                        canvasRefs.current[index] = canvas;
+
+                        try {
+                          const offscreenCanvas =
+                            canvas.transferControlToOffscreen();
+
+                          aiWorker.current?.postMessage(
+                            {
+                              hasWindowAI,
+                              id: sessionIdRef.current,
+                              imagePrompt: text,
+                              offscreenCanvas,
+                              streamId: STREAMING_SUPPORT
+                                ? conversation.length
+                                : undefined,
+                              style: convoStyle,
+                              text,
+                            },
+                            [offscreenCanvas]
+                          );
+                        } catch {
+                          // Ignore failure to transfer control to offscreen
+                        }
+                      }}
+                      height={512}
+                      width={512}
+                    />
+                    <div className="prompt">&quot;{text}&quot;</div>
+                    <div className="powered-by">
+                      <div>Powered by Stable Diffusion 1.5</div>
+                    </div>
+                  </div>
                 )}
               </div>
-            </div>
-          ))}
+            )
+          )}
           {responding && (
             <div className="responding">
               <button

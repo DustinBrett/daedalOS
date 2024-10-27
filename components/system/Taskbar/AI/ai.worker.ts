@@ -4,6 +4,11 @@ import {
   type ChatCompletionMessageParam,
   type MLCEngine,
 } from "@mlc-ai/web-llm";
+import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import {
+  runStableDiffusion,
+  StableDiffusionLibs,
+} from "components/system/Desktop/Wallpapers/StableDiffusion";
 import {
   type WorkerMessage,
   type ConvoStyles,
@@ -109,12 +114,12 @@ globalThis.addEventListener(
         | ReadableStream<string>
         | AsyncIterable<ChatCompletionChunk> = "";
       let retry = 0;
-      const rebuildSession = async (): Promise<void> => {
+      const rebuildSession = async (customResponse?: string): Promise<void> => {
         (session as AILanguageModel)?.destroy();
 
         prompts.push(
           { content: data.text, role: "user" },
-          { content: response as string, role: "assistant" }
+          { content: customResponse || (response as string), role: "assistant" }
         );
 
         const config: AILanguageModelCreateOptionsWithSystemPrompt = {
@@ -142,111 +147,146 @@ globalThis.addEventListener(
           summarizer = await globalThis.ai.summarizer.create();
         }
 
-        while (retry++ < 3 && !response) {
-          if (cancel) break;
+        if (data.imagePrompt && data.offscreenCanvas) {
+          globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
+          globalThis.tvmjsGlobalEnv.logger = (_type: string, message: string) =>
+            globalThis.postMessage({
+              progress: {
+                text: message,
+              },
+            });
 
           try {
-            if (data.hasWindowAI) {
-              const aiAssistant = session as AILanguageModel;
-              const aiOptions:
-                | AILanguageModelPromptOptions
-                | AISummarizerSummarizeOptions = {
-                signal: abortController.signal,
-              };
-
-              if (summarizer && data.summarizeText) {
-                // eslint-disable-next-line no-await-in-loop
-                response = await summarizer.summarize(
-                  data.summarizeText,
-                  aiOptions
-                );
-                rebuildSession();
-              } else if (aiAssistant) {
-                response = data.streamId
-                  ? aiAssistant.promptStreaming(data.text, aiOptions)
-                  : // eslint-disable-next-line no-await-in-loop
-                    (await aiAssistant.prompt(data.text, aiOptions)) || "";
-              }
-            } else {
-              prompts.push({
-                content: data.summarizeText
-                  ? `Summarize:\n\n${data.summarizeText}`
-                  : data.text,
-                role: "user",
-              });
-
-              const stream = Boolean(data.streamId);
-              // eslint-disable-next-line no-await-in-loop
-              const completions = await engine.chat.completions.create({
-                logprobs: true,
-                messages: prompts as ChatCompletionMessageParam[],
-                stream,
-                stream_options: { include_usage: false },
-                temperature: CONVO_STYLE_TEMPS[data.style].temperature,
-                top_logprobs: CONVO_STYLE_TEMPS[data.style].topK,
-                ...WEB_LLM_MODEL_CONFIG[WEB_LLM_MODEL],
-              });
-
-              response = stream
-                ? (completions as AsyncIterable<ChatCompletionChunk>)
-                : (completions as ChatCompletion).choices[0].message.content ||
-                  "";
-            }
-          } catch (error) {
-            console.error("Failed to get prompt response.", error);
+            globalThis.importScripts(...StableDiffusionLibs);
+          } catch {
+            // Ignore failure to load libs
           }
-        }
 
-        if (!response) console.error("Failed retires to create response.");
+          await runStableDiffusion(
+            {
+              prompts: [[data.imagePrompt, ""]],
+            } as StableDiffusionConfig,
+            data.offscreenCanvas,
+            true,
+            false
+          );
+
+          globalThis.tvmjsGlobalEnv.logger("", "");
+
+          if (data.hasWindowAI) {
+            rebuildSession("I'll try to create that.");
+          }
+        } else {
+          while (retry++ < 3 && !response) {
+            if (cancel) break;
+
+            try {
+              if (data.hasWindowAI) {
+                const aiAssistant = session as AILanguageModel;
+                const aiOptions:
+                  | AILanguageModelPromptOptions
+                  | AISummarizerSummarizeOptions = {
+                  signal: abortController.signal,
+                };
+
+                if (summarizer && data.summarizeText) {
+                  // eslint-disable-next-line no-await-in-loop
+                  response = await summarizer.summarize(
+                    data.summarizeText,
+                    aiOptions
+                  );
+                  rebuildSession();
+                } else if (aiAssistant) {
+                  response = data.streamId
+                    ? aiAssistant.promptStreaming(data.text, aiOptions)
+                    : // eslint-disable-next-line no-await-in-loop
+                      (await aiAssistant.prompt(data.text, aiOptions)) || "";
+                }
+              } else {
+                prompts.push({
+                  content: data.summarizeText
+                    ? `Summarize:\n\n${data.summarizeText}`
+                    : data.text,
+                  role: "user",
+                });
+
+                const stream = Boolean(data.streamId);
+                // eslint-disable-next-line no-await-in-loop
+                const completions = await engine.chat.completions.create({
+                  logprobs: true,
+                  messages: prompts as ChatCompletionMessageParam[],
+                  stream,
+                  stream_options: { include_usage: false },
+                  temperature: CONVO_STYLE_TEMPS[data.style].temperature,
+                  top_logprobs: CONVO_STYLE_TEMPS[data.style].topK,
+                  ...WEB_LLM_MODEL_CONFIG[WEB_LLM_MODEL],
+                });
+
+                response = stream
+                  ? (completions as AsyncIterable<ChatCompletionChunk>)
+                  : (completions as ChatCompletion).choices[0].message
+                      .content || "";
+              }
+            } catch (error) {
+              console.error("Failed to get prompt response.", error);
+            }
+          }
+
+          if (!response) console.error("Failed retires to create response.");
+        }
       } catch (error) {
         console.error("Failed to create text session.", error);
       }
 
       if (!cancel) {
-        if (response && !markedLoaded) {
-          globalThis.importScripts(...MARKED_LIBS);
-          markedLoaded = true;
+        if (response) {
+          if (!markedLoaded) {
+            globalThis.importScripts(...MARKED_LIBS);
+            markedLoaded = true;
+          }
+
+          const sendMessage = (message: string, streamId?: number): void => {
+            globalThis.postMessage({
+              formattedResponse: globalThis.marked.parse(message, {
+                headerIds: false,
+                mangle: false,
+              }),
+              response: message,
+              streamId,
+            });
+
+            if (prompts[prompts.length - 1]?.role !== "user") {
+              prompts.push({ content: data.text, role: "user" });
+            }
+
+            prompts.push({ content: message, role: "assistant" });
+          };
+
+          if (typeof response === "string") {
+            sendMessage(response);
+          } else {
+            try {
+              let reply = "";
+              // @ts-expect-error ReadableStream will have an asyncIterator if Prompt API exists
+              for await (const chunk of response) {
+                if (cancel) break;
+
+                if (typeof chunk === "string") {
+                  sendMessage(chunk, data.streamId);
+                } else {
+                  reply +=
+                    (chunk as ChatCompletionChunk).choices[0]?.delta.content ||
+                    "";
+                  sendMessage(reply, data.streamId);
+                }
+              }
+            } catch (error) {
+              console.error("Failed to stream prompt response.", error);
+            }
+          }
         }
 
-        const sendMessage = (message: string, streamId?: number): void => {
-          globalThis.postMessage({
-            formattedResponse: globalThis.marked.parse(message, {
-              headerIds: false,
-              mangle: false,
-            }),
-            response: message,
-            streamId,
-          });
-
-          if (prompts[prompts.length - 1]?.role !== "user") {
-            prompts.push({ content: data.text, role: "user" });
-          }
-
-          prompts.push({ content: message, role: "assistant" });
-        };
-
-        if (response && typeof response === "string") {
-          sendMessage(response);
-        } else {
-          try {
-            let reply = "";
-            // @ts-expect-error ReadableStream will have an asyncIterator if Prompt API exists
-            for await (const chunk of response) {
-              if (cancel) break;
-
-              if (typeof chunk === "string") {
-                sendMessage(chunk, data.streamId);
-              } else {
-                reply +=
-                  (chunk as ChatCompletionChunk).choices[0]?.delta.content ||
-                  "";
-                sendMessage(reply, data.streamId);
-              }
-            }
-          } catch (error) {
-            console.error("Failed to stream prompt response.", error);
-          }
-
+        if (data.streamId) {
           globalThis.postMessage({ complete: true, streamId: data.streamId });
         }
       }
