@@ -260,6 +260,12 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           max-width: 100%;
         }
 
+        &:not(.generating) canvas {
+          animation: unset;
+          background: transparent;
+          background-size: unset;
+        }
+
         .prompt {
           color: rgb(15, 15, 15);
           font-size: 12px;
@@ -379,6 +385,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
 
         &.invisible {
+          height: 13px;
           opacity: 0%;
           pointer-events: none;
         }

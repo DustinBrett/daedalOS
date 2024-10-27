@@ -446,7 +446,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   )}
                 </div>
                 {withCanvas && (
-                  <div className="image-container">
+                  <div
+                    className={clsx({
+                      generating:
+                        responding && index === conversation.length - 1,
+                      "image-container": true,
+                    })}
+                  >
                     <canvas
                       ref={(canvas) => {
                         if (
