@@ -229,7 +229,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         border-radius: 10px;
         margin-bottom: 18px;
         margin-top: 10px;
-        padding: 15px;
+        padding: 12px;
 
         canvas {
           @keyframes gradient {
@@ -269,8 +269,8 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         .prompt {
           color: rgb(15, 15, 15);
           font-size: 12px;
+          padding-bottom: 6px;
           padding-left: 6px;
-          padding-top: 3px;
         }
 
         .powered-by {
@@ -283,7 +283,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
             border: 1px solid rgb(220, 220, 220);
             border-radius: 5px;
             color: rgb(90, 90, 90);
-            font-size: 12px;
+            font-size: 11.5px;
             padding: 5px;
             width: fit-content;
           }
