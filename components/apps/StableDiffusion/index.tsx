@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import useCanvasContextMenu from "components/apps/StableDiffusion/useCanvasContextMenu";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import {
   type Prompt,
@@ -66,6 +67,11 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
     }
   }, [prompt, sdWorker, supportsOffscreenCanvas]);
   const hasWebGPU = useWebGPUCheck();
+  const { onContextMenuCapture } = useCanvasContextMenu(
+    canvasRef,
+    prompt[0],
+    generatedAnImage.current && !status
+  );
 
   useEffect(() => {
     if (hasWebGPU && status === NO_WEBGPU_SUPPORT) setStatus("");
@@ -107,7 +113,12 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
         </button>
       </nav>
       <div className="image">
-        <canvas ref={canvasRef} height={512} width={512} />
+        <canvas
+          ref={canvasRef}
+          height={512}
+          onContextMenuCapture={onContextMenuCapture}
+          width={512}
+        />
         {status && <div className="status">{status}</div>}
       </div>
     </StyledStableDiffusion>

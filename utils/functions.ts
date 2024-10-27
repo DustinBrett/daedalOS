@@ -191,6 +191,12 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 export const blobToBuffer = async (blob?: Blob | null): Promise<Buffer> =>
   blob ? Buffer.from(await blob.arrayBuffer()) : Buffer.from("");
 
+export const canvasToBuffer = (canvas?: HTMLCanvasElement): Buffer =>
+  Buffer.from(
+    canvas?.toDataURL("image/png").replace("data:image/png;base64,", "") || "",
+    "base64"
+  );
+
 export const imgDataToBuffer = (imageData: ImageData): Buffer => {
   const canvas = document.createElement("canvas");
 
@@ -198,11 +204,9 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
   canvas.height = imageData.height;
   canvas.getContext("2d")?.putImageData(imageData, 0, 0);
 
-  return Buffer.from(
-    canvas?.toDataURL("image/png").replace("data:image/png;base64,", ""),
-    "base64"
-  );
+  return canvasToBuffer(canvas);
 };
+
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
 const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {

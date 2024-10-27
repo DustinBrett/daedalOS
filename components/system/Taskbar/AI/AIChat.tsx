@@ -29,7 +29,13 @@ import {
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import Button from "styles/common/Button";
-import { clsx, getExtension, label, viewWidth } from "utils/functions";
+import {
+  canvasToBuffer,
+  clsx,
+  getExtension,
+  label,
+  viewWidth,
+} from "utils/functions";
 import { DESKTOP_PATH, PREVENT_SCROLL, SAVE_PATH } from "utils/constants";
 import {
   type MessageTypes,
@@ -236,10 +242,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         newFileName = await createPath(
           newFileName,
           savePath,
-          Buffer.from(
-            canvas.toDataURL("image/png").replace("data:image/png;base64,", ""),
-            "base64"
-          )
+          canvasToBuffer(canvas)
         );
 
         updateFolder(savePath);
