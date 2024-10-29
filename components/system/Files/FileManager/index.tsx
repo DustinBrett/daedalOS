@@ -100,7 +100,7 @@ const FileManager: FC<FileManagerProps> = ({
   const { lstat, mountFs, rootFs } = useFileSystem();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
-    useSelection(fileManagerRef, focusedEntries, focusFunctions);
+    useSelection(fileManagerRef, focusedEntries, focusFunctions, isDesktop);
   const draggableEntry = useDraggableEntries(
     focusedEntries,
     focusFunctions,
