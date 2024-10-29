@@ -5,6 +5,7 @@ import { type FocusEntryFunctions } from "components/system/Files/FileManager/us
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useMenu } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
+import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 export type SelectionRect = Partial<Position> & Partial<Size>;
 
@@ -90,8 +91,25 @@ const useSelection = (
       setSize(Object.create(null) as Size);
       setPosition(Object.create(null) as Position);
     };
+    const onMouseLeave = (): void => {
+      if (selection.isSelecting) {
+        const externalMouseMove = (event: MouseEvent): void => {
+          onMouseMove(event as unknown as React.MouseEvent<HTMLElement>);
+        };
 
-    selection.selectionEvents.onMouseLeave = resetSelection;
+        window.addEventListener("mousemove", externalMouseMove);
+        window.addEventListener(
+          "mouseup",
+          () => {
+            resetSelection();
+            window.removeEventListener("mousemove", externalMouseMove);
+          },
+          ONE_TIME_PASSIVE_EVENT
+        );
+      }
+    };
+
+    selection.selectionEvents.onMouseLeave = onMouseLeave;
     selection.selectionEvents.onMouseMove = onMouseMove;
     selection.selectionEvents.onMouseUp = resetSelection;
   }
