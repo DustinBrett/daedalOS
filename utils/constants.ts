@@ -133,16 +133,12 @@ export const TEXT_EDITORS = ["MonacoEditor", "Vim"];
 
 export const CURSOR_FILE_EXTENSIONS = new Set([".ani", ".cur"]);
 
-export const TEXT_FILE_EXTENSIONS = new Set([
+export const SUMMARIZABLE_FILE_EXTENSIONS = new Set([
   ".html",
   ".htm",
   ".whtml",
   ".md",
   ".txt",
-]);
-
-export const SUMMARIZABLE_FILE_EXTENSIONS = new Set([
-  ...TEXT_FILE_EXTENSIONS,
   ".pdf",
 ]);
 
