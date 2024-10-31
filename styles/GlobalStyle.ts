@@ -11,6 +11,7 @@ const GlobalStyle = styled.createGlobalStyle`
     margin: 0;
     outline: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
     -webkit-touch-callout: none;
     user-select: none;
