@@ -2,6 +2,7 @@ import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/
 import {
   type LocaleTimeDate,
   formatLocaleDateTime,
+  CLOCK_TEXT_HEIGHT_OFFSET,
 } from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
 import { type ClockSource } from "contexts/session/types";
@@ -24,8 +25,6 @@ const textPosition = {
   y: 0,
 };
 
-const TEXT_HEIGHT_OFFSET = 1;
-
 const styleClock = (): void => {
   offscreenContext.scale(global.devicePixelRatio, global.devicePixelRatio);
   offscreenContext.fillStyle = textColor;
@@ -35,7 +34,7 @@ const styleClock = (): void => {
 
   textPosition.y =
     Math.floor(offscreenCanvas.height / global.devicePixelRatio / 2) +
-    TEXT_HEIGHT_OFFSET;
+    CLOCK_TEXT_HEIGHT_OFFSET;
   textPosition.x = Math.floor(
     offscreenCanvas.width / global.devicePixelRatio / 2
   );

@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { CLOCK_TEXT_HEIGHT_OFFSET } from "components/system/Taskbar/Clock/functions";
+import { TASKBAR_HEIGHT } from "utils/constants";
 
 type StyledClockProps = {
   $hasAI: boolean;
@@ -10,12 +12,13 @@ const StyledClock = styled.div<StyledClockProps>`
   display: flex;
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
+  line-height: ${TASKBAR_HEIGHT - CLOCK_TEXT_HEIGHT_OFFSET}px;
   max-width: ${({ theme, $width }) =>
     `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
-  min-width: ${({ $width }) => $width}px;
+  min-width: ${({ theme, $width }) =>
+    `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
   padding: ${({ theme }) => `0 ${theme.sizes.clock.padding}px`};
   place-content: center;
-  place-items: center;
   position: absolute;
   right: ${({ theme, $hasAI }) =>
     $hasAI ? theme.sizes.taskbar.ai.buttonWidth : 0};

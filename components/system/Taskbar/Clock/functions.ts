@@ -32,3 +32,5 @@ export const formatLocaleDateTime = (now: Date): LocaleTimeDate => {
     time,
   };
 };
+
+export const CLOCK_TEXT_HEIGHT_OFFSET = 1;
