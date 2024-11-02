@@ -1,4 +1,4 @@
-import { basename, dirname } from "path";
+import { basename, dirname, join } from "path";
 import { type Options, type Track, type URLTrack } from "webamp";
 import { useCallback, useEffect, useRef } from "react";
 import {
@@ -28,6 +28,8 @@ import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
   MILLISECONDS_IN_SECOND,
   SAVE_PATH,
   TRANSITIONS_IN_MILLISECONDS,
@@ -246,6 +248,38 @@ const useWebamp = (id: string): Webamp => {
           }
 
           writeFile(SKIN_DATA_PATH, JSON.stringify(data), true);
+
+          try {
+            const { skinUrl } =
+              (webamp.options.availableSkins as { skinUrl?: string }[])?.find(
+                (skin) => skin.skinUrl
+              ) || {};
+
+            if (skinUrl) {
+              const screenshot = Buffer.from(
+                await (
+                  await fetch(
+                    `https://r2.webampskins.org/screenshots/${basename(skinUrl, ".wsz")}.png`
+                  )
+                ).arrayBuffer()
+              );
+              const iconCacheRootPath = join(ICON_CACHE, SAVE_PATH);
+              const iconCachePath = join(
+                ICON_CACHE,
+                `${SKIN_DATA_PATH}${ICON_CACHE_EXTENSION}`
+              );
+
+              if (!(await exists(iconCacheRootPath))) {
+                await mkdirRecursive(iconCacheRootPath);
+                updateFolder(dirname(SAVE_PATH));
+              }
+
+              await writeFile(iconCachePath, screenshot, true);
+            }
+          } catch {
+            // Ignore failure to get thumbnail screenshots
+          }
+
           updateFolder(SAVE_PATH, basename(SKIN_DATA_PATH));
         }),
         webamp._actionEmitter.on("LOAD_DEFAULT_SKIN", () => {

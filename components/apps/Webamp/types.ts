@@ -1,5 +1,5 @@
 import { type Position } from "react-rnd";
-import { type Track, type default as Webamp } from "webamp";
+import { type Options, type Track, type default as Webamp } from "webamp";
 
 type ButterChurnPreset = {
   getPreset: () => Promise<unknown>;
@@ -81,6 +81,7 @@ export type WebampCI = Webamp & {
       listener: (emitterEvent: { data?: SkinData; type: string }) => void
     ) => () => void;
   };
+  options: Options;
   store: {
     dispatch: (
       command:
