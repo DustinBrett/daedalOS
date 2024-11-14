@@ -17,7 +17,7 @@ export class ErrorBoundary extends Component<
     this.state = { hasError: false };
   }
 
-  public shouldComponentUpdate(): boolean {
+  public override shouldComponentUpdate(): boolean {
     return false;
   }
 
@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<
     return { hasError: true };
   }
 
-  public render(): React.ReactNode {
+  public override render(): React.ReactNode {
     const {
       props: { children, FallbackRender },
       state: { hasError },

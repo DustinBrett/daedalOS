@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowUnreachableCode": false,
     "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -11,6 +12,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "plugins": [{ "name": "next" }],
     "resolveJsonModule": true,

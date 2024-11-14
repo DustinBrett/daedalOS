@@ -33,13 +33,13 @@ const withStyledComponents = async (
 };
 
 class Document extends NextDocument {
-  public static async getInitialProps(
+  public static override async getInitialProps(
     ctx: DocumentContext
   ): Promise<DocumentInitialProps> {
     return withStyledComponents(ctx);
   }
 
-  public render(): React.JSX.Element {
+  public override render(): React.JSX.Element {
     return (
       <Html lang={DEFAULT_LOCALE}>
         <Head />

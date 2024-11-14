@@ -1,4 +1,4 @@
-import { sanitize } from "dompurify";
+import DOMPurify from "dompurify";
 import { useMemo } from "react";
 import {
   convertImageLinksToHtml,
@@ -21,7 +21,7 @@ const SanitizedContent: FC<{ content: string; decrypted: boolean }> = ({
     <div
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
-        __html: sanitize(decryptedContent || content, {
+        __html: DOMPurify.sanitize(decryptedContent || content, {
           ALLOWED_ATTR: ["src"],
           ALLOWED_TAGS: ["br", "img"],
         }),
