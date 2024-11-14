@@ -120,10 +120,7 @@ const useSelection = (
         window.addEventListener("mousemove", externalMouseMove);
         window.addEventListener(
           "mouseup",
-          () => {
-            resetSelection();
-            window.removeEventListener("mousemove", externalMouseMove);
-          },
+          () => window.removeEventListener("mousemove", externalMouseMove),
           ONE_TIME_PASSIVE_EVENT
         );
       }
@@ -131,7 +128,8 @@ const useSelection = (
 
     selection.selectionEvents.onMouseLeave = onMouseLeave;
     selection.selectionEvents.onMouseMove = onMouseMove;
-    selection.selectionEvents.onMouseUp = resetSelection;
+
+    window.addEventListener("mouseup", resetSelection, ONE_TIME_PASSIVE_EVENT);
   }
 
   if (isSelecting) {
