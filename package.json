@@ -121,7 +121,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-hooks-addons": "^0.4.1",
-    "eslint-plugin-regexp": "^2.6.0",
+    "eslint-plugin-regexp": "^2.7.0",
     "eslint-plugin-sonarjs": "^2.0.4",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^3.3.0",
