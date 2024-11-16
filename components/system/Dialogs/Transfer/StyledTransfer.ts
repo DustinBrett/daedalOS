@@ -91,6 +91,10 @@ const StyledTransfer = styled.div`
   h2 {
     font-size: 12px;
     font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
   }
 
   nav {
