@@ -34,12 +34,12 @@ const StyledSearch = styled.div`
       padding-right: 4px;
     }
 
-    &:focus {
+    &:not(:placeholder-shown) {
       height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
+    }
 
-      &::placeholder {
-        color: transparent;
-      }
+    &:focus::placeholder {
+      color: transparent;
     }
   }
 
