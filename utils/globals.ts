@@ -1,15 +1,15 @@
 const DEFAULT_KEY = "DEFAULT";
 const SET_KEY = "__setter__";
 
+type SharedGlobal = {
+  [key: string]: unknown;
+  [DEFAULT_KEY]: unknown;
+  [SET_KEY]: string;
+};
+
 declare global {
   interface Window {
-    sharedGlobals?: Record<
-      string,
-      {
-        [key: string]: unknown;
-        [SET_KEY]: string;
-      }
-    >;
+    sharedGlobals?: Record<string, SharedGlobal>;
   }
 }
 
