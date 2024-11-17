@@ -22,7 +22,7 @@ import {
   MILLISECONDS_IN_SECOND,
 } from "utils/constants";
 import { getExtension } from "utils/functions";
-import { lockGlobal, unlockGlobal } from "utils/globals";
+import { shareGlobal } from "utils/globals";
 
 const useMonaco = ({
   containerRef,
@@ -61,14 +61,8 @@ const useMonaco = ({
   }, [createModelUri, monaco?.editor, prependFileToTitle, readFile, url]);
   const loadFile = useCallback(async () => {
     if (monaco && editor && url.startsWith("/")) {
-      unlockGlobal("define");
-
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
-      window.setTimeout(
-        () => lockGlobal("define"),
-        2.5 * MILLISECONDS_IN_SECOND
-      );
     }
 
     prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
@@ -76,12 +70,9 @@ const useMonaco = ({
 
   useEffect(() => {
     if (!monaco) {
-      unlockGlobal("define");
+      shareGlobal("define", "MonacoEditor", 2.5 * MILLISECONDS_IN_SECOND);
       loader.config(config);
-      loader.init().then((monacoInstance) => {
-        lockGlobal("define");
-        setMonaco(monacoInstance);
-      });
+      loader.init().then((monacoInstance) => setMonaco(monacoInstance));
     }
   }, [monaco]);
 
@@ -130,7 +121,6 @@ const useMonaco = ({
       if (editor && monaco) {
         editor.getModel()?.dispose();
         editor.dispose();
-        lockGlobal("define");
       }
     };
   }, [containerRef, editor, id, monaco, setArgument, setLoading]);
