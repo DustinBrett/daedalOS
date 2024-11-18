@@ -18,9 +18,10 @@ import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import { HIGH_PRIORITY_ELEMENT, IMAGE_FILE_EXTENSIONS } from "utils/constants";
 import {
+  bufferToUrl,
   getExtension,
+  getMimeType,
   haltEvent,
-  imageToBufferUrl,
   label,
 } from "utils/functions";
 import { decodeImageToBuffer } from "utils/imageDecoder";
@@ -56,7 +57,9 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
         reset?.();
       }
 
-      return { [url]: imageToBufferUrl(ext, imageBuffer || fileContents) };
+      return {
+        [url]: bufferToUrl(imageBuffer || fileContents, getMimeType(url)),
+      };
     });
     prependFileToTitle(basename(url));
   }, [prependFileToTitle, readFile, reset, url]);

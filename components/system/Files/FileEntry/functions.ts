@@ -50,7 +50,6 @@ import {
   getGifJs,
   getHtmlToImage,
   getMimeType,
-  imageToBufferUrl,
   isSafari,
   isYouTubeUrl,
 } from "utils/functions";
@@ -345,7 +344,7 @@ export const getInfoWithExtension = (
             const image = await decodeImageToBuffer(extension, contents);
 
             if (image && !signal.aborted) {
-              getInfoByFileExtension(imageToBufferUrl(extension, image));
+              getInfoByFileExtension(bufferToUrl(image, getMimeType(path)));
             }
           }
         }
@@ -620,7 +619,7 @@ export const getInfoWithExtension = (
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
               imageIcon.decoding = "async";
-              imageIcon.src = imageToBufferUrl(extension, contents);
+              imageIcon.src = bufferToUrl(contents, getMimeType(path));
             }
           })
         );

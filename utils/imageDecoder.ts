@@ -9,7 +9,7 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   getGifJs,
-  imageToBufferUrl,
+  getMimeType,
   imgDataToBuffer,
 } from "utils/functions";
 
@@ -164,7 +164,7 @@ const canLoadNative = async (
       ONE_TIME_PASSIVE_EVENT
     );
 
-    image.src = imageToBufferUrl(extension, file);
+    image.src = bufferToUrl(file, getMimeType("", extension));
   });
 
 export const decodeImageToBuffer = async (

@@ -11,12 +11,12 @@ import {
   PACKAGE_DATA,
 } from "utils/constants";
 import {
+  bufferToUrl,
   getDpi,
   getExtension,
   getMimeType,
   imageSrc,
   imageSrcs,
-  imageToBufferUrl,
   isDynamicIcon,
 } from "utils/functions";
 
@@ -68,7 +68,7 @@ const Metadata: FC = () => {
         if (largestIcon) return largestIcon;
       }
 
-      return image ? imageToBufferUrl(extension, image) : "";
+      return image ? bufferToUrl(image, getMimeType(path)) : "";
     },
     [readFile]
   );

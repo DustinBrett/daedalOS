@@ -32,9 +32,9 @@ export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
 
 export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
-  mimeType
-    ? `data:${mimeType};base64,${buffer.toString("base64")}`
-    : URL.createObjectURL(bufferToBlob(buffer));
+  mimeType === "image/svg+xml"
+    ? `data:${mimeType};base64,${window.btoa(buffer.toString())}`
+    : URL.createObjectURL(bufferToBlob(buffer, mimeType));
 
 let dpi: number;
 
@@ -169,16 +169,6 @@ export const createFallbackSrcSet = (
     .reverse()
     .join(", ");
 };
-
-export const imageToBufferUrl = (
-  extension: string,
-  buffer: Buffer | string
-): string =>
-  extension === ".svg"
-    ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
-    : `data:image/${
-        extension === ".ani" || extension === ".gif" ? "gif" : "png"
-      };base64,${buffer.toString("base64")}`;
 
 export const blobToBase64 = (blob: Blob): Promise<string> =>
   new Promise((resolve) => {
@@ -809,8 +799,8 @@ export const getYouTubeUrlId = (url: string): string => {
   return "";
 };
 
-export const getMimeType = (url: string): string => {
-  switch (getExtension(url)) {
+export const getMimeType = (url: string, ext?: string): string => {
+  switch (ext ? ext.toLowerCase() : getExtension(url)) {
     case ".ani":
     case ".cur":
     case ".ico":
@@ -819,6 +809,8 @@ export const getMimeType = (url: string): string => {
     case ".jpg":
     case ".jpeg":
       return "image/jpeg";
+    case ".gif":
+      return "image/gif";
     case ".json":
       return "application/json";
     case ".html":
@@ -845,6 +837,8 @@ export const getMimeType = (url: string): string => {
       return "application/pdf";
     case ".png":
       return "image/png";
+    case ".svg":
+      return "image/svg+xml";
     case ".md":
     case ".txt":
       return "text/plain";
