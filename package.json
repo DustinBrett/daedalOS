@@ -42,7 +42,7 @@
     "react-rnd/re-resizable": "6.10.1"
   },
   "dependencies": {
-    "@mlc-ai/web-llm": "^0.2.75",
+    "@mlc-ai/web-llm": "^0.2.76",
     "@monaco-editor/loader": "^1.4.0",
     "@panzoom/panzoom": "^4.5.1",
     "@prettier/plugin-xml": "^3.4.1",
@@ -51,7 +51,7 @@
     "browserfs": "https://github.com/jvilk/BrowserFS.git#a96aa2d",
     "butterchurn-presets": "^3.0.0-beta.4",
     "decode-ico": "^0.4.1",
-    "dompurify": "^3.2.0",
+    "dompurify": "^3.2.1",
     "exif-js": "^2.3.0",
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
@@ -89,7 +89,7 @@
     "@next/eslint-plugin-next": "^15.0.3",
     "@playwright/test": "1.49.0",
     "@types/dom-chromium-ai": "^0.0.2",
-    "@types/dompurify": "^3.0.5",
+    "@types/dompurify": "^3.2.0",
     "@types/gif.js": "^0.2.5",
     "@types/ini": "^4.1.1",
     "@types/jest": "^29.5.14",
