@@ -106,6 +106,7 @@ const useMenuContextState = (): MenuContextState => {
             window.clearTimeout(touchTimer.current);
           },
           onTouchStart: (event: React.TouchEvent) => {
+            event.preventDefault();
             window.clearTimeout(touchTimer.current);
             touchTimer.current = window.setTimeout(() => {
               touchEvent.current = event;
