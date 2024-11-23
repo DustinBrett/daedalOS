@@ -22,6 +22,7 @@ export const CELEBRATIONS: Record<number, Record<number, boolean>> = {
 export const createCalendar = (date: Date): Calendar => {
   const day = date.getDate();
   const month = date.getMonth();
+  const isCurrentMonth = new Date().getMonth() === month;
   const year = date.getFullYear();
   const firstDay = new Date(year, month, 1).getDay();
   const firstWeek = FIRST_WEEK.slice(0, DAYS_IN_WEEK - firstDay);
@@ -41,7 +42,9 @@ export const createCalendar = (date: Date): Calendar => {
       const [vDay, vType] = value;
 
       acc[acc.length - 1].push(
-        vType === "curr" && vDay === day ? [vDay, "today"] : value
+        isCurrentMonth && vType === "curr" && vDay === day
+          ? [vDay, "today"]
+          : value
       );
 
       return acc;
