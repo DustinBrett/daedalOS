@@ -3,7 +3,9 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Down, Up } from "components/system/Taskbar/Calendar/Icons";
 import StyledCalendar from "components/system/Taskbar/Calendar/StyledCalendar";
 import {
+  CELEBRATIONS,
   type Calendar as ICalendar,
+  celebrate,
   createCalendar,
 } from "components/system/Taskbar/Calendar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
@@ -128,6 +130,11 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                       }
                     }}
                     className={type}
+                    onClick={(event) => {
+                      if (CELEBRATIONS[date.getMonth() + 1]?.[day]) {
+                        celebrate(event.clientX + 23, event.clientY + 20);
+                      }
+                    }}
                   >
                     {day}
                   </td>
