@@ -22,8 +22,9 @@ export const CELEBRATIONS: Record<number, Record<number, boolean>> = {
 export const createCalendar = (date: Date): Calendar => {
   const day = date.getDate();
   const month = date.getMonth();
-  const isCurrentMonth = new Date().getMonth() === month;
   const year = date.getFullYear();
+  const now = new Date();
+  const isCurrentMonth = now.getMonth() === month && now.getFullYear() === year;
   const firstDay = new Date(year, month, 1).getDay();
   const firstWeek = FIRST_WEEK.slice(0, DAYS_IN_WEEK - firstDay);
   const prevLastRow = Array.from({ length: DAYS_IN_WEEK - firstWeek.length })
