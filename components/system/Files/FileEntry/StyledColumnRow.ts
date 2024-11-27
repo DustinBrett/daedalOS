@@ -16,7 +16,8 @@ const StyledColumnRow = styled.div`
     white-space: nowrap;
 
     &:last-child {
-      margin-right: -${({ theme }) => theme.sizes.fileManager.detailsEndPadding / 2}px;
+      margin-right: -${({ theme }) =>
+          theme.sizes.fileManager.detailsEndPadding / 2}px;
       padding-right: ${({ theme }) =>
         theme.sizes.fileManager.detailsEndPadding - 4}px;
       text-align: right;
