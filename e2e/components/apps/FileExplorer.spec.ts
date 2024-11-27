@@ -61,6 +61,7 @@ import {
   fileExplorerRenameEntry,
   filterMenuItems,
   focusOnWindow,
+  loadApp,
   pageHasIcon,
   pageHasTitle,
   pressFileExplorerAddressBarKeys,
@@ -75,7 +76,7 @@ import {
 
 test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
-test.beforeEach(async ({ page }) => page.goto("/?app=FileExplorer"));
+test.beforeEach(async ({ page }) => loadApp({ page }, { app: "FileExplorer" }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(fileExplorerEntriesAreVisible);
 

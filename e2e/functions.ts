@@ -55,6 +55,7 @@ import {
   CURSOR_SPACE_LENGTH,
   TAB_SPACE_LENGTH,
   SHORTCUT_ICON_SELECTOR,
+  DEFAULT_SESSION,
 } from "e2e/constants";
 
 type TestProps = {
@@ -135,18 +136,6 @@ export const disableWallpaper = ({ page }: TestProps): Promise<void> =>
   });
 
 // action
-export const loadApp = async ({ page }: TestProps): Promise<Response | null> =>
-  page.goto("/");
-
-export const loadTestApp = async ({
-  page,
-}: TestProps): Promise<Response | null> => page.goto(`/?app=${TEST_APP}`);
-
-export const loadContainerTestApp = async ({
-  page,
-}: TestProps): Promise<Response | null> =>
-  page.goto(`/?app=${TEST_APP_CONTAINER_APP}`);
-
 export const mockPictureSlideshowRequest = async ({
   page,
 }: TestProps): Promise<() => Promise<void>> => {
@@ -941,15 +930,6 @@ export const clockCanvasMaybeIsVisible = async ({
   }
 };
 
-export const loadAppWithCanvas = async ({
-  headless,
-  browserName,
-  page,
-}: TestProps): Promise<void> => {
-  await loadApp({ page });
-  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
-};
-
 export const appIsOpen = async (
   label: RegExp | string,
   page: Page
@@ -981,4 +961,36 @@ export const selectArea = async ({
   expect(boundingBox?.y).toEqual(y);
 
   if (up) await page.mouse.up({ button: "left" });
+};
+
+// loaders
+export const loadApp = async (
+  { page }: TestProps,
+  queryParams?: Record<string, string>
+): Promise<Response | null> => {
+  await page.addInitScript((session) => {
+    window.DEBUG_DEFAULT_SESSION = session;
+  }, DEFAULT_SESSION);
+
+  return page.goto(
+    queryParams ? `/?${new URLSearchParams(queryParams).toString()}` : "/"
+  );
+};
+
+export const loadTestApp = async ({
+  page,
+}: TestProps): Promise<Response | null> => loadApp({ page }, { app: TEST_APP });
+
+export const loadContainerTestApp = async ({
+  page,
+}: TestProps): Promise<Response | null> =>
+  loadApp({ page }, { app: TEST_APP_CONTAINER_APP });
+
+export const loadAppWithCanvas = async ({
+  headless,
+  browserName,
+  page,
+}: TestProps): Promise<void> => {
+  await loadApp({ page });
+  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 };

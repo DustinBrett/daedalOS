@@ -5,6 +5,7 @@ import {
   captureConsoleLogs,
   didCaptureConsoleLogs,
   disableWallpaper,
+  loadApp,
   sendTabToTerminal,
   sendTextToTerminal,
   sendToTerminal,
@@ -21,7 +22,7 @@ import {
 
 test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
-test.beforeEach(async ({ page }) => page.goto("/?app=Terminal"));
+test.beforeEach(async ({ page }) => loadApp({ page }, { app: "Terminal" }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(terminalHasRows);
 

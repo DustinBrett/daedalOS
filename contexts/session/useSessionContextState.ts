@@ -33,7 +33,11 @@ import {
 } from "utils/constants";
 import { updateIconPositionsIfEmpty } from "utils/functions";
 
-const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
+const DEFAULT_SESSION = (
+  typeof window === "object" && "DEBUG_DEFAULT_SESSION" in window
+    ? window.DEBUG_DEFAULT_SESSION
+    : ((defaultSession || {}) as unknown)
+) as SessionData;
 
 const KEEP_RECENT_FILES_LIST_COUNT = 10;
 
