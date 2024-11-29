@@ -106,16 +106,20 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         }
       : undefined,
     {
-      action: () => {
-        setHaltSession(true);
+ action: () => {
+  setHaltSession(true);
 
-        import("contexts/fileSystem/functions").then(({ resetStorage }) =>
-          resetStorage(rootFs).finally(() => window.location.reload())
-        );
-      },
-      icon: <Power />,
-      name: "Power",
-      tooltip: "Clears session data and reloads the page.",
+  import("contexts/fileSystem/functions").then(({ resetStorage }) => {
+    resetStorage(rootFs).finally(() => {
+      // Attempt to close the tab
+      window.open('', '_self'); // Required for some browsers
+      window.close();
+    });
+  });
+},
+icon: <Power />,
+name: "Power",
+tooltip: "Clears session data and force closes the current tab."
     },
   ].filter(Boolean) as SidebarButtons;
 
