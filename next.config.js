@@ -2,9 +2,7 @@
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const bundleAnalyzer = process.env.npm_config_argv?.includes(
-  "build:bundle-analyzer"
-);
+const bundleAnalyzer = process.env.npm_config_argv?.includes("build:bundle-analyzer");
 
 const webpack = require("webpack");
 
@@ -27,13 +25,14 @@ const nextConfig = {
   devIndicators: {
     buildActivityPosition: "top-right",
   },
-  output: "export",
+  output: "export", // Only if you want to export a static site
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   webpack: (config) => {
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
         const mod = resource.request.replace(/^node:/, "");
+        console.log(`Processing module: ${mod}`); // Debugging log
 
         switch (mod) {
           case "buffer":
@@ -43,7 +42,7 @@ const nextConfig = {
             resource.request = "readable-stream";
             break;
           default:
-            throw new Error(`Not found ${mod}`);
+            throw new Error(`Not found: ${mod}`); // Ensure this is an instance of Error
         }
       }),
       new webpack.DefinePlugin({
@@ -51,9 +50,11 @@ const nextConfig = {
       })
     );
 
-    config.resolve.fallback = config.resolve.fallback || {};
-    config.resolve.fallback.module = false;
-    config.resolve.fallback.perf_hooks = false;
+    config.resolve.fallback = {
+      ...(config.resolve.fallback || {}),
+      module: false,
+      perf_hooks: false,
+    };
 
     config.module.parser.javascript = config.module.parser.javascript || {};
     config.module.parser.javascript.dynamicImportFetchPriority = "high";
@@ -62,6 +63,7 @@ const nextConfig = {
   },
 };
 
+// Export the configuration with bundle analyzer support if needed
 module.exports = bundleAnalyzer
   ? require("@next/bundle-analyzer")({
       enabled: isProduction,
