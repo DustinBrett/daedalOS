@@ -1,0 +1,25 @@
+jobs:
+  deploy:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Install Dependencies
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn
+      
+      - name: Build App
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn build
+      
+      - name: Export Static Files
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn export
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out  # Adjust this if your export directory is different
