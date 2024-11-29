@@ -8,7 +8,7 @@ const StyledSidebar = styled.nav`
   overflow: hidden;
   padding-top: 4px;
   position: absolute;
-  top: 20px;
+  top: 0;
   transition-duration: 150ms;
   width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
   z-index: 1;
