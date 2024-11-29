@@ -1,11 +1,11 @@
 {
-  "name": "daedalos",
-  "version": "2.0.0",
-  "description": "Desktop environment in the browser",
+  "name": "arcangelOS",
+  "version": "3.3.01",
+  "description": "Portfolio",
   "author": {
-    "name": "Dustin Brett",
-    "email": "dustinbrett@gmail.com",
-    "url": "https://dustinbrett.com"
+    "name": "Henrry Arcangelo",
+    "email": "henry.arcangello@gmail.com",
+    "url": "https://arcangelo.net"
   },
   "license": "MIT",
   "browserslist": [
