@@ -365,18 +365,25 @@ export const getInfoWithExtension = (
           if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
 
           if (pid === "FileExplorer" && !icon) {
+            const iconCallback = (newIcon?: string): void => {
+              if (!newIcon) return;
+
+              callback({
+                comment,
+                icon: newIcon,
+                pid,
+                subIcons,
+                url,
+              });
+            };
             const getIcon = (): void => {
-              getIconFromIni(fs, url).then(
-                (iniIcon) =>
-                  iniIcon &&
-                  callback({
-                    comment,
-                    icon: iniIcon,
-                    pid,
-                    subIcons,
-                    url,
-                  })
-              );
+              if (urlExt) {
+                getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
+                  iconCallback(extIcon)
+                );
+              } else {
+                getIconFromIni(fs, url).then(iconCallback);
+              }
             };
 
             callback({
@@ -479,6 +486,24 @@ export const getInfoWithExtension = (
           } else {
             callback({
               comment,
+              getIcon:
+                icon && icon === processDirectory[pid]?.icon
+                  ? () =>
+                      getInfoWithExtension(
+                        fs,
+                        url,
+                        urlExt,
+                        ({ icon: extIcon }) =>
+                          extIcon &&
+                          callback({
+                            comment,
+                            icon: extIcon,
+                            pid,
+                            subIcons,
+                            url,
+                          })
+                      )
+                  : undefined,
               icon: icon || UNKNOWN_ICON_PATH,
               pid,
               subIcons,
