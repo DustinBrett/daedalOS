@@ -151,7 +151,7 @@ tooltip: "Clears session data and force closes the current tab."
       }}
       style={{ height }}
     >
-      <SidebarGroup sidebarButtons={topButtons} />
+      
       <SidebarGroup sidebarButtons={bottomButtons} />
     </StyledSidebar>
   );
