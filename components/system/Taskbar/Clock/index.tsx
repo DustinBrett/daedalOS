@@ -24,7 +24,7 @@ const ClockSourceMap = {
 
 const EASTER_EGG_CLICK_COUNT = 7;
 
-const LARGEST_CLOCK_TEXT = "44:44:44 AM";
+const LARGEST_CLOCK_TEXT = "44:44:44";
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
 
