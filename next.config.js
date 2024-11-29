@@ -1,3 +1,5 @@
+Run actions/configure-pages@v5
+Injecting property=output and value=export in:
 // @ts-check
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -69,3 +71,4 @@ module.exports = bundleAnalyzer
       enabled: isProduction,
     })(nextConfig)
   : nextConfig;
+Error: TypeError: error must be an instance of Error
