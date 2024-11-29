@@ -32,7 +32,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
         `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH}px`};
 
       @supports not selector(::-webkit-scrollbar) {
-        width: ${({ theme }) =>
+        width: ${({ theme }) => 
           `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH_NON_WEBKIT}px`};
       }
     }
