@@ -12,8 +12,8 @@ playwright/.cache
 public/robots.txt
 public/rss.xml
 public/sitemap.xml
-public/.index/*
-public/Users/Public/**
+
+
 
 !public/Users/**/desktop.ini
 !public/Users/Public/Desktop
