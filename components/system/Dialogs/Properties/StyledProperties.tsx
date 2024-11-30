@@ -70,6 +70,7 @@ const StyledProperties = styled.div`
         &.spacer {
           border-bottom: 1px solid rgb(160, 160, 160);
           display: block;
+          max-width: unset;
           width: 100%;
         }
 
