@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { TASKBAR_HEIGHT } from "utils/constants";
 
 const StyledCalendar = styled(motion.section)`
+  top: 3vh;
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.panelBlur})`};
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};

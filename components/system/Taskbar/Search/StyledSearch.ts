@@ -66,7 +66,9 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
       z-index: 2;
     }
   }
-
+  #searchMenu {
+    top: 3vh;
+  }
   .content {
     animation: fade-in 0.85s;
     height: calc(100% - 40px);

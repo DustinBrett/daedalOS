@@ -19,7 +19,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
 
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
-   top: 3vh;
+   
     margin-top: 0;
     overflow-x: hidden;
     padding-bottom: ${({ theme }) =>
@@ -36,7 +36,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
           `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH_NON_WEBKIT}px`};
       }
     }
-
+ #startMenu {
+    top: 3vh;
+  }
     ${StyledFileManager} {
       margin: 0;
       overflow: hidden;
