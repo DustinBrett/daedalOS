@@ -34,10 +34,10 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
 
     input {
       appearance: none;
-      background-color: #fff;
-      border: 2px solid rgb(0, 120, 215);
+   background: rgba(100,100,100,0.1);
+  border: 0; 
       border-radius: 0;
-      color: #000;
+      color: #eee;
       font-size: 15px;
       height: 40px;
       padding: 10px;
@@ -69,11 +69,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
   #searchMenu {
     top: 3vh;
   }
-  .search input {
-  background: rgba(100,100,100,0.1);
-  border: 0; 
-  
-  }
+
   .content {
     animation: fade-in 0.85s;
     height: calc(100% - 40px);
