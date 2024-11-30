@@ -38,6 +38,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     }
  #startMenu {
     top: 3vh;
+    padding-top: 0px;
   }
     ${StyledFileManager} {
       margin: 0;

@@ -69,6 +69,11 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
   #searchMenu {
     top: 3vh;
   }
+  .search input {
+  background: rgba(100,100,100,0.1);
+  border: 0; 
+  
+  }
   .content {
     animation: fade-in 0.85s;
     height: calc(100% - 40px);
