@@ -67,64 +67,80 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
   nav {
     display: flex;
 
-    button {
-      border-left: ${styledBorder};
-      box-sizing: content-box;
-      display: flex;
-      place-content: center;
-      place-items: center;
-      width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
+     button {
+    border-left: ${styledBorder};
+    box-sizing: content-box;
+    display: flex;
+    place-content: center;
+    place-items: center;
+    width: ${({ theme }) => theme.sizes.titleBar.buttonWidth};
 
+    svg {
+      fill: ${({ $foreground, theme }) =>
+        $foreground
+          ? theme.colors.titleBar.text
+          : theme.colors.titleBar.buttonInactive};
+      margin: 0 1px 2px 0;
+      width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
+    }
+
+    &.minimize {
       svg {
-        fill: ${({ $foreground, theme }) =>
-          $foreground
-            ? theme.colors.titleBar.text
-            : theme.colors.titleBar.buttonInactive};
-        margin: 0 1px 2px 0;
-        width: ${({ theme }) => theme.sizes.titleBar.buttonIconWidth};
+        margin-bottom: 1px;
+        margin-right: 0;
+      }
+    }
+
+    &:hover {
+      background-color: ${({ theme }) =>
+        theme.colors.titleBar.backgroundHover};
+
+      &.close {
+        background-color: ${({ theme }) => theme.colors.titleBar.closeHover};
+        transition: background-color 0.25s ease;
+
+        svg {
+          fill: red; /* Set fill to red for close button on hover */
+        }
+      }
+
+      &.maximize {
+        svg {
+          fill: yellow; /* Set fill to yellow for maximize button on hover */
+        }
       }
 
       &.minimize {
         svg {
-          margin-bottom: 1px;
-          margin-right: 0;
+          fill: white; /* Set fill to white for minimize button on hover */
         }
+      }
+
+      svg {
+        fill: ${({ theme }) => theme.colors.titleBar.text};
+      }
+    }
+
+    &:active {
+      background-color: rgb(51, 51, 51);
+
+      &.close {
+        background-color: rgb(139, 10, 20);
+      }
+    }
+
+    &:disabled {
+      svg {
+        fill: ${({ $foreground }) =>
+          $foreground ? "rgb(50, 50, 50)" : "rgb(60, 60, 60)"};
       }
 
       &:hover {
-        background-color: ${({ theme }) =>
-          theme.colors.titleBar.backgroundHover};
-
-        svg {
-          fill: ${({ theme }) => theme.colors.titleBar.text};
-        }
-
-        &.close {
-          background-color: ${({ theme }) => theme.colors.titleBar.closeHover};
-          transition: background-color 0.25s ease;
-        }
-      }
-
-      &:active {
-        background-color: rgb(51, 51, 51);
-
-        &.close {
-          background-color: rgb(139, 10, 20);
-        }
-      }
-
-      &:disabled {
-        svg {
-          fill: ${({ $foreground }) =>
-            $foreground ? "rgb(50, 50, 50)" : "rgb(60, 60, 60)"};
-        }
-
-        &:hover {
-          background-color: inherit;
-        }
+        background-color: inherit;
       }
     }
   }
+}
 `;
 
 export default StyledTitlebar;
