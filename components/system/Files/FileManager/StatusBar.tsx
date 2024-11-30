@@ -106,30 +106,7 @@ const StatusBar: FC<StatusBarProps> = ({
             : ""}
         </div>
       )}
-      <nav className="views">
-        <Button
-          className={view === "details" ? "active" : undefined}
-          onClick={() => setView("details")}
-          {...label("Displays information about each item in the window.")}
-        >
-          <Icon
-            displaySize={16}
-            imgSize={16}
-            src="/System/Icons/details_view.webp"
-          />
-        </Button>
-        <Button
-          className={view === "icon" ? "active" : undefined}
-          onClick={() => setView("icon")}
-          {...label("Display items by using thumbnails.")}
-        >
-          <Icon
-            displaySize={16}
-            imgSize={16}
-            src="/System/Icons/icon_view.webp"
-          />
-        </Button>
-      </nav>
+   
     </StyledStatusBar>
   );
 };

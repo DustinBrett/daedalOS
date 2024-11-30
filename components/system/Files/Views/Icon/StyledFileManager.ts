@@ -5,7 +5,7 @@ import { TASKBAR_HEIGHT } from "utils/constants";
 
 const StyledFileManager = styled.ol<StyledFileManagerProps>`
   ${({ $scrollable }) => ($scrollable ? ScrollBars() : undefined)};
-
+  margin-top: 50px;
   contain: strict;
   display: grid;
   gap: ${({ theme }) =>
