@@ -16,7 +16,10 @@ type StyledStartMenuProps = {
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   ${({ theme }) =>
     TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
-
+#startMenu {
+  top: 3vh;
+  padding-top: 2px
+}
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
    
@@ -36,10 +39,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
           `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH_NON_WEBKIT}px`};
       }
     }
- #startMenu {
-    top: 3vh;
-    padding-top: 0px;
-  }
+
     ${StyledFileManager} {
       margin: 0;
       overflow: hidden;
