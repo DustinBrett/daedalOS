@@ -92,11 +92,11 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     }
 
     &:hover {
-      background-color: ${({ theme }) =>
+      fill: ${({ theme }) =>
         theme.colors.titleBar.backgroundHover};
 
       &.close {
-        background-color: ${({ theme }) => theme.colors.titleBar.closeHover};
+        fill: ${({ theme }) => theme.colors.titleBar.closeHover};
         transition: background-color 0.25s ease;
 
         svg {
@@ -122,10 +122,10 @@ const StyledTitlebar = styled.header<StyledTitlebarProps>`
     }
 
     &:active {
-      background-color: rgb(51, 51, 51);
+      background-color: inherit;
 
       &.close {
-        background-color: rgb(139, 10, 20);
+        background-color: inherit;
       }
     }
 
