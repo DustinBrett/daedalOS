@@ -109,13 +109,8 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
  action: () => {
   setHaltSession(true);
 
-  import("contexts/fileSystem/functions").then(({ resetStorage }) => {
-    resetStorage(rootFs).finally(() => {
-      // Attempt to close the tab
-      window.open('', '_self'); // Required for some browsers
+     window.open('', '_self'); // Required for some browsers
       window.close();
-    });
-  });
 },
 icon: <Power />,
 name: "Power",
