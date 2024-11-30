@@ -7,7 +7,7 @@ const StyledLoading = styled.div`
 
   &::before {
     color: #fff;
-    content: "Working on it...";
+    content: "L o a d i n g ...";
     display: flex;
     font-size: 12px;
     justify-content: center;

@@ -11,6 +11,7 @@ const StyledColumns = styled.span`
   z-index: 1;
 
   ol {
+  margin-top: 50px;
     display: flex;
     height: ${({ theme }) => theme.sizes.fileManager.columnHeight};
 
