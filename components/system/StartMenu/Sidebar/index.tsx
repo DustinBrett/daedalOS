@@ -147,9 +147,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
       }}
       style={{ height }}
     >
-      <SidebarGroup sidebarButtons={topButtons} />
-      <SidebarGroup sidebarButtons={bottomButtons} />
-    </StyledSidebar>
+      </StyledSidebar>
   );
 };
 
