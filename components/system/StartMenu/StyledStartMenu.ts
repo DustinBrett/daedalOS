@@ -38,6 +38,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
       margin: 0;
       overflow: hidden;
       padding: 0;
+      margin-top: 2px
       scrollbar-gutter: auto;
 
       figure {
