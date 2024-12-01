@@ -10,6 +10,8 @@ const TaskbarPanel = (
   background-color: hsla(0, 0%, 13%, 95%);
   border: ${hasBorder ? "1px solid hsla(0, 0%, 25%, 75%)" : "none"};
   border-bottom-width: 0;
+  top: 3vh;
+  padding-top: 2px;
   bottom: ${TASKBAR_HEIGHT}px;
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
   contain: strict;
