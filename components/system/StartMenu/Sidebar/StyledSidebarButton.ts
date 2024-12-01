@@ -23,7 +23,10 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     position: absolute;
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
   }
-
+#startMenu {
+  top: 3vh 
+  padding-top: 2px
+}
   figure {
     color: ${({ $active, theme }) =>
       $active ? theme.colors.highlight : theme.colors.text};
