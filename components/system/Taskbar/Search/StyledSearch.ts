@@ -31,6 +31,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
 
   .search {
     width: 100%;
+    top: 3vh
 
     input {
       appearance: none;
