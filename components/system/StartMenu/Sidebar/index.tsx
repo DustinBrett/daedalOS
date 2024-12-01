@@ -106,15 +106,16 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
         }
       : undefined,
     {
- action: () => {
-  setHaltSession(true);
+      action: () => {
+        setHaltSession(true);
 
-     window.open('', '_self'); // Required for some browsers
-      window.close();
-},
-icon: <Power />,
-name: "Power",
-tooltip: "Clears session data and force closes the current tab."
+        import("contexts/fileSystem/functions").then(({ resetStorage }) =>
+          resetStorage(rootFs).finally(() => window.location.reload())
+        );
+      },
+      icon: <Power />,
+      name: "Power",
+      tooltip: "Clears session data and reloads the page.",
     },
   ].filter(Boolean) as SidebarButtons;
 
@@ -146,7 +147,7 @@ tooltip: "Clears session data and force closes the current tab."
       }}
       style={{ height }}
     >
-      
+      <SidebarGroup sidebarButtons={topButtons} />
       <SidebarGroup sidebarButtons={bottomButtons} />
     </StyledSidebar>
   );
