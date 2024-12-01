@@ -16,10 +16,7 @@ type StyledStartMenuProps = {
 const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   ${({ theme }) =>
     TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
-#startMenu {
-  top: 3vh !important ;
-  padding-top: 2px !important;
-}
+
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
    
