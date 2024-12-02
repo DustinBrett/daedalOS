@@ -8,13 +8,13 @@ export const config: ITerminalOptions & { cols: number; rows: number } = {
   cursorInactiveStyle: "none",
   cursorStyle: "underline",
   cursorWidth: 8,
-  fontFamily: "Consolas, Lucida Console, Courier New, monospace",
+  fontFamily: "Fira Code, Monaco, Ubunto Mono, Lucida Console, Courier New, monospace",
   fontSize: 14,
   fontWeight: "100",
   rows: 20,
   theme: {
-    background: processDirectory.Terminal.backgroundColor,
-    foreground: "rgb(15, 204, 15)",
+    background: 'rgb(5, 5, 5, 0.2)',
+    foreground: "rgb(15, 255, 15)",
   },
 };
 
