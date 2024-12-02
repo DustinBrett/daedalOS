@@ -2,10 +2,8 @@ import { memo } from "react";
 
 export const Search = memo(() => (
   
-    <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  
-<g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <rect y="0" fill="none" width="24" height="24"></rect> <polygon fill-rule="evenodd" fill="#ffffff" points="0.8,5.9 3.7,0.8 9.5,0.8 12.4,5.9 9.5,10.9 3.7,10.9 "></polygon> <polygon fill-rule="evenodd" fill="#ffffff" points="11.4,7.7 8.5,2.6 9.5,0.7 12.4,5.9 "></polygon> <polygon id="Shape-Copy_00000019646383529055310330000009913415011964925323_" fill-rule="evenodd" fill="#fafafa" points=" 2.7,9.3 8.5,9.3 10.5,5.9 11.4,7.7 9.5,10.9 3.7,11 "></polygon> <polygon fill-rule="evenodd" fill="#ffffff" points="11.2,11.9 14.2,6.8 20,6.8 22.9,11.9 20,16.9 14.2,16.9 "></polygon> <polygon id="Shape-Copy_00000133527958483064390410000012377415375428947900_" fill-rule="evenodd" fill="#ffffff" points=" 21.9,13.7 19,8.6 20,6.7 22.9,11.9 "></polygon> <polygon id="Shape-Copy_00000176019471624316745960000001248137580190207128_" fill-rule="evenodd" fill="#fafafa" points=" 13.2,15.3 19,15.3 21,11.9 21.9,13.7 20,16.9 14.2,17 "></polygon> <polygon fill-rule="evenodd" fill="#ffffff" points="0.8,17.9 3.7,12.8 9.5,12.8 12.4,17.9 9.5,22.9 3.7,22.9 "></polygon> <polygon id="Shape-Copy_00000096041779745201399360000017167964797373102485_" fill-rule="evenodd" fill="#ffffff" points=" 11.4,19.7 8.5,14.6 9.5,12.7 12.4,17.9 "></polygon> <polygon id="Shape-Copy_00000049204188488742950820000010444321201512143025_" fill-rule="evenodd" fill="#fafafa" points=" 2.7,21.3 8.5,21.3 10.5,17.9 11.4,19.7 9.5,22.9 3.7,23 "></polygon> </g> </g>
-
+  <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <path d="m257.5 977.5 465-465.5-465-465.5 45-45 511 510.5-511 510.5z" />
   </svg>
 
 ));
