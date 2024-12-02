@@ -25,6 +25,7 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
   overflow: hidden;
   position: absolute;
   width: 100%;
+  opacity: 1;
 
   header + * {
     height: ${({ theme }) => `calc(100% - ${theme.sizes.titleBar.height}px)`};
