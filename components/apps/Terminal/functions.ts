@@ -139,7 +139,7 @@ const directoryCommands = new Set([
 ]);
 
 export const unknownCommand = (baseCommand: string): string =>
-  `'${baseCommand}' is not recognized as an internal or external command, operable program or batch file.`;
+  `zsh: ${baseCommand}: command not found`;
 
 export const autoComplete = (
   directory: string[],
