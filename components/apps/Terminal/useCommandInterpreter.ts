@@ -924,7 +924,7 @@ const useCommandInterpreter = (
             }
             break;
           }
-          case "sheep":
+          case "pet":
           case "esheep": {
             const { countSheep, killSheep, spawnSheep } = await import(
               "utils/spawnSheep"

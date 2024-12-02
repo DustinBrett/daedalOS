@@ -227,8 +227,8 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "Name:    dustinbrett.com");
   });
 
-  test("sheep", async ({ page }) => {
-    await sendToTerminal({ page }, "sheep");
+  test("pet", async ({ page }) => {
+    await sendToTerminal({ page }, "pet");
     await sheepIsVisible({ page });
   });
 
