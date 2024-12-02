@@ -15,6 +15,9 @@ const StyledTerminal = styled.div`
     width: 100% !important;
   
   }
+    .xterm-rows {
+    margin-left: 10px !important
+    }
 
   .xterm-cursor-underline {
     border-bottom-color: #f3f3f3 !important;
