@@ -248,16 +248,16 @@ exports.DEFAULT_TEXT_FILE_SAVE_PATH = "".concat(exports.DESKTOP_PATH, "/Untitled
 exports.DEFAULT_SCROLLBAR_WIDTH = 17;
 exports.TASKBAR_HEIGHT = 30;
 exports.PACKAGE_DATA = {
-    alias: "daedalOS",
+    alias: "arcangelOS",
     author: {
-        email: "dustinbrett@gmail.com",
-        name: "Dustin Brett",
-        npub: "npub10uc7hg6wdxhhd7ee8x9c5lr9d0ux7272rv2m0mc03ds54q7quxjss02r3p",
-        url: "https://dustinbrett.com",
+        email: "henry.arcangello@gmail.com",
+        name: "Henrique Arcangelo",
+        npub: "",
+        url: "https://github.com/ARCANGEL0",
     },
-    description: "Desktop environment in the browser",
+    description: "ArcangelOS portfolio",
     license: "MIT",
-    version: "2.0.0",
+    version: "3.3.01",
 };
 exports.BASE_ZIP_CONFIG = {
     consume: true,
