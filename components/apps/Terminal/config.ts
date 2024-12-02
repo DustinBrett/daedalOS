@@ -14,7 +14,7 @@ export const config: ITerminalOptions & { cols: number; rows: number } = {
   rows: 20,
   theme: {
     background: processDirectory.Terminal.backgroundColor,
-    foreground: "rgb(204, 204, 204)",
+    foreground: "rgb(15, 204, 15)",
   },
 };
 
@@ -22,7 +22,7 @@ export const WAPM_STD_IN_APPS = ["lolcat"];
 
 export const WAPM_STD_IN_EXCLUDE_ARGS = ["--help", "-h", "--version", "-V"];
 
-export const PROMPT_CHARACTER = ">";
+export const PROMPT_CHARACTER = "";
 
 export const PI_ASCII = [
   "     ':lodxkkkOOOOOOOOOOOOkkkkkl",
