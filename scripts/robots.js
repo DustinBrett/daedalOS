@@ -43,14 +43,14 @@ const buildFileSitemap = (path, excludePaths, callback) => {
 buildAppSitemap("components/apps");
 
 buildFileSitemap(
-  "Users/Public/Documents",
+  "home/arcangelo/Documents",
   [],
   (path, mtime) => `<url><loc>${path}</loc><lastmod>${mtime}</lastmod></url>`
 );
 
 buildFileSitemap(
-  "Users/Public/Pictures",
-  ["Users/Public/Pictures/Blog"],
+  "home/arcangelo/Pictures",
+  ["home/arcangelo/Pictures/Blog"],
   (path, mtime, url) =>
     `<url><loc>${path}</loc><image:image><image:loc>${url}</image:loc></image:image><lastmod>${mtime}</lastmod></url>`
 );

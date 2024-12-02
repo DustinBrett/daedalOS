@@ -57,7 +57,7 @@ const createRssFeedItems = (url) => {
   });
 };
 
-const name = "daedalOS";
+const name = "arcangelOS";
 const rss = [
   '<?xml version="1.0" encoding="utf-8"?>',
   '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">',
@@ -67,7 +67,7 @@ const rss = [
   `<link>${author.url}</link>`,
   `<description>${description}</description>`,
   `<lastBuildDate>${lastBuildDate || new Date().toUTCString()}</lastBuildDate>`,
-  ...createRssFeedItems("Users/Public/Documents/Blog Posts"),
+  ...createRssFeedItems("home/arcangelo/Documents/Blog Posts"),
   "</channel>",
   "</rss>",
 ].join("");
