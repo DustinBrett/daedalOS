@@ -422,9 +422,9 @@ test.describe("has navigation", () => {
   test("can go back & forward", async ({ page }) => {
     await fileExplorerEntriesAreVisible({ page });
 
-    await typeInFileExplorerAddressBar("/Users", { page });
+    await typeInFileExplorerAddressBar("/home", { page });
     await pressFileExplorerAddressBarKeys("Enter", { page });
-    await windowTitlebarTextIsVisible(/^Users$/, { page });
+    await windowTitlebarTextIsVisible(/^home$/, { page });
 
     await fileExplorerNavButtonIsVisible(/^Back to System$/, { page });
     await fileExplorerNavButtonIsVisible(/^Up to "My PC"$/, { page });
@@ -433,7 +433,7 @@ test.describe("has navigation", () => {
     await windowTitlebarTextIsVisible(/^System$/, { page });
 
     await fileExplorerNavButtonIsVisible(/^Back to My PC$/, { page });
-    await fileExplorerNavButtonIsVisible(/^Forward to Users$/, { page });
+    await fileExplorerNavButtonIsVisible(/^Forward to home$/, { page });
     await fileExplorerNavButtonIsVisible(/^Up to "My PC"$/, { page });
   });
 
