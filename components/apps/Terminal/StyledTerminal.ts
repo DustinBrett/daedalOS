@@ -13,6 +13,7 @@ const StyledTerminal = styled.div`
   .xterm-viewport {
     ${ScrollBars()};
     width: 100% !important;
+    color: green;
   }
 
   .xterm-cursor-underline {
