@@ -51,7 +51,7 @@ export const DIV_BUTTON_PROPS = {
 
 export const FS_HANDLES = "FileSystemAccessHandles";
 
-export const HOME = "/Users/Public";
+export const HOME = "/home/arcangelo";
 
 export const PICTURES_FOLDER = `${HOME}/Pictures`;
 
