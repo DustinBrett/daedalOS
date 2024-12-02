@@ -158,18 +158,18 @@ test.describe("has file system access", () => {
       const testFile = "abc123.txt";
 
       await sendToTerminal({ page }, `find ${testFile}`);
-      await terminalDoesNotHaveText({ page }, `/Users/Public/${testFile}`);
+      await terminalDoesNotHaveText({ page }, `/home/arcangelo/${testFile}`);
 
       await sendToTerminal({ page }, `touch ${testFile}`);
       await sendToTerminal({ page }, `find ${testFile}`);
-      await terminalHasText({ page }, `/Users/Public/${testFile}`);
+      await terminalHasText({ page }, `/home/arcangelo/${testFile}`);
     });
 
     test("folder", async ({ page }) => {
       await sendToTerminal({ page }, "find document");
       await terminalHasText(
         { page },
-        "/Users/Public/Documents",
+        "/home/arcangelo/Documents",
         1,
         false,
         true

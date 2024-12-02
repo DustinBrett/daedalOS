@@ -141,7 +141,7 @@ export const mockPictureSlideshowRequest = async ({
 }: TestProps): Promise<() => Promise<void>> => {
   let requested = false;
 
-  await page.route("/Users/Public/Pictures/slideshow.json", (route) =>
+  await page.route("/home/arcangelo/Pictures/slideshow.json", (route) =>
     route.fulfill({ body: JSON.stringify([UNKNOWN_ICON_PATH]) })
   );
   await page.route(UNKNOWN_ICON_PATH, () => {

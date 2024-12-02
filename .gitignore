@@ -16,22 +16,22 @@ public/sitemap.xml
 
 
 !public/Users/**/desktop.ini
-!public/Users/Public/Desktop
-!public/Users/Public/Desktop/My PC.url
-!public/Users/Public/Desktop/Public.url
-!public/Users/Public/Documents
-!public/Users/Public/Music
-!public/Users/Public/Pictures
-!public/Users/Public/Pictures/prompts.json
-!public/Users/Public/Pictures/slideshow.json
-!public/Users/Public/Start Menu
-!public/Users/Public/Start Menu/*.url
-!public/Users/Public/Start Menu/Emulators
-!public/Users/Public/Start Menu/Emulators/*.url
-!public/Users/Public/Start Menu/Games
-!public/Users/Public/Start Menu/Games/Chrome Dino.url
-!public/Users/Public/Start Menu/Games/ClassiCube.url
-!public/Users/Public/Start Menu/Games/DX-Ball.url
-!public/Users/Public/Start Menu/Games/Quake III Arena.url
-!public/Users/Public/Start Menu/Games/Space Cadet.url
-!public/Users/Public/Videos
+!public/home/arcangelo/Desktop
+!public/home/arcangelo/Desktop/My PC.url
+!public/home/arcangelo/Desktop/Public.url
+!public/home/arcangelo/Documents
+!public/home/arcangelo/Music
+!public/home/arcangelo/Pictures
+!public/home/arcangelo/Pictures/prompts.json
+!public/home/arcangelo/Pictures/slideshow.json
+!public/home/arcangelo/Start Menu
+!public/home/arcangelo/Start Menu/*.url
+!public/home/arcangelo/Start Menu/Emulators
+!public/home/arcangelo/Start Menu/Emulators/*.url
+!public/home/arcangelo/Start Menu/Games
+!public/home/arcangelo/Start Menu/Games/Chrome Dino.url
+!public/home/arcangelo/Start Menu/Games/ClassiCube.url
+!public/home/arcangelo/Start Menu/Games/DX-Ball.url
+!public/home/arcangelo/Start Menu/Games/Quake III Arena.url
+!public/home/arcangelo/Start Menu/Games/Space Cadet.url
+!public/home/arcangelo/Videos
