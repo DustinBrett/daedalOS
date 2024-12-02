@@ -19,6 +19,7 @@ import {
   searchMenuIsHidden,
   searchMenuIsVisible,
   startMenuContextIsOpen,
+  startMenuEntryHasIcon,
   startMenuEntryIsVisible,
   startMenuIsHidden,
   startMenuIsVisible,
@@ -93,6 +94,8 @@ test.describe("has files", () => {
     for (const label of START_MENU_APPS) {
       // eslint-disable-next-line no-await-in-loop
       await startMenuEntryIsVisible(label, { page });
+      // eslint-disable-next-line no-await-in-loop
+      await startMenuEntryHasIcon(label, { page });
     }
   });
 

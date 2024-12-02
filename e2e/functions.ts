@@ -606,6 +606,15 @@ const entryIsVisible = async (
     expect(page.locator(selector).getByLabel(label, EXACT)).toBeVisible()
   ).toPass();
 
+const entryHasIcon = async (
+  selector: string,
+  label: RegExp | string,
+  page: Page
+): Promise<void> =>
+  expect(
+    page.locator(selector).getByLabel(label, EXACT).locator("img")
+  ).not.toHaveAttribute("src", UNKNOWN_ICON_PATH);
+
 export const desktopEntryIsVisible = async (
   label: RegExp,
   { page }: TestProps
@@ -688,6 +697,11 @@ export const startMenuEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
 ): Promise<void> => entryIsVisible(START_MENU_SELECTOR, label, page);
+
+export const startMenuEntryHasIcon = async (
+  label: RegExp | string,
+  { page }: TestProps
+): Promise<void> => entryHasIcon(START_MENU_SELECTOR, label, page);
 
 export const startMenuSidebarEntryIsVisible = async (
   label: RegExp,

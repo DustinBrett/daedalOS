@@ -203,6 +203,7 @@ export const START_MENU_APPS = [
   /^DevTools$/,
   /^IRC$/,
   /^Marked$/,
+  /^Messenger$/,
   /^Monaco Editor$/,
   /^Paint$/,
   /^PDF$/,
@@ -259,7 +260,7 @@ export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
 export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
 
-export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.png";
+export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.webp";
 
 const OG_REQUIRED_TAGS = ["title", "image", "url", "type"];
 
