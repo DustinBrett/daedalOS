@@ -166,10 +166,7 @@ export const getShortcutInfo = (
 
   return {
     comment,
-    icon:
-      !icon && pid && pid !== "FileExplorer"
-        ? processDirectory[pid]?.icon
-        : icon,
+    icon,
     pid,
     type,
     url,
@@ -486,24 +483,18 @@ export const getInfoWithExtension = (
           } else {
             callback({
               comment,
-              getIcon:
-                icon && icon === processDirectory[pid]?.icon
-                  ? () =>
-                      getInfoWithExtension(
-                        fs,
+              getIcon: icon
+                ? undefined
+                : () =>
+                    getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
+                      callback({
+                        comment,
+                        icon: extIcon || processDirectory[pid]?.icon,
+                        pid,
+                        subIcons,
                         url,
-                        urlExt,
-                        ({ icon: extIcon }) =>
-                          extIcon &&
-                          callback({
-                            comment,
-                            icon: extIcon,
-                            pid,
-                            subIcons,
-                            url,
-                          })
-                      )
-                  : undefined,
+                      })
+                    ),
               icon: icon || UNKNOWN_ICON_PATH,
               pid,
               subIcons,
