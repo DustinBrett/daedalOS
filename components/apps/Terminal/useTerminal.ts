@@ -154,14 +154,14 @@ const useTerminal = ({
     if (localEcho && terminal && !prompted) {
       const prompt = (): Promise<void> =>
         localEcho
-          .read(`\r\n${PROMPT_CHARACTER}${cd.current}\n`)
+          .read(`\r\n${PROMPT_CHARACTER}${cd.current}\n$ `)
           .then((command) => processCommand.current?.(command).then(prompt));
 
       localEcho.println(`arcangelOS 3.31`);
 
       if (initialCommand) {
         localEcho.println(
-          `\r\n${PROMPT_CHARACTER}${cd.current}\n${initialCommand}\r\n`
+          `\r\n${PROMPT_CHARACTER}${cd.current}\n$ ${initialCommand}\r\n`
         );
         localEcho.history.entries = [initialCommand];
         processCommand.current(initialCommand).then(prompt);
