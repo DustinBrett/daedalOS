@@ -30,8 +30,8 @@ const StyledNavigation = styled.nav`
 
     &[title="Recent locations"] {
       left: 55px;
-      max-width: 33px;
-      min-width: 33px;
+      width: 61px
+      height: 61px
       position: absolute;
 
       svg {
