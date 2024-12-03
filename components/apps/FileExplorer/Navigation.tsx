@@ -150,7 +150,7 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
           <Up />
         </Button>
         <AddressBar ref={inputRef} id={id} />
-        {!hideSearch && !removeSearch && <SearchBar id={id} />}
+    
       </StyledNavigation>
     );
   }
