@@ -107,7 +107,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           className={inputing ? "inputing" : ""}
           onBlurCapture={({ relatedTarget }) => {
             if (actionButtonRef.current !== relatedTarget) {
-              setAddressBar(addressBar);
+              setAddressBar(url);
             }
           }}
           onChange={({ target }) => setAddressBar(target.value)}
