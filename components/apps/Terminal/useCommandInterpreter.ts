@@ -372,83 +372,84 @@ const useCommandInterpreter = (
           case "ls": {
             const [directory = ""] = commandArgs;
             const listDir = async (dirPath: string): Promise<void> => {
-              let totalSize = 0;
-              let fileCount = 0;
-              let directoryCount = 0;
-              let entries = await readdir(dirPath);
+  let totalSize = 0;
+  let fileCount = 0;
+  let directoryCount = 0;
+  let entries = await readdir(dirPath);
 
-              if (
-                entries.length === 0 &&
-                rootFs?.mntMap[dirPath]?.getName() === "FileSystemAccess"
-              ) {
-                await requestPermission(dirPath);
-                entries = await readdir(dirPath);
-              }
+  if (
+    entries.length === 0 &&
+    rootFs?.mntMap[dirPath]?.getName() === "FileSystemAccess"
+  ) {
+    await requestPermission(dirPath);
+    entries = await readdir(dirPath);
+  }
 
-              const timeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
-                timeStyle: "short",
-              });
-              const entriesWithStats = await Promise.all(
-                entries
-                  .filter(
-                    (entry) =>
-                      (!directory.startsWith("*") ||
-                        entry.endsWith(directory.slice(1))) &&
-                      (!directory.endsWith("*") ||
-                        entry.startsWith(directory.slice(0, -1)))
-                  )
-                  .map(async (entry) => {
-                    const filePath = join(dirPath, entry);
-                    const fileStats = await stat(filePath);
-                    const mDate = new Date(
-                      getModifiedTime(filePath, fileStats)
-                    );
-                    const date = mDate.toISOString().slice(0, 10);
-                    const time = timeFormatter.format(mDate).padStart(8, "0");
-                    const isDirectory = fileStats.isDirectory();
+  const entriesWithStats = await Promise.all(
+    entries.map(async (entry) => {
+      const filePath = join(dirPath, entry);
+      const fileStats = await stat(filePath);
+      const mDate = new Date(getModifiedTime(filePath, fileStats));
+      const date = mDate.toISOString().slice(0, 10);
+      const time = mDate.toISOString().slice(11, 16);
 
-                    totalSize += isDirectory ? 0 : fileStats.size;
-                    if (isDirectory) {
-                      directoryCount += 1;
-                    } else {
-                      fileCount += 1;
-                    }
+      const isDirectory = fileStats.isDirectory();
+      const fileMode = isDirectory
+        ? "d"
+        : "-"; // Add more logic for symbolic links, executables, etc.
+      const permissions = [
+        fileStats.mode & 0o400 ? "r" : "-",
+        fileStats.mode & 0o200 ? "w" : "-",
+        fileStats.mode & 0o100 ? "x" : "-",
+        fileStats.mode & 0o040 ? "r" : "-",
+        fileStats.mode & 0o020 ? "w" : "-",
+        fileStats.mode & 0o010 ? "x" : "-",
+        fileStats.mode & 0o004 ? "r" : "-",
+        fileStats.mode & 0o002 ? "w" : "-",
+        fileStats.mode & 0o001 ? "x" : "-",
+      ].join("");
 
-                    return [
-                      `${date}  ${time}`,
-                      isDirectory
-                        ? "<DIR>        "
-                        : fileStats.size.toLocaleString(),
-                      entry,
-                    ];
-                  })
-              );
-              printLn(` Directory of ${dirPath}`);
-              printLn("");
+      const owner = "user"; // Replace with logic to fetch actual owner.
+      const group = "group"; // Replace with logic to fetch actual group.
 
-              const fullSizeTerminal =
-                !localEcho?._termSize?.cols || localEcho?._termSize?.cols > 52;
+      totalSize += isDirectory ? 0 : fileStats.size;
+      if (isDirectory) {
+        directoryCount += 1;
+      } else {
+        fileCount += 1;
+      }
 
-              printTable(
-                [
-                  ["Date", fullSizeTerminal ? 22 : 20],
-                  [
-                    "Type/Size",
-                    fullSizeTerminal ? 15 : 13,
-                    true,
-                    (size) => (size === "-1" ? "" : size),
-                  ],
-                  ["Name", terminal?.cols ? terminal.cols - 40 : 30],
-                ],
-                entriesWithStats,
-                printLn,
-                true
-              );
-              printLn(
-                `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
-              );
-              printLn(`\t\t${directoryCount} Dir(s)${await getFreeSpace()}`);
-            };
+      return [
+        `${fileMode}${permissions}`, // Permissions and type
+        `${owner} ${group}`, // Owner and group
+        fileStats.size.toLocaleString(), // File size
+        `${date} ${time}`, // Date and time
+        entry, // File or directory name
+      ];
+    })
+  );
+
+  printLn(` Directory of ${dirPath}`);
+  printLn("");
+
+  printTable(
+    [
+      ["Permissions", 11],
+      ["Owner/Group", 20],
+      ["Size", 10, true],
+      ["Date Modified", 16],
+      ["Name", terminal?.cols ? terminal.cols - 50 : 30],
+    ],
+    entriesWithStats,
+    printLn,
+    true
+  );
+
+  printLn(
+    `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
+  );
+  printLn(`\t\t${directoryCount} Dir(s)`);
+};
 
             if (
               directory &&
