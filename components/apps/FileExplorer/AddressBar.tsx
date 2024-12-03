@@ -107,7 +107,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           className={inputing ? "inputing" : ""}
           onBlurCapture={({ relatedTarget }) => {
             if (actionButtonRef.current !== relatedTarget) {
-              setAddressBar(displayName);
+              setAddressBar(addressBar);
             }
           }}
           onChange={({ target }) => setAddressBar(target.value)}
@@ -115,7 +115,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           onKeyDown={({ key }) => {
             if (key === "Enter") goToAddress();
           }}
-          value={addressBar}
+          value={url}
           {...ADDRESS_INPUT_PROPS}
           {...useAddressBarContextMenu(url)}
         />
@@ -123,14 +123,14 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
           ref={actionButtonRef}
           className="action"
           onClick={() => {
-            setAddressBar(displayName);
+            setAddressBar(url);
 
             if (inputing) goToAddress();
             else updateFolder(url);
           }}
           onFocusCapture={() =>
             setTimeout(
-              () => setAddressBar(displayName),
+              () => setAddressBar(url),
               TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK / 2
             )
           }
