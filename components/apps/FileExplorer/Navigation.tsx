@@ -150,7 +150,7 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
         >
           <Up />
         </Button>
-        <AddressBar ref={url} id={id} />
+        <AddressBar ref={inputRef} id={id} />
     
       </StyledNavigation>
     );
