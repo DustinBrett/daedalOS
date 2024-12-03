@@ -20,7 +20,7 @@ const StyledNavigation = styled.nav`
     min-height: 36px;
     min-width: 34px;
 
-    &[title^="Up"] {
+    &[title^="Home"] {
       max-width: 33px;
       min-width: 33px;
       position: relative;
