@@ -1,3 +1,4 @@
+import AddressBar from './AddressBar';
 import { basename, dirname } from "path";
 import {
   forwardRef,
@@ -149,7 +150,8 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
         >
           <Up />
         </Button>
-        <AddressBar ref={inputRef} id={id} />
+        <AddressBar ref={u />
+rl} id={id} />
     
       </StyledNavigation>
     );
