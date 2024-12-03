@@ -10,7 +10,7 @@ export const config: ITerminalOptions & { cols: number; rows: number } = {
   cursorWidth: 8,
   fontFamily: "Fira Code, Monaco, Ubunto Mono, Lucida Console, Courier New, monospace",
   fontSize: 10,
-  fontWeight: "100",
+  fontWeight: "80",
   rows: 20,
   theme: {
     background: 'rgb(5, 5, 5, 0.2)',
