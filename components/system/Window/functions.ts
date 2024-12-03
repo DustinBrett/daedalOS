@@ -80,7 +80,7 @@ export const isWindowOutsideBounds = (
 };
 
 export const minMaxSize = (size: Size, lockAspectRatio: boolean): Size => {
-  const desiredHeight = Number(size.height);
+  const desiredHeight = Number(size.height - 20);
   const desiredWidth = Number(size.width);
   const [vh, vw] = [viewHeight(), viewWidth()];
   const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
