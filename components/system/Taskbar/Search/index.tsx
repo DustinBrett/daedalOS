@@ -305,7 +305,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                       <li
                         key={app}
                         onClick={() => openApp(app)}
-                        title={directory[app].title}
+                        title={'arcangelOS'}
                       >
                         <figure>
                           <Icon
