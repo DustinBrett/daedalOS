@@ -409,8 +409,8 @@ const useCommandInterpreter = (
         fileStats.mode & 0o001 ? "x" : "-",
       ].join("");
 
-      const owner = "user"; // Replace with logic to fetch actual owner.
-      const group = "group"; // Replace with logic to fetch actual group.
+      const owner = "root"; // Replace with logic to fetch actual owner.
+      const group = "root"; // Replace with logic to fetch actual group.
 
       totalSize += isDirectory ? 0 : fileStats.size;
       if (isDirectory) {
@@ -428,8 +428,9 @@ const useCommandInterpreter = (
       ];
     })
   );
-
-  printLn(` Directory of ${dirPath}`);
+           const totals = fileCount + directoryCount
+  printLn(`total ${totals}`);
+  
   printLn("");
 
   printTable(
@@ -445,10 +446,7 @@ const useCommandInterpreter = (
     true
   );
 
-  printLn(
-    `\t\t${fileCount} File(s)\t${totalSize.toLocaleString()} bytes`
-  );
-  printLn(`\t\t${directoryCount} Dir(s)`);
+
 };
 
             if (
