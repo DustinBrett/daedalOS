@@ -2,13 +2,13 @@ import { memo, useMemo } from "react";
 
 export const Back = memo(() => (
   <svg viewBox="-8 0 32 32" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32 14v4H7.656l7.172 7.172L12 28 0 16 12 4l2.828 2.828L7.656 14H32z" />
+    <path d="M15 18l-6-6 6-6" />
   </svg>
 ));
 
 export const Forward = memo(() => (
   <svg viewBox="8 0 32 32" xmlns="http://www.w3.org/2000/svg">
-    <path d="m20 4 12 12-12 12-2.828-2.828L24.344 18H0v-4h24.344l-7.172-7.172L20 4z" />
+    <path d="M9 18l6-6-6-6" />
   </svg>
 ));
 
@@ -39,7 +39,7 @@ export const Down = memo<DownProps>(({ flip }) => {
 
   return (
     <svg style={style} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="m28.109 5.453 3.781 3.766L15.999 25.11.108 9.219l3.781-3.766 12.109 12.109L28.107 5.453z" />
+      <path d="M18 15l-6-6-6 6" />
     </svg>
   );
 });
@@ -49,7 +49,7 @@ export const Up = memo(() => {
 
   return (
     <svg style={style} viewBox="0 -7 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="m16 0 12 12-2.828 2.828L18 7.656V32h-4V7.656l-7.172 7.172L4 12 16 0z" />
+      <path d="M20 9v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/><path d="M9 22V12h6v10M2 10.6L12 2l10 8.6"/>
     </svg>
   );
 });
