@@ -67,8 +67,8 @@ test.describe("has file system access", () => {
       test("has 'System'", async ({ page }) =>
         terminalDirectoryMatchesPublicFolder({ page }, "/System"));
 
-      test("has 'Users'", async ({ page }) =>
-        terminalDirectoryMatchesPublicFolder({ page }, "/Users"));
+      test("has 'home'", async ({ page }) =>
+        terminalDirectoryMatchesPublicFolder({ page }, "/home"));
     });
   });
 
