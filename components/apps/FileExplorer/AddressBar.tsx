@@ -13,7 +13,6 @@ import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBar
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import Button from "styles/common/Button";
-import Icon from "styles/common/Icon";
 import {
   DISBALE_AUTO_INPUT_FEATURES,
   ROOT_NAME,
@@ -101,7 +100,7 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
 
     return (
       <StyledAddressBar>
-        <Icon alt={displayName} imgSize={16} src={icon} />
+       
         <input
           ref={addressBarRef}
           className={inputing ? "inputing" : ""}

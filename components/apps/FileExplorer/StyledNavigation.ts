@@ -21,23 +21,21 @@ const StyledNavigation = styled.nav`
     min-width: 34px;
 
     &[title^="Home"] {
-      max-width: 33px;
-      min-width: 33px;
+      max-width: 0px;
+      min-width: 0px;
       position: relative;
-      right: -8px;
-      top: -1px;
+      right: 24px;
+      top: -2px;
     }
 
     &[title="Recent locations"] {
-      left: 55px;
-      width: 61px
-      height: 61px
-      position: absolute;
+      left: -15px;
+      position: relative;
 
       svg {
         stroke: currentColor;
         stroke-width: 3px;
-        width: 7px;
+        width: 16px;
       }
     }
 

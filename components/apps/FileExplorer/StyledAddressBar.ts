@@ -4,17 +4,19 @@ const StyledAddressBar = styled.div`
   background-position: 2px 5px;
   background-repeat: no-repeat;
   background-size: 16px;
+  background: rgba(70,70,70,0.5);
+  border-radius: 10px;
   border: 1px solid rgb(83, 83, 83);
   display: flex;
   height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight}px;
   margin: 6px 12px 5px 5px;
   overflow: hidden;
-  padding: 0 22px 2px 25px;
+  padding: 0 22px 2px 11px;
   position: relative;
   width: 100%;
 
   input {
-    background-color: rgb(25, 25, 25);
+    background-color:transparent;
     border-right: 1px solid rgb(21, 21, 21);
     color: #fff;
     font-family: ${({ theme }) => theme.formats.systemFont};
@@ -39,7 +41,7 @@ const StyledAddressBar = styled.div`
   }
 
   .action {
-    background-color: rgb(25, 25, 25);
+    background-color: transparent;
     display: flex;
     height: ${({ theme }) => theme.sizes.fileExplorer.navInputHeight - 2}px;
     margin: 0;
@@ -67,7 +69,10 @@ const StyledAddressBar = styled.div`
       &.refresh {
         position: relative;
         stroke-width: 3;
-        top: -1px;
+        top: 0px;
+        width: 150%;
+        left: 1px
+
       }
 
       &.go-to {
