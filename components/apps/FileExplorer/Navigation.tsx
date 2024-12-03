@@ -145,11 +145,7 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
         <Button
           disabled={url === "/"}
           onClick={() => changeUrl(id, dirname(url))}
-          {...label(
-            url === "/"
-              ? "Up one level"
-              : `Up to "${upTo === "" ? ROOT_NAME : upTo}"`
-          )}
+          {...label("Home")}
         >
           <Up />
         </Button>
