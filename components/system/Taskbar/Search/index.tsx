@@ -296,30 +296,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               $singleLine={singleLineView}
               className={singleLineView ? "single-line" : undefined}
             >
-              <section>
-                <figure>
-                  <figcaption>Suggested</figcaption>
-                  <StyledSuggestions>
-                    {SUGGESTED.map((app) => (
-                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                      <li
-                        key={app}
-                        onClick={() => openApp(app)}
-                        title={'arcangelOS'}
-                      >
-                        <figure>
-                          <Icon
-                            displaySize={32}
-                            imgSize={32}
-                            src={directory[app].icon}
-                          />
-                          <figcaption>{directory[app].title}</figcaption>
-                        </figure>
-                      </li>
-                    ))}
-                  </StyledSuggestions>
-                </figure>
-              </section>
+
               <section>
                 {recentFiles.length > 0 && (
                   <StyledFiles>
@@ -351,36 +328,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     </ol>
                   </StyledFiles>
                 )}
-                <figure className="card">
-                  <figcaption>
-                    <Games />
-                    Games for you
-                  </figcaption>
-                  <ol>
-                    {GAMES.filter(
-                      (game) =>
-                        !(menuWidth < 360 && game === "Quake3") &&
-                        !(menuWidth < 260 && game === "SpaceCadet")
-                    ).map(
-                      (game) =>
-                        directory[game] && (
-                          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                          <li
-                            key={game}
-                            onClick={() => openApp(game)}
-                            title={directory[game].title}
-                          >
-                            <Icon
-                              displaySize={56}
-                              imgSize={96}
-                              src={directory[game].icon}
-                            />
-                            <h4>{directory[game].title}</h4>
-                          </li>
-                        )
-                    )}
-                  </ol>
-                </figure>
+    
               </section>
             </StyledSections>
           )}
