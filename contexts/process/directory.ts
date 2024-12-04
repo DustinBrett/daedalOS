@@ -321,6 +321,18 @@ const directory: Processes = {
     icon: "/System/Icons/copying.webp",
     title: "",
   },
+  Fallout: {
+    Component: dynamic(() => import("components/apps/Fallout")),
+    allowResizing: false,
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 200,
+      width: 200,
+    },
+   
+    icon: "/System/Icons/fallout.webp",
+    title: "Robco Ind. Terminal",
+  },
   V86: {
     Component: dynamic(() => import("components/apps/V86")),
     allowResizing: false,

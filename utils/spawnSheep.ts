@@ -16,9 +16,7 @@ declare global {
 
 const PETS: Record<string, [string, number]> = {
   
-    fox: ["/Program Files/eSheep/fox.xml", 4],
-  
-    mimiko: ["/Program Files/eSheep/mimiko.xml", 4],
+
   neko: ["/Program Files/eSheep/neko.xml", 10],
     pingus: ["/Program Files/eSheep/pingus.xml", 10],
   };
