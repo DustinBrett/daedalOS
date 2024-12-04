@@ -450,7 +450,7 @@ var useCommandInterpreter = function (id, cd, terminal, localEcho) {
                                         entries = _b.sent();
                                         _b.label = 4;
                                     case 4: return [4 /*yield*/, Promise.all(entries.map(function (entry) { return __awaiter(void 0, void 0, void 0, function () {
-                                            var filePath, fileStats, mDate, day, month, year, date, time, isDirectory, fileMode, permissions, owner, group;
+                                            var filePath, fileStats, mDate, date, time, isDirectory, fileMode, permissions, owner, group;
                                             return __generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
@@ -459,10 +459,7 @@ var useCommandInterpreter = function (id, cd, terminal, localEcho) {
                                                     case 1:
                                                         fileStats = _a.sent();
                                                         mDate = new Date((0, functions_2.getModifiedTime)(filePath, fileStats));
-                                                        day = String(mDate.getDate()).padStart(2, '0');
-                                                        month = String(mDate.getMonth() + 1).padStart(2, '0');
-                                                        year = mDate.getFullYear();
-                                                        date = "".concat(day, "/").concat(month, "/").concat(year);
+                                                        date = mDate.toISOString().slice(0, 10);
                                                         time = mDate.toISOString().slice(11, 16);
                                                         isDirectory = fileStats.isDirectory();
                                                         fileMode = isDirectory
@@ -490,7 +487,8 @@ var useCommandInterpreter = function (id, cd, terminal, localEcho) {
                                                         }
                                                         return [2 /*return*/, [
                                                                 "".concat(fileMode).concat(permissions),
-                                                                "".concat(owner),
+                                                                "".concat(owner, " ").concat(group),
+                                                                fileStats.size.toLocaleString(),
                                                                 "".concat(date, " ").concat(time),
                                                                 entry, // File or directory name
                                                             ]];
@@ -504,8 +502,7 @@ var useCommandInterpreter = function (id, cd, terminal, localEcho) {
                                         printLn("");
                                         (0, functions_1.printTable)([
                                             ["Permissions", 11],
-                                            ["Owner/Group", 20],
-                                            ["Date Modified", 16],
+                                            ["Owner/Group", 13],
                                             ["Name", (terminal === null || terminal === void 0 ? void 0 : terminal.cols) ? terminal.cols - 50 : 30],
                                         ], entriesWithStats, printLn, true);
                                         return [2 /*return*/];
