@@ -389,13 +389,9 @@ const useCommandInterpreter = (
     entries.map(async (entry) => {
       const filePath = join(dirPath, entry);
       const fileStats = await stat(filePath);
-const mDate = new Date(getModifiedTime(filePath, fileStats));
-const day = String(mDate.getDate()).padStart(2, '0');  // Ensure day is two digits
-const month = String(mDate.getMonth() + 1).padStart(2, '0');  // Months are 0-based, so add 1
-const year = mDate.getFullYear();
-const date = `${day}/${month}/${year}`;
-
-     const time = mDate.toISOString().slice(11, 16);
+      const mDate = new Date(getModifiedTime(filePath, fileStats));
+      const date = mDate.toISOString().slice(0, 10);
+      const time = mDate.toISOString().slice(11, 16);
 
       const isDirectory = fileStats.isDirectory();
       const fileMode = isDirectory
@@ -424,8 +420,9 @@ const date = `${day}/${month}/${year}`;
       }
 
       return [
-        `${fileMode}${permissions}`, // 
-        `${owner}`, // Owner and group
+        `${fileMode}${permissions}`, // Permissions and type
+        `${owner} ${group}`, // Owner and group
+        fileStats.size.toLocaleString(), // File size
         `${date} ${time}`, // Date and time
         entry, // File or directory name
       ];
@@ -439,8 +436,7 @@ const date = `${day}/${month}/${year}`;
   printTable(
     [
       ["Permissions", 11],
-      ["Owner/Group", 20],
-      ["Date Modified", 16],
+      ["Owner/Group", 13],
       ["Name", terminal?.cols ? terminal.cols - 50 : 30],
     ],
     entriesWithStats,
