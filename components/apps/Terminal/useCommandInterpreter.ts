@@ -421,9 +421,7 @@ const useCommandInterpreter = (
 
       return [
         `${fileMode}${permissions}`, // Permissions and type
-        `${owner} ${group}`, // Owner and group
-        fileStats.size.toLocaleString(), // File size
-        `${date} ${time}`, // Date and time
+        `${owner}`, // Owner and group
         entry, // File or directory name
       ];
     })
