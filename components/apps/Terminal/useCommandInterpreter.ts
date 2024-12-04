@@ -389,9 +389,13 @@ const useCommandInterpreter = (
     entries.map(async (entry) => {
       const filePath = join(dirPath, entry);
       const fileStats = await stat(filePath);
-      const mDate = new Date(getModifiedTime(filePath, fileStats));
-      const date = mDate.toISOString().slice(0, 10);
-      const time = mDate.toISOString().slice(11, 16);
+const mDate = new Date(getModifiedTime(filePath, fileStats));
+const day = String(mDate.getDate()).padStart(2, '0');  // Ensure day is two digits
+const month = String(mDate.getMonth() + 1).padStart(2, '0');  // Months are 0-based, so add 1
+const year = mDate.getFullYear();
+const date = `${day}/${month}/${year}`;
+
+     const time = mDate.toISOString().slice(11, 16);
 
       const isDirectory = fileStats.isDirectory();
       const fileMode = isDirectory
@@ -420,9 +424,8 @@ const useCommandInterpreter = (
       }
 
       return [
-        `${fileMode}${permissions}`, // Permissions and type
-        `${owner} ${group}`, // Owner and group
-        fileStats.size.toLocaleString(), // File size
+        `${fileMode}${permissions}`, // 
+        `${owner}`, // Owner and group
         `${date} ${time}`, // Date and time
         entry, // File or directory name
       ];
@@ -437,7 +440,6 @@ const useCommandInterpreter = (
     [
       ["Permissions", 11],
       ["Owner/Group", 20],
-      ["Size", 10, true],
       ["Date Modified", 16],
       ["Name", terminal?.cols ? terminal.cols - 50 : 30],
     ],
