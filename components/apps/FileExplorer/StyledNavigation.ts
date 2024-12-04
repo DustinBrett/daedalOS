@@ -24,7 +24,7 @@ const StyledNavigation = styled.nav`
       max-width: 0px;
       min-width: 0px;
       position: relative;
-      right: 24px;
+      right: 15px;
       top: -2px;
     }
 
