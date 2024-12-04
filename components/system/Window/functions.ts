@@ -50,7 +50,7 @@ export const WINDOW_OFFSCREEN_BUFFER_PX = {
   BOTTOM: 15,
   LEFT: 150,
   RIGHT: 50,
-  TOP: 15,
+  TOP: 5,
 };
 
 export const isWindowOutsideBounds = (
@@ -80,10 +80,10 @@ export const isWindowOutsideBounds = (
 };
 
 export const minMaxSize = (size: Size, lockAspectRatio: boolean): Size => {
-  const desiredHeight = Number(size.height - 20);
+  const desiredHeight = Number(size.height - 50);
   const desiredWidth = Number(size.width);
   const [vh, vw] = [viewHeight(), viewWidth()];
-  const vhWithoutTaskbar = vh - TASKBAR_HEIGHT;
+  const vhWithoutTaskbar = vh - TASKBAR_HEIGHT - 15;
   const height = Math.max(
     MIN_WINDOW_HEIGHT,
     Math.min(desiredHeight, vhWithoutTaskbar)
