@@ -23,8 +23,8 @@ const useRnd = (id: string): Props => {
     processes: {
       [id]: {
         allowResizing = true,
-        autoSizing = false,
-        lockAspectRatio = false,
+        autoSizing = true,
+        lockAspectRatio = true,
         maximized = false,
       } = {},
     },

@@ -50,7 +50,7 @@ export const WINDOW_OFFSCREEN_BUFFER_PX = {
   BOTTOM: 15,
   LEFT: 150,
   RIGHT: 50,
-  TOP: 5,
+  TOP: 0,
 };
 
 export const isWindowOutsideBounds = (

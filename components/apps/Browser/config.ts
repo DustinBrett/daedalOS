@@ -17,8 +17,8 @@ export const DINO_GAME = {
 export const bookmarks: Bookmark[] = [
   {
     icon: FAVICON_BASE_PATH,
-    name: "daedalOS",
-    url: "https://dustinbrett.com/",
+    name: "ARC_OS",
+    url: "https://arcangelo.net",
   },
   {
     icon: "/System/Icons/Favicons/dir.webp",
@@ -47,9 +47,9 @@ export const bookmarks: Bookmark[] = [
     url: "https://windows96.net/",
   },
   {
-    icon: "/System/Icons/Favicons/aos.webp",
+    icon: "/System/Icons/Favicons/fallout.webp",
     name: "AaronOS",
-    url: "https://aaronos.dev/",
+    url: "https://arcangel0.github.io/RobcoTERMINAL",
   },
 ];
 

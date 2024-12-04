@@ -12,7 +12,7 @@ const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSession();
   const {
     processes: {
-      [id]: { lockAspectRatio = false, maximized = false } = {},
+      [id]: { lockAspectRatio = true, maximized = false } = {},
     } = {},
   } = useProcesses();
   const {
