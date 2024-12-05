@@ -57,6 +57,11 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
         margin: 0 0 0 8px;
       }
     }
+    #searchMenu {
+    top: 5vh;
+    background: rgba(0,0,0,0.8)
+    } 
+
 
     svg {
       bottom: 12px;
