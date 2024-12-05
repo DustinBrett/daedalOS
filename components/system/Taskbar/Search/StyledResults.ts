@@ -15,14 +15,14 @@ const StyledResults = styled.div`
   .list {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)}
     ${ThinScrollBars}
-    background-color: rgba(40, 40, 40, 95%);
+    background-color: rgba(20, 20, 20, 95%);
     overflow-y: auto;
     scrollbar-gutter: auto;
     width: 100%;
 
     li {
       &.active-item {
-        background-color: rgba(30, 80, 115, 75%);
+        background-color: rgba(30, 80, 115, 25%);
       }
 
       position: relative;

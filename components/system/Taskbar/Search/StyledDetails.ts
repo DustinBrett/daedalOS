@@ -7,7 +7,7 @@ const StyledDetails = styled.div`
   ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)}
   ${ThinScrollBars}
   background-color: rgba(20, 20, 20, 95%);
-  border: 8px solid rgba(30, 30, 30, 95%);
+  border: 15px solid rgba(0,0,0,0%);
   border-bottom: none;
   box-sizing: content-box;
   display: flex;

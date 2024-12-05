@@ -63,7 +63,7 @@ const StyledSections = styled.div<StyledSectionsProps>`
   }
 
   figure.card {
-    background-color: rgba(45, 45, 45, 60%);
+    background-color: rgba(20, 20, 20, 60%);
     border-radius: 5px;
     padding: 8px 12px;
 

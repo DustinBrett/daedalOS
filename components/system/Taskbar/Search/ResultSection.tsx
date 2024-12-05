@@ -51,8 +51,7 @@ const ResultSection: FC<ResultsSectionProps> = ({
       <ol>
         {noResults ? (
           <li className="no-results">
-            <SearchIcon />
-            No results found for &apos;{searchTerm}&apos;
+       ❱❱ No results found for &apos;{searchTerm}&apos;
           </li>
         ) : (
           results.map(({ ref }) => (

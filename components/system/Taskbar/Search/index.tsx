@@ -261,27 +261,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     >
       <div>
         <div className="content" onContextMenu={haltEvent}>
-          <StyledTabs>
-            {TABS.filter(
-              (tab) =>
-                !(menuWidth < 325 && tab === "Videos") &&
-                !(menuWidth < 260 && tab === "Photos")
-            ).map((tab) => (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-              <li
-                key={tab}
-                className={tab === activeTab ? "active" : undefined}
-                onClick={() => changeTab(tab)}
-                {...label(
-                  tab === "All"
-                    ? "Find the most relevant results"
-                    : `Find results in ${tab}`
-                )}
-              >
-                {tab}
-              </li>
-            ))}
-          </StyledTabs>
+      
           <nav>
             <Button
               className="close-button"

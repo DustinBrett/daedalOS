@@ -105,13 +105,13 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >
-      <StyledBackground $height={height} />
-    
+   { /*    <StyledBackground $height={height} />
+    */}
       <FileManager
         url={START_MENU_PATH}
         hideLoading
         hideShortcutIcons
-        isStartMenu
+        isStartMenu={false}
         loadIconsImmediately
         readOnly
         skipFsWatcher
