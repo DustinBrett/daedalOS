@@ -106,7 +106,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       {...FOCUSABLE_ELEMENT}
     >
       <StyledBackground $height={height} />
-      <Sidebar height={height} />
+    
       <FileManager
         url={START_MENU_PATH}
         hideLoading
