@@ -23,7 +23,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     overflow-x: hidden;
     padding-bottom: ${({ theme }) =>
       theme.sizes.startMenu.sideBar.buttonHeight / 2}px;
-    padding-left: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
+    padding-left: 10px;
     padding-top: 7px;
 
     ${StyledFileEntry} {
@@ -35,7 +35,9 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
           `${theme.sizes.startMenu.size - theme.sizes.startMenu.sideBar.width - THIN_SCROLLBAR_WIDTH_NON_WEBKIT}px`};
       }
     }
-
+           #startMenu {
+           top: 5vh
+           }
     ${StyledFileManager} {
       margin: 0;
       overflow: hidden;
