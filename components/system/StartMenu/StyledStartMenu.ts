@@ -23,7 +23,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     overflow-x: hidden;
     padding-bottom: ${({ theme }) =>
       theme.sizes.startMenu.sideBar.buttonHeight / 2}px;
-    padding-left: 10px;
+    padding-left: 80px;
     padding-top: 7px;
 
     ${StyledFileEntry} {
