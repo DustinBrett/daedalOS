@@ -17,10 +17,9 @@ const cellWidth =
 
 const StyledProperties = styled.div`
   padding: 0 ${rightPadding}px 0 ${leftPadding}px;
-
+   background-color: rgba(30,30,30,0.5);
   table.general {
-    background-color: #fff;
-    border: 1px solid rgb(217, 217, 217);
+    color: #fff;
     height: calc(100% - 36px - 28px);
     padding-top: 14px;
     position: relative;
@@ -74,10 +73,12 @@ const StyledProperties = styled.div`
         }
 
         input {
-          border: 1px solid rgb(122, 122, 122);
+          background: rgba(200,200,200,0.3);
           font-size: 11px;
           height: 23px;
-          padding: 3px;
+          color: #fff;
+          border-radius: 5px
+          padding: 10px;
           width: 100%;
         }
 
@@ -97,8 +98,8 @@ const StyledProperties = styled.div`
       z-index: 1;
 
       button {
-        background-color: #fff;
-        border: 1px solid rgb(217, 217, 217);
+        rgba(255, 255, 255,0.4)
+        border-radius: 5px;
         border-bottom-width: 0;
         display: flex;
         font-size: 11.5px;

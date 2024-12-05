@@ -35,17 +35,18 @@ const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
     }
 
     figure {
-      color: #000;
+      color: #cecece;
       display: flex;
       padding: 0 23px;
 
       figcaption {
         font-size: 15px;
         padding: 0 12px;
+
       }
 
       picture {
-        background-color: rgb(0, 120, 215);
+        
         display: flex;
         height: 40px;
         place-content: center;

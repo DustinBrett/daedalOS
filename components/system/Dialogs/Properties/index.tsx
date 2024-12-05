@@ -106,12 +106,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       {...closeOnEscape}
     >
       <nav className="tabs">
-        <StyledButton
-          className={onGeneral ? undefined : "inactive"}
-          onClick={onGeneral ? undefined : () => setCurrentTab("general")}
-        >
-          General
-        </StyledButton>
+      
         {MEDIA_APPS.has(pid) && !isShortcut && (
           <StyledButton
             className={onDetails ? undefined : "inactive"}

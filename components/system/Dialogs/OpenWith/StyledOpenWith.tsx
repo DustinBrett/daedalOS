@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledOpenWith = styled.div`
+  background-color: rgba(30,30,30,0.5);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -26,12 +27,13 @@ const StyledOpenWith = styled.div`
   }
 
   nav {
-    background-color: #fff;
+   
     height: 80px;
     width: 100%;
 
     button {
-      background-color: rgb(204, 204, 204);
+      background-color: rgb(160, 160, 160);
+      border-radius: 10px
       color: #000;
       font-size: 15px;
       font-weight: 600;
