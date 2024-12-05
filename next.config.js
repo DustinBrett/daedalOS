@@ -10,6 +10,7 @@ const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
     // Your custom webpack configuration
+    // https://webcheckin.fd.economysoftware.com.br/81/14690?idt=2
     return config;
   },
 };
