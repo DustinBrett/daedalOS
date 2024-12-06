@@ -868,6 +868,22 @@ const getPreloadedLinks = (): HTMLLinkElement[] => [
   ...document.querySelectorAll<HTMLLinkElement>("link[rel=preload]"),
 ];
 
+let HAS_MODULE_PRELOAD_SUPPORT = false;
+
+const supportsModulePreload = (): boolean => {
+  if (HAS_MODULE_PRELOAD_SUPPORT) return true;
+
+  try {
+    HAS_MODULE_PRELOAD_SUPPORT = Boolean(
+      document.createElement("link").relList?.supports?.("modulepreload")
+    );
+  } catch {
+    // Ignore failure to check for modulepreload support
+  }
+
+  return HAS_MODULE_PRELOAD_SUPPORT;
+};
+
 let HAS_WEBP_SUPPORT = false;
 
 export const supportsWebp = (): boolean => {
@@ -957,6 +973,11 @@ export const preloadLibs = (libs: string[] = []): void => {
       case ".htm":
       case ".html":
         link.rel = "prerender";
+        break;
+      case ".js":
+        if (supportsModulePreload()) {
+          link.rel = "modulepreload";
+        }
         break;
       case ".json":
       case ".wasm":
