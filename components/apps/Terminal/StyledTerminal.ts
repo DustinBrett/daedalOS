@@ -13,6 +13,7 @@ const StyledTerminal = styled.div`
   .xterm-viewport {
     ${ScrollBars()};
     width: 100% !important;
+    background: rgba(20,20,20,0.5) !important
   
   }
     .xterm-rows {

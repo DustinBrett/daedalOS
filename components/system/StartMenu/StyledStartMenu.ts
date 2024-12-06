@@ -18,7 +18,7 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
     TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
    #startMenu {
    padding: 3%
-   background-color: rgba(0,0,0,0.8);
+   background-color: rgba(0,0,0,0.3);
    height: 56vh !important
    } 
   ${StyledFileManager} {
