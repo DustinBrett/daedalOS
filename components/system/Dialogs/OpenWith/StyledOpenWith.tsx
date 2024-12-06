@@ -14,11 +14,14 @@ const StyledOpenWith = styled.div`
   h2,
   h4 {
     font-weight: 400;
+    color: #fff
   }
 
   h2 {
     font-size: 18px;
     height: 56px;
+        color: #fff
+
     padding: 16px 24px;
   }
 
