@@ -6,7 +6,7 @@ import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
 
 export type ContainerHookProps = {
-  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
   id: string;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;

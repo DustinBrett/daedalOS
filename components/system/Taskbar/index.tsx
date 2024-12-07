@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from "react";
 import dynamic from "next/dynamic";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import Clock from "components/system/Taskbar/Clock";
 import SearchButton from "components/system/Taskbar/Search/SearchButton";
 import StartButton from "components/system/Taskbar/StartButton";

@@ -32,7 +32,7 @@ const useEmulator = ({
     processes: { [id]: { closing = false, libs = [] } = {} } = {},
   } = useProcesses();
   const { prependFileToTitle } = useTitle(id);
-  const emulatorRef = useRef<Emulator>();
+  const emulatorRef = useRef<Emulator>(undefined);
   const loadedUrlRef = useRef<string>("");
   const loadRom = useCallback(async () => {
     if (!url) return;

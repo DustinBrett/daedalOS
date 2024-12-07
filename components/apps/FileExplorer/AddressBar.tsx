@@ -1,12 +1,5 @@
 import { basename } from "path";
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoTo, Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
@@ -38,111 +31,111 @@ export const ADDRESS_INPUT_PROPS = {
   HTMLInputElement
 >;
 
-const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
-  ({ id }, ref) => {
-    const addressBarRef =
-      ref as React.MutableRefObject<HTMLInputElement | null>;
-    const actionButtonRef = useRef<HTMLButtonElement | null>(null);
-    const {
-      open,
-      url: changeUrl,
-      processes: {
-        [id]: { icon, url = "" },
-      },
-    } = useProcesses();
-    const displayName = useMemo(() => basename(url) || ROOT_NAME, [url]);
-    const [addressBar, setAddressBar] = useState(displayName);
-    const { exists, stat, updateFolder } = useFileSystem();
-    const { updateRecentFiles } = useSession();
-    const inputing = useMemo(
-      () =>
-        addressBar !== displayName &&
-        addressBar !== url &&
-        document.activeElement === addressBarRef.current,
-      [addressBar, addressBarRef, displayName, url]
-    );
-    const goToAddress = useCallback(async () => {
-      if (addressBar && (await exists(addressBar))) {
-        if ((await stat(addressBar)).isDirectory()) changeUrl(id, addressBar);
-        else {
-          const openPid = getProcessByFileExtension(getExtension(addressBar));
+const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
+  id,
+  ref: addressBarRef,
+}) => {
+  const actionButtonRef = useRef<HTMLButtonElement | null>(null);
+  const {
+    open,
+    url: changeUrl,
+    processes: {
+      [id]: { icon, url = "" },
+    },
+  } = useProcesses();
+  const displayName = useMemo(() => basename(url) || ROOT_NAME, [url]);
+  const [addressBar, setAddressBar] = useState(displayName);
+  const { exists, stat, updateFolder } = useFileSystem();
+  const { updateRecentFiles } = useSession();
+  const inputing = useMemo(
+    () =>
+      addressBar !== displayName &&
+      addressBar !== url &&
+      addressBarRef &&
+      document.activeElement === addressBarRef.current,
+    [addressBar, addressBarRef, displayName, url]
+  );
+  const goToAddress = useCallback(async () => {
+    if (addressBar && (await exists(addressBar))) {
+      if ((await stat(addressBar)).isDirectory()) changeUrl(id, addressBar);
+      else {
+        const openPid = getProcessByFileExtension(getExtension(addressBar));
 
-          open(openPid || "OpenWith", { url: addressBar });
+        open(openPid || "OpenWith", { url: addressBar });
 
-          if (openPid) {
-            updateRecentFiles(addressBar, openPid);
-          }
+        if (openPid) {
+          updateRecentFiles(addressBar, openPid);
         }
       }
+    }
 
-      addressBarRef.current?.blur();
-    }, [
-      addressBar,
-      addressBarRef,
-      changeUrl,
-      exists,
-      id,
-      open,
-      stat,
-      updateRecentFiles,
-    ]);
+    addressBarRef?.current?.blur();
+  }, [
+    addressBar,
+    addressBarRef,
+    changeUrl,
+    exists,
+    id,
+    open,
+    stat,
+    updateRecentFiles,
+  ]);
 
-    useEffect(() => {
-      if (addressBarRef.current) {
-        if (addressBar === url) {
-          addressBarRef.current.select();
-        } else if (addressBar === displayName) {
-          window.getSelection()?.removeAllRanges();
-        } else if (document.activeElement !== addressBarRef.current) {
-          setAddressBar(displayName);
-        }
+  useEffect(() => {
+    if (addressBarRef?.current) {
+      if (addressBar === url) {
+        addressBarRef.current.select();
+      } else if (addressBar === displayName) {
+        window.getSelection()?.removeAllRanges();
+      } else if (document.activeElement !== addressBarRef.current) {
+        setAddressBar(displayName);
       }
-    }, [addressBar, addressBarRef, displayName, url]);
+    }
+  }, [addressBar, addressBarRef, displayName, url]);
 
-    return (
-      <StyledAddressBar>
-        <Icon alt={displayName} imgSize={16} src={icon} />
-        <input
-          ref={addressBarRef}
-          className={inputing ? "inputing" : ""}
-          onBlurCapture={({ relatedTarget }) => {
-            if (actionButtonRef.current !== relatedTarget) {
-              setAddressBar(displayName);
-            }
-          }}
-          onChange={({ target }) => setAddressBar(target.value)}
-          onFocusCapture={() => setAddressBar(url)}
-          onKeyDown={({ key }) => {
-            if (key === "Enter") goToAddress();
-          }}
-          value={addressBar}
-          {...ADDRESS_INPUT_PROPS}
-          {...useAddressBarContextMenu(url)}
-        />
-        <Button
-          ref={actionButtonRef}
-          className="action"
-          onClick={() => {
+  return (
+    <StyledAddressBar>
+      <Icon alt={displayName} imgSize={16} src={icon} />
+      <input
+        ref={addressBarRef}
+        className={inputing ? "inputing" : ""}
+        onBlurCapture={({ relatedTarget }) => {
+          if (actionButtonRef.current !== relatedTarget) {
             setAddressBar(displayName);
-
-            if (inputing) goToAddress();
-            else updateFolder(url);
-          }}
-          onFocusCapture={() =>
-            setTimeout(
-              () => setAddressBar(displayName),
-              TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK / 2
-            )
           }
-          {...label(
-            inputing ? `Go to "${addressBar}"` : `Refresh "${displayName}" (F5)`
-          )}
-        >
-          {inputing ? <GoTo /> : <Refresh />}
-        </Button>
-      </StyledAddressBar>
-    );
-  }
-);
+        }}
+        onChange={({ target }) => setAddressBar(target.value)}
+        onFocusCapture={() => setAddressBar(url)}
+        onKeyDown={({ key }) => {
+          if (key === "Enter") goToAddress();
+        }}
+        value={addressBar}
+        {...ADDRESS_INPUT_PROPS}
+        {...useAddressBarContextMenu(url)}
+      />
+      <Button
+        ref={actionButtonRef}
+        className="action"
+        onClick={() => {
+          setAddressBar(displayName);
+
+          if (inputing) goToAddress();
+          else updateFolder(url);
+        }}
+        onFocusCapture={() =>
+          setTimeout(
+            () => setAddressBar(displayName),
+            TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK / 2
+          )
+        }
+        {...label(
+          inputing ? `Go to "${addressBar}"` : `Refresh "${displayName}" (F5)`
+        )}
+      >
+        {inputing ? <GoTo /> : <Refresh />}
+      </Button>
+    </StyledAddressBar>
+  );
+};
 
 export default AddressBar;

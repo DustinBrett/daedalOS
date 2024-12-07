@@ -11,10 +11,10 @@ const contextFactory = <T,>(
 
   return {
     Provider: memo<FC>(({ children }) => (
-      <Context.Provider value={useContextState()}>
+      <Context value={useContextState()}>
         {children}
         {ContextComponent}
-      </Context.Provider>
+      </Context>
     )),
     useContext: () => useContext(Context),
   };

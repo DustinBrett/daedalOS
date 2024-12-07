@@ -62,7 +62,7 @@ export const HistoryProvider = memo<FC>(({ children }) => {
   }, [seenEventIds, writeFile]);
 
   return (
-    <HistoryContext.Provider
+    <HistoryContext
       value={useMemo(
         () => ({
           outgoingEvents,
@@ -78,6 +78,6 @@ export const HistoryProvider = memo<FC>(({ children }) => {
       )}
     >
       {children}
-    </HistoryContext.Provider>
+    </HistoryContext>
   );
 });

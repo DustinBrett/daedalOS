@@ -87,7 +87,7 @@ const Clock: FC<ClockProps> = ({
       ),
     [clockSource]
   );
-  const offScreenClockCanvas = useRef<OffscreenCanvas>();
+  const offScreenClockCanvas = useRef<OffscreenCanvas>(undefined);
   const supportsOffscreenCanvas = useMemo(
     () => typeof window !== "undefined" && "OffscreenCanvas" in window,
     []

@@ -86,7 +86,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
   const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
   const { onContextMenuCapture } = useResultsContextMenu(info?.url);
-  const abortController = useRef<AbortController>();
+  const abortController = useRef<AbortController>(undefined);
 
   useEffect(() => {
     const activeEntry = details || hovered;

@@ -11,7 +11,7 @@ const FPS = 15;
 
 const renderFrame = async (
   previewElement: HTMLElement,
-  animate: React.MutableRefObject<boolean>,
+  animate: React.RefObject<boolean>,
   callback: (url: string) => void
 ): Promise<void> => {
   if (!animate.current) return;
@@ -73,7 +73,7 @@ const useWindowPeek = (id: string): string => {
     processes: { [id]: process },
   } = useProcesses();
   const { peekElement, componentWindow } = process || {};
-  const previewTimer = useRef<number>();
+  const previewTimer = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
   const animate = useRef(true);
 
@@ -94,7 +94,7 @@ const useWindowPeek = (id: string): string => {
     return () => {
       if (previewTimer.current) {
         clearTimeout(previewTimer.current);
-        previewTimer.current = undefined;
+        previewTimer.current = 0;
       }
       animate.current = false;
     };

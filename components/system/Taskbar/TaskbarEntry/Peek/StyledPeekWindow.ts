@@ -1,4 +1,4 @@
-import { m as motion } from "framer-motion";
+import { m as motion } from "motion/react";
 import styled from "styled-components";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { PEEK_MAX_WIDTH, TASKBAR_HEIGHT } from "utils/constants";

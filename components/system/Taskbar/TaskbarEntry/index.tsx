@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";

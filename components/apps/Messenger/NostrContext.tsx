@@ -91,7 +91,7 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
   }, [connectToRelays, disconnectToRelays, knownRelays, relayUrls]);
 
   return (
-    <NostrContext.Provider
+    <NostrContext
       value={useMemo(
         () => ({
           connectToRelays,
@@ -102,6 +102,6 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
       )}
     >
       {children}
-    </NostrContext.Provider>
+    </NostrContext>
   );
 };

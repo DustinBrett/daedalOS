@@ -39,7 +39,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   const { open } = useProcesses();
   const { setHaltSession } = useSession();
   const [collapsed, setCollapsed] = useState(true);
-  const expandTimer = useRef<number>();
+  const expandTimer = useRef(0);
   const sidebarRef = useRef<HTMLElement>(null);
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);

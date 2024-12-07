@@ -44,7 +44,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
     stats?.isDirectory()
   );
   const { prependFileToTitle } = useTitle(id);
-  const getIconAbortController = useRef<AbortController>();
+  const getIconAbortController = useRef<AbortController>(undefined);
   const propertiesRef = useRef<HTMLDivElement>(null);
   const closeOnEscape = useCloseOnEscape(id);
   const [currentTab, setCurrentTab] = useState<"general" | "details">(

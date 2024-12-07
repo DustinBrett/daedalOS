@@ -110,7 +110,9 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledOpenWith
-      ref={(element) => element?.focus(PREVENT_SCROLL)}
+      ref={(element) => {
+        element?.focus(PREVENT_SCROLL);
+      }}
       onContextMenu={haltEvent}
       {...closeOnEscape}
     >

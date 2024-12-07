@@ -55,7 +55,7 @@ const useWebamp = (id: string): Webamp => {
     title,
   } = useProcesses();
   const { closing, componentWindow } = process || {};
-  const webampCI = useRef<WebampCI>();
+  const webampCI = useRef<WebampCI>(undefined);
   const {
     createPath,
     deletePath,
@@ -66,8 +66,8 @@ const useWebamp = (id: string): Webamp => {
     writeFile,
   } = useFileSystem();
   const { onDrop } = useFileDrop({ id });
-  const metadataProviderRef = useRef<number>();
-  const windowPositionDebounceRef = useRef<number>();
+  const metadataProviderRef = useRef(0);
+  const windowPositionDebounceRef = useRef(0);
   const subscriptions = useRef<(() => void)[]>([]);
   const onWillClose = useCallback(
     (cancel?: () => void): void => {

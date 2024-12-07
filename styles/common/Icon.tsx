@@ -1,4 +1,4 @@
-import { forwardRef, memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { SUPPORTED_ICON_PIXEL_RATIOS } from "utils/constants";
 import {
@@ -30,7 +30,7 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   ({ $eager = false, $height, $width }) => ({
     decoding: "async",
     draggable: false,
-    fetchpriority: $eager ? "high" : undefined,
+    fetchPriority: $eager ? "high" : undefined,
     height: $height,
     loading: $eager ? "eager" : "lazy",
     width: $width,
@@ -49,12 +49,11 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
 
-const Icon = forwardRef<
+const Icon: FCWithRef<
   HTMLImageElement,
   IconProps & React.ImgHTMLAttributes<HTMLImageElement>
->((props, ref) => {
+> = ({ displaySize = 0, imgSize = 0, ref, src = "", ...componentProps }) => {
   const [loaded, setLoaded] = useState(false);
-  const { displaySize = 0, imgSize = 0, src = "", ...componentProps } = props;
   const isDynamic = isDynamicIcon(src);
   const imgSrc = useMemo(
     () =>
@@ -149,6 +148,6 @@ const Icon = forwardRef<
       {RenderedIcon}
     </picture>
   );
-});
+};
 
 export default memo(Icon);

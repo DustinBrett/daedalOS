@@ -49,7 +49,7 @@ import {
 const slideshowFiles: string[] = [];
 
 const useWallpaper = (
-  desktopRef: React.MutableRefObject<HTMLElement | null>
+  desktopRef: React.RefObject<HTMLElement | null>
 ): void => {
   const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
     useFileSystem();
@@ -66,7 +66,7 @@ const useWallpaper = (
     undefined,
     vantaWireframe ? "Wireframe" : ""
   );
-  const wallpaperTimerRef = useRef<number>();
+  const wallpaperTimerRef = useRef(0);
   const failedOffscreenContext = useRef(false);
   const resetWallpaper = useCallback(
     (keepCanvas?: boolean): void => {

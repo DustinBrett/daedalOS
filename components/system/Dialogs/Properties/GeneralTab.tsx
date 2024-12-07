@@ -55,7 +55,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const isDirectory = useMemo(() => stats?.isDirectory(), [stats]);
   const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController>(undefined);
   const [folderIcon, setFolderIcon] = useState(FOLDER_ICON);
   const okAction = useCallback(async (): Promise<void> => {
     if (inputRef.current && url && inputRef.current.value !== basename(url)) {

@@ -1,6 +1,6 @@
 import { useTheme } from "styled-components";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { type Variant } from "framer-motion";
+import { type Variant } from "motion/react";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";

@@ -26,7 +26,7 @@ const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
     processes: { [id]: process },
   } = useProcesses();
   const { closing, libs = [] } = process || {};
-  const records = useRef<string>();
+  const records = useRef("");
   const libLoadingRef = useRef(true);
 
   useEffect(() => {

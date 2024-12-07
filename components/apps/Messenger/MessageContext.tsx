@@ -126,7 +126,7 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
     }, [chatEvents, outgoingEvents, setOutgoingEvents]);
 
     return (
-      <MessageContext.Provider
+      <MessageContext
         value={useMemo(
           () => ({
             events,
@@ -137,7 +137,7 @@ export const MessageProvider = memo<FC<MessageProviderProps>>(
         )}
       >
         {children}
-      </MessageContext.Provider>
+      </MessageContext>
     );
   }
 );

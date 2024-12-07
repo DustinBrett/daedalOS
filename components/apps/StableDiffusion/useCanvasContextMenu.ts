@@ -10,7 +10,7 @@ import { useSession } from "contexts/session";
 import { canvasToBuffer } from "utils/functions";
 
 const useCanvasContextMenu = (
-  canvasRef: React.RefObject<HTMLCanvasElement>,
+  canvasRef: React.RefObject<HTMLCanvasElement | null>,
   prompt: string,
   isImageReady: boolean
 ): ContextMenuCapture => {

@@ -1,4 +1,4 @@
-import { type MotionProps } from "framer-motion";
+import { type MotionProps } from "motion/react";
 import { TRANSITIONS_IN_SECONDS } from "utils/constants";
 
 const useAITransition = (width: number, widthOffset = 0.75): MotionProps => ({

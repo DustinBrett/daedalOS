@@ -23,7 +23,7 @@ type FocusableEntries = FocusEntryFunctions & {
 };
 
 const useFocusableEntries = (
-  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>
+  fileManagerRef: React.RefObject<HTMLOListElement | null>
 ): FocusableEntries => {
   const [focusedEntries, setFocusedEntries] = useState<string[]>([]);
   const blurEntry = useCallback(

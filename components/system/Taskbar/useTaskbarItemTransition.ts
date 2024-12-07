@@ -1,4 +1,4 @@
-import { type MotionProps } from "framer-motion";
+import { type MotionProps } from "motion/react";
 import { TASKBAR_HEIGHT, TRANSITIONS_IN_SECONDS } from "utils/constants";
 import { viewHeight } from "utils/functions";
 

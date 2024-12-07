@@ -34,7 +34,7 @@ const FILE_MANAGER_TOP_PADDING = 5;
 const useDraggableEntries = (
   focusedEntries: string[],
   { focusEntry }: FocusEntryFunctions,
-  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
+  fileManagerRef: React.RefObject<HTMLOListElement | null>,
   isSelecting: boolean,
   allowMoving?: boolean
 ): DraggableEntry => {
@@ -42,7 +42,7 @@ const useDraggableEntries = (
   const { exists } = useFileSystem();
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
-  const dragImageRef = useRef<HTMLImageElement | null>();
+  const dragImageRef = useRef<HTMLImageElement>(null);
   const adjustedCaptureOffsetRef = useRef(false);
   const capturedImageOffset = useRef({ x: 0, y: 0 });
   const dragPositionRef = useRef<DragPosition>(

@@ -1,4 +1,4 @@
-import { m as motion } from "framer-motion";
+import { m as motion } from "motion/react";
 import styled from "styled-components";
 import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";

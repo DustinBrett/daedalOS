@@ -6,7 +6,7 @@ type EmscriptenMounter = (FS?: EmscriptenFS, fsName?: string) => Promise<void>;
 
 const useEmscriptenMount = (): EmscriptenMounter => {
   const { mountEmscriptenFs, unMapFs, updateFolder } = useFileSystem();
-  const mountName = useRef<string>();
+  const mountName = useRef("");
 
   useEffect(
     () => () => {

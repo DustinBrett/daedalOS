@@ -1,4 +1,4 @@
-import { m as motion } from "framer-motion";
+import { m as motion } from "motion/react";
 import styled from "styled-components";
 
 const StyledChatContainer = styled(motion.div)`

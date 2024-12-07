@@ -1,4 +1,4 @@
-import { m as motion } from "framer-motion";
+import { m as motion } from "motion/react";
 import styled from "styled-components";
 import Button from "styles/common/Button";
 

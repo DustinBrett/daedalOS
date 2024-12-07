@@ -45,7 +45,7 @@ const addJsDosConfig = async (
 const useDosCI = (
   id: string,
   url: string,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+  containerRef: React.RefObject<HTMLDivElement | null>,
   dosInstance?: DosInstance
 ): CommandInterface | undefined => {
   const { appendFileToTitle } = useTitle(id);

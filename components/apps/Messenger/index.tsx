@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Event } from "nostr-tools";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import ChatLog from "components/apps/Messenger/ChatLog";
 import Contact from "components/apps/Messenger/Contact";
 import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";

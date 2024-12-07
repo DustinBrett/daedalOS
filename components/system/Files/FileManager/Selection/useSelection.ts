@@ -22,7 +22,7 @@ type Selection = {
 };
 
 const useSelection = (
-  containerRef: React.MutableRefObject<HTMLElement | null>,
+  containerRef: React.RefObject<HTMLElement | null>,
   focusedEntries: string[],
   { blurEntry }: FocusEntryFunctions,
   isDesktop?: boolean

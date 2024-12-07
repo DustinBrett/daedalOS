@@ -97,10 +97,10 @@ declare global {
 
 const useCommandInterpreter = (
   id: string,
-  cd: React.MutableRefObject<string>,
+  cd: React.RefObject<string>,
   terminal?: Terminal,
   localEcho?: LocalEcho
-): React.MutableRefObject<CommandInterpreter> => {
+): React.RefObject<CommandInterpreter> => {
   const {
     createPath,
     deletePath,

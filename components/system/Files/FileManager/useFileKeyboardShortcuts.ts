@@ -24,7 +24,7 @@ const useFileKeyboardShortcuts = (
   { blurEntry, focusEntry }: FocusEntryFunctions,
   { newPath, pasteToFolder }: FolderActions,
   updateFiles: (newFile?: string, oldFile?: string) => void,
-  fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,
+  fileManagerRef: React.RefObject<HTMLOListElement | null>,
   id?: string,
   view?: FileManagerViewNames
 ): KeyboardShortcutEntry => {

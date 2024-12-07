@@ -2,8 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { DEFAULT_INTERSECTION_OPTIONS } from "utils/constants";
 
 export const useIsVisible = (
-  elementRef: React.MutableRefObject<HTMLElement | null>,
-  parentSelector?: string | React.MutableRefObject<HTMLElement | null>,
+  elementRef: React.RefObject<HTMLElement | null>,
+  parentSelector?: string | React.RefObject<HTMLElement | null>,
   alwaysVisible = false
 ): boolean => {
   const watching = useRef(false);
