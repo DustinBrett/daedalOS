@@ -48,8 +48,8 @@ const colors = {
   },
   text: "rgba(255, 255, 255, 90%)",
   titleBar: {
-    background: "rgb(0, 0, 0)",
-    backgroundHover: "rgb(26, 26, 26)",
+    background: "rgba(0, 0, 0,0.7)",
+    backgroundHover: "rgba(26, 26, 26,0.7)",
     backgroundInactive: "rgb(43, 43, 43)",
     buttonInactive: "rgb(128, 128, 128)",
     closeHover: "rgb(232, 17, 35)",
@@ -57,7 +57,7 @@ const colors = {
     textInactive: "rgb(170, 170, 170)",
   },
   window: {
-    background: "#808080",
+    background: "rgba(0,0,0,0.5)",
     outline: "hsla(0, 0%, 25%, 75%)",
     outlineInactive: "hsla(0, 0%, 30%, 100%)",
     shadow: "0 0 14px 0 rgba(0, 0, 0, 50%)",

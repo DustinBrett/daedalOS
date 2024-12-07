@@ -7,8 +7,8 @@ type StyledWindowProps = {
 };
 
 const StyledWindow = styled(motion.section)<StyledWindowProps>`
-  background-color: rgba(30,30,30,0.5) !important
-    border-radius: 5px;
+ background-color: ${({ $backgroundColor, theme }) =>
+    $backgroundColor || theme.colors.window.background};
   box-shadow: ${({ $isForeground, theme }) =>
     $isForeground
       ? theme.colors.window.shadow
@@ -24,7 +24,7 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
   overflow: hidden;
   position: absolute;
   width: 100%;
-  opacity: 1;
+  opacity: 1 !important;
 
   header + * {
     height: ${({ theme }) => `calc(100% - ${theme.sizes.titleBar.height}px)`};
