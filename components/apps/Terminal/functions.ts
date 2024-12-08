@@ -290,6 +290,9 @@ export const printColor = (
     )}`
   }\u001B[0m`;
 
+export const clearAnsiBackground = (text: string): string =>
+  text.replace(/;48;2;/g, ";48;0;").replace(/;48;5;/g, ";48;0;");
+
 export const readClipboardToTerminal = (localEcho: LocalEcho): void => {
   try {
     navigator.clipboard

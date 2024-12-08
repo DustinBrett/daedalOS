@@ -5,7 +5,10 @@ import {
   WAPM_STD_IN_EXCLUDE_ARGS,
   config,
 } from "components/apps/Terminal/config";
-import { parseCommand } from "components/apps/Terminal/functions";
+import {
+  clearAnsiBackground,
+  parseCommand,
+} from "components/apps/Terminal/functions";
 import { getExtension } from "utils/functions";
 
 type WASIError = Error & {
@@ -225,7 +228,8 @@ const loadWapm = async (
         sendStderr: (buffer: Uint8Array) => print(buffer.toString()),
         sendStdout: (buffer: Uint8Array) => {
           if (stdIn) exitStdIn = true;
-          print(buffer.toString());
+          const output = buffer.toString();
+          print(stdIn ? clearAnsiBackground(output) : output);
         },
       });
       const instance = await WebAssembly.instantiate(
