@@ -15,7 +15,7 @@ const nextConfig = {
         hot: false, // Disable HMR
       };
     }
-
+ // https://www.microsoft.com/pt-br/microsoft-365/try?ocid=cmmkh0den3m
     return config; // Return the modified config
   },
 };
