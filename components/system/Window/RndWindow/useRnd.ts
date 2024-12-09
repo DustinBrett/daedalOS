@@ -11,6 +11,7 @@ import { isWindowOutsideBounds } from "components/system/Window/functions";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { getWindowViewport, pxToNum } from "utils/functions";
+import { TASKBAR_HEIGHT } from "utils/constants";
 
 const enableIframeCapture = (enable = true): void =>
   document.querySelectorAll("iframe").forEach((iframe) => {
@@ -69,7 +70,7 @@ const useRnd = (id: string): Props => {
         /translate\((-?\d+)px, (-?\d+)px\)/.exec(transform) || [];
       const newPositon =
         typeof x === "string" && typeof y === "string"
-          ? { x: pxToNum(x), y: pxToNum(y) }
+          ? { x: pxToNum(x), y: pxToNum(y+ TASKBAR_HEIGHT) }
           : resizePosition;
 
       enableIframeCapture();
