@@ -162,9 +162,9 @@ const useVideoPlayer = ({
       setPlayer(videoPlayer);
       setLoading(false);
       if (!isYT) linkElement(id, "peekElement", videoElement);
-      argument?.(id, "play", () => videoPlayer.play());
-      argument?.(id, "pause", () => videoPlayer.pause());
-      argument?.(id, "paused", (callback?: (paused: boolean) => void) => {
+      argument(id, "play", () => videoPlayer.play());
+      argument(id, "pause", () => videoPlayer.pause());
+      argument(id, "paused", (callback?: (paused: boolean) => void) => {
         if (callback) {
           videoPlayer.on("pause", () => callback(true));
           videoPlayer.on("play", () => callback(false));

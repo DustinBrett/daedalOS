@@ -151,9 +151,9 @@ const useWebamp = (id: string): Webamp => {
               linkElement(id, "peekElement", mainWindow);
             }
 
-            argument?.(id, "play", () => webamp.play());
-            argument?.(id, "pause", () => webamp.pause());
-            argument?.(id, "paused", (callback?: (paused: boolean) => void) => {
+            argument(id, "play", () => webamp.play());
+            argument(id, "pause", () => webamp.pause());
+            argument(id, "paused", (callback?: (paused: boolean) => void) => {
               if (callback) {
                 webamp._actionEmitter.on("PLAY", () => callback(false));
                 webamp._actionEmitter.on("PAUSE", () => callback(true));
