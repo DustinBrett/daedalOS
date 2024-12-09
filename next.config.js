@@ -10,14 +10,14 @@ const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
     
-    if (!isServer) {
+
       // Modify the devServer configuration
       config.devServer = {
         ...config.devServer,
         hot: false, // Disable hot module replacement
         liveReload: false, // Disable live reloading
       };
-    }
+    
       // Your custom webpack configuration
     // https://webcheckin.fd.economysoftware.com.br/81/14690?idt=2
     return config;
