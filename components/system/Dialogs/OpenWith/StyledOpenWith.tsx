@@ -6,21 +6,30 @@ const StyledOpenWith = styled.div`
   flex-direction: column;
   height: 100%;
 
+  .others {
+  
+    background: rgba(100,100,100,0.2)
+  
+    margin-right: 50%;
+   margin-left: 4.5%;
+    padding-top: 1%;
+
+  }
   div {
     height: calc(100% - 56px - 80px);
     overflow-y: scroll;
   }
 
-  h2,
+  
   h4 {
     font-weight: 400;
-    color: #fff
+    color: #fff;
   }
 
   h2 {
     font-size: 18px;
     height: 56px;
-        color: #fff
+    color: #fff;
 
     padding: 16px 24px;
   }
@@ -35,8 +44,8 @@ const StyledOpenWith = styled.div`
     width: 100%;
 
     button {
-      background-color: rgb(160, 160, 160);
-      border-radius: 10px
+      background-color: rgb(100, 100, 100,0.5);
+      border-radius: 10px;
       color: #000;
       font-size: 15px;
       font-weight: 600;

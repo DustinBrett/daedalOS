@@ -5,15 +5,13 @@ type StyledOpenWithListProps = {
 };
 
 const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
-  border-top: 1px solid transparent;
+ 
   padding-bottom: 9px;
   position: relative;
   width: 100%;
 
   &::before {
-    border-top: ${({ $hideBorder }) =>
-      `1px solid ${$hideBorder ? "transparent" : "rgb(192, 192, 194)"}`};
-    content: "";
+   content: "";
     height: 1px;
     left: 17px;
     position: absolute;

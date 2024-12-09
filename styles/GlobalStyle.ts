@@ -29,6 +29,34 @@ const GlobalStyle = styled.createGlobalStyle`
     text-size-adjust: none;
   }
 
+  :root {
+  --sb-track-color: #ffffff;
+  --sb-thumb-color: #4a4a4a;
+  --sb-size: 2px;
+}
+
+*::-webkit-scrollbar {
+  width: var(--sb-size);
+  height: var(--sb-size); /* For horizontal scrollbars */
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 1px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 1px;
+}
+
+@supports not (selector(::-webkit-scrollbar)) {
+  * {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+  
+
   html {
     background-color: ${({ theme }) => theme.colors.background};
     /* stylelint-disable value-no-vendor-prefix */

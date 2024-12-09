@@ -118,7 +118,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
       <div>
         {primaryTitle && primaryIcon && (
           <>
-            <h4>Keep using this app</h4>
+            <h4>Suggested application</h4>
             <StyledOpenWithList {...closeOnEscape}>
               <OpenWithEntry
                 key={primaryTitle}
@@ -128,7 +128,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
                 title={primaryTitle}
               />
             </StyledOpenWithList>
-            <h4>Other options</h4>
+            <h4>❱❱❱ Other apps</h4>
           </>
         )}
         <StyledOpenWithList $hideBorder={!primaryTitle || !primaryIcon}>
