@@ -7,9 +7,9 @@ const StyledOpenWith = styled.div`
   height: 100%;
 
   .others {
-  
-    background: rgba(100,100,100,0.2)
-  
+    
+    background: rgba(100,100,100,0.2);
+    margin-top: 10px;
     margin-right: 50%;
    margin-left: 4.5%;
     padding-top: 1%;
@@ -28,9 +28,10 @@ const StyledOpenWith = styled.div`
 
   h2 {
     font-size: 18px;
-    height: 56px;
+  
     color: #fff;
-
+   border-bottom: 1px solid rgba(150,150,150,0.3);
+    text-align: center;
     padding: 16px 24px;
   }
 
