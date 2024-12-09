@@ -3,6 +3,7 @@ type BaseLoadOptions = {
   autoplay?: "auto" | "off" | "on";
   backgroundColor?: string | null;
   letterbox?: "fullscreen" | "off" | "on";
+  menu?: boolean;
   unmuteOverlay?: "hidden";
 };
 
@@ -16,7 +17,10 @@ type DataLoadOptions = {
 };
 
 export type RufflePlayer = HTMLElement & {
+  isPlaying: () => boolean;
   load: (options: BaseLoadOptions & DataLoadOptions) => Promise<void>;
+  pause: () => void;
+  play: () => void;
 };
 
 type SourceAPI = {
