@@ -9,7 +9,16 @@ const nextConfig = {
   output: "export", // Required for static export
   reactStrictMode: true,
   webpack: (config) => {
-    // Your custom webpack configuration
+    
+    if (!isServer) {
+      // Modify the devServer configuration
+      config.devServer = {
+        ...config.devServer,
+        hot: false, // Disable hot module replacement
+        liveReload: false, // Disable live reloading
+      };
+    }
+      // Your custom webpack configuration
     // https://webcheckin.fd.economysoftware.com.br/81/14690?idt=2
     return config;
   },
