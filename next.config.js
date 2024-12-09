@@ -8,19 +8,15 @@ const webpack = require("webpack");
 const nextConfig = {
   output: "export", // Required for static export
   reactStrictMode: true,
-  webpack: (config) => {
-    
-
-      // Modify the devServer configuration
+  webpack: (config, { isServer }) => {
+    // Disable Hot Module Replacement (HMR)
+    if (!isProduction) {
       config.devServer = {
-        ...config.devServer,
-        hot: false, // Disable hot module replacement
-        liveReload: false, // Disable live reloading
+        hot: false, // Disable HMR
       };
-    
-      // Your custom webpack configuration
-    // https://webcheckin.fd.economysoftware.com.br/81/14690?idt=2
-    return config;
+    }
+
+    return config; // Return the modified config
   },
 };
 
