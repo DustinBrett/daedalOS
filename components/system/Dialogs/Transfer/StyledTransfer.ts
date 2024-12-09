@@ -2,10 +2,7 @@ import styled, { css } from "styled-components";
 import StyledButton from "components/system/Dialogs/StyledButton";
 
 const gradientAnimation = css`
-  animation: gradient 5s ease-in-out alternate infinite;
-  background: ${({ theme }) =>
-    `linear-gradient(-45deg, #fff, ${theme.colors.progressBarRgb}, #fff)`};
-  background-size: 300% 300%;
+  color: #cecece;
   content: "";
   inset: 0;
   position: absolute;
@@ -27,6 +24,7 @@ const StyledTransfer = styled.div`
       overflow: hidden;
       position: relative;
       width: 100%;
+      padding-top: 6px;
 
       &::-webkit-progress-bar {
         background: rgb(230, 230, 230);
@@ -73,12 +71,7 @@ const StyledTransfer = styled.div`
   }
 
   h1 {
-    background: linear-gradient(
-      to right,
-      rgb(220, 229, 244),
-      rgb(155, 192, 227),
-      rgb(0, 43, 85)
-    );
+    color: #cecece
     display: flex;
     font-size: 15px;
     font-weight: 400;
@@ -90,6 +83,7 @@ const StyledTransfer = styled.div`
 
   h2 {
     font-size: 12px;
+    color: #fff
     font-weight: 400;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -98,8 +92,8 @@ const StyledTransfer = styled.div`
   }
 
   nav {
-    background-color: rgb(240, 240, 240);
-    border-top: 1px solid rgb(223, 223, 223);
+    
+   
     bottom: 0;
     box-sizing: content-box;
     display: flex;
@@ -114,6 +108,11 @@ const StyledTransfer = styled.div`
       position: absolute;
       right: 22px;
     }
+      button {
+      background: rgba(145,145,145,0.8); 
+      border-radius: 6px; 
+      
+      }
   }
 `;
 

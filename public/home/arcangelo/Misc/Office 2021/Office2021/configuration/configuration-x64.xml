@@ -1,0 +1,15 @@
+<Configuration>
+
+  <Add OfficeClientEdition="64">
+    <Product ID="ProPlus2021Retail">
+      <Language ID="en-us" />
+      <ExcludeApp ID="Lync" />
+      <ExcludeApp ID="Teams" />
+    </Product>
+  </Add>
+  <Property Name="FORCEAPPSHUTDOWN" Value="TRUE" />
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Updates Enabled="TRUE" />
+  <RemoveMSI />
+
+</Configuration>
