@@ -38,7 +38,7 @@ const baseMinimize = {
 };
 
 const getMaxDimensions = (): Variant => ({
-  height: viewHeight() - TASKBAR_HEIGHT,
+  height: viewHeight() + TASKBAR_HEIGHT,
   width: viewWidth(),
 });
 
@@ -66,7 +66,7 @@ const useWindowTransitions = (
       ...baseMaximize,
       ...getMaxDimensions(),
       x: 0 - windowX,
-      y: 0 - windowY,
+      y: 0 - windowY + TASKBAR_HEIGHT,
     });
     // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, maximized]);
@@ -91,7 +91,7 @@ const useWindowTransitions = (
       taskbarX - windowX - windowWidth / 2 + taskbarWidth / 2
     );
     const y = Math.round(
-      taskbarY - windowY - windowHeight / 2 + taskbarHeight / 2
+      taskbarY - windowY - windowHeight / 2 - taskbarHeight / 2
     );
 
     if (!(x === 0 && y === 0)) {
