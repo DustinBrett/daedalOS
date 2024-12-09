@@ -7372,10 +7372,10 @@ rc@^1.0.1, rc@^1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-re-resizable@6.10.0, re-resizable@^6.10.2:
-  version "6.10.2"
-  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-6.10.2.tgz#85cdffcbb39a7fea9c588f95bcdf19028aa5f3f0"
-  integrity sha512-VGO8mfNN6n7a3AQ8JscygPzO9YJITdzxUSOcaG2VrvQwZuzoteOKiuK8AJf0qgmCMFuryl1V3mnjR/+qmWqxaw==
+re-resizable@6.10.0, re-resizable@6.10.1:
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-6.10.1.tgz#d062ca50bbc4ec7ae940f756cba36479e9015bc5"
+  integrity sha512-m33nSWRH57UZLmep5M/LatkZ2NRqimVD/bOOpvymw5Zf33+eTSEixsUugscOZzAtK0/nx+OSuOf8VbKJx/4ptw==
 
 react-dom@^17.0.1:
   version "17.0.2"
