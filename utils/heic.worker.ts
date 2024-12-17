@@ -10,7 +10,6 @@ type LibHeif = {
         get_width: () => number;
       }[];
     };
-    ready: Promise<void>;
   };
 };
 
@@ -20,22 +19,20 @@ globalThis.addEventListener(
     globalThis.importScripts("/System/libheif/libheif-bundle.js");
 
     const { libheif } = globalThis as unknown as typeof globalThis & LibHeif;
-    const { HeifDecoder, ready } = libheif();
+    const { HeifDecoder } = libheif();
 
-    ready.then(() => {
-      const [decodedImage] = new HeifDecoder().decode(image);
-      const width = decodedImage.get_width();
-      const height = decodedImage.get_height();
+    const [decodedImage] = new HeifDecoder().decode(image);
+    const width = decodedImage.get_width();
+    const height = decodedImage.get_height();
 
-      decodedImage.display(
-        {
-          data: new Uint8ClampedArray(width * height * 4),
-          height,
-          width,
-        } as ImageData,
-        ({ data }) => globalThis.postMessage(new ImageData(data, width, height))
-      );
-    });
+    decodedImage.display(
+      {
+        data: new Uint8ClampedArray(width * height * 4),
+        height,
+        width,
+      } as ImageData,
+      ({ data }) => globalThis.postMessage(new ImageData(data, width, height))
+    );
   },
   { passive: true }
 );
