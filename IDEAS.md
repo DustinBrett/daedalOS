@@ -63,6 +63,8 @@
 - Fancy Drag Zones for Windows
 - Calculator
   - [MCalculator](https://github.com/muzam1l/mcalculator)
+- Canvas Rendering
+  - [Skia Canvas](https://skia-canvas.org/)
 
 ## Features
 
