@@ -40,7 +40,7 @@ const useBoxedWine = ({
   const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const { readFile } = useFileSystem();
   const mountEmFs = useEmscriptenMount();
-  const loadedUrl = useRef("");
+  const loadedUrl = useRef<string>(undefined);
   const blankCanvasCheckerTimer = useRef(0);
   const loadEmulator = useCallback(async (): Promise<void> => {
     let dynamicConfig = {};
