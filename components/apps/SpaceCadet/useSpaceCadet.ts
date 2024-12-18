@@ -23,7 +23,8 @@ const useSpaceCadet = ({
   id,
   setLoading,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { linkElement, processes: { [id]: { libs = [] } = {} } = {} } =
+    useProcesses();
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
   const mountEmFs = useEmscriptenMount();
 
@@ -36,11 +37,12 @@ const useSpaceCadet = ({
         postRun: () => {
           setLoading(false);
           mountEmFs(window.FS as EmscriptenFS, "SpaceCadet");
+          linkElement(id, "peekElement", containerCanvas);
         },
       };
       setCanvas(containerCanvas);
     }
-  }, [containerRef, mountEmFs, setLoading]);
+  }, [containerRef, id, linkElement, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (canvas) {
