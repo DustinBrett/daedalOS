@@ -1047,3 +1047,7 @@ export const toSorted = <T>(
   array: T[],
   compareFn?: (a: T, b: T) => number
 ): T[] => [...array].sort(compareFn);
+
+export const notFound = (resource: string): void =>
+  // eslint-disable-next-line no-alert
+  alert(`Can't find '${resource}'. Check the spelling and try again.`);

@@ -12,7 +12,7 @@ import {
   ROOT_NAME,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { getExtension, label } from "utils/functions";
+import { getExtension, label, notFound } from "utils/functions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useSession } from "contexts/session";
 
@@ -67,6 +67,8 @@ const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
           updateRecentFiles(addressBar, openPid);
         }
       }
+    } else {
+      notFound(addressBar);
     }
 
     addressBarRef?.current?.blur();
