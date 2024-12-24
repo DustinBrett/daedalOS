@@ -5,7 +5,7 @@ const StyledDesktop = styled.main`
   contain: strict;
   height: 100%;
   inset: 0;
-  overflow: hidden;
+  overflow: clip;
   overscroll-behavior: none;
   position: fixed;
   width: 100vw;
