@@ -229,6 +229,10 @@
 - [Commodore 64](https://github.com/mborgbrant/c64js)
 - [RetroArch](https://github.com/BinBashBanana/webretro)
 
+### Microkernel
+
+- [exaequOS](https://www.exaequos.com/)
+
 ### Messaging Protocols
 
 - MQTT
