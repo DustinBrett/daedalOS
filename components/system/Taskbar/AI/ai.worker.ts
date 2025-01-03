@@ -268,14 +268,13 @@ globalThis.addEventListener(
               for await (const chunk of response) {
                 if (cancel) break;
 
-                if (typeof chunk === "string") {
-                  sendMessage(chunk, data.streamId);
-                } else {
-                  reply +=
-                    (chunk as ChatCompletionChunk).choices[0]?.delta.content ||
-                    "";
-                  sendMessage(reply, data.streamId);
-                }
+                reply +=
+                  typeof chunk === "string"
+                    ? chunk
+                    : (chunk as ChatCompletionChunk).choices[0]?.delta
+                        .content || "";
+
+                sendMessage(reply, data.streamId);
               }
             } catch (error) {
               console.error("Failed to stream prompt response.", error);
