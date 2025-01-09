@@ -19,6 +19,7 @@ const StyledDesktop = styled.main`
     font-weight: 600;
     left: 50%;
     padding: 12px 15px;
+    pointer-events: none;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
