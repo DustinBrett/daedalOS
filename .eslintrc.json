@@ -139,7 +139,10 @@
     "react/hook-use-state": "error",
     "react-hooks/exhaustive-deps": "error",
     "react/display-name": "off",
-    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-filename-extension": [
+      "error",
+      { "allow": "as-needed", "extensions": [".tsx"] }
+    ],
     "react/jsx-props-no-spreading": "off",
     "react/jsx-sort-props": [
       "error",
@@ -224,7 +227,7 @@
   },
   "overrides": [
     {
-      "files": ["__tests__/**/*.spec.tsx"],
+      "files": ["__tests__/**/*.spec.ts"],
       "rules": {
         "playwright/no-standalone-expect": "off"
       }
