@@ -95,3 +95,5 @@ This project is greatly augmented by code from the open source community. Thank 
 
 - [ntp.js](http://www.ntpjs.org/)
 - [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)
+- [The Old Net](https://theoldnet.com/)
+- [Wayback Machine](https://web.archive.org/)
