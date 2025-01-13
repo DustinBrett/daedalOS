@@ -1,4 +1,4 @@
-import { basename, dirname, join } from "path";
+import { basename, join } from "path";
 import { useCallback, useEffect, useState } from "react";
 import { type DosInstance } from "emulators-ui/dist/types/js-dos";
 import { type CommandInterface } from "emulators";
@@ -10,12 +10,7 @@ import {
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import {
-  ICON_CACHE,
-  ICON_CACHE_EXTENSION,
-  SAVE_PATH,
-  TRANSITIONS_IN_MILLISECONDS,
-} from "utils/constants";
+import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -23,6 +18,7 @@ import {
   imgDataToBuffer,
 } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
+import { useSnapshots } from "hooks/useSnapshots";
 
 const addJsDosConfig = async (
   buffer: Buffer,
@@ -49,8 +45,7 @@ const useDosCI = (
   dosInstance?: DosInstance
 ): CommandInterface | undefined => {
   const { appendFileToTitle } = useTitle(id);
-  const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
-    useFileSystem();
+  const { exists, readFile } = useFileSystem();
   const {
     linkElement,
     processes: { [id]: process },
@@ -59,42 +54,14 @@ const useDosCI = (
   const [dosCI, setDosCI] = useState<
     Record<string, CommandInterface | undefined>
   >({});
+  const { createSnapshot } = useSnapshots();
   const closeBundle = useCallback(
     async (bundleUrl: string, screenshot?: Buffer, closeInstance = false) => {
-      const saveName = `${basename(bundleUrl)}${saveExtension}`;
-
-      if (!(await exists(SAVE_PATH))) {
-        await mkdirRecursive(SAVE_PATH);
-        updateFolder(dirname(SAVE_PATH));
-      }
-
-      const savePath = join(SAVE_PATH, saveName);
-
-      if (
-        dosCI[bundleUrl] !== undefined &&
-        (await writeFile(
-          savePath,
-          Buffer.from((await dosCI[bundleUrl].persist()) || []),
-          true
-        ))
-      ) {
-        if (screenshot) {
-          const iconCacheRootPath = join(ICON_CACHE, SAVE_PATH);
-          const iconCachePath = join(
-            ICON_CACHE,
-            `${savePath}${ICON_CACHE_EXTENSION}`
-          );
-
-          if (!(await exists(iconCacheRootPath))) {
-            await mkdirRecursive(iconCacheRootPath);
-            updateFolder(dirname(SAVE_PATH));
-          }
-
-          await writeFile(iconCachePath, screenshot, true);
-        }
-
-        updateFolder(SAVE_PATH, saveName);
-      }
+      await createSnapshot(
+        `${basename(bundleUrl)}${saveExtension}`,
+        Buffer.from((await dosCI[bundleUrl].persist()) || []),
+        screenshot
+      );
 
       if (closeInstance) {
         try {
@@ -105,7 +72,7 @@ const useDosCI = (
         }
       }
     },
-    [dosCI, dosInstance, exists, mkdirRecursive, updateFolder, writeFile]
+    [createSnapshot, dosCI, dosInstance]
   );
   const loadBundle = useCallback(async () => {
     const [currentUrl] = Object.keys(dosCI);

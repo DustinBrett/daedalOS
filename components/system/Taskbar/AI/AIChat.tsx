@@ -51,6 +51,7 @@ import { useSession } from "contexts/session";
 import { useWindowAI } from "hooks/useWindowAI";
 import { useFileSystem } from "contexts/fileSystem";
 import { readPdfText } from "components/apps/PDF/functions";
+import { useSnapshots } from "hooks/useSnapshots";
 
 type AIChatProps = {
   toggleAI: () => void;
@@ -167,7 +168,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
   }, []);
-  const { createPath, exists, readFile, stat, updateFolder } = useFileSystem();
+  const { exists, readFile, stat } = useFileSystem();
   const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
   const sendMessage = useCallback(async () => {
     const { text } = conversation[conversation.length - 1];
@@ -229,6 +230,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     readFile,
     stat,
   ]);
+  const { createSnapshot } = useSnapshots();
   const saveCanvasImage = useCallback(
     async (
       index: number,
@@ -236,21 +238,20 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       savePath: string
     ): Promise<string> => {
       const canvas = canvasRefs.current[index];
-      let newFileName = `${saveName}.png`;
 
       if (canvas) {
-        newFileName = await createPath(
-          newFileName,
-          savePath,
-          canvasToBuffer(canvas)
+        return createSnapshot(
+          `${saveName}.png`,
+          canvasToBuffer(canvas),
+          undefined,
+          false,
+          savePath
         );
-
-        updateFolder(savePath);
       }
 
-      return newFileName;
+      return "";
     },
-    [createPath, updateFolder]
+    [createSnapshot]
   );
 
   useEffect(() => {

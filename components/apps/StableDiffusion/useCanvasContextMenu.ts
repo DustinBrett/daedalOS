@@ -4,10 +4,10 @@ import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useFileSystem } from "contexts/fileSystem";
 import { DESKTOP_PATH, SAVE_PATH } from "utils/constants";
 import { useSession } from "contexts/session";
 import { canvasToBuffer } from "utils/functions";
+import { useSnapshots } from "hooks/useSnapshots";
 
 const useCanvasContextMenu = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
@@ -15,25 +15,23 @@ const useCanvasContextMenu = (
   isImageReady: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenu();
-  const { createPath, updateFolder } = useFileSystem();
   const { setWallpaper } = useSession();
+  const { createSnapshot } = useSnapshots();
   const saveCanvasImage = useCallback(
     async (savePath: string): Promise<string> => {
-      let newFileName = `${prompt}.png`;
-
       if (canvasRef.current) {
-        newFileName = await createPath(
-          newFileName,
-          savePath,
-          canvasToBuffer(canvasRef.current)
+        return createSnapshot(
+          `${prompt}.png`,
+          canvasToBuffer(canvasRef.current),
+          undefined,
+          false,
+          savePath
         );
-
-        updateFolder(savePath);
       }
 
-      return newFileName;
+      return "";
     },
-    [canvasRef, createPath, prompt, updateFolder]
+    [canvasRef, createSnapshot, prompt]
   );
 
   return useMemo(
@@ -47,9 +45,11 @@ const useCanvasContextMenu = (
           },
           {
             action: () =>
-              saveCanvasImage(SAVE_PATH).then((newFileName) =>
-                setWallpaper(`${SAVE_PATH}/${newFileName}`)
-              ),
+              saveCanvasImage(SAVE_PATH).then((newFileName) => {
+                if (newFileName) {
+                  setWallpaper(`${SAVE_PATH}/${newFileName}`);
+                }
+              }),
             disabled: !isImageReady,
             label: "Set as background",
           },

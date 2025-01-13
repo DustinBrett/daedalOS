@@ -1,4 +1,4 @@
-import { basename, dirname, extname, join } from "path";
+import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type Core, emulatorCores } from "components/apps/Emulator/config";
 import { type Emulator } from "components/apps/Emulator/types";
@@ -8,9 +8,10 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
-import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
+import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
+import { useSnapshots } from "hooks/useSnapshots";
 
 const getCore = (extension: string): [string, Core] =>
   (Object.entries(emulatorCores).find(([, { ext }]) =>
@@ -24,8 +25,8 @@ const useEmulator = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { exists, mkdirRecursive, readFile, updateFolder, writeFile } =
-    useFileSystem();
+  const { exists, readFile } = useFileSystem();
+  const { createSnapshot } = useSnapshots();
   const mountEmFs = useEmscriptenMount();
   const {
     linkElement,
@@ -94,26 +95,9 @@ const useEmulator = ({
     window.EJS_onSaveState = ({ screenshot, state }) => {
       window.EJS_terminate?.();
 
-      const saveState = async (): Promise<void> => {
-        if (!(await exists(SAVE_PATH))) await mkdirRecursive(SAVE_PATH);
-        if (await writeFile(savePath, Buffer.from(state), true)) {
-          const iconCacheRootPath = join(ICON_CACHE, SAVE_PATH);
-          const iconCachePath = join(
-            ICON_CACHE,
-            `${savePath}${ICON_CACHE_EXTENSION}`
-          );
-
-          if (!(await exists(iconCacheRootPath))) {
-            await mkdirRecursive(iconCacheRootPath);
-            updateFolder(dirname(SAVE_PATH));
-          }
-
-          await writeFile(iconCachePath, Buffer.from(screenshot), true);
-          updateFolder(SAVE_PATH, saveName);
-        }
-      };
-
-      if (state) saveState();
+      if (state) {
+        createSnapshot(saveName, Buffer.from(state), Buffer.from(screenshot));
+      }
     };
 
     window.EJS_player = "#emulator";
@@ -136,16 +120,14 @@ const useEmulator = ({
     prependFileToTitle(`${window.EJS_gameName} (${console})`);
   }, [
     containerRef,
+    createSnapshot,
     exists,
     libs,
-    mkdirRecursive,
     mountEmFs,
     prependFileToTitle,
     readFile,
     setLoading,
-    updateFolder,
     url,
-    writeFile,
   ]);
 
   useEffect(() => {

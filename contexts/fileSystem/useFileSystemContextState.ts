@@ -64,7 +64,9 @@ type FileSystemContextState = AsyncFS & {
   createPath: (
     name: string,
     directory: string,
-    buffer?: Buffer
+    buffer?: Buffer,
+    iteration?: number,
+    overwrite?: boolean
   ) => Promise<string>;
   deletePath: (path: string) => Promise<boolean>;
   fs?: FSModule;
@@ -468,7 +470,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
       name: string,
       directory: string,
       buffer?: Buffer,
-      iteration = 0
+      iteration = 0,
+      overwrite = false
     ): Promise<string> => {
       const isInternal = !buffer && isAbsolute(name);
       const baseName = isInternal ? basename(name) : name;
@@ -514,7 +517,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         try {
           if (
             buffer
-              ? await writeFile(fullNewPath, buffer)
+              ? await writeFile(fullNewPath, buffer, overwrite)
               : await mkdir(fullNewPath)
           ) {
             return uniqueName;
