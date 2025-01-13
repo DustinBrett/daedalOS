@@ -48,12 +48,12 @@ import {
 import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
 
 export type FileActions = {
-  archiveFiles: (paths: string[]) => void;
+  archiveFiles: (paths: string[]) => Promise<void>;
   deleteLocalPath: (path: string) => Promise<void>;
-  downloadFiles: (paths: string[]) => void;
-  extractFiles: (path: string) => void;
+  downloadFiles: (paths: string[]) => Promise<void>;
+  extractFiles: (path: string) => Promise<void>;
   newShortcut: (path: string, process: string) => void;
-  renameFile: (path: string, name?: string) => void;
+  renameFile: (path: string, name?: string) => Promise<void>;
 };
 
 export type CompleteAction = "rename" | "updateUrl";
