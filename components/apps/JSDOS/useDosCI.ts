@@ -57,11 +57,13 @@ const useDosCI = (
   const { createSnapshot } = useSnapshots();
   const closeBundle = useCallback(
     async (bundleUrl: string, screenshot?: Buffer, closeInstance = false) => {
-      await createSnapshot(
-        `${basename(bundleUrl)}${saveExtension}`,
-        Buffer.from((await dosCI[bundleUrl].persist()) || []),
-        screenshot
-      );
+      if (dosCI[bundleUrl]) {
+        await createSnapshot(
+          `${basename(bundleUrl)}${saveExtension}`,
+          Buffer.from((await dosCI[bundleUrl].persist()) || []),
+          screenshot
+        );
+      }
 
       if (closeInstance) {
         try {
