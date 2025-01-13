@@ -49,7 +49,6 @@ export const useSnapshots = (): Snapshot => {
             }
           }
 
-          // TODO: Update icon but don't focus
           updateFolder(dirname(savePath));
           updateFolder(savePath, saveName);
         } catch {

@@ -134,6 +134,7 @@ const FileManager: FC<FileManagerProps> = ({
   );
   const [permission, setPermission] = useState<PermissionState>("prompt");
   const requestingPermissions = useRef(false);
+  const focusedOnLoad = useRef(false);
   const onKeyDown = useMemo(
     () => (renaming === "" ? keyShortcuts() : undefined),
     [keyShortcuts, renaming]
@@ -207,8 +208,9 @@ const FileManager: FC<FileManagerProps> = ({
   }, [currentUrl, folderActions, url]);
 
   useEffect(() => {
-    if (!loading && !isDesktop && !isStartMenu) {
+    if (!focusedOnLoad.current && !loading && !isDesktop && !isStartMenu) {
       fileManagerRef.current?.focus(PREVENT_SCROLL);
+      focusedOnLoad.current = true;
     }
   }, [isDesktop, isStartMenu, loading]);
 
