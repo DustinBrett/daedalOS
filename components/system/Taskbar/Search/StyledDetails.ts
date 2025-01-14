@@ -40,11 +40,16 @@ const StyledDetails = styled.div`
   h1 {
     font-size: 15px;
     font-weight: 400;
+    overflow-wrap: anywhere;
     padding-bottom: 7px;
     padding-left: 12px;
     padding-right: 12px;
     text-align: center;
-    word-break: break-word;
+
+    @supports not (overflow-wrap: anywhere) {
+      /* stylelint-disable declaration-property-value-keyword-no-deprecated */
+      word-break: break-word;
+    }
 
     &:hover {
       text-decoration: underline;

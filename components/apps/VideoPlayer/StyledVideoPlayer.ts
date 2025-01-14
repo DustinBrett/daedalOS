@@ -15,7 +15,7 @@ const StyledVideoPlayer = styled.div`
 
     .vjs-control-bar {
       background-color: rgb(240, 240, 240);
-      padding: 0 1;
+      padding: 0 1px;
 
       &:not(.no-interaction) {
         display: flex !important;

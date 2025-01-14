@@ -21,10 +21,15 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         line-height: 1.2;
         margin: 1px 0;
+        overflow-wrap: anywhere;
         padding: 2px 0;
         text-shadow: ${({ $desktop, theme }) =>
           $desktop ? theme.colors.fileEntry.textShadow : undefined};
-        word-break: break-word;
+
+        @supports not (overflow-wrap: anywhere) {
+          /* stylelint-disable declaration-property-value-keyword-no-deprecated */
+          word-break: break-word;
+        }
       }
 
       picture {

@@ -25,7 +25,6 @@ const StyledProfile = styled.figure<StyledProfileProps>`
         fill: #000;
         height: 18px;
         left: -2px;
-        max-height: auto;
         max-width: 18px;
         min-height: auto;
         min-width: 18px;

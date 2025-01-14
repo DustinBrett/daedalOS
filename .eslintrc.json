@@ -57,6 +57,7 @@
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-invalid-void-type": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-misused-spread": "off",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-shadow": [
       "error",

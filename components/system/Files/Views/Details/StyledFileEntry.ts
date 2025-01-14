@@ -25,10 +25,15 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         color: ${({ theme }) => theme.colors.fileEntry.text};
         font-size: ${({ theme }) => theme.sizes.fileEntry.fontSize};
         overflow: hidden;
+        overflow-wrap: anywhere;
         padding-left: 4px;
         text-overflow: ellipsis;
         white-space: nowrap;
-        word-break: break-word;
+
+        @supports not (overflow-wrap: anywhere) {
+          /* stylelint-disable declaration-property-value-keyword-no-deprecated */
+          word-break: break-word;
+        }
       }
     }
   }
