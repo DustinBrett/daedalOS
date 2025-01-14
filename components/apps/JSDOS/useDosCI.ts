@@ -76,11 +76,19 @@ const useDosCI = (
     },
     [createSnapshot, dosCI, dosInstance]
   );
+  const takeScreenshot = useCallback(
+    async (fileUrl: string): Promise<Buffer | undefined> => {
+      const imageData = await dosCI[fileUrl]?.screenshot();
+
+      return imageData ? imgDataToBuffer(imageData) : undefined;
+    },
+    [dosCI]
+  );
   const loadBundle = useCallback(async () => {
     const [currentUrl] = Object.keys(dosCI);
 
     if (typeof currentUrl === "string") {
-      await closeBundle(currentUrl);
+      await closeBundle(currentUrl, await takeScreenshot(currentUrl));
       setDosCI({ [url]: undefined });
     }
 
@@ -133,6 +141,7 @@ const useDosCI = (
     id,
     linkElement,
     readFile,
+    takeScreenshot,
     url,
   ]);
 
@@ -144,11 +153,6 @@ const useDosCI = (
     return () => {
       if (closing) {
         if (url) {
-          const takeScreenshot = async (): Promise<Buffer | undefined> => {
-            const imageData = await dosCI[url]?.screenshot();
-
-            return imageData ? imgDataToBuffer(imageData) : undefined;
-          };
           const scheduleSaveState = (screenshot?: Buffer): void => {
             window.setTimeout(
               () => closeBundle(url, screenshot, closing),
@@ -156,13 +160,22 @@ const useDosCI = (
             );
           };
 
-          takeScreenshot().then(scheduleSaveState).catch(scheduleSaveState);
+          takeScreenshot(url).then(scheduleSaveState).catch(scheduleSaveState);
         } else {
           dosInstance?.stop();
         }
       }
     };
-  }, [closeBundle, closing, dosCI, dosInstance, loadBundle, process, url]);
+  }, [
+    closeBundle,
+    closing,
+    dosCI,
+    dosInstance,
+    loadBundle,
+    process,
+    takeScreenshot,
+    url,
+  ]);
 
   return dosCI[url];
 };

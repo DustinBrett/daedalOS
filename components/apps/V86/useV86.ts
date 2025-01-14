@@ -75,11 +75,40 @@ const useV86 = ({
     },
     [createSnapshot, emulator, saveStateAsync]
   );
+  const takeScreenshot = useCallback(
+    async (fileUrl: string): Promise<Buffer | undefined> => {
+      let screenshot: string | undefined;
+
+      if (emulator[fileUrl]?.v86.cpu.devices.vga.graphical_mode) {
+        screenshot = (
+          containerRef.current?.querySelector("canvas") as HTMLCanvasElement
+        )?.toDataURL("image/png");
+      } else if (containerRef.current instanceof HTMLElement) {
+        const htmlToImage = await getHtmlToImage();
+
+        try {
+          screenshot = await htmlToImage?.toPng(containerRef.current, {
+            skipAutoScale: true,
+          });
+        } catch {
+          // Ignore failure to capture
+        }
+      }
+
+      return screenshot
+        ? Buffer.from(
+            screenshot.replace("data:image/png;base64,", ""),
+            "base64"
+          )
+        : undefined;
+    },
+    [containerRef, emulator]
+  );
   const loadDiskImage = useCallback(async () => {
     const [currentUrl] = Object.keys(emulator);
 
     if (typeof currentUrl === "string") {
-      await closeDiskImage(currentUrl);
+      await closeDiskImage(currentUrl, await takeScreenshot(currentUrl));
       setEmulator({ [url]: undefined });
     }
 
@@ -148,6 +177,7 @@ const useV86 = ({
     emulator,
     exists,
     readFile,
+    takeScreenshot,
     url,
   ]);
 
@@ -174,39 +204,11 @@ const useV86 = ({
       loadDiskImage();
     }
 
-    const currentContainer = containerRef.current;
-
     return () => {
       if (closing && !shutdown.current) {
         shutdown.current = true;
 
         if (url && emulator[url]) {
-          const takeScreenshot = async (): Promise<Buffer | undefined> => {
-            let screenshot: string | undefined;
-
-            if (emulator[url]?.v86.cpu.devices.vga.graphical_mode) {
-              screenshot = (
-                currentContainer?.querySelector("canvas") as HTMLCanvasElement
-              )?.toDataURL("image/png");
-            } else if (currentContainer instanceof HTMLElement) {
-              const htmlToImage = await getHtmlToImage();
-
-              try {
-                screenshot = await htmlToImage?.toPng(currentContainer, {
-                  skipAutoScale: true,
-                });
-              } catch {
-                // Ignore failure to capture
-              }
-            }
-
-            return screenshot
-              ? Buffer.from(
-                  screenshot.replace("data:image/png;base64,", ""),
-                  "base64"
-                )
-              : undefined;
-          };
           const scheduleSaveState = (screenshot?: Buffer): void => {
             window.setTimeout(
               () => closeDiskImage(url, screenshot),
@@ -214,7 +216,7 @@ const useV86 = ({
             );
           };
 
-          takeScreenshot().then(scheduleSaveState).catch(scheduleSaveState);
+          takeScreenshot(url).then(scheduleSaveState).catch(scheduleSaveState);
         } else {
           emulator[url]?.destroy();
         }
@@ -223,11 +225,11 @@ const useV86 = ({
   }, [
     closeDiskImage,
     closing,
-    containerRef,
     emulator,
     loadDiskImage,
     loading,
     process,
+    takeScreenshot,
     url,
   ]);
 };
