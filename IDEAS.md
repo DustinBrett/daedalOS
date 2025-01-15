@@ -185,7 +185,7 @@
 
 - [WebODF](https://webodf.org/)
 - [docx2html](https://github.com/lalalic/docx2html)
-- [Pandoc](https://github.com/jgm/pandoc)
+- [Pandoc](https://github.com/tweag/pandoc-wasm)
 - [gdal3.js](https://github.com/bugra9/gdal3.js)
 - [Epub.js](https://github.com/futurepress/epub.js/)
 - Barcode / QR
