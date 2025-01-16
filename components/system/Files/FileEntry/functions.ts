@@ -460,7 +460,8 @@ export const getInfoWithExtension = (
               pid,
               url,
             };
-            const isDefaultIcon = icon === processDirectory.VideoPlayer.icon;
+            const isDefaultIcon =
+              !icon || icon === processDirectory.VideoPlayer.icon;
             const videoSubIcons = [processDirectory.VideoPlayer.icon];
 
             callback({
@@ -478,7 +479,7 @@ export const getInfoWithExtension = (
                     )
                 : undefined,
               icon: icon || processDirectory.VideoPlayer.icon,
-              subIcons: icon && !isDefaultIcon ? videoSubIcons : undefined,
+              subIcons: isDefaultIcon ? undefined : videoSubIcons,
             });
           } else {
             callback({
