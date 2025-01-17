@@ -292,6 +292,7 @@
 - [fireworks.js](https://github.com/crashmax-dev/fireworks-js)
 - [Cursor Effects](https://tholman.com/cursor-effects/)
 - [Bobby Blue-Eyes](https://www.derschmale.com/lab/doodles/blueeyes/build/)
+- [CODEF Demoscene Gallery](https://www.wab.com/)
 
 ## Games
 
