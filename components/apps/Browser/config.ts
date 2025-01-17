@@ -31,11 +31,6 @@ export const bookmarks: Bookmark[] = [
   },
   DINO_GAME,
   {
-    icon: "/System/Icons/webamp.webp",
-    name: "Winamp Skin Museum",
-    url: "https://skins.webamp.org/",
-  },
-  {
     icon: "/System/Icons/Favicons/google.webp",
     name: "Google",
     url: "https://www.google.com/webhp?igu=1",
@@ -49,6 +44,11 @@ export const bookmarks: Bookmark[] = [
     icon: "/System/Icons/Favicons/archive.webp",
     name: "Internet Archive",
     url: "https://archive.org/",
+  },
+  {
+    icon: "/System/Icons/webamp.webp",
+    name: "Winamp Skin Museum",
+    url: "https://skins.webamp.org/",
   },
   {
     icon: "/System/Icons/Favicons/win96.webp",
