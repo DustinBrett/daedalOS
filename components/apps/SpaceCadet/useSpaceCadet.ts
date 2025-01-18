@@ -6,18 +6,6 @@ import { useProcesses } from "contexts/process";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
-declare global {
-  interface Window {
-    Module: {
-      SDL2?: {
-        audioContext: AudioContext;
-      };
-      canvas: HTMLCanvasElement;
-      postRun: () => void;
-    };
-  }
-}
-
 const useSpaceCadet = ({
   containerRef,
   id,

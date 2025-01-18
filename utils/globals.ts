@@ -9,6 +9,14 @@ type SharedGlobal = {
 
 declare global {
   interface Window {
+    Module: {
+      SDL2?: {
+        audioContext: AudioContext;
+      };
+      arguments?: string[];
+      canvas: HTMLCanvasElement;
+      postRun: () => void;
+    };
     sharedGlobals?: Record<string, SharedGlobal>;
   }
 }
