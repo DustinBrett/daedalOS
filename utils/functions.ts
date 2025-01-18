@@ -259,10 +259,11 @@ const loadScript = (
   src: string,
   defer?: boolean,
   force?: boolean,
-  asModule?: boolean
+  asModule?: boolean,
+  contentWindow = window as Window
 ): Promise<Event> =>
   new Promise((resolve, reject) => {
-    const loadedScripts = [...document.scripts];
+    const loadedScripts = [...contentWindow.document.scripts];
     const currentScript = loadedScripts.find((loadedScript) =>
       loadedScript.src.endsWith(src)
     );
@@ -276,7 +277,7 @@ const loadScript = (
       currentScript.remove();
     }
 
-    const script = document.createElement("script");
+    const script = contentWindow.document.createElement("script");
 
     script.async = false;
     if (defer) script.defer = true;
@@ -286,13 +287,16 @@ const loadScript = (
     script.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     script.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.append(script);
+    contentWindow.document.head.append(script);
   });
 
-const loadStyle = (href: string): Promise<Event> =>
+const loadStyle = (
+  href: string,
+  contentWindow = window as Window
+): Promise<Event> =>
   new Promise((resolve, reject) => {
     const loadedStyles = [
-      ...document.querySelectorAll("link[rel=stylesheet]"),
+      ...contentWindow.document.querySelectorAll("link[rel=stylesheet]"),
     ] as HTMLLinkElement[];
 
     if (loadedStyles.some((loadedStyle) => loadedStyle.href.endsWith(href))) {
@@ -300,7 +304,7 @@ const loadStyle = (href: string): Promise<Event> =>
       return;
     }
 
-    const link = document.createElement("link");
+    const link = contentWindow.document.createElement("link");
 
     link.rel = "stylesheet";
     link.fetchPriority = "high";
@@ -308,21 +312,22 @@ const loadStyle = (href: string): Promise<Event> =>
     link.addEventListener("error", reject, ONE_TIME_PASSIVE_EVENT);
     link.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
 
-    document.head.append(link);
+    contentWindow.document.head.append(link);
   });
 
 export const loadFiles = async (
   files?: string[],
   defer?: boolean,
   force?: boolean,
-  asModule?: boolean
+  asModule?: boolean,
+  contentWindow?: Window
 ): Promise<void> =>
   !files || files.length === 0
     ? Promise.resolve()
     : files.reduce(async (_promise, file) => {
         await (getExtension(file) === ".css"
-          ? loadStyle(encodeURI(file))
-          : loadScript(encodeURI(file), defer, force, asModule));
+          ? loadStyle(encodeURI(file), contentWindow)
+          : loadScript(encodeURI(file), defer, force, asModule, contentWindow));
       }, Promise.resolve());
 
 export const getHtmlToImage = async (): Promise<
