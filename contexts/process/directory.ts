@@ -305,6 +305,19 @@ const directory: Processes = {
     preferProcessIcon: true,
     title: "Terminal",
   },
+  Tic80: {
+    Component: dynamic(() => import("components/apps/Tic80")),
+    backgroundColor: "#1A1C2C",
+    defaultSize: {
+      height: 346,
+      width: 615,
+    },
+    dependantLibs: ["/Program Files/Tic80/tic80.wasm"],
+    icon: "/System/Icons/tic80.webp",
+    libs: ["/Program Files/Tic80/tic80.js"],
+    lockAspectRatio: true,
+    title: "TIC-80 tiny computer",
+  },
   TinyMCE: {
     Component: dynamic(() => import("components/apps/TinyMCE")),
     backgroundColor: "#202124",
