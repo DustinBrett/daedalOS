@@ -38,7 +38,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     title,
     maximized,
   } = process || {};
-  const { foregroundId } = useSession();
+  const { foregroundId, setForegroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const onClickClose = useDoubleClick(onClose);
@@ -99,7 +99,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         }}
         onMouseUpCapture={() => {
           if (componentWindow && componentWindow !== document.activeElement) {
-            componentWindow.focus(PREVENT_SCROLL);
+            setForegroundId(id);
           }
         }}
         onTouchEndCapture={onTouchEnd}
