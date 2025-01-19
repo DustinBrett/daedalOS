@@ -2,7 +2,7 @@ import { basename } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcesses } from "contexts/process";
-import { bufferToUrl, loadFiles } from "utils/functions";
+import { bufferToUrl, haltEvent, loadFiles } from "utils/functions";
 import { useFileSystem } from "contexts/fileSystem";
 import useTitle from "components/system/Window/useTitle";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
@@ -38,6 +38,8 @@ const useTic80 = ({
         const canvas = contentWindow.document.querySelector(
           "#canvas"
         ) as HTMLCanvasElement;
+
+        canvas.addEventListener("contextmenu", haltEvent);
 
         contentWindow.Module = {
           arguments: blobUrl ? [blobUrl] : undefined,
