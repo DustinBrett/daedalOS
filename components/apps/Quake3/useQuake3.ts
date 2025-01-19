@@ -6,7 +6,7 @@ import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import { PREVENT_SCROLL, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { loadFiles, pxToNum } from "utils/functions";
+import { haltEvent, loadFiles, pxToNum } from "utils/functions";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 
 declare global {
@@ -87,8 +87,22 @@ const useQuake3 = ({
           newContentWindow.ioq3.callMain([]);
 
           setLoading(false);
-          mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
-          setContentWindow(newContentWindow);
+
+          const initCanvas = (): void => {
+            if (newContentWindow.ioq3?.canvas) {
+              newContentWindow.ioq3.canvas.addEventListener(
+                "contextmenu",
+                haltEvent
+              );
+
+              mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
+              setContentWindow(newContentWindow);
+            } else {
+              requestAnimationFrame(initCanvas);
+            }
+          };
+
+          initCanvas();
         }
       );
     }
