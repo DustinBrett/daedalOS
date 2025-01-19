@@ -17,7 +17,13 @@ const useTic80 = ({
   const { readFile } = useFileSystem();
   const loadedUrl = useRef<string>(undefined);
   const { appendFileToTitle } = useTitle(id);
-  const getContentWindow = useIsolatedContentWindow(id, containerRef, true);
+  const getContentWindow = useIsolatedContentWindow(
+    id,
+    containerRef,
+    undefined,
+    "canvas { image-rendering: pixelated; }",
+    true
+  );
   const loadComputer = useCallback(
     async (fileUrl?: string) => {
       const loadApp = async (blobUrl?: string): Promise<void> => {

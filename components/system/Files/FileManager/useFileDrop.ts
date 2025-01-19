@@ -79,14 +79,15 @@ const useFileDrop = ({
     [id, mkdirRecursive, updateFolder, url, writeFile]
   );
   const { openTransferDialog } = useTransferDialog();
-
-  return {
-    onDragLeave,
-    onDragOver: (event) => {
+  const onDragOverThenHaltEvent = useCallback(
+    (event: DragEvent | React.DragEvent<HTMLElement>): void => {
       onDragOver?.(event);
       haltEvent(event);
     },
-    onDrop: (event) => {
+    [onDragOver]
+  );
+  const onDrop = useCallback(
+    (event: DragEvent | React.DragEvent<HTMLElement>): void => {
       if (MOUNTABLE_EXTENSIONS.has(getExtension(directory))) return;
 
       if (updatePositions && event.target instanceof HTMLElement) {
@@ -189,6 +190,25 @@ const useFileDrop = ({
         hasUpdateId
       );
     },
+    [
+      callback,
+      directory,
+      exists,
+      iconPositions,
+      id,
+      openTransferDialog,
+      processesRef,
+      setIconPositions,
+      sortOrders,
+      updatePositions,
+      updateProcessUrl,
+    ]
+  );
+
+  return {
+    onDragLeave,
+    onDragOver: onDragOverThenHaltEvent,
+    onDrop,
   };
 };
 

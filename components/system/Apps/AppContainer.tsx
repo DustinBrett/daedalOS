@@ -1,5 +1,5 @@
 import { memo, useMemo, useRef, useState } from "react";
-import { type IStyledComponent } from "styled-components";
+import styled, { type IStyledComponent } from "styled-components";
 import { type FastOmit } from "styled-components/dist/types";
 import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
@@ -16,7 +16,7 @@ export type ContainerHookProps = {
 type ContainerHook = (props: ContainerHookProps) => void;
 
 type AppContainerProps = {
-  StyledComponent: IStyledComponent<
+  StyledComponent?: IStyledComponent<
     "web",
     FastOmit<
       React.DetailedHTMLProps<
@@ -29,6 +29,8 @@ type AppContainerProps = {
   id: string;
   useHook: ContainerHook;
 };
+
+const StyledAppContainer = styled.div``;
 
 const AppContainer: FC<AppContainerProps> = ({
   id,
@@ -48,19 +50,16 @@ const AppContainer: FC<AppContainerProps> = ({
     }),
     [loading]
   );
+  const StyledWrapper = StyledComponent || StyledAppContainer;
 
   useHook({ containerRef, id, loading, setLoading, url });
 
   return (
     <>
       {loading && <StyledLoading />}
-      <StyledComponent
-        ref={containerRef}
-        style={style}
-        {...useFileDrop({ id })}
-      >
+      <StyledWrapper ref={containerRef} style={style} {...useFileDrop({ id })}>
         {children}
-      </StyledComponent>
+      </StyledWrapper>
     </>
   );
 };

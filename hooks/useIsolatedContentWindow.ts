@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback, useLayoutEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+} from "react";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { PREVENT_SCROLL } from "utils/constants";
 import { useProcesses } from "contexts/process";
@@ -19,18 +25,28 @@ const createCanvas = (hostDocument: Document): HTMLCanvasElement => {
 
 const createIframe = (
   id: string,
-  container: HTMLDivElement
+  container: HTMLDivElement,
+  styles?: string
 ): HTMLIFrameElement => {
   const iframe = document.createElement("iframe");
 
   iframe.title = id;
+
+  iframe.style.backgroundColor = "transparent";
+  iframe.style.border = "0";
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
 
   container.append(iframe);
 
   const contentDocument = iframe.contentDocument as Document;
 
   contentDocument.open();
-  contentDocument.write("<!DOCTYPE html><head /><body />");
+  contentDocument.write(`
+    <!DOCTYPE html>
+    ${styles ? `<head><style>${styles}</style></head>` : "<head />"}
+    <body />
+    `);
   contentDocument.close();
 
   const contentWindow = iframe.contentWindow as Window;
@@ -51,6 +67,8 @@ type IsolatedContentWindow = (() => Window | undefined) | undefined;
 const useIsolatedContentWindow = (
   id: string,
   containerRef: React.RefObject<HTMLDivElement | null>,
+  focusFunction?: (window: Window) => void,
+  styles?: string,
   withCanvas = false
 ): IsolatedContentWindow => {
   const [container, setContainer] = useState<HTMLDivElement>();
@@ -63,7 +81,7 @@ const useIsolatedContentWindow = (
 
     container.querySelector("iframe")?.remove();
 
-    const iframe = createIframe(id, container);
+    const iframe = createIframe(id, container, styles);
     const newContentWindow = iframe.contentWindow as Window;
 
     let canvas: HTMLCanvasElement;
@@ -86,22 +104,21 @@ const useIsolatedContentWindow = (
     setContentWindow(newContentWindow);
 
     return newContentWindow;
-  }, [container, id, onDragOver, onDrop, setForegroundId, withCanvas]);
+  }, [container, id, onDragOver, onDrop, setForegroundId, styles, withCanvas]);
 
   useLayoutEffect(() => {
     if (contentWindow && foregroundId === id) {
       requestAnimationFrame(() => {
-        if (withCanvas) {
+        if (focusFunction) focusFunction(contentWindow);
+        else if (withCanvas) {
           contentWindow.document
             .querySelector<HTMLCanvasElement>("canvas")
             ?.focus(PREVENT_SCROLL);
-        } else {
-          contentWindow.focus();
-        }
+        } else contentWindow.focus();
       });
     }
     // eslint-disable-next-line react-hooks-addons/no-unused-deps
-  }, [contentWindow, foregroundId, id, maximized, withCanvas]);
+  }, [contentWindow, focusFunction, foregroundId, id, maximized, withCanvas]);
 
   useEffect(() => {
     if (!container) {
@@ -119,7 +136,10 @@ const useIsolatedContentWindow = (
     }
   }, [container, containerRef]);
 
-  return container ? createContentWindow : undefined;
+  return useMemo(
+    () => (container ? createContentWindow : undefined),
+    [container, createContentWindow]
+  );
 };
 
 export default useIsolatedContentWindow;
