@@ -87,7 +87,7 @@ const useQuake3 = ({
           newContentWindow.ioq3.callMain([]);
 
           setLoading(false);
-          mountEmFs(window.FS as EmscriptenFS, "Quake3");
+          mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
           setContentWindow(newContentWindow);
         }
       );
