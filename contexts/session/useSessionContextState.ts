@@ -1,4 +1,4 @@
-import { dirname, extname } from "path";
+import { basename, dirname } from "path";
 import {
   type SetStateAction,
   useCallback,
@@ -28,10 +28,12 @@ import {
   DEFAULT_WALLPAPER_FIT,
   DESKTOP_PATH,
   SESSION_FILE,
+  SHORTCUT_EXTENSION,
   SYSTEM_FILES,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
-import { updateIconPositionsIfEmpty } from "utils/functions";
+import { getExtension, updateIconPositionsIfEmpty } from "utils/functions";
+import { getShortcutInfo } from "components/system/Files/FileEntry/functions";
 
 const DEFAULT_SESSION = (
   typeof window === "object" && "DEBUG_DEFAULT_SESSION" in window
@@ -66,12 +68,22 @@ const useSessionContextState = (): SessionContextState => {
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const updateRecentFiles = useCallback(
-    (url: string, pid: string, title?: string) =>
-      (title || extname(url)) &&
-      pid !== "FileExplorer" &&
+    async (url: string, pid: string, title?: string): Promise<void> => {
+      const ext = getExtension(url);
+
+      if (!(title || ext) || pid === "FileExplorer") return;
+
+      let baseUrl = url;
+      let baseTitle = title;
+
+      if (pid && ext === SHORTCUT_EXTENSION) {
+        ({ url: baseUrl } = getShortcutInfo(await readFile(url)));
+        baseTitle = title || basename(url, ext);
+      }
+
       setRecentFiles((currentRecentFiles) => {
         const entryIndex = currentRecentFiles.findIndex(
-          ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid
+          ([recentUrl, recentPid]) => recentUrl === baseUrl && recentPid === pid
         );
 
         if (entryIndex !== -1) {
@@ -82,12 +94,13 @@ const useSessionContextState = (): SessionContextState => {
           ] as RecentFiles;
         }
 
-        return [[url, pid, title], ...currentRecentFiles].slice(
+        return [[baseUrl, pid, baseTitle], ...currentRecentFiles].slice(
           0,
           KEEP_RECENT_FILES_LIST_COUNT
         ) as RecentFiles;
-      }),
-    []
+      });
+    },
+    [readFile]
   );
   const prependToStack = useCallback(
     (id: string) =>

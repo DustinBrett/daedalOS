@@ -62,11 +62,14 @@ const useFile = (url: string, path: string): UseFile => {
             ? processIcon
             : icon
         );
-        if (runUrl && pid) {
+
+        const recentUrl = runUrl || path;
+
+        if (recentUrl && pid) {
           updateRecentFiles(
-            runUrl,
+            recentUrl,
             pid,
-            isYouTubeUrl(runUrl) ? basename(path, extname(path)) : undefined
+            isYouTubeUrl(recentUrl) ? basename(path, extname(path)) : undefined
           );
         }
       }
