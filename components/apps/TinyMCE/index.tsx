@@ -9,7 +9,7 @@ const TinyMCE: FC<ComponentProcessProps> = ({ id }) => (
     id={id}
     useHook={useTinyMCE}
   >
-    <div />
+    <div id={id} />
   </AppContainer>
 );
 

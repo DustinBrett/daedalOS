@@ -329,7 +329,6 @@ const directory: Processes = {
     ],
     icon: "/System/Icons/tinymce.webp",
     libs: ["/Program Files/TinyMCE/tinymce.min.js"],
-    singleton: true,
     title: "TinyMCE",
   },
   Transfer: {

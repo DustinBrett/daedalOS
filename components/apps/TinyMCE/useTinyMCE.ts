@@ -162,11 +162,10 @@ const useTinyMCE = ({
 
       loadFiles(libs).then(() => {
         if (window.tinymce && containerRef.current) {
-          window.tinymce.remove();
           window.tinymce
             .init({
               readonly: Boolean(url),
-              selector: `.${[...containerRef.current.classList].join(".")} div`,
+              selector: `.${[...containerRef.current.classList].join(".")} div[id="${id}"]`,
               setup: (editorInstance) => {
                 editorInstance.on("ExecCommand", ({ command }) => {
                   if (command === "mceNewDocument") {
