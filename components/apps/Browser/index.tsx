@@ -327,6 +327,13 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
                 if (archived_snapshots.closest.url) {
                   addressUrl = archived_snapshots.closest.url;
+
+                  if (
+                    addressUrl.startsWith("http:") &&
+                    window.location.protocol === "https:"
+                  ) {
+                    addressUrl = addressUrl.replace("http:", "https:");
+                  }
                 }
               } catch {
                 // Ignore failure to fetch url
