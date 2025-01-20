@@ -228,7 +228,6 @@
 - [Palm](https://github.com/cloudpilot-emu/cloudpilot-emu)
 - [Commodore 64](https://github.com/mborgbrant/c64js)
 - [RetroArch](https://github.com/BinBashBanana/webretro)
-- [TIC-80](https://tic80.com/)
 
 ### Microkernel
 
