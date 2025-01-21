@@ -66,7 +66,7 @@ const useEmulator = ({
     loadedUrlRef.current = url;
     window.EJS_gameName = basename(url, extname(url));
 
-    const [console, { core = "", zip = false } = {}] = getCore(
+    const [consoleName, { core = "", zip = false } = {}] = getCore(
       getExtension(url)
     );
     const rom = await readFile(url);
@@ -117,7 +117,7 @@ const useEmulator = ({
 
     await loadFiles(libs, undefined, true);
 
-    prependFileToTitle(`${window.EJS_gameName} (${console})`);
+    prependFileToTitle(`${window.EJS_gameName} (${consoleName})`);
   }, [
     containerRef,
     createSnapshot,
