@@ -39,7 +39,6 @@ const directory: Processes = {
       height: 420,
       width: 640,
     },
-    hideMaximizeButton: true,
     icon: "/System/Icons/classicube.webp",
     libs: ["/Program Files/ClassiCube/ClassiCube.js"],
     title: "ClassiCube",
@@ -223,7 +222,6 @@ const directory: Processes = {
   },
   Quake3: {
     Component: dynamic(() => import("components/apps/Quake3")),
-    autoSizing: true,
     backgroundColor: "#000",
     defaultSize: {
       height: 480,
@@ -231,6 +229,7 @@ const directory: Processes = {
     },
     icon: "/System/Icons/quake3.webp",
     libs: ["/Program Files/Quake3/Quake3Game.js"],
+    lockAspectRatio: true,
     title: "Quake III Arena",
   },
   Ruffle: {
@@ -274,7 +273,6 @@ const directory: Processes = {
     icon: "/System/Icons/pinball.webp",
     libs: ["/Program Files/SpaceCadet/SpaceCadetPinball.js"],
     lockAspectRatio: true,
-    singleton: true,
     title: "Space Cadet",
   },
   StableDiffusion: {
