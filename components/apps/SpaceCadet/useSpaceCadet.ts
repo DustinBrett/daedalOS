@@ -3,60 +3,77 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcesses } from "contexts/process";
+import { haltEvent, loadFiles } from "utils/functions";
+import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { loadFiles } from "utils/functions";
 
 const useSpaceCadet = ({
   containerRef,
   id,
   setLoading,
+  loading,
 }: ContainerHookProps): void => {
-  const { linkElement, processes: { [id]: { libs = [] } = {} } = {} } =
-    useProcesses();
-  const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
   const mountEmFs = useEmscriptenMount();
+  const getContentWindow = useIsolatedContentWindow(
+    id,
+    containerRef,
+    undefined,
+    "canvas { height: calc(100% + 12px) !important; width: 100% !important; }",
+    true
+  );
+  const [contentWindow, setContentWindow] = useState<Window>();
 
   useEffect(() => {
-    const containerCanvas = containerRef.current?.querySelector("canvas");
+    if (loading) {
+      const newContentWindow = getContentWindow?.();
 
-    if (containerCanvas instanceof HTMLCanvasElement) {
-      window.Module = {
-        canvas: containerCanvas,
+      if (!newContentWindow) return;
+
+      const canvas = newContentWindow?.document.querySelector(
+        "canvas"
+      ) as HTMLCanvasElement;
+
+      canvas.addEventListener("contextmenu", haltEvent);
+
+      newContentWindow.Module = {
+        canvas,
         postRun: () => {
           setLoading(false);
-          mountEmFs(window.FS as EmscriptenFS, "SpaceCadet");
-          linkElement(id, "peekElement", containerCanvas);
+          setContentWindow(newContentWindow);
+          mountEmFs(newContentWindow.FS as EmscriptenFS, "SpaceCadet");
         },
+        windowElement: newContentWindow.document.body,
       };
-      setCanvas(containerCanvas);
+
+      const { height, width } =
+        newContentWindow.document.body.getBoundingClientRect() || {};
+
+      if (height && width) {
+        canvas.style.height = `${height}px`;
+        canvas.style.width = `${width}px`;
+
+        setTimeout(
+          () =>
+            loadFiles(libs, undefined, undefined, undefined, newContentWindow),
+          TRANSITIONS_IN_MILLISECONDS.WINDOW
+        );
+      }
     }
-  }, [containerRef, id, linkElement, mountEmFs, setLoading]);
+  }, [getContentWindow, libs, loading, mountEmFs, setLoading]);
 
-  useEffect(() => {
-    if (canvas) {
-      setTimeout(() => {
-        const { height, width } =
-          containerRef.current?.getBoundingClientRect() || {};
-
-        if (height && width) {
-          canvas.style.height = `${height}px`;
-          canvas.style.width = `${width}px`;
-
-          loadFiles(libs, undefined, !!window.Module.canvas);
-        }
-      }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
-    }
-
-    return () => {
-      if (canvas && window.Module) {
+  useEffect(
+    () => () => {
+      if (contentWindow?.Module) {
         try {
-          window.Module.SDL2?.audioContext.close();
+          contentWindow.Module.SDL2?.audioContext.close();
         } catch {
           // Ignore errors during closing
         }
       }
-    };
-  }, [canvas, containerRef, libs]);
+    },
+    [contentWindow?.Module]
+  );
 };
 
 export default useSpaceCadet;

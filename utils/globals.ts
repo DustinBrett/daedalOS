@@ -16,6 +16,7 @@ declare global {
       arguments?: string[];
       canvas: HTMLCanvasElement;
       postRun: () => void;
+      windowElement?: HTMLElement;
     };
     sharedGlobals?: Record<string, SharedGlobal>;
   }
