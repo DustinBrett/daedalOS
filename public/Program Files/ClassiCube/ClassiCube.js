@@ -2379,7 +2379,7 @@ function copyTempDouble(ptr) {
         JSEvents.eventHandlers.splice(i, 1);
       },registerOrRemoveHandler:function (eventHandler) {
         var jsEventHandler = function jsEventHandler(event) {
-          var windowElement = CCModule["canvas"]?.closest("section");
+          var windowElement = CCModule["windowElement"];
           if (!windowElement || (document.activeElement !== windowElement && !windowElement?.contains(document.activeElement))) {
             return;
           }
@@ -3458,7 +3458,7 @@ function copyTempDouble(ptr) {
 
 
         var ctx =
-          (canvas.getContext("webgl", webGLContextAttributes) || canvas.getContext("experimental-webgl", webGLContextAttributes));
+          (canvas.getContext("webgl", {...webGLContextAttributes,alpha:false,desynchronized:true,preserveDrawingBuffer:true,willReadFrequently:true}) || canvas.getContext("experimental-webgl", webGLContextAttributes));
 
 
         return ctx && GL.registerContext(ctx, webGLContextAttributes);
