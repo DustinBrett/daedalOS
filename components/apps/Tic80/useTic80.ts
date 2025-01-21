@@ -13,7 +13,7 @@ const useTic80 = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { linkElement, processes: { [id]: { libs = [] } = {} } = {} } =
+  const { processes: { [id]: { closing, libs = [] } = {} } = {} } =
     useProcesses();
   const { readFile } = useFileSystem();
   const loadedUrl = useRef<string>(undefined);
@@ -44,10 +44,7 @@ const useTic80 = ({
         contentWindow.Module = {
           arguments: blobUrl ? [blobUrl] : undefined,
           canvas,
-          postRun: () => {
-            setLoading(false);
-            linkElement(id, "peekElement", canvas);
-          },
+          postRun: () => setLoading(false),
         };
 
         await loadFiles(libs, undefined, undefined, undefined, contentWindow);
@@ -57,21 +54,12 @@ const useTic80 = ({
 
       loadApp(fileUrl ? `${bufferToUrl(await readFile(fileUrl))}?e=.tic` : "");
     },
-    [
-      appendFileToTitle,
-      getContentWindow,
-      id,
-      libs,
-      linkElement,
-      readFile,
-      setLoading,
-      url,
-    ]
+    [appendFileToTitle, getContentWindow, libs, readFile, setLoading, url]
   );
 
   useEffect(() => {
-    if (url !== loadedUrl.current) loadComputer(url);
-  }, [loadComputer, url]);
+    if (url !== loadedUrl.current && !closing) loadComputer(url);
+  }, [closing, loadComputer, url]);
 };
 
 export default useTic80;
