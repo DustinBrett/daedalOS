@@ -95,8 +95,8 @@ const useQuake3 = ({
                 haltEvent
               );
 
-              mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
               setContentWindow(newContentWindow);
+              mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
             } else {
               requestAnimationFrame(initCanvas);
             }
@@ -147,7 +147,7 @@ const useQuake3 = ({
     );
   }, [
     componentWindow,
-    contentWindow,
+    contentWindow?.ioq3,
     defaultSize,
     maximized,
     size,
@@ -164,7 +164,7 @@ const useQuake3 = ({
 
       contentWindow?.AL?.contexts.forEach(({ ctx }) => ctx.close());
     },
-    [contentWindow]
+    [contentWindow?.AL?.contexts, contentWindow?.ioq3]
   );
 };
 
