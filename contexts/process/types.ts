@@ -48,6 +48,7 @@ type BaseProcessArguments = {
   dependantLibs?: string[];
   hideMaximizeButton?: boolean;
   hideMinimizeButton?: boolean;
+  hidePeek?: boolean;
   hideTaskbarEntry?: boolean;
   hideTitlebar?: boolean;
   hideTitlebarIcon?: boolean;
