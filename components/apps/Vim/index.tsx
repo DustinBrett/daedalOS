@@ -1,4 +1,4 @@
-import { basename, dirname } from "path";
+import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import StyledVim from "components/apps/Vim/StyledVim";
 import { type QueueItem } from "components/apps/Vim/types";
@@ -47,7 +47,10 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       postRun: [
         () => {
           loading.current = false;
-          mountEmFs(window.VimWrapperModule?.VimModule?.FS, "Vim");
+          mountEmFs(
+            window.VimWrapperModule?.VimModule?.FS,
+            url ? `Vim_${basename(url, extname(url))}` : id
+          );
         },
       ],
       preRun: [

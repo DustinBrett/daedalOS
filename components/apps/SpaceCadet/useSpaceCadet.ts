@@ -41,7 +41,7 @@ const useSpaceCadet = ({
         postRun: () => {
           setLoading(false);
           setContentWindow(newContentWindow);
-          mountEmFs(newContentWindow.FS as EmscriptenFS, "SpaceCadet");
+          mountEmFs(newContentWindow.FS as EmscriptenFS, id);
         },
         windowElement: newContentWindow.document.body,
       };
@@ -60,7 +60,7 @@ const useSpaceCadet = ({
         );
       }
     }
-  }, [getContentWindow, libs, loading, mountEmFs, setLoading]);
+  }, [getContentWindow, id, libs, loading, mountEmFs, setLoading]);
 
   useEffect(
     () => () => {

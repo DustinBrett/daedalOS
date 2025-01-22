@@ -96,7 +96,7 @@ const useQuake3 = ({
               );
 
               setContentWindow(newContentWindow);
-              mountEmFs(newContentWindow.FS as EmscriptenFS, "Quake3");
+              mountEmFs(newContentWindow.FS as EmscriptenFS, id);
             } else {
               requestAnimationFrame(initCanvas);
             }
@@ -106,7 +106,7 @@ const useQuake3 = ({
         }
       );
     }
-  }, [getContentWindow, libs, loading, mountEmFs, setLoading]);
+  }, [getContentWindow, id, libs, loading, mountEmFs, setLoading]);
 
   useEffect(() => {
     if (!contentWindow?.ioq3) return;

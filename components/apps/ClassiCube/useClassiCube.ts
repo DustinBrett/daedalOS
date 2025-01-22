@@ -95,7 +95,7 @@ const useClassiCube = ({
           () => {
             setLoading(false);
             setContentWindow(newContentWindow);
-            mountEmFs(newContentWindow.FS as EmscriptenFS, "ClassiCube");
+            mountEmFs(newContentWindow.FS as EmscriptenFS, id);
           },
           () => {
             const { width, height } = canvas.getBoundingClientRect() || {};
@@ -111,7 +111,7 @@ const useClassiCube = ({
 
       loadFiles(libs, undefined, undefined, undefined, newContentWindow);
     }
-  }, [getContentWindow, libs, loading, mountEmFs, setLoading]);
+  }, [getContentWindow, id, libs, loading, mountEmFs, setLoading]);
 };
 
 export default useClassiCube;

@@ -101,7 +101,10 @@ const useEmulator = ({
             }
 
             setLoading(false);
-            mountEmFs(contentWindow.FS as EmscriptenFS, "EmulatorJs");
+            mountEmFs(
+              contentWindow.FS as EmscriptenFS,
+              `EmulatorJs_${contentWindow.EJS_gameName}`
+            );
             emulatorRef.current = currentEmulator;
           };
 

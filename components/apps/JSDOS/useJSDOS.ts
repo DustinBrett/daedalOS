@@ -1,3 +1,4 @@
+import { basename, extname } from "path";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type DosInstance } from "emulators-ui/dist/types/js-dos";
 import {
@@ -104,18 +105,21 @@ const useJSDOS = ({
       );
 
       setLoading(false);
-      mountEmFs(window.JSDOS_FS, "JS-DOS");
+      mountEmFs(
+        window.JSDOS_FS,
+        url ? `JSDOS_${basename(url, extname(url))}` : id
+      );
     }
   }, [
     closeWithTransition,
     containerRef,
     dosCI,
-    dosInstance?.layers,
     id,
     loading,
     mountEmFs,
     setLoading,
     updateWindowSize,
+    url,
   ]);
 
   useLayoutEffect(() => {

@@ -1,4 +1,4 @@
-import { basename } from "path";
+import { basename, extname } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type Unzipped } from "fflate";
 import { getConfig } from "components/apps/BoxedWine/config";
@@ -106,7 +106,10 @@ const useBoxedWine = ({
       try {
         window.BoxedWineShell(() => {
           setLoading(false);
-          mountEmFs(window.FS as EmscriptenFS, "BoxedWine");
+          mountEmFs(
+            window.FS as EmscriptenFS,
+            url ? `BoxedWine_${basename(url, extname(url))}` : id
+          );
         });
       } catch {
         // Ignore BoxedWine errors
@@ -115,6 +118,7 @@ const useBoxedWine = ({
   }, [
     appendFileToTitle,
     containerRef,
+    id,
     libs,
     mountEmFs,
     readFile,
