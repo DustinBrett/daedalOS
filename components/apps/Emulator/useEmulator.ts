@@ -1,7 +1,11 @@
 import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type Core, emulatorCores } from "components/apps/Emulator/config";
-import { type Emulator } from "components/apps/Emulator/types";
+import {
+  type OnGameStart,
+  type OnSaveState,
+  type Emulator,
+} from "components/apps/Emulator/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
@@ -12,11 +16,25 @@ import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
 import { useSnapshots } from "hooks/useSnapshots";
+import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 
 const getCore = (extension: string): [string, Core] =>
   (Object.entries(emulatorCores).find(([, { ext }]) =>
     ext.includes(extension)
   ) || []) as [string, Core];
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+const withWindowConstructor = <F extends Function>(
+  fn: F,
+  context: Window
+): F => {
+  if ("Function" in context) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, no-param-reassign
+    fn.constructor = context.Function as Function;
+  }
+
+  return fn;
+};
 
 const useEmulator = ({
   containerRef,
@@ -28,132 +46,132 @@ const useEmulator = ({
   const { exists, readFile } = useFileSystem();
   const { createSnapshot } = useSnapshots();
   const mountEmFs = useEmscriptenMount();
-  const {
-    linkElement,
-    processes: { [id]: { closing = false, libs = [] } = {} } = {},
-  } = useProcesses();
+  const { processes: { [id]: { closing, libs = [] } = {} } = {} } =
+    useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>(undefined);
-  const loadedUrlRef = useRef<string>("");
-  const loadRom = useCallback(async () => {
-    if (!url) return;
+  const getContentWindow = useIsolatedContentWindow(id, containerRef);
+  const loadedUrl = useRef<string>(undefined);
+  const loadRom = useCallback(
+    async (fileUrl: string) => {
+      const contentWindow = getContentWindow?.();
 
-    containerRef.current?.classList.remove("drop");
+      if (!contentWindow) return;
 
-    if (loadedUrlRef.current) {
-      if (loadedUrlRef.current !== url) {
-        loadedUrlRef.current = "";
+      loadedUrl.current = fileUrl;
 
-        try {
-          window.EJS_terminate?.();
-        } catch {
-          // Ignore errors during termination
-        }
+      setLoading(true);
 
-        if (containerRef.current) {
-          const div = document.createElement("div");
+      containerRef.current?.classList.remove("drop");
 
-          div.id = "emulator";
-          [...containerRef.current.children].forEach((child) => child.remove());
-          containerRef.current.append(div);
-          loadRom();
-        }
+      try {
+        contentWindow.EJS_terminate?.();
+      } catch {
+        // Ignore errors during termination
       }
 
-      return;
-    }
+      [...contentWindow.document.body.children].forEach((child) =>
+        child.remove()
+      );
+      const div = contentWindow.document.createElement("div");
+      div.id = "emulator";
+      div.style.placeContent = "center";
+      contentWindow.document.body.append(div);
 
-    loadedUrlRef.current = url;
-    window.EJS_gameName = basename(url, extname(url));
+      contentWindow.EJS_gameName = basename(fileUrl, extname(fileUrl));
 
-    const [consoleName, { core = "", zip = false } = {}] = getCore(
-      getExtension(url)
-    );
-    const rom = await readFile(url);
+      const [consoleName, { core = "", zip = false } = {}] = getCore(
+        getExtension(fileUrl)
+      );
+      const rom = await readFile(fileUrl);
 
-    window.EJS_gameUrl = bufferToUrl(
-      zip ? Buffer.from(await zipAsync({ [basename(url)]: rom })) : rom
-    );
-    window.EJS_core = core;
+      contentWindow.EJS_gameUrl = bufferToUrl(
+        zip ? Buffer.from(await zipAsync({ [basename(fileUrl)]: rom })) : rom
+      );
+      contentWindow.EJS_core = core;
 
-    const saveName = `${basename(url)}.sav`;
-    const savePath = join(SAVE_PATH, saveName);
+      const saveName = `${basename(fileUrl)}.sav`;
+      const savePath = join(SAVE_PATH, saveName);
 
-    window.EJS_onGameStart = ({ detail: { emulator: currentEmulator } }) => {
-      const loadState = async (): Promise<void> => {
-        if (await exists(savePath)) {
-          currentEmulator.loadState?.(await readFile(savePath));
-        }
+      contentWindow.EJS_onGameStart = withWindowConstructor<OnGameStart>(
+        ({ detail: { emulator: currentEmulator } }) => {
+          const loadState = async (): Promise<void> => {
+            if (await exists(savePath)) {
+              currentEmulator.loadState?.(await readFile(savePath));
+            }
 
-        setLoading(false);
-        mountEmFs(window.FS as EmscriptenFS, "EmulatorJs");
-        emulatorRef.current = currentEmulator;
+            setLoading(false);
+            mountEmFs(contentWindow.FS as EmscriptenFS, "EmulatorJs");
+            emulatorRef.current = currentEmulator;
+          };
+
+          loadState();
+        },
+        contentWindow
+      );
+      contentWindow.EJS_onSaveState = withWindowConstructor<OnSaveState>(
+        ({ screenshot, state }) => {
+          contentWindow.EJS_terminate?.();
+
+          if (state) {
+            createSnapshot(
+              saveName,
+              Buffer.from(state),
+              Buffer.from(screenshot)
+            );
+          }
+        },
+        contentWindow
+      );
+      contentWindow.EJS_player = "#emulator";
+      contentWindow.EJS_biosUrl = "";
+      contentWindow.EJS_pathtodata = "Program Files/EmulatorJs/";
+      contentWindow.EJS_startOnLoaded = true;
+      contentWindow.EJS_RESET_VARS = true;
+      contentWindow.EJS_Buttons = {
+        cacheManage: false,
+        loadState: false,
+        quickLoad: false,
+        quickSave: false,
+        saveState: false,
+        screenRecord: false,
+        screenshot: false,
       };
 
-      loadState();
-    };
-    window.EJS_onSaveState = ({ screenshot, state }) => {
-      window.EJS_terminate?.();
+      await loadFiles(libs, undefined, undefined, undefined, contentWindow);
 
-      if (state) {
-        createSnapshot(saveName, Buffer.from(state), Buffer.from(screenshot));
-      }
-    };
-
-    window.EJS_player = "#emulator";
-    window.EJS_biosUrl = "";
-    window.EJS_pathtodata = "Program Files/EmulatorJs/";
-    window.EJS_startOnLoaded = true;
-    window.EJS_RESET_VARS = true;
-    window.EJS_Buttons = {
-      cacheManage: false,
-      loadState: false,
-      quickLoad: false,
-      quickSave: false,
-      saveState: false,
-      screenRecord: false,
-      screenshot: false,
-    };
-
-    await loadFiles(libs, undefined, true);
-
-    prependFileToTitle(`${window.EJS_gameName} (${consoleName})`);
-  }, [
-    containerRef,
-    createSnapshot,
-    exists,
-    libs,
-    mountEmFs,
-    prependFileToTitle,
-    readFile,
-    setLoading,
-    url,
-  ]);
+      prependFileToTitle(`${contentWindow.EJS_gameName} (${consoleName})`);
+    },
+    [
+      containerRef,
+      createSnapshot,
+      exists,
+      getContentWindow,
+      libs,
+      mountEmFs,
+      prependFileToTitle,
+      readFile,
+      setLoading,
+    ]
+  );
 
   useEffect(() => {
-    if (url) loadRom();
-    else {
+    if (url) {
+      if (url !== loadedUrl.current) loadRom(url);
+    } else if (!closing) {
       setLoading(false);
-      mountEmFs(window.FS as EmscriptenFS, "EmulatorJs");
       containerRef.current?.classList.add("drop");
     }
-  }, [containerRef, loadRom, mountEmFs, setLoading, url]);
+  }, [closing, containerRef, loadRom, setLoading, url]);
 
-  useEffect(() => {
-    if (!loading) {
-      const canvas = containerRef.current?.querySelector("canvas");
-
-      if (canvas instanceof HTMLCanvasElement) {
-        linkElement(id, "peekElement", canvas);
-      }
-    }
-
-    return () => {
+  useEffect(
+    () => () => {
       if (!loading && closing) {
         emulatorRef.current?.elements.buttons.saveState?.click();
       }
-    };
-  }, [closing, containerRef, id, linkElement, loading]);
+    },
+    [closing, loading]
+  );
 };
 
 export default useEmulator;

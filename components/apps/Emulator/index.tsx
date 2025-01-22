@@ -4,9 +4,11 @@ import AppContainer from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const Emulator: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledEmulator} id={id} useHook={useEmulator}>
-    <div id="emulator" />
-  </AppContainer>
+  <AppContainer
+    StyledComponent={StyledEmulator}
+    id={id}
+    useHook={useEmulator}
+  />
 );
 
 export default Emulator;
