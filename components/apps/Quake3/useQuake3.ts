@@ -34,7 +34,8 @@ const useQuake3 = ({
   setLoading,
   loading,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: process } = {} } = useProcesses();
+  const { closeWithTransition, processes: { [id]: process } = {} } =
+    useProcesses();
   const {
     componentWindow = undefined,
     defaultSize = {
@@ -86,6 +87,12 @@ const useQuake3 = ({
           newContentWindow.ioq3.elementPointerLock = true;
           newContentWindow.ioq3.callMain([]);
 
+          (newContentWindow as Window & { console: Console }).console.log = (
+            message: string
+          ) => {
+            if (message.startsWith("SDL_Quit called")) closeWithTransition(id);
+          };
+
           setLoading(false);
 
           const initCanvas = (): void => {
@@ -106,7 +113,15 @@ const useQuake3 = ({
         }
       );
     }
-  }, [getContentWindow, id, libs, loading, mountEmFs, setLoading]);
+  }, [
+    closeWithTransition,
+    getContentWindow,
+    id,
+    libs,
+    loading,
+    mountEmFs,
+    setLoading,
+  ]);
 
   useEffect(() => {
     if (!contentWindow?.ioq3) return;
