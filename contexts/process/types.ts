@@ -55,6 +55,7 @@ type BaseProcessArguments = {
   initialRelativePosition?: RelativePosition;
   libs?: string[];
   lockAspectRatio?: boolean;
+  peekImage?: string;
   url?: string;
 };
 

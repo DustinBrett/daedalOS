@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useProcesses } from "contexts/process";
 import {
+  MAX_ICON_SIZE,
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
   PEEK_MAX_WIDTH,
 } from "utils/constants";
-import { getHtmlToImage, isCanvasDrawn } from "utils/functions";
+import {
+  getExtension,
+  getHtmlToImage,
+  imageSrc as getImageSrc,
+  isCanvasDrawn,
+} from "utils/functions";
 
 const FPS = 15;
 
@@ -72,23 +78,30 @@ const useWindowPeek = (id: string): string => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { peekElement, componentWindow } = process || {};
+  const { hidePeek, peekElement, peekImage, componentWindow, icon } =
+    process || {};
   const previewTimer = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
   const animate = useRef(true);
 
   useEffect(() => {
-    const previewElement = peekElement || componentWindow;
-
-    if (!previewTimer.current && previewElement) {
-      previewTimer.current = window.setTimeout(
-        () =>
-          window.requestAnimationFrame(() =>
-            renderFrame(previewElement, animate, setImageSrc)
-          ),
-        document.querySelector(".peekWindow") ? 0 : MILLISECONDS_IN_SECOND / 2
+    if (hidePeek || peekImage) {
+      setImageSrc(
+        peekImage || getImageSrc(icon, MAX_ICON_SIZE, 1, getExtension(icon))
       );
-      animate.current = true;
+    } else {
+      const previewElement = peekElement || componentWindow;
+
+      if (!previewTimer.current && previewElement) {
+        previewTimer.current = window.setTimeout(
+          () =>
+            window.requestAnimationFrame(() =>
+              renderFrame(previewElement, animate, setImageSrc)
+            ),
+          document.querySelector(".peekWindow") ? 0 : MILLISECONDS_IN_SECOND / 2
+        );
+        animate.current = true;
+      }
     }
 
     return () => {
@@ -98,7 +111,7 @@ const useWindowPeek = (id: string): string => {
       }
       animate.current = false;
     };
-  }, [componentWindow, peekElement]);
+  }, [componentWindow, hidePeek, icon, peekElement, peekImage]);
 
   return imageSrc;
 };

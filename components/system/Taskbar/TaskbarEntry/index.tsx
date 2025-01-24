@@ -31,7 +31,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     minimize,
     processes: { [id]: process },
   } = useProcesses();
-  const { hidePeek: alwaysHidePeek, minimized, progress } = process || {};
+  const { minimized, progress } = process || {};
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) => {
       if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
@@ -40,9 +40,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   );
   const [isPeekVisible, setIsPeekVisible] = useState(false);
   const hidePeek = (): void => setIsPeekVisible(false);
-  const showPeek = (): void => {
-    if (!alwaysHidePeek) setIsPeekVisible(true);
-  };
+  const showPeek = (): void => setIsPeekVisible(true);
   const onClick = (): void => {
     if (minimized || isForeground) minimize(id);
 
