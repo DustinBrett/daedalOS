@@ -372,12 +372,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
   );
   const { openTransferDialog } = useTransferDialog();
   const addFile = useCallback(
-    (directory: string, callback: NewPath): Promise<string[]> =>
+    (
+      directory: string,
+      callback: NewPath,
+      accept?: string,
+      multiple = true
+    ): Promise<string[]> =>
       new Promise((resolve) => {
         const fileInput = document.createElement("input");
 
         fileInput.type = "file";
-        fileInput.multiple = true;
+        fileInput.multiple = multiple;
+        if (accept) fileInput.accept = accept;
         fileInput.setAttribute("style", "display: none");
         fileInput.addEventListener(
           "change",
