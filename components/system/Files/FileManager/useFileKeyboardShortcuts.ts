@@ -11,7 +11,7 @@ import { type FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { DESKTOP_PATH, PREVENT_SCROLL } from "utils/constants";
+import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent, sendMouseClick } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
@@ -26,7 +26,9 @@ const useFileKeyboardShortcuts = (
   updateFiles: (newFile?: string, oldFile?: string) => void,
   fileManagerRef: React.RefObject<HTMLOListElement | null>,
   id?: string,
-  view?: FileManagerViewNames
+  isStartMenu?: boolean,
+  isDesktop?: boolean,
+  setView?: (newView: FileManagerViewNames) => void
 ): KeyboardShortcutEntry => {
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
   const { url: changeUrl } = useProcesses();
@@ -37,7 +39,7 @@ const useFileKeyboardShortcuts = (
     const pasteHandler = (event: ClipboardEvent): void => {
       if (
         event.clipboardData?.files?.length &&
-        ((!foregroundId && url === DESKTOP_PATH) || foregroundId === id)
+        ((!foregroundId && isDesktop) || foregroundId === id)
       ) {
         event.stopImmediatePropagation?.();
         createFileReaders(event.clipboardData.files, url, newPath).then(
@@ -49,16 +51,39 @@ const useFileKeyboardShortcuts = (
     document.addEventListener("paste", pasteHandler);
 
     return () => document.removeEventListener("paste", pasteHandler);
-  }, [foregroundId, id, newPath, openTransferDialog, url]);
+  }, [foregroundId, id, isDesktop, newPath, openTransferDialog, url]);
 
   return useCallback(
     (file?: string): React.KeyboardEventHandler =>
       (event) => {
-        if (view === "list") return;
+        if (isStartMenu) return;
 
         const { ctrlKey, key, target, shiftKey } = event;
 
-        if (shiftKey) return;
+        if (shiftKey) {
+          if (ctrlKey && !isDesktop) {
+            const updateViewAndFocus = (
+              newView: FileManagerViewNames
+            ): void => {
+              setView?.(newView);
+              requestAnimationFrame(() =>
+                fileManagerRef.current?.focus(PREVENT_SCROLL)
+              );
+            };
+
+            // eslint-disable-next-line default-case
+            switch (key) {
+              case "#": // 3
+                updateViewAndFocus("icon");
+                break;
+              case "^": // 6
+                updateViewAndFocus("details");
+                break;
+            }
+          }
+
+          return;
+        }
 
         if (ctrlKey) {
           const lKey = key.toLowerCase();
@@ -235,12 +260,14 @@ const useFileKeyboardShortcuts = (
       focusEntry,
       focusedEntries,
       id,
+      isDesktop,
+      isStartMenu,
       moveEntries,
       pasteToFolder,
       setRenaming,
+      setView,
       updateFiles,
       url,
-      view,
     ]
   );
 };

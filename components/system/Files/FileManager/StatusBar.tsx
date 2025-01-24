@@ -110,7 +110,9 @@ const StatusBar: FC<StatusBarProps> = ({
         <Button
           className={view === "details" ? "active" : undefined}
           onClick={() => setView("details")}
-          {...label("Displays information about each item in the window.")}
+          {...label(
+            "Displays information about each item\nin the window.  (Ctrl+Shift+6)"
+          )}
         >
           <Icon
             displaySize={16}
@@ -121,7 +123,9 @@ const StatusBar: FC<StatusBarProps> = ({
         <Button
           className={view === "icon" ? "active" : undefined}
           onClick={() => setView("icon")}
-          {...label("Display items by using thumbnails.")}
+          {...label(
+            "Display items by using medium\nthumbnails.  (Ctrl+Shift+3)"
+          )}
         >
           <Icon
             displaySize={16}
