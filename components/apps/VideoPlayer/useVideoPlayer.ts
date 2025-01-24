@@ -1,4 +1,4 @@
-import { basename } from "path";
+import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CONTROL_BAR_HEIGHT,
@@ -13,16 +13,18 @@ import {
   type SourceObjectWithUrl,
   type VideoPlayer,
   type YouTubePlayer,
+  type ControlBar,
 } from "components/apps/VideoPlayer/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
+import { DESKTOP_PATH, VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
+  getExtension,
   getMimeType,
   isSafari,
   isYouTubeUrl,
@@ -30,6 +32,7 @@ import {
   viewHeight,
   viewWidth,
 } from "utils/functions";
+import { getCoverArt } from "components/system/Files/FileEntry/functions";
 
 const useVideoPlayer = ({
   containerRef,
@@ -38,11 +41,12 @@ const useVideoPlayer = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { readFile } = useFileSystem();
+  const { addFile, createPath, readFile, updateFolder } = useFileSystem();
   const {
     argument,
     linkElement,
-    processes: { [id]: { closing = false, libs = [] } = {} },
+    processes: { [id]: { closing = false, componentWindow, libs = [] } = {} },
+    url: setUrl,
   } = useProcesses();
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
@@ -64,18 +68,24 @@ const useVideoPlayer = ({
     cleanUpSource();
 
     const type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
+    const buffer = isYT ? undefined : await readFile(url);
     const src = isYT
       ? url
-      : bufferToUrl(await readFile(url), isSafari() ? type : undefined);
+      : bufferToUrl(buffer as Buffer, isSafari() ? type : undefined);
 
-    return { src, type, url };
+    return { buffer, src, type, url };
   }, [cleanUpSource, isYT, readFile, url]);
   const initializedUrlRef = useRef(false);
+  const playerInitialized = useRef(false);
   const loadPlayer = useCallback(() => {
+    if (playerInitialized.current) return;
+
+    playerInitialized.current = true;
+
     const [videoElement] =
       (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
     const videoPlayer = window.videojs(videoElement, config, () => {
-      videoPlayer.on("play", () => {
+      videoPlayer.on(isYT ? "play" : "canplay", () => {
         if (initializedUrlRef.current) return;
 
         initializedUrlRef.current = true;
@@ -113,6 +123,40 @@ const useVideoPlayer = ({
           // Ignore fullscreen errors
         }
       };
+      const setupOpenFileOnPlay = (): void => {
+        const { playToggle } = (videoPlayer as VideoPlayer & ControlBar)
+          .controlBar;
+        const playFile = (): void => {
+          // eslint-disable-next-line unicorn/consistent-function-scoping
+          const unBindEvent = (): void => playToggle.off("click", playFile);
+
+          if (videoPlayer.currentSrc()) {
+            unBindEvent();
+            return;
+          }
+
+          addFile(
+            DESKTOP_PATH,
+            async (name: string, buffer?: Buffer) => {
+              unBindEvent();
+
+              const newPath = await createPath(name, DESKTOP_PATH, buffer);
+
+              setUrl(id, join(DESKTOP_PATH, newPath));
+              updateFolder(DESKTOP_PATH, newPath);
+
+              return newPath;
+            },
+            "video/*,.mkv",
+            false
+          );
+        };
+
+        playToggle.on("click", playFile);
+      };
+
+      videoPlayer.on("error", setupOpenFileOnPlay);
+      if (!url) setupOpenFileOnPlay();
 
       videoElement.addEventListener("dblclick", toggleFullscreen);
       videoElement.addEventListener(
@@ -174,13 +218,18 @@ const useVideoPlayer = ({
       });
     });
   }, [
+    addFile,
     argument,
     containerRef,
+    createPath,
     id,
     isYT,
     linkElement,
     setLoading,
+    setUrl,
+    updateFolder,
     updateWindowSize,
+    url,
   ]);
   const maybeHideControlbar = useCallback(
     (type?: string): void => {
@@ -200,21 +249,49 @@ const useVideoPlayer = ({
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
-        const source = await getSource();
+        const { buffer, ...source } = await getSource();
 
         initializedUrlRef.current = false;
+        player.poster("");
         player.src(source);
         maybeHideControlbar(source.type);
         prependFileToTitle(
           isYT ? ytPlayer?.videoTitle || "YouTube" : basename(url)
         );
+
+        const [videoElement] =
+          (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ??
+          [];
+
+        linkElement(
+          id,
+          "peekElement",
+          isYT ? (componentWindow as HTMLElement) : videoElement
+        );
+        argument(id, "peekImage", "");
+
+        if (buffer && getExtension(source.url) === ".mp3") {
+          getCoverArt(buffer).then((coverPicture) => {
+            if (coverPicture) {
+              const coverUrl = bufferToUrl(coverPicture);
+
+              player.poster(coverUrl);
+              argument(id, "peekImage", coverUrl);
+            }
+          });
+        }
       } catch {
         // Ignore player errors
       }
     }
   }, [
+    argument,
+    componentWindow,
+    containerRef,
     getSource,
+    id,
     isYT,
+    linkElement,
     maybeHideControlbar,
     player,
     prependFileToTitle,
@@ -224,11 +301,15 @@ const useVideoPlayer = ({
 
   useEffect(() => {
     if (loading && !player) {
-      loadFiles(libs).then(() => {
-        if (typeof window.videojs === "function") {
-          loadPlayer();
-        }
-      });
+      const maybeLoadPlayer = (): boolean => {
+        const isLibLoaded = typeof window.videojs === "function";
+
+        if (isLibLoaded) loadPlayer();
+
+        return isLibLoaded;
+      };
+
+      if (!maybeLoadPlayer()) loadFiles(libs).then(maybeLoadPlayer);
     }
 
     return () => {

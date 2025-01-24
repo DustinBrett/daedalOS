@@ -10,7 +10,7 @@ const VideoPlayer: FC<ComponentProcessProps> = ({ id }) => (
     useHook={useVideoPlayer}
   >
     {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-    <video className="video-js vjs-big-play-centered" autoPlay />
+    <video className="video-js vjs-big-play-centered" id={id} autoPlay />
   </AppContainer>
 );
 
