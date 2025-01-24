@@ -56,6 +56,7 @@ export const addFileSystemHandle = async (
       },
       FS_HANDLES
     );
+
     if (observer) observers.set(dirPath, observer);
   } catch {
     // Ignore errors storing handle
@@ -73,7 +74,9 @@ export const removeFileSystemHandle = async (
 
   try {
     await db.put(KEYVAL_STORE_NAME, handles, FS_HANDLES);
+
     observers.get(directory)?.disconnect();
+    observers.delete(directory);
   } catch {
     // Ignore errors storing handle
   }
