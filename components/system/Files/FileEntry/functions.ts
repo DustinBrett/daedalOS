@@ -261,6 +261,32 @@ const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
     );
   });
 
+export const getCoverArt = async (
+  buffer: Buffer,
+  signal?: AbortSignal
+): Promise<Buffer | undefined> => {
+  if (signal?.aborted) return undefined;
+
+  try {
+    const { parseBuffer, selectCover } = await import("music-metadata-browser");
+    const { common: { picture } = {} } = await parseBuffer(
+      buffer,
+      { mimeType: MP3_MIME_TYPE, size: buffer.length },
+      { skipPostHeaders: true }
+    );
+
+    if (signal?.aborted) return undefined;
+
+    const { data: coverPicture } = selectCover(picture) || {};
+
+    return coverPicture;
+  } catch {
+    // Ignore failure to get cover art
+  }
+
+  return undefined;
+};
+
 export const getInfoWithoutExtension = (
   fs: FSModule,
   rootFs: RootFileSystem,
@@ -539,28 +565,11 @@ export const getInfoWithExtension = (
         (signal) =>
           fs.readFile(path, (error, contents = Buffer.from("")) => {
             if (!error && !signal.aborted) {
-              import("music-metadata-browser").then(
-                ({ parseBuffer, selectCover }) => {
-                  if (signal.aborted) return;
-
-                  parseBuffer(
-                    contents,
-                    {
-                      mimeType: MP3_MIME_TYPE,
-                      size: contents.length,
-                    },
-                    { skipPostHeaders: true }
-                  ).then(({ common: { picture } = {} }) => {
-                    if (signal.aborted) return;
-
-                    const { data: coverPicture } = selectCover(picture) || {};
-
-                    if (coverPicture) {
-                      getInfoByFileExtension(bufferToUrl(coverPicture));
-                    }
-                  });
+              getCoverArt(contents, signal).then((coverPicture) => {
+                if (coverPicture) {
+                  getInfoByFileExtension(bufferToUrl(coverPicture));
                 }
-              );
+              });
             }
           })
       );
