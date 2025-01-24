@@ -37,6 +37,26 @@ import {
 } from "utils/constants";
 import { bufferToBlob, getExtension, getMimeType } from "utils/functions";
 
+export type FileSystemObserver = {
+  disconnect: () => void;
+  observe: (
+    handle: FileSystemDirectoryHandle,
+    options: { recursive: boolean }
+  ) => Promise<void>;
+};
+
+type FileSystemChangeRecord = {
+  relativePathComponents: string[];
+};
+
+declare global {
+  interface Window {
+    FileSystemObserver: new (
+      callback: (records: FileSystemChangeRecord[]) => void
+    ) => FileSystemObserver;
+  }
+}
+
 type FilePasteOperations = Record<string, "copy" | "move">;
 
 type FileSystemWatchers = Record<string, UpdateFiles[]>;
@@ -302,13 +322,28 @@ const useFileSystemContextState = (): FileSystemContextState => {
               const mappedName =
                 removeInvalidFilenameCharacters(handle.name).trim() ||
                 (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
+              const mappedPath = join(directory, mappedName);
 
-              rootFs?.mount?.(join(directory, mappedName), newFs);
+              rootFs?.mount?.(mappedPath, newFs);
               resolve(systemDirectory ? directory : mappedName);
+
+              let observer: FileSystemObserver | undefined;
+
+              if ("FileSystemObserver" in window) {
+                observer = new window.FileSystemObserver((records) =>
+                  records.forEach(({ relativePathComponents }) =>
+                    updateFolder(
+                      join(mappedPath, ...relativePathComponents.slice(0, -1))
+                    )
+                  )
+                );
+
+                observer.observe(handle, { recursive: true });
+              }
 
               import("contexts/fileSystem/functions").then(
                 ({ addFileSystemHandle }) =>
-                  addFileSystemHandle(directory, handle, mappedName)
+                  addFileSystemHandle(directory, handle, mappedName, observer)
               );
             });
           });
@@ -317,7 +352,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
         }
       });
     },
-    [rootFs]
+    [rootFs, updateFolder]
   );
   const mountFs = useCallback(
     async (url: string): Promise<void> => {

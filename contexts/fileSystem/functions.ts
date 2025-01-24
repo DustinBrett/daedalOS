@@ -3,6 +3,7 @@ import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type InMemoryFileSystem from "browserfs/dist/node/backend/InMemory";
+import { type FileSystemObserver } from "contexts/fileSystem/useFileSystemContextState";
 import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
 import {
   type ExtendedEmscriptenFileSystem,
@@ -33,24 +34,29 @@ export const isMountedFolder = (mount?: Mount): boolean =>
   (mount.getName() === "FileSystemAccess" ||
     (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
 
+const observers = new Map<string, FileSystemObserver>();
+
 export const addFileSystemHandle = async (
   directory: string,
   handle: FileSystemDirectoryHandle,
-  mappedName: string
+  mappedName: string,
+  observer?: FileSystemObserver
 ): Promise<void> => {
   if (!(await supportsIndexedDB())) return;
 
   const db = await getKeyValStore();
+  const dirPath = join(directory, mappedName);
 
   try {
-    db.put(
+    await db.put(
       KEYVAL_STORE_NAME,
       {
         ...(await getFileSystemHandles()),
-        [join(directory, mappedName)]: handle,
+        [dirPath]: handle,
       },
       FS_HANDLES
     );
+    if (observer) observers.set(dirPath, observer);
   } catch {
     // Ignore errors storing handle
   }
@@ -65,7 +71,12 @@ export const removeFileSystemHandle = async (
     await getFileSystemHandles();
   const db = await getKeyValStore();
 
-  await db.put(KEYVAL_STORE_NAME, handles, FS_HANDLES);
+  try {
+    await db.put(KEYVAL_STORE_NAME, handles, FS_HANDLES);
+    observers.get(directory)?.disconnect();
+  } catch {
+    // Ignore errors storing handle
+  }
 };
 
 export const requestPermission = async (
