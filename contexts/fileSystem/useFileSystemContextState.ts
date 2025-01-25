@@ -47,6 +47,8 @@ export type FileSystemObserver = {
 
 type FileSystemChangeRecord = {
   relativePathComponents: string[];
+  relativePathMovedFrom: string[] | null;
+  type: "appeared" | "disappeared" | "moved";
 };
 
 declare global {
@@ -330,13 +332,34 @@ const useFileSystemContextState = (): FileSystemContextState => {
               let observer: FileSystemObserver | undefined;
 
               if ("FileSystemObserver" in window) {
-                observer = new window.FileSystemObserver((records) =>
-                  records.forEach(({ relativePathComponents }) =>
-                    updateFolder(
-                      join(mappedPath, ...relativePathComponents.slice(0, -1))
-                    )
-                  )
-                );
+                observer = new window.FileSystemObserver(([record]) => {
+                  const {
+                    relativePathComponents,
+                    relativePathMovedFrom,
+                    type,
+                  } = record;
+                  let newFile = "";
+                  let oldFile = "";
+
+                  if (type === "appeared") {
+                    newFile =
+                      relativePathComponents[relativePathComponents.length - 1];
+                  } else if (type === "disappeared") {
+                    oldFile =
+                      relativePathComponents[relativePathComponents.length - 1];
+                  } else if (relativePathMovedFrom && type === "moved") {
+                    oldFile =
+                      relativePathMovedFrom[relativePathMovedFrom.length - 1];
+                    newFile =
+                      relativePathComponents[relativePathComponents.length - 1];
+                  }
+
+                  updateFolder(
+                    join(mappedPath, ...relativePathComponents.slice(0, -1)),
+                    newFile,
+                    oldFile
+                  );
+                });
 
                 observer.observe(handle, { recursive: true });
               }
