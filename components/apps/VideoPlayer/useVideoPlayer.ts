@@ -147,7 +147,7 @@ const useVideoPlayer = ({
 
               return newPath;
             },
-            "video/*,.mkv",
+            "audio/*,video/*,.mkv",
             false
           );
         };
