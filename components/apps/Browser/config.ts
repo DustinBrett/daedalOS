@@ -1,3 +1,4 @@
+import { type ProxyState } from "components/apps/Browser/useProxyMenu";
 import { FAVICON_BASE_PATH } from "utils/constants";
 
 type Bookmark = {
@@ -78,3 +79,42 @@ export const OLD_NET_SUPPORTED_YEARS = [
 ];
 
 export const WAYBACK_URL_INFO = "https://archive.org/wayback/available?url=";
+
+export const PROXIES: Record<
+  ProxyState,
+  ((url: string) => Promise<string> | string) | undefined
+> = {
+  ALL_ORIGINS: (url) => `https://api.allorigins.win/raw?url=${url}`,
+  CHAINFLARE: (url) => `https://x.xxlxx.co/?url=${url}`,
+  CORS: undefined,
+  WAYBACK_MACHINE: async (url) => {
+    try {
+      const urlInfoResponse = await fetch(`${WAYBACK_URL_INFO}${url}`);
+      const { archived_snapshots } =
+        (await urlInfoResponse.json()) as WaybackUrlInfo;
+
+      if (archived_snapshots.closest.url) {
+        let addressUrl = archived_snapshots.closest.url;
+
+        if (
+          addressUrl.startsWith("http:") &&
+          window.location.protocol === "https:"
+        ) {
+          addressUrl = addressUrl.replace("http:", "https:");
+        }
+
+        return addressUrl;
+      }
+    } catch {
+      // Ignore failure to fetch url
+    }
+
+    return url;
+  },
+  ...Object.fromEntries(
+    OLD_NET_SUPPORTED_YEARS.map((year) => [
+      `OLD_NET_${year}`,
+      (url) => `${OLD_NET_PROXY.replace("<year>", year.toString())}${url}`,
+    ])
+  ),
+};

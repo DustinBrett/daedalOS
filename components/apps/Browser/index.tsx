@@ -22,9 +22,7 @@ import {
   HOME_PAGE,
   LOCAL_HOST,
   NOT_FOUND,
-  OLD_NET_PROXY,
-  WAYBACK_URL_INFO,
-  type WaybackUrlInfo,
+  PROXIES,
   bookmarks,
 } from "components/apps/Browser/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -315,35 +313,9 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             setSrcDoc(newSrcDoc);
             prependFileToTitle(newTitle);
           } else {
-            let addressUrl = processedUrl.href;
-
-            if (proxyState === "WAYBACK_MACHINE") {
-              try {
-                const urlInfoResponse = await fetch(
-                  `${WAYBACK_URL_INFO}${addressUrl}`
-                );
-                const { archived_snapshots } =
-                  (await urlInfoResponse.json()) as WaybackUrlInfo;
-
-                if (archived_snapshots.closest.url) {
-                  addressUrl = archived_snapshots.closest.url;
-
-                  if (
-                    addressUrl.startsWith("http:") &&
-                    window.location.protocol === "https:"
-                  ) {
-                    addressUrl = addressUrl.replace("http:", "https:");
-                  }
-                }
-              } catch {
-                // Ignore failure to fetch url
-              }
-            } else if (proxyState.startsWith("OLD_NET_")) {
-              const year = proxyState.replace("OLD_NET_", "");
-              const proxyUrl = OLD_NET_PROXY.replace("<year>", year);
-
-              addressUrl = `${proxyUrl}${processedUrl.href}`;
-            }
+            const addressUrl = PROXIES[proxyState]
+              ? await PROXIES[proxyState](processedUrl.href)
+              : processedUrl.href;
 
             changeIframeWindowLocation(addressUrl, contentWindow);
 
