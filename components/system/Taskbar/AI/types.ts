@@ -1,5 +1,6 @@
 /// <reference types="dom-chromium-ai" />
 
+import { type ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
 declare global {
@@ -56,4 +57,8 @@ export type WebLlmProgress = {
 
 export type WorkerResponse = {
   data: AIResponse | WebLlmProgress | "canceled";
+};
+
+export type Prompt = (AILanguageModelPrompt | ChatCompletionMessageParam) & {
+  streamId?: number;
 };
