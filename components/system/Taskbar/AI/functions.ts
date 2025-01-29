@@ -54,3 +54,12 @@ export const speakMessage = (text: string): void => {
 
   window.speechSynthesis.speak(utterance);
 };
+
+export const responseTweaks = (text: string): string => {
+  // eslint-disable-next-line sonarjs/no-dead-store
+  let newText = text;
+
+  newText = text.replace("</think></p>", "</p></think>");
+
+  return newText;
+};

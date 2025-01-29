@@ -158,6 +158,22 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
       }
 
+      .thinking {
+        background-color: rgb(73, 73, 73);
+        border-radius: 6px;
+        color: #fff;
+        cursor: pointer;
+        font-family: ${({ theme }) => theme.formats.systemFont};
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        margin-left: 30px;
+        padding: 7px 11px;
+
+        &.thinking-responding {
+          cursor: default;
+        }
+      }
+
       .message {
         cursor: text;
         padding-left: 36px;
@@ -174,6 +190,27 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           border: 1px solid rgb(48, 48, 48);
           border-radius: 5px;
           padding: 12px;
+        }
+
+        /* stylelint-disable-next-line selector-type-no-unknown */
+        think {
+          border-left: 2px solid rgb(78, 78, 86);
+          color: rgb(166, 166, 166);
+          display: flex;
+          flex-direction: column;
+          font-size: 13px;
+          gap: 10px;
+          margin-left: 5px;
+          margin-top: 12px;
+          padding-left: 10px;
+          white-space: normal;
+        }
+
+        &.hide-think {
+          /* stylelint-disable-next-line selector-type-no-unknown */
+          think {
+            display: none;
+          }
         }
 
         code {
