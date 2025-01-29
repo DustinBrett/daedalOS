@@ -8,7 +8,7 @@ type Bookmark = {
   url: string;
 };
 
-export type WaybackUrlInfo = {
+type WaybackUrlInfo = {
   archived_snapshots: { closest: { url: string } };
 };
 
@@ -70,7 +70,7 @@ export const LOCAL_HOST = new Set(["127.0.0.1", "localhost"]);
 export const NOT_FOUND =
   '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>404 Not Found</title><style>h1{display:inline;}</style></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>';
 
-export const OLD_NET_PROXY =
+const OLD_NET_PROXY =
   "https://theoldnet.com/get?scripts=true&decode=true&year=<year>&url=";
 
 export const OLD_NET_SUPPORTED_YEARS = [
@@ -78,7 +78,7 @@ export const OLD_NET_SUPPORTED_YEARS = [
   2009, 2010, 2011, 2012,
 ];
 
-export const WAYBACK_URL_INFO = "https://archive.org/wayback/available?url=";
+const WAYBACK_URL_INFO = "https://archive.org/wayback/available?url=";
 
 export const PROXIES: Record<
   ProxyState,
