@@ -41,11 +41,13 @@
 - 3rd Party App Support
 - Email App
   - Open SMTP Server
+  - [openpgpjs](https://github.com/openpgpjs/openpgpjs)
 - Task Manager
   - [stats.js](https://github.com/mrdoob/stats.js)
 - Batch File Support
 - Compress Images via Context Menu
   - [Squoosh](https://github.com/GoogleChromeLabs/squoosh) ([lib](https://www.npmjs.com/package/@squoosh/lib))
+    - [Squish](https://github.com/addyosmani/squish)
   - [wasm-vips](https://github.com/kleisauke/wasm-vips)
   - [SVGO](https://github.com/svg/svgo)
 - Set WOFF/TTF as System Font
@@ -158,6 +160,7 @@
 - Waveforms
   - [AudioMass](https://github.com/pkalogiros/audiomass)
   - [peaks.js](https://github.com/bbc/peaks.js)
+  - [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 - [Meyda](https://meyda.js.org/)
 - [Quiet.js](https://github.com/quiet/quiet-js/)
 
