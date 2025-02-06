@@ -2076,10 +2076,10 @@
   resolved "https://registry.yarnpkg.com/@types/canvas-confetti/-/canvas-confetti-1.9.0.tgz#d1077752e046413c9881fbb2ba34a70ebe3c1773"
   integrity sha512-aBGj/dULrimR1XDZLtG9JwxX1b4HPRF6CX9Yfwh3NvstZEm1ZL7RBnel4keCPSqs1ANRu1u2Aoz9R+VmtjYuTg==
 
-"@types/dom-chromium-ai@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.4.tgz#a3ab199b9036eff6937ef6c90899ddd5a29a0959"
-  integrity sha512-zEJAmJcrszLhklp+UsEwn81Y65zUoGqZex80hMIvRiOKHhiC35wjtPpih7BBq9wkhCAra66TAgAmmwb7jXO3UA==
+"@types/dom-chromium-ai@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.5.tgz#15c00ae9cca80c7ae6744471dcd7cc9958635c6d"
+  integrity sha512-hvX35ReS3v+rYI1iIP5Ex8AAJ8ZRvW+rnG6pr0yNtoBjYHoBBOFfjanMyidIoYc8+StF1IAyvfR7peWkw1eVsA==
 
 "@types/dompurify@^3.2.0":
   version "3.2.0"
@@ -5077,10 +5077,10 @@ file-type@^16.5.4:
     strtok3 "^6.2.4"
     token-types "^4.1.1"
 
-file-type@^20.0.1:
-  version "20.0.1"
-  resolved "https://registry.yarnpkg.com/file-type/-/file-type-20.0.1.tgz#0c048d5f9dbf4d7aabf24176d5bbd5e44f1bbccc"
-  integrity sha512-R80W+NZ+s1M8PsC8L7xn+J0N72vEyxstMH+4vwIyt5B7ojfG80h/nKu2Qw/NYJTIYyGUeaPNLnzfJd78SWnG3A==
+file-type@^20.1.0:
+  version "20.1.0"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-20.1.0.tgz#adeeb3c798d343ecc35ac85404bba52989143f68"
+  integrity sha512-XoxU+lETfCf+bYK3SXkxFusAvmtYQl1u/ZC4zw1DBLEsHUvh339uwYucgQnnSMz1mRCWYJrCzsbJJ95hsQbZ8A==
   dependencies:
     "@tokenizer/inflate" "^0.2.6"
     strtok3 "^10.2.0"
@@ -5164,10 +5164,10 @@ frac@~1.1.2:
   resolved "https://registry.yarnpkg.com/frac/-/frac-1.1.2.tgz#3d74f7f6478c88a1b5020306d747dc6313c74d0b"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
-framer-motion@^12.0.11:
-  version "12.0.11"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.0.11.tgz#ec1c4e3eafcc30c5d3e250a14d110c6a40f6f18d"
-  integrity sha512-1F+YNXr3bSHxt5sCzeCVL56sc4MngbOhdU5ptv02vaepdFYcQd0fZtuAHvFJgMbn5V7SOsaX/3hVqr21ZaCKhA==
+framer-motion@^12.3.1:
+  version "12.3.1"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.3.1.tgz#041be06a3e1041cf6820a0895b704e8ea588e3df"
+  integrity sha512-Br4a2YhdeEvdzMDX8ToVO+/Jbqm2Loo/8rMjizX1nejjBvRJGMfz+NW1qBo4WCHF26uIdES5MBztUlB4pIyfqQ==
   dependencies:
     motion-dom "^12.0.0"
     motion-utils "^12.0.0"
@@ -7068,12 +7068,12 @@ motion-utils@^12.0.0:
   resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-12.0.0.tgz#fabf79f4f1c818720a1b70f615e2a1768f396ac0"
   integrity sha512-MNFiBKbbqnmvOjkPyOKgHUp3Q6oiokLkI1bEwm5QA28cxMZrv0CbbBGDNmhF6DIXsi1pCQBSs0dX8xjeER1tmA==
 
-motion@12.0.11:
-  version "12.0.11"
-  resolved "https://registry.yarnpkg.com/motion/-/motion-12.0.11.tgz#ef7f16f642e922cc38eab48bd5f4e1cf608e95ac"
-  integrity sha512-3jagvC6gy/AQn+pw26g7Ti7OAKkcN1srJS77VK6N1xN9wh7AUMtC/htNhWZQ5nIv8FvODW9wdzcuTstzoAt6pA==
+motion@12.3.1:
+  version "12.3.1"
+  resolved "https://registry.yarnpkg.com/motion/-/motion-12.3.1.tgz#3c0ce406abbc1bd1c786421b01a76409a9d95436"
+  integrity sha512-o25hkUR/dvOt7gPHqYnv3/rrDtzz6b8Khqkmed6Tn2u4m0ZU/0UIukWQBN7wSqTACLZVptX013N3yH+LtoNa2A==
   dependencies:
-    framer-motion "^12.0.11"
+    framer-motion "^12.3.1"
     tslib "^2.4.0"
 
 mrmime@^2.0.0:
@@ -7678,14 +7678,14 @@ postcss@8.4.31:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postcss@8.4.38:
-  version "8.4.38"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
-  integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
+postcss@8.4.49:
+  version "8.4.49"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.49.tgz#4ea479048ab059ab3ae61d082190fabfd994fe19"
+  integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
   dependencies:
     nanoid "^3.3.7"
-    picocolors "^1.0.0"
-    source-map-js "^1.2.0"
+    picocolors "^1.1.1"
+    source-map-js "^1.2.1"
 
 postcss@^8.4.32:
   version "8.4.41"
@@ -8969,17 +8969,17 @@ strtok3@^6.2.4, strtok3@^6.3.0:
     "@tokenizer/token" "^0.3.0"
     peek-readable "^4.1.0"
 
-styled-components@^6.1.14:
-  version "6.1.14"
-  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-6.1.14.tgz#addd3b645f400f8aad84c992afec58804ad1d217"
-  integrity sha512-KtfwhU5jw7UoxdM0g6XU9VZQFV4do+KrM8idiVCH5h4v49W+3p3yMe0icYwJgZQZepa5DbH04Qv8P0/RdcLcgg==
+styled-components@^6.1.15:
+  version "6.1.15"
+  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-6.1.15.tgz#7651904d5424d08c1046056eb39024cc23c72ab7"
+  integrity sha512-PpOTEztW87Ua2xbmLa7yssjNyUF9vE7wdldRfn1I2E6RTkqknkBYpj771OxM/xrvRGinLy2oysa7GOd7NcZZIA==
   dependencies:
     "@emotion/is-prop-valid" "1.2.2"
     "@emotion/unitless" "0.8.1"
     "@types/stylis" "4.2.5"
     css-to-react-native "3.2.0"
     csstype "3.1.3"
-    postcss "8.4.38"
+    postcss "8.4.49"
     shallowequal "1.1.0"
     stylis "4.3.2"
     tslib "2.6.2"
@@ -9130,10 +9130,10 @@ terser@^5.15.1:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
-terser@^5.37.0:
-  version "5.37.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.37.0.tgz#38aa66d1cfc43d0638fab54e43ff8a4f72a21ba3"
-  integrity sha512-B8wRRkmre4ERucLM/uXx4MOV5cbnOlVAqUst+1+iLKPI0dOgFO28f84ptoQt9HEI537PMzfYa/d+GEPKTRXmYA==
+terser@^5.38.0:
+  version "5.38.0"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.38.0.tgz#df742bb69ee556c29650e926ff154d116f4ccf79"
+  integrity sha512-a4GD5R1TjEeuCT6ZRiYMHmIf7okbCPEuhQET8bczV6FrQMMlFXA1n+G0KKjdlFCm3TEHV77GxfZB3vZSUQGFpg==
   dependencies:
     "@jridgewell/source-map" "^0.3.3"
     acorn "^8.8.2"
