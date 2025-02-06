@@ -25,15 +25,15 @@ const CONVO_STYLE_TEMPS: Record<
   AILanguageModelCreateOptionsWithSystemPrompt
 > = {
   balanced: {
-    temperature: 0.5,
+    temperature: 0.6,
     topK: 3,
   },
   creative: {
-    temperature: 0.8,
+    temperature: 0.7,
     topK: 5,
   },
   precise: {
-    temperature: 0.2,
+    temperature: 0.5,
     topK: 2,
   },
 };

@@ -63,3 +63,11 @@ export const responseTweaks = (text: string): string => {
 
   return newText;
 };
+
+export const escapeHtml = (unSafeHtml: string): string =>
+  unSafeHtml
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");

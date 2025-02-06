@@ -1,6 +1,7 @@
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  escapeHtml,
   formatWebLlmProgress,
   responseTweaks,
   speakMessage,
@@ -112,7 +113,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
   const addUserPrompt = useCallback(() => {
     if (promptText) {
-      addMessage(promptText, "user");
+      addMessage(escapeHtml(promptText), "user");
       (textAreaRef.current as HTMLTextAreaElement).value = "";
       setPromptText("");
     }
@@ -438,15 +439,18 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   <button
                     className={clsx({
                       thinking: true,
-                      "thinking-responding": responding,
+                      "thinking-responding":
+                        responding && index === conversation.length - 1,
                     })}
                     type="button"
-                    {...(!responding &&
+                    {...((!responding || index < conversation.length - 1) &&
                       text.includes("</think>") && {
                         onClick: () => toggleThought(index),
                       })}
                   >
-                    {text.includes("</think>") || !responding
+                    {text.includes("</think>") ||
+                    !responding ||
+                    index < conversation.length - 1
                       ? "Thoughts"
                       : "Thinking..."}
                   </button>
