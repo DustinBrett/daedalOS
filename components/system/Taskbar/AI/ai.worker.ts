@@ -40,12 +40,10 @@ const CONVO_STYLE_TEMPS: Record<
 
 const WEB_LLM_MODEL = "DeepSeek-R1-Distill-Llama-8B-q4f32_1-MLC";
 const WEB_LLM_MODEL_CONFIG = {
-  "DeepSeek-R1-Distill-Llama-8B-q4f32_1-MLC": {
-    context_window_size: 131072,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    top_p: 0.9,
-  },
+  context_window_size: 131072,
+  frequency_penalty: 0,
+  presence_penalty: 0,
+  top_p: 0.9,
 };
 const SYSTEM_PROMPT: ChatCompletionMessageParam = {
   content: "You are a helpful AI assistant.",
@@ -223,7 +221,7 @@ globalThis.addEventListener(
                   stream_options: { include_usage: false },
                   temperature: CONVO_STYLE_TEMPS[data.style].temperature,
                   top_logprobs: CONVO_STYLE_TEMPS[data.style].topK,
-                  ...WEB_LLM_MODEL_CONFIG[WEB_LLM_MODEL],
+                  ...WEB_LLM_MODEL_CONFIG,
                 });
 
                 response = stream
