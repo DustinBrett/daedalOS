@@ -47,7 +47,7 @@ test("can change background", async ({ headless, browserName, page }) => {
   await canvasBackgroundIsHidden({ page });
 });
 
-test.describe("can set backgound", () => {
+test.describe("can set background", () => {
   test.beforeEach(disableWallpaper);
   test.beforeEach(async ({ page }) =>
     loadApp({ page }, { url: "/System/Icons/48x48" })
