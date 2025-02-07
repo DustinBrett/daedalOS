@@ -12,7 +12,7 @@ const StyledComponentError = styled.div`
   width: 100%;
 `;
 
-const ERROR_MESSAGE = "Error occured within component.";
+const ERROR_MESSAGE = "Error occurred within component.";
 
 const ComponentError: FC = () => (
   <StyledComponentError>{ERROR_MESSAGE}</StyledComponentError>
