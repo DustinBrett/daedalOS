@@ -38,6 +38,7 @@ import {
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
   SYSTEM_SHORTCUT_DIRECTORIES,
+  ZIP_EXTENSIONS,
 } from "utils/constants";
 import {
   bufferToUrl,
@@ -493,7 +494,7 @@ const useFolder = (
 
       try {
         const unzippedFiles = Object.entries(
-          [".jsdos", ".wsz", ".zip"].includes(getExtension(path))
+          ZIP_EXTENSIONS.has(getExtension(path))
             ? await unzip(data)
             : await unarchive(path, data)
         );
