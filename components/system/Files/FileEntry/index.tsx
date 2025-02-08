@@ -57,6 +57,7 @@ import {
 import {
   blobToBase64,
   bufferToUrl,
+  fetchBlob,
   getExtension,
   getFormattedSize,
   getHtmlToImage,
@@ -355,7 +356,7 @@ const FileEntry: FC<FileEntryProps> = ({
                   generatedIcon = iconRef.current.currentSrc;
                 } else if (iconRef.current.currentSrc.startsWith("blob:")) {
                   generatedIcon = await blobToBase64(
-                    await (await fetch(iconRef.current.currentSrc)).blob()
+                    await fetchBlob(iconRef.current.currentSrc)
                   );
                 } else {
                   const { clientHeight, clientWidth } = iconRef.current;

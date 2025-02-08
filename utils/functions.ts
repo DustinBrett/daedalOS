@@ -181,6 +181,9 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
 export const blobToBuffer = async (blob?: Blob | null): Promise<Buffer> =>
   blob ? Buffer.from(await blob.arrayBuffer()) : Buffer.from("");
 
+export const fetchBlob = async (url: string): Promise<Blob> =>
+  (await fetch(url)).blob();
+
 export const canvasToBuffer = (canvas?: HTMLCanvasElement): Buffer =>
   Buffer.from(
     canvas?.toDataURL("image/png").replace("data:image/png;base64,", "") || "",

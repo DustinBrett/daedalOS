@@ -1,33 +1,26 @@
 import { basename, dirname, extname, join } from "path";
-import {
-  type FFmpegTranscodeFile,
-  type IFFmpegInstance,
-  type IFFmpegLog,
-} from "utils/ffmpeg/types";
-import { loadFiles } from "utils/functions";
+import { type FFmpeg } from "@ffmpeg/ffmpeg";
+import { type FFmpegTranscodeFile } from "utils/ffmpeg/types";
+import { fetchBlob } from "utils/functions";
 
-const getFFmpeg = async (
-  printLn?: (message: string) => void
-): Promise<IFFmpegInstance> => {
-  if (!window.FFmpeg) {
-    await loadFiles(["/Program Files/ffmpeg/ffmpeg.min.js"]);
-  }
+export const getFFmpeg = async (
+  printLn: (message: string) => void = console.info
+): Promise<FFmpeg> => {
+  const { FFmpeg: CreateFFmpeg } = await import("@ffmpeg/ffmpeg");
+  const ffmpeg = new CreateFFmpeg();
 
-  if (window.FFmpeg) {
-    window.FFmpegInstance?.exit();
-    window.FFmpegInstance = window.FFmpeg.createFFmpeg({
-      corePath: `${window.location.origin}/Program Files/ffmpeg/ffmpeg-core.js`,
-      log: true,
-      logger: ({ message }: IFFmpegLog) => {
-        printLn?.(message);
-        console.info(message);
-      },
-      mainName: "main",
-    });
-    await window.FFmpegInstance.load();
-  }
+  ffmpeg.on("log", ({ message }) => printLn(message));
 
-  return window.FFmpegInstance;
+  await ffmpeg.load({
+    coreURL: URL.createObjectURL(
+      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.js")
+    ),
+    wasmURL: URL.createObjectURL(
+      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.wasm")
+    ),
+  });
+
+  return ffmpeg;
 };
 
 export const transcode = async (
@@ -43,12 +36,12 @@ export const transcode = async (
       const baseName = basename(fileName);
       const newName = `${basename(fileName, extname(fileName))}.${extension}`;
 
-      ffmpeg.FS("writeFile", baseName, fileData);
-      await ffmpeg.run("-i", baseName, newName);
+      await ffmpeg.writeFile(baseName, fileData);
+      await ffmpeg.exec(["-i", baseName, newName]);
 
       returnFiles.push([
         join(dirname(fileName), newName),
-        Buffer.from(ffmpeg.FS("readFile", newName) as Uint8Array),
+        Buffer.from((await ffmpeg.readFile(newName)) as Uint8Array),
       ]);
     })
   );
