@@ -103,6 +103,7 @@ type FileSystemContextState = AsyncFS & {
   pasteList: FilePasteOperations;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   rootFs?: RootFileSystem;
+  setPasteList: React.Dispatch<React.SetStateAction<FilePasteOperations>>;
   unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
   unMountFs: (url: string) => void;
   updateFolder: (
@@ -646,6 +647,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     moveEntries,
     pasteList,
     removeFsWatcher,
+    setPasteList,
     unMapFs,
     unMountFs,
     updateFolder,

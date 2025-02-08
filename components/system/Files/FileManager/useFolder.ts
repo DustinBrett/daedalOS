@@ -124,6 +124,7 @@ const useFolder = (
     readFile,
     removeFsWatcher,
     rename,
+    setPasteList,
     stat,
     updateFolder,
     writeFile,
@@ -576,25 +577,36 @@ const useFolder = (
       const moving = pasteEntries.some(([, operation]) => operation === "move");
       const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
         const newBasePath = join(basePath, basename(entry));
-        let uniquePath: string;
+        let uniquePath = "";
 
-        if ((await lstat(entry)).isDirectory()) {
-          uniquePath = await createPath(newBasePath, directory);
+        try {
+          if ((await lstat(entry)).isDirectory()) {
+            uniquePath = await createPath(newBasePath, directory);
 
-          await Promise.all(
-            (await readdir(entry)).map((dirEntry) =>
-              copyFiles(join(entry, dirEntry), uniquePath)
-            )
-          );
-        } else {
-          uniquePath = await createPath(
-            newBasePath,
-            directory,
-            await readFile(entry)
-          );
+            await Promise.all(
+              (await readdir(entry)).map((dirEntry) =>
+                copyFiles(join(entry, dirEntry), uniquePath)
+              )
+            );
+          } else {
+            uniquePath = await createPath(
+              newBasePath,
+              directory,
+              await readFile(entry)
+            );
+          }
+        } catch (error) {
+          const { code, path } = error as ApiError;
+
+          if (path && code === "ENOENT") {
+            setPasteList(
+              ({ [path]: _missingFile, ...currentPasteList }) =>
+                currentPasteList
+            );
+          }
         }
 
-        if (!basePath) updateFolder(directory, uniquePath);
+        if (uniquePath && !basePath) updateFolder(directory, uniquePath);
       };
       const movedPaths: string[] = [];
       const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
@@ -658,6 +670,7 @@ const useFolder = (
       readFile,
       readdir,
       setIconPositions,
+      setPasteList,
       sortOrders,
       updateFolder,
     ]
