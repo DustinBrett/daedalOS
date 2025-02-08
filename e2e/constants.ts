@@ -127,6 +127,10 @@ export const ACCESSIBILITY_EXCEPTION_IDS = [
   "meta-viewport",
 ];
 
+export const CLIPBOARD_WRITE_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
+  "firefox",
+  "webkit",
+]);
 export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker#browser_compatibility
   "webkit",
@@ -236,9 +240,11 @@ export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 
+export const TEST_IMAGE_NAME = "image.png";
 export const TEST_DESKTOP_FILE = /^Public$/;
 export const TEST_ROOT_ARCHIVE = /^archive.zip$/;
 export const TEST_ROOT_FILE = /^CREDITS.md$/;
+export const TEST_ROOT_FILE_COPY = /^CREDITS \(1\).md$/;
 export const TEST_ROOT_FILE_2 = /^favicon.ico$/;
 export const TEST_ROOT_FILE_TEXT = "CREDITS.md";
 export const TEST_ROOT_FILE_DEFAULT_APP = "Marked";

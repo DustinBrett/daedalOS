@@ -108,7 +108,7 @@ const useFileKeyboardShortcuts = (
               moveEntries(focusedEntries.map((entry) => join(url, entry)));
               break;
             case "v":
-              haltEvent(event);
+              event.stopPropagation();
               if (target instanceof HTMLOListElement) {
                 pasteToFolder();
               }

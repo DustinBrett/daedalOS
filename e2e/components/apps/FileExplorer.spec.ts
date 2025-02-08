@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
+  CLIPBOARD_WRITE_HEADLESS_NOT_SUPPORTED_BROWSERS,
   DESKTOP_SELECTOR,
   DRAG_HEADLESS_NOT_SUPPORTED_BROWSERS,
   FILE_EXPLORER_COLUMN_HEIGHT,
@@ -18,10 +19,12 @@ import {
   TEST_APP_TITLE,
   TEST_APP_TITLE_TEXT,
   TEST_DESKTOP_FILE,
+  TEST_IMAGE_NAME,
   TEST_ROOT_ARCHIVE,
   TEST_ROOT_FILE,
   TEST_ROOT_FILE_2,
   TEST_ROOT_FILE_ALT_APP,
+  TEST_ROOT_FILE_COPY,
   TEST_ROOT_FILE_DEFAULT_APP,
   TEST_ROOT_FILE_TEXT,
   TEST_ROOT_FILE_TOOLTIP,
@@ -73,6 +76,7 @@ import {
   windowTitlebarTextIsVisible,
   windowsAreVisible,
 } from "e2e/functions";
+import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 
 test.beforeEach(captureConsoleLogs);
 test.beforeEach(disableWallpaper);
@@ -230,6 +234,50 @@ test.describe("has files & folders", () => {
       await clickContextMenuEntry(/^Properties$/, { page });
       await appIsOpen(`${TEST_ROOT_FILE_TEXT} Properties`, page);
     });
+  });
+
+  test("can paste from filesystem", async ({ page }) => {
+    await page.keyboard.press("Control+KeyV");
+    await fileExplorerEntryIsHidden(TEST_ROOT_FILE_COPY, { page });
+
+    await clickFileExplorerEntry(TEST_ROOT_FILE, { page });
+    await page.keyboard.press("Control+KeyC");
+    await fileExplorerEntryIsHidden(TEST_ROOT_FILE_COPY, { page });
+
+    await clickFileExplorer({ page }, false, WINDOW_RESIZE_HANDLE_WIDTH / 2, 0);
+    await page.keyboard.press("Control+KeyV");
+    await fileExplorerEntryIsVisible(TEST_ROOT_FILE_COPY, { page });
+  });
+
+  test("can paste from clipboard", async ({
+    browserName,
+    context,
+    headless,
+    page,
+  }) => {
+    test.skip(
+      headless &&
+        CLIPBOARD_WRITE_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless drag support"
+    );
+
+    await page.keyboard.press("Control+KeyV");
+    await fileExplorerEntryIsHidden(TEST_IMAGE_NAME, { page });
+
+    await context.grantPermissions(["clipboard-write"]);
+    await page.evaluate(
+      ([icon]) =>
+        navigator.clipboard.write([
+          new ClipboardItem({
+            "image/png": atob(icon.replace("data:image/png;base64,", "")),
+          }),
+        ]),
+      [UNKNOWN_ICON]
+    );
+    await fileExplorerEntryIsHidden(TEST_IMAGE_NAME, { page });
+
+    await page.keyboard.press("Control+KeyV");
+    await fileExplorerEntryIsVisible(TEST_IMAGE_NAME, { page });
   });
 
   test("can rename via F2", async ({ page }) => {
