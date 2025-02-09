@@ -9,34 +9,38 @@ export const convert = async (
 ): Promise<ImageMagickConvertFile[]> => {
   const returnFiles: ImageMagickConvertFile[] = [];
 
-  await loadFiles([
-    "/Program Files/imagemagick/wasm-imagemagick.umd-es5.min.js",
-  ]);
-
-  const { call } = window["wasm-imagemagick"];
-
-  await Promise.all(
-    files.map(async ([fileName, fileData]) => {
-      const baseName = basename(fileName);
-      const newName = `${basename(fileName, extname(fileName))}.${extension}`;
-      const {
-        outputFiles: [image] = [],
-        stderr,
-        stdout,
-      } = await call(
-        [{ content: fileData, name: baseName }],
-        ["convert", baseName, "-verbose", newName]
-      );
-      const output = [...stdout, ...stderr].join("\n");
-
-      if (output) printLn?.(output);
-
-      returnFiles.push([
-        join(dirname(fileName), newName),
-        await blobToBuffer(image?.blob),
-      ]);
-    })
+  await loadFiles(
+    ["/Program Files/imagemagick/wasm-imagemagick.umd-es5.min.js"],
+    false,
+    true
   );
+
+  const { call } = window["wasm-imagemagick"] || {};
+
+  if (call) {
+    await Promise.all(
+      files.map(async ([fileName, fileData]) => {
+        const baseName = basename(fileName);
+        const newName = `${basename(fileName, extname(fileName))}.${extension}`;
+        const {
+          outputFiles: [image] = [],
+          stderr,
+          stdout,
+        } = await call(
+          [{ content: fileData, name: baseName }],
+          ["convert", baseName, "-verbose", newName]
+        );
+        const output = [...stdout, ...stderr].join("\n");
+
+        if (output) printLn?.(output);
+
+        returnFiles.push([
+          join(dirname(fileName), newName),
+          await blobToBuffer(image?.blob),
+        ]);
+      })
+    );
+  }
 
   return returnFiles;
 };
