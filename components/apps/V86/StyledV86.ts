@@ -6,7 +6,8 @@ const StyledV86 = styled.div`
   }
 
   div {
-    font-family: "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
+    font-family:
+      "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
     font-size: 14px;
     font-weight: 700;
     line-height: normal;

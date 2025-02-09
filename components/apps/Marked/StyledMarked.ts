@@ -121,8 +121,8 @@ const StyledMarked = styled.div`
     pre {
       background-color: #f6f8fa;
       border-radius: 3px;
-      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier,
-        monospace;
+      font-family:
+        SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
       font-size: 85%;
       line-height: 1.45;
       overflow: auto;
