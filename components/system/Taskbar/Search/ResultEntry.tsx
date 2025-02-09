@@ -18,7 +18,7 @@ import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
-import { isYouTubeUrl } from "utils/functions";
+import { getExtension, isYouTubeUrl } from "utils/functions";
 import { useIsVisible } from "hooks/useIsVisible";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
@@ -47,8 +47,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const { updateRecentFiles } = useSession();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
-  const extension = extname(info?.url || url);
-  const baseName = basename(url, SHORTCUT_EXTENSION);
+  const extension = useMemo(
+    () => getExtension(info?.url || url),
+    [info?.url, url]
+  );
+  const baseName = useMemo(() => basename(url, SHORTCUT_EXTENSION), [url]);
   const name = useMemo(() => {
     let text = baseName;
 
@@ -63,7 +66,10 @@ const ResultEntry: FC<ResultEntryProps> = ({
 
     return text;
   }, [baseName, searchTerm]);
-  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
+  const isYTUrl = useMemo(
+    () => (info?.url ? isYouTubeUrl(info.url) : false),
+    [info?.url]
+  );
   const baseUrl = isYTUrl ? url : url || info?.url;
   const lastModified = useMemo(
     () =>
@@ -80,11 +86,21 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const [hovered, setHovered] = useState(false);
   const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef, ".list");
-  const isAppShortcut = info?.pid
-    ? url === info.url && extname(url) === SHORTCUT_EXTENSION
-    : false;
-  const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
-  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const isAppShortcut = useMemo(
+    () =>
+      info?.pid
+        ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
+        : false,
+    [info?.pid, info?.url, url]
+  );
+  const isDirectory = useMemo(
+    () => stats?.isDirectory() || (!extension && !isYTUrl),
+    [extension, isYTUrl, stats]
+  );
+  const isNostrUrl = useMemo(
+    () => (info?.url ? info.url.startsWith("nostr:") : false),
+    [info?.url]
+  );
   const { onContextMenuCapture } = useResultsContextMenu(info?.url);
   const abortController = useRef<AbortController>(undefined);
 

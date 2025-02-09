@@ -39,13 +39,13 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     [id, linkElement]
   );
   const [isPeekVisible, setIsPeekVisible] = useState(false);
-  const hidePeek = (): void => setIsPeekVisible(false);
-  const showPeek = (): void => setIsPeekVisible(true);
-  const onClick = (): void => {
+  const hidePeek = useCallback((): void => setIsPeekVisible(false), []);
+  const showPeek = useCallback((): void => setIsPeekVisible(true), []);
+  const onClick = useCallback((): void => {
     if (minimized || isForeground) minimize(id);
 
     setForegroundId(isForeground ? nextFocusableId : id);
-  };
+  }, [id, isForeground, minimize, minimized, nextFocusableId, setForegroundId]);
   const focusable = useMemo(() => (isSafari() ? DIV_BUTTON_PROPS : {}), []);
 
   return (

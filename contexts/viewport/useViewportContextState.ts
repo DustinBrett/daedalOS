@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   type FullscreenDocument,
   type FullscreenElement,
@@ -63,23 +63,26 @@ const useViewportContextState = (): ViewportContextState => {
     // eslint-disable-next-line unicorn/no-null
     null
   );
-  const toggleFullscreen = async (
-    element?: HTMLElement | null,
-    navigationUI?: FullscreenNavigationUI
-  ): Promise<void> => {
-    if (fullscreenElement && (!element || element === fullscreenElement)) {
-      await exitFullscreen();
-    } else {
-      // Only Chrome switches full screen elements without exiting
-      if (fullscreenElement && (isFirefox() || isSafari())) {
+  const toggleFullscreen = useCallback(
+    async (
+      element?: HTMLElement | null,
+      navigationUI?: FullscreenNavigationUI
+    ): Promise<void> => {
+      if (fullscreenElement && (!element || element === fullscreenElement)) {
         await exitFullscreen();
-      }
+      } else {
+        // Only Chrome switches full screen elements without exiting
+        if (fullscreenElement && (isFirefox() || isSafari())) {
+          await exitFullscreen();
+        }
 
-      await enterFullscreen(element || document.documentElement, {
-        navigationUI: navigationUI || "hide",
-      });
-    }
-  };
+        await enterFullscreen(element || document.documentElement, {
+          navigationUI: navigationUI || "hide",
+        });
+      }
+    },
+    [fullscreenElement]
+  );
 
   useEffect(() => {
     const onFullscreenChange = (): void => {

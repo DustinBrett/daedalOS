@@ -58,10 +58,12 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const [running, setRunning] = useState(false);
-  const checkIsEmpty: React.KeyboardEventHandler | React.ChangeEventHandler = ({
-    target,
-  }: React.KeyboardEvent | React.ChangeEvent): void =>
-    setIsEmptyInput(!(target as HTMLInputElement)?.value);
+  const checkIsEmpty: React.KeyboardEventHandler | React.ChangeEventHandler =
+    useCallback(
+      ({ target }: React.KeyboardEvent | React.ChangeEvent): void =>
+        setIsEmptyInput(!(target as HTMLInputElement)?.value),
+      []
+    );
   const runResource = useCallback(
     async (resource?: string) => {
       if (!resource) return;

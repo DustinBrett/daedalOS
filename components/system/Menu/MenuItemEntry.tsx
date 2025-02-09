@@ -66,31 +66,38 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       TRANSITIONS_IN_MILLISECONDS.MOUSE_IN_OUT
     );
   }, []);
-  const onMouseEnter: React.MouseEventHandler = () => {
+  const onMouseEnter: React.MouseEventHandler = useCallback(() => {
     setMouseOver(true);
     if (menu) setDelayedShowSubMenu(true);
-  };
-  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget, type }) => {
-    if (
-      !(relatedTarget instanceof HTMLElement) ||
-      !entryRef.current?.contains(relatedTarget)
-    ) {
-      setMouseOver(false);
+  }, [menu, setDelayedShowSubMenu]);
+  const onMouseLeave: React.MouseEventHandler = useCallback(
+    ({ relatedTarget, type }) => {
+      if (
+        !(relatedTarget instanceof HTMLElement) ||
+        !entryRef.current?.contains(relatedTarget)
+      ) {
+        setMouseOver(false);
 
-      if (type === "mouseleave") {
-        setDelayedShowSubMenu(false);
-      } else {
-        setShowSubMenu(false);
+        if (type === "mouseleave") {
+          setDelayedShowSubMenu(false);
+        } else {
+          setShowSubMenu(false);
+        }
       }
-    }
-  };
-  const subMenuEvents = menu
-    ? {
-        onBlur: onMouseLeave as unknown as React.FocusEventHandler,
-        onMouseEnter,
-        onMouseLeave,
-      }
-    : {};
+    },
+    [setDelayedShowSubMenu]
+  );
+  const subMenuEvents = useMemo(
+    () =>
+      menu
+        ? {
+            onBlur: onMouseLeave as unknown as React.FocusEventHandler,
+            onMouseEnter,
+            onMouseLeave,
+          }
+        : {},
+    [menu, onMouseEnter, onMouseLeave]
+  );
   const triggerAction = useCallback<React.MouseEventHandler>(
     (event) => {
       haltEvent(event);

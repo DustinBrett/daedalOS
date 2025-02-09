@@ -1,4 +1,5 @@
 import { type MotionProps } from "motion/react";
+import { useMemo } from "react";
 import { TASKBAR_HEIGHT, TRANSITIONS_IN_SECONDS } from "utils/constants";
 import { viewHeight } from "utils/functions";
 
@@ -8,7 +9,10 @@ const useTaskbarItemTransition = (
   paddingOffset = 0.5,
   heightOffset = 0.75
 ): MotionProps => {
-  const height = Math.min(maxHeight, viewHeight() - TASKBAR_HEIGHT);
+  const height = useMemo(
+    () => Math.min(maxHeight, viewHeight() - TASKBAR_HEIGHT),
+    [maxHeight]
+  );
 
   return {
     animate: "active",

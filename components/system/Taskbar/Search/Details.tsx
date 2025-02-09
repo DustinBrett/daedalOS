@@ -1,5 +1,5 @@
-import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { basename, dirname } from "path";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -20,7 +20,7 @@ import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
-import { isYouTubeUrl } from "utils/functions";
+import { getExtension, isYouTubeUrl } from "utils/functions";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 const Details: FC<{
@@ -34,28 +34,46 @@ const Details: FC<{
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
-  const extension = extname(info?.url || url);
+  const extension = useMemo(
+    () => getExtension(info?.url || url),
+    [info?.url, url]
+  );
   const { updateRecentFiles } = useSession();
   const openFile = useCallback(() => {
     openApp(info?.pid, { url: info?.url });
     if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
   }, [info?.pid, info?.url, openApp, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
-  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
-  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
-  const isAppShortcut = info?.pid
-    ? url === info.url && extname(url) === SHORTCUT_EXTENSION
-    : false;
-  const isDirectory =
-    stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
+  const isYTUrl = useMemo(
+    () => (info?.url ? isYouTubeUrl(info.url) : false),
+    [info?.url]
+  );
+  const isNostrUrl = useMemo(
+    () => (info?.url ? info.url.startsWith("nostr:") : false),
+    [info?.url]
+  );
+  const isAppShortcut = useMemo(
+    () =>
+      info?.pid
+        ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
+        : false,
+    [info?.pid, info?.url, url]
+  );
+  const isDirectory = useMemo(
+    () => stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl),
+    [extension, isNostrUrl, isYTUrl, stats]
+  );
   const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
   const currentUrlRef = useRef(url);
-  const name =
-    baseUrl === "/"
-      ? ROOT_NAME
-      : baseUrl
-        ? basename(baseUrl, SHORTCUT_EXTENSION)
-        : "";
+  const name = useMemo(
+    () =>
+      baseUrl === "/"
+        ? ROOT_NAME
+        : baseUrl
+          ? basename(baseUrl, SHORTCUT_EXTENSION)
+          : "",
+    [baseUrl]
+  );
 
   useEffect(() => {
     stat(url).then(

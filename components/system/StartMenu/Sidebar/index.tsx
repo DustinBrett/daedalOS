@@ -44,80 +44,86 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
-  const topButtons: SidebarButtons = [
-    {
-      heading: true,
-      icon: <SideMenu />,
-      name: "START",
-      ...(collapsed && { tooltip: "Expand" }),
-    },
-    {
-      active: true,
-      icon: <AllApps />,
-      name: "All apps",
-      ...(collapsed && { tooltip: "All apps" }),
-    },
-  ];
+  const topButtons: SidebarButtons = useMemo(
+    () => [
+      {
+        heading: true,
+        icon: <SideMenu />,
+        name: "START",
+        ...(collapsed && { tooltip: "Expand" }),
+      },
+      {
+        active: true,
+        icon: <AllApps />,
+        name: "All apps",
+        ...(collapsed && { tooltip: "All apps" }),
+      },
+    ],
+    [collapsed]
+  );
   const { sizes } = useTheme();
   const vh = viewHeight();
   const buttonAreaCount = useMemo(
     () => Math.floor((vh - TASKBAR_HEIGHT) / sizes.startMenu.sideBar.width),
     [sizes.startMenu.sideBar.width, vh]
   );
+  const bottomButtons = useMemo(
+    () =>
+      [
+        buttonAreaCount > 3
+          ? {
+              action: () =>
+                open(
+                  "FileExplorer",
+                  { url: `${HOME}/Documents` },
+                  "/System/Icons/documents.webp"
+                ),
+              icon: <Documents />,
+              name: "Documents",
+              ...(collapsed && { tooltip: "Documents" }),
+            }
+          : undefined,
+        buttonAreaCount > 4
+          ? {
+              action: () =>
+                open(
+                  "FileExplorer",
+                  { url: `${HOME}/Pictures` },
+                  "/System/Icons/pictures.webp"
+                ),
+              icon: <Pictures />,
+              name: "Pictures",
+              ...(collapsed && { tooltip: "Pictures" }),
+            }
+          : undefined,
+        buttonAreaCount > 5
+          ? {
+              action: () =>
+                open(
+                  "FileExplorer",
+                  { url: `${HOME}/Videos` },
+                  "/System/Icons/videos.webp"
+                ),
+              icon: <Videos />,
+              name: "Videos",
+              ...(collapsed && { tooltip: "Videos" }),
+            }
+          : undefined,
+        {
+          action: () => {
+            setHaltSession(true);
 
-  const bottomButtons = [
-    buttonAreaCount > 3
-      ? {
-          action: () =>
-            open(
-              "FileExplorer",
-              { url: `${HOME}/Documents` },
-              "/System/Icons/documents.webp"
-            ),
-          icon: <Documents />,
-          name: "Documents",
-          ...(collapsed && { tooltip: "Documents" }),
-        }
-      : undefined,
-    buttonAreaCount > 4
-      ? {
-          action: () =>
-            open(
-              "FileExplorer",
-              { url: `${HOME}/Pictures` },
-              "/System/Icons/pictures.webp"
-            ),
-          icon: <Pictures />,
-          name: "Pictures",
-          ...(collapsed && { tooltip: "Pictures" }),
-        }
-      : undefined,
-    buttonAreaCount > 5
-      ? {
-          action: () =>
-            open(
-              "FileExplorer",
-              { url: `${HOME}/Videos` },
-              "/System/Icons/videos.webp"
-            ),
-          icon: <Videos />,
-          name: "Videos",
-          ...(collapsed && { tooltip: "Videos" }),
-        }
-      : undefined,
-    {
-      action: () => {
-        setHaltSession(true);
-
-        import("contexts/fileSystem/functions").then(({ resetStorage }) =>
-          resetStorage(rootFs).finally(() => window.location.reload())
-        );
-      },
-      icon: <Power />,
-      name: "Power",
-      tooltip: "Clears session data and reloads the page.",
-    },
-  ].filter(Boolean) as SidebarButtons;
+            import("contexts/fileSystem/functions").then(({ resetStorage }) =>
+              resetStorage(rootFs).finally(() => window.location.reload())
+            );
+          },
+          icon: <Power />,
+          name: "Power",
+          tooltip: "Clears session data and reloads the page.",
+        },
+      ].filter(Boolean) as SidebarButtons,
+    [buttonAreaCount, collapsed, open, rootFs, setHaltSession]
+  );
 
   useEffect(() => clearTimer, []);
 

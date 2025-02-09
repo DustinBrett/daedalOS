@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getInfoWithExtension,
   getInfoWithoutExtension,
@@ -32,10 +32,10 @@ const useFileInfo = (
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>(INITIAL_FILE_INFO);
   const updatingInfo = useRef(false);
-  const updateInfo = (newInfo: FileInfo): void => {
+  const updateInfo = useCallback((newInfo: FileInfo): void => {
     setInfo(newInfo);
     updatingInfo.current = false;
-  };
+  }, []);
   const { fs, rootFs } = useFileSystem();
 
   useEffect(() => {
@@ -68,7 +68,16 @@ const useFileInfo = (
         getInfoWithExtension(fs, path, extension, updateInfo);
       }
     }
-  }, [fs, hasNewFolderIcon, info, isDirectory, isVisible, path, rootFs]);
+  }, [
+    fs,
+    hasNewFolderIcon,
+    info,
+    isDirectory,
+    isVisible,
+    path,
+    rootFs,
+    updateInfo,
+  ]);
 
   return [info, setInfo];
 };

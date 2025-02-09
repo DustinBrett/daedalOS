@@ -1,5 +1,6 @@
 import {
   memo,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -49,11 +50,11 @@ const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   );
   const peekTransition = usePeekTransition(showControls);
   const peekRef = useRef<HTMLDivElement | null>(null);
-  const onClick = (): void => {
+  const onClick = useCallback((): void => {
     if (minimized) minimize(id);
 
     setForegroundId(id);
-  };
+  }, [id, minimize, minimized, setForegroundId]);
   const [isPaused, setIsPaused] = useState(false);
   const monitoringPaused = useRef(false);
 

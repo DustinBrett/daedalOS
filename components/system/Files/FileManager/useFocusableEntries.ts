@@ -73,62 +73,65 @@ const useFocusableEntries = (
     });
   }, []);
   const mouseDownPositionRef = useRef({ x: 0, y: 0 });
-  const focusableEntry = (file: string): FocusedEntryProps => {
-    const isFocused = focusedEntries.includes(file);
-    const isOnlyFocusedEntry =
-      focusedEntries.length === 1 && focusedEntries[0] === file;
-    const className = clsx({
-      "focus-within": isFocused,
-      "only-focused": isOnlyFocusedEntry,
-    });
-    const onMouseDown: React.MouseEventHandler = ({
-      ctrlKey,
-      pageX,
-      pageY,
-    }) => {
-      mouseDownPositionRef.current = { x: pageX, y: pageY };
+  const focusableEntry = useCallback(
+    (file: string): FocusedEntryProps => {
+      const isFocused = focusedEntries.includes(file);
+      const isOnlyFocusedEntry =
+        focusedEntries.length === 1 && focusedEntries[0] === file;
+      const className = clsx({
+        "focus-within": isFocused,
+        "only-focused": isOnlyFocusedEntry,
+      });
+      const onMouseDown: React.MouseEventHandler = ({
+        ctrlKey,
+        pageX,
+        pageY,
+      }) => {
+        mouseDownPositionRef.current = { x: pageX, y: pageY };
 
-      if (ctrlKey) {
-        if (isFocused) {
-          blurEntry(file);
-        } else {
+        if (ctrlKey) {
+          if (isFocused) {
+            blurEntry(file);
+          } else {
+            focusEntry(file);
+          }
+        } else if (!isFocused) {
+          blurEntry();
           focusEntry(file);
         }
-      } else if (!isFocused) {
-        blurEntry();
-        focusEntry(file);
-      }
-    };
-    const onMouseUp: React.MouseEventHandler = ({
-      ctrlKey,
-      pageX,
-      pageY,
-      button,
-    }) => {
-      const { x, y } = mouseDownPositionRef.current;
+      };
+      const onMouseUp: React.MouseEventHandler = ({
+        ctrlKey,
+        pageX,
+        pageY,
+        button,
+      }) => {
+        const { x, y } = mouseDownPositionRef.current;
 
-      if (
-        !ctrlKey &&
-        !isOnlyFocusedEntry &&
-        button === 0 &&
-        x === pageX &&
-        y === pageY
-      ) {
-        blurEntry();
-        focusEntry(file);
-      }
+        if (
+          !ctrlKey &&
+          !isOnlyFocusedEntry &&
+          button === 0 &&
+          x === pageX &&
+          y === pageY
+        ) {
+          blurEntry();
+          focusEntry(file);
+        }
 
-      mouseDownPositionRef.current = { x: 0, y: 0 };
-    };
+        mouseDownPositionRef.current = { x: 0, y: 0 };
+      };
 
-    return {
-      className,
-      onBlurCapture,
-      onFocusCapture,
-      onMouseDown,
-      onMouseUp,
-    };
-  };
+      return {
+        className,
+        onBlurCapture,
+        onFocusCapture,
+        onMouseDown,
+        onMouseUp,
+      };
+    },
+    [blurEntry, focusEntry, focusedEntries, onBlurCapture, onFocusCapture]
+  );
 
   return { blurEntry, focusEntry, focusableEntry, focusedEntries };
 };

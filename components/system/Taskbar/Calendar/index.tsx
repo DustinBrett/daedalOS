@@ -1,5 +1,5 @@
 import { useTheme } from "styled-components";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Down, Up } from "components/system/Taskbar/Calendar/Icons";
 import StyledCalendar from "components/system/Taskbar/Calendar/StyledCalendar";
 import {
@@ -32,22 +32,25 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
       date.getFullYear() === today.getFullYear(),
     [date, today]
   );
-  const changeMonth = (direction: number): void => {
-    const newDate = new Date(date);
-    const newMonth = newDate.getMonth() + direction;
+  const changeMonth = useCallback(
+    (direction: number): void => {
+      const newDate = new Date(date);
+      const newMonth = newDate.getMonth() + direction;
 
-    newDate.setDate(1);
-    newDate.setMonth(newMonth);
+      newDate.setDate(1);
+      newDate.setMonth(newMonth);
 
-    const isCurrentMonth =
-      (newMonth === 12 ? 0 : newMonth === -1 ? 11 : newMonth) ===
-      today.getMonth();
+      const isCurrentMonth =
+        (newMonth === 12 ? 0 : newMonth === -1 ? 11 : newMonth) ===
+        today.getMonth();
 
-    if (isCurrentMonth) newDate.setDate(today.getDate());
+      if (isCurrentMonth) newDate.setDate(today.getDate());
 
-    setDate(newDate);
-    setCalendar(createCalendar(newDate));
-  };
+      setDate(newDate);
+      setCalendar(createCalendar(newDate));
+    },
+    [date, today]
+  );
   const calendarRef = useRef<HTMLTableElement>(null);
   const {
     sizes: {
@@ -55,7 +58,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     },
   } = useTheme();
   const calendarTransition = useTaskbarItemTransition(maxHeight, false);
-  const finePointer = hasFinePointer();
+  const finePointer = useMemo(() => hasFinePointer(), []);
 
   useEffect(() => {
     calendarRef.current?.addEventListener("blur", ({ relatedTarget }) => {

@@ -93,7 +93,10 @@ const useFileContextMenu = (
     updateRecentFiles,
   } = useSession();
   const baseName = basename(path);
-  const isFocusedEntry = focusedEntries.includes(baseName);
+  const isFocusedEntry = useMemo(
+    () => focusedEntries.includes(baseName),
+    [baseName, focusedEntries]
+  );
   const openFile = useFile(url, path);
   const {
     copyEntries,
