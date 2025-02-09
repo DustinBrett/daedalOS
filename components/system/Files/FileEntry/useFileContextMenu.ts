@@ -45,13 +45,11 @@ import {
   VIDEO_DECODE_FORMATS,
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
-import { type FFmpegTranscodeFile } from "utils/ffmpeg/types";
 import { getExtension, isSafari, isYouTubeUrl } from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
-import { type ImageMagickConvertFile } from "utils/imagemagick/types";
 import { Share } from "components/system/Menu/MenuIcons";
 import { useWindowAI } from "hooks/useWindowAI";
 import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
@@ -275,28 +273,19 @@ const useFileContextMenu = (
 
                     return {
                       action: async () => {
+                        openTransferDialog(undefined, path, "Converting");
+
                         const directory = dirname(path);
                         const closeDialog = (): void =>
                           close(`Transfer${PROCESS_DELIMITER}${path}`);
 
-                        openTransferDialog(undefined, path, "Converting");
-
                         try {
-                          const transcodeFiles: (
-                            | FFmpegTranscodeFile
-                            | ImageMagickConvertFile
-                          )[] = await Promise.all(
-                            absoluteEntries().map(async (absoluteEntry) => [
-                              absoluteEntry,
-                              await readFile(absoluteEntry),
-                            ])
-                          );
                           const transcodeFunction = isAudioVideo
                             ? (await import("utils/ffmpeg")).transcode
                             : (await import("utils/imagemagick")).convert;
                           const objectReaders =
-                            transcodeFiles.map<ObjectReader>(
-                              (transcodeFile) => {
+                            absoluteEntries().map<ObjectReader>(
+                              (absoluteEntry) => {
                                 let aborted = false;
 
                                 return {
@@ -304,7 +293,7 @@ const useFileContextMenu = (
                                     aborted = true;
                                   },
                                   directory,
-                                  name: basename(transcodeFile[0]),
+                                  name: basename(absoluteEntry),
                                   operation: "Converting",
                                   read: async () => {
                                     if (aborted) return;
@@ -316,7 +305,12 @@ const useFileContextMenu = (
                                           transcodedFileData,
                                         ],
                                       ] = await transcodeFunction(
-                                        [transcodeFile],
+                                        [
+                                          [
+                                            absoluteEntry,
+                                            await readFile(absoluteEntry),
+                                          ],
+                                        ],
                                         extension
                                       );
 

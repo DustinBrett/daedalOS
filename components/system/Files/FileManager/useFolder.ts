@@ -497,14 +497,14 @@ const useFolder = (
   const { openTransferDialog } = useTransferDialog();
   const extractFiles = useCallback(
     async (path: string): Promise<void> => {
-      const data = await readFile(path);
-      const { unarchive, unzip } = await import("utils/zipFunctions");
+      openTransferDialog(undefined, path, "Extracting");
+
       const closeDialog = (): void =>
         close(`Transfer${PROCESS_DELIMITER}${path}`);
 
-      openTransferDialog(undefined, path, "Extracting");
-
       try {
+        const { unarchive, unzip } = await import("utils/zipFunctions");
+        const data = await readFile(path);
         const unzippedFiles = Object.entries(
           ZIP_EXTENSIONS.has(getExtension(path))
             ? await unzip(data)
