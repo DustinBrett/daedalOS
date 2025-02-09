@@ -490,7 +490,7 @@ const useFolder = (
       const closeDialog = (): void =>
         close(`Transfer${PROCESS_DELIMITER}${path}`);
 
-      openTransferDialog(undefined, path);
+      openTransferDialog(undefined, path, "Extracting");
 
       try {
         const unzippedFiles = Object.entries(
@@ -609,7 +609,6 @@ const useFolder = (
 
         if (uniquePath && !basePath) updateFolder(directory, uniquePath);
       };
-      const movedPaths: string[] = [];
       const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
         let aborted = false;
 
@@ -619,13 +618,7 @@ const useFolder = (
           },
           directory,
           done: () => {
-            if (moving) {
-              movedPaths
-                .filter(Boolean)
-                .forEach((movedPath) => updateFolder(directory, movedPath));
-
-              copyEntries([]);
-            }
+            if (moving) copyEntries([]);
           },
           name: pasteEntry,
           operation: moving ? "Moving" : "Copying",
@@ -633,7 +626,7 @@ const useFolder = (
             if (aborted) return;
 
             if (moving) {
-              movedPaths.push(await createPath(pasteEntry, directory));
+              updateFolder(directory, await createPath(pasteEntry, directory));
             } else await copyFiles(pasteEntry);
           },
         };
