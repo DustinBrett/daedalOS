@@ -6,7 +6,7 @@ import { useProcessesRef } from "hooks/useProcessesRef";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension } from "utils/functions";
 
-export type Operation = "Copying" | "Extracting" | "Moving";
+export type Operation = "Copying" | "Converting" | "Extracting" | "Moving";
 
 export type FileReaders = [File, string, FileReader][];
 
@@ -24,7 +24,8 @@ export type ObjectReaders = ObjectReader[];
 type Dialog = {
   openTransferDialog: (
     fileReaders?: FileReaders | ObjectReaders,
-    url?: string
+    url?: string,
+    operation?: Operation
   ) => Promise<void>;
 };
 
@@ -45,7 +46,7 @@ const useTransferDialog = (): Dialog => {
 
   return useMemo(
     () => ({
-      openTransferDialog: async (fileReaders, url) => {
+      openTransferDialog: async (fileReaders, url, operation) => {
         if (fileReaders?.length === 0) return;
 
         if (fileReaders && url) {
@@ -67,7 +68,7 @@ const useTransferDialog = (): Dialog => {
             }
           }
 
-          open("Transfer", { fileReaders, url });
+          open("Transfer", { fileReaders, operation, url });
         }
       },
     }),

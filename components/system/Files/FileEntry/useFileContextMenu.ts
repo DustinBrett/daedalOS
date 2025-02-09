@@ -59,6 +59,9 @@ import {
   AI_DISPLAY_TITLE,
   AI_STAGE,
 } from "components/system/Taskbar/AI/constants";
+import useTransferDialog, {
+  type ObjectReader,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
 
 const { alias } = PACKAGE_DATA;
 
@@ -80,7 +83,7 @@ const useFileContextMenu = (
   fileManagerId?: string,
   readOnly?: boolean
 ): ContextMenuCapture => {
-  const { minimize, open, url: changeUrl } = useProcesses();
+  const { close, minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
   const {
     aiEnabled,
@@ -105,6 +108,7 @@ const useFileContextMenu = (
   } = useFileSystem();
   const { contextMenu } = useMenu();
   const hasWindowAI = useWindowAI();
+  const { openTransferDialog } = useTransferDialog();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
       contextMenu?.(() => {
@@ -268,44 +272,75 @@ const useFileContextMenu = (
 
                     return {
                       action: async () => {
-                        const transcodeFiles: (
-                          | FFmpegTranscodeFile
-                          | ImageMagickConvertFile
-                        )[] = await Promise.all(
-                          absoluteEntries().map(async (absoluteEntry) => [
-                            absoluteEntry,
-                            await readFile(absoluteEntry),
-                          ])
-                        );
-                        const transcodeFunction = isAudioVideo
-                          ? (await import("utils/ffmpeg")).transcode
-                          : (await import("utils/imagemagick")).convert;
-                        const transcodedFiles = await transcodeFunction(
-                          transcodeFiles,
-                          extension
-                        );
+                        const directory = dirname(path);
+                        const closeDialog = (): void =>
+                          close(`Transfer${PROCESS_DELIMITER}${path}`);
 
-                        await Promise.all(
-                          transcodedFiles.map(
-                            async ([
-                              transcodedFileName,
-                              transcodedFileData,
-                            ]) => {
-                              const baseTranscodedName =
-                                basename(transcodedFileName);
-                              const transcodedDirName = dirname(path);
+                        openTransferDialog(undefined, path, "Converting");
 
-                              updateFolder(
-                                transcodedDirName,
-                                await createPath(
-                                  baseTranscodedName,
-                                  transcodedDirName,
-                                  transcodedFileData
-                                )
-                              );
-                            }
-                          )
-                        );
+                        try {
+                          const transcodeFiles: (
+                            | FFmpegTranscodeFile
+                            | ImageMagickConvertFile
+                          )[] = await Promise.all(
+                            absoluteEntries().map(async (absoluteEntry) => [
+                              absoluteEntry,
+                              await readFile(absoluteEntry),
+                            ])
+                          );
+                          const transcodeFunction = isAudioVideo
+                            ? (await import("utils/ffmpeg")).transcode
+                            : (await import("utils/imagemagick")).convert;
+                          const objectReaders =
+                            transcodeFiles.map<ObjectReader>(
+                              (transcodeFile) => {
+                                let aborted = false;
+
+                                return {
+                                  abort: () => {
+                                    aborted = true;
+                                  },
+                                  directory,
+                                  name: basename(transcodeFile[0]),
+                                  operation: "Converting",
+                                  read: async () => {
+                                    if (aborted) return;
+
+                                    try {
+                                      const [
+                                        [
+                                          transcodedFileName,
+                                          transcodedFileData,
+                                        ],
+                                      ] = await transcodeFunction(
+                                        [transcodeFile],
+                                        extension
+                                      );
+
+                                      updateFolder(
+                                        directory,
+                                        await createPath(
+                                          basename(transcodedFileName),
+                                          directory,
+                                          transcodedFileData
+                                        )
+                                      );
+                                    } catch {
+                                      // Ignore failure to transcode
+                                    }
+                                  },
+                                };
+                              }
+                            );
+
+                          openTransferDialog(objectReaders, path);
+                        } catch (error) {
+                          closeDialog();
+
+                          if ("message" in (error as Error)) {
+                            console.error((error as Error).message);
+                          }
+                        }
                       },
                       label: extension.toUpperCase(),
                     };
@@ -649,6 +684,7 @@ const useFileContextMenu = (
       archiveFiles,
       baseName,
       changeUrl,
+      close,
       contextMenu,
       copyEntries,
       createPath,
@@ -666,6 +702,7 @@ const useFileContextMenu = (
       newShortcut,
       open,
       openFile,
+      openTransferDialog,
       path,
       pid,
       processesRef,
