@@ -402,6 +402,11 @@ const useFolderContextMenu = (
         const isReadOnly =
           MOUNTABLE_EXTENSIONS.has(getExtension(url)) ||
           (mountUrl && !isMountedFolder(rootFs?.mntMap[mountUrl]));
+        const hasCustomOrder =
+          isDesktop &&
+          Object.keys(iconPositions).some(
+            (entryPath) => dirname(entryPath) === url
+          );
 
         return [
           {
@@ -410,34 +415,38 @@ const useFolderContextMenu = (
               {
                 action: () => updateSorting("name", true),
                 label: "Name",
-                toggle: sortBy === "name",
+                toggle: !hasCustomOrder && sortBy === "name",
               },
               {
                 action: () => updateSorting("size", false),
                 label: "Size",
-                toggle: sortBy === "size",
+                toggle: !hasCustomOrder && sortBy === "size",
               },
               {
                 action: () => updateSorting("type", true),
                 label: "Item type",
-                toggle: sortBy === "type",
+                toggle: !hasCustomOrder && sortBy === "type",
               },
               {
                 action: () => updateSorting("date", false),
                 label: "Date modified",
-                toggle: sortBy === "date",
+                toggle: !hasCustomOrder && sortBy === "date",
               },
-              MENU_SEPERATOR,
-              {
-                action: () => updateSorting("", true),
-                label: "Ascending",
-                toggle: isAscending,
-              },
-              {
-                action: () => updateSorting("", false),
-                label: "Descending",
-                toggle: !isAscending,
-              },
+              ...(hasCustomOrder
+                ? []
+                : [
+                    MENU_SEPERATOR,
+                    {
+                      action: () => updateSorting("", true),
+                      label: "Ascending",
+                      toggle: isAscending,
+                    },
+                    {
+                      action: () => updateSorting("", false),
+                      label: "Descending",
+                      toggle: !isAscending,
+                    },
+                  ]),
             ],
           },
           { action: () => updateFolder(url), label: "Refresh" },
@@ -587,6 +596,7 @@ const useFolderContextMenu = (
       contextMenu,
       exists,
       hasWebGPU,
+      iconPositions,
       isAscending,
       isDesktop,
       isStartMenu,
