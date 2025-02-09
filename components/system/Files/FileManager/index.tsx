@@ -97,6 +97,7 @@ const FileManager: FC<FileManagerProps> = ({
     useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
       hideLoading,
+      isDesktop,
       skipFsWatcher,
       skipSorting,
     });

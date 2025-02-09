@@ -33,7 +33,6 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import {
   BASE_ZIP_CONFIG,
-  DESKTOP_PATH,
   PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
@@ -94,6 +93,7 @@ type Folder = {
 type FolderFlags = {
   hideFolders?: boolean;
   hideLoading?: boolean;
+  isDesktop?: boolean;
   skipFsWatcher?: boolean;
   skipSorting?: boolean;
 };
@@ -104,7 +104,13 @@ const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
   { blurEntry, focusEntry }: FocusEntryFunctions,
-  { hideFolders, hideLoading, skipFsWatcher, skipSorting }: FolderFlags
+  {
+    hideFolders,
+    hideLoading,
+    isDesktop,
+    skipFsWatcher,
+    skipSorting,
+  }: FolderFlags
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
   const [downloadLink, setDownloadLink] = useState("");
@@ -296,20 +302,23 @@ const useFolder = (
     },
     [deletePath, directory, updateFolder]
   );
-  const createLink = (contents: Buffer, fileName?: string): void => {
-    const link = document.createElement("a");
+  const createLink = useCallback(
+    (contents: Buffer, fileName?: string): void => {
+      const link = document.createElement("a");
 
-    link.href = bufferToUrl(contents);
-    link.download = fileName
-      ? extname(fileName)
-        ? fileName
-        : `${fileName}.zip`
-      : "download.zip";
+      link.href = bufferToUrl(contents);
+      link.download = fileName
+        ? extname(fileName)
+          ? fileName
+          : `${fileName}.zip`
+        : "download.zip";
 
-    link.click();
+      link.click();
 
-    setDownloadLink(link.href);
-  };
+      setDownloadLink(link.href);
+    },
+    []
+  );
   const getFile = useCallback(
     async (path: string): Promise<ZipFile> => [
       relative(directory, path),
@@ -317,50 +326,53 @@ const useFolder = (
     ],
     [directory, readFile]
   );
-  const renameFile = async (path: string, name?: string): Promise<void> => {
-    let newName = removeInvalidFilenameCharacters(name).trim();
+  const renameFile = useCallback(
+    async (path: string, name?: string): Promise<void> => {
+      let newName = removeInvalidFilenameCharacters(name).trim();
 
-    if (newName?.endsWith(".")) {
-      newName = newName.slice(0, -1);
-    }
+      if (newName?.endsWith(".")) {
+        newName = newName.slice(0, -1);
+      }
 
-    if (newName) {
-      const renamedPath = join(
-        directory,
-        `${newName}${
-          path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
-        }`
-      );
+      if (newName) {
+        const renamedPath = join(
+          directory,
+          `${newName}${
+            path.endsWith(SHORTCUT_EXTENSION) ? SHORTCUT_EXTENSION : ""
+          }`
+        );
 
-      if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
-        if (dirname(path) === DESKTOP_PATH) {
-          setIconPositions((currentPositions) => ({
-            ...currentPositions,
-            ...(currentPositions[path]
-              ? { [renamedPath]: currentPositions[path] }
-              : undefined),
-          }));
+        if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
+          if (isDesktop) {
+            setIconPositions((currentPositions) => ({
+              ...currentPositions,
+              ...(currentPositions[path]
+                ? { [renamedPath]: currentPositions[path] }
+                : undefined),
+            }));
 
-          await updateFolder(directory, renamedPath, path);
+            await updateFolder(directory, renamedPath, path);
 
-          requestAnimationFrame(() =>
-            setIconPositions((currentPositions) => {
-              const { [path]: iconPosition, ...newPositions } =
-                currentPositions;
+            requestAnimationFrame(() =>
+              setIconPositions((currentPositions) => {
+                const { [path]: iconPosition, ...newPositions } =
+                  currentPositions;
 
-              if (iconPosition) {
-                newPositions[renamedPath] = iconPosition;
-              }
+                if (iconPosition) {
+                  newPositions[renamedPath] = iconPosition;
+                }
 
-              return newPositions;
-            })
-          );
-        } else {
-          await updateFolder(directory, renamedPath, path);
+                return newPositions;
+              })
+            );
+          } else {
+            await updateFolder(directory, renamedPath, path);
+          }
         }
       }
-    }
-  };
+    },
+    [directory, exists, isDesktop, rename, setIconPositions, updateFolder]
+  );
   const newPath = useCallback(
     async (
       name: string,
@@ -480,7 +492,7 @@ const useFolder = (
         );
       }
     },
-    [createZipFile]
+    [createLink, createZipFile]
   );
   const { openTransferDialog } = useTransferDialog();
   const extractFiles = useCallback(
