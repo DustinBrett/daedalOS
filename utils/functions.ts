@@ -19,6 +19,7 @@ import {
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
   SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
@@ -430,7 +431,9 @@ export const updateIconPositionsIfEmpty = (
 
     if (!iconPositions[entryUrl]) {
       const gridEntry = [...gridElement.children].find((element) =>
-        element.querySelector(`button[aria-label="${entry}"]`)
+        element.querySelector(
+          `button[aria-label="${entry.replace(SHORTCUT_EXTENSION, "")}"]`
+        )
       );
 
       if (gridEntry instanceof HTMLElement) {

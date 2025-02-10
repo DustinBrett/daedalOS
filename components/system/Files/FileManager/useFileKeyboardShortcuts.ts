@@ -11,7 +11,7 @@ import { type FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { PREVENT_SCROLL } from "utils/constants";
+import { PREVENT_SCROLL, SHORTCUT_EXTENSION } from "utils/constants";
 import { haltEvent, sendMouseClick } from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
@@ -264,7 +264,9 @@ const useFileKeyboardShortcuts = (
                   blurEntry();
                   focusEntry(focusOnEntry);
                   fileManagerRef.current
-                    ?.querySelector(`button[aria-label='${focusOnEntry}']`)
+                    ?.querySelector(
+                      `button[aria-label='${focusOnEntry.replace(SHORTCUT_EXTENSION, "")}']`
+                    )
                     ?.scrollIntoView();
                 }
               }
