@@ -64,6 +64,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
             action: onClose,
             icon: CLOSE,
             label: "Close",
+            primary: true,
           },
         ].filter(Boolean) as MenuItem[];
       }),
