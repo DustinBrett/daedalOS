@@ -11,7 +11,7 @@ const isBrowserUrl = (url: string): boolean =>
   url.startsWith("chrome://");
 
 const useUrlLoader = (): void => {
-  const { exists, fs } = useFileSystem();
+  const { exists, fs, stat } = useFileSystem();
   const { open } = useProcesses();
   const loadedInitialAppRef = useRef(false);
 
@@ -50,17 +50,23 @@ const useUrlLoader = (): void => {
 
       loadInitialApp(lcAppNames[app.toLowerCase()]);
     } else if (url) {
-      const extension = getExtension(url);
-
-      loadInitialApp(
-        isBrowserUrl(url)
-          ? "Browser"
-          : extension
-            ? getProcessByFileExtension(extension)
-            : "FileExplorer"
-      );
+      if (isBrowserUrl(url)) {
+        loadInitialApp("Browser");
+      } else {
+        try {
+          stat(url).then((stats) =>
+            loadInitialApp(
+              stats.isDirectory()
+                ? "FileExplorer"
+                : getProcessByFileExtension(getExtension(url))
+            )
+          );
+        } catch {
+          // Ignore error getting url
+        }
+      }
     }
-  }, [exists, fs, open]);
+  }, [exists, fs, open, stat]);
 };
 
 export default useUrlLoader;
