@@ -9,7 +9,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { DIV_BUTTON_PROPS } from "utils/constants";
+import { DIV_BUTTON_PROPS, PROCESS_DELIMITER } from "utils/constants";
 import { isSafari, label } from "utils/functions";
 
 const PeekWindow = dynamic(
@@ -29,9 +29,10 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const {
     linkElement,
     minimize,
+    open,
     processes: { [id]: process },
   } = useProcesses();
-  const { minimized, progress } = process || {};
+  const { minimized, progress, singleton } = process || {};
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) => {
       if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
@@ -41,11 +42,29 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const [isPeekVisible, setIsPeekVisible] = useState(false);
   const hidePeek = useCallback((): void => setIsPeekVisible(false), []);
   const showPeek = useCallback((): void => setIsPeekVisible(true), []);
-  const onClick = useCallback((): void => {
-    if (minimized || isForeground) minimize(id);
+  const onClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+    (event): void => {
+      if (event.shiftKey && !singleton) {
+        const [pid] = id.split(PROCESS_DELIMITER);
 
-    setForegroundId(isForeground ? nextFocusableId : id);
-  }, [id, isForeground, minimize, minimized, nextFocusableId, setForegroundId]);
+        open(pid);
+      } else {
+        if (minimized || isForeground) minimize(id);
+
+        setForegroundId(isForeground ? nextFocusableId : id);
+      }
+    },
+    [
+      id,
+      isForeground,
+      minimize,
+      minimized,
+      nextFocusableId,
+      open,
+      setForegroundId,
+      singleton,
+    ]
+  );
   const focusable = useMemo(() => (isSafari() ? DIV_BUTTON_PROPS : {}), []);
 
   return (

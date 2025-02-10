@@ -27,13 +27,22 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const { componentWindow, closing, icon = "", url = "" } = process || {};
   const { fs, rootFs } = useFileSystem();
   const [currentUrl, setCurrentUrl] = useState(url);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const addressBarRef = useRef<HTMLInputElement | null>(null);
+  const searchBarRef = useRef<HTMLInputElement | null>(null);
   const directoryName = basename(url);
   const mountUrl = getMountUrl(url, rootFs?.mntMap || {});
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
-    if (event.altKey && event.key.toUpperCase() === "D") {
+    const eventKey = event.key.toUpperCase();
+
+    if (event.altKey && eventKey === "D") {
       haltEvent(event);
-      inputRef.current?.focus(PREVENT_SCROLL);
+      addressBarRef.current?.focus(PREVENT_SCROLL);
+    } else if (
+      eventKey === "F3" ||
+      (event.ctrlKey && (eventKey === "E" || eventKey === "F"))
+    ) {
+      haltEvent(event);
+      searchBarRef.current?.focus(PREVENT_SCROLL);
     } else {
       const fileManagerEntry = (event?.target as HTMLElement)?.querySelector(
         "ol li button"
@@ -102,14 +111,24 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   }, [closing, id, componentWindow, setProcessIcon, setProcessUrl, url]);
 
   useEffect(() => {
-    componentWindow?.addEventListener("keydown", onKeyDown);
+    componentWindow?.addEventListener("keydown", onKeyDown, {
+      capture: true,
+    });
 
-    return () => componentWindow?.removeEventListener("keydown", onKeyDown);
+    return () =>
+      componentWindow?.removeEventListener("keydown", onKeyDown, {
+        capture: true,
+      });
   }, [componentWindow, onKeyDown]);
 
   return url ? (
     <StyledFileExplorer>
-      <Navigation ref={inputRef} hideSearch={Boolean(mountUrl)} id={id} />
+      <Navigation
+        addressBarRef={addressBarRef}
+        hideSearch={Boolean(mountUrl)}
+        id={id}
+        searchBarRef={searchBarRef}
+      />
       <FileManager id={id} url={url} showStatusBar />
     </StyledFileExplorer>
   ) : // eslint-disable-next-line unicorn/no-null

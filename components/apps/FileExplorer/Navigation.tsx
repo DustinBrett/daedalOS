@@ -23,16 +23,19 @@ import {
 import useResizeObserver from "hooks/useResizeObserver";
 
 type NavigationProps = {
+  addressBarRef: React.RefObject<HTMLInputElement | null>;
   hideSearch: boolean;
   id: string;
+  searchBarRef: React.RefObject<HTMLInputElement | null>;
 };
 
 const CONTEXT_MENU_OFFSET = 3;
 
-const Navigation: FCWithRef<HTMLInputElement, NavigationProps> = ({
+const Navigation: FC<NavigationProps> = ({
   hideSearch,
   id,
-  ref: inputRef,
+  addressBarRef,
+  searchBarRef,
 }) => {
   const {
     url: changeUrl,
@@ -149,8 +152,8 @@ const Navigation: FCWithRef<HTMLInputElement, NavigationProps> = ({
       >
         <Up />
       </Button>
-      <AddressBar ref={inputRef} id={id} />
-      {!hideSearch && !removeSearch && <SearchBar id={id} />}
+      <AddressBar ref={addressBarRef} id={id} />
+      {!hideSearch && !removeSearch && <SearchBar ref={searchBarRef} id={id} />}
     </StyledNavigation>
   );
 };

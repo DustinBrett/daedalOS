@@ -242,7 +242,7 @@ const FileManager: FC<FileManagerProps> = ({
             ref={fileManagerRef}
             $isEmptyFolder={isEmptyFolder}
             $scrollable={!hideScrolling}
-            onKeyDown={onKeyDown}
+            onKeyDownCapture={onKeyDown}
             {...(readOnly
               ? { onContextMenu: haltEvent }
               : {

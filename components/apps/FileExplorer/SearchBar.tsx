@@ -23,7 +23,10 @@ type SearchBarProps = {
 
 const MAX_ENTRIES = 10;
 
-const SearchBar: FC<SearchBarProps> = ({ id }) => {
+const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
+  id,
+  ref: searchBarRef,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const hasUsedSearch = useRef(false);
   const {
@@ -32,14 +35,13 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
       [id]: { url = "" },
     },
   } = useProcesses();
-  const searchBarRef = useRef<HTMLInputElement | null>(null);
   const results = useSearch(searchTerm);
   const { contextMenu } = useMenu();
   const { fs } = useFileSystem();
   const { updateRecentFiles } = useSession();
 
   useEffect(() => {
-    if (searchBarRef.current && hasUsedSearch.current) {
+    if (searchBarRef?.current && hasUsedSearch.current) {
       const getItems = (): Promise<MenuItem[]> =>
         Promise.all(
           [
@@ -59,7 +61,8 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
                   open(pid, { url: infoUrl });
                   setSearchTerm("");
 
-                  if (searchBarRef.current) {
+                  if (searchBarRef?.current) {
+                    // eslint-disable-next-line no-param-reassign
                     searchBarRef.current.value = "";
                     searchBarRef.current.blur();
                   }
@@ -84,15 +87,16 @@ const SearchBar: FC<SearchBarProps> = ({ id }) => {
         }
       });
     }
-  }, [contextMenu, fs, open, results, updateRecentFiles, url]);
+  }, [contextMenu, fs, open, results, searchBarRef, updateRecentFiles, url]);
 
   useEffect(() => {
-    if (searchBarRef.current) {
+    if (searchBarRef?.current) {
+      // eslint-disable-next-line no-param-reassign
       searchBarRef.current.value = "";
       setSearchTerm("");
     }
     // eslint-disable-next-line react-hooks-addons/no-unused-deps
-  }, [url]);
+  }, [searchBarRef, url]);
 
   return (
     <StyledSearch>
