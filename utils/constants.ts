@@ -234,11 +234,21 @@ export const DEFAULT_INTERSECTION_OPTIONS: IntersectionObserverInit = {
   threshold: 0,
 };
 
-export const AUDIO_FILE_EXTENSIONS = new Set([".aac", ".oga", ".wav"]);
+export const AUDIO_FILE_EXTENSIONS = new Set([
+  ".aac",
+  ".flac",
+  ".m4a",
+  ".oga",
+  ".wav",
+]);
 
 export const AUDIO_PLAYLIST_EXTENSIONS = new Set([".asx", ".m3u", ".pls"]);
 
+export const DECODED_VIDEO_FILE_EXTENSIONS = new Set([".avi", ".divx"]);
+
 export const VIDEO_FILE_EXTENSIONS = new Set([
+  ".3gp",
+  ".f4v",
   ".m4v",
   ".mkv",
   ".mov",

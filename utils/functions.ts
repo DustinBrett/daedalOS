@@ -816,6 +816,8 @@ export const getMimeType = (url: string, ext?: string): string => {
     case ".cur":
     case ".ico":
       return "image/vnd.microsoft.icon";
+    case ".flac":
+      return "audio/x-flac";
     case ".cache":
     case ".jpg":
     case ".jpeg":
@@ -831,6 +833,8 @@ export const getMimeType = (url: string, ext?: string): string => {
     case ".m3u":
     case ".m3u8":
       return "application/x-mpegURL";
+    case ".m4a":
+      return "audio/m4a";
     case ".m4v":
     case ".mkv":
     case ".mov":
