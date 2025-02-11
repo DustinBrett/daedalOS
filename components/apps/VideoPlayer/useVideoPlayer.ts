@@ -219,9 +219,11 @@ const useVideoPlayer = ({
             true
           );
 
+          const { buffer } = await getSource();
+
           codecBox.current = window.initCodecBox?.({
             canvas: canvasElement as HTMLCanvasElement,
-            file: new File([(await getSource()).buffer], basename(url)),
+            file: new File([buffer as Buffer], basename(url)),
             onDecoding: (currentTime) => {
               if (!Number.isNaN(currentTime)) {
                 target?.player?.tech_?.stopTrackingCurrentTime();
@@ -307,7 +309,7 @@ const useVideoPlayer = ({
             }
           }
         });
-      setPlayer(videoPlayer);
+      setPlayer(videoPlayer as VideoPlayer);
       setLoading(false);
       if (!isYT) linkElement(id, "peekElement", videoElement);
       argument(id, "play", () => videoPlayer.play());
