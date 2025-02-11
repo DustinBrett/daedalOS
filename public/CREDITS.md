@@ -53,6 +53,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [mediainfo.js](https://github.com/buzz/mediainfo.js)
 - [exif-js](https://github.com/exif-js/exif-js)
 - [WebLLM](https://github.com/mlc-ai/web-llm)
+- [codecbox.js](https://github.com/duanyao/codecbox.js)
 
 ## App Libraries
 

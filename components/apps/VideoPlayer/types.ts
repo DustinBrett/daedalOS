@@ -1,12 +1,21 @@
 import type videojs from "video.js";
 
-export type VideoPlayer = ReturnType<typeof videojs>;
+export type VideoPlayer = ReturnType<typeof videojs> & {
+  tech_: {
+    setCurrentTime: (seconds: number) => void;
+    stopTrackingCurrentTime: () => void;
+  };
+};
 
 export type ControlBar = {
   controlBar: {
+    fullscreenToggle: { hide: () => void; show: () => void };
+    pictureInPictureToggle: { hide: () => void; show: () => void };
     playToggle: {
+      hide: () => void;
       off: (event: string, callback: () => void) => void;
       on: (event: string, callback: () => void) => void;
+      show: () => void;
     };
   };
 };
@@ -36,8 +45,21 @@ export type YouTubeTech = {
   };
 };
 
+export type CodecBox = {
+  exit: () => void;
+  pause: () => void;
+  volume: (volume: number) => void;
+};
+
 declare global {
   interface Window {
+    initCodecBox?: (config: {
+      canvas: HTMLCanvasElement;
+      file: File;
+      onDecoding: (time: number) => void;
+      onError: () => void;
+      onPlay: ({ duration }: { duration: number }) => void;
+    }) => CodecBox;
     videojs: typeof videojs;
   }
 }

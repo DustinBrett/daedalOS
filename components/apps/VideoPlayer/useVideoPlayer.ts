@@ -14,13 +14,18 @@ import {
   type VideoPlayer,
   type YouTubePlayer,
   type ControlBar,
+  type CodecBox,
 } from "components/apps/VideoPlayer/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { DESKTOP_PATH, VIDEO_FALLBACK_MIME_TYPE } from "utils/constants";
+import {
+  AUDIO_FILE_EXTENSIONS,
+  DESKTOP_PATH,
+  VIDEO_FALLBACK_MIME_TYPE,
+} from "utils/constants";
 import {
   bufferToUrl,
   cleanUpBufferUrl,
@@ -67,7 +72,10 @@ const useVideoPlayer = ({
   const getSource = useCallback(async () => {
     cleanUpSource();
 
-    const type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
+    let type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
+
+    if (type.startsWith("audio")) type = VIDEO_FALLBACK_MIME_TYPE;
+
     const buffer = isYT ? undefined : await readFile(url);
     const src = isYT
       ? url
@@ -77,13 +85,43 @@ const useVideoPlayer = ({
   }, [cleanUpSource, isYT, readFile, url]);
   const initializedUrlRef = useRef(false);
   const playerInitialized = useRef(false);
+  const codecBox = useRef<CodecBox>(undefined);
+  const failedToDecodeUrlRef = useRef("");
+  const canvasMode = useCallback(
+    (enable: boolean, videoPlayer?: VideoPlayer & ControlBar): void => {
+      if (!enable) codecBox.current?.exit?.();
+
+      const videoElement = containerRef.current?.querySelector(
+        "video"
+      ) as HTMLVideoElement;
+      const canvasElement = containerRef.current?.querySelector(
+        "canvas"
+      ) as HTMLCanvasElement;
+
+      videoElement.style.visibility = enable ? "hidden" : "visible";
+      canvasElement.style.visibility = enable ? "visible" : "hidden";
+
+      videoPlayer?.reset();
+
+      if (enable) {
+        videoPlayer?.controlBar.playToggle.hide();
+        videoPlayer?.controlBar.pictureInPictureToggle.hide();
+        videoPlayer?.controlBar.fullscreenToggle.hide();
+      } else {
+        videoPlayer?.controlBar.playToggle.show();
+        videoPlayer?.controlBar.pictureInPictureToggle.show();
+        videoPlayer?.controlBar.fullscreenToggle.show();
+      }
+    },
+    [containerRef]
+  );
   const loadPlayer = useCallback(() => {
     if (playerInitialized.current) return;
 
     playerInitialized.current = true;
 
-    const [videoElement] =
-      (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ?? [];
+    const [videoElement, canvasElement] =
+      (containerRef.current?.childNodes as NodeListOf<HTMLElement>) ?? [];
     const videoPlayer = window.videojs(videoElement, config, () => {
       videoPlayer.on(isYT ? "play" : "canplay", () => {
         if (initializedUrlRef.current) return;
@@ -154,12 +192,78 @@ const useVideoPlayer = ({
 
         playToggle.on("click", playFile);
       };
+      const maybeLoadToCanvas = async ({
+        target,
+        type,
+      }: {
+        target?: { player: VideoPlayer };
+        type?: string;
+      } = {}): Promise<void> => {
+        const playerError = target?.player.error();
 
-      videoPlayer.on("error", setupOpenFileOnPlay);
+        if (
+          failedToDecodeUrlRef.current !== url &&
+          type === "error" &&
+          (
+            [
+              MediaError.MEDIA_ERR_DECODE,
+              MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED,
+            ] as number[]
+          ).includes(playerError?.code as number)
+        ) {
+          canvasMode(true, target?.player as VideoPlayer & ControlBar);
+
+          await loadFiles(
+            ["/Program Files/codecbox.js/codecbox_init.js"],
+            false,
+            true
+          );
+
+          codecBox.current = window.initCodecBox?.({
+            canvas: canvasElement as HTMLCanvasElement,
+            file: new File([(await getSource()).buffer], basename(url)),
+            onDecoding: (currentTime) => {
+              if (!Number.isNaN(currentTime)) {
+                target?.player?.tech_?.stopTrackingCurrentTime();
+                target?.player?.tech_?.setCurrentTime(currentTime);
+              }
+            },
+            onError: () => {
+              failedToDecodeUrlRef.current = url;
+
+              canvasMode(false, target?.player as VideoPlayer & ControlBar);
+
+              if (playerError) target?.player?.error(playerError);
+            },
+            onPlay: ({ duration }) => {
+              target?.player?.duration(duration);
+
+              target?.player?.trigger("play");
+              target?.player?.trigger("playing");
+
+              requestAnimationFrame(() => {
+                const { height, width } = canvasElement as HTMLCanvasElement;
+
+                updateWindowSize(height + CONTROL_BAR_HEIGHT, width);
+              });
+            },
+          });
+        } else {
+          setupOpenFileOnPlay();
+        }
+      };
+
+      videoPlayer.on("error", maybeLoadToCanvas);
+      videoPlayer.on("volumechange", () =>
+        codecBox.current?.volume?.(
+          videoPlayer.muted() ? 0 : videoPlayer.volume()
+        )
+      );
+
       if (!url) setupOpenFileOnPlay();
 
       videoElement.addEventListener("dblclick", toggleFullscreen);
-      videoElement.addEventListener(
+      containerRef.current?.addEventListener(
         "mousewheel",
         (event) => {
           videoPlayer.volume(
@@ -220,8 +324,10 @@ const useVideoPlayer = ({
   }, [
     addFile,
     argument,
+    canvasMode,
     containerRef,
     createPath,
+    getSource,
     id,
     isYT,
     linkElement,
@@ -247,6 +353,8 @@ const useVideoPlayer = ({
     [containerRef]
   );
   const loadVideo = useCallback(async () => {
+    canvasMode(false, player as VideoPlayer & ControlBar);
+
     if (player && url) {
       try {
         const { buffer, ...source } = await getSource();
@@ -270,8 +378,8 @@ const useVideoPlayer = ({
         );
         argument(id, "peekImage", "");
 
-        if (buffer && getExtension(source.url) === ".mp3") {
-          getCoverArt(buffer).then((coverPicture) => {
+        if (buffer && AUDIO_FILE_EXTENSIONS.has(getExtension(source.url))) {
+          getCoverArt(source.url, buffer).then((coverPicture) => {
             if (coverPicture) {
               const coverUrl = bufferToUrl(coverPicture);
 
@@ -286,6 +394,7 @@ const useVideoPlayer = ({
     }
   }, [
     argument,
+    canvasMode,
     componentWindow,
     containerRef,
     getSource,
@@ -314,6 +423,7 @@ const useVideoPlayer = ({
 
     return () => {
       if (closing) {
+        codecBox.current?.exit?.();
         cleanUpSource();
         player?.dispose();
       }

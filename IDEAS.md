@@ -201,7 +201,6 @@
 ### Video Player
 
 - Codecs
-  - [codecbox.js](https://github.com/duanyao/codecbox.js)
   - [libav.js](https://github.com/Yahweasel/libav.js/)
   - [bestmediaplayer](https://github.com/bestmediaplayer/mediaplayer)
   - [ogv.js](https://github.com/bvibber/ogv.js)

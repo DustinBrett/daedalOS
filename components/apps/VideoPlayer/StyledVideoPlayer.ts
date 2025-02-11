@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+const CONTROL_BAR_HEIGHT = 30;
+
 const StyledVideoPlayer = styled.div`
   display: flex;
   height: 100%;
@@ -16,6 +18,7 @@ const StyledVideoPlayer = styled.div`
     .vjs-control-bar {
       background-color: rgb(240, 240, 240);
       padding: 0 1px;
+      z-index: 9999;
 
       &:not(.no-interaction) {
         display: flex !important;
@@ -188,8 +191,16 @@ const StyledVideoPlayer = styled.div`
       background-image: url("/System/Icons/48x48/vlc.webp");
       background-position: center calc(50% - 15px);
       background-repeat: no-repeat;
-      padding-bottom: 30px;
+      padding-bottom: ${CONTROL_BAR_HEIGHT}px;
     }
+  }
+
+  canvas {
+    height: calc(100% - ${CONTROL_BAR_HEIGHT}px);
+    object-fit: contain;
+    position: absolute;
+    visibility: hidden;
+    width: 100%;
   }
 `;
 
