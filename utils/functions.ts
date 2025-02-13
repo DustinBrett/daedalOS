@@ -37,6 +37,33 @@ export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
     ? `data:${mimeType};base64,${window.btoa(buffer.toString())}`
     : URL.createObjectURL(bufferToBlob(buffer, mimeType));
 
+const RESIZE_IMAGE_TIMEOUT_SECONDS = 60;
+
+export const resizeImage = async (
+  blob: Blob,
+  maxDimension: number
+): Promise<Blob> =>
+  new Promise((resolve) => {
+    const worker = new Worker(
+      new URL("utils/resizeImage.worker", import.meta.url),
+      { name: "Resize Image Worker" }
+    );
+    const timeoutHandle = setTimeout(() => {
+      resolve(blob);
+      worker.terminate();
+    }, RESIZE_IMAGE_TIMEOUT_SECONDS * 1000);
+    const canvas = document
+      .createElement("canvas")
+      .transferControlToOffscreen();
+
+    worker.addEventListener("message", ({ data }: { data: Blob }) => {
+      clearTimeout(timeoutHandle);
+      resolve(data instanceof Blob ? data : blob);
+      worker.terminate();
+    });
+    worker.postMessage({ blob, canvas, maxDimension }, [canvas]);
+  });
+
 let dpi: number;
 
 export const getDpi = (): number => {

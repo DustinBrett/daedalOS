@@ -346,6 +346,8 @@ export const SUPPORTED_ICON_SIZES = [16, 32, 48, 96, 144];
 
 export const MAX_ICON_SIZE = 144;
 
+export const MAX_THUMBNAIL_FILE_SIZE = 1048576; // 1 MB
+
 export const DEFAULT_TEXT_FILE_SAVE_PATH = `${DESKTOP_PATH}/Untitled.txt`;
 
 export const DEFAULT_SCROLLBAR_WIDTH = 17;

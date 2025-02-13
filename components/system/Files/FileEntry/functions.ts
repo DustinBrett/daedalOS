@@ -27,6 +27,7 @@ import {
   ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
   MAX_ICON_SIZE,
+  MAX_THUMBNAIL_FILE_SIZE,
   MOUNTED_FOLDER_ICON,
   NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
@@ -45,6 +46,7 @@ import {
 import shortcutCache from "public/.index/shortcutCache.json";
 import {
   blobToBase64,
+  bufferToBlob,
   bufferToUrl,
   getExtension,
   getGifJs,
@@ -52,6 +54,7 @@ import {
   getMimeType,
   isSafari,
   isYouTubeUrl,
+  resizeImage,
 } from "utils/functions";
 
 type InternetShortcut = {
@@ -651,7 +654,19 @@ export const getInfoWithExtension = (
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
               imageIcon.decoding = "async";
-              imageIcon.src = bufferToUrl(contents, getMimeType(path));
+
+              const mimeType = getMimeType(path);
+
+              if (contents.length > MAX_THUMBNAIL_FILE_SIZE) {
+                resizeImage(
+                  bufferToBlob(contents, mimeType),
+                  MAX_ICON_SIZE
+                ).then((resizedBlob) => {
+                  imageIcon.src = URL.createObjectURL(resizedBlob);
+                });
+              } else {
+                imageIcon.src = bufferToUrl(contents, mimeType);
+              }
             }
           })
         );
