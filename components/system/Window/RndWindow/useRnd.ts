@@ -67,7 +67,7 @@ const useRnd = (id: string): Props => {
     ) => {
       const [, x, y] =
         /translate\((-?\d+)px, (-?\d+)px\)/.exec(transform) || [];
-      const newPositon =
+      const newPosition =
         typeof x === "string" && typeof y === "string"
           ? { x: pxToNum(x), y: pxToNum(y) }
           : resizePosition;
@@ -76,21 +76,29 @@ const useRnd = (id: string): Props => {
 
       const newSize = { height: pxToNum(height), width: pxToNum(width) };
 
-      if (newPositon.y < 0) {
-        newSize.height += newPositon.y;
-        newPositon.y = 0;
+      if (newPosition.y < 0) {
+        newSize.height += newPosition.y;
+        newPosition.y = 0;
       }
 
-      setSize(newSize);
-      setPosition(newPositon);
-      setWindowStates((currentWindowStates) => ({
-        ...currentWindowStates,
-        [id]: {
-          ...currentWindowStates[id],
-          position: newPositon,
-          size: newSize,
-        },
-      }));
+      if (
+        !isWindowOutsideBounds(
+          { position: newPosition, size: newSize },
+          getWindowViewport(),
+          true
+        )
+      ) {
+        setSize(newSize);
+        setPosition(newPosition);
+        setWindowStates((currentWindowStates) => ({
+          ...currentWindowStates,
+          [id]: {
+            ...currentWindowStates[id],
+            position: newPosition,
+            size: newSize,
+          },
+        }));
+      }
     },
     [id, setPosition, setSize, setWindowStates]
   );
