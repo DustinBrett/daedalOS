@@ -66,6 +66,7 @@ import {
   getTZOffsetISOString,
   isFileSystemMappingSupported,
   loadFiles,
+  saveUnpositionedDesktopIcons,
 } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
@@ -118,7 +119,7 @@ const useCommandInterpreter = (
     writeFile,
   } = useFileSystem();
   const { closeWithTransition, open, title: changeTitle } = useProcesses();
-  const { updateRecentFiles } = useSession();
+  const { setIconPositions, updateRecentFiles } = useSession();
   const processesRef = useProcessesRef();
   const { name: themeName } = useTheme();
   const getFullPath = useCallback(
@@ -362,8 +363,14 @@ const useCommandInterpreter = (
             if (commandPath) {
               const fullPath = await getFullPath(commandPath);
 
-              if ((await exists(fullPath)) && (await deletePath(fullPath))) {
-                updateFile(fullPath, true);
+              if (await exists(fullPath)) {
+                if (dirname(fullPath) === DESKTOP_PATH) {
+                  saveUnpositionedDesktopIcons(setIconPositions);
+                }
+
+                if (await deletePath(fullPath)) {
+                  updateFile(fullPath, true);
+                }
               }
             }
             break;
@@ -712,6 +719,10 @@ const useCommandInterpreter = (
                     fullDestinationPath,
                     basename(fullSourcePath)
                   );
+                }
+
+                if (dirname(fullSourcePath) === DESKTOP_PATH) {
+                  saveUnpositionedDesktopIcons(setIconPositions);
                 }
 
                 if (await rename(fullSourcePath, fullDestinationPath)) {
@@ -1249,6 +1260,7 @@ const useCommandInterpreter = (
       readdir,
       rename,
       rootFs,
+      setIconPositions,
       stat,
       terminal,
       themeName,

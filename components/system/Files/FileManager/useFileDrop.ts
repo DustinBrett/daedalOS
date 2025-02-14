@@ -1,4 +1,4 @@
-import { basename, extname, join, relative } from "path";
+import { basename, join, relative } from "path";
 import { useCallback } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
@@ -19,7 +19,12 @@ import {
   MOUNTABLE_EXTENSIONS,
   PREVENT_SCROLL,
 } from "utils/constants";
-import { getExtension, haltEvent, updateIconPositions } from "utils/functions";
+import {
+  getExtension,
+  getIteratedNames,
+  haltEvent,
+  updateIconPositions,
+} from "utils/functions";
 import { useProcessesRef } from "hooks/useProcessesRef";
 
 export type FileDrop = {
@@ -132,33 +137,11 @@ const useFileDrop = ({
               .filter(Boolean);
           }
 
-          fileEntries = await Promise.all(
-            fileEntries.map(async (fileEntry) => {
-              let entryIteration = `${directory}/${fileEntry}`;
-
-              if (
-                !iconPositions[entryIteration] ||
-                !(await exists(entryIteration))
-              ) {
-                return fileEntry;
-              }
-
-              let iteration = 0;
-
-              do {
-                iteration += 1;
-                entryIteration = `${directory}/${basename(
-                  fileEntry,
-                  extname(fileEntry)
-                )} (${iteration})${extname(fileEntry)}`;
-              } while (
-                iconPositions[entryIteration] &&
-                // eslint-disable-next-line no-await-in-loop
-                (await exists(entryIteration))
-              );
-
-              return basename(entryIteration);
-            })
+          fileEntries = await getIteratedNames(
+            fileEntries,
+            directory,
+            iconPositions,
+            exists
           );
 
           updateIconPositions(

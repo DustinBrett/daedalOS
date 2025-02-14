@@ -45,7 +45,12 @@ import {
   VIDEO_DECODE_FORMATS,
   VIDEO_ENCODE_FORMATS,
 } from "utils/ffmpeg/formats";
-import { getExtension, isSafari, isYouTubeUrl } from "utils/functions";
+import {
+  getExtension,
+  isSafari,
+  isYouTubeUrl,
+  saveUnpositionedDesktopIcons,
+} from "utils/functions";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
@@ -87,6 +92,7 @@ const useFileContextMenu = (
     aiEnabled,
     setCursor,
     setForegroundId,
+    setIconPositions,
     setWallpaper,
     updateRecentFiles,
   } = useSession();
@@ -168,8 +174,13 @@ const useFileContextMenu = (
 
           menuItems.push(
             {
-              action: () =>
-                absoluteEntries().forEach((entry) => deleteLocalPath(entry)),
+              action: () => {
+                if (dirname(path) === DESKTOP_PATH) {
+                  saveUnpositionedDesktopIcons(setIconPositions);
+                }
+
+                absoluteEntries().forEach((entry) => deleteLocalPath(entry));
+              },
               label: "Delete",
             },
             { action: () => setRenaming(baseName), label: "Rename" },
@@ -709,6 +720,7 @@ const useFileContextMenu = (
       rootFs?.mountList,
       setCursor,
       setForegroundId,
+      setIconPositions,
       setRenaming,
       setWallpaper,
       stats,

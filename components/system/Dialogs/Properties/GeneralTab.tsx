@@ -23,7 +23,12 @@ import {
   FOLDER_ICON,
   SHORTCUT_ICON,
 } from "utils/constants";
-import { getExtension, getFormattedSize, haltEvent } from "utils/functions";
+import {
+  getExtension,
+  getFormattedSize,
+  haltEvent,
+  saveUnpositionedDesktopIcons,
+} from "utils/functions";
 
 type TabProps = {
   icon: string;
@@ -72,6 +77,10 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
         const renamedPath = `${join(directoryName, newName)}${
           isShortcut ? extname(url) : ""
         }`;
+
+        if (directoryName === DESKTOP_PATH) {
+          saveUnpositionedDesktopIcons(setIconPositions);
+        }
 
         if (await rename(url, renamedPath)) {
           updateFolder(directoryName, renamedPath, url);

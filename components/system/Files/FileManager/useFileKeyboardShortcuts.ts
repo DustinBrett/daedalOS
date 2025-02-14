@@ -11,8 +11,16 @@ import { type FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
-import { PREVENT_SCROLL, SHORTCUT_EXTENSION } from "utils/constants";
-import { haltEvent, sendMouseClick } from "utils/functions";
+import {
+  DESKTOP_PATH,
+  PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
+} from "utils/constants";
+import {
+  haltEvent,
+  saveUnpositionedDesktopIcons,
+  sendMouseClick,
+} from "utils/functions";
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
@@ -33,7 +41,7 @@ const useFileKeyboardShortcuts = (
   const { copyEntries, deletePath, moveEntries } = useFileSystem();
   const { open, url: changeUrl } = useProcesses();
   const { openTransferDialog } = useTransferDialog();
-  const { foregroundId } = useSession();
+  const { foregroundId, setIconPositions } = useSession();
 
   useEffect(() => {
     const pasteHandler = (event: ClipboardEvent): void => {
@@ -88,6 +96,11 @@ const useFileKeyboardShortcuts = (
         const onDelete = (): void => {
           if (focusedEntries.length > 0) {
             haltEvent(event);
+
+            if (url === DESKTOP_PATH) {
+              saveUnpositionedDesktopIcons(setIconPositions);
+            }
+
             focusedEntries.forEach(async (entry) => {
               const path = join(url, entry);
 
@@ -288,6 +301,7 @@ const useFileKeyboardShortcuts = (
       moveEntries,
       open,
       pasteToFolder,
+      setIconPositions,
       setRenaming,
       setView,
       updateFiles,

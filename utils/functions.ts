@@ -11,6 +11,7 @@ import {
 } from "contexts/session/types";
 import {
   DEFAULT_LOCALE,
+  DESKTOP_PATH,
   HIGH_PRIORITY_REQUEST,
   ICON_CACHE,
   ICON_PATH,
@@ -438,6 +439,60 @@ const calcGridDropPosition = (
   };
 };
 
+export const saveUnpositionedDesktopIcons = (
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>
+): void => {
+  const desktopIconGrid = document.querySelector<HTMLOListElement>("main > ol");
+
+  if (desktopIconGrid instanceof HTMLOListElement) {
+    const unPositionedIcons = [
+      ...desktopIconGrid.querySelectorAll("li"),
+    ].filter(
+      ({ style: { gridRowStart, gridColumnStart } }) =>
+        !gridRowStart || !gridColumnStart
+    );
+
+    if (unPositionedIcons.length > 0) {
+      const {
+        columnGap,
+        gridTemplateColumns,
+        gridTemplateRows,
+        paddingTop,
+        rowGap,
+      } = window.getComputedStyle(desktopIconGrid);
+      const [entryWidth] = gridTemplateColumns.split(" ");
+      const [entryHeight] = gridTemplateRows.split(" ");
+      const height = pxToNum(entryHeight) + pxToNum(rowGap);
+      const width = pxToNum(entryWidth) + pxToNum(columnGap);
+      const rowTopPadding = pxToNum(paddingTop);
+      const newIconPositions = Object.fromEntries(
+        unPositionedIcons.map((icon) => {
+          const { top, left } = icon.getBoundingClientRect() || {};
+          const button = icon.querySelector("button") as HTMLButtonElement;
+          let name = button?.getAttribute("aria-label") || button?.textContent;
+
+          if (button?.querySelector("img[src*=shortcut]")) {
+            name = `${name}${SHORTCUT_EXTENSION}`;
+          }
+
+          return [
+            name ? join(DESKTOP_PATH, name) : "",
+            {
+              gridColumnStart: Math.round(left / width) + 1,
+              gridRowStart: Math.round((top - rowTopPadding) / height) + 1,
+            },
+          ];
+        })
+      );
+
+      setIconPositions((currentIconPositions) => ({
+        ...currentIconPositions,
+        ...newIconPositions,
+      }));
+    }
+  }
+};
+
 export const updateIconPositionsIfEmpty = (
   url: string,
   gridElement: HTMLElement | null,
@@ -532,6 +587,38 @@ const calcGridPositionOffset = (
         gridRowStart,
       };
 };
+
+export const getIteratedNames = (
+  fileEntries: string[],
+  directory: string,
+  iconPositions: IconPositions,
+  exists: (path: string) => Promise<boolean>
+): Promise<string[]> =>
+  Promise.all(
+    fileEntries.map(async (fileEntry) => {
+      let entryIteration = `${directory}/${fileEntry}`;
+
+      if (!iconPositions[entryIteration] || !(await exists(entryIteration))) {
+        return fileEntry;
+      }
+
+      let iteration = 0;
+
+      do {
+        iteration += 1;
+        entryIteration = `${directory}/${basename(
+          fileEntry,
+          extname(fileEntry)
+        )} (${iteration})${extname(fileEntry)}`;
+      } while (
+        iconPositions[entryIteration] &&
+        // eslint-disable-next-line no-await-in-loop
+        (await exists(entryIteration))
+      );
+
+      return basename(entryIteration);
+    })
+  );
 
 export const updateIconPositions = (
   directory: string,

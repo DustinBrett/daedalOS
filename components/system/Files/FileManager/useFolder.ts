@@ -33,6 +33,7 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import {
   BASE_ZIP_CONFIG,
+  DESKTOP_PATH,
   PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
@@ -43,6 +44,8 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   getExtension,
+  getIteratedNames,
+  saveUnpositionedDesktopIcons,
   updateIconPositions,
 } from "utils/functions";
 import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
@@ -344,6 +347,8 @@ const useFolder = (
 
         if (!(await exists(renamedPath)) && (await rename(path, renamedPath))) {
           if (isDesktop) {
+            saveUnpositionedDesktopIcons(setIconPositions);
+
             setIconPositions((currentPositions) => ({
               ...currentPositions,
               ...(currentPositions[path]
@@ -650,16 +655,30 @@ const useFolder = (
             ? event.nativeEvent.touches[0]
             : (event.nativeEvent as MouseEvent);
 
-        updateIconPositions(
-          directory,
-          event.target as HTMLElement,
-          iconPositions,
-          sortOrders,
-          { x, y },
+        getIteratedNames(
           pasteEntries.map(([entry]) => basename(entry)),
-          setIconPositions,
+          directory,
+          iconPositions,
           exists
+        ).then((entries) =>
+          updateIconPositions(
+            directory,
+            event.target as HTMLElement,
+            iconPositions,
+            sortOrders,
+            { x, y },
+            entries,
+            setIconPositions,
+            exists
+          )
         );
+      }
+
+      if (
+        moving &&
+        pasteEntries.some(([entry]) => dirname(entry) === DESKTOP_PATH)
+      ) {
+        saveUnpositionedDesktopIcons(setIconPositions);
       }
 
       openTransferDialog(objectReaders);
