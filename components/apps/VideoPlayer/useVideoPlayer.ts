@@ -380,15 +380,19 @@ const useVideoPlayer = ({
         );
         argument(id, "peekImage", "");
 
-        if (buffer && AUDIO_FILE_EXTENSIONS.has(getExtension(source.url))) {
-          getCoverArt(source.url, buffer).then((coverPicture) => {
-            if (coverPicture) {
-              const coverUrl = bufferToUrl(coverPicture);
+        if (buffer) {
+          const extension = getExtension(source.url);
 
-              player.poster(coverUrl);
-              argument(id, "peekImage", coverUrl);
-            }
-          });
+          if (extension === ".mp3" || AUDIO_FILE_EXTENSIONS.has(extension)) {
+            getCoverArt(source.url, buffer).then((coverPicture) => {
+              if (coverPicture) {
+                const coverUrl = bufferToUrl(coverPicture);
+
+                player.poster(coverUrl);
+                argument(id, "peekImage", coverUrl);
+              }
+            });
+          }
         }
       } catch {
         // Ignore player errors
