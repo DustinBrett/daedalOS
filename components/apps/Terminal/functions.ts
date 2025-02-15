@@ -151,7 +151,11 @@ export const autoComplete = (
 
   localEcho.addAutocompleteHandler((index: number, [command]): string[] => {
     if (index === 0) {
-      return [...Object.keys(commands), ...directory];
+      return [
+        ...Object.keys(commands),
+        ...Object.values(aliases).flat(),
+        ...directory,
+      ];
     }
     if (index === 1) {
       const lowerCommand = command.toLowerCase();
