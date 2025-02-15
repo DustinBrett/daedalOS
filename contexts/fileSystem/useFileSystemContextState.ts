@@ -538,6 +538,8 @@ const useFileSystemContextState = (): FileSystemContextState => {
       iteration = 0,
       overwrite = false
     ): Promise<string> => {
+      if (!name.trim()) return "";
+
       const isInternal = !buffer && isAbsolute(name);
       const baseName = isInternal ? basename(name) : name;
       const uniqueName = iteration
