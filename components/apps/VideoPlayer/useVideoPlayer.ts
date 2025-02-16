@@ -112,8 +112,18 @@ const useVideoPlayer = ({
         videoPlayer?.controlBar.pictureInPictureToggle.show();
         videoPlayer?.controlBar.fullscreenToggle.show();
       }
+
+      linkElement(
+        id,
+        "peekElement",
+        enable
+          ? canvasElement
+          : isYT
+            ? (containerRef.current as HTMLDivElement)
+            : videoElement
+      );
     },
-    [containerRef]
+    [containerRef, id, isYT, linkElement]
   );
   const loadPlayer = useCallback(() => {
     if (playerInitialized.current) return;
