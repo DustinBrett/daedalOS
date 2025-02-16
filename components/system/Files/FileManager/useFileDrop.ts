@@ -95,68 +95,74 @@ const useFileDrop = ({
     (event: DragEvent | React.DragEvent<HTMLElement>): void => {
       if (MOUNTABLE_EXTENSIONS.has(getExtension(directory))) return;
 
-      if (updatePositions && event.target instanceof HTMLElement) {
-        const { files, text } = getEventData(event as React.DragEvent);
+      if (event.target instanceof HTMLElement) {
+        if (event.target.closest(".focus-within")?.contains(event.target)) {
+          return;
+        }
 
-        if (files.length === 0 && text === "") return;
+        if (updatePositions) {
+          const { files, text } = getEventData(event as React.DragEvent);
 
-        const checkUpdatableIcons = async (): Promise<void> => {
-          const dragPosition = {
-            x: event.clientX,
-            y: event.clientY,
-          } as DragPosition;
+          if (files.length === 0 && text === "") return;
 
-          let fileEntries: string[] = [];
+          const checkUpdatableIcons = async (): Promise<void> => {
+            const dragPosition = {
+              x: event.clientX,
+              y: event.clientY,
+            } as DragPosition;
 
-          if (text) {
-            try {
-              fileEntries = JSON.parse(text) as string[];
-            } catch {
-              // Ignore failed JSON parsing
+            let fileEntries: string[] = [];
+
+            if (text) {
+              try {
+                fileEntries = JSON.parse(text) as string[];
+              } catch {
+                // Ignore failed JSON parsing
+              }
+
+              if (!Array.isArray(fileEntries)) return;
+
+              const [firstEntry] = fileEntries;
+
+              if (!firstEntry) return;
+
+              if (
+                firstEntry.startsWith(directory) &&
+                basename(firstEntry) === relative(directory, firstEntry)
+              ) {
+                return;
+              }
+
+              fileEntries = fileEntries.map((entry) => basename(entry));
+            } else if (files instanceof FileList) {
+              fileEntries = [...files].map((file) => file.name);
+            } else {
+              fileEntries = [...files]
+                .map((file) => file.getAsFile()?.name || "")
+                .filter(Boolean);
             }
 
-            if (!Array.isArray(fileEntries)) return;
+            fileEntries = await getIteratedNames(
+              fileEntries,
+              directory,
+              iconPositions,
+              exists
+            );
 
-            const [firstEntry] = fileEntries;
+            updateIconPositions(
+              directory,
+              event.target as HTMLElement,
+              iconPositions,
+              sortOrders,
+              dragPosition,
+              fileEntries,
+              setIconPositions,
+              exists
+            );
+          };
 
-            if (!firstEntry) return;
-
-            if (
-              firstEntry.startsWith(directory) &&
-              basename(firstEntry) === relative(directory, firstEntry)
-            ) {
-              return;
-            }
-
-            fileEntries = fileEntries.map((entry) => basename(entry));
-          } else if (files instanceof FileList) {
-            fileEntries = [...files].map((file) => file.name);
-          } else {
-            fileEntries = [...files]
-              .map((file) => file.getAsFile()?.name || "")
-              .filter(Boolean);
-          }
-
-          fileEntries = await getIteratedNames(
-            fileEntries,
-            directory,
-            iconPositions,
-            exists
-          );
-
-          updateIconPositions(
-            directory,
-            event.target as HTMLElement,
-            iconPositions,
-            sortOrders,
-            dragPosition,
-            fileEntries,
-            setIconPositions,
-            exists
-          );
-        };
-
-        checkUpdatableIcons();
+          checkUpdatableIcons();
+        }
       }
 
       const hasUpdateId = typeof id === "string";
