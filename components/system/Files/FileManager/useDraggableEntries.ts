@@ -65,7 +65,7 @@ const useDraggableEntries = (
         ),
       ];
 
-      if (focusedElements.length > 1) {
+      if (focusedElements.length > 0) {
         if (dragImageRef.current) dragImageRef.current.src = "";
         else dragImageRef.current = new Image();
 
@@ -202,7 +202,7 @@ const useDraggableEntries = (
           );
         }
 
-        if (!singleFile && dragImageRef.current) {
+        if (dragImageRef.current) {
           if (!adjustedCaptureOffsetRef.current) {
             adjustedCaptureOffsetRef.current = true;
 
@@ -234,7 +234,7 @@ const useDraggableEntries = (
 
         if (allowMoving) {
           dragPositionRef.current =
-            focusedEntries.length > 1
+            focusedEntries.length > 0
               ? {
                   offsetX: event.nativeEvent.offsetX,
                   offsetY: event.nativeEvent.offsetY,
@@ -256,7 +256,7 @@ const useDraggableEntries = (
   );
 
   useEffect(() => {
-    if (!isSelecting && focusedEntries.length > 1) updateDragImage();
+    if (!isSelecting && focusedEntries.length > 0) updateDragImage();
     else if (focusedEntries.length === 0) {
       adjustedCaptureOffsetRef.current = false;
     }
