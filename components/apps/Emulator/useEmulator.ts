@@ -46,7 +46,7 @@ const useEmulator = ({
   const { exists, readFile } = useFileSystem();
   const { createSnapshot } = useSnapshots();
   const mountEmFs = useEmscriptenMount();
-  const { processes: { [id]: { closing, libs = [] } = {} } = {} } =
+  const { linkElement, processes: { [id]: { closing, libs = [] } = {} } = {} } =
     useProcesses();
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>(undefined);
@@ -106,6 +106,13 @@ const useEmulator = ({
               `EmulatorJs_${contentWindow.EJS_gameName}`
             );
             emulatorRef.current = currentEmulator;
+
+            const canvas =
+              currentEmulator.elements?.container?.querySelector("canvas");
+
+            if (canvas) {
+              linkElement(id, "peekElement", canvas);
+            }
           };
 
           loadState();
@@ -150,7 +157,9 @@ const useEmulator = ({
       createSnapshot,
       exists,
       getContentWindow,
+      id,
       libs,
+      linkElement,
       mountEmFs,
       prependFileToTitle,
       readFile,

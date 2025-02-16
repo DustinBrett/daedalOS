@@ -10,15 +10,36 @@ import { PREVENT_SCROLL } from "utils/constants";
 import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 
-const createCanvas = (hostDocument: Document): HTMLCanvasElement => {
-  const canvas = hostDocument.createElement("canvas");
+type ContentWindow = Window & typeof globalThis;
+
+const alwaysPreserveDrawingBuffer = (contentWindow: ContentWindow): void => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const canvasGetContext = contentWindow.HTMLCanvasElement.prototype.getContext;
+
+  // eslint-disable-next-line no-param-reassign
+  contentWindow.HTMLCanvasElement.prototype.getContext = function getContext(
+    this: typeof canvasGetContext,
+    contextId: "webgl" | "webgl2",
+    options?: WebGLContextAttributes
+  ) {
+    if (contextId === "webgl" || contextId === "webgl2") {
+      // eslint-disable-next-line no-param-reassign
+      options = Object.assign(options || {}, { preserveDrawingBuffer: true });
+    }
+
+    return canvasGetContext.call(this, contextId, options);
+  } as typeof canvasGetContext;
+};
+
+const createCanvas = (contentDocument: Document): HTMLCanvasElement => {
+  const canvas = contentDocument.createElement("canvas");
 
   canvas.id = "canvas";
   canvas.style.width = "100%";
   canvas.style.height = "100%";
   canvas.tabIndex = -1;
 
-  hostDocument.body.append(canvas);
+  contentDocument.body.append(canvas);
 
   return canvas;
 };
@@ -49,7 +70,7 @@ const createIframe = (
     `);
   contentDocument.close();
 
-  const contentWindow = iframe.contentWindow as Window;
+  const contentWindow = iframe.contentWindow as ContentWindow;
 
   contentWindow.document.documentElement.style.height = "100%";
   contentWindow.document.documentElement.style.width = "100%";
@@ -62,27 +83,29 @@ const createIframe = (
   return iframe;
 };
 
-type IsolatedContentWindow = (() => Window | undefined) | undefined;
+type IsolatedContentWindow = (() => ContentWindow | undefined) | undefined;
 
 const useIsolatedContentWindow = (
   id: string,
   containerRef: React.RefObject<HTMLDivElement | null>,
-  focusFunction?: (window: Window) => void,
+  focusFunction?: (window: ContentWindow) => void,
   styles?: string,
   withCanvas = false
 ): IsolatedContentWindow => {
   const [container, setContainer] = useState<HTMLDivElement>();
-  const [contentWindow, setContentWindow] = useState<Window>();
+  const [contentWindow, setContentWindow] = useState<ContentWindow>();
   const { onDragOver, onDrop } = useFileDrop({ id });
   const { processes: { [id]: { maximized } = {} } = {} } = useProcesses();
   const { foregroundId, setForegroundId } = useSession();
-  const createContentWindow = useCallback((): Window | undefined => {
+  const createContentWindow = useCallback((): ContentWindow | undefined => {
     if (!container) return undefined;
 
     container.querySelector("iframe")?.remove();
 
     const iframe = createIframe(id, container, styles);
-    const newContentWindow = iframe.contentWindow as Window;
+    const newContentWindow = iframe.contentWindow as ContentWindow;
+
+    alwaysPreserveDrawingBuffer(newContentWindow);
 
     let canvas: HTMLCanvasElement;
 

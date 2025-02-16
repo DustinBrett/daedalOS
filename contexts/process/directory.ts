@@ -75,7 +75,6 @@ const directory: Processes = {
       "/Program Files/EmulatorJs/emu-css.min.css",
       "/Program Files/EmulatorJs/emulator.min.js",
     ],
-    hidePeek: true,
     icon: "/System/Icons/emulator.webp",
     libs: ["/Program Files/EmulatorJs/loader.js"],
     lockAspectRatio: true,

@@ -3,6 +3,7 @@ export type Emulator = {
     buttons: {
       saveState?: HTMLButtonElement;
     };
+    container: HTMLDivElement;
   };
   loadState?: (state: Buffer) => void;
 };
