@@ -522,8 +522,8 @@ export const updateIconPositionsIfEmpty = (
         const { x, y, height, width } = gridEntry.getBoundingClientRect();
 
         newIconPositions[entryUrl] = calcGridDropPosition(gridElement, {
-          x: x - width,
-          y: y + height,
+          x: x + width / 2,
+          y: y + height / 2,
         });
       } else {
         const position = index + 1;
@@ -632,14 +632,14 @@ export const updateIconPositions = (
 ): void => {
   if (!gridElement || draggedEntries.length === 0) return;
 
-  const currentIconPositions = updateIconPositionsIfEmpty(
+  const updatedIconPositions = updateIconPositionsIfEmpty(
     directory,
     gridElement,
     iconPositions,
     sortOrders
   );
   const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
-  const conflictingIcon = Object.entries(currentIconPositions).find(
+  const conflictingIcon = Object.entries(updatedIconPositions).find(
     ([, { gridColumnStart, gridRowStart }]) =>
       gridColumnStart === gridDropPosition.gridColumnStart &&
       gridRowStart === gridDropPosition.gridRowStart
@@ -654,7 +654,7 @@ export const updateIconPositions = (
       targetFile,
       ...draggedEntries.filter((entry) => entry !== targetFile),
     ];
-    const newIconPositions = Object.fromEntries(
+    const adjustIconPositions = Object.fromEntries(
       adjustDraggedEntries
         .map<[string, IconPosition]>((entryFile) => {
           const url = join(directory, entryFile);
@@ -666,7 +666,7 @@ export const updateIconPositions = (
               : calcGridPositionOffset(
                   url,
                   targetUrl,
-                  currentIconPositions,
+                  updatedIconPositions,
                   gridDropPosition,
                   adjustDraggedEntries,
                   gridElement
@@ -678,23 +678,21 @@ export const updateIconPositions = (
             gridColumnStart >= 1 && gridRowStart >= 1
         )
     );
+    const newIconPositions = Object.fromEntries(
+      Object.entries(adjustIconPositions).filter(
+        ([, { gridColumnStart, gridRowStart }]) =>
+          !Object.values(updatedIconPositions).some(
+            ({
+              gridColumnStart: currentGridColumnStart,
+              gridRowStart: currentRowColumnStart,
+            }) =>
+              gridColumnStart === currentGridColumnStart &&
+              gridRowStart === currentRowColumnStart
+          )
+      )
+    );
 
-    setIconPositions({
-      ...currentIconPositions,
-      ...Object.fromEntries(
-        Object.entries(newIconPositions).filter(
-          ([, { gridColumnStart, gridRowStart }]) =>
-            !Object.values(currentIconPositions).some(
-              ({
-                gridColumnStart: currentGridColumnStart,
-                gridRowStart: currentRowColumnStart,
-              }) =>
-                gridColumnStart === currentGridColumnStart &&
-                gridRowStart === currentRowColumnStart
-            )
-        )
-      ),
-    });
+    setIconPositions({ ...updatedIconPositions, ...newIconPositions });
   };
 
   if (conflictingIcon) {
@@ -702,7 +700,7 @@ export const updateIconPositions = (
 
     exists(conflictingIconPath).then((pathExists) => {
       if (!pathExists) {
-        delete currentIconPositions[conflictingIconPath];
+        delete updatedIconPositions[conflictingIconPath];
         processIconMove();
       }
     });
