@@ -41,9 +41,18 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const { foregroundId, setForegroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const onClickClose = useDoubleClick(onClose);
-  const onClickMaximize = useDoubleClick(onMaximize);
   const { menu, setMenu } = useMenu();
+  const resetMenu = useCallback(
+    () => setMenu(Object.create(null) as MenuState),
+    [setMenu]
+  );
+  const menuIsOpenRef = useRef<boolean>(false);
+  const clickCloseCallback = useCallback(() => {
+    if (menuIsOpenRef.current) resetMenu();
+    onClose();
+  }, [onClose, resetMenu]);
+  const onClickClose = useDoubleClick(clickCloseCallback);
+  const onClickMaximize = useDoubleClick(onMaximize);
   const titlebarContextMenu = useTitlebarContextMenu(id);
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<DOMRect>(undefined);
@@ -79,6 +88,37 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     },
     [componentWindow]
   );
+  const onMouseDownCapture = useCallback<
+    React.MouseEventHandler<HTMLButtonElement>
+  >(
+    ({ button }) => {
+      if (button === 0 && Object.keys(menu).length > 0) resetMenu();
+    },
+    [menu, resetMenu]
+  );
+  const onMouseUpCapture = useCallback<
+    React.MouseEventHandler<HTMLButtonElement>
+  >(() => {
+    if (componentWindow && componentWindow !== document.activeElement) {
+      setForegroundId(id);
+    }
+  }, [componentWindow, id, setForegroundId]);
+  const onIconClick = useCallback<React.MouseEventHandler<HTMLImageElement>>(
+    (event) => {
+      if (menuIsOpenRef.current) resetMenu();
+      else titlebarContextMenu.onContextMenuCapture(event);
+
+      menuIsOpenRef.current = !menuIsOpenRef.current;
+
+      onClickClose.onClick(event);
+    },
+    [onClickClose, resetMenu, titlebarContextMenu]
+  );
+  const onIconMouseDownCapture = useCallback<
+    React.MouseEventHandler<HTMLImageElement>
+  >(() => {
+    menuIsOpenRef.current = (menu.items?.length || 0) > 0;
+  }, [menu.items?.length]);
 
   return (
     <StyledTitlebar
@@ -92,22 +132,20 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         {...(!hideMaximizeButton && allowResizing && !closing
           ? onClickMaximize
           : {})}
-        onMouseDownCapture={({ button }) => {
-          if (button === 0 && Object.keys(menu).length > 0) {
-            setMenu(Object.create(null) as MenuState);
-          }
-        }}
-        onMouseUpCapture={() => {
-          if (componentWindow && componentWindow !== document.activeElement) {
-            setForegroundId(id);
-          }
-        }}
+        onMouseDownCapture={onMouseDownCapture}
+        onMouseUpCapture={onMouseUpCapture}
         onTouchEndCapture={onTouchEnd}
         onTouchStartCapture={onTouchStart}
       >
         <figure>
           {!hideTitlebarIcon && (
-            <Icon alt={title} imgSize={16} src={icon} {...onClickClose} />
+            <Icon
+              alt={title}
+              imgSize={16}
+              onClick={onIconClick}
+              onMouseDownCapture={onIconMouseDownCapture}
+              src={icon}
+            />
           )}
           <figcaption>{title}</figcaption>
         </figure>
