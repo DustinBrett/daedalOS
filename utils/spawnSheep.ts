@@ -1,8 +1,10 @@
+import { TASKBAR_HEIGHT } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 type SheepOptions = {
   allowPopup: string;
   collisionsWith: string[];
+  footerMargin: number;
   spawnContainer: HTMLElement;
 };
 
@@ -47,6 +49,7 @@ export const spawnSheep = (): Promise<void> =>
       const sheep = new window.Sheep({
         allowPopup: "no",
         collisionsWith: ["nav", "section"],
+        footerMargin: TASKBAR_HEIGHT,
         spawnContainer: document.querySelector("main") as HTMLElement,
       });
 

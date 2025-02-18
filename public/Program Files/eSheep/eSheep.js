@@ -36,9 +36,10 @@ window.Sheep = class eSheep {
       document.body.clientWidth; // window width
 
     this.screenH =
-      window.innerHeight ||
+      (window.innerHeight ||
       document.documentElement.clientHeight ||
-      document.body.clientHeight; // window height
+      document.body.clientHeight) // window height
+      - (this.userOptions.footerMargin || 0);
   }
 
   Start(animation) {
@@ -154,9 +155,10 @@ window.Sheep = class eSheep {
         document.body.clientWidth;
 
       this.screenH =
-        window.innerHeight ||
+        (window.innerHeight ||
         document.documentElement.clientHeight ||
-        document.body.clientHeight;
+        document.body.clientHeight)
+        - (this.userOptions.footerMargin || 0);
 
       if (this.imageY + this.imageH > this.screenH) {
         this.imageY = this.screenH - this.imageH;
