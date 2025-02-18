@@ -7,6 +7,7 @@ import {
   getHtmlToImage,
   getMimeType,
   haltEvent,
+  shouldCaptureDragImage,
   trimCanvasToTopLeft,
   updateIconPositions,
 } from "utils/functions";
@@ -37,7 +38,8 @@ const useDraggableEntries = (
   { focusEntry }: FocusEntryFunctions,
   fileManagerRef: React.RefObject<HTMLOListElement | null>,
   isSelecting: boolean,
-  allowMoving?: boolean
+  allowMoving?: boolean,
+  isDesktop?: boolean
 ): DraggableEntry => {
   const [dropIndex, setDropIndex] = useState(-1);
   const { exists } = useFileSystem();
@@ -65,7 +67,7 @@ const useDraggableEntries = (
         ),
       ];
 
-      if (focusedElements.length > 0) {
+      if (shouldCaptureDragImage(focusedElements.length, isDesktop)) {
         if (dragImageRef.current) dragImageRef.current.src = "";
         else dragImageRef.current = new Image();
 
@@ -106,7 +108,7 @@ const useDraggableEntries = (
         }
       }
     }
-  }, [fileManagerRef]);
+  }, [fileManagerRef, isDesktop]);
   const onDragEnd = useCallback(
     (entryUrl: string): React.DragEventHandler =>
       (event) => {
@@ -202,7 +204,10 @@ const useDraggableEntries = (
           );
         }
 
-        if (dragImageRef.current) {
+        if (
+          dragImageRef.current &&
+          shouldCaptureDragImage(focusedEntries.length, isDesktop)
+        ) {
           if (!adjustedCaptureOffsetRef.current) {
             adjustedCaptureOffsetRef.current = true;
 
@@ -233,13 +238,15 @@ const useDraggableEntries = (
         Object.assign(event.dataTransfer, { effectAllowed: "move" });
 
         if (allowMoving) {
-          dragPositionRef.current =
-            focusedEntries.length > 0
-              ? {
-                  offsetX: event.nativeEvent.offsetX,
-                  offsetY: event.nativeEvent.offsetY,
-                }
-              : (Object.create(null) as DragPosition);
+          dragPositionRef.current = shouldCaptureDragImage(
+            focusedEntries.length,
+            isDesktop
+          )
+            ? {
+                offsetX: event.nativeEvent.offsetX,
+                offsetY: event.nativeEvent.offsetY,
+              }
+            : (Object.create(null) as DragPosition);
           fileManagerRef.current?.addEventListener("dragover", onDragging, {
             passive: true,
           });
@@ -250,17 +257,22 @@ const useDraggableEntries = (
       fileManagerRef,
       focusEntry,
       focusedEntries,
+      isDesktop,
       isMainContainer,
       onDragging,
     ]
   );
 
   useEffect(() => {
-    if (!isSelecting && focusedEntries.length > 0) updateDragImage();
-    else if (focusedEntries.length === 0) {
+    if (
+      !isSelecting &&
+      shouldCaptureDragImage(focusedEntries.length, isDesktop)
+    ) {
+      updateDragImage();
+    } else if (focusedEntries.length === 0) {
       adjustedCaptureOffsetRef.current = false;
     }
-  }, [focusedEntries, isSelecting, updateDragImage]);
+  }, [focusedEntries, isDesktop, isSelecting, updateDragImage]);
 
   return (entryUrl: string, file: string, renaming: boolean) => ({
     draggable: true,

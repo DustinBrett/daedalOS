@@ -1179,3 +1179,8 @@ export const toSorted = <T>(
 export const notFound = (resource: string): void =>
   // eslint-disable-next-line no-alert
   alert(`Can't find '${resource}'. Check the spelling and try again.`);
+
+export const shouldCaptureDragImage = (
+  entryCount: number,
+  isDesktop = false
+): boolean => entryCount > 1 || (!isDesktop && entryCount === 1 && isSafari());

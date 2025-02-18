@@ -110,7 +110,8 @@ const FileManager: FC<FileManagerProps> = ({
     focusFunctions,
     fileManagerRef,
     isSelecting,
-    allowMovingDraggableEntries
+    allowMovingDraggableEntries,
+    isDesktop
   );
   const fileDrop = useFileDrop({
     callback: folderActions.newPath,
