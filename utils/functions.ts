@@ -680,14 +680,21 @@ export const updateIconPositions = (
     );
     const newIconPositions = Object.fromEntries(
       Object.entries(adjustIconPositions).filter(
-        ([, { gridColumnStart, gridRowStart }]) =>
-          !Object.values(updatedIconPositions).some(
-            ({
-              gridColumnStart: currentGridColumnStart,
-              gridRowStart: currentRowColumnStart,
-            }) =>
-              gridColumnStart === currentGridColumnStart &&
-              gridRowStart === currentRowColumnStart
+        ([entryFile, { gridColumnStart, gridRowStart }]) =>
+          !Object.entries({
+            ...updatedIconPositions,
+            ...adjustIconPositions,
+          }).some(
+            ([
+              compareEntryFile,
+              {
+                gridColumnStart: compareGridColumnStart,
+                gridRowStart: compareGridRowStart,
+              },
+            ]) =>
+              entryFile !== compareEntryFile &&
+              gridColumnStart === compareGridColumnStart &&
+              gridRowStart === compareGridRowStart
           )
       )
     );
