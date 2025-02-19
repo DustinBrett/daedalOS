@@ -1,5 +1,6 @@
 import { useTheme } from "styled-components";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { importCalendar } from "components/system/Taskbar/functions";
 import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import { type LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
@@ -14,6 +15,7 @@ import {
   TASKBAR_HEIGHT,
 } from "utils/constants";
 import { createOffscreenCanvas } from "utils/functions";
+import { useMenuPreload } from "hooks/useMenuPreload";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
 
@@ -170,6 +172,7 @@ const Clock: FC<ClockProps> = ({
     },
     [toggleCalendar]
   );
+  const menuPreloadHandler = useMenuPreload(importCalendar);
 
   useEffect(() => {
     offScreenClockCanvas.current = undefined;
@@ -212,6 +215,7 @@ const Clock: FC<ClockProps> = ({
       suppressHydrationWarning
       {...clockContextMenu}
       {...FOCUSABLE_ELEMENT}
+      {...menuPreloadHandler}
     >
       {supportsOffscreenCanvas ? undefined : time}
     </StyledClock>

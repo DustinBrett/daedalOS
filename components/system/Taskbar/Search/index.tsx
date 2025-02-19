@@ -2,6 +2,7 @@ import { basename, extname } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { m as motion } from "motion/react";
+import dynamic from "next/dynamic";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
   getCachedShortcut,
@@ -14,9 +15,7 @@ import {
   Pictures,
   Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
-import Details from "components/system/Taskbar/Search/Details";
 import { Games } from "components/system/Taskbar/Search/Icons";
-import ResultSection from "components/system/Taskbar/Search/ResultSection";
 import StyledFiles from "components/system/Taskbar/Search/StyledFiles";
 import StyledResults from "components/system/Taskbar/Search/StyledResults";
 import StyledSearch from "components/system/Taskbar/Search/StyledSearch";
@@ -94,6 +93,13 @@ const METADATA = {
     title: "Videos",
   },
 } as Record<TabName, TabData>;
+
+const Details = dynamic(
+  () => import("components/system/Taskbar/Search/Details")
+);
+const ResultSection = dynamic(
+  () => import("components/system/Taskbar/Search/ResultSection")
+);
 
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);

@@ -1,6 +1,13 @@
 import { memo, useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "motion/react";
+import {
+  importAIButton,
+  importAIChat,
+  importCalendar,
+  importSearch,
+  importStartMenu,
+} from "components/system/Taskbar/functions";
 import Clock from "components/system/Taskbar/Clock";
 import SearchButton from "components/system/Taskbar/Search/SearchButton";
 import StartButton from "components/system/Taskbar/StartButton";
@@ -11,11 +18,11 @@ import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
 import { useWindowAI } from "hooks/useWindowAI";
 import { useSession } from "contexts/session";
 
-const AIButton = dynamic(() => import("components/system/Taskbar/AI/AIButton"));
-const AIChat = dynamic(() => import("components/system/Taskbar/AI/AIChat"));
-const Calendar = dynamic(() => import("components/system/Taskbar/Calendar"));
-const Search = dynamic(() => import("components/system/Taskbar/Search"));
-const StartMenu = dynamic(() => import("components/system/StartMenu"));
+const AIButton = dynamic(importAIButton);
+const AIChat = dynamic(importAIChat);
+const Calendar = dynamic(importCalendar);
+const Search = dynamic(importSearch);
+const StartMenu = dynamic(importStartMenu);
 
 const Taskbar: FC = () => {
   const [startMenuVisible, setStartMenuVisible] = useState(false);

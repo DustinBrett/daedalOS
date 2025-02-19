@@ -1,3 +1,4 @@
+import { importAIChat } from "components/system/Taskbar/functions";
 import {
   AI_DISPLAY_TITLE,
   WINDOW_ID,
@@ -8,6 +9,7 @@ import { DIV_BUTTON_PROPS } from "utils/constants";
 import { label } from "utils/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useSession } from "contexts/session";
+import { useMenuPreload } from "hooks/useMenuPreload";
 
 type AIButtonProps = {
   aiVisible: boolean;
@@ -15,6 +17,7 @@ type AIButtonProps = {
 };
 
 const AIButton: FC<AIButtonProps> = ({ aiVisible, toggleAI }) => {
+  const menuPreloadHandler = useMenuPreload(importAIChat);
   const { removeFromStack } = useSession();
 
   return (
@@ -26,6 +29,7 @@ const AIButton: FC<AIButtonProps> = ({ aiVisible, toggleAI }) => {
       {...DIV_BUTTON_PROPS}
       {...label(AI_DISPLAY_TITLE)}
       {...useTaskbarContextMenu()}
+      {...menuPreloadHandler}
     >
       <AIIcon />
     </StyledAIButton>
