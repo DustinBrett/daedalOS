@@ -258,7 +258,7 @@ test.describe("has files & folders", () => {
     test.skip(
       headless &&
         CLIPBOARD_WRITE_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
-      "no headless drag support"
+      "no headless clipboard write support"
     );
 
     await page.keyboard.press("Control+KeyV");
