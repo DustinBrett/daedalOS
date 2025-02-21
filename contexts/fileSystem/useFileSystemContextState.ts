@@ -355,11 +355,13 @@ const useFileSystemContextState = (): FileSystemContextState => {
                       relativePathComponents[relativePathComponents.length - 1];
                   }
 
-                  updateFolder(
-                    join(mappedPath, ...relativePathComponents.slice(0, -1)),
-                    newFile,
-                    oldFile
-                  );
+                  if (newFile || oldFile) {
+                    updateFolder(
+                      join(mappedPath, ...relativePathComponents.slice(0, -1)),
+                      newFile,
+                      oldFile
+                    );
+                  }
                 });
 
                 observer.observe(handle, { recursive: true });
