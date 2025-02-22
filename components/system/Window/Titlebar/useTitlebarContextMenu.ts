@@ -29,6 +29,9 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     hideMinimizeButton,
     maximized,
     minimized,
+    mute,
+    muted,
+    unmute,
   } = process || {};
 
   return useMemo(
@@ -36,6 +39,8 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
       contextMenu?.(() => {
         const isMaxOrMin = maximized || minimized;
         const showMaxOrMin = !hideMaximizeButton || !hideMinimizeButton;
+        const canMute =
+          typeof mute === "function" && typeof unmute === "function";
 
         return [
           showMaxOrMin && {
@@ -60,6 +65,15 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
             label: "Maximize",
           },
           showMaxOrMin && MENU_SEPERATOR,
+          ...(canMute
+            ? [
+                {
+                  action: () => (muted ? unmute() : mute()),
+                  label: muted ? "Unmute" : "Mute",
+                },
+                MENU_SEPERATOR,
+              ]
+            : []),
           {
             action: onClose,
             icon: CLOSE,
@@ -75,9 +89,12 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
       hideMinimizeButton,
       maximized,
       minimized,
+      mute,
+      muted,
       onClose,
       onMaximize,
       onMinimize,
+      unmute,
     ]
   );
 };

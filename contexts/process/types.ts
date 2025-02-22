@@ -19,9 +19,12 @@ type DialogProcessArguments = {
 };
 
 type MediaPlayerProcessArguments = {
+  mute?: () => void;
+  muted?: boolean;
   pause?: () => void;
   paused?: (callback?: (paused: boolean) => void) => boolean;
   play?: () => void;
+  unmute?: () => void;
 };
 
 type MonacoProcessArguments = {
