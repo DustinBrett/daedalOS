@@ -2,7 +2,7 @@ import { type StableDiffusionConfig } from "components/apps/StableDiffusion/type
 import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import { loadFiles } from "utils/functions";
 
-export const StableDiffusionLibs = [
+export const libs = [
   "/System/tvm/tvmjs_runtime.wasi.js",
   "/System/tvm/tvmjs.bundle.js",
   "/Program Files/StableDiffusion/tokenizers-wasm/tokenizers_wasm.js",
@@ -18,7 +18,7 @@ export const runStableDiffusion = async (
   if (!skipLibs) {
     window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
 
-    await loadFiles(StableDiffusionLibs);
+    await loadFiles(libs);
   }
 
   globalThis.tvmjsGlobalEnv.getTokenizer = async () => {

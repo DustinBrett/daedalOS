@@ -14,7 +14,7 @@ export const bgPositionSize: Record<WallpaperFit, string> = {
 
 export const WALLPAPER_PATHS: Record<
   string,
-  () => Promise<{ default: WallpaperFunc }>
+  () => Promise<{ default: WallpaperFunc; libs: string[] }>
 > = {
   COASTAL_LANDSCAPE: () =>
     import("components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape"),

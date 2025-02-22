@@ -7,7 +7,7 @@ import {
 import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import {
   runStableDiffusion,
-  StableDiffusionLibs,
+  libs as StableDiffusionLibs,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import {
   type WorkerMessage,

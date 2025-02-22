@@ -1,6 +1,6 @@
 import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import {
-  StableDiffusionLibs,
+  libs,
   runStableDiffusion,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
@@ -15,7 +15,7 @@ globalThis.addEventListener(
         globalThis.postMessage({ message, type });
       };
 
-      globalThis.importScripts(...StableDiffusionLibs);
+      globalThis.importScripts(...libs);
     } else if (!(data instanceof DOMRect)) {
       const { canvas, config } = data as OffscreenRenderProps;
 

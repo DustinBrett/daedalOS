@@ -31,8 +31,3 @@ export const disableControls = {
   mouseEase: false,
   touchControls: false,
 };
-
-export const libs = [
-  "/System/Vanta.js/three.min.js",
-  "/System/Vanta.js/vanta.waves.min.js",
-];

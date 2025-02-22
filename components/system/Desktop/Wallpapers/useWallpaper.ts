@@ -22,6 +22,7 @@ import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
   DEFAULT_LOCALE,
+  DEFAULT_WALLPAPER,
   IMAGE_FILE_EXTENSIONS,
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_MINUTE,
@@ -175,7 +176,7 @@ const useWallpaper = (
               "message",
               ({ data }: { data: WallpaperMessage }) => {
                 if (data.type === "[error]") {
-                  setWallpaper("VANTA");
+                  setWallpaper(DEFAULT_WALLPAPER);
                 } else if (data.type) {
                   loadingStatus.textContent = data.message || "";
                 } else if (!data.message) {
@@ -208,7 +209,11 @@ const useWallpaper = (
         }
       } else if (WALLPAPER_PATHS[wallpaperName]) {
         const fallbackWallpaper = (): void =>
-          setWallpaper(wallpaperName === "VANTA" ? "SLIDESHOW" : "VANTA");
+          setWallpaper(
+            wallpaperName === DEFAULT_WALLPAPER
+              ? "SLIDESHOW"
+              : DEFAULT_WALLPAPER
+          );
 
         WALLPAPER_PATHS[wallpaperName]()
           .then(({ default: wallpaper }) =>
@@ -216,7 +221,7 @@ const useWallpaper = (
           )
           .catch(fallbackWallpaper);
       } else {
-        setWallpaper("VANTA");
+        setWallpaper(DEFAULT_WALLPAPER);
       }
     },
     [
