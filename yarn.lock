@@ -6890,10 +6890,10 @@ rc@^1.0.1, rc@^1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-re-resizable@6.10.3:
-  version "6.10.3"
-  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-6.10.3.tgz#72c42532ede0cbcaf93308bcbfed782abbf97e79"
-  integrity sha512-zvWb7X3RJMA4cuSrqoxgs3KR+D+pEXnGrD2FAD6BMYAULnZsSF4b7AOVyG6pC3VVNVOtlagGDCDmZSwWLjjBBw==
+re-resizable@6.11.0:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-6.11.0.tgz#2b7b55ec4d061e882aeea50cda15d4c74933e777"
+  integrity sha512-XwaQX5Yk+JEvyGwX1nlLWaZUDr+8gz+Joys5lF4i+7Jy33wShJ0VYQUoFceiSKqUnjVEEz+zf3YkCTyT04R3AA==
 
 react-dom@^17.0.1:
   version "17.0.2"
@@ -6946,12 +6946,12 @@ react-redux@^7.2.2:
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
-react-rnd@10.4.14:
-  version "10.4.14"
-  resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-10.4.14.tgz#c0ce3051cce7da46ccb80be617d818f0dae1e5ec"
-  integrity sha512-NLGc3IymymumPfHy3DXiHNIMOiTlj6xBNb2boHqrtwCgYDasNarpg8tdUY36JlJbrs0E4BvjYBkfEGqUPBsukg==
+react-rnd@10.5.1:
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-10.5.1.tgz#cf975a2b841e01c2b9095fae7651553bca0b57c4"
+  integrity sha512-jzIdsDywCnrPETLkMnodawOtbL3VmDcym4xgpwW8ANxIj0cDyRAzWDBYdfjK3KzVl06eNLWrB5CHBrW96lLhQw==
   dependencies:
-    re-resizable "6.10.3"
+    re-resizable "6.11.0"
     react-draggable "4.4.6"
     tslib "2.6.2"
 
