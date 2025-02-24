@@ -1,19 +1,21 @@
 import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   type PDFWorker,
   type PDFDocumentProxy,
 } from "pdfjs-dist/types/src/display/api";
 import type * as PdfjsLib from "pdfjs-dist";
 import { type MetadataInfo } from "components/apps/PDF/types";
-import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import {
-  BASE_2D_CONTEXT_OPTIONS,
-  DEFAULT_INTERSECTION_OPTIONS,
-} from "utils/constants";
+import { BASE_2D_CONTEXT_OPTIONS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
 export const scales = [
@@ -34,19 +36,17 @@ const getInitialScale = (windowWidth = 0, canvasWidth = 0): number => {
   return minScaleIndex > 0 ? scales[minScaleIndex - 1] : 1;
 };
 
-const usePDF = ({
-  containerRef,
-  id,
-  setLoading,
-  url,
-}: ContainerHookProps): void => {
+const usePDF = (
+  id: string,
+  containerRef: RefObject<HTMLDivElement | null>
+): HTMLCanvasElement[] => {
   const { readFile } = useFileSystem();
   const {
     argument,
     processes: { [id]: process } = {},
     url: setUrl,
   } = useProcesses();
-  const { libs = [], scale } = process || {};
+  const { libs = [], scale, url } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const pdfWorker = useRef<PDFWorker | null>(null);
   const renderPage = useCallback(
@@ -101,7 +101,6 @@ const usePDF = ({
 
           // eslint-disable-next-line no-param-reassign
           containerRef.current.scrollTop = 0;
-          setLoading(true);
 
           const fileData = await readFile(url);
 
@@ -121,7 +120,6 @@ const usePDF = ({
 
           for (let i = 0; i < doc.numPages; i += 1) {
             if (abortControllerRef.current.signal.aborted) break;
-            if (i === 1) setLoading(false);
 
             // eslint-disable-next-line no-await-in-loop
             const page = await renderPage(i + 1, doc);
@@ -139,8 +137,6 @@ const usePDF = ({
         prependFileToTitle("");
       }
     }
-
-    setLoading(false);
   }, [
     argument,
     containerRef,
@@ -148,7 +144,6 @@ const usePDF = ({
     prependFileToTitle,
     readFile,
     renderPage,
-    setLoading,
     url,
   ]);
 
@@ -160,42 +155,12 @@ const usePDF = ({
 
         renderPages().catch(() => {
           setUrl(id, "");
-          setLoading(false);
           argument(id, "rendering", false);
           renderingRef.current = false;
         });
       }
     });
-  }, [argument, id, libs, renderPages, setLoading, setUrl]);
-
-  useEffect(() => {
-    const ol = containerRef.current?.querySelector(
-      "ol.pages"
-    ) as HTMLOListElement;
-
-    if (ol) {
-      [...ol.children].forEach((li) => li.remove());
-
-      pages?.forEach((page, pageNumber) => {
-        const li = document.createElement("li");
-        const observer = new IntersectionObserver(
-          (entries) =>
-            entries.forEach(({ isIntersecting }) => {
-              if (isIntersecting) argument(id, "page", pageNumber + 1);
-            }),
-          {
-            root: containerRef.current,
-            ...DEFAULT_INTERSECTION_OPTIONS,
-          }
-        );
-
-        li.append(page);
-        ol.append(li);
-
-        observer.observe(li);
-      });
-    }
-  }, [argument, containerRef, id, pages]);
+  }, [argument, id, libs, renderPages, setUrl]);
 
   useEffect(
     () => () => {
@@ -204,6 +169,8 @@ const usePDF = ({
     },
     []
   );
+
+  return pages;
 };
 
 export default usePDF;
