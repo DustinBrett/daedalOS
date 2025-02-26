@@ -15,14 +15,17 @@ const StyledTerminal = styled.div`
     width: 100% !important;
   }
 
-  .xterm-cursor-underline {
-    border-bottom-color: #f3f3f3 !important;
-    border-bottom-width: 4px !important;
-    font-size: 15px !important;
-  }
+  .xterm-screen {
+    .xterm-rows {
+      .xterm-cursor-underline {
+        border-bottom-color: #f3f3f3 !important;
+        border-bottom-width: 4px !important;
+      }
 
-  .xterm-cursor-blink {
-    animation-duration: 1.067s !important;
+      .xterm-cursor-blink {
+        animation-duration: 1.067s !important;
+      }
+    }
   }
 `;
 
