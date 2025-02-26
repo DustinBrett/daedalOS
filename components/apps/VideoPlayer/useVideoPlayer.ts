@@ -98,8 +98,12 @@ const useVideoPlayer = ({
         "canvas"
       ) as HTMLCanvasElement;
 
-      videoElement.style.visibility = enable ? "hidden" : "visible";
-      canvasElement.style.visibility = enable ? "visible" : "hidden";
+      if (videoElement) {
+        videoElement.style.visibility = enable ? "hidden" : "visible";
+      }
+      if (canvasElement) {
+        canvasElement.style.visibility = enable ? "visible" : "hidden";
+      }
 
       videoPlayer?.reset();
 
@@ -324,14 +328,8 @@ const useVideoPlayer = ({
       if (!isYT) linkElement(id, "peekElement", videoElement);
       argument(id, "play", () => videoPlayer.play());
       argument(id, "pause", () => videoPlayer.pause());
-      argument(id, "paused", (callback?: (paused: boolean) => void) => {
-        if (callback) {
-          videoPlayer.on("pause", () => callback(true));
-          videoPlayer.on("play", () => callback(false));
-        }
-
-        return videoPlayer.paused();
-      });
+      videoPlayer.on("pause", () => argument(id, "paused", true));
+      videoPlayer.on("play", () => argument(id, "paused", false));
     });
   }, [
     addFile,

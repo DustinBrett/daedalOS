@@ -1,5 +1,5 @@
 import { basename, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { type RufflePlayer } from "components/apps/Ruffle/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
@@ -19,7 +19,6 @@ const useRuffle = ({
     processes: { [id]: { libs = [] } = {} } = {},
   } = useProcesses();
   const [player, setPlayer] = useState<RufflePlayer>();
-  const eventTarget = useRef(new EventTarget());
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystem();
   const loadFlash = useCallback(async () => {
@@ -66,20 +65,15 @@ const useRuffle = ({
       linkElement(id, "peekElement", player);
       argument(id, "play", () => {
         player.play();
-        eventTarget.current.dispatchEvent(new Event("play"));
+        argument(id, "paused", false);
       });
       argument(id, "pause", () => {
         player.pause();
-        eventTarget.current.dispatchEvent(new Event("pause"));
+        argument(id, "paused", true);
       });
-      argument(id, "paused", (callback?: (paused: boolean) => void) => {
-        if (callback) {
-          eventTarget.current.addEventListener("pause", () => callback(true));
-          eventTarget.current.addEventListener("play", () => callback(false));
-        }
-
-        return !player.isPlaying;
-      });
+      player.addEventListener("click", () =>
+        argument(id, "paused", !player?.isPlaying)
+      );
     }
 
     return () => player?.remove();

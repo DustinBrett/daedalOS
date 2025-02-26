@@ -147,16 +147,18 @@ const useWebamp = (id: string): Webamp => {
 
             argument(id, "play", () => webamp.play());
             argument(id, "pause", () => webamp.pause());
-            argument(id, "paused", (callback?: (paused: boolean) => void) => {
-              if (callback) {
-                webamp._actionEmitter.on("PLAY", () => callback(false));
-                webamp._actionEmitter.on("PAUSE", () => callback(true));
-                webamp._actionEmitter.on("STOP", () => callback(true));
-                webamp._actionEmitter.on("IS_STOPPED", () => callback(true));
-              }
-
-              return webamp.getMediaStatus() === "PAUSED";
-            });
+            webamp._actionEmitter.on("PLAY", () =>
+              argument(id, "paused", false)
+            );
+            webamp._actionEmitter.on("PAUSE", () =>
+              argument(id, "paused", true)
+            );
+            webamp._actionEmitter.on("STOP", () =>
+              argument(id, "paused", true)
+            );
+            webamp._actionEmitter.on("IS_STOPPED", () =>
+              argument(id, "paused", true)
+            );
           }
 
           if (!initialSkin && !process.url?.endsWith(".wsz")) {

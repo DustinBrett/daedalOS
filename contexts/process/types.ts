@@ -22,7 +22,7 @@ type MediaPlayerProcessArguments = {
   mute?: () => void;
   muted?: boolean;
   pause?: () => void;
-  paused?: (callback?: (paused: boolean) => void) => boolean;
+  paused?: boolean;
   play?: () => void;
   unmute?: () => void;
 };

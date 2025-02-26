@@ -17,7 +17,7 @@ type DataLoadOptions = {
 };
 
 export type RufflePlayer = HTMLElement & {
-  isPlaying: () => boolean;
+  isPlaying: boolean;
   load: (options: BaseLoadOptions & DataLoadOptions) => Promise<void>;
   pause: () => void;
   play: () => void;
