@@ -1,6 +1,8 @@
 import { basename, join } from "path";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
+import StatusBar from "components/system/Files/FileManager/StatusBar";
 import {
   DEFAULT_COLUMNS,
   type Columns as ColumnsObject,
@@ -29,16 +31,8 @@ import { getExtension, haltEvent } from "utils/functions";
 import Columns from "components/system/Files/FileManager/Columns";
 import { useSession } from "contexts/session";
 
-const StatusBar = dynamic(
-  () => import("components/system/Files/FileManager/StatusBar")
-);
-
 const StyledEmpty = dynamic(
   () => import("components/system/Files/FileManager/StyledEmpty")
-);
-
-const StyledLoading = dynamic(
-  () => import("components/system/Files/FileManager/StyledLoading")
 );
 
 type FileManagerProps = {

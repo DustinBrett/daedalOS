@@ -3,13 +3,14 @@ import styled from "styled-components";
 const StyledStatusBar = styled.footer`
   align-items: center;
   background-color: rgb(51, 51, 51);
+  bottom: 0;
   color: rgb(247, 247, 247);
   display: flex;
   font-size: 12px;
   font-weight: 200;
   height: ${({ theme }) => theme.sizes.fileExplorer.statusBarHeight};
   padding: 0 4px 0 5px;
-  position: relative;
+  position: absolute;
   white-space: nowrap;
   width: 100%;
 

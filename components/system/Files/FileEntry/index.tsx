@@ -10,7 +10,6 @@ import {
 } from "react";
 import dynamic from "next/dynamic";
 import { m as motion } from "motion/react";
-import ColumnRow from "components/system/Files/FileEntry/ColumnRow";
 import { type Columns } from "components/system/Files/FileManager/Columns/constants";
 import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
@@ -70,6 +69,10 @@ import {
 import { spotlightEffect } from "utils/spotlightEffect";
 import { useIsVisible } from "hooks/useIsVisible";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
+
+const ColumnRow = dynamic(
+  () => import("components/system/Files/FileEntry/ColumnRow")
+);
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
