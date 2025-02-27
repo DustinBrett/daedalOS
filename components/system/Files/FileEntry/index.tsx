@@ -569,7 +569,7 @@ const FileEntry: FC<FileEntryProps> = ({
       <Button
         ref={buttonRef}
         aria-label={name}
-        onMouseOver={() => {
+        onMouseOverCapture={() => {
           if (listView && isDirectory) preloadImages();
           createTooltip().then(setTooltip);
         }}
