@@ -24,9 +24,7 @@ const nextConfig = {
       transpileTemplateLiterals: true,
     },
   },
-  devIndicators: {
-    buildActivityPosition: "top-right",
-  },
+  devIndicators: false,
   output: "export",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
