@@ -90,7 +90,7 @@ export const captureConsoleLogs =
     page.on("console", (msg) => {
       if (testName && msg.type() !== "error") return;
 
-      const text = msg.text();
+      const text = msg.text().trim();
       const isExcludedMessage =
         !text ||
         EXCLUDED_CONSOLE_LOGS(browserName, testName).some((excluded) =>
