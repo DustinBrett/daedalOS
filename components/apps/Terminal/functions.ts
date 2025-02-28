@@ -98,6 +98,7 @@ export const aliases: Record<string, string[]> = {
   ver: ["version"],
   wapm: ["wasmer", "wax"],
   weather: ["wttr"],
+  whoami: ["logname"],
   wsl: ["linux"],
 };
 
