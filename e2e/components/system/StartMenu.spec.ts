@@ -12,7 +12,6 @@ import {
   contextMenuEntryIsVisible,
   contextMenuHasCount,
   desktopEntriesAreVisible,
-  didCaptureConsoleLogs,
   disableWallpaper,
   loadApp,
   pressDesktopKeys,
@@ -26,7 +25,7 @@ import {
   startMenuSidebarEntryIsVisible,
 } from "e2e/functions";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp);
 test.beforeEach(async ({ page }) => clickStartButton({ page }));
@@ -137,5 +136,3 @@ test.describe("can close", () => {
     await searchMenuIsVisible({ page });
   });
 });
-
-test.afterEach(didCaptureConsoleLogs);

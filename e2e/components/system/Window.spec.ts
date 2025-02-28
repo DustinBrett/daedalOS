@@ -9,7 +9,6 @@ import {
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
-  didCaptureConsoleLogs,
   disableWallpaper,
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
@@ -27,7 +26,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
@@ -117,5 +116,3 @@ test("can resize", async ({ page }) => {
   expect(finalWidth).toEqual(initialWidth - RESIZE_OFFSET);
   expect(finalHeight).toEqual(initialHeight - RESIZE_OFFSET);
 });
-
-test.afterEach(didCaptureConsoleLogs);

@@ -3,7 +3,6 @@ import directory from "contexts/process/directory";
 import { ROOT_PUBLIC_TEST_FILE, TERMINAL_BASE_CD } from "e2e/constants";
 import {
   captureConsoleLogs,
-  didCaptureConsoleLogs,
   disableWallpaper,
   loadApp,
   sendTabToTerminal,
@@ -20,7 +19,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => loadApp({ page }, { app: "Terminal" }));
 test.beforeEach(windowsAreVisible);
@@ -304,5 +303,3 @@ test.describe("has tab completion", () => {
     await terminalHasText({ page }, "help", 1, true);
   });
 });
-
-test.afterEach(didCaptureConsoleLogs);

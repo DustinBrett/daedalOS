@@ -9,7 +9,6 @@ import {
   clickFileExplorerEntry,
   contextMenuIsVisible,
   desktopIsVisible,
-  didCaptureConsoleLogs,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
   loadApp,
@@ -19,12 +18,13 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 
 test("has background", loadAppWithCanvas);
 
 test("can change background", async ({ headless, browserName, page }) => {
   await loadAppWithCanvas({ browserName, headless, page });
+  await sessionIsWriteable({ page });
 
   const pictureSlideshowResponse = await mockPictureSlideshowRequest({ page });
 
@@ -32,7 +32,6 @@ test("can change background", async ({ headless, browserName, page }) => {
   await contextMenuIsVisible({ page });
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
   await clickContextMenuEntry(/^Background$/, { page });
-  await sessionIsWriteable({ page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 
   await pictureSlideshowResponse();
@@ -70,5 +69,3 @@ test.describe("can set background", () => {
     await canvasBackgroundIsHidden({ page });
   });
 });
-
-test.afterEach(didCaptureConsoleLogs);

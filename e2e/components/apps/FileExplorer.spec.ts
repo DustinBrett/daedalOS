@@ -50,7 +50,6 @@ import {
   contextMenuIsVisible,
   desktopEntryIsHidden,
   desktopEntryIsVisible,
-  didCaptureConsoleLogs,
   disableWallpaper,
   dragDesktopEntryToFileExplorer,
   dragFileExplorerEntryToDesktop,
@@ -78,7 +77,7 @@ import {
 } from "e2e/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => loadApp({ page }, { app: "FileExplorer" }));
 test.beforeEach(windowsAreVisible);
@@ -401,8 +400,8 @@ test.describe("has files & folders", () => {
     await fileExplorerEntryIsHidden(TEST_DESKTOP_FILE, { page });
     await desktopEntryIsVisible(TEST_DESKTOP_FILE, { page });
     await dragDesktopEntryToFileExplorer(TEST_DESKTOP_FILE, { page });
-    await desktopEntryIsHidden(TEST_DESKTOP_FILE, { page });
     await fileExplorerEntryIsVisible(TEST_DESKTOP_FILE, { page });
+    await desktopEntryIsHidden(TEST_DESKTOP_FILE, { page });
   });
 });
 
@@ -511,5 +510,3 @@ test.describe("has navigation", () => {
     await windowTitlebarTextIsVisible(/^My PC$/, { page });
   });
 });
-
-test.afterEach(didCaptureConsoleLogs);

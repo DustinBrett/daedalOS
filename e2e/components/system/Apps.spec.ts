@@ -8,7 +8,6 @@ import {
 import {
   captureConsoleLogs,
   desktopEntriesAreVisible,
-  didCaptureConsoleLogs,
   disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
@@ -16,7 +15,7 @@ import {
   windowsAreVisible,
 } from "e2e/functions";
 
-test.beforeEach(captureConsoleLogs);
+test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 
 test.describe("app container", () => {
@@ -42,5 +41,3 @@ test.describe("app container", () => {
     );
   });
 });
-
-test.afterEach(didCaptureConsoleLogs);

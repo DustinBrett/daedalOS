@@ -10,18 +10,53 @@ declare global {
   }
 }
 
-export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
+export const EXCLUDED_CONSOLE_LOGS = (
+  browserName: string,
+  testName?: string
+): string[] => {
+  // Generic messages
   const excludedConsoleLogs = [
-    // Generic messages
-    "Download the React DevTools for a better development experience",
     "[HMR] connected",
-    "[Fast Refresh] rebuilding",
-    "chrome://juggler",
     "No available adapters.",
     "not used within a few seconds",
-    // Marked
-    "mangle parameter is enabled by default, but is deprecated",
+    "[Fast Refresh] rebuilding",
+    "[Fast Refresh] done in",
+    "[Fast Refresh] performing full reload",
+    "Cannot update a component (`Unknown`) while rendering a different component",
   ];
+
+  if (testName === "apps") {
+    excludedConsoleLogs.push(
+      // Browser
+      "Cookie “AEC” has been rejected because it is in a cross-site context and its “SameSite” is “Lax” or “Strict”.",
+      "Blocked autofocusing on a form control in a cross-origin subframe.",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      'Error: "Content-Security-Policy:',
+      "an ancestor violates the following Content Security Policy directive",
+      // Messenger
+      "WebSocket connection to 'wss://public.relaying.io/' failed: Error during WebSocket handshake: Unexpected response code: 530"
+    );
+
+    if (browserName === "firefox") {
+      excludedConsoleLogs.push(
+        // Messenger
+        "Firefox can’t establish a connection to the server at wss://public.relaying.io/."
+      );
+    } else if (browserName === "webkit") {
+      excludedConsoleLogs.push(
+        // TIC-80
+        "Unable to initialize SDL Audio: -1, No audio context available",
+        "Unable to initialize SDL Game Controller: -1, Gamepads not supported",
+        // Quake 3
+        "WebGL: INVALID_ENUM: texParameter: invalid parameter name"
+      );
+    } else if (browserName === "chromium") {
+      excludedConsoleLogs.push(
+        // Browser
+        "Blocked autofocusing on a <textarea> element in a cross-origin subframe"
+      );
+    }
+  }
 
   if (process.env.CI) {
     if (browserName === "chromium") {
@@ -49,11 +84,6 @@ export const EXCLUDED_CONSOLE_LOGS = (browserName: string): string[] => {
       // sandbox=allow-presentation is not supported in webkit
       "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag.",
       'Viewport argument key "interactive-widget" not recognized and ignored.'
-    );
-  } else if (browserName === "firefox") {
-    excludedConsoleLogs.push(
-      "Layout was forced before the page was fully loaded",
-      "while rendering a different component (`ForwardRef`)"
     );
   }
 
