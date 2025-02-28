@@ -29,7 +29,7 @@ test.describe("can open app", () => {
 
       // NOTE: Some apps fully load AFTER the window has transitioned
       // eslint-disable-next-line playwright/no-wait-for-timeout
-      await page.waitForTimeout(TRANSITIONS_IN_MILLISECONDS.WINDOW * 2);
+      await page.waitForTimeout(TRANSITIONS_IN_MILLISECONDS.WINDOW);
 
       if (hasWindow) await windowsAreVisible({ page });
       if (!hideTaskbarEntry) await taskbarEntriesAreVisible({ page });
