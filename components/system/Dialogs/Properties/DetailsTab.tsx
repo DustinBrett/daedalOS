@@ -60,24 +60,29 @@ const DetailsTab: FC<TabProps> = ({
                       <th>{key}</th>
                       <th className="line" />
                     </tr>
-                    {Object.entries(data).map(([dataKey, value]) => (
-                      <tr key={`${dataKey}-${value}`}>
-                        <th title={dataKey}>{dataKey}</th>
-                        <td>
-                          {typeof value === "string" &&
-                          value.startsWith("blob:") ? (
-                            <img
-                              alt="Thumbnail"
-                              decoding="async"
-                              loading="lazy"
-                              src={value}
-                            />
-                          ) : (
-                            value
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                    {Object.entries(data)
+                      .filter(
+                        ([, value]) =>
+                          typeof value === "string" || typeof value === "number"
+                      )
+                      .map(([dataKey, value]) => (
+                        <tr key={`${dataKey}-${value}`}>
+                          <th title={dataKey}>{dataKey}</th>
+                          <td>
+                            {typeof value === "string" &&
+                            value.startsWith("blob:") ? (
+                              <img
+                                alt="Thumbnail"
+                                decoding="async"
+                                loading="lazy"
+                                src={value}
+                              />
+                            ) : (
+                              value
+                            )}
+                          </td>
+                        </tr>
+                      ))}
                   </Fragment>
                 )
               )}
