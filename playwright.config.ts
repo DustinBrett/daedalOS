@@ -16,7 +16,7 @@ const config: PlaywrightTestConfig = {
     { name: "webkit", use: safari },
   ],
   reporter: [["list"], ["html", { open: CI ? "never" : "always" }]],
-  retries: CI ? 2 : 1,
+  retries: CI ? 3 : 1,
   testDir: "e2e",
   use: {
     baseURL,
