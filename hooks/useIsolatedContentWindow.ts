@@ -63,6 +63,7 @@ const createIframe = (
   const contentDocument = iframe.contentDocument as Document;
 
   contentDocument.open();
+  // eslint-disable-next-line deprecation/deprecation
   contentDocument.write(`
     <!DOCTYPE html>
     ${styles ? `<head><style>${styles}</style></head>` : "<head />"}
