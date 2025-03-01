@@ -88,7 +88,9 @@ export const captureConsoleLogs =
   (testName = "") =>
   ({ browserName, page }: TestPropsWithBrowser): void => {
     page.on("console", (msg) => {
-      if (testName && msg.type() !== "error") return;
+      if (testName === "apps" && (process.env.CI || msg.type() !== "error")) {
+        return;
+      }
 
       const text = msg.text().trim();
       const isExcludedMessage =

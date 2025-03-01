@@ -53,7 +53,9 @@ export const EXCLUDED_CONSOLE_LOGS = (
         'THREE.WebGLRenderer: Argument 1 (\'contextType\') to OffscreenCanvas.getContext must be one of: "2d", "webgl", "webgl2", "bitmaprenderer", "webgpu"'
       );
     }
-  } else if (testName === "apps") {
+  }
+
+  if (testName === "apps") {
     excludedConsoleLogs.push(
       // Browser
       "Cookie “AEC” has been rejected because it is in a cross-site context and its “SameSite” is “Lax” or “Strict”.",
