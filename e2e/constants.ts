@@ -23,9 +23,37 @@ export const EXCLUDED_CONSOLE_LOGS = (
     "[Fast Refresh] done in",
     "[Fast Refresh] performing full reload",
     "Cannot update a component (`Unknown`) while rendering a different component",
+    "browserContext.",
   ];
 
-  if (testName === "apps") {
+  if (browserName === "webkit") {
+    excludedConsoleLogs.push(
+      // sandbox=allow-presentation is not supported in webkit
+      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag.",
+      'Viewport argument key "interactive-widget" not recognized and ignored.'
+    );
+  }
+
+  if (process.env.CI) {
+    if (browserName === "chromium") {
+      excludedConsoleLogs.push(
+        "Failed to create WebGPU Context Provider",
+        "WebGPU is experimental on this platform"
+      );
+    } else if (browserName === "firefox") {
+      excludedConsoleLogs.push(
+        "WebGL warning",
+        "Failed to create WebGL context",
+        "A WebGL context could not be created",
+        "Error creating WebGL context",
+        "'experimental-webgl' (value of argument 1) is not a valid value"
+      );
+    } else if (browserName === "webkit") {
+      excludedConsoleLogs.push(
+        'THREE.WebGLRenderer: Argument 1 (\'contextType\') to OffscreenCanvas.getContext must be one of: "2d", "webgl", "webgl2", "bitmaprenderer", "webgpu"'
+      );
+    }
+  } else if (testName === "apps") {
     excludedConsoleLogs.push(
       // Browser
       "Cookie “AEC” has been rejected because it is in a cross-site context and its “SameSite” is “Lax” or “Strict”.",
@@ -56,35 +84,6 @@ export const EXCLUDED_CONSOLE_LOGS = (
         "Blocked autofocusing on a <textarea> element in a cross-origin subframe"
       );
     }
-  }
-
-  if (process.env.CI) {
-    if (browserName === "chromium") {
-      excludedConsoleLogs.push(
-        "Failed to create WebGPU Context Provider",
-        "WebGPU is experimental on this platform"
-      );
-    } else if (browserName === "firefox") {
-      excludedConsoleLogs.push(
-        "WebGL warning",
-        "Failed to create WebGL context",
-        "A WebGL context could not be created",
-        "Error creating WebGL context",
-        "'experimental-webgl' (value of argument 1) is not a valid value"
-      );
-    } else if (browserName === "webkit") {
-      excludedConsoleLogs.push(
-        'THREE.WebGLRenderer: Argument 1 (\'contextType\') to OffscreenCanvas.getContext must be one of: "2d", "webgl", "webgl2", "bitmaprenderer", "webgpu"'
-      );
-    }
-  }
-
-  if (browserName === "webkit") {
-    excludedConsoleLogs.push(
-      // sandbox=allow-presentation is not supported in webkit
-      "Error while parsing the 'sandbox' attribute: 'allow-presentation' is an invalid sandbox flag.",
-      'Viewport argument key "interactive-widget" not recognized and ignored.'
-    );
   }
 
   return excludedConsoleLogs;
@@ -269,6 +268,10 @@ export const TEST_APP = "FileExplorer";
 export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
+export const TEST_APP_URL: Record<string, string> = {
+  Browser: "localhost",
+  Marked: "/CREDITS.md",
+};
 
 export const TEST_IMAGE_NAME = "image.png";
 export const TEST_DESKTOP_FILE = /^Public$/;
