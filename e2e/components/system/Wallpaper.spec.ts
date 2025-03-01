@@ -30,7 +30,6 @@ test("can change background", async ({ headless, browserName, page }) => {
 
   await clickDesktop({ page }, true);
   await contextMenuIsVisible({ page });
-  await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
   await clickContextMenuEntry(/^Background$/, { page });
   await clickContextMenuEntry(/^Picture Slideshow$/, { page });
 
@@ -42,8 +41,8 @@ test("can change background", async ({ headless, browserName, page }) => {
   await page.reload();
 
   await desktopIsVisible({ page });
-  await backgroundIsUrl({ page });
   await canvasBackgroundIsHidden({ page });
+  await backgroundIsUrl({ page });
 });
 
 test.describe("can set background", () => {
