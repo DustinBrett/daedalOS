@@ -105,16 +105,21 @@ const useVideoPlayer = ({
         canvasElement.style.visibility = enable ? "visible" : "hidden";
       }
 
-      videoPlayer?.reset();
+      if (videoPlayer) {
+        videoPlayer.reset();
 
-      if (enable) {
-        videoPlayer?.controlBar.playToggle.hide();
-        videoPlayer?.controlBar.pictureInPictureToggle.hide();
-        videoPlayer?.controlBar.fullscreenToggle.hide();
-      } else {
-        videoPlayer?.controlBar.playToggle.show();
-        videoPlayer?.controlBar.pictureInPictureToggle.show();
-        videoPlayer?.controlBar.fullscreenToggle.show();
+        if (enable) {
+          videoPlayer.controlBar.playToggle.hide();
+          videoPlayer.controlBar.pictureInPictureToggle.hide();
+          videoPlayer.controlBar.fullscreenToggle.hide();
+        } else {
+          videoPlayer.controlBar.playToggle.show();
+          videoPlayer.controlBar.pictureInPictureToggle.show();
+          videoPlayer.controlBar.fullscreenToggle.show();
+        }
+
+        argument(id, "play", enable ? false : () => videoPlayer.play());
+        argument(id, "pause", enable ? false : () => videoPlayer.pause());
       }
 
       linkElement(
@@ -127,7 +132,7 @@ const useVideoPlayer = ({
             : videoElement
       );
     },
-    [containerRef, id, isYT, linkElement]
+    [argument, containerRef, id, isYT, linkElement]
   );
   const loadPlayer = useCallback(() => {
     if (playerInitialized.current) return;
@@ -326,8 +331,6 @@ const useVideoPlayer = ({
       setPlayer(videoPlayer as VideoPlayer);
       setLoading(false);
       if (!isYT) linkElement(id, "peekElement", videoElement);
-      argument(id, "play", () => videoPlayer.play());
-      argument(id, "pause", () => videoPlayer.pause());
       videoPlayer.on("pause", () => argument(id, "paused", true));
       videoPlayer.on("play", () => argument(id, "paused", false));
     });
