@@ -680,7 +680,7 @@ const useFileContextMenu = (
               }
             },
             icon: pidIcon,
-            label: "Open",
+            label: VIDEO_FILE_EXTENSIONS.has(urlExtension) ? "Play" : "Open",
             primary: true,
           });
         }
