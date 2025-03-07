@@ -271,7 +271,7 @@ export const TEST_APP_TITLE = /^My PC$/;
 export const TEST_APP_TITLE_TEXT = "My PC";
 export const TEST_APP_ICON = /\/pc\.(webp|png)$/;
 export const TEST_APP_URL: Record<string, string> = {
-  Browser: "localhost",
+  Browser: "http://localhost",
   Marked: "/CREDITS.md",
 };
 
