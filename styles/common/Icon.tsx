@@ -17,6 +17,7 @@ export type IconProps = {
   $moving?: boolean;
   displaySize?: number;
   imgSize: number;
+  singleSrc?: boolean;
 };
 
 type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
@@ -52,7 +53,14 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
 const Icon: FCWithRef<
   HTMLImageElement,
   IconProps & React.ImgHTMLAttributes<HTMLImageElement>
-> = ({ displaySize = 0, imgSize = 0, ref, src = "", ...componentProps }) => {
+> = ({
+  displaySize = 0,
+  imgSize = 0,
+  ref,
+  singleSrc = false,
+  src = "",
+  ...componentProps
+}) => {
   const [loaded, setLoaded] = useState(false);
   const isDynamic = isDynamicIcon(src);
   const imgSrc = useMemo(
@@ -105,7 +113,7 @@ const Icon: FCWithRef<
       onLoad={() => setLoaded(true)}
       src={isDynamic ? imageSrc(imgSrc, imgSize, 1, srcExt) : src || undefined}
       srcSet={
-        isDynamic
+        !singleSrc && isDynamic
           ? imageSrcs(imgSrc, imgSize, srcExt, failedUrls) ||
             (failedUrls.length === 0
               ? ""
@@ -119,7 +127,8 @@ const Icon: FCWithRef<
 
   return (
     <picture>
-      {isDynamic &&
+      {!singleSrc &&
+        isDynamic &&
         SUPPORTED_ICON_PIXEL_RATIOS.map((ratio) => {
           const srcSet = imageSrc(imgSrc, imgSize, ratio, srcExt);
           const mediaRatio = ratio - 0.99;

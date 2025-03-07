@@ -464,7 +464,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             )}
             {...bookmarkMenu}
           >
-            <Icon alt={name} imgSize={16} src={icon} />
+            <Icon alt={name} imgSize={16} src={icon} singleSrc />
           </Button>
         ))}
       </nav>
