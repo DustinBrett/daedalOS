@@ -366,7 +366,11 @@ const useFileSystemContextState = (): FileSystemContextState => {
                   }
                 });
 
-                observer.observe(handle, { recursive: true });
+                try {
+                  observer.observe(handle, { recursive: true });
+                } catch {
+                  observer = undefined;
+                }
               }
 
               import("contexts/fileSystem/functions").then(
