@@ -12,7 +12,6 @@ import useFile from "components/system/Files/FileEntry/useFile";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type FileActions } from "components/system/Files/FileManager/useFolder";
 import { useFileSystem } from "contexts/fileSystem";
-import { isMountedFolder } from "contexts/fileSystem/functions";
 import { useMenu } from "contexts/menu";
 import {
   type ContextMenuCapture,
@@ -65,6 +64,7 @@ import {
 import useTransferDialog, {
   type ObjectReader,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
+import { isMountedFolder } from "contexts/fileSystem/core";
 
 const { alias } = PACKAGE_DATA;
 

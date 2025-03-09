@@ -4,9 +4,9 @@ import {
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFileSystem } from "contexts/fileSystem";
-import { isMountedFolder } from "contexts/fileSystem/functions";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
+import { isMountedFolder } from "contexts/fileSystem/core";
 
 export type FileInfo = {
   comment?: string;

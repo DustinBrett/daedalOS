@@ -1,15 +1,11 @@
-import { extname, join } from "path";
+import { join } from "path";
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type InMemoryFileSystem from "browserfs/dist/node/backend/InMemory";
 import { type FileSystemObserver } from "contexts/fileSystem/useFileSystemContextState";
-import { FS_HANDLES, MOUNTABLE_EXTENSIONS } from "utils/constants";
-import {
-  type ExtendedEmscriptenFileSystem,
-  type Mount,
-  type RootFileSystem,
-} from "contexts/fileSystem/useAsyncFs";
+import { FS_HANDLES } from "utils/constants";
+import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import {
   KEYVAL_STORE_NAME,
   getFileSystemHandles,
@@ -28,11 +24,6 @@ const KNOWN_IDB_DBS = [
   "js-dos-cache (emulators-ui-saves)",
   "keyval-store",
 ];
-
-export const isMountedFolder = (mount?: Mount): boolean =>
-  typeof mount === "object" &&
-  (mount.getName() === "FileSystemAccess" ||
-    (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
 
 const observers = new Map<string, FileSystemObserver>();
 
@@ -148,17 +139,3 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       clearFs();
     }
   });
-
-export const getMountUrl = (
-  url: string,
-  mntMap: Record<string, Mount>
-): string | undefined => {
-  if (url === "/") return "";
-  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(extname(url))) return url;
-
-  return Object.keys(mntMap)
-    .filter((mountedUrl) => mountedUrl !== "/")
-    .find(
-      (mountedUrl) => url === mountedUrl || url.startsWith(`${mountedUrl}/`)
-    );
-};

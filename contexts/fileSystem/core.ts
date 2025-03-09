@@ -1,7 +1,15 @@
-import { join } from "path";
+import { extname, join } from "path";
 import { openDB } from "idb";
+import {
+  type Mount,
+  type ExtendedEmscriptenFileSystem,
+} from "contexts/fileSystem/useAsyncFs";
 import index from "public/.index/fs.9p.json";
-import { FS_HANDLES, ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import {
+  FS_HANDLES,
+  MOUNTABLE_EXTENSIONS,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 
 type BFSFS = { [key: string]: BFSFS | null };
 type FS9PV3 = [
@@ -169,4 +177,23 @@ export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
     ) as Promise<FileSystemHandles>)) ||
     (Object.create(null) as FileSystemHandles)
   );
+};
+
+export const isMountedFolder = (mount?: Mount): boolean =>
+  typeof mount === "object" &&
+  (mount.getName() === "FileSystemAccess" ||
+    (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
+
+export const getMountUrl = (
+  url: string,
+  mntMap: Record<string, Mount>
+): string | undefined => {
+  if (url === "/") return "";
+  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(extname(url))) return url;
+
+  return Object.keys(mntMap)
+    .filter((mountedUrl) => mountedUrl !== "/")
+    .find(
+      (mountedUrl) => url === mountedUrl || url.startsWith(`${mountedUrl}/`)
+    );
 };

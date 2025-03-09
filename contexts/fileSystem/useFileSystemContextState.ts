@@ -18,8 +18,10 @@ import {
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
 import { type NewPath } from "components/system/Files/FileManager/useFolder";
-import { getFileSystemHandles } from "contexts/fileSystem/core";
-import { isMountedFolder } from "contexts/fileSystem/functions";
+import {
+  getFileSystemHandles,
+  isMountedFolder,
+} from "contexts/fileSystem/core";
 import useAsyncFs, {
   type AsyncFS,
   type EmscriptenFS,
