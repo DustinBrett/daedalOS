@@ -49,6 +49,7 @@ export type RelativePosition = {
 type BaseProcessArguments = {
   allowResizing?: boolean;
   autoSizing?: boolean;
+  backgroundBlur?: string;
   backgroundColor?: string;
   dependantLibs?: string[];
   hideMaximizeButton?: boolean;

@@ -287,6 +287,7 @@ const directory: Processes = {
   },
   Terminal: {
     Component: dynamic(() => import("components/apps/Terminal")),
+    backgroundBlur: "8px",
     backgroundColor: "rgba(12, 12, 12, 0.5)",
     defaultSize: {
       height: 374,

@@ -14,8 +14,13 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { backgroundColor, Component, hideTitlebar, peekElement } =
-    process || {};
+  const {
+    backgroundBlur,
+    backgroundColor,
+    Component,
+    hideTitlebar,
+    peekElement,
+  } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
@@ -32,6 +37,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   return (
     <RndWindow id={id} zIndex={zIndex}>
       <StyledWindow
+        $backgroundBlur={backgroundBlur}
         $backgroundColor={backgroundColor}
         $isForeground={isForeground}
         {...focusableProps}

@@ -1,7 +1,9 @@
 import { m as motion } from "motion/react";
 import styled from "styled-components";
+import StyledLoading from "components/system/Files/FileManager/StyledLoading";
 
 type StyledWindowProps = {
+  $backgroundBlur?: string;
   $backgroundColor?: string;
   $isForeground: boolean;
 };
@@ -27,6 +29,11 @@ const StyledWindow = styled(motion.section)<StyledWindowProps>`
 
   header + * {
     height: ${({ theme }) => `calc(100% - ${theme.sizes.titleBar.height}px)`};
+  }
+
+  ${StyledLoading} {
+    backdrop-filter: ${({ $backgroundBlur }) =>
+      $backgroundBlur ? `blur(${$backgroundBlur})` : undefined};
   }
 `;
 
