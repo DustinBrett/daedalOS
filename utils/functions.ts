@@ -26,9 +26,6 @@ import {
   TIMESTAMP_DATE_FORMAT,
   USER_ICON_PATH,
 } from "utils/constants";
-import { LOCAL_HOST } from "components/apps/Browser/config";
-
-export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
@@ -804,6 +801,9 @@ export const getTZOffsetISOString = (): string => {
     date.getTime() - date.getTimezoneOffset() * 60000
   ).toISOString();
 };
+
+export const LOCAL_HOST = new Set(["127.0.0.1", "localhost"]);
+export const GOOGLE_SEARCH_QUERY = "https://www.google.com/search?igu=1&q=";
 
 export const getUrlOrSearch = async (input: string): Promise<URL> => {
   const isIpfs = input.startsWith("ipfs://");

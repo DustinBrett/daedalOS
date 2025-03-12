@@ -1,5 +1,5 @@
 import { extname, join } from "path";
-import { openDB } from "idb";
+import { type openDB } from "idb";
 import {
   type Mount,
   type ExtendedEmscriptenFileSystem,
@@ -34,7 +34,7 @@ export const UNKNOWN_SIZE = -1;
 export const UNKNOWN_STATE_CODES = new Set(["EIO", "ENOENT"]);
 export const KEYVAL_STORE_NAME = "keyval";
 
-const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
+export const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
 const IDX_SIZE = 1;
 const IDX_MTIME = 2;
@@ -158,8 +158,28 @@ export const supportsIndexedDB = (): Promise<boolean> =>
     }
   });
 
-export const getKeyValStore = (): ReturnType<typeof openDB> =>
-  openDB(KEYVAL_DB, 1, {
+export const hasIndexedDB = async (name: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    try {
+      const db = window.indexedDB.open(name);
+
+      db.addEventListener("upgradeneeded", () => {
+        db.transaction?.abort();
+        resolve(false);
+      });
+      db.addEventListener("success", () => {
+        db.result.close();
+        resolve(true);
+      });
+      db.addEventListener("error", () => resolve(false));
+      db.addEventListener("blocked", () => resolve(false));
+    } catch {
+      resolve(false);
+    }
+  });
+
+export const getKeyValStore = async (): ReturnType<typeof openDB> =>
+  (await import("idb")).openDB(KEYVAL_DB, 1, {
     upgrade: (db) => db.createObjectStore(KEYVAL_STORE_NAME),
   });
 

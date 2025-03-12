@@ -20,7 +20,9 @@ import {
 import { type NewPath } from "components/system/Files/FileManager/useFolder";
 import {
   getFileSystemHandles,
+  hasIndexedDB,
   isMountedFolder,
+  KEYVAL_DB,
 } from "contexts/fileSystem/core";
 import useAsyncFs, {
   type AsyncFS,
@@ -617,25 +619,27 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
         let mappedOntoDesktop = false;
 
-        await Promise.all(
-          Object.entries(await getFileSystemHandles()).map(
-            async ([handleDirectory, handle]) => {
-              if (!(await exists(handleDirectory))) {
-                try {
-                  const mapDirectory = SYSTEM_DIRECTORIES.has(handleDirectory)
-                    ? handleDirectory
-                    : dirname(handleDirectory);
+        if (await hasIndexedDB(KEYVAL_DB)) {
+          await Promise.all(
+            Object.entries(await getFileSystemHandles()).map(
+              async ([handleDirectory, handle]) => {
+                if (!(await exists(handleDirectory))) {
+                  try {
+                    const mapDirectory = SYSTEM_DIRECTORIES.has(handleDirectory)
+                      ? handleDirectory
+                      : dirname(handleDirectory);
 
-                  await mapFs(mapDirectory, handle);
+                    await mapFs(mapDirectory, handle);
 
-                  if (mapDirectory === DESKTOP_PATH) mappedOntoDesktop = true;
-                } catch {
-                  // Ignore failure
+                    if (mapDirectory === DESKTOP_PATH) mappedOntoDesktop = true;
+                  } catch {
+                    // Ignore failure
+                  }
                 }
               }
-            }
-          )
-        );
+            )
+          );
+        }
 
         if (mappedOntoDesktop) updateFolder(DESKTOP_PATH);
       };

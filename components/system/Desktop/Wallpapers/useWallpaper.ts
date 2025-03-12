@@ -16,7 +16,6 @@ import {
   type WallpaperMessage,
   type WallpaperConfig,
 } from "components/system/Desktop/Wallpapers/types";
-import { config as vantaConfig } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
@@ -26,6 +25,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_MINUTE,
+  NATIVE_IMAGE_FORMATS,
   PICTURES_FOLDER,
   PROMPT_FILE,
   SLIDESHOW_FILE,
@@ -63,7 +63,7 @@ const useWallpaper = (
   );
   const vantaWireframe = wallpaperImage === "VANTA WIREFRAME";
   const wallpaperWorker = useWorker<void>(
-    WALLPAPER_WORKERS[wallpaperName],
+    sessionLoaded ? WALLPAPER_WORKERS[wallpaperName] : undefined,
     undefined,
     vantaWireframe ? "Wireframe" : ""
   );
@@ -107,12 +107,13 @@ const useWallpaper = (
 
       if (wallpaperName === "VANTA") {
         config = {
-          ...vantaConfig,
-          waveSpeed:
-            vantaConfig.waveSpeed *
-            (prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1),
+          material: {
+            options: {
+              wireframe: vantaWireframe || !isTopWindow,
+            },
+          },
+          waveSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
         };
-        vantaConfig.material.options.wireframe = vantaWireframe || !isTopWindow;
       } else if (wallpaperImage.startsWith("MATRIX")) {
         config = {
           animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
@@ -374,14 +375,17 @@ const useWallpaper = (
         }
       }
     } else if (await exists(wallpaperImage)) {
-      const { decodeImageToBuffer } = await import("utils/imageDecoder");
-      const fileData = await readFile(wallpaperImage);
-      const imageBuffer = await decodeImageToBuffer(
-        getExtension(wallpaperImage),
-        fileData
-      );
+      let fileData = await readFile(wallpaperImage);
+      const imgExt = getExtension(wallpaperImage);
 
-      wallpaperUrl = bufferToUrl(imageBuffer || fileData);
+      if (!NATIVE_IMAGE_FORMATS.has(imgExt)) {
+        const { decodeImageToBuffer } = await import("utils/imageDecoder");
+        const decodedData = await decodeImageToBuffer(imgExt, fileData);
+
+        if (decodedData) fileData = decodedData;
+      }
+
+      wallpaperUrl = bufferToUrl(fileData);
     }
 
     if (wallpaperUrl) {

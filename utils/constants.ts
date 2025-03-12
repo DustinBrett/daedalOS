@@ -96,14 +96,10 @@ export const TIFF_IMAGE_FORMATS = new Set([
 
 export const CLIPBOARD_FILE_EXTENSIONS = new Set([".jpeg", ".jpg", ".png"]);
 
-export const IMAGE_FILE_EXTENSIONS = new Set([
-  ...HEIF_IMAGE_FORMATS,
-  ...TIFF_IMAGE_FORMATS,
-  ".ani",
+export const NATIVE_IMAGE_FORMATS = new Set([
   ".apng",
   ".avif",
   ".bmp",
-  ".cur",
   ".gif",
   ".ico",
   ".jfif",
@@ -111,14 +107,22 @@ export const IMAGE_FILE_EXTENSIONS = new Set([
   ".jpe",
   ".jpeg",
   ".jpg",
-  ".jxl",
   ".pjp",
   ".pjpeg",
   ".png",
   ".svg",
-  ".qoi",
   ".webp",
   ".xbm",
+]);
+
+export const IMAGE_FILE_EXTENSIONS = new Set([
+  ...NATIVE_IMAGE_FORMATS,
+  ...HEIF_IMAGE_FORMATS,
+  ...TIFF_IMAGE_FORMATS,
+  ".ani",
+  ".cur",
+  ".jxl",
+  ".qoi",
 ]);
 
 export const UNSUPPORTED_SLIDESHOW_EXTENSIONS = new Set([

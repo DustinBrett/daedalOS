@@ -20,7 +20,6 @@ import StyledBrowser from "components/apps/Browser/StyledBrowser";
 import {
   DINO_GAME,
   HOME_PAGE,
-  LOCAL_HOST,
   NOT_FOUND,
   PROXIES,
   bookmarks,
@@ -41,6 +40,7 @@ import {
 } from "utils/constants";
 import {
   GOOGLE_SEARCH_QUERY,
+  LOCAL_HOST,
   getExtension,
   getUrlOrSearch,
   haltEvent,

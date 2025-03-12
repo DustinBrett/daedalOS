@@ -14,7 +14,7 @@ declare global {
 export type WallpaperConfig =
   | Partial<StableDiffusionConfig>
   | Partial<typeof MatrixConfig>
-  | VantaWavesConfig;
+  | Partial<VantaWavesConfig>;
 
 export type WallpaperFunc = (
   el: HTMLElement | null,

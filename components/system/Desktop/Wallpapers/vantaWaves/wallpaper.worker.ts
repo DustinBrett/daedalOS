@@ -1,7 +1,7 @@
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import { libs } from "components/system/Desktop/Wallpapers/vantaWaves";
 import {
-  config,
+  config as vantaConfig,
   disableControls,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import {
@@ -30,11 +30,7 @@ globalThis.addEventListener(
       waveEffect?.renderer.setSize(width, height);
       waveEffect?.resize();
     } else {
-      const {
-        canvas,
-        config: offscreenConfig,
-        devicePixelRatio,
-      } = data as OffscreenRenderProps;
+      const { canvas, config, devicePixelRatio } = data as OffscreenRenderProps;
       const { VANTA: { current: currentEffect = waveEffect, WAVES } = {} } =
         globalThis;
 
@@ -42,8 +38,16 @@ globalThis.addEventListener(
       if (currentEffect) currentEffect.destroy();
 
       try {
+        const { material, waveSpeed } = config as VantaWavesConfig;
+        const wavesConfig = {
+          ...vantaConfig,
+          waveSpeed: vantaConfig.waveSpeed * waveSpeed,
+        };
+
+        wavesConfig.material.options.wireframe = material.options.wireframe;
+
         waveEffect = WAVES({
-          ...((offscreenConfig || config) as VantaWavesConfig),
+          ...wavesConfig,
           ...disableControls,
           canvas,
           devicePixelRatio,

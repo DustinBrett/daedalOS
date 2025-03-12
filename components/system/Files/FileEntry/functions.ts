@@ -28,6 +28,7 @@ import {
   MAX_ICON_SIZE,
   MAX_THUMBNAIL_FILE_SIZE,
   MOUNTED_FOLDER_ICON,
+  NATIVE_IMAGE_FORMATS,
   NEW_FOLDER_ICON,
   ONE_TIME_PASSIVE_EVENT,
   PHOTO_ICON,
@@ -365,14 +366,23 @@ export const getInfoWithExtension = (
     getInfoByFileExtension(PHOTO_ICON, (signal) =>
       fs.readFile(path, async (error, contents = Buffer.from("")) => {
         if (!error && contents.length > 0 && !signal.aborted) {
-          const { decodeImageToBuffer } = await import("utils/imageDecoder");
+          let image = contents;
+
+          if (!NATIVE_IMAGE_FORMATS.has(extension)) {
+            const { decodeImageToBuffer } = await import("utils/imageDecoder");
+
+            if (!signal.aborted) {
+              const decodedImage = await decodeImageToBuffer(
+                extension,
+                contents
+              );
+
+              if (decodedImage) image = decodedImage;
+            }
+          }
 
           if (!signal.aborted) {
-            const image = await decodeImageToBuffer(extension, contents);
-
-            if (image && !signal.aborted) {
-              getInfoByFileExtension(bufferToUrl(image, getMimeType(path)));
-            }
+            getInfoByFileExtension(bufferToUrl(image, getMimeType(path)));
           }
         }
       })

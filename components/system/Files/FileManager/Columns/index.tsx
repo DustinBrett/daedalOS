@@ -1,5 +1,6 @@
 import { memo, useRef } from "react";
 import { useTheme } from "styled-components";
+import dynamic from "next/dynamic";
 import { sortFiles } from "components/system/Files/FileManager/functions";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import StyledColumns from "components/system/Files/FileManager/Columns/StyledColumns";
@@ -11,7 +12,10 @@ import {
 } from "components/system/Files/FileManager/Columns/constants";
 import { useSession } from "contexts/session";
 import { type Files } from "components/system/Files/FileManager/useFolder";
-import { Down } from "components/apps/FileExplorer/NavigationIcons";
+
+const Down = dynamic(() =>
+  import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)
+);
 
 type ColumnsProps = {
   columns: ColumnsObject;
