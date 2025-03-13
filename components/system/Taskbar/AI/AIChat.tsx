@@ -22,11 +22,8 @@ import {
 } from "components/system/Taskbar/AI/icons";
 import useAITransition from "components/system/Taskbar/AI/useAITransition";
 import {
-  AI_DISPLAY_TITLE,
-  AI_TITLE,
   AI_WORKER,
   DEFAULT_CONVO_STYLE,
-  WINDOW_ID,
 } from "components/system/Taskbar/AI/constants";
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
@@ -38,7 +35,13 @@ import {
   label,
   viewWidth,
 } from "utils/functions";
-import { DESKTOP_PATH, PREVENT_SCROLL, SAVE_PATH } from "utils/constants";
+import {
+  AI_TITLE,
+  AI_WINDOW_ID,
+  DESKTOP_PATH,
+  PREVENT_SCROLL,
+  SAVE_PATH,
+} from "utils/constants";
 import {
   type MessageTypes,
   type ConvoStyles,
@@ -168,7 +171,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     useState<HTMLElement | null>();
   const { removeFromStack, setWallpaper } = useSession();
   const { zIndex, ...focusableProps } = useFocusable(
-    WINDOW_ID,
+    AI_WINDOW_ID,
     undefined,
     containerElement
   );
@@ -371,13 +374,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     >
       <div className="header">
         <header>
-          {AI_DISPLAY_TITLE}
+          {AI_TITLE} (beta)
           <nav>
             <Button
               className="close"
               onClick={() => {
                 toggleAI();
-                removeFromStack(WINDOW_ID);
+                removeFromStack(AI_WINDOW_ID);
               }}
               {...label("Close")}
             >

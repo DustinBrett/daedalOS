@@ -1,15 +1,14 @@
 import { useEffect, useRef } from "react";
 
 const useWorker = <T>(
-  workerInit?: (info?: string) => Worker,
-  onMessage?: (message: MessageEvent<T>) => void,
-  workerInfo?: string
+  workerInit?: () => Worker,
+  onMessage?: (message: MessageEvent<T>) => void
 ): React.RefObject<Worker | undefined> => {
   const worker = useRef<Worker>(undefined);
 
   useEffect(() => {
     if (workerInit && !worker.current) {
-      worker.current = workerInit(workerInfo);
+      worker.current = workerInit();
 
       if (onMessage) {
         worker.current.addEventListener("message", onMessage, {
@@ -24,7 +23,7 @@ const useWorker = <T>(
       worker.current?.terminate();
       worker.current = undefined;
     };
-  }, [onMessage, workerInfo, workerInit]);
+  }, [onMessage, workerInit]);
 
   return worker;
 };

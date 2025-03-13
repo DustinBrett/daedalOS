@@ -211,6 +211,10 @@ export const DESKTOP_PATH = `${HOME}/Desktop`;
 
 export const START_MENU_PATH = `${HOME}/Start Menu`;
 
+export const AI_TITLE = "Talos";
+
+export const AI_WINDOW_ID = "ai-chat-window";
+
 export const SYSTEM_SHORTCUT_DIRECTORIES = new Set([DESKTOP_PATH]);
 
 export const TRANSITIONS_IN_MILLISECONDS = {

@@ -25,7 +25,7 @@ export const WALLPAPER_PATHS: Record<
   VANTA: () => import("components/system/Desktop/Wallpapers/vantaWaves"),
 };
 
-export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
+export const WALLPAPER_WORKERS: Record<string, () => Worker> = {
   COASTAL_LANDSCAPE: (): Worker =>
     new Worker(
       new URL(
@@ -47,13 +47,13 @@ export const WALLPAPER_WORKERS: Record<string, (info?: string) => Worker> = {
       new URL("components/apps/StableDiffusion/sd.worker", import.meta.url),
       { name: "Wallpaper (Stable Diffusion)" }
     ),
-  VANTA: (info?: string): Worker =>
+  VANTA: (): Worker =>
     new Worker(
       new URL(
         "components/system/Desktop/Wallpapers/vantaWaves/wallpaper.worker",
         import.meta.url
       ),
-      { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` }
+      { name: "Wallpaper (Vanta Waves)" }
     ),
 };
 

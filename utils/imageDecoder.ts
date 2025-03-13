@@ -37,7 +37,9 @@ const decodeJxl = async (image: Buffer): Promise<Buffer> =>
   (await supportsImageType("image/jxl"))
     ? image
     : new Promise((resolve) => {
-        const worker = new Worker("System/JXL.js/jxl_dec.js");
+        const worker = new Worker("System/JXL.js/jxl_dec.js", {
+          name: "JXL.js",
+        });
 
         worker.postMessage({ image, jxlSrc: "image.jxl" });
         worker.addEventListener("message", (message: JxlDecodeResponse) => {

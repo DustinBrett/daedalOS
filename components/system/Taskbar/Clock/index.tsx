@@ -19,11 +19,6 @@ import { useMenuPreload } from "hooks/useMenuPreload";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
 
-const ClockSourceMap = {
-  local: "Local",
-  ntp: "Server",
-};
-
 const EASTER_EGG_CLICK_COUNT = 7;
 
 const LARGEST_CLOCK_TEXT = "44:44:44 AM";
@@ -85,8 +80,10 @@ const Clock: FC<ClockProps> = ({
           "components/system/Taskbar/Clock/clock.worker",
           import.meta.url
         ),
-        { name: `Clock (${ClockSourceMap[clockSource]})` }
+        { name: "Clock" }
       ),
+    // NOTE: Need `clockSource` in the dependency array to ensure the worker is rebuilt
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [clockSource]
   );
   const offScreenClockCanvas = useRef<OffscreenCanvas>(undefined);

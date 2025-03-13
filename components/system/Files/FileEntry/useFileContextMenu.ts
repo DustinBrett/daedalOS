@@ -22,6 +22,7 @@ import processDirectory from "contexts/process/directory";
 import { useSession } from "contexts/session";
 import { useProcessesRef } from "hooks/useProcessesRef";
 import {
+  AI_TITLE,
   AUDIO_PLAYLIST_EXTENSIONS,
   CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
@@ -57,10 +58,6 @@ import {
 import { Share } from "components/system/Menu/MenuIcons";
 import { useWindowAI } from "hooks/useWindowAI";
 import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
-import {
-  AI_DISPLAY_TITLE,
-  AI_STAGE,
-} from "components/system/Taskbar/AI/constants";
 import useTransferDialog, {
   type ObjectReader,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
@@ -552,22 +549,13 @@ const useFileContextMenu = (
             if (newTopicButton) {
               newTopicButton?.click();
             } else {
-              getNavButtonByTitle(AI_DISPLAY_TITLE)?.click();
+              getNavButtonByTitle(AI_TITLE)?.click();
             }
           };
 
           menuItems.unshift(MENU_SEPERATOR, {
-            label: `AI (${AI_STAGE})`,
-            menu: [
-              ...(aiEnabled || (hasWindowAI && "summarizer" in window.ai)
-                ? [
-                    {
-                      action: () => aiCommand("Summarize"),
-                      label: "Summarize Text",
-                    },
-                  ]
-                : []),
-            ],
+            action: () => aiCommand("Summarize"),
+            label: "Summarize Text (AI)",
           });
         }
 
