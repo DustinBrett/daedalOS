@@ -36,7 +36,7 @@
     - [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/talk.wasm)
     - TTS
       - [Coqui.ai](https://github.com/coqui-ai/tts)
-      - [speak.js](https://github.com/mtttmpl/speak-js)
+      - speak.js ([1](https://github.com/kripken/speak.js), [2](https://github.com/mtttmpl/speak-js))
     - [Transformers.js](https://xenova.github.io/transformers.js/)
 - 3rd Party App Support
 - Email App
@@ -113,6 +113,7 @@
 
 - [native-file-system-adapter](https://github.com/jimmywarting/native-file-system-adapter)
 - [WebDAV](https://github.com/perry-mitchell/webdav-client)
+- [harextract](https://github.com/JC3/harextract)
 
 ### File Information
 
@@ -128,6 +129,7 @@
   - [WebGPUReport.org](https://github.com/webgpu/webgpureport.org)
 - Fonts
   - [Local Font Access API](https://developer.chrome.com/docs/capabilities/web-apis/local-fonts)
+  - [Font Parser](https://www.antvaset.com/font-parser)
 - React
   - [DevTools Inline](https://www.npmjs.com/package/react-devtools-inline)
 - Benchmarks
