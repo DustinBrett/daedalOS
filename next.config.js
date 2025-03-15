@@ -27,7 +27,8 @@ const nextConfig = {
   devIndicators: false,
   output: "export",
   productionBrowserSourceMaps: false,
-  reactStrictMode: true,
+  reactProductionProfiling: false,
+  reactStrictMode: !isProduction,
   webpack: (config) => {
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
