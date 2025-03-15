@@ -1,5 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
 
+type AIAvailability = {
+  availability?: () => Promise<"available" | "unavailable">;
+  capabilities?: () => Promise<{ available: AICapabilityAvailability }>;
+};
+
+export const isAvailable = async (ai: AIAvailability): Promise<boolean> => {
+  try {
+    if (typeof ai.availability === "function") {
+      return (await ai.availability()) === "available";
+    }
+
+    if (typeof ai.capabilities === "function") {
+      return (await ai.capabilities()).available === "readily";
+    }
+  } catch {
+    return false;
+  }
+
+  return false;
+};
+
 let HAS_WINDOW_AI = false;
 
 const supportsAI = async (): Promise<boolean> => {
@@ -7,16 +28,13 @@ const supportsAI = async (): Promise<boolean> => {
     typeof window === "undefined" ||
     !("ai" in window) ||
     !("languageModel" in window.ai) ||
-    typeof window.ai.languageModel !== "object" ||
-    !("capabilities" in window.ai.languageModel) ||
-    typeof window.ai.languageModel.capabilities !== "function"
+    typeof window.ai.languageModel !== "object"
   ) {
     return false;
   }
 
   try {
-    HAS_WINDOW_AI =
-      (await window.ai.languageModel.capabilities()).available === "readily";
+    HAS_WINDOW_AI = await isAvailable(globalThis.ai.languageModel);
 
     return HAS_WINDOW_AI;
   } catch {

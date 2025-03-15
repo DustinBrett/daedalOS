@@ -14,6 +14,7 @@ import {
   type ConvoStyles,
   type Prompt,
 } from "components/system/Taskbar/AI/types";
+import { isAvailable } from "hooks/useWindowAI";
 
 const MARKED_LIBS = [
   "/Program Files/Marked/marked.min.js",
@@ -140,8 +141,7 @@ globalThis.addEventListener(
           data.hasWindowAI &&
           data.summarizeText &&
           "summarizer" in globalThis.ai &&
-          (await globalThis.ai.summarizer.capabilities())?.available ===
-            "readily"
+          (await isAvailable(globalThis.ai.summarizer))
         ) {
           summarizer = await globalThis.ai.summarizer.create();
         }
