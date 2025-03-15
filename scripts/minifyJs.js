@@ -15,7 +15,7 @@ const JS_MINIFIER_CONFIG = {
 };
 
 const workerRegEx =
-  /new Worker\(\w+\.\w+\(new URL\(\w+\.\w+\+\w+\.\w+\(\d+\),\w+\.\w+\)\),\{name:"(\w+)"\}\)/;
+  /new Worker\(\w+\.\w+\(new URL\(\w+\.\w+\+\w+\.\w+\(\d+\),\w+\.\w+\)\),\{name:"(.+)"\}\)/;
 
 const inlineIndexWorkers = (code) => {
   const [, workerName] = code.match(workerRegEx) || [];
