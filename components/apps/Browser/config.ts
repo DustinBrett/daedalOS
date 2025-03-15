@@ -52,11 +52,6 @@ export const bookmarks: Bookmark[] = [
     url: "https://skins.webamp.org/",
   },
   {
-    icon: "/System/Icons/Favicons/win96.webp",
-    name: "Windows 96",
-    url: "https://windows96.net/",
-  },
-  {
     icon: "/System/Icons/Favicons/aos.webp",
     name: "AaronOS",
     url: "https://aaronos.dev/",
