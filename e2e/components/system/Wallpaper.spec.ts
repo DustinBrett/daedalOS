@@ -23,6 +23,7 @@ test.beforeEach(captureConsoleLogs());
 test("has background", loadAppWithCanvas);
 
 test("can change background", async ({ headless, browserName, page }) => {
+  await disableWallpaper({ page });
   await loadAppWithCanvas({ browserName, headless, page });
   await sessionIsWriteable({ page });
 

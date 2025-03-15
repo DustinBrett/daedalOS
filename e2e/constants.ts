@@ -70,7 +70,7 @@ export const EXCLUDED_CONSOLE_LOGS = (
     if (browserName === "firefox") {
       excludedConsoleLogs.push(
         // Messenger
-        "Firefox can’t establish a connection to the server at wss://public.relaying.io/."
+        "Firefox can’t establish a connection to the server at wss://"
       );
     } else if (browserName === "webkit") {
       excludedConsoleLogs.push(
