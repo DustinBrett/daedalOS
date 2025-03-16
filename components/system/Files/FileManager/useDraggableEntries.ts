@@ -1,6 +1,6 @@
 import { join } from "path";
 import { type Position } from "react-rnd";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { useSession } from "contexts/session";
 import {
@@ -41,10 +41,8 @@ const useDraggableEntries = (
   allowMoving?: boolean,
   isDesktop?: boolean
 ): DraggableEntry => {
-  const [dropIndex, setDropIndex] = useState(-1);
   const { exists } = useFileSystem();
-  const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
-    useSession();
+  const { iconPositions, sortOrders, setIconPositions } = useSession();
   const dragImageRef = useRef<HTMLImageElement>(null);
   const adjustedCaptureOffsetRef = useRef(false);
   const capturedImageOffset = useRef({ x: 0, y: 0 });
@@ -132,43 +130,19 @@ const useDraggableEntries = (
             adjustedCaptureOffsetRef.current = false;
             updateDragImage();
           }, TRANSITIONS_IN_MILLISECONDS.MOUSE_IN_OUT / 2);
-        } else if (dropIndex !== -1) {
-          setSortOrder(entryUrl, (currentSortOrders) => {
-            const sortedEntries = currentSortOrders.filter(
-              (entry) => !focusedEntries.includes(entry)
-            );
-
-            sortedEntries.splice(dropIndex, 0, ...focusedEntries);
-
-            return sortedEntries;
-          });
         }
       },
     [
       allowMoving,
-      dropIndex,
       exists,
       fileManagerRef,
       focusedEntries,
       iconPositions,
       onDragging,
       setIconPositions,
-      setSortOrder,
       sortOrders,
       updateDragImage,
     ]
-  );
-  const onDragOver = useCallback(
-    (file: string): React.DragEventHandler =>
-      ({ target }) => {
-        if (!allowMoving && target instanceof HTMLLIElement) {
-          const { children = [] } = target.parentElement || {};
-          const dragOverFocused = focusedEntries.includes(file);
-
-          setDropIndex(dragOverFocused ? -1 : [...children].indexOf(target));
-        }
-      },
-    [allowMoving, focusedEntries]
   );
   const onDragStart = useCallback(
     (
@@ -277,7 +251,6 @@ const useDraggableEntries = (
   return (entryUrl: string, file: string, renaming: boolean) => ({
     draggable: true,
     onDragEnd: onDragEnd(entryUrl),
-    onDragOver: onDragOver(file),
     onDragStart: onDragStart(entryUrl, file, renaming),
     style: isMainContainer ? iconPositions[join(entryUrl, file)] : undefined,
   });
