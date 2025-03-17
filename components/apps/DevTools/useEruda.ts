@@ -7,6 +7,7 @@ import { loadFiles, viewWidth } from "utils/functions";
 declare global {
   interface Window {
     eruda?: typeof Eruda;
+    erudaMonitor: Parameters<(typeof Eruda)["add"]>[0];
   }
 }
 
@@ -20,7 +21,8 @@ const config: InitOptions = {
   useShadowDom: false,
 };
 
-const FULL_TOOLBAR_WIDTH = 395;
+const FULL_TOOLBAR_WIDTH = 455;
+const SOURCES_BUTTON_WIDTH = 62;
 const RESOURCES_BUTTON_WIDTH = 74;
 
 const useEruda = ({
@@ -42,19 +44,37 @@ const useEruda = ({
         const vw = viewWidth();
 
         if (container) {
+          const tool = ["console", "elements", "network"];
+
+          if (vw >= FULL_TOOLBAR_WIDTH - RESOURCES_BUTTON_WIDTH) {
+            tool.push("resources");
+          }
+
+          if (vw >= FULL_TOOLBAR_WIDTH) {
+            tool.push("sources");
+          }
+
           window.eruda.init({
             ...config,
             container,
+            tool,
           });
-          window.eruda.remove("info");
-          window.eruda.remove("snippets");
-          if (vw < FULL_TOOLBAR_WIDTH) {
-            window.eruda.remove("resources");
+
+          if (
+            vw >
+            FULL_TOOLBAR_WIDTH - RESOURCES_BUTTON_WIDTH - SOURCES_BUTTON_WIDTH
+          ) {
+            window.eruda.add(window.erudaMonitor);
           }
-          if (vw < FULL_TOOLBAR_WIDTH - RESOURCES_BUTTON_WIDTH) {
-            window.eruda.remove("sources");
-          }
+
           window.eruda.show();
+
+          const firstFileEntry = document.querySelector("main > ol > li");
+
+          if (firstFileEntry instanceof HTMLLIElement) {
+            window.eruda.get("elements").select(firstFileEntry);
+          }
+
           setLoading(false);
         }
       }
