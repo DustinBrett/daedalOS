@@ -15,7 +15,7 @@ const JS_MINIFIER_CONFIG = {
 };
 
 const workerRegEx =
-  /new Worker\(\w+\.\w+\(new URL\(\w+\.\w+\+\w+\.\w+\(\d+\),\w+\.\w+\)\),\{name:"(.+)"\}\)/;
+  /new Worker\(\w+\.\w+\(new URL\(\w+\.\w+\+\w+\.\w+\(\d+\),\w+\.\w+\)\),\{name:"([\w\s]+)"\}\)/;
 
 const inlineIndexWorkers = (code) => {
   const [, workerName] = code.match(workerRegEx) || [];
@@ -24,6 +24,11 @@ const inlineIndexWorkers = (code) => {
     const workerFilename = readdirSync(
       join(OUT_PATH, "_next/static/chunks")
     ).find((entry) => entry.startsWith(`${workerName}.`));
+
+    if (!workerFilename) {
+      throw new Error(`Worker file not found for '${workerName}'`);
+    }
+
     const workerSource = readFileSync(
       join(OUT_PATH, "_next/static/chunks", workerFilename)
     );
