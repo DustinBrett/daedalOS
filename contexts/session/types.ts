@@ -41,7 +41,7 @@ export type IconPositions = Record<string, IconPosition>;
 export type SessionData = {
   aiEnabled: boolean;
   clockSource: ClockSource;
-  cursor: string;
+  cursor: string | undefined;
   iconPositions: IconPositions;
   recentFiles: RecentFiles;
   runHistory: string[];
