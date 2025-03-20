@@ -56,7 +56,7 @@ const useSessionContextState = (): SessionContextState => {
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
-  const [cursor, setCursor] = useState("");
+  const [cursor, setCursor] = useState<string | undefined>();
   const [aiEnabled, setAiEnabled] = useState(false);
   const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
