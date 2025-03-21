@@ -32,7 +32,7 @@ const buildFileSitemap = (path, excludePaths, callback) => {
       xmlUrls.push(
         callback(
           `${author.url}/?url=${encodedUrlEntryPath}`,
-          new Date(stats.mtime - date.getTimezoneOffset() * 60000)
+          new Date(stats.mtime - new Date().getTimezoneOffset() * 60000)
             .toISOString()
             .substring(0, 10),
           `${author.url}/${encodedUrlEntryPath}`
