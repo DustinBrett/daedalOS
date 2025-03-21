@@ -21,6 +21,7 @@ const buildFileSitemap = (path, excludePaths, callback) => {
     const entryPath = join(path, entry);
     const urlEntryPath = entryPath.replace(/\\/g, "/");
     const stats = statSync(join(publicPath, entry));
+    const date = new Date();
 
     if (stats.isDirectory()) {
       if (!excludePaths.includes(urlEntryPath)) {
