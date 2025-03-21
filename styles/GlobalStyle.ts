@@ -43,19 +43,19 @@ const GlobalStyle = styled.createGlobalStyle`
       content: "";
       height: 100%;
       position: absolute;
-      transition: opacity 1.25s ease-in-out;
+      transition: opacity var(--background-transition-timing, 0s) ease-in-out;
       width: 100%;
       z-index: -1;
     }
 
     &::before {
       background: var(--before-background);
-      opacity: var(--before-background-opacity);
+      opacity: var(--before-background-opacity, 0%);
     }
 
     &::after {
       background: var(--after-background);
-      opacity: var(--after-background-opacity);
+      opacity: var(--after-background-opacity, 100%);
     }
   }
 

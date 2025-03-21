@@ -429,6 +429,10 @@ const useWallpaper = (
           const isAfterNextBackground = isBeforeBg();
 
           document.documentElement.style.setProperty(
+            "--background-transition-timing",
+            isSlideshow ? "1.25s" : "0s"
+          );
+          document.documentElement.style.setProperty(
             `--${isAfterNextBackground ? "after" : "before"}-background`,
             `url(${CSS.escape(
               url
