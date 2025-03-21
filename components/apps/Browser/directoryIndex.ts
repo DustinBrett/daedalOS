@@ -8,7 +8,7 @@ export type DirectoryEntries = {
   description?: string;
   href: string;
   icon?: string;
-  modified?: Date;
+  modified?: number;
   size?: number;
 };
 
@@ -89,9 +89,9 @@ const formatSize = (size?: number): string => {
   return newNumber + (addTrailingZero ? ".0" : "") + units[power];
 };
 
-const formatDate = (date?: Date): string =>
-  date
-    ? getTZOffsetISOString(date.getTime())
+const formatDate = (timestamp?: number): string =>
+  timestamp
+    ? getTZOffsetISOString(timestamp)
         .replace("T", " ")
         .split(".")[0]
         .slice(0, -3)

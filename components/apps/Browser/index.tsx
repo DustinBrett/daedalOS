@@ -48,6 +48,7 @@ import {
 } from "utils/functions";
 import {
   getInfoWithExtension,
+  getModifiedTime,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
 import { useSession } from "contexts/session";
@@ -173,18 +174,18 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                       }
                     }
 
-                    const stats = await stat(
+                    const filePath =
                       shortcutUrl && (await exists(shortcutUrl))
                         ? shortcutUrl
-                        : href
-                    );
+                        : href;
+                    const stats = await stat(filePath);
                     const isDir = stats.isDirectory();
 
                     return {
                       description,
                       href: isDir && shortcutUrl ? shortcutUrl : href,
                       icon: isDir ? "folder" : undefined,
-                      modified: stats.mtime,
+                      modified: getModifiedTime(filePath, stats),
                       size: isDir || shortcutUrl ? undefined : stats.size,
                     };
                   })
@@ -229,9 +230,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                   }
 
                   if (column === "M") {
-                    return sortValue(
-                      ({ modified }) => modified?.getTime() ?? 0
-                    );
+                    return sortValue(({ modified }) => modified ?? 0);
                   }
 
                   if (column === "D") {
