@@ -52,6 +52,7 @@ import {
   getGifJs,
   getHtmlToImage,
   getMimeType,
+  getTZOffsetISOString,
   isSafari,
   isYouTubeUrl,
   resizeImage,
@@ -894,7 +895,7 @@ export const getDateModified = (
   format: Intl.DateTimeFormatOptions
 ): string => {
   const modifiedTime = getModifiedTime(path, fullStats);
-  const date = new Date(modifiedTime).toISOString().slice(0, 10);
+  const date = getTZOffsetISOString(modifiedTime).slice(0, 10);
   const time = new Intl.DateTimeFormat(DEFAULT_LOCALE, format).format(
     modifiedTime
   );

@@ -794,12 +794,23 @@ export const getFormattedSize = (size = 0, asKB = false): string => {
   return `${size} bytes`;
 };
 
-export const getTZOffsetISOString = (): string => {
-  const date = new Date();
+let timezoneOffset: number;
 
-  return new Date(
-    date.getTime() - date.getTimezoneOffset() * 60000
-  ).toISOString();
+export const getTZOffsetISOString = (timestamp?: number): string => {
+  let time = timestamp;
+  // eslint-disable-next-line no-undef-init
+  let date: Date | undefined = undefined;
+
+  if (!time) {
+    date = new Date();
+    time = date.getTime();
+  }
+
+  if (typeof timezoneOffset !== "number") {
+    timezoneOffset = (date || new Date()).getTimezoneOffset() * 60000;
+  }
+
+  return new Date(time - timezoneOffset).toISOString();
 };
 
 export const LOCAL_HOST = new Set(["127.0.0.1", "localhost"]);

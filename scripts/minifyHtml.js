@@ -45,7 +45,9 @@ const getCommitHash = () => {
   if (!commit) {
     commit =
       process.env.npm_package_gitHead?.slice(0, COMMIT_HASH_LENGTH - 1) ||
-      new Date().toISOString().slice(0, 10);
+      new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 10);
   }
 
   return commit;
