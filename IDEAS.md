@@ -33,6 +33,7 @@
 - Virtual Assistant
   - [ClippyJS](https://github.com/pi0/clippyjs)
   - AI Powered
+    - [wllama](https://github.com/ngxson/wllama)
     - [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/talk.wasm)
     - TTS
       - [Coqui.ai](https://github.com/coqui-ai/tts)
@@ -191,7 +192,9 @@
 ### Document/Book Viewer
 
 - [WebODF](https://webodf.org/)
-- [docx2html](https://github.com/lalalic/docx2html)
+- DOCX
+  - [docx2html](https://github.com/lalalic/docx2html)
+  - [docx](https://github.com/dolanmiu/docx)
 - [Pandoc](https://github.com/tweag/pandoc-wasm)
 - [gdal3.js](https://github.com/bugra9/gdal3.js)
 - [Epub.js](https://github.com/futurepress/epub.js/)
