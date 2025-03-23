@@ -612,12 +612,12 @@ const FileEntry: FC<FileEntryProps> = ({
             ref={iconRef}
             $eager={loadIconImmediately}
             $moving={pasteList[path] === "move"}
-            alt={name}
+            alt=""
             src={icon}
             {...FileEntryIconSize[view]}
           />
           <SubIcons
-            alt={name}
+            alt=""
             icon={icon}
             isDesktop={isDesktop}
             showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
