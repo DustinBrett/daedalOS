@@ -138,7 +138,7 @@
     "lint-staged": "^15.5.0",
     "lunr": "^2.3.9",
     "monaco-editor": "^0.52.2",
-    "pdfjs-dist": "^5.0.375",
+    "pdfjs-dist": "^5.1.91",
     "playwright-core": "1.51.1",
     "postcss": "^8.5.3",
     "postcss-styled-syntax": "^0.7.1",
