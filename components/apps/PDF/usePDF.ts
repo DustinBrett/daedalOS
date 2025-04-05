@@ -110,8 +110,9 @@ const usePDF = (
           const doc = await loader.promise;
           const { info } = await doc.getMetadata();
 
-          pdfWorker.current = loader._worker as PDFWorker;
-
+          pdfWorker.current = (
+            loader as unknown as { _worker: PDFWorker }
+          )._worker;
           argument(id, "subTitle", (info as MetadataInfo).Title);
           argument(id, "count", doc.numPages);
           prependFileToTitle(basename(url));
