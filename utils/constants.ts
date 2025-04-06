@@ -82,6 +82,7 @@ export const HEIF_IMAGE_FORMATS = new Set([
   ".heics",
   ".heif",
   ".heifs",
+  ".hif",
   ".avci",
   ".avcs",
 ]);
