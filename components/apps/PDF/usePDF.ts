@@ -113,9 +113,12 @@ const usePDF = (
           pdfWorker.current = (
             loader as unknown as { _worker: PDFWorker }
           )._worker;
-          argument(id, "subTitle", (info as MetadataInfo).Title);
+
+          const { Title } = info as MetadataInfo;
+
+          argument(id, "subTitle", Title);
           argument(id, "count", doc.numPages);
-          prependFileToTitle(basename(url));
+          prependFileToTitle(Title || basename(url));
 
           abortControllerRef.current = new AbortController();
 
