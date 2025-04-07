@@ -5,7 +5,7 @@ import {
 } from "components/apps/Messenger/HistoryContext";
 import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
 import Button from "styles/common/Button";
-import { MILLISECONDS_IN_DAY } from "utils/constants";
+import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 
 const TimeScaleLabel: Partial<Record<TimeScale, string>> = {
   day: "Retrieve last 7 days of messages",
@@ -27,7 +27,7 @@ const GetMoreMessages: FC<{
     setSince(since);
     setTimeScale(scale);
     setDisabled(true);
-    setTimeout(() => setDisabled(false), 1000);
+    setTimeout(() => setDisabled(false), MILLISECONDS_IN_SECOND);
   };
 
   return (

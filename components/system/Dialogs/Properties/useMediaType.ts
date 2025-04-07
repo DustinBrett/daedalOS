@@ -5,6 +5,7 @@ import {
   type MetaData,
 } from "components/system/Dialogs/Properties";
 import { analyzeFileToObject } from "utils/mediainfo";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 const FILTER_KEYS = new Set([
   "@type",
@@ -31,7 +32,7 @@ const maybeConvertValue = (key: string, value: number): string | number => {
   }
 
   if (key === "OverallBitRate" || key === "BitRate") {
-    return `${Math.floor(value / 1000)}kbps`;
+    return `${Math.floor(value / MILLISECONDS_IN_SECOND)}kbps`;
   }
 
   if (key === "FrameRate") {

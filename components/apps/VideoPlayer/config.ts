@@ -1,5 +1,6 @@
 import { type VideoJsPlayerOptions } from "video.js";
 import { type YouTubePlayerQuality } from "components/apps/VideoPlayer/types";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
 export const YT_TYPE = "video/youtube";
 
@@ -28,7 +29,7 @@ export const config = {
       inline: false,
     },
   },
-  inactivityTimeout: 1000,
+  inactivityTimeout: MILLISECONDS_IN_SECOND,
   preload: "auto",
   youtube: {
     enablePrivacyEnhancedMode: true,

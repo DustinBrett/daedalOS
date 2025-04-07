@@ -18,6 +18,7 @@ import {
   ICON_RES_MAP,
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
+  MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
@@ -49,7 +50,7 @@ export const resizeImage = async (
     const timeoutHandle = setTimeout(() => {
       resolve(blob);
       worker.terminate();
-    }, RESIZE_IMAGE_TIMEOUT_SECONDS * 1000);
+    }, RESIZE_IMAGE_TIMEOUT_SECONDS * MILLISECONDS_IN_SECOND);
     const canvas = document
       .createElement("canvas")
       .transferControlToOffscreen();

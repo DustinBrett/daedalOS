@@ -34,6 +34,7 @@ import { useSession } from "contexts/session";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
+  MILLISECONDS_IN_SECOND,
   PROCESS_DELIMITER,
   SHORTCUT_APPEND,
   SHORTCUT_EXTENSION,
@@ -340,7 +341,7 @@ const useFolder = (
         setTimeout(() => {
           cleanUpBufferUrl(href);
           link.remove();
-        }, 1000);
+        }, MILLISECONDS_IN_SECOND);
       }
     },
     []

@@ -189,7 +189,7 @@ export const shortTimeStamp = (timestamp: number): string => {
   const now = Date.now();
   const time = new Date(timestamp * MILLISECONDS_IN_SECOND).getTime();
   const diff = now - time;
-  const seconds = Math.floor(diff / 1000);
+  const seconds = Math.floor(diff / MILLISECONDS_IN_SECOND);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
@@ -249,7 +249,8 @@ const signEvent = async (event: Event): Promise<Event> => {
   return signedEvent;
 };
 
-const getUnixTime = (): number => Math.floor(Date.now() / 1000);
+const getUnixTime = (): number =>
+  Math.floor(Date.now() / MILLISECONDS_IN_SECOND);
 
 export const createProfileEvent = async (
   profile: ProfileData
