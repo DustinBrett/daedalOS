@@ -116,7 +116,6 @@ const useFolder = (
   }: FolderFlags
 ): Folder => {
   const [files, setFiles] = useState<Files | typeof NO_FILES>();
-  const [downloadLink, setDownloadLink] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const {
     addFile,
@@ -305,20 +304,44 @@ const useFolder = (
     },
     [deletePath, directory, updateFolder]
   );
-  const createLink = useCallback(
-    (contents: Buffer, fileName?: string): void => {
-      const link = document.createElement("a");
-
-      link.href = bufferToUrl(contents);
-      link.download = fileName
-        ? extname(fileName)
+  const triggerDownload = useCallback(
+    async (contents: Buffer, fileName?: string): Promise<void> => {
+      const extension = fileName ? getExtension(fileName) : undefined;
+      const name = fileName
+        ? extension
           ? fileName
           : `${fileName}.zip`
         : "download.zip";
 
-      link.click();
+      if (window.showSaveFilePicker && extension !== SHORTCUT_EXTENSION) {
+        try {
+          const filePickerHandle = await window.showSaveFilePicker({
+            id: "SaveFilePicker",
+            startIn: "desktop",
+            suggestedName: name,
+          });
+          const fileWriter = await filePickerHandle.createWritable();
 
-      setDownloadLink(link.href);
+          await fileWriter.write(contents);
+          await fileWriter.close();
+        } catch {
+          // Ignore failure with file picker
+        }
+      } else {
+        const link = document.createElement("a");
+        const href = bufferToUrl(contents);
+
+        link.href = href;
+        link.download = name;
+
+        link.click();
+        link.remove();
+
+        setTimeout(() => {
+          cleanUpBufferUrl(href);
+          link.remove();
+        }, 1000);
+      }
     },
     []
   );
@@ -479,7 +502,7 @@ const useFolder = (
       if (singleParentEntry && extname(path)) {
         const [contents] = file as [Uint8Array, AsyncZipOptions];
 
-        createLink(contents as Buffer, basename(path));
+        triggerDownload(contents as Buffer, basename(path));
       } else {
         const { zip } = await import("fflate");
 
@@ -488,7 +511,7 @@ const useFolder = (
           BASE_ZIP_CONFIG,
           (_zipError, newZipFile) => {
             if (newZipFile) {
-              createLink(
+              triggerDownload(
                 Buffer.from(newZipFile),
                 singleParentEntry ? path : undefined
               );
@@ -497,7 +520,7 @@ const useFolder = (
         );
       }
     },
-    [createLink, createZipFile]
+    [triggerDownload, createZipFile]
   );
   const { openTransferDialog } = useTransferDialog();
   const extractFiles = useCallback(
@@ -768,13 +791,6 @@ const useFolder = (
     sortOrder,
     updateFiles,
   ]);
-
-  useEffect(
-    () => () => {
-      if (downloadLink) cleanUpBufferUrl(downloadLink);
-    },
-    [downloadLink]
-  );
 
   useEffect(() => {
     if (!skipFsWatcher) addFsWatcher?.(directory, updateFiles);
