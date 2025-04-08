@@ -1170,9 +1170,6 @@ export const generatePrettyTimestamp = (): string =>
 export const isFileSystemMappingSupported = (): boolean =>
   typeof FileSystemHandle === "function" && "showDirectoryPicker" in window;
 
-export const hasSharedArrayBuffer = (): boolean =>
-  window.crossOriginIsolated && typeof SharedArrayBuffer === "function";
-
 export const hasFinePointer = (): boolean =>
   window.matchMedia("(pointer: fine)").matches;
 

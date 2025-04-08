@@ -1,7 +1,7 @@
 import { basename, dirname, extname, join } from "path";
 import { type FFmpeg } from "@ffmpeg/ffmpeg";
 import { type FFmpegTranscodeFile } from "utils/ffmpeg/types";
-import { fetchBlob, hasSharedArrayBuffer } from "utils/functions";
+import { fetchBlob } from "utils/functions";
 
 export const getFFmpeg = async (
   printLn: (message: string) => void = console.info
@@ -11,24 +11,13 @@ export const getFFmpeg = async (
 
   ffmpeg.on("log", ({ message }) => printLn(message));
 
-  const canMultiThread = hasSharedArrayBuffer();
-
   await ffmpeg.load({
     coreURL: URL.createObjectURL(
-      await fetchBlob(
-        `/Program Files/ffmpeg${canMultiThread ? "/mt" : ""}/ffmpeg-core.js`
-      )
+      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.js")
     ),
     wasmURL: URL.createObjectURL(
-      await fetchBlob(
-        `/Program Files/ffmpeg${canMultiThread ? "/mt" : ""}/ffmpeg-core.wasm`
-      )
+      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.wasm")
     ),
-    ...(canMultiThread && {
-      workerURL: URL.createObjectURL(
-        await fetchBlob("/Program Files/ffmpeg/mt/ffmpeg-core.worker.js")
-      ),
-    }),
   });
 
   return ffmpeg;
