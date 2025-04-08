@@ -449,6 +449,26 @@ export const triggerFullscreenDetection = async ({
     document.dispatchEvent(new Event("fullscreenchange"));
   }, browserName);
 
+export const mockSaveFilePicker = async (
+  { page }: TestProps,
+  fileName: string
+): Promise<void> =>
+  page.evaluate(
+    ([downloadName]) => {
+      window.showSaveFilePicker = () => {
+        const link = document.createElement("a");
+
+        link.href = "data:null;,";
+        link.download = downloadName;
+
+        link.click();
+
+        return Promise.resolve({} as FileSystemFileHandle);
+      };
+    },
+    [fileName]
+  );
+
 // expect->evaluate
 export const windowAnimationIsFinished = async ({
   page,

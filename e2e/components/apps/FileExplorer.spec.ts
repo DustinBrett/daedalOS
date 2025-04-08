@@ -64,6 +64,7 @@ import {
   filterMenuItems,
   focusOnWindow,
   loadApp,
+  mockSaveFilePicker,
   pageHasIcon,
   pageHasTitle,
   pressFileExplorerAddressBarKeys,
@@ -146,6 +147,13 @@ test.describe("has files & folders", () => {
 
     test("can download", async ({ page }) => {
       const downloadPromise = page.waitForEvent("download");
+      const supportsSaveFilePicker = await page.evaluate(
+        () => typeof window.showSaveFilePicker === "function"
+      );
+
+      if (supportsSaveFilePicker) {
+        await mockSaveFilePicker({ page }, TEST_ROOT_FILE_TEXT);
+      }
 
       await clickContextMenuEntry(/^Download$/, { page });
 
