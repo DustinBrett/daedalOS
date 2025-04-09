@@ -9,6 +9,7 @@ import {
   FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
+  TASKBAR_HEIGHT,
 } from "utils/constants";
 import { haltEvent, viewHeight, viewWidth } from "utils/functions";
 
@@ -80,14 +81,17 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     }
 
     if (!staticY) {
-      const bottomOffset = y + height > vh ? vh - y : 0;
+      const adjustedHeight = vh - TASKBAR_HEIGHT;
+      const bottomOffset = y + height > adjustedHeight ? adjustedHeight - y : 0;
       const topAdjustedBottomOffset =
-        bottomOffset + height > vh ? 0 : bottomOffset;
-      const subMenuOffscreenY = Boolean(subMenu) && menuY + height > vh;
+        bottomOffset + height > adjustedHeight ? 0 : bottomOffset;
+      const subMenuOffscreenY =
+        Boolean(subMenu) && menuY + height > adjustedHeight;
 
       newOffset.y =
-        Math.round(Math.max(0, y + height - (vh - topAdjustedBottomOffset))) +
-        (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0);
+        Math.round(
+          Math.max(0, y + height - (adjustedHeight - topAdjustedBottomOffset))
+        ) + (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0);
     }
 
     setOffset(newOffset);
