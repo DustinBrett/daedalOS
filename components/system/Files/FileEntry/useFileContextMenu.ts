@@ -123,9 +123,10 @@ const useFileContextMenu = (
           (process) => process !== pid
         );
         const openWithFiltered = openWith.filter((id) => id !== pid);
-        const isSingleSelection = focusedEntries.length === 1;
+        const isSingleSelection =
+          focusedEntries.length === 1 || !isFocusedEntry;
         const absoluteEntries = (): string[] =>
-          isSingleSelection || !isFocusedEntry
+          isSingleSelection
             ? [path]
             : [
                 ...new Set([
