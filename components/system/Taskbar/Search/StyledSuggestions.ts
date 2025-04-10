@@ -29,7 +29,7 @@ const StyledSuggestions = styled.ol`
     }
 
     &::before {
-      border-top: 1px solid rgba(80, 80, 80, 55%);
+      border-top: 1px solid rgb(80 80 80 / 55%);
       content: "";
       height: 100%;
       position: absolute;
@@ -43,7 +43,7 @@ const StyledSuggestions = styled.ol`
     }
 
     &:hover {
-      background-color: rgba(80, 80, 80, 75%);
+      background-color: rgb(80 80 80 / 75%);
 
       &::before {
         border: none;

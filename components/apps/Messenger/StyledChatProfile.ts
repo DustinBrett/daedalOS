@@ -44,7 +44,7 @@ const StyledChatProfile = styled.li`
       text-align: center;
 
       div.about {
-        color: rgb(255, 255, 255, 55%);
+        color: rgb(255 255 255 / 55%);
         font-size: 10px;
         font-weight: 400;
         overflow-wrap: break-word;
@@ -53,7 +53,7 @@ const StyledChatProfile = styled.li`
       }
 
       div.encryption {
-        background-color: rgb(255, 255, 255, 15%);
+        background-color: rgb(255 255 255 / 15%);
         border-radius: 8px;
         display: flex;
         flex-direction: column;

@@ -6,6 +6,7 @@ const bundleAnalyzer = process.env.npm_config_argv?.includes(
   "build:bundle-analyzer"
 );
 
+const path = require("path");
 const webpack = require("webpack");
 
 /**
@@ -48,6 +49,12 @@ const nextConfig = {
       new webpack.DefinePlugin({
         __REACT_DEVTOOLS_GLOBAL_HOOK__: "({ isDisabled: true })",
       })
+    );
+
+    config.resolve.alias = config.resolve.alias || {};
+    config.resolve.alias["MediaInfoModule.wasm"] = path.resolve(
+      __dirname,
+      "node_modules/mediainfo.js/dist/MediaInfoModule.wasm"
     );
 
     config.resolve.fallback = config.resolve.fallback || {};

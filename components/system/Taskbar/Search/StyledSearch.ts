@@ -35,7 +35,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
     input {
       appearance: none;
       background-color: #fff;
-      border: 2px solid rgb(0, 120, 215);
+      border: 2px solid rgb(0 120 215);
       border-radius: 0;
       color: #000;
       font-size: 15px;
@@ -89,7 +89,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
     }
 
     .tab {
-      color: rgb(175, 175, 175);
+      color: rgb(175 175 175);
       display: flex;
       flex-direction: column;
       height: ${({ theme }) =>
@@ -113,7 +113,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
       }
 
       svg {
-        fill: rgb(115, 115, 115);
+        fill: rgb(115 115 115);
         height: 128px;
         width: 128px;
       }
@@ -125,7 +125,7 @@ const StyledSearch = styled(motion.nav)<StyledSearchProps>`
       top: 15px;
 
       .close-button svg {
-        fill: rgb(200, 200, 200);
+        fill: rgb(200 200 200);
         height: 14px;
 
         &:hover {

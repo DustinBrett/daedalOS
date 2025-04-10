@@ -22,7 +22,7 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
     $offsetX ? `translateX(${$offsetX}px)` : undefined};
 
   ${StyledTaskbarEntry}:hover & {
-    background-color: hsla(0, 0%, 25%, 85%);
+    background-color: hsl(0 0% 25% / 85%);
 
     &:active {
       background-color: ${({ theme }) => theme.colors.taskbar.activeForeground};
@@ -40,7 +40,7 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
   }
 
   button.close {
-    background-color: rgb(40, 40, 40);
+    background-color: rgb(40 40 40);
     height: 32px;
     position: absolute;
     right: 0;
@@ -48,16 +48,16 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
     width: 32px;
 
     svg {
-      fill: rgb(252, 246, 247);
+      fill: rgb(252 246 247);
       width: 12px;
     }
 
     &:active {
-      background-color: rgb(139, 10, 20) !important;
+      background-color: rgb(139 10 20) !important;
     }
 
     &:hover {
-      background-color: rgb(194, 22, 36);
+      background-color: rgb(194 22 36);
     }
   }
 
@@ -71,8 +71,8 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
     width: 100%;
 
     button {
-      background-color: rgb(70, 70, 70);
-      border: 1px solid rgb(46, 46, 46);
+      background-color: rgb(70 70 70);
+      border: 1px solid rgb(46 46 46);
       display: flex;
       height: 27px;
       place-content: center;
@@ -80,13 +80,13 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
       width: 27px;
 
       &:active {
-        background-color: rgb(61, 96, 153) !important;
-        border: 1px solid rgb(49, 77, 122) !important;
+        background-color: rgb(61 96 153) !important;
+        border: 1px solid rgb(49 77 122) !important;
       }
 
       &:hover {
-        background-color: rgb(54, 101, 179);
-        border: 1px solid rgb(43, 81, 143);
+        background-color: rgb(54 101 179);
+        border: 1px solid rgb(43 81 143);
       }
 
       svg {

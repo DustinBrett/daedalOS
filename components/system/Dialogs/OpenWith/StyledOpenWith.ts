@@ -31,7 +31,7 @@ const StyledOpenWith = styled.div`
     width: 100%;
 
     button {
-      background-color: rgb(204, 204, 204);
+      background-color: rgb(204 204 204);
       color: #000;
       font-size: 15px;
       font-weight: 600;
@@ -42,7 +42,7 @@ const StyledOpenWith = styled.div`
       width: 200px;
 
       &:hover {
-        background-color: rgb(216, 216, 216);
+        background-color: rgb(216 216 216);
       }
 
       &:active {

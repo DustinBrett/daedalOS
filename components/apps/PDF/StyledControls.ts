@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const StyledControls = styled.nav`
-  background-color: rgb(50, 54, 57);
-  box-shadow: 0 0 5px hsla(0, 0%, 10%, 50%);
+  background-color: rgb(50 54 57);
+  box-shadow: 0 0 5px hsl(0 0% 10% / 50%);
   display: flex;
   height: 40px;
   position: absolute;
@@ -59,7 +59,7 @@ const StyledControls = styled.nav`
     }
 
     &:hover {
-      background-color: rgb(66, 70, 73);
+      background-color: rgb(66 70 73);
     }
 
     svg {
@@ -73,8 +73,8 @@ const StyledControls = styled.nav`
       background-color: initial;
 
       svg {
-        fill: rgb(110, 112, 114);
-        stroke: rgb(110, 112, 114);
+        fill: rgb(110 112 114);
+        stroke: rgb(110 112 114);
       }
     }
 
@@ -103,18 +103,18 @@ const StyledControls = styled.nav`
       font-size: 14px;
 
       input {
-        background-color: rgb(25, 27, 28);
+        background-color: rgb(25 27 28);
         color: #fff;
         height: 20px;
         text-align: center;
 
         &:disabled {
-          color: rgb(110, 112, 114);
+          color: rgb(110 112 114);
         }
       }
 
       &:not(:last-child)::after {
-        background-color: rgb(112, 115, 117);
+        background-color: rgb(112 115 117);
         content: "";
         margin-left: 20px;
         width: 1px;

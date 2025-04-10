@@ -14,10 +14,10 @@ type StyledAIChatProps = {
 };
 
 const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
-  background-color: rgb(32, 32, 32);
-  border-left: 1px solid rgb(104, 104, 104);
+  background-color: rgb(32 32 32);
+  border-left: 1px solid rgb(104 104 104);
   bottom: ${TASKBAR_HEIGHT}px;
-  color: rgb(200, 200, 200);
+  color: rgb(200 200 200);
   font-size: 14px;
   height: calc(100% - ${TASKBAR_HEIGHT}px);
   position: absolute;
@@ -35,13 +35,13 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
 
     &::-webkit-scrollbar-thumb {
       background-clip: content-box;
-      background-color: rgb(77, 77, 77);
+      background-color: rgb(77 77 77);
       border: 6px solid transparent;
       border-radius: 16px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-      background-color: rgb(121, 121, 121);
+      background-color: rgb(121 121 121);
     }
 
     display: flex;
@@ -82,7 +82,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         place-items: center;
 
         .buttons {
-          border: 1px solid rgb(102, 102, 102);
+          border: 1px solid rgb(102 102 102);
           border-radius: 4px;
           display: flex;
           margin-bottom: 48px;
@@ -139,7 +139,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           .person {
             background: ${({ $tertiaryColor }) => $tertiaryColor};
             border-radius: 50%;
-            fill: rgb(255, 255, 255, 45%);
+            fill: rgb(255 255 255 / 45%);
             padding: 5px;
           }
         }
@@ -148,8 +148,8 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       .ai {
         /* stylelint-disable-next-line selector-type-no-unknown */
         think {
-          border-left: 2px solid rgb(78, 78, 86);
-          color: rgb(166, 166, 166);
+          border-left: 2px solid rgb(78 78 86);
+          color: rgb(166 166 166);
           display: flex;
           flex-direction: column;
           font-size: 13px;
@@ -182,7 +182,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       .thinking {
-        background-color: rgb(73, 73, 73);
+        background-color: rgb(73 73 73);
         border-radius: 6px;
         color: #fff;
         cursor: pointer;
@@ -209,8 +209,8 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
 
         pre {
-          background-color: rgb(26, 26, 26);
-          border: 1px solid rgb(48, 48, 48);
+          background-color: rgb(26 26 26);
+          border: 1px solid rgb(48 48 48);
           border-radius: 5px;
           padding: 12px;
         }
@@ -221,7 +221,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           &.language-js,
           &.language-python {
             &::before {
-              background-color: rgb(29, 29, 29);
+              background-color: rgb(29 29 29);
               border-top-left-radius: 5px;
               border-top-right-radius: 5px;
               display: flex;
@@ -263,8 +263,8 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       .image-container {
-        background-color: rgb(240, 240, 240);
-        border: 1px solid rgb(102, 102, 102);
+        background-color: rgb(240 240 240);
+        border: 1px solid rgb(102 102 102);
         border-radius: 10px;
         margin-bottom: 18px;
         margin-top: 10px;
@@ -306,7 +306,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
 
         .prompt {
-          color: rgb(15, 15, 15);
+          color: rgb(15 15 15);
           font-size: 12px;
           padding-bottom: 6px;
           padding-left: 6px;
@@ -318,10 +318,10 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           width: 100%;
 
           div {
-            background-color: rgb(230, 230, 230);
-            border: 1px solid rgb(220, 220, 220);
+            background-color: rgb(230 230 230);
+            border: 1px solid rgb(220 220 220);
             border-radius: 5px;
-            color: rgb(90, 90, 90);
+            color: rgb(90 90 90);
             font-size: 11.5px;
             padding: 5px;
             width: fit-content;
@@ -330,7 +330,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       .responding {
-        background-color: rgb(32, 32, 32);
+        background-color: rgb(32 32 32);
         bottom: 120px;
         display: flex;
         left: 0;
@@ -343,7 +343,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         width: calc(100% - 32px);
 
         .stop {
-          background-color: rgb(45, 45, 45);
+          background-color: rgb(45 45 45);
           border: ${({ $primaryColor }) => `1px solid ${$primaryColor}`};
           border-radius: 8px;
           color: #fff;
@@ -357,11 +357,11 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           place-items: center;
 
           &:hover {
-            background-color: rgb(50, 50, 50);
+            background-color: rgb(50 50 50);
           }
 
           &.canceling {
-            background-color: rgb(42, 42, 42);
+            background-color: rgb(42 42 42);
           }
 
           .stop-icon {
@@ -384,7 +384,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
 
         &::before,
         &::after {
-          border-bottom: 1px solid rgb(48, 48, 48);
+          border-bottom: 1px solid rgb(48 48 48);
           content: "";
           flex: 1 1 0%;
           margin-top: 3px;
@@ -437,12 +437,12 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           width: 32px;
 
           &:hover {
-            background-color: rgb(45, 45, 45);
-            border: 1px solid rgb(65, 65, 65);
+            background-color: rgb(45 45 45);
+            border: 1px solid rgb(65 65 65);
           }
 
           &:active {
-            background-color: rgb(42, 42, 42);
+            background-color: rgb(42 42 42);
           }
 
           .control-icon {
@@ -494,12 +494,12 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           width: 36px;
 
           > svg {
-            fill: rgb(241, 241, 241);
+            fill: rgb(241 241 241);
             width: 12px;
           }
 
           &:hover {
-            background-color: rgb(49, 49, 49);
+            background-color: rgb(49 49 49);
           }
         }
       }
@@ -537,7 +537,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       &:active {
-        border: 1px solid rgb(32, 32, 32);
+        border: 1px solid rgb(32 32 32);
       }
     }
 
@@ -567,13 +567,13 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       }
 
       &:active {
-        background-color: rgb(38, 38, 38);
+        background-color: rgb(38 38 38);
       }
     }
 
     textarea {
-      background-color: rgb(31, 31, 31);
-      border: 1px solid rgb(102, 102, 102);
+      background-color: rgb(31 31 31);
+      border: 1px solid rgb(102 102 102);
       border-radius: 7px;
       bottom: 16px;
       color: #fff;
@@ -592,7 +592,7 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
       width: calc(100% - 80px);
 
       &::placeholder {
-        color: rgb(206, 206, 206);
+        color: rgb(206 206 206);
       }
 
       &:focus {

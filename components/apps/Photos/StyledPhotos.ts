@@ -30,7 +30,7 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
     width: 100%;
 
     div {
-      color: rgb(167, 167, 167);
+      color: rgb(167 167 167);
       font-size: 13px;
       padding: 0 38px;
       text-align: center;
@@ -77,16 +77,16 @@ const StyledPhotos = styled.div<StyledPhotosProps>`
         pointer-events: none;
 
         svg {
-          fill: rgb(125, 125, 125);
+          fill: rgb(125 125 125);
         }
       }
 
       &:hover {
-        background-color: rgba(75, 75, 75, 50%);
+        background-color: rgb(75 75 75 / 50%);
       }
 
       &:active {
-        background-color: rgba(100, 100, 100, 50%);
+        background-color: rgb(100 100 100 / 50%);
       }
     }
   }

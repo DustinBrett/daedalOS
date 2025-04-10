@@ -11,16 +11,16 @@ const StyledNotifications = styled.ol`
   width: calc(100% - 80px);
 
   .notification {
-    background: rgb(54, 53, 55);
+    background: rgb(54 53 55);
     border-radius: 4px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 50%);
-    color: rgb(186, 182, 192);
+    box-shadow: 0 0 15px rgb(0 0 0 / 50%);
+    color: rgb(186 182 192);
     max-width: 100%;
     padding: 12px 14px 12px 12px;
     width: fit-content;
 
     &:hover {
-      background: rgb(54, 53, 55);
+      background: rgb(54 53 55);
     }
 
     figure {
@@ -32,15 +32,15 @@ const StyledNotifications = styled.ol`
         width: 16px;
 
         &.warning {
-          color: rgb(253, 147, 71);
+          color: rgb(253 147 71);
         }
 
         &.error {
-          color: rgb(241, 76, 76);
+          color: rgb(241 76 76);
         }
 
         &.info {
-          color: rgb(55, 148, 255);
+          color: rgb(55 148 255);
         }
       }
 

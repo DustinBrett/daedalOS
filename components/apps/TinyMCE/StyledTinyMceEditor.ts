@@ -11,7 +11,7 @@ const StyledTinyMceEditor = styled.div`
       pointer-events: none;
 
       svg {
-        fill: rgb(255, 255, 255, 50%);
+        fill: rgb(255 255 255 / 50%);
       }
     }
 
@@ -30,7 +30,7 @@ const StyledTinyMceEditor = styled.div`
 
         &::after {
           bottom: 0;
-          color: rgb(200, 200, 200);
+          color: rgb(200 200 200);
           content: "Edit Document";
           cursor: pointer;
           display: flex;
@@ -50,7 +50,7 @@ const StyledTinyMceEditor = styled.div`
         }
 
         &:hover::after {
-          background-color: rgba(255, 255, 255, 15%);
+          background-color: rgb(255 255 255 / 15%);
         }
 
         .tox-toolbar-overlord {

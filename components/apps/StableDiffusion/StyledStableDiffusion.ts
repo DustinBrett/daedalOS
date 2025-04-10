@@ -77,7 +77,7 @@ const StyledStableDiffusion = styled.div`
       background-color: ${BG_COLOR};
       border: 1px solid ${FG_COLOR};
       border-radius: ${BORDER_RADIUS};
-      box-shadow: rgba(0, 0, 0, 20%) 4px 4px 4px;
+      box-shadow: rgb(0 0 0 / 20%) 4px 4px 4px;
       margin: 10px;
       padding: 10px;
       position: absolute;

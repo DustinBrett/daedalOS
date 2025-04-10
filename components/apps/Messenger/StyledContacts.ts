@@ -30,7 +30,7 @@ const StyledContacts = styled(motion.ol)`
 
     &:focus,
     &.selected {
-      background-color: rgba(45, 136, 255, 20%);
+      background-color: rgb(45 136 255 / 20%);
     }
 
     figure {
@@ -103,7 +103,7 @@ const StyledContacts = styled(motion.ol)`
     }
 
     &.unread::after {
-      background-color: rgb(46, 137, 255);
+      background-color: rgb(46 137 255);
       border-radius: 50%;
       content: "";
       cursor: pointer;

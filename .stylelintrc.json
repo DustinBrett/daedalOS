@@ -4,7 +4,6 @@
   "plugins": ["stylelint-order"],
   "rules": {
     "alpha-value-notation": "percentage",
-    "color-function-notation": "legacy",
     "hue-degree-notation": "number",
     "no-empty-source": null,
     "order/properties-alphabetical-order": true,

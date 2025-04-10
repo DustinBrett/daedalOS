@@ -15,7 +15,7 @@ const StyledPaint = styled.div<StyledPaintProps>`
       color: #fff;
       font-weight: 500;
       mix-blend-mode: normal;
-      text-shadow: 1px 2px 3px rgba(0, 0, 0, 50%);
+      text-shadow: 1px 2px 3px rgb(0 0 0 / 50%);
     }
   }
 `;

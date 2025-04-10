@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 const StyledStatusBar = styled.footer`
   align-items: center;
-  background-color: rgb(51, 51, 51);
+  background-color: rgb(51 51 51);
   bottom: 0;
-  color: rgb(247, 247, 247);
+  color: rgb(247 247 247);
   display: flex;
   font-size: 12px;
   font-weight: 200;
@@ -20,7 +20,7 @@ const StyledStatusBar = styled.footer`
     padding: 0 3px 0 9px;
 
     &::after {
-      border-right: 1px solid rgb(247, 247, 247);
+      border-right: 1px solid rgb(247 247 247);
       content: "";
       height: 11px;
       margin-left: 12px;
@@ -56,13 +56,13 @@ const StyledStatusBar = styled.footer`
       }
 
       &:hover {
-        background-color: rgb(77, 77, 77);
-        border: 1px solid rgb(99, 99, 99);
+        background-color: rgb(77 77 77);
+        border: 1px solid rgb(99 99 99);
       }
 
       &.active {
-        background-color: rgb(102, 102, 102);
-        border: 1px solid rgb(131, 131, 131);
+        background-color: rgb(102 102 102);
+        border: 1px solid rgb(131 131 131);
 
         picture {
           padding-left: 1px;

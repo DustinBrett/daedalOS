@@ -28,7 +28,7 @@ const StyledCalendar = styled(motion.section)`
 
       &.prev,
       &.next {
-        color: rgb(125, 125, 125);
+        color: rgb(125 125 125);
       }
     }
 
@@ -46,14 +46,14 @@ const StyledCalendar = styled(motion.section)`
           place-content: space-between;
 
           header {
-            color: rgb(223, 223, 223);
+            color: rgb(223 223 223);
 
             &:hover {
               color: #fff;
             }
 
             &:active {
-              color: rgb(165, 156, 156);
+              color: rgb(165 156 156);
             }
           }
         }
@@ -71,14 +71,14 @@ const StyledCalendar = styled(motion.section)`
         padding-top: 2px;
 
         button {
-          fill: rgb(223, 223, 223);
+          fill: rgb(223 223 223);
 
           &:hover {
             fill: #fff;
           }
 
           &:active {
-            fill: rgb(165, 156, 156);
+            fill: rgb(165 156 156);
           }
 
           svg {
@@ -89,7 +89,7 @@ const StyledCalendar = styled(motion.section)`
     }
 
     tbody.curr td.today {
-      background-color: rgb(0, 120, 215);
+      background-color: rgb(0 120 215);
       color: #fff;
       position: relative;
 
@@ -110,13 +110,13 @@ const StyledCalendar = styled(motion.section)`
 
       &:hover {
         &::after {
-          border: 2px solid rgb(102, 174, 231);
+          border: 2px solid rgb(102 174 231);
         }
       }
 
       &:active {
         &::after {
-          border: 2px solid rgb(153, 201, 239);
+          border: 2px solid rgb(153 201 239);
         }
       }
     }

@@ -31,7 +31,7 @@ const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
     }
 
     &:hover {
-      background-color: rgb(222, 222, 222);
+      background-color: rgb(222 222 222);
     }
 
     figure {
@@ -45,7 +45,7 @@ const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
       }
 
       picture {
-        background-color: rgb(0, 120, 215);
+        background-color: rgb(0 120 215);
         display: flex;
         height: 40px;
         place-content: center;
@@ -55,7 +55,7 @@ const StyledOpenWithList = styled.ul<StyledOpenWithListProps>`
     }
 
     &.selected {
-      background-color: rgb(12, 131, 218);
+      background-color: rgb(12 131 218);
 
       figcaption {
         color: #fff;

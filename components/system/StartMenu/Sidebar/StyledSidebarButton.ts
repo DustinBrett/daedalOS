@@ -60,12 +60,12 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
   }
 
   &:hover {
-    background-color: hsla(0, 0%, 35%, 70%);
-    border: 1px solid hsla(0, 0%, 45%, 70%);
+    background-color: hsl(0 0% 35% / 70%);
+    border: 1px solid hsl(0 0% 45% / 70%);
   }
 
   &:active {
-    background-color: hsla(0, 0%, 40%, 70%);
+    background-color: hsl(0 0% 40% / 70%);
   }
 `;
 

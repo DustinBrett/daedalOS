@@ -13,8 +13,8 @@ const StyledBoxedWine = styled.div`
 
   ol {
     ${ScrollBars()};
-    background-color: rgb(32, 33, 36);
-    color: rgb(232, 234, 237);
+    background-color: rgb(32 33 36);
+    color: rgb(232 234 237);
     font-family: "Lucida Grande", sans-serif, monospace;
     font-size: 13px;
     height: 100%;
@@ -23,7 +23,7 @@ const StyledBoxedWine = styled.div`
     width: 100%;
 
     li {
-      border-bottom: 1px solid rgb(58, 58, 58);
+      border-bottom: 1px solid rgb(58 58 58);
       padding: 0 25px;
 
       &:last-child {

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNavigation = styled.nav`
-  background-color: rgb(25, 25, 25);
+  background-color: rgb(25 25 25);
   display: flex;
   height: ${({ theme }) => theme.sizes.fileExplorer.navBarHeight};
 
@@ -41,20 +41,20 @@ const StyledNavigation = styled.nav`
 
     &:active {
       svg {
-        color: rgb(54, 116, 178);
+        color: rgb(54 116 178);
         transition: none;
       }
     }
 
     &:hover {
       svg {
-        color: rgb(50, 152, 254);
+        color: rgb(50 152 254);
       }
     }
 
     &:disabled {
       svg {
-        color: rgb(140, 140, 140);
+        color: rgb(140 140 140);
       }
     }
   }

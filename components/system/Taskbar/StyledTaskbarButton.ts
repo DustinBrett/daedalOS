@@ -38,7 +38,7 @@ const StyledTaskbarButton = styled(Button)<StyledTaskbarButtonProps>`
   }
 
   &:active {
-    background-color: hsla(0, 0%, 20%, 70%);
+    background-color: hsl(0 0% 20% / 70%);
 
     svg {
       fill: ${({ $highlight }) =>
