@@ -225,6 +225,11 @@ const useDraggableEntries = (
             passive: true,
           });
         }
+
+        if (event.nativeEvent.dataTransfer) {
+          // eslint-disable-next-line no-param-reassign
+          event.nativeEvent.dataTransfer.effectAllowed = "move";
+        }
       },
     [
       allowMoving,
