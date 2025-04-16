@@ -18,6 +18,7 @@ export type IconProps = {
   displaySize?: number;
   imgSize: number;
   singleSrc?: boolean;
+  src?: string;
 };
 
 type StyledIconProps = Pick<IconProps, "$eager" | "$moving"> & {
@@ -50,10 +51,7 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
 
-const Icon: FCWithRef<
-  HTMLImageElement,
-  IconProps & React.ImgHTMLAttributes<HTMLImageElement>
-> = ({
+const Icon: FCWithRef<HTMLImageElement, IconProps> = ({
   displaySize = 0,
   imgSize = 0,
   ref,
