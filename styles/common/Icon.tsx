@@ -51,7 +51,10 @@ const StyledIcon = styled.img.attrs<StyledIconProps>(
   visibility: ${({ $loaded }) => ($loaded ? "visible" : "hidden")};
 `;
 
-const Icon: FCWithRef<HTMLImageElement, IconProps> = ({
+const Icon: FCWithRef<
+  HTMLImageElement,
+  IconProps & Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">
+> = ({
   displaySize = 0,
   imgSize = 0,
   ref,
