@@ -1,5 +1,5 @@
 import { basename, join, resolve } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useProxyMenu, {
   type ProxyState,
 } from "components/apps/Browser/useProxyMenu";
@@ -52,6 +52,12 @@ import {
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
 import { useSession } from "contexts/session";
+
+declare module "react" {
+  interface IframeHTMLAttributes<T> extends React.HTMLAttributes<T> {
+    credentialless?: "credentialless";
+  }
+}
 
 const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -377,6 +383,10 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
       updateRecentFiles,
     ]
   );
+  const supportsCredentialless = useMemo(
+    () => "credentialless" in HTMLIFrameElement.prototype,
+    []
+  );
 
   useEffect(() => {
     if (process && history[position] !== currentUrl.current) {
@@ -483,6 +493,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         srcDoc={srcDoc || undefined}
         title={id}
         {...IFRAME_CONFIG}
+        credentialless={supportsCredentialless ? "credentialless" : undefined}
       />
     </StyledBrowser>
   );
