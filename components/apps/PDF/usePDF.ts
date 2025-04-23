@@ -46,7 +46,7 @@ const usePDF = (
     processes: { [id]: process } = {},
     url: setUrl,
   } = useProcesses();
-  const { libs = [], scale, url } = process || {};
+  const { libs = [], scale, url: processUrl } = process || {};
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const pdfWorker = useRef<PDFWorker | null>(null);
   const renderPage = useCallback(
@@ -86,70 +86,90 @@ const usePDF = (
     [argument, containerRef, id, scale]
   );
   const { prependFileToTitle } = useTitle(id);
+  const currentUrlRef = useRef("");
   const renderingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const renderPages = useCallback(async (): Promise<void> => {
+  const resetApp = useCallback(() => {
+    abortControllerRef.current?.abort();
+    pdfWorker.current?.destroy();
+
+    argument(id, "rendering", false);
+    renderingRef.current = false;
+
     if (containerRef.current) {
-      setPages([]);
-
-      if (url) {
-        containerRef.current.classList.remove("drop");
-
-        if (window.pdfjsLib && !renderingRef.current) {
-          renderingRef.current = true;
-          argument(id, "rendering", true);
-
-          // eslint-disable-next-line no-param-reassign
-          containerRef.current.scrollTop = 0;
-
-          const fileData = await readFile(url);
-
-          if (fileData.length === 0) throw new Error("File is empty");
-
-          const loader = window.pdfjsLib.getDocument(fileData);
-          const doc = await loader.promise;
-          const { info } = await doc.getMetadata();
-
-          pdfWorker.current = (
-            loader as unknown as { _worker: PDFWorker }
-          )._worker;
-
-          const { Title } = info as MetadataInfo;
-
-          argument(id, "subTitle", Title);
-          argument(id, "count", doc.numPages);
-          prependFileToTitle(Title || basename(url));
-
-          abortControllerRef.current = new AbortController();
-
-          for (let i = 0; i < doc.numPages; i += 1) {
-            if (abortControllerRef.current.signal.aborted) break;
-
-            // eslint-disable-next-line no-await-in-loop
-            const page = await renderPage(i + 1, doc);
-
-            setPages((currentPages) => [...currentPages, page]);
-          }
-
-          argument(id, "rendering", false);
-          renderingRef.current = false;
-        }
-      } else {
-        containerRef.current.classList.add("drop");
-        argument(id, "subTitle", "");
-        argument(id, "count", 0);
-        prependFileToTitle("");
-      }
+      // eslint-disable-next-line no-param-reassign
+      containerRef.current.scrollTop = 0;
     }
-  }, [
-    argument,
-    containerRef,
-    id,
-    prependFileToTitle,
-    readFile,
-    renderPage,
-    url,
-  ]);
+  }, [argument, containerRef, id]);
+  const renderPages = useCallback(
+    async (url: string): Promise<void> => {
+      if (containerRef.current) {
+        setPages([]);
+
+        if (url) {
+          containerRef.current.classList.remove("drop");
+
+          if (window.pdfjsLib && !renderingRef.current) {
+            renderingRef.current = true;
+            argument(id, "rendering", true);
+
+            // eslint-disable-next-line no-param-reassign
+            containerRef.current.scrollTop = 0;
+
+            const fileData = await readFile(url);
+
+            if (fileData.length === 0) throw new Error("File is empty");
+
+            const loader = window.pdfjsLib.getDocument(fileData);
+            const doc = await loader.promise;
+            const { info } = await doc.getMetadata();
+
+            pdfWorker.current = (
+              loader as unknown as { _worker: PDFWorker }
+            )._worker;
+
+            const { Title } = info as MetadataInfo;
+
+            argument(id, "subTitle", Title);
+            argument(id, "count", doc.numPages);
+            prependFileToTitle(Title || basename(url));
+
+            abortControllerRef.current = new AbortController();
+
+            for (let i = 0; i < doc.numPages; i += 1) {
+              if (
+                abortControllerRef.current.signal.aborted ||
+                url !== currentUrlRef.current
+              ) {
+                break;
+              }
+
+              // eslint-disable-next-line no-await-in-loop
+              const page = await renderPage(i + 1, doc);
+
+              if (
+                abortControllerRef.current.signal.aborted ||
+                url !== currentUrlRef.current
+              ) {
+                break;
+              }
+
+              setPages((currentPages) => [...currentPages, page]);
+            }
+
+            argument(id, "rendering", false);
+            renderingRef.current = false;
+          }
+        } else {
+          containerRef.current.classList.add("drop");
+          argument(id, "subTitle", "");
+          argument(id, "count", 0);
+          prependFileToTitle("");
+        }
+      }
+    },
+    [argument, containerRef, id, prependFileToTitle, readFile, renderPage]
+  );
 
   useEffect(() => {
     loadFiles(libs).then(() => {
@@ -157,22 +177,25 @@ const usePDF = (
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "/Program Files/PDF.js/pdf.worker.js";
 
-        renderPages().catch(() => {
-          setUrl(id, "");
-          argument(id, "rendering", false);
-          renderingRef.current = false;
-        });
+        if (processUrl) {
+          renderPages(processUrl).catch(() => {
+            setUrl(id, "");
+            argument(id, "rendering", false);
+            renderingRef.current = false;
+          });
+        }
       }
     });
-  }, [argument, id, libs, renderPages, setUrl]);
+  }, [argument, id, libs, processUrl, renderPages, setUrl]);
 
-  useEffect(
-    () => () => {
-      abortControllerRef.current?.abort();
-      pdfWorker.current?.destroy();
-    },
-    []
-  );
+  useEffect(() => resetApp, [resetApp]);
+
+  useEffect(() => {
+    if (processUrl && currentUrlRef.current !== processUrl) {
+      currentUrlRef.current = processUrl;
+      resetApp();
+    }
+  }, [resetApp, processUrl]);
 
   return pages;
 };
