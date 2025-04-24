@@ -331,6 +331,21 @@ const FileEntry: FC<FileEntryProps> = ({
         .forEach(({ icon: image }) => image && preloadImage(image))
     );
   }, [path, readdir]);
+  const onMouseOverButton = useCallback(() => {
+    if (listView && isDirectory) preloadImages();
+    createTooltip().then(setTooltip);
+  }, [createTooltip, isDirectory, listView, preloadImages]);
+  const lockWidthStyle = useMemo(
+    () => ({ maxWidth: columnWidth, minWidth: columnWidth }),
+    [columnWidth]
+  );
+  const renameFile = useCallback(
+    (origPath: string, newName?: string) => {
+      fileActions.renameFile(origPath, newName);
+      setRenaming("");
+    },
+    [fileActions, setRenaming]
+  );
 
   useEffect(() => {
     if (!isLoadingFileManager && isVisible && !isIconCached.current) {
@@ -569,10 +584,7 @@ const FileEntry: FC<FileEntryProps> = ({
       <Button
         ref={buttonRef}
         aria-label={name}
-        onMouseOverCapture={() => {
-          if (listView && isDirectory) preloadImages();
-          createTooltip().then(setTooltip);
-        }}
+        onMouseOverCapture={onMouseOverButton}
         title={tooltip}
         {...(listView && { ...LIST_VIEW_ANIMATION, as: motion.button })}
         {...useDoubleClick(doubleClickHandler, listView)}
@@ -598,11 +610,7 @@ const FileEntry: FC<FileEntryProps> = ({
             [listView]
           )}
           $renaming={renaming}
-          style={
-            showColumn
-              ? { maxWidth: columnWidth, minWidth: columnWidth }
-              : undefined
-          }
+          style={showColumn ? lockWidthStyle : undefined}
           {...(isHeading && {
             "aria-level": 1,
             role: "heading",
@@ -629,10 +637,7 @@ const FileEntry: FC<FileEntryProps> = ({
               isDesktop={isDesktop}
               name={name}
               path={path}
-              renameFile={(origPath, newName) => {
-                fileActions.renameFile(origPath, newName);
-                setRenaming("");
-              }}
+              renameFile={renameFile}
               setRenaming={setRenaming}
               view={view}
             />

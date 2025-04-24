@@ -114,6 +114,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     },
     [onClickClose, resetMenu, titlebarContextMenu]
   );
+  const triggerMinimize = useCallback(() => onMinimize(), [onMinimize]);
   const onIconMouseDownCapture = useCallback<
     React.MouseEventHandler<HTMLImageElement>
   >(() => {
@@ -154,7 +155,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         {!hideMinimizeButton && (
           <Button
             className="minimize"
-            onClick={() => onMinimize()}
+            onClick={triggerMinimize}
             {...label("Minimize")}
           >
             <MinimizeIcon />
