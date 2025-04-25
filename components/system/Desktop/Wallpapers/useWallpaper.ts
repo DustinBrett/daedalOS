@@ -271,14 +271,14 @@ const useWallpaper = (
       cleanUpBufferUrl(currentWallpaperUrl);
     }
 
-    resetWallpaper();
-
     let wallpaperUrl = "";
     let fallbackBackground = "";
     let newWallpaperFit = wallpaperFit;
     const isSlideshow = wallpaperName === "SLIDESHOW";
 
     if (isSlideshow) {
+      resetWallpaper();
+
       const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
 
       if (!(await exists(slideshowFilePath))) {
@@ -335,12 +335,17 @@ const useWallpaper = (
       // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
       const [, , currentDate] = wallpaperImage.split(" ");
       const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+        day: "2-digit",
+        month: "2-digit",
         timeZone: "US/Eastern",
+        year: "numeric",
       })
         .formatToParts(Date.now())
         .map(({ value }) => value);
 
       if (currentDate === `${year}-${month}-${day}`) return;
+
+      resetWallpaper();
 
       const {
         date = "",
@@ -373,6 +378,8 @@ const useWallpaper = (
         }
       }
     } else if (await exists(wallpaperImage)) {
+      resetWallpaper();
+
       let fileData = await readFile(wallpaperImage);
       const imgExt = getExtension(wallpaperImage);
 
