@@ -1305,10 +1305,10 @@
   dependencies:
     undici-types "~6.19.2"
 
-"@types/node@^22.14.1":
-  version "22.14.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.14.1.tgz#53b54585cec81c21eee3697521e31312d6ca1e6f"
-  integrity sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==
+"@types/node@^22.15.2":
+  version "22.15.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.2.tgz#1db55aa64618ee93a58c8912f74beefe44aca905"
+  integrity sha512-uKXqKN9beGoMdBfcaTY1ecwz6ctxuJAcUlwE55938g0ZJ8lRxwAZqRz2AJ4pzpt5dHdTPMB863UZ0ESiFUcP7A==
   dependencies:
     undici-types "~6.21.0"
 
@@ -3220,10 +3220,10 @@ emulators-ui@^0.73.9:
   resolved "https://registry.yarnpkg.com/emulators-ui/-/emulators-ui-0.73.9.tgz#194bf4d7712c3e5b31c073826373b42d2c9200be"
   integrity sha512-Zx1eD9yHt+QjMwU0ay9FQKhyvvKucL1bRsTlZdHZsBrU3rNsZm52XODXFLSHMmAksEUe5TRocopWduJF7R9+xw==
 
-emulators@^8.3.3:
-  version "8.3.3"
-  resolved "https://registry.yarnpkg.com/emulators/-/emulators-8.3.3.tgz#beda22e1b369c1223d26f78e46b1f7debac8110a"
-  integrity sha512-fZXyIRg/lukDdmiidtwzRH7/gyqJXyz/0iYQVbGJGmEWn/YCP86xOvhHPeuXd9C2I3oAUTsZPU3RUMJcaawvug==
+emulators@^8.3.4:
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/emulators/-/emulators-8.3.4.tgz#7412f08518e336d7e710ec7ef026b7758091b2fb"
+  integrity sha512-l8x6hJLnCRMLtp0FiZfhMjkPOiUqgh2T/fwBNTawrwjb0iGlT3BObFL2ujpVMuAalG9XLC20XWiv4yGX/itw6Q==
 
 endianness@^8.0.2:
   version "8.0.2"
@@ -4162,10 +4162,10 @@ file-type@^16.5.4:
     strtok3 "^6.2.4"
     token-types "^4.1.1"
 
-file-type@^20.4.1:
-  version "20.4.1"
-  resolved "https://registry.yarnpkg.com/file-type/-/file-type-20.4.1.tgz#8a58cf0922c6098af0ca5d84d5cf859c0c0f56a5"
-  integrity sha512-hw9gNZXUfZ02Jo0uafWLaFVPter5/k2rfcrjFJJHX/77xtSDOfJuEFb6oKlFV86FLP1SuyHMW1PSk0U9M5tKkQ==
+file-type@^20.5.0:
+  version "20.5.0"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-20.5.0.tgz#616e90564e6ffabab22ad9763e28efcc5c95aee0"
+  integrity sha512-BfHZtG/l9iMm4Ecianu7P8HRD2tBHLtjXinm4X62XBOYzi7CYA7jyqfJzOvXHqzVrVPYqBo2/GvbARMaaJkKVg==
   dependencies:
     "@tokenizer/inflate" "^0.2.6"
     strtok3 "^10.2.0"
@@ -4249,10 +4249,10 @@ frac@~1.1.2:
   resolved "https://registry.yarnpkg.com/frac/-/frac-1.1.2.tgz#3d74f7f6478c88a1b5020306d747dc6313c74d0b"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
-framer-motion@^12.9.1:
-  version "12.9.1"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.9.1.tgz#89f22079610b6656fbbaa7e9b498a5be75f7d623"
-  integrity sha512-dZBp2TO0a39Cc24opshlLoM0/OdTZVKzcXWuhntfwy2Qgz3t9+N4sTyUqNANyHaRFiJUWbwwsXeDvQkEBPky+g==
+framer-motion@^12.9.2:
+  version "12.9.2"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.9.2.tgz#d6b5f7c9553da17a4d92db293eebfbbf97bd4c33"
+  integrity sha512-R0O3Jdqbfwywpm45obP+8sTgafmdEcUoShQTAV+rB5pi+Y1Px/FYL5qLLRe5tPtBdN1J4jos7M+xN2VV2oEAbQ==
   dependencies:
     motion-dom "^12.9.1"
     motion-utils "^12.8.3"
@@ -6177,12 +6177,12 @@ motion-utils@^12.8.3:
   resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-12.8.3.tgz#d72bd9712574266088f0903f69466a9d3ad206c4"
   integrity sha512-GYVauZEbca8/zOhEiYOY9/uJeedYQld6co/GJFKOy//0c/4lDqk0zB549sBYqqV2iMuX+uHrY1E5zd8A2L+1Lw==
 
-motion@12.9.1:
-  version "12.9.1"
-  resolved "https://registry.yarnpkg.com/motion/-/motion-12.9.1.tgz#027f0ed9f6f48d2d4334db3e929884558fd10cc7"
-  integrity sha512-amdtlwafU+XLPcrfSrOQ/S2sqiSw+UTywH+X/Yoqaz0qYEocqJKh8bs6M09CdRmkjZuKx2YM+BHodXjsqoTEag==
+motion@12.9.2:
+  version "12.9.2"
+  resolved "https://registry.yarnpkg.com/motion/-/motion-12.9.2.tgz#a604d58850637716c2874a0f2e4f2e4842ebe0b4"
+  integrity sha512-2hwi4wlOpt/zDHcDZATL2FFhYgj2n6t5Hd0UT91swMup6dx6KpFRkTydYJkkV0PUImT1QfC+WT5d0eRekTKpcg==
   dependencies:
-    framer-motion "^12.9.1"
+    framer-motion "^12.9.2"
     tslib "^2.4.0"
 
 mrmime@^2.0.0:
@@ -6658,10 +6658,10 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-pdfjs-dist@^5.1.91:
-  version "5.1.91"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-5.1.91.tgz#d5d90efacaf17d1c8d12310740eb7070322886d8"
-  integrity sha512-qSIADdagooJB4wWCBnrBJjRvASevmxL0BwafvOuKJG5uTQdYoFBrhrRYnucKNiSc9qS6JIk0hC5y1yktFljXkA==
+pdfjs-dist@^5.2.133:
+  version "5.2.133"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-5.2.133.tgz#1d0383bddf65f488671f3279de78d0db12200300"
+  integrity sha512-abE6ZWDxztt+gGFzfm4bX2ggfxUk9wsDEoFzIJm9LozaY3JdXR7jyLK4Bjs+XLXplCduuWS1wGhPC4tgTn/kzg==
   optionalDependencies:
     "@napi-rs/canvas" "^0.1.67"
 
@@ -8058,10 +8058,10 @@ stylelint-order@^7.0.0:
     postcss "^8.5.3"
     postcss-sorting "^9.1.0"
 
-stylelint@^16.19.0:
-  version "16.19.0"
-  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-16.19.0.tgz#bc10b4515dcceacd4aa68ccc0997724a477ee497"
-  integrity sha512-BJzc5mo/ez0H/ZSl3UbxGdkK/s0kFGsF5/k6IGu4z8wJ1qp49WrOS9RxswvcN6HMirt0g/iiJqOwLHTbWv49IQ==
+stylelint@^16.19.1:
+  version "16.19.1"
+  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-16.19.1.tgz#486b95fa7518a3077ee2802bc6dda2174bc097bb"
+  integrity sha512-C1SlPZNMKl+d/C867ZdCRthrS+6KuZ3AoGW113RZCOL0M8xOGpgx7G70wq7lFvqvm4dcfdGFVLB/mNaLFChRKw==
   dependencies:
     "@csstools/css-parser-algorithms" "^3.0.4"
     "@csstools/css-tokenizer" "^3.0.3"

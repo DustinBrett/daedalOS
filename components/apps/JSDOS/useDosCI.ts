@@ -61,7 +61,7 @@ const useDosCI = (
       if (dosCI[bundleUrl]) {
         await createSnapshot(
           `${basename(bundleUrl)}${saveExtension}`,
-          Buffer.from((await dosCI[bundleUrl].persist()) || []),
+          Buffer.from(((await dosCI[bundleUrl].persist()) as Uint8Array) || []),
           screenshot
         );
       }
