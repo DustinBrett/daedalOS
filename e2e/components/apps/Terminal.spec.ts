@@ -207,6 +207,11 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "1 history");
   });
 
+  test("mediainfo", async ({ page }) => {
+    await sendToTerminal({ page }, "mediainfo desktop.ini");
+    await terminalHasText({ page }, "General");
+  });
+
   test("neofetch", async ({ page }) => {
     await sendToTerminal({ page }, "neofetch");
     await terminalHasText(
