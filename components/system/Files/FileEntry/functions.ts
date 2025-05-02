@@ -238,32 +238,33 @@ const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
   new Promise((resolve) => {
     const iconCacheDirectory = join(ICON_CACHE, path);
 
-    fs?.readdir(
-      iconCacheDirectory,
-      async (dirError, [firstIcon, ...otherIcons] = []) => {
-        if (dirError) resolve([]);
-        else {
-          resolve(
-            (
-              await Promise.all(
-                [firstIcon, otherIcons[otherIcons.length - 1]]
-                  .filter((icon) => icon?.endsWith(ICON_CACHE_EXTENSION))
-                  .map(
-                    (cachedIcon): Promise<string> =>
-                      // eslint-disable-next-line promise/param-names
-                      new Promise((resolveIcon) => {
-                        getCachedIconUrl(
-                          fs,
-                          join(iconCacheDirectory, cachedIcon)
-                        ).then(resolveIcon);
-                      })
-                  )
-              )
-            ).filter(Boolean)
-          );
-        }
+    fs?.readdir(iconCacheDirectory, async (dirError, possibleIcons = []) => {
+      if (dirError) resolve([]);
+      else {
+        const [firstIcon, ...otherIcons] = possibleIcons.filter((icon) =>
+          icon?.endsWith(ICON_CACHE_EXTENSION)
+        );
+
+        resolve(
+          (
+            await Promise.all(
+              [firstIcon, otherIcons[otherIcons.length - 1]]
+                .filter(Boolean)
+                .map(
+                  (cachedIcon): Promise<string> =>
+                    // eslint-disable-next-line promise/param-names
+                    new Promise((resolveIcon) => {
+                      getCachedIconUrl(
+                        fs,
+                        join(iconCacheDirectory, cachedIcon)
+                      ).then(resolveIcon);
+                    })
+                )
+            )
+          ).filter(Boolean)
+        );
       }
-    );
+    });
   });
 
 export const getCoverArt = async (
