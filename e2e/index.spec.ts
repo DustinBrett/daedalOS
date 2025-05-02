@@ -12,7 +12,7 @@ import {
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());
-test.beforeEach(loadApp);
+test.beforeEach(loadApp());
 test.beforeEach(desktopEntriesAreVisible);
 test.beforeEach(taskbarIsVisible);
 test.beforeEach(startButtonIsVisible);

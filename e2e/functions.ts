@@ -985,33 +985,32 @@ export const selectArea = async ({
 };
 
 // loaders
-export const loadApp = async (
-  { page }: TestProps,
-  queryParams?: Record<string, string>
-): Promise<Response | null> => {
-  await page.addInitScript((session) => {
-    window.DEBUG_DEFAULT_SESSION = session;
-  }, DEFAULT_SESSION);
+export const loadApp =
+  (queryParams?: Record<string, string>) =>
+  async ({ page }: TestProps): Promise<Response | null> => {
+    await page.addInitScript((session) => {
+      window.DEBUG_DEFAULT_SESSION = session;
+    }, DEFAULT_SESSION);
 
-  return page.goto(
-    queryParams ? `/?${new URLSearchParams(queryParams).toString()}` : "/"
-  );
-};
+    return page.goto(
+      queryParams ? `/?${new URLSearchParams(queryParams).toString()}` : "/"
+    );
+  };
 
 export const loadTestApp = async ({
   page,
-}: TestProps): Promise<Response | null> => loadApp({ page }, { app: TEST_APP });
+}: TestProps): Promise<Response | null> => loadApp({ app: TEST_APP })({ page });
 
 export const loadContainerTestApp = async ({
   page,
 }: TestProps): Promise<Response | null> =>
-  loadApp({ page }, { app: TEST_APP_CONTAINER_APP });
+  loadApp({ app: TEST_APP_CONTAINER_APP })({ page });
 
 export const loadAppWithCanvas = async ({
   headless,
   browserName,
   page,
 }: TestProps): Promise<void> => {
-  await loadApp({ page });
+  await loadApp()({ page });
   await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 };

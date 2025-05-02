@@ -28,7 +28,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
-test.beforeEach(loadApp);
+test.beforeEach(loadApp());
 test.beforeEach(desktopIsVisible);
 
 test("has file entry", desktopEntriesAreVisible);

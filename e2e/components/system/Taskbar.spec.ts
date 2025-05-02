@@ -46,7 +46,7 @@ test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 
 test.describe("elements", () => {
-  test.beforeEach(loadApp);
+  test.beforeEach(loadApp());
   test.beforeEach(taskbarIsVisible);
 
   test.describe("has start button", () => {

@@ -13,7 +13,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
-test.beforeEach(loadApp);
+test.beforeEach(loadApp());
 test.beforeEach(async ({ page }) => clickSearchButton({ page }));
 test.beforeEach(searchMenuIsVisible);
 

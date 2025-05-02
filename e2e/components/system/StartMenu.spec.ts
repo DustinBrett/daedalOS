@@ -27,7 +27,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
-test.beforeEach(loadApp);
+test.beforeEach(loadApp());
 test.beforeEach(async ({ page }) => clickStartButton({ page }));
 test.beforeEach(startMenuIsVisible);
 

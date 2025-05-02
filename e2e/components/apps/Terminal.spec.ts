@@ -21,7 +21,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
-test.beforeEach(async ({ page }) => loadApp({ page }, { app: "Terminal" }));
+test.beforeEach(async ({ page }) => loadApp({ app: "Terminal" })({ page }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(terminalHasRows);
 

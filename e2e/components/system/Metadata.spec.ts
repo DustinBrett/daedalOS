@@ -4,7 +4,7 @@ import desktopIcons from "public/.index/desktopIcons.json";
 import { OG_TAGS } from "e2e/constants";
 import { loadApp } from "e2e/functions";
 
-test.beforeEach(loadApp);
+test.beforeEach(loadApp());
 
 test.describe("has correct tags", () => {
   test("has link preloads", async ({ page }) => {

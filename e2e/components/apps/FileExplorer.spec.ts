@@ -80,7 +80,7 @@ import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
-test.beforeEach(async ({ page }) => loadApp({ page }, { app: "FileExplorer" }));
+test.beforeEach(async ({ page }) => loadApp({ app: "FileExplorer" })({ page }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(fileExplorerEntriesAreVisible);
 
