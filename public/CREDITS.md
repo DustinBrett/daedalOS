@@ -26,6 +26,8 @@ This project is greatly augmented by code from the open source community. Thank 
 
 ## System Libraries
 
+- [3D FlowerBox](https://github.com/kevin-shannon/3D-FlowerBox)
+- [3D Maze](https://github.com/ibid-11962/Windows-95-3D-Maze-Screensaver)
 - [7z-wasm](https://github.com/use-strict/7z-wasm)
 - [ani-cursor](https://github.com/captbaritone/webamp/tree/master/packages/ani-cursor)
 - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
@@ -51,6 +53,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [multiformats](https://github.com/multiformats/multiformats)
 - [music-metadata-browser](https://github.com/Borewit/music-metadata-browser)
 - [Panzoom](https://github.com/timmywil/panzoom)
+- [Pipes](https://github.com/1j01/pipes)
 - [playlist-parser](https://github.com/nickdesaulniers/javascript-playlist-parser)
 - [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
 - [resedit](https://github.com/jet2jet/resedit-js)

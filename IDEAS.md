@@ -6,9 +6,6 @@
 
 - Accessibility (Structure & Markup)
 - Screen Savers (.scr)
-  - [Pipes](https://github.com/1j01/pipes)
-  - [3D Maze](https://github.com/ibid-11962/Windows-95-3D-Maze-Screensaver)
-  - [3D FlowerBox](https://github.com/kevin-shannon/3D-FlowerBox)
   - [After Dark](https://www.bryanbraun.com/after-dark-css/)
   - [Hackers](https://simone.computer/#/webdesktops) (Shows when site is inactive)
   - [Bouncing DVD Logo](https://www.bouncingdvdlogo.com/)

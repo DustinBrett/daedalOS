@@ -394,3 +394,5 @@ export const DISBALE_AUTO_INPUT_FEATURES = {
   autoCorrect: "off",
   spellCheck: false,
 };
+
+export const MAX_ZINDEX = 2147483647;
