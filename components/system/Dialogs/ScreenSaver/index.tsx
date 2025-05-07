@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
@@ -35,6 +35,7 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
     useProcesses();
   const { readFile } = useFileSystem();
   const [srcDoc, setSrcDoc] = useState<Record<string, string>>({});
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const loadScreenSaver = useCallback(
     async () =>
       setSrcDoc({
@@ -42,7 +43,13 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
       }),
     [readFile, url]
   );
-  const closeScreenSaver = useCallback(() => close(id), [close, id]);
+  const closeScreenSaver = useCallback(() => {
+    if (iframeRef.current) {
+      iframeRef.current.style.display = "none";
+    }
+
+    close(id);
+  }, [close, id]);
 
   useEffect(() => {
     if (url && !srcDoc[url]) loadScreenSaver();
@@ -50,6 +57,7 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledScreenSaver
+      ref={iframeRef}
       onLoad={(event) => {
         const { contentWindow: iframeWindow } = event?.currentTarget || {};
 
@@ -73,7 +81,7 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
                   ONE_TIME_PASSIVE_CAPTURE_EVENT
                 )
               ),
-            MILLISECONDS_IN_SECOND
+            MILLISECONDS_IN_SECOND / 2
           );
         } else {
           closeScreenSaver();
