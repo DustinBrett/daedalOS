@@ -469,7 +469,10 @@ export const mockSaveFilePicker = async (
     [fileName]
   );
 
-// expect->evaluate
+// evaluate
+export const getHostname = async ({ page }: TestProps): Promise<string> =>
+  page.evaluate(() => window.location.hostname);
+
 export const windowAnimationIsFinished = async ({
   page,
 }: TestProps): Promise<Animation[]> =>

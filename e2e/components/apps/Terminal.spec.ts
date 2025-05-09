@@ -1,9 +1,14 @@
 import { expect, test } from "@playwright/test";
 import directory from "contexts/process/directory";
-import { ROOT_PUBLIC_TEST_FILE, TERMINAL_BASE_CD } from "e2e/constants";
+import {
+  PYODIDE_HEADLESS_NOT_SUPPORTED_BROWSERS,
+  ROOT_PUBLIC_TEST_FILE,
+  TERMINAL_BASE_CD,
+} from "e2e/constants";
 import {
   captureConsoleLogs,
   disableWallpaper,
+  getHostname,
   loadApp,
   sendTabToTerminal,
   sendTextToTerminal,
@@ -119,17 +124,51 @@ test.describe("has file system access", () => {
     });
   });
 
+  test.describe("can move", () => {
+    test("file", async ({ page }) => {
+      const testFile = ROOT_PUBLIC_TEST_FILE;
+      const newTestFile = "test.ini";
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, testFile);
+
+      await sendToTerminal({ page }, `move ${testFile} ${newTestFile}`);
+      await sendToTerminal({ page }, "clear");
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, newTestFile);
+      await terminalDoesNotHaveText({ page }, testFile);
+    });
+  });
+
+  test.describe("can rename", () => {
+    test("file", async ({ page }) => {
+      const testFile = ROOT_PUBLIC_TEST_FILE;
+      const newTestFile = "test.ini";
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, testFile);
+
+      await sendToTerminal({ page }, `ren ${testFile} ${newTestFile}`);
+      await sendToTerminal({ page }, "clear");
+
+      await sendToTerminal({ page }, "ls");
+      await terminalHasText({ page }, newTestFile);
+      await terminalDoesNotHaveText({ page }, testFile);
+    });
+  });
+
   test.describe("can delete", () => {
     test("file", async ({ page }) => {
       const testFile = ROOT_PUBLIC_TEST_FILE;
 
-      await sendToTerminal({ page }, "ls");
+      await sendToTerminal({ page }, "dir");
       await terminalHasText({ page }, testFile);
 
       await sendToTerminal({ page }, `del ${testFile}`);
       await sendToTerminal({ page }, "clear");
 
-      await sendToTerminal({ page }, "ls");
+      await sendToTerminal({ page }, "dir");
       await terminalDoesNotHaveText({ page }, testFile);
     });
 
@@ -178,7 +217,7 @@ test.describe("has file system access", () => {
 });
 
 test.describe("has commands", () => {
-  test("echo & clear", async ({ page }) => {
+  test("clear", async ({ page }) => {
     await sendToTerminal({ page }, "echo hi");
     await terminalHasText({ page }, "hi", 2);
 
@@ -192,9 +231,34 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "Foreground: Aqua");
   });
 
+  test("date", async ({ page }) => {
+    await sendToTerminal({ page }, "date");
+    await terminalHasText({ page }, /The current date is: \d{4}-\d{2}-\d{2}/);
+  });
+
+  test("echo", async ({ page }) => {
+    await sendToTerminal({ page }, "echo hi");
+    await terminalHasText({ page }, "hi", 2);
+  });
+
   test("exit", async ({ page }) => {
     await sendToTerminal({ page }, "exit");
     await windowIsHidden({ page });
+  });
+
+  test("git", async ({ page }) => {
+    await sendToTerminal({ page }, "git version");
+    await terminalHasText({ page }, /^\d+\.\d+\.\d+/);
+  });
+
+  test("help", async ({ page }) => {
+    await sendToTerminal({ page }, "help");
+    await terminalHasText({ page }, /Spawn a new sheep./);
+  });
+
+  test("history", async ({ page }) => {
+    await sendToTerminal({ page }, "history");
+    await terminalHasText({ page }, "1 history");
   });
 
   test("ipconfig", async ({ page }) => {
@@ -202,9 +266,9 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "IPv4 Address");
   });
 
-  test("history", async ({ page }) => {
-    await sendToTerminal({ page }, "history");
-    await terminalHasText({ page }, "1 history");
+  test("license", async ({ page }) => {
+    await sendToTerminal({ page }, "license");
+    await terminalHasText({ page }, "MIT License", 2);
   });
 
   test("mediainfo", async ({ page }) => {
@@ -229,6 +293,33 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "Server:  cloudflare-dns.com");
     await terminalHasText({ page }, "Address:  1.1.1.1");
     await terminalHasText({ page }, "Name:    dustinbrett.com");
+  });
+
+  test("python", async ({ browserName, headless, page }) => {
+    test.skip(
+      headless && PYODIDE_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName),
+      "no headless Pyodide support"
+    );
+
+    const randomNumber = Math.floor(Math.random() * 1000);
+    const randomNumber2 = Math.floor(Math.random() * 1000);
+
+    await sendToTerminal({ page }, `python ${randomNumber}+${randomNumber2}`);
+    await terminalHasText({ page }, `${randomNumber + randomNumber2}`);
+
+    await sendToTerminal({ page }, "py");
+    await terminalHasText({ page }, /\d+\.\d+\.\d+ \(main, .*\) \[Clang/);
+  });
+
+  test("qjs", async ({ page }) => {
+    const randomNumber = Math.floor(Math.random() * 1000);
+    const randomNumber2 = Math.floor(Math.random() * 1000);
+
+    await sendToTerminal({ page }, `qjs ${randomNumber}+${randomNumber2}`);
+    await terminalHasText({ page }, `${randomNumber + randomNumber2}`);
+
+    await sendToTerminal({ page }, "qjs Object.keys(window)");
+    await terminalHasText({ page }, '["console","window"]');
   });
 
   test("sheep", async ({ page }) => {
@@ -259,13 +350,6 @@ test.describe("has commands", () => {
     await terminalHasText({ page }, "Terminal", -1);
   });
 
-  test("title", async ({ page }) => {
-    const testTitle = "Testing";
-
-    await sendToTerminal({ page }, `title ${testTitle}`);
-    await windowTitlebarTextIsVisible(testTitle, { page });
-  });
-
   test("time", async ({ page }) => {
     await sendToTerminal({ page }, "time");
     await terminalHasText(
@@ -274,14 +358,37 @@ test.describe("has commands", () => {
     );
   });
 
-  test("date", async ({ page }) => {
-    await sendToTerminal({ page }, "date");
-    await terminalHasText({ page }, /The current date is: \d{4}-\d{2}-\d{2}/);
+  test("title", async ({ page }) => {
+    const testTitle = "Testing";
+
+    await sendToTerminal({ page }, `title ${testTitle}`);
+    await windowTitlebarTextIsVisible(testTitle, { page });
   });
 
   test("uptime", async ({ page }) => {
     await sendToTerminal({ page }, "uptime");
     await terminalHasText({ page }, /Uptime: \d+ second(s)?/);
+  });
+
+  test("ver", async ({ page }) => {
+    await sendToTerminal({ page }, "ver");
+    await terminalHasText({ page }, /\d+\.\d+\.\d+-[0-9a-f]+/, 2);
+  });
+
+  test("whoami", async ({ page }) => {
+    await sendToTerminal({ page }, "whoami");
+    await terminalHasText({ page }, `${await getHostname({ page })}\\public`);
+  });
+
+  test("wsl", async ({ page }) => {
+    await sendToTerminal({ page }, "wsl");
+    await windowTitlebarTextIsVisible(/linux.bin/, { page });
+  });
+
+  test("xlsx", async ({ page }) => {
+    await sendToTerminal({ page }, "xlsx desktop.ini");
+    await sendToTerminal({ page }, "dir");
+    await terminalHasText({ page }, "desktop.xlsx");
   });
 });
 
