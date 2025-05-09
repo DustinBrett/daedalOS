@@ -102,6 +102,14 @@ This project is greatly augmented by code from the open source community. Thank 
 ## Services
 
 - [ntp.js](http://www.ntpjs.org/)
+- [allOrigins](https://allorigins.win/)
 - [Astronomy Picture of the Day](https://apod.nasa.gov/apod/)
+- [Cloudflare DoH](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/)
+- [Google DoH](https://developers.google.com/speed/public-dns/docs/doh)
+- [isomorphic-git Cors Proxy](https://github.com/isomorphic-git/cors-proxy)
+- [IPFS Public Gateways](https://ipfs.github.io/public-gateway-checker/)
 - [The Old Net](https://theoldnet.com/)
 - [Wayback Machine](https://web.archive.org/)
+- [Wasmer Registry](https://docs.wasmer.io/registry)
+- [Winamp Skin Museum](https://skins.webamp.org/)
+- [Weather Report](https://github.com/chubin/wttr.in)
