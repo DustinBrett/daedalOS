@@ -5,7 +5,6 @@ import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 
 export type ProxyState =
   | "ALL_ORIGINS"
-  | "CHAINFLARE"
   | "CORS"
   | `OLD_NET_${number}`
   | "WAYBACK_MACHINE";
@@ -23,11 +22,6 @@ const useProxyMenu = (
           action: () => setProxyState("ALL_ORIGINS"),
           label: "allOrigins",
           toggle: proxyState === "ALL_ORIGINS",
-        },
-        {
-          action: () => setProxyState("CHAINFLARE"),
-          label: "Chainflare",
-          toggle: proxyState === "CHAINFLARE",
         },
         {
           action: () => setProxyState("CORS"),
