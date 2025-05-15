@@ -8,6 +8,7 @@ import { type IconProps } from "styles/common/Icon";
 
 export type StyledFileEntryProps = {
   $desktop?: boolean;
+  $labelHeightOffset?: number;
   $selecting?: boolean;
   $visible?: boolean;
 };

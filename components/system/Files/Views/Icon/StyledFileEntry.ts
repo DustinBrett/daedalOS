@@ -4,8 +4,10 @@ import { type StyledFileEntryProps } from "components/system/Files/Views";
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
   display: ${({ $visible }) => ($visible ? "flex" : "none")};
   height: min-content;
+  margin-bottom: ${({ $labelHeightOffset }) =>
+    $labelHeightOffset ? `-${$labelHeightOffset}px` : undefined};
   outline-offset: -2px;
-  padding: 2px;
+  padding: ${({ theme }) => theme.sizes.fileEntry.iconPadding};
 
   button {
     position: relative;
@@ -30,6 +32,11 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
           /* stylelint-disable declaration-property-value-keyword-no-deprecated */
           word-break: break-word;
         }
+      }
+
+      textarea {
+        position: absolute;
+        top: ${({ theme }) => theme.sizes.fileEntry.iconSize};
       }
 
       picture {
@@ -61,10 +68,6 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         ? `1px solid ${theme.colors.fileEntry.borderFocused}`
         : undefined};
     z-index: 1;
-
-    &.only-focused {
-      margin-bottom: -1000px;
-    }
 
     &:hover {
       background-color: ${({ theme, $selecting }) =>

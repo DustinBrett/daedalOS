@@ -2,7 +2,7 @@ import { extname } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import { type FileManagerViewNames } from "components/system/Files/Views";
-import { getTextWrapData } from "components/system/Files/FileEntry/functions";
+import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
@@ -34,7 +34,7 @@ const RenameBox: FC<RenameBoxProps> = ({
   const updateDimensions = useCallback(
     (textArea: EventTarget | HTMLTextAreaElement | null): void => {
       if (textArea instanceof HTMLTextAreaElement) {
-        const { width } = getTextWrapData(
+        const width = measureText(
           textArea.value,
           sizes.fileEntry.fontSize,
           formats.systemFont

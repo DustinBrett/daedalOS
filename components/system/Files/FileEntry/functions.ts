@@ -813,6 +813,7 @@ export const filterSystemFiles =
 
 type WrapData = {
   lines: string[];
+  truncatedText: string;
   width: number;
 };
 
@@ -848,44 +849,53 @@ export const getTextWrapData = (
   text: string,
   fontSize: string,
   fontFamily: string,
-  maxWidth?: number
+  maxWidth: number
 ): WrapData => {
   const lines = [""];
-
   const totalWidth = measureText(text, fontSize, fontFamily);
+  let truncatedText = "";
 
-  if (!maxWidth) return { lines: [text], width: totalWidth };
-
-  if (totalWidth > maxWidth) {
-    const words = text.split(" ");
-
-    [...text].forEach((character) => {
-      const lineIndex = lines.length - 1;
-      const lineText = `${lines[lineIndex]}${character}`;
-      const lineWidth = measureText(lineText, fontSize, fontFamily);
-
-      if (lineWidth > maxWidth) {
-        const spacesInLine = lineText.split(" ").length - 1;
-        const lineWithWords = words.splice(0, spacesInLine).join(" ");
-
-        if (
-          lines.length === 1 &&
-          spacesInLine > 0 &&
-          lines[0] !== lineWithWords
-        ) {
-          lines[0] = lineText.slice(0, lineWithWords.length);
-          lines.push(lineText.slice(lineWithWords.length));
-        } else {
-          lines.push(character);
-        }
-      } else {
-        lines[lineIndex] = lineText;
-      }
-    });
+  if (totalWidth <= maxWidth) {
+    return { lines: [text], truncatedText: text, width: totalWidth };
   }
+
+  [...text].forEach((character, characterIndex) => {
+    const currentLineIndex = lines.length - 1;
+
+    if (currentLineIndex < 2) truncatedText += character;
+
+    const isEmptyLine =
+      lines[currentLineIndex] === "" || lines[currentLineIndex] === " ";
+    const isSpaceCharacter = character === " ";
+
+    if (isEmptyLine && isSpaceCharacter) {
+      lines[currentLineIndex] = "";
+      return;
+    }
+
+    const newLineText = `${lines[currentLineIndex]}${character}`;
+    const newLineWidth = measureText(newLineText, fontSize, fontFamily);
+
+    if (newLineWidth > maxWidth) {
+      if (currentLineIndex === 1) truncatedText = truncatedText.slice(0, -1);
+
+      if (text[characterIndex + 1] === " " || !newLineText.includes(" ")) {
+        lines.push(character);
+      } else {
+        const lastSpaceIndex = newLineText.lastIndexOf(" ");
+
+        lines[currentLineIndex] = newLineText.slice(0, lastSpaceIndex);
+
+        lines.push(newLineText.slice(lastSpaceIndex + 1));
+      }
+    } else {
+      lines[currentLineIndex] = newLineText;
+    }
+  });
 
   return {
     lines,
+    truncatedText,
     width: Math.min(maxWidth, totalWidth),
   };
 };

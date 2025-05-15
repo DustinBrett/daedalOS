@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { type StyledFileEntryProps } from "components/system/Files/Views";
 
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
-  margin-bottom: -1px;
   margin-left: ${({ theme }) => theme.sizes.fileManager.detailsStartPadding}px;
   width: fit-content;
 
