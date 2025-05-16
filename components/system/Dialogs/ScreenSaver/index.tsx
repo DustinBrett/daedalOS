@@ -4,6 +4,7 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 const ONE_TIME_PASSIVE_CAPTURE_EVENT = {
   capture: true,
@@ -43,13 +44,18 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
       }),
     [readFile, url]
   );
-  const closeScreenSaver = useCallback(() => {
-    if (iframeRef.current) {
-      iframeRef.current.style.display = "none";
-    }
+  const closeScreenSaver = useCallback(
+    (event?: Event) => {
+      if (event) haltEvent(event);
 
-    close(id);
-  }, [close, id]);
+      if (iframeRef.current) {
+        iframeRef.current.style.display = "none";
+      }
+
+      close(id);
+    },
+    [close, id]
+  );
 
   useEffect(() => {
     if (url && !srcDoc[url]) loadScreenSaver();

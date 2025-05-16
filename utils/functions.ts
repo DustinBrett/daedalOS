@@ -880,7 +880,7 @@ export const haltEvent = (
     | React.MouseEvent
 ): void => {
   try {
-    if (event.cancelable) {
+    if (event?.cancelable) {
       event.preventDefault();
       event.stopPropagation();
     }
