@@ -4,25 +4,23 @@
 
 ### High Priority
 
+- 3rd Party App Support
 - Accessibility (Structure & Markup)
+- Add my old personal website
+  - [http://surf.to/misc](https://web.archive.org/web/20050826192118if_/http://surf.to:80/misc)
 - Screen Savers (.scr)
   - [After Dark](https://www.bryanbraun.com/after-dark-css/)
-  - [Hackers](https://simone.computer/#/webdesktops) (Shows when site is inactive)
   - [Bouncing DVD Logo](https://www.bouncingdvdlogo.com/)
   - [Drift](https://github.com/sandydoo/flux)
   - [Mystify](https://codepen.io/chrissimmons/pen/rWNJRp)
   - [Johnny Castaway](https://github.com/xesf/castaway)
-- Add my old personal website
-  - [http://surf.to/misc](https://web.archive.org/web/20050826192118if_/http://surf.to:80/misc)
 - Progressive Web App
   - Offline
     - [next-offline](https://github.com/hanford/next-offline)
   - Service Worker (Firewall)
     - [Mock Service Worker](https://github.com/mswjs/msw)
-- System Tray Icons
 - Light Windows 10 Theme
   - [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme)
-- Single Click Window Icon Opens Context Menu
 
 ### Medium Priority
 
@@ -36,7 +34,7 @@
       - [Coqui.ai](https://github.com/coqui-ai/tts)
       - speak.js ([1](https://github.com/kripken/speak.js), [2](https://github.com/mtttmpl/speak-js))
     - [Transformers.js](https://xenova.github.io/transformers.js/)
-- 3rd Party App Support
+- System Tray Icons
 - Email App
   - Open SMTP Server
   - [openpgpjs](https://github.com/openpgpjs/openpgpjs)
