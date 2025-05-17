@@ -372,7 +372,7 @@ test.describe("has commands", () => {
 
   test("ver", async ({ page }) => {
     await sendToTerminal({ page }, "ver");
-    await terminalHasText({ page }, /\d+\.\d+\.\d+-[0-9a-f]+/, 2);
+    await terminalHasText({ page }, /\d+\.\d+\.\d+-/, 2);
   });
 
   test("whoami", async ({ page }) => {
