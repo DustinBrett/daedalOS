@@ -26,7 +26,7 @@ const sizes = {
   },
   fileManager: {
     columnGap: "1px",
-    columnHeight: "25px",
+    columnHeight: 25,
     columnMinWidth: 70,
     columnResizeWidth: 7,
     detailsEndPadding: 16,
@@ -87,6 +87,7 @@ const sizes = {
   window: {
     cascadeOffset: 26,
     outline: "1px",
+    textTopPadding: 14,
   },
 };
 

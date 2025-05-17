@@ -1,6 +1,6 @@
 import { m as motion } from "motion/react";
 import styled from "styled-components";
-import StyledLoading from "components/system/Files/FileManager/StyledLoading";
+import StyledLoading from "components/system/Apps/StyledLoading";
 
 type StyledWindowProps = {
   $backgroundBlur?: string;

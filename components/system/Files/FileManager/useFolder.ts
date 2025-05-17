@@ -168,8 +168,10 @@ const useFolder = (
     },
     [directory, readFile]
   );
-  const isSimpleSort =
-    skipSorting || !sortBy || sortBy === "name" || sortBy === "type";
+  const isSimpleSort = useMemo(
+    () => skipSorting || !sortBy || sortBy === "name" || sortBy === "type",
+    [skipSorting, sortBy]
+  );
   const updateFiles = useCallback(
     async (newFile?: string, oldFile?: string) => {
       if (oldFile) {
@@ -739,6 +741,7 @@ const useFolder = (
 
   useEffect(() => {
     if (directory !== currentDirectory) {
+      setIsLoading(true);
       setCurrentDirectory(directory);
       setFiles(NO_FILES);
     }

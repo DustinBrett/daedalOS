@@ -1,7 +1,7 @@
 import { memo, useMemo, useRef, useState } from "react";
 import styled, { type IStyledComponent } from "styled-components";
 import { type FastOmit } from "styled-components/dist/types";
-import StyledLoading from "components/system/Files/FileManager/StyledLoading";
+import StyledLoading from "components/system/Apps/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useProcesses } from "contexts/process";
 

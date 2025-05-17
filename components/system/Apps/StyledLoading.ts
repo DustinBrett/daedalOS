@@ -1,16 +1,17 @@
 import styled from "styled-components";
 
-type StyledEmptyProps = {
+type StyledLoadingProps = {
   $hasColumns?: boolean;
 };
 
-const StyledEmpty = styled.div<StyledEmptyProps>`
-  position: absolute;
+const StyledLoading = styled.div<StyledLoadingProps>`
+  cursor: wait;
+  height: 100%;
   width: 100%;
 
   &::before {
     color: #fff;
-    content: "This folder is empty.";
+    content: "Working on it...";
     display: flex;
     font-size: 12px;
     font-weight: 200;
@@ -25,4 +26,4 @@ const StyledEmpty = styled.div<StyledEmptyProps>`
   }
 `;
 
-export default StyledEmpty;
+export default StyledLoading;

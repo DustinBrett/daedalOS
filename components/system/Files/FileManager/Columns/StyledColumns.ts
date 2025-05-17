@@ -12,7 +12,7 @@ const StyledColumns = styled.span`
 
   ol {
     display: flex;
-    height: ${({ theme }) => theme.sizes.fileManager.columnHeight};
+    height: ${({ theme }) => theme.sizes.fileManager.columnHeight}px;
 
     li {
       color: rgb(222 222 222);
@@ -46,7 +46,7 @@ const StyledColumns = styled.span`
       .resize {
         border-left: 1px solid rgb(99 99 99);
         cursor: col-resize;
-        height: 25px;
+        height: ${({ theme }) => theme.sizes.fileManager.columnHeight}px;
         padding-left: ${({ theme }) =>
           theme.sizes.fileManager.columnResizeWidth}px;
         position: absolute;
