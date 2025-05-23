@@ -1205,10 +1205,10 @@
   resolved "https://registry.yarnpkg.com/@types/canvas-confetti/-/canvas-confetti-1.9.0.tgz#d1077752e046413c9881fbb2ba34a70ebe3c1773"
   integrity sha512-aBGj/dULrimR1XDZLtG9JwxX1b4HPRF6CX9Yfwh3NvstZEm1ZL7RBnel4keCPSqs1ANRu1u2Aoz9R+VmtjYuTg==
 
-"@types/dom-chromium-ai@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.7.tgz#9938052cdc691da138296980e742dbfbdb5f39ec"
-  integrity sha512-nt1pTKmvEWjrAq/QuFEpcXYsTGZwuSdPhGNJf6YtMZDiLkQJcEq8znZImO9ABnHEoYbSX899ez3YUZmlE7fkYw==
+"@types/dom-chromium-ai@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@types/dom-chromium-ai/-/dom-chromium-ai-0.0.6.tgz#0c9e5712d8db3d26586cd9f175001b509cd2e514"
+  integrity sha512-/jUGe9a3BLzsjjg18Olk/Ul64PZ0P4aw8uNxrXeXVTni5PSxyCfyhHb4UohsXNVByOnwYGzlqUcb3vYKVsG4mg==
 
 "@types/dompurify@^3.2.0":
   version "3.2.0"

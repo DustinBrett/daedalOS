@@ -90,7 +90,7 @@
     "@next/eslint-plugin-next": "^15.3.2",
     "@playwright/test": "1.52.0",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/dom-chromium-ai": "^0.0.7",
+    "@types/dom-chromium-ai": "0.0.6",
     "@types/dompurify": "^3.2.0",
     "@types/gif.js": "^0.2.5",
     "@types/ini": "^4.1.1",
