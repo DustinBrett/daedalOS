@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <style type="text/css">
 	html, body {
+		background: black;
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
@@ -25,7 +26,7 @@
 
 			uniform mat4 u_mvMatrix;
 			uniform mat4 u_projMatrix;
-			
+
 			varying vec4 fColor;
 
 			void main() {
@@ -238,7 +239,7 @@ function initShaders( gl, vertexShaderId, fragmentShaderId )
     var fragShdr;
 
     var vertElem = document.getElementById( vertexShaderId );
-    if ( !vertElem ) { 
+    if ( !vertElem ) {
         alert( "Unable to load vertex shader " + vertexShaderId );
         return -1;
     }
@@ -255,7 +256,7 @@ function initShaders( gl, vertexShaderId, fragmentShaderId )
     }
 
     var fragElem = document.getElementById( fragmentShaderId );
-    if ( !fragElem ) { 
+    if ( !fragElem ) {
         alert( "Unable to load vertex shader " + fragmentShaderId );
         return -1;
     }
@@ -275,7 +276,7 @@ function initShaders( gl, vertexShaderId, fragmentShaderId )
     gl.attachShader( program, vertShdr );
     gl.attachShader( program, fragShdr );
     gl.linkProgram( program );
-    
+
     if ( !gl.getProgramParameter(program, gl.LINK_STATUS) ) {
         var msg = "Shader program failed to link.  The error log is:"
             + "<pre>" + gl.getProgramInfoLog( program ) + "</pre>";
@@ -1314,7 +1315,7 @@ function generate_geometry(surface, time) {
       var pos = vec3(x, y, 1.0);
       var pos2 = vec3(pos);
       var morph = -Math.abs(1.6 * (time % 7.5) - 6) + 5;
-      vertices.push(mix(pos, normalize(pos2), morph)); 
+      vertices.push(mix(pos, normalize(pos2), morph));
     }
   }
 
@@ -1528,7 +1529,7 @@ function resizeCanvas() {
 	gl.viewport( 0, 0, canvas.width, canvas.height );
 	aspect_ratio =  canvas.width/canvas.height;
 }
-    
+
 
 // Graphics Initialization
 window.onload = function init() {
@@ -1624,7 +1625,7 @@ var render = function() {
   if (Math.abs(pos[1]) > max_y) {
     speed_y = -speed_y;
   }
-  
+
   generate_geometry(shape, time);
 
   // Vertex buffer
@@ -1655,20 +1656,20 @@ var render = function() {
     mvMatrix = mult(mvFoundation, rotateX(faces[face].orientation[0]));
     mvMatrix = mult(mvMatrix, rotateY(faces[face].orientation[1]));
     mvMatrix = mult(translate(pos[0], pos[1], 0), mvMatrix);
-    
+
     gl.uniformMatrix4fv(u_mvMatrix, false, flatten(mvMatrix));
-  
+
     // Lights
     ambientProduct = mult(light.ambient, materials[faces[face].material].ambient);
     diffuseProduct = mult(light.diffuse, materials[faces[face].material].diffuse);
     specularProduct = mult(light.specular, materials[faces[face].material].specular);
-  
+
     gl.uniform4fv(u_lightPosition, flatten(light.position));
     gl.uniform4fv(u_ambientProduct, flatten(ambientProduct));
     gl.uniform4fv(u_diffuseProduct, flatten(diffuseProduct));
     gl.uniform4fv(u_specularProduct, flatten(specularProduct));
     gl.uniform1f(u_shininess, shininess);
-  
+
     gl.drawElements(gl.TRIANGLES, shape.numIndices, gl.UNSIGNED_INT, 0);
   }
   requestAnimFrame(render);
