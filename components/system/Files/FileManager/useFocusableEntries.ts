@@ -134,14 +134,18 @@ const useFocusableEntries = (
         );
 
         if (lines.length > 1) {
-          const element = fileManagerRef.current?.querySelector(
-            `[aria-label='${textLabel}'] figcaption`
-          );
+          try {
+            const element = fileManagerRef.current?.querySelector(
+              `[aria-label='${CSS.escape(textLabel)}'] figcaption`
+            );
 
-          if (element) {
-            $labelHeightOffset =
-              (lines.length - 1) *
-              Number.parseFloat(window.getComputedStyle(element).lineHeight);
+            if (element) {
+              $labelHeightOffset =
+                (lines.length - 1) *
+                Number.parseFloat(window.getComputedStyle(element).lineHeight);
+            }
+          } catch {
+            // Ignore error getting element
           }
         }
       }

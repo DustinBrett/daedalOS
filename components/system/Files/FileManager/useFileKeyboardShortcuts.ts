@@ -276,11 +276,16 @@ const useFileKeyboardShortcuts = (
                 if (focusOnEntry) {
                   blurEntry();
                   focusEntry(focusOnEntry);
-                  fileManagerRef.current
-                    ?.querySelector(
-                      `button[aria-label='${focusOnEntry.replace(SHORTCUT_EXTENSION, "")}']`
-                    )
-                    ?.scrollIntoView();
+
+                  try {
+                    fileManagerRef.current
+                      ?.querySelector(
+                        `button[aria-label='${CSS.escape(focusOnEntry.replace(SHORTCUT_EXTENSION, ""))}']`
+                      )
+                      ?.scrollIntoView();
+                  } catch {
+                    // Ignore error getting/scrolling element
+                  }
                 }
               }
           }

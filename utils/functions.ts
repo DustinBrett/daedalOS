@@ -510,11 +510,17 @@ export const updateIconPositionsIfEmpty = (
     const entryUrl = join(url, entry);
 
     if (!iconPositions[entryUrl]) {
-      const gridEntry = [...gridElement.children].find((element) =>
-        element.querySelector(
-          `button[aria-label="${entry.replace(SHORTCUT_EXTENSION, "")}"]`
-        )
-      );
+      let gridEntry: Element | undefined;
+
+      try {
+        gridEntry = [...gridElement.children].find((element) =>
+          element.querySelector(
+            `button[aria-label="${CSS.escape(entry.replace(SHORTCUT_EXTENSION, ""))}"]`
+          )
+        );
+      } catch {
+        // Ignore error getting element
+      }
 
       if (gridEntry instanceof HTMLElement) {
         const { x, y, height, width } = gridEntry.getBoundingClientRect();

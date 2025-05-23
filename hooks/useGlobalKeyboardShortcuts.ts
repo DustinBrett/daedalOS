@@ -22,10 +22,17 @@ declare global {
   }
 }
 
-export const getNavButtonByTitle = (title: string): HTMLButtonElement | null =>
-  document.querySelector(
-    `main > nav > div[title='${title}']`
-  ) as HTMLButtonElement;
+export const getNavButtonByTitle = (
+  title: string
+): HTMLButtonElement | undefined => {
+  try {
+    return document.querySelector(
+      `main > nav > div[title='${CSS.escape(title)}']`
+    ) as HTMLButtonElement;
+  } catch {
+    return undefined;
+  }
+};
 
 let metaDown = false;
 let metaComboUsed = false;
