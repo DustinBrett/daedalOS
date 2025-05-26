@@ -3,7 +3,7 @@ import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScree
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 const ONE_TIME_PASSIVE_CAPTURE_EVENT = {
@@ -16,19 +16,16 @@ const triggerEvents = [
   "contextmenu",
   "click",
   "wheel",
-  "blur",
   "focus",
-  "keydown",
-  "pointerdown",
-  "touchstart",
-];
-
-const delayedTriggerEvents = [
-  "pointermove",
-  "touchmove",
+  "blur",
   "keyup",
+  "keydown",
   "pointerup",
+  "pointerdown",
+  "pointermove",
+  "touchstart",
   "touchend",
+  "touchmove",
 ];
 
 const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
@@ -70,24 +67,18 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
         if (iframeWindow) {
           iframeWindow.focus();
 
-          triggerEvents.forEach((eventName) =>
-            iframeWindow.addEventListener(
-              eventName,
-              closeScreenSaver,
-              ONE_TIME_PASSIVE_CAPTURE_EVENT
+          requestAnimationFrame(() =>
+            setTimeout(
+              () =>
+                triggerEvents.forEach((eventName) =>
+                  iframeWindow.addEventListener(
+                    eventName,
+                    closeScreenSaver,
+                    ONE_TIME_PASSIVE_CAPTURE_EVENT
+                  )
+                ),
+              TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK
             )
-          );
-
-          setTimeout(
-            () =>
-              delayedTriggerEvents.forEach((eventName) =>
-                iframeWindow.addEventListener(
-                  eventName,
-                  closeScreenSaver,
-                  ONE_TIME_PASSIVE_CAPTURE_EVENT
-                )
-              ),
-            MILLISECONDS_IN_SECOND / 2
           );
         } else {
           closeScreenSaver();
