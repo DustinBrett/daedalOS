@@ -10,7 +10,7 @@ jobs:
         with:
           node-version: '20'
       - run: npm install --legacy-peer-deps
-      - run: npm run export
+      - run: npm run build && npx next export
       - run: cd out && zip -r ../daedalOS.zip .
       - uses: actions/upload-artifact@v4
         with:
