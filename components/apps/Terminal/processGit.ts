@@ -1,5 +1,5 @@
 import { join } from "path";
-import { type FSModule } from "browserfs/dist/node/core/FS";
+import type { FSModule } from "browserfs";
 import {
   type AuthCallback,
   type GitAuth,
