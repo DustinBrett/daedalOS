@@ -3857,10 +3857,10 @@ eslint-plugin-react@^7.37.5:
     string.prototype.matchall "^4.0.12"
     string.prototype.repeat "^1.0.0"
 
-eslint-plugin-regexp@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-regexp/-/eslint-plugin-regexp-2.8.0.tgz#e0c830c86e5f16c6e3dedb42c064e8837a490d4d"
-  integrity sha512-xme90IvkMgdyS+NJC21FM0H6ek4urGsdlIFTXpZRqH2BKJKVSd8hRbyrCpbcqfGBi2jth3eQoLiO3RC1gxZHiw==
+eslint-plugin-regexp@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-regexp/-/eslint-plugin-regexp-2.9.0.tgz#0783be374e68c7a7af98543334fd4f8572949e3f"
+  integrity sha512-9WqJMnOq8VlE/cK+YAo9C9YHhkOtcEtEk9d12a+H7OSZFwlpI6stiHmYPGa2VE0QhTzodJyhlyprUaXDZLgHBw==
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
     "@eslint-community/regexpp" "^4.11.0"
@@ -6091,10 +6091,10 @@ media-typer@^1.1.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-1.1.0.tgz#6ab74b8f2d3320f2064b2a87a38e7931ff3a5561"
   integrity sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==
 
-mediainfo.js@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/mediainfo.js/-/mediainfo.js-0.3.4.tgz#08868f549590d37a1cf6984df7630df89fc58696"
-  integrity sha512-uTUlVqw9PcsuVt4DcXvqfQGKQBx3BCyQcDnJ68kSQyOxz0InIsCuykPShrYp+c5uDr6Mvhy5AfaboHn77xR7Ug==
+mediainfo.js@0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/mediainfo.js/-/mediainfo.js-0.3.5.tgz#b7e4b127a60607887255fb1fe8086b9139de08be"
+  integrity sha512-frLJzKOoAUC0sbPzmg9VOR+WFbNj5CarbTuOzXeH9cOl33haU/CGcyXUTWK00HPXCVS2N5eT0o0dirVxaPIOIw==
   dependencies:
     yargs "^17.7.2"
 

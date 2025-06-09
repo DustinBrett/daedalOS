@@ -69,7 +69,7 @@ const nextConfig = {
     config.resolve.alias = config.resolve.alias || {};
     config.resolve.alias["MediaInfoModule.wasm"] = path.resolve(
       __dirname,
-      "node_modules/mediainfo.js/dist/MediaInfoModule.wasm"
+      "public/System/mediainfo.js/MediaInfoModule.wasm"
     );
 
     config.resolve.fallback = config.resolve.fallback || {};
