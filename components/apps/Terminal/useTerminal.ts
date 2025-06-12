@@ -25,17 +25,16 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
-import { getExtension, haltEvent, loadFiles } from "utils/functions";
+import {
+  displayVersion,
+  getExtension,
+  haltEvent,
+  loadFiles,
+} from "utils/functions";
 
-const { alias, author, license, version } = PACKAGE_DATA;
+const { alias, author, license } = PACKAGE_DATA;
 
 export const displayLicense = `${license} License`;
-
-export const displayVersion = (): string => {
-  const { __NEXT_DATA__: { buildId } = {} } = window;
-
-  return `${version}${buildId ? `-${buildId}` : ""}`;
-};
 
 const useTerminal = ({
   containerRef,

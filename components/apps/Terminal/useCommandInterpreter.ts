@@ -34,10 +34,7 @@ import {
   type NsEntry,
   type NsResponse,
 } from "components/apps/Terminal/types";
-import {
-  displayLicense,
-  displayVersion,
-} from "components/apps/Terminal/useTerminal";
+import { displayLicense } from "components/apps/Terminal/useTerminal";
 import { resourceAliasMap } from "components/system/Dialogs/Run";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -62,6 +59,7 @@ import {
 } from "utils/constants";
 import { transcode } from "utils/ffmpeg";
 import {
+  displayVersion,
   getExtension,
   getTZOffsetISOString,
   isFileSystemMappingSupported,

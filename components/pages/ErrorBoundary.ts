@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { isDev } from "utils/functions";
 
 type ErrorBoundaryProps = {
   FallbackRender?: React.ReactNode;
@@ -31,7 +32,7 @@ export class ErrorBoundary extends Component<
       state: { hasError },
     } = this;
 
-    if (hasError && !FallbackRender && !("__nextDevClientId" in window)) {
+    if (hasError && !FallbackRender && !isDev()) {
       window.location.reload();
     }
 

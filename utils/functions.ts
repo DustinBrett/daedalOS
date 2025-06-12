@@ -20,6 +20,7 @@ import {
   MAX_RES_ICON_OVERRIDE,
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
+  PACKAGE_DATA,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SUPPORTED_ICON_SIZES,
@@ -1222,3 +1223,11 @@ export const maybeRequestIdleCallback = (
     callback();
   }
 };
+
+export const displayVersion = (): string => {
+  const { __NEXT_DATA__: { buildId } = {} } = window;
+
+  return `${PACKAGE_DATA.version}${buildId ? `-${buildId}` : ""}`;
+};
+
+export const isDev = (): boolean => "__nextDevClientId" in window;
