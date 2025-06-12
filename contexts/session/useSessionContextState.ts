@@ -360,13 +360,12 @@ const useSessionContextState = (): SessionContextState => {
           if (session.lazySheep) {
             setLazySheep(session.lazySheep);
 
-            maybeRequestIdleCallback(async () => {
-              const { spawnSheep } = await import("utils/spawnSheep");
+            maybeRequestIdleCallback(() => {
+              window.setTimeout(async () => {
+                const { spawnSheep } = await import("utils/spawnSheep");
 
-              window.setTimeout(
-                () => spawnSheep(true),
-                MILLISECONDS_IN_MINUTE * 60
-              );
+                spawnSheep(true);
+              }, MILLISECONDS_IN_MINUTE * 60);
             });
           }
         } catch (error) {
