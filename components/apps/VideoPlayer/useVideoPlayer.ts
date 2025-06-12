@@ -233,7 +233,7 @@ const useVideoPlayer = ({
           canvasMode(true, target?.player as VideoPlayer & ControlBar);
 
           await loadFiles(
-            ["/Program Files/codecbox.js/codecbox_init.js"],
+            ["/Program Files/Video.js/codecbox.js/codecbox_init.js"],
             false,
             true
           );

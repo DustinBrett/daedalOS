@@ -13,10 +13,10 @@ export const getFFmpeg = async (
 
   await ffmpeg.load({
     coreURL: URL.createObjectURL(
-      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.js")
+      await fetchBlob("/System/ffmpeg/ffmpeg-core.js")
     ),
     wasmURL: URL.createObjectURL(
-      await fetchBlob("/Program Files/ffmpeg/ffmpeg-core.wasm")
+      await fetchBlob("/System/ffmpeg/ffmpeg-core.wasm")
     ),
   });
 

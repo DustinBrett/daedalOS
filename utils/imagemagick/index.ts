@@ -10,7 +10,7 @@ export const convert = async (
   const returnFiles: ImageMagickConvertFile[] = [];
 
   await loadFiles(
-    ["/Program Files/imagemagick/wasm-imagemagick.umd-es5.min.js"],
+    ["/System/imagemagick/wasm-imagemagick.umd-es5.min.js"],
     false,
     true
   );

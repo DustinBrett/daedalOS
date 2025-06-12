@@ -1153,7 +1153,7 @@ export const getGifJs = async (): Promise<GIFWithWorkers> => {
 
   return new GIFInstance({
     quality: 10,
-    workerScript: "Program Files/gif.js/gif.worker.js",
+    workerScript: "System/gif.js/gif.worker.js",
     workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
   }) as GIFWithWorkers;
 };
