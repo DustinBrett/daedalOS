@@ -507,6 +507,7 @@ const useWallpaper = (
     if (sessionLoaded) {
       if (wallpaperTimerRef.current) {
         window.clearTimeout(wallpaperTimerRef.current);
+        wallpaperTimerRef.current = 0;
       }
 
       if (wallpaperName && !WALLPAPER_WORKER_NAMES.includes(wallpaperName)) {

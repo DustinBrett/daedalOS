@@ -100,10 +100,12 @@ const useMenuContextState = (): MenuContextState => {
               touchEvent.current = undefined;
             }
             window.clearTimeout(touchTimer.current);
+            touchTimer.current = 0;
           },
           onTouchMove: () => {
             touchEvent.current = undefined;
             window.clearTimeout(touchTimer.current);
+            touchTimer.current = 0;
           },
           onTouchStart: (event: React.TouchEvent) => {
             event.preventDefault();
