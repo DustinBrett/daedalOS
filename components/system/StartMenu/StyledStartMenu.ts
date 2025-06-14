@@ -17,6 +17,8 @@ const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
   ${({ theme }) =>
     TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
 
+  backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.panelBlur})`};
+
   ${StyledFileManager} {
     ${ScrollBars(THIN_SCROLLBAR_WIDTH, -2, -1)};
     margin-top: 0;

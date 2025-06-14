@@ -42,7 +42,10 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   const expandTimer = useRef(0);
   const sidebarRef = useRef<HTMLElement>(null);
   const clearTimer = (): void => {
-    if (expandTimer.current) clearTimeout(expandTimer.current);
+    if (expandTimer.current) {
+      clearTimeout(expandTimer.current);
+      expandTimer.current = 0;
+    }
   };
   const topButtons: SidebarButtons = useMemo(
     () => [
