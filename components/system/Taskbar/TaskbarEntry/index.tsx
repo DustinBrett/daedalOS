@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "motion/react";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
@@ -40,8 +40,20 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     [id, linkElement]
   );
   const [isPeekVisible, setIsPeekVisible] = useState(false);
-  const hidePeek = useCallback((): void => setIsPeekVisible(false), []);
-  const showPeek = useCallback((): void => setIsPeekVisible(true), []);
+  const hidePeekTimerRef = useRef(0);
+  const hidePeek = useCallback((): void => {
+    hidePeekTimerRef.current = window.setTimeout(
+      () => setIsPeekVisible(false),
+      200
+    );
+  }, []);
+  const showPeek = useCallback((): void => {
+    if (hidePeekTimerRef.current) {
+      window.clearTimeout(hidePeekTimerRef.current);
+      hidePeekTimerRef.current = 0;
+    }
+    setIsPeekVisible(true);
+  }, []);
   const onClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
     (event): void => {
       if (event.shiftKey && !singleton) {
