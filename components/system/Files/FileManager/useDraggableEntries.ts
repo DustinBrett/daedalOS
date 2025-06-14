@@ -173,8 +173,8 @@ const useDraggableEntries = (
           event.nativeEvent.dataTransfer?.setData(
             "DownloadURL",
             `${getMimeType(file) || "application/octet-stream"}:${file}:${
-              window.location.href
-            }${join(entryUrl, file)}`
+              window.location.origin
+            }${encodeURI(join(entryUrl, file))}`
           );
         }
 
