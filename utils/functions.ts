@@ -1220,7 +1220,7 @@ export const maybeRequestIdleCallback = (
   ) {
     requestIdleCallback(callback);
   } else {
-    callback();
+    setTimeout(callback, 0);
   }
 };
 
