@@ -21,7 +21,7 @@ declare global {
 
 const config = {
   fullStdLib: false,
-  indexURL: "/Program Files/Xterm.js/Pyodide/",
+  indexURL: "/Program Files/Pyodide/",
 };
 
 const versionCommand = "import sys\r\nsys.version\r\n";
@@ -33,7 +33,7 @@ export const runPython = async (
   code: string,
   printLn: (message: string) => void
 ): Promise<void> => {
-  await loadFiles(["/Program Files/Xterm.js/Pyodide/pyodide.js"]);
+  await loadFiles(["/Program Files/Pyodide/pyodide.js"]);
 
   if (!window.pyodide && window.loadPyodide) {
     window.pyodide = await window.loadPyodide(config);
