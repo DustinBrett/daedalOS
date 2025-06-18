@@ -288,6 +288,7 @@
 - [spacekit](https://github.com/typpo/spacekit)
 - [UVCanvas](https://github.com/latentcat/uvcanvas)
 - [Google Easter Eggs](https://elgoog.im/)
+- [Aurelia](https://github.com/holtsetio/aurelia/)
 - [Shan, Shui](https://github.com/LingDong-/shan-shui-inf) (Procedural Chinese Landscape)
 - [gpu-io](https://github.com/amandaghassaei/gpu-io) (Physics Simulations)
 - [Retro Synthwave](https://github.com/victorqribeiro/retroSynthwave)
