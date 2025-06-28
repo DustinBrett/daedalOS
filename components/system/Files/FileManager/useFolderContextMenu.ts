@@ -38,11 +38,12 @@ import {
 } from "utils/functions";
 import { getMountUrl, isMountedFolder } from "contexts/fileSystem/core";
 
-const stopGlobalMusicVisualization = (): void =>
+const stopGlobalMusicVisualization = (): void => {
   window.WebampGlobal?.store.dispatch({
     enabled: false,
     type: "SET_MILKDROP_DESKTOP",
   });
+};
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -463,7 +464,7 @@ const useFolderContextMenu = (
                       {
                         action: () => {
                           if (isMusicVisualizationRunning) {
-                            stopGlobalMusicVisualization?.();
+                            stopGlobalMusicVisualization();
                           }
                           setWallpaper(item.id);
                         },

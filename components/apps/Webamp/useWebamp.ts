@@ -212,13 +212,16 @@ const useWebamp = (id: string): Webamp => {
               const updateTrackInfo = async (): Promise<void> => {
                 const {
                   display: { closed = false } = {},
-                  playlist: { currentTrack = -1 } = {},
+                  playlist: { currentTrack } = {},
                   tracks,
                 } = webamp.store.getState() || {};
 
                 if (closed) {
                   window.clearInterval(metadataProviderRef.current);
-                } else if (tracks[currentTrack]) {
+                } else if (
+                  typeof currentTrack === "number" &&
+                  tracks[currentTrack]
+                ) {
                   const metaData = await getMetadata?.();
 
                   if (metaData) {
@@ -238,10 +241,12 @@ const useWebamp = (id: string): Webamp => {
                 30 * MILLISECONDS_IN_SECOND
               );
             } else {
-              const { playlist: { currentTrack = -1 } = {}, tracks } =
+              const { playlist: { currentTrack } = {}, tracks } =
                 webamp.store.getState() || {};
               const { artist = "", title: trackTitle = "" } =
-                tracks?.[currentTrack] || {};
+                typeof currentTrack === "number"
+                  ? tracks?.[currentTrack] || {}
+                  : {};
 
               if (trackTitle || artist) {
                 title(
