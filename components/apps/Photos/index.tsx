@@ -1,5 +1,5 @@
 import { basename, dirname, extname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   ExitFullscreen,
   Fullscreen,
@@ -187,4 +187,4 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Photos;
+export default memo(Photos);

@@ -1,6 +1,6 @@
 import { basename, extname } from "path";
 import { type Options } from "webamp";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import StyledWebamp from "components/apps/Webamp/StyledWebamp";
 import {
   cleanBufferOnSkinLoad,
@@ -112,4 +112,4 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Webamp;
+export default memo(Webamp);

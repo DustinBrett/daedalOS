@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledSpaceCadet from "components/apps/SpaceCadet/StyledSpaceCadet";
 import useSpaceCadet from "components/apps/SpaceCadet/useSpaceCadet";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -11,4 +12,4 @@ const SpaceCadet: FC<ComponentProcessProps> = ({ id }) => (
   />
 );
 
-export default SpaceCadet;
+export default memo(SpaceCadet);

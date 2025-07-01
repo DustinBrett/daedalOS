@@ -45,4 +45,4 @@ const SearchButton: FC<StartButtonProps> = ({
   );
 };
 
-export default SearchButton;
+export default memo(SearchButton);

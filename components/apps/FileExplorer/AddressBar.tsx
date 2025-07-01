@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoTo, Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
@@ -140,4 +140,4 @@ const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
   );
 };
 
-export default AddressBar;
+export default memo(AddressBar);

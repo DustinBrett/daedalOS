@@ -1,4 +1,5 @@
 import { basename } from "path";
+import { memo } from "react";
 import {
   Add,
   Download,
@@ -158,4 +159,4 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Controls;
+export default memo(Controls);

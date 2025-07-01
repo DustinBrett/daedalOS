@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
@@ -85,4 +85,4 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default ScreenSaver;
+export default memo(ScreenSaver);

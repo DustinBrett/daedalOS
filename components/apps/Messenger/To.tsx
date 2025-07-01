@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledTo from "components/apps/Messenger/StyledTo";
 
 type ToProps = { setRecipientKey: (key: string) => boolean };
@@ -23,4 +24,4 @@ const To: FC<ToProps> = ({ setRecipientKey }) => (
   </StyledTo>
 );
 
-export default To;
+export default memo(To);

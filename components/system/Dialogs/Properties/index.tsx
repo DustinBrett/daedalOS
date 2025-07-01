@@ -1,5 +1,5 @@
 import { basename, extname } from "path";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -143,4 +143,4 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Properties;
+export default memo(Properties);

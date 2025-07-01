@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import {
   convertImageLinksToHtml,
   convertNewLinesToBreaks,
@@ -30,4 +30,4 @@ const SanitizedContent: FC<{ content: string; decrypted: boolean }> = ({
   );
 };
 
-export default SanitizedContent;
+export default memo(SanitizedContent);

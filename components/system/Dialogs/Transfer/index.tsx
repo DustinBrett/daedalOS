@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/StyledButton";
@@ -199,4 +199,4 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Transfer;
+export default memo(Transfer);

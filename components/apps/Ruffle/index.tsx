@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledRuffle from "components/apps/Ruffle/StyledRuffle";
 import useRuffle from "components/apps/Ruffle/useRuffle";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -7,4 +8,4 @@ const Ruffle: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer StyledComponent={StyledRuffle} id={id} useHook={useRuffle} />
 );
 
-export default Ruffle;
+export default memo(Ruffle);

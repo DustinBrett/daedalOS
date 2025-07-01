@@ -1,5 +1,5 @@
 import { basename, join } from "path";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { memo, useCallback, useLayoutEffect, useRef, useState } from "react";
 import { parseCommand } from "components/apps/Terminal/functions";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
@@ -315,4 +315,4 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Run;
+export default memo(Run);

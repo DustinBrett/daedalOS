@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StatusBar from "components/apps/MonacoEditor/StatusBar";
 import StyledMonacoEditor from "components/apps/MonacoEditor/StyledMonacoEditor";
 import useMonaco from "components/apps/MonacoEditor/useMonaco";
@@ -15,4 +16,4 @@ const MonacoEditor: FC<ComponentProcessProps> = ({ id }) => (
   </>
 );
 
-export default MonacoEditor;
+export default memo(MonacoEditor);

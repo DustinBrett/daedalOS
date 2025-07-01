@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "components/apps/FileExplorer/Navigation";
 import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -135,4 +135,4 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   null;
 };
 
-export default FileExplorer;
+export default memo(FileExplorer);

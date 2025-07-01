@@ -1,5 +1,5 @@
 import { useTheme } from "styled-components";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { type Variant } from "motion/react";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
@@ -119,4 +119,4 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   );
 };
 
-export default StartMenu;
+export default memo(StartMenu);

@@ -1,4 +1,5 @@
 import { type AppProps } from "next/app";
+import { memo } from "react";
 import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import Metadata from "components/pages/Metadata";
 import StyledApp from "components/pages/StyledApp";
@@ -27,4 +28,4 @@ const App = ({ Component: Index, pageProps }: AppProps): React.ReactElement => (
   </ViewportProvider>
 );
 
-export default App;
+export default memo(App);

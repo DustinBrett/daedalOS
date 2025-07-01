@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import StyledDesktop from "components/system/Desktop/StyledDesktop";
 import useWallpaper from "components/system/Desktop/Wallpapers/useWallpaper";
 import FileManager from "components/system/Files/FileManager";
@@ -24,4 +24,4 @@ const Desktop: FC = ({ children }) => {
   );
 };
 
-export default Desktop;
+export default memo(Desktop);

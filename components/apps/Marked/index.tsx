@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledMarked from "components/apps/Marked/StyledMarked";
 import useMarked from "components/apps/Marked/useMarked";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -9,4 +10,4 @@ const Marked: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default Marked;
+export default memo(Marked);

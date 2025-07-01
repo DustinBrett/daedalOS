@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useCanvasContextMenu from "components/apps/StableDiffusion/useCanvasContextMenu";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import {
@@ -125,4 +125,4 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
   );
 };
 
-export default StableDiffusion;
+export default memo(StableDiffusion);

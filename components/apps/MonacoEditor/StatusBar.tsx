@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import {
   ErrorIcon,
   InfoIcon,
@@ -188,4 +188,4 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default StatusBar;
+export default memo(StatusBar);

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledTinyMceEditor from "components/apps/TinyMCE/StyledTinyMceEditor";
 import useTinyMCE from "components/apps/TinyMCE/useTinyMCE";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -13,4 +14,4 @@ const TinyMCE: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default TinyMCE;
+export default memo(TinyMCE);

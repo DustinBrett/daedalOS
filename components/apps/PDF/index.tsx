@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import Page from "components/apps/PDF/Page";
 import Controls from "components/apps/PDF/Controls";
 import StyledPDF from "components/apps/PDF/StyledPDF";
@@ -29,4 +29,4 @@ const PDF: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default PDF;
+export default memo(PDF);

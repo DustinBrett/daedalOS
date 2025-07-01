@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledEmulator from "components/apps/Emulator/StyledEmulator";
 import useEmulator from "components/apps/Emulator/useEmulator";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -11,4 +12,4 @@ const Emulator: FC<ComponentProcessProps> = ({ id }) => (
   />
 );
 
-export default Emulator;
+export default memo(Emulator);

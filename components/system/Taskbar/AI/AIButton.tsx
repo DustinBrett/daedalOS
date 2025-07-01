@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { importAIChat } from "components/system/Taskbar/functions";
 import { AIIcon } from "components/system/Taskbar/AI/icons";
 import StyledAIButton from "components/system/Taskbar/AI/StyledAIButton";
@@ -32,4 +33,4 @@ const AIButton: FC<AIButtonProps> = ({ aiVisible, toggleAI }) => {
   );
 };
 
-export default AIButton;
+export default memo(AIButton);

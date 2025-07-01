@@ -1,5 +1,5 @@
 import { useTheme } from "styled-components";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   escapeHtml,
   formatWebLlmProgress,
@@ -664,4 +664,4 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
 };
 
-export default AIChat;
+export default memo(AIChat);

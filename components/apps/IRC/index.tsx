@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { getNetworkConfig } from "components/apps/IRC/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Apps/StyledLoading";
@@ -87,4 +87,4 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default IRC;
+export default memo(IRC);

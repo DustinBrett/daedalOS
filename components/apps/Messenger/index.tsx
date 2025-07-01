@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Event } from "nostr-tools";
 import { AnimatePresence } from "motion/react";
 import ChatLog from "components/apps/Messenger/ChatLog";
@@ -227,4 +227,4 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Messenger;
+export default memo(Messenger);

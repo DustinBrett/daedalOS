@@ -1,5 +1,5 @@
 import { Rnd } from "react-rnd";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import useRnd from "components/system/Window/RndWindow/useRnd";
 import { useProcesses } from "contexts/process";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
@@ -71,4 +71,4 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
   );
 };
 
-export default RndWindow;
+export default memo(RndWindow);

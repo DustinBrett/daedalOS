@@ -1,6 +1,6 @@
 import { extname } from "path";
 import { useTheme } from "styled-components";
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import { type FileManagerViewNames } from "components/system/Files/Views";
 import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
@@ -86,4 +86,4 @@ const RenameBox: FC<RenameBoxProps> = ({
   );
 };
 
-export default RenameBox;
+export default memo(RenameBox);

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledTerminal from "components/apps/Terminal/StyledTerminal";
 import useTerminal from "components/apps/Terminal/useTerminal";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -11,4 +12,4 @@ const Terminal: FC<ComponentProcessProps> = ({ id }) => (
   />
 );
 
-export default Terminal;
+export default memo(Terminal);

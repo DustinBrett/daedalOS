@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledVideoPlayer from "components/apps/VideoPlayer/StyledVideoPlayer";
 import useVideoPlayer from "components/apps/VideoPlayer/useVideoPlayer";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -15,4 +16,4 @@ const VideoPlayer: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default VideoPlayer;
+export default memo(VideoPlayer);

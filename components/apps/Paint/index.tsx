@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import StyledPaint from "components/apps/Paint/StyledPaint";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Apps/StyledLoading";
@@ -183,4 +183,4 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Paint;
+export default memo(Paint);

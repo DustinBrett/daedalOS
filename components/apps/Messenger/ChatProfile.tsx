@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import Profile from "components/apps/Messenger/Profile";
 import StyledChatProfile from "components/apps/Messenger/StyledChatProfile";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
@@ -30,4 +30,4 @@ const ChatProfile: FC<{ publicKey: string }> = ({ publicKey }) => {
   );
 };
 
-export default ChatProfile;
+export default memo(ChatProfile);

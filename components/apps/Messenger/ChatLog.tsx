@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
 import {
@@ -114,4 +114,4 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
   );
 };
 
-export default ChatLog;
+export default memo(ChatLog);

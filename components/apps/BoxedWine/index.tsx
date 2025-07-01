@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledBoxedWine from "components/apps/BoxedWine/StyledBoxedWine";
 import useBoxedWine from "components/apps/BoxedWine/useBoxedWine";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -14,4 +15,4 @@ const BoxedWine: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default BoxedWine;
+export default memo(BoxedWine);

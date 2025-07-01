@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -158,4 +158,4 @@ const Navigation: FC<NavigationProps> = ({
   );
 };
 
-export default Navigation;
+export default memo(Navigation);

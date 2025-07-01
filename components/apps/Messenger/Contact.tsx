@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { type Event } from "nostr-tools";
 import Profile from "components/apps/Messenger/Profile";
 import {
@@ -104,4 +104,4 @@ const Contact: FC<ContactProps> = ({
   );
 };
 
-export default Contact;
+export default memo(Contact);

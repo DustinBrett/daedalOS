@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledClassiCube from "components/apps/ClassiCube/StyledClassiCube";
 import useClassiCube from "components/apps/ClassiCube/useClassiCube";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -11,4 +12,4 @@ const ClassiCube: FC<ComponentProcessProps> = ({ id }) => (
   />
 );
 
-export default ClassiCube;
+export default memo(ClassiCube);

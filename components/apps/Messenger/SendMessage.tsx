@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { Send } from "components/apps/Messenger/Icons";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
 import { useNostr } from "components/apps/Messenger/NostrContext";
@@ -80,4 +80,4 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
   );
 };
 
-export default SendMessage;
+export default memo(SendMessage);

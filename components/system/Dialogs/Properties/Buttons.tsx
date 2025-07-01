@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import { useProcesses } from "contexts/process";
 
@@ -18,4 +19,4 @@ const Buttons: FC<ButtonsProps> = ({ id, onClick }) => {
   );
 };
 
-export default Buttons;
+export default memo(Buttons);

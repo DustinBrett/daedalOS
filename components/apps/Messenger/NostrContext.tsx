@@ -1,6 +1,7 @@
 import { type Event as NostrEvent, type Relay, relayInit } from "nostr-tools";
 import {
   createContext,
+  memo,
   useCallback,
   useContext,
   useEffect,
@@ -24,7 +25,7 @@ const NostrContext = createContext<NostrContextType>({
 
 export const useNostr = (): NostrContextType => useContext(NostrContext);
 
-export const NostrProvider: FC<{ relayUrls: string[] }> = ({
+const NostrProviderFC: FC<{ relayUrls: string[] }> = ({
   children,
   relayUrls,
 }) => {
@@ -105,3 +106,5 @@ export const NostrProvider: FC<{ relayUrls: string[] }> = ({
     </NostrContext>
   );
 };
+
+export const NostrProvider = memo(NostrProviderFC);

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { Back, Write } from "components/apps/Messenger/Icons";
 import { useNostr } from "components/apps/Messenger/NostrContext";
@@ -167,4 +167,4 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   );
 };
 
-export default ProfileBanner;
+export default memo(ProfileBanner);

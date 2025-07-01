@@ -1,6 +1,7 @@
 import { useTheme } from "styled-components";
 import { type Position } from "react-rnd";
 import {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -186,4 +187,4 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   );
 };
 
-export default MenuItemEntry;
+export default memo(MenuItemEntry);

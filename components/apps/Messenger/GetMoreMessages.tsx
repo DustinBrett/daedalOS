@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   type TimeScale,
   useHistoryContext,
@@ -57,4 +57,4 @@ const GetMoreMessages: FC<{
   );
 };
 
-export default GetMoreMessages;
+export default memo(GetMoreMessages);

@@ -1,6 +1,6 @@
 import { basename, extname } from "path";
 import { useTheme } from "styled-components";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { m as motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
@@ -487,4 +487,4 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   );
 };
 
-export default Search;
+export default memo(Search);

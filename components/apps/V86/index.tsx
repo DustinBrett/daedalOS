@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledV86 from "components/apps/V86/StyledV86";
 import useV86 from "components/apps/V86/useV86";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -11,4 +12,4 @@ const V86: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default V86;
+export default memo(V86);

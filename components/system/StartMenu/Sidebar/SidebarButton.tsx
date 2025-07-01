@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
 import { spotlightEffect } from "utils/spotlightEffect";
 import { hasFinePointer } from "utils/functions";
@@ -38,4 +38,4 @@ const SidebarButtonComponent: FC<SidebarButton> = ({
   </StyledSidebarButton>
 );
 
-export default SidebarButtonComponent;
+export default memo(SidebarButtonComponent);

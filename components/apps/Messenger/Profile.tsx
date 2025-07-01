@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Avatar, Verified } from "components/apps/Messenger/Icons";
 import StyledProfile from "components/apps/Messenger/StyledProfile";
 import { useNip05Domain } from "components/apps/Messenger/hooks";
@@ -53,4 +53,4 @@ const Profile: FC<ProfileProps> = ({
   );
 };
 
-export default Profile;
+export default memo(Profile);

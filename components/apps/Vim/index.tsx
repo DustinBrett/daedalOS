@@ -1,5 +1,5 @@
 import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import StyledVim from "components/apps/Vim/StyledVim";
 import { type QueueItem } from "components/apps/Vim/types";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -142,4 +142,4 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default Vim;
+export default memo(Vim);

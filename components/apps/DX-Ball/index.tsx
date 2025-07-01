@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledDXBall from "components/apps/DX-Ball/StyledDXBall";
 import useDXBall from "components/apps/DX-Ball/useDXBall";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -10,4 +11,4 @@ const DXBall: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default DXBall;
+export default memo(DXBall);

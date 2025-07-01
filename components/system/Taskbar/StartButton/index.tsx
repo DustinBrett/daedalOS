@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
 import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import {
@@ -57,4 +57,4 @@ const StartButton: FC<StartButtonProps> = ({
   );
 };
 
-export default StartButton;
+export default memo(StartButton);

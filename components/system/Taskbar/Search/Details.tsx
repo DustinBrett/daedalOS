@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -157,4 +157,4 @@ const Details: FC<{
   );
 };
 
-export default Details;
+export default memo(Details);

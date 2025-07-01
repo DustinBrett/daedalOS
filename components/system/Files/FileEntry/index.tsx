@@ -1,6 +1,7 @@
 import { basename, dirname, extname, join } from "path";
 import { useTheme } from "styled-components";
 import {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -672,4 +673,4 @@ const FileEntry: FC<FileEntryProps> = ({
   );
 };
 
-export default FileEntry;
+export default memo(FileEntry);

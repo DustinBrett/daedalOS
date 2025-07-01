@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StyledDevTools from "components/apps/DevTools/StyledDevTools";
 import useEruda from "components/apps/DevTools/useEruda";
 import AppContainer from "components/system/Apps/AppContainer";
@@ -9,4 +10,4 @@ const DevTools: FC<ComponentProcessProps> = ({ id }) => (
   </AppContainer>
 );
 
-export default DevTools;
+export default memo(DevTools);

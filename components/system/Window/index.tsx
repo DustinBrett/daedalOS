@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledPeekViewport from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekViewport";
 import RndWindow from "components/system/Window/RndWindow";
@@ -52,4 +52,4 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   );
 };
 
-export default Window;
+export default memo(Window);

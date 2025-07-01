@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, memo } from "react";
 import { useProcesses } from "contexts/process";
 
 type PageProps = {
@@ -47,4 +47,4 @@ const Page: FC<PageProps> = ({ canvas, id, page }) => {
   return <li ref={containerRef} />;
 };
 
-export default Page;
+export default memo(Page);

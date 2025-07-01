@@ -1,5 +1,6 @@
 import { join } from "path";
 import {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -138,4 +139,4 @@ const StatusBar: FC<StatusBarProps> = ({
   );
 };
 
-export default StatusBar;
+export default memo(StatusBar);
