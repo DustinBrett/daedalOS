@@ -57,7 +57,7 @@ const createRssFeedItems = (url) => {
   });
 };
 
-const name = "Taqyudin Portfolio";
+const name = "Taqyudin";
 const rss = [
   '<?xml version="1.0" encoding="utf-8"?>',
   '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">',

@@ -364,9 +364,9 @@ export const DEFAULT_SCROLLBAR_WIDTH = 17;
 export const TASKBAR_HEIGHT = 30;
 
 export const PACKAGE_DATA = {
-  alias: "Taqyudin Portfolio",
+  alias: "Taqyudin",
   author: {
-    email: "taqyudin@example.com",
+    email: "ikbaltaqyudin@gmail.com",
     name: "Taqyudin",
     npub: "",
     url: "https://taqyudin.com",

@@ -22,7 +22,7 @@ export const DINO_GAME = {
 export const bookmarks: Bookmark[] = [
   {
     icon: FAVICON_BASE_PATH,
-    name: "Taqyudin Portfolio",
+    name: "Taqyudin",
     url: "https://taqyudin.com/",
   },
   {
