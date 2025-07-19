@@ -1,8 +1,8 @@
-## 🌌 **daedalOS** 🌌
+## 🌌 **Taqyudin's Portfolio** 🌌
 
-## _Desktop environment in the browser_
+## _Web Portfolio - Desktop environment in the browser_
 
-![Screenshot](https://raw.githubusercontent.com/DustinBrett/daedalOS/refs/heads/main/public/screenshot.png?raw=true)
+![Screenshot](public/screenshot.png)
 
 ### Feature Overview
 
@@ -264,10 +264,10 @@ yarn serve
 ##### Docker
 
 ```
-docker build -t daedalos .
-docker run -dp 3000:3000 --rm --name daedalos daedalos
+docker build -t taqyudin-portfolio .
+docker run -dp 3000:3000 --rm --name taqyudin-portfolio taqyudin-portfolio
 ```
 
 ##### Notes
 
-- If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider` ([1](https://github.com/DustinBrett/daedalOS/blob/main/Dockerfile#L3), [2](https://github.com/DustinBrett/daedalOS/blob/main/.github/workflows/main.yml#L17), [3](https://stackoverflow.com/a/69699772/5895982))
+- If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider`

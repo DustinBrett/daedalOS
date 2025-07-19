@@ -96,9 +96,8 @@ const getIniIcons = () => {
 
       if (statSync(currentPath).isDirectory()) readDirectory(currentPath);
       else if (entry === "desktop.ini") {
-        const {
-          ShellClassInfo: { IconFile = "" },
-        } = parse(readFileSync(currentPath).toString());
+        const parsedIni = parse(readFileSync(currentPath).toString());
+        const IconFile = parsedIni.ShellClassInfo?.IconFile || "";
 
         iniIcons[directory.replace(PUBLIC_DIR, "").replace(/\\/g, "/")] =
           IconFile;
