@@ -1138,6 +1138,302 @@ const useCommandInterpreter = (
             }
             break;
           }
+          // Taqyudin Portfolio Commands
+          case "skills":
+          case "skill":
+          case "tech":
+          case "technologies":
+            printLn("🛠️  Taqyudin's Technical Skills");
+            printLn("================================");
+            printLn("");
+            printLn("Frontend Development:");
+            printLn("  React.js         ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("  Next.js          ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("  TypeScript       ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("  Vue.js           ⭐⭐⭐⭐ (Advanced)");
+            printLn("  Tailwind CSS     ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("");
+            printLn("Backend Development:");
+            printLn("  Node.js          ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("  Express.js       ⭐⭐⭐⭐⭐ (Expert)");
+            printLn("  Python           ⭐⭐⭐⭐ (Advanced)");
+            printLn("  PostgreSQL       ⭐⭐⭐⭐ (Advanced)");
+            printLn("  MongoDB          ⭐⭐⭐⭐ (Advanced)");
+            printLn("");
+            printLn("Mobile & Others:");
+            printLn("  React Native     ⭐⭐⭐⭐ (Advanced)");
+            printLn("  Docker           ⭐⭐⭐⭐ (Advanced)");
+            printLn("  AWS              ⭐⭐⭐⭐ (Advanced)");
+            printLn("");
+            printLn("💡 Type 'projects' to see these skills in action!");
+            break;
+          case "projects":
+          case "work":
+          case "portfolio":
+          case "demos":
+            printLn("🚀 Featured Projects");
+            printLn("===================");
+            printLn("");
+            printLn("1. E-Commerce Platform (2024)");
+            printLn("   ├─ Tech: React, Node.js, PostgreSQL");
+            printLn("   ├─ Impact: $2M+ monthly transactions");
+            printLn("   └─ Features: Payment gateway, admin dashboard");
+            printLn("");
+            printLn("2. Education Management System (2023)");
+            printLn("   ├─ Tech: Next.js, Express, MongoDB");
+            printLn("   ├─ Users: 10,000+ students & teachers");
+            printLn("   └─ Features: LMS, video streaming, analytics");
+            printLn("");
+            printLn("3. Mobile Banking App (2023)");
+            printLn("   ├─ Tech: React Native, Python, Redis");
+            printLn("   ├─ Security: Multi-factor authentication");
+            printLn("   └─ Performance: 99.9% uptime, <2s load time");
+            printLn("");
+            printLn("4. Real Estate Platform (2022)");
+            printLn("   ├─ Tech: Vue.js, Laravel, MySQL");
+            printLn("   ├─ Features: Virtual tours, mortgage calc");
+            printLn("   └─ Growth: 300% increase in leads");
+            printLn("");
+            printLn("🎯 Type 'hire-me' to learn why these projects succeeded!");
+            break;
+          case "contact":
+          case "info":
+          case "reach":
+          case "connect":
+            printLn("📧 Contact Taqyudin");
+            printLn("==================");
+            printLn("");
+            printLn("📧 Email:     ikbaltaqyudin@gmail.com");
+            printLn("💬 WhatsApp:  +62-xxx-xxxx-xxxx");
+            printLn("🔗 LinkedIn:  linkedin.com/in/taqyudin");
+            printLn("🐙 GitHub:    github.com/taqyudin");
+            printLn("🌐 Website:   https://taqyudin.com");
+            printLn("");
+            printLn("📅 Schedule a free consultation:");
+            printLn("   calendly.com/taqyudin");
+            printLn("");
+            printLn("⏰ Response Time:");
+            printLn("   Email:    < 24 hours");
+            printLn("   WhatsApp: < 4 hours (business days)");
+            printLn("");
+            printLn("🕐 Available: Mon-Fri 9AM-6PM WIB");
+            printLn("             Sat 9AM-2PM WIB");
+            break;
+          case "hire-me":
+          case "hire":
+          case "work-with-me":
+          case "why-hire":
+            printLn("🎯 Why Hire Taqyudin?");
+            printLn("====================");
+            printLn("");
+            printLn("💼 PROVEN TRACK RECORD");
+            printLn("   ✅ 15+ successful projects delivered");
+            printLn("   ✅ 98% client satisfaction rate");
+            printLn("   ✅ Never missed a deadline");
+            printLn("   ✅ 40% average performance improvements");
+            printLn("");
+            printLn("🚀 BUSINESS-FIRST APPROACH");
+            printLn("   ► Focus on ROI, not just code");
+            printLn("   ► Proactive problem solving");
+            printLn("   ► Clear communication in business terms");
+            printLn("   ► Strategic technical recommendations");
+            printLn("");
+            printLn("⚡ TECHNICAL EXCELLENCE");
+            printLn("   ◆ Full-stack expertise (no coordination overhead)");
+            printLn("   ◆ Modern, scalable architectures");
+            printLn("   ◆ Security & performance obsessed");
+            printLn("   ◆ Future-proof technology choices");
+            printLn("");
+            printLn("💰 VALUE PROPOSITION");
+            printLn("   • 25-40% faster time-to-market");
+            printLn("   • 50-70% lower maintenance costs");
+            printLn("   • 15-35% improvement in key metrics");
+            printLn("");
+            printLn("💬 CLIENT TESTIMONIAL:");
+            printLn('   "Taqyudin delivered exactly what we needed, on time');
+            printLn("   and under budget. Best investment we've made.\"");
+            printLn("   - Sarah Chen, CTO, TechStart Inc.");
+            printLn("");
+            printLn("📞 Ready to work together? Type 'contact' or 'services'");
+            break;
+          case "services":
+          case "pricing":
+          case "rates":
+          case "costs":
+            printLn("💼 Services & Investment");
+            printLn("=======================");
+            printLn("");
+            printLn("🌐 WEB APPLICATION DEVELOPMENT");
+            printLn("   Timeline: 8-16 weeks");
+            printLn("   Investment: $5,000 - $25,000");
+            printLn("   Includes: Frontend, backend, database, deployment");
+            printLn("");
+            printLn("📱 MOBILE APP DEVELOPMENT");
+            printLn("   Timeline: 10-20 weeks");
+            printLn("   Investment: $8,000 - $35,000");
+            printLn("   Includes: iOS & Android, API, app store deployment");
+            printLn("");
+            printLn("⚡ MVP DEVELOPMENT");
+            printLn("   Timeline: 4-8 weeks");
+            printLn("   Investment: $3,000 - $12,000");
+            printLn("   Perfect for: Startups, idea validation");
+            printLn("");
+            printLn("🔧 PERFORMANCE OPTIMIZATION");
+            printLn("   Timeline: 2-6 weeks");
+            printLn("   Investment: $1,500 - $8,000");
+            printLn("   Results: 40-60% speed improvements");
+            printLn("");
+            printLn("👨‍💼 TECHNICAL CONSULTING");
+            printLn("   Rate: $100/hour or $3,000/week");
+            printLn("   Includes: Architecture review, mentoring, planning");
+            printLn("");
+            printLn("🎁 CURRENT PROMOTION:");
+            printLn("   10% discount for projects started this month!");
+            printLn("   Free technical audit (worth $500)");
+            printLn("");
+            printLn("💳 Payment: 30% upfront, 40% milestone, 30% completion");
+            printLn("");
+            printLn("📞 Get detailed quote: Type 'contact'");
+            break;
+          case "experience":
+          case "exp":
+            printLn("💼 Work Experience");
+            printLn("=================");
+            printLn("");
+            printLn("🏢 Senior Full-Stack Developer (2022-Present)");
+            printLn("   Company: TechCorp Indonesia");
+            printLn("   ► Led team of 5 developers");
+            printLn("   ► Delivered 8 major projects on time");
+            printLn("   ► Improved system performance by 45%");
+            printLn("   ► Mentored 3 junior developers");
+            printLn("");
+            printLn("💻 Full-Stack Developer (2021-2022)");
+            printLn("   Company: StartupXYZ");
+            printLn("   ► Built MVP from scratch (0 to 10K users)");
+            printLn("   ► Implemented CI/CD pipeline");
+            printLn("   ► Reduced server costs by 30%");
+            printLn("");
+            printLn("🌱 Junior Developer (2020-2021)");
+            printLn("   Company: DigitalAgency");
+            printLn("   ► Contributed to 15+ client projects");
+            printLn("   ► Specialized in React & Node.js");
+            printLn("   ► Consistently exceeded performance metrics");
+            printLn("");
+            printLn("🎓 EDUCATION:");
+            printLn("   Computer Science, University of Indonesia (2020)");
+            printLn("   GPA: 3.8/4.0, Magna Cum Laude");
+            printLn("");
+            printLn("🏆 CERTIFICATIONS:");
+            printLn("   ✓ AWS Certified Solutions Architect");
+            printLn("   ✓ Google Cloud Professional Developer");
+            printLn("   ✓ MongoDB Certified Developer");
+            printLn("");
+            printLn("📈 Type 'skills' or 'projects' for more details!");
+            break;
+          case "about":
+          case "bio":
+          case "story":
+          case "background":
+            printLn("👋 About Taqyudin");
+            printLn("=================");
+            printLn("");
+            printLn("🚀 MISSION:");
+            printLn("Creating digital solutions that make a real difference");
+            printLn("in people's lives and businesses.");
+            printLn("");
+            printLn("💡 PHILOSOPHY:");
+            printLn("Great software isn't just about clean code - it's about");
+            printLn("understanding the human behind the screen and solving");
+            printLn("their actual problems.");
+            printLn("");
+            printLn("🎯 SPECIALIZATION:");
+            printLn("• Performance optimization (40%+ speed improvements)");
+            printLn("• Scalable architecture (0 to 100K+ users)");
+            printLn("• Business-focused development (ROI-driven)");
+            printLn("• Modern tech stack (React, Node.js, TypeScript)");
+            printLn("");
+            printLn("☕ FUN FACTS:");
+            printLn("► Coffee enthusiast (probably drinking one now!)");
+            printLn("► Built first game at age 12 using Scratch");
+            printLn("► Marathon runner (coding & actual marathons)");
+            printLn("► Read 24 tech books in 2023 (goal: 30 in 2024)");
+            printLn("► Play guitar to debug code (it actually works!)");
+            printLn("");
+            printLn("🌱 CURRENT FOCUS:");
+            printLn("Exploring AI integration in web apps and helping");
+            printLn(
+              "businesses leverage technology for competitive advantage."
+            );
+            printLn("");
+            printLn("💭 FAVORITE QUOTE:");
+            printLn('"Code is poetry, and every developer is a poet trying');
+            printLn("to solve the world's problems one function at a time.\"");
+            printLn("");
+            printLn("🤝 Type 'contact' to start a conversation!");
+            break;
+          case "resume":
+          case "cv":
+          case "curriculum":
+            printLn("📄 Opening Resume...");
+            printLn("");
+            printLn("📁 Attempting to open CV file from:");
+            printLn("   /Users/Public/Desktop/AboutMe/");
+            printLn("");
+            printLn("⚠️  CV file not found in current location.");
+            printLn("");
+            printLn("📧 Alternative options:");
+            printLn("   1. Email: ikbaltaqyudin@gmail.com");
+            printLn("      Subject: 'Request for CV'");
+            printLn("");
+            printLn("   2. LinkedIn: linkedin.com/in/taqyudin");
+            printLn("      Complete professional profile available");
+            printLn("");
+            printLn("   3. Download link: https://taqyudin.com/cv");
+            printLn("      Updated PDF version");
+            printLn("");
+            printLn("💡 Type 'experience' for detailed work history");
+            printLn("💡 Type 'skills' for technical expertise");
+            break;
+          case "taqyudin":
+          case "help-me":
+          case "assistant":
+          case "guide":
+            printLn("🤖 Taqyudin Portfolio Assistant");
+            printLn("==============================");
+            printLn("");
+            printLn("Hi! I'm your interactive portfolio guide.");
+            printLn("Here's what you can explore:");
+            printLn("");
+            printLn("📋 PORTFOLIO COMMANDS:");
+            printLn("   skills     - Technical expertise & ratings");
+            printLn("   projects   - Featured work & case studies");
+            printLn("   experience - Work history & achievements");
+            printLn("   about      - Personal story & philosophy");
+            printLn("   services   - What I offer & pricing");
+            printLn("   contact    - How to reach me");
+            printLn("   hire-me    - Why work with me?");
+            printLn("   resume     - CV & credentials");
+            printLn("");
+            printLn("💡 QUICK RECOMMENDATIONS:");
+            printLn(
+              "   → Recruiter? Try: 'hire-me' → 'experience' → 'contact'"
+            );
+            printLn("   → Client? Try: 'projects' → 'services' → 'hire-me'");
+            printLn("   → Curious? Try: 'about' → 'skills' → 'projects'");
+            printLn("");
+            printLn("🎯 SYSTEM COMMANDS:");
+            printLn("   help       - All available commands");
+            printLn("   ls         - List files/folders");
+            printLn("   cd         - Navigate directories");
+            printLn("   clear      - Clear screen");
+            printLn("");
+            printLn("💬 TIPS:");
+            printLn("   • Commands have aliases (e.g., 'tech' = 'skills')");
+            printLn("   • Use tab for auto-completion");
+            printLn("   • Type 'contact' anytime to reach out!");
+            printLn("");
+            printLn("🚀 Ready to explore? Pick a command above!");
+            break;
           default:
             if (baseCommand) {
               const [pid] = Object.entries(processDirectory)

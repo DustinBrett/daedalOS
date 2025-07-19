@@ -19,11 +19,16 @@ public/Users/Public/**
 !public/Users/Public/Desktop
 !public/Users/Public/Desktop/My PC.url
 !public/Users/Public/Desktop/Public.url
+!public/Users/Public/Desktop/AboutMe
+!public/Users/Public/Desktop/AboutMe/**
+!public/Users/Public/Desktop/Note
+!public/Users/Public/Desktop/Note/**
 !public/Users/Public/Documents
 !public/Users/Public/Music
 !public/Users/Public/Pictures
 !public/Users/Public/Pictures/prompts.json
 !public/Users/Public/Pictures/slideshow.json
+!public/Users/Public/Pictures/wallpaper.jpg
 !public/Users/Public/Start Menu
 !public/Users/Public/Start Menu/*.url
 !public/Users/Public/Start Menu/Emulators
