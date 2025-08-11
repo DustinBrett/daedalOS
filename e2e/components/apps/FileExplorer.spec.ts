@@ -273,14 +273,15 @@ test.describe("has files & folders", () => {
 
     await context.grantPermissions(["clipboard-write"]);
     await page.evaluate(
-      ([icon]) =>
+      async ([icon]) =>
         navigator.clipboard.write([
           new ClipboardItem({
-            "image/png": atob(icon.replace("data:image/png;base64,", "")),
+            "image/png": await (await fetch(icon)).blob(),
           }),
         ]),
       [UNKNOWN_ICON]
     );
+
     await fileExplorerEntryIsHidden(TEST_IMAGE_NAME, { page });
 
     await page.keyboard.press("Control+KeyV");

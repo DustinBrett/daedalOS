@@ -302,7 +302,7 @@ export const parseTrack = async (
 
 export const createM3uPlaylist = (tracks: URLTrack[]): string => {
   const m3uPlaylist = tracks.map((track): string => {
-    const trackUrl = track.url ? `\n${track.url.toString()}` : "";
+    const trackUrl = track.url ? `\n${track.url}` : "";
     let title = track.defaultName;
 
     if (track.metaData?.artist) {

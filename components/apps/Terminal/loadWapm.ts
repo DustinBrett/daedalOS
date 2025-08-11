@@ -179,7 +179,9 @@ const loadWapm = async (
     ) {
       bindings ||= (await import("wasi-js/dist/bindings/browser")).default;
 
-      const wasmModule = await WebAssembly.compile(moduleResponse);
+      const wasmModule = await WebAssembly.compile(
+        moduleResponse as BufferSource
+      );
       const stdIn =
         (WAPM_STD_IN_APPS.includes(args[0]) ||
           (getExtension(args[0]) === ".wasm" &&

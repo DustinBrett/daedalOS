@@ -79,7 +79,7 @@ const usePDF = (
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      await page.render({ canvasContext, viewport }).promise;
+      await page.render({ canvas, canvasContext, viewport }).promise;
 
       return canvas;
     },

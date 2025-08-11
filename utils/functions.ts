@@ -30,7 +30,7 @@ import {
 } from "utils/constants";
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
-  new Blob([buffer], type ? { type } : undefined);
+  new Blob([buffer as BlobPart], type ? { type } : undefined);
 
 export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
   mimeType === "image/svg+xml"
@@ -764,9 +764,7 @@ const formatNumber = (number: number, roundUpNumber = false): string => {
           minimumSignificantDigits: number < 1 ? 2 : 3,
         }
   ).format(
-    roundUpNumber
-      ? Math.ceil(Number(number))
-      : Number(number.toFixed(4).slice(0, -2))
+    roundUpNumber ? Math.ceil(number) : Number(number.toFixed(4).slice(0, -2))
   );
 
   if (roundUpNumber) return formattedNumber;
@@ -1028,9 +1026,11 @@ const supportsModulePreload = (): boolean => {
   if (HAS_MODULE_PRELOAD_SUPPORT) return true;
 
   try {
-    HAS_MODULE_PRELOAD_SUPPORT = Boolean(
-      document.createElement("link").relList?.supports?.("modulepreload")
-    );
+    const { relList } = document.createElement("link");
+
+    HAS_MODULE_PRELOAD_SUPPORT = relList
+      ? relList.supports("modulepreload")
+      : false;
   } catch {
     // Ignore failure to check for modulepreload support
   }

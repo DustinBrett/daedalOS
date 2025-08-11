@@ -55,7 +55,7 @@ export const runPython = async (
         result = await window.pyodide.runPythonAsync("sys.stdout.getvalue()");
       }
 
-      if (result) printLn(result.toString());
+      if (result) printLn(result);
     } catch (error) {
       const { message } = error as PyError;
 

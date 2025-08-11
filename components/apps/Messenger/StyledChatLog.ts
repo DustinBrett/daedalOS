@@ -78,8 +78,8 @@ const StyledChatLog = styled.ol`
     div {
       cursor: auto;
       overflow: hidden;
+      overflow-wrap: break-word;
       user-select: text;
-      word-wrap: break-word;
 
       img {
         border-radius: 5px;

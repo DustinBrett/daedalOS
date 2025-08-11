@@ -78,10 +78,10 @@ const formatSize = (size?: number): string => {
   let newSize = size / 1024 ** power;
   newSize =
     newSize >= 100 ? Math.round(newSize) : Math.round(newSize * 10) / 10;
-  let newNumber = Number(newSize).toString();
+  let newNumber = newSize.toString();
 
   if (newNumber.length > 3) {
-    newNumber = Number(Math.round(newSize)).toString();
+    newNumber = Math.round(newSize).toString();
   }
 
   const addTrailingZero = newSize !== 0 && newSize < 10 && newSize % 1 === 0;

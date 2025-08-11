@@ -105,7 +105,7 @@ const Navigation: FC<NavigationProps> = ({
       </Button>
       <Button
         disabled={!canGoForward}
-        onClick={() => moveHistory(+1)}
+        onClick={() => moveHistory(1)}
         {...label(
           canGoForward
             ? `Forward to ${basename(history[position + 1]) || ROOT_NAME}`

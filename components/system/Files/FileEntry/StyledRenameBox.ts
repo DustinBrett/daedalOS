@@ -26,6 +26,8 @@ const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
   min-height: 19px;
   min-width: 30px;
   overflow: hidden;
+  overflow-wrap: ${({ $singleLineMode }) =>
+    $singleLineMode ? "normal" : undefined};
   padding: ${({ theme }) => `1px ${theme.sizes.fileEntry.renamePadding}px`};
   position: ${({ $singleLineMode }) =>
     $singleLineMode ? "absolute" : "relative"};
@@ -34,8 +36,6 @@ const StyledRenameBox = styled.textarea.attrs<StyledRenameBoxProps>(() => ({
   top: ${({ $singleLineMode }) => ($singleLineMode ? "3px" : "2px")};
   user-select: text;
   white-space: break-spaces;
-  word-wrap: ${({ $singleLineMode }) =>
-    $singleLineMode ? "normal" : undefined};
   z-index: 1;
 `;
 

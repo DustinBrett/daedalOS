@@ -160,7 +160,10 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
             prependFileToTitle("Untitled");
           }
         };
-        jsPaintInstance.open_from_file(new File([buffer], url), url);
+        jsPaintInstance.open_from_file(
+          new File([buffer as BlobPart], url),
+          url
+        );
         prependFileToTitle(basename(url));
       });
     }

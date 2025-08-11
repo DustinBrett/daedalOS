@@ -325,7 +325,7 @@ const useFolder = (
           });
           const fileWriter = await filePickerHandle.createWritable();
 
-          await fileWriter.write(contents);
+          await fileWriter.write(contents as BufferSource);
           await fileWriter.close();
         } catch {
           // Ignore failure with file picker

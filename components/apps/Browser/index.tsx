@@ -415,7 +415,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           </Button>
           <Button
             disabled={!canGoForward}
-            onClick={() => changeHistory(+1)}
+            onClick={() => changeHistory(1)}
             {...label("Click to go forward")}
             {...forwardMenu}
           >

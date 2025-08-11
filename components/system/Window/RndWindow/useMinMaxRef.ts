@@ -7,7 +7,7 @@ const useMinMaxRef = (id: string): React.RefObject<boolean> => {
   const blockAutoPositionRef = useRef(false);
 
   useEffect(() => {
-    blockAutoPositionRef.current = Boolean(maximized || minimized);
+    blockAutoPositionRef.current = maximized || minimized;
   }, [maximized, minimized]);
 
   return blockAutoPositionRef;

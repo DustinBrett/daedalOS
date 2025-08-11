@@ -242,7 +242,7 @@ const useVideoPlayer = ({
 
           codecBox.current = window.initCodecBox?.({
             canvas: canvasElement as HTMLCanvasElement,
-            file: new File([buffer as Buffer], basename(url)),
+            file: new File([buffer as BlobPart], basename(url)),
             onDecoding: (currentTime) => {
               if (!Number.isNaN(currentTime)) {
                 target?.player?.tech_?.stopTrackingCurrentTime();
