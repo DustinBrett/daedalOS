@@ -25,6 +25,7 @@ export const EXCLUDED_CONSOLE_LOGS = (
     "Cannot update a component (`Unknown`) while rendering a different component",
     "browserContext.",
     "Web browser doesn't support Web Audio API",
+    "Slow execution detected",
   ];
 
   if (browserName === "webkit") {

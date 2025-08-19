@@ -57,7 +57,7 @@ const ResultSection: FC<ResultsSectionProps> = ({
         ) : (
           results.map(({ ref }) => (
             <ResultEntry
-              key={ref}
+              key={`${title}-${ref}`}
               active={activeItem === ref}
               details={details}
               openApp={openApp}

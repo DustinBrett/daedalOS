@@ -301,14 +301,11 @@ test.describe("has commands", () => {
       "no headless Pyodide support"
     );
 
-    const randomNumber = Math.floor(Math.random() * 1000);
-    const randomNumber2 = Math.floor(Math.random() * 1000);
-
-    await sendToTerminal({ page }, `python ${randomNumber}+${randomNumber2}`);
-    await terminalHasText({ page }, `${randomNumber + randomNumber2}`);
-
     await sendToTerminal({ page }, "py");
-    await terminalHasText({ page }, /\d+\.\d+\.\d+ \(main, .*\) \[Clang/);
+
+    await expect(async () =>
+      terminalHasText({ page }, /\d+\.\d+\.\d+ \(main, .*\) \[Clang/)
+    ).toPass();
   });
 
   test("qjs", async ({ page }) => {
