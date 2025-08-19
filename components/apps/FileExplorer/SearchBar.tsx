@@ -42,6 +42,7 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
 
   useEffect(() => {
     if (searchBarRef?.current && hasUsedSearch.current) {
+      const searchText = searchBarRef.current.value;
       const getItems = (): Promise<MenuItem[]> =>
         Promise.all(
           [
@@ -50,6 +51,10 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
           ]
             .slice(0, MAX_ENTRIES - 1)
             .map(async ({ ref: path }) => {
+              if (searchText !== searchBarRef.current?.value) {
+                throw new Error("Search term changed");
+              }
+
               const {
                 icon,
                 url: infoUrl,
@@ -75,17 +80,25 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
             })
         );
 
-      getItems().then((items) => {
-        if (searchBarRef.current?.value || items.length === 0) {
-          const searchBarRect = searchBarRef.current?.getBoundingClientRect();
+      getItems()
+        .then((items) => {
+          if (items.length === 0) {
+            contextMenu?.(() => []).onContextMenuCapture();
+          } else if (searchBarRef.current?.value) {
+            const searchBarRect = searchBarRef.current.getBoundingClientRect();
 
-          contextMenu?.(() => items).onContextMenuCapture(
-            undefined,
-            searchBarRect,
-            { staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0) }
-          );
-        }
-      });
+            contextMenu?.(() => items).onContextMenuCapture(
+              undefined,
+              searchBarRect,
+              {
+                staticY: (searchBarRect?.y || 0) + (searchBarRect?.height || 0),
+              }
+            );
+          }
+        })
+        .catch(() => {
+          // Ignore failure to complete search
+        });
     }
   }, [contextMenu, fs, open, results, searchBarRef, updateRecentFiles, url]);
 
