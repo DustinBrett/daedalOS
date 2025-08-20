@@ -48,7 +48,11 @@ export const spawnSheep = (pickRandom?: boolean): Promise<void> =>
     if (window.Sheep) {
       const sheep = new window.Sheep({
         allowPopup: "no",
-        collisionsWith: ["nav", "section"],
+        collisionsWith: [
+          "#__next main > nav", // Taskbar
+          ".react-draggable section", // Windows
+          "#webamp .window", // Webamp Windows
+        ],
         footerMargin: TASKBAR_HEIGHT,
         spawnContainer: document.querySelector("main") as HTMLElement,
       });

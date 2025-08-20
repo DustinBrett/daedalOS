@@ -382,7 +382,7 @@ window.Sheep = class eSheep {
     let margin = 20;
     if (this.HTMLelement) margin = 5;
     for (const index in this.userOptions.collisionsWith) {
-      const els = document.body.getElementsByTagName(
+      const els = document.body.querySelectorAll(
         this.userOptions.collisionsWith[index]
       );
 
