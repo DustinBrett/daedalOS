@@ -80,6 +80,7 @@
       "error",
       { "allowNumber": true }
     ],
+    "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
     "camelcase": "off",
     "class-methods-use-this": "off",

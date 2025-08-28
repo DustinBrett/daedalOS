@@ -6,6 +6,7 @@ import {
   TASKBAR_ENTRY_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
+  WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS,
 } from "e2e/constants";
 import {
   calendarIsVisible,
@@ -184,10 +185,14 @@ test.describe("entries", () => {
       await contextMenuIsVisible({ page });
     });
 
-    test("has items", async ({ page }) => {
-      await contextMenuHasCount(TASKBAR_ENTRIES_MENU_ITEMS.length, { page });
+    test("has items", async ({ browserName, page }) => {
+      const entries = TASKBAR_ENTRIES_MENU_ITEMS(
+        !WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)
+      );
 
-      for (const label of TASKBAR_ENTRIES_MENU_ITEMS) {
+      await contextMenuHasCount(entries.length, { page });
+
+      for (const label of entries) {
         // eslint-disable-next-line no-await-in-loop
         await contextMenuEntryIsVisible(label, { page });
       }

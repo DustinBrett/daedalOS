@@ -41,12 +41,7 @@ export const EXCLUDED_CONSOLE_LOGS = (
   }
 
   if (process.env.CI) {
-    if (browserName === "chromium") {
-      excludedConsoleLogs.push(
-        "Failed to create WebGPU Context Provider",
-        "WebGPU is experimental on this platform"
-      );
-    } else if (browserName === "firefox") {
+    if (browserName === "firefox") {
       excludedConsoleLogs.push(
         "WebGL warning",
         "Failed to create WebGL context",
@@ -185,6 +180,7 @@ export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "webkit",
 ]);
 export const PYODIDE_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["firefox"]);
+export const WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 
 export const FILE_MENU_ITEMS = [
   /^Open$/,
@@ -221,8 +217,9 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
 
 export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
 
-export const TASKBAR_ENTRIES_MENU_ITEMS = [
+export const TASKBAR_ENTRIES_MENU_ITEMS = (hasWebGpu: boolean): RegExp[] => [
   /^Enter full screen$/,
+  ...(hasWebGpu ? [/^Show Talos button$/] : []),
   /^Show the desktop$/,
 ];
 

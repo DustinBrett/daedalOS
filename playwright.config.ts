@@ -1,17 +1,26 @@
 import { type PlaywrightTestConfig, devices } from "@playwright/test";
 
-const overrideUrl = "";
+const OVERRIDE_URL = "";
 const { CI, PORT = 3000 } = process.env;
+
 const {
   "Desktop Chrome": chrome,
   "Desktop Firefox": firefox,
   "Desktop Safari": safari,
 } = devices;
-const baseURL = overrideUrl || `http://localhost:${PORT}`;
+const baseURL = OVERRIDE_URL || `http://localhost:${PORT}`;
 const config: PlaywrightTestConfig = {
   fullyParallel: true,
   projects: [
-    { name: "chromium", use: chrome },
+    {
+      name: "chromium",
+      use: {
+        ...chrome,
+        launchOptions: {
+          args: ["--enable-gpu", "--use-gl=angle"],
+        },
+      },
+    },
     { name: "firefox", use: firefox },
     { name: "webkit", use: safari },
   ],
@@ -24,9 +33,9 @@ const config: PlaywrightTestConfig = {
     video: "retain-on-failure",
   },
   webServer: {
-    command: overrideUrl ? "" : CI ? "yarn serve" : "yarn dev",
-    reuseExistingServer: Boolean(overrideUrl),
-    url: overrideUrl || baseURL,
+    command: OVERRIDE_URL ? "" : CI ? "yarn serve" : "yarn dev",
+    reuseExistingServer: Boolean(OVERRIDE_URL),
+    url: OVERRIDE_URL || baseURL,
   },
   workers: CI ? 1 : undefined,
 };
