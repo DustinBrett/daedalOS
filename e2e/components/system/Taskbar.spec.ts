@@ -187,7 +187,8 @@ test.describe("entries", () => {
 
     test("has items", async ({ browserName, page }) => {
       const entries = TASKBAR_ENTRIES_MENU_ITEMS(
-        !WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName)
+        !WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName) &&
+          !process.env.CI
       );
 
       await contextMenuHasCount(entries.length, { page });

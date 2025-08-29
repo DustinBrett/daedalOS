@@ -17,7 +17,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...chrome,
         launchOptions: {
-          args: ["--enable-gpu", "--use-gl=angle"],
+          args: CI ? [] : ["--enable-gpu", "--use-gl=angle"],
         },
       },
     },
