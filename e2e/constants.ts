@@ -41,7 +41,12 @@ export const EXCLUDED_CONSOLE_LOGS = (
   }
 
   if (process.env.CI) {
-    if (browserName === "firefox") {
+    if (browserName === "chromium") {
+      excludedConsoleLogs.push(
+        "Failed to create WebGPU Context Provider",
+        "WebGPU is experimental on this platform"
+      );
+    } else if (browserName === "firefox") {
       excludedConsoleLogs.push(
         "WebGL warning",
         "Failed to create WebGL context",

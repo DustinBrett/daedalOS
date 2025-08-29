@@ -14,12 +14,14 @@ const config: PlaywrightTestConfig = {
   projects: [
     {
       name: "chromium",
-      use: {
-        ...chrome,
-        launchOptions: {
-          args: CI ? [] : ["--enable-gpu", "--use-gl=angle"],
-        },
-      },
+      use: CI
+        ? chrome
+        : {
+            ...chrome,
+            launchOptions: {
+              args: ["--enable-gpu", "--use-gl=angle"],
+            },
+          },
     },
     { name: "firefox", use: firefox },
     { name: "webkit", use: safari },
