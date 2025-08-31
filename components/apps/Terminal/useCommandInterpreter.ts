@@ -108,6 +108,7 @@ const useCommandInterpreter = (
     lstat,
     mapFs,
     mkdirRecursive,
+    mountHttpRequestFs,
     readdir,
     readFile,
     rename,
@@ -680,8 +681,27 @@ const useCommandInterpreter = (
               }
             }
             break;
-          case "mount":
-            if (isFileSystemMappingSupported()) {
+          case "mount": {
+            const [mountPoint, url, baseUrl] = commandArgs;
+
+            if (mountPoint && url) {
+              try {
+                await mountHttpRequestFs(
+                  mountPoint,
+                  url,
+                  baseUrl === "/" ? undefined : baseUrl || mountPoint
+                );
+
+                const basePath = dirname(mountPoint);
+
+                updateFolder(
+                  basePath === "." ? "/" : basePath,
+                  basename(mountPoint)
+                );
+              } catch (error) {
+                printLn(error);
+              }
+            } else if (isFileSystemMappingSupported()) {
               try {
                 const mappedFolder = await mapFs(cd.current);
 
@@ -700,6 +720,7 @@ const useCommandInterpreter = (
               printLn(COMMAND_NOT_SUPPORTED);
             }
             break;
+          }
           case "move":
           case "mv":
           case "ren":
@@ -1255,6 +1276,7 @@ const useCommandInterpreter = (
       lstat,
       mapFs,
       mkdirRecursive,
+      mountHttpRequestFs,
       open,
       processesRef,
       readFile,

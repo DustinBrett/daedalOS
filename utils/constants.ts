@@ -173,6 +173,8 @@ export const ZIP_EXTENSIONS = new Set([".jsdos", ".pk3", ".wsz", ".zip"]);
 
 export const MOUNTABLE_EXTENSIONS = new Set([".iso", ...ZIP_EXTENSIONS]);
 
+export const MOUNTABLE_FS_TYPES = new Set(["FileSystemAccess", "HTTPRequest"]);
+
 export const SPREADSHEET_FORMATS = [
   ".csv",
   ".numbers",

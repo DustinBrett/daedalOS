@@ -10,11 +10,11 @@ const IDX_TARGET = 3;
 
 const args = process.argv.slice(2);
 const argPath = resolvePath(args[args.length - 1]);
-const excludedPaths = [];
+let excludedPaths = [];
 let outputPath = "";
 
 args.forEach((arg, index) => {
-  if (arg === "--exclude") excludedPaths.push(args[index + 1]);
+  if (arg === "--exclude") excludedPaths = args[index + 1].split(",");
   if (arg === "--out") outputPath = resolvePath(args[index + 1]);
 });
 
@@ -43,9 +43,10 @@ const fs2json = (dir) => {
           return;
         }
 
-        const includedFiles = files.filter(
-          (file) => !excludedPaths.includes(file)
-        );
+        const includedFiles =
+          dir === walkDir
+            ? files.filter((file) => !excludedPaths.includes(file))
+            : files;
 
         const recur = () => {
           const file = includedFiles.shift();

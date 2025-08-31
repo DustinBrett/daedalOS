@@ -8,6 +8,7 @@ import index from "public/.index/fs.9p.json";
 import {
   FS_HANDLES,
   MOUNTABLE_EXTENSIONS,
+  MOUNTABLE_FS_TYPES,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
 
@@ -21,7 +22,7 @@ type FS9PV3 = [
   number,
   FS9PV3[] | string,
 ];
-type FS9PV4 = [string, number, number, FS9PV4[] | undefined];
+export type FS9PV4 = [string, number, number, FS9PV4[] | undefined];
 type FS9P = {
   fsroot: FS9PV3[];
   size: number;
@@ -76,7 +77,7 @@ export const get9pModifiedTime = (path: string): number =>
 
 export const get9pSize = (path: string): number => get9pData(path, IDX_SIZE);
 
-const parseDirectory = (array: FS9PV4[]): BFSFS => {
+export const parseDirectory = (array: FS9PV4[]): BFSFS => {
   const directory: BFSFS = {};
 
   // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
@@ -201,7 +202,7 @@ export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
 
 export const isMountedFolder = (mount?: Mount): boolean =>
   typeof mount === "object" &&
-  (mount.getName() === "FileSystemAccess" ||
+  (MOUNTABLE_FS_TYPES.has(mount.getName()) ||
     (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
 
 export const getMountUrl = (

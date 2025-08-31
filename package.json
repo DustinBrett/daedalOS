@@ -14,9 +14,10 @@
   "scripts": {
     "build": "yarn build:prebuild && next build",
     "build:bundle-analyzer": "yarn build",
-    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
+    "build:fs:private": "node scripts/fs2json.js --out public/.index/fs.private.9p.json ./public/private",
+    "build:fs:public": "node scripts/fs2json.js --exclude .index,private --out public/.index/fs.9p.json ./public",
     "build:minify": "node scripts/minifyHtml.js && node scripts/minifyJs.js",
-    "build:prebuild": "node scripts/robots.js && node scripts/rssBuilder.js && node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && yarn build:fs",
+    "build:prebuild": "node scripts/robots.js && node scripts/rssBuilder.js && node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && yarn build:fs:public",
     "docker:build": "docker build -t daedalos .",
     "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
     "dev": "next dev",

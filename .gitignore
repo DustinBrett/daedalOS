@@ -9,6 +9,7 @@ test-results
 playwright-report
 playwright/.cache
 
+public/private
 public/robots.txt
 public/rss.xml
 public/sitemap.xml

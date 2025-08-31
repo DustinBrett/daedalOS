@@ -22,7 +22,9 @@ import {
   getFileSystemHandles,
   hasIndexedDB,
   isMountedFolder,
+  parseDirectory,
   KEYVAL_DB,
+  type FS9PV4,
 } from "contexts/fileSystem/core";
 import useAsyncFs, {
   type AsyncFS,
@@ -103,6 +105,11 @@ type FileSystemContextState = AsyncFS & {
   mkdirRecursive: (path: string) => Promise<void>;
   mountEmscriptenFs: (FS: EmscriptenFS, fsName?: string) => Promise<string>;
   mountFs: (url: string) => Promise<void>;
+  mountHttpRequestFs: (
+    mountPoint: string,
+    url: string,
+    baseUrl?: string
+  ) => Promise<void>;
   moveEntries: (entries: string[]) => void;
   pasteList: FilePasteOperations;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
@@ -291,6 +298,40 @@ const useFileSystemContextState = (): FileSystemContextState => {
           });
         });
       }),
+    [rootFs]
+  );
+  const mountHttpRequestFs = useCallback(
+    async (
+      mountPoint: string,
+      url: string,
+      baseUrl?: string
+    ): Promise<void> => {
+      const index = (await (await fetch(url)).json()) as object;
+
+      if (!(typeof index === "object" && "fsroot" in index)) {
+        throw new Error("Invalid HTTPRequest FS object.");
+      }
+
+      const {
+        FileSystem: { HTTPRequest },
+      } = (await import(
+        "public/System/BrowserFS/browserfs.min.js"
+      )) as typeof IBrowserFS;
+
+      return new Promise((resolve, reject) => {
+        HTTPRequest?.Create(
+          { baseUrl, index: parseDirectory(index.fsroot as FS9PV4[]) },
+          (error, newFs) => {
+            if (error || !newFs) {
+              reject(new Error("Error while mounting HTTPRequest FS."));
+            } else {
+              rootFs?.mount?.(mountPoint, newFs);
+              resolve();
+            }
+          }
+        );
+      });
+    },
     [rootFs]
   );
   const mapFs = useCallback(
@@ -658,6 +699,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     mkdirRecursive,
     mountEmscriptenFs,
     mountFs,
+    mountHttpRequestFs,
     moveEntries,
     pasteList,
     removeFsWatcher,
