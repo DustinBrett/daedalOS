@@ -11,7 +11,6 @@ import {
   PACKAGE_DATA,
 } from "utils/constants";
 import {
-  bufferToUrl,
   getDpi,
   getExtension,
   getMimeType,
@@ -53,22 +52,13 @@ const Metadata: FC = () => {
   );
   const getCursor = useCallback(
     async (path: string) => {
-      const { getFirstAniImage, getLargestIcon } = await import(
-        "utils/imageDecoder"
-      );
       const imageBuffer = await readFile(path);
-      const extension = getExtension(path);
-      let image: Buffer | undefined = imageBuffer;
 
-      if (extension === ".ani") {
-        image = await getFirstAniImage(imageBuffer);
-      } else {
-        const largestIcon = await getLargestIcon(imageBuffer, 128);
+      if (!imageBuffer || imageBuffer.length === 0) return "";
 
-        if (largestIcon) return largestIcon;
-      }
+      const { cursorToCss } = await import("utils/imageDecoder");
 
-      return image ? bufferToUrl(image, getMimeType(path)) : "";
+      return cursorToCss(imageBuffer, path);
     },
     [readFile]
   );
@@ -173,9 +163,7 @@ const Metadata: FC = () => {
           />
         );
       })}
-      {customCursor && (
-        <style>{`*, *::before, *::after { cursor: url(${customCursor}), default !important; }`}</style>
-      )}
+      {customCursor && <style>{customCursor}</style>}
     </Head>
   );
 };
