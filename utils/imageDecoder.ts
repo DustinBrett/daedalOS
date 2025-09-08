@@ -16,6 +16,9 @@ import {
 
 type JxlDecodeResponse = { data: { imgData: ImageData } };
 
+const JIFFIES_IN_SECOND = 60;
+const DEFAULT_JIFFY_RATE = 10;
+
 const supportsImageType = async (type: string): Promise<boolean> => {
   const img = document.createElement("img");
 
@@ -72,9 +75,10 @@ const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
   const gif = await getGifJs();
   const { parseAni } = await import("ani-cursor/dist/parser");
   let images: Uint8Array[] = [];
+  let metadata: { iDispRate?: number } = {};
 
   try {
-    ({ images } = parseAni(aniBuffer));
+    ({ images, metadata } = parseAni(aniBuffer));
   } catch {
     return aniBuffer;
   }
@@ -89,7 +93,12 @@ const aniToGif = async (aniBuffer: Buffer): Promise<Buffer> => {
           imageIcon.addEventListener(
             "load",
             () => {
-              gif.addFrame(imageIcon);
+              gif.addFrame(imageIcon, {
+                delay:
+                  ((metadata.iDispRate || DEFAULT_JIFFY_RATE) /
+                    JIFFIES_IN_SECOND) *
+                  1000,
+              });
               cleanUpBufferUrl(bufferUrl);
               resolve();
             },
@@ -131,9 +140,6 @@ export const getFirstAniImage = async (
 
 const getGlobalCursorCSS = (cursorUrl: string): string =>
   `*, *::before, *::after { cursor: url(${cursorUrl}), default !important; }`;
-
-const JIFFIES_IN_SECOND = 60;
-const DEFAULT_JIFFY_RATE = 10;
 
 const aniToCss = async (
   imageBuffer: Buffer,
