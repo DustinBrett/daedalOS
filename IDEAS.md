@@ -319,7 +319,7 @@
   - [Xash3D-Emscripten](https://github.com/btarg/Xash3D-Emscripten)
 - Minesweeper ([1](https://github.com/ziebelje/minesweeper), [2](https://github.com/ShizukuIchi/minesweeper))
 - [S.U.R.F.](https://github.com/jackbuehner/MicrosoftEdge-S.U.R.F.)
-- Game of Life ([1](https://github.com/rustwasm/wasm_game_of_life), [2](https://github.com/skeeto/webgl-game-of-life/))
+- Game of Life ([1](https://github.com/copy/life), [2](https://github.com/rustwasm/wasm_game_of_life), [3](https://github.com/skeeto/webgl-game-of-life/))
 - Solitaire ([1](https://github.com/rjanjic/js-solitaire), [2](https://github.com/1j01/98/tree/master/programs/js-solitaire))
 - [Heroes of Might and Magic II](https://github.com/ihhub/fheroes2)
 - [Doom 3](https://wasm.continuation-labs.com/d3demo/)
