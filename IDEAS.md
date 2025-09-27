@@ -35,6 +35,7 @@
       - speak.js ([1](https://github.com/kripken/speak.js), [2](https://github.com/mtttmpl/speak-js))
     - [Transformers.js](https://xenova.github.io/transformers.js/)
 - System Tray Icons
+- Crypto Wallet Explorer ([MainNet](https://mainnet.base.org))
 - Email App
   - Open SMTP Server
   - [openpgpjs](https://github.com/openpgpjs/openpgpjs)
