@@ -96,7 +96,7 @@ export const unarchive = async (
   data: Buffer
 ): Promise<Unzipped> => {
   if (!window.SevenZip) {
-    await loadFiles(["System/7zip/7zz.es6.js"]);
+    await loadFiles(["System/7zip/7zz.umd.js"]);
   }
 
   if (!window.SevenZip) return {};
