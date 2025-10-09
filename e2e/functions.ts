@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import {
+  type ConsoleMessage,
   type Locator,
   type Page,
   type Response,
@@ -84,11 +85,18 @@ type DocumentWithVendorFullscreen = Document & {
   webkitFullscreenElement?: HTMLElement;
 };
 
+type MessageType = ReturnType<ConsoleMessage["type"]>;
+
 export const captureConsoleLogs =
   (testName = "") =>
   ({ browserName, page }: TestPropsWithBrowser): void => {
     page.on("console", (msg) => {
-      if (testName === "apps" && (process.env.CI || msg.type() !== "error")) {
+      const messageType = msg.type();
+
+      if (
+        messageType === ("timeStamp" as MessageType) ||
+        (testName === "apps" && (process.env.CI || messageType !== "error"))
+      ) {
         return;
       }
 
