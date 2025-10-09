@@ -1,6 +1,7 @@
 import { join } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { wallpaperHandler } from "components/system/Desktop/Wallpapers/handlers";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
@@ -20,10 +21,8 @@ import { useFileSystem } from "contexts/fileSystem";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
-  DEFAULT_LOCALE,
   DEFAULT_WALLPAPER,
   IMAGE_FILE_EXTENSIONS,
-  MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_MINUTE,
   NATIVE_IMAGE_FORMATS,
   PICTURES_FOLDER,
@@ -38,13 +37,9 @@ import {
   cleanUpBufferUrl,
   createOffscreenCanvas,
   getExtension,
-  getYouTubeUrlId,
   isBeforeBg,
-  isYouTubeUrl,
-  jsonFetch,
   parseBgPosition,
   preloadImage,
-  viewWidth,
 } from "utils/functions";
 
 const slideshowFiles: string[] = [];
@@ -61,7 +56,7 @@ const useWallpaper = (
     () => wallpaperImage.split(" "),
     [wallpaperImage]
   );
-  const vantaWireframe = wallpaperImage === "VANTA WIREFRAME";
+  const isAlt = wallpaperImage.endsWith(" ALT");
   const wallpaperWorker = useWorker<void>(
     sessionLoaded ? WALLPAPER_WORKERS[wallpaperName] : undefined
   );
@@ -107,7 +102,7 @@ const useWallpaper = (
         config = {
           material: {
             options: {
-              wireframe: vantaWireframe || !isTopWindow,
+              wireframe: isAlt || !isTopWindow,
             },
           },
           waveSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
@@ -115,8 +110,8 @@ const useWallpaper = (
       } else if (wallpaperImage.startsWith("MATRIX")) {
         config = {
           animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
-          volumetric: wallpaperImage.endsWith("3D"),
-          ...(isTopWindow
+          volumetric: wallpaperImage.startsWith("MATRIX 3D"),
+          ...(isTopWindow && !isAlt
             ? {}
             : {
                 fallSpeed: -0.09,
@@ -226,10 +221,10 @@ const useWallpaper = (
     [
       desktopRef,
       exists,
+      isAlt,
       readFile,
       resetWallpaper,
       setWallpaper,
-      vantaWireframe,
       wallpaperImage,
       wallpaperName,
       wallpaperWorker,
@@ -301,7 +296,7 @@ const useWallpaper = (
                 (await readFile(slideshowFilePath))?.toString() || "[]"
               ) as string[]
             ),
-          ].sort(() => Math.random() - 0.5)
+          ].sort(() => Math.random() - (isAlt ? 0.5 : -0.5))
         );
       }
 
@@ -331,51 +326,15 @@ const useWallpaper = (
       );
 
       newWallpaperFit = "fill";
-    } else if (wallpaperName === "APOD") {
-      // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
-      const [, , currentDate] = wallpaperImage.split(" ");
-      const [month, , day, , year] = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
-        day: "2-digit",
-        month: "2-digit",
-        timeZone: "US/Eastern",
-        year: "numeric",
-      })
-        .formatToParts(Date.now())
-        .map(({ value }) => value);
-
-      if (currentDate === `${year}-${month}-${day}`) return;
-
+    } else if (wallpaperHandler[wallpaperName]) {
       resetWallpaper();
 
-      const {
-        date = "",
-        hdurl = "",
-        url = "",
-      } = await jsonFetch(
-        "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
-      );
+      const newWallpaper = await wallpaperHandler[wallpaperName]({ isAlt });
 
-      if (hdurl || url) {
-        wallpaperUrl = ((viewWidth() > 1024 ? hdurl : url) || url) as string;
-        newWallpaperFit = "fit";
-
-        if (isYouTubeUrl(wallpaperUrl)) {
-          const ytBaseUrl = `https://i.ytimg.com/vi/${getYouTubeUrlId(
-            wallpaperUrl
-          )}`;
-
-          wallpaperUrl = `${ytBaseUrl}/maxresdefault.jpg`;
-          fallbackBackground = `${ytBaseUrl}/hqdefault.jpg`;
-        } else if (hdurl && url && hdurl !== url) {
-          fallbackBackground = (wallpaperUrl === url ? hdurl : url) as string;
-        }
-
-        const newWallpaperImage = `APOD ${wallpaperUrl} ${date as string}`;
-
-        if (newWallpaperImage !== wallpaperImage) {
-          setWallpaper(newWallpaperImage, newWallpaperFit);
-          setTimeout(loadWallpaper, MILLISECONDS_IN_DAY);
-        }
+      if (newWallpaper) {
+        wallpaperUrl = newWallpaper.wallpaperUrl || "";
+        fallbackBackground = newWallpaper.fallbackBackground || "";
+        newWallpaperFit = newWallpaper.newWallpaperFit || newWallpaperFit;
       }
     } else if (await exists(wallpaperImage)) {
       resetWallpaper();
@@ -492,10 +451,10 @@ const useWallpaper = (
     desktopRef,
     exists,
     getAllImages,
+    isAlt,
     loadWallpaper,
     readFile,
     resetWallpaper,
-    setWallpaper,
     updateFolder,
     wallpaperFit,
     wallpaperImage,

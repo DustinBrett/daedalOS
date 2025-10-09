@@ -1160,9 +1160,10 @@ export const getGifJs = async (): Promise<GIFWithWorkers> => {
 };
 
 export const jsonFetch = async (
-  url: string
+  url: string,
+  options?: RequestInit
 ): Promise<Record<string, unknown>> => {
-  const response = await fetch(url, HIGH_PRIORITY_REQUEST);
+  const response = await fetch(url, { ...HIGH_PRIORITY_REQUEST, ...options });
   const json = (await response.json()) as Record<string, unknown>;
 
   return json || {};
