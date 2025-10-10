@@ -42,7 +42,7 @@ import {
   preloadImage,
 } from "utils/functions";
 
-const slideshowFiles: string[] = [];
+let slideshowFiles: Record<string, string[]> = {};
 
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
@@ -288,22 +288,26 @@ const useWallpaper = (
         updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
       }
 
-      if (slideshowFiles.length === 0) {
-        slideshowFiles.push(
+      slideshowFiles = {
+        [wallpaperImage]: slideshowFiles[wallpaperImage] || [],
+      };
+
+      if (slideshowFiles[wallpaperImage].length === 0) {
+        slideshowFiles[wallpaperImage].push(
           ...[
             ...new Set(
               JSON.parse(
                 (await readFile(slideshowFilePath))?.toString() || "[]"
               ) as string[]
             ),
-          ].sort(() => Math.random() - (isAlt ? 0.5 : -0.5))
+          ].sort(() => Math.random() - 0.5)
         );
       }
 
       do {
-        wallpaperUrl = slideshowFiles.shift() || "";
+        wallpaperUrl = slideshowFiles[wallpaperImage].shift() || "";
 
-        const [nextWallpaper] = slideshowFiles;
+        const [nextWallpaper] = slideshowFiles[wallpaperImage];
 
         if (nextWallpaper) {
           document.querySelector(`#${PRELOAD_ID}`)?.remove();
@@ -322,7 +326,7 @@ const useWallpaper = (
         }
       } while (
         currentWallpaperUrl === wallpaperUrl &&
-        slideshowFiles.length > 1
+        slideshowFiles[wallpaperImage].length > 1
       );
 
       newWallpaperFit = "fill";
