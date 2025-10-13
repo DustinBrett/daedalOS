@@ -4,6 +4,7 @@ import {
   type ArtInstituteOfChicagoResponse,
 } from "components/system/Desktop/Wallpapers/types";
 import { type WallpaperFit } from "contexts/session/types";
+import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_HOUR } from "utils/constants";
 import {
   jsonFetch,
   viewWidth,
@@ -14,7 +15,7 @@ import {
 
 const API_URL = {
   APOD: "https://api.nasa.gov/planetary/apod",
-  ART_INSTITUTE_OF_CHICAGO: "https://api.artic.edu/api/v1/search",
+  ART_INSTITUTE_OF_CHICAGO: "https://api.artic.edu/api/v1/artworks/search",
 };
 
 export const wallpaperHandler: Record<string, WallpaperHandler> = {
@@ -47,6 +48,7 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
     return {
       fallbackBackground,
       newWallpaperFit,
+      updateTimeout: MILLISECONDS_IN_DAY,
       wallpaperUrl,
     };
   },
@@ -67,6 +69,11 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
                   },
                 },
                 {
+                  terms: {
+                    artwork_type_id: [1], // Painting
+                  },
+                },
+                {
                   exists: {
                     field: "image_id",
                   },
@@ -80,7 +87,6 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
           },
         },
       },
-      resources: "artworks",
     };
     const response = (await jsonFetch(API_URL.ART_INSTITUTE_OF_CHICAGO, {
       body: JSON.stringify(requestPayload),
@@ -99,12 +105,14 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
     return {
       fallbackBackground: imageUrl(false),
       newWallpaperFit: "fit",
+      updateTimeout: MILLISECONDS_IN_HOUR,
       wallpaperUrl: imageUrl(true),
     };
   },
   LOREM_PICSUM: () => ({
     fallbackBackground: "",
     newWallpaperFit: "fill",
+    updateTimeout: MILLISECONDS_IN_HOUR,
     wallpaperUrl: `https://picsum.photos/seed/${Date.now()}/${viewWidth()}/${viewHeight()}`,
   }),
 };

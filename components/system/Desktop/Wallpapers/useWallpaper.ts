@@ -339,6 +339,7 @@ const useWallpaper = (
         wallpaperUrl = newWallpaper.wallpaperUrl || "";
         fallbackBackground = newWallpaper.fallbackBackground || "";
         newWallpaperFit = newWallpaper.newWallpaperFit || newWallpaperFit;
+        setTimeout(loadFileWallpaper, newWallpaper.updateTimeout);
       }
     } else if (await exists(wallpaperImage)) {
       resetWallpaper();

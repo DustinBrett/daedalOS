@@ -42,6 +42,7 @@ export type WallpaperMessage = { message: string; type: string };
 export type WallpaperData = {
   fallbackBackground: string;
   newWallpaperFit: WallpaperFit;
+  updateTimeout: number;
   wallpaperUrl: string;
 };
 

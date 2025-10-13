@@ -27,7 +27,7 @@ import {
   DEFAULT_WALLPAPER,
   DEFAULT_WALLPAPER_FIT,
   DESKTOP_PATH,
-  MILLISECONDS_IN_MINUTE,
+  MILLISECONDS_IN_HOUR,
   SESSION_FILE,
   SHORTCUT_EXTENSION,
   SYSTEM_FILES,
@@ -365,7 +365,7 @@ const useSessionContextState = (): SessionContextState => {
                 const { spawnSheep } = await import("utils/spawnSheep");
 
                 spawnSheep(true);
-              }, MILLISECONDS_IN_MINUTE * 60);
+              }, MILLISECONDS_IN_HOUR);
             });
           }
         } catch (error) {
