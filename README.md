@@ -79,6 +79,8 @@
 - Set via image/video (Fill, Fit, Stretch, Tile, Center)
 - Picture Slideshow
 - [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
+- [Art Institute of Chicago](https://api.artic.edu/docs/)
+- [Lorem Picsum](https://picsum.photos/)
 - AI Generated Wallpapers [Stable Diffusion](https://stability.ai/stable-diffusion)
 - Custom screen saver file support
   - [3D FlowerBox](https://github.com/kevin-shannon/3D-FlowerBox)
