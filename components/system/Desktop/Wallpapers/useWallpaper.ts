@@ -339,7 +339,7 @@ const useWallpaper = (
         wallpaperUrl = newWallpaper.wallpaperUrl || "";
         fallbackBackground = newWallpaper.fallbackBackground || "";
         newWallpaperFit = newWallpaper.newWallpaperFit || newWallpaperFit;
-        wallpaperTimerRef.current = setTimeout(
+        wallpaperTimerRef.current = window.setTimeout(
           loadFileWallpaper,
           newWallpaper.updateTimeout
         );
