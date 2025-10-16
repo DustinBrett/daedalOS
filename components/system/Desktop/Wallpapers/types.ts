@@ -39,7 +39,7 @@ export type WallpaperMenuItem = {
 
 export type WallpaperMessage = { message: string; type: string };
 
-export type WallpaperData = {
+type WallpaperData = {
   fallbackBackground: string;
   newWallpaperFit: WallpaperFit;
   updateTimeout: number;
