@@ -44,7 +44,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@mlc-ai/web-llm": "^0.2.79",
-    "@monaco-editor/loader": "^1.6.1",
+    "@monaco-editor/loader": "1.5.0",
     "@panzoom/panzoom": "^4.6.0",
     "@prettier/plugin-xml": "^3.4.2",
     "@wasmer/wasm-transformer": "^0.12.0",
