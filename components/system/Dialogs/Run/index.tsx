@@ -169,12 +169,15 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
               ([processName]) =>
                 processName.toLowerCase() ===
                 (
-                  resourceAliasMap[resourcePath.toLowerCase()] || resourcePath
+                  resourceAliasMap[resourcePid.toLowerCase()] || resourcePid
                 ).toLowerCase()
             ) || [];
 
         if (pid) {
-          open(pid);
+          open(
+            pid,
+            resourcePath === resourcePid ? undefined : { url: resourcePath }
+          );
           addRunHistoryEntry();
         } else if (utilCommandMap[resource.toLowerCase()]) {
           utilCommandMap[resource.toLowerCase()]();
