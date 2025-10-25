@@ -274,13 +274,14 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
 
 export const DYNAMIC_PREFIX = ["nostr:"];
 
+export const EXTENSIONS_WITH_ICON = new Set([".ani", ".cur", ".exe", ".ico"]);
+
 export const DYNAMIC_EXTENSION = new Set([
   ...AUDIO_FILE_EXTENSIONS,
   ...AUDIO_PLAYLIST_EXTENSIONS,
   ...IMAGE_FILE_EXTENSIONS,
   ...TIFF_IMAGE_FORMATS,
   ...VIDEO_FILE_EXTENSIONS,
-  ".ani",
   ".exe",
   ".mp3",
   ".sav",

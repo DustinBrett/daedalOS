@@ -41,6 +41,7 @@ import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
+  EXTENSIONS_WITH_ICON,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   ICON_PATH,
@@ -349,7 +350,7 @@ const FileEntry: FC<FileEntryProps> = ({
       !isLoadingFileManager &&
       isVisible &&
       !isIconCached.current &&
-      !detailsView
+      (!detailsView || EXTENSIONS_WITH_ICON.has(urlExt))
     ) {
       const updateIcon = async (): Promise<void> => {
         if (icon.startsWith("blob:") || icon.startsWith("data:")) {
@@ -506,9 +507,7 @@ const FileEntry: FC<FileEntryProps> = ({
       updateIcon();
     }
 
-    if (!isVisible && getIconAbortController.current) {
-      getIconAbortController.current.abort();
-    }
+    if (!isVisible) getIconAbortController.current?.abort();
   }, [
     detailsView,
     exists,
