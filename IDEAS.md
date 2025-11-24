@@ -285,12 +285,12 @@
   - [Glassy Field](https://www.shadertoy.com/view/4ttGDH)
 - Art Wallpapers
   - [MMoA](https://metmuseum.github.io/)
-  - [AIoC](https://api.artic.edu/docs/)
 - [spacekit](https://github.com/typpo/spacekit)
 - [twigl](https://github.com/doxas/twigl)
 - [UVCanvas](https://github.com/latentcat/uvcanvas)
 - [Google Easter Eggs](https://elgoog.im/)
 - [Aurelia](https://github.com/holtsetio/aurelia/)
+- [Galaxy Simulation](https://threejsroadmap.com/blog/galaxy-simulation-webgpu-compute-shaders)
 - [Shan, Shui](https://github.com/LingDong-/shan-shui-inf) (Procedural Chinese Landscape)
 - [gpu-io](https://github.com/amandaghassaei/gpu-io) (Physics Simulations)
 - [Retro Synthwave](https://github.com/victorqribeiro/retroSynthwave)
