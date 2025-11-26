@@ -9,6 +9,7 @@ const StyledTabs = styled.ol`
   gap: 1px;
   padding: 2px 13px 0;
   position: absolute;
+  width: 100%;
 
   li {
     color: rgb(215 215 215);
