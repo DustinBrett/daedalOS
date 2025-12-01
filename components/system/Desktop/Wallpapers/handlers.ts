@@ -1,10 +1,15 @@
+import { MAX_RETRIES } from "components/system/Desktop/Wallpapers/constants";
 import {
   type WallpaperHandler,
   type ApodResponse,
   type ArtInstituteOfChicagoResponse,
 } from "components/system/Desktop/Wallpapers/types";
 import { type WallpaperFit } from "contexts/session/types";
-import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_HOUR } from "utils/constants";
+import {
+  HIGH_PRIORITY_REQUEST,
+  MILLISECONDS_IN_DAY,
+  MILLISECONDS_IN_HOUR,
+} from "utils/constants";
 import {
   jsonFetch,
   viewWidth,
@@ -88,25 +93,48 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
         },
       },
     };
-    const response = (await jsonFetch(API_URL.ART_INSTITUTE_OF_CHICAGO, {
-      body: JSON.stringify(requestPayload),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    })) as ArtInstituteOfChicagoResponse;
-    const imageUrl = (isMaxSize: boolean): string =>
-      response?.data?.[0]?.image_id
-        ? `https://www.artic.edu/iiif/2/${response.data[0].image_id}/full/${
-            isMaxSize ? "1686" : "843"
-          },/0/default.jpg`
-        : "";
+    const fetchArtwork = (): Promise<ArtInstituteOfChicagoResponse> =>
+      jsonFetch<ArtInstituteOfChicagoResponse>(
+        API_URL.ART_INSTITUTE_OF_CHICAGO,
+        {
+          body: JSON.stringify(requestPayload),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        }
+      );
+    let wallpaperUrl = "";
+
+    for (let a = 0; a < MAX_RETRIES; a++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const { data: [{ image_id } = {}] = [] } = await fetchArtwork();
+
+        if (image_id) {
+          const url = `https://www.artic.edu/iiif/2/${image_id}/full/1686,/0/default.jpg`;
+
+          // eslint-disable-next-line no-await-in-loop
+          const { ok } = await fetch(url, {
+            ...HIGH_PRIORITY_REQUEST,
+            method: "HEAD",
+          });
+
+          if (ok) {
+            wallpaperUrl = url;
+            break;
+          }
+        }
+      } catch {
+        // Ignore failure to get wallpaper
+      }
+    }
 
     return {
-      fallbackBackground: imageUrl(false),
+      fallbackBackground: "",
       newWallpaperFit: "fit",
       updateTimeout: MILLISECONDS_IN_HOUR,
-      wallpaperUrl: imageUrl(true),
+      wallpaperUrl,
     };
   },
   LOREM_PICSUM: () => ({
