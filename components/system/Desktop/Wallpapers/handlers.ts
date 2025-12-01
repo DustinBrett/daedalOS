@@ -58,46 +58,46 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
     };
   },
   ART_INSTITUTE_OF_CHICAGO: async () => {
-    const requestPayload = {
-      boost: false,
-      fields: ["image_id"],
-      limit: 1,
-      query: {
-        function_score: {
-          boost_mode: "replace",
-          query: {
-            bool: {
-              filter: [
-                {
-                  term: {
-                    is_public_domain: true,
-                  },
-                },
-                {
-                  terms: {
-                    artwork_type_id: [1], // Painting
-                  },
-                },
-                {
-                  exists: {
-                    field: "image_id",
-                  },
-                },
-              ],
-            },
-          },
-          random_score: {
-            field: "id",
-            seed: Date.now(),
-          },
-        },
-      },
-    };
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const fetchArtwork = (): Promise<ArtInstituteOfChicagoResponse> =>
       jsonFetch<ArtInstituteOfChicagoResponse>(
         API_URL.ART_INSTITUTE_OF_CHICAGO,
         {
-          body: JSON.stringify(requestPayload),
+          body: JSON.stringify({
+            boost: false,
+            fields: ["image_id"],
+            limit: 1,
+            query: {
+              function_score: {
+                boost_mode: "replace",
+                query: {
+                  bool: {
+                    filter: [
+                      {
+                        term: {
+                          is_public_domain: true,
+                        },
+                      },
+                      {
+                        terms: {
+                          artwork_type_id: [1], // Painting
+                        },
+                      },
+                      {
+                        exists: {
+                          field: "image_id",
+                        },
+                      },
+                    ],
+                  },
+                },
+                random_score: {
+                  field: "id",
+                  seed: Date.now(),
+                },
+              },
+            },
+          }),
           headers: {
             "Content-Type": "application/json",
           },
