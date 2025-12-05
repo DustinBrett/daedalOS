@@ -9,6 +9,7 @@ import {
   HIGH_PRIORITY_REQUEST,
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_HOUR,
+  MILLISECONDS_IN_SECOND,
 } from "utils/constants";
 import {
   jsonFetch,
@@ -104,37 +105,38 @@ export const wallpaperHandler: Record<string, WallpaperHandler> = {
           method: "POST",
         }
       );
-    let wallpaperUrl = "";
-
-    for (let a = 0; a < MAX_RETRIES; a++) {
+    const maybeFetchArtwork = async (attempt = 1): Promise<string> => {
       try {
-        // eslint-disable-next-line no-await-in-loop
         const { data: [{ image_id } = {}] = [] } = await fetchArtwork();
 
         if (image_id) {
           const url = `https://www.artic.edu/iiif/2/${image_id}/full/1686,/0/default.jpg`;
-
-          // eslint-disable-next-line no-await-in-loop
           const { ok } = await fetch(url, {
             ...HIGH_PRIORITY_REQUEST,
             method: "HEAD",
           });
 
-          if (ok) {
-            wallpaperUrl = url;
-            break;
-          }
+          if (ok) return url;
         }
       } catch {
         // Ignore failure to get wallpaper
       }
-    }
+
+      return attempt < MAX_RETRIES
+        ? await new Promise((resolve) => {
+            setTimeout(
+              () => resolve(maybeFetchArtwork(attempt + 1)),
+              MILLISECONDS_IN_SECOND
+            );
+          })
+        : "";
+    };
 
     return {
       fallbackBackground: "",
       newWallpaperFit: "fit",
       updateTimeout: MILLISECONDS_IN_HOUR,
-      wallpaperUrl,
+      wallpaperUrl: await maybeFetchArtwork(),
     };
   },
   LOREM_PICSUM: () => ({
