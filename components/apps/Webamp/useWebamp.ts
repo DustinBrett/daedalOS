@@ -83,7 +83,6 @@ const useWebamp = (id: string): Webamp => {
       { initialSkin, initialTracks }: Options
     ) => {
       const handleUrl = async (): Promise<Track[]> => {
-        // eslint-disable-next-line no-alert
         const externalUrl = prompt(
           "Enter an Internet location to open here:\nFor example: https://server.com/playlist.m3u"
         );
@@ -110,21 +109,15 @@ const useWebamp = (id: string): Webamp => {
       };
       const webamp = new window.Webamp({
         ...BASE_WEBAMP_OPTIONS,
-        // FIX: Container constraint for taskbar snapping
-        container: document.querySelector("#desktop") || containerElement,
         handleAddUrlEvent: handleUrl,
         handleLoadListEvent: handleUrl,
-        // FIX: Removed curly braces to satisfy 'arrow-body-style' (Implicit Return)
-        handleSaveListEvent: (tracks: URLTrack[]) =>
+        handleSaveListEvent: (tracks: URLTrack[]) => {
           createPath(
             "playlist.m3u",
             DESKTOP_PATH,
             Buffer.from(createM3uPlaylist(tracks))
-          ).then((saveName) => {
-            updateFolder(DESKTOP_PATH, saveName);
-            // eslint-disable-next-line unicorn/no-null
-            return null;
-          }),
+          ).then((saveName) => updateFolder(DESKTOP_PATH, saveName));
+        },
         initialSkin,
         initialTracks,
       } as Options) as WebampCI;
