@@ -110,15 +110,21 @@ const useWebamp = (id: string): Webamp => {
       };
       const webamp = new window.Webamp({
         ...BASE_WEBAMP_OPTIONS,
+        // FIX: Container constraint for taskbar snapping
+        container: document.querySelector("#desktop") || containerElement,
         handleAddUrlEvent: handleUrl,
         handleLoadListEvent: handleUrl,
-        handleSaveListEvent: (tracks: URLTrack[]) => {
+        // FIX: Removed curly braces to satisfy 'arrow-body-style' (Implicit Return)
+        handleSaveListEvent: (tracks: URLTrack[]) =>
           createPath(
             "playlist.m3u",
             DESKTOP_PATH,
             Buffer.from(createM3uPlaylist(tracks))
-          ).then((saveName) => updateFolder(DESKTOP_PATH, saveName));
-        },
+          ).then((saveName) => {
+            updateFolder(DESKTOP_PATH, saveName);
+            // eslint-disable-next-line unicorn/no-null
+            return null;
+          }),
         initialSkin,
         initialTracks,
       } as Options) as WebampCI;
