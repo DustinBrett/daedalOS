@@ -10,6 +10,7 @@ export const BASE_2D_CONTEXT_OPTIONS: CanvasRenderingContext2DSettings = {
 
 export const IFRAME_CONFIG = {
   referrerPolicy: "no-referrer" as React.HTMLAttributeReferrerPolicy,
+  allow: "screen-wake-lock; picture-in-picture; document-picture-in-picture; camera; encrypted-media; gamepad; display-capture; geolocation; gyroscope; microphone; midi; clipboard-read; clipboard-write; fullscreen; web-share; file-system-handle; local-storage; downloads;",
   sandbox:
     "allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts",
 };
