@@ -41,11 +41,10 @@ export type Frame = {
   width: number;
 };
 
-export const toScreen = (
-  frame: Frame,
-  x: number,
-  y: number
-): [number, number] => [x + frame.width / 2, frame.height / 2 - y];
+const toScreen = (frame: Frame, x: number, y: number): [number, number] => [
+  x + frame.width / 2,
+  frame.height / 2 - y,
+];
 
 export const toScene = (
   frame: Frame,

@@ -11,7 +11,7 @@ import { Rng } from "utils/desktopFly/rng";
 import { type Signals } from "utils/desktopFly/signals";
 
 /** Rendered size of the fly at ground level. */
-export const FLY_SCALE = 1.15;
+const FLY_SCALE = 1.15;
 /** How far from the edge of the output a flight target may land. */
 const EDGE_MARGIN = 50;
 /** Legacy (non-connectome) fear radii, used only when there are no signals. */
@@ -62,7 +62,7 @@ export const FlyState = {
 export type FlyState = (typeof FlyState)[keyof typeof FlyState];
 
 /** One leg's animation state. Six of them, tripod-phased. */
-export type Leg = {
+type Leg = {
   angle: number;
   baseYaw: number;
   isFront: boolean;
@@ -84,7 +84,7 @@ const LEG_SPECS: [number, number, number, boolean][] = [
 ];
 
 /** Euler angles of one wing. */
-export type Wing = {
+type Wing = {
   x: number;
   y: number;
   z: number;

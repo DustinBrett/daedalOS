@@ -73,7 +73,7 @@ type Stim = {
   untilMs: number;
 };
 
-export type Groups = {
+type Groups = {
   /** Ascending partners, carrying leg proprioception. */
   ascend: number[];
   /** DNa01 + DNa02, left. */
@@ -94,7 +94,7 @@ export type Groups = {
 };
 
 /** Group firing rates, in Hz per neuron, exponentially smoothed. */
-export type Rates = {
+type Rates = {
   dnaL: number;
   dnaR: number;
   escw: number;
@@ -107,7 +107,7 @@ export type Rates = {
 };
 
 /** What the coordinator feeds in each frame. All in 0..1 unless noted. */
-export type Inputs = {
+type Inputs = {
   /** Circadian and sleep neuromodulation of baseline drive and noise. */
   activityScale: number;
   /** Fast cursor motion near the fly, into the sensory pathway. */

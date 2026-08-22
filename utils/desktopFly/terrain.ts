@@ -118,7 +118,7 @@ const subtractSpans = (
 };
 
 /** A window's full box in screen coordinates, for the looming sense. */
-export type ScreenRect = {
+type ScreenRect = {
   bottom: number;
   id: number;
   left: number;
@@ -126,7 +126,7 @@ export type ScreenRect = {
   top: number;
 };
 
-export type TerrainSense = {
+type TerrainSense = {
   ledges: ScreenLedge[];
   rects: ScreenRect[];
 };
@@ -168,10 +168,6 @@ export const senseTerrain = (width: number, height: number): TerrainSense => {
     })),
   };
 };
-
-/** The walkable edges alone. */
-export const getLedges = (width: number, height: number): ScreenLedge[] =>
-  senseTerrain(width, height).ledges;
 
 /** Convert walkable edges into the body's scene frame (+y up, origin centre). */
 export const ledgesToScene = (

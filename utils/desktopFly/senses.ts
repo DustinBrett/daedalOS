@@ -47,7 +47,7 @@ const rearBlindness = (cosBearing: number): number =>
  * Split a looming drive between the eyes by bearing relative to the heading.
  * `rdX/rdY` is the unit vector from the fly to the stimulus.
  */
-export const eyeSplit = (
+const eyeSplit = (
   heading: number,
   rdX: number,
   rdY: number
@@ -156,7 +156,7 @@ const TAP_RADIUS = 260;
  * mechanosensory, not visual — it reaches the giant fibre through the
  * tactile/Johnston's-organ pathway and reliably triggers escape.
  */
-export const CONTACT_RADIUS = 32;
+const CONTACT_RADIUS = 32;
 
 export const isContact = (pos: Point, click: Point): boolean =>
   Math.hypot(click.x - pos.x, click.y - pos.y) < CONTACT_RADIUS;
