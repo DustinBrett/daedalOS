@@ -8,6 +8,8 @@ import {
 import {
   captureConsoleLogs,
   disableWallpaper,
+  flyIsHidden,
+  flyIsVisible,
   getHostname,
   loadApp,
   sendTabToTerminal,
@@ -330,6 +332,14 @@ test.describe("has commands", () => {
 
     await sendToTerminal({ page }, "qjs Object.keys(window)");
     await terminalHasText({ page }, '["console","window"]');
+  });
+
+  test("fly", async ({ page }) => {
+    await sendToTerminal({ page }, "fly");
+    await flyIsVisible({ page });
+
+    await sendToTerminal({ page }, "fly kill");
+    await flyIsHidden({ page });
   });
 
   test("sheep", async ({ page }) => {

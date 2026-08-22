@@ -116,6 +116,12 @@
 - IPFS protocol support
 - [chrome://dino](https://github.com/wayou/t-rex-runner) game
 
+### [DesktopFly](https://github.com/DenisSergeevitch/desktop-fly)
+
+- Fruit fly pets driven by a live spiking simulation of 1,275 real [FlyWire](https://flywire.ai/) connectome neurons, with escape, backward retreat, grooming, sleep & circadian rhythm
+- Every fly has its own brain & senses: window edges are walkable terrain, dragged windows & the cursor loom, clicks swat, and a takeoff startles nearby flies
+- Spawn via `fly` in Terminal or Run dialog
+
 ### [DevTools](https://eruda.liriliri.io/)
 
 - Console, Elements, Network, Resources, Sources, DOM

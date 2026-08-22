@@ -26,6 +26,7 @@ import {
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
   FILE_EXPLORER_SELECTOR,
+  FLY_SELECTOR,
   RIGHT_CLICK,
   SEARCH_BUTTON_SELECTOR,
   SEARCH_MENU_SELECTOR,
@@ -563,6 +564,37 @@ export const searchMenuIsVisible = async ({ page }: TestProps): Promise<void> =>
 
 export const sheepIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(SHEEP_SELECTOR)).toBeVisible();
+
+export const flyIsVisible = async ({ page }: TestProps): Promise<void> => {
+  await expect(page.locator(FLY_SELECTOR)).toBeVisible();
+  // The overlay canvas exists; the fly counts only once it has painted.
+  await expect(async () =>
+    expect(
+      await page.locator(FLY_SELECTOR).evaluate((canvas) => {
+        const context = (canvas as HTMLCanvasElement).getContext("2d");
+
+        if (!context) return 0;
+
+        const { data } = context.getImageData(
+          0,
+          0,
+          (canvas as HTMLCanvasElement).width,
+          (canvas as HTMLCanvasElement).height
+        );
+        let painted = 0;
+
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] > 0) painted += 1;
+        }
+
+        return painted;
+      })
+    ).toBeGreaterThan(50)
+  ).toPass();
+};
+
+export const flyIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(FLY_SELECTOR)).toBeHidden();
 
 export const startButtonIsVisible = async ({
   page,

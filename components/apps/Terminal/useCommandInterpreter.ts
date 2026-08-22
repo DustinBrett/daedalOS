@@ -961,6 +961,30 @@ const useCommandInterpreter = (
             }
             break;
           }
+          case "fly":
+          case "gnat": {
+            const { countFlies, killFly, scareFlies, spawnFly } = await import(
+              "utils/spawnFly"
+            );
+            const [arg = 1] = commandArgs;
+
+            if (arg === "scare") {
+              scareFlies();
+            } else if (arg === "kill") {
+              Array.from({ length: countFlies() }).forEach(() => killFly());
+            } else if (!Number.isNaN(Number(arg))) {
+              const count = Number(arg);
+
+              if (count === 0) {
+                Array.from({ length: countFlies() }).forEach(() => killFly());
+              } else {
+                await Promise.all(
+                  Array.from({ length: count }).map(() => spawnFly())
+                );
+              }
+            }
+            break;
+          }
           case "sheep":
           case "esheep": {
             const { countSheep, killSheep, spawnSheep } = await import(

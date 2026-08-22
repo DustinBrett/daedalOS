@@ -152,6 +152,7 @@ export const FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR = `${FILE_EXPLORER_ENTRIES_
 export const TERMINAL_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>${APP_CONTAINER_SELECTOR}>.terminal`;
 export const TERMINAL_ROWS_SELECTOR = `${TERMINAL_SELECTOR}>.xterm-screen>.xterm-rows>div:not(:empty)`;
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
+export const FLY_SELECTOR = `${DESKTOP_SELECTOR}>canvas#desktop-fly`;
 
 export const CALENDAR_LABEL = /^Calendar$/;
 export const CLOCK_LABEL = /^Clock$/;

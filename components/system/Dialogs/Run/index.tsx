@@ -22,6 +22,7 @@ import {
 } from "utils/constants";
 import { getExtension, haltEvent, notFound } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
+import { spawnFly } from "utils/spawnFly";
 import { spawnSheep } from "utils/spawnSheep";
 import Icon from "styles/common/Icon";
 import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
@@ -42,6 +43,8 @@ const MESSAGE = `Type the name of a program, folder, document, or Internet resou
 
 const utilCommandMap: Record<string, () => void> = {
   esheep: spawnSheep,
+  fly: spawnFly,
+  gnat: spawnFly,
   sheep: spawnSheep,
 };
 
