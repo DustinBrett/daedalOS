@@ -39,7 +39,8 @@
     "*.{js,ts,tsx}": "eslint --fix"
   },
   "resolutions": {
-    "@emotion/is-prop-valid": "^1.4.0"
+    "@emotion/is-prop-valid": "^1.4.0",
+    "music-metadata": "11.12.3"
   },
   "dependencies": {
     "@chrisoakman/chessboard2": "^0.5.0",
