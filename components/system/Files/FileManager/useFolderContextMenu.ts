@@ -29,7 +29,6 @@ import {
 } from "utils/constants";
 import {
   blobToBuffer,
-  bufferToBlob,
   generatePrettyTimestamp,
   getExtension,
   isFileSystemMappingSupported,
@@ -75,7 +74,6 @@ const useFolderContextMenu = (
     exists,
     mapFs,
     pasteList = {},
-    readFile,
     rootFs,
     writeFile,
     updateFolder,
@@ -123,7 +121,6 @@ const useFolderContextMenu = (
       const { active: wasActive } = currentMediaStream;
 
       try {
-        currentMediaRecorder.requestData();
         currentMediaStream.getTracks().forEach((track) => track.stop());
       } catch {
         // Ignore errors with MediaRecorder
@@ -138,9 +135,8 @@ const useFolderContextMenu = (
     const isFirefoxOrSafari = isFirefox() || isSafari();
     const displayMediaOptions: DisplayMediaStreamOptions &
       MediaStreamConstraints = {
-      video: {
-        frameRate: CAPTURE_FPS,
-      },
+      // Safari aborts capture when video constraints are applied
+      video: isSafari() ? true : { frameRate: CAPTURE_FPS },
       // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#browser_compatibility
       ...(!isFirefoxOrSafari && {
         preferCurrentTab: true,
@@ -150,8 +146,14 @@ const useFolderContextMenu = (
       }),
     };
 
-    currentMediaStream =
-      await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+    try {
+      currentMediaStream =
+        await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+    } catch (error) {
+      console.error("Failed to start screen capture.", error);
+      currentMediaStream = undefined;
+      return;
+    }
 
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
@@ -167,54 +169,25 @@ const useFolderContextMenu = (
 
     const capturePath = join(DESKTOP_PATH, fileName);
     const startTime = Date.now();
-    let hasCapturedData = false;
+    const writeCapture = async (capture: Blob): Promise<void> => {
+      await writeFile(capturePath, await blobToBuffer(capture));
+      updateFolder(DESKTOP_PATH, fileName);
+    };
 
     currentMediaRecorder.start();
-    currentMediaRecorder.addEventListener("dataavailable", async (event) => {
-      const { data } = event;
+    // Without a timeslice, dataavailable fires once with all data on stop
+    currentMediaRecorder.addEventListener("dataavailable", async ({ data }) => {
+      if (!data?.size) return;
 
-      if (data?.size) {
-        const bufferData = await blobToBuffer(data);
+      if (supportsWebm && !isFirefoxOrSafari) {
+        const { default: fixWebmDuration } = await import("fix-webm-duration");
 
-        await writeFile(
-          capturePath,
-          hasCapturedData
-            ? Buffer.concat([await readFile(capturePath), bufferData])
-            : bufferData,
-          hasCapturedData
-        );
-
-        if (
-          supportsWebm &&
-          !isFirefoxOrSafari &&
-          (!currentMediaRecorder || currentMediaRecorder.state === "inactive")
-        ) {
-          const [{ default: fixWebmDuration }, capturedBuffer] =
-            await Promise.all([
-              import("fix-webm-duration"),
-              readFile(capturePath),
-            ]);
-
-          fixWebmDuration(
-            bufferToBlob(capturedBuffer),
-            Date.now() - startTime,
-            async (capturedFile) => {
-              await writeFile(
-                capturePath,
-                await blobToBuffer(capturedFile),
-                true
-              );
-              updateFolder(DESKTOP_PATH, fileName);
-            }
-          );
-        } else {
-          updateFolder(DESKTOP_PATH, fileName);
-        }
-
-        hasCapturedData = true;
+        fixWebmDuration(data, Date.now() - startTime, writeCapture);
+      } else {
+        await writeCapture(data);
       }
     });
-  }, [readFile, updateFolder, writeFile]);
+  }, [updateFolder, writeFile]);
   const hasWebGPU = useWebGPUCheck();
   const processesRef = useProcessesRef();
   const updateDesktopIconPositions = useCallback(
