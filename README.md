@@ -72,6 +72,7 @@
 ### Background & Screensaver
 
 - Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
+  - Milky Way ([density wave theory](https://beltoforion.de/en/spiral_galaxy_renderer/), device orientation parallax)
   - [Waves](https://www.vantajs.com/?effect=waves)
   - [Hexells](https://znah.net/hexells/)
   - [Matrix](https://rezmason.github.io/matrix/)

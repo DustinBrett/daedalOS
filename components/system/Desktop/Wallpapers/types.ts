@@ -1,4 +1,5 @@
 import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
+import { type GalaxyConfig } from "components/system/Desktop/Wallpapers/Galaxy/config";
 import { type VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import type MatrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
@@ -13,6 +14,7 @@ declare global {
 }
 
 export type WallpaperConfig =
+  | Partial<GalaxyConfig>
   | Partial<StableDiffusionConfig>
   | Partial<typeof MatrixConfig>
   | Partial<VantaWavesConfig>;
@@ -26,7 +28,10 @@ export type WallpaperFunc = (
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
   clockSize?: Size;
-  config?: Partial<StableDiffusionConfig> | VantaWavesConfig;
+  config?:
+    | Partial<GalaxyConfig>
+    | Partial<StableDiffusionConfig>
+    | VantaWavesConfig;
   devicePixelRatio: number;
 };
 

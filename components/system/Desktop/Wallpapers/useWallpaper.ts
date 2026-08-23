@@ -1,6 +1,7 @@
 import { join } from "path";
 import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { listenGalaxyInput } from "components/system/Desktop/Wallpapers/Galaxy/input";
 import { wallpaperHandler } from "components/system/Desktop/Wallpapers/handlers";
 import {
   BASE_CANVAS_SELECTOR,
@@ -107,7 +108,12 @@ const useWallpaper = (
         }
       }
 
-      if (wallpaperName === "VANTA") {
+      if (wallpaperName === "GALAXY") {
+        config = {
+          faceOn: isAlt,
+          speed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+        };
+      } else if (wallpaperName === "VANTA") {
         config = {
           material: {
             options: {
@@ -151,12 +157,22 @@ const useWallpaper = (
         typeof window.OffscreenCanvas === "function" &&
         wallpaperWorker.current
       ) {
-        const workerConfig = { config, devicePixelRatio: 1 };
+        // GALAXY renders at up to 1.5x native resolution so its point stars
+        // stay pin-sharp on hiDPI screens; capped to bound the fill cost on
+        // phones, and its quality governor adapts if a GPU can't keep up
+        const canvasScale =
+          wallpaperName === "GALAXY"
+            ? Math.min(window.devicePixelRatio || 1, 1.5)
+            : 1;
+        const workerConfig = { config, devicePixelRatio: canvasScale };
 
         if (keepCanvas) {
           wallpaperWorker.current.postMessage(workerConfig);
         } else {
-          const offscreen = createOffscreenCanvas(desktopRef.current);
+          const offscreen = createOffscreenCanvas(
+            desktopRef.current,
+            canvasScale
+          );
 
           wallpaperWorker.current.postMessage(
             { canvas: offscreen, ...workerConfig },
@@ -208,6 +224,27 @@ const useWallpaper = (
                 }
               }
             );
+          }
+
+          if (wallpaperName === "GALAXY") {
+            const stopInput = listenGalaxyInput({
+              onTilt: (x, y) =>
+                wallpaperWorker.current?.postMessage({
+                  type: "tilt",
+                  x,
+                  y,
+                }),
+              onVisibility: (visible) =>
+                wallpaperWorker.current?.postMessage({
+                  type: "visibility",
+                  visible,
+                }),
+            });
+
+            window.WallpaperDestroy = () => {
+              stopInput();
+              window.WallpaperDestroy = undefined;
+            };
           }
         }
       } else if (WALLPAPER_PATHS[wallpaperName]) {

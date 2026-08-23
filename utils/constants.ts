@@ -24,7 +24,7 @@ export const DEFAULT_CLOSE_EFFECT = "None";
 
 export const DEFAULT_THEME: ThemeName = "defaultTheme";
 
-export const DEFAULT_WALLPAPER = "VANTA";
+export const DEFAULT_WALLPAPER = "GALAXY";
 
 export const DEFAULT_WALLPAPER_FIT: WallpaperFit = "fill";
 

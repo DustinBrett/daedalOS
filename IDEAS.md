@@ -6,8 +6,6 @@
 
 - 3rd Party App Support
 - Accessibility (Structure & Markup)
-- Add my old personal website
-  - [http://surf.to/misc](https://web.archive.org/web/20050826192118if_/http://surf.to:80/misc)
 - Screen Savers (.scr)
   - [After Dark](https://www.bryanbraun.com/after-dark-css/)
   - [Bouncing DVD Logo](https://www.bouncingdvdlogo.com/)
@@ -53,7 +51,6 @@
 - OneDrive File System Integration
 - Full Search Results in File Explorer
 - [WindowBlinds](https://www.stardock.com/products/windowblinds/) Theme Support
-- Better color cycling for wallpaper
 
 ### Low Priority
 
@@ -287,12 +284,10 @@
 - [UVCanvas](https://github.com/latentcat/uvcanvas)
 - [Google Easter Eggs](https://elgoog.im/)
 - [Aurelia](https://github.com/holtsetio/aurelia/)
-- [Galaxy Simulation](https://threejsroadmap.com/blog/galaxy-simulation-webgpu-compute-shaders)
 - [Shan, Shui](https://github.com/LingDong-/shan-shui-inf) (Procedural Chinese Landscape)
 - [gpu-io](https://github.com/amandaghassaei/gpu-io) (Physics Simulations)
 - [Retro Synthwave](https://github.com/victorqribeiro/retroSynthwave)
 - [GPU Shaders](https://www.kevs3d.co.uk/dev/shaders/)
-- [Better Rainbow](https://krazydad.com/tutorials/makecolors.php)
 - [fireworks.js](https://github.com/crashmax-dev/fireworks-js)
 - [Cursor Effects](https://tholman.com/cursor-effects/)
 - [Bobby Blue-Eyes](https://www.derschmale.com/lab/doodles/blueeyes/build/)

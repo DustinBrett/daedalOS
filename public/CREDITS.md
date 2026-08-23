@@ -57,6 +57,7 @@ This project is greatly augmented by code from the open source community. Thank 
 - [Pipes](https://github.com/1j01/pipes)
 - [playlist-parser](https://github.com/nickdesaulniers/javascript-playlist-parser)
 - [QOI Decoder](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba)
+- [Spiral Galaxy Renderer](https://beltoforion.de/en/spiral_galaxy_renderer/) (density wave model inspiration)
 - [resedit](https://github.com/jet2jet/resedit-js)
 - [rtf.js](https://github.com/tbluemel/rtf.js)
 - [SheetJS](https://github.com/SheetJS/sheetjs)
