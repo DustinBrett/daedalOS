@@ -36,7 +36,8 @@ export const EXCLUDED_CONSOLE_LOGS = (
     );
   } else if (browserName === "firefox") {
     excludedConsoleLogs.push(
-      "Found a sectioned h1 element with no specified font-size or margin properties."
+      "Found a sectioned h1 element with no specified font-size or margin properties.",
+      "Use of the orientation sensor is deprecated."
     );
   }
 
