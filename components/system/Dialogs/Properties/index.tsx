@@ -105,8 +105,9 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
       }}
       {...closeOnEscape}
     >
-      <nav className="tabs">
+      <nav className="tabs" role="presentation">
         <StyledButton
+          aria-pressed={onGeneral}
           className={onGeneral ? undefined : "inactive"}
           onClick={onGeneral ? undefined : () => setCurrentTab("general")}
         >
@@ -114,6 +115,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
         </StyledButton>
         {MEDIA_APPS.has(pid) && !isShortcut && (
           <StyledButton
+            aria-pressed={onDetails}
             className={onDetails ? undefined : "inactive"}
             onClick={onDetails ? undefined : () => setCurrentTab("details")}
           >

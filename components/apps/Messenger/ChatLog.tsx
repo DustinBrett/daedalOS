@@ -60,7 +60,7 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
   }, [decryptMessages, messages]);
 
   return (
-    <StyledChatLog ref={listRef}>
+    <StyledChatLog ref={listRef} aria-label="Messages" aria-live="polite">
       {!isUnknownKey && (
         <>
           <ChatProfile publicKey={recipientPublicKey} />

@@ -25,7 +25,9 @@ import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
   PREVENT_SCROLL,
+  ROOT_NAME,
   SHORTCUT_EXTENSION,
+  START_MENU_PATH,
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
 import Columns from "components/system/Files/FileManager/Columns";
@@ -70,7 +72,7 @@ const FileManager: FC<FileManagerProps> = ({
   skipSorting,
   url,
 }) => {
-  const { foregroundId, views, setViews } = useSession();
+  const { foregroundId, views, setForegroundId, setViews } = useSession();
   const view = useMemo(() => {
     if (isDesktop) return "icon";
     if (isStartMenu) return "list";
@@ -239,6 +241,13 @@ const FileManager: FC<FileManagerProps> = ({
     setColumns(isDetailsView ? DEFAULT_COLUMNS : undefined);
   }, [isDetailsView]);
 
+  // Focusing the desktop must deactivate the foreground window, as no window
+  // blur fires when its focused element was already removed by navigation
+  const onDesktopFocusCapture = useCallback(
+    () => setForegroundId(""),
+    [setForegroundId]
+  );
+
   return (
     <>
       {loading && <StyledLoading $hasColumns={isDetailsView} />}
@@ -247,7 +256,18 @@ const FileManager: FC<FileManagerProps> = ({
         ref={fileManagerRef}
         $isEmptyFolder={isEmptyFolder}
         $scrollable={!hideScrolling}
+        aria-busy={loading || undefined}
+        aria-label={
+          isDesktop
+            ? "Desktop"
+            : isStartMenu
+              ? url === START_MENU_PATH
+                ? "All apps"
+                : `${basename(url)} folder`
+              : basename(url) || ROOT_NAME
+        }
         onKeyDownCapture={loading ? undefined : onKeyDown}
+        {...(isDesktop && { onFocusCapture: onDesktopFocusCapture })}
         {...(loading || readOnly
           ? { onContextMenu: haltEvent }
           : {

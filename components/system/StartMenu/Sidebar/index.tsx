@@ -133,6 +133,7 @@ const Sidebar: FC<SidebarProps> = ({ height }) => {
   return (
     <StyledSidebar
       ref={sidebarRef}
+      aria-label="Start"
       className={collapsed ? "collapsed" : undefined}
       onClick={({ target }) => {
         clearTimer();

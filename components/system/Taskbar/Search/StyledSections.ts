@@ -87,7 +87,15 @@ const StyledSections = styled.div<StyledSectionsProps>`
         flex-direction: column;
         max-width: 80px;
         min-width: 80px;
-        text-align: left;
+
+        button {
+          background-color: transparent;
+          color: inherit;
+          display: flex;
+          flex-direction: column;
+          font-family: inherit;
+          text-align: left;
+        }
 
         img {
           background-color: rgb(60 60 60 / 85%);

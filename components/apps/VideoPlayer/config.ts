@@ -31,6 +31,11 @@ export const config = {
   },
   inactivityTimeout: MILLISECONDS_IN_SECOND,
   preload: "auto",
+  // Space/m/f/arrow keyboard control while the player has focus, matching
+  // the native keyboard operability of Movies & TV
+  userActions: {
+    hotkeys: true,
+  },
   youtube: {
     enablePrivacyEnhancedMode: true,
     ytControls: 2,

@@ -79,7 +79,21 @@ const useTerminal = ({
 
   useEffect(() => {
     loadFiles(libs).then(() => {
-      if (window.Terminal) setTerminal(new window.Terminal(config));
+      if (window.Terminal) {
+        const highContrast =
+          window.matchMedia("(forced-colors: active)").matches ||
+          window.matchMedia("(prefers-contrast: more)").matches;
+
+        setTerminal(
+          new window.Terminal({
+            ...config,
+            ...(highContrast && {
+              minimumContrastRatio: 4.5,
+              screenReaderMode: true,
+            }),
+          })
+        );
+      }
     });
   }, [libs]);
 

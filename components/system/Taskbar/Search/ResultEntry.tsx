@@ -1,5 +1,5 @@
 import { basename, extname } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
 import {
@@ -18,7 +18,7 @@ import { type ProcessArguments } from "contexts/process/types";
 import { useSession } from "contexts/session";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
-import { getExtension, isYouTubeUrl } from "utils/functions";
+import { getExtension, isYouTubeUrl, label } from "utils/functions";
 import { useIsVisible } from "hooks/useIsVisible";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
@@ -103,6 +103,10 @@ const ResultEntry: FC<ResultEntryProps> = ({
   );
   const { onContextMenuCapture } = useResultsContextMenu(info?.url);
   const abortController = useRef<AbortController>(undefined);
+  const maybeHovered = useCallback(
+    () => !details && setHovered(true),
+    [details]
+  );
 
   useEffect(() => {
     const activeEntry = details || hovered;
@@ -139,15 +143,13 @@ const ResultEntry: FC<ResultEntryProps> = ({
   return (
     <li
       ref={elementRef}
-      aria-label={baseName}
       className={active ? "active-item" : undefined}
-      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-      onMouseOver={() => !details && setHovered(true)}
+      onFocus={maybeHovered}
+      onMouseOver={maybeHovered}
       title={lastModified ? `${baseUrl}\n\n${lastModified}` : baseUrl}
     >
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-      <figure
-        className={details ? undefined : "simple"}
+      <button
+        aria-label={baseName}
         onClick={async () => {
           openApp(
             info?.pid,
@@ -167,44 +169,57 @@ const ResultEntry: FC<ResultEntryProps> = ({
             ? onContextMenuCapture
             : undefined
         }
+        type="button"
       >
-        <Icon
-          displaySize={details ? 32 : 16}
-          imgSize={details ? 32 : 16}
-          src={info?.icon}
-        />
-        <SubIcons
-          alt={name}
-          icon={info?.icon}
-          imgSize={details ? 32 : 16}
-          showShortcutIcon={false}
-          subIcons={info?.subIcons}
-          view="icon"
-        />
-        <figcaption>
-          <h1
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: name,
-            }}
+        <figure className={details ? undefined : "simple"}>
+          <Icon
+            displaySize={details ? 32 : 16}
+            imgSize={details ? 32 : 16}
+            src={info?.icon}
           />
-          {details && stats && (
-            <>
-              <h2>
-                {fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}
-              </h2>
-              {!isYTUrl && !isAppShortcut && !isDirectory && (
-                <h2>{lastModified}</h2>
-              )}
-            </>
-          )}
-        </figcaption>
-      </figure>
+          <SubIcons
+            alt=""
+            icon={info?.icon}
+            imgSize={details ? 32 : 16}
+            showShortcutIcon={false}
+            subIcons={info?.subIcons}
+            view="icon"
+          />
+          <figcaption>
+            <h1
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: name,
+              }}
+            />
+            {details && stats && (
+              <>
+                <h2>
+                  {fileType(
+                    stats,
+                    extension,
+                    isYTUrl,
+                    isAppShortcut,
+                    isNostrUrl
+                  )}
+                </h2>
+                {!isYTUrl && !isAppShortcut && !isDirectory && (
+                  <h2>{lastModified}</h2>
+                )}
+              </>
+            )}
+          </figcaption>
+        </figure>
+      </button>
       {!active && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-        <div className="select" onClick={() => setActiveItem(url)}>
+        <button
+          className="select"
+          onClick={() => setActiveItem(url)}
+          type="button"
+          {...label("See more information")}
+        >
           <RightArrow />
-        </div>
+        </button>
       )}
     </li>
   );

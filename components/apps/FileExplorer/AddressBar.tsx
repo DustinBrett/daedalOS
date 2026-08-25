@@ -21,7 +21,6 @@ type AddressBarProps = {
 };
 
 export const ADDRESS_INPUT_PROPS = {
-  "aria-label": "Address",
   enterKeyHint: "go",
   inputMode: "url",
   name: "address",
@@ -97,9 +96,10 @@ const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
 
   return (
     <StyledAddressBar>
-      <Icon alt={displayName} imgSize={16} src={icon} />
+      <Icon alt="" imgSize={16} src={icon} />
       <input
         ref={addressBarRef}
+        aria-label="Address"
         className={inputing ? "inputing" : ""}
         onBlurCapture={({ relatedTarget }) => {
           if (actionButtonRef.current !== relatedTarget) {

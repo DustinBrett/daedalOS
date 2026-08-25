@@ -126,6 +126,8 @@ const useDosCI = (
       const canvas = containerRef.current?.querySelector("canvas");
 
       if (canvas instanceof HTMLCanvasElement) {
+        canvas.setAttribute("role", "img");
+        canvas.setAttribute("aria-label", "Screen");
         linkElement(id, "peekElement", canvas);
         setDosCI({ [url]: ci });
         appendFileToTitle(basename(url));

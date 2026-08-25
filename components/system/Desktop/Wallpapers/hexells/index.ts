@@ -25,6 +25,7 @@ const hexells = async (el?: HTMLElement | null): Promise<void> => {
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
+  canvas.setAttribute("aria-hidden", "true");
 
   window.Hexells = new window.Demo(canvas, ROOT_PATH);
 

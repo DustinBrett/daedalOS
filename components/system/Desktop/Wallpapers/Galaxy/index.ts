@@ -22,6 +22,7 @@ const Galaxy = async (
     canvas.width = el.offsetWidth;
     canvas.height = el.offsetHeight;
     setCanvasSize();
+    canvas.setAttribute("aria-hidden", "true");
     el.append(canvas);
 
     const renderer = createGalaxyRenderer(

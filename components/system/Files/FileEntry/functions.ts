@@ -622,6 +622,8 @@ export const getInfoWithExtension = (
             containerElement.style.webkitUserSelect = "none";
 
             containerElement.innerHTML = contents.toString();
+            containerElement.setAttribute("aria-hidden", "true");
+            containerElement.inert = true;
 
             document.body.append(containerElement);
 

@@ -167,6 +167,15 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     },
     [open, toggleSearch]
   );
+  const visibleTabs = useMemo(
+    () =>
+      TABS.filter(
+        (tab) =>
+          !(menuWidth < 325 && tab === "Videos") &&
+          !(menuWidth < 260 && tab === "Photos")
+      ),
+    [menuWidth]
+  );
   const searchTimeoutRef = useRef(0);
   const preloadedSearch = useRef(false);
   const preloadSearch = useCallback(() => {
@@ -190,6 +199,14 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       setActiveItem("");
     }
   }, [activeItem, bestMatch, firstResult]);
+
+  useEffect(() => {
+    // The select/back buttons unmount on activation, dropping focus to body,
+    // which would leave Escape and blur-close inoperable
+    if (document.activeElement === document.body) {
+      menuRef.current?.focus(PREVENT_SCROLL);
+    }
+  }, [/* effect dep */ activeItem]);
 
   useEffect(() => {
     const updateMenuWidth = (): void =>
@@ -247,6 +264,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     <StyledSearch
       ref={menuRef}
       $singleLine={singleLineView}
+      aria-label="Search"
       id="searchMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
@@ -261,33 +279,42 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleSearch(false);
       }}
+      role="dialog"
       {...searchTransition}
       {...FOCUSABLE_ELEMENT}
     >
       <div>
         <div className="content" onContextMenu={haltEvent}>
-          <StyledTabs>
-            {TABS.filter(
-              (tab) =>
-                !(menuWidth < 325 && tab === "Videos") &&
-                !(menuWidth < 260 && tab === "Photos")
-            ).map((tab) => (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+          <StyledTabs role="tablist">
+            {visibleTabs.map((tab) => (
               <li
                 key={tab}
                 className={tab === activeTab ? "active" : undefined}
-                onClick={() => changeTab(tab)}
-                {...label(
-                  tab === "All"
-                    ? "Find the most relevant results"
-                    : `Find results in ${tab}`
-                )}
+                role="presentation"
               >
-                {tab}
+                <button
+                  aria-selected={tab === activeTab}
+                  id={`search-tab-${tab}`}
+                  onClick={() => changeTab(tab)}
+                  role="tab"
+                  type="button"
+                  {...(searchTerm &&
+                    (!singleLineView || !activeItem) && {
+                      "aria-controls": "search-results",
+                    })}
+                  {...label(
+                    tab === "All"
+                      ? "Find the most relevant results"
+                      : `Find results in ${tab}`,
+                    tab
+                  )}
+                >
+                  {tab}
+                </button>
               </li>
             ))}
           </StyledTabs>
-          <nav>
+          <nav role="presentation">
             <Button
               className="close-button"
               onClick={() => toggleSearch(false)}
@@ -306,20 +333,18 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   <figcaption>Suggested</figcaption>
                   <StyledSuggestions>
                     {SUGGESTED.map((app) => (
-                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                      <li
-                        key={app}
-                        onClick={() => openApp(app)}
-                        title={directory[app].title}
-                      >
-                        <figure>
-                          <Icon
-                            displaySize={32}
-                            imgSize={32}
-                            src={directory[app].icon}
-                          />
-                          <figcaption>{directory[app].title}</figcaption>
-                        </figure>
+                      <li key={app} title={directory[app].title}>
+                        <button onClick={() => openApp(app)} type="button">
+                          <figure>
+                            <Icon
+                              alt=""
+                              displaySize={32}
+                              imgSize={32}
+                              src={directory[app].icon}
+                            />
+                            <figcaption>{directory[app].title}</figcaption>
+                          </figure>
+                        </button>
                       </li>
                     ))}
                   </StyledSuggestions>
@@ -331,26 +356,28 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     <figcaption>Recent</figcaption>
                     <ol>
                       {recentFiles.map(([file, pid, title], index) => (
-                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                        <li
-                          key={`${file}${pid}`}
-                          onClick={() => {
-                            openApp(pid, { url: file });
-                            if (index !== 0) {
-                              setTimeout(
-                                () => updateRecentFiles(file, pid, title),
-                                TRANSITIONS_IN_SECONDS.TASKBAR_ITEM *
-                                  MILLISECONDS_IN_SECOND
-                              );
-                            }
-                          }}
-                        >
-                          <Icon
-                            displaySize={16}
-                            imgSize={16}
-                            src={directory[pid]?.icon}
-                          />
-                          <h2>{title || basename(file, extname(file))}</h2>
+                        <li key={`${file}${pid}`}>
+                          <button
+                            onClick={() => {
+                              openApp(pid, { url: file });
+                              if (index !== 0) {
+                                setTimeout(
+                                  () => updateRecentFiles(file, pid, title),
+                                  TRANSITIONS_IN_SECONDS.TASKBAR_ITEM *
+                                    MILLISECONDS_IN_SECOND
+                                );
+                              }
+                            }}
+                            type="button"
+                          >
+                            <Icon
+                              alt=""
+                              displaySize={16}
+                              imgSize={16}
+                              src={directory[pid]?.icon}
+                            />
+                            <h2>{title || basename(file, extname(file))}</h2>
+                          </button>
                         </li>
                       ))}
                     </ol>
@@ -369,18 +396,16 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                     ).map(
                       (game) =>
                         directory[game] && (
-                          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-                          <li
-                            key={game}
-                            onClick={() => openApp(game)}
-                            title={directory[game].title}
-                          >
-                            <Icon
-                              displaySize={56}
-                              imgSize={96}
-                              src={directory[game].icon}
-                            />
-                            <h4>{directory[game].title}</h4>
+                          <li key={game} title={directory[game].title}>
+                            <button onClick={() => openApp(game)} type="button">
+                              <Icon
+                                alt=""
+                                displaySize={56}
+                                imgSize={96}
+                                src={directory[game].icon}
+                              />
+                              <h4 aria-level={2}>{directory[game].title}</h4>
+                            </button>
                           </li>
                         )
                     )}
@@ -393,7 +418,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             <div className="tab">
               {METADATA[activeTab].icon}
               <h1>Search {METADATA[activeTab].title.toLowerCase()}</h1>
-              <h3>
+              <h3 aria-level={2}>
                 Start typing to search{" "}
                 {METADATA[activeTab].subtitle ||
                   METADATA[activeTab].title.toLowerCase()}
@@ -403,7 +428,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           {searchTerm && (
             <StyledResults>
               {(!singleLineView || !activeItem) && (
-                <div ref={listRef} className="list">
+                <div
+                  ref={listRef}
+                  aria-labelledby={`search-tab-${activeTab}`}
+                  className="list"
+                  id="search-results"
+                  role="tabpanel"
+                >
                   <ResultSection
                     activeItem={activeItem}
                     activeTab={activeTab}
@@ -468,7 +499,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
 
               if (key === "Enter" && firstResult?.ref) {
                 const bestMatchElement = menuRef.current?.querySelector(
-                  ".list li:first-child figure"
+                  ".list li:first-child > button"
                 );
 
                 (bestMatchElement as HTMLElement)?.click();
@@ -479,6 +510,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               caretColor: showCaret ? undefined : "transparent",
             }}
             {...SEARCH_INPUT_PROPS}
+            aria-label="Type here to search"
           />
         </motion.div>
       </div>

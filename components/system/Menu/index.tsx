@@ -196,6 +196,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
       $isSubMenu={isSubMenu}
       $x={staticX || x - offset.x}
       $y={staticY || y - offset.y}
+      aria-label="Context"
       onBlurCapture={resetMenu}
       onContextMenu={haltEvent}
       {...menuTransition}

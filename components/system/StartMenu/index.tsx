@@ -62,6 +62,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     <StyledStartMenu
       ref={focusOnRenderCallback}
       $showScrolling={showScrolling}
+      aria-label="Start"
       id="startMenu"
       onBlurCapture={(event) =>
         maybeCloseTaskbarMenu(
@@ -85,7 +86,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
             let tries = 0;
             const openSearchTimerRef = window.setInterval(() => {
               const searchInput = document.querySelector<HTMLInputElement>(
-                "main > nav .search > input"
+                "#searchMenu .search > input"
               );
 
               if (searchInput) {
@@ -101,6 +102,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       }}
       onMouseLeave={() => setShowScrolling(false)}
       onMouseMove={revealScrolling}
+      role="dialog"
       {...startMenuTransition}
       {...FOCUSABLE_ELEMENT}
     >

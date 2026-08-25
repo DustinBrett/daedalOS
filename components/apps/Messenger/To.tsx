@@ -6,6 +6,7 @@ type ToProps = { setRecipientKey: (key: string) => boolean };
 const To: FC<ToProps> = ({ setRecipientKey }) => (
   <StyledTo>
     <input
+      aria-label="To"
       onKeyDown={(event) => {
         if (
           event.key === "Enter" &&

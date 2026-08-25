@@ -13,7 +13,7 @@ type StyledStartMenuProps = {
   $showScrolling: boolean;
 };
 
-const StyledStartMenu = styled(motion.nav)<StyledStartMenuProps>`
+const StyledStartMenu = styled(motion.section)<StyledStartMenuProps>`
   ${({ theme }) =>
     TaskbarPanel(theme.sizes.startMenu.maxHeight, theme.sizes.startMenu.size)}
 

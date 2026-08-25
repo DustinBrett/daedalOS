@@ -5,7 +5,14 @@ type StyledProfileProps = {
 };
 
 const StyledProfile = styled.figure<StyledProfileProps>`
+  > button {
+    display: flex;
+    place-items: center;
+  }
+
+  > button,
   > div {
+    background-color: transparent;
     cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
     position: relative;
 

@@ -131,12 +131,16 @@ export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol`;
 export const TASKBAR_ENTRY_SELECTOR = `${TASKBAR_ENTRIES_SELECTOR}>li`;
 export const TASKBAR_ENTRY_PEEK_SELECTOR = `${TASKBAR_ENTRY_SELECTOR}>div:not([title])`;
 export const TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR = `${TASKBAR_ENTRY_PEEK_SELECTOR}>img`;
-export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#searchMenu`;
+export const TASKBAR_ENTRY_LABEL_SUFFIX = " - 1 running window";
+export const TASKBAR_ENTRY_RUNNING_LABEL = new RegExp(
+  `${TASKBAR_ENTRY_LABEL_SUFFIX}$`
+);
+export const SEARCH_MENU_SELECTOR = `${DESKTOP_SELECTOR}>section#searchMenu`;
 export const SEARCH_MENU_INPUT_SELECTOR = `${SEARCH_MENU_SELECTOR} input[placeholder='Type here to search']`;
 export const SEARCH_MENU_RESULTS_SELECTOR = `${SEARCH_MENU_SELECTOR}>div>.content>div>.list>figure:first-child>ol`;
 export const SEARCH_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title='Type here to search']`;
 export const START_BUTTON_SELECTOR = `${TASKBAR_SELECTOR}>[title=Start]`;
-export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>nav#startMenu`;
+export const START_MENU_SELECTOR = `${DESKTOP_SELECTOR}>section#startMenu`;
 export const START_MENU_SIDEBAR_SELECTOR = `${START_MENU_SELECTOR}>nav`;
 export const WINDOW_SELECTOR = `${DESKTOP_SELECTOR}>${WINDOW_DRAG_SELECTOR}>section`;
 export const WINDOW_TITLEBAR_SELECTOR = `${WINDOW_SELECTOR}>${VIEWPORT_SELECTOR}>header`;
@@ -155,14 +159,13 @@ export const TERMINAL_ROWS_SELECTOR = `${TERMINAL_SELECTOR}>.xterm-screen>.xterm
 export const SHEEP_SELECTOR = `${DESKTOP_SELECTOR}>div>img[src^=data]`;
 export const FLY_SELECTOR = `${DESKTOP_SELECTOR}>canvas#desktop-fly`;
 
-export const CALENDAR_LABEL = /^Calendar$/;
-export const CLOCK_LABEL = /^Clock$/;
+export const CALENDAR_LABEL = /^Date and Time Information$/;
+export const CLOCK_LABEL = /^System Clock/;
 export const FILE_EXPLORER_ADDRESS_BAR_LABEL = /^Address$/;
 export const START_BUTTON_LABEL = /^Start$/;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = [
   "aria-allowed-role",
-  "image-redundant-alt",
   "meta-viewport",
 ];
 

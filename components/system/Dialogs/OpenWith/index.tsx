@@ -43,9 +43,9 @@ const OpenWithEntry: FC<OpenWithEntryProps> = ({
   title,
 }) => (
   <li className={selected ? "selected" : ""}>
-    <Button onClick={onClick}>
+    <Button aria-pressed={selected} onClick={onClick}>
       <figure>
-        <Icon alt={title} displaySize={24} imgSize={32} src={icon} />
+        <Icon alt="" displaySize={24} imgSize={32} src={icon} />
         <figcaption>{title}</figcaption>
       </figure>
     </Button>
@@ -53,6 +53,10 @@ const OpenWithEntry: FC<OpenWithEntryProps> = ({
 );
 
 const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
+  // Process ids can contain paths with spaces, which are invalid in id
+  // attributes and split aria-labelledby's IDREF list
+  const primaryLabelId = `openwith-primary-${id}`.replace(/\s/g, "_");
+  const otherLabelId = `openwith-other-${id}`.replace(/\s/g, "_");
   const {
     closeWithTransition,
     open,
@@ -125,8 +129,13 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
       <div>
         {primaryTitle && primaryIcon && (
           <>
-            <h4>Keep using this app</h4>
-            <StyledOpenWithList {...closeOnEscape}>
+            <h4 aria-level={3} id={primaryLabelId}>
+              Keep using this app
+            </h4>
+            <StyledOpenWithList
+              aria-labelledby={primaryLabelId}
+              {...closeOnEscape}
+            >
               <OpenWithEntry
                 key={primaryTitle}
                 icon={primaryIcon}
@@ -135,10 +144,16 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
                 title={primaryTitle}
               />
             </StyledOpenWithList>
-            <h4>Other options</h4>
+            <h4 aria-level={3} id={otherLabelId}>
+              Other options
+            </h4>
           </>
         )}
-        <StyledOpenWithList $hideBorder={!primaryTitle || !primaryIcon}>
+        <StyledOpenWithList
+          $hideBorder={!primaryTitle || !primaryIcon}
+          {...(primaryTitle &&
+            primaryIcon && { "aria-labelledby": otherLabelId })}
+        >
           {Object.entries(directory)
             .filter(
               ([pid]) =>
@@ -155,7 +170,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
             ))}
         </StyledOpenWithList>
       </div>
-      <nav>
+      <nav role="presentation">
         <Button onClick={() => runApp(selectedPid)}>OK</Button>
       </nav>
     </StyledOpenWith>

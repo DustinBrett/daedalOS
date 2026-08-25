@@ -9,8 +9,8 @@ import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useSession } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
+  CLICK_FOCUSABLE_ELEMENT,
   CLOCK_CANVAS_BASE_WIDTH,
-  FOCUSABLE_ELEMENT,
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
 } from "utils/constants";
@@ -56,6 +56,7 @@ const easterEggOnClick: React.MouseEventHandler<HTMLElement> = async ({
 };
 
 type ClockProps = {
+  calendarVisible: boolean;
   hasAI: boolean;
   setClockWidth: React.Dispatch<React.SetStateAction<number>>;
   toggleCalendar: () => void;
@@ -63,6 +64,7 @@ type ClockProps = {
 };
 
 const Clock: FC<ClockProps> = ({
+  calendarVisible,
   hasAI,
   setClockWidth,
   toggleCalendar,
@@ -87,6 +89,7 @@ const Clock: FC<ClockProps> = ({
     [clockSource]
   );
   const offScreenClockCanvas = useRef<OffscreenCanvas>(undefined);
+  const clockButtonRef = useRef<HTMLButtonElement | null>(null);
   const supportsOffscreenCanvas = useMemo(
     () => typeof window !== "undefined" && "OffscreenCanvas" in window,
     []
@@ -96,6 +99,12 @@ const Clock: FC<ClockProps> = ({
       if (data === "source") {
         (clockWorker as Worker).postMessage(clockSource);
       } else {
+        // The offscreen canvas path skips re-rendering on time changes, so
+        // the accessible name must be kept current imperatively
+        clockButtonRef.current?.setAttribute(
+          "aria-label",
+          `System Clock, ${data.time}`
+        );
         setNow((currentNow) =>
           !offScreenClockCanvas.current || currentNow.date !== data.date
             ? data
@@ -132,11 +141,13 @@ const Clock: FC<ClockProps> = ({
     [fontSize, systemFont]
   );
   const clockCallbackRef = useCallback(
-    (clockContainer: HTMLDivElement | null) => {
+    (clockContainer: HTMLButtonElement | null) => {
+      clockButtonRef.current = clockContainer;
+
       if (
         !offScreenClockCanvas.current &&
         currentWorker.current &&
-        clockContainer instanceof HTMLDivElement
+        clockContainer instanceof HTMLButtonElement
       ) {
         [...clockContainer.children].forEach((element) => element.remove());
 
@@ -205,13 +216,16 @@ const Clock: FC<ClockProps> = ({
       ref={supportsOffscreenCanvas ? clockCallbackRef : undefined}
       $hasAI={hasAI}
       $width={width}
-      aria-label="Clock"
+      aria-expanded={calendarVisible}
+      aria-haspopup="dialog"
+      aria-label={`System Clock, ${time}`}
+      id="clock"
+      {...(calendarVisible && { "aria-controls": "calendar" })}
       onClick={onClockClick}
-      role="timer"
+      {...CLICK_FOCUSABLE_ELEMENT}
       title={date}
       suppressHydrationWarning
       {...clockContextMenu}
-      {...FOCUSABLE_ELEMENT}
       {...menuPreloadHandler}
     >
       {supportsOffscreenCanvas ? undefined : time}

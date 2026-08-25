@@ -168,7 +168,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                       // Ignore focus issues
                     }
                   }}
-                  {...label("Go to Line/Column")}
+                  title="Go to Line/Column"
                 >
                   {position}
                 </Button>
@@ -176,7 +176,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
             )}
             {language !== "" && <li>{language}</li>}
           </ol>
-          <StyledNotifications>
+          <StyledNotifications aria-live="polite">
             {notifications.map(({ message, type }) => (
               <li key={`${type} ${message}`} className="notification">
                 <figure>

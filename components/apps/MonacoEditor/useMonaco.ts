@@ -101,6 +101,7 @@ const useMonaco = ({
 
     if (monaco && !editor && containerElement) {
       const currentEditor = monaco.editor.create(containerElement, {
+        ariaLabel: "Editor content",
         automaticLayout: true,
         theme,
       });
@@ -132,6 +133,7 @@ const useMonaco = ({
 
   useEffect(() => {
     if (monaco && editor && url) {
+      editor.updateOptions({ ariaLabel: basename(url) });
       loadFile();
     }
   }, [editor, loadFile, monaco, url]);

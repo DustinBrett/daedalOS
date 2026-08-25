@@ -122,6 +122,7 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
         onFocus={() => preloadLibs([SEARCH_LIB, FILE_INDEX])}
         placeholder="Search"
         {...SEARCH_INPUT_PROPS}
+        aria-label="Search Box"
       />
       <Search />
     </StyledSearch>

@@ -112,6 +112,8 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     },
     [id, readdir, setUrl, url]
   );
+  const isFullscreen =
+    fullscreenElement === containerRef.current && containerRef.current !== null;
 
   useEffect(() => {
     if (url && !src[url] && !closing) loadPhoto();
@@ -131,7 +133,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       onContextMenu={haltEvent}
       {...useFileDrop({ id })}
     >
-      <nav className="top">
+      <nav className="top" role="presentation">
         <Button
           disabled={!url || scale === maxScale || brokenImage}
           onClick={zoomIn}
@@ -176,17 +178,13 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
           </div>
         )}
       </figure>
-      <nav className="bottom">
+      <nav className="bottom" role="presentation">
         <Button
           disabled={!url}
           onClick={() => toggleFullscreen(containerRef.current, "show")}
-          {...label("Full-screen")}
+          {...label(isFullscreen ? "Exit full-screen" : "Full-screen")}
         >
-          {fullscreenElement === containerRef.current ? (
-            <ExitFullscreen />
-          ) : (
-            <Fullscreen />
-          )}
+          {isFullscreen ? <ExitFullscreen /> : <Fullscreen />}
         </Button>
       </nav>
     </StyledPhotos>

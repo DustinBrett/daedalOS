@@ -78,6 +78,8 @@ const usePDF = (
 
       canvas.height = viewport.height;
       canvas.width = viewport.width;
+      canvas.setAttribute("role", "img");
+      canvas.setAttribute("aria-label", `Page ${pageNumber}`);
 
       await page.render({ canvas, canvasContext, viewport }).promise;
 

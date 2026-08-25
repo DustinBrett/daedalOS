@@ -17,7 +17,7 @@ export const StyledSelectionComponent = styled.span`
 const StyledSelection: FC<React.HTMLAttributes<HTMLSpanElement>> = (props) => (
   <>
     <NoGlobalPointerEvents />
-    <StyledSelectionComponent {...props} />
+    <StyledSelectionComponent aria-hidden="true" {...props} />
   </>
 );
 

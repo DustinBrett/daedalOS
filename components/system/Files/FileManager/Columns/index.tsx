@@ -107,7 +107,7 @@ const Columns: FC<ColumnsProps> = ({
           >
             {sortedBy === name && <Down flip={ascending} />}
             <div className="name">{columns[name].name}</div>
-            <span className="resize" />
+            <span aria-hidden="true" className="resize" />
           </li>
         ))}
       </ol>

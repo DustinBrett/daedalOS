@@ -45,6 +45,10 @@ export const DEFAULT_MAPPED_NAME = "Share";
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
+// WebKit only mouse-focuses elements carrying an explicit tabindex, so any
+// button whose popup closes on blur needs one to keep click-to-focus uniform
+export const CLICK_FOCUSABLE_ELEMENT = { tabIndex: 0 };
+
 export const DIV_BUTTON_PROPS = {
   as: "div",
   role: "button",

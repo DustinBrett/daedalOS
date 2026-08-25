@@ -17,9 +17,11 @@ const StyledCalendar = styled(motion.section)`
     padding: 4px 10px 19px;
     white-space: nowrap;
 
-    td {
+    td,
+    th {
       color: #fff;
       display: inline-table;
+      font-weight: inherit;
       height: 40px;
       line-height: 32px;
       margin: 0 1px;
@@ -59,7 +61,7 @@ const StyledCalendar = styled(motion.section)`
         }
       }
 
-      td:not([colspan]) {
+      th {
         height: auto;
         margin-top: -1px;
       }

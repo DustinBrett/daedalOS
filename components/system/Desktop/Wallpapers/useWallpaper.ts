@@ -183,6 +183,7 @@ const useWallpaper = (
             const loadingStatus = document.createElement("div");
 
             loadingStatus.id = "loading-status";
+            loadingStatus.setAttribute("role", "status");
 
             desktopRef.current?.append(loadingStatus);
 
@@ -194,6 +195,10 @@ const useWallpaper = (
             wallpaperWorker.current.addEventListener(
               "message",
               ({ data }: { data: WallpaperMessage }) => {
+                // Show the live region before its content changes,
+                // otherwise the announcement is unreliable
+                loadingStatus.style.display = data.message ? "block" : "none";
+
                 if (data.type === "[error]") {
                   setWallpaper(DEFAULT_WALLPAPER);
                 } else if (data.type) {
@@ -206,8 +211,6 @@ const useWallpaper = (
                         STABLE_DIFFUSION_DELAY_IN_MIN)
                   );
                 }
-
-                loadingStatus.style.display = data.message ? "block" : "none";
               }
             );
           } else {
@@ -454,6 +457,8 @@ const useWallpaper = (
         video.style.objectFit = "cover";
         video.style.objectPosition = "center center";
         video.style.zIndex = "-1";
+
+        video.setAttribute("aria-hidden", "true");
 
         desktopRef.current?.append(video);
       } else {

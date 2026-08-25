@@ -74,6 +74,10 @@ const StyledStableDiffusion = styled.div`
     position: relative;
 
     .status {
+      &:empty {
+        display: none;
+      }
+
       background-color: ${BG_COLOR};
       border: 1px solid ${FG_COLOR};
       border-radius: ${BORDER_RADIUS};

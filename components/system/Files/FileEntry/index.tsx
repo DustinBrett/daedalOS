@@ -586,8 +586,11 @@ const FileEntry: FC<FileEntryProps> = ({
       <Button
         ref={buttonRef}
         aria-label={name}
+        aria-pressed={focusedEntries.includes(fileName)}
         onMouseOverCapture={onMouseOverButton}
         title={tooltip}
+        {...(listView &&
+          openInFileExplorer && { "aria-expanded": showInFileManager })}
         {...(listView && { ...LIST_VIEW_ANIMATION, as: motion.button })}
         {...useDoubleClick(doubleClickHandler, listView)}
         {...(openInFileExplorer && fileDrop)}

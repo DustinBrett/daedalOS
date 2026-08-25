@@ -13,6 +13,16 @@ const StyledSuggestions = styled.ol`
     position: relative;
     width: 100%;
 
+    > button {
+      background-color: transparent;
+      color: inherit;
+      font-family: inherit;
+      height: 100%;
+      position: relative;
+      text-align: left;
+      width: 100%;
+    }
+
     figure {
       display: flex;
       padding: 9px 16px;

@@ -948,6 +948,8 @@ export const createOffscreenCanvas = (
   canvas.height = Math.floor(height * devicePixelRatio);
   canvas.width = Math.floor(width * devicePixelRatio);
 
+  canvas.setAttribute("aria-hidden", "true");
+
   containerElement.append(canvas);
 
   return canvas.transferControlToOffscreen();
@@ -962,8 +964,11 @@ export const clsx = (classes: Record<string, boolean>): string =>
     .map(([className]) => className)
     .join(" ");
 
-export const label = (value: string): React.HTMLAttributes<HTMLElement> => ({
-  "aria-label": value,
+export const label = (
+  value: string,
+  simpleValue?: string
+): React.HTMLAttributes<HTMLElement> => ({
+  "aria-label": simpleValue || value,
   title: value,
 });
 

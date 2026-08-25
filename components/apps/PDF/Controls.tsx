@@ -35,7 +35,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   } = process || {};
 
   return (
-    <StyledControls>
+    <StyledControls role="presentation">
       <div className="side-menu">
         <span>{subTitle || basename(url)}</span>
       </div>
@@ -43,6 +43,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
         {count !== 0 && (
           <li className="pages">
             <input
+              aria-label="Page number"
               enterKeyHint="go"
               onChange={({ target }) => {
                 const newPage = Number(target.value);
@@ -74,6 +75,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
             <Subtract />
           </Button>
           <input
+            aria-label="Zoom level"
             disabled={rendering || count === 0}
             enterKeyHint="done"
             onChange={({ target }) => {

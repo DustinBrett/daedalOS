@@ -7,7 +7,12 @@ import { haltEvent } from "utils/functions";
 
 const DXBall: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer StyledComponent={StyledDXBall} id={id} useHook={useDXBall}>
-    <canvas id="dx-ball" onContextMenuCapture={haltEvent} />
+    <canvas
+      aria-label="DX-Ball"
+      id="dx-ball"
+      onContextMenuCapture={haltEvent}
+      role="img"
+    />
   </AppContainer>
 );
 

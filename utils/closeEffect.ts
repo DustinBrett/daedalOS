@@ -575,6 +575,7 @@ export const startCloseEffect = async (
     width: `${cssW}px`,
     zIndex: "10000",
   });
+  canvas.setAttribute("aria-hidden", "true");
 
   const pointerPos: [number, number] = [
     Math.max(0, Math.min(1, (lastPointerX - rect.left) / rect.width)),

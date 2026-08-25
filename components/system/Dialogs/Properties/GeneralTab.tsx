@@ -166,13 +166,14 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
       <table className="general">
         <tbody>
           <tr className="header">
-            <th scope="row">
+            <th aria-hidden="true">
               <Icon imgSize={32} src={isDirectory ? folderIcon : icon} />
               {isShortcut && <Icon imgSize={48} src={SHORTCUT_ICON} />}
             </th>
             <td>
               <input
                 ref={inputRef}
+                aria-label="Name"
                 defaultValue={basename(
                   url,
                   isShortcut ? extname(url) : undefined

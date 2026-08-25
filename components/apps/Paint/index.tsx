@@ -188,6 +188,9 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
       {paintSrc && (
         <iframe
           ref={iframeRef}
+          // Busy on the content only, never on an ancestor of the
+          // role="status" loader or its announcement may be withheld
+          aria-busy={!loaded || undefined}
           height="100%"
           id={`jspaint-${id}`}
           onLoad={() => setLoaded(true)}

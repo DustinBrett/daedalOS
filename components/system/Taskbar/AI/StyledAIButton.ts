@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-const StyledAIButton = styled.div`
+const StyledAIButton = styled.button.attrs({ type: "button" })`
+  background-color: transparent;
   contain: strict;
   display: flex;
   height: 100%;

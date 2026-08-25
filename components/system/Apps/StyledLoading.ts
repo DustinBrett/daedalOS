@@ -4,7 +4,12 @@ type StyledLoadingProps = {
   $hasColumns?: boolean;
 };
 
-const StyledLoading = styled.div<StyledLoadingProps>`
+// The accessible name mirrors the ::before text below, and role="status"
+// makes the label valid (aria-label is dropped on generic divs)
+const StyledLoading = styled.div.attrs({
+  "aria-label": "Working on it...",
+  role: "status",
+})<StyledLoadingProps>`
   cursor: wait;
   height: 100%;
   width: 100%;

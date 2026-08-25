@@ -7,7 +7,7 @@ type StyledSearchProps = {
   $singleLine: boolean;
 };
 
-const StyledSearch = styled(motion.nav)<StyledSearchProps>`
+const StyledSearch = styled(motion.section)<StyledSearchProps>`
   ${({ $singleLine, theme }) =>
     TaskbarPanel(
       theme.sizes.search.maxHeight +

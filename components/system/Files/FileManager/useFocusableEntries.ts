@@ -136,7 +136,7 @@ const useFocusableEntries = (
         if (lines.length > 1) {
           try {
             const element = fileManagerRef.current?.querySelector(
-              `[aria-label='${CSS.escape(textLabel)}'] figcaption`
+              `button[aria-label='${CSS.escape(textLabel)}'] figcaption`
             );
 
             if (element) {

@@ -11,7 +11,12 @@ const BoxedWine: FC<ComponentProcessProps> = ({ id }) => (
     id={id}
     useHook={useBoxedWine}
   >
-    <canvas id="boxedWineCanvas" onContextMenu={haltEvent} />
+    <canvas
+      aria-label="BoxedWine"
+      id="boxedWineCanvas"
+      onContextMenu={haltEvent}
+      role="img"
+    />
   </AppContainer>
 );
 

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "motion/react";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
@@ -9,8 +9,8 @@ import { useProcesses } from "contexts/process";
 import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { DIV_BUTTON_PROPS, PROCESS_DELIMITER } from "utils/constants";
-import { isSafari, label } from "utils/functions";
+import { CLICK_FOCUSABLE_ELEMENT, PROCESS_DELIMITER } from "utils/constants";
+import { label } from "utils/functions";
 
 const PeekWindow = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry/Peek/PeekWindow")
@@ -34,7 +34,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   } = useProcesses();
   const { minimized, progress, singleton } = process || {};
   const linkTaskbarEntry = useCallback(
-    (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) => {
+    (taskbarEntry: HTMLButtonElement | null) => {
       if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
     },
     [id, linkElement]
@@ -80,7 +80,20 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       singleton,
     ]
   );
-  const focusable = useMemo(() => (isSafari() ? DIV_BUTTON_PROPS : {}), []);
+  useEffect(() => {
+    const onKeyDown = ({ key }: KeyboardEvent): void => {
+      if (key === "Escape") {
+        resetPeekTimer();
+        setIsPeekVisible(false);
+      }
+    };
+
+    if (isPeekVisible) {
+      window.addEventListener("keydown", onKeyDown, { passive: true });
+    }
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isPeekVisible, resetPeekTimer]);
   const titlebarContextMenu = useTitlebarContextMenu(id);
   const onContextMenuCapture = useCallback<
     React.MouseEventHandler<HTMLElement>
@@ -109,12 +122,13 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       </AnimatePresence>
       <Button
         ref={linkTaskbarEntry}
+        aria-pressed={isForeground}
         onClick={onClick}
-        {...focusable}
-        {...label(title)}
+        {...CLICK_FOCUSABLE_ELEMENT}
+        {...label(title, `${title} - 1 running window`)}
       >
         <figure>
-          <Icon alt={title} imgSize={16} src={icon} />
+          <Icon alt="" imgSize={16} src={icon} />
           <figcaption>{title}</figcaption>
         </figure>
       </Button>

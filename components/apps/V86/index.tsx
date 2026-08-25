@@ -7,8 +7,12 @@ import { haltEvent } from "utils/functions";
 
 const V86: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer StyledComponent={StyledV86} id={id} useHook={useV86}>
-    <div onContextMenuCapture={haltEvent} />
-    <canvas onContextMenuCapture={haltEvent} />
+    <div
+      aria-label="Text screen"
+      onContextMenuCapture={haltEvent}
+      role="group"
+    />
+    <canvas aria-label="Screen" onContextMenuCapture={haltEvent} role="img" />
   </AppContainer>
 );
 

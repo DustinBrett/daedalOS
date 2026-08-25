@@ -24,6 +24,21 @@ import {
 
 type KeyboardShortcutEntry = (file?: string) => React.KeyboardEventHandler;
 
+const scrollEntryIntoView = (
+  fileManagerRef: React.RefObject<HTMLOListElement | null>,
+  entry: string
+): void => {
+  try {
+    fileManagerRef.current
+      ?.querySelector(
+        `button[aria-label='${CSS.escape(entry.replace(SHORTCUT_EXTENSION, ""))}']`
+      )
+      ?.scrollIntoView();
+  } catch {
+    // Ignore error getting/scrolling element
+  }
+};
+
 const useFileKeyboardShortcuts = (
   files: Files,
   url: string,
@@ -184,15 +199,48 @@ const useFileKeyboardShortcuts = (
               break;
             case "Enter":
               if (
-                focusedEntries.length > 0 &&
-                target instanceof HTMLButtonElement
+                target instanceof HTMLButtonElement &&
+                fileManagerRef.current?.contains(target)
               ) {
                 haltEvent(event);
                 sendMouseClick(target, 2);
+              } else if (
+                target instanceof HTMLOListElement &&
+                target === fileManagerRef.current &&
+                focusedEntries.length > 0
+              ) {
+                // WebKit leaves the list focused after clicking an entry
+                haltEvent(event);
+
+                try {
+                  const entryButton = fileManagerRef.current?.querySelector(
+                    `button[aria-label='${CSS.escape(
+                      focusedEntries[0].replace(SHORTCUT_EXTENSION, "")
+                    )}']`
+                  );
+
+                  if (entryButton instanceof HTMLElement) {
+                    sendMouseClick(entryButton, 2);
+                  }
+                } catch {
+                  // Ignore error getting entry button
+                }
               }
               break;
             default:
-              if (key.startsWith("Arrow")) {
+              if (key === "Home" || key === "End") {
+                haltEvent(event);
+
+                const fileNames = Object.keys(files);
+                const jumpToEntry =
+                  key === "Home" ? fileNames[0] : fileNames.at(-1);
+
+                if (jumpToEntry) {
+                  blurEntry();
+                  focusEntry(jumpToEntry);
+                  scrollEntryIntoView(fileManagerRef, jumpToEntry);
+                }
+              } else if (key.startsWith("Arrow")) {
                 haltEvent(event);
 
                 if (!(target instanceof HTMLElement)) return;
@@ -223,10 +271,15 @@ const useFileKeyboardShortcuts = (
                   const nearestLi = targetElement.closest("li");
 
                   if (nearestLi instanceof HTMLLIElement) {
-                    const olChildren = [...movedElement.children];
+                    const olChildren = [...movedElement.children].filter(
+                      (olChild) => olChild instanceof HTMLLIElement
+                    );
                     const liPosition = olChildren.indexOf(nearestLi);
 
-                    if (key === "ArrowUp" || key === "ArrowDown") {
+                    if (
+                      liPosition !== -1 &&
+                      (key === "ArrowUp" || key === "ArrowDown")
+                    ) {
                       movedElement =
                         olChildren[
                           key === "ArrowUp"
@@ -279,16 +332,7 @@ const useFileKeyboardShortcuts = (
                 if (focusOnEntry) {
                   blurEntry();
                   focusEntry(focusOnEntry);
-
-                  try {
-                    fileManagerRef.current
-                      ?.querySelector(
-                        `button[aria-label='${CSS.escape(focusOnEntry.replace(SHORTCUT_EXTENSION, ""))}']`
-                      )
-                      ?.scrollIntoView();
-                  } catch {
-                    // Ignore error getting/scrolling element
-                  }
+                  scrollEntryIntoView(fileManagerRef, focusOnEntry);
                 }
               }
           }

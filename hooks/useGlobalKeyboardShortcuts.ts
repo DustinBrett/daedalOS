@@ -27,7 +27,7 @@ export const getNavButtonByTitle = (
 ): HTMLButtonElement | undefined => {
   try {
     return document.querySelector(
-      `main > nav > div[title='${CSS.escape(title)}']`
+      `main > nav > [title='${CSS.escape(title)}']`
     ) as HTMLButtonElement;
   } catch {
     return undefined;

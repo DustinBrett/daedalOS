@@ -398,9 +398,12 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
           margin-inline-start: 5px;
         }
 
-        a {
+        button[type="button"] {
+          background-color: transparent;
           color: ${({ $primaryColor }) => $primaryColor};
           cursor: pointer;
+          font-family: inherit;
+          font-size: inherit;
           margin-left: 4px;
         }
 

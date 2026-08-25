@@ -7,9 +7,13 @@ type StyledClockProps = {
   $width: number;
 };
 
-const StyledClock = styled.div<StyledClockProps>`
+const StyledClock = styled.button.attrs({
+  type: "button",
+})<StyledClockProps>`
+  background-color: transparent;
   color: ${({ theme }) => theme.colors.text};
   display: flex;
+  font-family: inherit;
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
   line-height: ${TASKBAR_HEIGHT - CLOCK_TEXT_HEIGHT_OFFSET}px;

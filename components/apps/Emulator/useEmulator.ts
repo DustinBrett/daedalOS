@@ -111,6 +111,8 @@ const useEmulator = ({
               currentEmulator.elements?.container?.querySelector("canvas");
 
             if (canvas) {
+              canvas.setAttribute("role", "img");
+              canvas.setAttribute("aria-label", "Screen");
               linkElement(id, "peekElement", canvas);
             }
           };

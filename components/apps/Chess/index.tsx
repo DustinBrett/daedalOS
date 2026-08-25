@@ -734,6 +734,8 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     setOrientation((prev) => (prev === "white" ? "black" : "white"));
   }, []);
 
+  const controlId = id.replace(/\s/g, "_");
+
   return (
     <StyledChess>
       {!ready && (
@@ -741,27 +743,31 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
           <StyledLoading />
         </div>
       )}
-      <nav className="toolbar">
-        <label htmlFor={`chess-mode-${id}`}>Mode</label>
-        <select id={`chess-mode-${id}`} onChange={onModeChange} value={mode}>
+      <nav className="toolbar" role="presentation">
+        <label htmlFor={`chess-mode-${controlId}`}>Mode</label>
+        <select
+          id={`chess-mode-${controlId}`}
+          onChange={onModeChange}
+          value={mode}
+        >
           <option value="hvc">Human vs Computer</option>
           <option value="hvh">Human vs Human</option>
           <option value="cvc">Computer vs Computer</option>
         </select>
-        <label htmlFor={`chess-side-${id}`}>Side</label>
+        <label htmlFor={`chess-side-${controlId}`}>Side</label>
         <select
           disabled={mode !== "hvc"}
-          id={`chess-side-${id}`}
+          id={`chess-side-${controlId}`}
           onChange={onSideChange}
           value={playerSide}
         >
           <option value="w">White</option>
           <option value="b">Black</option>
         </select>
-        <label htmlFor={`chess-skill-${id}`}>Difficulty</label>
+        <label htmlFor={`chess-skill-${controlId}`}>Difficulty</label>
         <select
           disabled={mode === "hvh"}
-          id={`chess-skill-${id}`}
+          id={`chess-skill-${controlId}`}
           onChange={onSkillChange}
           value={skill}
         >
@@ -784,7 +790,9 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
           </button>
         </div>
       </nav>
-      <div className="board-wrap">
+      {/* Busy on the content only, never on an ancestor of the
+          role="status" loader or its announcement may be withheld */}
+      <div aria-busy={!ready || undefined} className="board-wrap">
         <div className="board-frame">
           <div ref={boardElRef} className="board" />
         </div>
@@ -838,6 +846,7 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
           status: true,
           thinking: status.className === "thinking",
         })}
+        role="status"
       >
         {status.text}
       </div>

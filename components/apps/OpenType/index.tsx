@@ -33,20 +33,21 @@ const FontCanvas: FC<FontCanvasProps> = ({
   text,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvas = <canvas ref={canvasRef} />;
+  const value = text || DEFAULT_MESSAGE;
+  const canvas = <canvas ref={canvasRef} aria-label={value} role="img" />;
 
   useEffect(() => {
     if (!font || !canvasRef.current) return;
 
     const viewSize = Math.ceil(fontSize * VISUAL_MODIFIER);
-    const path = font.getPath(text || DEFAULT_MESSAGE, 0, viewSize, viewSize);
+    const path = font.getPath(value, 0, viewSize, viewSize);
     const { x2, y2 } = path.getBoundingBox();
 
     canvasRef.current.setAttribute("height", `${Math.ceil(y2)}`);
     canvasRef.current.setAttribute("width", `${Math.ceil(x2)}`);
 
     path.draw(canvasRef.current.getContext("2d") as CanvasRenderingContext2D);
-  }, [font, fontSize, text]);
+  }, [font, fontSize, value]);
 
   if (hideLabel) return canvas;
 

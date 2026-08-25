@@ -369,13 +369,16 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       $typing={typing}
       $width={fullWidth}
       $zIndex={zIndex}
+      aria-label={AI_TITLE}
+      id={AI_WINDOW_ID}
+      role="dialog"
       {...aiTransition}
       {...focusableProps}
     >
       <div className="header">
         <header>
           {AI_TITLE} (beta)
-          <nav>
+          <nav role="presentation">
             <Button
               className="close"
               onClick={() => {
@@ -396,30 +399,43 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           </div>
           <div className="convo-style">
             Choose a conversation style
-            <div className="buttons">
+            <div
+              aria-label="Choose a conversation style"
+              className="buttons"
+              role="group"
+            >
               <button
+                aria-pressed={convoStyle === "creative"}
                 className={convoStyle === "creative" ? "selected" : ""}
                 onClick={() => changeConvoStyle("creative")}
                 type="button"
-                {...label("Start an original and imaginative chat")}
+                {...label(
+                  "Start an original and imaginative chat",
+                  "More Creative"
+                )}
               >
                 <h4>More</h4>
                 <h2>Creative</h2>
               </button>
               <button
+                aria-pressed={convoStyle === "balanced"}
                 className={convoStyle === "balanced" ? "selected" : ""}
                 onClick={() => changeConvoStyle("balanced")}
                 type="button"
-                {...label("For everyday, informed chats")}
+                {...label("For everyday, informed chats", "More Balanced")}
               >
                 <h4>More</h4>
                 <h2>Balanced</h2>
               </button>
               <button
+                aria-pressed={convoStyle === "precise"}
                 className={convoStyle === "precise" ? "selected" : ""}
                 onClick={() => changeConvoStyle("precise")}
                 type="button"
-                {...label("Start a concise chat, useful for fact-finding")}
+                {...label(
+                  "Start a concise chat, useful for fact-finding",
+                  "More Precise"
+                )}
               >
                 <h4>More</h4>
                 <h2>Precise</h2>
@@ -448,6 +464,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                     type="button"
                     {...((!responding || index < conversation.length - 1) &&
                       text.includes("</think>") && {
+                        "aria-expanded": !hiddenThoughts.includes(index),
                         onClick: () => toggleThought(index),
                       })}
                   >
@@ -588,7 +605,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                           // Ignore failure to transfer control to offscreen
                         }
                       }}
+                      aria-label={text}
                       height={512}
+                      role="img"
                       width={512}
                     />
                     <div className="prompt">&quot;{text}&quot;</div>
@@ -617,8 +636,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
             <div className="failed-session">
               <WarningIcon />
               It might be time to move onto a new topic.
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-              <a onClick={newTopic}>Let&apos;s start over.</a>
+              <button onClick={newTopic} type="button">
+                Let&apos;s start over.
+              </button>
             </div>
           )}
         </div>
@@ -626,6 +646,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       <footer>
         <textarea
           ref={textAreaRef}
+          aria-label="Ask me anything"
           disabled={failedSession}
           onBlur={autoSizeText}
           onChange={(event) => {
@@ -653,13 +674,14 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           <ChatIcon />
         </button>
         <button
+          aria-disabled={!typing || undefined}
           className="submit"
           disabled={canceling || responding}
           {...(typing && {
             onClick: addUserPrompt,
           })}
           type="button"
-          {...(!canceling && typing ? label("Submit") : undefined)}
+          {...label("Submit")}
         >
           {!canceling && typing ? <SendFilledIcon /> : <SendIcon />}
         </button>

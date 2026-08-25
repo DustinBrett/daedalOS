@@ -40,10 +40,7 @@ const StyledProfileBanner = styled.div`
       }
     }
 
-    div {
-      display: flex;
-      place-items: center;
-
+    button {
       div.verified {
         svg {
           bottom: -3px;
@@ -53,7 +50,7 @@ const StyledProfileBanner = styled.div`
     }
   }
 
-  button:first-child {
+  > button:first-child {
     border-radius: 5px;
     cursor: pointer;
     height: 30px;
@@ -100,6 +97,13 @@ const StyledProfileBanner = styled.div`
 
       li {
         font-size: 6.5px;
+
+        button {
+          background-color: transparent;
+          color: inherit;
+          font-family: inherit;
+          font-size: inherit;
+        }
       }
     }
   }

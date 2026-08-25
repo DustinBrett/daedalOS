@@ -57,7 +57,12 @@ const AppContainer: FC<AppContainerProps> = ({
   return (
     <>
       {loading && <StyledLoading />}
-      <StyledWrapper ref={containerRef} style={style} {...useFileDrop({ id })}>
+      <StyledWrapper
+        ref={containerRef}
+        aria-busy={loading || undefined}
+        style={style}
+        {...useFileDrop({ id })}
+      >
         {children}
       </StyledWrapper>
     </>

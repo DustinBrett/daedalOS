@@ -66,7 +66,11 @@ const Taskbar: FC = () => {
         )}
         {searchVisible && <Search key="search" toggleSearch={toggleSearch} />}
       </AnimatePresence>
-      <StyledTaskbar {...useTaskbarContextMenu()} {...FOCUSABLE_ELEMENT}>
+      <StyledTaskbar
+        aria-label="Taskbar"
+        {...useTaskbarContextMenu()}
+        {...FOCUSABLE_ELEMENT}
+      >
         <StartButton
           startMenuVisible={startMenuVisible}
           toggleStartMenu={toggleStartMenu}
@@ -77,6 +81,7 @@ const Taskbar: FC = () => {
         />
         <TaskbarEntries clockWidth={clockWidth} hasAI={hasAI} />
         <Clock
+          calendarVisible={calendarVisible}
           hasAI={hasAI}
           setClockWidth={setClockWidth}
           toggleCalendar={toggleCalendar}

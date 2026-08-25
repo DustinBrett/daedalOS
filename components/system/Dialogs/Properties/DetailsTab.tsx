@@ -37,18 +37,22 @@ const DetailsTab: FC<TabProps> = ({
 
   return (
     <>
-      <StyledDetailsTab>
-        <table>
+      <StyledDetailsTab aria-busy={loading || undefined}>
+        <table aria-label="Details">
           <thead>
             <tr>
-              <th className="property">Property</th>
-              <th className="value">Value</th>
+              <th className="property" scope="col">
+                Property
+              </th>
+              <th className="value" scope="col">
+                Value
+              </th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr className="header">
-                <td>Loading...</td>
+                <td colSpan={2}>Loading...</td>
               </tr>
             )}
             {!loading &&
@@ -58,7 +62,7 @@ const DetailsTab: FC<TabProps> = ({
                   <Fragment key={`${key}${index}`}>
                     <tr className="header">
                       <th>{key}</th>
-                      <th className="line" />
+                      <th aria-hidden="true" className="line" />
                     </tr>
                     {Object.entries(data)
                       .filter(
@@ -67,7 +71,9 @@ const DetailsTab: FC<TabProps> = ({
                       )
                       .map(([dataKey, value]) => (
                         <tr key={`${dataKey}-${value}`}>
-                          <th title={dataKey}>{dataKey}</th>
+                          <th scope="row" title={dataKey}>
+                            {dataKey}
+                          </th>
                           <td>
                             {typeof value === "string" &&
                             value.startsWith("blob:") ? (

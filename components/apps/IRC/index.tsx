@@ -76,6 +76,9 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
       {!loaded && <StyledLoading />}
       <iframe
         ref={iframeRef}
+        // Busy on the content only, never on an ancestor of the
+        // role="status" loader or its announcement may be withheld
+        aria-busy={!loaded || undefined}
         height="100%"
         onLoad={() => setLoaded(true)}
         src={ircSrc}

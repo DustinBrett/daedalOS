@@ -143,6 +143,7 @@ export class FlyApp {
     this.canvas.style.inset = "0";
     this.canvas.style.pointerEvents = "none";
     this.canvas.style.zIndex = "2000";
+    this.canvas.setAttribute("aria-hidden", "true");
     container.append(this.canvas);
 
     const ctx = this.canvas.getContext("2d", { alpha: true });

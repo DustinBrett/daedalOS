@@ -20,7 +20,7 @@ import { useSession } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
-import { getExtension, isYouTubeUrl } from "utils/functions";
+import { getExtension, isYouTubeUrl, label } from "utils/functions";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 const Details: FC<{
@@ -92,33 +92,40 @@ const Details: FC<{
   return info?.url && stats ? (
     <StyledDetails ref={elementRef}>
       {singleLineView && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-        <div className="back" onClick={() => setActiveItem("")}>
+        <button
+          className="back"
+          onClick={() => setActiveItem("")}
+          type="button"
+          {...label("Back")}
+        >
           <RightArrow />
-        </div>
+        </button>
       )}
-      <Icon displaySize={64} imgSize={96} src={info?.icon} />
+      <Icon alt="" displaySize={64} imgSize={96} src={info?.icon} />
       <SubIcons
-        alt={name}
+        alt=""
         icon={info?.icon}
         imgSize={64}
         showShortcutIcon={false}
         subIcons={info?.subIcons}
         view="icon"
       />
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-      <h1 onClick={openFile}>{name}</h1>
+      <h1>
+        <button onClick={openFile} type="button">
+          {name}
+        </button>
+      </h1>
       <h2>{fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}</h2>
       {!isAppShortcut && info?.url && (
         <table>
           <tbody>
             <tr>
-              <th>Location</th>
+              <th scope="row">Location</th>
               <td onClick={openFile}>{info.url}</td>
             </tr>
             {!isYTUrl && !isNostrUrl && !isDirectory && (
               <tr>
-                <th>Last modified</th>
+                <th scope="row">Last modified</th>
                 <td>
                   {new Date(getModifiedTime(info.url, stats)).toLocaleString(
                     DEFAULT_LOCALE

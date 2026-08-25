@@ -1,7 +1,11 @@
 import { memo } from "react";
 
 export const AIIcon = memo(() => (
-  <svg viewBox="0 0 330 220" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 330 220"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M177.49 123.22c7.325 13.037 15.82 22.852 25.489 29.444 9.814 6.445 20.874 9.668 33.179 9.668 14.794 0 26.88-4.908 36.255-14.722 9.374-9.961 14.062-22.632 14.062-38.013 0-14.795-4.322-27.1-12.964-36.914-8.643-9.814-19.483-14.722-32.52-14.722-11.865 0-22.632 4.908-32.3 14.722-9.521 9.668-19.921 26.514-31.2 50.537m-26.807-23.51c-7.178-12.891-15.674-22.56-25.489-29.005-9.668-6.445-20.727-9.667-33.178-9.668-14.795 0-26.88 4.908-36.255 14.722-9.375 9.668-14.063 22.193-14.063 37.573 0 14.796 4.321 27.1 12.964 36.915 8.643 9.814 19.482 14.721 32.52 14.721 11.865 0 22.558-4.834 32.08-14.502 9.668-9.668 20.141-26.587 31.42-50.757m15.601 40.21c-10.4 19.922-21.313 34.498-32.739 43.726-11.28 9.229-23.877 13.843-37.793 13.843-19.775 0-36.548-8.203-50.317-24.61C31.81 156.472 25 136.184 25 112.014c0-25.635 6.079-46.362 18.237-62.183 12.305-15.82 28.272-23.73 47.9-23.73 13.917 0 26.368 4.541 37.354 13.623 10.987 8.936 21.973 23.73 32.96 44.385 9.96-20.215 20.727-35.083 32.3-44.605 11.571-9.668 24.462-14.502 38.671-14.502 19.482 0 36.108 8.277 49.878 24.83 13.916 16.552 20.874 36.987 20.874 61.303 0 25.489-6.152 46.143-18.457 61.963-12.158 15.674-28.052 23.511-47.68 23.511-13.917 0-26.295-4.248-37.134-12.744-10.694-8.643-21.9-23.291-33.619-43.946"
       fill="url(#a)"
@@ -45,25 +49,41 @@ export const AIIcon = memo(() => (
 ));
 
 export const ChatIcon = memo(() => (
-  <svg className="chat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    aria-hidden="true"
+    className="chat"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="M12 2c5.523 0 10 4.477 10 10 0 .263-.01.523-.03.78a6.518 6.518 0 0 0-1.474-1.05 8.5 8.5 0 1 0-15.923 4.407l.15.27-1.112 3.984 3.987-1.112.27.15a8.449 8.449 0 0 0 3.862 1.067c.281.54.636 1.036 1.05 1.474a9.96 9.96 0 0 1-5.368-1.082l-3.825 1.067a1.25 1.25 0 0 1-1.54-1.54l1.068-3.823A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2Zm11 15.5a5.5 5.5 0 1 0-11 0 5.5 5.5 0 0 0 11 0Zm-5 .5.001 2.503a.5.5 0 1 1-1 0V18h-2.505a.5.5 0 0 1 0-1H17v-2.5a.5.5 0 1 1 1 0V17h2.497a.5.5 0 0 1 0 1H18Z" />
   </svg>
 ));
 
 export const SendIcon = memo(() => (
-  <svg className="send" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    aria-hidden="true"
+    className="send"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="M5.694 12 2.299 3.27c-.236-.607.356-1.188.942-.981l.093.039 18 9a.75.75 0 0 1 .097 1.284l-.097.058-18 9c-.583.291-1.217-.245-1.065-.848l.03-.095L5.694 12 2.299 3.27 5.694 12ZM4.402 4.54l2.61 6.71h6.627a.75.75 0 0 1 .743.648l.007.102a.75.75 0 0 1-.649.743l-.101.007H7.01l-2.609 6.71L19.322 12 4.401 4.54Z" />
   </svg>
 ));
 
 export const SendFilledIcon = memo(() => (
-  <svg className="send" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    aria-hidden="true"
+    className="send"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="m12.815 12.197-7.532 1.255a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.942l18-9a.75.75 0 0 0 0-1.341l-18-9c-.614-.307-1.283.303-1.035.942l2.598 6.958a.5.5 0 0 0 .386.318l7.532 1.255a.2.2 0 0 1 0 .395Z" />
   </svg>
 ));
 
 export const PersonIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="person"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -74,6 +94,7 @@ export const PersonIcon = memo(() => (
 
 export const CopyIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="control-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +105,7 @@ export const CopyIcon = memo(() => (
 
 export const BackgroundIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="control-icon background-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -94,6 +116,7 @@ export const BackgroundIcon = memo(() => (
 
 export const SaveIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="control-icon save-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -104,6 +127,7 @@ export const SaveIcon = memo(() => (
 
 export const EditIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="control-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -114,6 +138,7 @@ export const EditIcon = memo(() => (
 
 export const StopIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="stop-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -124,6 +149,7 @@ export const StopIcon = memo(() => (
 
 export const WarningIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="warning-icon"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -134,6 +160,7 @@ export const WarningIcon = memo(() => (
 
 export const SpeakIcon = memo(() => (
   <svg
+    aria-hidden="true"
     className="control-icon"
     viewBox="0 0 20 19"
     xmlns="http://www.w3.org/2000/svg"

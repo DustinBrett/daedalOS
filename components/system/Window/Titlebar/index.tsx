@@ -16,7 +16,11 @@ import { useSession } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { LONG_PRESS_DELAY_MS, PREVENT_SCROLL } from "utils/constants";
+import {
+  FOCUSABLE_ELEMENT,
+  LONG_PRESS_DELAY_MS,
+  PREVENT_SCROLL,
+} from "utils/constants";
 import { haltEvent, label } from "utils/functions";
 
 type TitlebarProps = {
@@ -131,6 +135,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
       {...titlebarContextMenu}
     >
       <Button
+        {...FOCUSABLE_ELEMENT}
         {...(!hideMaximizeButton && allowResizing && !closing
           ? onClickMaximize
           : {})}
@@ -142,7 +147,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
         <figure>
           {!hideTitlebarIcon && (
             <Icon
-              alt={title}
+              alt=""
               imgSize={16}
               onClick={onIconClick}
               onMouseDownCapture={onIconMouseDownCapture}
@@ -152,7 +157,7 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
           <figcaption>{title}</figcaption>
         </figure>
       </Button>
-      <nav className="cancel">
+      <nav className="cancel" role="presentation">
         {!hideMinimizeButton && (
           <Button
             className="minimize"

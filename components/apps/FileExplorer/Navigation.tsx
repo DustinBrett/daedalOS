@@ -88,6 +88,7 @@ const Navigation: FC<NavigationProps> = ({
   return (
     <StyledNavigation
       ref={navRef}
+      role="presentation"
       {...useTitlebarContextMenu(id)}
       onDragOver={haltEvent}
       onDrop={haltEvent}

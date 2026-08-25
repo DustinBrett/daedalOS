@@ -3,7 +3,10 @@ import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScree
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useFileSystem } from "contexts/fileSystem";
 import { useProcesses } from "contexts/process";
-import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
+import {
+  FOCUSABLE_ELEMENT,
+  TRANSITIONS_IN_MILLISECONDS,
+} from "utils/constants";
 
 const ONE_TIME_PASSIVE_CAPTURE_EVENT = {
   capture: true,
@@ -79,8 +82,8 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
         }
       }}
       srcDoc={srcDoc[url]}
-      tabIndex={-1}
       title={title}
+      {...FOCUSABLE_ELEMENT}
     />
   );
 };

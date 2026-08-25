@@ -14,6 +14,7 @@ const reRouteFocus =
   (focusElement?: HTMLElement) =>
   (element?: Element): void => {
     element?.setAttribute("tabindex", FOCUSABLE_ELEMENT.tabIndex.toString());
+    element?.setAttribute("aria-hidden", "true");
     element?.addEventListener("contextmenu", haltEvent);
     element?.addEventListener("mousedown", (event) => {
       event.preventDefault();

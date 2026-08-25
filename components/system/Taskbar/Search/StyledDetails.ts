@@ -41,14 +41,22 @@ const StyledDetails = styled.div`
     font-size: 15px;
     font-weight: 400;
     overflow-wrap: anywhere;
-    padding-bottom: 7px;
-    padding-left: 12px;
-    padding-right: 12px;
     text-align: center;
 
     @supports not (overflow-wrap: anywhere) {
       /* stylelint-disable declaration-property-value-keyword-no-deprecated */
       word-break: break-word;
+    }
+
+    button {
+      background-color: transparent;
+      color: inherit;
+      font: inherit;
+      padding-bottom: 7px;
+      padding-left: 12px;
+      padding-right: 12px;
+      text-decoration: inherit;
+      width: 100%;
     }
 
     &:hover {
@@ -128,6 +136,7 @@ const StyledDetails = styled.div`
   }
 
   .back {
+    background-color: transparent;
     border-radius: 50%;
     display: flex;
     height: 32px;

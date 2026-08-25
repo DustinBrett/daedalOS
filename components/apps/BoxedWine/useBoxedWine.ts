@@ -74,7 +74,10 @@ const useBoxedWine = ({
     };
 
     if (!blankCanvasCheckerTimer.current) {
-      containerRef.current?.prepend(document.createElement("ol"));
+      const consoleList = document.createElement("ol");
+
+      consoleList.setAttribute("aria-label", "Boot log");
+      containerRef.current?.prepend(consoleList);
       blankCanvasCheckerTimer.current = window.setInterval(() => {
         if (isCanvasDrawn(containerRef.current?.querySelector("canvas"))) {
           clearInterval(blankCanvasCheckerTimer.current);

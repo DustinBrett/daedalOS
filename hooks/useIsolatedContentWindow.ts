@@ -39,6 +39,8 @@ const createCanvas = (contentDocument: Document): HTMLCanvasElement => {
   canvas.style.width = "100%";
   canvas.style.height = "100%";
   canvas.tabIndex = -1;
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-label", "Screen");
 
   contentDocument.body.append(canvas);
 

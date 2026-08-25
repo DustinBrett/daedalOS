@@ -158,6 +158,7 @@ const NostrChat: FC<NostrChatProps> = ({
           ) : (
             <StyledContacts
               key="contacts"
+              aria-label="Contacts"
               onContextMenu={haltEvent}
               {...inLeftOutRight}
             >

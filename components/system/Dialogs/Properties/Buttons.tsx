@@ -12,7 +12,7 @@ const Buttons: FC<ButtonsProps> = ({ id, onClick }) => {
   const close = (): void => closeWithTransition(id);
 
   return (
-    <nav className="buttons">
+    <nav className="buttons" role="presentation">
       <StyledButton onClick={onClick || close}>OK</StyledButton>
       <StyledButton onClick={close}>Cancel</StyledButton>
     </nav>

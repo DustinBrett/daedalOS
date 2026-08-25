@@ -146,7 +146,6 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
     <li
       ref={entryRef}
       className={disabled ? "disabled" : undefined}
-      title={tooltip}
       {...FOCUSABLE_ELEMENT}
       {...(menu && subMenuEvents)}
     >
@@ -154,18 +153,26 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
         <hr />
       ) : (
         <Button
+          aria-disabled={disabled || undefined}
           aria-label={label}
+          aria-pressed={
+            checked === undefined && toggle === undefined
+              ? undefined
+              : Boolean(checked || toggle)
+          }
           className={
             showSubMenu && (!canMouseOver || mouseOver) ? "active" : undefined
           }
           onMouseUp={triggerAction}
+          title={tooltip}
+          {...(menu && { "aria-expanded": showSubMenu })}
           {...DIV_BUTTON_PROPS}
         >
           {icon &&
             (/\p{Emoji_Presentation}/u.test(icon) ? (
               <span>{icon}</span>
             ) : (
-              <Icon alt={label} imgSize={16} src={icon} />
+              <Icon alt="" imgSize={16} src={icon} />
             ))}
           {checked && <Checkmark className="left" />}
           {toggle && <Circle className="left" />}

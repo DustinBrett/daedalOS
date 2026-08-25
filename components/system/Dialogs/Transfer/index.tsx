@@ -20,6 +20,9 @@ const isFileReaders = (
 ): readers is FileReaders => Array.isArray(readers?.[0]);
 
 const Transfer: FC<ComponentProcessProps> = ({ id }) => {
+  // Process ids can contain paths with spaces, which are invalid in id
+  // attributes and split aria-labelledby's IDREF list
+  const titleId = `transfer-title-${id}`.replace(/\s/g, "_");
   const {
     argument,
     closeWithTransition,
@@ -170,7 +173,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledTransfer onContextMenu={haltEvent} {...closeOnEscape}>
-      <h1>
+      <h1 id={titleId}>
         {name
           ? `${actionName} '${
               name.length >= MAX_TITLE_LENGTH
@@ -182,6 +185,9 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
       <div>
         <h2>{cd ? `To '${cd}'` : ""}</h2>
         <progress
+          {...(name
+            ? { "aria-labelledby": titleId }
+            : { "aria-label": "Transfer progress" })}
           max={totalTransferSize}
           value={
             totalTransferSize === Number.POSITIVE_INFINITY
@@ -190,7 +196,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
           }
         />
       </div>
-      <nav>
+      <nav role="presentation">
         <StyledButton onClick={() => closeWithTransition(id)}>
           Cancel
         </StyledButton>

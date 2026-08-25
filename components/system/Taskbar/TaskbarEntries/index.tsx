@@ -17,7 +17,11 @@ const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth, hasAI }) => {
   const { processes = {} } = useProcesses();
 
   return (
-    <StyledTaskbarEntries $clockWidth={clockWidth} $hasAI={hasAI}>
+    <StyledTaskbarEntries
+      $clockWidth={clockWidth}
+      $hasAI={hasAI}
+      aria-label="Running applications"
+    >
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
         {Object.entries(processes)
           .filter(

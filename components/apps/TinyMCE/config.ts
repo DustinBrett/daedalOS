@@ -8,11 +8,13 @@ const toolbar = `
   alignleft aligncenter alignright | outdent indent | code help`;
 
 export const config = {
+  a11y_advanced_options: true,
   base_url: "/Program Files/TinyMCE/",
   branding: false,
+  browser_spellcheck: true,
   contextmenu: "",
   draggable_modal: true,
-  help_accessibility: false,
+  help_accessibility: true,
   image_advtab: true,
   plugins,
   promotion: false,

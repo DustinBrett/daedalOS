@@ -116,12 +116,14 @@ const StatusBar: FC<StatusBarProps> = ({
             : ""}
         </div>
       )}
-      <nav className="views">
+      <nav className="views" role="presentation">
         <Button
+          aria-pressed={view === "details"}
           className={view === "details" ? "active" : undefined}
           onClick={() => setView("details")}
           {...label(
-            "Displays information about each item\nin the window.  (Ctrl+Shift+6)"
+            "Displays information about each item\nin the window.  (Ctrl+Shift+6)",
+            "Details view"
           )}
         >
           <Icon
@@ -131,10 +133,12 @@ const StatusBar: FC<StatusBarProps> = ({
           />
         </Button>
         <Button
+          aria-pressed={view === "icon"}
           className={view === "icon" ? "active" : undefined}
           onClick={() => setView("icon")}
           {...label(
-            "Display items by using medium\nthumbnails.  (Ctrl+Shift+3)"
+            "Display items by using medium\nthumbnails.  (Ctrl+Shift+3)",
+            "Medium icons view"
           )}
         >
           <Icon

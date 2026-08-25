@@ -133,24 +133,36 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
 
   return (
     <StyledProfileBanner onContextMenuCapture={haltEvent} style={style}>
-      <Button onClick={selectedRecipientKey ? goHome : newChat}>
+      <Button
+        aria-label={selectedRecipientKey ? "Back" : "New message"}
+        onClick={selectedRecipientKey ? goHome : newChat}
+      >
         {selectedRecipientKey ? <Back /> : <Write />}
       </Button>
       {!selectedRecipientKey && connectedRelays.length > 0 && (
         <div className="relays">
           <ol>
             {toSorted(relayUrls).map((relayUrl) => (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-              <li
-                key={relayUrl}
-                onClick={
-                  connectedRelayData[relayUrl]
-                    ? undefined
-                    : () => connectToRelays([relayUrl])
-                }
-                title={relayUrl}
-              >
-                {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
+              <li key={relayUrl}>
+                <button
+                  // aria-disabled keeps the tooltip and connected status
+                  // reachable, unlike a natively disabled button
+                  aria-disabled={
+                    connectedRelayData[relayUrl] ? true : undefined
+                  }
+                  aria-label={`${relayUrl} (${
+                    connectedRelayData[relayUrl] ? "connected" : "disconnected"
+                  })`}
+                  onClick={
+                    connectedRelayData[relayUrl]
+                      ? undefined
+                      : () => connectToRelays([relayUrl])
+                  }
+                  title={relayUrl}
+                  type="button"
+                >
+                  {getWebSocketStatusIcon(connectedRelayData[relayUrl])}
+                </button>
               </li>
             ))}
           </ol>
@@ -158,7 +170,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       )}
       <Profile
         nip05={nip05}
-        onMouseDown={onContextMenuCapture}
+        onClick={onContextMenuCapture}
         picture={picture}
         pubkey={pubkey}
         userName={userName}

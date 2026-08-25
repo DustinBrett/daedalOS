@@ -48,6 +48,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
     <StyledSendMessage>
       <textarea
         ref={inputRef}
+        aria-label="Type a message"
         disabled={isUnknownKey}
         onChange={() => {
           setCanSend(Boolean(inputRef.current?.value));
@@ -68,6 +69,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
         autoFocus
       />
       <Button
+        aria-label="Send"
         disabled={isUnknownKey || !canSend}
         onClick={() =>
           inputRef.current?.value && sendMessage(inputRef.current.value)

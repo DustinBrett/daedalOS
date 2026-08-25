@@ -13,11 +13,23 @@ const StyledTabs = styled.ol`
 
   li {
     color: rgb(215 215 215);
-    padding: 15px 13px 14px;
+
+    button {
+      align-items: flex-start;
+      background-color: transparent;
+      color: inherit;
+      display: flex;
+      font: inherit;
+      height: 100%;
+      padding: 15px 13px 14px;
+    }
 
     &.active {
-      border-bottom: 4px solid rgb(0 120 215);
       color: #fff;
+
+      button {
+        border-bottom: 4px solid rgb(0 120 215);
+      }
     }
 
     &:hover {

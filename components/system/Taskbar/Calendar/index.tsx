@@ -11,7 +11,7 @@ import {
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
-import { haltEvent, hasFinePointer } from "utils/functions";
+import { haltEvent, hasFinePointer, label } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -64,16 +64,12 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     const calendarElement = calendarRef.current;
     const onBlur = ({ relatedTarget }: FocusEvent): void => {
       if (relatedTarget instanceof HTMLElement) {
-        if (calendarElement?.contains(relatedTarget)) {
-          calendarElement?.focus(PREVENT_SCROLL);
+        if (calendarElement?.contains(relatedTarget)) return;
 
-          return;
-        }
-
-        const clockElement = document.querySelector("main>nav [role=timer]");
+        const clockElement = document.querySelector("main>nav #clock");
 
         if (
-          clockElement instanceof HTMLDivElement &&
+          clockElement instanceof HTMLElement &&
           (clockElement === relatedTarget ||
             clockElement.contains(relatedTarget))
         ) {
@@ -84,18 +80,20 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
       toggleCalendar(false);
     };
 
-    calendarElement?.addEventListener("blur", onBlur);
+    calendarElement?.addEventListener("focusout", onBlur);
     calendarElement?.focus(PREVENT_SCROLL);
 
-    return () => calendarElement?.removeEventListener("blur", onBlur);
+    return () => calendarElement?.removeEventListener("focusout", onBlur);
   }, [toggleCalendar]);
 
   return (
     calendar && (
       <StyledCalendar
         ref={calendarRef}
-        aria-label="Calendar"
+        aria-label="Date and Time Information"
+        id="calendar"
         onContextMenu={haltEvent}
+        role="dialog"
         {...calendarTransition}
         {...FOCUSABLE_ELEMENT}
       >
@@ -109,11 +107,14 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                       month: "long",
                     })}, ${date.getFullYear()}`}
                   </header>
-                  <nav>
-                    <Button onClick={() => changeMonth(-1)}>
+                  <nav role="presentation">
+                    <Button
+                      onClick={() => changeMonth(-1)}
+                      {...label("Previous")}
+                    >
                       <Up />
                     </Button>
-                    <Button onClick={() => changeMonth(1)}>
+                    <Button onClick={() => changeMonth(1)} {...label("Next")}>
                       <Down />
                     </Button>
                   </nav>
@@ -122,7 +123,9 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
             </tr>
             <tr>
               {DAY_NAMES.map((dayName) => (
-                <td key={dayName}>{dayName}</td>
+                <th key={dayName} scope="col">
+                  {dayName}
+                </th>
               ))}
             </tr>
           </thead>
@@ -137,6 +140,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                         spotlightEffect(tdRef, true, 2, true);
                       }
                     }}
+                    aria-current={type === "today" ? "date" : undefined}
                     className={type}
                     onClick={(event) => {
                       if (CELEBRATIONS[date.getMonth() + 1]?.[day]) {

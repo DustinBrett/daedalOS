@@ -35,9 +35,12 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
   const sdWorker = useWorker<void>(SD_WORKER);
   const transferedCanvas = useRef(false);
   const [status, setStatus] = useState<string>(NO_WEBGPU_SUPPORT);
+  const [generatedPrompt, setGeneratedPrompt] = useState("");
   const generateImage = useCallback(async () => {
     if (canvasRef.current) {
       const config: StableDiffusionConfig = { prompts: [prompt] };
+
+      setGeneratedPrompt(prompt[0]);
 
       if (supportsOffscreenCanvas && sdWorker.current) {
         if (transferedCanvas.current) {
@@ -79,9 +82,10 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
 
   return (
     <StyledStableDiffusion>
-      <nav>
+      <nav role="presentation">
         <div className="prompts">
           <textarea
+            aria-label="Input Prompt"
             defaultValue={prompt[0]}
             onChange={({ target }) =>
               setPrompt(([, negativePrompt]) => [
@@ -92,6 +96,7 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
             placeholder="Input Prompt"
           />
           <textarea
+            aria-label="Negative Prompt"
             defaultValue={prompt[1]}
             onChange={({ target }) =>
               setPrompt(([positivePrompt]) => [
@@ -115,11 +120,21 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
       <div className="image">
         <canvas
           ref={canvasRef}
+          // Busy only while actually generating (the WebGPU-unsupported
+          // status is an idle state), and never on an ancestor of the
+          // role="status" region or its announcements may be withheld
+          aria-busy={
+            (Boolean(status) && status !== NO_WEBGPU_SUPPORT) || undefined
+          }
+          aria-label={generatedPrompt || "Generated image"}
           height={512}
           onContextMenuCapture={onContextMenuCapture}
+          role="img"
           width={512}
         />
-        {status && <div className="status">{status}</div>}
+        <div className="status" role="status">
+          {status}
+        </div>
       </div>
     </StyledStableDiffusion>
   );

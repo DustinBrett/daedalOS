@@ -135,7 +135,12 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledVim>
       <div id="vimjs-container" {...useFileDrop({ id })}>
-        <canvas id="vimjs-canvas" onContextMenuCapture={haltEvent} />
+        <canvas
+          aria-label="Vim"
+          id="vimjs-canvas"
+          onContextMenuCapture={haltEvent}
+          role="img"
+        />
       </div>
       <div id="vimjs-font-test" />
     </StyledVim>

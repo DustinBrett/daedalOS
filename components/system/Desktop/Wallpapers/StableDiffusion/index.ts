@@ -62,6 +62,7 @@ const StableDiffusion = (
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
+  canvas.setAttribute("aria-hidden", "true");
 
   el.append(canvas);
 

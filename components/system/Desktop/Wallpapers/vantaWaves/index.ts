@@ -44,6 +44,10 @@ const vantaWaves = (
           ...disableControls,
           ...wavesConfig,
         });
+        el.querySelector(":scope > canvas")?.setAttribute(
+          "aria-hidden",
+          "true"
+        );
       } catch {
         fallback?.();
       }

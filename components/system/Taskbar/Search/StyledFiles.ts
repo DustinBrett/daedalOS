@@ -14,10 +14,19 @@ const StyledFiles = styled.figure`
       border: 1px solid rgb(75 75 75 / 85%);
       border-radius: 15px;
       display: flex;
-      padding: 4px 10px;
       place-content: center;
       place-items: center;
       white-space: nowrap;
+
+      button {
+        background-color: transparent;
+        color: inherit;
+        display: flex;
+        font-family: inherit;
+        padding: 4px 10px;
+        place-items: center;
+        text-align: left;
+      }
 
       h2 {
         bottom: 1px;

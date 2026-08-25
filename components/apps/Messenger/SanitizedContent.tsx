@@ -22,7 +22,7 @@ const SanitizedContent: FC<{ content: string; decrypted: boolean }> = ({
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(decryptedContent || content, {
-          ALLOWED_ATTR: ["src"],
+          ALLOWED_ATTR: ["alt", "src"],
           ALLOWED_TAGS: ["br", "img"],
         }),
       }}

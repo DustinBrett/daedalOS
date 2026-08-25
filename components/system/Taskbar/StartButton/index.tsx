@@ -6,7 +6,7 @@ import {
   START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { DIV_BUTTON_PROPS } from "utils/constants";
+import { CLICK_FOCUSABLE_ELEMENT } from "utils/constants";
 import { label, preloadImage } from "utils/functions";
 import { useMenuPreload } from "hooks/useMenuPreload";
 
@@ -45,9 +45,12 @@ const StartButton: FC<StartButtonProps> = ({
   return (
     <StyledTaskbarButton
       $active={startMenuVisible}
+      aria-expanded={startMenuVisible}
+      aria-haspopup="dialog"
+      {...(startMenuVisible && { "aria-controls": "startMenu" })}
       onClick={onClick}
       $highlight
-      {...DIV_BUTTON_PROPS}
+      {...CLICK_FOCUSABLE_ELEMENT}
       {...label(START_BUTTON_TITLE)}
       {...useTaskbarContextMenu(true)}
       {...useMenuPreload(preloadStartMenu)}

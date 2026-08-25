@@ -414,12 +414,12 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledBrowser $hasSrcDoc={Boolean(srcDoc)}>
-      <nav>
+      <nav aria-label="Toolbar">
         <div>
           <Button
             disabled={!canGoBack}
             onClick={() => changeHistory(-1)}
-            {...label("Click to go back")}
+            {...label("Click to go back", "Back")}
             {...backMenu}
           >
             <Arrow direction="left" />
@@ -427,7 +427,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           <Button
             disabled={!canGoForward}
             onClick={() => changeHistory(1)}
-            {...label("Click to go forward")}
+            {...label("Click to go forward", "Forward")}
             {...forwardMenu}
           >
             <Arrow direction="right" />
@@ -436,13 +436,14 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             disabled={loading}
             onClick={() => setUrl(history[position])}
             onContextMenu={haltEvent}
-            {...label("Reload this page")}
+            {...label("Reload this page", "Reload")}
           >
             {loading ? <Stop /> : <Refresh />}
           </Button>
         </div>
         <input
           ref={inputRef}
+          aria-label="Address and search bar"
           defaultValue={initialUrl}
           onFocusCapture={() => inputRef.current?.select()}
           onKeyDown={({ key }) => {
@@ -466,7 +467,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
           <Network />
         </Button>
       </nav>
-      <nav>
+      <nav aria-label="Bookmarks">
         {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
           <Button
             key={name}
@@ -480,16 +481,20 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
             {...label(
               `${name}\n${bookmarkUrl
                 .replace(/^http:\/\//, "")
-                .replace(/\/$/, "")}`
+                .replace(/\/$/, "")}`,
+              name
             )}
             {...bookmarkMenu}
           >
-            <Icon alt={name} imgSize={16} src={icon} singleSrc />
+            <Icon alt="" imgSize={16} src={icon} singleSrc />
           </Button>
         ))}
       </nav>
       <iframe
         ref={iframeRef}
+        // Only the page content is busy while loading; the toolbar stays
+        // fully operable
+        aria-busy={loading || undefined}
         onLoad={() => {
           try {
             iframeRef.current?.contentWindow?.addEventListener("focus", () =>

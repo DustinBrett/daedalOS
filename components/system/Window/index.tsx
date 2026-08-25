@@ -19,7 +19,9 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     backgroundColor,
     Component,
     hideTitlebar,
+    minimized,
     peekElement,
+    title,
   } = process || {};
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
@@ -40,6 +42,10 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
         $backgroundBlur={backgroundBlur}
         $backgroundColor={backgroundColor}
         $isForeground={isForeground}
+        aria-hidden={minimized || undefined}
+        aria-label={title}
+        inert={minimized || undefined}
+        role="dialog"
         {...focusableProps}
         {...windowTransitions}
       >

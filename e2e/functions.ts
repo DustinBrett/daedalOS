@@ -1,15 +1,18 @@
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
+import AxeBuilder from "@axe-core/playwright";
 import {
   type ConsoleMessage,
   type Locator,
   type Page,
   type Response,
   expect,
+  test,
 } from "@playwright/test";
 import {
   type IsShown,
   type MenuItems,
+  ACCESSIBILITY_EXCEPTION_IDS,
   BACKGROUND_CANVAS_SELECTOR,
   CALENDAR_LABEL,
   CLOCK_LABEL,
@@ -37,6 +40,7 @@ import {
   START_MENU_SIDEBAR_SELECTOR,
   TASKBAR_ENTRIES_SELECTOR,
   TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
+  TASKBAR_ENTRY_LABEL_SUFFIX,
   TASKBAR_ENTRY_PEEK_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
@@ -85,6 +89,36 @@ type DocumentWithVendorFullscreen = Document & {
   mozFullScreenElement?: HTMLElement;
   webkitFullscreenElement?: HTMLElement;
 };
+
+export const scanPasses = async (
+  page: Page,
+  include?: string
+): Promise<void> => {
+  const builder = new AxeBuilder({ page }).disableRules(
+    ACCESSIBILITY_EXCEPTION_IDS
+  );
+  const { violations } = await (
+    include ? builder.include(include) : builder
+  ).analyze();
+
+  await test.info().attach("accessibility-scan-results", {
+    body: JSON.stringify(violations, undefined, 2),
+    contentType: "application/json",
+  });
+
+  expect(violations).toEqual([]);
+};
+
+const taskbarEntryLabel = (label: RegExp | string): RegExp | string =>
+  typeof label === "string"
+    ? `${label}${TASKBAR_ENTRY_LABEL_SUFFIX}`
+    : // An escaped literal \$ is not the end-of-input anchor
+      label.source.endsWith("$") && !label.source.endsWith(String.raw`\$`)
+      ? new RegExp(
+          `${label.source.slice(0, -1)}${TASKBAR_ENTRY_LABEL_SUFFIX}$`,
+          label.flags
+        )
+      : label;
 
 type MessageType = ReturnType<ConsoleMessage["type"]>;
 
@@ -258,7 +292,10 @@ export const hoverOnTaskbarEntry = async (
   label: RegExp | string,
   { page }: TestProps
 ): Promise<void> =>
-  page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).hover();
+  page
+    .locator(TASKBAR_ENTRY_SELECTOR)
+    .getByLabel(taskbarEntryLabel(label))
+    .hover();
 
 export const pressDesktopKeys = async (
   keys: string,
@@ -385,7 +422,7 @@ export const clickTaskbarEntry = async (
 ): Promise<void> =>
   page
     .locator(TASKBAR_ENTRY_SELECTOR)
-    .getByLabel(label, EXACT)
+    .getByLabel(taskbarEntryLabel(label), EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
 export const fileExplorerRenameEntry = async (
@@ -723,13 +760,16 @@ export const taskbarEntryIsHidden = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label, EXACT)
+    page
+      .locator(TASKBAR_ENTRY_SELECTOR)
+      .getByLabel(taskbarEntryLabel(label), EXACT)
   ).toBeHidden();
 
 export const taskbarEntryIsVisible = async (
   label: RegExp | string,
   { page }: TestProps
-): Promise<void> => entryIsVisible(TASKBAR_ENTRY_SELECTOR, label, page);
+): Promise<void> =>
+  entryIsVisible(TASKBAR_ENTRY_SELECTOR, taskbarEntryLabel(label), page);
 
 export const taskbarEntryPeekIsHidden = async ({
   page,
@@ -776,7 +816,7 @@ export const taskbarEntryHasTooltip = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label)
+    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(taskbarEntryLabel(label))
   ).toHaveAttribute("title", title);
 
 // expect->locator->getBy->getBy
@@ -806,7 +846,10 @@ export const taskbarEntryHasIcon = async (
   { page }: TestProps
 ): Promise<void> =>
   expect(
-    page.locator(TASKBAR_ENTRY_SELECTOR).getByLabel(label).locator("img")
+    page
+      .locator(TASKBAR_ENTRY_SELECTOR)
+      .getByLabel(taskbarEntryLabel(label))
+      .locator("img")
   ).toHaveAttribute("src", src);
 
 export const fileExplorerEntryHasShortcutIcon = async (

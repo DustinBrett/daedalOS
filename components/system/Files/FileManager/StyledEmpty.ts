@@ -4,7 +4,12 @@ type StyledEmptyProps = {
   $hasColumns?: boolean;
 };
 
-const StyledEmpty = styled.div<StyledEmptyProps>`
+// The accessible name mirrors the ::before text below, and role="status"
+// makes the label valid (aria-label is dropped on generic divs)
+const StyledEmpty = styled.div.attrs({
+  "aria-label": "This folder is empty.",
+  role: "status",
+})<StyledEmptyProps>`
   position: absolute;
   width: 100%;
 

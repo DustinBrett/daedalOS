@@ -89,6 +89,7 @@ const Icon: FCWithRef<
   HTMLImageElement,
   IconProps & Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">
 > = ({
+  alt = "",
   displaySize = 0,
   imgSize = 0,
   ref,
@@ -180,6 +181,7 @@ const Icon: FCWithRef<
       <StyledIcon
         ref={ref}
         $loaded={loaded}
+        alt={alt}
         onError={onError}
         onLoad={onLoad}
         src={
