@@ -42,6 +42,11 @@ export type GalaxyLayer = {
    */
   spikeAmp: number;
   target: GalaxyLayerTarget;
+  /**
+   * Amplitude of the slow brightness shimmer. There is no atmosphere in
+   * space, so this stays subtle: a hint of life standing in for real
+   * stellar variability rather than earthly twinkle.
+   */
   twinkleAmp: number;
 };
 
@@ -473,8 +478,13 @@ export const generateGalaxy = (
     );
   }
 
-  // Globular clusters in the halo
+  // Globular clusters: the Milky Way hosts ~150, in two families (Zinn
+  // 1985): metal-rich clusters concentrated toward the bulge in a mildly
+  // flattened system, and metal-poor clusters strewn through the halo
+  // along the same steep power-law profile as its field stars
   const globulars = createWriter(grade(1.06));
+  const GC_CDF_INNER = 0.22 ** -0.5;
+  const GC_CDF_OUTER = 1.6 ** -0.5;
 
   for (
     let index = 0;
@@ -484,8 +494,15 @@ export const generateGalaxy = (
     const azimuth = random() * TAU;
     const cosPolar = random() * 2 - 1;
     const sinPolar = Math.sqrt(1 - cosPolar * cosPolar);
-    const radius = 0.3 + random() ** 1.5 * 1.1;
-    const [red, green, blue] = kelvinRgb(4300 + random() * 1500);
+    const metalRich = random() < 0.3;
+    const radius = metalRich
+      ? 0.08 + random() ** 2 * 0.3
+      : (GC_CDF_INNER - random() * (GC_CDF_INNER - GC_CDF_OUTER)) ** -2;
+    // Metal-poor clusters shine bluer: a warmer giant branch plus blue
+    // horizontal-branch stars, against the redder metal-rich population
+    const [red, green, blue] = kelvinRgb(
+      metalRich ? 4300 + random() * 700 : 5000 + random() * 1200
+    );
 
     globulars.add(
       radius * sinPolar,
@@ -493,13 +510,13 @@ export const generateGalaxy = (
       azimuth,
       0,
       0,
-      radius * cosPolar,
+      radius * cosPolar * (metalRich ? 0.6 : 1),
       0.012 + random() * 0.012,
       random() * TAU,
       red,
       green,
       blue,
-      90 + random() * 80
+      70 + random() * 60
     );
   }
 
@@ -530,19 +547,21 @@ export const generateGalaxy = (
       red,
       green,
       blue,
-      20 + random() * 26
+      // Barely-there: the halo must read as scattered grains on a close
+      // look, never as a visible shell ringing the galaxy
+      10 + random() * 14
     );
   }
 
-  // Soft gas glow forming the luminous disk and outer halo
+  // Soft gas glow forming the luminous disk. No glow clouds off the plane:
+  // a real stellar halo's surface brightness sits far below the sky - the
+  // space around a galaxy looks empty to the eye, and stray puffs read as
+  // a distracting shell around the disk
   const diskGlow = createWriter(grade(1.16));
 
   for (let index = 0; index < scaled(BASE_COUNTS.diskGlow); index += 1) {
-    const isHalo = random() < 0.12;
-    const a = isHalo
-      ? 0.25 + random() * 0.85
-      : sampleDiskRadius(random, GALAXY.diskScaleLength + 0.04);
-    const onMinorArm = !isHalo && a > 0.3 && random() < 0.14;
+    const a = sampleDiskRadius(random, GALAXY.diskScaleLength + 0.04);
+    const onMinorArm = a > 0.3 && random() < 0.14;
     const coreness = 1 - smoothstep(0.05, 0.55, a);
     const rim = smoothstep(0.62, 1.05, a);
     const red = mix(onMinorArm ? 158 : 172, 255, coreness);
@@ -551,22 +570,21 @@ export const generateGalaxy = (
 
     diskGlow.add(
       a,
-      isHalo ? 1 : axisRatio(a),
-      isHalo ? random() * TAU : armAngle(a) + spread(random, 0.1),
+      axisRatio(a),
+      armAngle(a) + spread(random, 0.1),
       onMinorArm
         ? (random() < 0.5 ? 1 : -1) * MINOR_ARM_PHASE + spread(random, 0.3)
         : random() * TAU,
-      isHalo || onMinorArm ? 0 : relativeOrbitalSpeed(a),
-      spread(random, isHalo ? 0.1 + a * 0.1 : diskHeight(a) * 1.4),
+      onMinorArm ? 0 : relativeOrbitalSpeed(a),
+      spread(random, diskHeight(a) * 1.4),
       // Rim clouds shrink as well as dim: small faint sprites read as
       // granular cloud texture, large faint ones read as blur
-      (isHalo ? 0.08 + random() * 0.05 : 0.035 + random() ** 2 * 0.085) *
-        mix(1, 0.55, rim),
+      (0.035 + random() ** 2 * 0.085) * mix(1, 0.55, rim),
       random() * TAU,
       red,
       green,
       blue,
-      (isHalo ? 1.4 + random() * 1.6 : 8 + random() * 10) *
+      (8 + random() * 10) *
         mix(0.3, 1, smoothstep(0.02, 0.3, a)) *
         mix(1, 0.34, rim)
     );
@@ -657,11 +675,20 @@ export const generateGalaxy = (
     }
 
     // Bright stars skew heavily toward red giants, as in the Gaia
-    // colour-magnitude diagram where the giant branch dominates at the top
+    // colour-magnitude diagram where the giant branch dominates at the
+    // top - and a few of those are carbon stars, sooty atmospheres
+    // burning a startling deep red (the R Leporis "Crimson Star" look)
     const isBright = random() < 0.006;
-    const [red, green, blue] = kelvinRgb(
-      isBright && random() < 0.55 ? 3300 + random() * 900 : temperature
-    );
+    let brightTemperature = temperature;
+
+    if (isBright) {
+      const giantRoll = random();
+
+      if (giantRoll < 0.06) brightTemperature = 2200 + random() * 500;
+      else if (giantRoll < 0.58) brightTemperature = 3300 + random() * 900;
+    }
+
+    const [red, green, blue] = kelvinRgb(brightTemperature);
 
     oldStars.add(
       a,
@@ -678,6 +705,26 @@ export const generateGalaxy = (
       isBright ? 235 : brightness
     );
   }
+
+  // One unremarkable G-type star rides the Local Spur about two-thirds of
+  // the way out, a whisker above the midplane - the Sun, exactly where it
+  // belongs, overtaking the spiral pattern from inside corotation
+  const [sunRed, sunGreen, sunBlue] = kelvinRgb(5778);
+
+  oldStars.add(
+    SPUR_RADIUS,
+    axisRatio(SPUR_RADIUS),
+    armAngle(SPUR_RADIUS),
+    SPUR_PHASE,
+    relativeOrbitalSpeed(SPUR_RADIUS),
+    0.002,
+    0.0045,
+    random() * TAU,
+    sunRed,
+    sunGreen,
+    sunBlue,
+    110
+  );
 
   // Dark dust lanes hugging the inner edge of the arms. The particle color
   // is a per-channel ABSORPTION vector, not a paint color: interstellar
@@ -854,6 +901,29 @@ export const generateGalaxy = (
     );
   }
 
+  // Runaway OB stars: roughly a fifth of O stars are flung from their
+  // birth clusters by dynamical kicks or a companion's supernova, and
+  // burn out mid-flight far from any arm (AE Aurigae, Mu Columbae)
+  for (let index = 0; index < scaled(120); index += 1) {
+    const a = 0.25 + random() * 0.75;
+    const [red, green, blue] = kelvinRgb(14000 + random() ** 2 * 16000);
+
+    youngStars.add(
+      a,
+      axisRatio(a),
+      armAngle(a) + spread(random, 0.4),
+      random() * TAU,
+      relativeOrbitalSpeed(a),
+      spread(random, diskHeight(a) * 1.3),
+      0.003 + random() ** 2 * 0.005,
+      random() * TAU,
+      red,
+      green,
+      blue,
+      70 + random() * 90
+    );
+  }
+
   // Star forming H-II regions: pink emission knots with embedded clusters
   const h2Regions = createWriter(grade(1.28));
 
@@ -938,6 +1008,28 @@ export const generateGalaxy = (
     }
   }
 
+  // Planetary nebulae: dying sunlike stars blow luminous shells that glow
+  // teal in doubly-ionized oxygen. They trace the older disk population
+  // rather than the arms, so the tiny cyan motes turn up between them
+  for (let index = 0; index < scaled(70); index += 1) {
+    const a = Math.max(sampleDiskRadius(random, GALAXY.diskScaleLength), 0.14);
+
+    h2Regions.add(
+      a,
+      axisRatio(a),
+      armAngle(a) + spread(random, 0.3),
+      random() * TAU,
+      relativeOrbitalSpeed(a),
+      spread(random, diskHeight(a) * 1.6),
+      0.0035 + random() * 0.0035,
+      random() * TAU,
+      120,
+      235,
+      205,
+      8 + random() * 10
+    );
+  }
+
   // Open star clusters: compact families born together. The older ones
   // have decoupled from the spiral pattern and orbit with the disk, so
   // they show up between the arms too, like the Hyades and M67
@@ -950,10 +1042,16 @@ export const generateGalaxy = (
     // Cluster age sets its color: young ones blue-white, old ones sunny
     const baseTemperature = 5200 + random() ** 2 * 9000;
     const members = 5 + Math.trunc(random() * 8);
+    // A few clusters keep a red supergiant, the way h and chi Persei
+    // hang on to their handful of ruby stars among the blue
+    const hasSupergiant = random() < 0.25;
 
     for (let member = 0; member < members; member += 1) {
+      const isSupergiant = hasSupergiant && member === 0;
       const [red, green, blue] = kelvinRgb(
-        baseTemperature * (0.75 + random() * 0.5)
+        isSupergiant
+          ? 3450 + random() * 300
+          : baseTemperature * (0.75 + random() * 0.5)
       );
 
       youngStars.add(
@@ -963,12 +1061,12 @@ export const generateGalaxy = (
         clusterPhase + spread(random, 0.01),
         clusterOmega,
         clusterZ + spread(random, 0.004),
-        0.0035 + random() ** 2 * 0.005,
+        (0.0035 + random() ** 2 * 0.005) * (isSupergiant ? 1.7 : 1),
         random() * TAU,
         red,
         green,
         blue,
-        90 + random() * 110
+        isSupergiant ? 170 + random() * 60 : 90 + random() * 110
       );
     }
   }
@@ -1011,19 +1109,26 @@ export const generateGalaxy = (
   // Deep sky surroundings: the Magellanic Cloud satellites below the disk
   // and a sprinkling of distant background galaxies as elongated smudges
   const deepSky = createWriter(grade(1.08));
+  // The Clouds are structured dwarfs, not round blobs: the LMC is a barred
+  // one-armed disc and the SMC an elongated irregular, so each satellite
+  // clump is drawn from an anisotropic spread at its own position angle
   const addSatellite = (
-    azimuth: number,
-    radiusXY: number,
+    centerX: number,
+    centerY: number,
     z: number,
-    clumpSpread: number,
+    majorSpread: number,
+    minorSpread: number,
+    positionAngle: number,
     sprites: number
   ): void => {
-    const centerX = radiusXY * Math.cos(azimuth);
-    const centerY = radiusXY * Math.sin(azimuth);
+    const cosAngle = Math.cos(positionAngle);
+    const sinAngle = Math.sin(positionAngle);
 
     for (let sprite = 0; sprite < sprites; sprite += 1) {
-      const x = centerX + spread(random, clumpSpread);
-      const y = centerY + spread(random, clumpSpread);
+      const along = spread(random, majorSpread);
+      const across = spread(random, minorSpread);
+      const x = centerX + along * cosAngle - across * sinAngle;
+      const y = centerY + along * sinAngle + across * cosAngle;
       const isH2Knot = random() < 0.12;
 
       deepSky.add(
@@ -1032,7 +1137,7 @@ export const generateGalaxy = (
         Math.atan2(y, x),
         0,
         0,
-        z + spread(random, clumpSpread * 0.7),
+        z + spread(random, minorSpread * 0.9),
         isH2Knot ? 0.012 + random() * 0.01 : 0.02 + random() * 0.045,
         random() * TAU,
         isH2Knot ? 255 : 205,
@@ -1048,14 +1153,50 @@ export const generateGalaxy = (
   // and stars ties them together
   const lmcAzimuth = random() * TAU;
   const smcAzimuth = lmcAzimuth + 0.4 + random() * 0.2;
-
-  addSatellite(lmcAzimuth, 1.3, -0.85, 0.085, 32);
-  addSatellite(smcAzimuth, 1.55, -1.05, 0.055, 18);
-
   const lmcX = 1.3 * Math.cos(lmcAzimuth);
   const lmcY = 1.3 * Math.sin(lmcAzimuth);
   const smcX = 1.55 * Math.cos(smcAzimuth);
   const smcY = 1.55 * Math.sin(smcAzimuth);
+  const lmcBarAngle = random() * TAU;
+
+  addSatellite(lmcX, lmcY, -0.85, 0.1, 0.055, lmcBarAngle, 32);
+  // The SMC's wing points back along the gas bridge toward its companion
+  addSatellite(
+    smcX,
+    smcY,
+    -1.05,
+    0.07,
+    0.032,
+    Math.atan2(lmcY - smcY, lmcX - smcX),
+    18
+  );
+
+  // 30 Doradus, the Tarantula Nebula: the most luminous star-forming
+  // region of the Local Group blazes at one end of the LMC's bar - the
+  // pink beacon that identifies the LMC at a glance
+  for (let knot = 0; knot < 3; knot += 1) {
+    const along = 0.09 + spread(random, 0.01);
+    const across = spread(random, 0.012);
+    const x =
+      lmcX + along * Math.cos(lmcBarAngle) - across * Math.sin(lmcBarAngle);
+    const y =
+      lmcY + along * Math.sin(lmcBarAngle) + across * Math.cos(lmcBarAngle);
+
+    deepSky.add(
+      Math.hypot(x, y),
+      1,
+      Math.atan2(y, x),
+      0,
+      0,
+      -0.85 + spread(random, 0.012),
+      knot === 0 ? 0.016 + random() * 0.008 : 0.009 + random() * 0.006,
+      random() * TAU,
+      255,
+      120,
+      150,
+      knot === 0 ? 26 + random() * 10 : 15 + random() * 8
+    );
+  }
 
   for (let index = 0; index < scaled(26); index += 1) {
     const along = random();
@@ -1109,7 +1250,7 @@ export const generateGalaxy = (
       blue,
       // Streams are among the faintest structures in deep exposures; keep
       // this a whisper so it never draws the eye from the galaxy itself
-      14 + random() * 16
+      8 + random() * 10
     );
   }
 
@@ -1139,7 +1280,7 @@ export const generateGalaxy = (
       red,
       green,
       blue,
-      20 + random() * 20
+      12 + random() * 12
     );
   }
 
@@ -1202,6 +1343,30 @@ export const generateGalaxy = (
           3 + random() * 3
         );
       }
+
+      // M32 and M110, Andromeda's pair of compact elliptical companions,
+      // huddle just off its disk as two small round smudges
+      for (let companion = 0; companion < 2; companion += 1) {
+        const companionAngle = random() * TAU;
+        const offset = 0.12 + companion * 0.09 + random() * 0.03;
+        const x = center[0] + offset * Math.cos(companionAngle);
+        const y = center[1] + offset * Math.sin(companionAngle);
+
+        deepSky.add(
+          Math.hypot(x, y),
+          1,
+          Math.atan2(y, x),
+          0,
+          0,
+          center[2] + offset * (random() - 0.5),
+          0.028 + random() * 0.018,
+          random() * TAU,
+          240,
+          228,
+          210,
+          3.5 + random() * 2
+        );
+      }
     } else {
       // Anonymous background galaxies: one or two overlapping soft sprites
       // each, reading as compact smudges rather than lines of dots
@@ -1230,6 +1395,64 @@ export const generateGalaxy = (
     }
   }
 
+  // Galaxies cluster: one compact huddle of smudges in the far field (a
+  // Fornax-cluster analog) instead of every neighbor drifting alone
+  const groupAzimuth = random() * TAU;
+  const groupCosPolar = (0.3 + random() * 0.6) * (random() < 0.5 ? -1 : 1);
+  const groupSinPolar = Math.sqrt(1 - groupCosPolar * groupCosPolar);
+  const groupDistance = 7.5 + random() * 1.5;
+
+  for (let index = 0; index < 5; index += 1) {
+    const x =
+      groupDistance * groupSinPolar * Math.cos(groupAzimuth) +
+      spread(random, 0.3);
+    const y =
+      groupDistance * groupSinPolar * Math.sin(groupAzimuth) +
+      spread(random, 0.3);
+    // Cluster cores are ruled by red ellipticals, spirals keep out
+    const isElliptical = random() < 0.75;
+
+    deepSky.add(
+      Math.hypot(x, y),
+      1,
+      Math.atan2(y, x),
+      0,
+      0,
+      groupDistance * groupCosPolar + spread(random, 0.3),
+      0.04 + random() * 0.05,
+      random() * TAU,
+      isElliptical ? 243 : 210,
+      isElliptical ? 226 : 216,
+      isElliptical ? 206 : 238,
+      2.5 + random() * 2
+    );
+  }
+
+  // Classical dwarf spheroidal satellites (Sculptor and Fornax analogs):
+  // diffuse whispers of old stars far off the plane, so tenuous they went
+  // unnoticed until the 20th century despite orbiting our own galaxy
+  for (let index = 0; index < 3; index += 1) {
+    const azimuth = random() * TAU;
+    const cosPolar = (0.35 + random() * 0.6) * (random() < 0.5 ? -1 : 1);
+    const sinPolar = Math.sqrt(1 - cosPolar * cosPolar);
+    const radius = 1.6 + random() * 0.5;
+
+    deepSky.add(
+      radius * sinPolar,
+      1,
+      azimuth,
+      0,
+      0,
+      radius * cosPolar,
+      0.045 + random() * 0.03,
+      random() * TAU,
+      228,
+      218,
+      205,
+      2 + random() * 1.5
+    );
+  }
+
   return [
     farStars.build({
       alpha: 1,
@@ -1240,7 +1463,7 @@ export const generateGalaxy = (
       sizeMul: 1,
       spikeAmp: 0,
       target: "background",
-      twinkleAmp: 0.45,
+      twinkleAmp: 0.22,
     }),
     globulars.build({
       alpha: 0.8,
@@ -1295,7 +1518,7 @@ export const generateGalaxy = (
       sizeMul: 1,
       spikeAmp: 0.3,
       target: "stars",
-      twinkleAmp: 0.18,
+      twinkleAmp: 0.1,
     }),
     dust.build({
       alpha: 1,
@@ -1317,7 +1540,7 @@ export const generateGalaxy = (
       sizeMul: 1,
       spikeAmp: 0.3,
       target: "foreground",
-      twinkleAmp: 0.22,
+      twinkleAmp: 0.12,
     }),
     h2Regions.build({
       alpha: 1,
@@ -1339,7 +1562,7 @@ export const generateGalaxy = (
       sizeMul: 1,
       spikeAmp: 0,
       target: "foreground",
-      twinkleAmp: 0.35,
+      twinkleAmp: 0.2,
     }),
   ];
 };

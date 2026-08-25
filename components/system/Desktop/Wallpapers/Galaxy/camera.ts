@@ -83,6 +83,8 @@ type CameraState = {
   azimuth: number;
   distance: number;
   elevation: number;
+  panX?: number;
+  panY?: number;
 };
 
 /**
@@ -90,7 +92,7 @@ type CameraState = {
  * calls: consume it (upload/read) before the next call.
  */
 export const buildViewProjection = (
-  { azimuth, distance, elevation }: CameraState,
+  { azimuth, distance, elevation, panX = 0, panY = 0 }: CameraState,
   width: number,
   height: number
 ): Float32Array => {
@@ -109,11 +111,16 @@ export const buildViewProjection = (
   );
   multiply(viewProjectionMatrix, projectionMatrix, viewMatrix);
 
-  // Shift the image up in screen space (clip.y += k * clip.w) so the near
-  // rim of the tilted disk clears the bottom edge with some margin
+  // Screen-space shifts (clip.xy += k * clip.w): a fixed upward shift so
+  // the near rim of the tilted disk clears the bottom edge, plus the
+  // parallax pan that glides the frame along with the tilt orbit
+  const shiftY = CAMERA.screenShiftY + panY;
+
   for (let column = 0; column < 4; column += 1) {
+    viewProjectionMatrix[column * 4] +=
+      panX * viewProjectionMatrix[column * 4 + 3];
     viewProjectionMatrix[column * 4 + 1] +=
-      CAMERA.screenShiftY * viewProjectionMatrix[column * 4 + 3];
+      shiftY * viewProjectionMatrix[column * 4 + 3];
   }
 
   return viewProjectionMatrix;

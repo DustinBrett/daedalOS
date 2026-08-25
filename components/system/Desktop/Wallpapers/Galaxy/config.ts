@@ -59,10 +59,16 @@ export const CAMERA = {
   // Portrait screens show more of the disc from a higher vantage
   mobileElevationAdd: 0.22,
   nearPlane: 0.05,
-  parallaxAzimuth: 0.17,
-  parallaxElevation: 0.12,
+  parallaxAzimuth: 0.14,
+  parallaxElevation: 0.09,
+  // Screen-space pan paired with the parallax orbit: the whole frame glides
+  // the way the camera swings, so a tilt reads as one coherent motion
+  // instead of a rotation about a pinned center
+  parallaxPan: 0.055,
   screenShiftY: 0.1,
-  smoothing: 2.5,
+  // Tilt tracking speed (per second): fast enough to feel attached to the
+  // hand, slow enough that the glide stays calm rather than twitchy
+  smoothing: 4.5,
 };
 
 export const BASE_COUNTS = {
@@ -70,7 +76,7 @@ export const BASE_COUNTS = {
   diskGlow: 18000,
   dust: 13000,
   farStars: 2800,
-  globularClusters: 80,
+  globularClusters: 110,
   h2Regions: 150,
   haloStars: 1500,
   nearStars: 90,

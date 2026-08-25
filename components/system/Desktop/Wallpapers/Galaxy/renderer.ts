@@ -695,6 +695,11 @@ export const createGalaxyRenderer = (
           ),
           1.5
         ),
+        // Pan tracks the orbit: azimuth+ translates the camera along its
+        // right vector (scene shifts left), elevation- lowers it (scene
+        // shifts up) - both cues agreeing makes the tilt easy to follow
+        panX: -smoothTiltX * CAMERA.parallaxPan,
+        panY: smoothTiltY * CAMERA.parallaxPan,
       },
       width,
       height
