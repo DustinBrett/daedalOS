@@ -38,6 +38,14 @@ import {
 // WebKit build always allows keyboard focus of buttons — real Safari's
 // default "Option+Tab only" setting cannot be reproduced here, so taskbar
 // behavior still needs an occasional real-Safari smoke test.
+//
+// The mouse-focus quirk is also port-specific, not engine-wide: WebKit's
+// HTMLFormControlElement::isMouseFocusable() bypasses the tabindex check
+// under `#if PLATFORM(GTK) || PLATFORM(WPE)`, so the Linux WebKit build
+// (used by CI on ubuntu) mouse-focuses buttons exactly like Chromium.
+// Only the Cocoa/Windows ports — i.e. everything real Safari runs on —
+// exhibit the quirk, so the webkit expectations below are gated on it.
+const WEBKIT_HAS_MOUSE_FOCUS_QUIRK = process.platform !== "linux";
 
 const activeElement = async (page: Page): Promise<string> =>
   page.evaluate(() => {
@@ -59,7 +67,7 @@ test.describe("engine focus behavior", () => {
     await page.click("#plain");
 
     expect(await activeElement(page)).toBe(
-      browserName === "webkit" ? "bar" : "plain"
+      browserName === "webkit" && WEBKIT_HAS_MOUSE_FOCUS_QUIRK ? "bar" : "plain"
     );
   });
 
@@ -71,7 +79,9 @@ test.describe("engine focus behavior", () => {
     await page.click("#plain");
 
     expect(await activeElement(page)).toBe(
-      browserName === "webkit" ? "body" : "plain"
+      browserName === "webkit" && WEBKIT_HAS_MOUSE_FOCUS_QUIRK
+        ? "body"
+        : "plain"
     );
   });
 
@@ -147,7 +157,7 @@ test.describe("engine focus behavior", () => {
     // bare button reports the tabindex ancestor as relatedTarget instead
     await page.click("#plain");
     expect(await page.evaluate(() => document.body.dataset.relatedTarget)).toBe(
-      browserName === "webkit" ? "bar" : "plain"
+      browserName === "webkit" && WEBKIT_HAS_MOUSE_FOCUS_QUIRK ? "bar" : "plain"
     );
 
     await page.focus("#field");
