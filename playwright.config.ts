@@ -19,11 +19,23 @@ const config: PlaywrightTestConfig = {
         : {
             ...chrome,
             launchOptions: {
-              args: ["--enable-gpu", "--use-gl=angle"],
+              args: ["--enable-gpu", "--use-gl=angle", "--mute-audio"],
             },
           },
     },
-    { name: "firefox", use: firefox },
+    {
+      name: "firefox",
+      use: CI
+        ? firefox
+        : {
+            ...firefox,
+            launchOptions: {
+              firefoxUserPrefs: {
+                "media.volume_scale": "0.0",
+              },
+            },
+          },
+    },
     { name: "webkit", use: safari },
   ],
   reporter: [["list"], ["html", { open: CI ? "never" : "always" }]],
