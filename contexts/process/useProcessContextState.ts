@@ -50,6 +50,7 @@ const useProcessContextState = (): ProcessContextState => {
     Object.create(null) as Processes
   );
   const processesRef = useRef<Processes>({} as Processes);
+  const closingIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     processesRef.current = processes;
@@ -115,14 +116,28 @@ const useProcessContextState = (): ProcessContextState => {
   );
   const closeWithTransition = useCallback(
     (id: string): void => {
+      // Capturing the window for a close effect is async, so rapid close
+      // requests could each spawn their own effect. Ignore repeats until
+      // the process is fully closed.
+      if (closingIdsRef.current.has(id)) return;
+
+      closingIdsRef.current.add(id);
+
       const { componentWindow, hasWindow } = processesRef.current[id] || {};
+      let closeInitiated = false;
       const initClose = (): void => {
+        if (closeInitiated) return;
+
+        closeInitiated = true;
         close(id, true);
-        window.setTimeout(() => close(id), TRANSITIONS_IN_MILLISECONDS.WINDOW);
+        window.setTimeout(() => {
+          close(id);
+          closingIdsRef.current.delete(id);
+        }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
       };
 
       if (componentWindow && hasWindow !== false) {
-        startCloseEffect(componentWindow, initClose);
+        startCloseEffect(componentWindow, initClose).catch(initClose);
       } else {
         initClose();
       }
