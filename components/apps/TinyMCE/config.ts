@@ -14,7 +14,7 @@ export const config = {
   browser_spellcheck: true,
   contextmenu: "",
   draggable_modal: true,
-  help_accessibility: true,
+  help_accessibility: false,
   image_advtab: true,
   plugins,
   promotion: false,
