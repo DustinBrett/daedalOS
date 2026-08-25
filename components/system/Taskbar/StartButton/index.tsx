@@ -34,9 +34,9 @@ const StartButton: FC<StartButtonProps> = ({
       toggleStartMenu();
 
       if (ctrlKey && shiftKey) {
-        const { spawnSheep } = await import("utils/spawnSheep");
+        const { spawnFly } = await import("utils/spawnFly");
 
-        spawnSheep();
+        await spawnFly();
       }
     },
     [toggleStartMenu]
