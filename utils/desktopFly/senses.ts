@@ -47,7 +47,7 @@ const rearBlindness = (cosBearing: number): number =>
  * Split a looming drive between the eyes by bearing relative to the heading.
  * `rdX/rdY` is the unit vector from the fly to the stimulus.
  */
-const eyeSplit = (
+export const eyeSplit = (
   heading: number,
   rdX: number,
   rdY: number
@@ -81,7 +81,30 @@ export const cursorThreat = (
   const dist = Math.max(Math.hypot(relX, relY), 20);
   // Radial approach speed; positive means the cursor is closing in.
   const approach = -(relX * mouseVel.x + relY * mouseVel.y) / dist;
-  let loom = clamp((approach / dist) * 6, 0, 1) * clamp(1 - dist / 800, 0, 1);
+  // approach/dist is the inverse time-to-contact — loom urgency. The gain
+  // sets where the response saturates: at the old x6 anything with SIX
+  // SECONDS to spare read as a maximal loom, so slow and fast approaches
+  // were indistinguishable — an awake fly bolted from a lazy sweep 300 px
+  // away 7 times in 8, a 40 px/s creep launched it (when slow approach is
+  // exactly how a real fly lets you get close: escape falls off hard for
+  // slow expansion), and no sleep gate could pass a lunge while blocking a
+  // drift. At x1.2 the response is full only inside ~0.8 s to contact.
+  //
+  // And looming is EXPANSION, not motion: an object gliding to a stop a
+  // few centimetres to the side is translating across the eye, which the
+  // real LC4/LPLC2 populations do not answer with escape. The impact
+  // parameter — how far this trajectory would miss by — separates the two:
+  // radial approach toward a point NEAR the fly is not approach AT the fly.
+  const speed2 = Math.hypot(mouseVel.x, mouseVel.y);
+  const miss =
+    speed2 > 1
+      ? Math.abs(relX * mouseVel.y - relY * mouseVel.x) / speed2
+      : dist;
+  const onCourse = clamp(1 - miss / 110, 0, 1);
+  let loom =
+    clamp((approach / dist) * 1.2, 0, 1) *
+    onCourse *
+    clamp(1 - dist / 800, 0, 1);
 
   // Hovering close counts too: a big stationary object is still a threat —
   // and one parked almost on top of the fly fills its whole visual field.
@@ -147,6 +170,35 @@ export const rectThreat = (
     // A big surface sweeping past also pushes air.
     puff: clamp(speed / 2000, 0, 0.6) * clamp(1 - dist / 300, 0, 1),
   };
+};
+
+/**
+ * A small moving thing — another fly, a sheep, the cursor at a distance —
+ * as seen by the LC11 small-object pathway: per-eye drive rising with the
+ * object's speed, strongest at mid range, gone outside `[dist0, dist1]`.
+ */
+export const smallObjectDrive = (
+  pos: Point,
+  heading: number,
+  at: Point,
+  speed: number,
+  dist0: number,
+  dist1: number
+): [number, number] => {
+  const relX = at.x - pos.x;
+  const relY = at.y - pos.y;
+  const dist = Math.hypot(relX, relY);
+
+  if (dist < dist0 || dist > dist1 || speed < 15) return [0, 0];
+
+  // LC11 prefers modest speeds (Keleş & Frye 2017): the response saturates
+  // by a brisk conspecific walk, rather than only for the fastest darts.
+  const strength =
+    clamp(speed / 150, 0, 1) *
+    clamp(1 - (dist - dist0) / (dist1 - dist0), 0.2, 1);
+  const [lw, rw] = eyeSplit(heading, relX / dist, relY / dist);
+
+  return [strength * lw, strength * rw];
 };
 
 /** Radius inside which a click reads as a swat, in px. */
@@ -262,6 +314,6 @@ export const addThreat = (into: Threat, threat: Threat): void => {
   /* eslint-enable no-param-reassign */
 };
 
-/** Total salience of a threat, for legacy flies with no brain to feel it. */
+/** Total salience of a threat, for memory and dopamine gating. */
 export const threatLevel = ({ loomL, loomR, puff }: Threat): number =>
   Math.max(loomL, loomR) + 0.3 * puff;

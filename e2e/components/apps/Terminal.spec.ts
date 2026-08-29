@@ -342,6 +342,15 @@ test.describe("has commands", () => {
     await flyIsHidden({ page });
   });
 
+  test("fly help", async ({ page }) => {
+    await sendToTerminal({ page }, "fly help");
+
+    // The last line of the help text: the whole thing printed.
+    await terminalHasText({ page }, "crossed real synapses");
+    // Documentation must never wake the simulation.
+    await flyIsHidden({ page });
+  });
+
   test("sheep", async ({ page }) => {
     await sendToTerminal({ page }, "sheep");
     await sheepIsVisible({ page });

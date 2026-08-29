@@ -13,6 +13,8 @@ type ScreenLedge = {
   x0: number;
   x1: number;
   y: number;
+  /** How far this surface stands above the desktop, in scene units. */
+  z: number;
 };
 
 type TerrainRect = {
@@ -42,6 +44,23 @@ const idFor = (element: Element): number => {
 };
 
 const MIN_LEDGE_WIDTH = 24;
+/**
+ * How high each kind of surface stands above the wallpaper, in scene units
+ * (a fly is about 18 long). The desktop is not flat to something three
+ * millimetres tall: an icon is a card lying on a table, the taskbar is a
+ * kerb, and a window is a box you can climb and walk the rim of. Stacked
+ * windows step upward, because the one in front really is on top.
+ */
+const ICON_HEIGHT = 4;
+const TASKBAR_HEIGHT_Z = 7;
+const WINDOW_BASE_Z = 12;
+const WINDOW_STACK_STEP = 5;
+const WINDOW_MAX_Z = 40;
+/** A menu is thrown on top of everything, so it is the highest thing there. */
+const MENU_Z = 46;
+/** Desktop icons: small, low platforms a fly can perch on. */
+const ICON_SELECTOR = "main > ol > li";
+const MENU_SELECTOR = "#__next > nav";
 
 const collectRects = (width: number, height: number): TerrainRect[] => {
   const rects: TerrainRect[] = [];
@@ -131,15 +150,61 @@ type TerrainSense = {
   rects: ScreenRect[];
 };
 
+/** Small platforms: desktop icons, and a context menu while it is open. */
+const collectPerches = (height: number): ScreenLedge[] => {
+  const perches: ScreenLedge[] = [];
+
+  document.querySelectorAll(ICON_SELECTOR).forEach((element) => {
+    const { left, right, top } = element.getBoundingClientRect();
+
+    // An icon's walkable surface is its top edge, inset so a fly standing
+    // on one is on the icon rather than hanging off it.
+    if (right - left >= MIN_LEDGE_WIDTH && top > 4 && top < height) {
+      perches.push({
+        id: idFor(element),
+        x0: left + 4,
+        x1: right - 4,
+        y: top,
+        z: ICON_HEIGHT,
+      });
+    }
+  });
+
+  const menu = document.querySelector(MENU_SELECTOR);
+
+  if (menu instanceof HTMLElement && menu.offsetHeight > 0) {
+    const { left, right, top } = menu.getBoundingClientRect();
+
+    if (right - left >= MIN_LEDGE_WIDTH) {
+      perches.push({
+        id: idFor(menu),
+        x0: left,
+        x1: right,
+        y: top,
+        z: MENU_Z,
+      });
+    }
+  }
+
+  return perches;
+};
+
 /**
- * One DOM pass over the desktop: the walkable window top edges (plus the
- * floor at the top of the taskbar) and the raw window boxes, whose movement
+ * One DOM pass over the desktop: every walkable surface (window rims, icon
+ * tops, an open menu, and the kerb at the top of the taskbar) with the
+ * height each one stands at, plus the raw window boxes, whose movement
  * between polls feeds the looming sense. A ledge is only walkable where no
  * window in front of it covers that span.
  */
 export const senseTerrain = (width: number, height: number): TerrainSense => {
   const out: ScreenLedge[] = [
-    { id: 0, x0: 0, x1: width, y: height - TASKBAR_HEIGHT },
+    {
+      id: 0,
+      x0: 0,
+      x1: width,
+      y: height - TASKBAR_HEIGHT,
+      z: TASKBAR_HEIGHT_Z,
+    },
   ];
   const rects = collectRects(width, height);
 
@@ -149,16 +214,22 @@ export const senseTerrain = (width: number, height: number): TerrainSense => {
     const occluders = rects
       .slice(0, i)
       .filter((other) => other.top <= rect.top && other.bottom > rect.top);
+    // `rects` runs front to back, so the last one is the bottom of the pile.
+    const stacked = rects.length - 1 - i;
+    const z = Math.min(
+      WINDOW_BASE_Z + stacked * WINDOW_STACK_STEP,
+      WINDOW_MAX_Z
+    );
 
     subtractSpans(rect.left, rect.right, occluders).forEach(([x0, x1]) => {
       if (x1 - x0 >= MIN_LEDGE_WIDTH) {
-        out.push({ id: rect.id, x0, x1, y: rect.top });
+        out.push({ id: rect.id, x0, x1, y: rect.top, z });
       }
     });
   });
 
   return {
-    ledges: out,
+    ledges: [...out, ...collectPerches(height)],
     rects: rects.map(({ bottom, id, left, right, top }) => ({
       bottom,
       id,
@@ -175,9 +246,10 @@ export const ledgesToScene = (
   width: number,
   height: number
 ): Ledge[] =>
-  ledges.map(({ id, x0, x1, y }) => ({
+  ledges.map(({ id, x0, x1, y, z }) => ({
     id,
     x0: x0 - width / 2,
     x1: x1 - width / 2,
     y: height / 2 - y,
+    z,
   }));

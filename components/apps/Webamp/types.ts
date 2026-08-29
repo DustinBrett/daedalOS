@@ -101,6 +101,10 @@ export type WebampCI = Webamp & {
       display?: {
         closed: boolean;
       };
+      media?: {
+        status?: string;
+        volume?: number;
+      };
       milkdrop?: {
         butterchurn?: unknown;
         presetHistory?: number[];

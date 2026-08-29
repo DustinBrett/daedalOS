@@ -25,6 +25,7 @@ import {
   disableOffscreenCanvas,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
+  flyIsVisible,
   hoverOnTaskbarEntry,
   loadApp,
   loadTestApp,
@@ -53,12 +54,12 @@ test.describe("elements", () => {
   test.describe("has start button", () => {
     test.beforeEach(startButtonIsVisible);
 
-    test("can spawn sheep", async ({ page }) => {
+    test("can spawn fly", async ({ page }) => {
       await page.keyboard.down("Control");
       await page.keyboard.down("Shift");
 
       await clickStartButton({ page });
-      await sheepIsVisible({ page });
+      await flyIsVisible({ page });
     });
 
     test("has context menu", async ({ page }) => {

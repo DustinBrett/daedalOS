@@ -63,7 +63,7 @@ const useSessionContextState = (): SessionContextState => {
   const [cursor, setCursor] = useState<string | undefined>();
   const [aiEnabled, setAiEnabled] = useState(false);
   const [closeEffect, setCloseEffect] = useState(DEFAULT_CLOSE_EFFECT);
-  const [lazySheep, setLazySheep] = useState(false);
+  const [lazyZoo, setLazyZoo] = useState(false);
   const [windowStates, setWindowStates] = useState(
     Object.create(null) as WindowStates
   );
@@ -222,7 +222,7 @@ const useSessionContextState = (): SessionContextState => {
             closeEffect,
             cursor,
             iconPositions,
-            lazySheep,
+            lazyZoo,
             recentFiles,
             runHistory,
             sortOrders,
@@ -243,7 +243,7 @@ const useSessionContextState = (): SessionContextState => {
     cursor,
     haltSession,
     iconPositions,
-    lazySheep,
+    lazyZoo,
     recentFiles,
     runHistory,
     sessionLoaded,
@@ -368,8 +368,8 @@ const useSessionContextState = (): SessionContextState => {
           } else if (!Array.isArray(session.recentFiles)) {
             setRecentFiles(DEFAULT_SESSION?.recentFiles || []);
           }
-          if (session.lazySheep) {
-            setLazySheep(session.lazySheep);
+          if (session.lazyZoo) {
+            setLazyZoo(session.lazyZoo);
 
             maybeRequestIdleCallback(() => {
               window.setTimeout(async () => {
@@ -377,6 +377,11 @@ const useSessionContextState = (): SessionContextState => {
 
                 spawnSheep(true);
               }, MILLISECONDS_IN_HOUR);
+              window.setTimeout(async () => {
+                const { spawnFly } = await import("utils/spawnFly");
+
+                spawnFly();
+              }, 4 * MILLISECONDS_IN_HOUR);
             });
           }
         } catch (error) {

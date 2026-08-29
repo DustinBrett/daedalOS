@@ -963,12 +963,22 @@ const useCommandInterpreter = (
           }
           case "fly":
           case "gnat": {
-            const { countFlies, killFly, scareFlies, spawnFly } = await import(
-              "utils/spawnFly"
-            );
-            const [arg = 1] = commandArgs;
+            const [arg = 1, audioArg] = commandArgs;
 
-            if (arg === "scare") {
+            if (arg === "help" || arg === "-h" || arg === "--help") {
+              // Documentation only: never wake the simulation for this.
+              const { FLY_HELP } = await import("utils/desktopFly/help");
+
+              FLY_HELP.forEach((line) => printLn(line));
+              break;
+            }
+
+            const { countFlies, killFly, scareFlies, setFlyAudio, spawnFly } =
+              await import("utils/spawnFly");
+
+            if (arg === "audio") {
+              setFlyAudio(audioArg !== "off");
+            } else if (arg === "scare") {
               scareFlies();
             } else if (arg === "kill") {
               Array.from({ length: countFlies() }).forEach(() => killFly());
