@@ -37,6 +37,8 @@ export const KEYVAL_STORE_NAME = "keyval";
 
 export const KEYVAL_DB = `${KEYVAL_STORE_NAME}-store`;
 
+export const BROWSER_FS_DB = "browserfs";
+
 const IDX_SIZE = 1;
 const IDX_MTIME = 2;
 const IDX_TARGET = 3;
@@ -123,7 +125,7 @@ export const fs9pV4ToV3 = (): FS9P =>
 export const supportsIndexedDB = (): Promise<boolean> =>
   new Promise((resolve) => {
     try {
-      const db = window.indexedDB.open("browserfs");
+      const db = window.indexedDB.open(BROWSER_FS_DB);
 
       db.addEventListener(
         "error",
@@ -146,7 +148,7 @@ export const supportsIndexedDB = (): Promise<boolean> =>
 
           if (objectStoreNames?.length === 0) {
             try {
-              window.indexedDB.deleteDatabase("browserfs");
+              window.indexedDB.deleteDatabase(BROWSER_FS_DB);
             } catch {
               // Ignore errors to delete database
             }

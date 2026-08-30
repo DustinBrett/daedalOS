@@ -597,7 +597,9 @@ export const generateGalaxy = (
     const isCore = random() < 0.25;
     const x = spread(random, isCore ? 0.05 : 0.16);
     const y = spread(random, isCore ? 0.045 : 0.085);
-    const [red, green, blue] = isCore ? [255, 238, 210] : [255, 216, 168];
+    // Population II light: the bulge shines with old, cool stars, so its
+    // glow sits firmly in the warm 4000-5000K range rather than pale white
+    const [red, green, blue] = isCore ? [255, 232, 194] : [255, 212, 158];
 
     bulgeGlow.add(
       Math.hypot(x, y),
@@ -629,8 +631,8 @@ export const generateGalaxy = (
       0.06 + shell ** 2 * 0.42,
       random() * TAU,
       255,
-      mix(238, 222, shell),
-      mix(212, 178, shell),
+      mix(235, 215, shell),
+      mix(200, 162, shell),
       1.5 + (1 - shell) * 3.5
     );
   }
@@ -689,6 +691,9 @@ export const generateGalaxy = (
     }
 
     const [red, green, blue] = kelvinRgb(brightTemperature);
+    const size = isBright
+      ? 0.013 + random() * 0.012
+      : 0.0035 + random() ** 2 * 0.005;
 
     oldStars.add(
       a,
@@ -697,13 +702,33 @@ export const generateGalaxy = (
       phase0,
       relativeOrbitalSpeed(a),
       z,
-      isBright ? 0.013 + random() * 0.012 : 0.0035 + random() ** 2 * 0.005,
+      size,
       random() * TAU,
       red,
       green,
       blue,
       isBright ? 235 : brightness
     );
+
+    // Halation: saturated giants bleed a soft wide halo of their own color,
+    // the way blown-out stars glow through the optics of a long exposure.
+    // Same orbit parameters, so the halo rides its star exactly
+    if (isBright) {
+      diskGlow.add(
+        a,
+        ratio,
+        theta0,
+        phase0,
+        relativeOrbitalSpeed(a),
+        z,
+        size * (3 + random() * 1.5),
+        random() * TAU,
+        red,
+        green,
+        blue,
+        4 + random() * 4
+      );
+    }
   }
 
   // One unremarkable G-type star rides the Local Spur about two-thirds of
@@ -834,9 +859,16 @@ export const generateGalaxy = (
     a: number,
     theta0: number,
     phase0: number,
-    sizeBoost: number
+    sizeBoost: number,
+    age = 0.5
   ): void => {
-    const [red, green, blue] = kelvinRgb(8500 + random() ** 2 * 21000);
+    // Stellar age maps to temperature: newborn O/B stars fresh off the
+    // shock front burn electric blue, while survivors that have drifted
+    // downstream have lost their brightest members and settle toward the
+    // white-yellow of longer-lived masses
+    const [red, green, blue] = kelvinRgb(
+      mix(12500 + random() ** 2 * 17500, 6600 + random() * 2600, age)
+    );
 
     youngStars.add(
       a,
@@ -869,12 +901,21 @@ export const generateGalaxy = (
       0.14,
       0.04
     );
+    // Density waves spawn stars at the shock and let them go: the youngest
+    // crowd in a tight sheet at the arm's leading edge while older ones
+    // smear downstream in an ever more diffuse (and redder) trail, giving
+    // each arm a sharp blue edge and a soft fading wake
+    const age = random() * random();
 
     addYoungStar(
       radius,
-      armAngle(radius) + YOUNG_STAR_DRIFT + spread(random, 0.05),
+      armAngle(radius) +
+        YOUNG_STAR_DRIFT +
+        age * 0.075 +
+        spread(random, 0.012 + age * 0.045),
       phase + spread(random, (0.24 + radius * 0.1) * widthMul),
-      1
+      1,
+      age
     );
   }
 
@@ -975,14 +1016,38 @@ export const generateGalaxy = (
       );
     }
 
+    // The ionizing envelope: the knots sit inside a wider, fainter haze of
+    // H-alpha emission, so each region reads as a glowing gas cloud rather
+    // than a cluster of pink star points
+    const envelopes = 1 + Math.trunc(random() * 2);
+
+    for (let patch = 0; patch < envelopes; patch += 1) {
+      h2Regions.add(
+        radius + spread(random, 0.006),
+        axisRatio(radius),
+        thetaCenter + spread(random, 0.006),
+        phaseCenter + spread(random, 0.025),
+        0,
+        spread(random, 0.006),
+        0.032 + random() ** 2 * 0.05,
+        random() * TAU,
+        255,
+        88,
+        132,
+        (5 + random() * 8) * rimFade
+      );
+    }
+
     const clusterStars = 4 + Math.trunc(random() * 8);
 
     for (let star = 0; star < clusterStars; star += 1) {
+      // Embedded clusters are the regions' newborns, still at the shock
       addYoungStar(
         radius + spread(random, 0.01),
         thetaCenter + spread(random, 0.008),
         phaseCenter + spread(random, 0.03),
-        1.25
+        1.25,
+        random() * 0.2
       );
     }
 

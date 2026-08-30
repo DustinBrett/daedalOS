@@ -933,6 +933,15 @@ export const haltEvent = (
   }
 };
 
+let HAS_OFFSCREEN_CANVAS_SUPPORT: boolean;
+
+export const hasOffscreenCanvasSupport = (): boolean => {
+  HAS_OFFSCREEN_CANVAS_SUPPORT ??=
+    typeof window !== "undefined" && "OffscreenCanvas" in window;
+
+  return HAS_OFFSCREEN_CANVAS_SUPPORT;
+};
+
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
   devicePixelRatio = 1,

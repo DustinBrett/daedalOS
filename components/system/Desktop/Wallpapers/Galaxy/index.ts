@@ -25,23 +25,39 @@ const Galaxy = async (
     canvas.setAttribute("aria-hidden", "true");
     el.append(canvas);
 
-    const renderer = createGalaxyRenderer(
+    // `let`, as the renderer is replaced when a lost context is restored
+    let renderer = createGalaxyRenderer(
       canvas,
       config as Partial<GalaxyConfig>
     );
     const stopInput = listenGalaxyInput({
-      onTilt: renderer.setTilt,
-      onVisibility: renderer.setVisible,
+      onTilt: (x, y) => renderer.setTilt(x, y),
+      onVisibility: (visible) => renderer.setVisible(visible),
     });
     const resizeListener = (): void => {
       setCanvasSize();
       renderer.resize(el.offsetWidth, el.offsetHeight);
     };
+    const contextLostListener = (event: Event): void => {
+      // preventDefault keeps the evicted context restorable
+      event.preventDefault();
+      renderer.destroy();
+    };
+    const contextRestoredListener = (): void => {
+      renderer = createGalaxyRenderer(canvas, config as Partial<GalaxyConfig>);
+    };
 
     window.addEventListener("resize", resizeListener, { passive: true });
+    canvas.addEventListener("webglcontextlost", contextLostListener);
+    canvas.addEventListener("webglcontextrestored", contextRestoredListener);
 
     window.WallpaperDestroy = () => {
       window.removeEventListener("resize", resizeListener);
+      canvas.removeEventListener("webglcontextlost", contextLostListener);
+      canvas.removeEventListener(
+        "webglcontextrestored",
+        contextRestoredListener
+      );
       stopInput();
       renderer.destroy();
       window.WallpaperDestroy = undefined;

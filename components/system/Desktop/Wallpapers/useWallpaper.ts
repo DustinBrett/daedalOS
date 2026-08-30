@@ -39,6 +39,7 @@ import {
   createOffscreenCanvas,
   getExtension,
   getSearchParam,
+  hasOffscreenCanvasSupport,
   isBeforeBg,
   isGlobalMusicVisualizationRunning,
   parseBgPosition,
@@ -154,8 +155,8 @@ const useWallpaper = (
 
       if (
         !failedOffscreenContext.current &&
-        typeof window.OffscreenCanvas === "function" &&
-        wallpaperWorker.current
+        wallpaperWorker.current &&
+        hasOffscreenCanvasSupport()
       ) {
         // GALAXY renders at up to 1.5x native resolution so its point stars
         // stay pin-sharp on hiDPI screens; capped to bound the fill cost on

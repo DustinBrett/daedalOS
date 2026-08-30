@@ -31,7 +31,11 @@ const MAX_RADIUS_GLSL = GALAXY.maxRadius.toFixed(2);
 // into wall time). Width 0.00007 selects ~1 of the ~8k young stars.
 const NOVA_RATE_GLSL = (1 / 55).toFixed(6);
 
-const VERTEX_SHADER = `
+// Two sprite shader variants from one template: crisp (star layers) keeps
+// spikes + supernovae, soft (glow/dust/nebulae) compiles those terms out -
+// bit-identical there (their amplitudes are zero), but the fill-heaviest
+// passes drop most of their per-fragment transcendental work.
+const buildSpriteVertexShader = (crisp: boolean): string => `
 attribute vec4 aOrbit;
 attribute vec4 aMotion;
 attribute vec4 aColor;
@@ -43,14 +47,17 @@ uniform float uAlpha;
 uniform float uTwinkleAmp;
 uniform float uMaxPoint;
 uniform vec4 uWarp; // x: amplitude, y: cos(node), z: sin(node), w: start
-uniform float uSpike;
+${
+  crisp
+    ? `uniform float uSpike;
 uniform float uNova;
-uniform vec2 uDepthFade; // x: camera distance, y: 1 / depth range
-uniform float uDustNear;
 uniform float uSpikeGate; // sprite size (device px) where spikes begin
-varying vec4 vColor;
 varying float vSpike;
-varying float vNova;
+varying float vNova;`
+    : `uniform vec2 uDepthFade; // x: camera distance, y: 1 / depth range
+uniform float uDustNear;`
+}
+varying vec4 vColor;
 
 void main() {
   float a = aOrbit.x;
@@ -65,7 +72,9 @@ void main() {
   float z = aMotion.y + uWarp.x * smoothstep(uWarp.w, ${MAX_RADIUS_GLSL}, a) *
     (pos.y * uWarp.y - pos.x * uWarp.z) / max(a, 0.2);
   vec4 clip = uViewProj * vec4(pos, z, 1.0);
-  // Supernova channel: each cycle a rolling hash window elects one star
+${
+  crisp
+    ? `  // Supernova channel: each cycle a rolling hash window elects one star
   // of the layer to flare ~50x and decay over seconds
   float novaTick = uTime * ${NOVA_RATE_GLSL};
   float novaPhase = fract(novaTick);
@@ -75,23 +84,19 @@ void main() {
   float nova = novaPick *
     smoothstep(0.0, 0.02, novaPhase) * exp(-novaPhase * 9.0);
   float sizePx = aMotion.z * (1.0 + nova * 3.0) * uPointScale /
-    max(clip.w, 0.0001);
+    max(clip.w, 0.0001);`
+    : `  float sizePx = aMotion.z * uPointScale / max(clip.w, 0.0001);`
+}
   float fade = clamp(sizePx, 0.0, 1.0);
   float twinkle = 1.0 + uTwinkleAmp *
     sin(uTime * (1.5 + fract(aMotion.w * 0.6366) * 2.5) + aMotion.w);
   float shownSize = clamp(sizePx, 1.0, uMaxPoint);
 
-  // Inclination asymmetry of extinction: dust on the near side of a tilted
-  // disk blocks the light column behind it, while far-side dust is hidden
-  // by the disk's own glow - the cue astronomers read to tell which edge
-  // of a galaxy is closer. Near-side lanes darken more, far-side less.
-  float nearness = clamp(0.5 + (uDepthFade.x - clip.w) * uDepthFade.y,
-    0.0, 1.0);
-  float dustBias = mix(1.0, mix(0.72, 1.28, nearness), uDustNear);
-
   gl_PointSize = shownSize;
   gl_Position = clip;
-  // Only sprites big enough to read as saturated stars grow spikes; the
+${
+  crisp
+    ? `  // Only sprites big enough to read as saturated stars grow spikes; the
   // gate scales with resolution so hiDPI screens spike the same stars.
   // A supernova always spikes hard at peak, so the flare reads as a
   // dazzling star with a cross flare rather than a flat white ball
@@ -99,16 +104,25 @@ void main() {
     uSpike * nova * 4.0);
   vNova = min(nova * 2.0, 1.0);
   vColor = vec4(aColor.rgb,
-    aColor.a * uAlpha * twinkle * fade * fade * dustBias *
-      (1.0 + nova * 5.0));
+    aColor.a * uAlpha * twinkle * fade * fade * (1.0 + nova * 5.0));`
+    : `  // Inclination asymmetry of extinction: dust on the near side of a tilted
+  // disk blocks the light column behind it, while far-side dust is hidden
+  // by the disk's own glow - the cue astronomers read to tell which edge
+  // of a galaxy is closer. Near-side lanes darken more, far-side less.
+  float nearness = clamp(0.5 + (uDepthFade.x - clip.w) * uDepthFade.y,
+    0.0, 1.0);
+  float dustBias = mix(1.0, mix(0.72, 1.28, nearness), uDustNear);
+
+  vColor = vec4(aColor.rgb,
+    aColor.a * uAlpha * twinkle * fade * fade * dustBias);`
+}
 }
 `;
 
-const FRAGMENT_SHADER = `
+const buildSpriteFragmentShader = (crisp: boolean): string => `
 precision mediump float;
 varying vec4 vColor;
-varying float vSpike;
-varying float vNova;
+${crisp ? "varying float vSpike;\nvarying float vNova;" : ""}
 uniform vec3 uFalloff; // x: exponent, y: exp(-exponent), z: 1/(1-y)
 
 void main() {
@@ -118,16 +132,29 @@ void main() {
   if (r2 > 1.0) discard;
 
   float falloff = (exp(-uFalloff.x * r2) - uFalloff.y) * uFalloff.z;
-  // A supernova sharpens its profile (cubed falloff) so the flare shows a
+${
+  crisp
+    ? `  // A supernova sharpens its profile (cubed falloff) so the flare shows a
   // compact saturated core with a steep skirt instead of a flat disc
   falloff = mix(falloff, falloff * falloff * falloff, vNova);
   // Four-point diffraction spikes along the screen axes, as telescope
   // spider vanes draw them on the saturated stars of NASA/ESA photographs
   float spikes = vSpike * (1.0 - r2) *
-    (exp(-48.0 * p.x * p.x) + exp(-48.0 * p.y * p.y));
+    (exp(-48.0 * p.x * p.x) + exp(-48.0 * p.y * p.y));`
+    : ""
+}
+  // The R2 dither needs the integer pixel coordinate intact; GPUs that run
+  // mediump at fp16 would collapse the fract, so the coordinate is read at
+  // high precision wherever the hardware offers it
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+  highp vec2 ditherCoord = gl_FragCoord.xy;
+#else
+  vec2 ditherCoord = gl_FragCoord.xy;
+#endif
   float dither =
-    fract(dot(gl_FragCoord.xy, vec2(0.75487767, 0.56984029))) - 0.5;
-  float weight = vColor.a * (falloff + spikes) * (1.0 + dither * 0.1);
+    fract(dot(ditherCoord, vec2(0.75487767, 0.56984029))) - 0.5;
+  float weight =
+    vColor.a * ${crisp ? "(falloff + spikes)" : "falloff"} * (1.0 + dither * 0.1);
 
   gl_FragColor = vec4(vColor.rgb * weight, weight);
 }
@@ -144,14 +171,70 @@ void main() {
 `;
 
 const COMPOSITE_FRAGMENT_SHADER = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
 precision mediump float;
+#endif
 varying vec2 vUv;
 uniform sampler2D uTex;
+uniform float uTonemap;
+uniform float uAberration;
 
 void main() {
-  gl_FragColor = texture2D(uTex, vUv);
+  vec3 color;
+
+  if (uAberration > 0.0) {
+    // Residual chromatic aberration of long-exposure optics: a slight
+    // radial RGB split that grows toward the frame corners, felt on the
+    // nebulous glow rather than seen on the stars
+    vec2 shift = (vUv - 0.5) * uAberration;
+
+    color = vec3(
+      texture2D(uTex, vUv + shift).r,
+      texture2D(uTex, vUv).g,
+      texture2D(uTex, vUv - shift).b);
+  } else {
+    color = texture2D(uTex, vUv).rgb;
+  }
+
+  // Filmic shoulder for the HDR glow: exactly linear below the knee so the
+  // tuned mid-tones pass through untouched, then an exponential rolloff
+  // that compresses the core's stacked brightness into a warm gradient
+  // instead of letting it clip to flat white
+  vec3 over = max(color - 0.6, 0.0);
+  vec3 shouldered = min(color, vec3(0.6)) + 0.4 * (1.0 - exp(-over * 2.5));
+
+  gl_FragColor = vec4(mix(color, shouldered, uTonemap), 1.0);
 }
 `;
+
+const FINISH_FRAGMENT_SHADER = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+varying vec2 vUv;
+uniform float uSeed;
+
+void main() {
+  // Multiplicative finishing pass. Sensor grain rides on the signal (the
+  // shot noise of a long exposure), and a gentle optical vignette eases
+  // the frame corners down the way real lens flat-fields fall off -
+  // multiplying means pure black stays pure black, so the sky keeps its
+  // full contrast while the corners deepen and frame the galaxy
+  float noise = fract(
+    sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233)) + uSeed) * 43758.5453);
+  float vignette = 1.0 - 0.28 * smoothstep(0.4, 0.9, length(vUv - 0.5));
+
+  gl_FragColor = vec4(vec3(vignette * (1.0 + (noise - 0.5) * 0.07)), 1.0);
+}
+`;
+
+// Radial RGB-split strength of the glow composite, in uv units at the
+// frame corners (a couple of device pixels at 1080p)
+const ABERRATION_STRENGTH = 0.003;
 
 const QUALITY_FRACTIONS = [1, 0.72, 0.5, 0.32];
 // Sample points on the galaxy's bounding cylinder (radius 1.45, height
@@ -317,32 +400,67 @@ export const createGalaxyRenderer = (
   const azimuthStart = Math.random() * Math.PI * 2;
 
   warmedLayers = undefined;
-  const spriteProgram = compileProgram(gl, VERTEX_SHADER, FRAGMENT_SHADER, [
-    "aOrbit",
-    "aMotion",
-    "aColor",
-  ]);
+  // Uniform locations absent from a variant (compiled out) resolve to null
+  // and their guarded sets are skipped in the draw loop
+  const createSpriteVariant = (
+    crisp: boolean
+  ): {
+    program: WebGLProgram;
+    uniforms: Record<string, WebGLUniformLocation | null>;
+  } => {
+    const program = compileProgram(
+      gl,
+      buildSpriteVertexShader(crisp),
+      buildSpriteFragmentShader(crisp),
+      ["aOrbit", "aMotion", "aColor"]
+    );
+
+    return {
+      program,
+      uniforms: {
+        alpha: gl.getUniformLocation(program, "uAlpha"),
+        depthFade: gl.getUniformLocation(program, "uDepthFade"),
+        dustNear: gl.getUniformLocation(program, "uDustNear"),
+        falloff: gl.getUniformLocation(program, "uFalloff"),
+        maxPoint: gl.getUniformLocation(program, "uMaxPoint"),
+        nova: gl.getUniformLocation(program, "uNova"),
+        patternRot: gl.getUniformLocation(program, "uPatternRot"),
+        pointScale: gl.getUniformLocation(program, "uPointScale"),
+        spike: gl.getUniformLocation(program, "uSpike"),
+        spikeGate: gl.getUniformLocation(program, "uSpikeGate"),
+        time: gl.getUniformLocation(program, "uTime"),
+        twinkleAmp: gl.getUniformLocation(program, "uTwinkleAmp"),
+        viewProj: gl.getUniformLocation(program, "uViewProj"),
+        warp: gl.getUniformLocation(program, "uWarp"),
+      },
+    };
+  };
+  const crispSprites = createSpriteVariant(true);
+  const softSprites = createSpriteVariant(false);
+  const spriteVariants = [crispSprites, softSprites];
   const compositeProgram = compileProgram(
     gl,
     COMPOSITE_VERTEX_SHADER,
     COMPOSITE_FRAGMENT_SHADER,
     ["aPos"]
   );
-  const uniforms = {
-    alpha: gl.getUniformLocation(spriteProgram, "uAlpha"),
-    depthFade: gl.getUniformLocation(spriteProgram, "uDepthFade"),
-    dustNear: gl.getUniformLocation(spriteProgram, "uDustNear"),
-    falloff: gl.getUniformLocation(spriteProgram, "uFalloff"),
-    maxPoint: gl.getUniformLocation(spriteProgram, "uMaxPoint"),
-    nova: gl.getUniformLocation(spriteProgram, "uNova"),
-    patternRot: gl.getUniformLocation(spriteProgram, "uPatternRot"),
-    pointScale: gl.getUniformLocation(spriteProgram, "uPointScale"),
-    spike: gl.getUniformLocation(spriteProgram, "uSpike"),
-    spikeGate: gl.getUniformLocation(spriteProgram, "uSpikeGate"),
-    time: gl.getUniformLocation(spriteProgram, "uTime"),
-    twinkleAmp: gl.getUniformLocation(spriteProgram, "uTwinkleAmp"),
-    viewProj: gl.getUniformLocation(spriteProgram, "uViewProj"),
-    warp: gl.getUniformLocation(spriteProgram, "uWarp"),
+  const finishProgram = compileProgram(
+    gl,
+    COMPOSITE_VERTEX_SHADER,
+    FINISH_FRAGMENT_SHADER,
+    ["aPos"]
+  );
+  const finishSeedLocation = gl.getUniformLocation(finishProgram, "uSeed");
+  const compositeUniforms = {
+    aberration: gl.getUniformLocation(compositeProgram, "uAberration"),
+    tonemap: gl.getUniformLocation(compositeProgram, "uTonemap"),
+  };
+  let activeProgram: WebGLProgram | undefined;
+  const bindProgram = (program: WebGLProgram): void => {
+    if (activeProgram !== program) {
+      gl.useProgram(program);
+      activeProgram = program;
+    }
   };
   // The warp's line of nodes points a random way each load; it stays fixed
   // in space while the spiral pattern rotates through it, as the real warp
@@ -354,9 +472,8 @@ export const createGalaxyRenderer = (
     gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE) as Float32Array
   )[1];
 
-  gl.useProgram(compositeProgram);
+  bindProgram(compositeProgram);
   gl.uniform1i(gl.getUniformLocation(compositeProgram, "uTex"), 0);
-  gl.useProgram(spriteProgram);
 
   // Vertex state binders: native/OES vertex array objects when available,
   // otherwise a fallback that re-applies the full attribute state per draw
@@ -446,10 +563,15 @@ export const createGalaxyRenderer = (
   type RenderTarget = {
     framebuffer: WebGLFramebuffer;
     height: number;
+    internalFormat: number;
     texture: WebGLTexture;
+    type: number;
     width: number;
   };
-  const createRenderTarget = (): RenderTarget => {
+  const createRenderTarget = (
+    internalFormat: number,
+    type: number
+  ): RenderTarget => {
     const texture = gl.createTexture();
     const framebuffer = gl.createFramebuffer();
 
@@ -459,7 +581,7 @@ export const createGalaxyRenderer = (
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    return { framebuffer, height: 0, texture, width: 0 };
+    return { framebuffer, height: 0, internalFormat, texture, type, width: 0 };
   };
   const sizeRenderTarget = (
     target: RenderTarget,
@@ -474,12 +596,12 @@ export const createGalaxyRenderer = (
     gl.texImage2D(
       gl.TEXTURE_2D,
       0,
-      gl.RGBA,
+      sized.internalFormat,
       toWidth,
       toHeight,
       0,
       gl.RGBA,
-      gl.UNSIGNED_BYTE,
+      sized.type,
       // eslint-disable-next-line unicorn/no-null
       null
     );
@@ -492,17 +614,62 @@ export const createGalaxyRenderer = (
       0
     );
   };
-  const glowTarget = createRenderTarget();
-  const dustTarget = createRenderTarget();
+  // HDR glow accumulation where the hardware allows it: half-float texels
+  // keep the core's stacked brightness beyond 1.0 for the filmic rolloff.
+  // WebGL2 accepts either float-renderability extension (mid-range mobile
+  // GPUs often expose only the half-float one); WebGL1 needs its own trio
+  let glowFormat: number = gl.RGBA;
+  let glowType: number = gl.UNSIGNED_BYTE;
+  let glowHdr = false;
+
+  if (isWebGL2) {
+    if (
+      gl.getExtension("EXT_color_buffer_float") ||
+      gl.getExtension("EXT_color_buffer_half_float")
+    ) {
+      glowFormat = gl2.RGBA16F;
+      glowType = gl2.HALF_FLOAT;
+      glowHdr = true;
+    }
+  } else {
+    const halfFloat = gl.getExtension("OES_texture_half_float");
+
+    // Rendering into the texture needs the color-buffer extension, and the
+    // bilinear upsample of the composite blit needs the linear one
+    if (
+      halfFloat &&
+      gl.getExtension("EXT_color_buffer_half_float") &&
+      gl.getExtension("OES_texture_half_float_linear")
+    ) {
+      glowType = halfFloat.HALF_FLOAT_OES;
+      glowHdr = true;
+    }
+  }
+
+  const glowTarget = createRenderTarget(glowFormat, glowType);
+  const dustTarget = createRenderTarget(gl.RGBA, gl.UNSIGNED_BYTE);
 
   sizeRenderTarget(glowTarget, 2, 2);
 
-  const useRenderTargets =
+  let useRenderTargets =
     gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+
+  if (!useRenderTargets && glowHdr) {
+    // The driver advertises float rendering but refuses the attachment:
+    // fall back to the classic 8-bit glow buffer without tone mapping
+    glowHdr = false;
+    glowTarget.internalFormat = gl.RGBA;
+    glowTarget.type = gl.UNSIGNED_BYTE;
+    sizeRenderTarget(glowTarget, 2, 2);
+    useRenderTargets =
+      gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  }
 
   // eslint-disable-next-line unicorn/no-null
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.disable(gl.DEPTH_TEST);
+  // The sprite shader's own dither makes driver dithering redundant work
+  gl.disable(gl.DITHER);
   gl.enable(gl.BLEND);
 
   let { height, width } = canvas;
@@ -516,6 +683,8 @@ export const createGalaxyRenderer = (
   let simTime = 0;
   let quality = 0;
   let frameTimeAverage = 1000 / 60;
+  // The frame budget: vsync interval times the vsync-skip divisor
+  let renderInterval = 1000 / 60;
   let framesAtQuality = 0;
   let tiltX = 0;
   let tiltY = 0;
@@ -533,7 +702,12 @@ export const createGalaxyRenderer = (
       (isMobile ? CAMERA.mobileElevationAdd : 0) +
       (Math.random() * 2 - 1) * CAMERA.elevationJitter;
 
-  type LayerDraw = { binder: () => void; layer: GalaxyLayer };
+  type LayerDraw = {
+    binder: () => void;
+    falloffCut: number;
+    layer: GalaxyLayer;
+    variant: typeof crispSprites;
+  };
 
   const layerGroups: Record<GalaxyLayerTarget, LayerDraw[]> = {
     background: [],
@@ -544,7 +718,15 @@ export const createGalaxyRenderer = (
   };
 
   layers.forEach((layer, index) =>
-    layerGroups[layer.target].push({ binder: layerBinders[index], layer })
+    layerGroups[layer.target].push({
+      binder: layerBinders[index],
+      falloffCut: Math.exp(-layer.falloffK),
+      layer,
+      // Star layers with spikes or supernovae need the crisp program; every
+      // other layer renders bit-identically on the cheaper soft one
+      variant:
+        layer.spikeAmp > 0 || layer.novaAmp > 0 ? crispSprites : softSprites,
+    })
   );
 
   const drawGroup = (target: GalaxyLayerTarget, passScale: number): void => {
@@ -560,12 +742,13 @@ export const createGalaxyRenderer = (
       target === "dust" ? gl.ONE_MINUS_SRC_COLOR : gl.ONE
     );
 
-    for (const { binder, layer } of layerGroups[target]) {
+    for (const { binder, falloffCut, layer, variant } of layerGroups[target]) {
       const count = Math.floor(layer.count * fraction);
 
       if (count > 0) {
-        const falloffCut = Math.exp(-layer.falloffK);
+        const { uniforms } = variant;
 
+        bindProgram(variant.program);
         binder();
         gl.uniform1f(uniforms.pointScale, basePointScale * layer.sizeMul);
         gl.uniform3f(
@@ -583,9 +766,11 @@ export const createGalaxyRenderer = (
           )
         );
         gl.uniform1f(uniforms.twinkleAmp, layer.twinkleAmp);
-        gl.uniform1f(uniforms.spike, layer.spikeAmp);
-        gl.uniform1f(uniforms.nova, layer.novaAmp);
-        gl.uniform1f(uniforms.dustNear, target === "dust" ? 1 : 0);
+        if (uniforms.spike) gl.uniform1f(uniforms.spike, layer.spikeAmp);
+        if (uniforms.nova) gl.uniform1f(uniforms.nova, layer.novaAmp);
+        if (uniforms.dustNear) {
+          gl.uniform1f(uniforms.dustNear, target === "dust" ? 1 : 0);
+        }
         // Only disk populations ride the warp; the spherical background
         // and near-field layers (patternMul 0) stay untouched
         gl.uniform4f(
@@ -605,32 +790,40 @@ export const createGalaxyRenderer = (
   };
 
   const compositeTarget = (target: RenderTarget, additive: boolean): void => {
-    gl.useProgram(compositeProgram);
+    bindProgram(compositeProgram);
     quadBinder();
     // Glow adds light; the dust buffer holds per-channel TRANSMITTANCE, so
     // it multiplies the frame (dst *= src), dimming and reddening at once
     gl.blendFunc(additive ? gl.ONE : gl.ZERO, additive ? gl.ONE : gl.SRC_COLOR);
+    // Tone mapping and lens fringing belong to the additive glow only: the
+    // dust transmittance is physical data that must multiply through as-is
+    gl.uniform1f(compositeUniforms.tonemap, additive && glowHdr ? 1 : 0);
+    gl.uniform1f(
+      compositeUniforms.aberration,
+      additive ? ABERRATION_STRENGTH : 0
+    );
     gl.bindTexture(gl.TEXTURE_2D, target.texture);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    gl.useProgram(spriteProgram);
   };
 
   const adaptQuality = (frameTime: number): void => {
-    frameTimeAverage += (frameTime - frameTimeAverage) * 0.04;
+    // Clamped so a single page stall can't read as a slow GPU
+    frameTimeAverage +=
+      (Math.min(frameTime, renderInterval * 4) - frameTimeAverage) * 0.04;
     framesAtQuality += 1;
 
     if (framesAtQuality < 90) return;
 
-    // Thresholds are relative to the display's vsync interval, so the
-    // governor works the same on 60Hz and 144Hz monitors: degrade while
-    // vsyncs are being missed, upgrade only with clear headroom
+    // Thresholds are relative to the render cadence (vsync interval times
+    // the vsync-skip divisor), so 240Hz+ displays' intentional
+    // every-other-vsync pacing never reads as missed frames
     if (
-      frameTimeAverage > tickInterval * 1.6 &&
+      frameTimeAverage > renderInterval * 1.6 &&
       quality < QUALITY_FRACTIONS.length - 1
     ) {
       quality += 1;
       framesAtQuality = 0;
-    } else if (frameTimeAverage < tickInterval * 1.12 && quality > 0) {
+    } else if (frameTimeAverage < renderInterval * 1.12 && quality > 0) {
       quality -= 1;
       framesAtQuality = 0;
     }
@@ -662,6 +855,7 @@ export const createGalaxyRenderer = (
     if (ticksSinceRender < renderDivisor) return;
 
     ticksSinceRender = 0;
+    renderInterval = tickInterval * renderDivisor;
 
     const deltaTime = lastFrameTime ? (now - lastFrameTime) / 1000 : 1 / 60;
 
@@ -705,16 +899,25 @@ export const createGalaxyRenderer = (
       height
     );
 
-    gl.uniformMatrix4fv(uniforms.viewProj, false, viewProjection);
-    gl.uniform1f(uniforms.time, simTime);
-    // Depth window for the dust inclination asymmetry: the disk spans
-    // roughly +-0.9 view depth around the camera distance when tilted, and
-    // collapses to zero face-on, where the bias neutralizes on its own
-    gl.uniform2f(uniforms.depthFade, cameraDistance, 0.55);
-    gl.uniform1f(
-      uniforms.spikeGate,
-      Math.max((9 * height) / SIZE_REFERENCE_HEIGHT, 4)
-    );
+    for (const { program, uniforms } of spriteVariants) {
+      bindProgram(program);
+      gl.uniformMatrix4fv(uniforms.viewProj, false, viewProjection);
+      gl.uniform1f(uniforms.time, simTime);
+
+      if (uniforms.depthFade) {
+        // Depth window for the dust inclination asymmetry: the disk spans
+        // roughly +-0.9 view depth around the camera distance when tilted,
+        // and collapses to zero face-on, where the bias neutralizes
+        gl.uniform2f(uniforms.depthFade, cameraDistance, 0.55);
+      }
+
+      if (uniforms.spikeGate) {
+        gl.uniform1f(
+          uniforms.spikeGate,
+          Math.max((9 * height) / SIZE_REFERENCE_HEIGHT, 4)
+        );
+      }
+    }
 
     // Project the content bounds for the composite scissor rectangle
     let boundsMinX = width;
@@ -808,7 +1011,10 @@ export const createGalaxyRenderer = (
     }
 
     gl.viewport(0, 0, width, height);
-    gl.clearColor(0.002, 0.003, 0.008, 1);
+    // The sky stays essentially black - just the faintest blue bias so the
+    // darkest tones lean cold rather than gray. Deep contrast against the
+    // dark panel is the look; a lifted navy floor reads as gray haze
+    gl.clearColor(0.0012, 0.0018, 0.005, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     drawGroup("background", 1);
 
@@ -831,6 +1037,15 @@ export const createGalaxyRenderer = (
     }
 
     drawGroup("foreground", 1);
+
+    // Final full-frame finishing multiply (grain + vignette). Always on:
+    // it costs one cheap fullscreen quad, and gating it on the quality
+    // governor would make the whole frame visibly pop when tiers change
+    bindProgram(finishProgram);
+    quadBinder();
+    gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
+    gl.uniform1f(finishSeedLocation, (simTime * 61.8) % 97);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
   const start = (): void => {
@@ -847,6 +1062,10 @@ export const createGalaxyRenderer = (
       destroyed = true;
 
       cancelAnimationFrame(frameId);
+
+      // Everything is already gone, and loseContext would kill the restore
+      if (gl.isContextLost()) return;
+
       vertexArrays.forEach((vertexArray) => {
         if (isWebGL2) gl2.deleteVertexArray(vertexArray);
         else vaoExtension?.deleteVertexArrayOES(vertexArray);
@@ -857,8 +1076,10 @@ export const createGalaxyRenderer = (
         gl.deleteFramebuffer(target.framebuffer);
         gl.deleteTexture(target.texture);
       });
-      gl.deleteProgram(spriteProgram);
+      gl.deleteProgram(crispSprites.program);
+      gl.deleteProgram(softSprites.program);
       gl.deleteProgram(compositeProgram);
+      gl.deleteProgram(finishProgram);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
     resize: (newWidth, newHeight) => {

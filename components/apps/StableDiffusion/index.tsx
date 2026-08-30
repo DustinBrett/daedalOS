@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import useCanvasContextMenu from "components/apps/StableDiffusion/useCanvasContextMenu";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import {
@@ -9,6 +9,7 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import useWorker from "hooks/useWorker";
+import { hasOffscreenCanvasSupport } from "utils/functions";
 
 type WorkerMessage = { data: { message: string; type: string } };
 
@@ -28,10 +29,6 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [prompt, setPrompt] = useState<Prompt>(DEFAULT_PROMPT);
   const generatedAnImage = useRef(false);
-  const supportsOffscreenCanvas = useMemo(
-    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
-    []
-  );
   const sdWorker = useWorker<void>(SD_WORKER);
   const transferedCanvas = useRef(false);
   const [status, setStatus] = useState<string>(NO_WEBGPU_SUPPORT);
@@ -42,7 +39,7 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
 
       setGeneratedPrompt(prompt[0]);
 
-      if (supportsOffscreenCanvas && sdWorker.current) {
+      if (hasOffscreenCanvasSupport() && sdWorker.current) {
         if (transferedCanvas.current) {
           sdWorker.current.postMessage({ config });
         } else {
@@ -68,7 +65,7 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
 
       generatedAnImage.current = true;
     }
-  }, [prompt, sdWorker, supportsOffscreenCanvas]);
+  }, [prompt, sdWorker]);
   const hasWebGPU = useWebGPUCheck();
   const { onContextMenuCapture } = useCanvasContextMenu(
     canvasRef,

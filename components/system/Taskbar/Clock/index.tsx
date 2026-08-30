@@ -14,7 +14,10 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   TASKBAR_HEIGHT,
 } from "utils/constants";
-import { createOffscreenCanvas } from "utils/functions";
+import {
+  createOffscreenCanvas,
+  hasOffscreenCanvasSupport,
+} from "utils/functions";
 import { useMenuPreload } from "hooks/useMenuPreload";
 
 type ClockWorkerResponse = LocaleTimeDate | "source";
@@ -90,10 +93,7 @@ const Clock: FC<ClockProps> = ({
   );
   const offScreenClockCanvas = useRef<OffscreenCanvas>(undefined);
   const clockButtonRef = useRef<HTMLButtonElement | null>(null);
-  const supportsOffscreenCanvas = useMemo(
-    () => typeof window !== "undefined" && "OffscreenCanvas" in window,
-    []
-  );
+  const supportsOffscreenCanvas = useMemo(hasOffscreenCanvasSupport, []);
   const updateTime = useCallback(
     ({ data, target: clockWorker }: MessageEvent<ClockWorkerResponse>) => {
       if (data === "source") {

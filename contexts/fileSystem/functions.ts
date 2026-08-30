@@ -7,6 +7,7 @@ import { type FileSystemObserver } from "contexts/fileSystem/useFileSystemContex
 import { FS_HANDLES } from "utils/constants";
 import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import {
+  BROWSER_FS_DB,
   KEYVAL_STORE_NAME,
   getFileSystemHandles,
   getKeyValStore,
@@ -125,7 +126,8 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
           const dbs = window.indexedDB.databases
             ? (await window.indexedDB.databases())
                 .filter(
-                  ({ name }) => typeof name === "string" && name !== "browserfs"
+                  ({ name }) =>
+                    typeof name === "string" && name !== BROWSER_FS_DB
                 )
                 .map(({ name }) => name as string)
             : KNOWN_IDB_DBS;
