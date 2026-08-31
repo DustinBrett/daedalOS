@@ -65,7 +65,7 @@ const NOISE_SECONDS = 2;
  * modulation depth move it as much as the gains do — so it is checked by
  * measurement.
  */
-export const AUDIO_CALIBRATION = {
+const AUDIO_CALIBRATION = {
   amDepth: AM_DEPTH,
   /** Lowpass on the tonal half: `base + span * effort`, Hz. */
   cutoffBase: 900,

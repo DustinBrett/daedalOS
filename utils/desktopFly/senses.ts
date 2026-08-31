@@ -47,7 +47,7 @@ const rearBlindness = (cosBearing: number): number =>
  * Split a looming drive between the eyes by bearing relative to the heading.
  * `rdX/rdY` is the unit vector from the fly to the stimulus.
  */
-export const eyeSplit = (
+const eyeSplit = (
   heading: number,
   rdX: number,
   rdY: number

@@ -86,7 +86,7 @@ const SLEEP_BOUT_MAX = 1.9;
  * temperature with bursts past 12, and at the scene scale that is roughly
  * 18-29 px/s, bursting to 45.
  */
-export const SCENE_PX_PER_MM = 3.6;
+const SCENE_PX_PER_MM = 3.6;
 /** Walking: a resting pace plus whatever DNp09 is asking for, in mm/s. */
 const WALK_BASE_MM_S = 4.2;
 const WALK_DRIVE_MM_S = 14;
