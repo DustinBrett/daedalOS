@@ -260,10 +260,7 @@ const BOUND_POINTS = ((): number[] => {
   return points;
 })();
 const SIZE_REFERENCE_HEIGHT = 900;
-// Render at the display's full refresh rate so the wallpaper never beats
-// against menu fades or cursor motion; only extreme refresh rates (240Hz+)
-// skip vsyncs, and never below this rate.
-const MIN_EFFECTIVE_FPS = 120;
+const MIN_EFFECTIVE_FPS = 60;
 
 type GalaxyCanvas = HTMLCanvasElement | OffscreenCanvas;
 
